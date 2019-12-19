@@ -1,5 +1,6 @@
 package james.graphicalModel;
 
+import javax.swing.*;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -21,11 +22,11 @@ public class Value<T> {
     }
 
     void print(PrintWriter p) {
-        p.print(toString());
+        p.print(toString()+";");
     }
 
     public String toString() {
-        return name + " = " + value + ";";
+        return name + " = " + value;
     }
 
     public void setValue(T value) {
@@ -34,5 +35,14 @@ public class Value<T> {
 
     public String getName() {
         return name;
+    }
+
+    JLabel label = null;
+    public JComponent getViewer() {
+        if (label == null) {
+            label = new JLabel(toString());
+            label.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        }
+        return label;
     }
 }

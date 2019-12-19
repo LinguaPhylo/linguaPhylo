@@ -27,5 +27,6 @@ public class RandomVariable<T> extends Value<T> {
 
         p.print(name + " ~ ");
         g.print(p);
+        //p.print(";");
     }
 }
