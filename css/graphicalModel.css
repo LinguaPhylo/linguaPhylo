@@ -1,0 +1,14 @@
+.random-variable-button {
+    -fx-background-color: #CCFF99;
+    -fx-border-color: #99CC66;
+}
+
+.random-variable-button:hover {
+    -fx-background-color: #DDFFAA;
+}
+
+.random-variable-button:focused {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, #CCFF99, -fx-faint-focus-color, #CCFF99;
+    -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+    -fx-background-radius: 3, 2, 1, 4, 1;
+}
