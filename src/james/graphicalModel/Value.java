@@ -1,5 +1,7 @@
 package james.graphicalModel;
 
+import james.swing.HasComponentView;
+
 import javax.swing.*;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -39,6 +41,10 @@ public class Value<T> {
 
     JLabel label = null;
     public JComponent getViewer() {
+        if (value instanceof HasComponentView) {
+            return ((HasComponentView)value).getComponent();
+        }
+
         if (label == null) {
             label = new JLabel(toString());
             label.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));

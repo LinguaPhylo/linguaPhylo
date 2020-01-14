@@ -1,8 +1,6 @@
 package james;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -15,6 +13,8 @@ public class TimeTreeNode {
     double age = 0.0;
     String id = null;
 
+    Map<String, Object> metaData = new TreeMap();
+
     TimeTree tree;
 
     public TimeTreeNode(String id, TimeTree tree) {
@@ -26,6 +26,9 @@ public class TimeTreeNode {
     public TimeTreeNode(double age, TimeTreeNode[] children) {
         this.age = age;
         this.children = Arrays.asList(children);
+        for (TimeTreeNode child : children) {
+            child.parent = this;
+        }
     }
 
     public boolean isRoot() {
@@ -46,5 +49,22 @@ public class TimeTreeNode {
 
     public String getId() {
         return id;
+    }
+
+    public void setMetaData(String key, Object value) {
+        metaData.put(key, value);
+    }
+
+    public Object getMetaData(String key) {
+        return metaData.get(key);
+    }
+
+    public TimeTreeNode getParent() {
+        return parent;
+    }
+
+    public String toString() {
+        if (isLeaf()) return getId();
+        return super.toString();
     }
 }

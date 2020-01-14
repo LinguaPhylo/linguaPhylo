@@ -1,14 +1,15 @@
 package james;
 
-import james.graphicalModel.RandomVariable;
+import james.swing.HasComponentView;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree {
+public class TimeTree implements HasComponentView {
 
     TimeTreeNode rootNode;
 
@@ -45,5 +46,16 @@ public class TimeTree {
 
     public int n() {
         return n;
+    }
+
+    TimeTreeComponent component;
+    @Override
+    public JComponent getComponent() {
+        if (component == null) {
+            component = new TimeTreeComponent(this);
+        } else {
+            component.setTimeTree(this);
+        }
+        return component;
     }
 }

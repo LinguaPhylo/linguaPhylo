@@ -1,6 +1,5 @@
 package james.graphicalModel;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**

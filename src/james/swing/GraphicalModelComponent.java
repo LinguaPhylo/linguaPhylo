@@ -171,15 +171,6 @@ public class GraphicalModelComponent extends JComponent {
         });
     }
 
-//    private void drawStrings(String s, float x, float y, Graphics2D g) {
-//        String[] lines = s.split("\n");
-//
-//        for (String line : lines) {
-//            g.drawString(line, x, y);
-//            y += LINE_SPACING;
-//        }
-//    }
-
     /**
      * Draw an arrow line between two points.
      *

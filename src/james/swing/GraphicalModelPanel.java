@@ -7,7 +7,6 @@ import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -27,14 +26,11 @@ public class GraphicalModelPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        //add(component, BorderLayout.CENTER);
-        //add(selectedValueLabel, BorderLayout.EAST);
-
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,component,selectedValueLabel);
         splitPane.setResizeWeight(0.75);
         add(splitPane, BorderLayout.CENTER);
 
-        component.addGraphicalModelListener(value -> showValue(value));
+        component.addGraphicalModelListener(this::showValue);
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
