@@ -94,7 +94,7 @@ public class GraphicalModelPane extends AnchorPane {
         NodeVisitor buttonVisitor = new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q) {
-                String str = value.getName();
+                String str = value.getId();
 
                 if (!(value instanceof RandomVariable)) {
                     str = value.toString();
@@ -169,13 +169,13 @@ public class GraphicalModelPane extends AnchorPane {
 
         visitor.visitGenEdge(genDist, p, q);
 
-        List<Value> values = genDist.getParams();
+        Map<String, Value> map = genDist.getParams();
 
-        double width = (values.size() - 1) * HSPACE;
+        double width = (map.size() - 1) * HSPACE;
         double x = 0;
         if (p != null) x = p.getX() - width / 2.0;
 
-        for (Value value : values) {
+        for (Value value : map.values()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
             traverseGraphicalModel(value, p1, p, visitor);

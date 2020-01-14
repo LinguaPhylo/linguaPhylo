@@ -1,11 +1,7 @@
 package james.graphicalModel;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by adru001 on 17/12/19.
@@ -14,12 +10,11 @@ public interface GenerativeDistribution<T> {
 
     RandomVariable<T> sample();
 
-    default RandomVariable<T> sample(String name) {
+    default RandomVariable<T> sample(String id) {
         RandomVariable<T> v = sample();
-        v.name = name;
+        v.id = id;
         return v;
     }
-
 
     default double density(T t) {
         return Math.exp(logDensity(t));
@@ -33,15 +28,23 @@ public interface GenerativeDistribution<T> {
         return this.getClass().getSimpleName();
     }
 
-    List<Value> getParams();
+    Map<String, Value> getParams();
+
+    void setParam(String paramName, Value value);
 
     default void print(PrintWriter p) {
-        List<Value> params = getParams();
+        Map<String, Value> map = getParams();
 
-        p.print(getName()+"("+params.get(0).name);
-        for (int i = 1; i < params.size(); i++) {
-            p.print(", " + params.get(i).name);
+        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
+
+        Map.Entry<String, Value> entry = iterator.next();
+
+        p.print(getName()+"("+entry.getKey() + "=" + entry.getValue().id);
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            p.print(", " +entry.getKey() + "=" + entry.getValue().id);
         }
         p.print(");");
     }
+
 }

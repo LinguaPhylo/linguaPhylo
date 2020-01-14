@@ -20,7 +20,6 @@ public class TimeTreeComponent extends JComponent {
     String caption = null;
     String colorTraitName = null;
 
-    int BORDER_WIDTH = 20;
 
     TimeTree tree;
 
@@ -40,9 +39,6 @@ public class TimeTreeComponent extends JComponent {
 
     public TimeTreeComponent(TimeTree tree) {
         setTimeTree(tree);
-
-        System.out.println("Setting empty border");
-        setBorder(BorderFactory.createEmptyBorder(BORDER_WIDTH,BORDER_WIDTH,BORDER_WIDTH,BORDER_WIDTH));
     }
 
     public void setTimeTree(TimeTree timeTree) {

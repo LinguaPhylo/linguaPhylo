@@ -49,6 +49,7 @@ public class TimeTree implements HasComponentView {
     }
 
     TimeTreeComponent component;
+
     @Override
     public JComponent getComponent() {
         if (component == null) {
@@ -57,5 +58,32 @@ public class TimeTree implements HasComponentView {
             component.setTimeTree(this);
         }
         return component;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        toNewick(rootNode, builder);
+        return builder.toString();
+    }
+
+    private void toNewick(TimeTreeNode node, StringBuilder builder) {
+        if (node.isLeaf()) {
+            builder.append(node.id);
+        } else {
+            builder.append("(");
+            List<TimeTreeNode> children = node.getChildren();
+            toNewick(children.get(0), builder);
+            for (int i = 1; i < children.size(); i++) {
+                builder.append(",");
+                toNewick(children.get(i), builder);
+            }
+            builder.append(")");
+        }
+        if (node.isRoot()) {
+            builder.append(":0.0;");
+        } else {
+            builder.append(":");
+            builder.append(node.getParent().age-node.age);
+        }
     }
 }

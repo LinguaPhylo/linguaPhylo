@@ -4,15 +4,14 @@ import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Exp implements GenerativeDistribution<Double> {
 
+    static String rateParamName = "rate";
     private Value<Double> rate;
 
     private Random random;
@@ -34,8 +33,17 @@ public class Exp implements GenerativeDistribution<Double> {
     }
 
     @Override
-    public List<Value> getParams() {
-        return Arrays.asList(rate);
+    public Map<String,Value> getParams() {
+        return Collections.singletonMap(rateParamName, rate);
+    }
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(rateParamName)) {
+            rate = value;
+        } else {
+            throw new RuntimeException("Only valid parameter name is " + rateParamName);
+        }
     }
 
     public void setRate(double rate) {

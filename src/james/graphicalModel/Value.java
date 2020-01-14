@@ -12,10 +12,10 @@ import java.io.PrintWriter;
 public class Value<T> {
 
     T value;
-    String name;
+    String id;
 
-    public Value(String name, T value) {
-        this.name = name;
+    public Value(String id, T value) {
+        this.id = id;
         this.value = value;
     }
 
@@ -28,27 +28,34 @@ public class Value<T> {
     }
 
     public String toString() {
-        return name + " = " + value;
+        return id + " = " + value;
     }
 
     public void setValue(T value) {
         this.value = value;
     }
 
-    public String getName() {
-        return name;
-    }
-
     JLabel label = null;
+    static int BORDER_SIZE = 20;
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
-            return ((HasComponentView)value).getComponent();
+            JComponent component = ((HasComponentView)value).getComponent();
+            component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0,BORDER_SIZE, BORDER_SIZE ), id));
+            return component;
         }
 
         if (label == null) {
             label = new JLabel(toString());
-            label.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+            label.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE ));
         }
         return label;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

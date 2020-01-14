@@ -5,15 +5,15 @@ import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class LogNormal implements GenerativeDistribution<Double> {
 
+    String meanLogParamName = "meanlog";
+    String sdLogParamName = "sdlog";
     private Value<Double> M;
     private Value<Double> S;
 
@@ -22,6 +22,7 @@ public class LogNormal implements GenerativeDistribution<Double> {
     LogNormalDistribution logNormalDistribution;
 
     public LogNormal(Value<Double> M, Value<Double> S, Random random) {
+
         this.M = M;
         this.S = S;
         this.random = random;
@@ -41,8 +42,16 @@ public class LogNormal implements GenerativeDistribution<Double> {
         return logNormalDistribution.density(x);
     }
 
-    @Override
-    public List<Value> getParams() {
-        return Arrays.asList(M,S);
+    public Map<String, Value> getParams() {
+        SortedMap<String, Value> map = new TreeMap<>();
+        map.put(meanLogParamName, M);
+        map.put(sdLogParamName, S);
+        return map;
     }
-}
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(meanLogParamName)) M = value;
+        else if (paramName.equals(sdLogParamName)) S = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+    }}

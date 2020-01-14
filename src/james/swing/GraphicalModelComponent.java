@@ -39,8 +39,8 @@ public class GraphicalModelComponent extends JComponent {
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelComponent(RandomVariable variable) {
-        this.variable = variable;
+    public GraphicalModelComponent(RandomVariable v) {
+        this.variable = v;
 
         buttonMap = new HashMap<>();
 
@@ -48,40 +48,7 @@ public class GraphicalModelComponent extends JComponent {
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
-
-                traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
-                    @Override
-                    public void visitValue(Value value, Point2D p, Point2D q) {
-                        String str = value.getName();
-                        Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-                        Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
-
-                        if (!(value instanceof RandomVariable)) {
-                            str = value.toString();
-                            backgroundColor = Color.white;
-                            borderColor = Color.black;
-                        }
-
-                        JButton button = buttonMap.get(value);
-                        if (button == null) {
-                            button = new CircleButton(str, backgroundColor, borderColor);
-                            button.addActionListener(e1 -> {
-                                for (GraphicalModelListener listener : listeners) {
-                                    listener.valueSelected(value);
-                                }
-                            });
-                            buttonMap.put(value, button);
-                            add(button);
-                        }
-                        button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
-                        button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
-                    }
-
-                    @Override
-                    public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
-
-                    }
-                });
+                generateButtons();
             }
         });
     }
@@ -112,16 +79,16 @@ public class GraphicalModelComponent extends JComponent {
 
         visitor.visitGenEdge(genDist, p, q);
 
-        List<Value> values = genDist.getParams();
+        Map<String, Value> map = genDist.getParams();
 
-        double width = (values.size() - 1) * HSPACE;
+        double width = (map.size() - 1) * HSPACE;
         double x = 0;
         if (p != null) x = p.getX() - width / 2.0;
 
-        for (Value value : values) {
+        for (Map.Entry<String,Value> e : map.entrySet()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(value, p1, p, visitor);
+            traverseGraphicalModel(e.getValue(), p1, p, visitor);
             x += HSPACE;
         }
     }
@@ -135,7 +102,7 @@ public class GraphicalModelComponent extends JComponent {
         g.setColor(Color.black);
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
-
+        
         traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q) {
@@ -204,5 +171,55 @@ public class GraphicalModelComponent extends JComponent {
 
         g.draw(line);
         g.fill(p);
+    }
+
+    private void generateButtons() {
+        traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
+            @Override
+            public void visitValue(Value value, Point2D p, Point2D q) {
+                String str = value.getId();
+                Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
+
+                if (!(value instanceof RandomVariable)) {
+                    str = value.toString();
+                    backgroundColor = Color.white;
+                    borderColor = Color.black;
+                }
+
+                JButton button = buttonMap.get(value);
+                if (button == null) {
+                    button = new CircleButton(str, backgroundColor, borderColor);
+                    button.addActionListener(e1 -> {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.valueSelected(value);
+                        }
+                    });
+                    buttonMap.put(value, button);
+                    add(button);
+                }
+                button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
+                button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
+            }
+
+            @Override
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+
+            }
+        });
+    }
+
+    private void removeButtons() {
+        for (JButton button: buttonMap.values()) {
+            remove(button);
+        }
+        buttonMap.clear();
+    }
+
+    public void setVariable(RandomVariable randomVariable) {
+        variable = randomVariable;
+        removeButtons();
+        generateButtons();
+        repaint();
     }
 }

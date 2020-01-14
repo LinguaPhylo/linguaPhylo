@@ -19,12 +19,12 @@ public class RandomVariable<T> extends Value<T> {
     }
 
     public void print(PrintWriter p) {
-        for (Value val : g.getParams()) {
+        for (Value val : g.getParams().values()) {
             val.print(p);
             p.print("\n");
         }
 
-        p.print(name + " ~ ");
+        p.print(id + " ~ ");
         g.print(p);
         //p.print(";");
     }

@@ -5,19 +5,17 @@ import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * A Kingman coalescent tree generative distribution
  */
 public class Coalescent implements GenerativeDistribution<TimeTree> {
 
+    String thetaParamName = "theta";
     private Value<Double> theta;
+    String nParamName = "n";
     private Value<Integer> n;
 
     Random random;
@@ -59,7 +57,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         }
 
         tree.setRoot(activeNodes.get(0));
-
+        
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
@@ -88,9 +86,20 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public List<Value> getParams() {
-        return Arrays.asList(theta, n);
+    public SortedMap<String, Value> getParams() {
+        SortedMap<String, Value> map = new TreeMap<>();
+        map.put(thetaParamName, theta);
+        map.put(nParamName, n);
+        return map;
     }
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(thetaParamName)) theta = value;
+        else if (paramName.equals(nParamName)) n = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+    }
+
 
     private double[] getInternalNodeAges(TimeTree timeTree, double[] ages) {
         if (ages == null) ages = new double[timeTree.n()-1];
