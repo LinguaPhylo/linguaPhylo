@@ -22,8 +22,8 @@ public class LogNormal implements GenerativeDistribution<Double> {
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean in log-transformed values.") Value<Double> M,
-                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the log-transformed values.") Value<Double> S,
+    public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Double> M,
+                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Double> S,
                      Random random) {
 
         this.M = M;

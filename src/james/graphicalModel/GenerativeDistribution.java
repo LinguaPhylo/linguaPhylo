@@ -84,9 +84,11 @@ public interface GenerativeDistribution<T> {
 
         List<ParameterInfo> pInfo = getParameterInfo(index);
 
+        Map<String, Value> paramValues = getParams();
+
         String html = "<html><h3>" + getName() + " distribution</h3>parameters: <ul>";
         for (ParameterInfo pi : pInfo) {
-            html += "<li>" + pi.name() + ": <font color=\"#808080\">" + pi.description() + "</font></li>";
+            html += "<li>" + pi.name() + " (" + paramValues.get(pi.name()) + "); <font color=\"#808080\">" + pi.description() + "</font></li>";
         }
         html += "</ul></html>";
         return html;
