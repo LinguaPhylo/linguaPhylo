@@ -3,7 +3,10 @@ package james.graphicalModel;
 import javax.swing.*;
 import java.awt.*;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by adru001 on 17/12/19.
@@ -41,13 +44,68 @@ public interface GenerativeDistribution<T> {
 
         Map.Entry<String, Value> entry = iterator.next();
 
-        p.print(getName()+"("+entry.getKey() + "=" + entry.getValue().id);
+        p.print(getName() + "(" + entry.getKey() + "=" + entry.getValue().id);
         while (iterator.hasNext()) {
             entry = iterator.next();
-            p.print(", " +entry.getKey() + "=" + entry.getValue().id);
+            p.print(", " + entry.getKey() + "=" + entry.getValue().id);
         }
         p.print(");");
     }
 
-    JComponent getViewer();
+    default String getParamName(int index) {
+
+        Class classElement = getClass();
+
+        Constructor[] constructors = classElement.getConstructors();
+        for (Constructor constructor : constructors) {
+            Annotation[][] annotations = constructor.getParameterAnnotations();
+
+            if (annotations.length > index) {
+                Annotation[] annotations1 = annotations[index];
+                for (Annotation annotation : annotations1) {
+                    if (annotation instanceof ParameterInfo) {
+                        return ((ParameterInfo) annotation).name();
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    default List<ParameterInfo> getParameterInfo(int constructorIndex) {
+
+        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+
+        Class classElement = getClass();
+
+        Constructor constructor = classElement.getConstructors()[constructorIndex];
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (int i = 0; i < annotations.length; i++) {
+            Annotation[] annotations1 = annotations[i];
+            for (Annotation annotation : annotations1) {
+                if (annotation instanceof ParameterInfo) {
+                    pInfo.add((ParameterInfo) annotation);
+                }
+            }
+        }
+
+        return pInfo;
+    }
+
+    default String getRichDescription(int index) {
+
+        List<ParameterInfo> pInfo = getParameterInfo(index);
+
+        String html = "<html><h3>" + getName() + " distribution</h3>parameters: <ul>";
+        for (ParameterInfo pi : pInfo) {
+            html += "<li>" + pi.name() + ": <font color=\"#808080\">" + pi.description() + "</font></li>";
+        }
+        html += "</ul></html>";
+        return html;
+    }
+
+    default JComponent getViewer() {
+        return new JLabel(getRichDescription(0));
+    }
 }

@@ -2,10 +2,10 @@ package james;
 
 import james.core.Exp;
 import james.graphicalModel.GenerativeDistribution;
+import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
-import javax.swing.*;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -14,19 +14,25 @@ import java.util.*;
  */
 public class Coalescent implements GenerativeDistribution<TimeTree> {
 
-    String thetaParamName = "theta";
+    private final String thetaParamName;
+    private final String nParamName;
     private Value<Double> theta;
-    String nParamName = "n";
     private Value<Integer> n;
 
     Random random;
 
     private Exp exp;
 
-    public Coalescent(Value<Double> theta, Value<Integer> n, Random random) {
+
+    public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
+                      @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n,
+                      Random random) {
         this.theta = theta;
         this.n = n;
         this.random = random;
+
+        thetaParamName = getParamName(0);
+        nParamName = getParamName(1);
 
         exp = new Exp(new Value<>("rate", 1.0), random);
     }
@@ -101,7 +107,6 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-
     private double[] getInternalNodeAges(TimeTree timeTree, double[] ages) {
         if (ages == null) ages = new double[timeTree.n() - 1];
         if (ages.length != timeTree.n() - 1)
@@ -115,14 +120,6 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         }
         return ages;
     }
-
-    public JComponent getViewer() {
-        return new JLabel("<html><h3>The Kingman's coalescent distribution</h3>governed by two parameters: <ul>" +
-                "<li><small><font color=\"#808080\">" + thetaParamName + ":</font></small></li> population size parameter, possibly scaled to mutations or calendar units." +
-                "<li><small><font color=\"#808080\">" + nParamName + ":</font></small></li> the number of taxa." +
-                "</ul></html>");
-    }
-
 
     public static void main(String[] args) {
 
@@ -140,6 +137,5 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
         PrintWriter p = new PrintWriter(System.out);
         g.print(p);
-
     }
 }

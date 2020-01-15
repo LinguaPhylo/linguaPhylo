@@ -1,10 +1,10 @@
 package james.core;
 
 import james.graphicalModel.GenerativeDistribution;
+import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
-import javax.swing.*;
 import java.util.*;
 
 /**
@@ -12,14 +12,15 @@ import java.util.*;
  */
 public class Exp implements GenerativeDistribution<Double> {
 
-    static String rateParamName = "rate";
+    private final String rateParamName;
     private Value<Double> rate;
 
     private Random random;
 
-    public Exp(Value<Double> rate, Random random) {
+    public Exp(@ParameterInfo(name="rate", description="the rate of an exponential distribution.") Value<Double> rate, Random random) {
         this.rate = rate;
         this.random = random;
+        rateParamName = getParamName(0);
     }
 
     public RandomVariable<Double> sample() {
@@ -35,7 +36,7 @@ public class Exp implements GenerativeDistribution<Double> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(rateParamName, rate);
+        return Collections.singletonMap(getParamName(0), rate);
     }
 
     @Override
@@ -49,9 +50,5 @@ public class Exp implements GenerativeDistribution<Double> {
 
     public void setRate(double rate) {
         this.rate.setValue(rate);
-    }
-
-    public JComponent getViewer() {
-        return new JLabel("<html>An exponential distribution, governed by a <small><font color=\"#808080\">" + rateParamName + "</font></small> parameter.</html>");
     }
 }
