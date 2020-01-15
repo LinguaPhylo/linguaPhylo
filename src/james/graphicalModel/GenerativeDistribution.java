@@ -52,25 +52,12 @@ public interface GenerativeDistribution<T> {
         p.print(");");
     }
 
-    default String getParamName(int index) {
+    default String getParamName(int paramIndex, int constructorIndex) {
+        return getParameterInfo(constructorIndex).get(paramIndex).name();
+    }
 
-        Class classElement = getClass();
-
-        Constructor[] constructors = classElement.getConstructors();
-        for (Constructor constructor : constructors) {
-            Annotation[][] annotations = constructor.getParameterAnnotations();
-
-            if (annotations.length > index) {
-                Annotation[] annotations1 = annotations[index];
-                for (Annotation annotation : annotations1) {
-                    if (annotation instanceof ParameterInfo) {
-                        return ((ParameterInfo) annotation).name();
-                    }
-                }
-            }
-        }
-
-        return null;
+    default String getParamName(int paramIndex) {
+        return getParameterInfo(0).get(paramIndex).name();
     }
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
