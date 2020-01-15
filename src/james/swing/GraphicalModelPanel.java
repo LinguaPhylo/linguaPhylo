@@ -35,7 +35,7 @@ public class GraphicalModelPanel extends JPanel {
         setLayout(new BorderLayout());
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,component,dummyLabel);
-        splitPane.setResizeWeight(0.75);
+        splitPane.setResizeWeight(0.5);
         add(splitPane, BorderLayout.CENTER);
 
         component.addGraphicalModelListener(this::showValue);

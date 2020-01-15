@@ -173,6 +173,10 @@ public class GraphicalModelComponent extends JComponent {
         g.fill(p);
     }
 
+    private String displayString(Value v) {
+        return "<html><font color=\"#808080\"><small>" + v.getId() + ":</small></font>" + v.value().toString() + "</html>";
+    }
+
     private void generateButtons() {
         traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
             @Override
@@ -182,7 +186,7 @@ public class GraphicalModelComponent extends JComponent {
                 Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
 
                 if (!(value instanceof RandomVariable)) {
-                    str = value.toString();
+                    str = displayString(value);
                     backgroundColor = Color.white;
                     borderColor = Color.black;
                 }

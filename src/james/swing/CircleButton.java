@@ -9,7 +9,7 @@ import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class CircleButton extends JButton{
+public class CircleButton extends JButton {
 
     private boolean mouseOver = false;
     private boolean mousePressed = false;
@@ -81,7 +81,7 @@ public class CircleButton extends JButton{
     }
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
 
         int diameter = getDiameter();
         int radius = diameter/2;
@@ -102,11 +102,6 @@ public class CircleButton extends JButton{
         }
         g.drawOval(getWidth()/2 - radius, getHeight()/2 - radius, diameter, diameter);
 
-        g.setColor(Color.BLACK);
-        g.setFont(getFont());
-        FontMetrics metrics = g.getFontMetrics(getFont());
-        int stringWidth = metrics.stringWidth(getText());
-        int stringHeight = metrics.getHeight();
-        g.drawString(getText(), getWidth()/2 - stringWidth/2, getHeight()/2 + stringHeight/4);
+        super.paintComponent(g);
     }
 }

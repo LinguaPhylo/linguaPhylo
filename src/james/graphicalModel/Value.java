@@ -3,7 +3,6 @@ package james.graphicalModel;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
@@ -40,7 +39,10 @@ public class Value<T> {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView)value).getComponent();
-            component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0,BORDER_SIZE, BORDER_SIZE ), id));
+            component.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(BORDER_SIZE, 0,BORDER_SIZE, BORDER_SIZE),
+                    id)
+            );
             return component;
         }
 
