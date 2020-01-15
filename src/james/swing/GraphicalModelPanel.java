@@ -25,7 +25,7 @@ public class GraphicalModelPanel extends JPanel {
 
     RandomVariable variable;
 
-    Value displayedValue;
+    Object displayedElement;
 
     GraphicalModelPanel(RandomVariable variable) {
 
@@ -38,7 +38,17 @@ public class GraphicalModelPanel extends JPanel {
         splitPane.setResizeWeight(0.5);
         add(splitPane, BorderLayout.CENTER);
 
-        component.addGraphicalModelListener(this::showValue);
+        component.addGraphicalModelListener(new GraphicalModelListener() {
+            @Override
+            public void valueSelected(Value value) {
+                showValue(value);
+            }
+
+            @Override
+            public void generativeDistributionSelected(GenerativeDistribution g) {
+                showGenerativeDistribution(g);
+            }
+        });
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -63,8 +73,8 @@ public class GraphicalModelPanel extends JPanel {
     private void sample() {
         variable = sampleAll(variable.getGenerativeDistribution());
         component.setVariable(variable);
-        if (displayedValue instanceof RandomVariable) {
-            GenerativeDistribution dist = ((RandomVariable)displayedValue).getGenerativeDistribution();
+        if (displayedElement instanceof RandomVariable) {
+            GenerativeDistribution dist = ((RandomVariable)displayedElement).getGenerativeDistribution();
             RandomVariable rv = getVariableByDistribution(variable, dist);
             showValue(rv);
         }
@@ -108,11 +118,19 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     private void showValue(Value value) {
-        displayedValue = value;
+        displayedElement = value;
         final int size = splitPane.getDividerLocation();
         splitPane.setRightComponent(value.getViewer());
         splitPane.setDividerLocation(size);
     }
+
+    private void showGenerativeDistribution(GenerativeDistribution g) {
+        displayedElement = g;
+        final int size = splitPane.getDividerLocation();
+        splitPane.setRightComponent(g.getViewer());
+        splitPane.setDividerLocation(size);
+    }
+
 
     public static void main(String[] args) {
 

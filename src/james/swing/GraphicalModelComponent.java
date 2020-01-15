@@ -35,7 +35,7 @@ public class GraphicalModelComponent extends JComponent {
 
     float STROKE_SIZE = 1.0f;
 
-    Map<Value, JButton> buttonMap;
+    Map<Object, JButton> buttonMap;
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
@@ -174,7 +174,7 @@ public class GraphicalModelComponent extends JComponent {
     }
 
     private String displayString(Value v) {
-        return "<html><font color=\"#808080\"><small>" + v.getId() + ":</small></font>" + v.value().toString() + "</html>";
+        return "<html><font color=\"#808080\" ><small>" + v.getId() + ":</small></font>" + v.value().toString() + "</html>";
     }
 
     private void generateButtons() {
@@ -208,7 +208,24 @@ public class GraphicalModelComponent extends JComponent {
 
             @Override
             public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+                String dtr = genDist.getName();
 
+                JButton button = buttonMap.get(genDist);
+                if (button == null) {
+                    button = new JButton("");
+
+                    button.addActionListener(e -> {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.generativeDistributionSelected(genDist);
+                        }
+                    });
+
+                    buttonMap.put(genDist, button);
+
+                    add(button);
+                }
+                button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+                button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
             }
         });
     }

@@ -4,6 +4,7 @@ import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -48,5 +49,9 @@ public class Exp implements GenerativeDistribution<Double> {
 
     public void setRate(double rate) {
         this.rate.setValue(rate);
+    }
+
+    public JComponent getViewer() {
+        return new JLabel("<html>An exponential distribution, governed by a <small><font color=\"#808080\">" + rateParamName + "</font></small> parameter.</html>");
     }
 }

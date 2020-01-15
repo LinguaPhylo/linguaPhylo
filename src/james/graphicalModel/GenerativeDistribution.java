@@ -1,5 +1,7 @@
 package james.graphicalModel;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -47,4 +49,5 @@ public interface GenerativeDistribution<T> {
         p.print(");");
     }
 
+    JComponent getViewer();
 }

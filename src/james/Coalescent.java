@@ -5,6 +5,7 @@ import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
+import javax.swing.*;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         List<TimeTreeNode> activeNodes = new ArrayList<>();
 
         for (int i = 0; i < n.value(); i++) {
-            activeNodes.add(new TimeTreeNode(i+"", tree));
+            activeNodes.add(new TimeTreeNode(i + "", tree));
         }
 
         double time = 0.0;
@@ -52,12 +53,12 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
             exp.setRate((theta * 2.0 / (k * (k - 1.0))));
             time += exp.sample().value();
 
-            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[] {a,b});
+            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[]{a, b});
             activeNodes.add(parent);
         }
 
         tree.setRoot(activeNodes.get(0));
-        
+
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
@@ -80,7 +81,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
             k -= 1;
         }
 
-        logDensity -= (timeTree.n()-1)*Math.log(theta);
+        logDensity -= (timeTree.n() - 1) * Math.log(theta);
 
         return logDensity;
     }
@@ -102,8 +103,9 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
 
     private double[] getInternalNodeAges(TimeTree timeTree, double[] ages) {
-        if (ages == null) ages = new double[timeTree.n()-1];
-        if (ages.length != timeTree.n()-1) throw new IllegalArgumentException("Ages array size must be equal to the number of internal nodes in the tree.");
+        if (ages == null) ages = new double[timeTree.n() - 1];
+        if (ages.length != timeTree.n() - 1)
+            throw new IllegalArgumentException("Ages array size must be equal to the number of internal nodes in the tree.");
         int i = 0;
         for (TimeTreeNode node : timeTree.nodes) {
             if (!node.isLeaf()) {
@@ -113,6 +115,14 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         }
         return ages;
     }
+
+    public JComponent getViewer() {
+        return new JLabel("<html><h3>The Kingman's coalescent distribution</h3>governed by two parameters: <ul>" +
+                "<li><small><font color=\"#808080\">" + thetaParamName + ":</font></small></li> population size parameter, possibly scaled to mutations or calendar units." +
+                "<li><small><font color=\"#808080\">" + nParamName + ":</font></small></li> the number of taxa." +
+                "</ul></html>");
+    }
+
 
     public static void main(String[] args) {
 

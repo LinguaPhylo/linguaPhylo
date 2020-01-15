@@ -5,6 +5,7 @@ import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -54,4 +55,13 @@ public class LogNormal implements GenerativeDistribution<Double> {
         if (paramName.equals(meanLogParamName)) M = value;
         else if (paramName.equals(sdLogParamName)) S = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }}
+    }
+
+    public JComponent getViewer() {
+        return new JLabel("<html><h3>The log-normal distribution</h3>governed by two parameters: <ul>" +
+                "<li><small><font color=\"#808080\">" + meanLogParamName + "</font></small></li>" +
+                "<li><small><font color=\"#808080\">" + sdLogParamName + "</font></small></li>" +
+                "</ul></html>");
+    }
+
+}
