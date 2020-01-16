@@ -14,11 +14,19 @@ public class Value<T> {
 
     private T value;
     String id;
-    List<ValueListener> listeners = new ArrayList<ValueListener>();
+    List<ValueListener> listeners = new ArrayList<>();
+
+    // the function that produced this value, or null if this value was initialized another way;
+    Function function;
 
     public Value(String id, T value) {
         this.id = id;
         this.value = value;
+    }
+
+    public Value(String id, T value, Function function) {
+        this(id, value);
+        this.function = function;
     }
 
     public T value() {
@@ -26,7 +34,7 @@ public class Value<T> {
     }
 
     void print(PrintWriter p) {
-        p.print(toString()+";");
+        p.print(toString() + ";");
     }
 
     public String toString() {
@@ -42,11 +50,12 @@ public class Value<T> {
 
     JComponent viewer = null;
     static int BORDER_SIZE = 20;
+
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
-            JComponent component = ((HasComponentView)value).getComponent();
+            JComponent component = ((HasComponentView) value).getComponent();
             component.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEmptyBorder(BORDER_SIZE, 0,BORDER_SIZE, BORDER_SIZE),
+                    BorderFactory.createEmptyBorder(BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE),
                     id)
             );
             return component;
@@ -54,13 +63,13 @@ public class Value<T> {
 
         if (viewer == null) {
             if (this instanceof DoubleValue) {
-                viewer = new DoubleValueEditor((DoubleValue)this);
+                viewer = new DoubleValueEditor((DoubleValue) this);
             } else {
                 viewer = new JPanel();
-                new BoxLayout(viewer,BoxLayout.LINE_AXIS);
+                new BoxLayout(viewer, BoxLayout.LINE_AXIS);
                 viewer.add(new JLabel(toString()));
             }
-            viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE ));
+            viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
         }
         return viewer;
     }
