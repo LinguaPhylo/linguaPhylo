@@ -51,4 +51,8 @@ public class Exp implements GenerativeDistribution<Double> {
     public void setRate(double rate) {
         this.rate.setValue(rate);
     }
+
+    public String toString() {
+        return getName();
+    }
 }

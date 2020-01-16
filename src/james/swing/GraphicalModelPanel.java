@@ -3,6 +3,7 @@ package james.swing;
 import james.Coalescent;
 import james.TimeTree;
 import james.core.LogNormal;
+import james.graphicalModel.DoubleValue;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
@@ -136,8 +137,8 @@ public class GraphicalModelPanel extends JPanel {
 
         Random random = new Random();
 
-        Value<Double> thetaM = new Value<>("M", 3.0);
-        Value<Double> thetaS = new Value<>("S", 1.0);
+        DoubleValue thetaM = new DoubleValue("M", 3.0);
+        DoubleValue thetaS = new DoubleValue("S", 1.0);
         LogNormal logNormal = new LogNormal(thetaM, thetaS, random);
 
         RandomVariable<Double> theta = logNormal.sample("\u0398");

@@ -1,13 +1,18 @@
 package james.swing;
 
+import james.core.Exp;
+import james.core.LogNormal;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
+import james.graphicalModel.ValueListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
@@ -36,6 +41,7 @@ public class GraphicalModelComponent extends JComponent {
     float STROKE_SIZE = 1.0f;
 
     Map<Object, JButton> buttonMap;
+    Map<Object, JComboBox> comboBoxMap;
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
@@ -43,6 +49,7 @@ public class GraphicalModelComponent extends JComponent {
         this.variable = v;
 
         buttonMap = new HashMap<>();
+        comboBoxMap = new HashMap<>();
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -181,15 +188,15 @@ public class GraphicalModelComponent extends JComponent {
         traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q) {
-                String str = value.getId();
                 Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
                 Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
 
                 if (!(value instanceof RandomVariable)) {
-                    str = displayString(value);
                     backgroundColor = Color.white;
                     borderColor = Color.black;
                 }
+
+                String str = getButtonString(value);
 
                 JButton button = buttonMap.get(value);
                 if (button == null) {
@@ -201,6 +208,9 @@ public class GraphicalModelComponent extends JComponent {
                     });
                     buttonMap.put(value, button);
                     add(button);
+
+                    JButton finalButton = button;
+                    value.addValueListener(() -> finalButton.setText(getButtonString(value)));
                 }
                 button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
                 button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
@@ -224,10 +234,41 @@ public class GraphicalModelComponent extends JComponent {
 
                     add(button);
                 }
+
+//                JComboBox comboBox = comboBoxMap.get(genDist);
+//                if (comboBox == null) {
+//                    comboBox = new JComboBox(new GenerativeDistribution[] { genDist,
+//                            new Exp(new Value<>("rate", 1.0), new Random()),
+//                            new LogNormal(new Value<>("M", 0.0), new Value<>("S", 1.0), new Random())});
+//
+//                    comboBox.addItemListener(new ItemListener() {
+//                        @Override
+//                        public void itemStateChanged(ItemEvent e) {
+//                            GenerativeDistribution item = (GenerativeDistribution)e.getItem();
+//
+//                        }
+//                    });
+//
+//                    add(comboBox);
+//                }
+//                comboBox.setLocation((int) (p.getX() + FACTOR_SIZE + 1), (int) (p.getY() - FACTOR_SIZE));
+//                comboBox.setSize(120, 24);
+
                 button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
                 button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
+
+
             }
         });
+    }
+
+    private String getButtonString(Value value) {
+        String str = value.getId();
+
+        if (!(value instanceof RandomVariable)) {
+            str = displayString(value);
+        }
+        return str;
     }
 
     private void removeButtons() {

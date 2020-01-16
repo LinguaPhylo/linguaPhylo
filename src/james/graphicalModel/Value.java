@@ -4,14 +4,17 @@ import james.swing.HasComponentView;
 
 import javax.swing.*;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Value<T> {
 
-    T value;
+    private T value;
     String id;
+    List<ValueListener> listeners = new ArrayList<ValueListener>();
 
     public Value(String id, T value) {
         this.id = id;
@@ -32,9 +35,12 @@ public class Value<T> {
 
     public void setValue(T value) {
         this.value = value;
+        for (ValueListener listener : listeners) {
+            listener.valueSet();
+        }
     }
 
-    JLabel label = null;
+    JComponent viewer = null;
     static int BORDER_SIZE = 20;
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
@@ -46,11 +52,17 @@ public class Value<T> {
             return component;
         }
 
-        if (label == null) {
-            label = new JLabel(toString());
-            label.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE ));
+        if (viewer == null) {
+            if (this instanceof DoubleValue) {
+                viewer = new DoubleValueEditor((DoubleValue)this);
+            } else {
+                viewer = new JPanel();
+                new BoxLayout(viewer,BoxLayout.LINE_AXIS);
+                viewer.add(new JLabel(toString()));
+            }
+            viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE ));
         }
-        return label;
+        return viewer;
     }
 
     public String getId() {
@@ -59,5 +71,9 @@ public class Value<T> {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void addValueListener(ValueListener listener) {
+        listeners.add(listener);
     }
 }

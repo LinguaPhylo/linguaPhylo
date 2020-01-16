@@ -32,12 +32,11 @@ public class LogNormal implements GenerativeDistribution<Double> {
 
         meanLogParamName = getParamName(0);
         sdLogParamName = getParamName(1);
-
-        logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
     }
 
     public RandomVariable<Double> sample() {
 
+        logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
         double x = logNormalDistribution.sample();
         return new RandomVariable<>("x", x, this);
     }
@@ -60,4 +59,9 @@ public class LogNormal implements GenerativeDistribution<Double> {
         else if (paramName.equals(sdLogParamName)) S = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
+
+    public String toString() {
+        return getName();
+    }
+
 }

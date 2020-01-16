@@ -138,4 +138,8 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         PrintWriter p = new PrintWriter(System.out);
         g.print(p);
     }
+
+    public String toString() {
+        return getName();
+    }
 }
