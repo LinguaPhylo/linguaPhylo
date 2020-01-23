@@ -64,6 +64,8 @@ public class Value<T> {
         if (viewer == null) {
             if (this instanceof DoubleValue) {
                 viewer = new DoubleValueEditor((DoubleValue) this);
+            } if (this instanceof IntegerValue) {
+                viewer = new IntegerValueEditor((IntegerValue) this);
             } else {
                 viewer = new JPanel();
                 new BoxLayout(viewer, BoxLayout.LINE_AXIS);

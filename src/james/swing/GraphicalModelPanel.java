@@ -3,10 +3,7 @@ package james.swing;
 import james.Coalescent;
 import james.TimeTree;
 import james.core.LogNormal;
-import james.graphicalModel.DoubleValue;
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -142,7 +139,7 @@ public class GraphicalModelPanel extends JPanel {
         LogNormal logNormal = new LogNormal(thetaM, thetaS, random);
 
         RandomVariable<Double> theta = logNormal.sample("\u0398");
-        Value<Integer> n = new Value<>("n", 20);
+        IntegerValue n = new IntegerValue("n", 20);
 
         Coalescent coalescent = new Coalescent(theta, n, random);
 
