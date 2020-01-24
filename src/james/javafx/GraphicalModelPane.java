@@ -60,7 +60,7 @@ public class GraphicalModelPane extends AnchorPane {
 
         NodeVisitor canvasVisitor = new NodeVisitor() {
             @Override
-            public void visitValue(Value value, Point2D p, Point2D q) {
+            public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 if (q != null) {
 
                     double x1 = p.getX();
@@ -73,7 +73,7 @@ public class GraphicalModelPane extends AnchorPane {
             }
 
             @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
                 String str = genDist.getName();
 
                 GraphicsContext g2d = canvas.getGraphicsContext2D();
@@ -92,14 +92,14 @@ public class GraphicalModelPane extends AnchorPane {
             }
 
             @Override
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
                 // TODO
             }
         };
 
         NodeVisitor buttonVisitor = new NodeVisitor() {
             @Override
-            public void visitValue(Value value, Point2D p, Point2D q) {
+            public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 String str = value.getId();
 
                 if (!(value instanceof RandomVariable)) {
@@ -127,17 +127,17 @@ public class GraphicalModelPane extends AnchorPane {
             }
 
             @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
 
             }
 
             @Override
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
                 // TODO
             }
         };
 
-        traverseGraphicalModel(variable, getStartPoint(), null, buttonVisitor);
+        traverseGraphicalModel(variable, getStartPoint(), null, 1, buttonVisitor);
 
         ChangeListener<Number> sizeListener = (observable, oldValue, newValue) -> {
             canvas.setWidth(getWidth());
@@ -148,8 +148,8 @@ public class GraphicalModelPane extends AnchorPane {
             canvas.getGraphicsContext2D().setFill(Color.WHITE);
             canvas.getGraphicsContext2D().fillRect(0,0,WIDTH,HEIGHT);
             canvas.getGraphicsContext2D().setFill(Color.BLACK);
-            traverseGraphicalModel(variable, getStartPoint(), null, buttonVisitor);
-            traverseGraphicalModel(variable, getStartPoint(), null, canvasVisitor);
+            traverseGraphicalModel(variable, getStartPoint(), null, 1, buttonVisitor);
+            traverseGraphicalModel(variable, getStartPoint(), null, 1, canvasVisitor);
         };
 
         widthProperty(). addListener(sizeListener);
@@ -162,9 +162,9 @@ public class GraphicalModelPane extends AnchorPane {
         return new Point2D.Double(WIDTH / 2.0, HEIGHT - BORDER - VAR_SIZE/2);
     }
 
-    private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, NodeVisitor visitor) {
+    private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, int level, NodeVisitor visitor) {
 
-        visitor.visitValue(value, currentP, prevP);
+        visitor.visitValue(value, currentP, prevP, level);
 
         if (value instanceof RandomVariable) {
             // recursion
@@ -172,13 +172,13 @@ public class GraphicalModelPane extends AnchorPane {
             if (currentP != null) {
                 newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
             }
-            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, visitor);
+            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, level + 1, visitor);
         }
     }
 
-    private void traverseGraphicalModel(GenerativeDistribution genDist, Point2D p, Point2D q, NodeVisitor visitor) {
+    private void traverseGraphicalModel(GenerativeDistribution genDist, Point2D p, Point2D q, int level, NodeVisitor visitor) {
 
-        visitor.visitGenEdge(genDist, p, q);
+        visitor.visitGenEdge(genDist, p, q, level);
 
         Map<String, Value> map = genDist.getParams();
 
@@ -189,7 +189,7 @@ public class GraphicalModelPane extends AnchorPane {
         for (Value value : map.values()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(value, p1, p, visitor);
+            traverseGraphicalModel(value, p1, p, level + 1, visitor);
             x += HSPACE;
         }
     }

@@ -11,9 +11,9 @@ import java.awt.geom.Point2D;
  */
 public interface NodeVisitor {
 
-    void visitValue(Value value, Point2D p, Point2D q);
+    void visitValue(Value value, Point2D p, Point2D q, int level);
 
-    void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q);
+    void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level);
 
-    void visitFunctionEdge(Function function, Point2D p, Point2D q);
+    void visitFunctionEdge(Function function, Point2D p, Point2D q, int level);
 }

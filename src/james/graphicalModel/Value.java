@@ -1,11 +1,14 @@
 package james.graphicalModel;
 
 import james.swing.HasComponentView;
+import james.swing.NodeVisitor;
 
 import javax.swing.*;
+import java.awt.geom.Point2D;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -34,13 +37,13 @@ public class Value<T> implements Viewable {
     }
 
     void print(PrintWriter p) {
-        if (function !=  null) {
+        if (function != null) {
             for (Object val : function.getParams().values()) {
-                ((Value)val).print(p);
+                ((Value) val).print(p);
                 p.print("\n");
             }
 
-            p.print(id + " <- ");
+            p.print(id + " = ");
             function.print(p);
             //p.print(";");
         } else {
@@ -75,9 +78,9 @@ public class Value<T> implements Viewable {
         }
 
         if (viewer == null) {
-            if (this instanceof DoubleValue) {
+            if (this instanceof DoubleValue && function == null) {
                 viewer = new DoubleValueEditor((DoubleValue) this);
-            } if (this instanceof IntegerValue) {
+            } else if (this instanceof IntegerValue && function == null) {
                 viewer = new IntegerValueEditor((IntegerValue) this);
             } else {
                 viewer = new JPanel();
@@ -103,5 +106,35 @@ public class Value<T> implements Viewable {
 
     public void addValueListener(ValueListener listener) {
         listeners.add(listener);
+    }
+
+    public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor) {
+        visitor.visitValue(value);
+
+        if (value instanceof RandomVariable) {
+            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), visitor);
+        } else if (value.getFunction() != null) {
+            traverseGraphicalModel(value.getFunction(), visitor);
+        }
+    }
+
+    private static void traverseGraphicalModel(Function function, GraphicalModelNodeVisitor visitor) {
+        visitor.visitFunction(function);
+
+        Map<String, Value> map = function.getParams();
+
+        for (Map.Entry<String, Value> e : map.entrySet()) {
+            traverseGraphicalModel(e.getValue(), visitor);
+        }
+    }
+
+    public static void traverseGraphicalModel(GenerativeDistribution genDist, GraphicalModelNodeVisitor visitor) {
+        visitor.visitGenDist(genDist);
+
+        Map<String, Value> map = genDist.getParams();
+
+        for (Map.Entry<String, Value> e : map.entrySet()) {
+            traverseGraphicalModel(e.getValue(), visitor);
+        }
     }
 }

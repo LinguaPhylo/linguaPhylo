@@ -25,9 +25,14 @@ public class GraphicalModelPanel extends JPanel {
 
     Viewable displayedElement;
 
+    Map<GenerativeDistribution, RandomVariable> variables = new HashMap<>();
+
     GraphicalModelPanel(RandomVariable variable) {
 
         this.variable = variable;
+
+        repopulateVariables();
+
         component = new GraphicalModelComponent(variable);
         
         setLayout(new BorderLayout());
@@ -73,8 +78,27 @@ public class GraphicalModelPanel extends JPanel {
         add(textArea, BorderLayout.SOUTH);
     }
 
+    private void repopulateVariables() {
+        variables.clear();
+        Value.traverseGraphicalModel(variable, new GraphicalModelNodeVisitor() {
+            @Override
+            public void visitValue(Value value) {
+                if (value instanceof RandomVariable) {
+                    RandomVariable rv = (RandomVariable)value;
+                    variables.put(rv.getGenerativeDistribution(), rv);
+                }
+            }
+
+            public void visitGenDist(GenerativeDistribution genDist) {}
+
+            public void visitFunction(Function f) {}
+        });
+    }
+
     private void sample() {
         variable = sampleAll(variable.getGenerativeDistribution());
+        repopulateVariables();
+
         component.setVariable(variable);
         if (displayedElement instanceof RandomVariable) {
             GenerativeDistribution dist = ((RandomVariable)displayedElement).getGenerativeDistribution();
@@ -86,7 +110,7 @@ public class GraphicalModelPanel extends JPanel {
     private RandomVariable sampleAll(GenerativeDistribution generativeDistribution) {
         Map<String, Value> params = generativeDistribution.getParams();
 
-        Map<String, RandomVariable> newlySampledParams = new HashMap<>();
+        Map<String, Value> newlySampledParams = new HashMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
             if (e.getValue() instanceof RandomVariable) {
                 RandomVariable v = (RandomVariable) e.getValue();
@@ -100,9 +124,10 @@ public class GraphicalModelPanel extends JPanel {
 
                 Value nv = sampleAll(f);
                 nv.setId(v.getId());
+                newlySampledParams.put(e.getKey(), nv);
             }
         }
-        for (Map.Entry<String, RandomVariable> e : newlySampledParams.entrySet()) {
+        for (Map.Entry<String, Value> e : newlySampledParams.entrySet()) {
             generativeDistribution.setParam(e.getKey(), e.getValue());
         }
         
@@ -128,25 +153,12 @@ public class GraphicalModelPanel extends JPanel {
                 nv.setId(v.getId());
             }
         }
-        return (Value) function.apply(newlySampledParams.entrySet());
+        return (Value) function.apply(newlySampledParams.entrySet().iterator().next().getValue());
         
     }
 
     private RandomVariable getVariableByDistribution(RandomVariable variable, GenerativeDistribution dist) {
-        GenerativeDistribution candidate = variable.getGenerativeDistribution();
-
-        if (candidate == dist) {
-            return variable;
-        } else {
-            Map<String,Value> params = candidate.getParams();
-            for (Value v : params.values()) {
-                if (v instanceof RandomVariable) {
-                    RandomVariable crv = getVariableByDistribution((RandomVariable)v, dist);
-                    if (crv != null) return crv;
-                }
-            }
-            return null;
-        }
+        return variables.get(dist);
     }
 
     private void showValue(Value value) {

@@ -39,6 +39,8 @@ public class GraphicalModelComponent extends JComponent {
     Map<Object, JButton> buttonMap;
     Map<Object, JComboBox> comboBoxMap;
 
+    boolean sizesComputed = false;
+
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
     public GraphicalModelComponent(RandomVariable v) {
@@ -50,10 +52,40 @@ public class GraphicalModelComponent extends JComponent {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
+                recomputeSizes();
                 generateButtons();
+                super.componentResized(e);
             }
         });
+    }
+
+    private void recomputeSizes() {
+        VSPACE = (getHeight() - 2 * BORDER) / computeMaxLevel();
+
+    }
+
+    private int computeMaxLevel() {
+
+        final int[] ml = {1};
+
+        traverseGraphicalModel(variable, null, null, 1, new NodeVisitor() {
+            @Override
+            public void visitValue(Value value, Point2D p, Point2D q, int level) {
+                if (level > ml[0]) ml[0] = level;
+            }
+
+            @Override
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
+                if (level > ml[0]) ml[0] = level;
+            }
+
+            @Override
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                if (level > ml[0]) ml[0] = level;
+            }
+        });
+
+        return ml[0];
     }
 
     public void addGraphicalModelListener(GraphicalModelListener listener) {
@@ -61,12 +93,12 @@ public class GraphicalModelComponent extends JComponent {
     }
 
     private Point2D getStartPoint() {
-        return new Point2D.Double(getWidth() / 2.0, getHeight() - BORDER - VAR_HEIGHT);
+        return new Point2D.Double(getWidth() / 2.0, getHeight() - BORDER - (VAR_HEIGHT/2));
     }
 
-    private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, NodeVisitor visitor) {
+    private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, int level, NodeVisitor visitor) {
 
-        visitor.visitValue(value, currentP, prevP);
+        visitor.visitValue(value, currentP, prevP, level);
 
         if (value instanceof RandomVariable) {
             // recursion
@@ -74,20 +106,20 @@ public class GraphicalModelComponent extends JComponent {
             if (currentP != null) {
                 newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
             }
-            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, visitor);
+            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, level + 1, visitor);
         } else if (value.getFunction() != null) {
             // recursion
             Point2D newP = null;
             if (currentP != null) {
                 newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
             }
-            traverseGraphicalModel(value.getFunction(), newP, currentP, visitor);
+            traverseGraphicalModel(value.getFunction(), newP, currentP, level + 1,visitor);
         }
     }
 
-    private void traverseGraphicalModel(GenerativeDistribution genDist, Point2D p, Point2D q, NodeVisitor visitor) {
+    private void traverseGraphicalModel(GenerativeDistribution genDist, Point2D p, Point2D q, int level, NodeVisitor visitor) {
 
-        visitor.visitGenEdge(genDist, p, q);
+        visitor.visitGenEdge(genDist, p, q, level);
 
         Map<String, Value> map = genDist.getParams();
 
@@ -98,14 +130,14 @@ public class GraphicalModelComponent extends JComponent {
         for (Map.Entry<String,Value> e : map.entrySet()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(e.getValue(), p1, p, visitor);
+            traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
             x += HSPACE;
         }
     }
 
-    private void traverseGraphicalModel(Function function, Point2D p, Point2D q, NodeVisitor visitor) {
+    private void traverseGraphicalModel(Function function, Point2D p, Point2D q, int level, NodeVisitor visitor) {
 
-        visitor.visitFunctionEdge(function, p, q);
+        visitor.visitFunctionEdge(function, p, q, level);
 
         Map<String, Value> map = function.getParams();
 
@@ -116,11 +148,13 @@ public class GraphicalModelComponent extends JComponent {
         for (Map.Entry<String,Value> e : map.entrySet()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(e.getValue(), p1, p, visitor);
+            traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
             x += HSPACE;
         }
     }
     public void paintComponent(Graphics g) {
+
+        if (!sizesComputed) recomputeSizes();
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -130,9 +164,9 @@ public class GraphicalModelComponent extends JComponent {
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
         
-        traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
+        traverseGraphicalModel(variable, getStartPoint(), null, 1, new NodeVisitor() {
             @Override
-            public void visitValue(Value value, Point2D p, Point2D q) {
+            public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 if (q != null) {
 
                     double x1 = p.getX();
@@ -145,7 +179,7 @@ public class GraphicalModelComponent extends JComponent {
             }
 
             @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
                 String str = genDist.getName();
 
                 g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
@@ -163,7 +197,7 @@ public class GraphicalModelComponent extends JComponent {
 
             }
 
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
                 String str = function.getName();
 
                 g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
@@ -223,9 +257,9 @@ public class GraphicalModelComponent extends JComponent {
     }
 
     private void generateButtons() {
-        traverseGraphicalModel(variable, getStartPoint(), null, new NodeVisitor() {
+        traverseGraphicalModel(variable, getStartPoint(), null, 1, new NodeVisitor() {
             @Override
-            public void visitValue(Value value, Point2D p, Point2D q) {
+            public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
                 Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
 
@@ -255,7 +289,7 @@ public class GraphicalModelComponent extends JComponent {
             }
 
             @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
+            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
                 String dtr = genDist.getName();
 
                 JButton button = buttonMap.get(genDist);
@@ -299,7 +333,7 @@ public class GraphicalModelComponent extends JComponent {
             }
 
             @Override
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
                 JButton button = buttonMap.get(function);
                 if (button == null) {
                     button = new JButton("");
