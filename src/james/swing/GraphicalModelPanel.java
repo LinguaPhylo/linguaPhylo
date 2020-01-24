@@ -2,7 +2,8 @@ package james.swing;
 
 import james.Coalescent;
 import james.TimeTree;
-import james.core.LogNormal;
+import james.core.distributions.Normal;
+import james.core.functions.Exp;
 import james.graphicalModel.*;
 
 import javax.swing.*;
@@ -10,7 +11,6 @@ import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
-import java.util.List;
 
 public class GraphicalModelPanel extends JPanel {
 
@@ -23,7 +23,7 @@ public class GraphicalModelPanel extends JPanel {
 
     RandomVariable variable;
 
-    Object displayedElement;
+    Viewable displayedElement;
 
     GraphicalModelPanel(RandomVariable variable) {
 
@@ -45,6 +45,11 @@ public class GraphicalModelPanel extends JPanel {
             @Override
             public void generativeDistributionSelected(GenerativeDistribution g) {
                 showGenerativeDistribution(g);
+            }
+
+            @Override
+            public void functionSelected(Function f) {
+                showFunction(f);
             }
         });
 
@@ -89,6 +94,12 @@ public class GraphicalModelPanel extends JPanel {
                 RandomVariable nv = sampleAll(v.getGenerativeDistribution());
                 nv.setId(v.getId());
                 newlySampledParams.put(e.getKey(), nv);
+            } else if (e.getValue().getFunction() != null) {
+                Value v = e.getValue();
+                Function f = e.getValue().getFunction();
+
+                Value nv = sampleAll(f);
+                nv.setId(v.getId());
             }
         }
         for (Map.Entry<String, RandomVariable> e : newlySampledParams.entrySet()) {
@@ -96,6 +107,29 @@ public class GraphicalModelPanel extends JPanel {
         }
         
         return generativeDistribution.sample();
+    }
+
+    private Value sampleAll(Function function) {
+        Map<String, Value> params = function.getParams();
+
+        Map<String, RandomVariable> newlySampledParams = new HashMap<>();
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            if (e.getValue() instanceof RandomVariable) {
+                RandomVariable v = (RandomVariable) e.getValue();
+
+                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
+                nv.setId(v.getId());
+                newlySampledParams.put(e.getKey(), nv);
+            } else if (e.getValue().getFunction() != null) {
+                Value v = e.getValue();
+                Function f = e.getValue().getFunction();
+
+                Value nv = sampleAll(f);
+                nv.setId(v.getId());
+            }
+        }
+        return (Value) function.apply(newlySampledParams.entrySet());
+        
     }
 
     private RandomVariable getVariableByDistribution(RandomVariable variable, GenerativeDistribution dist) {
@@ -129,17 +163,32 @@ public class GraphicalModelPanel extends JPanel {
         splitPane.setDividerLocation(size);
     }
 
+    private void showFunction(Function f) {
+        displayedElement = f;
+        final int size = splitPane.getDividerLocation();
+        splitPane.setRightComponent(f.getViewer());
+        splitPane.setDividerLocation(size);
+    }
 
     public static void main(String[] args) {
 
         Random random = new Random();
 
-        DoubleValue thetaM = new DoubleValue("M", 3.0);
-        DoubleValue thetaS = new DoubleValue("S", 1.0);
-        LogNormal logNormal = new LogNormal(thetaM, thetaS, random);
+//        DoubleValue thetaM = new DoubleValue("M", 3.0);
+//        DoubleValue thetaS = new DoubleValue("S", 1.0);
 
-        RandomVariable<Double> theta = logNormal.sample("\u0398");
+        DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
+        DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
+
+
+        Normal normal = new Normal(logthetaMean, logThetaSD, random);
+
+        RandomVariable<Double> logTheta = normal.sample("logTheta");
         IntegerValue n = new IntegerValue("n", 20);
+
+        Exp exp = new Exp();
+
+        DoubleValue theta = (DoubleValue) exp.apply(logTheta, "\u0398");
 
         Coalescent coalescent = new Coalescent(theta, n, random);
 

@@ -1,4 +1,4 @@
-package james.core;
+package james.core.distributions;
 
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.ParameterInfo;

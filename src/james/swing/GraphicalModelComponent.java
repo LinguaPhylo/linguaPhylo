@@ -1,18 +1,14 @@
 package james.swing;
 
-import james.core.Exp;
-import james.core.LogNormal;
+import james.graphicalModel.Function;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
-import james.graphicalModel.ValueListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
@@ -79,6 +75,13 @@ public class GraphicalModelComponent extends JComponent {
                 newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
             }
             traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, visitor);
+        } else if (value.getFunction() != null) {
+            // recursion
+            Point2D newP = null;
+            if (currentP != null) {
+                newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
+            }
+            traverseGraphicalModel(value.getFunction(), newP, currentP, visitor);
         }
     }
 
@@ -100,6 +103,23 @@ public class GraphicalModelComponent extends JComponent {
         }
     }
 
+    private void traverseGraphicalModel(Function function, Point2D p, Point2D q, NodeVisitor visitor) {
+
+        visitor.visitFunctionEdge(function, p, q);
+
+        Map<String, Value> map = function.getParams();
+
+        double width = (map.size() - 1) * HSPACE;
+        double x = 0;
+        if (p != null) x = p.getX() - width / 2.0;
+
+        for (Map.Entry<String,Value> e : map.entrySet()) {
+            Point2D p1 = null;
+            if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
+            traverseGraphicalModel(e.getValue(), p1, p, visitor);
+            x += HSPACE;
+        }
+    }
     public void paintComponent(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
@@ -127,6 +147,24 @@ public class GraphicalModelComponent extends JComponent {
             @Override
             public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
                 String str = genDist.getName();
+
+                g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
+
+                double x1 = p.getX();
+                double y1 = p.getY() + FACTOR_SIZE;
+                double x2 = q.getX();
+                double y2 = q.getY() - VAR_HEIGHT / 2;
+
+                Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+
+                g2d.fill(rect);
+
+                drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+
+            }
+
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+                String str = function.getName();
 
                 g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 
@@ -258,6 +296,27 @@ public class GraphicalModelComponent extends JComponent {
                 button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
 
 
+            }
+
+            @Override
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+                JButton button = buttonMap.get(function);
+                if (button == null) {
+                    button = new JButton("");
+
+                    button.addActionListener(e -> {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.functionSelected(function);
+                        }
+                    });
+
+                    buttonMap.put(function, button);
+
+                    add(button);
+                }
+
+                button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+                button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
             }
         });
     }

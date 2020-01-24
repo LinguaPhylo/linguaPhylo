@@ -1,5 +1,6 @@
 package james.javafx;
 
+import james.graphicalModel.Function;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
@@ -89,6 +90,11 @@ public class GraphicalModelPane extends AnchorPane {
                 drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
 
             }
+
+            @Override
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+                // TODO
+            }
         };
 
         NodeVisitor buttonVisitor = new NodeVisitor() {
@@ -123,6 +129,11 @@ public class GraphicalModelPane extends AnchorPane {
             @Override
             public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q) {
 
+            }
+
+            @Override
+            public void visitFunctionEdge(Function function, Point2D p, Point2D q) {
+                // TODO
             }
         };
 

@@ -10,14 +10,14 @@ import java.util.List;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> {
+public class Value<T> implements Viewable {
 
     private T value;
     String id;
     List<ValueListener> listeners = new ArrayList<>();
 
     // the function that produced this value, or null if this value was initialized another way;
-    Function function;
+    Function function = null;
 
     public Value(String id, T value) {
         this.id = id;
@@ -34,7 +34,20 @@ public class Value<T> {
     }
 
     void print(PrintWriter p) {
-        p.print(toString() + ";");
+        if (function !=  null) {
+            for (Object val : function.getParams().values()) {
+                ((Value)val).print(p);
+                p.print("\n");
+            }
+
+            p.print(id + " <- ");
+            function.print(p);
+            //p.print(";");
+        } else {
+            p.print(toString() + ";");
+        }
+
+
     }
 
     public String toString() {
@@ -82,6 +95,10 @@ public class Value<T> {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Function getFunction() {
+        return function;
     }
 
     public void addValueListener(ValueListener listener) {

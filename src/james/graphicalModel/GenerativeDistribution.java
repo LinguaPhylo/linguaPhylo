@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by adru001 on 17/12/19.
  */
-public interface GenerativeDistribution<T> {
+public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     RandomVariable<T> sample();
 
@@ -50,34 +50,6 @@ public interface GenerativeDistribution<T> {
             p.print(", " + entry.getKey() + "=" + entry.getValue().id);
         }
         p.print(");");
-    }
-
-    default String getParamName(int paramIndex, int constructorIndex) {
-        return getParameterInfo(constructorIndex).get(paramIndex).name();
-    }
-
-    default String getParamName(int paramIndex) {
-        return getParameterInfo(0).get(paramIndex).name();
-    }
-
-    default List<ParameterInfo> getParameterInfo(int constructorIndex) {
-
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-
-        Class classElement = getClass();
-
-        Constructor constructor = classElement.getConstructors()[constructorIndex];
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation[] annotations1 = annotations[i];
-            for (Annotation annotation : annotations1) {
-                if (annotation instanceof ParameterInfo) {
-                    pInfo.add((ParameterInfo) annotation);
-                }
-            }
-        }
-
-        return pInfo;
     }
 
     default String getRichDescription(int index) {

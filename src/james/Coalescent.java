@@ -1,6 +1,6 @@
 package james;
 
-import james.core.Exp;
+import james.core.distributions.Exp;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.RandomVariable;

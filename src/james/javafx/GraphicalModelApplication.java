@@ -2,7 +2,7 @@ package james.javafx;
 
 import james.Coalescent;
 import james.TimeTree;
-import james.core.LogNormal;
+import james.core.distributions.LogNormal;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 import javafx.application.Application;
