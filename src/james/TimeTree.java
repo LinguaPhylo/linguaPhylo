@@ -25,6 +25,10 @@ public class TimeTree implements HasComponentView {
         fillNodeList(rootNode);
     }
 
+    public int getNodeCount() {
+        return nodes.size();
+    }
+
     private int fillNodeList(TimeTreeNode node) {
         if (node.isRoot()) {
             nodes.clear();
@@ -85,5 +89,9 @@ public class TimeTree implements HasComponentView {
             builder.append(":");
             builder.append(node.getParent().age-node.age);
         }
+    }
+
+    public TimeTreeNode getRoot() {
+        return rootNode;
     }
 }

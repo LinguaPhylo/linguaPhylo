@@ -2,6 +2,8 @@ package james.swing;
 
 import james.Coalescent;
 import james.TimeTree;
+import james.core.Alignment;
+import james.core.JCPhyloCTMC;
 import james.core.distributions.Normal;
 import james.core.functions.Exp;
 import james.graphicalModel.*;
@@ -206,10 +208,14 @@ public class GraphicalModelPanel extends JPanel {
 
         RandomVariable<TimeTree> g = coalescent.sample();
 
-        PrintWriter p = new PrintWriter(System.out);
-        g.print(p);
+        JCPhyloCTMC jcPhyloCTMC = new JCPhyloCTMC(g, new DoubleValue("mu", 0.01),new IntegerValue("L", 50), new IntegerValue("dim", 4), random);
 
-        GraphicalModelPanel panel = new GraphicalModelPanel(g);
+        RandomVariable<Alignment> D = jcPhyloCTMC.sample();
+
+        PrintWriter p = new PrintWriter(System.out);
+        D.print(p);
+
+        GraphicalModelPanel panel = new GraphicalModelPanel(D);
         panel.setPreferredSize(new Dimension(800, 800));
 
         JFrame frame = new JFrame("Graphical Models");

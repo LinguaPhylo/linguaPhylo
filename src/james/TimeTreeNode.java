@@ -13,7 +13,7 @@ public class TimeTreeNode {
     double age = 0.0;
     String id = null;
 
-    Map<String, Object> metaData = new TreeMap();
+    Map<String, Object> metaData = new TreeMap<>();
 
     TimeTree tree;
 
