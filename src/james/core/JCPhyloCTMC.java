@@ -51,13 +51,13 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
         fillIdMap(tree.value().getRoot(), idMap);
 
         GenerativeDistribution<Integer> rootDistribution =
-                new DiscreteDistribution(new Value<double[]>("rootProb", new double[] {0.25, 0.25, 0.25, 0.25}),random);
+                new DiscreteDistribution(new Value<>("rootProb", new double[] {0.25, 0.25, 0.25, 0.25}),random);
 
-        Value<Integer> rootState = rootDistribution.sample();
 
         Alignment alignment = new Alignment(tree.value().n(), L.value(), idMap);
 
         for (int i = 0; i < L.value(); i++) {
+            Value<Integer> rootState = rootDistribution.sample();
             traverseTree(tree.value().getRoot(), rootState, alignment, i);
         }
 
@@ -86,7 +86,7 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
             alignment.setState(node.getId(), pos, nodeState.value());
         } else {
             for (TimeTreeNode child : node.getChildren()) {
-                JukesCantorCTMC jc = new JukesCantorCTMC(nodeState, new DoubleValue("t", node.getAge()-child.getAge()), dim, random);
+                JukesCantorCTMC jc = new JukesCantorCTMC(nodeState, new DoubleValue("d", (node.getAge()-child.getAge())*clockRate.value()), dim, random);
                 traverseTree(child, jc.sample(), alignment, pos);
             }
         }

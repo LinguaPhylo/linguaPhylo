@@ -20,7 +20,7 @@ public class GraphicalModelComponent extends JComponent {
 
     RandomVariable variable;
 
-    double HSPACE = 120;
+    double HSPACE = 100;
     double VSPACE = 100;
 
     double FACTOR_SIZE = 7;
