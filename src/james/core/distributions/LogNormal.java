@@ -1,9 +1,6 @@
 package james.core.distributions;
 
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.ParameterInfo;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 
 import java.util.*;
@@ -34,6 +31,7 @@ public class LogNormal implements GenerativeDistribution<Double> {
         sdLogParamName = getParamName(1);
     }
 
+    @GenerativeDistributionInfo(description="The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         logNormalDistribution = new LogNormalDistribution(M.value(), S.value());

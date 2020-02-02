@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
@@ -58,12 +59,35 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
         Map<String, Value> paramValues = getParams();
 
-        String html = "<html><h3>" + getName() + " distribution</h3>parameters: <ul>";
+        String html = "<html><h3>" + getName() + " distribution</h3>";
+        GenerativeDistributionInfo info = getInfo();
+        if (info != null) {
+            html += "<p>" + getInfo().description() + "</p>";
+        }
+        html += "<p>parameters: <ul>";
         for (ParameterInfo pi : pInfo) {
             html += "<li>" + pi.name() + " (" + paramValues.get(pi.name()) + "); <font color=\"#808080\">" + pi.description() + "</font></li>";
         }
-        html += "</ul></html>";
+        html += "</ul></p></html>";
         return html;
+    }
+
+    default GenerativeDistributionInfo getInfo() {
+
+        Class classElement = getClass();
+
+        Method[] methods = classElement.getMethods();
+
+        for (Method method : methods) {
+            Annotation[] annotations = method.getAnnotations();
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation instanceof GenerativeDistributionInfo) {
+                    return (GenerativeDistributionInfo) annotation;
+                }
+            }
+        }
+
+        return null;
     }
 
     default JComponent getViewer() {

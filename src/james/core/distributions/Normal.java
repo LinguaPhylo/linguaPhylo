@@ -1,9 +1,6 @@
 package james.core.distributions;
 
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.ParameterInfo;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
@@ -38,6 +35,7 @@ public class Normal implements GenerativeDistribution<Double> {
         sdParamName = getParamName(1);
     }
 
+    @GenerativeDistributionInfo(description="The normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         normalDistribution = new NormalDistribution(mean.value(), sd.value());

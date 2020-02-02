@@ -5,11 +5,11 @@ import james.graphicalModel.Function;
 import james.graphicalModel.FunctionInfo;
 import james.graphicalModel.Value;
 
-public class Exp extends Function<Double, Double> {
+public class Floor extends Function<Double, Double> {
 
-    @FunctionInfo(name="exp",description = "The exponential function: e^x")
+    @FunctionInfo(name="floor",description = "The floor function. Returns the integer component of the argument.")
     public Value<Double> apply(Value<Double> v) {
         setParam("x", v);
-        return new DoubleValue("exp(" + v.getId() + ")", Math.exp(v.value()), this);
+        return new DoubleValue("floor " + v.getId(), Math.floor(v.value()), this);
     }
 }

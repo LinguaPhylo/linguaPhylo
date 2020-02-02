@@ -2,13 +2,32 @@ package james.graphicalModel;
 
 import javax.swing.*;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public abstract class Function<U, V> implements java.util.function.Function<Value<U>, Value<V>>, Parameterized, Viewable {
 
-    public abstract String getName();
+    public String getName() {
+        FunctionInfo fInfo = getFunctionInfo();
+        if (fInfo != null) return fInfo.name();
+        return getClass().getSimpleName();
+    }
+
+    public String getDescription() {
+        FunctionInfo fInfo = getFunctionInfo();
+        if (fInfo != null) return fInfo.description();
+        return "";
+    }
+
+    public String getRichDescription() {
+
+        String html = "<html><h3>" + getName() + " function</h3> <ul>";
+            html += "<li>" + getDescription();
+        html += "</ul></html>";
+        return html;
+    }
 
     TreeMap<String, Value> paramMap = new TreeMap<>();
 
@@ -25,9 +44,9 @@ public abstract class Function<U, V> implements java.util.function.Function<Valu
     public void setParam(String paramName, Value value) {
         paramMap.put(paramName, value);
     }
-    
+
     public JComponent getViewer() {
-        return new JLabel(getName());
+        return new JLabel(getRichDescription());
     }
 
     public String getCallName() {
@@ -49,5 +68,23 @@ public abstract class Function<U, V> implements java.util.function.Function<Valu
             p.print(", " + entry.getValue().id);
         }
         p.print(");");
+    }
+
+    public FunctionInfo getFunctionInfo() {
+
+        Class classElement = getClass();
+
+        Method[] methods = classElement.getMethods();
+
+        for (Method method : methods) {
+            Annotation[] annotations = method.getAnnotations();
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation instanceof FunctionInfo) {
+                    return (FunctionInfo)annotation;
+                }
+            }
+        }
+
+        return null;
     }
 }

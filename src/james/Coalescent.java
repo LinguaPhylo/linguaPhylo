@@ -1,10 +1,7 @@
 package james;
 
 import james.core.distributions.Exp;
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.ParameterInfo;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -37,6 +34,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         exp = new Exp(new Value<>("rate", 1.0), random);
     }
 
+    @GenerativeDistributionInfo(description="The Kingman coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();

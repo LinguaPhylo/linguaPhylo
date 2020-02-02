@@ -1,9 +1,6 @@
 package james.core.distributions;
 
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.ParameterInfo;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 
 import java.util.*;
 
@@ -23,6 +20,7 @@ public class Exp implements GenerativeDistribution<Double> {
         rateParamName = getParamName(0);
     }
 
+    @GenerativeDistributionInfo(description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 
         double x = -rate.value() * Math.log(1.0 - random.nextDouble());
