@@ -1,5 +1,6 @@
 package james;
 
+import james.graphicalModel.Value;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree implements HasComponentView {
+public class TimeTree implements HasComponentView<TimeTree> {
 
     TimeTreeNode rootNode;
 
@@ -55,11 +56,11 @@ public class TimeTree implements HasComponentView {
     TimeTreeComponent component;
 
     @Override
-    public JComponent getComponent() {
+    public JComponent getComponent(Value<TimeTree> timeTreeValue) {
         if (component == null) {
-            component = new TimeTreeComponent(this);
+            component = new TimeTreeComponent(timeTreeValue.value());
         } else {
-            component.setTimeTree(this);
+            component.setTimeTree(timeTreeValue.value());
         }
         return component;
     }

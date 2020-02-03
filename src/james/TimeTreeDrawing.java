@@ -57,7 +57,9 @@ public class TimeTreeDrawing {
             //g.setRenderingHint(TikzRenderingHints.KEY_NODE_ANCHOR, anchor);
             //g.setRenderingHint(TikzRenderingHints.KEY_FONT_SIZE, fontSize);
 
-            g.drawString(string, (float) x, (float) y);
+            int ascent = g.getFontMetrics().getAscent();
+
+            g.drawString(string, (float) x, (float) y + ascent/2.0f);
 
             //if (oldAnchorValue != null) g.setRenderingHint(TikzRenderingHints.KEY_NODE_ANCHOR, oldAnchorValue);
             //if (oldFontSize != null) g.setRenderingHint(TikzRenderingHints.KEY_FONT_SIZE, oldFontSize);

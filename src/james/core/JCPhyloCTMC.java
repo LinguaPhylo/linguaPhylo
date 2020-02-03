@@ -110,4 +110,8 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(dimParamName)) dim = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
+
+    public Value<TimeTree> getTimeTree() {
+        return tree;
+    }
 }

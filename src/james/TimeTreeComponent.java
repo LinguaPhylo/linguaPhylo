@@ -301,7 +301,7 @@ public class TimeTreeComponent extends JComponent {
     public void paintComponent(Graphics g) {
 
         Insets insets = getInsets();
-        g.translate(insets.left,insets.right);
+        g.translate(insets.left,insets.top);
         int width = getWidth()-insets.left-insets.right;
         int height = getHeight()-insets.top-insets.bottom;
 
@@ -312,7 +312,7 @@ public class TimeTreeComponent extends JComponent {
         TimeTree tree = treeDrawing.getTree();
 
         draw(treeDrawing, tree.rootNode, g2d);
-        g.translate(-insets.left,-insets.right);
+        g.translate(-insets.left,-insets.top);
     }
 
     public void setCaption(String caption) {

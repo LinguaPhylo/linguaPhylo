@@ -1,10 +1,8 @@
 package james.graphicalModel;
 
 import james.swing.HasComponentView;
-import james.swing.NodeVisitor;
 
 import javax.swing.*;
-import java.awt.geom.Point2D;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +67,7 @@ public class Value<T> implements Viewable {
 
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
-            JComponent component = ((HasComponentView) value).getComponent();
+            JComponent component = ((HasComponentView<T>) value).getComponent(this);
             component.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEmptyBorder(BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE),
                     id)

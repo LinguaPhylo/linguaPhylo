@@ -1,22 +1,30 @@
 package james.core;
 
+import james.graphicalModel.Value;
 import james.swing.AlignmentComponent;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by adru001 on 2/02/20.
  */
-public class Alignment implements HasComponentView {
+public class Alignment implements HasComponentView<Alignment> {
 
     Integer[][] alignment;
     Map<String, Integer> idMap;
+    Map<Integer, String> reverseMap;
 
     public Alignment(int taxa, int length, Map<String, Integer> idMap) {
         alignment = new Integer[taxa][length];
         this.idMap = idMap;
+
+        reverseMap = new TreeMap<>();
+        for (String key : idMap.keySet()) {
+            reverseMap.put(idMap.get(key), key);
+        }
     }
 
     public void setState(int taxon, int position, int state) {
@@ -32,8 +40,9 @@ public class Alignment implements HasComponentView {
     }
 
     @Override
-    public JComponent getComponent() {
-        return new AlignmentComponent(this, AlignmentComponent.DNA_COLORS);
+    public JComponent getComponent(Value<Alignment> value) {
+
+        return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 
     public int n() {
@@ -42,5 +51,9 @@ public class Alignment implements HasComponentView {
 
     public int L() {
         return alignment[0].length;
+    }
+
+    public String getId(int taxonIndex) {
+        return reverseMap.get(taxonIndex);
     }
 }
