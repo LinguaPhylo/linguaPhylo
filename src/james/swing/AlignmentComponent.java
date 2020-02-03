@@ -20,20 +20,26 @@ public class AlignmentComponent extends JComponent {
 
     public void paintComponent(Graphics g) {
 
-        double h = getHeight() / (double)alignment.n();
-        double w = getWidth() / (double)alignment.L();
+        Insets insets = getInsets();
+        g.translate(insets.left,insets.right);
+        int width = getWidth()-insets.left-insets.right;
+        int height = getHeight()-insets.top-insets.bottom;
 
-        Graphics2D g2D = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D)g;
+
+        double h = height / (double)alignment.n();
+        double w = width / (double)alignment.L();
 
         for (int i = 0; i < alignment.n(); i++) {
             for (int j = 0; j < alignment.L(); j++) {
                 g.setColor(colors[alignment.getState(i,j)]);
 
-                Rectangle2D rect2D = new Rectangle2D.Double(j*w, i*h, w, h);
+                Rectangle2D rect2D = new Rectangle2D.Double(j*w, i*h, w, h*0.95);
 
-                g2D.fill(rect2D);
+                g2d.fill(rect2D);
             }
         }
+        g.translate(-insets.left,-insets.right);
 
     }
 }
