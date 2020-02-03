@@ -47,8 +47,19 @@ public class Value<T> implements Viewable {
         } else {
             p.print(toString() + ";");
         }
+    }
 
-
+    public String codeString() {
+        StringBuilder builder = new StringBuilder();
+        if (function != null) {
+            builder.append(id + " = ");
+            builder.append(function.codeString());
+            //p.print(";");
+        } else {
+            builder.append(toString());
+            builder.append(";");
+        }
+        return builder.toString();
     }
 
     public String toString() {
@@ -106,33 +117,36 @@ public class Value<T> implements Viewable {
         listeners.add(listener);
     }
 
-    public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor) {
-        visitor.visitValue(value);
+    public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitValue(value);
 
         if (value instanceof RandomVariable) {
-            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), visitor);
+            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), visitor, post);
         } else if (value.getFunction() != null) {
-            traverseGraphicalModel(value.getFunction(), visitor);
+            traverseGraphicalModel(value.getFunction(), visitor, post);
         }
+        if (post) visitor.visitValue(value);
     }
 
-    private static void traverseGraphicalModel(Function function, GraphicalModelNodeVisitor visitor) {
-        visitor.visitFunction(function);
+    private static void traverseGraphicalModel(Function function, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitFunction(function);
 
         Map<String, Value> map = function.getParams();
 
         for (Map.Entry<String, Value> e : map.entrySet()) {
-            traverseGraphicalModel(e.getValue(), visitor);
+            traverseGraphicalModel(e.getValue(), visitor, post);
         }
+        if (post) visitor.visitFunction(function);
     }
 
-    public static void traverseGraphicalModel(GenerativeDistribution genDist, GraphicalModelNodeVisitor visitor) {
-        visitor.visitGenDist(genDist);
+    public static void traverseGraphicalModel(GenerativeDistribution genDist, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitGenDist(genDist);
 
         Map<String, Value> map = genDist.getParams();
 
         for (Map.Entry<String, Value> e : map.entrySet()) {
-            traverseGraphicalModel(e.getValue(), visitor);
+            traverseGraphicalModel(e.getValue(), visitor, post);
         }
+        if (post) visitor.visitGenDist(genDist);
     }
 }

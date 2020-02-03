@@ -39,18 +39,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
     void setParam(String paramName, Value value);
 
     default void print(PrintWriter p) {
-        Map<String, Value> map = getParams();
-
-        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
-
-        Map.Entry<String, Value> entry = iterator.next();
-
-        p.print(getName() + "(" + entry.getKey() + "=" + entry.getValue().id);
-        while (iterator.hasNext()) {
-            entry = iterator.next();
-            p.print(", " + entry.getKey() + "=" + entry.getValue().id);
-        }
-        p.print(");");
+        p.print(codeString());
     }
 
     default String getRichDescription(int index) {
@@ -59,17 +48,19 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
         Map<String, Value> paramValues = getParams();
 
-        String html = "<html><h3>" + getName() + " distribution</h3>";
+        StringBuilder html = new StringBuilder("<html><h3>");
+        html.append(getName());
+        html.append(" distribution</h3>");
         GenerativeDistributionInfo info = getInfo();
         if (info != null) {
-            html += "<p>" + getInfo().description() + "</p>";
+            html.append("<p>").append(getInfo().description()).append("</p>");
         }
-        html += "<p>parameters: <ul>";
+        html.append("<p>parameters: <ul>");
         for (ParameterInfo pi : pInfo) {
-            html += "<li>" + pi.name() + " (" + paramValues.get(pi.name()) + "); <font color=\"#808080\">" + pi.description() + "</font></li>";
+            html.append("<li>").append(pi.name()).append(" (").append(paramValues.get(pi.name())).append("); <font color=\"#808080\">").append(pi.description()).append("</font></li>");
         }
-        html += "</ul></p></html>";
-        return html;
+        html.append("</ul></p></html>");
+        return html.toString();
     }
 
     default GenerativeDistributionInfo getInfo() {
@@ -92,5 +83,23 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     default JComponent getViewer() {
         return new JLabel(getRichDescription(0));
+    }
+
+    default String codeString() {
+        Map<String, Value> map = getParams();
+
+        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
+
+        Map.Entry<String, Value> entry = iterator.next();
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(getName()).append("(").append(entry.getKey()).append("=").append(entry.getValue().id);
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            builder.append(", ").append(entry.getKey()).append("=").append(entry.getValue().id);
+        }
+        builder.append(");");
+        return builder.toString();
     }
 }

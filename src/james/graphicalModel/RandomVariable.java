@@ -24,8 +24,14 @@ public class RandomVariable<T> extends Value<T> {
             p.print("\n");
         }
 
-        p.print(id + " ~ ");
-        g.print(p);
-        //p.print(";");
+        p.print(codeString());
+    }
+
+    public String codeString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(id);
+        builder.append(" ~ ");
+        builder.append(g.codeString());
+        return builder.toString();
     }
 }

@@ -9,6 +9,11 @@ import james.core.functions.Exp;
 import james.graphicalModel.*;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -18,6 +23,8 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
+    JTextPane modelTextPane;
+    HTMLDocument document;
 
     JButton sampleButton = new JButton("Sample");
 
@@ -60,14 +67,10 @@ public class GraphicalModelPanel extends JPanel {
             }
         });
 
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        variable.print(pw);
-        pw.flush();
-
-        JTextArea textArea = new JTextArea(sw.toString());
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 16));
-        textArea.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        modelTextPane = new JTextPane();
+        setModelText();
+        modelTextPane.setFont(new Font("monospaced", Font.PLAIN, 16));
+        modelTextPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
@@ -77,7 +80,57 @@ public class GraphicalModelPanel extends JPanel {
         
         add(buttonPanel,BorderLayout.NORTH);
 
-        add(textArea, BorderLayout.SOUTH);
+        add(modelTextPane, BorderLayout.SOUTH);
+
+        showValue(variable);
+    }
+
+    private void setModelText() {
+
+        StyledDocument document = modelTextPane.getStyledDocument();
+
+        try {
+            document.remove(0, document.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+
+        Value.traverseGraphicalModel(variable, new GraphicalModelNodeVisitor() {
+            @Override
+            public void visitValue(Value value) {
+                Color color = Color.black;
+                if (value instanceof  RandomVariable) {
+                    color = Color.green;
+                }
+
+                addColoredText(modelTextPane,
+                        (modelTextPane.getStyledDocument().getLength() > 0 ? "\n" : "") + value.codeString(),
+                        color);
+            }
+
+            @Override
+            public void visitGenDist(GenerativeDistribution genDist) {
+
+            }
+
+            @Override
+            public void visitFunction(Function f) {
+
+            }
+        }, true);
+    }
+
+    private void addColoredText(JTextPane pane, String text, Color color) {
+        StyledDocument doc = pane.getStyledDocument();
+
+        Style style = pane.addStyle("Color Style", null);
+        StyleConstants.setForeground(style, color);
+        try {
+            doc.insertString(doc.getLength(), text, style);
+        }
+        catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void repopulateVariables() {
@@ -89,12 +142,13 @@ public class GraphicalModelPanel extends JPanel {
                     RandomVariable rv = (RandomVariable)value;
                     variables.put(rv.getGenerativeDistribution(), rv);
                 }
+                value.addValueListener(() -> setModelText());
             }
 
             public void visitGenDist(GenerativeDistribution genDist) {}
 
             public void visitFunction(Function f) {}
-        });
+        }, false);
     }
 
     private void sample() {
@@ -188,9 +242,6 @@ public class GraphicalModelPanel extends JPanel {
 
         Random random = new Random();
 
-//        DoubleValue thetaM = new DoubleValue("M", 3.0);
-//        DoubleValue thetaS = new DoubleValue("S", 1.0);
-
         DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
         DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
 
@@ -216,7 +267,7 @@ public class GraphicalModelPanel extends JPanel {
         D.print(p);
 
         GraphicalModelPanel panel = new GraphicalModelPanel(D);
-        panel.setPreferredSize(new Dimension(800, 800));
+        panel.setPreferredSize(new Dimension(1200, 800));
 
         JFrame frame = new JFrame("Graphical Models");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

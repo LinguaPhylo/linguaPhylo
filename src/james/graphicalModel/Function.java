@@ -55,21 +55,6 @@ public abstract class Function<U, V> implements java.util.function.Function<Valu
         return builder.toString();
     }
 
-    public void print(PrintWriter p) {
-        Map<String, Value> map = getParams();
-
-        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
-
-        Map.Entry<String, Value> entry = iterator.next();
-
-        p.print(getName() + "(" + entry.getValue().id);
-        while (iterator.hasNext()) {
-            entry = iterator.next();
-            p.print(", " + entry.getValue().id);
-        }
-        p.print(");");
-    }
-
     public FunctionInfo getFunctionInfo() {
 
         Class classElement = getClass();
@@ -87,4 +72,27 @@ public abstract class Function<U, V> implements java.util.function.Function<Valu
 
         return null;
     }
+
+    public String codeString() {
+        Map<String, Value> map = getParams();
+
+        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
+
+        Map.Entry<String, Value> entry = iterator.next();
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(getName() + "(" + entry.getValue().id);
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            builder.append(", " + entry.getValue().id);
+        }
+        builder.append(");");
+        return builder.toString();
+    }
+
+    public void print(PrintWriter p) {
+        p.print(codeString());
+    }
+
 }

@@ -19,7 +19,6 @@ public class DoubleValueEditor extends JPanel {
 
         JTextField textField = new JTextField(value.value().toString(), 12);
 
-
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
