@@ -9,10 +9,9 @@ import james.core.functions.Exp;
 import james.graphicalModel.*;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.io.PrintWriter;
@@ -23,7 +22,7 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
-    JTextPane modelTextPane;
+    GraphicalModelTextPane modelTextPane;
     HTMLDocument document;
 
     JButton sampleButton = new JButton("Sample");
@@ -40,6 +39,7 @@ public class GraphicalModelPanel extends JPanel {
 
         this.variable = variable;
 
+        modelTextPane = new GraphicalModelTextPane(this);
         repopulateVariables();
 
         component = new GraphicalModelComponent(variable);
@@ -53,6 +53,7 @@ public class GraphicalModelPanel extends JPanel {
         component.addGraphicalModelListener(new GraphicalModelListener() {
             @Override
             public void valueSelected(Value value) {
+
                 showValue(value);
             }
 
@@ -63,14 +64,29 @@ public class GraphicalModelPanel extends JPanel {
 
             @Override
             public void functionSelected(Function f) {
+
                 showFunction(f);
             }
         });
 
-        modelTextPane = new JTextPane();
-        setModelText();
-        modelTextPane.setFont(new Font("monospaced", Font.PLAIN, 16));
-        modelTextPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        modelTextPane.addGraphicalModelListener(new GraphicalModelListener() {
+            @Override
+            public void valueSelected(Value value) {
+
+                showValue(value);
+            }
+
+            @Override
+            public void generativeDistributionSelected(GenerativeDistribution g) {
+                showGenerativeDistribution(g);
+            }
+
+            @Override
+            public void functionSelected(Function f) {
+
+                showFunction(f);
+            }
+        });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
@@ -85,52 +101,8 @@ public class GraphicalModelPanel extends JPanel {
         showValue(variable);
     }
 
-    private void setModelText() {
-
-        StyledDocument document = modelTextPane.getStyledDocument();
-
-        try {
-            document.remove(0, document.getLength());
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
-
-        Value.traverseGraphicalModel(variable, new GraphicalModelNodeVisitor() {
-            @Override
-            public void visitValue(Value value) {
-                Color color = Color.black;
-                if (value instanceof  RandomVariable) {
-                    color = Color.green;
-                }
-
-                addColoredText(modelTextPane,
-                        (modelTextPane.getStyledDocument().getLength() > 0 ? "\n" : "") + value.codeString(),
-                        color);
-            }
-
-            @Override
-            public void visitGenDist(GenerativeDistribution genDist) {
-
-            }
-
-            @Override
-            public void visitFunction(Function f) {
-
-            }
-        }, true);
-    }
-
-    private void addColoredText(JTextPane pane, String text, Color color) {
-        StyledDocument doc = pane.getStyledDocument();
-
-        Style style = pane.addStyle("Color Style", null);
-        StyleConstants.setForeground(style, color);
-        try {
-            doc.insertString(doc.getLength(), text, style);
-        }
-        catch (BadLocationException e) {
-            e.printStackTrace();
-        }
+    private void setDisplayedElement(Viewable viewable) {
+        displayedElement = viewable;
     }
 
     private void repopulateVariables() {
@@ -142,13 +114,14 @@ public class GraphicalModelPanel extends JPanel {
                     RandomVariable rv = (RandomVariable)value;
                     variables.put(rv.getGenerativeDistribution(), rv);
                 }
-                value.addValueListener(() -> setModelText());
+                value.addValueListener(() -> modelTextPane.updateModelText());
             }
 
             public void visitGenDist(GenerativeDistribution genDist) {}
 
             public void visitFunction(Function f) {}
         }, false);
+        modelTextPane.updateModelText();
     }
 
     private void sample() {
@@ -158,7 +131,7 @@ public class GraphicalModelPanel extends JPanel {
         component.setVariable(variable);
         if (displayedElement instanceof RandomVariable) {
             GenerativeDistribution dist = ((RandomVariable)displayedElement).getGenerativeDistribution();
-            RandomVariable rv = getVariableByDistribution(variable, dist);
+            RandomVariable rv = getVariableByDistribution(dist);
             showValue(rv);
         }
     }
@@ -213,11 +186,11 @@ public class GraphicalModelPanel extends JPanel {
         
     }
 
-    private RandomVariable getVariableByDistribution(RandomVariable variable, GenerativeDistribution dist) {
+    private RandomVariable getVariableByDistribution(GenerativeDistribution dist) {
         return variables.get(dist);
     }
 
-    private void showValue(Value value) {
+    void showValue(Value value) {
         displayedElement = value;
         final int size = splitPane.getDividerLocation();
         splitPane.setRightComponent(value.getViewer());
@@ -244,7 +217,6 @@ public class GraphicalModelPanel extends JPanel {
 
         DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
         DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
-
 
         Normal normal = new Normal(logthetaMean, logThetaSD, random);
 
