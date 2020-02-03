@@ -1,15 +1,13 @@
 package james.swing;
 
-import james.graphicalModel.Function;
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
@@ -57,6 +55,8 @@ public class GraphicalModelComponent extends JComponent {
                 super.componentResized(e);
             }
         });
+
+        format.setMaximumFractionDigits(3);
     }
 
     private void recomputeSizes() {
@@ -252,8 +252,18 @@ public class GraphicalModelComponent extends JComponent {
         g.fill(p);
     }
 
+    DecimalFormat format = new DecimalFormat();
+
     private String displayString(Value v) {
-        return "<html><font color=\"#808080\" ><small>" + v.getId() + ":</small></font>" + v.value().toString() + "</html>";
+
+        String valueString;
+        if (v instanceof DoubleValue) {
+            valueString = format.format(((DoubleValue) v).value());
+        } else {
+            valueString = v.value().toString();
+        }
+
+        return "<html><font color=\"#808080\" ><small>" + v.getId() + ":</small></font>" + valueString + "</html>";
     }
 
     private void generateButtons() {

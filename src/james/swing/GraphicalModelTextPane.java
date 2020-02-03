@@ -20,6 +20,7 @@ public class GraphicalModelTextPane extends JTextPane {
         updateModelText();
         setFont(new Font("monospaced", Font.PLAIN, 16));
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        setEditable(false);
 
         addCaretListener(e -> {
             if (!updatingModelText) {
@@ -76,16 +77,18 @@ public class GraphicalModelTextPane extends JTextPane {
         }
     }
 
-    private void addColoredText(JTextPane pane, String text, Color color) {
+    private void addColoredTextLine(JTextPane pane, String[] text, Color[] color) {
         StyledDocument doc = pane.getStyledDocument();
 
-        Style style = pane.addStyle("Color Style", null);
-        StyleConstants.setForeground(style, color);
-        try {
-            doc.insertString(doc.getLength(), text, style);
-        }
-        catch (BadLocationException e) {
-            e.printStackTrace();
+        if (doc.getLength() > 0) text[0] = "\n" + text[0];
+        for (int i = 0; i < text.length; i++) {
+            Style style = pane.addStyle("Color Style", null);
+            StyleConstants.setForeground(style, color[i]);
+            try {
+                doc.insertString(doc.getLength(), text[i], style);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -107,15 +110,19 @@ public class GraphicalModelTextPane extends JTextPane {
         Value.traverseGraphicalModel(panel.variable, new GraphicalModelNodeVisitor() {
             @Override
             public void visitValue(Value value) {
+                values.add(value);
                 Color color = Color.black;
                 if (value instanceof RandomVariable) {
-                    color = Color.green;
+                    String[] parts = value.codeString().split("~");
+                    String[] funcParts = parts[1].split("\\(");
+                    addColoredTextLine(GraphicalModelTextPane.this,
+                            new String[] {parts[0], "~", funcParts[0], "(", funcParts[1]},
+                            new Color[] {Color.green, Color.black, Color.blue, Color.black, Color.black});
+                } else {
+                    addColoredTextLine(GraphicalModelTextPane.this,
+                            new String[] {value.codeString()},
+                            new Color[] {Color.black});
                 }
-                values.add(value);
-                addColoredText(GraphicalModelTextPane.this,
-                        (getStyledDocument().getLength() > 0 ? "\n" : "") + value.codeString(),
-                        color);
-
             }
 
             @Override
