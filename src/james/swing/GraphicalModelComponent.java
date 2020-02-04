@@ -68,22 +68,24 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         final int[] ml = {1};
 
-        traverseGraphicalModel(parser.getRootVariable(), null, null, 1, new NodeVisitor() {
-            @Override
-            public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                if (level > ml[0]) ml[0] = level;
-            }
+        for (Value value : parser.getRoots()) {
+            traverseGraphicalModel(value, null, null, 1, new NodeVisitor() {
+                @Override
+                public void visitValue(Value value, Point2D p, Point2D q, int level) {
+                    if (level > ml[0]) ml[0] = level;
+                }
 
-            @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                if (level > ml[0]) ml[0] = level;
-            }
+                @Override
+                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
+                    if (level > ml[0]) ml[0] = level;
+                }
 
-            @Override
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
-                if (level > ml[0]) ml[0] = level;
-            }
-        });
+                @Override
+                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                    if (level > ml[0]) ml[0] = level;
+                }
+            });
+        }
 
         return ml[0];
     }
@@ -92,8 +94,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         listeners.add(listener);
     }
 
-    private Point2D getStartPoint() {
-        return new Point2D.Double(getWidth() / 2.0, getHeight() - BORDER - (VAR_HEIGHT/2));
+    private Point2D getStartPoint(double frac) {
+        return new Point2D.Double(frac*getWidth(), getHeight() - BORDER - (VAR_HEIGHT/2));
     }
 
     private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, int level, NodeVisitor visitor) {
@@ -163,58 +165,63 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g.setColor(Color.black);
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
-        
-        traverseGraphicalModel(parser.getRootVariable(), getStartPoint(), null, 1, new NodeVisitor() {
-            @Override
-            public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                if (q != null) {
+
+        List<Value> valueList = new ArrayList<> (parser.getRoots());
+
+        for (int i = 0; i < valueList.size(); i++) {
+
+            traverseGraphicalModel(valueList.get(i), getStartPoint((i+1.0)/(valueList.size()+1.0)), null, 1, new NodeVisitor() {
+                @Override
+                public void visitValue(Value value, Point2D p, Point2D q, int level) {
+                    if (q != null) {
+
+                        double x1 = p.getX();
+                        double y1 = p.getY() + VAR_HEIGHT / 2;
+                        double x2 = q.getX();
+                        double y2 = q.getY() - FACTOR_SIZE;
+
+                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    }
+                }
+
+                @Override
+                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
+                    String str = genDist.getName();
+
+                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 
                     double x1 = p.getX();
-                    double y1 = p.getY() + VAR_HEIGHT / 2;
+                    double y1 = p.getY() + FACTOR_SIZE;
                     double x2 = q.getX();
-                    double y2 = q.getY() - FACTOR_SIZE;
+                    double y2 = q.getY() - VAR_HEIGHT / 2;
 
-                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+
+                    g2d.fill(rect);
+
+                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+
                 }
-            }
 
-            @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                String str = genDist.getName();
+                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                    String str = function.getName();
 
-                g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
+                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 
-                double x1 = p.getX();
-                double y1 = p.getY() + FACTOR_SIZE;
-                double x2 = q.getX();
-                double y2 = q.getY() - VAR_HEIGHT / 2;
+                    double x1 = p.getX();
+                    double y1 = p.getY() + FACTOR_SIZE;
+                    double x2 = q.getX();
+                    double y2 = q.getY() - VAR_HEIGHT / 2;
 
-                Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+                    Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
 
-                g2d.fill(rect);
+                    g2d.fill(rect);
 
-                drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
 
-            }
-
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
-                String str = function.getName();
-
-                g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
-
-                double x1 = p.getX();
-                double y1 = p.getY() + FACTOR_SIZE;
-                double x2 = q.getX();
-                double y2 = q.getY() - VAR_HEIGHT / 2;
-
-                Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
-
-                g2d.fill(rect);
-
-                drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
-
-            }
-        });
+                }
+            });
+        }
     }
 
     /**
@@ -268,83 +275,92 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     private void generateButtons() {
-        traverseGraphicalModel(parser.getRootVariable(), getStartPoint(), null, 1, new NodeVisitor() {
-            @Override
-            public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-                Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
+        List<Value> valueList = new ArrayList<> (parser.getRoots());
 
-                if (!(value instanceof RandomVariable)) {
-                    backgroundColor = Color.white;
-                    borderColor = Color.black;
+        for (int i = 0; i < valueList.size(); i++) {
+            traverseGraphicalModel(valueList.get(i), getStartPoint((i+1.0)/(valueList.size()+1.0)), null, 1, new NodeVisitor() {
+                @Override
+                public void visitValue(Value value, Point2D p, Point2D q, int level) {
+                    Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+                    Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
+
+                    if (!(value instanceof RandomVariable)) {
+                        backgroundColor = Color.white;
+                        borderColor = Color.black;
+                    }
+                    if (!parser.getDictionary().values().contains(value)) {
+                        backgroundColor = backgroundColor.darker();
+                        borderColor = Color.black;
+                    }
+
+
+                    String str = getButtonString(value);
+
+                    JButton button = buttonMap.get(value);
+                    if (button == null) {
+                        button = new CircleButton(str, backgroundColor, borderColor);
+                        button.addActionListener(e1 -> {
+                            for (GraphicalModelListener listener : listeners) {
+                                listener.valueSelected(value);
+                            }
+                        });
+                        buttonMap.put(value, button);
+                        add(button);
+
+                        JButton finalButton = button;
+                        value.addValueListener(() -> finalButton.setText(getButtonString(value)));
+                    }
+                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
+                    button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
                 }
 
-                String str = getButtonString(value);
+                @Override
+                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
+                    String dtr = genDist.getName();
 
-                JButton button = buttonMap.get(value);
-                if (button == null) {
-                    button = new CircleButton(str, backgroundColor, borderColor);
-                    button.addActionListener(e1 -> {
-                        for (GraphicalModelListener listener : listeners) {
-                            listener.valueSelected(value);
-                        }
-                    });
-                    buttonMap.put(value, button);
-                    add(button);
+                    JButton button = buttonMap.get(genDist);
+                    if (button == null) {
+                        button = new JButton("");
 
-                    JButton finalButton = button;
-                    value.addValueListener(() -> finalButton.setText(getButtonString(value)));
-                }
-                button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
-                button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
-            }
+                        button.addActionListener(e -> {
+                            for (GraphicalModelListener listener : listeners) {
+                                listener.generativeDistributionSelected(genDist);
+                            }
+                        });
 
-            @Override
-            public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                String dtr = genDist.getName();
+                        buttonMap.put(genDist, button);
 
-                JButton button = buttonMap.get(genDist);
-                if (button == null) {
-                    button = new JButton("");
+                        add(button);
+                    }
 
-                    button.addActionListener(e -> {
-                        for (GraphicalModelListener listener : listeners) {
-                            listener.generativeDistributionSelected(genDist);
-                        }
-                    });
+                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
 
-                    buttonMap.put(genDist, button);
 
-                    add(button);
                 }
 
-                button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-                button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
+                @Override
+                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                    JButton button = buttonMap.get(function);
+                    if (button == null) {
+                        button = new JButton("");
 
+                        button.addActionListener(e -> {
+                            for (GraphicalModelListener listener : listeners) {
+                                listener.functionSelected(function);
+                            }
+                        });
 
-            }
+                        buttonMap.put(function, button);
 
-            @Override
-            public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
-                JButton button = buttonMap.get(function);
-                if (button == null) {
-                    button = new JButton("");
+                        add(button);
+                    }
 
-                    button.addActionListener(e -> {
-                        for (GraphicalModelListener listener : listeners) {
-                            listener.functionSelected(function);
-                        }
-                    });
-
-                    buttonMap.put(function, button);
-
-                    add(button);
+                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
                 }
-
-                button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-                button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
-            }
-        });
+            });
+        }
     }
 
     private String getButtonString(Value value) {
@@ -367,5 +383,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public void modelChanged() {
         removeButtons();
         generateButtons();
+        repaint();
     }
 }

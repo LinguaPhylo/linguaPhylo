@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> implements Viewable {
+public class Value<T> implements Viewable, Comparable<Value> {
 
     private T value;
     String id;
@@ -148,5 +148,11 @@ public class Value<T> implements Viewable {
             traverseGraphicalModel(e.getValue(), visitor, post);
         }
         if (post) visitor.visitGenDist(genDist);
+    }
+
+
+    @Override
+    public int compareTo(Value o) {
+        return this.id.compareTo(o.id);
     }
 }

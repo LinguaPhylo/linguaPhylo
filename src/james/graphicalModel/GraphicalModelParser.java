@@ -14,7 +14,7 @@ import java.util.*;
 
 public class GraphicalModelParser {
 
-    Map<String, Value> dictionary = new TreeMap<>();
+    private SortedMap<String, Value> dictionary = new TreeMap<>();
 
     Set<String> globalArguments = new TreeSet<>();
 
@@ -42,19 +42,18 @@ public class GraphicalModelParser {
         listeners.add(listener);
     }
 
-    public Set<Value> getRoots() {
-        Set<String> nonArguments = new HashSet<>();
-        nonArguments.addAll(dictionary.keySet());
+    public SortedMap<String, Value> getDictionary() {
+        return dictionary;
+    }
+
+    public SortedSet<Value> getRoots() {
+        SortedSet<String> nonArguments = new TreeSet<>(dictionary.keySet());
         nonArguments.removeAll(globalArguments);
-        HashSet<Value> values = new HashSet<>();
+        SortedSet<Value> values = new TreeSet<>();
         for (String id : nonArguments) {
             values.add(dictionary.get(id));
         }
         return values;
-    }
-
-    public RandomVariable getRootVariable() {
-        return (RandomVariable)getRoots().iterator().next();
     }
 
     public void parseLines(String[] lines) {
@@ -284,9 +283,15 @@ public class GraphicalModelParser {
     }
 
     public void sample() {
-        RandomVariable rootVariable = sampleAll(getRootVariable().getGenerativeDistribution());
-        rootVariable.setId(getRootVariable().id);
-        dictionary.put(rootVariable.getId(), rootVariable);
+
+        for (Value value : getRoots()) {
+
+            if (value instanceof RandomVariable) {
+                RandomVariable variable = sampleAll(((RandomVariable)value).getGenerativeDistribution());
+                variable.setId(value.id);
+                dictionary.put(variable.getId(), variable);
+            }
+        }
         notifyListeners();
     }
 
@@ -301,6 +306,7 @@ public class GraphicalModelParser {
                 RandomVariable nv = sampleAll(v.getGenerativeDistribution());
                 nv.setId(v.getId());
                 newlySampledParams.put(e.getKey(), nv);
+                dictionary.put(nv.getId(), nv);
             } else if (e.getValue().getFunction() != null) {
                 Value v = e.getValue();
                 Function f = e.getValue().getFunction();
@@ -330,12 +336,14 @@ public class GraphicalModelParser {
                 RandomVariable nv = sampleAll(v.getGenerativeDistribution());
                 nv.setId(v.getId());
                 newlySampledParams.put(e.getKey(), nv);
+                dictionary.put(nv.getId(), nv);
             } else if (e.getValue().getFunction() != null) {
                 Value v = e.getValue();
                 Function f = e.getValue().getFunction();
 
                 Value nv = sampleAll(f);
                 nv.setId(v.getId());
+                dictionary.put(nv.getId(), nv);
             }
         }
         return (Value) function.apply(newlySampledParams.entrySet().iterator().next().getValue());

@@ -30,7 +30,7 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                interpretLine(interpreterField.getText());
+                interpretInput(interpreterField.getText());
                 interpreterField.setText("");
             }
         });
@@ -42,15 +42,18 @@ public class GraphicalModelInterpreter extends JPanel {
         add(interpreterField, BorderLayout.SOUTH);
     }
 
-    private void interpretLine(String line) {
+    private void interpretInput(String input) {
 
-        line = line.trim();
-        if (line.charAt(line.length()-1) != ';') {
-            line = line + ";";
+        String[] lines = input.split(";");
+
+        for (String line : lines) {
+            line = line.trim();
+            if (line.charAt(line.length() - 1) != ';') {
+                line = line + ";";
+            }
+
+            parser.parseLine(line);
+            textPane.addLine(line);
         }
-
-        parser.parseLine(line);
-        textPane.addLine(line);
-
     }
 }

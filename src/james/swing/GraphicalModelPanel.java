@@ -13,7 +13,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
     GraphicalModelInterpreter intepreter;
-    HTMLDocument document;
+    JTabbedPane rightPane;
 
     GraphicalModelParser parser;
 
@@ -63,13 +63,22 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(sampleButton);
 
-        sampleButton.addActionListener(e -> {parser.sample(); showValue(parser.getRootVariable());});
+        sampleButton.addActionListener(e -> {
+            parser.sample();
+            showValue(parser.getRoots().first());
+        });
 
         add(buttonPanel, BorderLayout.NORTH);
 
         add(intepreter, BorderLayout.SOUTH);
 
-        showValue(parser.getRootVariable());
+        rightPane = new JTabbedPane();
+        rightPane.addTab("Current", new JPanel());
+        rightPane.addTab("Literals", new LiteralPanel(parser));
+        rightPane.addTab("State", new StatePanel(parser));
+        splitPane.setRightComponent(rightPane);
+
+        showValue(parser.getRoots().first());
     }
 
     private void setDisplayedElement(Viewable viewable) {
@@ -78,46 +87,31 @@ public class GraphicalModelPanel extends JPanel {
 
     void showValue(Value value) {
         displayedElement = value;
-        final int size = splitPane.getDividerLocation();
-        splitPane.setRightComponent(value.getViewer());
-        splitPane.setDividerLocation(size);
+        rightPane.setComponentAt(0, value.getViewer());
+//        final int size = splitPane.getDividerLocation();
+//        splitPane.setRightComponent(value.getViewer());
+//        splitPane.setDividerLocation(size);
     }
 
     private void showGenerativeDistribution(GenerativeDistribution g) {
         displayedElement = g;
-        final int size = splitPane.getDividerLocation();
-        splitPane.setRightComponent(g.getViewer());
-        splitPane.setDividerLocation(size);
+        rightPane.setComponentAt(0, g.getViewer());
+
+//        final int size = splitPane.getDividerLocation();
+//        splitPane.setRightComponent(g.getViewer());
+//        splitPane.setDividerLocation(size);
     }
 
     private void showFunction(Function f) {
         displayedElement = f;
-        final int size = splitPane.getDividerLocation();
-        splitPane.setRightComponent(f.getViewer());
-        splitPane.setDividerLocation(size);
+        rightPane.setComponentAt(0, f.getViewer());
+
+//        final int size = splitPane.getDividerLocation();
+//        splitPane.setRightComponent(f.getViewer());
+//        splitPane.setDividerLocation(size);
     }
 
     public static void main(String[] args) {
-
-//        DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
-//        DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
-//
-//        Normal normal = new Normal(logthetaMean, logThetaSD);
-//
-//        RandomVariable<Double> logTheta = normal.sample("logTheta");
-//        IntegerValue n = new IntegerValue("n", 20);
-//
-//        Exp exp = new Exp();
-//
-//        DoubleValue theta = (DoubleValue) exp.apply(logTheta, "\u0398");
-//
-//        Coalescent coalescent = new Coalescent(theta, n);
-//
-//        RandomVariable<TimeTree> g = coalescent.sample();
-//
-//        JCPhyloCTMC jcPhyloCTMC = new JCPhyloCTMC(g, new DoubleValue("mu", 0.01),new IntegerValue("L", 50), new IntegerValue("dim", 4));
-//
-//        RandomVariable<Alignment> D = jcPhyloCTMC.sample();
 
         String[] lines = {
                 "L = 50;",
@@ -154,5 +148,4 @@ public class GraphicalModelPanel extends JPanel {
             throw new RuntimeException("Expected root node to be a random variable!");
         }
     }
-
 }
