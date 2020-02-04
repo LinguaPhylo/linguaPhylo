@@ -1,6 +1,6 @@
 package james.swing;
 
-import james.core.GraphicalModelParser;
+import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
-    GraphicalModelTextPane modelTextPane;
+    GraphicalModelInterpreter intepreter;
     HTMLDocument document;
 
     GraphicalModelParser parser;
@@ -21,32 +21,22 @@ public class GraphicalModelPanel extends JPanel {
 
     JSplitPane splitPane;
 
-    RandomVariable variable;
-
     Viewable displayedElement;
-
-    Map<GenerativeDistribution, RandomVariable> variables = new HashMap<>();
 
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
+        intepreter = new GraphicalModelInterpreter(parser);
 
-        modelTextPane = new GraphicalModelTextPane(this);
-        JScrollPane scrollPane = new JScrollPane(modelTextPane);
-        TextLineNumber tln = new TextLineNumber(modelTextPane);
-        scrollPane.setRowHeaderView( tln );
+        component = new GraphicalModelComponent(parser);
 
-        repopulateVariables();
-
-        component = new GraphicalModelComponent(variable);
-        
         setLayout(new BorderLayout());
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,component,dummyLabel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, component, dummyLabel);
         splitPane.setResizeWeight(0.5);
         add(splitPane, BorderLayout.CENTER);
 
-        component.addGraphicalModelListener(new GraphicalModelListener() {
+        GraphicalModelListener listener = new GraphicalModelListener() {
             @Override
             public void valueSelected(Value value) {
 
@@ -63,127 +53,27 @@ public class GraphicalModelPanel extends JPanel {
 
                 showFunction(f);
             }
-        });
 
-        modelTextPane.addGraphicalModelListener(new GraphicalModelListener() {
-            @Override
-            public void valueSelected(Value value) {
+        };
 
-                showValue(value);
-            }
-
-            @Override
-            public void generativeDistributionSelected(GenerativeDistribution g) {
-                showGenerativeDistribution(g);
-            }
-
-            @Override
-            public void functionSelected(Function f) {
-
-                showFunction(f);
-            }
-        });
+        component.addGraphicalModelListener(listener);
+        parser.addGraphicalModelChangeListener(component);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.LINE_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(sampleButton);
 
-        sampleButton.addActionListener(e -> sample());
-        
-        add(buttonPanel,BorderLayout.NORTH);
+        sampleButton.addActionListener(e -> {parser.sample(); showValue(parser.getRootVariable());});
 
-        add(scrollPane, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.NORTH);
 
-        showValue(variable);
+        add(intepreter, BorderLayout.SOUTH);
+
+        showValue(parser.getRootVariable());
     }
 
     private void setDisplayedElement(Viewable viewable) {
         displayedElement = viewable;
-    }
-
-    private void repopulateVariables() {
-        variables.clear();
-        Value.traverseGraphicalModel(variable, new GraphicalModelNodeVisitor() {
-            @Override
-            public void visitValue(Value value) {
-                if (value instanceof RandomVariable) {
-                    RandomVariable rv = (RandomVariable)value;
-                    variables.put(rv.getGenerativeDistribution(), rv);
-                }
-                value.addValueListener(() -> modelTextPane.updateModelText());
-            }
-
-            public void visitGenDist(GenerativeDistribution genDist) {}
-
-            public void visitFunction(Function f) {}
-        }, false);
-        modelTextPane.updateModelText();
-    }
-
-    private void sample() {
-        variable = sampleAll(variable.getGenerativeDistribution());
-        repopulateVariables();
-
-        component.setVariable(variable);
-        if (displayedElement instanceof RandomVariable) {
-            GenerativeDistribution dist = ((RandomVariable)displayedElement).getGenerativeDistribution();
-            RandomVariable rv = getVariableByDistribution(dist);
-            showValue(rv);
-        }
-    }
-
-    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution) {
-        Map<String, Value> params = generativeDistribution.getParams();
-
-        Map<String, Value> newlySampledParams = new HashMap<>();
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-            if (e.getValue() instanceof RandomVariable) {
-                RandomVariable v = (RandomVariable) e.getValue();
-
-                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-            } else if (e.getValue().getFunction() != null) {
-                Value v = e.getValue();
-                Function f = e.getValue().getFunction();
-
-                Value nv = sampleAll(f);
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-            }
-        }
-        for (Map.Entry<String, Value> e : newlySampledParams.entrySet()) {
-            generativeDistribution.setParam(e.getKey(), e.getValue());
-        }
-        
-        return generativeDistribution.sample();
-    }
-
-    private Value sampleAll(Function function) {
-        Map<String, Value> params = function.getParams();
-
-        Map<String, RandomVariable> newlySampledParams = new HashMap<>();
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-            if (e.getValue() instanceof RandomVariable) {
-                RandomVariable v = (RandomVariable) e.getValue();
-
-                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-            } else if (e.getValue().getFunction() != null) {
-                Value v = e.getValue();
-                Function f = e.getValue().getFunction();
-
-                Value nv = sampleAll(f);
-                nv.setId(v.getId());
-            }
-        }
-        return (Value) function.apply(newlySampledParams.entrySet().iterator().next().getValue());
-        
-    }
-
-    private RandomVariable getVariableByDistribution(GenerativeDistribution dist) {
-        return variables.get(dist);
     }
 
     void showValue(Value value) {

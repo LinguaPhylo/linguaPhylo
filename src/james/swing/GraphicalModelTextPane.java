@@ -1,7 +1,6 @@
 package james.swing;
 
-import james.core.GraphicalModelParser;
-import james.graphicalModel.*;
+import james.graphicalModel.GraphicalModelParser;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -12,18 +11,32 @@ import java.util.List;
 public class GraphicalModelTextPane extends JTextPane {
 
     GraphicalModelParser parser;
-    GraphicalModelPanel panel;
-    boolean updatingModelText = false;
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelTextPane(GraphicalModelPanel panel) {
-        this.panel = panel;
-        this.parser = panel.parser;
-        setFont(new Font("monospaced", Font.PLAIN, 16));
+    public GraphicalModelTextPane(GraphicalModelParser parser) {
+        this.parser = parser;
+        setFont(new Font("monospaced", Font.PLAIN, 12));
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         setEditable(false);
 
-        //for (String line : );
+        for (String line : parser.getLines() ) {
+            addLine(line);
+        }
+    }
+
+    void addLine(String line) {
+        if (GraphicalModelParser.isRandomVariableLine(line)) {
+            String[] parts = line.split("~");
+            String[] funcParts = parts[1].split("\\(");
+            addColoredTextLine(GraphicalModelTextPane.this,
+                    new String[] {parts[0], "~", funcParts[0], "(", funcParts[1]},
+                    new Color[] {Color.green, Color.black, Color.blue, Color.black, Color.black});
+        } else {
+            addColoredTextLine(GraphicalModelTextPane.this,
+                    new String[] {line},
+                    new Color[] {Color.black});
+        }
+        setCaretPosition(getDocument().getLength());
     }
 
     static int getLineOfOffset(JTextComponent comp, int offset) throws BadLocationException {

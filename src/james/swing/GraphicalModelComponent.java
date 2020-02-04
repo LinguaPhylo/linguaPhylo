@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class GraphicalModelComponent extends JComponent {
+public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
 
-    RandomVariable variable;
+    GraphicalModelParser parser;
 
     double HSPACE = 100;
     double VSPACE = 100;
@@ -41,8 +41,8 @@ public class GraphicalModelComponent extends JComponent {
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelComponent(RandomVariable v) {
-        this.variable = v;
+    public GraphicalModelComponent(GraphicalModelParser parser) {
+        this.parser = parser;
 
         buttonMap = new HashMap<>();
         comboBoxMap = new HashMap<>();
@@ -68,7 +68,7 @@ public class GraphicalModelComponent extends JComponent {
 
         final int[] ml = {1};
 
-        traverseGraphicalModel(variable, null, null, 1, new NodeVisitor() {
+        traverseGraphicalModel(parser.getRootVariable(), null, null, 1, new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 if (level > ml[0]) ml[0] = level;
@@ -164,7 +164,7 @@ public class GraphicalModelComponent extends JComponent {
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
         
-        traverseGraphicalModel(variable, getStartPoint(), null, 1, new NodeVisitor() {
+        traverseGraphicalModel(parser.getRootVariable(), getStartPoint(), null, 1, new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 if (q != null) {
@@ -268,7 +268,7 @@ public class GraphicalModelComponent extends JComponent {
     }
 
     private void generateButtons() {
-        traverseGraphicalModel(variable, getStartPoint(), null, 1, new NodeVisitor() {
+        traverseGraphicalModel(parser.getRootVariable(), getStartPoint(), null, 1, new NodeVisitor() {
             @Override
             public void visitValue(Value value, Point2D p, Point2D q, int level) {
                 Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
@@ -318,25 +318,6 @@ public class GraphicalModelComponent extends JComponent {
                     add(button);
                 }
 
-//                JComboBox comboBox = comboBoxMap.get(genDist);
-//                if (comboBox == null) {
-//                    comboBox = new JComboBox(new GenerativeDistribution[] { genDist,
-//                            new Exp(new Value<>("rate", 1.0), new Random()),
-//                            new LogNormal(new Value<>("M", 0.0), new Value<>("S", 1.0), new Random())});
-//
-//                    comboBox.addItemListener(new ItemListener() {
-//                        @Override
-//                        public void itemStateChanged(ItemEvent e) {
-//                            GenerativeDistribution item = (GenerativeDistribution)e.getItem();
-//
-//                        }
-//                    });
-//
-//                    add(comboBox);
-//                }
-//                comboBox.setLocation((int) (p.getX() + FACTOR_SIZE + 1), (int) (p.getY() - FACTOR_SIZE));
-//                comboBox.setSize(120, 24);
-
                 button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
                 button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
 
@@ -382,10 +363,9 @@ public class GraphicalModelComponent extends JComponent {
         buttonMap.clear();
     }
 
-    public void setVariable(RandomVariable randomVariable) {
-        variable = randomVariable;
+    @Override
+    public void modelChanged() {
         removeButtons();
         generateButtons();
-        repaint();
     }
 }

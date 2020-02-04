@@ -1,10 +1,12 @@
-package james.core;
+package james.graphicalModel;
 
 import james.Coalescent;
+import james.core.JCPhyloCTMC;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
-import james.graphicalModel.*;
+import james.swing.GraphicalModelChangeListener;
+import james.swing.GraphicalModelListener;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +24,8 @@ public class GraphicalModelParser {
 
     List<String> lines = new ArrayList<>();
 
+    List<GraphicalModelChangeListener> listeners = new ArrayList<>();
+
     public GraphicalModelParser() {
         genDistDictionary.put("Normal", Normal.class);
         genDistDictionary.put("LogNormal", LogNormal.class);
@@ -34,14 +38,23 @@ public class GraphicalModelParser {
         functionDictionary.put("exp", james.core.functions.Exp.class);
     }
 
+    public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
+        listeners.add(listener);
+    }
+
     public Set<Value> getRoots() {
-        Set<String> nonArguments = dictionary.keySet();
+        Set<String> nonArguments = new HashSet<>();
+        nonArguments.addAll(dictionary.keySet());
         nonArguments.removeAll(globalArguments);
         HashSet<Value> values = new HashSet<>();
         for (String id : nonArguments) {
             values.add(dictionary.get(id));
         }
         return values;
+    }
+
+    public RandomVariable getRootVariable() {
+        return (RandomVariable)getRoots().iterator().next();
     }
 
     public void parseLines(String[] lines) {
@@ -60,6 +73,13 @@ public class GraphicalModelParser {
             parseFixedParameterLine(line, lineNumber);
         } else throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
         lines.add(line);
+        notifyListeners();
+    }
+
+    private void notifyListeners() {
+        for (GraphicalModelChangeListener listener : listeners) {
+            listener.modelChanged();
+        }
     }
 
     private int nextLineNumber() {
@@ -210,18 +230,18 @@ public class GraphicalModelParser {
         return arguments;
     }
 
-    private boolean isFunctionLine(String line) {
+    public static boolean isFunctionLine(String line) {
         int firstEquals = line.indexOf('=');
         String id = line.substring(0, firstEquals).trim();
         String remainder = line.substring(firstEquals+1);
         return (remainder.indexOf('(')>0);
     }
 
-    private boolean isRandomVariableLine(String line) {
+    public static boolean isRandomVariableLine(String line) {
         return (line.indexOf('~') > 0);
     }
 
-    private boolean isFixedParameterLine(String line) {
+    public static boolean isFixedParameterLine(String line) {
         int firstEquals = line.indexOf('=');
         String id = line.substring(0, firstEquals).trim();
         String remainder = line.substring(firstEquals+1);
@@ -256,6 +276,69 @@ public class GraphicalModelParser {
         nonArguments.removeAll(parser.globalArguments);
         System.out.println("Non-arguments = " + parser.dictionary);
         System.out.println("Found " + nonArguments.size() + " root values");
+
+    }
+
+    public List<String> getLines() {
+        return lines;
+    }
+
+    public void sample() {
+        RandomVariable rootVariable = sampleAll(getRootVariable().getGenerativeDistribution());
+        rootVariable.setId(getRootVariable().id);
+        dictionary.put(rootVariable.getId(), rootVariable);
+        notifyListeners();
+    }
+
+    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution) {
+        Map<String, Value> params = generativeDistribution.getParams();
+
+        Map<String, Value> newlySampledParams = new HashMap<>();
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            if (e.getValue() instanceof RandomVariable) {
+                RandomVariable v = (RandomVariable) e.getValue();
+
+                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
+                nv.setId(v.getId());
+                newlySampledParams.put(e.getKey(), nv);
+            } else if (e.getValue().getFunction() != null) {
+                Value v = e.getValue();
+                Function f = e.getValue().getFunction();
+
+                Value nv = sampleAll(f);
+                nv.setId(v.getId());
+                newlySampledParams.put(e.getKey(), nv);
+                dictionary.put(nv.getId(), nv);
+
+            }
+        }
+        for (Map.Entry<String, Value> e : newlySampledParams.entrySet()) {
+            generativeDistribution.setParam(e.getKey(), e.getValue());
+        }
+
+        return generativeDistribution.sample();
+    }
+
+    private Value sampleAll(Function function) {
+        Map<String, Value> params = function.getParams();
+
+        Map<String, RandomVariable> newlySampledParams = new HashMap<>();
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            if (e.getValue() instanceof RandomVariable) {
+                RandomVariable v = (RandomVariable) e.getValue();
+
+                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
+                nv.setId(v.getId());
+                newlySampledParams.put(e.getKey(), nv);
+            } else if (e.getValue().getFunction() != null) {
+                Value v = e.getValue();
+                Function f = e.getValue().getFunction();
+
+                Value nv = sampleAll(f);
+                nv.setId(v.getId());
+            }
+        }
+        return (Value) function.apply(newlySampledParams.entrySet().iterator().next().getValue());
 
     }
 }
