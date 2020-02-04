@@ -1,6 +1,7 @@
 package james;
 
 import james.core.distributions.Exp;
+import james.core.distributions.Utils;
 import james.graphicalModel.*;
 
 import java.io.PrintWriter;
@@ -22,11 +23,10 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
 
     public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
-                      @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n,
-                      Random random) {
+                      @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n) {
         this.theta = theta;
         this.n = n;
-        this.random = random;
+        this.random = Utils.getRandom();
 
         thetaParamName = getParamName(0);
         nParamName = getParamName(1);
@@ -129,7 +129,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         RandomVariable<Double> theta = exp.sample("\u0398");
         Value<Integer> n = new Value<>("n", 20);
 
-        Coalescent coalescent = new Coalescent(theta, n, random);
+        Coalescent coalescent = new Coalescent(theta, n);
 
         RandomVariable<TimeTree> g = coalescent.sample();
 

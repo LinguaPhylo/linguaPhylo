@@ -3,6 +3,7 @@ package james.swing;
 import james.Coalescent;
 import james.TimeTree;
 import james.core.Alignment;
+import james.core.GraphicalModelParser;
 import james.core.JCPhyloCTMC;
 import james.core.distributions.Normal;
 import james.core.functions.Exp;
@@ -213,41 +214,60 @@ public class GraphicalModelPanel extends JPanel {
 
     public static void main(String[] args) {
 
-        Random random = new Random();
+//        DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
+//        DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
+//
+//        Normal normal = new Normal(logthetaMean, logThetaSD);
+//
+//        RandomVariable<Double> logTheta = normal.sample("logTheta");
+//        IntegerValue n = new IntegerValue("n", 20);
+//
+//        Exp exp = new Exp();
+//
+//        DoubleValue theta = (DoubleValue) exp.apply(logTheta, "\u0398");
+//
+//        Coalescent coalescent = new Coalescent(theta, n);
+//
+//        RandomVariable<TimeTree> g = coalescent.sample();
+//
+//        JCPhyloCTMC jcPhyloCTMC = new JCPhyloCTMC(g, new DoubleValue("mu", 0.01),new IntegerValue("L", 50), new IntegerValue("dim", 4));
+//
+//        RandomVariable<Alignment> D = jcPhyloCTMC.sample();
 
-        DoubleValue logthetaMean = new DoubleValue("mean", 3.0);
-        DoubleValue logThetaSD = new DoubleValue("sd", 1.0);
+        String[] lines = {
+                "L = 50;",
+                "dim = 4;",
+                "mu = 0.01;",
+                "n = 20;",
+                "mean = 3.0;",
+                "sd = 1.0;",
+                "logTheta ~ Normal(μ=mean, σ=sd);",
+                "Θ = exp(logTheta);",
+                "ψ ~ Coalescent(n=n, theta=Θ);",
+                "D ~ JCPhyloCTMC(L=L, dim=dim, mu=mu, tree=ψ);"};
 
-        Normal normal = new Normal(logthetaMean, logThetaSD, random);
+        GraphicalModelParser parser = new GraphicalModelParser();
+        parser.parseLines(lines);
+        Set<Value> values = parser.getRoots();
+        if (values.size() != 1) throw new RuntimeException("Expected 1 root node in the graphical model!");
 
-        RandomVariable<Double> logTheta = normal.sample("logTheta");
-        IntegerValue n = new IntegerValue("n", 20);
+        Value v = values.iterator().next();
 
-        Exp exp = new Exp();
+        if (v instanceof RandomVariable) {
 
-        DoubleValue theta = (DoubleValue) exp.apply(logTheta, "\u0398");
+            GraphicalModelPanel panel = new GraphicalModelPanel((RandomVariable)v);
+            panel.setPreferredSize(new Dimension(1200, 800));
 
-        Coalescent coalescent = new Coalescent(theta, n, random);
-
-        RandomVariable<TimeTree> g = coalescent.sample();
-
-        JCPhyloCTMC jcPhyloCTMC = new JCPhyloCTMC(g, new DoubleValue("mu", 0.01),new IntegerValue("L", 50), new IntegerValue("dim", 4), random);
-
-        RandomVariable<Alignment> D = jcPhyloCTMC.sample();
-
-        PrintWriter p = new PrintWriter(System.out);
-        D.print(p);
-
-        GraphicalModelPanel panel = new GraphicalModelPanel(D);
-        panel.setPreferredSize(new Dimension(1200, 800));
-
-        JFrame frame = new JFrame("Graphical Models");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-        frame.pack();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
-        frame.setVisible(true);
+            JFrame frame = new JFrame("Graphical Models");
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.getContentPane().add(panel, BorderLayout.CENTER);
+            frame.pack();
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+            frame.setVisible(true);
+        } else {
+            throw new RuntimeException("Expected root node to be a random variable!");
+        }
     }
 
 }

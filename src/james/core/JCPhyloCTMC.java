@@ -3,6 +3,7 @@ package james.core;
 import james.ColorTable;
 import james.TimeTree;
 import james.TimeTreeNode;
+import james.core.distributions.Utils;
 import james.graphicalModel.*;
 
 import java.util.*;
@@ -29,13 +30,12 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
     public JCPhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                        @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
                        @ParameterInfo(name = "L", description = "the length of the alignment to generate.") Value<Integer> L,
-                       @ParameterInfo(name = "dim", description = "the number of possible states in the markov chain.") Value<Integer> dim,
-                       Random random) {
+                       @ParameterInfo(name = "dim", description = "the number of possible states in the markov chain.") Value<Integer> dim) {
         this.tree = tree;
         this.clockRate = mu;
         this.L = L;
         this.dim = dim;
-        this.random = random;
+        this.random = Utils.getRandom();
 
         treeParamName = getParamName(0);
         muParamName = getParamName(1);

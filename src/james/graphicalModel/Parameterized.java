@@ -23,12 +23,12 @@ public interface Parameterized {
     }
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
+        return getParameterInfo(this.getClass().getConstructors()[constructorIndex]);
+    }
 
+    public static List<ParameterInfo> getParameterInfo(Constructor constructor) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
 
-        Class classElement = getClass();
-
-        Constructor constructor = classElement.getConstructors()[constructorIndex];
         Annotation[][] annotations = constructor.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++) {
             Annotation[] annotations1 = annotations[i];

@@ -263,7 +263,8 @@ public class GraphicalModelComponent extends JComponent {
             valueString = v.value().toString();
         }
 
-        return "<html><font color=\"#808080\" ><small>" + v.getId() + ":</small></font>" + valueString + "</html>";
+
+        return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString +"</p></center></html>";
     }
 
     private void generateButtons() {
