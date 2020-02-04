@@ -20,6 +20,8 @@ public class GraphicalModelParser {
 
     Map<String, Class> functionDictionary = new TreeMap<>();
 
+    List<String> lines = new ArrayList<>();
+
     public GraphicalModelParser() {
         genDistDictionary.put("Normal", Normal.class);
         genDistDictionary.put("LogNormal", LogNormal.class);
@@ -44,11 +46,12 @@ public class GraphicalModelParser {
 
     public void parseLines(String[] lines) {
         for (int i = 0; i < lines.length; i++) {
-            parseLine(lines[i], i);
+            parseLine(lines[i]);
         }
     }
 
-    private void parseLine(String line, int lineNumber) {
+    public void parseLine(String line) {
+        int lineNumber = nextLineNumber();
         if (isRandomVariableLine(line)) {
             parseRandomVariable(line, lineNumber);
         } else if (isFunctionLine(line)) {
@@ -56,6 +59,11 @@ public class GraphicalModelParser {
         } else if (isFixedParameterLine(line)) {
             parseFixedParameterLine(line, lineNumber);
         } else throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
+        lines.add(line);
+    }
+
+    private int nextLineNumber() {
+        return lines.size();
     }
 
     private void parseFixedParameterLine(String line, int lineNumber) {

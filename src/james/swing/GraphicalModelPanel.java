@@ -1,22 +1,11 @@
 package james.swing;
 
-import james.Coalescent;
-import james.TimeTree;
-import james.core.Alignment;
 import james.core.GraphicalModelParser;
-import james.core.JCPhyloCTMC;
-import james.core.distributions.Normal;
-import james.core.functions.Exp;
 import james.graphicalModel.*;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 public class GraphicalModelPanel extends JPanel {
@@ -25,6 +14,8 @@ public class GraphicalModelPanel extends JPanel {
     JLabel dummyLabel = new JLabel("");
     GraphicalModelTextPane modelTextPane;
     HTMLDocument document;
+
+    GraphicalModelParser parser;
 
     JButton sampleButton = new JButton("Sample");
 
@@ -36,11 +27,15 @@ public class GraphicalModelPanel extends JPanel {
 
     Map<GenerativeDistribution, RandomVariable> variables = new HashMap<>();
 
-    GraphicalModelPanel(RandomVariable variable) {
+    GraphicalModelPanel(GraphicalModelParser parser) {
 
-        this.variable = variable;
+        this.parser = parser;
 
         modelTextPane = new GraphicalModelTextPane(this);
+        JScrollPane scrollPane = new JScrollPane(modelTextPane);
+        TextLineNumber tln = new TextLineNumber(modelTextPane);
+        scrollPane.setRowHeaderView( tln );
+
         repopulateVariables();
 
         component = new GraphicalModelComponent(variable);
@@ -97,7 +92,7 @@ public class GraphicalModelPanel extends JPanel {
         
         add(buttonPanel,BorderLayout.NORTH);
 
-        add(modelTextPane, BorderLayout.SOUTH);
+        add(scrollPane, BorderLayout.SOUTH);
 
         showValue(variable);
     }
@@ -255,7 +250,7 @@ public class GraphicalModelPanel extends JPanel {
 
         if (v instanceof RandomVariable) {
 
-            GraphicalModelPanel panel = new GraphicalModelPanel((RandomVariable)v);
+            GraphicalModelPanel panel = new GraphicalModelPanel(parser);
             panel.setPreferredSize(new Dimension(1200, 800));
 
             JFrame frame = new JFrame("Graphical Models");
