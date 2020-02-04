@@ -76,6 +76,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Current", new JPanel());
         rightPane.addTab("Literals", new LiteralPanel(parser));
         rightPane.addTab("State", new StatePanel(parser));
+        rightPane.addTab("Model", new CanonicalModelPanel(parser));
         splitPane.setRightComponent(rightPane);
 
         showValue(parser.getRoots().first());
