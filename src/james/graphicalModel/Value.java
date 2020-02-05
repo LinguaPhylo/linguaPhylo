@@ -142,9 +142,8 @@ public class Value<T> implements Viewable, Comparable<Value> {
         if (post) visitor.visitGenDist(genDist);
     }
 
-
     @Override
     public int compareTo(Value o) {
-        return this.id.compareTo(o.id);
+        return getId().compareTo(o.getId());
     }
 }

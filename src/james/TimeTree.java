@@ -53,16 +53,9 @@ public class TimeTree implements HasComponentView<TimeTree> {
         return n;
     }
 
-    TimeTreeComponent component;
-
     @Override
     public JComponent getComponent(Value<TimeTree> timeTreeValue) {
-        if (component == null) {
-            component = new TimeTreeComponent(timeTreeValue.value());
-        } else {
-            component.setTimeTree(timeTreeValue.value());
-        }
-        return component;
+        return new TimeTreeComponent(timeTreeValue.value());
     }
 
     public String toString() {

@@ -37,7 +37,12 @@ public class TimeTreeComponent extends JComponent {
     private ColorTable traitColorTable = new ColorTable(Arrays.asList(traitColors));
 
 
+    public TimeTreeComponent() {
+        setBorder(BorderFactory.createEmptyBorder(10,1,10,40));
+    }
+
     public TimeTreeComponent(TimeTree tree) {
+        this();
         setTimeTree(tree);
     }
 

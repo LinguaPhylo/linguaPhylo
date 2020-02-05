@@ -12,8 +12,8 @@ public class DiamondButton extends JButton {
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    private Color backgroundColor = Color.white;
-    private Color borderColor = Color.black;
+    private Color backgroundColor;
+    private Color borderColor;
 
     public DiamondButton(String text, Color backgroundColor, Color borderColor) {
 

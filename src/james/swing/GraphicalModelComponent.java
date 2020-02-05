@@ -284,9 +284,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
                     Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
 
-                    if (!(value instanceof RandomVariable)) {
+                    if (ValueUtils.isFixedValue(value)) {
                         backgroundColor = Color.white;
                         borderColor = Color.black;
+                    } else if (ValueUtils.isValueOfFunction(value)) {
+                        backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                        borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
                     }
                     if (!parser.getDictionary().values().contains(value)) {
                         backgroundColor = backgroundColor.darker();

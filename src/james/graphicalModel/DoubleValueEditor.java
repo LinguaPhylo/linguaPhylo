@@ -7,7 +7,6 @@ import javax.swing.event.DocumentListener;
 public class DoubleValueEditor extends JTextField {
 
     private Value<Double> value;
-   //JLabel message = new JLabel();
 
     public DoubleValueEditor(Value<Double> value)  {
 

@@ -30,8 +30,8 @@ public class StatePanel extends JPanel {
 
         setLayout(layout);
 
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        //layout.setAutoCreateGaps(true);
+        //layout.setAutoCreateContainerGaps(true);
 
         generateComponents();
 
@@ -62,10 +62,11 @@ public class StatePanel extends JPanel {
             vertParallelGroup.addComponent(labels.get(i));
             vertParallelGroup.addComponent(editors.get(i));
             vertSequentialGroup.addGroup(vertParallelGroup);
+            vertSequentialGroup.addGap(2);
         }
 
         GroupLayout.SequentialGroup horizSequentialGroup = layout.createSequentialGroup();
-        horizSequentialGroup.addGroup(horizParallelGroup).addGroup(horizParallelGroup2);
+        horizSequentialGroup.addGroup(horizParallelGroup).addGap(5).addGroup(horizParallelGroup2);
 
         layout.setHorizontalGroup(horizSequentialGroup);
 

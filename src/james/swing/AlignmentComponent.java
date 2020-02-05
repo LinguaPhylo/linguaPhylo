@@ -36,6 +36,7 @@ public class AlignmentComponent extends JComponent {
                 timeTree = ((JCPhyloCTMC) gen).getTimeTree();
             }
         }
+        timeTree = null;
     }
 
     public void paintComponent(Graphics g) {
@@ -51,6 +52,19 @@ public class AlignmentComponent extends JComponent {
 
         double h = height / (double) alignment.n();
 
+        Font f = g.getFont();
+        if (h<9) {
+            g.setFont(f.deriveFont(8.0f));
+        } else if (h < 10) {
+            g.setFont(f.deriveFont(9.0f));
+        } else if (h < 11) {
+            g.setFont(f.deriveFont(10.0f));
+        } else if (h < 12) {
+            g.setFont(f.deriveFont(11.0f));
+        } else {
+            g.setFont(f.deriveFont(12.0f));
+        }
+
         if (timeTree != null) {
 
             int ytrans = (int)Math.round(h/2);
@@ -59,6 +73,7 @@ public class AlignmentComponent extends JComponent {
             g.translate(0, ytrans);
 
             TimeTreeComponent treeComponent = new TimeTreeComponent(timeTree.value());
+            treeComponent.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
             treeComponent.setSize(width/2, treeHeight);
             treeComponent.paintComponent(g);
             width /= 2;
