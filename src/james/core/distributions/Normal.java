@@ -39,7 +39,10 @@ public class Normal implements GenerativeDistribution<Double> {
     @GenerativeDistributionInfo(description="The normal probability distribution.")
     public RandomVariable<Double> sample() {
 
-        normalDistribution = new NormalDistribution(mean.value(), sd.value());
+        // in case the mean is type integer
+        double d =((Number)mean.value()).doubleValue();
+
+        normalDistribution = new NormalDistribution(d, sd.value());
         double x = normalDistribution.sample();
         return new RandomVariable<>("x", x, this);
     }

@@ -6,35 +6,73 @@ import james.graphicalModel.Value;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatePanel extends JPanel {
-    GraphicalModelParser parser;
-    JTextArea area = new JTextArea();
-    JScrollPane scrollPane;
 
-    public StatePanel(GraphicalModelParser parser) {
+    GraphicalModelParser parser;
+
+    List<JLabel> labels = new ArrayList<>();
+    List<JComponent> editors = new ArrayList<>();
+    GroupLayout layout = new GroupLayout(this);
+
+    boolean includeRandomVariables = true;
+    boolean includeFixedValues = true;
+    boolean includeFunctionValues = false;
+
+    public StatePanel(GraphicalModelParser parser, boolean includeFixedValues, boolean includeRandomVariables, boolean includeFunctionValues) {
         this.parser = parser;
 
-        area.setFont(new Font("monospaced", Font.PLAIN, 12));
-        area.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        area.setEditable(false);
+        this.includeFixedValues = includeFixedValues;
+        this.includeFunctionValues = includeFunctionValues;
+        this.includeRandomVariables = includeRandomVariables;
 
-        scrollPane = new JScrollPane(area);
+        setLayout(layout);
 
-        setText();
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
 
-        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-        setLayout(boxLayout);
-        add(scrollPane);
+        generateComponents();
 
-        parser.addGraphicalModelChangeListener(() -> setText());
+        parser.addGraphicalModelChangeListener(() -> generateComponents());
     }
 
-    void setText() {
-        area.setText("");
-        for (Value value : parser.getDictionary().values()) {
+    void generateComponents() {
 
-            if ((value instanceof RandomVariable)) area.append(value.toString()+"\n");
+        labels.clear();
+        editors.clear();
+        removeAll();
+
+        for (Value value : parser.getDictionary().values()) {
+            if (((value instanceof RandomVariable) && includeRandomVariables) || (value.getFunction() != null && includeFunctionValues) || (isFixedValue(value) && includeFixedValues)) {
+                JLabel label = new JLabel(value.getId()+":");
+                label.setForeground(Color.gray);
+                labels.add(label);
+                editors.add(value.getViewer());
+            }
         }
+        GroupLayout.ParallelGroup horizParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
+        GroupLayout.ParallelGroup horizParallelGroup2 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        GroupLayout.SequentialGroup vertSequentialGroup = layout.createSequentialGroup();
+        for (int i = 0; i < labels.size(); i++) {
+            horizParallelGroup.addComponent(labels.get(i));
+            horizParallelGroup2.addComponent(editors.get(i));
+            GroupLayout.ParallelGroup vertParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.BASELINE);
+            vertParallelGroup.addComponent(labels.get(i));
+            vertParallelGroup.addComponent(editors.get(i));
+            vertSequentialGroup.addGroup(vertParallelGroup);
+        }
+
+        GroupLayout.SequentialGroup horizSequentialGroup = layout.createSequentialGroup();
+        horizSequentialGroup.addGroup(horizParallelGroup).addGroup(horizParallelGroup2);
+
+        layout.setHorizontalGroup(horizSequentialGroup);
+
+        layout.setVerticalGroup(vertSequentialGroup);
+    }
+
+    private boolean isFixedValue(Value value) {
+        return !(value instanceof RandomVariable) && value.getFunction() == null;
     }
 }

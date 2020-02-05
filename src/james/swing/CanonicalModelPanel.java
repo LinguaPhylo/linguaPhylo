@@ -23,7 +23,7 @@ public class CanonicalModelPanel extends JComponent {
 
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
-        add(new JLabel("This is the canonical model description."));
+        add(new JLabel("Canonical model description."));
         add(scrollPane);
 
         parser.addGraphicalModelChangeListener(() -> setText());

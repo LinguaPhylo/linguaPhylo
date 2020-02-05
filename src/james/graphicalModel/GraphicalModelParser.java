@@ -231,9 +231,11 @@ public class GraphicalModelParser {
 
     public static boolean isFunctionLine(String line) {
         int firstEquals = line.indexOf('=');
-        String id = line.substring(0, firstEquals).trim();
-        String remainder = line.substring(firstEquals+1);
-        return (remainder.indexOf('(')>0);
+        if (firstEquals>0) {
+            String id = line.substring(0, firstEquals).trim();
+            String remainder = line.substring(firstEquals+1);
+            return (remainder.indexOf('(')>0);
+        } else return false;
     }
 
     public static boolean isRandomVariableLine(String line) {

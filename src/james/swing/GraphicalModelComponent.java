@@ -34,7 +34,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     float STROKE_SIZE = 1.0f;
 
-    Map<Object, JButton> buttonMap;
+    Map<String, JButton> buttonMap;
     Map<Object, JComboBox> comboBoxMap;
 
     boolean sizesComputed = false;
@@ -296,29 +296,34 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                     String str = getButtonString(value);
 
-                    JButton button = buttonMap.get(value);
+                    JButton button = buttonMap.get(value.getId());
                     if (button == null) {
-                        button = new CircleButton(str, backgroundColor, borderColor);
+                        if (value.getFunction() != null) {
+                            button = new DiamondButton(str, backgroundColor, borderColor);
+                        } else {
+
+                            button = new CircleButton(str, backgroundColor, borderColor);
+                        }
                         button.addActionListener(e1 -> {
                             for (GraphicalModelListener listener : listeners) {
                                 listener.valueSelected(value);
                             }
                         });
-                        buttonMap.put(value, button);
+                        buttonMap.put(value.getId(), button);
                         add(button);
 
                         JButton finalButton = button;
                         value.addValueListener(() -> finalButton.setText(getButtonString(value)));
                     }
-                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
                     button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
+                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
                 }
 
                 @Override
                 public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
                     String dtr = genDist.getName();
 
-                    JButton button = buttonMap.get(genDist);
+                    JButton button = buttonMap.get(genDist.codeString());
                     if (button == null) {
                         button = new JButton("");
 
@@ -328,7 +333,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                             }
                         });
 
-                        buttonMap.put(genDist, button);
+                        buttonMap.put(genDist.codeString(), button);
 
                         add(button);
                     }
@@ -341,7 +346,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                 @Override
                 public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
-                    JButton button = buttonMap.get(function);
+                    JButton button = buttonMap.get(function.codeString());
                     if (button == null) {
                         button = new JButton("");
 
@@ -351,7 +356,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                             }
                         });
 
-                        buttonMap.put(function, button);
+                        buttonMap.put(function.codeString(), button);
 
                         add(button);
                     }
@@ -381,6 +386,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     @Override
     public void modelChanged() {
+        recomputeSizes();
         removeButtons();
         generateButtons();
         repaint();

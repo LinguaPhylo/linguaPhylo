@@ -5,6 +5,7 @@ import james.swing.AlignmentComponent;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -55,5 +56,26 @@ public class Alignment implements HasComponentView<Alignment> {
 
     public String getId(int taxonIndex) {
         return reverseMap.get(taxonIndex);
+    }
+
+    public String toJSON() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\n");
+        for (int i = 0; i < n(); i++) {
+            builder.append("  ");
+            builder.append(reverseMap.get(i));
+            builder.append(" = ");
+            builder.append(Arrays.toString(alignment[i]));
+            if (i < n()-1) {
+                builder.append(",");
+            }
+            builder.append("\n");
+        }
+        builder.append("}");
+        return builder.toString();
+    }
+
+    public String toString() {
+        return toJSON();
     }
 }

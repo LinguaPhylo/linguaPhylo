@@ -3,6 +3,7 @@ package james.swing;
 import james.graphicalModel.GraphicalModelParser;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -23,10 +24,16 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Font interpreterFont =  new Font("monospaced", Font.PLAIN, 12);
 
+    int BORDER_SIZE = 10;
+
+    Border textBorder = BorderFactory.createEmptyBorder(BORDER_SIZE,BORDER_SIZE,BORDER_SIZE,BORDER_SIZE);
+
+
     public GraphicalModelInterpreter(GraphicalModelParser parser) {
         this.parser = parser;
 
         textPane = new GraphicalModelTextPane(parser);
+        textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
         TextLineNumber tln = new TextLineNumber(textPane);
@@ -34,7 +41,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
         interpreterField = new JTextField(80);
         interpreterField.setFont(interpreterFont);
-        interpreterField.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        interpreterField.setBorder(textBorder);
 
         interpreterField.addActionListener(e -> {
             interpretInput(interpreterField.getText());
@@ -52,7 +59,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
         JLabel label = new JLabel("  >");
         label.setFont(interpreterFont);
-        label.setBorder(new CompoundBorder(new MatteBorder(0,0,0,2,Color.gray), new EmptyBorder(10,5,10,7)));
+        label.setBorder(new CompoundBorder(new MatteBorder(0,0,0,2,Color.gray), new EmptyBorder(BORDER_SIZE,tln.getBorderGap(),BORDER_SIZE,tln.getBorderGap()+2)));
 
         activeLine.add(label);
         activeLine.add(interpreterField);

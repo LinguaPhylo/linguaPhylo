@@ -67,7 +67,9 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append("\"");
         toNewick(rootNode, builder);
+        builder.append("\"");
         return builder.toString();
     }
 

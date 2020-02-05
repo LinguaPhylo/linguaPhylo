@@ -4,7 +4,6 @@ import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.util.*;
 
@@ -21,18 +20,32 @@ public class GraphicalModelPanel extends JPanel {
 
     JSplitPane splitPane;
 
-    Viewable displayedElement;
+    Object displayedElement;
 
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
         intepreter = new GraphicalModelInterpreter(parser);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+        buttonPanel.add(sampleButton);
+
+        sampleButton.addActionListener(e -> {
+            parser.sample();
+            showValue(parser.getRoots().first());
+        });
+
+
         component = new GraphicalModelComponent(parser);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.add(component);
+        panel.add(buttonPanel);
 
         setLayout(new BorderLayout());
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, component, dummyLabel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel, dummyLabel);
         splitPane.setResizeWeight(0.5);
         add(splitPane, BorderLayout.CENTER);
 
@@ -58,37 +71,24 @@ public class GraphicalModelPanel extends JPanel {
 
         component.addGraphicalModelListener(listener);
         parser.addGraphicalModelChangeListener(component);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-        buttonPanel.add(sampleButton);
-
-        sampleButton.addActionListener(e -> {
-            parser.sample();
-            showValue(parser.getRoots().first());
-        });
-
-        add(buttonPanel, BorderLayout.NORTH);
-
+        
         add(intepreter, BorderLayout.SOUTH);
 
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", new JPanel());
-        rightPane.addTab("Literals", new LiteralPanel(parser));
-        rightPane.addTab("State", new StatePanel(parser));
+        rightPane.addTab("Literals", new StatePanel(parser, true, false, false));
+        rightPane.addTab("State", new StatePanel(parser, false, true, false));
+        rightPane.addTab("JSON", new JSONPanel(parser));
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         splitPane.setRightComponent(rightPane);
 
         showValue(parser.getRoots().first());
     }
 
-    private void setDisplayedElement(Viewable viewable) {
-        displayedElement = viewable;
-    }
-
     void showValue(Value value) {
         displayedElement = value;
         rightPane.setComponentAt(0, value.getViewer());
+        repaint();
 //        final int size = splitPane.getDividerLocation();
 //        splitPane.setRightComponent(value.getViewer());
 //        splitPane.setDividerLocation(size);
@@ -97,6 +97,7 @@ public class GraphicalModelPanel extends JPanel {
     private void showGenerativeDistribution(GenerativeDistribution g) {
         displayedElement = g;
         rightPane.setComponentAt(0, g.getViewer());
+        repaint();
 
 //        final int size = splitPane.getDividerLocation();
 //        splitPane.setRightComponent(g.getViewer());
@@ -106,6 +107,7 @@ public class GraphicalModelPanel extends JPanel {
     private void showFunction(Function f) {
         displayedElement = f;
         rightPane.setComponentAt(0, f.getViewer());
+        repaint();
 
 //        final int size = splitPane.getDividerLocation();
 //        splitPane.setRightComponent(f.getViewer());

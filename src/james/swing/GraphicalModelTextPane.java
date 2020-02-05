@@ -15,7 +15,6 @@ public class GraphicalModelTextPane extends JTextPane {
 
     public GraphicalModelTextPane(GraphicalModelParser parser) {
         this.parser = parser;
-        setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         setEditable(false);
 
         for (String line : parser.getLines() ) {

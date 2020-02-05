@@ -73,32 +73,24 @@ public class Value<T> implements Viewable, Comparable<Value> {
         }
     }
 
-    JComponent viewer = null;
-    static int BORDER_SIZE = 20;
-
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
-            component.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEmptyBorder(BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE),
-                    id)
-            );
+            //component.setBorder(BorderFactory.createTitledBorder(
+            //        BorderFactory.createEmptyBorder(BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE),
+            //        id)
+            //);
             return component;
         }
 
-        if (viewer == null) {
-            if (this instanceof DoubleValue && function == null) {
-                viewer = new DoubleValueEditor((DoubleValue) this);
-            } else if (this instanceof IntegerValue && function == null) {
-                viewer = new IntegerValueEditor((IntegerValue) this);
-            } else {
-                viewer = new JPanel();
-                new BoxLayout(viewer, BoxLayout.LINE_AXIS);
-                viewer.add(new JLabel(toString()));
-            }
-            viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
+        if (this instanceof DoubleValue && function == null) {
+            return new DoubleValueEditor((DoubleValue) this);
+        } else if (this instanceof IntegerValue && function == null) {
+            return new IntegerValueEditor((IntegerValue) this);
+        } else {
+            return new JLabel(value.toString());
         }
-        return viewer;
+        //viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     }
 
     public String getId() {
