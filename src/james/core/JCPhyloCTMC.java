@@ -86,7 +86,9 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
             alignment.setState(node.getId(), pos, nodeState.value());
         } else {
             for (TimeTreeNode child : node.getChildren()) {
-                JukesCantorCTMC jc = new JukesCantorCTMC(nodeState, new DoubleValue("d", (node.getAge()-child.getAge())*clockRate.value()), dim, random);
+                double rate = clockRate.value();
+
+                JukesCantorCTMC jc = new JukesCantorCTMC(nodeState, new DoubleValue("d", (node.getAge()-child.getAge())*rate), dim, random);
                 traverseTree(child, jc.sample(), alignment, pos);
             }
         }

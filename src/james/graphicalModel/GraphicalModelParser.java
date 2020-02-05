@@ -25,6 +25,11 @@ public class GraphicalModelParser {
     List<String> lines = new ArrayList<>();
 
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
+    List<GraphicalModelListener> gmListeners = new ArrayList<>();
+
+    enum Keyword {
+        remove
+    }
 
     public GraphicalModelParser() {
         genDistDictionary.put("Normal", Normal.class);
@@ -40,6 +45,10 @@ public class GraphicalModelParser {
 
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
         listeners.add(listener);
+    }
+
+    public void addGraphicalModelListener(GraphicalModelListener listener) {
+        gmListeners.add(listener);
     }
 
     public SortedMap<String, Value> getDictionary() {
@@ -70,9 +79,67 @@ public class GraphicalModelParser {
             parseFunctionLine(line, lineNumber);
         } else if (isFixedParameterLine(line)) {
             parseFixedParameterLine(line, lineNumber);
-        } else throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
+        } else if (isKeywordLine(line)) {
+            parseKeywordLine(line, lineNumber);
+        } else if (isValueId(line)) {
+            selectValue(dictionary.get(line.substring(0,line.length()-1)));
+        } else {
+            throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
+        }
         lines.add(line);
         notifyListeners();
+    }
+
+    private void selectValue(Value value) {
+        for (GraphicalModelListener listener : gmListeners) {
+            listener.valueSelected(value);
+        }
+    }
+
+    private boolean isValueId(String line) {
+        return dictionary.keySet().contains(line.substring(0,line.length()-1));
+    }
+
+    private void parseKeywordLine(String line, int lineNumber) {
+        line = line.trim();
+        Keyword keyword = null;
+        for (Keyword kw : Keyword.values()) {
+            if (line.startsWith(kw.name())) {
+                keyword = kw;
+                break;
+            }
+        }
+        String remainder = line.substring(keyword.name().length());
+        switch (keyword) {
+            case remove:
+                parseRemove(remainder, lineNumber);
+        }
+    }
+
+    private void parseRemove(String remainder, int lineNumber) {
+        if (remainder.startsWith("(")) {
+            remainder = remainder.trim();
+            if (remainder.endsWith(");")) {
+                String argument = remainder.substring(1, remainder.length() - 2);
+                if (dictionary.keySet().contains(argument)) {
+                    dictionary.remove(argument);
+                    System.out.println("Removed " + argument + ".");
+                } else {
+                    System.out.println("Value named " + argument + " not found.");
+                }
+            } else throw new RuntimeException("Parsing error: expected ')' after argument to keyword " + Keyword.remove);
+
+        } else throw new RuntimeException("Parsing error: expected '(' after keyword " + Keyword.remove);
+    }
+
+    private boolean isKeywordLine(String line) {
+        line = line.trim();
+        for (Keyword keyword : Keyword.values()) {
+            if (line.startsWith(keyword.name())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void notifyListeners() {
@@ -87,9 +154,10 @@ public class GraphicalModelParser {
 
     private void parseFixedParameterLine(String line, int lineNumber) {
         String[] parts = line.split("=");
-        if (parts.length != 2) throw new RuntimeException("Parsing fixed parameter " + parts[0] + " failed on line " + lineNumber);
+        if (parts.length != 2)
+            throw new RuntimeException("Parsing fixed parameter " + parts[0] + " failed on line " + lineNumber);
         String id = parts[0].trim();
-        String valueString = parts[1].substring(0,parts[1].indexOf(';')).trim();
+        String valueString = parts[1].substring(0, parts[1].indexOf(';')).trim();
         Value literalValue = parseLiteralValue(id, valueString, lineNumber);
         dictionary.put(literalValue.getId(), literalValue);
     }
@@ -108,23 +176,24 @@ public class GraphicalModelParser {
         } catch (NumberFormatException e) {
         }
 
-        throw new RuntimeException("Parsing fixed parameter " + id + " with value "  + valueString + " failed on line " + lineNumber);
+        throw new RuntimeException("Parsing fixed parameter " + id + " with value " + valueString + " failed on line " + lineNumber);
     }
 
     private void parseFunctionLine(String line, int lineNumber) {
         int firstEquals = line.indexOf('=');
         String id = line.substring(0, firstEquals).trim();
-        String remainder = line.substring(firstEquals+1);
-        String functionString = remainder.substring(0,remainder.indexOf(';'));
+        String remainder = line.substring(firstEquals + 1);
+        String functionString = remainder.substring(0, remainder.indexOf(';'));
         Value val = parseFunction(id, functionString, lineNumber);
         dictionary.put(val.getId(), val);
     }
 
     private Value parseFunction(String id, String functionString, int lineNumber) {
         String[] parts = functionString.split("\\(");
-        if (parts.length != 2) throw new RuntimeException("Parsing function " + parts[0] + "failed on line " + lineNumber);
+        if (parts.length != 2)
+            throw new RuntimeException("Parsing function " + parts[0] + "failed on line " + lineNumber);
         String funcName = parts[0].trim();
-        String argumentString = parts[1].substring(0,parts[1].indexOf(')')).trim();
+        String argumentString = parts[1].substring(0, parts[1].indexOf(')')).trim();
         Value argument = dictionary.get(argumentString);
         if (argument == null) {
             System.err.println(dictionary);
@@ -135,7 +204,7 @@ public class GraphicalModelParser {
 
         Class functionClass = functionDictionary.get(funcName);
         try {
-            Function function = (Function)functionClass.newInstance();
+            Function function = (Function) functionClass.newInstance();
             Value result = function.apply(argument, id);
             return result;
         } catch (InstantiationException e) {
@@ -149,9 +218,10 @@ public class GraphicalModelParser {
 
     private void parseRandomVariable(String line, int lineNumber) {
         String[] parts = line.split("~");
-        if (parts.length != 2) throw new RuntimeException("Parsing random variable " + parts[0] + "failed on line " + lineNumber);
+        if (parts.length != 2)
+            throw new RuntimeException("Parsing random variable " + parts[0] + "failed on line " + lineNumber);
         String id = parts[0].trim();
-        String genString = parts[1].substring(0,parts[1].indexOf(';'));
+        String genString = parts[1].substring(0, parts[1].indexOf(';'));
         GenerativeDistribution genDist = parseGenDist(genString, lineNumber);
         RandomVariable var = genDist.sample(id);
         dictionary.put(var.getId(), var);
@@ -159,20 +229,23 @@ public class GraphicalModelParser {
 
     private GenerativeDistribution parseGenDist(String genString, int lineNumber) {
         String[] parts = genString.split("\\(");
-        if (parts.length != 2) throw new RuntimeException("Parsing generative distribution " + parts[0] + "failed on line " + lineNumber);
+        if (parts.length != 2)
+            throw new RuntimeException("Parsing generative distribution " + parts[0] + "failed on line " + lineNumber);
         String name = parts[0].trim();
-        String argumentString = parts[1].substring(0,parts[1].indexOf(')'));
-        Map<String,String> arguments = parseArguments(argumentString, lineNumber);
+        String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
+        Map<String, String> arguments = parseArguments(argumentString, lineNumber);
 
         Class genDistClass = genDistDictionary.get(name);
-        if (genDistClass == null) throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
+        if (genDistClass == null)
+            throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
 
         try {
             Object[] initargs = new Object[arguments.keySet().size()];
             Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-            if (constructor == null) throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+            if (constructor == null)
+                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
 
-            GenerativeDistribution dist = (GenerativeDistribution)constructor.newInstance(initargs);
+            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs);
             for (String parameterName : arguments.keySet()) {
                 Value value = dictionary.get(arguments.get(parameterName));
                 dist.setParam(parameterName, value);
@@ -198,7 +271,8 @@ public class GraphicalModelParser {
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = dictionary.get(arguments.get(pInfo.get(i).name()));
-                    if (arg == null) throw new RuntimeException("Value for id=" + arguments.get(pInfo.get(i).name()) + " not found!");
+                    if (arg == null)
+                        throw new RuntimeException("Value for id=" + arguments.get(pInfo.get(i).name()) + " not found!");
                     initargs[i] = arg;
                 }
                 return constructor;
@@ -221,7 +295,8 @@ public class GraphicalModelParser {
         TreeMap<String, String> arguments = new TreeMap<>();
         for (String argumentPair : argumentStrings) {
             String[] keyValue = argumentPair.split("=");
-            if (keyValue.length != 2) throw new RuntimeException("Parsing argument " + keyValue[0].trim() + "failed on line " + lineNumber);
+            if (keyValue.length != 2)
+                throw new RuntimeException("Parsing argument " + keyValue[0].trim() + "failed on line " + lineNumber);
             String key = keyValue[0].trim();
             String value = keyValue[1].trim();
             arguments.put(key, value);
@@ -231,10 +306,10 @@ public class GraphicalModelParser {
 
     public static boolean isFunctionLine(String line) {
         int firstEquals = line.indexOf('=');
-        if (firstEquals>0) {
+        if (firstEquals > 0) {
             String id = line.substring(0, firstEquals).trim();
-            String remainder = line.substring(firstEquals+1);
-            return (remainder.indexOf('(')>0);
+            String remainder = line.substring(firstEquals + 1);
+            return (remainder.indexOf('(') > 0);
         } else return false;
     }
 
@@ -244,16 +319,19 @@ public class GraphicalModelParser {
 
     public static boolean isFixedParameterLine(String line) {
         int firstEquals = line.indexOf('=');
-        String id = line.substring(0, firstEquals).trim();
-        String remainder = line.substring(firstEquals+1);
-        String valueString = remainder.substring(0, remainder.indexOf(';'));
+        if (firstEquals > 0) {
+            String id = line.substring(0, firstEquals).trim();
 
-        try {
-            Double val = Double.parseDouble(valueString);
-            return true;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+            String remainder = line.substring(firstEquals + 1);
+            String valueString = remainder.substring(0, remainder.indexOf(';'));
+
+            try {
+                Double val = Double.parseDouble(valueString);
+                return true;
+            } catch (NumberFormatException nfe) {
+                return false;
+            }
+        } else return false;
     }
 
     public static void main(String[] args) {
@@ -289,7 +367,7 @@ public class GraphicalModelParser {
         for (Value value : getRoots()) {
 
             if (value instanceof RandomVariable) {
-                RandomVariable variable = sampleAll(((RandomVariable)value).getGenerativeDistribution());
+                RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution());
                 variable.setId(value.id);
                 dictionary.put(variable.getId(), variable);
             }

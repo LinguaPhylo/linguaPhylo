@@ -9,6 +9,7 @@ public class TimeTreeNode {
 
     private List<TimeTreeNode> children;
     private TimeTreeNode parent = null;
+    private int index;
 
     double age = 0.0;
     String id = null;
@@ -66,5 +67,13 @@ public class TimeTreeNode {
     public String toString() {
         if (isLeaf()) return getId();
         return super.toString();
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

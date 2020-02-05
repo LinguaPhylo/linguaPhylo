@@ -71,13 +71,29 @@ public class GraphicalModelPanel extends JPanel {
 
         component.addGraphicalModelListener(listener);
         parser.addGraphicalModelChangeListener(component);
+        parser.addGraphicalModelListener(new GraphicalModelListener() {
+            @Override
+            public void valueSelected(Value value) {
+                showValue(value);
+            }
+
+            @Override
+            public void generativeDistributionSelected(GenerativeDistribution g) {
+
+            }
+
+            @Override
+            public void functionSelected(Function f) {
+
+            }
+        });
         
         add(intepreter, BorderLayout.SOUTH);
 
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", new JPanel());
-        rightPane.addTab("Literals", new StatePanel(parser, true, false, false));
-        rightPane.addTab("State", new StatePanel(parser, false, true, false));
+        rightPane.addTab("Values", new StatePanel(parser, true, false, false));
+        rightPane.addTab("Variables", new StatePanel(parser, false, true, false));
         rightPane.addTab("JSON", new JSONPanel(parser));
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         splitPane.setRightComponent(rightPane);
@@ -89,9 +105,6 @@ public class GraphicalModelPanel extends JPanel {
         displayedElement = value;
         rightPane.setComponentAt(0, value.getViewer());
         repaint();
-//        final int size = splitPane.getDividerLocation();
-//        splitPane.setRightComponent(value.getViewer());
-//        splitPane.setDividerLocation(size);
     }
 
     private void showGenerativeDistribution(GenerativeDistribution g) {
@@ -99,19 +112,12 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.setComponentAt(0, g.getViewer());
         repaint();
 
-//        final int size = splitPane.getDividerLocation();
-//        splitPane.setRightComponent(g.getViewer());
-//        splitPane.setDividerLocation(size);
     }
 
     private void showFunction(Function f) {
         displayedElement = f;
         rightPane.setComponentAt(0, f.getViewer());
         repaint();
-
-//        final int size = splitPane.getDividerLocation();
-//        splitPane.setRightComponent(f.getViewer());
-//        splitPane.setDividerLocation(size);
     }
 
     public static void main(String[] args) {

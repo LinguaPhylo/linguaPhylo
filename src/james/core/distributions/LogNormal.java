@@ -20,12 +20,11 @@ public class LogNormal implements GenerativeDistribution<Double> {
     LogNormalDistribution logNormalDistribution;
 
     public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Double> M,
-                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Double> S,
-                     Random random) {
+                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Double> S) {
 
         this.M = M;
         this.S = S;
-        this.random = random;
+        this.random = Utils.getRandom();
 
         meanLogParamName = getParamName(0);
         sdLogParamName = getParamName(1);
@@ -35,13 +34,12 @@ public class LogNormal implements GenerativeDistribution<Double> {
     public RandomVariable<Double> sample() {
 
         logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
-        double x = logNormalDistribution.sample();
-        return new RandomVariable<>("x", x, this);
+        return new RandomVariable<>("x",  logNormalDistribution.sample(), this);
     }
 
-    @Override
-    public double density(Double x) {
-        return logNormalDistribution.density(x);
+    public double logDensity(Double x) {
+
+        return logNormalDistribution.logDensity(x);
     }
 
     public Map<String, Value> getParams() {

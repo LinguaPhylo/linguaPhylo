@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -15,6 +16,14 @@ import java.util.List;
 public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     RandomVariable<T> sample();
+
+//    default RandomVariable<T[]> sample(int dim, T[] array) {
+//        for (int i = 0; i < array.length; i++) {
+//            array[i] = sample().value();
+//        }
+//        return new RandomVariable<T[]>("x", array, this);
+//    }
+
 
     default RandomVariable<T> sample(String id) {
         RandomVariable<T> v = sample();
