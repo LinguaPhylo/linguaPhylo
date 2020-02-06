@@ -2,6 +2,7 @@ package james.graphicalModel;
 
 import james.Coalescent;
 import james.core.JCPhyloCTMC;
+import james.core.PhyloCTMC;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
@@ -33,13 +34,14 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class};
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
         }
 
         functionDictionary.put("exp", james.core.functions.Exp.class);
+        functionDictionary.put("jukesCantor", james.core.functions.JukesCantor.class);
     }
 
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
@@ -231,8 +233,11 @@ public class GraphicalModelParser {
         try {
             Object[] initargs = new Object[arguments.keySet().size()];
             Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
-            if (constructor == null)
-                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+            if (constructor == null) {
+                System.err.println("Function class: " + functionClass);
+                System.err.println("     Arguments: " + arguments);
+                throw new RuntimeException("Parser error: no constructor found for deterministic function " + name + " with arguments " + arguments);
+            }
 
             DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs);
             for (String parameterName : arguments.keySet()) {
@@ -379,6 +384,7 @@ public class GraphicalModelParser {
 
     public static void main(String[] args) {
         String[] lines = {
+                "rate = 1;",
                 "L = 50;",
                 "dim = 4;",
                 "mu = 0.01;",
@@ -387,8 +393,9 @@ public class GraphicalModelParser {
                 "sd = 1.0;",
                 "logTheta ~ Normal(μ=mean, σ=sd);",
                 "Θ = exp(logTheta);",
+                "Q = jukesCantor(rate=rate)",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
-                "D ~ JCPhyloCTMC(L=L, dim=dim, mu=mu, tree=ψ);"};
+                "D ~ PhyloCTMC(L=L, dim=dim, Q=Q, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);

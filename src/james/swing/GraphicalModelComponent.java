@@ -1,6 +1,7 @@
 package james.swing;
 
 import james.graphicalModel.*;
+import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -269,10 +270,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
+        } else if (v instanceof MatrixValue) {
+            return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
         } else {
             valueString = v.value().toString();
         }
-
 
         return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";
     }

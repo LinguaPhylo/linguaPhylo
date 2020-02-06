@@ -1,11 +1,12 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * Created by adru001 on 2/02/20.
  */
-public class JukesCantor extends DeterministicFunction<Double[][]> {
+public class JukesCantor extends DeterministicFunction<RealMatrix> {
 
     String paramName;
 
@@ -15,14 +16,14 @@ public class JukesCantor extends DeterministicFunction<Double[][]> {
     }
 
 
-    @FunctionInfo(name = "jc", description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
-    public Value<Double[][]> apply() {
+    @FunctionInfo(name = "jukesCantor", description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
+    public Value<RealMatrix> apply() {
         Value<Double> rate = getParams().get(paramName);
         return new MatrixValue(getName() + "(" + rate.getId() + ")", jc(rate.value()), this);
     }
 
-    private Double[][] jc(Double meanRate) {
-        Double[][] Q = new Double[4][4];
+    private double[][] jc(Double meanRate) {
+        double[][] Q = new double[4][4];
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {

@@ -123,16 +123,17 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
+                "rate = 1.0;",
                 "L = 50;",
-                "dim = 4;",
                 "mu = 0.01;",
                 "n = 20;",
-                "mean = 1.0;",
-                "sd = 0.5;",
-                "logtheta ~ Normal(mean=mean, sd=sd);",
-                "Θ = exp(logtheta);",
+                "mean = 3.0;",
+                "sd = 1.0;",
+                "logTheta ~ Normal(mean=mean, sd=sd);",
+                "Θ = exp(logTheta);",
+                "Q = jukesCantor(rate=rate);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
-                "D ~ JCPhyloCTMC(L=L, dim=dim, mu=mu, tree=ψ);"};
+                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);
