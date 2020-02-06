@@ -52,6 +52,14 @@ public class TimeTreeNode {
         return id;
     }
 
+    public void setBranchRate(Double rate) {
+        setMetaData("rate", rate);
+    }
+
+    public Double getBranchRate() {
+        return (Double)getMetaData("rate");
+    }
+
     public void setMetaData(String key, Object value) {
         metaData.put(key, value);
     }

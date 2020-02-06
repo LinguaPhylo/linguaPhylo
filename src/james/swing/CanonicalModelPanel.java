@@ -44,8 +44,7 @@ public class CanonicalModelPanel extends JComponent {
 
                 }
 
-                @Override
-                public void visitFunction(Function f) {
+                public void visitFunction(DeterministicFunction f) {
 
                 }
             }, true);

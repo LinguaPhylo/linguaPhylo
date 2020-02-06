@@ -1,5 +1,6 @@
 package james.swing;
 
+import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.Function;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.Value;
@@ -15,5 +16,5 @@ public interface NodeVisitor {
 
     void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level);
 
-    void visitFunctionEdge(Function function, Point2D p, Point2D q, int level);
+    void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level);
 }

@@ -33,7 +33,7 @@ public class GraphicalModelPanel extends JPanel {
 
         sampleButton.addActionListener(e -> {
             parser.sample();
-            showValue(parser.getRoots().first());
+            showValue(parser.getRoots().iterator().next());
         });
 
 
@@ -62,7 +62,7 @@ public class GraphicalModelPanel extends JPanel {
             }
 
             @Override
-            public void functionSelected(Function f) {
+            public void functionSelected(DeterministicFunction f) {
 
                 showFunction(f);
             }
@@ -83,7 +83,7 @@ public class GraphicalModelPanel extends JPanel {
             }
 
             @Override
-            public void functionSelected(Function f) {
+            public void functionSelected(DeterministicFunction f) {
 
             }
         });
@@ -98,7 +98,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         splitPane.setRightComponent(rightPane);
 
-        showValue(parser.getRoots().first());
+        showValue(parser.getRoots().iterator().next());
     }
 
     void showValue(Value value) {
@@ -114,7 +114,7 @@ public class GraphicalModelPanel extends JPanel {
 
     }
 
-    private void showFunction(Function f) {
+    private void showFunction(DeterministicFunction f) {
         displayedElement = f;
         rightPane.setComponentAt(0, f.getViewer());
         repaint();
@@ -127,10 +127,10 @@ public class GraphicalModelPanel extends JPanel {
                 "dim = 4;",
                 "mu = 0.01;",
                 "n = 20;",
-                "mean = 3.0;",
-                "sd = 1.0;",
-                "logTheta ~ Normal(μ=mean, σ=sd);",
-                "Θ = exp(logTheta);",
+                "mean = 1.0;",
+                "sd = 0.5;",
+                "logtheta ~ Normal(mean=mean, sd=sd);",
+                "Θ = exp(logtheta);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "D ~ JCPhyloCTMC(L=L, dim=dim, mu=mu, tree=ψ);"};
 

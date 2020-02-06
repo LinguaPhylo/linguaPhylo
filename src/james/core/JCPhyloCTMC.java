@@ -17,6 +17,7 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Integer> L;
     Value<Integer> dim;
     Value<Double> clockRate;
+    Value<Double[]> branchRates;
     Random random;
 
     String treeParamName;

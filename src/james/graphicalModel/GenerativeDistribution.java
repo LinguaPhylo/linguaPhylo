@@ -43,10 +43,6 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         return this.getClass().getSimpleName();
     }
 
-    Map<String, Value> getParams();
-
-    void setParam(String paramName, Value value);
-
     default void print(PrintWriter p) {
         p.print(codeString());
     }

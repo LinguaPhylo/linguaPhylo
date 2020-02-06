@@ -11,21 +11,21 @@ import java.util.Map;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> implements Viewable, Comparable<Value> {
+public class Value<T> implements Viewable {
 
     private T value;
     String id;
     List<ValueListener> listeners = new ArrayList<>();
 
     // the function that produced this value, or null if this value was initialized another way;
-    Function function = null;
+    DeterministicFunction<T> function = null;
 
     public Value(String id, T value) {
         this.id = id;
         this.value = value;
     }
 
-    public Value(String id, T value, Function function) {
+    public Value(String id, T value, DeterministicFunction<T> function) {
         this(id, value);
         this.function = function;
     }
@@ -42,7 +42,7 @@ public class Value<T> implements Viewable, Comparable<Value> {
             }
 
             p.print(id + " = ");
-            function.print(p);
+            p.print(function.codeString());
             //p.print(";");
         } else {
             p.print(toString() + ";");
@@ -76,10 +76,6 @@ public class Value<T> implements Viewable, Comparable<Value> {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
-            //component.setBorder(BorderFactory.createTitledBorder(
-            //        BorderFactory.createEmptyBorder(BORDER_SIZE, 0, BORDER_SIZE, BORDER_SIZE),
-            //        id)
-            //);
             return component;
         }
 
@@ -90,7 +86,6 @@ public class Value<T> implements Viewable, Comparable<Value> {
         } else {
             return new JLabel(value.toString());
         }
-        //viewer.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     }
 
     public String getId() {
@@ -101,7 +96,7 @@ public class Value<T> implements Viewable, Comparable<Value> {
         this.id = id;
     }
 
-    public Function getFunction() {
+    public DeterministicFunction<T> getFunction() {
         return function;
     }
 
@@ -120,7 +115,7 @@ public class Value<T> implements Viewable, Comparable<Value> {
         if (post) visitor.visitValue(value);
     }
 
-    private static void traverseGraphicalModel(Function function, GraphicalModelNodeVisitor visitor, boolean post) {
+    private static void traverseGraphicalModel(DeterministicFunction function, GraphicalModelNodeVisitor visitor, boolean post) {
         if (!post) visitor.visitFunction(function);
 
         Map<String, Value> map = function.getParams();
@@ -142,8 +137,4 @@ public class Value<T> implements Viewable, Comparable<Value> {
         if (post) visitor.visitGenDist(genDist);
     }
 
-    @Override
-    public int compareTo(Value o) {
-        return getId().compareTo(o.getId());
-    }
 }

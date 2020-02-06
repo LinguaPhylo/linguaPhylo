@@ -1,5 +1,6 @@
 package james.swing;
 
+import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.Function;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.Value;
@@ -10,5 +11,5 @@ public interface GraphicalModelListener {
 
     void generativeDistributionSelected(GenerativeDistribution g);
 
-    void functionSelected(Function f);
+    void functionSelected(DeterministicFunction f);
 }

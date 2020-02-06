@@ -1,15 +1,26 @@
 package james.core.functions;
 
-import james.graphicalModel.DoubleValue;
-import james.graphicalModel.Function;
-import james.graphicalModel.FunctionInfo;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 
-public class Exp extends Function<Double, Double> {
+import java.util.Map;
+
+public class Exp extends DeterministicFunction<Double> {
+
+    String paramName;
+
+    public Exp(@ParameterInfo(name = "x", description = "the argument.") Value<Double> x) {
+        paramName = getParamName(0);
+        setParam(paramName, x);
+    }
 
     @FunctionInfo(name="exp",description = "The exponential function: e^x")
     public Value<Double> apply(Value<Double> v) {
         setParam("x", v);
         return new DoubleValue("exp(" + v.getId() + ")", Math.exp(v.value()), this);
+    }
+
+    @Override
+    public Value<Double> apply() {
+        return apply((Value<Double>)getParams().get(paramName));
     }
 }

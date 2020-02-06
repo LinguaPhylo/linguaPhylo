@@ -23,8 +23,8 @@ public class Normal implements GenerativeDistribution<Double> {
 
     NormalDistribution normalDistribution;
 
-    public Normal(@ParameterInfo(name = "\u03bc", description = "the mean of the distribution.") Value<Double> mean,
-                  @ParameterInfo(name = "\u03c3", description = "the standard deviation of the distribution.") Value<Double> sd) {
+    public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Double> mean,
+                  @ParameterInfo(name = "sd", description = "the standard deviation of the distribution.") Value<Double> sd) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");

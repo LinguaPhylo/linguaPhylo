@@ -8,5 +8,5 @@ public interface GraphicalModelNodeVisitor {
 
     void visitGenDist(GenerativeDistribution genDist);
 
-    void visitFunction(Function f);
+    void visitFunction(DeterministicFunction f);
 }

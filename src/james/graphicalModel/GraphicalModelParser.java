@@ -32,13 +32,12 @@ public class GraphicalModelParser {
     }
 
     public GraphicalModelParser() {
-        genDistDictionary.put("Normal", Normal.class);
-        genDistDictionary.put("LogNormal", LogNormal.class);
-        genDistDictionary.put("Exp", Exp.class);
-        genDistDictionary.put("Coalescent", Coalescent.class);
-        genDistDictionary.put("JCPhyloCTMC", JCPhyloCTMC.class);
 
-        System.out.println(genDistDictionary);
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class};
+
+        for (Class genClass : genClasses) {
+            genDistDictionary.put(genClass.getSimpleName(), genClass);
+        }
 
         functionDictionary.put("exp", james.core.functions.Exp.class);
     }
@@ -55,14 +54,15 @@ public class GraphicalModelParser {
         return dictionary;
     }
 
-    public SortedSet<Value> getRoots() {
-        SortedSet<String> nonArguments = new TreeSet<>(dictionary.keySet());
+    public Set<Value> getRoots() {
+        Set<String> nonArguments = new HashSet<>();
+        dictionary.values().forEach((val) -> nonArguments.add(val.getId()));
         nonArguments.removeAll(globalArguments);
-        SortedSet<Value> values = new TreeSet<>();
-        for (String id : nonArguments) {
-            values.add(dictionary.get(id));
-        }
-        return values;
+
+        Set<Value> nonArgValues = new HashSet<>();
+        nonArguments.forEach((id) -> nonArgValues.add(dictionary.get(id)));
+
+        return nonArgValues;
     }
 
     public void parseLines(String[] lines) {
@@ -184,35 +184,74 @@ public class GraphicalModelParser {
         String id = line.substring(0, firstEquals).trim();
         String remainder = line.substring(firstEquals + 1);
         String functionString = remainder.substring(0, remainder.indexOf(';'));
-        Value val = parseFunction(id, functionString, lineNumber);
+        Value val = parseDeterministicFunction(id, functionString, lineNumber);
         dictionary.put(val.getId(), val);
     }
 
-    private Value parseFunction(String id, String functionString, int lineNumber) {
+//    private Value parseFunction(String id, String functionString, int lineNumber) {
+//        String[] parts = functionString.split("\\(");
+//        if (parts.length != 2)
+//            throw new RuntimeException("Parsing function " + parts[0] + "failed on line " + lineNumber);
+//        String funcName = parts[0].trim();
+//        String argumentString = parts[1].substring(0, parts[1].indexOf(')')).trim();
+//        Value argument = dictionary.get(argumentString);
+//        if (argument == null) {
+//            System.err.println(dictionary);
+//            throw new RuntimeException("Couldn't find argument " + argumentString + " when parsing " + funcName + " on line " + lineNumber);
+//        } else {
+//            globalArguments.add(argument);
+//        }
+//
+//        Class functionClass = functionDictionary.get(funcName);
+//        try {
+//            Function function = (Function) functionClass.newInstance();
+//            Value result = function.apply(argument, id);
+//            return result;
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
+//        }
+//    }
+
+    private Value parseDeterministicFunction(String id, String functionString, int lineNumber) {
         String[] parts = functionString.split("\\(");
         if (parts.length != 2)
-            throw new RuntimeException("Parsing function " + parts[0] + "failed on line " + lineNumber);
-        String funcName = parts[0].trim();
-        String argumentString = parts[1].substring(0, parts[1].indexOf(')')).trim();
-        Value argument = dictionary.get(argumentString);
-        if (argument == null) {
-            System.err.println(dictionary);
-            throw new RuntimeException("Couldn't find argument " + argumentString + " when parsing " + funcName + " on line " + lineNumber);
-        } else {
-            globalArguments.add(argumentString);
-        }
+            throw new RuntimeException("Parsing deterministic function " + parts[0] + "failed on line " + lineNumber);
+        String name = parts[0].trim();
+        String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
+        Map<String, String> arguments = parseArguments(argumentString, lineNumber);
 
-        Class functionClass = functionDictionary.get(funcName);
+        Class functionClass = functionDictionary.get(name);
+        if (functionClass == null)
+            throw new RuntimeException("Parsing error: Unrecognised deterministic function: " + name);
+
         try {
-            Function function = (Function) functionClass.newInstance();
-            Value result = function.apply(argument, id);
-            return result;
+            Object[] initargs = new Object[arguments.keySet().size()];
+            Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
+            if (constructor == null)
+                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+
+            DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs);
+            for (String parameterName : arguments.keySet()) {
+                Value value = dictionary.get(arguments.get(parameterName));
+                func.setParam(parameterName, value);
+                globalArguments.add(value.id);
+            }
+            Value val = func.apply();
+            val.setId(id);
+            return val;
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
+            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
+            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
         }
     }
 
@@ -249,7 +288,7 @@ public class GraphicalModelParser {
             for (String parameterName : arguments.keySet()) {
                 Value value = dictionary.get(arguments.get(parameterName));
                 dist.setParam(parameterName, value);
-                globalArguments.add(value.getId());
+                globalArguments.add(value.id);
             }
             return dist;
         } catch (InstantiationException e) {
@@ -274,6 +313,7 @@ public class GraphicalModelParser {
                     if (arg == null)
                         throw new RuntimeException("Value for id=" + arguments.get(pInfo.get(i).name()) + " not found!");
                     initargs[i] = arg;
+                    globalArguments.add(arg.id);
                 }
                 return constructor;
             }
@@ -294,9 +334,12 @@ public class GraphicalModelParser {
         String[] argumentStrings = argumentString.split(",");
         TreeMap<String, String> arguments = new TreeMap<>();
         for (String argumentPair : argumentStrings) {
+            if (argumentPair.indexOf('=') < 0) {
+                argumentPair = "x="+argumentPair;
+            }
             String[] keyValue = argumentPair.split("=");
             if (keyValue.length != 2)
-                throw new RuntimeException("Parsing argument " + keyValue[0].trim() + "failed on line " + lineNumber);
+                throw new RuntimeException("Parsing argument " + keyValue[0].trim() + " failed on line " + lineNumber);
             String key = keyValue[0].trim();
             String value = keyValue[1].trim();
             arguments.put(key, value);
@@ -351,11 +394,6 @@ public class GraphicalModelParser {
         parser.parseLines(lines);
         System.out.println(parser.dictionary);
 
-        Set<String> nonArguments = parser.dictionary.keySet();
-        nonArguments.removeAll(parser.globalArguments);
-        System.out.println("Non-arguments = " + parser.dictionary);
-        System.out.println("Found " + nonArguments.size() + " root values");
-
     }
 
     public List<String> getLines() {
@@ -376,7 +414,25 @@ public class GraphicalModelParser {
     }
 
     private RandomVariable sampleAll(GenerativeDistribution generativeDistribution) {
-        Map<String, Value> params = generativeDistribution.getParams();
+
+        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution).entrySet()) {
+            generativeDistribution.setParam(e.getKey(), e.getValue());
+        }
+
+        return generativeDistribution.sample();
+    }
+
+    private Value sampleAll(DeterministicFunction function) {
+
+        for (Map.Entry<String, Value> e : getNewlySampledParams(function).entrySet()) {
+            function.setParam(e.getKey(), e.getValue());
+        }
+
+        return function.apply();
+    }
+
+    private Map<String, Value> getNewlySampledParams(Parameterized parameterized) {
+        Map<String, Value> params = parameterized.getParams();
 
         Map<String, Value> newlySampledParams = new HashMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
@@ -389,44 +445,14 @@ public class GraphicalModelParser {
                 dictionary.put(nv.getId(), nv);
             } else if (e.getValue().getFunction() != null) {
                 Value v = e.getValue();
-                Function f = e.getValue().getFunction();
+                DeterministicFunction f = e.getValue().getFunction();
 
                 Value nv = sampleAll(f);
                 nv.setId(v.getId());
                 newlySampledParams.put(e.getKey(), nv);
                 dictionary.put(nv.getId(), nv);
-
             }
         }
-        for (Map.Entry<String, Value> e : newlySampledParams.entrySet()) {
-            generativeDistribution.setParam(e.getKey(), e.getValue());
-        }
-
-        return generativeDistribution.sample();
-    }
-
-    private Value sampleAll(Function function) {
-        Map<String, Value> params = function.getParams();
-
-        Map<String, RandomVariable> newlySampledParams = new HashMap<>();
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-            if (e.getValue() instanceof RandomVariable) {
-                RandomVariable v = (RandomVariable) e.getValue();
-
-                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-                dictionary.put(nv.getId(), nv);
-            } else if (e.getValue().getFunction() != null) {
-                Value v = e.getValue();
-                Function f = e.getValue().getFunction();
-
-                Value nv = sampleAll(f);
-                nv.setId(v.getId());
-                dictionary.put(nv.getId(), nv);
-            }
-        }
-        return (Value) function.apply(newlySampledParams.entrySet().iterator().next().getValue());
-
+        return newlySampledParams;
     }
 }

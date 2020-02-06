@@ -74,8 +74,4 @@ public class Alignment implements HasComponentView<Alignment> {
         builder.append("}");
         return builder.toString();
     }
-
-    public String toString() {
-        return toJSON();
-    }
 }

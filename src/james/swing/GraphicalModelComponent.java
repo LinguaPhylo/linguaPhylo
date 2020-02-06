@@ -4,6 +4,7 @@ import james.graphicalModel.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.*;
@@ -34,7 +35,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     float STROKE_SIZE = 1.0f;
 
-    Map<String, JButton> buttonMap;
+    Map<Object, JButton> buttonMap;
     Map<Object, JComboBox> comboBoxMap;
 
     boolean sizesComputed = false;
@@ -81,7 +82,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 }
 
                 @Override
-                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
                     if (level > ml[0]) ml[0] = level;
                 }
             });
@@ -95,7 +96,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     private Point2D getStartPoint(double frac) {
-        return new Point2D.Double(frac*getWidth(), getHeight() - BORDER - (VAR_HEIGHT/2));
+        return new Point2D.Double(frac * getWidth(), getHeight() - BORDER - (VAR_HEIGHT / 2));
     }
 
     private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, int level, NodeVisitor visitor) {
@@ -115,7 +116,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             if (currentP != null) {
                 newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
             }
-            traverseGraphicalModel(value.getFunction(), newP, currentP, level + 1,visitor);
+            traverseGraphicalModel(value.getFunction(), newP, currentP, level + 1, visitor);
         }
     }
 
@@ -129,7 +130,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         double x = 0;
         if (p != null) x = p.getX() - width / 2.0;
 
-        for (Map.Entry<String,Value> e : map.entrySet()) {
+        for (Map.Entry<String, Value> e : map.entrySet()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
             traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
@@ -137,7 +138,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         }
     }
 
-    private void traverseGraphicalModel(Function function, Point2D p, Point2D q, int level, NodeVisitor visitor) {
+    private void traverseGraphicalModel(DeterministicFunction function, Point2D p, Point2D q, int level, NodeVisitor visitor) {
 
         visitor.visitFunctionEdge(function, p, q, level);
 
@@ -147,13 +148,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         double x = 0;
         if (p != null) x = p.getX() - width / 2.0;
 
-        for (Map.Entry<String,Value> e : map.entrySet()) {
+        for (Map.Entry<String, Value> e : map.entrySet()) {
             Point2D p1 = null;
             if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
             traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
             x += HSPACE;
         }
     }
+
     public void paintComponent(Graphics g) {
 
         if (!sizesComputed) recomputeSizes();
@@ -161,16 +163,17 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         Graphics2D g2d = (Graphics2D) g;
 
         g.setColor(Color.white);
-        g.fillRect(0,0,getWidth(), getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.black);
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        List<Value> valueList = new ArrayList<> (parser.getRoots());
+        List<Value> valueList = new ArrayList<>(parser.getRoots());
+        //System.out.println(valueList);
 
         for (int i = 0; i < valueList.size(); i++) {
 
-            traverseGraphicalModel(valueList.get(i), getStartPoint((i+1.0)/(valueList.size()+1.0)), null, 1, new NodeVisitor() {
+            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
                 @Override
                 public void visitValue(Value value, Point2D p, Point2D q, int level) {
                     if (q != null) {
@@ -203,7 +206,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                 }
 
-                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
                     String str = function.getName();
 
                     g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
@@ -271,14 +274,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         }
 
 
-        return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString +"</p></center></html>";
+        return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";
     }
 
     private void generateButtons() {
-        List<Value> valueList = new ArrayList<> (parser.getRoots());
+        List<Value> valueList = new ArrayList<>(parser.getRoots());
 
         for (int i = 0; i < valueList.size(); i++) {
-            traverseGraphicalModel(valueList.get(i), getStartPoint((i+1.0)/(valueList.size()+1.0)), null, 1, new NodeVisitor() {
+            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
                 @Override
                 public void visitValue(Value value, Point2D p, Point2D q, int level) {
                     Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
@@ -299,7 +302,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                     String str = getButtonString(value);
 
-                    JButton button = buttonMap.get(value.getId());
+                    JButton button = buttonMap.get(value);
                     if (button == null) {
                         if (value.getFunction() != null) {
                             button = new DiamondButton(str, backgroundColor, borderColor);
@@ -312,7 +315,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                                 listener.valueSelected(value);
                             }
                         });
-                        buttonMap.put(value.getId(), button);
+
+                        buttonMap.put(value, button);
                         add(button);
 
                         JButton finalButton = button;
@@ -348,7 +352,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 }
 
                 @Override
-                public void visitFunctionEdge(Function function, Point2D p, Point2D q, int level) {
+                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
                     JButton button = buttonMap.get(function.codeString());
                     if (button == null) {
                         button = new JButton("");
@@ -381,8 +385,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     private void removeButtons() {
-        for (JButton button: buttonMap.values()) {
+        for (JButton button : buttonMap.values()) {
             remove(button);
+            for (ActionListener al : button.getActionListeners()) {
+                button.removeActionListener(al);
+            }
         }
         buttonMap.clear();
     }
