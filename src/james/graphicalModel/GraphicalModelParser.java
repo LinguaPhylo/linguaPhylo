@@ -42,6 +42,7 @@ public class GraphicalModelParser {
 
         functionDictionary.put("exp", james.core.functions.Exp.class);
         functionDictionary.put("jukesCantor", james.core.functions.JukesCantor.class);
+        functionDictionary.put("k80", james.core.functions.K80.class);
     }
 
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {

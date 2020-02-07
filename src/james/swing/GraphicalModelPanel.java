@@ -123,7 +123,7 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
-                "rate = 1.0;",
+                "kappa = 10.0;",
                 "L = 50;",
                 "mu = 0.01;",
                 "n = 20;",
@@ -131,7 +131,7 @@ public class GraphicalModelPanel extends JPanel {
                 "sd = 1.0;",
                 "logTheta ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(logTheta);",
-                "Q = jukesCantor(rate=rate);",
+                "Q = k80(kappa=kappa);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
 
