@@ -21,7 +21,7 @@ public class HKY extends DeterministicFunction<RealMatrix> {
     }
 
 
-    @FunctionInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
+    @FunctionInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
     public Value<RealMatrix> apply() {
         Value<Double> kappa = getParams().get(kappaParamName);
         Value<List<Double>> freq = getParams().get(freqParamName);
