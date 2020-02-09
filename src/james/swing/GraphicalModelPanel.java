@@ -2,6 +2,9 @@ package james.swing;
 
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
+import javafx.beans.binding.ObjectExpression;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,10 +25,15 @@ public class GraphicalModelPanel extends JPanel {
 
     Object displayedElement;
 
+    Map<Class, ViewerFactory> viewerFactories = new HashMap<>();
+
+
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
         intepreter = new GraphicalModelInterpreter(parser);
+
+        registerViewerFactory(Array2DRowRealMatrix.class, RealMatrixEditor.viewerFactory());
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
@@ -35,7 +43,6 @@ public class GraphicalModelPanel extends JPanel {
             parser.sample();
             showValue(parser.getRoots().iterator().next());
         });
-
 
         component = new GraphicalModelComponent(parser);
         JPanel panel = new JPanel();
@@ -101,22 +108,44 @@ public class GraphicalModelPanel extends JPanel {
         showValue(parser.getRoots().iterator().next());
     }
 
+    public void registerViewerFactory(Class c, ViewerFactory factory) {
+        viewerFactories.put(c, factory);
+    }
+
+    public JComponent getViewer(Object outer) {
+        Object inner;
+        if (outer instanceof Value) {
+            inner = ((Value) outer).value();
+        } else {
+            inner =  outer;
+        }
+        ViewerFactory factory = viewerFactories.get(inner.getClass());
+        if (factory != null) {
+
+            return factory.createViewer(inner);
+        }
+        if (outer instanceof Viewable) {
+            return ((Viewable) outer).getViewer();
+        }
+        return new JLabel(outer.toString());
+    }
+
     void showValue(Value value) {
         displayedElement = value;
-        rightPane.setComponentAt(0, value.getViewer());
+        rightPane.setComponentAt(0, getViewer(value));
         repaint();
     }
 
     private void showGenerativeDistribution(GenerativeDistribution g) {
         displayedElement = g;
-        rightPane.setComponentAt(0, g.getViewer());
+        rightPane.setComponentAt(0, getViewer(g));
         repaint();
 
     }
 
     private void showFunction(DeterministicFunction f) {
         displayedElement = f;
-        rightPane.setComponentAt(0, f.getViewer());
+        rightPane.setComponentAt(0, getViewer(f));
         repaint();
     }
 

@@ -385,18 +385,17 @@ public class GraphicalModelParser {
 
     public static void main(String[] args) {
         String[] lines = {
-                "rate = 1;",
+                "kappa = 10.0;",
                 "L = 50;",
-                "dim = 4;",
                 "mu = 0.01;",
                 "n = 20;",
                 "mean = 3.0;",
                 "sd = 1.0;",
-                "logTheta ~ Normal(μ=mean, σ=sd);",
+                "logTheta ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(logTheta);",
-                "Q = jukesCantor(rate=rate)",
+                "Q = k80(kappa=kappa);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
-                "D ~ PhyloCTMC(L=L, dim=dim, Q=Q, tree=ψ);"};
+                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);
