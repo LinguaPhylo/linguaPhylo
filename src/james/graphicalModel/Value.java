@@ -76,6 +76,8 @@ public class Value<T> implements Viewable {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
+            component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), id));
+
             return component;
         }
 

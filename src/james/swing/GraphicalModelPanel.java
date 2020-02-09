@@ -112,22 +112,18 @@ public class GraphicalModelPanel extends JPanel {
         viewerFactories.put(c, factory);
     }
 
-    public JComponent getViewer(Object outer) {
-        Object inner;
-        if (outer instanceof Value) {
-            inner = ((Value) outer).value();
-        } else {
-            inner =  outer;
+    public JComponent getViewer(Object object) {
+        if (object instanceof Viewable) {
+            return ((Viewable) object).getViewer();
         }
-        ViewerFactory factory = viewerFactories.get(inner.getClass());
+
+        ViewerFactory factory = viewerFactories.get(object.getClass());
         if (factory != null) {
 
-            return factory.createViewer(inner);
+            return factory.createViewer(object);
         }
-        if (outer instanceof Viewable) {
-            return ((Viewable) outer).getViewer();
-        }
-        return new JLabel(outer.toString());
+
+        return new JLabel(object.toString());
     }
 
     void showValue(Value value) {
