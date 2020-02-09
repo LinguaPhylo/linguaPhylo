@@ -31,7 +31,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         thetaParamName = getParamName(0);
         nParamName = getParamName(1);
 
-        exp = new Exp(new Value<>("rate", 1.0), random);
+        exp = new Exp(new Value<>("rate", 1.0));
     }
 
     @GenerativeDistributionInfo(description="The Kingman coalescent distribution over tip-labelled time trees.")
@@ -124,7 +124,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         Random random = new Random();
 
         Value<Double> thetaExpPriorRate = new Value<>("r", 20.0);
-        Exp exp = new Exp(thetaExpPriorRate, random);
+        Exp exp = new Exp(thetaExpPriorRate);
 
         RandomVariable<Double> theta = exp.sample("\u0398");
         Value<Integer> n = new Value<>("n", 20);

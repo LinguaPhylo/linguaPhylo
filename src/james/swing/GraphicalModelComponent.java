@@ -1,7 +1,6 @@
 package james.swing;
 
 import james.graphicalModel.*;
-import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -170,7 +169,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
         List<Value> valueList = new ArrayList<>(parser.getRoots());
-        //System.out.println(valueList);
 
         for (int i = 0; i < valueList.size(); i++) {
 
@@ -270,7 +268,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
-        } else if (v instanceof MatrixValue) {
+        } else if (v instanceof MatrixValue || v instanceof IntegerListValue || v instanceof DoubleListValue) {
             return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
         } else {
             valueString = v.value().toString();

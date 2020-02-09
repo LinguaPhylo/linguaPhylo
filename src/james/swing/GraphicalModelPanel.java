@@ -2,9 +2,7 @@ package james.swing;
 
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
-import javafx.beans.binding.ObjectExpression;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +12,7 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
-    GraphicalModelInterpreter intepreter;
+    GraphicalModelInterpreter interpreter;
     JTabbedPane rightPane;
 
     GraphicalModelParser parser;
@@ -31,7 +29,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
-        intepreter = new GraphicalModelInterpreter(parser);
+        interpreter = new GraphicalModelInterpreter(parser);
 
         registerViewerFactory(Array2DRowRealMatrix.class, RealMatrixEditor.viewerFactory());
 
@@ -95,7 +93,7 @@ public class GraphicalModelPanel extends JPanel {
             }
         });
         
-        add(intepreter, BorderLayout.SOUTH);
+        add(interpreter, BorderLayout.SOUTH);
 
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", new JPanel());
@@ -148,6 +146,8 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
+                "α = [2.0,2.0,2.0,2.0];",
+                "freq ~ Dirichlet(concentration=α);",
                 "kappa = 10.0;",
                 "L = 50;",
                 "mu = 0.01;",
@@ -156,14 +156,14 @@ public class GraphicalModelPanel extends JPanel {
                 "sd = 1.0;",
                 "logTheta ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(logTheta);",
-                "Q = k80(kappa=kappa);",
+                "Q = hky(kappa=kappa, freq=freq);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);
         Set<Value> values = parser.getRoots();
-        if (values.size() != 1) throw new RuntimeException("Expected 1 root node in the graphical model!");
+        //if (values.size() != 1) throw new RuntimeException("Expected 1 root node in the graphical model!");
 
         Value v = values.iterator().next();
 

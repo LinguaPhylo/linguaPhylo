@@ -14,9 +14,9 @@ public class Exp implements GenerativeDistribution<Double> {
 
     private Random random;
 
-    public Exp(@ParameterInfo(name="rate", description="the rate of an exponential distribution.") Value<Double> rate, Random random) {
+    public Exp(@ParameterInfo(name="rate", description="the rate of an exponential distribution.") Value<Double> rate) {
         this.rate = rate;
-        this.random = random;
+        this.random = Utils.getRandom();
         rateParamName = getParamName(0);
     }
 

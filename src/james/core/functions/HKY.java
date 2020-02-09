@@ -3,29 +3,35 @@ package james.core.functions;
 import james.graphicalModel.*;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.util.List;
+
 /**
  * Created by adru001 on 2/02/20.
  */
-public class K80 extends DeterministicFunction<RealMatrix> {
+public class HKY extends DeterministicFunction<RealMatrix> {
 
-    String paramName;
+    String kappaParamName;
+    String freqParamName;
 
-    public K80(@ParameterInfo(name = "kappa", description = "the kappa of the K80 process.") Value<Double> kappa) {
-        paramName = getParamName(0);
-        setParam(paramName, kappa);
+    public HKY(@ParameterInfo(name = "kappa", description = "the kappa of the HKY process.") Value<Double> kappa, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<List<Double>> freq) {
+        kappaParamName = getParamName(0);
+        freqParamName = getParamName(1);
+        setParam(kappaParamName, kappa);
+        setParam(freqParamName, freq);
     }
 
 
     @FunctionInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
     public Value<RealMatrix> apply() {
-        Value<Double> kappa = getParams().get(paramName);
-        return new MatrixValue(getName() + "(" + kappa.getId() + ")", k80(kappa.value()), this);
+        Value<Double> kappa = getParams().get(kappaParamName);
+        Value<List<Double>> freq = getParams().get(freqParamName);
+        return new MatrixValue(getName() + "(" + kappa.getId() + ")", hky(kappa.value(), freq.value()), this);
     }
 
-    private double[][] k80(double kappa) {
+    private double[][] hky(double kappa, List<Double> freqs) {
 
         int numStates = 4;
-
+        
         double[][] Q = new double[numStates][numStates];
 
         double[] totalRates = new double[numStates];
@@ -34,9 +40,9 @@ public class K80 extends DeterministicFunction<RealMatrix> {
             for (int j = 0; j < numStates; j++) {
                 if (i != j) {
                     if (Math.abs(i-j) == 2) {
-                        Q[i][j] = kappa;
+                        Q[i][j] = kappa * freqs.get(j);
                     } else {
-                        Q[i][j] = 1.0;
+                        Q[i][j] = freqs.get(j);
                     }
                 }
                 totalRates[i] += Q[i][j];

@@ -3,12 +3,14 @@ package james.graphicalModel;
 import james.Coalescent;
 import james.core.JCPhyloCTMC;
 import james.core.PhyloCTMC;
+import james.core.distributions.Dirichlet;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
 import james.swing.GraphicalModelChangeListener;
 import james.swing.GraphicalModelListener;
 
+import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -34,7 +36,7 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class};
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class, Dirichlet.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
@@ -43,6 +45,7 @@ public class GraphicalModelParser {
         functionDictionary.put("exp", james.core.functions.Exp.class);
         functionDictionary.put("jukesCantor", james.core.functions.JukesCantor.class);
         functionDictionary.put("k80", james.core.functions.K80.class);
+        functionDictionary.put("hky", james.core.functions.HKY.class);
     }
 
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
@@ -85,7 +88,7 @@ public class GraphicalModelParser {
         } else if (isKeywordLine(line)) {
             parseKeywordLine(line, lineNumber);
         } else if (isValueId(line)) {
-            selectValue(dictionary.get(line.substring(0,line.length()-1)));
+            selectValue(dictionary.get(line.substring(0, line.length() - 1)));
         } else {
             throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
         }
@@ -100,7 +103,7 @@ public class GraphicalModelParser {
     }
 
     private boolean isValueId(String line) {
-        return dictionary.keySet().contains(line.substring(0,line.length()-1));
+        return dictionary.keySet().contains(line.substring(0, line.length() - 1));
     }
 
     private void parseKeywordLine(String line, int lineNumber) {
@@ -130,7 +133,8 @@ public class GraphicalModelParser {
                 } else {
                     System.out.println("Value named " + argument + " not found.");
                 }
-            } else throw new RuntimeException("Parsing error: expected ')' after argument to keyword " + Keyword.remove);
+            } else
+                throw new RuntimeException("Parsing error: expected ')' after argument to keyword " + Keyword.remove);
 
         } else throw new RuntimeException("Parsing error: expected '(' after keyword " + Keyword.remove);
     }
@@ -167,6 +171,9 @@ public class GraphicalModelParser {
 
     private Value parseLiteralValue(String id, String valueString, int lineNumber) {
 
+        if (valueString.startsWith("[") && valueString.endsWith("]")) {
+            return parseList(id, valueString, lineNumber);
+        }
         try {
             Integer intVal = Integer.parseInt(valueString);
             return new IntegerValue(id, intVal);
@@ -180,6 +187,56 @@ public class GraphicalModelParser {
         }
 
         throw new RuntimeException("Parsing fixed parameter " + id + " with value " + valueString + " failed on line " + lineNumber);
+    }
+
+    private Value parseList(String id, String valueString, int lineNumber) {
+        String[] elements = valueString.substring(1, valueString.length() - 1).split(",");
+        for (int i = 0; i < elements.length; i++) {
+            elements[i] = elements[i].trim();
+        }
+
+
+        if (isInteger(elements[0])) {
+            List<Integer> values = new ArrayList<>();
+            for (int i = 0; i < elements.length; i++) {
+                try {
+                    values.add(Integer.parseInt(elements[i]));
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Parser error: parsing integer list at line number " + lineNumber + " but found non-integer:" + elements[i]);
+                }
+                return new IntegerListValue(id, values);
+            }
+        } else if (isDouble(elements[0])) {
+            List<Double> values = new ArrayList<>();
+            for (int i = 0; i < elements.length; i++) {
+                try {
+                    values.add(Double.parseDouble(elements[i]));
+
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Parser error: parsing real list at line number " + lineNumber + " but found non-real:" + elements[i]);
+                }
+            }
+            return new DoubleListValue(id, values);
+        }
+        throw new RuntimeException("Parser error: parsing number list at line number " + lineNumber + " but found non-number:" + elements[0]);
+    }
+
+    private boolean isInteger(String s) {
+        try {
+            Integer intVal = Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isDouble(String s) {
+        try {
+            Double doubleVal = Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private void parseFunctionLine(String line, int lineNumber) {
@@ -341,7 +398,7 @@ public class GraphicalModelParser {
         TreeMap<String, String> arguments = new TreeMap<>();
         for (String argumentPair : argumentStrings) {
             if (argumentPair.indexOf('=') < 0) {
-                argumentPair = "x="+argumentPair;
+                argumentPair = "x=" + argumentPair;
             }
             String[] keyValue = argumentPair.split("=");
             if (keyValue.length != 2)
@@ -373,6 +430,12 @@ public class GraphicalModelParser {
 
             String remainder = line.substring(firstEquals + 1);
             String valueString = remainder.substring(0, remainder.indexOf(';'));
+            valueString = valueString.trim();
+
+            if (valueString.startsWith("[") && valueString.endsWith("]")) {
+                // is list
+                return true;
+            }
 
             try {
                 Double val = Double.parseDouble(valueString);
