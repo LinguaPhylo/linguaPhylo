@@ -147,8 +147,11 @@ public class GraphicalModelPanel extends JPanel {
 
         String[] lines = {
                 "α = [2.0,2.0,2.0,2.0];",
+                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+                "r ~ Dirichlet(concentration=α_r);",
                 "freq ~ Dirichlet(concentration=α);",
-                "kappa = 10.0;",
+//                "r = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];",
+//                "freq = [0.25, 0.25, 0.25, 0.25];",
                 "L = 50;",
                 "mu = 0.01;",
                 "n = 20;",
@@ -156,7 +159,7 @@ public class GraphicalModelPanel extends JPanel {
                 "sd = 1.0;",
                 "logTheta ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(logTheta);",
-                "Q = hky(kappa=kappa, freq=freq);",
+                "Q = gtr(rates=r, freq=freq);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
 

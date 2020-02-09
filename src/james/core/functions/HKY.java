@@ -25,7 +25,7 @@ public class HKY extends DeterministicFunction<RealMatrix> {
     public Value<RealMatrix> apply() {
         Value<Double> kappa = getParams().get(kappaParamName);
         Value<List<Double>> freq = getParams().get(freqParamName);
-        return new MatrixValue(getName() + "(" + kappa.getId() + ")", hky(kappa.value(), freq.value()), this);
+        return new MatrixValue(getName() + "(" + kappa.getId() + ", " + freq.getId() + ")", hky(kappa.value(), freq.value()), this);
     }
 
     private double[][] hky(double kappa, List<Double> freqs) {
@@ -53,7 +53,7 @@ public class HKY extends DeterministicFunction<RealMatrix> {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < numStates; i++) {
-            subst += -Q[i][i] * 0.25;
+            subst += -Q[i][i] * freqs.get(i);
         }
 
         for (int i = 0; i < numStates; i++) {
