@@ -1,6 +1,7 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.IntegerValue;
 
 public class Floor extends DeterministicFunction<Integer> {
 

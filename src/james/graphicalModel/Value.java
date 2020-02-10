@@ -1,8 +1,13 @@
 package james.graphicalModel;
 
+import james.graphicalModel.swing.DoubleValueEditor;
+import james.graphicalModel.swing.IntegerValueEditor;
+import james.graphicalModel.types.DoubleValue;
+import james.graphicalModel.types.IntegerValue;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +91,13 @@ public class Value<T> implements Viewable {
         } else if (this instanceof IntegerValue && function == null) {
             return new IntegerValueEditor((IntegerValue) this);
         } else {
-            return new JLabel(value.toString());
+            if (value.toString().length() < 80) {
+                return new JLabel(value.toString());
+            } else {
+                JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
+                scrollPane.setPreferredSize(new Dimension(600,20));
+                return scrollPane;
+            }
         }
     }
 

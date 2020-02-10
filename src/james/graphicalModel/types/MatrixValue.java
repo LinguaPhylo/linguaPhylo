@@ -1,5 +1,8 @@
-package james.graphicalModel;
+package james.graphicalModel.types;
 
+import james.graphicalModel.DeterministicFunction;
+import james.graphicalModel.Value;
+import james.graphicalModel.Viewable;
 import james.swing.RealMatrixEditor;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -13,14 +16,13 @@ import java.awt.*;
 public class MatrixValue extends Value<RealMatrix> implements Viewable {
 
     public MatrixValue(String id, double[][] value, DeterministicFunction<RealMatrix> function) {
-        super(id, new Array2DRowRealMatrix(value));
-        this.function = function;
+        super(id, new Array2DRowRealMatrix(value), function);
     }
 
     public JComponent getViewer() {
 
         JComponent realMatrixComponent = new RealMatrixEditor(value(), false);
-        realMatrixComponent.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), id));
+        realMatrixComponent.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), getId()));
         return realMatrixComponent;
     }
 

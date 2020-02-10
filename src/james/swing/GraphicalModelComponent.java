@@ -1,6 +1,10 @@
 package james.swing;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleListValue;
+import james.graphicalModel.types.DoubleValue;
+import james.graphicalModel.types.IntegerListValue;
+import james.graphicalModel.types.MatrixValue;
 
 import javax.swing.*;
 import java.awt.*;

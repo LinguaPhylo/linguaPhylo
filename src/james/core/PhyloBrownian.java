@@ -4,18 +4,15 @@ import james.TimeTree;
 import james.TimeTreeNode;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 
 import java.util.*;
 
 /**
  * Created by adru001 on 2/02/20.
  */
-public class PhyloBrownian implements GenerativeDistribution<List<Double>> {
+public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>> {
 
     Value<TimeTree> tree;
     Value<Double> diffusionRate;
@@ -58,19 +55,16 @@ public class PhyloBrownian implements GenerativeDistribution<List<Double>> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public RandomVariable<List<Double>> sample() {
+    public RandomVariable<Map<String, Double>> sample() {
 
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
 
-        Double[] tipValues = new Double[tree.value().n()];
+        Map<String, Double> tipValues = new TreeMap<>();
 
         traverseTree(tree.value().getRoot(), y0, tipValues, diffusionRate.value(), idMap);
 
-
-        List<Double> tipValueList = Arrays.asList(tipValues);
-
-        return new RandomVariable<>("x", tipValueList, this);
+        return new RandomVariable<>("x", tipValues, this);
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
@@ -90,9 +84,9 @@ public class PhyloBrownian implements GenerativeDistribution<List<Double>> {
         }
     }
 
-    private void traverseTree(TimeTreeNode node, Value<Double> nodeState, Double[] tipValues, double diffusionRate, Map<String, Integer> idMap) {
+    private void traverseTree(TimeTreeNode node, Value<Double> nodeState, Map<String, Double> tipValues, double diffusionRate, Map<String, Integer> idMap) {
         if (node.isLeaf()) {
-            tipValues[idMap.get(node.getId())] = nodeState.value();
+            tipValues.put(node.getId(), nodeState.value());
         } else {
             for (TimeTreeNode child : node.getChildren()) {
 

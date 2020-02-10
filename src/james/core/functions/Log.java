@@ -1,6 +1,7 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleValue;
 
 public class Log extends DeterministicFunction<Double> {
 

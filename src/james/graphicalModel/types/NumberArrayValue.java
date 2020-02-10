@@ -1,4 +1,6 @@
-package james.graphicalModel;
+package james.graphicalModel.types;
+
+import james.graphicalModel.Value;
 
 public class NumberArrayValue<U extends Number> extends Value<U[]> {
 

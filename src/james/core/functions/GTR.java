@@ -1,9 +1,9 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.MatrixValue;
 import org.apache.commons.math3.linear.RealMatrix;
 
-import javax.swing.*;
 import java.util.List;
 
 /**

@@ -8,10 +8,13 @@ import james.core.distributions.Dirichlet;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
+import james.graphicalModel.types.DoubleListValue;
+import james.graphicalModel.types.DoubleValue;
+import james.graphicalModel.types.IntegerListValue;
+import james.graphicalModel.types.IntegerValue;
 import james.swing.GraphicalModelChangeListener;
 import james.swing.GraphicalModelListener;
 
-import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

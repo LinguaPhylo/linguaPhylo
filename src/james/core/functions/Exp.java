@@ -1,8 +1,7 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
-
-import java.util.Map;
+import james.graphicalModel.types.DoubleValue;
 
 public class Exp extends DeterministicFunction<Double> {
 

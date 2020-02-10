@@ -4,6 +4,7 @@ import james.TimeTree;
 import james.TimeTreeNode;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
+import james.graphicalModel.types.IntegerValue;
 import org.apache.commons.math3.linear.*;
 
 import java.util.*;

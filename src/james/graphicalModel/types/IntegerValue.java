@@ -1,4 +1,7 @@
-package james.graphicalModel;
+package james.graphicalModel.types;
+
+import james.graphicalModel.DeterministicFunction;
+import james.graphicalModel.types.NumberValue;
 
 public class IntegerValue extends NumberValue<Integer> {
 

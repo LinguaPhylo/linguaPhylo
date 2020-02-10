@@ -1,4 +1,6 @@
-package james.graphicalModel;
+package james.graphicalModel.types;
+
+import james.graphicalModel.DeterministicFunction;
 
 public class DoubleValue extends NumberValue<Double> {
 

@@ -1,14 +1,17 @@
-package james.graphicalModel;
+package james.graphicalModel.swing;
+
+import james.graphicalModel.Value;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class DoubleValueEditor extends JTextField {
+public class IntegerValueEditor extends JTextField {
 
-    private Value<Double> value;
+    private Value<Integer> value;
+    //JLabel message = new JLabel();
 
-    public DoubleValueEditor(Value<Double> value)  {
+    public IntegerValueEditor(Value<Integer> value)  {
 
         this.value = value;
         //JLabel label = new JLabel("<html><font color=\"#808080\" >" + value.getId() + ":</font></html>");
@@ -18,6 +21,7 @@ public class DoubleValueEditor extends JTextField {
 
         setText(value.value().toString());
         setColumns(12);
+
 
         getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -38,10 +42,10 @@ public class DoubleValueEditor extends JTextField {
 
             void setValue(String text) {
                 try {
-                    Double d = Double.parseDouble(getText());
-                    value.setValue(d);
+                    Integer n = Integer.parseInt(getText());
+                    value.setValue(n);
                     //message.setText("");
-                } catch (java.lang.NumberFormatException ne) {
+                } catch (NumberFormatException ne) {
                     //message.setText("'" + textField.getText() + "' is not a double.");
                 }
 

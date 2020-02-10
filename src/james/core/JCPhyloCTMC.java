@@ -1,10 +1,10 @@
 package james.core;
 
-import james.ColorTable;
 import james.TimeTree;
 import james.TimeTreeNode;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleValue;
 
 import java.util.*;
 
