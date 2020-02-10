@@ -5,6 +5,7 @@ import james.graphicalModel.Value;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
 
 public class DoubleValueEditor extends JTextField {
 
@@ -17,6 +18,8 @@ public class DoubleValueEditor extends JTextField {
 
         //BoxLayout boxLayout = new BoxLayout(this,BoxLayout.LINE_AXIS);
         //add(label);
+
+        //setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(1,0,0,0, Color.lightGray), "<html><font color=\"#808080\" >" + value.getId() + "</font></html>"));
 
         setText(value.value().toString());
         setColumns(12);

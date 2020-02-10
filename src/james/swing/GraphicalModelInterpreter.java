@@ -55,6 +55,12 @@ public class GraphicalModelInterpreter extends JPanel {
         canonicalWords.put("\\theta", "θ");
         canonicalWords.put("\\Gamma", "Γ");
         canonicalWords.put("\\Theta", "Θ");
+        canonicalWords.put("\\phi", "φ");
+        canonicalWords.put("\\epsilon", "ε");
+        canonicalWords.put("\\psi", "ψ");
+        canonicalWords.put("\\pi", "π");
+        canonicalWords.put("\\Pi", "Π");
+
 
         interpreterField.addKeyListener(new KeyAdapter() {
             @Override

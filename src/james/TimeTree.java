@@ -4,6 +4,7 @@ import james.graphicalModel.Value;
 import james.swing.HasComponentView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,8 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     @Override
     public JComponent getComponent(Value<TimeTree> timeTreeValue) {
-        return new TimeTreeComponent(timeTreeValue.value());
+        TimeTreeComponent component = new TimeTreeComponent(timeTreeValue.value());
+        return component;
     }
 
     public String toString() {

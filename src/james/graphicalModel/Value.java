@@ -5,6 +5,7 @@ import james.graphicalModel.swing.IntegerValueEditor;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerValue;
 import james.swing.HasComponentView;
+import james.swing.JSONPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,7 +82,7 @@ public class Value<T> implements Viewable {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
-            component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), id));
+            //component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), id));
 
             return component;
         }
@@ -94,9 +95,16 @@ public class Value<T> implements Viewable {
             if (value.toString().length() < 80) {
                 return new JLabel(value.toString());
             } else {
-                JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
-                scrollPane.setPreferredSize(new Dimension(600,20));
-                return scrollPane;
+                String valueString = value.toString();
+                valueString = valueString.replace(", ", ",\n");
+
+                JTextArea textArea = new JTextArea(valueString);
+                textArea.setEditable(false);
+
+                return textArea;
+                //JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
+                //scrollPane.setPreferredSize(new Dimension(600,50));
+                //return scrollPane;
             }
         }
     }

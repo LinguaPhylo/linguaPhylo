@@ -3,6 +3,7 @@ package james.swing;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import sun.plugin.javascript.JSClassLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +25,8 @@ public class GraphicalModelPanel extends JPanel {
     Object displayedElement;
 
     Map<Class, ViewerFactory> viewerFactories = new HashMap<>();
+
+    JScrollPane currentSelectionContainer = new JScrollPane();
 
 
     GraphicalModelPanel(GraphicalModelParser parser) {
@@ -59,6 +62,7 @@ public class GraphicalModelPanel extends JPanel {
             public void valueSelected(Value value) {
 
                 showValue(value);
+                rightPane.setSelectedIndex(0);
             }
 
             @Override
@@ -79,6 +83,7 @@ public class GraphicalModelPanel extends JPanel {
         parser.addGraphicalModelListener(new GraphicalModelListener() {
             @Override
             public void valueSelected(Value value) {
+
                 showValue(value);
             }
 
@@ -95,8 +100,12 @@ public class GraphicalModelPanel extends JPanel {
         
         add(interpreter, BorderLayout.SOUTH);
 
+        //currentSelectionContainer.setLayout(new BoxLayout(currentSelectionContainer, BoxLayout.PAGE_AXIS));
+        currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
         rightPane = new JTabbedPane();
-        rightPane.addTab("Current", new JPanel());
+        rightPane.addTab("Current", currentSelectionContainer);
         rightPane.addTab("Values", new StatePanel(parser, true, false, false));
         rightPane.addTab("Variables", new StatePanel(parser, false, true, false));
         rightPane.addTab("JSON", new JSONPanel(parser));
@@ -126,20 +135,37 @@ public class GraphicalModelPanel extends JPanel {
 
     void showValue(Value value) {
         displayedElement = value;
-        rightPane.setComponentAt(0, getViewer(value));
+
+        JComponent viewer = getViewer(value);
+
+        if (viewer.getPreferredSize().height > 1) {
+            JPanel viewerPanel = new JPanel();
+            viewerPanel.setOpaque(false);
+            viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            viewerPanel.add(viewer);
+            viewer = viewerPanel;
+        }
+
+        currentSelectionContainer.setViewportView(viewer);
+        currentSelectionContainer.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
+                        "<html><font color=\"#808080\" >" + value.getId() + "</font></html>"));
         repaint();
     }
 
     private void showGenerativeDistribution(GenerativeDistribution g) {
         displayedElement = g;
-        rightPane.setComponentAt(0, getViewer(g));
+        currentSelectionContainer.removeAll();
+        currentSelectionContainer.add(getViewer(g));
         repaint();
 
     }
 
     private void showFunction(DeterministicFunction f) {
         displayedElement = f;
-        rightPane.setComponentAt(0, getViewer(f));
+        currentSelectionContainer.removeAll();
+        currentSelectionContainer.add(getViewer(f));
         repaint();
     }
 
@@ -162,7 +188,7 @@ public class GraphicalModelPanel extends JPanel {
 //                "Q = gtr(rates=r, freq=freq);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "y0 = 0.0;",
-                "r = 1.0;",
+                "r = 0.01;",
 //                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);",
                 "y ~ PhyloBrownian(r=r, y0=y0, tree=ψ);"};
 

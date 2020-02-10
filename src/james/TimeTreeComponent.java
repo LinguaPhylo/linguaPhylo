@@ -1,6 +1,8 @@
 package james;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.geom.*;
 import java.text.NumberFormat;
@@ -16,10 +18,11 @@ public class TimeTreeComponent extends JComponent {
     BranchStyle branchStyle = BranchStyle.SQUARE;
     NodeDecorator leafDecorator, internalNodeDecorator;
     NodePositioningRule positioningRule = NodePositioningRule.AVERAGE_OF_CHILDREN;
-    
+
     String caption = null;
     String colorTraitName = null;
 
+    private boolean borderSet = false;
 
     TimeTree tree;
 
@@ -38,11 +41,11 @@ public class TimeTreeComponent extends JComponent {
 
 
     public TimeTreeComponent() {
-        setBorder(BorderFactory.createEmptyBorder(10,1,10,40));
     }
 
     public TimeTreeComponent(TimeTree tree) {
         this();
+
         setTimeTree(tree);
     }
 
@@ -304,6 +307,20 @@ public class TimeTreeComponent extends JComponent {
     }
 
     public void paintComponent(Graphics g) {
+
+        if (!borderSet) {
+            int maxWidth = 0;
+            FontMetrics metrics = g.getFontMetrics();
+            for (TimeTreeNode node : tree.nodes) {
+                if (node.getId() != null) {
+                    int stringWidth = metrics.stringWidth(node.getId());
+                    if (stringWidth > maxWidth) maxWidth = stringWidth;
+                }
+            }
+            setBorder(BorderFactory.createEmptyBorder(metrics.getHeight()/2+1,1,metrics.getHeight()/2+1,maxWidth));
+            borderSet = true;
+
+        }
 
         Insets insets = getInsets();
         g.translate(insets.left,insets.top);
