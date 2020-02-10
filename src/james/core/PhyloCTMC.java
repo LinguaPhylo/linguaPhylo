@@ -67,6 +67,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
 
+
+        //TODO need to use explicit root distribution
         GenerativeDistribution<Integer> rootDistribution =
                 new DiscreteDistribution(new Value<>("rootProb", new double[]{0.25, 0.25, 0.25, 0.25}), random);
 

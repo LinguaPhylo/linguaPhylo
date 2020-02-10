@@ -2,6 +2,7 @@ package james.graphicalModel;
 
 import james.Coalescent;
 import james.core.JCPhyloCTMC;
+import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.distributions.Dirichlet;
 import james.core.distributions.Exp;
@@ -36,7 +37,7 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class, Dirichlet.class};
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
