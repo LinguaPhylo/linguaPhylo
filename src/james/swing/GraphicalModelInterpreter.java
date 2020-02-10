@@ -1,7 +1,6 @@
 package james.swing;
 
 import james.graphicalModel.GraphicalModelParser;
-import org.antlr.v4.runtime.BufferedTokenStream;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -11,7 +10,6 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.List;
 
 public class GraphicalModelInterpreter extends JPanel {
 
@@ -19,6 +17,16 @@ public class GraphicalModelInterpreter extends JPanel {
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
+
+    static String[] greekLetterCodes = {
+            "\\alpha", "\\beta", "\\gamma", "\\delta", "\\epsilon", "\\zeta", "\\eta", "\\theta", "\\iota", "\\kappa",
+            "\\lambda", "\\mu", "\\nu", "\\xi", "\\omicron", "\\pi", "\\rho", "\\sigma", "\\tau", "\\upsilon",
+            "\\phi", "\\chi", "\\psi", "\\omega", "\\Gamma", "\\Delta", "\\Theta", "\\Lambda", "\\Xi", "\\Pi",
+            "\\Sigma", "\\Omega"};
+
+    String[] greekLetters = {
+            "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ",
+            "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω"};
 
     Font interpreterFont =  new Font("monospaced", Font.PLAIN, 12);
 
@@ -47,20 +55,13 @@ public class GraphicalModelInterpreter extends JPanel {
             interpreterField.setText("");
         });
 
-        canonicalWords.put("\\alpha", "α");
-        canonicalWords.put("\\beta", "β");
-        canonicalWords.put("\\gamma", "γ");
-        canonicalWords.put("\\kappa", "κ");
-        canonicalWords.put("\\mu", "μ");
-        canonicalWords.put("\\theta", "θ");
-        canonicalWords.put("\\Gamma", "Γ");
-        canonicalWords.put("\\Theta", "Θ");
-        canonicalWords.put("\\phi", "φ");
-        canonicalWords.put("\\epsilon", "ε");
-        canonicalWords.put("\\psi", "ψ");
-        canonicalWords.put("\\pi", "π");
-        canonicalWords.put("\\Pi", "Π");
+        if (greekLetterCodes.length != greekLetters.length) {
+            throw new RuntimeException("Error! Mismatched array lengths for greek letter codes and symbols");
+        }
 
+        for (int i = 0; i < greekLetterCodes.length; i++) {
+            canonicalWords.put(greekLetterCodes[i], greekLetters[i]);
+        }
 
         interpreterField.addKeyListener(new KeyAdapter() {
             @Override
