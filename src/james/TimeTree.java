@@ -1,10 +1,9 @@
 package james;
 
 import james.graphicalModel.Value;
-import james.swing.HasComponentView;
+import james.app.HasComponentView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

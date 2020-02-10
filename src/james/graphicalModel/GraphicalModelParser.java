@@ -12,8 +12,8 @@ import james.graphicalModel.types.DoubleListValue;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerListValue;
 import james.graphicalModel.types.IntegerValue;
-import james.swing.GraphicalModelChangeListener;
-import james.swing.GraphicalModelListener;
+import james.app.GraphicalModelChangeListener;
+import james.app.GraphicalModelListener;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

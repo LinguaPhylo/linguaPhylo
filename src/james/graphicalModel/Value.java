@@ -4,11 +4,9 @@ import james.graphicalModel.swing.DoubleValueEditor;
 import james.graphicalModel.swing.IntegerValueEditor;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerValue;
-import james.swing.HasComponentView;
-import james.swing.JSONPanel;
+import james.app.HasComponentView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;

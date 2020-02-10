@@ -1,11 +1,10 @@
-package james.swing;
+package james.app;
 
 import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 public class RealMatrixEditor extends JPanel {
 

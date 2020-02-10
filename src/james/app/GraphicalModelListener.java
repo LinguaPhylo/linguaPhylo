@@ -1,7 +1,6 @@
-package james.swing;
+package james.app;
 
 import james.graphicalModel.DeterministicFunction;
-import james.graphicalModel.Function;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.Value;
 

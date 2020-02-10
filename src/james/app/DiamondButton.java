@@ -1,4 +1,4 @@
-package james.swing;
+package james.app;
 
 import javax.swing.JButton;
 import java.awt.*;

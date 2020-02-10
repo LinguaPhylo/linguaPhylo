@@ -1,4 +1,4 @@
-package james.swing;
+package james.app;
 
 import james.TimeTree;
 import james.TimeTreeComponent;

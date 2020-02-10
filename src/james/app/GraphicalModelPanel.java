@@ -1,9 +1,8 @@
-package james.swing;
+package james.app;
 
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import sun.plugin.javascript.JSClassLoader;
 
 import javax.swing.*;
 import java.awt.*;

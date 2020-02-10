@@ -3,12 +3,11 @@ package james.graphicalModel.types;
 import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.Value;
 import james.graphicalModel.Viewable;
-import james.swing.RealMatrixEditor;
+import james.app.RealMatrixEditor;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by adru001 on 2/02/20.

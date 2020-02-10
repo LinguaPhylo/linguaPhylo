@@ -1,8 +1,8 @@
 package james.core;
 
 import james.graphicalModel.Value;
-import james.swing.AlignmentComponent;
-import james.swing.HasComponentView;
+import james.app.AlignmentComponent;
+import james.app.HasComponentView;
 
 import javax.swing.*;
 import java.util.Arrays;
