@@ -1,6 +1,7 @@
 package james.swing;
 
 import james.graphicalModel.GraphicalModelParser;
+import org.antlr.v4.runtime.BufferedTokenStream;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,11 +9,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
 
 public class GraphicalModelInterpreter extends JPanel {
@@ -28,6 +26,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Border textBorder = BorderFactory.createEmptyBorder(BORDER_SIZE,BORDER_SIZE,BORDER_SIZE,BORDER_SIZE);
 
+    Map<String, String> canonicalWords = new TreeMap<>();
 
     public GraphicalModelInterpreter(GraphicalModelParser parser) {
         this.parser = parser;
@@ -48,7 +47,29 @@ public class GraphicalModelInterpreter extends JPanel {
             interpreterField.setText("");
         });
 
+        canonicalWords.put("\\alpha", "α");
+        canonicalWords.put("\\beta", "β");
+        canonicalWords.put("\\gamma", "γ");
+        canonicalWords.put("\\kappa", "κ");
+        canonicalWords.put("\\mu", "μ");
+        canonicalWords.put("\\theta", "θ");
+        canonicalWords.put("\\Gamma", "Γ");
+        canonicalWords.put("\\Theta", "Θ");
 
+        interpreterField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyChar() == ' ' || e.getKeyChar() == '=' || e.getKeyChar() == ',' || e.getKeyChar() == '~') {
+                    String lastWord = lastWord(" |\\=|\\,|~");
+                    String canonicalWord = getCanonicalWord(lastWord);
+                    if (!lastWord.equals(canonicalWord)) {
+                        String newText = interpreterField.getText().replace(lastWord, canonicalWord);
+                        interpreterField.setText(newText);
+                        interpreterField.setCaretPosition(newText.length());
+                    }
+                }
+            }
+        });
 
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
@@ -66,6 +87,17 @@ public class GraphicalModelInterpreter extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
         add(activeLine, BorderLayout.SOUTH);
+    }
+
+    private String getCanonicalWord(String word) {
+        String canonicalWord = canonicalWords.get(word);
+        if (canonicalWord != null) return canonicalWord;
+        return word;
+    }
+
+    private String lastWord(String delimiters) {
+        String[] words = interpreterField.getText().split(delimiters);
+        return words[words.length-1];
     }
 
     private void interpretInput(String input) {
