@@ -23,8 +23,6 @@ public class GraphicalModelPanel extends JPanel {
 
     Object displayedElement;
 
-    Map<Class, ViewerFactory> viewerFactories = new HashMap<>();
-
     JScrollPane currentSelectionContainer = new JScrollPane();
 
 
@@ -32,9 +30,7 @@ public class GraphicalModelPanel extends JPanel {
 
         this.parser = parser;
         interpreter = new GraphicalModelInterpreter(parser);
-
-        registerViewerFactory(Array2DRowRealMatrix.class, RealMatrixEditor.viewerFactory());
-
+        
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(sampleButton);
@@ -114,26 +110,8 @@ public class GraphicalModelPanel extends JPanel {
         showValue(parser.getRoots().iterator().next());
     }
 
-    public void registerViewerFactory(Class c, ViewerFactory factory) {
-        viewerFactories.put(c, factory);
-    }
-
     public JComponent getViewer(Object object) {
 
-        if (object instanceof Value) {
-
-            Class c = ((Value)object).value().getClass();
-
-            System.out.println("Trying to find a view factory for " + c);
-
-            ViewerFactory factory = viewerFactories.get(c);
-            if (factory != null) {
-                System.out.println("Found view factory for " + c);
-
-                return factory.createViewer(object);
-            }
-        }
-        
         if (object instanceof Viewable) {
             return ((Viewable) object).getViewer();
         }

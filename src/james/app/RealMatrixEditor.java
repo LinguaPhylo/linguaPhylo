@@ -52,8 +52,4 @@ public class RealMatrixEditor extends JPanel {
             }
         }
     }
-
-    public static ViewerFactory<RealMatrix> viewerFactory() {
-        return matrix -> new RealMatrixEditor(matrix, false);
-    }
 }
