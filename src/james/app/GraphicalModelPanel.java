@@ -171,25 +171,23 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
-//                "α = [2.0,2.0,2.0,2.0];",
-//                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-//                "r ~ Dirichlet(concentration=α_r);",
-//                "freq ~ Dirichlet(concentration=α);",
-//                "r = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];",
-//                "freq = [0.25, 0.25, 0.25, 0.25];",
-//                "L = 50;",
-//                "mu = 0.01;",
+                "α = [2.0,2.0,2.0,2.0];",
+                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+                "r ~ Dirichlet(concentration=α_r);",
+                "freq ~ Dirichlet(concentration=α);",
+                "L = 50;",
+                "mu = 0.01;",
                 "n = 20;",
                 "mean = 3.0;",
                 "sd = 1.0;",
                 "logTheta ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(logTheta);",
-//                "Q = gtr(rates=r, freq=freq);",
+                "Q = gtr(rates=r, freq=freq);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "y0 = 0.0;",
-                "r = 0.01;",
-//                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);",
-                "y ~ PhyloBrownian(r=r, y0=y0, tree=ψ);"};
+                "σ2 = 0.01;",
+                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);",
+                "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);

@@ -1,20 +1,16 @@
 package james.app;
 
 import james.graphicalModel.*;
-import james.graphicalModel.types.DoubleListValue;
-import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerListValue;
-import james.graphicalModel.types.MatrixValue;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.*;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+
+import static james.app.RenderNode.*;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -23,146 +19,66 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     GraphicalModelParser parser;
 
-    double HSPACE = 100;
-    double VSPACE = 100;
-
-    double FACTOR_SIZE = 7;
-    double FACTOR_LABEL_GAP = 10;
-
-    double VAR_WIDTH = 100;
-    double VAR_HEIGHT = 60;
-
     double ARROWHEAD_WIDTH = 4;
     double ARROWHEAD_DEPTH = 10;
 
-    double BORDER = 20;
-
     float STROKE_SIZE = 1.0f;
 
-    Map<Object, JButton> buttonMap;
-    Map<Object, JComboBox> comboBoxMap;
-
-    boolean sizesComputed = false;
-
     List<GraphicalModelListener> listeners = new ArrayList<>();
+
+    RenderNodePool pool;
+
+    boolean sizeChanged = true;
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
 
-        buttonMap = new HashMap<>();
-        comboBoxMap = new HashMap<>();
-
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                recomputeSizes();
-                generateButtons();
                 super.componentResized(e);
+                sizeChanged = true;
+                repaint();
             }
         });
 
-        format.setMaximumFractionDigits(3);
+        setup();
+        parser.addGraphicalModelChangeListener(() -> setup());
     }
 
-    private void recomputeSizes() {
-        VSPACE = (getHeight() - 2 * BORDER) / computeMaxLevel();
+    private void setup() {
+        removeAll();
+        pool = new RenderNodePool();
 
-    }
+        for (Value val : parser.getRoots()) {
+            pool.addRoot(val);
+        }
+        
+        for (RenderNode node : pool.getRenderNodes()) {
 
-    private int computeMaxLevel() {
-
-        final int[] ml = {1};
-
-        for (Value value : parser.getRoots()) {
-            traverseGraphicalModel(value, null, null, 1, new NodeVisitor() {
-                @Override
-                public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                    if (level > ml[0]) ml[0] = level;
-                }
-
-                @Override
-                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                    if (level > ml[0]) ml[0] = level;
-                }
-
-                @Override
-                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
-                    if (level > ml[0]) ml[0] = level;
+            JButton button = node.getButton();
+            button.addActionListener(e -> {
+                if (node.value() instanceof Value) {
+                    for (GraphicalModelListener listener : listeners) {
+                        listener.valueSelected((Value) node.value());
+                    }
                 }
             });
+            add(button);
         }
-
-        return ml[0];
+        sizeChanged = true;
     }
 
     public void addGraphicalModelListener(GraphicalModelListener listener) {
         listeners.add(listener);
     }
 
-    private Point2D getStartPoint(double frac) {
-        return new Point2D.Double(frac * getWidth(), getHeight() - BORDER - (VAR_HEIGHT / 2));
-    }
-
-    private void traverseGraphicalModel(Value value, Point2D currentP, Point2D prevP, int level, NodeVisitor visitor) {
-
-        visitor.visitValue(value, currentP, prevP, level);
-
-        if (value instanceof RandomVariable) {
-            // recursion
-            Point2D newP = null;
-            if (currentP != null) {
-                newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
-            }
-            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), newP, currentP, level + 1, visitor);
-        } else if (value.getFunction() != null) {
-            // recursion
-            Point2D newP = null;
-            if (currentP != null) {
-                newP = new Point2D.Double(currentP.getX(), currentP.getY() - VSPACE);
-            }
-            traverseGraphicalModel(value.getFunction(), newP, currentP, level + 1, visitor);
-        }
-    }
-
-    private void traverseGraphicalModel(GenerativeDistribution genDist, Point2D p, Point2D q, int level, NodeVisitor visitor) {
-
-        visitor.visitGenEdge(genDist, p, q, level);
-
-        Map<String, Value> map = genDist.getParams();
-
-        double width = (map.size() - 1) * HSPACE;
-        double x = 0;
-        if (p != null) x = p.getX() - width / 2.0;
-
-        for (Map.Entry<String, Value> e : map.entrySet()) {
-            Point2D p1 = null;
-            if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
-            x += HSPACE;
-        }
-    }
-
-    private void traverseGraphicalModel(DeterministicFunction function, Point2D p, Point2D q, int level, NodeVisitor visitor) {
-
-        visitor.visitFunctionEdge(function, p, q, level);
-
-        Map<String, Value> map = function.getParams();
-
-        double width = (map.size() - 1) * HSPACE;
-        double x = 0;
-        if (p != null) x = p.getX() - width / 2.0;
-
-        for (Map.Entry<String, Value> e : map.entrySet()) {
-            Point2D p1 = null;
-            if (p != null) p1 = new Point2D.Double(x, p.getY() - VSPACE);
-            traverseGraphicalModel(e.getValue(), p1, p, level + 1, visitor);
-            x += HSPACE;
-        }
-    }
-
     public void paintComponent(Graphics g) {
 
-        if (!sizesComputed) recomputeSizes();
+        if (sizeChanged) {
+            pool.locateAll(getWidth(), getHeight());
+            sizeChanged = false;
+        }
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -172,61 +88,40 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        List<Value> valueList = new ArrayList<>(parser.getRoots());
+        for (RenderNode node : pool.getRenderNodes()) {
 
-        for (int i = 0; i < valueList.size(); i++) {
+            if (node.value() instanceof Value) {
 
-            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
-                @Override
-                public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                    if (q != null) {
+                double x1 = node.point.getX();
+                double y1 = node.point.getY() + VAR_HEIGHT / 2;
 
-                        double x1 = p.getX();
-                        double y1 = p.getY() + VAR_HEIGHT / 2;
-                        double x2 = q.getX();
-                        double y2 = q.getY() - FACTOR_SIZE;
+                for (RenderNode parent : (List<RenderNode>) node.outputs) {
 
-                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
-                    }
+                    double x2 = parent.point.getX();
+                    double y2 = parent.point.getY() - FACTOR_SIZE;
+
+                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
                 }
+            } else if (node.value() instanceof Parameterized) {
+                Parameterized gen = (Parameterized) node.value();
 
-                @Override
-                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                    String str = genDist.getName();
+                String str = gen.getName();
+                Point2D p = node.point;
+                Point2D q = ((List<RenderNode>) node.outputs).get(0).point;
 
-                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 
-                    double x1 = p.getX();
-                    double y1 = p.getY() + FACTOR_SIZE;
-                    double x2 = q.getX();
-                    double y2 = q.getY() - VAR_HEIGHT / 2;
+                g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 
-                    Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+                double x1 = p.getX();
+                double y1 = p.getY() + FACTOR_SIZE;
+                double x2 = q.getX();
+                double y2 = q.getY() - VAR_HEIGHT / 2;
 
-                    g2d.fill(rect);
+                //Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+                //g2d.fill(rect);
 
-                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
-
-                }
-
-                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
-                    String str = function.getName();
-
-                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
-
-                    double x1 = p.getX();
-                    double y1 = p.getY() + FACTOR_SIZE;
-                    double x2 = q.getX();
-                    double y2 = q.getY() - VAR_HEIGHT / 2;
-
-                    Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
-
-                    g2d.fill(rect);
-
-                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
-
-                }
-            });
+                drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+            }
         }
     }
 
@@ -265,144 +160,119 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g.fill(p);
     }
 
-    DecimalFormat format = new DecimalFormat();
+//    private void generateButtons() {
+//        List<Value> valueList = new ArrayList<>(parser.getRoots());
+//
+//        for (int i = 0; i < valueList.size(); i++) {
+//            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
+//                @Override
+//                public void visitValue(Value value, Point2D p, Point2D q, int level) {
+//                    Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+//                    Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
+//
+//                    if (ValueUtils.isFixedValue(value)) {
+//                        backgroundColor = Color.white;
+//                        borderColor = Color.black;
+//                    } else if (ValueUtils.isValueOfFunction(value)) {
+//                        backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+//                        borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
+//                    }
+//                    if (!parser.getDictionary().values().contains(value)) {
+//                        backgroundColor = backgroundColor.darker();
+//                        borderColor = Color.black;
+//                    }
+//
+//
+//                    String str = getButtonString(value);
+//
+//                    JButton button = buttonMap.get(value);
+//                    if (button == null) {
+//                        if (value.getFunction() != null) {
+//                            button = new DiamondButton(str, backgroundColor, borderColor);
+//                        } else {
+//
+//                            button = new CircleButton(str, backgroundColor, borderColor);
+//                        }
+//                        button.addActionListener(e1 -> {
+//                            for (GraphicalModelListener listener : listeners) {
+//                                listener.valueSelected(value);
+//                            }
+//                        });
+//
+//                        buttonMap.put(value, button);
+//                        add(button);
+//
+//                        JButton finalButton = button;
+//                        value.addValueListener(() -> finalButton.setText(getButtonString(value)));
+//                    }
+//                    button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
+//                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
+//                }
+//
+//                @Override
+//                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
+//                    String dtr = genDist.getName();
+//
+//                    JButton button = buttonMap.get(genDist.codeString());
+//                    if (button == null) {
+//                        button = new JButton("");
+//
+//                        button.addActionListener(e -> {
+//                            for (GraphicalModelListener listener : listeners) {
+//                                listener.generativeDistributionSelected(genDist);
+//                            }
+//                        });
+//
+//                        buttonMap.put(genDist.codeString(), button);
+//
+//                        add(button);
+//                    }
+//
+//                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+//                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
+//
+//
+//                }
+//
+//                @Override
+//                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
+//                    JButton button = buttonMap.get(function.codeString());
+//                    if (button == null) {
+//                        button = new JButton("");
+//
+//                        button.addActionListener(e -> {
+//                            for (GraphicalModelListener listener : listeners) {
+//                                listener.functionSelected(function);
+//                            }
+//                        });
+//
+//                        buttonMap.put(function.codeString(), button);
+//
+//                        add(button);
+//                    }
+//
+//                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
+//                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
+//                }
+//            });
+//        }
+//    }
 
-    private String displayString(Value v) {
-
-        String valueString;
-        if (v instanceof DoubleValue) {
-            valueString = format.format(((DoubleValue) v).value());
-        } else if (v instanceof MatrixValue || v instanceof IntegerListValue || v instanceof DoubleListValue) {
-            return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
-        } else {
-            valueString = v.value().toString();
-        }
-
-        return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";
-    }
-
-    private void generateButtons() {
-        List<Value> valueList = new ArrayList<>(parser.getRoots());
-
-        for (int i = 0; i < valueList.size(); i++) {
-            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
-                @Override
-                public void visitValue(Value value, Point2D p, Point2D q, int level) {
-                    Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-                    Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
-
-                    if (ValueUtils.isFixedValue(value)) {
-                        backgroundColor = Color.white;
-                        borderColor = Color.black;
-                    } else if (ValueUtils.isValueOfFunction(value)) {
-                        backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-                        borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
-                    }
-                    if (!parser.getDictionary().values().contains(value)) {
-                        backgroundColor = backgroundColor.darker();
-                        borderColor = Color.black;
-                    }
-
-
-                    String str = getButtonString(value);
-
-                    JButton button = buttonMap.get(value);
-                    if (button == null) {
-                        if (value.getFunction() != null) {
-                            button = new DiamondButton(str, backgroundColor, borderColor);
-                        } else {
-
-                            button = new CircleButton(str, backgroundColor, borderColor);
-                        }
-                        button.addActionListener(e1 -> {
-                            for (GraphicalModelListener listener : listeners) {
-                                listener.valueSelected(value);
-                            }
-                        });
-
-                        buttonMap.put(value, button);
-                        add(button);
-
-                        JButton finalButton = button;
-                        value.addValueListener(() -> finalButton.setText(getButtonString(value)));
-                    }
-                    button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
-                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
-                }
-
-                @Override
-                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-                    String dtr = genDist.getName();
-
-                    JButton button = buttonMap.get(genDist.codeString());
-                    if (button == null) {
-                        button = new JButton("");
-
-                        button.addActionListener(e -> {
-                            for (GraphicalModelListener listener : listeners) {
-                                listener.generativeDistributionSelected(genDist);
-                            }
-                        });
-
-                        buttonMap.put(genDist.codeString(), button);
-
-                        add(button);
-                    }
-
-                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
-
-
-                }
-
-                @Override
-                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
-                    JButton button = buttonMap.get(function.codeString());
-                    if (button == null) {
-                        button = new JButton("");
-
-                        button.addActionListener(e -> {
-                            for (GraphicalModelListener listener : listeners) {
-                                listener.functionSelected(function);
-                            }
-                        });
-
-                        buttonMap.put(function.codeString(), button);
-
-                        add(button);
-                    }
-
-                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
-                }
-            });
-        }
-    }
-
-    private String getButtonString(Value value) {
-        String str = value.getId();
-
-        if (!(value instanceof RandomVariable)) {
-            str = displayString(value);
-        }
-        return str;
-    }
-
-    private void removeButtons() {
-        for (JButton button : buttonMap.values()) {
-            remove(button);
-            for (ActionListener al : button.getActionListeners()) {
-                button.removeActionListener(al);
-            }
-        }
-        buttonMap.clear();
-    }
+//    private void removeButtons() {
+//        for (JButton button : buttonMap.values()) {
+//            remove(button);
+//            for (ActionListener al : button.getActionListeners()) {
+//                button.removeActionListener(al);
+//            }
+//        }
+//        buttonMap.clear();
+//    }
 
     @Override
     public void modelChanged() {
-        recomputeSizes();
-        removeButtons();
-        generateButtons();
-        repaint();
+//        recomputeSizes();
+//        removeButtons();
+//        generateButtons();
+//        repaint();
     }
 }

@@ -90,7 +90,7 @@ public class Value<T> implements Viewable {
         } else if (this instanceof IntegerValue && function == null) {
             return new IntegerValueEditor((IntegerValue) this);
         } else {
-            if (value.toString().length() < 80) {
+            if (value.toString().length() < 130) {
                 return new JLabel(value.toString());
             } else {
                 String valueString = value.toString();

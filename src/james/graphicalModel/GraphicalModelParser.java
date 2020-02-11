@@ -70,7 +70,11 @@ public class GraphicalModelParser {
         dictionary.values().forEach((val) -> nonArguments.add(val.getId()));
         nonArguments.removeAll(globalArguments);
 
-        Set<Value> nonArgValues = new HashSet<>();
+        SortedSet<Value> nonArgValues = new TreeSet<>(new Comparator<>() {
+            public int compare(Value o1, Value o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
         nonArguments.forEach((id) -> nonArgValues.add(dictionary.get(id)));
 
         return nonArgValues;
@@ -477,10 +481,12 @@ public class GraphicalModelParser {
 
     public void sample() {
 
+        Set<String> sampled = new HashSet<>();
+
         for (Value value : getRoots()) {
 
             if (value instanceof RandomVariable) {
-                RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution());
+                RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
                 variable.setId(value.id);
                 dictionary.put(variable.getId(), variable);
             }
@@ -488,44 +494,54 @@ public class GraphicalModelParser {
         notifyListeners();
     }
 
-    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution) {
+    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {
 
-        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution).entrySet()) {
+        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
             generativeDistribution.setParam(e.getKey(), e.getValue());
+            sampled.add(e.getValue().getId());
         }
 
         return generativeDistribution.sample();
     }
 
-    private Value sampleAll(DeterministicFunction function) {
+    private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
 
-        for (Map.Entry<String, Value> e : getNewlySampledParams(function).entrySet()) {
+        for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
             function.setParam(e.getKey(), e.getValue());
+            sampled.add(e.getValue().getId());
         }
 
         return function.apply();
     }
 
-    private Map<String, Value> getNewlySampledParams(Parameterized parameterized) {
+    private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
         Map<String, Value> params = parameterized.getParams();
 
         Map<String, Value> newlySampledParams = new HashMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
-            if (e.getValue() instanceof RandomVariable) {
-                RandomVariable v = (RandomVariable) e.getValue();
 
-                RandomVariable nv = sampleAll(v.getGenerativeDistribution());
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-                dictionary.put(nv.getId(), nv);
-            } else if (e.getValue().getFunction() != null) {
-                Value v = e.getValue();
-                DeterministicFunction f = e.getValue().getFunction();
+            if (!sampled.contains(e.getValue().getId())) {
+                // needs to be sampled
 
-                Value nv = sampleAll(f);
-                nv.setId(v.getId());
-                newlySampledParams.put(e.getKey(), nv);
-                dictionary.put(nv.getId(), nv);
+                if (e.getValue() instanceof RandomVariable) {
+                    RandomVariable v = (RandomVariable) e.getValue();
+
+                    RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
+                    nv.setId(v.getId());
+                    newlySampledParams.put(e.getKey(), nv);
+                    dictionary.put(nv.getId(), nv);
+                } else if (e.getValue().getFunction() != null) {
+                    Value v = e.getValue();
+                    DeterministicFunction f = e.getValue().getFunction();
+
+                    Value nv = sampleAll(f, sampled);
+                    nv.setId(v.getId());
+                    newlySampledParams.put(e.getKey(), nv);
+                    dictionary.put(nv.getId(), nv);
+                }
+            } else {
+                String id = e.getValue().getId();
+                newlySampledParams.put(e.getKey(), dictionary.get(id));
             }
         }
         return newlySampledParams;

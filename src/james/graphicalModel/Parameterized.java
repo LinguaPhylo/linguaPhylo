@@ -9,6 +9,8 @@ import java.util.Map;
 
 public interface Parameterized {
 
+    String getName();
+
     default String getParamName(int paramIndex, int constructorIndex) {
         return getParameterInfo(constructorIndex).get(paramIndex).name();
     }

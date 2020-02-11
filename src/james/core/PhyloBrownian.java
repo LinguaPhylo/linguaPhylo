@@ -26,7 +26,7 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
     int numStates;
 
     public PhyloBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                         @ParameterInfo(name = "r", description = "the diffusion rate.") Value<Double> diffusionRate,
+                         @ParameterInfo(name = "diffusionRate", description = "the diffusion rate.") Value<Double> diffusionRate,
                          @ParameterInfo(name = "y0", description = "the value of continuous trait at the root.") Value<Double> y0) {
         this.tree = tree;
         this.diffusionRate = diffusionRate;
