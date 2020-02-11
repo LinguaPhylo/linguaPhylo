@@ -62,13 +62,13 @@ public class GraphicalModelPanel extends JPanel {
 
             @Override
             public void generativeDistributionSelected(GenerativeDistribution g) {
-                showGenerativeDistribution(g);
+                showParameterized(g);
             }
 
             @Override
             public void functionSelected(DeterministicFunction f) {
 
-                showFunction(f);
+                showParameterized(f);
             }
 
         };
@@ -95,7 +95,6 @@ public class GraphicalModelPanel extends JPanel {
         
         add(interpreter, BorderLayout.SOUTH);
 
-        //currentSelectionContainer.setLayout(new BoxLayout(currentSelectionContainer, BoxLayout.PAGE_AXIS));
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -140,19 +139,25 @@ public class GraphicalModelPanel extends JPanel {
         repaint();
     }
 
-    private void showGenerativeDistribution(GenerativeDistribution g) {
+    private void showParameterized(Parameterized g) {
         displayedElement = g;
-        currentSelectionContainer.removeAll();
-        currentSelectionContainer.add(getViewer(g));
+
+        JComponent viewer = getViewer(g);
+        
+        if (viewer.getPreferredSize().height > 1) {
+            JPanel viewerPanel = new JPanel();
+            viewerPanel.setOpaque(false);
+            viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            viewerPanel.add(viewer);
+            viewer = viewerPanel;
+        }
+        currentSelectionContainer.setViewportView(viewer);
+        currentSelectionContainer.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
+                        "<html><font color=\"#808080\" >" + g.codeString() + "</font></html>"));
         repaint();
 
-    }
-
-    private void showFunction(DeterministicFunction f) {
-        displayedElement = f;
-        currentSelectionContainer.removeAll();
-        currentSelectionContainer.add(getViewer(f));
-        repaint();
     }
 
     public static void main(String[] args) {
@@ -163,17 +168,17 @@ public class GraphicalModelPanel extends JPanel {
                 "r ~ Dirichlet(concentration=α_r);",
                 "freq ~ Dirichlet(concentration=α);",
                 "L = 50;",
-                "mu = 0.01;",
+                "μ = 0.01;",
                 "n = 20;",
                 "mean = 3.0;",
                 "sd = 1.0;",
-                "logTheta ~ Normal(mean=mean, sd=sd);",
-                "Θ = exp(logTheta);",
+                "lnΘ ~ Normal(mean=mean, sd=sd);",
+                "Θ = exp(lnΘ);",
                 "Q = gtr(rates=r, freq=freq);",
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "y0 = 0.0;",
                 "σ2 = 0.01;",
-                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);",
+                "D ~ PhyloCTMC(L=L, mu=μ, Q=Q, tree=ψ);",
                 "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();

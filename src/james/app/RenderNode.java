@@ -22,8 +22,8 @@ public class RenderNode<T> {
     private T value;
     int level;
 
-    static double VAR_WIDTH = 100;
-    static double VAR_HEIGHT = 60;
+    static double VAR_WIDTH = 90;
+    static double VAR_HEIGHT = 50;
 
     static double FACTOR_SIZE = 7;
     static double FACTOR_LABEL_GAP = 10;

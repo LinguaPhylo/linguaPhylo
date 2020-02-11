@@ -63,6 +63,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                         listener.valueSelected((Value) node.value());
                     }
                 }
+                if (node.value() instanceof GenerativeDistribution) {
+                    for (GraphicalModelListener listener : listeners) {
+                        listener.generativeDistributionSelected((GenerativeDistribution) node.value());
+                    }
+                }
+                if (node.value() instanceof DeterministicFunction) {
+                    for (GraphicalModelListener listener : listeners) {
+                        listener.functionSelected((DeterministicFunction) node.value());
+                    }
+                }
             });
             add(button);
         }

@@ -69,4 +69,6 @@ public interface Parameterized {
     Map<String, Value> getParams();
 
     void setParam(String paramName, Value value);
+
+    String codeString();
 }
