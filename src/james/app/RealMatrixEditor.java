@@ -21,6 +21,7 @@ public class RealMatrixEditor extends JPanel {
 
         DecimalFormat format = new DecimalFormat();
         format.setMaximumFractionDigits(maxFracDigits);
+        setOpaque(false);
 
         int rowCount = matrix.getRowDimension();
         int colCount = matrix.getColumnDimension();
@@ -51,5 +52,21 @@ public class RealMatrixEditor extends JPanel {
                 }
             }
         }
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(Color.black);
+
+        int corner = 10;
+
+        g.drawLine(1,1,1,getHeight());
+        g.drawLine(1,1,corner,1);
+        g.drawLine(1,getHeight()-1,corner,getHeight()-1);
+
+        g.drawLine(getWidth()-1,1,getWidth()-corner-1,1);
+        g.drawLine(getWidth()-1,getHeight()-1,getWidth()-corner-1,getHeight()-1);
+
+        g.drawLine(getWidth()-1,1,getWidth()-1,getHeight());
     }
 }

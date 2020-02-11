@@ -21,7 +21,6 @@ public class MatrixValue extends Value<RealMatrix> implements Viewable {
     public JComponent getViewer() {
 
         JComponent realMatrixComponent = new RealMatrixEditor(value(), false);
-        realMatrixComponent.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), getId()));
         return realMatrixComponent;
     }
 
