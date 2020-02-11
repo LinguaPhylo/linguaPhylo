@@ -15,8 +15,8 @@ public class RealMatrixEditor extends JPanel {
 
     int maxFracDigits = 5;
 
-    int GAP = 10;
-    int corner = 10;
+    int GAP = 9;
+    int corner = 5;
 
     public RealMatrixEditor(RealMatrix matrix, boolean editable) {
         this.matrix = matrix;
@@ -37,7 +37,7 @@ public class RealMatrixEditor extends JPanel {
         GridLayout gridLayout = new GridLayout(rowCount, colCount);
         gridLayout.setHgap(GAP);
         gridLayout.setVgap(GAP);
-        setBorder(BorderFactory.createEmptyBorder(GAP,GAP,GAP,GAP));
+        setBorder(BorderFactory.createEmptyBorder(GAP,GAP-1,GAP,GAP));
         setLayout(gridLayout);
 
         for (int i = 0; i < rowCount; i++) {
@@ -59,6 +59,9 @@ public class RealMatrixEditor extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
+
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.setStroke(new BasicStroke(1.5f));
 
         g.drawLine(1,1,1,getHeight());
         g.drawLine(1,1,corner,1);

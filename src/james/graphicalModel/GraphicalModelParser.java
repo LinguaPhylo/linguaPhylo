@@ -70,11 +70,7 @@ public class GraphicalModelParser {
         dictionary.values().forEach((val) -> nonArguments.add(val.getId()));
         nonArguments.removeAll(globalArguments);
 
-        SortedSet<Value> nonArgValues = new TreeSet<>(new Comparator<>() {
-            public int compare(Value o1, Value o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        });
+        SortedSet<Value> nonArgValues = new TreeSet<>(Comparator.comparing(Value::getId));
         nonArguments.forEach((id) -> nonArgValues.add(dictionary.get(id)));
 
         return nonArgValues;
