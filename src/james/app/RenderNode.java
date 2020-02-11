@@ -5,6 +5,8 @@ import james.graphicalModel.types.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ public class RenderNode<T> {
 
     static double FACTOR_SIZE = 7;
     static double FACTOR_LABEL_GAP = 10;
-
 
     static DecimalFormat format = new DecimalFormat();
 

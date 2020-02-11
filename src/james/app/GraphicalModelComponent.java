@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
@@ -28,6 +30,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     RenderNodePool pool;
 
+    RenderNode selectedNode;
+
     boolean sizeChanged = true;
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
@@ -46,6 +50,22 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         parser.addGraphicalModelChangeListener(() -> setup());
     }
 
+    void shiftLeft() {
+
+        pool.shiftLeft(selectedNode);
+        sizeChanged = true;
+        repaint();
+
+    }
+
+    public void shiftRight() {
+        pool.shiftRight(selectedNode);
+        sizeChanged = true;
+        repaint();
+    }
+
+
+
     private void setup() {
         removeAll();
         pool = new RenderNodePool();
@@ -62,6 +82,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     for (GraphicalModelListener listener : listeners) {
                         listener.valueSelected((Value) node.value());
                     }
+                    selectedNode = node;
                 }
                 if (node.value() instanceof GenerativeDistribution) {
                     for (GraphicalModelListener listener : listeners) {

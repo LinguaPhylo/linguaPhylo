@@ -17,12 +17,14 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     Value<TimeTree> tree;
     Value<Double> clockRate;
+    Value<Double[]> freq;
     Value<Double[][]> Q;
     Value<Integer> L;
     Random random;
 
     String treeParamName;
     String muParamName;
+    String rootFreqParamName;
     String QParamName;
     String LParamName;
 
@@ -30,10 +32,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
+                     @ParameterInfo(name = "freq", description = "the root probabilities.") Value<Double[]> rootFreq,
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "L", description = "the length of the alignment to generate.") Value<Integer> L) {
+
         this.tree = tree;
         this.Q = Q;
+        this.freq = rootFreq;
         this.clockRate = mu;
         this.L = L;
         numStates = Q.value().length;
@@ -41,8 +46,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         treeParamName = getParamName(0);
         muParamName = getParamName(1);
-        QParamName = getParamName(2);
-        LParamName = getParamName(3);
+        rootFreqParamName = getParamName(2);
+        QParamName = getParamName(3);
+        LParamName = getParamName(4);
     }
 
     @Override
@@ -50,6 +56,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, tree);
         map.put(muParamName, clockRate);
+        map.put(rootFreqParamName, freq);
         map.put(QParamName, Q);
         map.put(LParamName, L);
         return map;
@@ -59,6 +66,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public void setParam(String paramName, Value value) {
         if (paramName.equals(treeParamName)) tree = value;
         else if (paramName.equals(muParamName)) clockRate = value;
+        else if (paramName.equals(rootFreqParamName)) freq = value;
         else if (paramName.equals(QParamName)) Q = value;
         else if (paramName.equals(LParamName)) L = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
@@ -71,16 +79,12 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
 
         //TODO need to use explicit root distribution
-        GenerativeDistribution<Integer> rootDistribution =
-                new DiscreteDistribution(new Value<>("rootProb", new double[]{0.25, 0.25, 0.25, 0.25}), random);
+        GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(freq, random);
 
         Alignment alignment = new Alignment(tree.value().n(), L.value(), idMap);
 
         double[][] transProb = new double[numStates][numStates];
 
-        System.out.println("Q = " + Q.value());
-        System.out.println("Q.length = " + Q.value().length);
-        System.out.println("Q[0].length = " + Q.value()[0].length);
         double[][] primitive = new double[numStates][numStates];
         for (int i = 0; i < numStates; i++) {
             for (int j = 0; j < numStates; j++) {

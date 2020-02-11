@@ -4,6 +4,8 @@ import james.graphicalModel.Parameterized;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -11,6 +13,9 @@ public class RenderNodePool {
 
     private Map<Object, RenderNode> pool = new HashMap<>();
     private List<List<RenderNode>> nodesByLevel = new ArrayList<>();
+
+    int lastWidth = 0;
+    int lastHeight = 0;
 
     public RenderNodePool() {
     }
@@ -41,6 +46,9 @@ public class RenderNodePool {
     }
 
     public void locateAll(int width, int height) {
+
+        lastWidth = width;
+        lastHeight = height;
 
         Set<RenderNode> located = new HashSet<>();
 
@@ -95,6 +103,26 @@ public class RenderNodePool {
             }
 
             node.locate(new Point2D.Double(x, y));
+        }
+    }
+
+    public void shiftLeft(RenderNode node) {
+        int pos = nodesByLevel.get(node.level).indexOf(node);
+        if (pos > 0) {
+            RenderNode temp = nodesByLevel.get(node.level).get(pos-1);
+            nodesByLevel.get(node.level).set(pos-1, node);
+            nodesByLevel.get(node.level).set(pos, temp);
+            locateAll(lastWidth, lastHeight);
+        }
+    }
+
+    public void shiftRight(RenderNode node) {
+        int pos = nodesByLevel.get(node.level).indexOf(node);
+        if (pos < nodesByLevel.get(node.level).size() - 1) {
+            RenderNode temp = nodesByLevel.get(node.level).get(pos+1);
+            nodesByLevel.get(node.level).set(pos+1, node);
+            nodesByLevel.get(node.level).set(pos, temp);
+            locateAll(lastWidth, lastHeight);
         }
     }
 

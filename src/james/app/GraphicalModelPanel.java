@@ -6,6 +6,10 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class GraphicalModelPanel extends JPanel {
@@ -18,6 +22,9 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelParser parser;
 
     JButton sampleButton = new JButton("Sample");
+    JButton shiftLeftButton = new JButton("<");
+    JButton shiftRightButton = new JButton(">");
+
 
     JSplitPane splitPane;
 
@@ -34,10 +41,24 @@ public class GraphicalModelPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(sampleButton);
+        buttonPanel.add(shiftLeftButton);
+        buttonPanel.add(shiftRightButton);
 
         sampleButton.addActionListener(e -> {
             parser.sample();
             showValue(parser.getRoots().iterator().next());
+        });
+        shiftLeftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                component.shiftLeft();
+            }
+        });
+        shiftRightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                component.shiftRight();
+            }
         });
 
         component = new GraphicalModelComponent(parser);
@@ -163,10 +184,10 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
-//                "α = [5.0,5.0,5.0,5.0];",
-//                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-//                "r ~ Dirichlet(concentration=α_r);",
-//                "freq ~ Dirichlet(concentration=α);",
+                "α = [5.0,5.0,5.0,5.0];",
+                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+                "r ~ Dirichlet(concentration=α_r);",
+                "freq ~ Dirichlet(concentration=α);",
                 "L = 50;",
                 "μ = 0.01;",
                 "n = 20;",
@@ -174,13 +195,13 @@ public class GraphicalModelPanel extends JPanel {
                 "sd = 1.0;",
                 "lnΘ ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(lnΘ);",
-//                "Q = gtr(rates=r, freq=freq);",
-                "Q = [[-1.0,0.3333, 0.3333, 0.3333],[0.3333, -1.0, 0.3333, 0.3333],[0.3333, 0.3333, -1.0, 0.3333],[0.3333, 0.3333, 0.3333, -1.0]];",
+                "Q = gtr(rates=r, freq=freq);",
+//                "Q = [[-1.0,0.3333, 0.3333, 0.3333],[0.3333, -1.0, 0.3333, 0.3333],[0.3333, 0.3333, -1.0, 0.3333],[0.3333, 0.3333, 0.3333, -1.0]];",
 
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "y0 = 0.0;",
                 "σ2 = 0.01;",
-                "D ~ PhyloCTMC(L=L, mu=μ, Q=Q, tree=ψ);",
+                "D ~ PhyloCTMC(L=L, mu=μ, freq=freq, Q=Q, tree=ψ);",
                 "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
         GraphicalModelParser parser = new GraphicalModelParser();

@@ -40,9 +40,6 @@ public class DoubleArray2DEditor extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(GAP,GAP-1,GAP,GAP));
         setLayout(gridLayout);
 
-        int totalPreferredHeight = 0;
-        int totalPreferredWidth = 0;
-
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
                 if (editable) {
@@ -56,12 +53,8 @@ public class DoubleArray2DEditor extends JPanel {
                 }
 
             }
-            totalPreferredHeight += labels[i][i].getPreferredSize().height;
-            totalPreferredWidth += labels[i][i].getPreferredSize().width;
 
         }
-
-        setPreferredSize(new Dimension(totalPreferredWidth, totalPreferredHeight));
     }
 
     public void paintComponent(Graphics g) {

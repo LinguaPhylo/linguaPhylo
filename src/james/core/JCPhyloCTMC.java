@@ -52,7 +52,7 @@ public class JCPhyloCTMC implements GenerativeDistribution<Alignment> {
         fillIdMap(tree.value().getRoot(), idMap);
 
         GenerativeDistribution<Integer> rootDistribution =
-                new DiscreteDistribution(new Value<>("rootProb", new double[] {0.25, 0.25, 0.25, 0.25}),random);
+                new DiscreteDistribution(new Value<>("rootProb", new Double[] {0.25, 0.25, 0.25, 0.25}),random);
 
 
         Alignment alignment = new Alignment(tree.value().n(), L.value(), idMap);

@@ -10,13 +10,12 @@ import java.util.Random;
 
 public class DiscreteDistribution implements GenerativeDistribution<Integer> {
 
-    Value<double[]> probs;
+    Value<Double[]> probs;
     Random random;
 
     String probsParamName;
 
-
-    public DiscreteDistribution(@ParameterInfo(name = "p", description = "the probability distribution over integer states.") Value<double[]> probs,
+    public DiscreteDistribution(@ParameterInfo(name = "p", description = "the probability distribution over integer states.") Value<Double[]> probs,
                 Random random) {
 
         this.probs = probs;
@@ -30,7 +29,7 @@ public class DiscreteDistribution implements GenerativeDistribution<Integer> {
 
         // TODO slow implementation! Should create cumulative probability distribution and use binary search!
 
-        double[] p = probs.value();
+        Double[] p = probs.value();
 
         double sum = p[0];
         int i = 0;
