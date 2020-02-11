@@ -1,10 +1,7 @@
 package james.app;
 
 import james.graphicalModel.*;
-import james.graphicalModel.types.DoubleArrayValue;
-import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerArrayValue;
-import james.graphicalModel.types.MatrixValue;
+import james.graphicalModel.types.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +52,7 @@ public class RenderNode<T> {
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
-        } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue) {
+        } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue || v instanceof DoubleArray2DValue || v instanceof IntegerArray2DValue) {
             return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
         } else {
             valueString = v.value().toString();

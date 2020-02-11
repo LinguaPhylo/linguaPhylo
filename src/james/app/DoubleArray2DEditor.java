@@ -6,9 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class RealMatrixEditor extends JPanel {
+public class DoubleArray2DEditor extends JPanel {
 
-    RealMatrix matrix;
+    Double[][] matrix;
 
     JTextField[][] textFields;
     JLabel[][] labels;
@@ -18,15 +18,15 @@ public class RealMatrixEditor extends JPanel {
     int GAP = 9;
     int corner = 5;
 
-    public RealMatrixEditor(RealMatrix matrix, boolean editable) {
+    public DoubleArray2DEditor(Double[][] matrix, boolean editable) {
         this.matrix = matrix;
 
         DecimalFormat format = new DecimalFormat();
         format.setMaximumFractionDigits(maxFracDigits);
         setOpaque(false);
 
-        int rowCount = matrix.getRowDimension();
-        int colCount = matrix.getColumnDimension();
+        int rowCount = matrix.length;
+        int colCount = matrix[0].length;
 
         if (editable) {
             textFields = new JTextField[rowCount][colCount];
@@ -40,19 +40,28 @@ public class RealMatrixEditor extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(GAP,GAP-1,GAP,GAP));
         setLayout(gridLayout);
 
+        int totalPreferredHeight = 0;
+        int totalPreferredWidth = 0;
+
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
                 if (editable) {
-                    textFields[i][j] = new JTextField(Double.toString(matrix.getEntry(i, j)), 8);
+                    textFields[i][j] = new JTextField(Double.toString(matrix[i][j]), 8);
                     add(textFields[i][j]);
 
                 } else {
-                    labels[i][j] = new JLabel(format.format(matrix.getEntry(i, j)));
+                    labels[i][j] = new JLabel(format.format(matrix[i][j]));
                     labels[i][j].setHorizontalAlignment(SwingConstants.RIGHT);
                     add(labels[i][j]);
                 }
+
             }
+            totalPreferredHeight += labels[i][i].getPreferredSize().height;
+            totalPreferredWidth += labels[i][i].getPreferredSize().width;
+
         }
+
+        setPreferredSize(new Dimension(totalPreferredWidth, totalPreferredHeight));
     }
 
     public void paintComponent(Graphics g) {

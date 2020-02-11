@@ -1,6 +1,7 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleArray2DValue;
 import james.graphicalModel.types.MatrixValue;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class GTR extends DeterministicFunction<RealMatrix> {
+public class GTR extends DeterministicFunction<Double[][]> {
 
     String rateParamName;
     String freqParamName;
@@ -26,17 +27,17 @@ public class GTR extends DeterministicFunction<RealMatrix> {
 
 
     @FunctionInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
-    public Value<RealMatrix> apply() {
+    public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(rateParamName);
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new MatrixValue(getName() + "(" + rates.getId() + ", " + freq.getId() + ")", gtr(rates.value(), freq.value()), this);
+        return new DoubleArray2DValue(getName() + "(" + rates.getId() + ", " + freq.getId() + ")", gtr(rates.value(), freq.value()), this);
     }
 
-    private double[][] gtr(Double[] rates, Double[] freqs) {
+    private Double[][] gtr(Double[] rates, Double[] freqs) {
 
         int numStates = 4;
         
-        double[][] Q = new double[numStates][numStates];
+        Double[][] Q = new Double[numStates][numStates];
 
         double[] totalRates = new double[numStates];
 

@@ -8,10 +8,7 @@ import james.core.distributions.Dirichlet;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
-import james.graphicalModel.types.DoubleArrayValue;
-import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerArrayValue;
-import james.graphicalModel.types.IntegerValue;
+import james.graphicalModel.types.*;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
 
@@ -195,34 +192,87 @@ public class GraphicalModelParser {
     }
 
     private Value parseList(String id, String valueString, int lineNumber) {
-        String[] elements = valueString.substring(1, valueString.length() - 1).split(",");
+
+        // remove whitespace
+        valueString = valueString.replace(" ", "");
+
+        // remove outer brackets
+        valueString = valueString.substring(1, valueString.length() - 1);
+
+        if (valueString.startsWith("[")) {
+            // nested list -> parse as [][]
+
+            String[] parts = valueString.split("\\]\\,");
+
+            // remove opening bracket from each element and closing bracket from last element
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].replace("[", "");
+                parts[i] = parts[i].replace("]", "");
+            }
+
+            Number[][] array;
+
+            Number[] num = parseNumberArray(parts[0], lineNumber);
+            if (num instanceof Double[]) {
+                array = new Double[parts.length][];
+            } else {
+                array = new Integer[parts.length][];
+            }
+
+            for (int i = 0; i < parts.length; i++) {
+                array[i] = parseNumberArray(parts[i], lineNumber);
+            }
+
+            if (array instanceof Double[][]) {
+                return new DoubleArray2DValue(id, (Double[][]) array);
+            } else {
+                return new IntegerArray2DValue(id, (Integer[][]) array);
+            }
+
+        } else {
+
+            Number[] val = parseNumberArray(valueString, lineNumber);
+
+            if (val instanceof Integer[]) {
+
+                return new IntegerArrayValue(id, (Integer[]) val);
+            } else {
+                return new DoubleArrayValue(id, (Double[]) val);
+            }
+        }
+    }
+
+    private Number[] parseNumberArray(String arrayString, int lineNumber) {
+
+        String[] elements = arrayString.split(",");
         for (int i = 0; i < elements.length; i++) {
             elements[i] = elements[i].trim();
         }
 
         if (isInteger(elements[0])) {
-            List<Integer> values = new ArrayList<>();
+            Integer[] val = new Integer[elements.length];
             for (int i = 0; i < elements.length; i++) {
                 try {
-                    values.add(Integer.parseInt(elements[i]));
+                    val[i] = Integer.parseInt(elements[i]);
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("Parser error: parsing integer list at line number " + lineNumber + " but found non-integer:" + elements[i]);
                 }
-                return new IntegerArrayValue(id, values.toArray(new Integer[values.size()]));
             }
+            return val;
+
         } else if (isDouble(elements[0])) {
-            List<Double> values = new ArrayList<>();
+            Double[] val = new Double[elements.length];
+
             for (int i = 0; i < elements.length; i++) {
                 try {
-                    values.add(Double.parseDouble(elements[i]));
-
+                    val[i] = Double.parseDouble(elements[i]);
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("Parser error: parsing real list at line number " + lineNumber + " but found non-real:" + elements[i]);
                 }
             }
-            return new DoubleArrayValue(id, values.toArray(new Double[values.size()]));
+            return val;
         }
-        throw new RuntimeException("Parser error: parsing number list at line number " + lineNumber + " but found non-number:" + elements[0]);
+        throw new RuntimeException("Parser error: parsing number array at line number " + lineNumber + " but found non-number:" + elements[0]);
     }
 
     private boolean isInteger(String s) {

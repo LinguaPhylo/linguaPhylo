@@ -1,13 +1,14 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleArray2DValue;
 import james.graphicalModel.types.MatrixValue;
 import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * Created by adru001 on 2/02/20.
  */
-public class K80 extends DeterministicFunction<RealMatrix> {
+public class K80 extends DeterministicFunction<Double[][]> {
 
     String paramName;
 
@@ -18,16 +19,16 @@ public class K80 extends DeterministicFunction<RealMatrix> {
 
 
     @FunctionInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
-    public Value<RealMatrix> apply() {
+    public Value<Double[][]> apply() {
         Value<Double> kappa = getParams().get(paramName);
-        return new MatrixValue(getName() + "(" + kappa.getId() + ")", k80(kappa.value()), this);
+        return new DoubleArray2DValue(getName() + "(" + kappa.getId() + ")", k80(kappa.value()), this);
     }
 
-    private double[][] k80(double kappa) {
+    private Double[][] k80(double kappa) {
 
         int numStates = 4;
 
-        double[][] Q = new double[numStates][numStates];
+        Double[][] Q = new Double[numStates][numStates];
 
         double[] totalRates = new double[numStates];
 

@@ -8,6 +8,7 @@ import james.graphicalModel.types.IntegerValue;
 import org.apache.commons.math3.linear.*;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -16,7 +17,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     Value<TimeTree> tree;
     Value<Double> clockRate;
-    Value<RealMatrix> Q;
+    Value<Double[][]> Q;
     Value<Integer> L;
     Random random;
 
@@ -29,13 +30,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
-                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<RealMatrix> Q,
+                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "L", description = "the length of the alignment to generate.") Value<Integer> L) {
         this.tree = tree;
         this.Q = Q;
         this.clockRate = mu;
         this.L = L;
-        numStates = Q.value().getColumnDimension();
+        numStates = Q.value().length;
         this.random = Utils.getRandom();
 
         treeParamName = getParamName(0);
@@ -76,7 +77,19 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         Alignment alignment = new Alignment(tree.value().n(), L.value(), idMap);
 
         double[][] transProb = new double[numStates][numStates];
-        EigenDecomposition decomposition = new EigenDecomposition(Q.value());
+
+        System.out.println("Q = " + Q.value());
+        System.out.println("Q.length = " + Q.value().length);
+        System.out.println("Q[0].length = " + Q.value()[0].length);
+        double[][] primitive = new double[numStates][numStates];
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                primitive[i][j] = Q.value()[i][j];
+            }
+        }
+        Array2DRowRealMatrix matrix = new Array2DRowRealMatrix(primitive);
+
+        EigenDecomposition decomposition = new EigenDecomposition(matrix);
 
         for (int i = 0; i < L.value(); i++) {
             Value<Integer> rootState = rootDistribution.sample();

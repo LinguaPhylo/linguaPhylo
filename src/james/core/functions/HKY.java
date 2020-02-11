@@ -1,6 +1,7 @@
 package james.core.functions;
 
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleArray2DValue;
 import james.graphicalModel.types.MatrixValue;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class HKY extends DeterministicFunction<RealMatrix> {
+public class HKY extends DeterministicFunction<Double[][]> {
 
     String kappaParamName;
     String freqParamName;
@@ -23,17 +24,17 @@ public class HKY extends DeterministicFunction<RealMatrix> {
 
 
     @FunctionInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
-    public Value<RealMatrix> apply() {
+    public Value<Double[][]> apply() {
         Value<Double> kappa = getParams().get(kappaParamName);
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new MatrixValue(getName() + "(" + kappa.getId() + ", " + freq.getId() + ")", hky(kappa.value(), freq.value()), this);
+        return new DoubleArray2DValue(getName() + "(" + kappa.getId() + ", " + freq.getId() + ")", hky(kappa.value(), freq.value()), this);
     }
 
-    private double[][] hky(double kappa, Double[] freqs) {
+    private Double[][] hky(double kappa, Double[] freqs) {
 
         int numStates = 4;
         
-        double[][] Q = new double[numStates][numStates];
+        Double[][] Q = new Double[numStates][numStates];
 
         double[] totalRates = new double[numStates];
 

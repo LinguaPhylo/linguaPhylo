@@ -163,10 +163,10 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
-                "α = [5.0,5.0,5.0,5.0];",
-                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-                "r ~ Dirichlet(concentration=α_r);",
-                "freq ~ Dirichlet(concentration=α);",
+//                "α = [5.0,5.0,5.0,5.0];",
+//                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+//                "r ~ Dirichlet(concentration=α_r);",
+//                "freq ~ Dirichlet(concentration=α);",
                 "L = 50;",
                 "μ = 0.01;",
                 "n = 20;",
@@ -174,7 +174,9 @@ public class GraphicalModelPanel extends JPanel {
                 "sd = 1.0;",
                 "lnΘ ~ Normal(mean=mean, sd=sd);",
                 "Θ = exp(lnΘ);",
-                "Q = gtr(rates=r, freq=freq);",
+//                "Q = gtr(rates=r, freq=freq);",
+                "Q = [[-1.0,0.3333, 0.3333, 0.3333],[0.3333, -1.0, 0.3333, 0.3333],[0.3333, 0.3333, -1.0, 0.3333],[0.3333, 0.3333, 0.3333, -1.0]];",
+
                 "ψ ~ Coalescent(n=n, theta=Θ);",
                 "y0 = 0.0;",
                 "σ2 = 0.01;",
