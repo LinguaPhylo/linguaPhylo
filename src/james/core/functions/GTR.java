@@ -14,11 +14,11 @@ public class GTR extends DeterministicFunction<RealMatrix> {
     String rateParamName;
     String freqParamName;
 
-    public GTR(@ParameterInfo(name = "rates", description = "the relative rates of the GTR process.") Value<List<Double>> rates, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<List<Double>> freq) {
+    public GTR(@ParameterInfo(name = "rates", description = "the relative rates of the GTR process.") Value<Double[]> rates, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq) {
         rateParamName = getParamName(0);
         freqParamName = getParamName(1);
 
-        if (rates.value().size() != 6) throw new IllegalArgumentException("Rates must have 6 dimensions.");
+        if (rates.value().length != 6) throw new IllegalArgumentException("Rates must have 6 dimensions.");
 
         setParam(rateParamName, rates);
         setParam(freqParamName, freq);
@@ -27,12 +27,12 @@ public class GTR extends DeterministicFunction<RealMatrix> {
 
     @FunctionInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<RealMatrix> apply() {
-        Value<List<Double>> rates = getParams().get(rateParamName);
-        Value<List<Double>> freq = getParams().get(freqParamName);
+        Value<Double[]> rates = getParams().get(rateParamName);
+        Value<Double[]> freq = getParams().get(freqParamName);
         return new MatrixValue(getName() + "(" + rates.getId() + ", " + freq.getId() + ")", gtr(rates.value(), freq.value()), this);
     }
 
-    private double[][] gtr(List<Double> rates, List<Double> freqs) {
+    private double[][] gtr(Double[] rates, Double[] freqs) {
 
         int numStates = 4;
         
@@ -45,8 +45,8 @@ public class GTR extends DeterministicFunction<RealMatrix> {
         for (int i = 0; i < numStates; i++) {
             for (int j = i; j < numStates; j++) {
                 if (j > i) {
-                    Q[i][j] = rates.get(upper) * freqs.get(j);
-                    Q[j][i] = rates.get(upper) * freqs.get(i);
+                    Q[i][j] = rates[upper] * freqs[j];
+                    Q[j][i] = rates[upper] * freqs[i];
                     upper += 1;
                 }
             }
@@ -65,7 +65,7 @@ public class GTR extends DeterministicFunction<RealMatrix> {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < numStates; i++) {
-            subst += -Q[i][i] * freqs.get(i);
+            subst += -Q[i][i] * freqs[i];
         }
 
         for (int i = 0; i < numStates; i++) {

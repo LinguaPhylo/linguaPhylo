@@ -7,28 +7,28 @@ import java.util.*;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Dirichlet implements GenerativeDistribution<List<Double>> {
+public class Dirichlet implements GenerativeDistribution<Double[]> {
 
     private final String concParamName;
-    private Value<List<Double>> concentration;
+    private Value<Double[]> concentration;
 
-    public Dirichlet(@ParameterInfo(name="concentration", description="the concentration parameters of a Dirichlet distribution.") Value<List<Double>> concentration) {
+    public Dirichlet(@ParameterInfo(name="concentration", description="the concentration parameters of a Dirichlet distribution.") Value<Double[]> concentration) {
         this.concentration = concentration;
         concParamName = getParamName(0);
     }
 
     @GenerativeDistributionInfo(description="The dirichlet probability distribution.")
-    public RandomVariable<List<Double>> sample() {
+    public RandomVariable<Double[]> sample() {
 
-        List<Double> dirichlet = new ArrayList<>();
+        Double[] dirichlet = new Double[concentration.value().length];
         double sum = 0.0;
-        for (int i = 0; i < concentration.value().size(); i++) {
-            double val = Utils.randomGamma(concentration.value().get(i), 1.0);
-            dirichlet.add(val);
+        for (int i = 0; i < dirichlet.length; i++) {
+            double val = Utils.randomGamma(concentration.value()[i], 1.0);
+            dirichlet[i] = val;
             sum += val;
         }
-        for (int i = 0; i < concentration.value().size(); i++) {
-            dirichlet.set(i, dirichlet.get(i)/sum);
+        for (int i = 0; i < dirichlet.length; i++) {
+            dirichlet[i] /= sum;
         }
 
         return new RandomVariable<>("x", dirichlet, this);

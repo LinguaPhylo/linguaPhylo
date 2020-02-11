@@ -1,9 +1,9 @@
 package james.app;
 
 import james.graphicalModel.*;
-import james.graphicalModel.types.DoubleListValue;
+import james.graphicalModel.types.DoubleArrayValue;
 import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerListValue;
+import james.graphicalModel.types.IntegerArrayValue;
 import james.graphicalModel.types.MatrixValue;
 
 import javax.swing.*;
@@ -55,7 +55,7 @@ public class RenderNode<T> {
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
-        } else if (v instanceof MatrixValue || v instanceof IntegerListValue || v instanceof DoubleListValue) {
+        } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue) {
             return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
         } else {
             valueString = v.value().toString();

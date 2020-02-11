@@ -8,9 +8,9 @@ import james.core.distributions.Dirichlet;
 import james.core.distributions.Exp;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
-import james.graphicalModel.types.DoubleListValue;
+import james.graphicalModel.types.DoubleArrayValue;
 import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerListValue;
+import james.graphicalModel.types.IntegerArrayValue;
 import james.graphicalModel.types.IntegerValue;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
@@ -204,7 +204,6 @@ public class GraphicalModelParser {
             elements[i] = elements[i].trim();
         }
 
-
         if (isInteger(elements[0])) {
             List<Integer> values = new ArrayList<>();
             for (int i = 0; i < elements.length; i++) {
@@ -213,7 +212,7 @@ public class GraphicalModelParser {
                 } catch (NumberFormatException e) {
                     throw new RuntimeException("Parser error: parsing integer list at line number " + lineNumber + " but found non-integer:" + elements[i]);
                 }
-                return new IntegerListValue(id, values);
+                return new IntegerArrayValue(id, values.toArray(new Integer[values.size()]));
             }
         } else if (isDouble(elements[0])) {
             List<Double> values = new ArrayList<>();
@@ -225,7 +224,7 @@ public class GraphicalModelParser {
                     throw new RuntimeException("Parser error: parsing real list at line number " + lineNumber + " but found non-real:" + elements[i]);
                 }
             }
-            return new DoubleListValue(id, values);
+            return new DoubleArrayValue(id, values.toArray(new Double[values.size()]));
         }
         throw new RuntimeException("Parser error: parsing number list at line number " + lineNumber + " but found non-number:" + elements[0]);
     }

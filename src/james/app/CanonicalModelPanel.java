@@ -4,6 +4,8 @@ import james.graphicalModel.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CanonicalModelPanel extends JComponent {
     GraphicalModelParser parser;
@@ -31,12 +33,20 @@ public class CanonicalModelPanel extends JComponent {
 
     void setText() {
         area.setText("");
+
+        Set<Value> visited = new HashSet<>();
+
         for (Value value : parser.getRoots()) {
 
             Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
                 public void visitValue(Value value) {
-                    area.append(value.codeString()+"\n");
+
+                    if (!visited.contains(value)) {
+
+                        area.append(value.codeString() + "\n");
+                        visited.add(value);
+                    }
                 }
 
                 @Override

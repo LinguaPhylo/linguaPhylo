@@ -14,7 +14,7 @@ public class HKY extends DeterministicFunction<RealMatrix> {
     String kappaParamName;
     String freqParamName;
 
-    public HKY(@ParameterInfo(name = "kappa", description = "the kappa of the HKY process.") Value<Double> kappa, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<List<Double>> freq) {
+    public HKY(@ParameterInfo(name = "kappa", description = "the kappa of the HKY process.") Value<Double> kappa, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq) {
         kappaParamName = getParamName(0);
         freqParamName = getParamName(1);
         setParam(kappaParamName, kappa);
@@ -25,11 +25,11 @@ public class HKY extends DeterministicFunction<RealMatrix> {
     @FunctionInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
     public Value<RealMatrix> apply() {
         Value<Double> kappa = getParams().get(kappaParamName);
-        Value<List<Double>> freq = getParams().get(freqParamName);
+        Value<Double[]> freq = getParams().get(freqParamName);
         return new MatrixValue(getName() + "(" + kappa.getId() + ", " + freq.getId() + ")", hky(kappa.value(), freq.value()), this);
     }
 
-    private double[][] hky(double kappa, List<Double> freqs) {
+    private double[][] hky(double kappa, Double[] freqs) {
 
         int numStates = 4;
         
@@ -41,9 +41,9 @@ public class HKY extends DeterministicFunction<RealMatrix> {
             for (int j = 0; j < numStates; j++) {
                 if (i != j) {
                     if (Math.abs(i-j) == 2) {
-                        Q[i][j] = kappa * freqs.get(j);
+                        Q[i][j] = kappa * freqs[j];
                     } else {
-                        Q[i][j] = freqs.get(j);
+                        Q[i][j] = freqs[j];
                     }
                 }
                 totalRates[i] += Q[i][j];
@@ -54,7 +54,7 @@ public class HKY extends DeterministicFunction<RealMatrix> {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < numStates; i++) {
-            subst += -Q[i][i] * freqs.get(i);
+            subst += -Q[i][i] * freqs[i];
         }
 
         for (int i = 0; i < numStates; i++) {

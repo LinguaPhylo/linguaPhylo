@@ -119,14 +119,23 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     public JComponent getViewer(Object object) {
+
+        if (object instanceof Value) {
+
+            Class c = ((Value)object).value().getClass();
+
+            System.out.println("Trying to find a view factory for " + c);
+
+            ViewerFactory factory = viewerFactories.get(c);
+            if (factory != null) {
+                System.out.println("Found view factory for " + c);
+
+                return factory.createViewer(object);
+            }
+        }
+        
         if (object instanceof Viewable) {
             return ((Viewable) object).getViewer();
-        }
-
-        ViewerFactory factory = viewerFactories.get(object.getClass());
-        if (factory != null) {
-
-            return factory.createViewer(object);
         }
 
         return new JLabel(object.toString());
@@ -171,7 +180,7 @@ public class GraphicalModelPanel extends JPanel {
     public static void main(String[] args) {
 
         String[] lines = {
-                "α = [2.0,2.0,2.0,2.0];",
+                "α = [5.0,5.0,5.0,5.0];",
                 "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
                 "r ~ Dirichlet(concentration=α_r);",
                 "freq ~ Dirichlet(concentration=α);",
@@ -192,7 +201,6 @@ public class GraphicalModelPanel extends JPanel {
         GraphicalModelParser parser = new GraphicalModelParser();
         parser.parseLines(lines);
         Set<Value> values = parser.getRoots();
-        //if (values.size() != 1) throw new RuntimeException("Expected 1 root node in the graphical model!");
 
         Value v = values.iterator().next();
 

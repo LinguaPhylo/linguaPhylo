@@ -1,5 +1,6 @@
 package james.graphicalModel;
 
+import james.app.DoubleArrayLabel;
 import james.graphicalModel.swing.DoubleValueEditor;
 import james.graphicalModel.swing.IntegerValueEditor;
 import james.graphicalModel.types.DoubleValue;
@@ -66,6 +67,10 @@ public class Value<T> implements Viewable {
         return builder.toString();
     }
 
+    public String valueDisplayString() {
+        return value.toString();
+    }
+
     public String toString() {
         return id + " = " + value;
     }
@@ -80,30 +85,27 @@ public class Value<T> implements Viewable {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
-            //component.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(10,10,10,10), id));
 
             return component;
         }
 
-        if (this instanceof DoubleValue && function == null) {
-            return new DoubleValueEditor((DoubleValue) this);
-        } else if (this instanceof IntegerValue && function == null) {
-            return new IntegerValueEditor((IntegerValue) this);
+        if (value() instanceof Double[]) {
+            return new DoubleArrayLabel((Value<Double[]>)this);
+        }
+
+        if (value.toString().length() < 130) {
+            return new JLabel(value.toString());
         } else {
-            if (value.toString().length() < 130) {
-                return new JLabel(value.toString());
-            } else {
-                String valueString = value.toString();
-                valueString = valueString.replace(", ", ",\n");
+            String valueString = value.toString();
+            valueString = valueString.replace(", ", ",\n");
 
-                JTextArea textArea = new JTextArea(valueString);
-                textArea.setEditable(false);
+            JTextArea textArea = new JTextArea(valueString);
+            textArea.setEditable(false);
 
-                return textArea;
-                //JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
-                //scrollPane.setPreferredSize(new Dimension(600,50));
-                //return scrollPane;
-            }
+            return textArea;
+            //JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
+            //scrollPane.setPreferredSize(new Dimension(600,50));
+            //return scrollPane;
         }
     }
 
