@@ -76,26 +76,28 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         
         for (RenderNode node : pool.getRenderNodes()) {
 
-            JButton button = node.getButton();
-            button.addActionListener(e -> {
-                if (node.value() instanceof Value) {
-                    for (GraphicalModelListener listener : listeners) {
-                        listener.valueSelected((Value) node.value());
+            if (node.hasButton()) {
+                JButton button = node.getButton();
+                button.addActionListener(e -> {
+                    if (node.value() instanceof Value) {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.valueSelected((Value) node.value());
+                        }
+                        selectedNode = node;
                     }
-                    selectedNode = node;
-                }
-                if (node.value() instanceof GenerativeDistribution) {
-                    for (GraphicalModelListener listener : listeners) {
-                        listener.generativeDistributionSelected((GenerativeDistribution) node.value());
+                    if (node.value() instanceof GenerativeDistribution) {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.generativeDistributionSelected((GenerativeDistribution) node.value());
+                        }
                     }
-                }
-                if (node.value() instanceof DeterministicFunction) {
-                    for (GraphicalModelListener listener : listeners) {
-                        listener.functionSelected((DeterministicFunction) node.value());
+                    if (node.value() instanceof DeterministicFunction) {
+                        for (GraphicalModelListener listener : listeners) {
+                            listener.functionSelected((DeterministicFunction) node.value());
+                        }
                     }
-                }
-            });
-            add(button);
+                });
+                add(button);
+            }
         }
         sizeChanged = true;
     }
@@ -128,10 +130,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                 for (RenderNode parent : (List<RenderNode>) node.outputs) {
 
-                    double x2 = parent.point.getX();
-                    double y2 = parent.point.getY() - FACTOR_SIZE;
-
-                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    if (parent != pool.rootNode) {
+                        double x2 = parent.point.getX();
+                        double y2 = parent.point.getY() - FACTOR_SIZE;
+                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    }
                 }
             } else if (node.value() instanceof Parameterized) {
                 Parameterized gen = (Parameterized) node.value();

@@ -5,8 +5,6 @@ import james.graphicalModel.types.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,6 +35,10 @@ public class RenderNode<T> {
         } else if (value instanceof Parameterized) {
             createParameterizedButton();
         }
+    }
+
+    public boolean hasButton() {
+        return button != null;
     }
 
     private String getButtonString(Value value) {
@@ -109,7 +111,7 @@ public class RenderNode<T> {
 
     public void locate(Point2D point) {
         this.point = point;
-        button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
+        if (hasButton()) button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
     }
 
     void setLevel() {
@@ -136,6 +138,7 @@ public class RenderNode<T> {
 
     public double getPreferredX(double preferredSpacing) {
         double x = 0;
+
         for (RenderNode parent : outputs) {
             x += getPreferredX(parent, preferredSpacing);
         }

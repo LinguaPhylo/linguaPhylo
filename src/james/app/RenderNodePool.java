@@ -4,8 +4,6 @@ import james.graphicalModel.Parameterized;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -17,11 +15,16 @@ public class RenderNodePool {
     int lastWidth = 0;
     int lastHeight = 0;
 
+    RenderNode rootNode = null;
+
     public RenderNodePool() {
+        rootNode = new RenderNode("A dummy root to group actual root nodes! This node will node be rendered!");
+        rootNode.level = 0;
+        addNode(rootNode);
     }
 
     public void addRoot(Value v) {
-        createRenderNode(v, null);
+        rootNode.inputs.add(createRenderNode(v, rootNode));
     }
 
     private void addNode(RenderNode node) {
@@ -33,7 +36,26 @@ public class RenderNodePool {
         while (nodesByLevel.size() <= node.level) {
             nodesByLevel.add(new ArrayList<>());
         }
-        nodesByLevel.get(node.level).add(node);
+        List<RenderNode> level =  nodesByLevel.get(node.level);
+        if (!level.contains(node)) {
+            level.add(node);
+        }
+    }
+
+    private void relevel() {
+        for (List<RenderNode> level : nodesByLevel) {
+            level.clear();
+        }
+        nodesByLevel.clear();
+
+        traverseToRelevel(rootNode);
+    }
+
+    private void traverseToRelevel(RenderNode node) {
+        addNodeByLevel(node);
+        for (RenderNode child : ((List<RenderNode>)node.inputs)) {
+            traverseToRelevel(child);
+        }
     }
 
     public List<RenderNode> getRenderNodes() {
@@ -75,7 +97,7 @@ public class RenderNodePool {
     private void locate(List<RenderNode> nodes, int width, int height, int level, int maxNodesAtAnyLevel, int maxLevel) {
 
         double preferredSpacing = width / (maxNodesAtAnyLevel + 1.0);
-        double y = (maxLevel - level + 1) / (maxLevel + 2.0) * height;
+        double y = (maxLevel - level + 1) / (maxLevel + 1.0) * height;
 
 
         double lastX = 0;
@@ -87,7 +109,7 @@ public class RenderNodePool {
                 x = ((RenderNode) node.outputs.get(0)).point.getX();
             } else {
                 double preferredX = 0;
-                if (level == 0) {
+                if (level <= 1) {
                     preferredX = (i + 1.0) / (nodes.size() + 1.0) * width;
                 } else {
                     preferredX = node.getPreferredX(preferredSpacing);
@@ -106,22 +128,69 @@ public class RenderNodePool {
         }
     }
 
+    private List<RenderNode> getInputsOfLeftmostOutput(RenderNode node) {
+        List<RenderNode> outputs = node.outputs;
+
+        if (node.outputs.size() > 1) {
+            // get the left-most output according to nodesByLevel
+            RenderNode leftMost = outputs.get(0);
+            int leftMostIndex = levelIndex(leftMost);
+            for (int i = 1; i < outputs.size(); i++) {
+                int index = levelIndex(outputs.get(i));
+                if (index < leftMostIndex) {
+                    leftMostIndex = index;
+                    leftMost = outputs.get(i);
+                }
+            }
+            return leftMost.inputs;
+        } else if (outputs.size() == 1) {
+            return outputs.get(0).inputs;
+        } else {
+            return null;
+        }
+    }
+
     public void shiftLeft(RenderNode node) {
-        int pos = nodesByLevel.get(node.level).indexOf(node);
+//        int pos = nodesByLevel.get(node.level).indexOf(node);
+//        if (pos > 0) {
+//            RenderNode temp = nodesByLevel.get(node.level).get(pos-1);
+//            nodesByLevel.get(node.level).set(pos-1, node);
+//            nodesByLevel.get(node.level).set(pos, temp);
+//            locateAll(lastWidth, lastHeight);
+//        }
+
+        List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
+
+        int pos = inputs.indexOf(node);
         if (pos > 0) {
-            RenderNode temp = nodesByLevel.get(node.level).get(pos-1);
-            nodesByLevel.get(node.level).set(pos-1, node);
-            nodesByLevel.get(node.level).set(pos, temp);
+            RenderNode temp = inputs.get(pos-1);
+            inputs.set(pos-1, node);
+            inputs.set(pos, temp);
+            relevel();
             locateAll(lastWidth, lastHeight);
         }
     }
 
+    private int levelIndex(RenderNode node) {
+        return nodesByLevel.get(node.level).indexOf(node);
+    }
+
     public void shiftRight(RenderNode node) {
-        int pos = nodesByLevel.get(node.level).indexOf(node);
-        if (pos < nodesByLevel.get(node.level).size() - 1) {
-            RenderNode temp = nodesByLevel.get(node.level).get(pos+1);
-            nodesByLevel.get(node.level).set(pos+1, node);
-            nodesByLevel.get(node.level).set(pos, temp);
+//        int pos = nodesByLevel.get(node.level).indexOf(node);
+//        if (pos < nodesByLevel.get(node.level).size() - 1) {
+//            RenderNode temp = nodesByLevel.get(node.level).get(pos+1);
+//            nodesByLevel.get(node.level).set(pos+1, node);
+//            nodesByLevel.get(node.level).set(pos, temp);
+//            locateAll(lastWidth, lastHeight);
+//        }
+
+        List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
+        int pos = inputs.indexOf(node);
+        if (pos < inputs.size() - 1) {
+            RenderNode temp = inputs.get(pos+1);
+            inputs.set(pos+1, node);
+            inputs.set(pos, temp);
+            relevel();
             locateAll(lastWidth, lastHeight);
         }
     }
