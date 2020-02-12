@@ -4,10 +4,7 @@ import james.Coalescent;
 import james.core.JCPhyloCTMC;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
-import james.core.distributions.Dirichlet;
-import james.core.distributions.Exp;
-import james.core.distributions.LogNormal;
-import james.core.distributions.Normal;
+import james.core.distributions.*;
 import james.graphicalModel.types.*;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
@@ -38,7 +35,8 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class, PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class};
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
+                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);

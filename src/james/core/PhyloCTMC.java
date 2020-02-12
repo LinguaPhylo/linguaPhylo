@@ -19,14 +19,14 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double> clockRate;
     Value<Double[]> freq;
     Value<Double[][]> Q;
-    Value<Integer> L;
+    Value<Double[]> siteRates;
     Random random;
 
     String treeParamName;
     String muParamName;
     String rootFreqParamName;
     String QParamName;
-    String LParamName;
+    String siteRatesParamName;
 
     int numStates;
 
@@ -34,13 +34,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
                      @ParameterInfo(name = "freq", description = "the root probabilities.") Value<Double[]> rootFreq,
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
-                     @ParameterInfo(name = "L", description = "the length of the alignment to generate.") Value<Integer> L) {
+                     @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment.") Value<Double[]> siteRates) {
 
         this.tree = tree;
         this.Q = Q;
         this.freq = rootFreq;
         this.clockRate = mu;
-        this.L = L;
+        this.siteRates = siteRates;
         numStates = Q.value().length;
         this.random = Utils.getRandom();
 
@@ -48,7 +48,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         muParamName = getParamName(1);
         rootFreqParamName = getParamName(2);
         QParamName = getParamName(3);
-        LParamName = getParamName(4);
+        siteRatesParamName = getParamName(4);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         map.put(muParamName, clockRate);
         map.put(rootFreqParamName, freq);
         map.put(QParamName, Q);
-        map.put(LParamName, L);
+        map.put(siteRatesParamName, siteRates);
         return map;
     }
 
@@ -68,7 +68,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(muParamName)) clockRate = value;
         else if (paramName.equals(rootFreqParamName)) freq = value;
         else if (paramName.equals(QParamName)) Q = value;
-        else if (paramName.equals(LParamName)) L = value;
+        else if (paramName.equals(siteRatesParamName)) siteRates = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -81,7 +81,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         //TODO need to use explicit root distribution
         GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(freq, random);
 
-        Alignment alignment = new Alignment(tree.value().n(), L.value(), idMap);
+        Alignment alignment = new Alignment(tree.value().n(), siteRates.value().length, idMap);
 
         double[][] transProb = new double[numStates][numStates];
 
@@ -95,9 +95,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         EigenDecomposition decomposition = new EigenDecomposition(matrix);
 
-        for (int i = 0; i < L.value(); i++) {
+        for (int i = 0; i < siteRates.value().length; i++) {
             Value<Integer> rootState = rootDistribution.sample();
-            traverseTree(tree.value().getRoot(), rootState, alignment, i, decomposition, transProb);
+            traverseTree(tree.value().getRoot(), rootState, alignment, i, decomposition, transProb, siteRates.value()[i]);
         }
 
         return new RandomVariable<>("D", alignment, this);
@@ -120,19 +120,19 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    private void traverseTree(TimeTreeNode node, Value<Integer> nodeState, Alignment alignment, int pos, EigenDecomposition eigenDecomposition, double[][] transProb) {
+    private void traverseTree(TimeTreeNode node, Value<Integer> nodeState, Alignment alignment, int pos, EigenDecomposition eigenDecomposition, double[][] transProb, double siteRate) {
         if (node.isLeaf()) {
             alignment.setState(node.getId(), pos, nodeState.value());
         } else {
             for (TimeTreeNode child : node.getChildren()) {
                 double rate = clockRate.value();
 
-                double branchLength = rate * (node.getAge() - child.getAge());
+                double branchLength = siteRate * rate * (node.getAge() - child.getAge());
 
                 getTransitionProbabilities(branchLength, eigenDecomposition, transProb);
                 int state = drawState(transProb[nodeState.value()]);
 
-                traverseTree(child, new IntegerValue("x", state), alignment, pos, eigenDecomposition, transProb);
+                traverseTree(child, new IntegerValue("x", state), alignment, pos, eigenDecomposition, transProb, siteRate);
             }
         }
     }

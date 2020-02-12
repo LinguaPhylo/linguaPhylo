@@ -114,7 +114,7 @@ public class RenderNodePool {
                     preferredX = node.getPreferredX(preferredSpacing);
                 }
 
-                if (preferredX >= (lastX + preferredSpacing) && (width - preferredX) >= ((nodes.size() - i - 1) * preferredSpacing)) {
+                if (preferredX >= (lastX + preferredSpacing) && (width - preferredX) >= ((nodes.size() - i - 1) * preferredSpacing))  {
                     x = preferredX;
                 } else {
                     x = lastX + preferredSpacing;

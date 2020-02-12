@@ -11,48 +11,55 @@ import java.util.TreeMap;
 /**
  * Discretized Gamma distribution
  */
-public class DiscretizedGamma implements GenerativeDistribution<Double> {
+public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
 
     private final String shapeParamName;
     private final String ncatParamName;
+    private final String repsParamName;
     private Value<Double> shape;
     private Value<Integer> ncat;
-
-    private Random random;
+    private Value<Integer> reps;
 
     GammaDistribution gammaDistribution;
     double[] rates;
 
+
     public DiscretizedGamma(@ParameterInfo(name = "shape", description = "the shape of the discretized gamma distribution.") Value<Double> shape,
-                            @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.") Value<Integer> ncat) {
+                            @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.") Value<Integer> ncat,
+                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.") Value<Integer> reps) {
 
         this.shape = shape;
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
         this.ncat = ncat;
-        random = Utils.getRandom();
+        this.reps = reps;
 
         shapeParamName = getParamName(0);
         ncatParamName = getParamName(1);
+        repsParamName = getParamName(2);
 
         constructGammaDistribution();
     }
 
-    @GenerativeDistributionInfo(description = "The normal probability distribution.")
-    public RandomVariable<Double> sample() {
+    @GenerativeDistributionInfo(description = "The discretized gamma probability distribution with mean = 1.")
+    public RandomVariable<Double[]> sample() {
         constructGammaDistribution();
-        double x = gammaDistribution.sample();
+        Double[] x = new Double[reps.value()];
+        for (int i = 0; i < x.length; i++){
+            x[i] = rates[Utils.getRandom().nextInt(rates.length)];
+        }
         return new RandomVariable<>("x", x, this);
     }
 
-    @Override
-    public double density(Double x) {
-        return gammaDistribution.density(x);
+    public double logDensity(Double[] x) {
+        //TODO
+        throw new UnsupportedOperationException("TODO");
     }
 
     public Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(shapeParamName, shape);
         map.put(ncatParamName, ncat);
+        map.put(repsParamName, reps);
         return map;
     }
 
@@ -60,6 +67,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double> {
     public void setParam(String paramName, Value value) {
         if (paramName.equals(shapeParamName)) shape = value;
         else if (paramName.equals(ncatParamName)) ncat = value;
+        else if (paramName.equals(repsParamName)) reps = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
         constructGammaDistribution();

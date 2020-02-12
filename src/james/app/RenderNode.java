@@ -46,6 +46,16 @@ public class RenderNode<T> {
 
         if (!(value instanceof RandomVariable)) {
             str = displayString(value);
+        } else {
+            if (str.length() > 5) {
+                str = "<small>" + str + "</small>";
+            }
+
+            if (value.value() instanceof Double[] || value.value() instanceof Double[][] || value.value() instanceof Integer[] || value.value() instanceof Integer[][]) {
+                str = "<b>" + str + "</b>";
+            }
+            return "<html><center><p>" + str + "</p></center></html>";
+
         }
         return str;
     }
@@ -56,9 +66,13 @@ public class RenderNode<T> {
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
         } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue || v instanceof DoubleArray2DValue || v instanceof IntegerArray2DValue) {
-            return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
+            if (v.getId().length() < 5) {
+                return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
+            } else {
+                return "<html><center><p><font color=\"#808080\" ><b><small>" + v.getId() + "</small></b></p></font></center></html>";
+            }
         } else {
-            valueString = v.value( ).toString();
+            valueString = v.value().toString();
         }
 
         return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";

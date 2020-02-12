@@ -52,7 +52,10 @@ public class GraphicalModelApp {
             "ψ ~ Coalescent(n=n, theta=Θ);",
             "y0 = 0.0;",
             "σ2 = 0.01;",
-            "D ~ PhyloCTMC(L=L, mu=μ, freq=freq, Q=Q, tree=ψ);",
+            "ncat = 4;",
+            "shape = 0.75;",
+            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
+            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, freq=freq, Q=Q, tree=ψ);",
             "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
 
