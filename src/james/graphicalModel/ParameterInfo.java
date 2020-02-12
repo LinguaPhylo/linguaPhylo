@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 public @interface ParameterInfo {
     String name();
     String description();
+    boolean optional() default false;
 }

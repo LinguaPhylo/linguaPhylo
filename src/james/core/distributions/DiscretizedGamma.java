@@ -26,7 +26,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
 
     public DiscretizedGamma(@ParameterInfo(name = "shape", description = "the shape of the discretized gamma distribution.") Value<Double> shape,
                             @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.") Value<Integer> ncat,
-                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.") Value<Integer> reps) {
+                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.", optional = true) Value<Integer> reps) {
 
         this.shape = shape;
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
@@ -43,7 +43,11 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     @GenerativeDistributionInfo(description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double[]> sample() {
         constructGammaDistribution();
-        Double[] x = new Double[reps.value()];
+
+        int n = 1;
+        if (reps != null) n = reps.value();
+
+        Double[] x = new Double[n];
         for (int i = 0; i < x.length; i++){
             x[i] = rates[Utils.getRandom().nextInt(rates.length)];
         }

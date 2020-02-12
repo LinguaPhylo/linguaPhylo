@@ -436,8 +436,10 @@ public class GraphicalModelParser {
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = dictionary.get(arguments.get(pInfo.get(i).name()));
-                    if (arg == null)
-                        throw new RuntimeException("Value for id=" + arguments.get(pInfo.get(i).name()) + " not found!");
+                    if (arg == null && !pInfo.get(i).optional()) {
+                        throw new RuntimeException("Value id=" + arguments.get(pInfo.get(i).name()) + " not found for required input!");
+                    }
+
                     initargs[i] = arg;
                     globalArguments.add(arg.id);
                 }
@@ -447,13 +449,30 @@ public class GraphicalModelParser {
         return null;
     }
 
+    /**
+     * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
+     * @param arguments
+     * @param pInfo
+     * @return
+     */
     private boolean match(Map<String, String> arguments, List<ParameterInfo> pInfo) {
-        if (arguments.size() != pInfo.size()) return false;
-        Set<String> paramSet = new TreeSet<>();
-        for (ParameterInfo pi : pInfo) {
-            paramSet.add(pi.name());
+
+        Set<String> requiredArguments = new TreeSet<>();
+        Set<String> optionalArguments = new TreeSet<>();
+        for (ParameterInfo pinfo : pInfo) {
+            if (pinfo.optional()) {
+                optionalArguments.add(pinfo.name());
+            } else {
+                requiredArguments.add(pinfo.name());
+            }
         }
-        return paramSet.equals(arguments.keySet());
+
+        if (!arguments.keySet().containsAll(requiredArguments)) {
+            return false;
+        }
+        Set<String> allArguments = optionalArguments;
+        allArguments.addAll(requiredArguments);
+        return allArguments.containsAll(arguments.keySet());
     }
 
     private Map<String, String> parseArguments(String argumentString, int lineNumber) {
