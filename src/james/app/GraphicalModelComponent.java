@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
@@ -304,9 +302,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     @Override
     public void modelChanged() {
-//        recomputeSizes();
-//        removeButtons();
-//        generateButtons();
-//        repaint();
+        setup();
+        repaint();
     }
 }

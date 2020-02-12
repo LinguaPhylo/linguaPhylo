@@ -99,7 +99,6 @@ public class RenderNodePool {
         double preferredSpacing = width / (maxNodesAtAnyLevel + 1.0);
         double y = (maxLevel - level + 1) / (maxLevel + 1.0) * height;
 
-
         double lastX = 0;
         for (int i = 0; i < nodes.size(); i++) {
             RenderNode node = nodes.get(i);
@@ -129,6 +128,8 @@ public class RenderNodePool {
     }
 
     private List<RenderNode> getInputsOfLeftmostOutput(RenderNode node) {
+
+        //TODO find out how node can be null here!
         List<RenderNode> outputs = node.outputs;
 
         if (node.outputs.size() > 1) {

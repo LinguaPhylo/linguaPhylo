@@ -85,7 +85,6 @@ public class Value<T> implements Viewable {
     public JComponent getViewer() {
         if (value instanceof HasComponentView) {
             JComponent component = ((HasComponentView<T>) value).getComponent(this);
-
             return component;
         }
 

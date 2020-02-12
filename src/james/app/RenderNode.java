@@ -58,7 +58,7 @@ public class RenderNode<T> {
         } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue || v instanceof DoubleArray2DValue || v instanceof IntegerArray2DValue) {
             return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
         } else {
-            valueString = v.value().toString();
+            valueString = v.value( ).toString();
         }
 
         return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";

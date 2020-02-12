@@ -9,6 +9,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class GraphicalModelInterpreter extends JPanel {
@@ -84,7 +91,6 @@ public class GraphicalModelInterpreter extends JPanel {
         BoxLayout boxLayout2 = new BoxLayout(activeLine, BoxLayout.LINE_AXIS);
         activeLine.setLayout(boxLayout2);
 
-
         JLabel label = new JLabel("  >");
         label.setFont(interpreterFont);
         label.setBorder(new CompoundBorder(new MatteBorder(0,0,0,2,Color.gray), new EmptyBorder(BORDER_SIZE,tln.getBorderGap(),BORDER_SIZE,tln.getBorderGap()+2)));
@@ -107,7 +113,7 @@ public class GraphicalModelInterpreter extends JPanel {
         return words[words.length-1];
     }
 
-    private void interpretInput(String input) {
+    public void interpretInput(String input) {
 
         String[] lines = input.split(";");
 
@@ -120,5 +126,9 @@ public class GraphicalModelInterpreter extends JPanel {
             parser.parseLine(line);
             textPane.addLine(line);
         }
+    }
+
+    public void clear() {
+        textPane.setText("");
     }
 }

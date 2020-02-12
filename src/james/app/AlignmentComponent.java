@@ -4,6 +4,7 @@ import james.TimeTree;
 import james.TimeTreeComponent;
 import james.core.Alignment;
 import james.core.JCPhyloCTMC;
+import james.core.PhyloCTMC;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
@@ -32,11 +33,11 @@ public class AlignmentComponent extends JComponent {
 
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
-            if (gen instanceof JCPhyloCTMC) {
-                timeTree = ((JCPhyloCTMC) gen).getTimeTree();
+            if (gen instanceof PhyloCTMC) {
+                timeTree = ((PhyloCTMC) gen).getParams().get("tree");
             }
         }
-        timeTree = null;
+        //timeTree = null;
     }
 
     public void paintComponent(Graphics g) {

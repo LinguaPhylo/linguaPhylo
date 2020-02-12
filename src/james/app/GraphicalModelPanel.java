@@ -10,6 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class GraphicalModelPanel extends JPanel {
@@ -181,49 +188,28 @@ public class GraphicalModelPanel extends JPanel {
 
     }
 
-    public static void main(String[] args) {
+    public void readScript(File scriptFile) {
+        Path path = Paths.get(scriptFile.getAbsolutePath());
+        try {
+            String mimeType = Files.probeContentType(path);
 
-        String[] lines = {
-                "α = [5.0,5.0,5.0,5.0];",
-                "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-                "r ~ Dirichlet(concentration=α_r);",
-                "freq ~ Dirichlet(concentration=α);",
-                "L = 50;",
-                "μ = 0.01;",
-                "n = 20;",
-                "mean = 3.0;",
-                "sd = 1.0;",
-                "lnΘ ~ Normal(mean=mean, sd=sd);",
-                "Θ = exp(lnΘ);",
-                "Q = gtr(rates=r, freq=freq);",
-//                "Q = [[-1.0,0.3333, 0.3333, 0.3333],[0.3333, -1.0, 0.3333, 0.3333],[0.3333, 0.3333, -1.0, 0.3333],[0.3333, 0.3333, 0.3333, -1.0]];",
+            if (mimeType.equals("text/plain")) {
+                parser.clear();
+                interpreter.clear();
 
-                "ψ ~ Coalescent(n=n, theta=Θ);",
-                "y0 = 0.0;",
-                "σ2 = 0.01;",
-                "D ~ PhyloCTMC(L=L, mu=μ, freq=freq, Q=Q, tree=ψ);",
-                "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
+                FileReader reader = new FileReader(scriptFile);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                String line = bufferedReader.readLine();
+                while (line != null) {
+                    interpreter.interpretInput(line);
+                    line = bufferedReader.readLine();
+                }
+                bufferedReader.close();
+                reader.close();
+            }
 
-        GraphicalModelParser parser = new GraphicalModelParser();
-        parser.parseLines(lines);
-        Set<Value> values = parser.getRoots();
-
-        Value v = values.iterator().next();
-
-        if (v instanceof RandomVariable) {
-
-            GraphicalModelPanel panel = new GraphicalModelPanel(parser);
-            panel.setPreferredSize(new Dimension(1200, 800));
-
-            JFrame frame = new JFrame("Graphical Models");
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.getContentPane().add(panel, BorderLayout.CENTER);
-            frame.pack();
-            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
-            frame.setVisible(true);
-        } else {
-            throw new RuntimeException("Expected root node to be a random variable!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

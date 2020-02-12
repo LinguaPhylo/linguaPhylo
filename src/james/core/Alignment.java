@@ -42,7 +42,6 @@ public class Alignment implements HasComponentView<Alignment> {
 
     @Override
     public JComponent getComponent(Value<Alignment> value) {
-
         return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 

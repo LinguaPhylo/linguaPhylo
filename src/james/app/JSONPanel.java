@@ -33,18 +33,20 @@ public class JSONPanel extends JPanel {
     }
 
     void setText() {
-        area.setText("{\n");
         List<RandomVariable> variables = new ArrayList<>();
         for (Value value : parser.getDictionary().values()) {
             if ((value instanceof RandomVariable)) {
                 variables.add((RandomVariable)value);
             }
         }
-        area.append(indent(variables.get(0).toString()));
-        for (int i = 1; i < variables.size(); i++) {
-            area.append(",\n");
-            area.append(indent(variables.get(i).toString()));
+        area.setText("{\n");
+        if (variables.size() > 0) {
+            area.append(indent(variables.get(0).toString()));
+            for (int i = 1; i < variables.size(); i++) {
+                area.append(",\n");
+                area.append(indent(variables.get(i).toString()));
 
+            }
         }
         area.append("\n}");
     }

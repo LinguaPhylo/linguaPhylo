@@ -18,15 +18,16 @@ import java.util.*;
 
 public class GraphicalModelParser {
 
+    // CURRENT MODEL STATE
     private SortedMap<String, Value> dictionary = new TreeMap<>();
-
     Set<String> globalArguments = new TreeSet<>();
 
-    Map<String, Class> genDistDictionary = new TreeMap<>();
-
-    Map<String, Class> functionDictionary = new TreeMap<>();
-
+    // HISTORY OF LINES PARSED
     List<String> lines = new ArrayList<>();
+
+    // PARSER STATE
+    Map<String, Class> genDistDictionary = new TreeMap<>();
+    Map<String, Class> functionDictionary = new TreeMap<>();
 
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     List<GraphicalModelListener> gmListeners = new ArrayList<>();
@@ -48,6 +49,16 @@ public class GraphicalModelParser {
         functionDictionary.put("k80", james.core.functions.K80.class);
         functionDictionary.put("hky", james.core.functions.HKY.class);
         functionDictionary.put("gtr", james.core.functions.GTR.class);
+    }
+
+    public void clear() {
+        // clear current model state
+        dictionary.clear();
+        globalArguments.clear();
+
+        // clear history of lines
+        lines.clear();
+        notifyListeners();
     }
 
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
