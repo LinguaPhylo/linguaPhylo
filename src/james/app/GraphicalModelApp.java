@@ -44,10 +44,9 @@ public class GraphicalModelApp {
             "L = 50;",
             "μ = 0.01;",
             "n = 20;",
-            "mean = 3.0;",
-            "sd = 1.0;",
-            "lnΘ ~ Normal(mean=mean, sd=sd);",
-            "Θ = exp(lnΘ);",
+            "M = 3.0;",
+            "S = 1.0;",
+            "Θ ~ LogNormal(meanlog=M, sdlog=S);",
             "Q = gtr(rates=r, freq=freq);",
             "ψ ~ Coalescent(n=n, theta=Θ);",
             "y0 = 0.0;",
@@ -55,7 +54,7 @@ public class GraphicalModelApp {
             "ncat = 4;",
             "shape = 0.75;",
             "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, freq=freq, Q=Q, tree=ψ);",
+            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
             "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
 

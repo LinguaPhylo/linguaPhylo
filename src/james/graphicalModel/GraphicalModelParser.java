@@ -17,6 +17,8 @@ public class GraphicalModelParser {
 
     // CURRENT MODEL STATE
     private SortedMap<String, Value> dictionary = new TreeMap<>();
+
+    // convenience book-keeping
     Set<String> globalArguments = new TreeSet<>();
 
     // HISTORY OF LINES PARSED
@@ -42,6 +44,7 @@ public class GraphicalModelParser {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
         }
 
+        // TODO get name directly from FunctionInfo annotation
         functionDictionary.put("exp", james.core.functions.Exp.class);
         functionDictionary.put("jukesCantor", james.core.functions.JukesCantor.class);
         functionDictionary.put("k80", james.core.functions.K80.class);
@@ -86,6 +89,10 @@ public class GraphicalModelParser {
         for (int i = 0; i < lines.length; i++) {
             parseLine(lines[i]);
         }
+    }
+
+    public void parseLineProperly(String line) {
+
     }
 
     public void parseLine(String line) {
@@ -352,7 +359,7 @@ public class GraphicalModelParser {
             throw new RuntimeException("Parsing error: Unrecognised deterministic function: " + name);
 
         try {
-            Object[] initargs = new Object[arguments.keySet().size()];
+            List<Object> initargs = new ArrayList<>();
             Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
             if (constructor == null) {
                 System.err.println("Function class: " + functionClass);
@@ -360,7 +367,7 @@ public class GraphicalModelParser {
                 throw new RuntimeException("Parser error: no constructor found for deterministic function " + name + " with arguments " + arguments);
             }
 
-            DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs);
+            DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
                 Value value = dictionary.get(arguments.get(parameterName));
                 func.setParam(parameterName, value);
@@ -405,12 +412,12 @@ public class GraphicalModelParser {
             throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
 
         try {
-            Object[] initargs = new Object[arguments.keySet().size()];
+            List<Object> initargs = new ArrayList<>();
             Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
             if (constructor == null)
                 throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
 
-            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs);
+            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
                 Value value = dictionary.get(arguments.get(parameterName));
                 dist.setParam(parameterName, value);
@@ -429,19 +436,26 @@ public class GraphicalModelParser {
         }
     }
 
-    private Constructor getConstructorByArguments(Map<String, String> arguments, Class genDistClass, Object[] initargs) {
-        System.out.println(arguments);
+    private Constructor getConstructorByArguments(Map<String, String> arguments, Class genDistClass, List<Object> initargs) {
+        System.out.println("getConstructorByArguments " + arguments );
         for (Constructor constructor : genDistClass.getConstructors()) {
             List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
-                    Value arg = dictionary.get(arguments.get(pInfo.get(i).name()));
-                    if (arg == null && !pInfo.get(i).optional()) {
-                        throw new RuntimeException("Value id=" + arguments.get(pInfo.get(i).name()) + " not found for required input!");
+                    String id = arguments.get(pInfo.get(i).name());
+                    if (id != null) {
+                        Value arg = dictionary.get(id);
+                        initargs.add(arg);
+                        if (arg != null) {
+                            globalArguments.add(arg.id);
+                        } else if (!pInfo.get(i).optional()) {
+                            throw new RuntimeException("Value id=" + arguments.get(pInfo.get(i).name()) + " not found for required input!");
+                        }
+                    } else if (!pInfo.get(i).optional()) {
+                        throw new RuntimeException("No argument provided for required input" + pInfo.get(i).name() + " of " + genDistClass.getSimpleName());
+                    } else {
+                        initargs.add(null);
                     }
-
-                    initargs[i] = arg;
-                    globalArguments.add(arg.id);
                 }
                 return constructor;
             }

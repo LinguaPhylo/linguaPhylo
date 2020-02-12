@@ -32,7 +32,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
-                     @ParameterInfo(name = "freq", description = "the root probabilities.") Value<Double[]> rootFreq,
+                     @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment.") Value<Double[]> siteRates) {
 
@@ -56,9 +56,12 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, tree);
         map.put(muParamName, clockRate);
-        map.put(rootFreqParamName, freq);
+        if (freq != null) {
+            map.put(rootFreqParamName, freq);
+        }
         map.put(QParamName, Q);
         map.put(siteRatesParamName, siteRates);
+        System.out.println("getParams=" + map);
         return map;
     }
 
@@ -77,12 +80,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
 
-
-        //TODO need to use explicit root distribution
-        GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(freq, random);
-
-        Alignment alignment = new Alignment(tree.value().n(), siteRates.value().length, idMap);
-
         double[][] transProb = new double[numStates][numStates];
 
         double[][] primitive = new double[numStates][numStates];
@@ -95,12 +92,39 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         EigenDecomposition decomposition = new EigenDecomposition(matrix);
 
+        Value<Double[]> rootFreqs = freq;
+        if (rootFreqs == null) {
+            rootFreqs = computeEquilibrium(decomposition, transProb);
+        }
+
+        GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(rootFreqs, random);
+
+        Alignment alignment = new Alignment(tree.value().n(), siteRates.value().length, idMap);
+
+
         for (int i = 0; i < siteRates.value().length; i++) {
             Value<Integer> rootState = rootDistribution.sample();
             traverseTree(tree.value().getRoot(), rootState, alignment, i, decomposition, transProb, siteRates.value()[i]);
         }
 
         return new RandomVariable<>("D", alignment, this);
+    }
+
+    private Value<Double[]> computeEquilibrium(EigenDecomposition eigenDecomposition, double[][] transProb) {
+        getTransitionProbabilities(100, eigenDecomposition, transProb);
+        Double[] freqs = new Double[transProb.length];
+        for (int i = 0; i < freqs.length; i++) {
+            freqs[i] = transProb[0][i];
+            for (int j = 1; j < freqs.length; j++) {
+                if (Math.abs(transProb[0][i] - transProb[j][i]) > 1e-6) {
+                    System.out.println("WARNING: branch length used to get equilibrium distribution was not long enough!");
+                }
+
+            }
+        }
+        System.out.println("  Computed equilibrium (from e^{100*Q}) is " + Arrays.toString(freqs));
+
+        return new Value<>("freq", freqs);
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
