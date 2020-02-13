@@ -1,10 +1,6 @@
 package james.graphicalModel;
 
 import james.app.DoubleArrayLabel;
-import james.graphicalModel.swing.DoubleValueEditor;
-import james.graphicalModel.swing.IntegerValueEditor;
-import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerValue;
 import james.app.HasComponentView;
 
 import javax.swing.*;

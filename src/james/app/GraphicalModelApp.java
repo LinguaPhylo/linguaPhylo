@@ -36,28 +36,47 @@ public class GraphicalModelApp {
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
+//    static String[] lines = {
+//            "α = [5.0,5.0,5.0,5.0];",
+//            "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+//            "r ~ Dirichlet(concentration=α_r);",
+//            "freq ~ Dirichlet(concentration=α);",
+//            "L = 50;",
+//            "μ = 0.01;",
+//            "n = 20;",
+//            "M = 3.0;",
+//            "S = 1.0;",
+//            "Θ ~ LogNormal(meanlog=M, sdlog=S);",
+//            "Q = gtr(rates=r, freq=freq);",
+//            "ψ ~ Coalescent(n=n, theta=Θ);",
+//            "y0 = 0.0;",
+//            "σ2 = 0.01;",
+//            "ncat = 4;",
+//            "shape = 0.75;",
+//            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
+//            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+//            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
+
     static String[] lines = {
-            "α = [5.0,5.0,5.0,5.0];",
-            "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-            "r ~ Dirichlet(concentration=α_r);",
-            "freq ~ Dirichlet(concentration=α);",
             "L = 50;",
             "μ = 0.01;",
             "n = 20;",
             "M = 3.0;",
             "S = 1.0;",
+            "lM = 3.0;",
+            "lS = 1.0;",
+            "alpha = 0.01;",
+            "beta = 0.01;",
+            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
             "Θ ~ LogNormal(meanlog=M, sdlog=S);",
-            "Q = gtr(rates=r, freq=freq);",
+            "Q = binaryCTMC(lambda=lambda);",
             "ψ ~ Coalescent(n=n, theta=Θ);",
-            "y0 = 0.0;",
-            "σ2 = 0.01;",
             "ncat = 4;",
             "shape = 0.75;",
             "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
-            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
-
-
+            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
+    
     GraphicalModelParser parser = new GraphicalModelParser();
 
     public GraphicalModelApp() {
