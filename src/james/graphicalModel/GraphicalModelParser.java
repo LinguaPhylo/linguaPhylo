@@ -437,7 +437,7 @@ public class GraphicalModelParser {
     }
 
     private Constructor getConstructorByArguments(Map<String, String> arguments, Class genDistClass, List<Object> initargs) {
-        System.out.println("getConstructorByArguments " + arguments );
+        System.out.println(genDistClass.getSimpleName() + " " + arguments );
         for (Constructor constructor : genDistClass.getConstructors()) {
             List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {

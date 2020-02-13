@@ -61,7 +61,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
         map.put(QParamName, Q);
         map.put(siteRatesParamName, siteRates);
-        System.out.println("getParams=" + map);
         return map;
     }
 
