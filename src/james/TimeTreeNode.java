@@ -84,4 +84,55 @@ public class TimeTreeNode {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    public void addChild(TimeTreeNode child) {
+        children.add(child);
+        child.parent = this;
+    }
+
+    public void setAge(double age) {
+        this.age = age;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getChildCount() {
+        return children.size();
+    }
+
+    /**
+     * get all leaf node under this node, if this node is leaf then list.size() = 0.
+     *
+     * @return
+     */
+    public List<TimeTreeNode> getAllLeafNodes() {
+        final List<TimeTreeNode> leafNodes = new ArrayList<>();
+        if (!this.isLeaf()) getAllLeafNodes(leafNodes);
+        return leafNodes;
+    }
+
+    // recursive
+    public void getAllLeafNodes(final List<TimeTreeNode> leafNodes) {
+        if (this.isLeaf()) {
+            leafNodes.add(this);
+        }
+
+        for (TimeTreeNode child : children)
+            child.getAllLeafNodes(leafNodes);
+    }
+
+    /**
+     * sorts nodes in children according to lowest numbered label in subtree
+     *
+     * @return
+     */
+    public void sort() {
+
+        for (TimeTreeNode child : children) {
+            child.sort();
+        }
+        children.sort(Comparator.comparingInt(o -> o.index));
+    }
 }
