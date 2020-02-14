@@ -16,9 +16,9 @@ public interface Parameterized {
     }
 
     default String getParamName(int paramIndex) {
-        if (this instanceof Function) {
-            return getParameterInfo("apply").get(paramIndex).name();
-        }
+//        if (this instanceof Function) {
+//            return getParameterInfo("apply").get(paramIndex).name();
+//        }
         return getParamName(paramIndex, 0);
     }
 

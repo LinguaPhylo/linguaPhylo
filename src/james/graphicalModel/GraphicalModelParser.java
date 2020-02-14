@@ -6,6 +6,8 @@ import james.core.JCPhyloCTMC;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.distributions.*;
+import james.core.distributions.Exp;
+import james.core.functions.*;
 import james.graphicalModel.types.*;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
@@ -39,19 +41,20 @@ public class GraphicalModelParser {
     public GraphicalModelParser() {
 
         Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
-                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class};
+                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
+                ErrorModel.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
         }
 
-        // TODO get name directly from FunctionInfo annotation
-        functionDictionary.put("exp", james.core.functions.Exp.class);
-        functionDictionary.put("jukesCantor", james.core.functions.JukesCantor.class);
-        functionDictionary.put("k80", james.core.functions.K80.class);
-        functionDictionary.put("hky", james.core.functions.HKY.class);
-        functionDictionary.put("gtr", james.core.functions.GTR.class);
-        functionDictionary.put("binaryCTMC", james.core.functions.BinaryCTMC.class);
+        Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
+                BinaryCTMC.class, Newick.class};
+
+        for (Class functionClass : functionClasses) {
+            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
+        }
+        System.out.println(functionDictionary);
     }
 
     public void clear() {
@@ -180,16 +183,26 @@ public class GraphicalModelParser {
     }
 
     private void parseFixedParameterLine(String line, int lineNumber) {
-        String[] parts = line.split("=");
-        if (parts.length != 2)
-            throw new RuntimeException("Parsing fixed parameter " + parts[0] + " failed on line " + lineNumber);
-        String id = parts[0].trim();
-        String valueString = parts[1].substring(0, parts[1].indexOf(';')).trim();
-        Value literalValue = parseLiteralValue(id, valueString, lineNumber);
-        dictionary.put(literalValue.getId(), literalValue);
+        int firstEquals = line.indexOf('=');
+        if (firstEquals > 0) {
+            String id = line.substring(0, firstEquals).trim();
+            String remainder = line.substring(firstEquals + 1).trim();
+            if (remainder.endsWith(";")) {
+                remainder = remainder.substring(0, remainder.length()-1);
+            }
+
+            Value literalValue = parseLiteralValue(id, remainder, lineNumber);
+            dictionary.put(literalValue.getId(), literalValue);
+        }
     }
 
     private Value parseLiteralValue(String id, String valueString, int lineNumber) {
+
+        if (valueString.startsWith("\"") && valueString.endsWith("\"")) {
+            // parse string
+            return new Value<>(id, valueString.substring(1, valueString.length()-1));
+        }
+
 
         if (valueString.startsWith("[") && valueString.endsWith("]")) {
             return parseList(id, valueString, lineNumber);
@@ -320,38 +333,10 @@ public class GraphicalModelParser {
         dictionary.put(val.getId(), val);
     }
 
-//    private Value parseFunction(String id, String functionString, int lineNumber) {
-//        String[] parts = functionString.split("\\(");
-//        if (parts.length != 2)
-//            throw new RuntimeException("Parsing function " + parts[0] + "failed on line " + lineNumber);
-//        String funcName = parts[0].trim();
-//        String argumentString = parts[1].substring(0, parts[1].indexOf(')')).trim();
-//        Value argument = dictionary.get(argumentString);
-//        if (argument == null) {
-//            System.err.println(dictionary);
-//            throw new RuntimeException("Couldn't find argument " + argumentString + " when parsing " + funcName + " on line " + lineNumber);
-//        } else {
-//            globalArguments.add(argument);
-//        }
-//
-//        Class functionClass = functionDictionary.get(funcName);
-//        try {
-//            Function function = (Function) functionClass.newInstance();
-//            Value result = function.apply(argument, id);
-//            return result;
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Parsing function " + funcName + " failed on line " + lineNumber);
-//        }
-//    }
-
     private Value parseDeterministicFunction(String id, String functionString, int lineNumber) {
         String[] parts = functionString.split("\\(");
         if (parts.length != 2)
-            throw new RuntimeException("Parsing deterministic function " + parts[0] + "failed on line " + lineNumber);
+            throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
         String name = parts[0].trim();
         String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
         Map<String, String> arguments = parseArguments(argumentString, lineNumber);
@@ -364,7 +349,7 @@ public class GraphicalModelParser {
             List<Object> initargs = new ArrayList<>();
             Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
             if (constructor == null) {
-                System.err.println("Function class: " + functionClass);
+                System.err.println("DeterministicFunction class: " + functionClass);
                 System.err.println("     Arguments: " + arguments);
                 throw new RuntimeException("Parser error: no constructor found for deterministic function " + name + " with arguments " + arguments);
             }
@@ -512,8 +497,8 @@ public class GraphicalModelParser {
         int firstEquals = line.indexOf('=');
         if (firstEquals > 0) {
             String id = line.substring(0, firstEquals).trim();
-            String remainder = line.substring(firstEquals + 1);
-            return (remainder.indexOf('(') > 0);
+            String remainder = line.substring(firstEquals + 1).trim();
+            return (remainder.indexOf('(') > 0 && !remainder.startsWith("\""));
         } else return false;
     }
 
@@ -526,9 +511,14 @@ public class GraphicalModelParser {
         if (firstEquals > 0) {
             String id = line.substring(0, firstEquals).trim();
 
-            String remainder = line.substring(firstEquals + 1);
+            String remainder = line.substring(firstEquals + 1).trim();
             String valueString = remainder.substring(0, remainder.indexOf(';'));
             valueString = valueString.trim();
+
+            if (valueString.startsWith("\"")) {
+                // is string
+                return true;
+            }
 
             if (valueString.startsWith("[") && valueString.endsWith("]")) {
                 // is list

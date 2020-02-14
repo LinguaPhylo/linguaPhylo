@@ -35,9 +35,12 @@ public abstract class Func implements Parameterized, Viewable {
 
     public FunctionInfo getFunctionInfo() {
 
-        Class classElement = getClass();
+       return getFunctionInfo(getClass());
+    }
 
-        Method[] methods = classElement.getMethods();
+    public static FunctionInfo getFunctionInfo(Class c) {
+
+        Method[] methods = c.getMethods();
 
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
@@ -49,7 +52,10 @@ public abstract class Func implements Parameterized, Viewable {
         }
 
         return null;
+    }
 
+    public static String getFunctionName(Class c) {
+        return getFunctionInfo(c).name();
     }
 
     public String getRichDescription() {

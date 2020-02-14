@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class TimeTreeNode {
 
-    private List<TimeTreeNode> children;
+    private List<TimeTreeNode> children = new ArrayList<>();
     private TimeTreeNode parent = null;
     private int index;
 
@@ -86,6 +86,7 @@ public class TimeTreeNode {
     }
 
     public void addChild(TimeTreeNode child) {
+        if (children == null) children = new ArrayList<>();
         children.add(child);
         child.parent = this;
     }
@@ -130,9 +131,11 @@ public class TimeTreeNode {
      */
     public void sort() {
 
-        for (TimeTreeNode child : children) {
-            child.sort();
+        if (!isLeaf()) {
+            for (TimeTreeNode child : children) {
+                child.sort();
+            }
+            children.sort(Comparator.comparingInt(o -> o.index));
         }
-        children.sort(Comparator.comparingInt(o -> o.index));
     }
 }

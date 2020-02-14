@@ -206,8 +206,11 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
                 node.setAge(0);
             }
         }
-        for (TimeTreeNode child : node.getChildren())
-            offset(child, delta);
+        if (!node.isLeaf()) {
+            for (TimeTreeNode child : node.getChildren()) {
+                offset(child, delta);
+            }
+        }
     }
 
     /**
