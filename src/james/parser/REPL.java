@@ -2,10 +2,14 @@ package james.parser;
 
 
 import java.io.*;
-import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import james.graphicalModel.Value;
 
 /** A simple Read-Eval-Print-Loop for the graphicalModelSimulator language **/ 
 public class REPL {
+	SortedMap<String, Value<?>> dictionary = new TreeMap<>();
 
 	public REPL() {
 	}
@@ -31,7 +35,7 @@ public class REPL {
 			System.exit(0);
 		} else if (cmd.startsWith("?")) {
 			try {
-				SimulatorListenerImpl parser = new SimulatorListenerImpl();
+				SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
 				Object o = parser.parse(cmd);
 				//parser.parse(cmd);
 			} catch (SimulatorParsingException e) {

@@ -15,29 +15,66 @@ import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
- 
+
+import james.Coalescent;
+import james.core.ErrorModel;
+import james.core.JCPhyloCTMC;
+import james.core.PhyloBrownian;
+import james.core.PhyloCTMC;
+import james.core.distributions.Dirichlet;
+import james.core.distributions.DiscretizedGamma;
+import james.core.distributions.Exp;
+import james.core.distributions.Gamma;
+import james.core.distributions.LogNormal;
+import james.core.distributions.Normal;
+import james.core.functions.BinaryCTMC;
+import james.core.functions.GTR;
+import james.core.functions.HKY;
+import james.core.functions.JukesCantor;
+import james.core.functions.K80;
+import james.core.functions.Newick;
+import james.graphicalModel.DeterministicFunction;
+import james.graphicalModel.Func;
+import james.graphicalModel.GenerativeDistribution;
+import james.graphicalModel.RandomVariable;
+import james.graphicalModel.Value;
+import james.graphicalModel.types.DoubleValue;
+import james.graphicalModel.types.IntegerValue;
 import james.parser.SimulatorParser.*;
 
 public class SimulatorListenerImpl extends SimulatorBaseListener {
-	static private Set<String> bivarOperators;
-	static private Set<String> univarDistirbutions;
-	static private Set<String> bivarDistirbutions;
-	static private Set<String> trivarDistirbutions;
 	
-	
-	static public Map<String, String> mapNameToClass;
-	static public Map<String, String> mapDistrToClass;
+    // CURRENT MODEL STATE
+    private SortedMap<String, Value<?>> dictionary;
+
+    // PARSER STATE
+    static Map<String, Class<?>> genDistDictionary;
+    static Map<String, Class<?>> functionDictionary;
+
 	
 	static public void initNameMap() {
-		if (mapNameToClass == null) {
-			mapNameToClass = new HashMap<>();
-//			initMap(Transform.class, mapNameToClass);
-
-			mapDistrToClass = new HashMap<>();
-//			initMap(JAGSDistribution.class, mapDistrToClass);
+		if (genDistDictionary == null) {
+			genDistDictionary = new TreeMap<>();
+			functionDictionary = new TreeMap<>();
+			
+	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
+	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
+	                ErrorModel.class};
+	
+	        for (Class<?> genClass : genClasses) {
+	            genDistDictionary.put(genClass.getSimpleName(), genClass);
+	        }
+	
+	        Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
+	                BinaryCTMC.class, Newick.class};
+	
+	        for (Class<?> functionClass : functionClasses) {
+	            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
+	        }
 		}
-		System.out.println(Arrays.toString(mapNameToClass.keySet().toArray()));
-		System.out.println(Arrays.toString(mapDistrToClass.keySet().toArray()));
+		System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
+		System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
+		
 	}
 
 //	private static void initMap(Class baseClass, Map<String, String> mapNameToClass) {
@@ -91,7 +128,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //		public int getDimension(int dim) {return 1;}
 //	};
 	
-	public SimulatorListenerImpl() {
+	public SimulatorListenerImpl(SortedMap<String, Value<?>> dictionary) {
+		this.dictionary = dictionary;
 	}
 	
 	// we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
@@ -104,23 +142,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		public SimulatorASTVisitor() {
 			initNameMap();
 			
-			bivarOperators = new HashSet<>();
-			for (String s : new String[]{"+","-","*","/","**","&&","||","<=","<",">=",">","%",":","^","!=","==","&","|","<<",">>",">>>"}) {
-				bivarOperators.add(s);
-			}
-			
-			univarDistirbutions = new HashSet<>();
-			bivarDistirbutions = new HashSet<>();
-			trivarDistirbutions = new HashSet<>();
-			for (String s : new String[]{"dchisq" ,"dexp" ,"dpois" ,"dgeom","ddirich"}){
-				univarDistirbutions.add(s);
-			}
-			for (String s : new String[]{"dnorm" ,"dlnorm" ,"dbeta" ,"dnchisq" ,"dnt" ,"dbinom" ,"dnbinom" ,"dnbinom_mu" ,"dcauchy" ,"df" ,"dgamma" ,"dunif" ,"dweibull" ,"dlogis" ,"dsignrank"}){
-				bivarDistirbutions.add(s);
-			}
-			for (String s : new String[]{"dnbeta" ,"dnf" ,"dhyper" ,"dwilcox"}){
-				trivarDistirbutions.add(s);			
-			}
+//			bivarOperators = new HashSet<>();
+//			for (String s : new String[]{"+","-","*","/","**","&&","||","<=","<",">=",">","%",":","^","!=","==","&","|","<<",">>",">>>"}) {
+//				bivarOperators.add(s);
+//			}
+//			
+//			univarDistirbutions = new HashSet<>();
+//			bivarDistirbutions = new HashSet<>();
+//			trivarDistirbutions = new HashSet<>();
+//			for (String s : new String[]{"dchisq" ,"dexp" ,"dpois" ,"dgeom","ddirich"}){
+//				univarDistirbutions.add(s);
+//			}
+//			for (String s : new String[]{"dnorm" ,"dlnorm" ,"dbeta" ,"dnchisq" ,"dnt" ,"dbinom" ,"dnbinom" ,"dnbinom_mu" ,"dcauchy" ,"df" ,"dgamma" ,"dunif" ,"dweibull" ,"dlogis" ,"dsignrank"}){
+//				bivarDistirbutions.add(s);
+//			}
+//			for (String s : new String[]{"dnbeta" ,"dnf" ,"dhyper" ,"dwilcox"}){
+//				trivarDistirbutions.add(s);			
+//			}
 
 		}
 		
@@ -128,28 +166,48 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
 				
 		@Override
-		public Object visitConstant(SimulatorParser.ConstantContext ctx) {
+		public Value visitConstant(SimulatorParser.ConstantContext ctx) {
 			String text = ctx.getText();
 			double d = 0;
 			try {
 				d = Double.parseDouble(text);
+				String id = nextID("DoubleValue");
+				Value<Double> v = new DoubleValue(id, d);
+				return v;
 			} catch (NumberFormatException e) {
 				try {
 					d = Long.parseLong(text);
+					String id = nextID("IntegerValue");
+					// TODO: should be a LongValue?
+					Value<Integer> v = new IntegerValue(id, (int) d);
+					return v;
 				} catch (NumberFormatException e2) {
-					d = Boolean.parseBoolean(text) ? 1.0 : 0.0;
+					int i = Boolean.parseBoolean(text) ? 1 : 0;
+					String id = nextID("IntegerValue");
+					Value<Integer> v = new IntegerValue(id, i);
+					return v;
 				}
 			}
-//			Constant c = Constant.createConstant(new double[]{d});
-			System.out.println("value = " + text + " = " + d);
-//			return c;
-			return null;
 		}
 	
+		private String nextID(String id) {
+			int k = 0;
+			while (dictionary.containsKey(id + k)) {
+				k++;
+			}
+			return id + k;
+		}
+
+
+
+
 		@Override
-		public Object visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
-//			JFunction f = (JFunction) visit(ctx.getChild(2));
-//			String id = ctx.children.get(0).getText();
+		public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
+			// TODO: why not Func -- Func has no apply()?
+			DeterministicFunction f = (DeterministicFunction) visit(ctx.getChild(2));
+			String id = ctx.children.get(0).getText();
+			Value value = f.apply();
+			dictionary.put(id, value);
 //			if (id.indexOf('[') >= 0) {
 //				id = ctx.getChild(0).getChild(0).getText();
 //				JFunction range = (JFunction) visit(ctx.getChild(0).getChild(2));
@@ -169,16 +227,16 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			c.setID(id);
 //			doc.registerPlugin(c);
 //			System.out.println(c);			
-//			return c;
-			return null;
+//			return c;<?>
+			return value;
 		}
 		
 		@Override
-		public Object visitStoch_relation(SimulatorParser.Stoch_relationContext ctx) {
+		public Value visitStoch_relation(SimulatorParser.Stoch_relationContext ctx) {
 //			System.out.println(2);
-//			ParametricDistribution distr = (ParametricDistribution) visit(ctx.getChild(2));
-//			String id = ctx.getChild(0).getText();
-//			JFunction f;
+			GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
+			String id = ctx.getChild(0).getText();
+//			JFunction f;JFunction
 //			if (id.indexOf('[') == -1) {
 //				f = (JFunction) doc.pluginmap.get(id);
 //			} else {
@@ -200,7 +258,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			doc.registerPlugin(distribution);
 //			
 //			return distribution;
-			return null;
+
+	        RandomVariable var = genDist.sample(id);
+	        dictionary.put(var.getId(), var);
+	        return var;
 		}
 		
 		@Override
@@ -213,7 +274,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		
 		@Override
 		public Object visitVar(VarContext ctx) {
-//			String id = ctx.getChild(0).getText();
+			String id = ctx.getChild(0).getText();
 //			JFunction var = (JFunction) doc.pluginmap.get(id);
 //			if (ctx.getChildCount() == 1) {
 //				// variable not indexed
@@ -222,7 +283,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			JFunction index = (JFunction) visit(ctx.getChild(2));
 //			JFunction element = new Index(var, index);
 //			return element;
-			return null;
+			return id;
 		}
 		
 		
@@ -296,7 +357,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //						break;
 //					case "!=": transform = new Ne(f1,f2); break;
 //					case "==": transform = new Eq(f1,f2); break;
-//					case "%": transform = new Modulo(f1,f2); break;
+//					case "%": transform = new Modulo(f1,f2); break;JFunction
 //
 //					case "&": transform = new BitwiseAnd(f1,f2); break;
 //					case "|": transform = new BitwiseOr(f1,f2); break;
@@ -326,37 +387,39 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		public Object visitDistribution(SimulatorParser.DistributionContext ctx) {
 			super.visitDistribution(ctx);
 			
-//			String name = ctx.getChild(0).getText();
-//			ParametricDistribution distr = null;
-//			
-//			JFunction [] f = (JFunction[]) visit(ctx.getChild(2));
-//			
-//			
-//			if (mapDistrToClass.containsKey(name)) {
-//				String className = mapDistrToClass.get(name);
-//				Constructor ctor = null;
-//				try {
-//				switch (f.length) {
-//				case 0: 
-//					ctor = Class.forName(className).getConstructor();
-//					distr = (ParametricDistribution) ctor.newInstance();
-//					break;
-//				case 1: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class); 
-//					distr = (ParametricDistribution) ctor.newInstance(f[0]);
-//					break;
-//				case 2: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class, JFunction.class); 
-//					distr = (ParametricDistribution) ctor.newInstance(f[0], f[1]);
-//					break;
-//				case 3: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class, JFunction.class, JFunction.class); 
-//					distr = (ParametricDistribution) ctor.newInstance(f[0], f[1], f[2]);
-//					break;
-//				}
-//				} catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-//					
-//				}
+			String name = ctx.getChild(0).getText();
+			GenerativeDistribution distr = null;
+			
+			Value [] f = (Value[]) visit(ctx.getChild(2));
+			
+			
+			if (genDistDictionary.containsKey(name)) {
+				Class class_ = genDistDictionary.get(name);
+				Constructor ctor = null;
+				try {
+				switch (f.length) {
+				case 0: 
+					ctor = class_.getConstructor();
+					distr = (GenerativeDistribution<?>) ctor.newInstance();
+					break;
+				case 1: 
+					ctor = class_.getConstructor(Value.class); 
+					distr = (GenerativeDistribution) ctor.newInstance(f[0]);
+					break;
+				case 2: 
+					ctor = class_.getConstructor(Value.class, Value.class); 
+					distr = (GenerativeDistribution) ctor.newInstance(f[0], f[1]);
+					break;
+				case 3: 
+					ctor = class_.getConstructor(Value.class, Value.class, Value.class); 
+					distr = (GenerativeDistribution) ctor.newInstance(f[0], f[1], f[2]);
+					break;
+				}
+				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+					
+				}
+				return distr;
+			}
 //			
 //			
 //			/*
@@ -407,8 +470,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				throw new IllegalArgumentException("Distributions not implemented yet. "
 //						+ "Choose one of " + Arrays.toString(mapDistrToClass.keySet().toArray(new String[]{})));
 //			}
-//			return distr; 
-			return null;
+			return distr; 
 		}
 		
 
@@ -427,13 +489,44 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			iteratorValue.remove(name);
 //			iteratorDimension.remove(name);
 //			return null;
-//		}
+//		}			return null;
+
 		
 		
 		@Override
-		public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
+		public Value visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 //			Transform transform = null;
-//			String functionName = ctx.children.get(0).getText();
+			String functionName = ctx.children.get(0).getText();
+			Value [] f= (Value []) visit(ctx.getChild(2));
+			DeterministicFunction func = null;
+			if (functionDictionary.containsKey(functionName)) {
+				Class class_ = functionDictionary.get(functionName);
+				Constructor ctor = null;
+				try {
+				switch (f.length) {
+				case 0: 
+					ctor = class_.getConstructor();
+					func = (DeterministicFunction<?>) ctor.newInstance();
+					break;
+				case 1: 
+					ctor = class_.getConstructor(Value.class); 
+					func = (DeterministicFunction) ctor.newInstance(f[0]);
+					break;
+				case 2: 
+					ctor = class_.getConstructor(Value.class, Value.class); 
+					func = (DeterministicFunction) ctor.newInstance(f[0], f[1]);
+					break;
+				case 3: 
+					ctor = class_.getConstructor(Value.class, Value.class, Value.class); 
+					func = (DeterministicFunction) ctor.newInstance(f[0], f[1], f[2]);
+					break;
+				}
+				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+					
+				}
+			}
+			return func.apply();
+
 //			
 //			if (functionName.equals("c")) {
 //				JFunction [] f= (JFunction []) visit(ctx.getChild(2));				
@@ -467,7 +560,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				}
 //				} catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
 //					// ignore
-//				}
+//				}			return null;
+
 //				if (transform != null) {
 //					return transform;
 //				}
@@ -531,7 +625,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				case "atan2": transform = new Atan2(f[0], f[1]);break;
 //				case "pow": transform = new Pow(f[0], f[1]);break;
 //				case "rep": transform = new Rep(f[0], f[1]);break;
-//				case "prod":
+//				caObjectse "prod":
 //				case "%*%": transform = new MatrixMult(f[0], f[1]);break;
 //				case "equals": transform = new Eq(f[0], f[1]);break;
 //				
@@ -539,7 +633,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				case "interp.lin": transform = new InterpLin(f[0], f[1], f[2]);break;
 //				*/
 //				case "inprod": transform = new Times(f[0], f[1]); break;
-//				case "prod":
+//				case "prod":f.apply()
 //				case "%*%": transform = new MatrixMult(f[0], f[1]);break;
 //
 //				case "min": transform = new Min(f);break;
@@ -551,7 +645,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			}
 //			
 //			return transform;
-			return null;
 		}
 		
 	}
