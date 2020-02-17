@@ -204,10 +204,19 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		@Override
 		public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
 			// TODO: why not Func -- Func has no apply()?
-			DeterministicFunction f = (DeterministicFunction) visit(ctx.getChild(2));
+			Object expr = visit(ctx.getChild(2));
 			String id = ctx.children.get(0).getText();
-			Value value = f.apply();
-			dictionary.put(id, value);
+			if (expr instanceof DeterministicFunction) {
+				DeterministicFunction f = (DeterministicFunction) expr;
+				Value value = f.apply();
+				dictionary.put(id, value);
+				return value;
+	 		} else if (expr instanceof Value) {
+				Value value = (Value) expr;
+				dictionary.put(id, value);
+				return value;
+	 		}
+			return null;
 //			if (id.indexOf('[') >= 0) {
 //				id = ctx.getChild(0).getChild(0).getText();
 //				JFunction range = (JFunction) visit(ctx.getChild(0).getChild(2));
@@ -228,7 +237,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			doc.registerPlugin(c);
 //			System.out.println(c);			
 //			return c;<?>
-			return value;
 		}
 		
 		@Override
@@ -380,7 +388,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				}
 //			}
 //			return transform; 
-			return null;
+			return super.visitExpression(ctx);
 		}
 		
 		@Override

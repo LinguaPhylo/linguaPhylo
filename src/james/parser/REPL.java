@@ -33,7 +33,7 @@ public class REPL {
 		}
 		if (cmd.startsWith("quit") || cmd.startsWith("end") || cmd == null) {
 			System.exit(0);
-		} else if (cmd.startsWith("?")) {
+		} else if (!cmd.startsWith("?")) {
 			try {
 				SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
 				Object o = parser.parse(cmd);
