@@ -297,11 +297,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		
 		@Override
 		public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
-//			if (ctx.getChildCount() == 1) {
-//				String key = ctx.getChild(0).getText();
-//				if (doc.pluginmap.containsKey(key)) {
-//					return doc.pluginmap.get(key);
-//				}
+			if (ctx.getChildCount() == 1) {
+				String key = ctx.getChild(0).getText();
+				if (dictionary.containsKey(key)) {
+					return dictionary.get(key);
+				}
 //				if (iteratorValue.containsKey(key)) {
 //					final int ivalue = iteratorValue.get(key);
 //					return new JFunction() {						
@@ -365,7 +365,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //						break;
 //					case "!=": transform = new Ne(f1,f2); break;
 //					case "==": transform = new Eq(f1,f2); break;
-//					case "%": transform = new Modulo(f1,f2); break;JFunction
+//					case "%": transform = new Modulo(f1,f2); break;
 //
 //					case "&": transform = new BitwiseAnd(f1,f2); break;
 //					case "|": transform = new BitwiseOr(f1,f2); break;
@@ -387,8 +387,19 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					transform = new Index(var, f1);
 //				}
 //			}
+			}
 //			return transform; 
 			return super.visitExpression(ctx);
+		}
+		
+		
+		@Override
+		public Object visitNamed_expression(Named_expressionContext ctx) {
+			String name = ctx.getChild(0).getText();
+			Value value = (Value) visit(ctx.getChild(2));
+			// TODO: do we really need a new object here?
+			Value v = new Value(name, value.value());
+			return v;
 		}
 		
 		@Override
@@ -502,10 +513,20 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		
 		
 		@Override
+		public Object visitExpression_list(Expression_listContext ctx) {
+			List<Value> list = new ArrayList<>();
+			for (int i = 0; i < ctx.getChildCount(); i+= 2) {
+				list.add((Value) visit(ctx.getChild(i)));
+			}
+			return list.toArray(new Value[] {});
+		}
+		
+		@Override
 		public Value visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 //			Transform transform = null;
 			String functionName = ctx.children.get(0).getText();
-			Value [] f= (Value []) visit(ctx.getChild(2));
+			ParseTree ctx2 = ctx.getChild(2);
+			Value [] f= (Value []) visit(ctx2);
 			DeterministicFunction func = null;
 			if (functionDictionary.containsKey(functionName)) {
 				Class class_ = functionDictionary.get(functionName);
@@ -569,7 +590,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				} catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
 //					// ignore
 //				}			return null;
-
 //				if (transform != null) {
 //					return transform;
 //				}

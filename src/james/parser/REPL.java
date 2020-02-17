@@ -33,9 +33,14 @@ public class REPL {
 		}
 		if (cmd.startsWith("quit") || cmd.startsWith("end") || cmd == null) {
 			System.exit(0);
+		} else if (cmd.trim().length() == 0) {
+			// ignore empty lines
 		} else if (!cmd.startsWith("?")) {
 			try {
 				SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
+				if (!cmd.endsWith(";")) {
+					cmd = cmd + ";";
+				}
 				Object o = parser.parse(cmd);
 				//parser.parse(cmd);
 			} catch (SimulatorParsingException e) {
