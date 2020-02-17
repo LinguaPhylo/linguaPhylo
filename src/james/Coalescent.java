@@ -54,7 +54,9 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
             TimeTreeNode a = activeNodes.remove(random.nextInt(activeNodes.size()));
             TimeTreeNode b = activeNodes.remove(random.nextInt(activeNodes.size()));
 
-            exp.setRate((theta * 2.0 / (k * (k - 1.0))));
+            double rate = (k * (k - 1.0))/(theta * 2.0);
+            
+            exp.setRate(rate);
             time += exp.sample().value();
 
             TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[]{a, b});

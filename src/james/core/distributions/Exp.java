@@ -23,7 +23,7 @@ public class Exp implements GenerativeDistribution<Double> {
     @GenerativeDistributionInfo(description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 
-        double x = -rate.value() * Math.log(1.0 - random.nextDouble());
+        double x = - Math.log(random.nextDouble()) / rate.value();
         return new RandomVariable<>("x", x, this);
     }
 

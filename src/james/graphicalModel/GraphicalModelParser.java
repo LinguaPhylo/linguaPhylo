@@ -1,6 +1,7 @@
 package james.graphicalModel;
 
 import james.Coalescent;
+import james.Yule;
 import james.core.ErrorModel;
 import james.core.JCPhyloCTMC;
 import james.core.PhyloBrownian;
@@ -42,7 +43,7 @@ public class GraphicalModelParser {
 
         Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class};
+                ErrorModel.class, Yule.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);

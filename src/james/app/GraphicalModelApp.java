@@ -57,6 +57,23 @@ public class GraphicalModelApp {
 //            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
 //            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
+//    static String[] lines = {
+//            "L = 50;",
+//            "μ = 0.01;",
+//            "lM = 3.0;",
+//            "lS = 1.0;",
+//            "alpha = 0.01;",
+//            "beta = 0.01;",
+//            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
+//            "Q = binaryCTMC(lambda=lambda);",
+//            "mytree = \"((A:1,B:1):1,(C:0.5, D:0.5):1.5):0.0;\";",
+//            "ψ = newick(str=mytree);",
+//            "ncat = 4;",
+//            "shape = 0.75;",
+//            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
+//            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+//            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
+
     static String[] lines = {
             "L = 50;",
             "μ = 0.01;",
@@ -66,14 +83,15 @@ public class GraphicalModelApp {
             "beta = 0.01;",
             "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
             "Q = binaryCTMC(lambda=lambda);",
-            "mytree = \"((A:1,B:1):1,(C:0.5, D:0.5):1.5):0.0;\";",
-            "ψ = newick(str=mytree);",
+            "birthRate = 10.0;",
+            "n = 20;",
+            "ψ ~ Yule(birthRate=birthRate, n=n);",
             "ncat = 4;",
             "shape = 0.75;",
             "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
             "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
             "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
-    
+
     GraphicalModelParser parser = new GraphicalModelParser();
 
     public GraphicalModelApp() {
