@@ -6,13 +6,14 @@ import james.app.HasComponentView;
 import javax.swing.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> implements Viewable {
+public class Value<T> implements GraphicalModelNode, Viewable {
 
     private T value;
     String id;
@@ -153,4 +154,9 @@ public class Value<T> implements Viewable {
         if (post) visitor.visitGenDist(genDist);
     }
 
+    @Override
+    public List<GraphicalModelNode> getInputs() {
+        if (function != null) return Collections.singletonList(function);
+        return new ArrayList<>();
+    }
 }

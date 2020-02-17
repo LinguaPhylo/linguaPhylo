@@ -51,7 +51,9 @@ public class RenderNode<T> {
                 str = "<small>" + str + "</small>";
             }
 
-            if (value.value() instanceof Double[] || value.value() instanceof Double[][] || value.value() instanceof Integer[] || value.value() instanceof Integer[][]) {
+            Object obj = value.value();
+
+            if (obj instanceof Double[] || obj instanceof Double[][] || obj instanceof Integer[] || obj instanceof Integer[][]) {
                 str = "<b>" + str + "</b>";
             }
             return "<html><center><p>" + str + "</p></center></html>";

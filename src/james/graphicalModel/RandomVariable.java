@@ -1,6 +1,8 @@
 package james.graphicalModel;
 
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -33,5 +35,10 @@ public class RandomVariable<T> extends Value<T> {
         builder.append(" ~ ");
         builder.append(g.codeString());
         return builder.toString();
+    }
+
+    @Override
+    public List<GraphicalModelNode> getInputs() {
+        return Collections.singletonList(g);
     }
 }

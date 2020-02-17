@@ -45,7 +45,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         });
 
         setup();
-        parser.addGraphicalModelChangeListener(() -> setup());
+        parser.addGraphicalModelChangeListener(this::setup);
     }
 
     void shiftLeft() {
@@ -191,114 +191,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g.draw(line);
         g.fill(p);
     }
-
-//    private void generateButtons() {
-//        List<Value> valueList = new ArrayList<>(parser.getRoots());
-//
-//        for (int i = 0; i < valueList.size(); i++) {
-//            traverseGraphicalModel(valueList.get(i), getStartPoint((i + 1.0) / (valueList.size() + 1.0)), null, 1, new NodeVisitor() {
-//                @Override
-//                public void visitValue(Value value, Point2D p, Point2D q, int level) {
-//                    Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-//                    Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
-//
-//                    if (ValueUtils.isFixedValue(value)) {
-//                        backgroundColor = Color.white;
-//                        borderColor = Color.black;
-//                    } else if (ValueUtils.isValueOfFunction(value)) {
-//                        backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-//                        borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
-//                    }
-//                    if (!parser.getDictionary().values().contains(value)) {
-//                        backgroundColor = backgroundColor.darker();
-//                        borderColor = Color.black;
-//                    }
-//
-//
-//                    String str = getButtonString(value);
-//
-//                    JButton button = buttonMap.get(value);
-//                    if (button == null) {
-//                        if (value.getFunction() != null) {
-//                            button = new DiamondButton(str, backgroundColor, borderColor);
-//                        } else {
-//
-//                            button = new CircleButton(str, backgroundColor, borderColor);
-//                        }
-//                        button.addActionListener(e1 -> {
-//                            for (GraphicalModelListener listener : listeners) {
-//                                listener.valueSelected(value);
-//                            }
-//                        });
-//
-//                        buttonMap.put(value, button);
-//                        add(button);
-//
-//                        JButton finalButton = button;
-//                        value.addValueListener(() -> finalButton.setText(getButtonString(value)));
-//                    }
-//                    button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
-//                    button.setLocation((int) (p.getX() - VAR_WIDTH / 2), (int) (p.getY() - VAR_HEIGHT / 2));
-//                }
-//
-//                @Override
-//                public void visitGenEdge(GenerativeDistribution genDist, Point2D p, Point2D q, int level) {
-//                    String dtr = genDist.getName();
-//
-//                    JButton button = buttonMap.get(genDist.codeString());
-//                    if (button == null) {
-//                        button = new JButton("");
-//
-//                        button.addActionListener(e -> {
-//                            for (GraphicalModelListener listener : listeners) {
-//                                listener.generativeDistributionSelected(genDist);
-//                            }
-//                        });
-//
-//                        buttonMap.put(genDist.codeString(), button);
-//
-//                        add(button);
-//                    }
-//
-//                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-//                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
-//
-//
-//                }
-//
-//                @Override
-//                public void visitFunctionEdge(DeterministicFunction function, Point2D p, Point2D q, int level) {
-//                    JButton button = buttonMap.get(function.codeString());
-//                    if (button == null) {
-//                        button = new JButton("");
-//
-//                        button.addActionListener(e -> {
-//                            for (GraphicalModelListener listener : listeners) {
-//                                listener.functionSelected(function);
-//                            }
-//                        });
-//
-//                        buttonMap.put(function.codeString(), button);
-//
-//                        add(button);
-//                    }
-//
-//                    button.setLocation((int) (p.getX() - FACTOR_SIZE), (int) (p.getY() - FACTOR_SIZE));
-//                    button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
-//                }
-//            });
-//        }
-//    }
-
-//    private void removeButtons() {
-//        for (JButton button : buttonMap.values()) {
-//            remove(button);
-//            for (ActionListener al : button.getActionListeners()) {
-//                button.removeActionListener(al);
-//            }
-//        }
-//        buttonMap.clear();
-//    }
 
     @Override
     public void modelChanged() {

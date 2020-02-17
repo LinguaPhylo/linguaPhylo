@@ -30,6 +30,14 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     int numStates;
 
+    // these are all initialized in setup method.
+    private EigenDecomposition decomposition;
+    private double[][] Ievc;
+    private double[][] Evec;
+    private Value<Double[]> rootFreqs;
+    private SortedMap<String, Integer> idMap = new TreeMap<>();
+    private double[][] transProb;
+
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate.") Value<Double> mu,
                      @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
@@ -74,12 +82,11 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public RandomVariable<Alignment> sample() {
-
-        SortedMap<String, Integer> idMap = new TreeMap<>();
+    private void setup() {
+        idMap.clear();
         fillIdMap(tree.value().getRoot(), idMap);
 
-        double[][] transProb = new double[numStates][numStates];
+        transProb = new double[numStates][numStates];
 
         double[][] primitive = new double[numStates][numStates];
         for (int i = 0; i < numStates; i++) {
@@ -87,19 +94,37 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                 primitive[i][j] = Q.value()[i][j];
             }
         }
-        Array2DRowRealMatrix matrix = new Array2DRowRealMatrix(primitive);
+        Array2DRowRealMatrix Qmatrix = new Array2DRowRealMatrix(primitive);
 
-        EigenDecomposition decomposition = new EigenDecomposition(matrix);
+        decomposition = new EigenDecomposition(Qmatrix);
+        Ievc = new double[numStates][numStates];
 
-        Value<Double[]> rootFreqs = freq;
-        if (rootFreqs == null) {
-            rootFreqs = computeEquilibrium(decomposition, transProb);
+        // Eigen vectors
+
+        Evec = new double[numStates][numStates];
+        for (int i = 0; i < numStates; i++) {
+            RealVector evec = decomposition.getEigenvector(i);
+            for (int j = 0; j < numStates; j++) {
+                Evec[j][i] = evec.getEntry(j);
+            }
         }
+
+        // TODO this should not be done on every branch. Can be done just once!!
+        luinverse(Evec, Ievc, numStates);
+
+        rootFreqs = freq;
+        if (rootFreqs == null) {
+            rootFreqs = computeEquilibrium(transProb);
+        }
+    }
+
+    public RandomVariable<Alignment> sample() {
+
+        setup();
 
         GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(rootFreqs, random);
 
         Alignment alignment = new Alignment(tree.value().n(), siteRates.value().length, idMap);
-
 
         for (int i = 0; i < siteRates.value().length; i++) {
             Value<Integer> rootState = rootDistribution.sample();
@@ -109,8 +134,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         return new RandomVariable<>("D", alignment, this);
     }
 
-    private Value<Double[]> computeEquilibrium(EigenDecomposition eigenDecomposition, double[][] transProb) {
-        getTransitionProbabilities(100, eigenDecomposition, transProb);
+    private Value<Double[]> computeEquilibrium(double[][] transProb) {
+        getTransitionProbabilities(100, transProb);
         Double[] freqs = new Double[transProb.length];
         for (int i = 0; i < freqs.length; i++) {
             freqs[i] = transProb[0][i];
@@ -152,7 +177,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
                 double branchLength = siteRate * rate * (node.getAge() - child.getAge());
 
-                getTransitionProbabilities(branchLength, eigenDecomposition, transProb);
+                getTransitionProbabilities(branchLength, transProb);
                 int state = drawState(transProb[nodeState.value()]);
 
                 traverseTree(child, new IntegerValue("x", state), alignment, pos, eigenDecomposition, transProb, siteRate);
@@ -170,31 +195,18 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         throw new RuntimeException("p vector doesn't add to 1.0!");
     }
 
-    public static void getTransitionProbabilities(double branchLength, EigenDecomposition eigenDecomposition, double[][] transProbs) {
+    private void getTransitionProbabilities(double branchLength, double[][] transProbs) {
 
         int i, j, k;
         double temp;
 
         int numStates = transProbs.length;
 
-        // Eigen vectors
-
-        double[][] Evec = new double[numStates][numStates];
-        for (i = 0; i < numStates; i++) {
-            RealVector evec = eigenDecomposition.getEigenvector(i);
-            for (j = 0; j < numStates; j++) {
-                Evec[j][i] = evec.getEntry(j);
-            }
-        }
-        double[][] Ievc = new double[numStates][numStates];
-
-        luinverse(Evec, Ievc, numStates);
-
         double[][] iexp = new double[numStates][numStates];
 
         // inverse Eigen vectors
         // Eigen values
-        double[] Eval = eigenDecomposition.getRealEigenvalues();
+        double[] Eval = decomposition.getRealEigenvalues();
         for (i = 0; i < numStates; i++) {
             temp = Math.exp(branchLength * Eval[i]);
             for (j = 0; j < numStates; j++) {
@@ -213,7 +225,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    public static double EPSILON = 2.220446049250313E-16;
+    private static double EPSILON = 2.220446049250313E-16;
 
     private static void luinverse(double[][] inmat, double[][] imtrx, int size) throws IllegalArgumentException {
         int i, j, k, l, maxi = 0, idx, ix, jx;
@@ -323,34 +335,5 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         wk = null;
         index = null;
         omtrx = null;
-    }
-
-    public static void main(String[] args) {
-
-        double third = 1.0 / 3.0;
-
-        double[][] Qarray = {
-                {-1, third, third, third},
-                {third, -1, third, third},
-                {third, third, -1, third},
-                {third, third, third, -1}
-        };
-
-        RealMatrix Qmatrix = new Array2DRowRealMatrix(Qarray);
-
-        EigenDecomposition eigenDecomposition = new EigenDecomposition(Qmatrix);
-
-        double[][] transProbs = new double[4][4];
-
-        double[] branchLengths = {0, 0.1, 10};
-
-        for (double dist : branchLengths) {
-
-            getTransitionProbabilities(dist, eigenDecomposition, transProbs);
-            System.out.println("branch length = " + dist + ":");
-            for (int i = 0; i < transProbs.length; i++) {
-                System.out.println(Arrays.toString(transProbs[i]));
-            }
-        }
     }
 }

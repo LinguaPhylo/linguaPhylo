@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public interface Parameterized {
+public interface Parameterized extends GraphicalModelNode {
 
     String getName();
 
@@ -64,6 +64,11 @@ public interface Parameterized {
         }
 
         return pInfo;
+    }
+
+    @Override
+    default List<GraphicalModelNode> getInputs() {
+        return new ArrayList<>(getParams().values());
     }
 
     Map<String, Value> getParams();
