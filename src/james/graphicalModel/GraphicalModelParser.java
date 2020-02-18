@@ -97,10 +97,6 @@ public class GraphicalModelParser {
         }
     }
 
-    public void parseLineProperly(String line) {
-
-    }
-
     public void parseLine(String line) {
         int lineNumber = nextLineNumber();
         if (isRandomVariableLine(line)) {
@@ -111,13 +107,54 @@ public class GraphicalModelParser {
             parseFixedParameterLine(line, lineNumber);
         } else if (isKeywordLine(line)) {
             parseKeywordLine(line, lineNumber);
-        } else if (isValueId(line)) {
-            selectValue(dictionary.get(line.substring(0, line.length() - 1)));
+        } else if (isValueId(trim(line))) {
+            selectValue(dictionary.get(trim(line)));
         } else {
             throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
         }
         lines.add(line);
         notifyListeners();
+    }
+
+    /**
+     * @param valueString a piece of a string that can represent a value. Could be literal or an id of a value or a function call.
+     * @param lineNumber  the line number this value expression was extracted from
+     * @return A Value constructed or produced from this expression
+     */
+    private Value parseValueExpression(String valueString, int lineNumber) {
+        System.out.println("Parsing value string '" + valueString + "'");
+
+        if (isValueId(valueString)) {
+            return dictionary.get(valueString);
+        } else if (isLiteral(valueString)) {
+            return parseLiteralValue("", valueString, lineNumber);
+        } else if (isFunction(valueString)) {
+            return parseDeterministicFunction("", valueString, lineNumber);
+        } else throw new RuntimeException("Failed to parse value expression " + valueString + " on line " + lineNumber);
+    }
+
+    private boolean isFunction(String functionString) {
+        return functionString.indexOf('(') > 0 && functionDictionary.keySet().contains(functionString.substring(0, functionString.indexOf('(')));
+    }
+
+    private static boolean isLiteral(String expression) {
+
+        if (expression.startsWith("\"") && expression.endsWith("\"")) {
+            // is string
+            return true;
+        }
+
+        if (expression.startsWith("[") && expression.endsWith("]")) {
+            // is list
+            return true;
+        }
+
+        try {
+            Double val = Double.parseDouble(expression);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     private void selectValue(Value value) {
@@ -126,8 +163,16 @@ public class GraphicalModelParser {
         }
     }
 
-    private boolean isValueId(String line) {
-        return dictionary.keySet().contains(line.substring(0, line.length() - 1));
+    private boolean isValueId(String valueString) {
+        return dictionary.keySet().contains(valueString);
+    }
+
+    private String trim(String str) {
+        str = str.trim();
+        if (str.endsWith(";")) {
+            str = str.substring(0, str.length()-1);
+        }
+        return str;
     }
 
     private void parseKeywordLine(String line, int lineNumber) {
@@ -339,7 +384,8 @@ public class GraphicalModelParser {
         if (parts.length != 2)
             throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
         String name = parts[0].trim();
-        String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
+        String remainder = parts[1].trim();
+        String argumentString = remainder.substring(0, remainder.length()-1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class functionClass = functionDictionary.get(name);
@@ -358,7 +404,7 @@ public class GraphicalModelParser {
             DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
                 Value value = arguments.get(parameterName);
-                func.setParam(parameterName, arguments.get(parameterName));
+                func.setInput(parameterName, arguments.get(parameterName));
                 if (!value.isAnonymous()) globalArguments.add(value.id);
             }
             Value val = func.apply();
@@ -388,11 +434,12 @@ public class GraphicalModelParser {
     }
 
     private GenerativeDistribution parseGenDist(String genString, int lineNumber) {
-        String[] parts = genString.split("\\(");
-        if (parts.length != 2)
-            throw new RuntimeException("Parsing generative distribution " + parts[0] + "failed on line " + lineNumber);
+
+        int pos = genString.indexOf('(');
+        String[] parts = {genString.substring(0, pos),genString.substring(pos+1) };
         String name = parts[0].trim();
-        String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
+        String remainder = parts[1].trim();
+        String argumentString = remainder.substring(0, remainder.length()-1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class genDistClass = genDistDictionary.get(name);
@@ -408,7 +455,7 @@ public class GraphicalModelParser {
             GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
                 Value value = arguments.get(parameterName);
-                dist.setParam(parameterName, arguments.get(parameterName));
+                dist.setInput(parameterName, arguments.get(parameterName));
                 if (!value.isAnonymous()) globalArguments.add(value.id);
             }
             return dist;
@@ -438,13 +485,13 @@ public class GraphicalModelParser {
                         throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
                     } else {
                         initargs.add(null);
+                    }
                 }
+                return constructor;
             }
-            return constructor;
         }
-    }
         return null;
-}
+    }
 
     /**
      * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
@@ -474,37 +521,60 @@ public class GraphicalModelParser {
     }
 
     private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
-        String[] argumentStrings = argumentString.split(",");
+        List<String> argumentStrings = new ArrayList<>();
+        while (argumentString.length() > 0) {
+            String argument = consumeArgument(argumentString, lineNumber);
+            System.out.println("Found argument:'" + argument + "'");
+
+            argumentString = argumentString.substring(argument.length());
+            if (argumentString.startsWith(",")) argumentString = argumentString.substring(1);
+            argumentStrings.add(argument);
+        }
+
         TreeMap<String, Value> arguments = new TreeMap<>();
         for (String argumentPair : argumentStrings) {
+
             if (argumentPair.indexOf('=') < 0) {
                 argumentPair = "x=" + argumentPair;
             }
-            String[] keyValue = argumentPair.split("=");
-            if (keyValue.length != 2)
-                throw new RuntimeException("Parsing argument " + keyValue[0].trim() + " failed on line " + lineNumber);
-            String key = keyValue[0].trim();
-            String valueString = keyValue[1].trim();
+            int pos = argumentPair.indexOf('=');
+            
+            String key = argumentPair.substring(0, pos).trim();
+            String valueString = argumentPair.substring(pos+1).trim();
 
-            if (!dictionary.containsKey(valueString)) {
-                // attempt to parse primitive
-                Value val = parseLiteralValue(key, valueString, lineNumber);
-                val.setId("");
-                arguments.put(key, val);
-
-            } else {
-                arguments.put(key, dictionary.get(valueString));
-            }
+            Value val = parseValueExpression(valueString, lineNumber);
+            arguments.put(key, val);
         }
         return arguments;
     }
 
-    public static boolean isFunctionLine(String line) {
+    private String consumeArgument(String argumentString, int lineNumber) {
+
+        int pos = argumentString.indexOf(',');
+        if (pos > 0) {
+            String nextArgument = argumentString.substring(0, pos);
+            while (pos > 0 && !matchingBrackets(nextArgument)) {
+                pos = argumentString.indexOf(',', pos + 1);
+                if (pos > 0) nextArgument = argumentString.substring(0, pos);
+            }
+            if (matchingBrackets(nextArgument))
+                return nextArgument;
+            else throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
+        } else {
+            return argumentString;
+        }
+    }
+
+    private boolean matchingBrackets(String string) {
+        return string.replace(")","").length() == string.replace("(","").length();
+    }
+
+    public boolean isFunctionLine(String line) {
         int firstEquals = line.indexOf('=');
         if (firstEquals > 0) {
             String id = line.substring(0, firstEquals).trim();
             String remainder = line.substring(firstEquals + 1).trim();
-            return (remainder.indexOf('(') > 0 && !remainder.startsWith("\""));
+            return isFunction(remainder);
         } else return false;
     }
 
@@ -521,22 +591,8 @@ public class GraphicalModelParser {
             String valueString = remainder.substring(0, remainder.indexOf(';'));
             valueString = valueString.trim();
 
-            if (valueString.startsWith("\"")) {
-                // is string
-                return true;
-            }
+            return isLiteral(valueString);
 
-            if (valueString.startsWith("[") && valueString.endsWith("]")) {
-                // is list
-                return true;
-            }
-
-            try {
-                Double val = Double.parseDouble(valueString);
-                return true;
-            } catch (NumberFormatException nfe) {
-                return false;
-            }
         } else return false;
     }
 

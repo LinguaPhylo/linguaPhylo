@@ -18,6 +18,7 @@ public class Value<T> implements GraphicalModelNode, Viewable {
     private T value;
     String id;
     List<ValueListener> listeners = new ArrayList<>();
+    List<GraphicalModelNode> outputs = new ArrayList<>();
 
     // the function that produced this value, or null if this value was initialized another way;
     DeterministicFunction<T> function = null;
@@ -153,6 +154,18 @@ public class Value<T> implements GraphicalModelNode, Viewable {
             traverseGraphicalModel(e.getValue(), visitor, post);
         }
         if (post) visitor.visitGenDist(genDist);
+    }
+
+    public void addOutput(Parameterized p) {
+        outputs.add(p);
+    }
+
+    public void removeOutput(Parameterized p) {
+        outputs.remove(p);
+    }
+
+    public List<GraphicalModelNode> getOutputs() {
+        return outputs;
     }
 
     @Override

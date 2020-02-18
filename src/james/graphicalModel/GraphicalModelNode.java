@@ -9,12 +9,4 @@ public interface GraphicalModelNode {
      * @return
      */
     List<GraphicalModelNode> getInputs();
-
-    /**
-     * Outputs are the function or distribution of the arguments or the value/variable produced by the function/distribution.
-     * @return
-     */
-    //List<GraphicalModelNode> getOutputs();
-
-
 }

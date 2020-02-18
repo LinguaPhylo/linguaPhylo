@@ -156,11 +156,16 @@ public class GraphicalModelPanel extends JPanel {
             viewer = viewerPanel;
         }
 
+        String name = value.getId();
+        if (value.isAnonymous()) {
+            name = "[" + ((Parameterized)value.getOutputs().get(0)).getParamName(value) + "]";
+        }
+
         currentSelectionContainer.setViewportView(viewer);
         currentSelectionContainer.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
-                        "<html><font color=\"#808080\" >" + value.getId() + "</font></html>"));
+                        "<html><font color=\"#808080\" >" + name + "</font></html>"));
         repaint();
     }
 

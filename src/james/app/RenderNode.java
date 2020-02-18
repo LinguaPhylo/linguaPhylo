@@ -19,6 +19,8 @@ public class RenderNode<T> {
     private T value;
     int level;
 
+    String name = null;
+
     static double VAR_WIDTH = 90;
     static double VAR_HEIGHT = 50;
 
@@ -31,12 +33,22 @@ public class RenderNode<T> {
         this.value = value;
 
         if (value instanceof Value) {
+            name = ((Value)value).getId();
             createValueButton();
         } else if (value instanceof Parameterized) {
             createParameterizedButton();
         }
     }
 
+    public void addOutput(RenderNode output) {
+        outputs.add(output);
+
+        if (outputs.size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
+            name = "[" + ((Parameterized)output.value).getParamName(((Value) value)) + "]";
+            button.setText(getButtonString((Value)value));
+        }
+    }
+    
     public boolean hasButton() {
         return button != null;
     }
@@ -45,7 +57,7 @@ public class RenderNode<T> {
         String str = value.getId();
 
         if (!(value instanceof RandomVariable)) {
-            str = displayString(value);
+            str = displayString(name, value);
         } else {
             if (str.length() > 5) {
                 str = "<small>" + str + "</small>";
@@ -62,23 +74,21 @@ public class RenderNode<T> {
         return str;
     }
 
-    private String displayString(Value v) {
+    private String displayString(String name, Value v) {
 
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
         } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue || v instanceof DoubleArray2DValue || v instanceof IntegerArray2DValue) {
             if (v.getId().length() < 5) {
-                return "<html><center><p><font color=\"#808080\" ><b>" + v.getId() + "</b></p></font></center></html>";
+                return "<html><center><p><font color=\"#808080\" ><b>" + name + "</b></p></font></center></html>";
             } else {
-                return "<html><center><p><font color=\"#808080\" ><b><small>" + v.getId() + "</small></b></p></font></center></html>";
+                return "<html><center><p><font color=\"#808080\" ><b><small>" + name + "</small></b></p></font></center></html>";
             }
         } else {
             valueString = v.value().toString();
         }
-
-        String name = v.getId();
-
+        
         return "<html><center><p><small><font color=\"#808080\" >" + name + "</p></font></small><p>" + valueString + "</p></center></html>";
     }
 
@@ -99,7 +109,7 @@ public class RenderNode<T> {
 //            borderColor = Color.black;
 //        }
 
-        String str = getButtonString((Value) value);
+        String str = getButtonString((Value)value);
 
         if (button == null) {
             if (((Value) value).getFunction() != null) {

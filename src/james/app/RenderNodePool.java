@@ -210,7 +210,7 @@ public class RenderNodePool {
         }
 
         if (parentNode != null && !node.outputs.contains(parentNode)) {
-            node.outputs.add(parentNode);
+            node.addOutput(parentNode);
         }
         node.setLevel();
 
@@ -236,7 +236,7 @@ public class RenderNodePool {
         RenderNode<Parameterized> node = pool.get(g);
         if (node == null) {
             node = new RenderNode<>(g);
-            node.outputs.add(parentNode);
+            node.addOutput(parentNode);
             node.setLevel();
             addNode(node);
 

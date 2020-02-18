@@ -59,25 +59,32 @@ public class Utils {
     }
 
     private static String graphvizEdgeLabel(GraphicalModelNode node, GraphicalModelNode child) {
-        String taillabel = "";
+        String label = "";
         String edgestyle = " arrowhead=vee, ";
 
         if (child instanceof Parameterized) {
-            taillabel = "taillabel=\"" + ((Parameterized)child).getName() + "\", " ;
+            label = "taillabel=\"" + ((Parameterized)child).getName() + "\", " ;
+        } else if (child instanceof Value && ((Value) child).isAnonymous()) {
+            label = "label=\"" + ((Parameterized)((Value) child).getOutputs().get(0)).getParamName((Value) child) + "\", ";
         }
 
         if (node instanceof Parameterized) {
             edgestyle = "arrowhead=none, ";
         }
 
-        return "[" + taillabel + edgestyle + "tailport=s]";
+        return "[" + label + edgestyle + "tailport=s]";
     }
 
     private static String graphvizName(GraphicalModelNode node) {
         String name = null;
 
         if (node instanceof Value) {
-            name = ((Value) node).getId();
+            if (((Value) node).isAnonymous()) {
+
+                name = ""+node.hashCode();
+            } else {
+                name = ((Value) node).getId();
+            }
         } else if (node instanceof Parameterized) {
             name = ""+node.hashCode();
         }
@@ -88,7 +95,10 @@ public class Utils {
         String label = null;
 
         if (node instanceof Value) {
-            if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
+            if (((Value) node).isAnonymous()) {
+                //label = ((Parameterized)((Value) node).getOutputs().get(0)).getParamName((Value) node) + " = " + node.toString();
+                label = node.toString();
+            } else if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
                 label = node.toString();
             } else {
                 label = ((Value) node).getId();
