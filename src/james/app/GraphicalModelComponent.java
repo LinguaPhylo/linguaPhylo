@@ -31,6 +31,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     RenderNode selectedNode;
 
     boolean sizeChanged = true;
+    boolean showArgumentLabels = false;
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -62,7 +63,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         repaint();
     }
 
-
+    public void setShowArgumentLabels(boolean show) {
+        showArgumentLabels = show;
+        repaint();
+    }
 
     private void setup() {
         removeAll();
@@ -106,6 +110,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public void paintComponent(Graphics g) {
 
+        double delta = g.getFontMetrics().getAscent()/2.0;
+
         if (sizeChanged) {
             pool.locateAll(getWidth(), getHeight());
             sizeChanged = false;
@@ -132,6 +138,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                         double x2 = parent.point.getX();
                         double y2 = parent.point.getY() - FACTOR_SIZE;
                         drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                        if (showArgumentLabels) {
+                            String label = ((Parameterized)parent.value()).getParamName((Value)node.value());
+                            g.setColor(Color.gray);
+                            g.drawString(label, (int)Math.round((x1+x2)/2.0 - g.getFontMetrics().stringWidth(label)/2.0), (int)Math.round((y1+y2)/2.0+delta));
+                            g.setColor(Color.black);
+                        }
                     }
                 }
             } else if (node.value() instanceof Parameterized) {

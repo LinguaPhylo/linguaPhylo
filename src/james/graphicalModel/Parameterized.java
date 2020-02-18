@@ -75,5 +75,13 @@ public interface Parameterized extends GraphicalModelNode {
 
     void setParam(String paramName, Value value);
 
+    default String getParamName(Value value) {
+        Map<String, Value> params = getParams();
+        for (String key : params.keySet()) {
+            if (params.get(key) == value) return key;
+        }
+        return null;
+    }
+
     String codeString();
 }

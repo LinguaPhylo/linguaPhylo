@@ -110,7 +110,7 @@ public class GraphicalModelApp {
 
         JMenuItem openMenuItem = new JMenuItem("Open Script...");
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
-        
+
         menu.add(openMenuItem);
 
         JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script As...");
@@ -122,6 +122,17 @@ public class GraphicalModelApp {
 
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
+
+
+        //Build the second menu.
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+        menuBar.add(viewMenu);
+
+        JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Argument Names");
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setState(false);
+        viewMenu.add(showArgumentLabels);
 
         menu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> {
@@ -202,6 +213,13 @@ public class GraphicalModelApp {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
                 writeCanonicalToFile(selectedFile);
+            }
+        });
+
+        showArgumentLabels.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.component.setShowArgumentLabels(showArgumentLabels.getState());
             }
         });
     }
