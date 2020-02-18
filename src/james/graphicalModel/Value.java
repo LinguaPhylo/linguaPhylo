@@ -69,6 +69,7 @@ public class Value<T> implements GraphicalModelNode, Viewable {
     }
 
     public String toString() {
+        if (isAnonymous()) return value.toString();
         return id + " = " + value;
     }
 
@@ -158,5 +159,9 @@ public class Value<T> implements GraphicalModelNode, Viewable {
     public List<GraphicalModelNode> getInputs() {
         if (function != null) return Collections.singletonList(function);
         return new ArrayList<>();
+    }
+
+    public boolean isAnonymous() {
+        return id == null || id.equals("");
     }
 }

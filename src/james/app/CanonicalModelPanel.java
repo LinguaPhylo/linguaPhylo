@@ -44,7 +44,9 @@ public class CanonicalModelPanel extends JComponent {
 
                     if (!visited.contains(value)) {
 
-                        area.append(value.codeString() + "\n");
+                        if (!value.isAnonymous()) {
+                            area.append(value.codeString() + "\n");
+                        }
                         visited.add(value);
                     }
                 }

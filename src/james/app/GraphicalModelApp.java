@@ -75,22 +75,12 @@ public class GraphicalModelApp {
 //            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
 
     static String[] lines = {
-            "L = 50;",
-            "μ = 0.01;",
-            "lM = 3.0;",
-            "lS = 1.0;",
-            "alpha = 0.01;",
-            "beta = 0.01;",
-            "λ ~ LogNormal(meanlog=lM, sdlog=lS);",
+            "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
             "Q = binaryCTMC(lambda=λ);",
-            "birthRate = 10.0;",
-            "n = 20;",
-            "ψ ~ Yule(birthRate=birthRate, n=n);",
-            "ncat = 4;",
-            "shape = 0.75;",
-            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
-            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
+            "ψ ~ Yule(birthRate=10.0, n=20);",
+            "siteRates ~ DiscretizedGamma(shape=0.75, ncat=4, reps=50);",
+            "S ~ PhyloCTMC(siteRates=siteRates, mu=0.01, Q=Q, tree=ψ);",
+            "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);"};
 
     GraphicalModelParser parser = new GraphicalModelParser();
 

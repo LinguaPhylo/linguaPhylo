@@ -189,7 +189,7 @@ public class GraphicalModelParser {
             String id = line.substring(0, firstEquals).trim();
             String remainder = line.substring(firstEquals + 1).trim();
             if (remainder.endsWith(";")) {
-                remainder = remainder.substring(0, remainder.length()-1);
+                remainder = remainder.substring(0, remainder.length() - 1);
             }
 
             Value literalValue = parseLiteralValue(id, remainder, lineNumber);
@@ -201,7 +201,7 @@ public class GraphicalModelParser {
 
         if (valueString.startsWith("\"") && valueString.endsWith("\"")) {
             // parse string
-            return new Value<>(id, valueString.substring(1, valueString.length()-1));
+            return new Value<>(id, valueString.substring(1, valueString.length() - 1));
         }
 
 
@@ -340,7 +340,7 @@ public class GraphicalModelParser {
             throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
         String name = parts[0].trim();
         String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
-        Map<String, String> arguments = parseArguments(argumentString, lineNumber);
+        Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class functionClass = functionDictionary.get(name);
         if (functionClass == null)
@@ -357,9 +357,9 @@ public class GraphicalModelParser {
 
             DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
-                Value value = dictionary.get(arguments.get(parameterName));
-                func.setParam(parameterName, value);
-                globalArguments.add(value.id);
+                Value value = arguments.get(parameterName);
+                func.setParam(parameterName, arguments.get(parameterName));
+                if (!value.isAnonymous()) globalArguments.add(value.id);
             }
             Value val = func.apply();
             val.setId(id);
@@ -393,7 +393,7 @@ public class GraphicalModelParser {
             throw new RuntimeException("Parsing generative distribution " + parts[0] + "failed on line " + lineNumber);
         String name = parts[0].trim();
         String argumentString = parts[1].substring(0, parts[1].indexOf(')'));
-        Map<String, String> arguments = parseArguments(argumentString, lineNumber);
+        Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class genDistClass = genDistDictionary.get(name);
         if (genDistClass == null)
@@ -407,9 +407,9 @@ public class GraphicalModelParser {
 
             GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
-                Value value = dictionary.get(arguments.get(parameterName));
-                dist.setParam(parameterName, value);
-                globalArguments.add(value.id);
+                Value value = arguments.get(parameterName);
+                dist.setParam(parameterName, arguments.get(parameterName));
+                if (!value.isAnonymous()) globalArguments.add(value.id);
             }
             return dist;
         } catch (InstantiationException e) {
@@ -424,40 +424,36 @@ public class GraphicalModelParser {
         }
     }
 
-    private Constructor getConstructorByArguments(Map<String, String> arguments, Class genDistClass, List<Object> initargs) {
-        System.out.println(genDistClass.getSimpleName() + " " + arguments );
+    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
+        System.out.println(genDistClass.getSimpleName() + " " + arguments);
         for (Constructor constructor : genDistClass.getConstructors()) {
             List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
-                    String id = arguments.get(pInfo.get(i).name());
-                    if (id != null) {
-                        Value arg = dictionary.get(id);
+                    Value arg = arguments.get(pInfo.get(i).name());
+                    if (arg != null) {
                         initargs.add(arg);
-                        if (arg != null) {
-                            globalArguments.add(arg.id);
-                        } else if (!pInfo.get(i).optional()) {
-                            throw new RuntimeException("Value id=" + arguments.get(pInfo.get(i).name()) + " not found for required input!");
-                        }
+                        globalArguments.add(arg.id);
                     } else if (!pInfo.get(i).optional()) {
-                        throw new RuntimeException("No argument provided for required input" + pInfo.get(i).name() + " of " + genDistClass.getSimpleName());
+                        throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
                     } else {
                         initargs.add(null);
-                    }
                 }
-                return constructor;
             }
+            return constructor;
         }
-        return null;
     }
+        return null;
+}
 
     /**
      * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
+     *
      * @param arguments
      * @param pInfo
      * @return
      */
-    private boolean match(Map<String, String> arguments, List<ParameterInfo> pInfo) {
+    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
 
         Set<String> requiredArguments = new TreeSet<>();
         Set<String> optionalArguments = new TreeSet<>();
@@ -477,9 +473,9 @@ public class GraphicalModelParser {
         return allArguments.containsAll(arguments.keySet());
     }
 
-    private Map<String, String> parseArguments(String argumentString, int lineNumber) {
+    private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
         String[] argumentStrings = argumentString.split(",");
-        TreeMap<String, String> arguments = new TreeMap<>();
+        TreeMap<String, Value> arguments = new TreeMap<>();
         for (String argumentPair : argumentStrings) {
             if (argumentPair.indexOf('=') < 0) {
                 argumentPair = "x=" + argumentPair;
@@ -488,8 +484,17 @@ public class GraphicalModelParser {
             if (keyValue.length != 2)
                 throw new RuntimeException("Parsing argument " + keyValue[0].trim() + " failed on line " + lineNumber);
             String key = keyValue[0].trim();
-            String value = keyValue[1].trim();
-            arguments.put(key, value);
+            String valueString = keyValue[1].trim();
+
+            if (!dictionary.containsKey(valueString)) {
+                // attempt to parse primitive
+                Value val = parseLiteralValue(key, valueString, lineNumber);
+                val.setId("");
+                arguments.put(key, val);
+
+            } else {
+                arguments.put(key, dictionary.get(valueString));
+            }
         }
         return arguments;
     }

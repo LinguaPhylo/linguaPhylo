@@ -79,10 +79,10 @@ public abstract class Func implements Parameterized, Viewable {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(getName() + "(" + entry.getValue().id);
+        builder.append(getName() + "(" + Parameterized.getArgumentValue(entry));
         while (iterator.hasNext()) {
             entry = iterator.next();
-            builder.append(", " + entry.getValue().id);
+            builder.append(", " + Parameterized.getArgumentValue(entry));
         }
         builder.append(");");
         return builder.toString();

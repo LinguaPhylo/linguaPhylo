@@ -84,4 +84,15 @@ public interface Parameterized extends GraphicalModelNode {
     }
 
     String codeString();
+
+    static String getArgumentCodeString(Map.Entry<String, Value> entry) {
+        if (entry.getValue().isAnonymous()) return entry.getKey() + "=" + entry.getValue().value().toString();
+        return entry.getKey() + "=" + entry.getValue().getId();
+    }
+
+    static String getArgumentValue(Map.Entry<String, Value> entry) {
+        if (entry.getValue().isAnonymous()) return entry.getValue().value().toString();
+        return entry.getValue().getId();
+    }
+
 }

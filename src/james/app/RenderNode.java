@@ -77,7 +77,9 @@ public class RenderNode<T> {
             valueString = v.value().toString();
         }
 
-        return "<html><center><p><small><font color=\"#808080\" >" + v.getId() + "</p></font></small><p>" + valueString + "</p></center></html>";
+        String name = v.getId();
+
+        return "<html><center><p><small><font color=\"#808080\" >" + name + "</p></font></small><p>" + valueString + "</p></center></html>";
     }
 
 

@@ -99,10 +99,10 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(getName()).append("(").append(entry.getKey()).append("=").append(entry.getValue().id);
+        builder.append(getName()).append("(").append(Parameterized.getArgumentCodeString(entry));
         while (iterator.hasNext()) {
             entry = iterator.next();
-            builder.append(", ").append(entry.getKey()).append("=").append(entry.getValue().id);
+            builder.append(", ").append(Parameterized.getArgumentCodeString(entry));
         }
         builder.append(");");
         return builder.toString();
