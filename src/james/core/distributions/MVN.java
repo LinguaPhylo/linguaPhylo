@@ -10,7 +10,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * Normal distribution
+ * Multivariate Normal distribution
  */
 public class MVN implements GenerativeDistribution<Double[]> {
 
@@ -24,7 +24,7 @@ public class MVN implements GenerativeDistribution<Double[]> {
     MultivariateNormalDistribution multivariateNormalDistribution;
 
     public MVN(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Double[]> mean,
-               @ParameterInfo(name = "covariances", description = "the standard deviation of the distribution.") Value<Double[][]> covariances) {
+               @ParameterInfo(name = "covariances", description = "the variance-covariance matrix of the distribution.") Value<Double[][]> covariances) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The means can't be null!");

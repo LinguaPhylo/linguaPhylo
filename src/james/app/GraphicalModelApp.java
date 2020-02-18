@@ -1,16 +1,16 @@
 package james.app;
 
+import james.graphicalModel.GraphicalModelNode;
 import james.graphicalModel.GraphicalModelParser;
+import james.graphicalModel.Utils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicalModelApp {
 
@@ -81,8 +81,8 @@ public class GraphicalModelApp {
             "lS = 1.0;",
             "alpha = 0.01;",
             "beta = 0.01;",
-            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
-            "Q = binaryCTMC(lambda=lambda);",
+            "λ ~ LogNormal(meanlog=lM, sdlog=lS);",
+            "Q = binaryCTMC(lambda=λ);",
             "birthRate = 10.0;",
             "n = 20;",
             "ψ ~ Yule(birthRate=birthRate, n=n);",
@@ -122,7 +122,32 @@ public class GraphicalModelApp {
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
 
         menu.add(exportGraphvizMenuItem);
+        exportGraphvizMenuItem.addActionListener(e -> {
+            List<GraphicalModelNode> nodes = new ArrayList<>(parser.getRoots());
 
+            String graphvizString = Utils.toGraphvizDot(nodes);
+
+            System.out.println(graphvizString);
+
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            jfc.setMultiSelectionEnabled(false);
+            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            int returnValue = jfc.showSaveDialog(null);
+
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jfc.getSelectedFile();
+                PrintWriter writer = null;
+                try {
+                    writer = new PrintWriter(new FileWriter(selectedFile));
+                    writer.write(graphvizString);
+                    writer.flush();
+                    writer.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         parser.parseLines(lines);
 
