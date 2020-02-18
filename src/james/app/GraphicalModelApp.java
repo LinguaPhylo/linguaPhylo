@@ -94,6 +94,8 @@ public class GraphicalModelApp {
 
     GraphicalModelParser parser = new GraphicalModelParser();
 
+    File lastDirectory = null;
+
     public GraphicalModelApp() {
         JMenuBar menuBar;
         JMenu menu;
@@ -118,7 +120,7 @@ public class GraphicalModelApp {
 
         menu.addSeparator();
 
-        JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz...");
+        JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
 
         menu.add(exportGraphvizMenuItem);
@@ -129,7 +131,12 @@ public class GraphicalModelApp {
 
             System.out.println(graphvizString);
 
-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            JFileChooser jfc = null;
+            if (lastDirectory != null) {
+                 jfc = new JFileChooser(lastDirectory);
+            } else {
+                jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            }
             jfc.setMultiSelectionEnabled(false);
             jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -146,6 +153,7 @@ public class GraphicalModelApp {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
+                lastDirectory = selectedFile.getParentFile();
             }
         });
 

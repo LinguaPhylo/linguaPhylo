@@ -43,7 +43,7 @@ public class Utils {
             }
 
             String name = graphvizName(node);
-            builder.append(graphvizNodeString(node,name) );
+            builder.append(graphvizNodeString(node, name) );
             builder.append(";\n");
 
             for (GraphicalModelNode child : node.getInputs()) {
@@ -77,27 +77,40 @@ public class Utils {
         String name = null;
 
         if (node instanceof Value) {
-            if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
-                name = "\"" + node.toString() + "\"";
-            } else {
-                name = "\"" + ((Value) node).getId() + "\"";
-            }
+            name = ((Value) node).getId();
         } else if (node instanceof Parameterized) {
-            name = ((Parameterized)node).getName() + node.hashCode();
+            name = ""+node.hashCode();
         }
         return name;
     }
 
+    private static String graphvizLabel(GraphicalModelNode node) {
+        String label = null;
+
+        if (node instanceof Value) {
+            if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
+                label = node.toString();
+            } else {
+                label = ((Value) node).getId();
+            }
+        } else if (node instanceof Parameterized) {
+            label = "";
+        }
+        return label;
+    }
+
     private static String graphvizNodeString(GraphicalModelNode node, String name) {
+        String labelString = "label=\"" + graphvizLabel(node) + "\", ";
+
         if (node instanceof Parameterized) {
-            return name + "[shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
+            return name + "[" + labelString + "shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
             //, label=\"" + ((Parameterized)node).getName() + "\"]";
         } else if (node instanceof RandomVariable) {
-            return name + "[shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=green, style=filled]";
+            return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=green, style=filled]";
         } else if (node instanceof Value) {
             if (((Value)node).function != null) {
-                return name + "[shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=red, style=filled]";
-            } else return name + "[shape=rect]";
+                return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=red, style=filled]";
+            } else return name + "[" + labelString +"shape=rect]";
         }
         return name;
     }

@@ -160,15 +160,17 @@ public class RenderNodePool {
 //            locateAll(lastWidth, lastHeight);
 //        }
 
-        List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
+        if (node != null) {
+            List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
 
-        int pos = inputs.indexOf(node);
-        if (pos > 0) {
-            RenderNode temp = inputs.get(pos-1);
-            inputs.set(pos-1, node);
-            inputs.set(pos, temp);
-            relevel();
-            locateAll(lastWidth, lastHeight);
+            int pos = inputs.indexOf(node);
+            if (pos > 0) {
+                RenderNode temp = inputs.get(pos - 1);
+                inputs.set(pos - 1, node);
+                inputs.set(pos, temp);
+                relevel();
+                locateAll(lastWidth, lastHeight);
+            }
         }
     }
 
@@ -185,14 +187,16 @@ public class RenderNodePool {
 //            locateAll(lastWidth, lastHeight);
 //        }
 
-        List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
-        int pos = inputs.indexOf(node);
-        if (pos < inputs.size() - 1) {
-            RenderNode temp = inputs.get(pos+1);
-            inputs.set(pos+1, node);
-            inputs.set(pos, temp);
-            relevel();
-            locateAll(lastWidth, lastHeight);
+        if (node != null) {
+            List<RenderNode> inputs = getInputsOfLeftmostOutput(node);
+            int pos = inputs.indexOf(node);
+            if (pos < inputs.size() - 1) {
+                RenderNode temp = inputs.get(pos+1);
+                inputs.set(pos+1, node);
+                inputs.set(pos, temp);
+                relevel();
+                locateAll(lastWidth, lastHeight);
+            }
         }
     }
 

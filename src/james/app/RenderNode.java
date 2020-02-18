@@ -102,8 +102,9 @@ public class RenderNode<T> {
         if (button == null) {
             if (((Value) value).getFunction() != null) {
                 button = new DiamondButton(str, backgroundColor, borderColor);
+            } else if (!(value instanceof RandomVariable)) {
+                button = new SquareButton(str, backgroundColor, borderColor);
             } else {
-
                 button = new CircleButton(str, backgroundColor, borderColor);
             }
         }
