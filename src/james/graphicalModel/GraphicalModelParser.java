@@ -50,7 +50,7 @@ public class GraphicalModelParser {
         }
 
         Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                BinaryRateMatrix.class, Newick.class};
+                BinaryRateMatrix.class, Newick.class, Rep.class};
 
         for (Class functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -425,7 +425,7 @@ public class GraphicalModelParser {
     }
 
     private void storeGlobalArgument(Value value) {
-        globalArguments.add(value.id);
+        if (!value.isAnonymous()) globalArguments.add(value.id);
     }
 
     private void parseRandomVariable(String line, int lineNumber) {

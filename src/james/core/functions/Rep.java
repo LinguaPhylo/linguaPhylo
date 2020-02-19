@@ -4,7 +4,7 @@ import james.graphicalModel.*;
 
 import java.util.*;
 
-public class Rep<U> extends DeterministicFunction<List<U>> {
+public class Rep<U> extends DeterministicFunction<U[]> {
 
     private final String xParamName;
     private final String timesParamName;
@@ -23,12 +23,12 @@ public class Rep<U> extends DeterministicFunction<List<U>> {
         timesParamName = getParamName(1);
     }
 
-    @FunctionInfo(name = "exp", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
-    public Value<List<U>> apply(Value<U> v, Value<Integer> times) {
+    @FunctionInfo(name = "rep", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
+    public Value<U[]> apply(Value<U> v, Value<Integer> times) {
         setParam("x", v);
         List<U> values = new ArrayList<>(times.value());
         Collections.fill(values, v.value());
-        return new Value<List<U>>("rep(" + v.getId() + ", " + times.value() + ")", values, this);
+        return new Value<>("rep(" + v.getId() + ", " + times.value() + ")", (U[]) values.toArray(), this);
     }
 
     public Map<String, Value> getParams() {
@@ -44,7 +44,7 @@ public class Rep<U> extends DeterministicFunction<List<U>> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public Value<List<U>> apply() {
+    public Value<U[]> apply() {
         return apply(x, times);
     }
 }

@@ -77,7 +77,7 @@ public class GraphicalModelApp {
     static String[] lines = {
             "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
             "ψ ~ Yule(birthRate=10.0, n=20);",
-            "siteRates ~ DiscretizedGamma(shape=0.75, ncat=4, reps=50);",
+            "siteRates = rep(x=1, times=100);",
             "S ~ PhyloCTMC(siteRates=siteRates, mu=0.01, Q=binaryRateMatrix(lambda=λ), tree=ψ);",
             "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);"};
 
