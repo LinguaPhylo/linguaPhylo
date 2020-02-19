@@ -26,7 +26,6 @@ import james.core.distributions.Exp;
 import james.core.distributions.Gamma;
 import james.core.distributions.LogNormal;
 import james.core.distributions.Normal;
-import james.core.functions.BinaryRateMatrix;
 import james.core.functions.GTR;
 import james.core.functions.HKY;
 import james.core.functions.JukesCantor;
@@ -66,7 +65,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 	        }
 	
 	        Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-	                BinaryRateMatrix.class, Newick.class};
+	                Newick.class};
 	
 	        for (Class<?> functionClass : functionClasses) {
 	            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
