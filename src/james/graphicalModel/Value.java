@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> implements GraphicalModelNode, Viewable {
+public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
     private T value;
     String id;
@@ -177,8 +177,4 @@ public class Value<T> implements GraphicalModelNode, Viewable {
         return id == null || id.equals("");
     }
     
-    @Override
-    public Value currentValue() {
-    	return this;
-    }
 }

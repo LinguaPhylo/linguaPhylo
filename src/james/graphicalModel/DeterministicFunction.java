@@ -5,7 +5,7 @@ public abstract class DeterministicFunction<T> extends Func {
     public abstract Value<T> apply();
 
     @Override
-    public Value currentValue() {
-    	return apply();
+    public T value() {
+    	return apply().value();
     }
 }

@@ -107,10 +107,9 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         builder.append(");");
         return builder.toString();
     }
-    
+
     @Override
-    default public Value currentValue() {
+    default T value() {
     	return null;
     }
-
 }

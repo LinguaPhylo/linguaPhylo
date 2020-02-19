@@ -38,7 +38,10 @@ public class Utils {
             return null;
         } else {
             StringBuilder builder = new StringBuilder();
-            for (GraphicalModelNode child : node.getInputs()) {
+            // RRB: weirdly, the compiler complains that node.getInputs() returns objects, but 
+            // the method signature says it returns a List<GraphicalModelNode>, so no cast
+            // should be necessary
+            for (GraphicalModelNode child : (List<GraphicalModelNode>) node.getInputs()) {
                 builder.append(toGraphvizDot(child, done));
             }
 
@@ -46,7 +49,7 @@ public class Utils {
             builder.append(graphvizNodeString(node, name) );
             builder.append(";\n");
 
-            for (GraphicalModelNode child : node.getInputs()) {
+            for (GraphicalModelNode child : (List<GraphicalModelNode>) node.getInputs()) {
                 builder.append(graphvizName(child));
                 builder.append(" -> ");
 
