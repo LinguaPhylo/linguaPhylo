@@ -2,6 +2,7 @@ package james.core.functions;
 
 import james.graphicalModel.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Rep<U> extends DeterministicFunction<U[]> {
@@ -26,9 +27,12 @@ public class Rep<U> extends DeterministicFunction<U[]> {
     @FunctionInfo(name = "rep", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
     public Value<U[]> apply(Value<U> v, Value<Integer> times) {
         setParam("x", v);
-        List<U> values = new ArrayList<>(times.value());
-        Collections.fill(values, v.value());
-        return new Value<>("rep(" + v.getId() + ", " + times.value() + ")", (U[]) values.toArray(), this);
+
+        Class c = v.value().getClass();
+        U[] array = (U[]) Array.newInstance(c, times.value());
+        Arrays.fill(array, v.value());
+
+        return new Value<>("rep(" + v.getId() + ", " + times.value() + ")", array, this);
     }
 
     public Map<String, Value> getParams() {

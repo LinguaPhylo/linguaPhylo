@@ -76,12 +76,14 @@ public class RenderNode<T> {
 
     private String displayString(String name, Value v) {
 
+        Object value = v.value();
+
         if (name == null) name = "null";
 
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
-        } else if (v instanceof MatrixValue || v instanceof IntegerArrayValue || v instanceof DoubleArrayValue || v instanceof DoubleArray2DValue || v instanceof IntegerArray2DValue) {
+        } else if (value instanceof Integer[] || value instanceof Double[] || value instanceof Double[][] || value instanceof Integer[][]) {
             if (name.length() < 5) {
                 return "<html><center><p><font color=\"#808080\" ><b>" + name + "</b></p></font></center></html>";
             } else {
