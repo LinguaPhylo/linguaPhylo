@@ -55,12 +55,11 @@ public class Value<T> implements GraphicalModelNode, Viewable {
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         if (function != null) {
-            builder.append(id + " = ");
+            if (!isAnonymous()) builder.append(id + " = ");
             builder.append(function.codeString());
             //p.print(";");
         } else {
             builder.append(toString());
-            builder.append(";");
         }
         return builder.toString();
     }

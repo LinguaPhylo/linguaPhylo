@@ -84,7 +84,7 @@ public abstract class Func implements Parameterized, Viewable {
             entry = iterator.next();
             builder.append(", " + Parameterized.getArgumentValue(entry));
         }
-        builder.append(");");
+        builder.append(")");
         return builder.toString();
     }
 

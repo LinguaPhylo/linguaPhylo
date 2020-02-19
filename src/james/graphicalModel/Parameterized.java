@@ -91,12 +91,12 @@ public interface Parameterized extends GraphicalModelNode {
     String codeString();
 
     static String getArgumentCodeString(Map.Entry<String, Value> entry) {
-        if (entry.getValue().isAnonymous()) return entry.getKey() + "=" + entry.getValue().value().toString();
+        if (entry.getValue().isAnonymous()) return entry.getKey() + "=" + entry.getValue().codeString();
         return entry.getKey() + "=" + entry.getValue().getId();
     }
 
     static String getArgumentValue(Map.Entry<String, Value> entry) {
-        if (entry.getValue().isAnonymous()) return entry.getValue().value().toString();
+        if (entry.getValue().isAnonymous()) return entry.getValue().codeString();
         return entry.getValue().getId();
     }
 

@@ -50,7 +50,7 @@ public class GraphicalModelParser {
         }
 
         Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                BinaryCTMC.class, Newick.class};
+                BinaryRateMatrix.class, Newick.class};
 
         for (Class functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -127,9 +127,9 @@ public class GraphicalModelParser {
         if (isValueId(valueString)) {
             return dictionary.get(valueString);
         } else if (isLiteral(valueString)) {
-            return parseLiteralValue("", valueString, lineNumber);
+            return parseLiteralValue(null, valueString, lineNumber);
         } else if (isFunction(valueString)) {
-            return parseDeterministicFunction("", valueString, lineNumber);
+            return parseDeterministicFunction(null, valueString, lineNumber);
         } else throw new RuntimeException("Failed to parse value expression " + valueString + " on line " + lineNumber);
     }
 
@@ -255,12 +255,14 @@ public class GraphicalModelParser {
         }
         try {
             Integer intVal = Integer.parseInt(valueString);
+            System.out.println("Parsed " + valueString + " as integer.");
             return new IntegerValue(id, intVal);
         } catch (NumberFormatException e) {
         }
 
         try {
             Double val = Double.parseDouble(valueString);
+            System.out.println("Parsed " + valueString + " as double.");
             return new DoubleValue(id, val);
         } catch (NumberFormatException e) {
         }
@@ -404,8 +406,8 @@ public class GraphicalModelParser {
             DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
             for (String parameterName : arguments.keySet()) {
                 Value value = arguments.get(parameterName);
-                func.setInput(parameterName, arguments.get(parameterName));
-                if (!value.isAnonymous()) globalArguments.add(value.id);
+                func.setInput(parameterName, value);
+                storeGlobalArgument(value);
             }
             Value val = func.apply();
             val.setId(id);
@@ -420,6 +422,10 @@ public class GraphicalModelParser {
             e.printStackTrace();
             throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
         }
+    }
+
+    private void storeGlobalArgument(Value value) {
+        globalArguments.add(value.id);
     }
 
     private void parseRandomVariable(String line, int lineNumber) {
@@ -480,7 +486,7 @@ public class GraphicalModelParser {
                     Value arg = arguments.get(pInfo.get(i).name());
                     if (arg != null) {
                         initargs.add(arg);
-                        globalArguments.add(arg.id);
+                        if (!arg.isAnonymous()) globalArguments.add(arg.getId());
                     } else if (!pInfo.get(i).optional()) {
                         throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
                     } else {
@@ -526,7 +532,7 @@ public class GraphicalModelParser {
             String argument = consumeArgument(argumentString, lineNumber);
             System.out.println("Found argument:'" + argument + "'");
 
-            argumentString = argumentString.substring(argument.length());
+            argumentString = argumentString.substring(argument.length()).trim();
             if (argumentString.startsWith(",")) argumentString = argumentString.substring(1);
             argumentStrings.add(argument);
         }
@@ -557,9 +563,9 @@ public class GraphicalModelParser {
                 pos = argumentString.indexOf(',', pos + 1);
                 if (pos > 0) nextArgument = argumentString.substring(0, pos);
             }
-            if (matchingBrackets(nextArgument))
+            if (matchingBrackets(nextArgument)) {
                 return nextArgument;
-            else throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
+            } else throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
         } else {
             return argumentString;
         }
@@ -638,8 +644,8 @@ public class GraphicalModelParser {
     private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {
 
         for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
-            generativeDistribution.setParam(e.getKey(), e.getValue());
-            sampled.add(e.getValue().getId());
+            generativeDistribution.setInput(e.getKey(), e.getValue());
+            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
         }
 
         return generativeDistribution.sample();
@@ -648,11 +654,15 @@ public class GraphicalModelParser {
     private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
 
         for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
-            function.setParam(e.getKey(), e.getValue());
-            sampled.add(e.getValue().getId());
+            function.setInput(e.getKey(), e.getValue());
+            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
         }
 
         return function.apply();
+    }
+
+    private void addValueToDictionary(Value value) {
+        if (!value.isAnonymous()) dictionary.put(value.getId(), value);
     }
 
     private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
@@ -670,7 +680,7 @@ public class GraphicalModelParser {
                     RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
                     nv.setId(v.getId());
                     newlySampledParams.put(e.getKey(), nv);
-                    dictionary.put(nv.getId(), nv);
+                    addValueToDictionary(nv);
                 } else if (e.getValue().getFunction() != null) {
                     Value v = e.getValue();
                     DeterministicFunction f = e.getValue().getFunction();
@@ -678,7 +688,7 @@ public class GraphicalModelParser {
                     Value nv = sampleAll(f, sampled);
                     nv.setId(v.getId());
                     newlySampledParams.put(e.getKey(), nv);
-                    dictionary.put(nv.getId(), nv);
+                    addValueToDictionary(nv);
                 }
             } else {
                 String id = e.getValue().getId();

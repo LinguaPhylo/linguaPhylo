@@ -50,7 +50,11 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(alphaParamName)) alpha = value;
+        if (paramName.equals(alphaParamName)) {
+            if (value.value() instanceof Double) {
+                alpha = value;
+            } else throw new IllegalArgumentException("Expecting type double, but got " + value.value().getClass());
+        }
         else if (paramName.equals(betaParamName)) beta = value;
         else if (paramName.equals(alignmentParamName)) alignment = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);

@@ -97,7 +97,12 @@ public class Utils {
         if (node instanceof Value) {
             if (((Value) node).isAnonymous()) {
                 //label = ((Parameterized)((Value) node).getOutputs().get(0)).getParamName((Value) node) + " = " + node.toString();
-                label = node.toString();
+                String slot = ((Parameterized)((Value)node).getOutputs().get(0)).getParamName((Value)node);
+                label = "[" + slot + "]";
+                Object val = ((Value) node).value();
+                if (val instanceof Double || val instanceof Integer) {
+                    label = node.toString();
+                }
             } else if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
                 label = node.toString();
             } else {
