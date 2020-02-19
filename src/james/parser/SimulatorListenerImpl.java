@@ -48,7 +48,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
     // PARSER STATE
     static Map<String, Class<?>> genDistDictionary;
     static Map<String, Class<?>> functionDictionary;
-    static Set<String> bivarOperators;
+    static Set<String> bivarOperators, univarfunctions;
 
 	
 	static public void initNameMap() {
@@ -145,19 +145,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			for (String s : new String[]{"+","-","*","/","**","&&","||","<=","<",">=",">","%",":","^","!=","==","&","|","<<",">>",">>>"}) {
 				bivarOperators.add(s);
 			}
-//			
-//			univarDistirbutions = new HashSet<>();
-//			bivarDistirbutions = new HashSet<>();
-//			trivarDistirbutions = new HashSet<>();
-//			for (String s : new String[]{"dchisq" ,"dexp" ,"dpois" ,"dgeom","ddirich"}){
-//				univarDistirbutions.add(s);
-//			}
-//			for (String s : new String[]{"dnorm" ,"dlnorm" ,"dbeta" ,"dnchisq" ,"dnt" ,"dbinom" ,"dnbinom" ,"dnbinom_mu" ,"dcauchy" ,"df" ,"dgamma" ,"dunif" ,"dweibull" ,"dlogis" ,"dsignrank"}){
-//				bivarDistirbutions.add(s);
-//			}
-//			for (String s : new String[]{"dnbeta" ,"dnf" ,"dhyper" ,"dwilcox"}){
-//				trivarDistirbutions.add(s);			
-//			}
+			univarfunctions = new HashSet<>();
+			for (String s : new String[]{"abs", "acos", "acosh", "asin", "asinh", "atan", "atanh", "cLogLog", "cbrt", "ceil", "cos", "cosh", "exp", "expm1", "floor", "log", "log10", "log1p", "logFact", "logGamma", "logit", "phi", "probit", "round", "signum", "sin", "sinh", "sqrt", "step", "tan", "tanh"}) {
+				univarfunctions.add(s);
+			}
 
 		}
 		
@@ -335,39 +326,39 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
 
 					switch (s) {
-					case "+": expression = new ExpressionNode(ctx.getText(), ExpressionNode.plus(), f1, f2); break;
-					case "-": expression = new ExpressionNode(ctx.getText(), ExpressionNode.minus(), f1,f2); break;
-					case "*": expression = new ExpressionNode(ctx.getText(), ExpressionNode.times(), f1,f2); break;
-					case "/": expression = new ExpressionNode(ctx.getText(), ExpressionNode.divide(), f1,f2); break;
-					case "**": expression = new ExpressionNode(ctx.getText(), ExpressionNode.pow(), f1,f2); break;
-					case "&&": expression = new ExpressionNode(ctx.getText(), ExpressionNode.and(), f1,f2); break;
-					case "||": expression = new ExpressionNode(ctx.getText(), ExpressionNode.or(), f1,f2); break;
-					case "<=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.le(), f1,f2); break;
+					case "+": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.plus(), f1, f2); break;
+					case "-": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.minus(), f1,f2); break;
+					case "*": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.times(), f1,f2); break;
+					case "/": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.divide(), f1,f2); break;
+					case "**": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.pow(), f1,f2); break;
+					case "&&": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.and(), f1,f2); break;
+					case "||": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.or(), f1,f2); break;
+					case "<=": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.le(), f1,f2); break;
 					case "<": 
 						switch (ctx.getChildCount()) {
 						case 3:
-							expression = new ExpressionNode(ctx.getText(), ExpressionNode.less(), f1,f2); break;
+							expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.less(), f1,f2); break;
 						case 4:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 						} 
 						break;
-					case ">=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.ge(), f1,f2); break;
+					case ">=": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.ge(), f1,f2); break;
 					case ">":
 						switch (ctx.getChildCount()) {
 						case 3:
-							expression = new ExpressionNode(ctx.getText(), ExpressionNode.greater(), f1,f2); break;
+							expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.greater(), f1,f2); break;
 						case 4:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
 						case 5:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
 						} 
 						break;
-					case "!=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.ne(), f1,f2); break;
-					case "==": expression = new ExpressionNode(ctx.getText(), ExpressionNode.equals(), f1,f2); break;
-					case "%": expression = new ExpressionNode(ctx.getText(), ExpressionNode.mod(), f1,f2); break;
+					case "!=": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.ne(), f1,f2); break;
+					case "==": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.equals(), f1,f2); break;
+					case "%": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.mod(), f1,f2); break;
 
-					case "&": expression = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseand(), f1,f2); break;
-					case "|": expression = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseor(), f1,f2); break;
+					case "&": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.bitwiseand(), f1,f2); break;
+					case "|": expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.bitwiseor(), f1,f2); break;
 //					case "^": transform = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseXOr(), f1,f2); break;
 //					case "<<": transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 //					case ">>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
@@ -375,10 +366,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					case ":": transform = new ExpressionNode(ctx.getText(), ExpressionNode.range(), f1,f2); break;
 					}
 					return expression; 
-				}
-//				} else if (s.equals("!")) {
-//					JFunction f1 = (JFunction) visit(ctx.getChild(2));
-//					transform = new Not(f1);
+				} else if (s.equals("!")) {
+					Value f1 = (Value) visit(ctx.getChild(2));
+					expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
 //				} else if (s.equals("~")) {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
 //					transform = new Complement(f1);
@@ -387,6 +377,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
 //					transform = new Index(var, f1);
 //				}
+				}
 			}
 			}
 			return super.visitExpression(ctx);
@@ -439,56 +430,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 				}
 				return distr;
 			}
-//			
-//			
-//			/*
-//			if (univarDistirbutions.contains(name)) {
-//				switch (name) {
-//				//case "dchisq": distr = new Chisq(f1); break;
-//				case "dexp": distr = new Exponential(f[0]); break;
-//				case "ddirich": distr = new Dirichlet(f[0]); break;
-//				//case "dpois": distr = new Pois(f1); break;
-//				//case "dgeom": distr = new Geom(f1); break;
-//				}
-//				
-//			} else if (bivarDistirbutions.contains(name)) {
-//				switch (name) {
-//				case "dnorm": distr = new Normal(f[0],f[1]); break;
-//				case "dlnorm": distr = new LogNormal(f[0],f[1]); break;
-//				case "dbeta": distr = new Beta(f[0],f[1]); break;
-//				//case "dnchisq": distr = new Nchisq(f1,f2); break;
-//				//case "dnt": distr = new Nt(f1,f2); break;
-//				//case "dbinom": distr = new Binom(f1,f2); break;
-//				//case "dnbinom": distr = new Nbinom(f1,f2); break;
-//				//case "dnbinom_mu": distr = new Nbinom_mu(f1,f2); break;
-//				//case "dcauchy": distr = new Cauchy(f1,f2); break;
-//				//case "df": distr = new F(f1,f2); break;
-//				//case "dgamma": distr = new Gamma(f1,f2); break;
-//				//case "dunif": distr = new Unif(f1,f2); break;
-//				//case "dweibull": distr = new Weibull(f1,f2); break;
-//				//case "dlogis": distr = new Logis(f1,f2); break;
-//				//case "dsignrank": distr = new Signrank(f1,f2); break;
-//				}
-//			} else if (trivarDistirbutions.contains(name)) {
-//				switch (name) {				
-//					//case "dnbeta": distr = new Nbeta(f1,f2,f3); break;
-//					//case "dnf": distr = new Nf(f1,f2,f3); break;
-//					//case "dhyper": distr = new Hyper(f1,f2,f3); break;
-//					//case "dwilcox": distr = new Wilcox(f1,f2,f3); break;
-//				}
-//				
-//			} else {
-//				throw new IllegalArgumentException("Unknown distributions. Choose one of " +
-//						Arrays.toString(univarDistirbutions.toArray()) + 
-//						Arrays.toString(bivarDistirbutions.toArray()) + 
-//						Arrays.toString(trivarDistirbutions.toArray()) 
-//						);
-//			}
-//			*/
-//			if (distr == null) {
-//				throw new IllegalArgumentException("Distributions not implemented yet. "
-//						+ "Choose one of " + Arrays.toString(mapDistrToClass.keySet().toArray(new String[]{})));
-//			}
 			return distr; 
 		}
 		
@@ -522,32 +463,75 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		}
 		
 		@Override
-		public Value visitMethodCall(SimulatorParser.MethodCallContext ctx) {
+		public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 //			Transform transform = null;
+			
+			
 			String functionName = ctx.children.get(0).getText();
 			ParseTree ctx2 = ctx.getChild(2);
-			Value [] f= (Value []) visit(ctx2);
+			Value [] f1= (Value []) visit(ctx2);
+
+			if (univarfunctions.contains(functionName)) {
+				ExpressionNode expression = null;
+				switch (functionName) {
+				case "abs": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.abs(), f1); break;
+				case "acos": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.acos(), f1); break;
+				case "acosh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.acosh(), f1); break;
+				case "asin": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.asin(), f1); break;
+				case "asinh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.asinh(), f1); break;
+				case "atan": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.atan(), f1); break;
+				case "atanh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.atanh(), f1); break;
+				case "cLogLog": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.cLogLog(), f1); break;
+				case "cbrt": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.cbrt(), f1); break;
+				case "ceil": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.ceil(), f1); break;
+				case "cos": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.cos(), f1); break;
+				case "cosh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.cosh(), f1); break;
+				case "exp": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.exp(), f1); break;
+				case "expm1": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.expm1(), f1); break;
+				case "floor": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.floor(), f1); break;
+				case "log": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.log(), f1); break;
+				case "log10": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.log10(), f1); break;
+				case "log1p": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.log1p(), f1); break;
+				case "logFact": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.logFact(), f1); break;
+				case "logGamma": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.logGamma(), f1); break;
+				case "logit": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.logit(), f1); break;
+				case "phi": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.phi(), f1); break;
+				case "probit": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.probit(), f1); break;
+				case "round": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.round(), f1); break;
+				case "signum": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.signum(), f1); break;
+				case "sin": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.sin(), f1); break;
+				case "sinh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.sinh(), f1); break;
+				case "sqrt": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.sqrt(), f1); break;
+				case "step": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.step(), f1); break;
+				case "tan": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.tan(), f1); break;
+				case "tanh": 	expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.tanh(), f1); break;
+				}
+				return expression;
+			}
+
+			
+			
 			DeterministicFunction func = null;
 			if (functionDictionary.containsKey(functionName)) {
 				Class class_ = functionDictionary.get(functionName);
 				Constructor ctor = null;
 				try {
-				switch (f.length) {
+				switch (f1.length) {
 				case 0: 
 					ctor = class_.getConstructor();
 					func = (DeterministicFunction<?>) ctor.newInstance();
 					break;
 				case 1: 
 					ctor = class_.getConstructor(Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f[0]);
+					func = (DeterministicFunction) ctor.newInstance(f1[0]);
 					break;
 				case 2: 
 					ctor = class_.getConstructor(Value.class, Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f[0], f[1]);
+					func = (DeterministicFunction) ctor.newInstance(f1[0], f1[1]);
 					break;
 				case 3: 
 					ctor = class_.getConstructor(Value.class, Value.class, Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f[0], f[1], f[2]);
+					func = (DeterministicFunction) ctor.newInstance(f1[0], f1[1], f1[2]);
 					break;
 				}
 				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
