@@ -327,7 +327,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				}
 //				return visit(ctx.getChild(0));
 //			}
-				ExpressionNode transform = null;
+			ExpressionNode expression = null;
 			if (ctx.getChildCount() >= 2) {
 				String s = ctx.getChild(1).getText();
 				if (bivarOperators.contains(s)) {
@@ -336,46 +336,46 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
 
 					switch (s) {
-					case "+": transform = new ExpressionNode(ctx.getText(), ExpressionNode.plus(), f1, f2); break;
-					case "-": transform = new ExpressionNode(ctx.getText(), ExpressionNode.minus(), f1,f2); break;
-					case "*": transform = new ExpressionNode(ctx.getText(), ExpressionNode.times(), f1,f2); break;
-					case "/": transform = new ExpressionNode(ctx.getText(), ExpressionNode.divide(), f1,f2); break;
-					case "**": transform = new ExpressionNode(ctx.getText(), ExpressionNode.pow(), f1,f2); break;
-					case "&&": transform = new ExpressionNode(ctx.getText(), ExpressionNode.and(), f1,f2); break;
-					case "||": transform = new ExpressionNode(ctx.getText(), ExpressionNode.or(), f1,f2); break;
-					case "<=": transform = new ExpressionNode(ctx.getText(), ExpressionNode.le(), f1,f2); break;
+					case "+": expression = new ExpressionNode(ctx.getText(), ExpressionNode.plus(), f1, f2); break;
+					case "-": expression = new ExpressionNode(ctx.getText(), ExpressionNode.minus(), f1,f2); break;
+					case "*": expression = new ExpressionNode(ctx.getText(), ExpressionNode.times(), f1,f2); break;
+					case "/": expression = new ExpressionNode(ctx.getText(), ExpressionNode.divide(), f1,f2); break;
+					case "**": expression = new ExpressionNode(ctx.getText(), ExpressionNode.pow(), f1,f2); break;
+					case "&&": expression = new ExpressionNode(ctx.getText(), ExpressionNode.and(), f1,f2); break;
+					case "||": expression = new ExpressionNode(ctx.getText(), ExpressionNode.or(), f1,f2); break;
+					case "<=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.le(), f1,f2); break;
 					case "<": 
 						switch (ctx.getChildCount()) {
 						case 3:
-							transform = new ExpressionNode(ctx.getText(), ExpressionNode.less(), f1,f2); break;
+							expression = new ExpressionNode(ctx.getText(), ExpressionNode.less(), f1,f2); break;
 						case 4:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 						} 
 						break;
-					case ">=": transform = new ExpressionNode(ctx.getText(), ExpressionNode.ge(), f1,f2); break;
+					case ">=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.ge(), f1,f2); break;
 					case ">":
 						switch (ctx.getChildCount()) {
 						case 3:
-							transform = new ExpressionNode(ctx.getText(), ExpressionNode.greater(), f1,f2); break;
+							expression = new ExpressionNode(ctx.getText(), ExpressionNode.greater(), f1,f2); break;
 						case 4:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
 						case 5:
 //							transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
 						} 
 						break;
-					case "!=": transform = new ExpressionNode(ctx.getText(), ExpressionNode.ne(), f1,f2); break;
-					case "==": transform = new ExpressionNode(ctx.getText(), ExpressionNode.equals(), f1,f2); break;
-					case "%": transform = new ExpressionNode(ctx.getText(), ExpressionNode.mod(), f1,f2); break;
+					case "!=": expression = new ExpressionNode(ctx.getText(), ExpressionNode.ne(), f1,f2); break;
+					case "==": expression = new ExpressionNode(ctx.getText(), ExpressionNode.equals(), f1,f2); break;
+					case "%": expression = new ExpressionNode(ctx.getText(), ExpressionNode.mod(), f1,f2); break;
 
-					case "&": transform = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseand(), f1,f2); break;
-					case "|": transform = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseor(), f1,f2); break;
+					case "&": expression = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseand(), f1,f2); break;
+					case "|": expression = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseor(), f1,f2); break;
 //					case "^": transform = new ExpressionNode(ctx.getText(), ExpressionNode.bitwiseXOr(), f1,f2); break;
 //					case "<<": transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 //					case ">>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
 //					case ">>>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
 //					case ":": transform = new ExpressionNode(ctx.getText(), ExpressionNode.range(), f1,f2); break;
 					}
-					return transform; 
+					return expression; 
 				}
 //				} else if (s.equals("!")) {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
