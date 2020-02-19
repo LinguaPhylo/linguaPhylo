@@ -176,4 +176,9 @@ public class Value<T> implements GraphicalModelNode, Viewable {
     public boolean isAnonymous() {
         return id == null || id.equals("");
     }
+    
+    @Override
+    public Value currentValue() {
+    	return this;
+    }
 }

@@ -9,4 +9,9 @@ public interface GraphicalModelNode {
      * @return
      */
     List<GraphicalModelNode> getInputs();
+    
+    /**
+     * @return current value of the Constant, DeterministicFunction or GenerativeDistribution
+     */
+    Value currentValue();
 }
