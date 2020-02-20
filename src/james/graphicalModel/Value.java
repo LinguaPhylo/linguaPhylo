@@ -37,6 +37,12 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         return value;
     }
 
+    public String getLabel() {
+        if (isAnonymous()) {
+            return "[" + ((Parameterized)getOutputs().get(0)).getParamName(this) + "]";
+        } else return getId();
+    }
+
     void print(PrintWriter p) {
         if (function != null) {
             for (Object val : function.getParams().values()) {

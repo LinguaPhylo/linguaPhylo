@@ -19,7 +19,10 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
     }
 
 
-    @FunctionInfo(name = "binaryRateMatrix", description = "The binary trait instantaneous rate matrix. Takes a lambda and produces a instantaneous rate matrix.")
+    @FunctionInfo(name = "binaryRateMatrix",
+            description = "The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:<br><br>" +
+                    "<tt>&nbsp;&nbsp;Q = ⎡-1&nbsp;&nbsp;1⎤<br>" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⎣ λ -λ⎦</tt><br>")
     public Value<Double[][]> apply() {
         Value<Double> lambda = getParams().get(paramName);
         return new DoubleArray2DValue(getName() + "(" + lambda.getId() + ")", binaryCTMC(lambda.value()), this);

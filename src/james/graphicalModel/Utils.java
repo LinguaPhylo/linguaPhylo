@@ -68,7 +68,7 @@ public class Utils {
         if (child instanceof Parameterized) {
             label = "taillabel=\"" + ((Parameterized)child).getName() + "\", " ;
         } else if (child instanceof Value && ((Value) child).isAnonymous()) {
-            label = "label=\"" + ((Parameterized)((Value) child).getOutputs().get(0)).getParamName((Value) child) + "\", ";
+            label = "label=\"" + ((Value)child).getLabel() + "\", ";
         }
 
         if (node instanceof Parameterized) {
@@ -100,8 +100,7 @@ public class Utils {
         if (node instanceof Value) {
             if (((Value) node).isAnonymous()) {
                 //label = ((Parameterized)((Value) node).getOutputs().get(0)).getParamName((Value) node) + " = " + node.toString();
-                String slot = ((Parameterized)((Value)node).getOutputs().get(0)).getParamName((Value)node);
-                label = "[" + slot + "]";
+                String slot = ((Value)node).getLabel();
                 Object val = ((Value) node).value();
                 if (val instanceof Double || val instanceof Integer) {
                     label = node.toString();

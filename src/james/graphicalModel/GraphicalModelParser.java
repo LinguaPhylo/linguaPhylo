@@ -35,6 +35,23 @@ public class GraphicalModelParser {
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     List<GraphicalModelListener> gmListeners = new ArrayList<>();
 
+    public List<Value> getAllValues() {
+        List<Value> values = new ArrayList<>();
+        for (Value v : getRoots()) {
+            getAllValues(v, values);
+        }
+        return values;
+    }
+
+    private void getAllValues(GraphicalModelNode node, List<Value> values ) {
+        if (node instanceof Value && !values.contains(node)) {
+            values.add((Value)node);
+        }
+        for (GraphicalModelNode childNode : (List<GraphicalModelNode>)node.getInputs()) {
+            getAllValues(childNode, values);
+        }
+    }
+
     enum Keyword {
         remove
     }

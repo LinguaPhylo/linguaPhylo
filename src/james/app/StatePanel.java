@@ -44,9 +44,11 @@ public class StatePanel extends JPanel {
         editors.clear();
         removeAll();
 
-        for (Value value : parser.getDictionary().values()) {
+        ;
+
+        for (Value value : parser.getAllValues()) {
             if (((value instanceof RandomVariable) && includeRandomVariables) || (value.getFunction() != null && includeFunctionValues) || (isFixedValue(value) && includeFixedValues)) {
-                JLabel label = new JLabel(value.getId()+":");
+                JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);
                 labels.add(label);
                 editors.add(value.getViewer());
