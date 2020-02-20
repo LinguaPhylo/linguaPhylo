@@ -124,6 +124,17 @@ public class GraphicalModelApp {
         showArgumentLabels.setState(false);
         viewMenu.add(showArgumentLabels);
 
+        JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
+        showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
+        showTreeInAlignmentView.setState(true);
+        viewMenu.add(showTreeInAlignmentView);
+
+        JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
+        showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MASK));
+        showErrorsInErrorAlignmentView.setState(true);
+        viewMenu.add(showErrorsInErrorAlignmentView);
+
+
         menu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> {
             List<GraphicalModelNode> nodes = new ArrayList<>(parser.getRoots());
@@ -212,6 +223,10 @@ public class GraphicalModelApp {
                 panel.component.setShowArgumentLabels(showArgumentLabels.getState());
             }
         });
+
+        showTreeInAlignmentView.addActionListener(e -> {AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState(); panel.repaint();});
+        showErrorsInErrorAlignmentView.addActionListener(e -> {AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState(); panel.repaint();});
+
     }
 
     private void writeCanonicalToFile(File file) {

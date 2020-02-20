@@ -17,8 +17,9 @@ public class Alignment implements HasComponentView<Alignment> {
     Integer[][] alignment;
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
+    int numStates;
 
-    public Alignment(int taxa, int length, Map<String, Integer> idMap) {
+    public Alignment(int taxa, int length, Map<String, Integer> idMap, int numStates) {
         alignment = new Integer[taxa][length];
         this.idMap = idMap;
 
@@ -26,9 +27,13 @@ public class Alignment implements HasComponentView<Alignment> {
         for (String key : idMap.keySet()) {
             reverseMap.put(idMap.get(key), key);
         }
+
+        this.numStates = numStates;
     }
 
     public void setState(int taxon, int position, int state) {
+
+        if (state < 0 || state > numStates-1) throw new IllegalArgumentException("Tried to set a state outside of the range!");
         alignment[taxon][position] = state;
     }
 
@@ -42,7 +47,10 @@ public class Alignment implements HasComponentView<Alignment> {
 
     @Override
     public JComponent getComponent(Value<Alignment> value) {
-        return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
+
+        if (numStates == 2)
+            return new AlignmentComponent(value, AlignmentComponent.BINARY_COLORS);
+        else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 
     public int n() {

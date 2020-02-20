@@ -3,7 +3,7 @@ package james.app;
 import james.TimeTree;
 import james.TimeTreeComponent;
 import james.core.Alignment;
-import james.core.JCPhyloCTMC;
+import james.core.ErrorAlignment;
 import james.core.PhyloCTMC;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.RandomVariable;
@@ -11,11 +11,16 @@ import james.graphicalModel.Value;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
 public class AlignmentComponent extends JComponent {
 
     public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.black, Color.green};
+
+    public static Color[] BINARY_COLORS = {Color.red, Color.blue};
+
 
     Color[] colors;
     Value<Alignment> alignmentValue;
@@ -23,8 +28,10 @@ public class AlignmentComponent extends JComponent {
 
     Value<TimeTree> timeTree = null;
 
-
     int spacer = 5;
+
+    static boolean showTreeIfAvailable = true;
+    static boolean showErrorsIfAvailable = true;
 
     public AlignmentComponent(Value<Alignment> av, Color[] colors) {
         this.colors = colors;
@@ -38,6 +45,19 @@ public class AlignmentComponent extends JComponent {
             }
         }
         //timeTree = null;
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    showTreeIfAvailable = !showTreeIfAvailable;
+                } else {
+                    showErrorsIfAvailable = !showErrorsIfAvailable;
+                }
+                repaint();
+            }
+        });
     }
 
     public void paintComponent(Graphics g) {
@@ -66,7 +86,7 @@ public class AlignmentComponent extends JComponent {
             g.setFont(f.deriveFont(12.0f));
         }
 
-        if (timeTree != null) {
+        if (isShowingTree()) {
 
             int ytrans = (int)Math.round(h/2);
 
@@ -99,13 +119,20 @@ public class AlignmentComponent extends JComponent {
         for (int i = 0; i < alignment.n(); i++) {
             double y = i * h;
 
-            if (timeTree == null) {
+            if (!isShowingTree()) {
                 g.setColor(Color.black);
                 g.drawString(alignment.getId(i),maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
             }
 
             for (int j = 0; j < alignment.L(); j++) {
-                g.setColor(colors[alignment.getState(i, j)]);
+
+                Color c = colors[alignment.getState(i, j)];
+
+                if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
+                    c = new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue());
+                }
+
+                g.setColor(c);
 
                 Rectangle2D rect2D = new Rectangle2D.Double(j * w + xdelta + maxWidth + spacer, y, w, h * 0.95);
 
@@ -114,5 +141,9 @@ public class AlignmentComponent extends JComponent {
         }
         g.translate(-insets.left, -insets.top);
 
+    }
+
+    boolean isShowingTree() {
+        return showTreeIfAvailable && timeTree != null;
     }
 }

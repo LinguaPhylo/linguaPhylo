@@ -17,7 +17,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import james.Coalescent;
 import james.core.ErrorModel;
-import james.core.JCPhyloCTMC;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.distributions.Dirichlet;
@@ -56,7 +55,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			genDistDictionary = new TreeMap<>();
 			functionDictionary = new TreeMap<>();
 			
-	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
+	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
 	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
 	                ErrorModel.class};
 	

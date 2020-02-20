@@ -3,7 +3,6 @@ package james.graphicalModel;
 import james.Coalescent;
 import james.Yule;
 import james.core.ErrorModel;
-import james.core.JCPhyloCTMC;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.distributions.*;
@@ -55,7 +54,7 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class, JCPhyloCTMC.class,
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, Yule.class, Beta.class, Geometric.class};
 

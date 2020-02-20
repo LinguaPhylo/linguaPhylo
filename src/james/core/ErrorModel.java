@@ -64,7 +64,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
 
         Alignment original = alignment.value();
 
-        Alignment newAlignment = new Alignment(original.n(), original.L(), original.idMap);
+        Alignment newAlignment = new ErrorAlignment(original.n(), original.L(), original.idMap, original);
 
         double a = alpha.value();
         double b = beta.value();

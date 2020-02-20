@@ -136,7 +136,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
             throw new RuntimeException(LParamName + " and " + siteRatesParamName + " have incompatible values!");
         }
 
-        Alignment alignment = new Alignment(tree.value().n(), length, idMap);
+        Alignment alignment = new Alignment(tree.value().n(), length, idMap, transProb.length);
 
         for (int i = 0; i < length; i++) {
             Value<Integer> rootState = rootDistribution.sample();
