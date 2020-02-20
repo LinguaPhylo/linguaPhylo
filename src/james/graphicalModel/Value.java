@@ -70,10 +70,6 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         return builder.toString();
     }
 
-    public String valueDisplayString() {
-        return value.toString();
-    }
-
     public String toString() {
         if (isAnonymous()) return value.toString();
         return id + " = " + value;
@@ -106,9 +102,6 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
             textArea.setEditable(false);
 
             return textArea;
-            //JScrollPane scrollPane = new JScrollPane(new JLabel(value.toString()));
-            //scrollPane.setPreferredSize(new Dimension(600,50));
-            //return scrollPane;
         }
     }
 

@@ -35,6 +35,7 @@ public class RenderNode<T> {
         if (value instanceof Value) {
             name = ((Value)value).getId();
             createValueButton();
+
         } else if (value instanceof Parameterized) {
             createParameterizedButton();
         }
@@ -108,10 +109,6 @@ public class RenderNode<T> {
             backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
         }
-//        if (!parser.getDictionary().values().contains(value)) {
-//            backgroundColor = backgroundColor.darker();
-//            borderColor = Color.black;
-//        }
 
         String str = getButtonString((Value)value);
 
@@ -125,6 +122,9 @@ public class RenderNode<T> {
             }
         }
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
+
+        // keep button string up to date.
+        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value)));
     }
 
     private void createParameterizedButton() {

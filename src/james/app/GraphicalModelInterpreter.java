@@ -35,11 +35,11 @@ public class GraphicalModelInterpreter extends JPanel {
             "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ",
             "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω"};
 
-    Font interpreterFont =  new Font("monospaced", Font.PLAIN, 12);
+    Font interpreterFont = new Font("monospaced", Font.PLAIN, 12);
 
     int BORDER_SIZE = 10;
 
-    Border textBorder = BorderFactory.createEmptyBorder(BORDER_SIZE,BORDER_SIZE,BORDER_SIZE,BORDER_SIZE);
+    Border textBorder = BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE);
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
@@ -51,7 +51,7 @@ public class GraphicalModelInterpreter extends JPanel {
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
         TextLineNumber tln = new TextLineNumber(textPane);
-        scrollPane.setRowHeaderView( tln );
+        scrollPane.setRowHeaderView(tln);
 
         interpreterField = new JTextField(80);
         interpreterField.setFont(interpreterFont);
@@ -93,7 +93,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
         JLabel label = new JLabel("  >");
         label.setFont(interpreterFont);
-        label.setBorder(new CompoundBorder(new MatteBorder(0,0,0,2,Color.gray), new EmptyBorder(BORDER_SIZE,tln.getBorderGap(),BORDER_SIZE,tln.getBorderGap()+2)));
+        label.setBorder(new CompoundBorder(new MatteBorder(0, 0, 0, 2, Color.gray), new EmptyBorder(BORDER_SIZE, tln.getBorderGap(), BORDER_SIZE, tln.getBorderGap() + 2)));
 
         activeLine.add(label);
         activeLine.add(interpreterField);
@@ -110,7 +110,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
     private String lastWord(String delimiters) {
         String[] words = interpreterField.getText().split(delimiters);
-        return words[words.length-1];
+        return words[words.length - 1];
     }
 
     public void interpretInput(String input) {
@@ -119,12 +119,17 @@ public class GraphicalModelInterpreter extends JPanel {
 
         for (String line : lines) {
             line = line.trim();
-            if (line.charAt(line.length() - 1) != ';') {
-                line = line + ";";
-            }
+            if (line != "") {
 
-            parser.parseLine(line);
-            textPane.addLine(line);
+
+                if (line.charAt(line.length() - 1) != ';') {
+                    line = line + ";";
+                }
+                parser.parseLine(line);
+                textPane.addLine(line);
+
+
+            }
         }
     }
 

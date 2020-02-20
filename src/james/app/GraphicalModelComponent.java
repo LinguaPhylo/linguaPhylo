@@ -69,6 +69,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     private void setup() {
+
         removeAll();
         pool = new RenderNodePool();
 

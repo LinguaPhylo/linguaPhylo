@@ -99,7 +99,9 @@ public class GraphicalModelParser {
 
     public Set<Value> getRoots() {
         Set<String> nonArguments = new HashSet<>();
-        dictionary.values().forEach((val) -> nonArguments.add(val.getId()));
+        dictionary.values().forEach((val) -> {
+            if (!val.isAnonymous()) nonArguments.add(val.getId());
+        });
         nonArguments.removeAll(globalArguments);
 
         SortedSet<Value> nonArgValues = new TreeSet<>(Comparator.comparing(Value::getId));
