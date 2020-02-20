@@ -207,7 +207,7 @@ public class RenderNodePool {
     public RenderNode<Value> createRenderNode(Value value, RenderNode<Parameterized> parentNode) {
 
         RenderNode<Value> node = pool.get(value);
-        boolean newNode = node == null;
+        boolean newNode = (node == null);
 
         if (newNode) {
             node = new RenderNode<>(value, parser);
