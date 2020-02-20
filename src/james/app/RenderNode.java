@@ -29,8 +29,11 @@ public class RenderNode<T> {
 
     static DecimalFormat format = new DecimalFormat();
 
-    public RenderNode(T value) {
+    GraphicalModelParser parser;
+
+    public RenderNode(T value, GraphicalModelParser parser) {
         this.value = value;
+        this.parser = parser;
 
         if (value instanceof Value) {
             name = ((Value)value).getId();
@@ -108,6 +111,12 @@ public class RenderNode<T> {
         } else if (ValueUtils.isValueOfFunction((Value) value)) {
             backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
+        }
+
+
+        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
+            backgroundColor = backgroundColor.darker();
+            borderColor = borderColor.darker();
         }
 
         String str = getButtonString((Value)value);

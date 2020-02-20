@@ -71,7 +71,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        pool = new RenderNodePool();
+        pool = new RenderNodePool(parser);
 
         for (Value val : parser.getRoots()) {
             pool.addRoot(val);

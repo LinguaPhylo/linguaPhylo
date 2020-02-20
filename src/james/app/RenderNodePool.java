@@ -1,5 +1,6 @@
 package james.app;
 
+import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Parameterized;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
@@ -17,8 +18,11 @@ public class RenderNodePool {
 
     RenderNode rootNode = null;
 
-    public RenderNodePool() {
-        rootNode = new RenderNode("A dummy root to group actual root nodes! This node will node be rendered!");
+    GraphicalModelParser parser;
+
+    public RenderNodePool(GraphicalModelParser parser) {
+        this.parser = parser;
+        rootNode = new RenderNode("A dummy root to group actual root nodes! This node will node be rendered!", null);
         rootNode.level = 0;
         addNode(rootNode);
     }
@@ -206,7 +210,7 @@ public class RenderNodePool {
         boolean newNode = node == null;
 
         if (newNode) {
-            node = new RenderNode<>(value);
+            node = new RenderNode<>(value, parser);
         }
 
         if (parentNode != null && !node.outputs.contains(parentNode)) {
@@ -235,7 +239,7 @@ public class RenderNodePool {
     public RenderNode<Parameterized> createRenderNode(Parameterized g, RenderNode<Value> parentNode) {
         RenderNode<Parameterized> node = pool.get(g);
         if (node == null) {
-            node = new RenderNode<>(g);
+            node = new RenderNode<>(g, parser);
             node.addOutput(parentNode);
             node.setLevel();
             addNode(node);

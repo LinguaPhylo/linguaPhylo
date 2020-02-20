@@ -22,9 +22,6 @@ public class GraphicalModelParser {
     // CURRENT MODEL STATE
     private SortedMap<String, Value> dictionary = new TreeMap<>();
 
-    // convenience book-keeping
-    Set<String> globalArguments = new TreeSet<>();
-
     // HISTORY OF LINES PARSED
     List<String> lines = new ArrayList<>();
 
@@ -78,7 +75,6 @@ public class GraphicalModelParser {
     public void clear() {
         // clear current model state
         dictionary.clear();
-        globalArguments.clear();
 
         // clear history of lines
         lines.clear();
@@ -98,16 +94,12 @@ public class GraphicalModelParser {
     }
 
     public Set<Value> getRoots() {
-        Set<String> nonArguments = new HashSet<>();
+        SortedSet<Value> nonArguments = new TreeSet<>(Comparator.comparing(Value::getId));
         dictionary.values().forEach((val) -> {
-            if (!val.isAnonymous()) nonArguments.add(val.getId());
+            if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
         });
-        nonArguments.removeAll(globalArguments);
 
-        SortedSet<Value> nonArgValues = new TreeSet<>(Comparator.comparing(Value::getId));
-        nonArguments.forEach((id) -> nonArgValues.add(dictionary.get(id)));
-
-        return nonArgValues;
+        return nonArguments;
     }
 
     public void parseLines(String[] lines) {
@@ -426,7 +418,6 @@ public class GraphicalModelParser {
             for (String parameterName : arguments.keySet()) {
                 Value value = arguments.get(parameterName);
                 func.setInput(parameterName, value);
-                storeGlobalArgument(value);
             }
             Value val = func.apply();
             val.setId(id);
@@ -443,10 +434,6 @@ public class GraphicalModelParser {
         }
     }
 
-    private void storeGlobalArgument(Value value) {
-        if (!value.isAnonymous()) globalArguments.add(value.id);
-    }
-
     private void parseRandomVariable(String line, int lineNumber) {
         String[] parts = line.split("~");
         if (parts.length != 2)
@@ -455,7 +442,7 @@ public class GraphicalModelParser {
         String genString = parts[1].substring(0, parts[1].indexOf(';'));
         GenerativeDistribution genDist = parseGenDist(genString, lineNumber);
         RandomVariable var = genDist.sample(id);
-        dictionary.put(var.getId(), var);
+        addValueToDictionary(var);
     }
 
     private GenerativeDistribution parseGenDist(String genString, int lineNumber) {
@@ -481,7 +468,6 @@ public class GraphicalModelParser {
             for (String parameterName : arguments.keySet()) {
                 Value value = arguments.get(parameterName);
                 dist.setInput(parameterName, arguments.get(parameterName));
-                if (!value.isAnonymous()) globalArguments.add(value.id);
             }
             return dist;
         } catch (InstantiationException e) {
@@ -505,7 +491,6 @@ public class GraphicalModelParser {
                     Value arg = arguments.get(pInfo.get(i).name());
                     if (arg != null) {
                         initargs.add(arg);
-                        if (!arg.isAnonymous()) globalArguments.add(arg.getId());
                     } else if (!pInfo.get(i).optional()) {
                         throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
                     } else {
@@ -681,7 +666,16 @@ public class GraphicalModelParser {
     }
 
     private void addValueToDictionary(Value value) {
-        if (!value.isAnonymous()) dictionary.put(value.getId(), value);
+
+        if (!value.isAnonymous()) {
+            String id = value.getId();
+            Value oldValue = dictionary.get(id);
+            if (oldValue != null) {
+                oldValue.setId(id + ".old");
+            }
+
+            dictionary.put(id, value);
+        }
     }
 
     private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
