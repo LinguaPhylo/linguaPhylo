@@ -78,7 +78,8 @@ public class GraphicalModelApp {
             "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
             "ψ ~ Yule(birthRate=10.0, n=20);",
             "Q=binaryRateMatrix(lambda=λ);",
-            "S ~ PhyloCTMC(L=100, mu=0.01, Q=Q, tree=ψ);",
+            "L ~ Geometric(p=0.01);",
+            "S ~ PhyloCTMC(L=L, mu=0.01, Q=Q, tree=ψ);",
             "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);"};
 
     GraphicalModelParser parser = new GraphicalModelParser();

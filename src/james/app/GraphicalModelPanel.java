@@ -127,7 +127,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Current", currentSelectionContainer);
         rightPane.addTab("Values", new StatePanel(parser, true, false, false));
         rightPane.addTab("Variables", new StatePanel(parser, false, true, false));
-        rightPane.addTab("JSON", new JSONPanel(parser));
+        //rightPane.addTab("JSON", new JSONPanel(parser));
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         splitPane.setRightComponent(rightPane);
 
