@@ -74,21 +74,23 @@ public abstract class Func implements Parameterized, Viewable {
         Map<String, Value> map = getParams();
 
         Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
-
-        Map.Entry<String, Value> entry = iterator.next();
-
         StringBuilder builder = new StringBuilder();
         builder.append(getName());
         builder.append("(");
 
-        if (getParams().size() == 1) {
-            builder.append(Parameterized.getArgumentValue(entry));
-        } else {
+        if (iterator.hasNext()) {
+            Map.Entry<String, Value> entry = iterator.next();
 
-            builder.append(Parameterized.getArgumentCodeString(entry));
-            while (iterator.hasNext()) {
-                entry = iterator.next();
-                builder.append(", " + Parameterized.getArgumentCodeString(entry));
+
+            if (getParams().size() == 1) {
+                builder.append(Parameterized.getArgumentValue(entry));
+            } else {
+
+                builder.append(Parameterized.getArgumentCodeString(entry));
+                while (iterator.hasNext()) {
+                    entry = iterator.next();
+                    builder.append(", " + Parameterized.getArgumentCodeString(entry));
+                }
             }
         }
         builder.append(")");
