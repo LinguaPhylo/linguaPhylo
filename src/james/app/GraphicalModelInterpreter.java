@@ -93,7 +93,7 @@ public class GraphicalModelInterpreter extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == ' ' || e.getKeyChar() == '=' || e.getKeyChar() == ',' || e.getKeyChar() == '~') {
-                    String lastWord = lastWord(" |\\=|\\,|~");
+                    String lastWord = lastWord(" |\\=|\\,|~|\\(");
                     String canonicalWord = getCanonicalWord(lastWord);
                     if (!lastWord.equals(canonicalWord)) {
                         String newText = interpreterField.getText().replace(lastWord, canonicalWord);
