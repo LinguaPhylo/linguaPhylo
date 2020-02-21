@@ -101,7 +101,9 @@ public class RenderNodePool {
     private void locate(List<RenderNode> nodes, int width, int height, int level, int maxNodesAtAnyLevel, int maxLevel) {
 
         double preferredSpacing = width / (maxNodesAtAnyLevel + 1.0);
-        double y = (maxLevel - level + 1) / (maxLevel + 1.0) * height;
+
+        double yDelta = height / (maxLevel + 1.0);
+        double y = (maxLevel - level + 1) * yDelta;
 
         double lastX = 0;
         for (int i = 0; i < nodes.size(); i++) {

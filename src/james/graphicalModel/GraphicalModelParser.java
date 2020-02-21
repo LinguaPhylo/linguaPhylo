@@ -155,7 +155,6 @@ public class GraphicalModelParser {
      * @return A Value constructed or produced from this expression
      */
     private Value parseValueExpression(String valueString, int lineNumber) {
-        System.out.println("Parsing value string '" + valueString + "'");
 
         if (isValueId(valueString)) {
             return dictionary.get(valueString);
@@ -288,14 +287,12 @@ public class GraphicalModelParser {
         }
         try {
             Integer intVal = Integer.parseInt(valueString);
-            System.out.println("Parsed " + valueString + " as integer.");
             return new IntegerValue(id, intVal);
         } catch (NumberFormatException e) {
         }
 
         try {
             Double val = Double.parseDouble(valueString);
-            System.out.println("Parsed " + valueString + " as double.");
             return new DoubleValue(id, val);
         } catch (NumberFormatException e) {
         }

@@ -49,8 +49,17 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(shiftRightButton);
 
         sampleButton.addActionListener(e -> {
+
+            String id = null;
+            if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
+                id = ((Value)displayedElement).getId();
+            }
             parser.sample();
-            showValue(parser.getRoots().iterator().next());
+            if (id != null) {
+                showValue(parser.getDictionary().get(id));
+            } else {
+                showValue(parser.getRoots().iterator().next());
+            }
         });
         shiftLeftButton.addActionListener(new ActionListener() {
             @Override
