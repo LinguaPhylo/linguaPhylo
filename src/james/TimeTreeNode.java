@@ -7,9 +7,10 @@ import java.util.*;
  */
 public class TimeTreeNode {
 
-    private List<TimeTreeNode> children = new ArrayList<>();
+    private TimeTreeNode[] children;
     private TimeTreeNode parent = null;
     private int index;
+    private int leafIndex;
 
     double age = 0.0;
     String id = null;
@@ -26,9 +27,9 @@ public class TimeTreeNode {
 
     public TimeTreeNode(double age, TimeTreeNode[] children) {
         this.age = age;
-        this.children = Arrays.asList(children);
-        for (TimeTreeNode child : children) {
-            child.parent = this;
+        this.children = children;
+        for (int i = 0; i < children.length; i++) {
+            children[i].parent = this;
         }
     }
 
@@ -36,19 +37,19 @@ public class TimeTreeNode {
         return parent == null;
     }
 
-    public boolean isLeaf() {
-        return children == null || children.size() == 0;
+    public final boolean isLeaf() {
+        return children == null || children.length == 0;
     }
 
-    public double getAge() {
+    public final double getAge() {
         return age;
     }
 
-    public List<TimeTreeNode> getChildren() {
+    public TimeTreeNode[] getChildren() {
         return children;
     }
 
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
@@ -77,30 +78,45 @@ public class TimeTreeNode {
         return super.toString();
     }
 
-    public int getIndex() {
+    public final int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public final void setIndex(int index) {
         this.index = index;
     }
 
+    public final int getLeafIndex() {
+        return leafIndex;
+    }
+
+    public final void setLeafIndex(int index) {
+        this.leafIndex = index;
+    }
+
+
     public void addChild(TimeTreeNode child) {
-        if (children == null) children = new ArrayList<>();
-        children.add(child);
+        if (children == null) {
+            children = new TimeTreeNode[] {child};
+        } else {
+            TimeTreeNode[] newChildren = new TimeTreeNode[children.length+1];
+            System.arraycopy(children, 0, newChildren, 0, children.length);
+            newChildren[children.length] = child;
+            children = newChildren;
+        }
         child.parent = this;
     }
 
-    public void setAge(double age) {
+    public final void setAge(double age) {
         this.age = age;
     }
 
-    public void setId(String id) {
+    public final void setId(String id) {
         this.id = id;
     }
 
-    public int getChildCount() {
-        return children.size();
+    public final int getChildCount() {
+        return children.length;
     }
 
     /**
@@ -135,7 +151,7 @@ public class TimeTreeNode {
             for (TimeTreeNode child : children) {
                 child.sort();
             }
-            children.sort(Comparator.comparingInt(o -> o.index));
+            Arrays.sort(children,Comparator.comparingInt(o -> o.index));
         }
     }
 }

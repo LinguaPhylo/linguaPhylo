@@ -1,6 +1,7 @@
 package james.core.distributions;
 
 import james.graphicalModel.*;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public class Exp implements GenerativeDistribution<Double> {
     private final String rateParamName;
     private Value<Double> rate;
 
-    private Random random;
+    private RandomGenerator random;
 
     public Exp(@ParameterInfo(name="rate", description="the rate of an exponential distribution.") Value<Double> rate) {
         this.rate = rate;

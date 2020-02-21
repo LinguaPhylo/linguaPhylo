@@ -2,13 +2,14 @@ package james.core;
 
 import james.TimeTree;
 import james.TimeTreeNode;
+import james.core.distributions.DiscreteDistribution;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
-import james.graphicalModel.types.IntegerValue;
 import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.util.FastMath;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -21,7 +22,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[][]> Q;
     Value<Double[]> siteRates;
     Value<Integer> L;
-    Random random;
+    RandomGenerator random;
 
     String treeParamName;
     String muParamName;
@@ -39,6 +40,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     private Value<Double[]> rootFreqs;
     private SortedMap<String, Integer> idMap = new TreeMap<>();
     private double[][] transProb;
+    private double[][] iexp;
+    private double[] Eval;
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional=true) Value<Double> mu,
@@ -55,6 +58,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.L = L;
         numStates = Q.value().length;
         this.random = Utils.getRandom();
+        iexp = new double[numStates][numStates];
 
         treeParamName = getParamName(0);
         muParamName = getParamName(1);
@@ -102,6 +106,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         Array2DRowRealMatrix Qmatrix = new Array2DRowRealMatrix(primitive);
 
         decomposition = new EigenDecomposition(Qmatrix);
+        Eval = decomposition.getRealEigenvalues();
         Ievc = new double[numStates][numStates];
 
         // Eigen vectors
@@ -127,8 +132,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         setup();
 
-        GenerativeDistribution<Integer> rootDistribution = new DiscreteDistribution(rootFreqs, random);
-
         int length = 0;
         if (L != null) length = L.value();
         if (length == 0 && siteRates != null) length = siteRates.value().length;
@@ -141,8 +144,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
 
         for (int i = 0; i < length; i++) {
-            Value<Integer> rootState = rootDistribution.sample();
-            traverseTree(tree.value().getRoot(), rootState, alignment, i, decomposition, transProb, mu,
+            int rootState = DiscreteDistribution.sample(rootFreqs.value(), random);
+            traverseTree(tree.value().getRoot(), rootState, alignment, i, transProb, mu,
                     (siteRates == null) ? 1.0 : siteRates.value()[i]);
         }
 
@@ -161,7 +164,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
             }
         }
-        System.out.println("  Computed equilibrium (from e^{100*Q}) is " + Arrays.toString(freqs));
 
         return new Value<>("freq", freqs);
     }
@@ -175,6 +177,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                     if (j >= nextValue) nextValue = j + 1;
                 }
                 idMap.put(node.getId(), nextValue);
+                node.setLeafIndex(nextValue);
+            } else {
+                node.setLeafIndex(i);
             }
         } else {
             for (TimeTreeNode child : node.getChildren()) {
@@ -183,25 +188,29 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    private void traverseTree(TimeTreeNode node, Value<Integer> nodeState, Alignment alignment, int pos, EigenDecomposition eigenDecomposition, double[][] transProb, double clockRate, double siteRate) {
+    private void traverseTree(TimeTreeNode node, int nodeState, Alignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
+
         if (node.isLeaf()) {
-            alignment.setState(node.getId(), pos, nodeState.value());
+            alignment.setState(node.getLeafIndex(), pos, nodeState);
         } else {
-            for (TimeTreeNode child : node.getChildren()) {
+            TimeTreeNode[] children = node.getChildren();
+            for (int i = 0; i < children.length; i++) {
+                TimeTreeNode child = children[i];
                 double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
 
                 getTransitionProbabilities(branchLength, transProb);
-                int state = drawState(transProb[nodeState.value()]);
+                int state = drawState(transProb[nodeState]);
 
-                traverseTree(child, new IntegerValue("x", state), alignment, pos, eigenDecomposition, transProb, clockRate, siteRate);
+                traverseTree(child, state, alignment, pos, transProb, clockRate, siteRate);
             }
         }
     }
 
     private int drawState(double[] p) {
         double U = random.nextDouble();
-        double totalP = 0.0;
-        for (int i = 0; i < p.length; i++) {
+        double totalP = p[0];
+        if (U <= totalP) return 0;
+        for (int i = 1; i < p.length; i++) {
             totalP += p[i];
             if (U <= totalP) return i;
         }
@@ -213,15 +222,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         int i, j, k;
         double temp;
 
-        int numStates = transProbs.length;
-
-        double[][] iexp = new double[numStates][numStates];
-
         // inverse Eigen vectors
         // Eigen values
-        double[] Eval = decomposition.getRealEigenvalues();
         for (i = 0; i < numStates; i++) {
-            temp = Math.exp(branchLength * Eval[i]);
+            temp = FastMath.exp(branchLength * Eval[i]);
             for (j = 0; j < numStates; j++) {
                 iexp[i][j] = Ievc[i][j] * temp;
             }
@@ -233,7 +237,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                 for (k = 0; k < numStates; k++) {
                     temp += Evec[i][k] * iexp[k][j];
                 }
-                transProbs[i][j] = Math.abs(temp);
+                transProbs[i][j] = FastMath.abs(temp);
             }
         }
     }

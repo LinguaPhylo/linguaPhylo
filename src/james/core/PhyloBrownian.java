@@ -6,6 +6,7 @@ import james.core.distributions.Utils;
 import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
     Value<TimeTree> tree;
     Value<Double> diffusionRate;
     Value<Double> y0;
-    Random random;
+    RandomGenerator random;
 
     String treeParamName;
     String diffusionRateParamName;

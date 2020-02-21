@@ -2,6 +2,7 @@ package james.core.distributions;
 
 import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.GeometricDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class Geometric implements GenerativeDistribution<Integer> {
     private final String pParamName;
     private Value<Double> p;
 
-    private Random random;
+    private RandomGenerator random;
 
     public Geometric(@ParameterInfo(name="p", description="the probability of success.") Value<Double> p) {
         this.p = p;

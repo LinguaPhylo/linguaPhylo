@@ -5,6 +5,7 @@ import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Random;
 import java.util.SortedMap;
@@ -23,7 +24,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
     String betaParamName;
     String alignmentParamName;
 
-    Random random = Utils.getRandom();
+    RandomGenerator random = Utils.getRandom();
 
     public ErrorModel(@ParameterInfo(name = "alpha", description = "the false positive probability.") Value<Double> alpha,
                       @ParameterInfo(name = "beta", description = "the false negative probability.") Value<Double> beta,
@@ -63,12 +64,10 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
     public RandomVariable<Alignment> sample() {
 
         Alignment original = alignment.value();
-
         Alignment newAlignment = new ErrorAlignment(original.n(), original.L(), original.idMap, original);
 
         double a = alpha.value();
         double b = beta.value();
-
 
         for (int i = 0; i < newAlignment.n(); i++) {
             for (int j = 0; j < newAlignment.L(); j++) {

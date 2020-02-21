@@ -1,7 +1,9 @@
 package james.app;
 
+import james.graphicalModel.Command;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
+import james.graphicalModel.Value;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GraphicalModelApp {
 
@@ -74,16 +77,24 @@ public class GraphicalModelApp {
 
     static String[] lines = {
             "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
-            "ψ ~ Yule(birthRate=10.0, n=20);",
+            "ψ ~ Yule(birthRate=10.0, n=100);",
             "Q=binaryRateMatrix(lambda=λ);",
-            "S ~ PhyloCTMC(L=300, Q=Q, tree=ψ);",
-            "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);"};
+            "S ~ PhyloCTMC(L=1000, Q=Q, tree=ψ);",
+            "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);",
+            "sample(1000);",
+            "quit();"};
 
     GraphicalModelParser parser = new GraphicalModelParser();
+    GraphicalModelPanel panel = null;
+    JFrame frame;
 
     File lastDirectory = null;
 
     public GraphicalModelApp() {
+
+        initParser();
+        panel = new GraphicalModelPanel(parser);
+
         JMenuBar menuBar;
         JMenu menu;
 
@@ -142,9 +153,7 @@ public class GraphicalModelApp {
 
         parser.parseLines(lines);
 
-        GraphicalModelPanel panel = new GraphicalModelPanel(parser);
-
-        JFrame frame = new JFrame("Phylogenetic Graphical Models");
+        frame = new JFrame("Phylogenetic Graphical Models");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -153,6 +162,8 @@ public class GraphicalModelApp {
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
+
+
 
         openMenuItem.addActionListener(e -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -173,7 +184,53 @@ public class GraphicalModelApp {
         showErrorsInErrorAlignmentView.addActionListener(e -> {AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState(); panel.repaint();});
 
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
-        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText()));
+        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText())); }
+
+    private void initParser() {
+
+        Command sampleCommand = new Command() {
+            @Override
+            public String getName() {
+                return "sample";
+            }
+
+            public void execute(Map<String, Value> params) {
+                Value val = params.values().iterator().next();
+                if (val.value() instanceof Integer) {
+                    panel.sample((Integer)val.value());
+                }
+            }
+        };
+
+        Command quitCommand = new Command() {
+            @Override
+            public String getName() {
+                return "quit";
+            }
+
+            public void execute(Map<String, Value> params) {
+                quit();
+            }
+        };
+
+        parser.addCommand(sampleCommand);
+        parser.addCommand(quitCommand);
+
+        parser.addCommand(new Command() {
+            @Override
+            public String getName() {
+                return "log.clear";
+            }
+
+            public void execute(Map<String, Value> params) {
+                panel.log.clear();
+            }
+        });
+    }
+
+    private void quit() {
+        if (frame != null) frame.dispose();
+        System.exit(0);
     }
 
     private void saveToFile(String text) {

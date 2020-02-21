@@ -3,6 +3,7 @@ package james.core.distributions;
 import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Gamma implements GenerativeDistribution<Double> {
     private Value<Double> shape;
     private Value<Double> scale;
 
-    private Random random;
+    private RandomGenerator random;
 
     GammaDistribution gammaDistribution;
 

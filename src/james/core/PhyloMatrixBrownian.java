@@ -9,6 +9,7 @@ import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 import james.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class PhyloMatrixBrownian implements GenerativeDistribution<Map<String, D
     Value<TimeTree> tree;
     Value<Double> diffusionRate;
     Value<Double> y0;
-    Random random;
+    RandomGenerator random;
 
     String treeParamName;
     String diffusionRateParamName;

@@ -14,13 +14,13 @@ import java.util.TreeMap;
  */
 public class Alignment implements HasComponentView<Alignment> {
 
-    Integer[][] alignment;
+    int[][] alignment;
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
     int numStates;
 
     public Alignment(int taxa, int length, Map<String, Integer> idMap, int numStates) {
-        alignment = new Integer[taxa][length];
+        alignment = new int[taxa][length];
         this.idMap = idMap;
 
         reverseMap = new TreeMap<>();
@@ -41,7 +41,7 @@ public class Alignment implements HasComponentView<Alignment> {
         alignment[idMap.get(taxon)][position] = state;
     }
 
-    public Integer getState(int taxon, int position) {
+    public int getState(int taxon, int position) {
         return alignment[taxon][position];
     }
 
@@ -53,11 +53,11 @@ public class Alignment implements HasComponentView<Alignment> {
         else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 
-    public int n() {
+    public final int n() {
         return alignment.length;
     }
 
-    public int L() {
+    public final int L() {
         return alignment[0].length;
     }
 

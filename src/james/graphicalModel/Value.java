@@ -33,7 +33,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         this.function = function;
     }
 
-    public T value() {
+    public final T value() {
         return value;
     }
 

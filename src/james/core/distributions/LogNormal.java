@@ -2,6 +2,7 @@ package james.core.distributions;
 
 import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class LogNormal implements GenerativeDistribution<Double> {
     private Value<Double> M;
     private Value<Double> S;
 
-    private Random random;
+    private RandomGenerator random;
 
     LogNormalDistribution logNormalDistribution;
 

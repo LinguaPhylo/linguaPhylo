@@ -1,9 +1,10 @@
-package james.core;
+package james.core.distributions;
 
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.Random;
@@ -11,33 +12,33 @@ import java.util.Random;
 public class DiscreteDistribution implements GenerativeDistribution<Integer> {
 
     Value<Double[]> probs;
-    Random random;
+    RandomGenerator random;
 
     String probsParamName;
 
-    public DiscreteDistribution(@ParameterInfo(name = "p", description = "the probability distribution over integer states.") Value<Double[]> probs,
-                Random random) {
+    public DiscreteDistribution(@ParameterInfo(name = "p", description = "the probability distribution over integer states.") Value<Double[]> probs) {
 
         this.probs = probs;
-        this.random = random;
-
-
+        probsParamName = getParamName(0);
+        this.random = Utils.getRandom();
     }
     public RandomVariable<Integer> sample() {
 
+        int i = sample(probs.value(), random);
+        return new RandomVariable<>("X", i, this);
+    }
+
+    public static int sample(Double[] p, RandomGenerator random) {
         double U = random.nextDouble();
 
         // TODO slow implementation! Should create cumulative probability distribution and use binary search!
-
-        Double[] p = probs.value();
-
         double sum = p[0];
         int i = 0;
         while (U > sum) {
             sum += p[i+1];
             i += 1;
         }
-        return new RandomVariable<>("X", i, this);
+        return i;
     }
 
     @Override

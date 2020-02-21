@@ -2,6 +2,7 @@ package james.app;
 
 import james.graphicalModel.Loggable;
 import james.graphicalModel.RandomVariable;
+import james.graphicalModel.RandomVariableLogger;
 import james.graphicalModel.Value;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Log extends JTextArea {
+public class Log extends JTextArea implements RandomVariableLogger {
 
     int rep = 0;
     Map<Class, Loggable> loggableMap = new HashMap<>();
@@ -67,35 +68,36 @@ public class Log extends JTextArea {
     }
 
     public void log(List<RandomVariable> variables) {
-        StringBuilder builder = new StringBuilder();
+        if (rep < 1000) {
+            StringBuilder builder = new StringBuilder();
+            if (getText().length() == 0) {
+                // start with titles
+                builder.append("rep");
+                for (RandomVariable variable : variables) {
+                    Loggable loggable = loggableMap.get(variable.value().getClass());
+                    if (loggable != null) {
+                        for (String title : loggable.getLogTitles(variable)) {
+                            builder.append("\t");
+                            builder.append(title);
+                        }
+                    }
+                }
+                builder.append("\n");
+            }
 
-        if (getText().length() == 0) {
-            // start with titles
-            builder.append("rep");
+            builder.append(rep);
             for (RandomVariable variable : variables) {
                 Loggable loggable = loggableMap.get(variable.value().getClass());
                 if (loggable != null) {
-                    for (String title : loggable.getLogTitles(variable)) {
+                    for (String logValue : loggable.getLogValues(variable)) {
                         builder.append("\t");
-                        builder.append(title);
+                        builder.append(logValue);
                     }
                 }
             }
             builder.append("\n");
+            append(builder.toString());
+            rep += 1;
         }
-
-        builder.append(rep);
-        for (RandomVariable variable : variables) {
-            Loggable loggable = loggableMap.get(variable.value().getClass());
-            if (loggable != null) {
-                for (String logValue : loggable.getLogValues(variable)) {
-                    builder.append("\t");
-                    builder.append(logValue);
-                }
-            }
-        }
-        builder.append("\n");
-        append(builder.toString());
-        rep += 1;
     }
 }

@@ -214,7 +214,7 @@ public class TimeTreeComponent extends JComponent {
 
             int parentColorIndex = getIntegerTrait(node, colorTraitName);
 
-            if (childColorIndex == parentColorIndex && node.getChildren().size() == 1) {
+            if (childColorIndex == parentColorIndex && node.getChildren().length == 1) {
                 System.out.println("Parent and single child have same state!!");
                 drawNode(getTransformedNodePoint2D(node), g, NodeDecorator.BLACK_DOT);
             }

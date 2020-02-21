@@ -3,6 +3,7 @@ package james;
 import james.core.distributions.Exp;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -17,10 +18,9 @@ public class Yule implements GenerativeDistribution<TimeTree> {
     private Value<Double> birthRate;
     private Value<Integer> n;
 
-    Random random;
+    private List<TimeTreeNode> activeNodes;
 
-    private Exp exp;
-
+    RandomGenerator random;
 
     public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Double> birthRate,
                 @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n) {
@@ -31,15 +31,15 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         birthRateParamName = getParamName(0);
         nParamName = getParamName(1);
 
-        exp = new Exp(new Value<>("rate", birthRate.value()));
+        activeNodes = new ArrayList<>(2*n.value());
     }
+
 
     @GenerativeDistributionInfo(description="The Yule tree distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();
-
-        List<TimeTreeNode> activeNodes = new ArrayList<>();
+        activeNodes.clear();
 
         for (int i = 0; i < n.value(); i++) {
             activeNodes.add(new TimeTreeNode(i + "", tree));
@@ -56,10 +56,11 @@ public class Yule implements GenerativeDistribution<TimeTree> {
 
             double totalRate = birthRate * (double)k;
 
-            exp.setRate(totalRate);
-            time += exp.sample().value();
+            // random exponential variate
+            double x = - Math.log(random.nextDouble()) / totalRate;
+            time += x;
 
-            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[]{a, b});
+            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[] {a, b});
             activeNodes.add(parent);
         }
 

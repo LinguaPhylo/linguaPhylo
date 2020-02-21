@@ -35,36 +35,9 @@ public class GraphicalModelPanel extends JPanel {
 
     JScrollPane currentSelectionContainer = new JScrollPane();
 
-    Command sampleCommand = new Command() {
-        @Override
-        public String getName() {
-            return "sample";
-        }
-
-        public void execute(Map<String, Value> params) {
-            Value val = params.values().iterator().next();
-            if (val.value() instanceof Integer) {
-                sample((Integer)val.value());
-            }
-        }
-    };
-
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
-
-        parser.addCommand(sampleCommand);
-
-        parser.addCommand(new Command() {
-            @Override
-            public String getName() {
-                return "log.clear";
-            }
-
-            public void execute(Map<String, Value> params) {
-                log.clear();
-            }
-        });
 
         interpreter = new GraphicalModelInterpreter(parser);
         
@@ -145,24 +118,27 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Trees", new JScrollPane(treeLog));
         splitPane.setRightComponent(rightPane);
 
-        showValue(parser.getRoots().iterator().next());
+        if (parser.getRoots().size() > 0) {
+            showValue(parser.getRoots().iterator().next());
+        }
     }
 
-    private void sample(int reps) {
+    void sample(int reps) {
+        long start = System.currentTimeMillis();
+
         String id = null;
         if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
             id = ((Value)displayedElement).getId();
         }
-        for (int i =0; i < reps; i++) {
-            parser.sample();
-            log.log(parser.getAllVariablesFromRoots());
-            treeLog.log(parser.getAllVariablesFromRoots());
-        }
+        //parser.sample(reps, new RandomVariableLogger[] {log, treeLog});
+        parser.sample(reps, null);
         if (id != null && parser.genDistDictionary.get(id) != null) {
             showValue(parser.getDictionary().get(id));
         } else {
             showValue(parser.getRoots().iterator().next());
         }
+        long end = System.currentTimeMillis();
+        System.out.println("sample(" + reps + ") took " + (end-start) + " ms.");
     }
 
     public JComponent getViewer(Object object) {

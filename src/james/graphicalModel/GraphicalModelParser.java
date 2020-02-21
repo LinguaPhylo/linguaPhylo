@@ -74,11 +74,11 @@ public class GraphicalModelParser {
                 .collect(Collectors.toList());
     }
 
-    private void getAllValues(GraphicalModelNode node, List<Value> values ) {
+    private void getAllValues(GraphicalModelNode node, List<Value> values) {
         if (node instanceof Value && !values.contains(node)) {
-            values.add((Value)node);
+            values.add((Value) node);
         }
-        for (GraphicalModelNode childNode : (List<GraphicalModelNode>)node.getInputs()) {
+        for (GraphicalModelNode childNode : (List<GraphicalModelNode>) node.getInputs()) {
             getAllValues(childNode, values);
         }
     }
@@ -96,7 +96,7 @@ public class GraphicalModelParser {
                     if (!visited.contains(value)) {
 
                         if (!value.isAnonymous()) {
-                            String str =  value.codeString();
+                            String str = value.codeString();
                             if (!str.endsWith(";")) str += ";";
                             builder.append(str).append("\n");
                         }
@@ -133,7 +133,7 @@ public class GraphicalModelParser {
         for (Class c : classes) {
             Parameterized.getAllParameterInfo(c).forEach((pinfo) -> {
                 String name = pinfo.name();
-                if (name.length()>2 && !keywords.contains(name)) keywords.add(name);
+                if (name.length() > 2 && !keywords.contains(name)) keywords.add(name);
             });
         }
 
@@ -142,13 +142,17 @@ public class GraphicalModelParser {
 
     public List<RandomVariable> getRandomVariables() {
         ArrayList<RandomVariable> randomVariables = new ArrayList<>();
-        dictionary.values().forEach((val) -> {if (val instanceof RandomVariable) randomVariables.add((RandomVariable)val);});
+        dictionary.values().forEach((val) -> {
+            if (val instanceof RandomVariable) randomVariables.add((RandomVariable) val);
+        });
         return randomVariables;
     }
 
     public List<RandomVariable> collectRandomVariablesFromRoots() {
         ArrayList<RandomVariable> randomVariables = new ArrayList<>();
-        dictionary.values().forEach((val) -> {if (val instanceof RandomVariable) randomVariables.add((RandomVariable)val);});
+        dictionary.values().forEach((val) -> {
+            if (val instanceof RandomVariable) randomVariables.add((RandomVariable) val);
+        });
         return randomVariables;
     }
 
@@ -259,7 +263,7 @@ public class GraphicalModelParser {
     private String trim(String str) {
         str = str.trim();
         if (str.endsWith(";")) {
-            str = str.substring(0, str.length()-1);
+            str = str.substring(0, str.length() - 1);
         }
         return str;
     }
@@ -277,7 +281,7 @@ public class GraphicalModelParser {
 
         String remainder = line.substring(command.getName().length());
         remainder = trim(remainder);
-        Map<String, Value> arguments = parseArguments(remainder.substring(1, remainder.length()-1), lineNumber);
+        Map<String, Value> arguments = parseArguments(remainder.substring(1, remainder.length() - 1), lineNumber);
         command.execute(arguments);
     }
 
@@ -471,7 +475,7 @@ public class GraphicalModelParser {
             throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
         String name = parts[0].trim();
         String remainder = parts[1].trim();
-        String argumentString = remainder.substring(0, remainder.length()-1);
+        String argumentString = remainder.substring(0, remainder.length() - 1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class functionClass = functionDictionary.get(name);
@@ -521,10 +525,10 @@ public class GraphicalModelParser {
     private GenerativeDistribution parseGenDist(String genString, int lineNumber) {
 
         int pos = genString.indexOf('(');
-        String[] parts = {genString.substring(0, pos),genString.substring(pos+1) };
+        String[] parts = {genString.substring(0, pos), genString.substring(pos + 1)};
         String name = parts[0].trim();
         String remainder = parts[1].trim();
-        String argumentString = remainder.substring(0, remainder.length()-1);
+        String argumentString = remainder.substring(0, remainder.length() - 1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class genDistClass = genDistDictionary.get(name);
@@ -621,9 +625,9 @@ public class GraphicalModelParser {
                 argumentPair = argumentCount + "=" + argumentPair;
             }
             int pos = argumentPair.indexOf('=');
-            
+
             String key = argumentPair.substring(0, pos).trim();
-            String valueString = argumentPair.substring(pos+1).trim();
+            String valueString = argumentPair.substring(pos + 1).trim();
 
             Value val = parseValueExpression(valueString, lineNumber);
             arguments.put(key, val);
@@ -643,14 +647,15 @@ public class GraphicalModelParser {
             }
             if (matchingBrackets(nextArgument)) {
                 return nextArgument;
-            } else throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
+            } else
+                throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
         } else {
             return argumentString;
         }
     }
 
     private boolean matchingBrackets(String string) {
-        return string.replace(")","").length() == string.replace("(","").length();
+        return string.replace(")", "").length() == string.replace("(", "").length();
     }
 
     public boolean isFunctionLine(String line) {
@@ -704,16 +709,24 @@ public class GraphicalModelParser {
         return lines;
     }
 
-    public void sample() {
+    public void sample(int reps, RandomVariableLogger[] loggers) {
 
-        Set<String> sampled = new HashSet<>();
+        for (int i = 0; i < reps; i++) {
+            Set<String> sampled = new TreeSet<>();
+            for (Value value : getRoots()) {
 
-        for (Value value : getRoots()) {
+                if (value instanceof RandomVariable) {
+                    RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
+                    variable.setId(value.id);
+                    dictionary.put(variable.getId(), variable);
+                }
+            }
 
-            if (value instanceof RandomVariable) {
-                RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
-                variable.setId(value.id);
-                dictionary.put(variable.getId(), variable);
+            if (loggers != null) {
+                List<RandomVariable> variables = getAllVariablesFromRoots();
+                for (RandomVariableLogger logger : loggers) {
+                    logger.log(variables);
+                }
             }
         }
         notifyListeners();
@@ -755,10 +768,10 @@ public class GraphicalModelParser {
     private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
         Map<String, Value> params = parameterized.getParams();
 
-        Map<String, Value> newlySampledParams = new HashMap<>();
+        Map<String, Value> newlySampledParams = new TreeMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
 
-            if (!sampled.contains(e.getValue().getId())) {
+            if (e.getValue().isAnonymous() || !sampled.contains(e.getValue().getId())) {
                 // needs to be sampled
 
                 if (e.getValue() instanceof RandomVariable) {

@@ -2,6 +2,7 @@ package james.core.distributions;
 
 import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class Poisson implements GenerativeDistribution<Integer> {
     private final String lambdaParamName;
     private Value<Double> lambda;
 
-    private Random random;
+    private RandomGenerator random;
 
     public Poisson(@ParameterInfo(name="lambda", description="the expected number of events.") Value<Double> lambda) {
         this.lambda = lambda;

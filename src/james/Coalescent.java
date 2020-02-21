@@ -3,6 +3,7 @@ package james;
 import james.core.distributions.Exp;
 import james.core.distributions.Utils;
 import james.graphicalModel.*;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -17,10 +18,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     private Value<Double> theta;
     private Value<Integer> n;
 
-    Random random;
-
-    private Exp exp;
-
+    RandomGenerator random;
 
     public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
                       @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n) {
@@ -30,8 +28,6 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
         thetaParamName = getParamName(0);
         nParamName = getParamName(1);
-
-        exp = new Exp(new Value<>("rate", 1.0));
     }
 
     @GenerativeDistributionInfo(description="The Kingman coalescent distribution over tip-labelled time trees.")
@@ -55,11 +51,12 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
             TimeTreeNode b = activeNodes.remove(random.nextInt(activeNodes.size()));
 
             double rate = (k * (k - 1.0))/(theta * 2.0);
-            
-            exp.setRate(rate);
-            time += exp.sample().value();
 
-            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[]{a, b});
+            // random exponential variate
+            double x = - Math.log(random.nextDouble()) / rate;
+            time += x;
+
+            TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[] {a, b});
             activeNodes.add(parent);
         }
 

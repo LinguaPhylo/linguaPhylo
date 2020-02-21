@@ -3,6 +3,7 @@ package james.core.distributions;
 import james.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Normal implements GenerativeDistribution<Double> {
     private Value<Double> mean;
     private Value<Double> sd;
 
-    private Random random;
+    private RandomGenerator random;
 
     NormalDistribution normalDistribution;
 

@@ -1,18 +1,18 @@
 package james.core.distributions;
 
 import org.apache.commons.math3.distribution.GammaDistribution;
-
-import java.util.Random;
+import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomGenerator;
 
 public class Utils {
 
-    private static Random random = new Random();
+    private static RandomGenerator random = new MersenneTwister();
 
-    public static Random getRandom() {
+    public static RandomGenerator getRandom() {
         return random;
     }
 
-    public static void setRandom(Random r) {
+    public static void setRandom(RandomGenerator r) {
         random = r;
     }
 
