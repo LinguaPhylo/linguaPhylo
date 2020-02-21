@@ -48,6 +48,29 @@ public class GraphicalModelParser {
         }
     }
 
+    /**
+     * @return a list of keywords including names of distributions, functions and param names.
+     */
+    public List<String> getKeywords() {
+        List<String> keywords = new ArrayList<>();
+        keywords.addAll(genDistDictionary.keySet());
+        keywords.addAll(functionDictionary.keySet());
+
+
+        Set<Class> classes = new HashSet<>();
+        classes.addAll(genDistDictionary.values());
+        classes.addAll(functionDictionary.values());
+
+        for (Class c : classes) {
+            Parameterized.getAllParameterInfo(c).forEach((pinfo) -> {
+                String name = pinfo.name();
+                if (name.length()>2 && !keywords.contains(name)) keywords.add(name);
+            });
+        }
+
+        return keywords;
+    }
+
     enum Keyword {
         remove
     }
@@ -533,7 +556,6 @@ public class GraphicalModelParser {
         List<String> argumentStrings = new ArrayList<>();
         while (argumentString.length() > 0) {
             String argument = consumeArgument(argumentString, lineNumber);
-            System.out.println("Found argument:'" + argument + "'");
 
             argumentString = argumentString.substring(argument.length()).trim();
             if (argumentString.startsWith(",")) argumentString = argumentString.substring(1);

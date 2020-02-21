@@ -50,7 +50,7 @@ public interface Parameterized extends GraphicalModelNode {
         return null;
     }
 
-    public static List<ParameterInfo> getParameterInfo(Constructor constructor) {
+    static List<ParameterInfo> getParameterInfo(Constructor constructor) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
 
         Annotation[][] annotations = constructor.getParameterAnnotations();
@@ -63,6 +63,14 @@ public interface Parameterized extends GraphicalModelNode {
             }
         }
 
+        return pInfo;
+    }
+
+    static List<ParameterInfo> getAllParameterInfo(Class c) {
+        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+        for (Constructor constructor : c.getConstructors()) {
+            pInfo.addAll(getParameterInfo(constructor));
+        }
         return pInfo;
     }
 

@@ -9,14 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 public class GraphicalModelInterpreter extends JPanel {
 
@@ -34,6 +28,8 @@ public class GraphicalModelInterpreter extends JPanel {
     String[] greekLetters = {
             "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ",
             "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω"};
+
+    private static final String COMMIT_ACTION = "commit";
 
     Font interpreterFont = new Font("monospaced", Font.PLAIN, 12);
 
@@ -56,6 +52,13 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField = new JTextField(80);
         interpreterField.setFont(interpreterFont);
         interpreterField.setBorder(textBorder);
+        interpreterField.setFocusTraversalKeysEnabled(false);
+
+        List<String> keywords = parser.getKeywords();
+        Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
+        interpreterField.getDocument().addDocumentListener(autoComplete);
+        interpreterField.getInputMap().put(KeyStroke.getKeyStroke('\t'), COMMIT_ACTION);
+        interpreterField.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
 
         interpreterField.addActionListener(e -> {
             interpretInput(interpreterField.getText());
@@ -127,8 +130,6 @@ public class GraphicalModelInterpreter extends JPanel {
                 }
                 parser.parseLine(line);
                 textPane.addLine(line);
-
-
             }
         }
     }
