@@ -131,4 +131,13 @@ public class Utils {
         }
         return name;
     }
+
+    public static boolean isInteger(String str) {
+        try {
+            int i = Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
 }

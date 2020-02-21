@@ -1,11 +1,7 @@
 package james.graphicalModel;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
@@ -24,7 +20,6 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 //        return new RandomVariable<T[]>("x", array, this);
 //    }
 
-
     default RandomVariable<T> sample(String id) {
         RandomVariable<T> v = sample();
         v.id = id;
@@ -41,10 +36,6 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     default String getName() {
         return this.getClass().getSimpleName();
-    }
-
-    default void print(PrintWriter p) {
-        p.print(codeString());
     }
 
     default String getRichDescription(int index) {

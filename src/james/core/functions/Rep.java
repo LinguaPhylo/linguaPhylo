@@ -12,7 +12,7 @@ public class Rep<U> extends DeterministicFunction<U[]> {
     private Value<U> x;
     private Value<Integer> times;
 
-    public Rep(@ParameterInfo(name = "x", description = "the element to replicate.") Value<U> x,
+    public Rep(@ParameterInfo(name = "0", description = "the element to replicate.") Value<U> x,
                @ParameterInfo(name = "times", description = "the standard deviation of the distribution.") Value<Integer> times) {
 
         this.x = x;

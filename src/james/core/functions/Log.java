@@ -7,7 +7,7 @@ public class Log extends DeterministicFunction<Double> {
 
     final String paramName;
 
-    public Log(@ParameterInfo(name = "x", description = "the argument.") Value<Double> x) {
+    public Log(@ParameterInfo(name = "0", description = "the argument.") Value<Double> x) {
         paramName = getParamName(0);
         setParam(paramName, x);
     }

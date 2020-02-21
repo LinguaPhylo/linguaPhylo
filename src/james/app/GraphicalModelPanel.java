@@ -2,12 +2,9 @@ package james.app;
 
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class GraphicalModelPanel extends JPanel {
 
@@ -31,17 +29,43 @@ public class GraphicalModelPanel extends JPanel {
     JButton shiftLeftButton = new JButton("<");
     JButton shiftRightButton = new JButton(">");
 
-
     JSplitPane splitPane;
 
     Object displayedElement;
 
     JScrollPane currentSelectionContainer = new JScrollPane();
 
+    Command sampleCommand = new Command() {
+        @Override
+        public String getName() {
+            return "sample";
+        }
+
+        public void execute(Map<String, Value> params) {
+            Value val = params.values().iterator().next();
+            if (val.value() instanceof Integer) {
+                sample((Integer)val.value());
+            }
+        }
+    };
 
     GraphicalModelPanel(GraphicalModelParser parser) {
 
         this.parser = parser;
+
+        parser.addCommand(sampleCommand);
+
+        parser.addCommand(new Command() {
+            @Override
+            public String getName() {
+                return "log.clear";
+            }
+
+            public void execute(Map<String, Value> params) {
+                log.clear();
+            }
+        });
+
         interpreter = new GraphicalModelInterpreter(parser);
         
         JPanel buttonPanel = new JPanel();
@@ -50,21 +74,7 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(shiftLeftButton);
         buttonPanel.add(shiftRightButton);
 
-        sampleButton.addActionListener(e -> {
-
-            String id = null;
-            if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
-                id = ((Value)displayedElement).getId();
-            }
-            parser.sample();
-            log.log(parser.getAllVariablesFromRoots());
-            treeLog.log(parser.getAllVariablesFromRoots());
-            if (id != null && parser.genDistDictionary.get(id) != null) {
-                showValue(parser.getDictionary().get(id));
-            } else {
-                showValue(parser.getRoots().iterator().next());
-            }
-        });
+        sampleButton.addActionListener(e -> sample(1));
         shiftLeftButton.addActionListener(e -> component.shiftLeft());
         shiftRightButton.addActionListener(e -> component.shiftRight());
 
@@ -136,6 +146,23 @@ public class GraphicalModelPanel extends JPanel {
         splitPane.setRightComponent(rightPane);
 
         showValue(parser.getRoots().iterator().next());
+    }
+
+    private void sample(int reps) {
+        String id = null;
+        if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
+            id = ((Value)displayedElement).getId();
+        }
+        for (int i =0; i < reps; i++) {
+            parser.sample();
+            log.log(parser.getAllVariablesFromRoots());
+            treeLog.log(parser.getAllVariablesFromRoots());
+        }
+        if (id != null && parser.genDistDictionary.get(id) != null) {
+            showValue(parser.getDictionary().get(id));
+        } else {
+            showValue(parser.getRoots().iterator().next());
+        }
     }
 
     public JComponent getViewer(Object object) {

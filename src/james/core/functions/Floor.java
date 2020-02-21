@@ -7,7 +7,7 @@ public class Floor extends DeterministicFunction<Integer> {
 
     final String paramName;
 
-    public Floor(@ParameterInfo(name = "x", description = "the argument.") Value<Double> x) {
+    public Floor(@ParameterInfo(name = "0", description = "the argument.") Value<Double> x) {
         paramName = getParamName(0);
         setParam(paramName, x);
     }

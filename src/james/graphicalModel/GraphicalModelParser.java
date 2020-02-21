@@ -5,6 +5,7 @@ import james.Yule;
 import james.core.ErrorModel;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
+import james.core.commands.Remove;
 import james.core.distributions.*;
 import james.core.distributions.Exp;
 import james.core.functions.*;
@@ -28,9 +29,35 @@ public class GraphicalModelParser {
     // PARSER STATE
     public Map<String, Class> genDistDictionary = new TreeMap<>();
     Map<String, Class> functionDictionary = new TreeMap<>();
+    Map<String, Command> commandDictionary = new TreeMap<>();
+
 
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     List<GraphicalModelListener> gmListeners = new ArrayList<>();
+
+    public GraphicalModelParser() {
+
+        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
+                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
+                ErrorModel.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
+
+        for (Class genClass : genClasses) {
+            genDistDictionary.put(genClass.getSimpleName(), genClass);
+        }
+
+        Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
+                BinaryRateMatrix.class, Newick.class, Rep.class};
+
+        for (Class functionClass : functionClasses) {
+            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
+        }
+
+        addCommand(new Remove(this));
+    }
+
+    public void addCommand(Command command) {
+        commandDictionary.put(command.getName(), command);
+    }
 
     public List<Value> getAllValuesFromRoots() {
         List<Value> values = new ArrayList<>();
@@ -91,13 +118,13 @@ public class GraphicalModelParser {
     }
 
     /**
-     * @return a list of keywords including names of distributions, functions and param names.
+     * @return a list of keywords including names of distributions, functions, commands, and param names.
      */
     public List<String> getKeywords() {
         List<String> keywords = new ArrayList<>();
         keywords.addAll(genDistDictionary.keySet());
         keywords.addAll(functionDictionary.keySet());
-
+        keywords.addAll(commandDictionary.keySet());
 
         Set<Class> classes = new HashSet<>();
         classes.addAll(genDistDictionary.values());
@@ -123,29 +150,6 @@ public class GraphicalModelParser {
         ArrayList<RandomVariable> randomVariables = new ArrayList<>();
         dictionary.values().forEach((val) -> {if (val instanceof RandomVariable) randomVariables.add((RandomVariable)val);});
         return randomVariables;
-    }
-
-    enum Keyword {
-        remove
-    }
-
-    public GraphicalModelParser() {
-
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
-
-        for (Class genClass : genClasses) {
-            genDistDictionary.put(genClass.getSimpleName(), genClass);
-        }
-
-        Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                BinaryRateMatrix.class, Newick.class, Rep.class};
-
-        for (Class functionClass : functionClasses) {
-            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
-        }
-        System.out.println(functionDictionary);
     }
 
     public void clear() {
@@ -192,8 +196,8 @@ public class GraphicalModelParser {
             parseFunctionLine(line, lineNumber);
         } else if (isFixedParameterLine(line)) {
             parseFixedParameterLine(line, lineNumber);
-        } else if (isKeywordLine(line)) {
-            parseKeywordLine(line, lineNumber);
+        } else if (isCommandLine(line)) {
+            parseCommandLine(line, lineNumber);
         } else if (isValueId(trim(line))) {
             selectValue(dictionary.get(trim(line)));
         } else {
@@ -260,43 +264,27 @@ public class GraphicalModelParser {
         return str;
     }
 
-    private void parseKeywordLine(String line, int lineNumber) {
+    private void parseCommandLine(String line, int lineNumber) {
         line = line.trim();
-        Keyword keyword = null;
-        for (Keyword kw : Keyword.values()) {
-            if (line.startsWith(kw.name())) {
-                keyword = kw;
+        Command command = null;
+        for (Command c : commandDictionary.values()) {
+            if (line.startsWith(c.getName())) {
+                command = c;
                 break;
             }
         }
-        String remainder = line.substring(keyword.name().length());
-        switch (keyword) {
-            case remove:
-                parseRemove(remainder, lineNumber);
-        }
+        if (command == null) throw new RuntimeException("Parsing error: trying to find command at line " + lineNumber);
+
+        String remainder = line.substring(command.getName().length());
+        remainder = trim(remainder);
+        Map<String, Value> arguments = parseArguments(remainder.substring(1, remainder.length()-1), lineNumber);
+        command.execute(arguments);
     }
 
-    private void parseRemove(String remainder, int lineNumber) {
-        if (remainder.startsWith("(")) {
-            remainder = remainder.trim();
-            if (remainder.endsWith(");")) {
-                String argument = remainder.substring(1, remainder.length() - 2);
-                if (dictionary.keySet().contains(argument)) {
-                    dictionary.remove(argument);
-                    System.out.println("Removed " + argument + ".");
-                } else {
-                    System.out.println("Value named " + argument + " not found.");
-                }
-            } else
-                throw new RuntimeException("Parsing error: expected ')' after argument to keyword " + Keyword.remove);
-
-        } else throw new RuntimeException("Parsing error: expected '(' after keyword " + Keyword.remove);
-    }
-
-    private boolean isKeywordLine(String line) {
+    private boolean isCommandLine(String line) {
         line = line.trim();
-        for (Keyword keyword : Keyword.values()) {
-            if (line.startsWith(keyword.name())) {
+        for (Command c : commandDictionary.values()) {
+            if (line.startsWith(c.getName())) {
                 return true;
             }
         }
@@ -477,6 +465,7 @@ public class GraphicalModelParser {
     }
 
     private Value parseDeterministicFunction(String id, String functionString, int lineNumber) {
+        // TODO this will fail to parse nested functions
         String[] parts = functionString.split("\\(");
         if (parts.length != 2)
             throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
@@ -625,10 +614,11 @@ public class GraphicalModelParser {
         }
 
         TreeMap<String, Value> arguments = new TreeMap<>();
+        int argumentCount = 0;
         for (String argumentPair : argumentStrings) {
 
             if (argumentPair.indexOf('=') < 0) {
-                argumentPair = "x=" + argumentPair;
+                argumentPair = argumentCount + "=" + argumentPair;
             }
             int pos = argumentPair.indexOf('=');
             
@@ -637,6 +627,7 @@ public class GraphicalModelParser {
 
             Value val = parseValueExpression(valueString, lineNumber);
             arguments.put(key, val);
+            argumentCount += 1;
         }
         return arguments;
     }
