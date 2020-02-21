@@ -17,6 +17,7 @@ public class Log extends JTextArea {
     public Log() {
 
         setTabSize(4);
+        setEditable(false);
 
         loggableMap.put(Integer.class, new Loggable<Integer>() {
             @Override

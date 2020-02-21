@@ -1,6 +1,5 @@
 package james.app;
 
-import james.graphicalModel.GraphicalModelNode;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
 
@@ -10,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GraphicalModelApp {
 
@@ -102,10 +100,15 @@ public class GraphicalModelApp {
 
         menu.add(openMenuItem);
 
-        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script As...");
+        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
-
         menu.add(saveAsMenuItem);
+
+        JMenuItem saveLogAsMenuItem = new JMenuItem("Save Log to File...");
+        menu.add(saveLogAsMenuItem);
+
+        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree Log to File...");
+        menu.add(saveTreeLogAsMenuItem);
 
         menu.addSeparator();
 
@@ -135,56 +138,18 @@ public class GraphicalModelApp {
 
 
         menu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> {
-            List<GraphicalModelNode> nodes = new ArrayList<>(parser.getRoots());
-
-            String graphvizString = Utils.toGraphvizDot(nodes);
-
-            System.out.println(graphvizString);
-
-            JFileChooser jfc = null;
-            if (lastDirectory != null) {
-                 jfc = new JFileChooser(lastDirectory);
-            } else {
-                jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            }
-            jfc.setMultiSelectionEnabled(false);
-            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-            int returnValue = jfc.showSaveDialog(null);
-
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jfc.getSelectedFile();
-                PrintWriter writer = null;
-                try {
-                    writer = new PrintWriter(new FileWriter(selectedFile));
-                    writer.write(graphvizString);
-                    writer.flush();
-                    writer.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                lastDirectory = selectedFile.getParentFile();
-            }
-        });
+        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getRoots()))));
 
         parser.parseLines(lines);
 
         GraphicalModelPanel panel = new GraphicalModelPanel(parser);
-        //panel.setPreferredSize(new Dimension(1200, 800));
 
         JFrame frame = new JFrame("Phylogenetic Graphical Models");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.out.println(e);
-            }
-        });
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(dim.width*8/10, dim.height*8/10);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
-
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
@@ -195,7 +160,6 @@ public class GraphicalModelApp {
             jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             int returnValue = jfc.showOpenDialog(null);
-            // int returnValue = jfc.showSaveDialog(null);
 
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
@@ -203,33 +167,35 @@ public class GraphicalModelApp {
             }
         });
 
-        saveAsMenuItem.addActionListener(e -> {
-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            jfc.setMultiSelectionEnabled(false);
-            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-            int returnValue = jfc.showSaveDialog(null);
-
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jfc.getSelectedFile();
-                writeCanonicalToFile(selectedFile);
-            }
-        });
-
-        showArgumentLabels.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                panel.component.setShowArgumentLabels(showArgumentLabels.getState());
-            }
-        });
-
+        saveAsMenuItem.addActionListener(e -> saveToFile(parser.getCanonicalScript()));
+        showArgumentLabels.addActionListener(e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
         showTreeInAlignmentView.addActionListener(e -> {AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState(); panel.repaint();});
         showErrorsInErrorAlignmentView.addActionListener(e -> {AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState(); panel.repaint();});
 
+        saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
+        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText()));
     }
 
-    private void writeCanonicalToFile(File file) {
+    private void saveToFile(String text) {
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setMultiSelectionEnabled(false);
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
+        int returnValue = jfc.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            PrintWriter writer = null;
+            try {
+                writer = new PrintWriter(new FileWriter(selectedFile));
+                writer.write(text);
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            lastDirectory = selectedFile.getParentFile();
+        }
     }
 
     public static void main(String[] args) {

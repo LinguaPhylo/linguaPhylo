@@ -56,6 +56,40 @@ public class GraphicalModelParser {
         }
     }
 
+    public String getCanonicalScript() {
+        Set<Value> visited = new HashSet<>();
+
+        StringBuilder builder = new StringBuilder();
+        for (Value value : getRoots()) {
+
+            Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+                @Override
+                public void visitValue(Value value) {
+
+                    if (!visited.contains(value)) {
+
+                        if (!value.isAnonymous()) {
+                            String str =  value.codeString();
+                            if (!str.endsWith(";")) str += ";";
+                            builder.append(str).append("\n");
+                        }
+                        visited.add(value);
+                    }
+                }
+
+                @Override
+                public void visitGenDist(GenerativeDistribution genDist) {
+
+                }
+
+                public void visitFunction(DeterministicFunction f) {
+
+                }
+            }, true);
+        }
+        return builder.toString();
+    }
+
     /**
      * @return a list of keywords including names of distributions, functions and param names.
      */
