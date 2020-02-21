@@ -22,6 +22,8 @@ public class GraphicalModelPanel extends JPanel {
     JLabel dummyLabel = new JLabel("");
     GraphicalModelInterpreter interpreter;
     JTabbedPane rightPane;
+    Log log = new Log();
+    TreeLog treeLog = new TreeLog();
 
     GraphicalModelParser parser;
 
@@ -55,7 +57,9 @@ public class GraphicalModelPanel extends JPanel {
                 id = ((Value)displayedElement).getId();
             }
             parser.sample();
-            if (id != null) {
+            log.log(parser.getAllVariablesFromRoots());
+            treeLog.log(parser.getAllVariablesFromRoots());
+            if (id != null && parser.genDistDictionary.get(id) != null) {
                 showValue(parser.getDictionary().get(id));
             } else {
                 showValue(parser.getRoots().iterator().next());
@@ -126,8 +130,9 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Current", currentSelectionContainer);
         rightPane.addTab("Values", new StatePanel(parser, true, false, false));
         rightPane.addTab("Variables", new StatePanel(parser, false, true, false));
-        //rightPane.addTab("JSON", new JSONPanel(parser));
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
+        rightPane.addTab("Log", new JScrollPane(log));
+        rightPane.addTab("Trees", new JScrollPane(treeLog));
         splitPane.setRightComponent(rightPane);
 
         showValue(parser.getRoots().iterator().next());
@@ -143,7 +148,7 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     void showValue(Value value) {
-        showObject(value.getLabel(), value);
+        if (value != null) showObject(value.getLabel(), value);
     }
 
     private void showParameterized(Parameterized g) {

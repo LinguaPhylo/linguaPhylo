@@ -1,7 +1,6 @@
 package james.core.distributions;
 
 import james.graphicalModel.*;
-import org.apache.commons.math3.distribution.GeometricDistribution;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 
 import java.util.Collections;

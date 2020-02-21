@@ -46,7 +46,7 @@ public class StatePanel extends JPanel {
 
         ;
 
-        for (Value value : parser.getAllValues()) {
+        for (Value value : parser.getAllValuesFromRoots()) {
             if (((value instanceof RandomVariable) && includeRandomVariables) || (value.getFunction() != null && includeFunctionValues) || (isFixedValue(value) && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);

@@ -15,6 +15,7 @@ import james.app.GraphicalModelListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GraphicalModelParser {
 
@@ -31,12 +32,19 @@ public class GraphicalModelParser {
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     List<GraphicalModelListener> gmListeners = new ArrayList<>();
 
-    public List<Value> getAllValues() {
+    public List<Value> getAllValuesFromRoots() {
         List<Value> values = new ArrayList<>();
         for (Value v : getRoots()) {
             getAllValues(v, values);
         }
         return values;
+    }
+
+    public List<RandomVariable> getAllVariablesFromRoots() {
+        return getAllValuesFromRoots().stream()
+                .filter(RandomVariable.class::isInstance)
+                .map(RandomVariable.class::cast)
+                .collect(Collectors.toList());
     }
 
     private void getAllValues(GraphicalModelNode node, List<Value> values ) {
@@ -71,6 +79,18 @@ public class GraphicalModelParser {
         return keywords;
     }
 
+    public List<RandomVariable> getRandomVariables() {
+        ArrayList<RandomVariable> randomVariables = new ArrayList<>();
+        dictionary.values().forEach((val) -> {if (val instanceof RandomVariable) randomVariables.add((RandomVariable)val);});
+        return randomVariables;
+    }
+
+    public List<RandomVariable> collectRandomVariablesFromRoots() {
+        ArrayList<RandomVariable> randomVariables = new ArrayList<>();
+        dictionary.values().forEach((val) -> {if (val instanceof RandomVariable) randomVariables.add((RandomVariable)val);});
+        return randomVariables;
+    }
+
     enum Keyword {
         remove
     }
@@ -79,7 +99,7 @@ public class GraphicalModelParser {
 
         Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, Geometric.class};
+                ErrorModel.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
@@ -181,12 +201,11 @@ public class GraphicalModelParser {
             return true;
         }
 
-        try {
-            Double val = Double.parseDouble(expression);
-            return true;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+        if (isDouble(expression)) return true;
+
+        if (isInteger(expression)) return true;
+
+        return (isBoolean(expression));
     }
 
     private void selectValue(Value value) {
@@ -285,17 +304,25 @@ public class GraphicalModelParser {
         if (valueString.startsWith("[") && valueString.endsWith("]")) {
             return parseList(id, valueString, lineNumber);
         }
+
         try {
             Integer intVal = Integer.parseInt(valueString);
             return new IntegerValue(id, intVal);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
 
         try {
             Double val = Double.parseDouble(valueString);
             return new DoubleValue(id, val);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
+
+        try {
+            Boolean booleanValue = Boolean.parseBoolean(valueString);
+            return new Value<>(id, booleanValue);
+        } catch (NumberFormatException ignored) {
+        }
+
 
         throw new RuntimeException("Parsing fixed parameter " + id + " with value " + valueString + " failed on line " + lineNumber);
     }
@@ -384,7 +411,7 @@ public class GraphicalModelParser {
         throw new RuntimeException("Parser error: parsing number array at line number " + lineNumber + " but found non-number:" + elements[0]);
     }
 
-    private boolean isInteger(String s) {
+    private static boolean isInteger(String s) {
         try {
             Integer intVal = Integer.parseInt(s);
             return true;
@@ -393,13 +420,17 @@ public class GraphicalModelParser {
         }
     }
 
-    private boolean isDouble(String s) {
+    private static boolean isDouble(String s) {
         try {
             Double doubleVal = Double.parseDouble(s);
             return true;
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private static boolean isBoolean(String s) {
+        return s.equals("true") || s.equals("false");
     }
 
     private void parseFunctionLine(String line, int lineNumber) {
