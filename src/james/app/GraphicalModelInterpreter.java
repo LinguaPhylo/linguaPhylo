@@ -1,5 +1,6 @@
 package james.app;
 
+import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.GraphicalModelParser;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ public class GraphicalModelInterpreter extends JPanel {
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
+    JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
 
     static String[] greekLetterCodes = {
             "\\alpha", "\\beta", "\\gamma", "\\delta", "\\epsilon", "\\zeta", "\\eta", "\\theta", "\\iota", "\\kappa",
@@ -55,7 +57,21 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.setFocusTraversalKeysEnabled(false);
 
         List<String> keywords = parser.getKeywords();
+        keywords.addAll(Arrays.asList(greekLetterCodes));
+
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
+
+        for (Map.Entry<String, Class> entry : parser.genDistDictionary.entrySet()) {
+            final String message = GenerativeDistribution.getSignature(entry.getValue());
+
+            autoComplete.getActionMap().put(entry.getKey(), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setMessage(message);
+                }
+            });
+        }
+
         interpreterField.getDocument().addDocumentListener(autoComplete);
         interpreterField.getInputMap().put(KeyStroke.getKeyStroke('\t'), COMMIT_ACTION);
         interpreterField.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
@@ -88,8 +104,8 @@ public class GraphicalModelInterpreter extends JPanel {
             }
         });
 
-        BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-        setLayout(boxLayout);
+        //BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+        //setLayout(boxLayout);
 
         BoxLayout boxLayout2 = new BoxLayout(activeLine, BoxLayout.LINE_AXIS);
         activeLine.setLayout(boxLayout2);
@@ -101,8 +117,37 @@ public class GraphicalModelInterpreter extends JPanel {
         activeLine.add(label);
         activeLine.add(interpreterField);
 
-        add(scrollPane, BorderLayout.CENTER);
-        add(activeLine, BorderLayout.SOUTH);
+        //add(scrollPane);
+        //add(activeLine);
+
+        infoLine.setBorder(new EmptyBorder(2,43,2,2));
+        infoLine.setHorizontalTextPosition(SwingConstants.LEFT);
+        infoLine.setFont(infoLine.getFont().deriveFont(10.0f));
+        infoLine.setForeground(Color.gray);
+        //add(infoLine);
+
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+
+        GroupLayout.ParallelGroup horizParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        horizParallelGroup.addComponent(scrollPane);
+        horizParallelGroup.addComponent(activeLine);
+        horizParallelGroup.addComponent(infoLine);
+
+        GroupLayout.SequentialGroup vertSequentialGroup = layout.createSequentialGroup();
+        vertSequentialGroup.addComponent(scrollPane);
+        vertSequentialGroup.addComponent(activeLine);
+        vertSequentialGroup.addComponent(infoLine);
+
+
+        layout.setHorizontalGroup(horizParallelGroup);
+
+        layout.setVerticalGroup(vertSequentialGroup);
+    }
+
+    private void setMessage(String message) {
+        infoLine.setText(message);
+        repaint();
     }
 
     private String getCanonicalWord(String word) {

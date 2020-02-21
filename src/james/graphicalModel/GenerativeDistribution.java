@@ -49,7 +49,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     default String getRichDescription(int index) {
 
-        List<ParameterInfo> pInfo = getParameterInfo(index);
+        List<ParameterInfo> pInfo = getParameterInfo( index);
 
         Map<String, Value> paramValues = getParams();
 
@@ -111,5 +111,22 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
     @Override
     default T value() {
     	return null;
+    }
+
+    static String getSignature(Class aClass) {
+
+        List<ParameterInfo> pInfo = Parameterized.getParameterInfo(aClass, 0);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(aClass.getSimpleName() + "(");
+        if (pInfo.size() > 0) {
+            builder.append(pInfo.get(0).name());
+            for (int i = 1; i < pInfo.size(); i++) {
+                builder.append(", ");
+                builder.append(pInfo.get(i).name());
+            }
+        }
+        builder.append(")");
+        return builder.toString();
     }
 }

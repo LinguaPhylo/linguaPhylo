@@ -22,8 +22,12 @@ public interface Parameterized extends GraphicalModelNode {
         return getParamName(paramIndex, 0);
     }
 
+    static List<ParameterInfo> getParameterInfo(Class c, int constructorIndex) {
+        return getParameterInfo(c.getConstructors()[constructorIndex]);
+    }
+
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
-        return getParameterInfo(this.getClass().getConstructors()[constructorIndex]);
+        return getParameterInfo(this.getClass(), constructorIndex);
     }
 
     default List<ParameterInfo> getParameterInfo(String methodName) {

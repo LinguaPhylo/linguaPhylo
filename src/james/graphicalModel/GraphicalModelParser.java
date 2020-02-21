@@ -25,7 +25,7 @@ public class GraphicalModelParser {
     List<String> lines = new ArrayList<>();
 
     // PARSER STATE
-    Map<String, Class> genDistDictionary = new TreeMap<>();
+    public Map<String, Class> genDistDictionary = new TreeMap<>();
     Map<String, Class> functionDictionary = new TreeMap<>();
 
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();

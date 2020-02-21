@@ -4,9 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -22,10 +20,16 @@ public class Autocomplete implements DocumentListener {
     private final List<String> keywords;
     private Mode mode = Mode.INSERT;
 
+    private ActionMap actionMap = new ActionMap();
+
     public Autocomplete(JTextField textField, List<String> keywords) {
         this.textField = textField;
         this.keywords = keywords;
         Collections.sort(keywords);
+    }
+
+    public ActionMap getActionMap() {
+        return actionMap;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class Autocomplete implements DocumentListener {
         // Find where the word starts
         int w;
         for (w = pos; w >= 0; w--) {
-            if (!Character.isLetter(content.charAt(w))) {
+            if (!(Character.isLetter(content.charAt(w)) || content.charAt(w) == '\\')) {
                 break;
             }
         }
@@ -68,7 +72,7 @@ public class Autocomplete implements DocumentListener {
                 String completion = match.substring(pos - w);
                 // We cannot modify Document from within notification,
                 // so we submit a task that does the change later
-                SwingUtilities.invokeLater(new CompletionTask(completion, pos + 1));
+                SwingUtilities.invokeLater(new CompletionTask(match, completion, pos + 1));
             }
         } else {
             // Nothing found
@@ -99,8 +103,10 @@ public class Autocomplete implements DocumentListener {
     private class CompletionTask implements Runnable {
         private String completion;
         private int position;
+        private String match;
 
-        CompletionTask(String completion, int position) {
+        CompletionTask(String match, String completion, int position) {
+            this.match = match;
             this.completion = completion;
             this.position = position;
         }
@@ -112,6 +118,11 @@ public class Autocomplete implements DocumentListener {
             textField.setCaretPosition(position + completion.length());
             textField.moveCaretPosition(position);
             mode = Mode.COMPLETION;
+
+            Action action = actionMap.get(match);
+            if (action != null) {
+                action.actionPerformed(new ActionEvent(this, 0, match));
+            }
         }
     }
 
