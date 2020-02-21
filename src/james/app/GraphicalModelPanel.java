@@ -61,18 +61,8 @@ public class GraphicalModelPanel extends JPanel {
                 showValue(parser.getRoots().iterator().next());
             }
         });
-        shiftLeftButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                component.shiftLeft();
-            }
-        });
-        shiftRightButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                component.shiftRight();
-            }
-        });
+        shiftLeftButton.addActionListener(e -> component.shiftLeft());
+        shiftRightButton.addActionListener(e -> component.shiftRight());
 
         component = new GraphicalModelComponent(parser);
         JPanel panel = new JPanel();
@@ -153,31 +143,18 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     void showValue(Value value) {
-        displayedElement = value;
-
-        JComponent viewer = getViewer(value);
-
-        if (viewer.getPreferredSize().height > 1) {
-            JPanel viewerPanel = new JPanel();
-            viewerPanel.setOpaque(false);
-            viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            viewerPanel.add(viewer);
-            viewer = viewerPanel;
-        }
-        
-        currentSelectionContainer.setViewportView(viewer);
-        currentSelectionContainer.setBorder(
-                BorderFactory.createTitledBorder(
-                        BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
-                        "<html><font color=\"#808080\" >" + value.getLabel() + "</font></html>"));
-        repaint();
+        showObject(value.getLabel(), value);
     }
 
     private void showParameterized(Parameterized g) {
-        displayedElement = g;
+        showObject(g.codeString(), g);
+    }
 
-        JComponent viewer = getViewer(g);
-        
+    private void showObject(String label, Object obj) {
+        displayedElement = obj;
+
+        JComponent viewer = getViewer(obj);
+
         if (viewer.getPreferredSize().height > 1) {
             JPanel viewerPanel = new JPanel();
             viewerPanel.setOpaque(false);
@@ -189,9 +166,8 @@ public class GraphicalModelPanel extends JPanel {
         currentSelectionContainer.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
-                        "<html><font color=\"#808080\" >" + g.codeString() + "</font></html>"));
+                        "<html><font color=\"#808080\" >" + label + "</font></html>"));
         repaint();
-
     }
 
     public void readScript(File scriptFile) {
