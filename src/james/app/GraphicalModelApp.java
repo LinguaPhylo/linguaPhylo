@@ -251,14 +251,31 @@ public class GraphicalModelApp {
         parser.addCommand(quitCommand);
 
         parser.addCommand(new Command() {
-            @Override
             public String getName() {
-                return "log.clear";
+                return "clearlog";
             }
-
             public void execute(Map<String, Value> params) {
                 panel.log.clear();
             }
+        });
+
+        parser.addCommand(new Command() {
+            public String getName() {
+                return "cleartrees";
+            }
+            public void execute(Map<String, Value> params) {
+                panel.treeLog.clear();
+            }
+        });
+
+        parser.addCommand(new Command() {
+            public String getName() { return "savelog"; }
+            public void execute(Map<String, Value> params) { saveToFile(panel.log.getText()); }
+        });
+
+        parser.addCommand(new Command() {
+            public String getName() { return "savetrees"; }
+            public void execute(Map<String, Value> params) { saveToFile(panel.treeLog.getText()); }
         });
     }
 
