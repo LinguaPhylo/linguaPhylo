@@ -463,19 +463,25 @@ public class GraphicalModelParser {
         int firstEquals = line.indexOf('=');
         String id = line.substring(0, firstEquals).trim();
         String remainder = line.substring(firstEquals + 1);
-        String functionString = remainder.substring(0, remainder.indexOf(';'));
+
+        if (remainder.endsWith(";")) remainder = remainder.substring(0, remainder.length()-1);
+        String functionString = remainder;
         Value val = parseDeterministicFunction(id, functionString, lineNumber);
         dictionary.put(val.getId(), val);
     }
 
+    /**
+     * @param functionString includes the function name and open and closed brackets
+     */
     private Value parseDeterministicFunction(String id, String functionString, int lineNumber) {
-        // TODO this will fail to parse nested functions
-        String[] parts = functionString.split("\\(");
-        if (parts.length != 2)
-            throw new RuntimeException("Parsing deterministic function " + parts[0] + " failed on line " + lineNumber);
+        int pos = functionString.indexOf('(');
+        String[] parts = {functionString.substring(0, pos), functionString.substring(pos + 1)};
         String name = parts[0].trim();
         String remainder = parts[1].trim();
-        String argumentString = remainder.substring(0, remainder.length() - 1);
+
+        if (remainder.endsWith(")")) remainder = remainder.substring(0, remainder.length()-1);
+        String argumentString = remainder;
+
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
         Class functionClass = functionDictionary.get(name);
@@ -638,7 +644,16 @@ public class GraphicalModelParser {
 
     private String consumeArgument(String argumentString, int lineNumber) {
 
-        int pos = argumentString.indexOf(',');
+        int firstQuote = argumentString.indexOf('"');
+        int firstComma = argumentString.indexOf(',');
+
+        // if next argument is a string or contains a string return immediately
+        if (firstQuote >= 0 && firstQuote < firstComma) {
+            System.out.println("next argument contains quotes: " + argumentString);
+            return argumentString.substring(0, argumentString.indexOf("\"", firstQuote+1)+1);
+        }
+
+        int pos = firstComma;
         if (pos > 0) {
             String nextArgument = argumentString.substring(0, pos);
             while (pos > 0 && !matchingBrackets(nextArgument)) {

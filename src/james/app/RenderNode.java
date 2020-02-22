@@ -1,5 +1,6 @@
 package james.app;
 
+import james.TimeTree;
 import james.graphicalModel.*;
 import james.graphicalModel.types.*;
 
@@ -69,7 +70,7 @@ public class RenderNode<T> {
 
             Object obj = value.value();
 
-            if (obj instanceof Double[] || obj instanceof Double[][] || obj instanceof Integer[] || obj instanceof Integer[][]) {
+            if (obj instanceof TimeTree || obj instanceof Double[] || obj instanceof Double[][] || obj instanceof Integer[] || obj instanceof Integer[][]) {
                 str = "<b>" + str + "</b>";
             }
             return "<html><center><p>" + str + "</p></center></html>";
@@ -87,7 +88,7 @@ public class RenderNode<T> {
         String valueString;
         if (v instanceof DoubleValue) {
             valueString = format.format(((DoubleValue) v).value());
-        } else if (value instanceof Integer[] || value instanceof Double[] || value instanceof Double[][] || value instanceof Integer[][]) {
+        } else if (tooLarge(value)) {
             if (name.length() < 5) {
                 return "<html><center><p><font color=\"#808080\" ><b>" + name + "</b></p></font></center></html>";
             } else {
@@ -100,6 +101,9 @@ public class RenderNode<T> {
         return "<html><center><p><small><font color=\"#808080\" >" + name + "</p></font></small><p>" + valueString + "</p></center></html>";
     }
 
+    private boolean tooLarge(Object v) {
+        return (v instanceof TimeTree || v instanceof Integer[] || v instanceof Double[] || v instanceof Double[][] || v instanceof Integer[][] || v.toString().length()>10);
+    }
 
     private void createValueButton() {
         Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);

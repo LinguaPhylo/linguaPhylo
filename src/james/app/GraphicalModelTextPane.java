@@ -20,6 +20,9 @@ public class GraphicalModelTextPane extends JTextPane {
         for (String line : parser.getLines() ) {
             addLine(line);
         }
+        if (parser.getLines().size() == 0) {
+            setPreferredSize(new Dimension(1,200));
+        }
     }
 
     void addLine(String line) {

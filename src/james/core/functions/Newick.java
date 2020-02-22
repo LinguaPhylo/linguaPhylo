@@ -26,10 +26,10 @@ public class Newick extends DeterministicFunction<TimeTree> {
     @FunctionInfo(name="newick",description = "A function that parses a tree from a newick formatted string.")
     public Value<TimeTree> apply() {
         Value<String> newickValue = (Value<String>)getParams().get(paramName);
-        
+
         TimeTree tree = parseNewick(newickValue.value());
-        
-        return new Value<>("treeparser " + newickValue.getId(), tree, this);
+
+        return new Value<>("newick " + newickValue.getId(), tree, this);
     }
 
     private TimeTree parseNewick(String newick) {

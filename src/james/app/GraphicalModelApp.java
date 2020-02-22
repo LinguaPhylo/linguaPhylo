@@ -58,31 +58,31 @@ public class GraphicalModelApp {
 //            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
 //            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
-//    static String[] lines = {
-//            "L = 50;",
-//            "μ = 0.01;",
-//            "lM = 3.0;",
-//            "lS = 1.0;",
-//            "alpha = 0.01;",
-//            "beta = 0.01;",
-//            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
-//            "Q = binaryCTMC(lambda=lambda);",
-//            "mytree = \"((A:1,B:1):1,(C:0.5, D:0.5):1.5):0.0;\";",
-//            "ψ = newick(str=mytree);",
-//            "ncat = 4;",
-//            "shape = 0.75;",
-//            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-//            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
-//            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
+    static String[] errorModel1ExampleCode = {
+            "L = 50;",
+            "μ = 0.01;",
+            "lM = 3.0;",
+            "lS = 1.0;",
+            "alpha = 0.01;",
+            "beta = 0.01;",
+            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
+            "Q = binaryRateMatrix(lambda=lambda);",
+            "ψ = newick(\"((A:1,B:1):1,(C:0.5, D:0.5):1.5):0.0;\");",
+            "ncat = 4;",
+            "shape = 0.75;",
+            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
+            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
 
-    static String[] lines = {
+    static String[] errorModel2ExampleCode = {
             "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
             "ψ ~ Yule(birthRate=10.0, n=100);",
             "Q=binaryRateMatrix(lambda=λ);",
             "S ~ PhyloCTMC(L=1000, Q=Q, tree=ψ);",
             "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);",
-            "sample(1000);",
-            "quit();"};
+//            "sample(1000);",
+//            "quit();"
+    };
 
     GraphicalModelParser parser = new GraphicalModelParser();
     GraphicalModelPanel panel = null;
@@ -96,35 +96,58 @@ public class GraphicalModelApp {
         panel = new GraphicalModelPanel(parser);
 
         JMenuBar menuBar;
-        JMenu menu;
+        JMenu fileMenu;
 
         //Create the menu bar.
         menuBar = new JMenuBar();
 
         //Build the first menu.
-        menu = new JMenu("File");
-        menu.setMnemonic(KeyEvent.VK_F);
-        menuBar.add(menu);
+        fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        menuBar.add(fileMenu);
 
         JMenuItem openMenuItem = new JMenuItem("Open Script...");
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
 
-        menu.add(openMenuItem);
+        fileMenu.add(openMenuItem);
 
         JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
-        menu.add(saveAsMenuItem);
+        fileMenu.add(saveAsMenuItem);
 
         JMenuItem saveLogAsMenuItem = new JMenuItem("Save Log to File...");
-        menu.add(saveLogAsMenuItem);
+        fileMenu.add(saveLogAsMenuItem);
 
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree Log to File...");
-        menu.add(saveTreeLogAsMenuItem);
+        fileMenu.add(saveTreeLogAsMenuItem);
 
-        menu.addSeparator();
+        fileMenu.addSeparator();
 
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
+        fileMenu.add(exportGraphvizMenuItem);
+        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getRoots()))));
+
+        //Build the example menu.
+        JMenu exampleMenu = new JMenu("Examples");
+        exampleMenu.setMnemonic(KeyEvent.VK_X);
+        fileMenu.addSeparator();
+        fileMenu.add(exampleMenu);
+
+        JMenuItem errorModelExample = new JMenuItem("Error Model 1");
+        errorModelExample.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MASK));
+        exampleMenu.add(errorModelExample);
+        errorModelExample.addActionListener(e -> {
+            parser.clear();
+            source(errorModel1ExampleCode);
+        });
+
+        JMenuItem errorModel2Example = new JMenuItem("Error Model 2");
+        exampleMenu.add(errorModel2Example);
+        errorModel2Example.addActionListener(e -> {
+            parser.clear();
+            source(errorModel2ExampleCode);
+        });
 
 
         //Build the second menu.
@@ -148,21 +171,15 @@ public class GraphicalModelApp {
         viewMenu.add(showErrorsInErrorAlignmentView);
 
 
-        menu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getRoots()))));
-
-        parser.parseLines(lines);
-
         frame = new JFrame("Phylogenetic Graphical Models");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(dim.width*8/10, dim.height*8/10);
+        frame.setSize(dim.width * 8 / 10, dim.height * 8 / 10);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
-
 
 
         openMenuItem.addActionListener(e -> {
@@ -180,11 +197,24 @@ public class GraphicalModelApp {
 
         saveAsMenuItem.addActionListener(e -> saveToFile(parser.getCanonicalScript()));
         showArgumentLabels.addActionListener(e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
-        showTreeInAlignmentView.addActionListener(e -> {AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState(); panel.repaint();});
-        showErrorsInErrorAlignmentView.addActionListener(e -> {AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState(); panel.repaint();});
+        showTreeInAlignmentView.addActionListener(e -> {
+            AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState();
+            panel.repaint();
+        });
+        showErrorsInErrorAlignmentView.addActionListener(e -> {
+            AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState();
+            panel.repaint();
+        });
 
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
-        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText())); }
+        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText()));
+    }
+
+    private void source(String[] source) {
+        for (int i =0; i < source.length; i++) {
+            panel.interpreter.interpretInput(source[i]);
+        }
+    }
 
     private void initParser() {
 
@@ -197,7 +227,7 @@ public class GraphicalModelApp {
             public void execute(Map<String, Value> params) {
                 Value val = params.values().iterator().next();
                 if (val.value() instanceof Integer) {
-                    panel.sample((Integer)val.value());
+                    panel.sample((Integer) val.value());
                 }
             }
         };

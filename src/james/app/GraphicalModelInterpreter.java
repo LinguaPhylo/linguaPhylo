@@ -163,12 +163,12 @@ public class GraphicalModelInterpreter extends JPanel {
 
     public void interpretInput(String input) {
 
-        String[] lines = input.split(";");
+        // split on ; that are not in string
+        String[] lines = input.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
         for (String line : lines) {
             line = line.trim();
             if (line != "") {
-
 
                 if (line.charAt(line.length() - 1) != ';') {
                     line = line + ";";

@@ -136,8 +136,11 @@ public class TimeTreeNode {
             leafNodes.add(this);
         }
 
-        for (TimeTreeNode child : children)
-            child.getAllLeafNodes(leafNodes);
+        if (!isLeaf()) {
+            for (TimeTreeNode child : children) {
+                child.getAllLeafNodes(leafNodes);
+            }
+        }
     }
 
     /**
