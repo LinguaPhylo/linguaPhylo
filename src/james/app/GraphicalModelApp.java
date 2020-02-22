@@ -42,9 +42,9 @@ public class GraphicalModelApp {
             "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
             "r ~ Dirichlet(concentration=α_r);",
             "freq ~ Dirichlet(concentration=α);",
-            "L = 50;",
+            "L = 200;",
             "μ = 0.01;",
-            "n = 20;",
+            "n = 16;",
             "M = 3.0;",
             "S = 1.0;",
             "Θ ~ LogNormal(meanlog=M, sdlog=S);",
@@ -52,10 +52,7 @@ public class GraphicalModelApp {
             "ψ ~ Coalescent(n=n, theta=Θ);",
             "y0 = 0.0;",
             "σ2 = 0.01;",
-            "ncat = 4;",
-            "shape = 0.75;",
-            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+            "D ~ PhyloCTMC(L=L, mu=μ, Q=Q, tree=ψ);",
             "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
     static String[] errorModel1ExampleCode = {

@@ -105,13 +105,9 @@ public class GraphicalModelParser {
                 }
 
                 @Override
-                public void visitGenDist(GenerativeDistribution genDist) {
+                public void visitGenDist(GenerativeDistribution genDist) {}
 
-                }
-
-                public void visitFunction(DeterministicFunction f) {
-
-                }
+                public void visitFunction(DeterministicFunction f) {}
             }, true);
         }
         return builder.toString();
@@ -724,6 +720,11 @@ public class GraphicalModelParser {
         return lines;
     }
 
+    /**
+     * Sample the current model
+     * @param reps the number of times to sample
+     * @param loggers the loggers to log to
+     */
     public void sample(int reps, RandomVariableLogger[] loggers) {
 
         for (int i = 0; i < reps; i++) {

@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 import static james.app.Utils.MAX_FONT_SIZE;
+import static james.app.Utils.MIN_FONT_SIZE;
 
 /**
  * @author Alexei Drummond
@@ -55,8 +56,12 @@ public class TimeTreeComponent extends JComponent {
 
         int maximumWidth = desktopWidth;
         int maximumHeight = MAX_FONT_SIZE*tree.n();
+        int minimumWidth = 100;
+        int minimumHeight = MIN_FONT_SIZE*tree.n();
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
+        setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+        //setPreferredSize(new Dimension(minimumWidth+maximumWidth/2, (minimumHeight+maximumHeight)/2));
     }
 
     public void setBorder(Border border) {

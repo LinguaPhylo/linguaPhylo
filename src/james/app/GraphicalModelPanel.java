@@ -136,9 +136,9 @@ public class GraphicalModelPanel extends JPanel {
         if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
             id = ((Value)displayedElement).getId();
         }
-        //parser.sample(reps, new RandomVariableLogger[] {log, treeLog});
-        parser.sample(reps, null);
-        if (id != null && parser.genDistDictionary.get(id) != null) {
+        parser.sample(reps, new RandomVariableLogger[] {log, treeLog});
+        //parser.sample(reps, null);
+        if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));
         } else {
             showValue(parser.getRoots().iterator().next());
@@ -169,7 +169,7 @@ public class GraphicalModelPanel extends JPanel {
 
         JComponent viewer = getViewer(obj);
 
-        if (viewer.getPreferredSize().height > 1) {
+        if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof DoubleArray2DEditor) {
             JPanel viewerPanel = new JPanel();
             viewerPanel.setOpaque(false);
             viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

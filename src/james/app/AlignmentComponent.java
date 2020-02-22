@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
 import static james.app.Utils.MAX_FONT_SIZE;
+import static james.app.Utils.MIN_FONT_SIZE;
 
 public class AlignmentComponent extends JComponent {
 
@@ -64,8 +65,11 @@ public class AlignmentComponent extends JComponent {
 
         int maximumWidth = Math.min(desktopWidth,MAX_FONT_SIZE*alignment.L());
         int maximumHeight = MAX_FONT_SIZE*alignment.n();
+        int minimumHeight = MIN_FONT_SIZE*alignment.n();
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
+        setMinimumSize(new Dimension(100, minimumHeight));
+
     }
 
     public void paintComponent(Graphics g) {
