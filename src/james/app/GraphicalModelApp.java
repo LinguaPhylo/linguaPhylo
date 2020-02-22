@@ -37,26 +37,26 @@ public class GraphicalModelApp {
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-//    static String[] lines = {
-//            "α = [5.0,5.0,5.0,5.0];",
-//            "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-//            "r ~ Dirichlet(concentration=α_r);",
-//            "freq ~ Dirichlet(concentration=α);",
-//            "L = 50;",
-//            "μ = 0.01;",
-//            "n = 20;",
-//            "M = 3.0;",
-//            "S = 1.0;",
-//            "Θ ~ LogNormal(meanlog=M, sdlog=S);",
-//            "Q = gtr(rates=r, freq=freq);",
-//            "ψ ~ Coalescent(n=n, theta=Θ);",
-//            "y0 = 0.0;",
-//            "σ2 = 0.01;",
-//            "ncat = 4;",
-//            "shape = 0.75;",
-//            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-//            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
-//            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
+    static String[] totalEvidenceExample = {
+            "α = [5.0,5.0,5.0,5.0];",
+            "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
+            "r ~ Dirichlet(concentration=α_r);",
+            "freq ~ Dirichlet(concentration=α);",
+            "L = 50;",
+            "μ = 0.01;",
+            "n = 20;",
+            "M = 3.0;",
+            "S = 1.0;",
+            "Θ ~ LogNormal(meanlog=M, sdlog=S);",
+            "Q = gtr(rates=r, freq=freq);",
+            "ψ ~ Coalescent(n=n, theta=Θ);",
+            "y0 = 0.0;",
+            "σ2 = 0.01;",
+            "ncat = 4;",
+            "shape = 0.75;",
+            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
+            "D ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
+            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
 
     static String[] errorModel1ExampleCode = {
             "L = 50;",
@@ -134,8 +134,14 @@ public class GraphicalModelApp {
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
 
+        JMenuItem totalEvidenceExampleItem = new JMenuItem("Total Evidence");
+        exampleMenu.add(totalEvidenceExampleItem);
+        totalEvidenceExampleItem.addActionListener(e -> {
+            parser.clear();
+            source(totalEvidenceExample);
+        });
+
         JMenuItem errorModelExample = new JMenuItem("Error Model 1");
-        errorModelExample.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MASK));
         exampleMenu.add(errorModelExample);
         errorModelExample.addActionListener(e -> {
             parser.clear();
@@ -143,6 +149,7 @@ public class GraphicalModelApp {
         });
 
         JMenuItem errorModel2Example = new JMenuItem("Error Model 2");
+        errorModel2Example.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MASK));
         exampleMenu.add(errorModel2Example);
         errorModel2Example.addActionListener(e -> {
             parser.clear();

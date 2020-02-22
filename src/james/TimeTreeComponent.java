@@ -1,5 +1,7 @@
 package james;
 
+import james.app.AlignmentComponent;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -7,6 +9,8 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.text.NumberFormat;
 import java.util.*;
+
+import static james.app.Utils.MAX_FONT_SIZE;
 
 /**
  * @author Alexei Drummond
@@ -47,6 +51,17 @@ public class TimeTreeComponent extends JComponent {
         this();
 
         setTimeTree(tree);
+        int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+
+        int maximumWidth = desktopWidth;
+        int maximumHeight = MAX_FONT_SIZE*tree.n();
+
+        setMaximumSize(new Dimension(maximumWidth, maximumHeight));
+    }
+
+    public void setBorder(Border border) {
+        super.setBorder(border);
+        borderSet = true;
     }
 
     public void setTimeTree(TimeTree timeTree) {
@@ -318,8 +333,6 @@ public class TimeTreeComponent extends JComponent {
                 }
             }
             setBorder(BorderFactory.createEmptyBorder(metrics.getHeight()/2+1,1,metrics.getHeight()/2+1,maxWidth));
-            borderSet = true;
-
         }
 
         Insets insets = getInsets();

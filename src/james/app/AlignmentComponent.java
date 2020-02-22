@@ -15,6 +15,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
+import static james.app.Utils.MAX_FONT_SIZE;
+
 public class AlignmentComponent extends JComponent {
 
     public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.black, Color.green};
@@ -44,7 +46,6 @@ public class AlignmentComponent extends JComponent {
                 timeTree = ((PhyloCTMC) gen).getParams().get("tree");
             }
         }
-        //timeTree = null;
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -58,6 +59,13 @@ public class AlignmentComponent extends JComponent {
                 repaint();
             }
         });
+
+        int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+
+        int maximumWidth = Math.min(desktopWidth,MAX_FONT_SIZE*alignment.L());
+        int maximumHeight = MAX_FONT_SIZE*alignment.n();
+
+        setMaximumSize(new Dimension(maximumWidth, maximumHeight));
     }
 
     public void paintComponent(Graphics g) {
@@ -94,7 +102,7 @@ public class AlignmentComponent extends JComponent {
             g.translate(0, ytrans);
 
             TimeTreeComponent treeComponent = new TimeTreeComponent(timeTree.value());
-            treeComponent.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            treeComponent.setBorder(BorderFactory.createEmptyBorder(1,1,1,0));
             treeComponent.setSize(width/2, treeHeight);
             treeComponent.paintComponent(g);
             width /= 2;

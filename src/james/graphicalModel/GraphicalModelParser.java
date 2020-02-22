@@ -728,7 +728,11 @@ public class GraphicalModelParser {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
-            for (Value value : getRoots()) {
+            Set<Value> roots = getRoots();
+            for (RandomVariable var : getAllVariablesFromRoots()) {
+                dictionary.remove(var.getId());
+            }
+            for (Value value : roots) {
 
                 if (value instanceof RandomVariable) {
                     RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
@@ -786,17 +790,20 @@ public class GraphicalModelParser {
         Map<String, Value> newlySampledParams = new TreeMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
 
-            if (e.getValue().isAnonymous() || !sampled.contains(e.getValue().getId())) {
+            Value val = e.getValue();
+
+            if (val.isAnonymous() || !sampled.contains(val.getId())) {
                 // needs to be sampled
 
-                if (e.getValue() instanceof RandomVariable) {
+                if (val instanceof RandomVariable) {
                     RandomVariable v = (RandomVariable) e.getValue();
 
                     RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
                     nv.setId(v.getId());
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToDictionary(nv);
-                } else if (e.getValue().getFunction() != null) {
+                    sampled.add(v.getId());
+                } else if (val.getFunction() != null) {
                     Value v = e.getValue();
                     DeterministicFunction f = e.getValue().getFunction();
 
@@ -804,8 +811,10 @@ public class GraphicalModelParser {
                     nv.setId(v.getId());
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToDictionary(nv);
+                    sampled.add(v.getId());
                 }
             } else {
+                // get the already sampled one
                 String id = e.getValue().getId();
                 newlySampledParams.put(e.getKey(), dictionary.get(id));
             }

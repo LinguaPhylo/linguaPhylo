@@ -109,10 +109,16 @@ public class GraphicalModelPanel extends JPanel {
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+        JScrollPane valueScrollPane = new JScrollPane(new StatePanel(parser, true, false, false));
+        valueScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true, false));
+        variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", currentSelectionContainer);
-        rightPane.addTab("Values", new StatePanel(parser, true, false, false));
-        rightPane.addTab("Variables", new StatePanel(parser, false, true, false));
+        rightPane.addTab("Values", valueScrollPane);
+        rightPane.addTab("Variables", variablesScrollPane);
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         rightPane.addTab("Log", new JScrollPane(log));
         rightPane.addTab("Trees", new JScrollPane(treeLog));
