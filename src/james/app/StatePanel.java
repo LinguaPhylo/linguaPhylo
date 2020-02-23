@@ -17,21 +17,16 @@ public class StatePanel extends JPanel {
     List<JComponent> editors = new ArrayList<>();
     GroupLayout layout = new GroupLayout(this);
 
-    boolean includeRandomVariables = true;
+    boolean includeRandomValues = true;
     boolean includeFixedValues = true;
-    boolean includeFunctionValues = false;
 
-    public StatePanel(GraphicalModelParser parser, boolean includeFixedValues, boolean includeRandomVariables, boolean includeFunctionValues) {
+    public StatePanel(GraphicalModelParser parser, boolean includeFixedValues, boolean includeRandomValues) {
         this.parser = parser;
 
         this.includeFixedValues = includeFixedValues;
-        this.includeFunctionValues = includeFunctionValues;
-        this.includeRandomVariables = includeRandomVariables;
+        this.includeRandomValues = includeRandomValues;
 
         setLayout(layout);
-
-        //layout.setAutoCreateGaps(true);
-        //layout.setAutoCreateContainerGaps(true);
 
         generateComponents();
 
@@ -47,7 +42,7 @@ public class StatePanel extends JPanel {
         ;
 
         for (Value value : parser.getAllValuesFromRoots()) {
-            if (((value instanceof RandomVariable) && includeRandomVariables) || (value.getFunction() != null && includeFunctionValues) || (isFixedValue(value) && includeFixedValues)) {
+            if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);
                 labels.add(label);

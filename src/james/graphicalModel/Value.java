@@ -101,6 +101,13 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         return function;
     }
 
+    /**
+     * @return true if this value is a random variable, or the function of a random value.
+     */
+    public boolean isRandom() {
+        return (this instanceof RandomVariable) || (function != null && function.hasRandomParameters());
+    }
+
     public void addValueListener(ValueListener listener) {
         listeners.add(listener);
     }

@@ -19,16 +19,23 @@ public class RenderNodePool {
     RenderNode rootNode = null;
 
     GraphicalModelParser parser;
+    private boolean showAllNodes = true;
 
-    public RenderNodePool(GraphicalModelParser parser) {
+    public RenderNodePool(GraphicalModelParser parser, boolean showAllNodes) {
         this.parser = parser;
+        this.showAllNodes = showAllNodes;
         rootNode = new RenderNode("A dummy root to group actual root nodes! This node will node be rendered!", null);
         rootNode.level = 0;
         addNode(rootNode);
     }
 
     public void addRoot(Value v) {
-        rootNode.inputs.add(createRenderNode(v, rootNode));
+
+        RenderNode renderNode = createRenderNode(v, rootNode);
+
+        if (renderNode != null) {
+            rootNode.inputs.add(renderNode);
+        }
     }
 
     private void addNode(RenderNode node) {
@@ -75,8 +82,6 @@ public class RenderNodePool {
 
         lastWidth = width;
         lastHeight = height;
-
-        Set<RenderNode> located = new HashSet<>();
 
         int maxLevel = 0;
         for (RenderNode node : pool.values()) {
@@ -211,27 +216,29 @@ public class RenderNodePool {
         RenderNode<Value> node = pool.get(value);
         boolean newNode = (node == null);
 
-        if (newNode) {
+        if (newNode && (value.isRandom() || showAllNodes)) {
             node = new RenderNode<>(value, parser);
         }
 
-        if (parentNode != null && !node.outputs.contains(parentNode)) {
-            node.addOutput(parentNode);
-        }
-        node.setLevel();
-
-        if (newNode) {
-            addNode(node);
-            Parameterized child;
-            if (value instanceof RandomVariable) {
-                child = ((RandomVariable) value).getGenerativeDistribution();
-            } else {
-                child = value.getFunction();
+        if (node != null) {
+            if (parentNode != null && !node.outputs.contains(parentNode)) {
+                node.addOutput(parentNode);
             }
+            node.setLevel();
 
-            if (child != null) {
-                RenderNode<Parameterized> childNode = createRenderNode(child, node);
-                node.inputs.add(childNode);
+            if (newNode) {
+                addNode(node);
+                Parameterized child;
+                if (value instanceof RandomVariable) {
+                    child = ((RandomVariable) value).getGenerativeDistribution();
+                } else {
+                    child = value.getFunction();
+                }
+
+                if (child != null) {
+                    RenderNode<Parameterized> childNode = createRenderNode(child, node);
+                    if (childNode != null) node.inputs.add(childNode);
+                }
             }
         }
 
@@ -250,7 +257,7 @@ public class RenderNodePool {
             for (String key : params.keySet()) {
 
                 RenderNode<Value> child = createRenderNode(params.get(key), node);
-                node.inputs.add(child);
+                if (child != null) node.inputs.add(child);
             }
         }
         return node;

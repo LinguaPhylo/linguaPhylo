@@ -5,6 +5,7 @@ import james.graphicalModel.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,6 +28,7 @@ public class GraphicalModelPanel extends JPanel {
     JButton sampleButton = new JButton("Sample");
     JButton shiftLeftButton = new JButton("<");
     JButton shiftRightButton = new JButton(">");
+    JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;
@@ -46,10 +48,18 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(sampleButton);
         buttonPanel.add(shiftLeftButton);
         buttonPanel.add(shiftRightButton);
+        buttonPanel.add(showNonRandomValues);
 
         sampleButton.addActionListener(e -> sample(1));
         shiftLeftButton.addActionListener(e -> component.shiftLeft());
         shiftRightButton.addActionListener(e -> component.shiftRight());
+
+        showNonRandomValues.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                component.setShowNonRandomValues(showNonRandomValues.isSelected());
+            }
+        });
 
         component = new GraphicalModelComponent(parser);
         JPanel panel = new JPanel();
@@ -113,9 +123,9 @@ public class GraphicalModelPanel extends JPanel {
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        JScrollPane valueScrollPane = new JScrollPane(new StatePanel(parser, true, false, false));
+        JScrollPane valueScrollPane = new JScrollPane(new StatePanel(parser, true, false));
         valueScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        JScrollPane variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true, false));
+        JScrollPane variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true));
         variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         rightPane = new JTabbedPane();

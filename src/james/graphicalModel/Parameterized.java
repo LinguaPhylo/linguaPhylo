@@ -116,4 +116,14 @@ public interface Parameterized extends GraphicalModelNode {
         return entry.getValue().getId();
     }
 
+    /**
+     * @return true if any of the parameters are random variables,
+     * or are themselves that result of a function with random parameters as arguments.
+     */
+    default boolean hasRandomParameters() {
+        for (Value v : getParams().values()) {
+            if (v.isRandom()) return true;
+        }
+        return false;
+    }
 }

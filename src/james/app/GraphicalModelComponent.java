@@ -32,6 +32,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     boolean sizeChanged = true;
     boolean showArgumentLabels = false;
+    boolean showNonRandomValues = false;
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -71,7 +72,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        pool = new RenderNodePool(parser);
+        pool = new RenderNodePool(parser, showNonRandomValues);
 
         for (Value val : parser.getRoots()) {
             pool.addRoot(val);
@@ -207,6 +208,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     @Override
     public void modelChanged() {
+        setup();
+        repaint();
+    }
+
+    public void setShowNonRandomValues(boolean showNonRandomValues) {
+        this.showNonRandomValues = showNonRandomValues;
         setup();
         repaint();
     }

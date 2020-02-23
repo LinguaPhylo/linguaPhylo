@@ -1,7 +1,5 @@
 package james.app;
 
-import org.apache.commons.math3.linear.RealMatrix;
-
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -28,11 +26,8 @@ public class DoubleArray2DEditor extends JPanel {
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
 
-        if (editable) {
-            textFields = new JTextField[rowCount][colCount];
-        } else {
-            labels = new JLabel[rowCount][colCount];
-        }
+        textFields = new JTextField[rowCount][colCount];
+        labels = new JLabel[rowCount][colCount];
 
         GridLayout gridLayout = new GridLayout(rowCount, colCount);
         gridLayout.setHgap(GAP);
@@ -42,19 +37,26 @@ public class DoubleArray2DEditor extends JPanel {
 
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
+                textFields[i][j] = new JTextField(Double.toString(matrix[i][j]), 8);
+                labels[i][j] = new JLabel(format.format(matrix[i][j]));
+                labels[i][j].setHorizontalAlignment(SwingConstants.RIGHT);
                 if (editable) {
-                    textFields[i][j] = new JTextField(Double.toString(matrix[i][j]), 8);
                     add(textFields[i][j]);
 
                 } else {
-                    labels[i][j] = new JLabel(format.format(matrix[i][j]));
-                    labels[i][j].setHorizontalAlignment(SwingConstants.RIGHT);
                     add(labels[i][j]);
                 }
-
             }
-
         }
+
+        Dimension preferredElementSize = labels[0][0].getPreferredSize();
+
+        int maxWidth = preferredElementSize.width*colCount + GAP * (colCount+1);
+        int maxHeight = preferredElementSize.height*rowCount + GAP * (rowCount+1);
+
+        setMaximumSize(new Dimension(maxWidth, maxHeight));
+        System.out.println("Max size = " + maxWidth + ", " + maxHeight);
+
     }
 
     public void paintComponent(Graphics g) {

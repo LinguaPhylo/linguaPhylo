@@ -95,9 +95,4 @@ public abstract class Func implements Parameterized, Viewable {
         builder.append(")");
         return builder.toString();
     }
-
-    public void print(PrintWriter p) {
-        p.print(codeString());
-    }
-
 }

@@ -781,53 +781,39 @@ public class GraphicalModelParser {
 
             Value val = e.getValue();
 
-            if (val.isAnonymous() || !sampled.contains(val.getId())) {
-                // needs to be sampled
+            if (val.isRandom()) {
+                if (!sampled.contains(val.getId())) {
+                    // needs to be sampled
 
-                if (val instanceof RandomVariable) {
-                    RandomVariable v = (RandomVariable) e.getValue();
+                    if (val instanceof RandomVariable) {
+                        RandomVariable v = (RandomVariable) e.getValue();
 
-                    RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
-                    nv.setId(v.getId());
-                    newlySampledParams.put(e.getKey(), nv);
-                    addValueToDictionary(nv);
-                    sampled.add(v.getId());
-                } else if (val.getFunction() != null) {
-                    Value v = e.getValue();
-                    DeterministicFunction f = e.getValue().getFunction();
+                        RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
+                        nv.setId(v.getId());
+                        newlySampledParams.put(e.getKey(), nv);
+                        addValueToDictionary(nv);
+                        sampled.add(v.getId());
+                    } else {
+                        Value v = e.getValue();
+                        DeterministicFunction f = e.getValue().getFunction();
 
-                    Value nv = sampleAll(f, sampled);
-                    nv.setId(v.getId());
-                    newlySampledParams.put(e.getKey(), nv);
-                    addValueToDictionary(nv);
-                    if (!v.isAnonymous()) sampled.add(v.getId());
+                        Value nv = sampleAll(f, sampled);
+                        nv.setId(v.getId());
+                        newlySampledParams.put(e.getKey(), nv);
+                        addValueToDictionary(nv);
+                        if (!v.isAnonymous()) sampled.add(v.getId());
+                    }
+                } else {
+                    // already been sampled
+                    String id = e.getValue().getId();
+                    newlySampledParams.put(e.getKey(), dictionary.get(id));
                 }
-            } else {
-                // get the already sampled one
-                String id = e.getValue().getId();
-                newlySampledParams.put(e.getKey(), dictionary.get(id));
             }
         }
         return newlySampledParams;
     }
 
     public static void main(String[] args) {
-//        String[] lines = {
-//                "kappa = 10.0;",
-//                "L = 50;",
-//                "mu = 0.01;",
-//                "n = 20;",
-//                "mean = 3.0;",
-//                "sd = 1.0;",
-//                "logTheta ~ Normal(mean=mean, sd=sd);",
-//                "Θ = exp(logTheta);",
-//                "Q = k80(kappa=kappa);",
-//                "ψ ~ Coalescent(n=n, theta=Θ);",
-//                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
-//
-//        GraphicalModelParser parser = new GraphicalModelParser();
-//        parser.parseLines(lines);
-//        System.out.println(parser.dictionary);
 
         GraphicalModelParser parser = new GraphicalModelParser();
 

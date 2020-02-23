@@ -2,8 +2,6 @@ package james.core.functions;
 
 import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleArray2DValue;
-import james.graphicalModel.types.MatrixValue;
-import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * Created by adru001 on 2/02/20.
