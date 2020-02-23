@@ -612,6 +612,8 @@ public class GraphicalModelParser {
 
     private String[] parseArguments(String argumentString) {
 
+        if (argumentString.length() == 0) return new String[] {};
+
         String argumentSplitterPattern =
                 ",(?=(([^']*'){2})*[^']*$)(?=(([^\"]*\"){2})*[^\"]*$)(?![^()]*\\))(?![^\\[]*\\])";
 
@@ -624,7 +626,10 @@ public class GraphicalModelParser {
 
         TreeMap<String, Value> arguments = new TreeMap<>();
         int argumentCount = 0;
-        for (String argumentPair : argumentStrings) {
+        for (int i = 0; i < argumentStrings.length; i++) {
+
+            String argumentPair = argumentStrings[i];
+            System.out.println("arg" + i + ": " + argumentPair);
 
             if (argumentPair.indexOf('=') < 0) {
                 argumentPair = argumentCount + "=" + argumentPair;
@@ -795,7 +800,7 @@ public class GraphicalModelParser {
                     nv.setId(v.getId());
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToDictionary(nv);
-                    sampled.add(v.getId());
+                    if (!v.isAnonymous()) sampled.add(v.getId());
                 }
             } else {
                 // get the already sampled one

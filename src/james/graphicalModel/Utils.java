@@ -11,7 +11,7 @@ public class Utils {
     public static DecimalFormat FORMAT = new DecimalFormat();
 
     static {
-        FORMAT.setMaximumFractionDigits(8);
+        FORMAT.setMaximumFractionDigits(6);
     }
     
     public static String toGraphvizDot(Collection<GraphicalModelNode> nodes) {

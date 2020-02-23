@@ -1,6 +1,8 @@
 package james.app;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -18,6 +20,8 @@ public class SquareButton extends JButton {
     public SquareButton(String text, Color backgroundColor, Color borderColor) {
 
         super(text);
+
+        setBorder(new EmptyBorder(0,0,0,0));
 
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;

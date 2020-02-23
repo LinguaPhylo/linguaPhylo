@@ -11,9 +11,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
-public class GraphicalModelApp {
+public class LinguaPhyloStudio {
+
+    private static String APP_NAME = "LinguaPhylo Studio";
+    private static String VERSION = "0.01";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
@@ -37,48 +41,13 @@ public class GraphicalModelApp {
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-    static String[] totalEvidenceExample = {
-            "r ~ Dirichlet(conc=[2.0,4.0,2.0,4.0,2.0,2.0]);",
-            "freq ~ Dirichlet(conc=[5.0,5.0,5.0,5.0]);",
-            "Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
-            "Q = gtr(rates=r, freq=freq);",
-            "ψ ~ Coalescent(n=16, theta=Θ);",
-            "D ~ PhyloCTMC(L=200, mu=0.01, Q=Q, tree=ψ);",
-            "y ~ PhyloBrownian(diffusionRate=0.01, y0=0.0, tree=ψ);"};
-
-    static String[] errorModel1ExampleCode = {
-            "L = 50;",
-            "μ = 0.01;",
-            "lM = 3.0;",
-            "lS = 1.0;",
-            "alpha = 0.01;",
-            "beta = 0.01;",
-            "lambda ~ LogNormal(meanlog=lM, sdlog=lS);",
-            "Q = binaryRateMatrix(lambda=lambda);",
-            "ψ = newick(\"((A:1,B:1):1,(C:0.5, D:0.5):1.5):0.0;\");",
-            "ncat = 4;",
-            "shape = 0.75;",
-            "siteRates ~ DiscretizedGamma(shape=shape, ncat=ncat, reps=L);",
-            "S ~ PhyloCTMC(siteRates=siteRates, mu=μ, Q=Q, tree=ψ);",
-            "D ~ ErrorModel(alpha=alpha, beta=beta, alignment=S);"};
-
-    static String[] errorModel2ExampleCode = {
-            "λ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
-            "ψ ~ Yule(birthRate=10.0, n=100);",
-            "Q=binaryRateMatrix(lambda=λ);",
-            "S ~ PhyloCTMC(L=1000, Q=Q, tree=ψ);",
-            "D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);",
-//            "sample(1000);",
-//            "quit();"
-    };
-
     GraphicalModelParser parser = new GraphicalModelParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
 
     File lastDirectory = null;
 
-    public GraphicalModelApp() {
+    public LinguaPhyloStudio() {
 
         initParser();
         panel = new GraphicalModelPanel(parser);
@@ -122,28 +91,29 @@ public class GraphicalModelApp {
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
 
-        JMenuItem totalEvidenceExampleItem = new JMenuItem("Total Evidence");
-        exampleMenu.add(totalEvidenceExampleItem);
-        totalEvidenceExampleItem.addActionListener(e -> {
-            parser.clear();
-            source(totalEvidenceExample);
-        });
-
-        JMenuItem errorModelExample = new JMenuItem("Error Model 1");
-        exampleMenu.add(errorModelExample);
-        errorModelExample.addActionListener(e -> {
-            parser.clear();
-            source(errorModel1ExampleCode);
-        });
-
-        JMenuItem errorModel2Example = new JMenuItem("Error Model 2");
-        errorModel2Example.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, MASK));
-        exampleMenu.add(errorModel2Example);
-        errorModel2Example.addActionListener(e -> {
-            parser.clear();
-            source(errorModel2ExampleCode);
-        });
-
+        File file = new File("examples");
+        File[] files = file.listFiles();
+        if (files != null) {
+            Arrays.sort(files, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+            for (int i = 0; i < files.length; i++) {
+                String name = files[i].getName();
+                if (files[i].getName().endsWith(".lphy")) {
+                    final File exampleFile = files[i];
+                    JMenuItem exampleItem = new JMenuItem(name.substring(0, name.length() - 5));
+                    exampleMenu.add(exampleItem);
+                    exampleItem.addActionListener(e -> {
+                        BufferedReader reader = null;
+                        try {
+                            reader = new BufferedReader(new FileReader(exampleFile));
+                            parser.clear();
+                            source(reader);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+                }
+            }
+        }
 
         //Build the second menu.
         JMenu viewMenu = new JMenu("View");
@@ -166,11 +136,11 @@ public class GraphicalModelApp {
         viewMenu.add(showErrorsInErrorAlignmentView);
 
 
-        frame = new JFrame("Phylogenetic Graphical Models");
+        frame = new JFrame(APP_NAME + " version " + VERSION);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(dim.width * 8 / 10, dim.height * 8 / 10);
+        frame.setSize(dim.width * 9 / 10, dim.height * 9 / 10);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
 
         frame.setJMenuBar(menuBar);
@@ -205,10 +175,13 @@ public class GraphicalModelApp {
         saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText()));
     }
 
-    private void source(String[] source) {
-        for (int i =0; i < source.length; i++) {
-            panel.interpreter.interpretInput(source[i]);
+    private void source(BufferedReader reader) throws IOException {
+        String line = reader.readLine();
+        while (line != null) {
+            panel.interpreter.interpretInput(line);
+            line = reader.readLine();
         }
+        reader.close();
     }
 
     private void initParser() {
@@ -245,6 +218,7 @@ public class GraphicalModelApp {
             public String getName() {
                 return "clearlog";
             }
+
             public void execute(Map<String, Value> params) {
                 panel.log.clear();
             }
@@ -254,19 +228,30 @@ public class GraphicalModelApp {
             public String getName() {
                 return "cleartrees";
             }
+
             public void execute(Map<String, Value> params) {
                 panel.treeLog.clear();
             }
         });
 
         parser.addCommand(new Command() {
-            public String getName() { return "savelog"; }
-            public void execute(Map<String, Value> params) { saveToFile(panel.log.getText()); }
+            public String getName() {
+                return "savelog";
+            }
+
+            public void execute(Map<String, Value> params) {
+                saveToFile(panel.log.getText());
+            }
         });
 
         parser.addCommand(new Command() {
-            public String getName() { return "savetrees"; }
-            public void execute(Map<String, Value> params) { saveToFile(panel.treeLog.getText()); }
+            public String getName() {
+                return "savetrees";
+            }
+
+            public void execute(Map<String, Value> params) {
+                saveToFile(panel.treeLog.getText());
+            }
         });
     }
 
@@ -299,6 +284,6 @@ public class GraphicalModelApp {
 
     public static void main(String[] args) {
 
-        GraphicalModelApp app = new GraphicalModelApp();
+        LinguaPhyloStudio app = new LinguaPhyloStudio();
     }
 }

@@ -116,6 +116,9 @@ public class GraphicalModelInterpreter extends JPanel {
 
         activeLine.add(label);
         activeLine.add(interpreterField);
+        
+        activeLine.setPreferredSize(new Dimension(2000,interpreterField.getPreferredSize().height));
+        activeLine.setMaximumSize(new Dimension(2000,interpreterField.getPreferredSize().height));
 
         //add(scrollPane);
         //add(activeLine);

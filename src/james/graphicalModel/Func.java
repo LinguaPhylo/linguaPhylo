@@ -81,7 +81,6 @@ public abstract class Func implements Parameterized, Viewable {
         if (iterator.hasNext()) {
             Map.Entry<String, Value> entry = iterator.next();
 
-
             if (getParams().size() == 1) {
                 builder.append(Parameterized.getArgumentValue(entry));
             } else {

@@ -46,7 +46,7 @@ public class HKY extends DeterministicFunction<Double[][]> {
                     } else {
                         Q[i][j] = freqs[j];
                     }
-                }
+                } else Q[i][i] = 0.0;
                 totalRates[i] += Q[i][j];
             }
             Q[i][i] = -totalRates[i];

@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 public class GraphicalModelPanel extends JPanel {
 
@@ -29,7 +28,8 @@ public class GraphicalModelPanel extends JPanel {
     JButton shiftLeftButton = new JButton("<");
     JButton shiftRightButton = new JButton(">");
 
-    JSplitPane splitPane;
+    JSplitPane horizSplitPane;
+    JSplitPane verticalSplitPane;
 
     Object displayedElement;
 
@@ -59,9 +59,15 @@ public class GraphicalModelPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel, dummyLabel);
-        splitPane.setResizeWeight(0.5);
-        add(splitPane, BorderLayout.CENTER);
+        horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel, dummyLabel);
+        horizSplitPane.setResizeWeight(0.5);
+
+        verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreter);
+        verticalSplitPane.setResizeWeight(0.75);
+        add(verticalSplitPane, BorderLayout.CENTER);
+
+        System.out.println("top.preferredSize = " + horizSplitPane.getPreferredSize());
+        System.out.println("bottom.preferredSize = " + interpreter.getPreferredSize());
 
         GraphicalModelListener listener = new GraphicalModelListener() {
             @Override
@@ -103,8 +109,6 @@ public class GraphicalModelPanel extends JPanel {
 
             }
         });
-        
-        add(interpreter, BorderLayout.SOUTH);
 
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -114,7 +118,6 @@ public class GraphicalModelPanel extends JPanel {
         JScrollPane variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true, false));
         variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", currentSelectionContainer);
         rightPane.addTab("Values", valueScrollPane);
@@ -122,7 +125,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         rightPane.addTab("Log", new JScrollPane(log));
         rightPane.addTab("Trees", new JScrollPane(treeLog));
-        splitPane.setRightComponent(rightPane);
+        horizSplitPane.setRightComponent(rightPane);
 
         if (parser.getRoots().size() > 0) {
             showValue(parser.getRoots().iterator().next());

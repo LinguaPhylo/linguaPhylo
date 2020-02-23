@@ -68,7 +68,7 @@ public class CircleButton extends JButton {
     }
 
     @Override
-    public Dimension getPreferredSize(){
+    public Dimension getPreferredSize() {
         FontMetrics metrics = getGraphics().getFontMetrics(getFont());
         int minDiameter = 10 + Math.max(metrics.stringWidth(getText()), metrics.getHeight());
         return new Dimension(minDiameter, minDiameter);

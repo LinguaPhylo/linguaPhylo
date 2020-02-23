@@ -20,15 +20,6 @@ public class RandomVariable<T> extends Value<T> {
         return g;
     }
 
-    public void print(PrintWriter p) {
-        for (Value val : g.getParams().values()) {
-            val.print(p);
-            p.print("\n");
-        }
-
-        p.print(codeString());
-    }
-
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         builder.append(id);

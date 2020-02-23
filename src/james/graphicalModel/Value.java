@@ -43,27 +43,11 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         } else return getId();
     }
 
-    void print(PrintWriter p) {
-        if (function != null) {
-            for (Object val : function.getParams().values()) {
-                ((Value) val).print(p);
-                p.print("\n");
-            }
-
-            p.print(id + " = ");
-            p.print(function.codeString());
-            //p.print(";");
-        } else {
-            p.print(toString() + ";");
-        }
-    }
-
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         if (function != null) {
             if (!isAnonymous()) builder.append(id + " = ");
             builder.append(function.codeString());
-            //p.print(";");
         } else {
             builder.append(toString());
         }

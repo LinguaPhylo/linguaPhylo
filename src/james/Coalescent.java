@@ -132,8 +132,6 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
         RandomVariable<TimeTree> g = coalescent.sample();
 
-        PrintWriter p = new PrintWriter(System.out);
-        g.print(p);
     }
 
     public String toString() {

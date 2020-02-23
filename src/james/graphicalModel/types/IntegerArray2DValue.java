@@ -18,8 +18,8 @@ public class IntegerArray2DValue extends Value<Integer[][]> {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getId());
-        builder.append(" = [");
+        if (!isAnonymous()) builder.append(getId() + " = ");
+        builder.append("[");
         for (int i = 0; i < value().length; i++) {
             builder.append("[");
             builder.append(value()[i][0]);

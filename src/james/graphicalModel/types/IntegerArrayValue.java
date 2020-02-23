@@ -17,6 +17,6 @@ public class IntegerArrayValue extends Value<Integer[]> {
     }
 
     public String toString() {
-        return getId() + " = " + Arrays.toString(value());
+        return (isAnonymous() ? "" : (getId() + " = ")) + Arrays.toString(value());
     }
 }

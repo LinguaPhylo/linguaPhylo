@@ -20,7 +20,7 @@ public class DoubleArrayValue extends Value<Double[]> {
     }
 
     public String toString() {
-        return getId() + " = " + Arrays.toString(value());
+        return (isAnonymous() ? "" : (getId() + " = ")) + Arrays.toString(value());
     }
 
 }
