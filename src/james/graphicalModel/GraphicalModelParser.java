@@ -16,6 +16,7 @@ import james.app.GraphicalModelListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GraphicalModelParser {
@@ -609,15 +610,17 @@ public class GraphicalModelParser {
         return allArguments.containsAll(arguments.keySet());
     }
 
-    private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
-        List<String> argumentStrings = new ArrayList<>();
-        while (argumentString.length() > 0) {
-            String argument = consumeArgument(argumentString, lineNumber);
+    private String[] parseArguments(String argumentString) {
 
-            argumentString = argumentString.substring(argument.length()).trim();
-            if (argumentString.startsWith(",")) argumentString = argumentString.substring(1);
-            argumentStrings.add(argument);
-        }
+        String argumentSplitterPattern =
+                ",(?=(([^']*'){2})*[^']*$)(?=(([^\"]*\"){2})*[^\"]*$)(?![^()]*\\))(?![^\\[]*\\])";
+
+        return argumentString.split(argumentSplitterPattern);
+    }
+
+    private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
+
+        String[] argumentStrings = parseArguments(argumentString);
 
         TreeMap<String, Value> arguments = new TreeMap<>();
         int argumentCount = 0;
@@ -694,26 +697,6 @@ public class GraphicalModelParser {
             return isLiteral(valueString);
 
         } else return false;
-    }
-
-    public static void main(String[] args) {
-        String[] lines = {
-                "kappa = 10.0;",
-                "L = 50;",
-                "mu = 0.01;",
-                "n = 20;",
-                "mean = 3.0;",
-                "sd = 1.0;",
-                "logTheta ~ Normal(mean=mean, sd=sd);",
-                "Θ = exp(logTheta);",
-                "Q = k80(kappa=kappa);",
-                "ψ ~ Coalescent(n=n, theta=Θ);",
-                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
-
-        GraphicalModelParser parser = new GraphicalModelParser();
-        parser.parseLines(lines);
-        System.out.println(parser.dictionary);
-
     }
 
     public List<String> getLines() {
@@ -822,4 +805,35 @@ public class GraphicalModelParser {
         }
         return newlySampledParams;
     }
+
+    public static void main(String[] args) {
+//        String[] lines = {
+//                "kappa = 10.0;",
+//                "L = 50;",
+//                "mu = 0.01;",
+//                "n = 20;",
+//                "mean = 3.0;",
+//                "sd = 1.0;",
+//                "logTheta ~ Normal(mean=mean, sd=sd);",
+//                "Θ = exp(logTheta);",
+//                "Q = k80(kappa=kappa);",
+//                "ψ ~ Coalescent(n=n, theta=Θ);",
+//                "D ~ PhyloCTMC(L=L, mu=mu, Q=Q, tree=ψ);"};
+//
+//        GraphicalModelParser parser = new GraphicalModelParser();
+//        parser.parseLines(lines);
+//        System.out.println(parser.dictionary);
+
+        GraphicalModelParser parser = new GraphicalModelParser();
+
+        String argumentString = "conc=[1,1,1,1],Q=jukesCantor(),label=\"foo,bar\",newick=newick(\"((A,B),C)\")";
+
+        String[] arguments = parser.parseArguments(argumentString);
+
+        for (int i = 0; i < arguments.length; i++) {
+            System.out.println("arg" + i + ": " + arguments[i]);
+        }
+
+    }
+
 }

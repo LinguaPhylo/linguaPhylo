@@ -38,22 +38,13 @@ public class GraphicalModelApp {
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
     static String[] totalEvidenceExample = {
-            "α = [5.0,5.0,5.0,5.0];",
-            "α_r = [2.0,4.0,2.0,4.0,2.0,2.0];",
-            "r ~ Dirichlet(concentration=α_r);",
-            "freq ~ Dirichlet(concentration=α);",
-            "L = 200;",
-            "μ = 0.01;",
-            "n = 16;",
-            "M = 3.0;",
-            "S = 1.0;",
-            "Θ ~ LogNormal(meanlog=M, sdlog=S);",
+            "r ~ Dirichlet(conc=[2.0,4.0,2.0,4.0,2.0,2.0]);",
+            "freq ~ Dirichlet(conc=[5.0,5.0,5.0,5.0]);",
+            "Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);",
             "Q = gtr(rates=r, freq=freq);",
-            "ψ ~ Coalescent(n=n, theta=Θ);",
-            "y0 = 0.0;",
-            "σ2 = 0.01;",
-            "D ~ PhyloCTMC(L=L, mu=μ, Q=Q, tree=ψ);",
-            "y ~ PhyloBrownian(diffusionRate=σ2, y0=y0, tree=ψ);"};
+            "ψ ~ Coalescent(n=16, theta=Θ);",
+            "D ~ PhyloCTMC(L=200, mu=0.01, Q=Q, tree=ψ);",
+            "y ~ PhyloBrownian(diffusionRate=0.01, y0=0.0, tree=ψ);"};
 
     static String[] errorModel1ExampleCode = {
             "L = 50;",
