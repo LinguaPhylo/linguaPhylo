@@ -98,12 +98,28 @@ public class RenderNodePool {
             if (levelWidth > maxLevelWidth) maxLevelWidth = levelWidth;
         }
 
+        double[] minMaxX = {width, 0};
         for (int i = 0; i <= maxLevel; i++) {
-            locate(nodesByLevel.get(i), width, height, i, maxLevelWidth, maxLevel);
+            locate(nodesByLevel.get(i), width, height, i, maxLevelWidth, maxLevel, minMaxX);
+        }
+
+        // this is a hack to partially correct my bad layout algorithm :(
+        double xAdjust = (minMaxX[0] + (width-minMaxX[1])) / 2 - minMaxX[0];
+
+        for (int i = 0; i <= maxLevel; i++) {
+            for (int j = 0; j < nodesByLevel.get(i).size(); j++) {
+                shiftX(nodesByLevel.get(i).get(j), xAdjust);
+            }
         }
     }
 
-    private void locate(List<RenderNode> nodes, int width, int height, int level, int maxNodesAtAnyLevel, int maxLevel) {
+
+    private void shiftX(RenderNode renderNode, double xAdjust) {
+        renderNode.locate(
+                new Point2D.Double(renderNode.point.getX() + xAdjust, renderNode.point.getY()));
+    }
+
+    private void locate(List<RenderNode> nodes, int width, int height, int level, int maxNodesAtAnyLevel, int maxLevel, double[] minMaxX) {
 
         double preferredSpacing = width / (maxNodesAtAnyLevel + 1.0);
 
@@ -134,6 +150,8 @@ public class RenderNodePool {
                 lastX = x;
             }
 
+            if (x < minMaxX[0]) minMaxX[0] = x;
+            if (x > minMaxX[1]) minMaxX[1] = x;
             node.locate(new Point2D.Double(x, y));
         }
     }

@@ -1,0 +1,8 @@
+κ ~ LogNormal(meanlog=1.0, sdlog=0.5);
+freq ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+T ~ Coalescent(n=16, theta=Θ);
+σ2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
+y0 ~ Normal(mean=0.0, sd=1.0);
+D ~ PhyloCTMC(L=200, Q=hky(kappa=κ, freq=freq), tree=T);
+y ~ PhyloBrownian(diffRate=σ2, y0=y0, tree=T);

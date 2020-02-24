@@ -782,7 +782,7 @@ public class GraphicalModelParser {
             Value val = e.getValue();
 
             if (val.isRandom()) {
-                if (!sampled.contains(val.getId())) {
+                if (val.isAnonymous() || !sampled.contains(val.getId())) {
                     // needs to be sampled
 
                     if (val instanceof RandomVariable) {
