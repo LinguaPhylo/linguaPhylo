@@ -1,5 +1,6 @@
 package james.graphicalModel;
 
+import james.BirthDeathTree;
 import james.Coalescent;
 import james.Yule;
 import james.core.ErrorModel;
@@ -40,14 +41,15 @@ public class GraphicalModelParser {
 
         Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
+                ErrorModel.class, BirthDeathTree.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
         for (Class genClass : genClasses) {
             genDistDictionary.put(genClass.getSimpleName(), genClass);
         }
 
-        Class[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                BinaryRateMatrix.class, Newick.class, Rep.class};
+        Class[] functionClasses = {
+                james.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, TN93.class,
+                GTR.class, BinaryRateMatrix.class, Newick.class, Rep.class};
 
         for (Class functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);

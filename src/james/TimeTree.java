@@ -72,11 +72,11 @@ public class TimeTree implements HasComponentView<TimeTree> {
             builder.append(node.id);
         } else {
             builder.append("(");
-            TimeTreeNode[] children = node.getChildren();
-            toNewick(children[0], builder);
-            for (int i = 1; i < children.length; i++) {
+            List<TimeTreeNode> children = node.getChildren();
+            toNewick(children.get(0), builder);
+            for (int i = 1; i < children.size(); i++) {
                 builder.append(",");
-                toNewick(children[i], builder);
+                toNewick(children.get(i), builder);
             }
             builder.append(")");
         }

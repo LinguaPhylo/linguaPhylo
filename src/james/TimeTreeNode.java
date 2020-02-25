@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class TimeTreeNode {
 
-    private TimeTreeNode[] children;
+    private List<TimeTreeNode> children;
     private TimeTreeNode parent = null;
     private int index;
     private int leafIndex;
@@ -27,7 +27,7 @@ public class TimeTreeNode {
 
     public TimeTreeNode(double age, TimeTreeNode[] children) {
         this.age = age;
-        this.children = children;
+        this.children = Arrays.asList(children);
         for (int i = 0; i < children.length; i++) {
             children[i].parent = this;
         }
@@ -38,14 +38,14 @@ public class TimeTreeNode {
     }
 
     public final boolean isLeaf() {
-        return children == null || children.length == 0;
+        return children == null || children.size() == 0;
     }
 
     public final double getAge() {
         return age;
     }
 
-    public TimeTreeNode[] getChildren() {
+    public List<TimeTreeNode> getChildren() {
         return children;
     }
 
@@ -97,15 +97,17 @@ public class TimeTreeNode {
 
     public void addChild(TimeTreeNode child) {
         if (children == null) {
-            children = new TimeTreeNode[] {child};
-        } else {
-            TimeTreeNode[] newChildren = new TimeTreeNode[children.length+1];
-            System.arraycopy(children, 0, newChildren, 0, children.length);
-            newChildren[children.length] = child;
-            children = newChildren;
+            children = new ArrayList<>();
         }
+        children.add(child);
         child.parent = this;
     }
+
+    public void removeChild(TimeTreeNode child) {
+        children.remove(child);
+        child.parent = null;
+    }
+
 
     public final void setAge(double age) {
         this.age = age;
@@ -116,7 +118,7 @@ public class TimeTreeNode {
     }
 
     public final int getChildCount() {
-        return children.length;
+        return children.size();
     }
 
     /**
@@ -154,7 +156,7 @@ public class TimeTreeNode {
             for (TimeTreeNode child : children) {
                 child.sort();
             }
-            Arrays.sort(children,Comparator.comparingInt(o -> o.index));
+            children.sort(Comparator.comparingInt(o -> o.index));
         }
     }
 }

@@ -193,9 +193,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (node.isLeaf()) {
             alignment.setState(node.getLeafIndex(), pos, nodeState);
         } else {
-            TimeTreeNode[] children = node.getChildren();
-            for (int i = 0; i < children.length; i++) {
-                TimeTreeNode child = children[i];
+            List<TimeTreeNode> children = node.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                TimeTreeNode child = children.get(i);
                 double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
 
                 getTransitionProbabilities(branchLength, transProb);

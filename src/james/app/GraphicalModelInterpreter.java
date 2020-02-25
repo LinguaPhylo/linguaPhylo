@@ -171,7 +171,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
         for (String line : lines) {
             line = line.trim();
-            if (line != "") {
+            if (!line.equals("")) {
 
                 if (line.charAt(line.length() - 1) != ';') {
                     line = line + ";";

@@ -43,7 +43,7 @@ public interface NodePositioningRule {
         @Override
         public void setPosition(TimeTreeNode node, String positionLabel) {
 
-            node.setMetaData(positionLabel, node.getChildren()[0].getMetaData(positionLabel));
+            node.setMetaData(positionLabel, node.getChildren().get(0).getMetaData(positionLabel));
         }
     };
 
