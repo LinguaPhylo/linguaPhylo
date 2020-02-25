@@ -3,6 +3,9 @@ package james.parser;
 
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -16,25 +19,17 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import james.Coalescent;
+import james.Yule;
 import james.core.ErrorModel;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
-import james.core.distributions.Dirichlet;
-import james.core.distributions.DiscretizedGamma;
-import james.core.distributions.Exp;
-import james.core.distributions.Gamma;
-import james.core.distributions.LogNormal;
-import james.core.distributions.Normal;
+import james.core.distributions.*;
 import james.core.functions.GTR;
 import james.core.functions.HKY;
 import james.core.functions.JukesCantor;
 import james.core.functions.K80;
 import james.core.functions.Newick;
-import james.graphicalModel.DeterministicFunction;
-import james.graphicalModel.Func;
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerValue;
 import james.parser.SimulatorParser.*;
@@ -57,7 +52,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			
 	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
 	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-	                ErrorModel.class};
+	                ErrorModel.class, Yule.class};
 	
 	        for (Class<?> genClass : genClasses) {
 	            genDistDictionary.put(genClass.getSimpleName(), genClass);
@@ -159,16 +154,16 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			String text = ctx.getText();
 			double d = 0;
 			try {
-				d = Double.parseDouble(text);
-				String id = nextID("DoubleValue");
-				Value<Double> v = new DoubleValue(id, d);
+				d = Long.parseLong(text);
+				String id = nextID("IntegerValue");
+				// TODO: should be a LongValue?
+				Value<Integer> v = new IntegerValue(id, (int) d);
 				return v;
 			} catch (NumberFormatException e) {
 				try {
-					d = Long.parseLong(text);
-					String id = nextID("IntegerValue");
-					// TODO: should be a LongValue?
-					Value<Integer> v = new IntegerValue(id, (int) d);
+					d = Double.parseDouble(text);
+					String id = nextID("DoubleValue");
+					Value<Double> v = new DoubleValue(id, d);
 					return v;
 				} catch (NumberFormatException e2) {
 					int i = Boolean.parseBoolean(text) ? 1 : 0;
@@ -425,7 +420,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 					break;
 				}
 				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-					
+					e.printStackTrace();
 				}
 				return distr;
 			}
@@ -468,7 +463,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			
 			String functionName = ctx.children.get(0).getText();
 			ParseTree ctx2 = ctx.getChild(2);
-			Value [] f1= (Value []) visit(ctx2);
+			Value [] f1= ctx2.getText().equals(")") ?
+					new Value[] {} :
+					(Value []) visit(ctx2);
 
 			if (univarfunctions.contains(functionName)) {
 				ExpressionNode expression = null;
@@ -517,8 +514,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 				try {
 				switch (f1.length) {
 				case 0: 
-					ctor = class_.getConstructor();
-					func = (DeterministicFunction<?>) ctor.newInstance();
+					try {
+						ctor = class_.getConstructor();
+						func = (DeterministicFunction<?>) ctor.newInstance();
+					} catch (Throwable e) {
+						ctor = class_.getConstructor(Value.class);
+						func = (DeterministicFunction<?>) ctor.newInstance(f1);						
+					}
 					break;
 				case 1: 
 					ctor = class_.getConstructor(Value.class); 
@@ -534,7 +536,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 					break;
 				}
 				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-					
+					e.printStackTrace();
 				}
 			}
 			return func.apply();
@@ -719,4 +721,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         return visitor.visit(parseTree);
 	}
 	
+	
+	public static void main(String[] args) throws IOException {
+		if (args.length == 1) {
+			SimulatorListenerImpl parser = new SimulatorListenerImpl(new TreeMap());
+            BufferedReader fin = new BufferedReader(new FileReader(args[0]));
+            StringBuffer buf = new StringBuffer();
+            String str = null;
+            while (fin.ready()) {
+                str = fin.readLine();
+                buf.append(str);
+                buf.append('\n');
+            }
+            fin.close();
+			Object o = parser.parse(buf.toString());
+
+		} else {
+			throw new IllegalArgumentException("Expected 1 argument: a file name");
+		}
+	}
 }
