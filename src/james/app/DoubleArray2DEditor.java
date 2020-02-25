@@ -13,7 +13,7 @@ public class DoubleArray2DEditor extends JPanel {
 
     int maxFracDigits = 5;
 
-    int GAP = 9;
+    int GAP = 5;
     int corner = 5;
 
     public DoubleArray2DEditor(Double[][] matrix, boolean editable) {
