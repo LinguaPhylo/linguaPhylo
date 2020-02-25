@@ -6,7 +6,7 @@ import james.graphicalModel.types.DoubleArray2DValue;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class K80 extends DeterministicFunction<Double[][]> {
+public class K80 extends RateMatrix {
 
     String paramName;
 
@@ -44,17 +44,7 @@ public class K80 extends DeterministicFunction<Double[][]> {
             Q[i][i] = -totalRates[i];
         }
 
-        // normalise rate matrix to one expected substitution per unit time
-        double subst = 0.0;
-        for (int i = 0; i < numStates; i++) {
-            subst += -Q[i][i] * 0.25;
-        }
-
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                Q[i][j] = Q[i][j] / subst;
-            }
-        }
+        normalize(new Double[] {0.25, 0.25, 0.25, 0.25}, Q);
 
         return Q;
     }

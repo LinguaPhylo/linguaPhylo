@@ -6,7 +6,7 @@ import james.graphicalModel.types.DoubleArray2DValue;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class GTR extends DeterministicFunction<Double[][]> {
+public class GTR extends RateMatrix {
 
     String rateParamName;
     String freqParamName;
@@ -60,16 +60,7 @@ public class GTR extends DeterministicFunction<Double[][]> {
             Q[i][i] = -totalRate;
         }
         // normalise rate matrix to one expected substitution per unit time
-        double subst = 0.0;
-        for (int i = 0; i < numStates; i++) {
-            subst += -Q[i][i] * freqs[i];
-        }
-
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                Q[i][j] = Q[i][j] / subst;
-            }
-        }
+        normalize(freqs, Q);
 
         return Q;
     }

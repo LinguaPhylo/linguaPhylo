@@ -6,7 +6,7 @@ import james.graphicalModel.types.DoubleArray2DValue;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class JukesCantor extends DeterministicFunction<Double[][]> {
+public class JukesCantor extends RateMatrix {
 
     String paramName;
 
