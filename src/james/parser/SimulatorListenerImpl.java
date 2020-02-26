@@ -52,10 +52,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			
 	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
 	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-	                ErrorModel.class, Yule.class};
+	                ErrorModel.class, Yule.class, Beta.class};
 	
 	        for (Class<?> genClass : genClasses) {
-	            genDistDictionary.put(genClass.getSimpleName(), genClass);
+	            String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
+	            genDistDictionary.put(name, genClass);
 	        }
 	
 	        Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
@@ -423,14 +424,17 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
 			
 	        Class genDistClass = genDistDictionary.get(name);
-	        if (genDistClass == null)
+	        if (genDistClass == null) {
 	            throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
+	        }
 
 	        try {
 	            List<Object> initargs = new ArrayList<>();
 	            Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-	            if (constructor == null)
+	            if (constructor == null) {
+	            	constructor = getConstructorByArguments(arguments, genDistClass, initargs);
 	                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+	            }
 
 	            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
 	            for (String parameterName : arguments.keySet()) {
@@ -599,23 +603,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 	     */
 	    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
 
-	        Set<String> requiredArguments = new TreeSet<>();
-	        Set<String> optionalArguments = new TreeSet<>();
-	        for (ParameterInfo pinfo : pInfo) {
-	            if (pinfo.optional()) {
-	                optionalArguments.add(pinfo.name());
-	            } else {
-	                requiredArguments.add(pinfo.name());
-	            }
-	        }
+            Set<String> requiredArguments = new TreeSet<>();
+            Set<String> optionalArguments = new TreeSet<>();
+            for (ParameterInfo pinfo : pInfo) {
+                if (pinfo.optional()) {
+                    optionalArguments.add(pinfo.name());
+                } else {
+                    requiredArguments.add(pinfo.name());
+                }
+            }
 
-	        if (!arguments.keySet().containsAll(requiredArguments)) {
-	            return false;
-	        }
-	        Set<String> allArguments = optionalArguments;
-	        allArguments.addAll(requiredArguments);
-	        return allArguments.containsAll(arguments.keySet());
-	    }
+            if (!arguments.keySet().containsAll(requiredArguments)) {
+                return false;
+            }
+            Set<String> allArguments = optionalArguments;
+            allArguments.addAll(requiredArguments);
+            return allArguments.containsAll(arguments.keySet());
+       }
 	    
 	public Object parse(String CASentence) {
         // Custom parse/lexer error listener
