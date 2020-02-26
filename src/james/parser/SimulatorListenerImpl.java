@@ -3,6 +3,9 @@ package james.parser;
 
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -16,25 +19,20 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import james.Coalescent;
+import james.Yule;
 import james.core.ErrorModel;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
-import james.core.distributions.Dirichlet;
-import james.core.distributions.DiscretizedGamma;
-import james.core.distributions.Exp;
-import james.core.distributions.Gamma;
-import james.core.distributions.LogNormal;
-import james.core.distributions.Normal;
+import james.core.distributions.*;
+import james.core.functions.BinaryRateMatrix;
 import james.core.functions.GTR;
 import james.core.functions.HKY;
 import james.core.functions.JukesCantor;
 import james.core.functions.K80;
 import james.core.functions.Newick;
-import james.graphicalModel.DeterministicFunction;
-import james.graphicalModel.Func;
-import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
+import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleArray2DValue;
+import james.graphicalModel.types.DoubleArrayValue;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerValue;
 import james.parser.SimulatorParser.*;
@@ -57,14 +55,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			
 	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
 	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-	                ErrorModel.class};
+	                ErrorModel.class, Yule.class};
 	
 	        for (Class<?> genClass : genClasses) {
 	            genDistDictionary.put(genClass.getSimpleName(), genClass);
 	        }
 	
 	        Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-	                Newick.class};
+	                Newick.class, james.core.functions.BinaryRateMatrix.class};
 	
 	        for (Class<?> functionClass : functionClasses) {
 	            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -159,16 +157,16 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			String text = ctx.getText();
 			double d = 0;
 			try {
-				d = Double.parseDouble(text);
-				String id = nextID("DoubleValue");
-				Value<Double> v = new DoubleValue(id, d);
+				d = Long.parseLong(text);
+				String id = nextID("IntegerValue");
+				// TODO: should be a LongValue?
+				Value<Integer> v = new IntegerValue(id, (int) d);
 				return v;
 			} catch (NumberFormatException e) {
 				try {
-					d = Long.parseLong(text);
-					String id = nextID("IntegerValue");
-					// TODO: should be a LongValue?
-					Value<Integer> v = new IntegerValue(id, (int) d);
+					d = Double.parseDouble(text);
+					String id = nextID("DoubleValue");
+					Value<Double> v = new DoubleValue(id, d);
 					return v;
 				} catch (NumberFormatException e2) {
 					int i = Boolean.parseBoolean(text) ? 1 : 0;
@@ -315,7 +313,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					};
 //				}
 //				return visit(ctx.getChild(0));
-//			}
+			}
 			ExpressionNode expression = null;
 			if (ctx.getChildCount() >= 2) {
 				String s = ctx.getChild(1).getText();
@@ -365,19 +363,37 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					case ":": transform = new ExpressionNode(ctx.getText(), ExpressionNode.range(), f1,f2); break;
 					}
 					return expression; 
-				} else if (s.equals("!")) {
+				} 
+				s = ctx.getChild(0).getText();
+
+				if (s.equals("!")) {
 					Value f1 = (Value) visit(ctx.getChild(2));
 					expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
+					return expression;
 //				} else if (s.equals("~")) {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
 //					transform = new Complement(f1);
-//				} else if (s.equals("[")) {
-//					JFunction var = (JFunction) visit(ctx.getChild(0));
-//					JFunction f1 = (JFunction) visit(ctx.getChild(2));
-//					transform = new Index(var, f1);
+				} else if (s.equals("[")) {
+					Value [] var = (Value[]) visit(ctx.getChild(1));
+					if (var[0].value() instanceof Double[]) {
+						Double[][] value = new Double[var.length][];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Double[]) var[i].value();
+						}
+						DoubleArray2DValue v = new DoubleArray2DValue(null, value);
+						return v;
+					} else if (var[0].value() instanceof Double) {
+						Double[] value = new Double[var.length];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Double) var[i].value();
+						}
+						DoubleArrayValue v = new DoubleArrayValue(null, value);
+						return v;
+					} else {
+						throw new RuntimeException("Don't know how to handle 3D matrics");
+					}
 //				}
 				}
-			}
 			}
 			return super.visitExpression(ctx);
 		}
@@ -397,39 +413,34 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			super.visitDistribution(ctx);
 			
 			String name = ctx.getChild(0).getText();
-			GenerativeDistribution distr = null;
-			
 			Value [] f = (Value[]) visit(ctx.getChild(2));
+	        Map<String, Value> arguments = new HashMap<>();
+	        for (Value v : f) {
+	        	arguments.put(v.getId(), v); 
+	        }
+
 			
-			
-			if (genDistDictionary.containsKey(name)) {
-				Class class_ = genDistDictionary.get(name);
-				Constructor ctor = null;
-				try {
-				switch (f.length) {
-				case 0: 
-					ctor = class_.getConstructor();
-					distr = (GenerativeDistribution<?>) ctor.newInstance();
-					break;
-				case 1: 
-					ctor = class_.getConstructor(Value.class); 
-					distr = (GenerativeDistribution) ctor.newInstance(f[0]);
-					break;
-				case 2: 
-					ctor = class_.getConstructor(Value.class, Value.class); 
-					distr = (GenerativeDistribution) ctor.newInstance(f[0], f[1]);
-					break;
-				case 3: 
-					ctor = class_.getConstructor(Value.class, Value.class, Value.class); 
-					distr = (GenerativeDistribution) ctor.newInstance(f[0], f[1], f[2]);
-					break;
-				}
-				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-					
-				}
-				return distr;
-			}
-			return distr; 
+	        Class genDistClass = genDistDictionary.get(name);
+	        if (genDistClass == null)
+	            throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
+
+	        try {
+	            List<Object> initargs = new ArrayList<>();
+	            Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
+	            if (constructor == null)
+	                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+
+	            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
+	            for (String parameterName : arguments.keySet()) {
+	                Value value = arguments.get(parameterName);
+	                dist.setInput(parameterName, arguments.get(parameterName));
+	            }
+	            return dist;
+	        } catch (InstantiationException | IllegalAccessException | InvocationTargetException  e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Parsing generative distribution " + name + " failed. " + e.getMessage());
+	        }
+
 		}
 		
 
@@ -462,13 +473,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		}
 		
 		@Override
+		public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
+			List<Value> list = new ArrayList<>();
+			for (int i = 0; i < ctx.getChildCount(); i+= 2) {
+				list.add((Value) visit(ctx.getChild(i)));
+			}
+			return list.toArray(new Value[] {});
+		}
+
+		@Override
 		public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 //			Transform transform = null;
 			
-			
 			String functionName = ctx.children.get(0).getText();
 			ParseTree ctx2 = ctx.getChild(2);
-			Value [] f1= (Value []) visit(ctx2);
+			Value [] f1= ctx2.getText().equals(")") ?
+					new Value[] {} :
+					(Value []) visit(ctx2);
 
 			if (univarfunctions.contains(functionName)) {
 				ExpressionNode expression = null;
@@ -510,156 +531,90 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
 			
 			
-			DeterministicFunction func = null;
 			if (functionDictionary.containsKey(functionName)) {
-				Class class_ = functionDictionary.get(functionName);
-				Constructor ctor = null;
-				try {
-				switch (f1.length) {
-				case 0: 
-					ctor = class_.getConstructor();
-					func = (DeterministicFunction<?>) ctor.newInstance();
-					break;
-				case 1: 
-					ctor = class_.getConstructor(Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f1[0]);
-					break;
-				case 2: 
-					ctor = class_.getConstructor(Value.class, Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f1[0], f1[1]);
-					break;
-				case 3: 
-					ctor = class_.getConstructor(Value.class, Value.class, Value.class); 
-					func = (DeterministicFunction) ctor.newInstance(f1[0], f1[1], f1[2]);
-					break;
-				}
-				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-					
-				}
-			}
-			return func.apply();
+				Class functionClass = functionDictionary.get(functionName);
+				
+		        Map<String, Value> arguments = new HashMap<>();
+		        for (Value v : f1) {
+		        	arguments.put(v.getId(), v); 
+		        }
 
-//			
-//			if (functionName.equals("c")) {
-//				JFunction [] f= (JFunction []) visit(ctx.getChild(2));				
-//				Concat c = new Concat(f);
-//				return c;
-//			}
-//			
-//			// process expression_list
-//			JFunction [] f =  (JFunction[]) visit(ctx.getChild(2));
-//			if (mapNameToClass.containsKey(functionName)) {
-//				String className = mapNameToClass.get(functionName);
-//				Constructor ctor = null;
-//				try {
-//				switch (f.length) {
-//				case 0: 
-//					ctor = Class.forName(className).getConstructor();
-//					transform = (Transform) ctor.newInstance();
-//					break;
-//				case 1: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class); 
-//					transform = (Transform) ctor.newInstance(f[0]);
-//					break;
-//				case 2: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class, JFunction.class); 
-//					transform = (Transform) ctor.newInstance(f[0], f[1]);
-//					break;
-//				case 3: 
-//					ctor = Class.forName(className).getConstructor(JFunction.class, JFunction.class, JFunction.class); 
-//					transform = (Transform) ctor.newInstance(f[0], f[1], f[2]);
-//					break;
-//				}
-//				} catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-//					// ignore
-//				}			return null;
-//				if (transform != null) {
-//					return transform;
-//				}
-//			}
-//			switch (functionName) {
-//				case "length": transform = new Length(f[0]);break;
-//				case "dim": transform = new Dim(f[0]);break;
-//			/*
-//				// Univariable functions
-//
-//				case "sort": transform = new Sort(f[0]);break;
-//				case "rank": transform = new Rank(f[0]);break;
-//				case "order": transform = new Order(f[0]);break;
-//				case "inverse": transform = new Inverse(f[0]);break;
-//				case "t": transform = new Transpose(f[0]);break;
-//				
-//				case "abs": transform = new Abs(f[0]);break;
-//				case "cos": transform = new Cos(f[0]);break;
-//				case "sin": transform = new Sin(f[0]);break;
-//				case "tan": transform = new Tan(f[0]);break;
-//				case "arccos": 
-//				case "acos": transform = new Acos(f[0]);break;
-//				case "arcsin": 
-//				case "asin": transform = new Asin(f[0]);break;
-//				case "arctan": 
-//				case "atan": transform = new Atan(f[0]);break;
-//				case "sinh": transform = new Sinh(f[0]);break;
-//				case "cosh": transform = new Cosh(f[0]);break;
-//				case "tanh": transform = new Tanh(f[0]);break;
-//				case "arcsinh": 
-//				case "asinh": transform = new Asinh(f[0]);break;
-//				case "arccosh": 
-//				case "acosh": transform = new Acosh(f[0]);break;
-//				case "arctanh": 
-//				case "atanh": transform = new Atanh(f[0]);break;
-//
-//				case "cbrt": transform = new Cbrt(f[0]);break;
-//				case "cloglog": transform = new CLogLog(f[0]);break;
-//				case "sqrt": transform = new Sqrt(f[0]);break;
-//				case "exp": transform = new Exp(f[0]);break;
-//				case "expm1": transform = new Expm1(f[0]);break;
-//				case "log": transform = new jags.functions.Log(f[0]);break;
-//				case "log10": transform = new Log10(f[0]);break;
-//				case "log1p": transform = new Log1p(f[0]);break;
-//				case "logdet": transform = new LogDet(f[0]);break;
-//				case "loggamm": transform = new LogGamma(f[0]);break;
-//				case "logit": transform = new Logit(f[0]);break;
-//				case "logfact": transform = new LogFact(f[0]);break;
-//				case "probit": transform = new Probit(f[0]);break;
-//				case "ceil": transform = new Ceil(f[0]);break;
-//				case "trunc":
-//				case "floor": transform = new Floor(f[0]);break;
-//				case "round": transform = new Round(f[0]);break;
-//				case "signum": transform = new Signum(f[0]);break;
-//				case "step": transform = new Step(f[0]);break;
-//				case "mean": transform = new Mean(f[0]);break;
-//				case "sd": transform = new StdDev(f[0]);break;
-//				
-//				// Bivariable functions
-//				case "hypot": transform = new Hypot(f[0], f[1]);break;
-//				case "atan2": transform = new Atan2(f[0], f[1]);break;
-//				case "pow": transform = new Pow(f[0], f[1]);break;
-//				case "rep": transform = new Rep(f[0], f[1]);break;
-//				caObjectse "prod":
-//				case "%*%": transform = new MatrixMult(f[0], f[1]);break;
-//				case "equals": transform = new Eq(f[0], f[1]);break;
-//				
-//				case "ifelse": transform = new IfElse(f[0], f[1], f[2]);break;
-//				case "interp.lin": transform = new InterpLin(f[0], f[1], f[2]);break;
-//				*/
-//				case "inprod": transform = new Times(f[0], f[1]); break;
-//				case "prod":f.apply()
-//				case "%*%": transform = new MatrixMult(f[0], f[1]);break;
-//
-//				case "min": transform = new Min(f);break;
-//				case "max": transform = new Max(f);break;
-//				case "sum": transform = new Sum(f);break;
-//
-//				default:
-//					throw new IllegalArgumentException("Unknown function : " + functionName);
-//			}
-//			
-//			return transform;
+		        try {
+		            List<Object> initargs = new ArrayList<>();
+		            Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
+		            if (constructor == null) {
+		                System.err.println("DeterministicFunction class: " + functionClass);
+		                System.err.println("     Arguments: " + arguments);
+		                throw new RuntimeException("Parser error: no constructor found for deterministic function " + functionName + " with arguments " + arguments);
+		            }
+
+		            DeterministicFunction f = (DeterministicFunction) constructor.newInstance(initargs.toArray());
+		            for (String parameterName : arguments.keySet()) {
+		                Value value = arguments.get(parameterName);
+		                f.setInput(parameterName, value);
+		            }
+		            Value val = f.apply();
+		            //val.setId(id);
+		            return val;
+		        } catch (InstantiationException |IllegalAccessException | InvocationTargetException e) {
+		            e.printStackTrace();
+		            throw new RuntimeException("Parsing generative distribution " + functionClass + " failed. " + e.getMessage());
+		        }
+
+			}
+			throw new RuntimeException("Function name not recognised: " + functionName);		
 		}
 		
 	}
 
+	    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
+	        System.out.println(genDistClass.getSimpleName() + " " + arguments);
+	        for (Constructor constructor : genDistClass.getConstructors()) {
+	            List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
+	            if (match(arguments, pInfo)) {
+	                for (int i = 0; i < pInfo.size(); i++) {
+	                    Value arg = arguments.get(pInfo.get(i).name());
+	                    if (arg != null) {
+	                        initargs.add(arg);
+	                    } else if (!pInfo.get(i).optional()) {
+	                        throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
+	                    } else {
+	                        initargs.add(null);
+	                    }
+	                }
+	                return constructor;
+	            }
+	        }
+	        return null;
+	    }
+	    
+	    /**
+	     * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
+	     *
+	     * @param arguments
+	     * @param pInfo
+	     * @return
+	     */
+	    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
+
+	        Set<String> requiredArguments = new TreeSet<>();
+	        Set<String> optionalArguments = new TreeSet<>();
+	        for (ParameterInfo pinfo : pInfo) {
+	            if (pinfo.optional()) {
+	                optionalArguments.add(pinfo.name());
+	            } else {
+	                requiredArguments.add(pinfo.name());
+	            }
+	        }
+
+	        if (!arguments.keySet().containsAll(requiredArguments)) {
+	            return false;
+	        }
+	        Set<String> allArguments = optionalArguments;
+	        allArguments.addAll(requiredArguments);
+	        return allArguments.containsAll(arguments.keySet());
+	    }
+	    
 	public Object parse(String CASentence) {
         // Custom parse/lexer error listener
         BaseErrorListener errorListener = new BaseErrorListener() {
@@ -719,4 +674,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         return visitor.visit(parseTree);
 	}
 	
+	
+	public static void main(String[] args) throws IOException {
+		if (args.length == 1) {
+			SimulatorListenerImpl parser = new SimulatorListenerImpl(new TreeMap());
+            BufferedReader fin = new BufferedReader(new FileReader(args[0]));
+            StringBuffer buf = new StringBuffer();
+            String str = null;
+            while (fin.ready()) {
+                str = fin.readLine();
+                buf.append(str);
+                buf.append('\n');
+            }
+            fin.close();
+			Object o = parser.parse(buf.toString());
+			System.err.println("OK Done!");
+		} else {
+			throw new IllegalArgumentException("Expected 1 argument: a file name");
+		}
+	}
 }

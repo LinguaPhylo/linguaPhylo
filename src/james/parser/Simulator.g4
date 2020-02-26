@@ -60,6 +60,10 @@ expression_list
     : named_expression (',' named_expression)*
     ;
 
+unnamed_expression_list
+    : expression (',' expression)*
+    ;
+
 methodCall
     : NAME '(' expression_list? ')'
     ;
@@ -75,6 +79,7 @@ expression
     : constant
     | NAME
     | '(' expression ')'
+    | '[' unnamed_expression_list ']'
     | expression '[' range_list ']'
     | methodCall
     | expression postfix=('++' | '--')

@@ -1,8 +1,7 @@
-// Generated from Simulator.g4 by ANTLR 4.4
+// Generated from Simulator.g4 by ANTLR 4.8
 package james.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -17,264 +16,276 @@ public class SimulatorBaseListener implements SimulatorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstant(@NotNull SimulatorParser.ConstantContext ctx) { }
+	@Override public void enterInput(SimulatorParser.InputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConstant(@NotNull SimulatorParser.ConstantContext ctx) { }
+	@Override public void exitInput(SimulatorParser.InputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(@NotNull SimulatorParser.ExpressionContext ctx) { }
+	@Override public void enterRelations(SimulatorParser.RelationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression(@NotNull SimulatorParser.ExpressionContext ctx) { }
+	@Override public void exitRelations(SimulatorParser.RelationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignment(@NotNull SimulatorParser.AssignmentContext ctx) { }
+	@Override public void enterRelation_list(SimulatorParser.Relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignment(@NotNull SimulatorParser.AssignmentContext ctx) { }
+	@Override public void exitRelation_list(SimulatorParser.Relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVar(@NotNull SimulatorParser.VarContext ctx) { }
+	@Override public void enterRelation(SimulatorParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVar(@NotNull SimulatorParser.VarContext ctx) { }
+	@Override public void exitRelation(SimulatorParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTruncated(@NotNull SimulatorParser.TruncatedContext ctx) { }
+	@Override public void enterFor_loop(SimulatorParser.For_loopContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTruncated(@NotNull SimulatorParser.TruncatedContext ctx) { }
+	@Override public void exitFor_loop(SimulatorParser.For_loopContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCounter(@NotNull SimulatorParser.CounterContext ctx) { }
+	@Override public void enterCounter(SimulatorParser.CounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCounter(@NotNull SimulatorParser.CounterContext ctx) { }
+	@Override public void exitCounter(SimulatorParser.CounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRange_list(@NotNull SimulatorParser.Range_listContext ctx) { }
+	@Override public void enterAssignment(SimulatorParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRange_list(@NotNull SimulatorParser.Range_listContext ctx) { }
+	@Override public void exitAssignment(SimulatorParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDistribution(@NotNull SimulatorParser.DistributionContext ctx) { }
+	@Override public void enterDeterm_relation(SimulatorParser.Determ_relationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDistribution(@NotNull SimulatorParser.DistributionContext ctx) { }
+	@Override public void exitDeterm_relation(SimulatorParser.Determ_relationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelation(@NotNull SimulatorParser.RelationContext ctx) { }
+	@Override public void enterStoch_relation(SimulatorParser.Stoch_relationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelation(@NotNull SimulatorParser.RelationContext ctx) { }
+	@Override public void exitStoch_relation(SimulatorParser.Stoch_relationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeterm_relation(@NotNull SimulatorParser.Determ_relationContext ctx) { }
+	@Override public void enterTruncated(SimulatorParser.TruncatedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeterm_relation(@NotNull SimulatorParser.Determ_relationContext ctx) { }
+	@Override public void exitTruncated(SimulatorParser.TruncatedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStoch_relation(@NotNull SimulatorParser.Stoch_relationContext ctx) { }
+	@Override public void enterInterval(SimulatorParser.IntervalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStoch_relation(@NotNull SimulatorParser.Stoch_relationContext ctx) { }
+	@Override public void exitInterval(SimulatorParser.IntervalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInput(@NotNull SimulatorParser.InputContext ctx) { }
+	@Override public void enterVar(SimulatorParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInput(@NotNull SimulatorParser.InputContext ctx) { }
+	@Override public void exitVar(SimulatorParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNamed_expression(@NotNull SimulatorParser.Named_expressionContext ctx) { }
+	@Override public void enterRange_list(SimulatorParser.Range_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNamed_expression(@NotNull SimulatorParser.Named_expressionContext ctx) { }
+	@Override public void exitRange_list(SimulatorParser.Range_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelation_list(@NotNull SimulatorParser.Relation_listContext ctx) { }
+	@Override public void enterRange_element(SimulatorParser.Range_elementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelation_list(@NotNull SimulatorParser.Relation_listContext ctx) { }
+	@Override public void exitRange_element(SimulatorParser.Range_elementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRange_element(@NotNull SimulatorParser.Range_elementContext ctx) { }
+	@Override public void enterConstant(SimulatorParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRange_element(@NotNull SimulatorParser.Range_elementContext ctx) { }
+	@Override public void exitConstant(SimulatorParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression_list(@NotNull SimulatorParser.Expression_listContext ctx) { }
+	@Override public void enterExpression_list(SimulatorParser.Expression_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression_list(@NotNull SimulatorParser.Expression_listContext ctx) { }
+	@Override public void exitExpression_list(SimulatorParser.Expression_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInterval(@NotNull SimulatorParser.IntervalContext ctx) { }
+	@Override public void enterUnnamed_expression_list(SimulatorParser.Unnamed_expression_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInterval(@NotNull SimulatorParser.IntervalContext ctx) { }
+	@Override public void exitUnnamed_expression_list(SimulatorParser.Unnamed_expression_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFor_loop(@NotNull SimulatorParser.For_loopContext ctx) { }
+	@Override public void enterMethodCall(SimulatorParser.MethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFor_loop(@NotNull SimulatorParser.For_loopContext ctx) { }
+	@Override public void exitMethodCall(SimulatorParser.MethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelations(@NotNull SimulatorParser.RelationsContext ctx) { }
+	@Override public void enterDistribution(SimulatorParser.DistributionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelations(@NotNull SimulatorParser.RelationsContext ctx) { }
+	@Override public void exitDistribution(SimulatorParser.DistributionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMethodCall(@NotNull SimulatorParser.MethodCallContext ctx) { }
+	@Override public void enterNamed_expression(SimulatorParser.Named_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMethodCall(@NotNull SimulatorParser.MethodCallContext ctx) { }
+	@Override public void exitNamed_expression(SimulatorParser.Named_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExpression(SimulatorParser.ExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression(SimulatorParser.ExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
+	@Override public void enterEveryRule(ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEveryRule(@NotNull ParserRuleContext ctx) { }
+	@Override public void exitEveryRule(ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitTerminal(@NotNull TerminalNode node) { }
+	@Override public void visitTerminal(TerminalNode node) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
+	@Override public void visitErrorNode(ErrorNode node) { }
 }
