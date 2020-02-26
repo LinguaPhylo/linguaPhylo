@@ -37,140 +37,76 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
 	@Override
 	public Value<T> apply() {
-		return elementWise.apply(inputValues[0].value(), inputValues[1].value(), func);
+		return elementWise.apply(inputValues[0], inputValues[1], func);
 	}
 
 
 
 	// binary operators
-	static BinaryOperator<Double> plus() {
-		return (a, b) -> a + b;
+	static BinaryOperator<Number> plus() {
+		return (a, b) -> a.doubleValue() + b.doubleValue();
 	}
 
-	static BinaryOperator<Double> minus() {
-		return (a, b) -> a - b;
+	static BinaryOperator<Number> minus() {
+		return (a, b) -> a.doubleValue() - b.doubleValue();
 	}
 
-	static BinaryOperator<Double> times() {
-		return (a, b) -> a * b;
+	static BinaryOperator<Number> times() {
+		return (a, b) -> a.doubleValue() * b.doubleValue();
 	}
 
-	static BinaryOperator<Double> divide() {
-		return (a, b) -> a / b;
+	static BinaryOperator<Number> divide() {
+		return (a, b) -> a.doubleValue() / b.doubleValue();
 	}
 
-	static BinaryOperator<Double> and() {
-		return (a, b) -> a != 0.0 && b != 0.0 ? 1.0 : 0.0;
+	static BinaryOperator<Number> and() {
+		return (a, b) -> a.doubleValue() != 0.0 && b.doubleValue() != 0.0 ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> or() {
-		return (a, b) -> a != 0.0 || b != 0.0 ? 1.0 : 0.0;
+	static BinaryOperator<Number> or() {
+		return (a, b) -> a.doubleValue() != 0.0 || b.doubleValue() != 0.0 ? 1.0 : 0.0;
 	}
 
 	static BinaryOperator<Integer> bitwiseand() {
-		return (a, b) -> (int) a & (int) b;
+		return (a, b) -> (int) a.doubleValue() & (int) b.doubleValue();
 	}
 
 	static BinaryOperator<Integer> bitwiseor() {
-		return (a, b) -> (int) a | (int) b;
+		return (a, b) -> (int) a.doubleValue() | (int) b.doubleValue();
 	}
 
-	static BinaryOperator<Double> le() {
-		return (a, b) -> a <= b ? 1.0 : 0.0;
+	static BinaryOperator<Number> le() {
+		return (a, b) -> a.doubleValue() <= b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> less() {
-		return (a, b) -> a < b ? 1.0 : 0.0;
+	static BinaryOperator<Number> less() {
+		return (a, b) -> a.doubleValue() < b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> ge() {
-		return (a, b) -> a >= b ? 1.0 : 0.0;
+	static BinaryOperator<Number> ge() {
+		return (a, b) -> a.doubleValue() >= b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> greater() {
-		return (a, b) -> a > b ? 1.0 : 0.0;
+	static BinaryOperator<Number> greater() {
+		return (a, b) -> a.doubleValue() > b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> equals() {
-		return (a, b) -> a == b ? 1.0 : 0.0;
+	static BinaryOperator<Number> equals() {
+		return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> ne() {
-		return (a, b) -> a == b ? 1.0 : 0.0;
+	static BinaryOperator<Number> ne() {
+		return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
 	}
 
-	static BinaryOperator<Double> pow() {
-		return (a, b) -> Math.pow(a, b);
+	static BinaryOperator<Number> pow() {
+		return (a, b) -> Math.pow(a.doubleValue(), b.doubleValue());
 	}
 
-	static BinaryOperator<Double> mod() {
-		return (a, b) -> a % b;
+	static BinaryOperator<Number> mod() {
+		return (a, b) -> a.doubleValue() % b.doubleValue();
 	}
 
-	
-	
-	static BinaryOperator<Integer> plusI() {
-		return (a, b) -> a + b;
-	}
-	static BinaryOperator<Integer> minusI() {
-		return (a, b) -> a - b;
-	}
-
-	static BinaryOperator<Integer> timesI() {
-		return (a, b) -> a * b;
-	}
-
-	static BinaryOperator<Integer> divideI() {
-		return (a, b) -> a / b;
-	}
-
-	static BinaryOperator<Integer> andI() {
-		return (a, b) -> a != 0.0 && b != 0.0 ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> orI() {
-		return (a, b) -> a != 0.0 || b != 0.0 ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> bitwiseandI() {
-		return (a, b) -> (int) a & (int) b;
-	}
-
-	static BinaryOperator<Integer> bitwiseorI() {
-		return (a, b) -> (int) a | (int) b;
-	}
-
-	static BinaryOperator<Integer> leI() {
-		return (a, b) -> a <= b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> lessI() {
-		return (a, b) -> a < b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> geI() {
-		return (a, b) -> a >= b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> greaterI() {
-		return (a, b) -> a > b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> equalsI() {
-		return (a, b) -> a == b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> neI() {
-		return (a, b) -> a == b ? 1 : 0;
-	}
-
-	static BinaryOperator<Integer> powI() {
-		return (a, b) -> (Integer) ((int) Math.pow(a, b));
-	}
-
-	static BinaryOperator<Integer> modI() {
-		return (a, b) -> a % b;
-	}
 	
 
 }

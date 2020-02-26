@@ -17,7 +17,9 @@ public class ParserTest extends TestCase {
 	public void testAssingment() {
 		parse("a=3;");
 		parse("a=2;b=a;");
-		parse("a=3;b=3*a;");	
+		parse("a=3.0;b=3.0*a;");	
+		parse("a=3;b=3.0*a;");	
+		parse("a=3.0;b=3*a;");	
 	}
 	
 	private Object parse(String cmd) {

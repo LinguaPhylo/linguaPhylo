@@ -35,87 +35,84 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
 
 	@Override
 	public Value<T> apply() {
-		return elementWise.apply(inputValues[0].value(), func);
+		return elementWise.apply(inputValues[0], func);
 	}
 
 
 
 	// unary operators
-	static Function<Double, Double> not() {
-		return (a) -> a == 0 ? 1.0 : 0.0;
-	}
-	static Function<Integer, Integer> notI() {
-		return (a) -> a == 0 ? 1 : 0;
+	static Function<Number, Number> not() {
+		return (a) -> a.doubleValue() == 0 ? 1.0 : 0.0;
 	}
 
-	static Function<Double, Double> abs() {		return (a)-> Math.abs(a);	}
+	static Function<Number, Double> abs() {		return (a)-> Math.abs(a.doubleValue());	}
 
-	static Function<Double, Double> acos() {		return (a)-> Math.acos(a);	}
+	static Function<Number, Double> acos() {		return (a)-> Math.acos(a.doubleValue());	}
 
-	static Function<Double, Double> acosh() {		return (a)-> (Math.log(a + Math.sqrt(a + 1) * Math.sqrt(a - 1)));	}
+	static Function<Number, Double> acosh() {		return (a)-> (Math.log(a.doubleValue() + Math.sqrt(a.doubleValue() + 1) * Math.sqrt(a.doubleValue() - 1)));	}
 
-	static Function<Double, Double> asin() {		return (a)-> Math.asin(a);	}
+	static Function<Number, Double> asin() {		return (a)-> Math.asin(a.doubleValue());	}
 
-	static Function<Double, Double> asinh() {		return (a)-> (Math.log(a + Math.sqrt(a * a + 1)));	}
+	static Function<Number, Double> asinh() {		return (a)-> (Math.log(a.doubleValue() + Math.sqrt(a.doubleValue() * a.doubleValue() + 1)));	}
 
-	static Function<Double, Double> atan() {		return (a)-> Math.atan(a);	}
+	static Function<Number, Double> atan() {		return (a)-> Math.atan(a.doubleValue());	}
 
-	static Function<Double, Double> atanh() {		return (a)-> (0.5 * Math.log((1 + a) / (1 - a)));	}
+	static Function<Number, Double> atanh() {		return (a)-> (0.5 * Math.log((1 + a.doubleValue()) / (1 - a.doubleValue())));	}
 
-	static Function<Double, Double> cLogLog() {		return (a)-> Math.log(-Math.log(1 - a));}
+	static Function<Number, Double> cLogLog() {		return (a)-> Math.log(-Math.log(1 - a.doubleValue()));}
 
-	static Function<Double, Double> cbrt() {		return (a)-> Math.cbrt(a);	}
+	static Function<Number, Double> cbrt() {		return (a)-> Math.cbrt(a.doubleValue());	}
 
-	static Function<Double, Double> ceil() {		return (a)-> Math.ceil(a);	}
+	static Function<Number, Double> ceil() {		return (a)-> Math.ceil(a.doubleValue());	}
 
-	static Function<Double, Double> cos() {		return (a)-> Math.cos(a);	}
+	static Function<Number, Double> cos() {		return (a)-> Math.cos(a.doubleValue());	}
 
-	static Function<Double, Double> cosh() {		return (a)-> Math.cosh(a);	}
+	static Function<Number, Double> cosh() {		return (a)-> Math.cosh(a.doubleValue());	}
 
-	static Function<Double, Double> exp() {		return (a)-> Math.exp(a);	}
+	static Function<Number, Double> exp() {		return (a)-> Math.exp(a.doubleValue());	}
 
-	static Function<Double, Double> expm1() {		return (a)-> Math.expm1(a);	}
+	static Function<Number, Double> expm1() {		return (a)-> Math.expm1(a.doubleValue());	}
 
-	static Function<Double, Double> floor() {		return (a)-> Math.floor(a);	}
+	static Function<Number, Double> floor() {		return (a)-> Math.floor(a.doubleValue());	}
 
-	static Function<Double, Double> log() {		return (a)-> Math.log(a);	}
+	static Function<Number, Double> log() {		return (a)-> Math.log(a.doubleValue());	}
 
-	static Function<Double, Double> log10() {		return (a)-> Math.log10(a);	}
+	static Function<Number, Double> log10() {		return (a)-> Math.log10(a.doubleValue());	}
 
-	static Function<Double, Double> log1p() {		return (a)-> Math.log1p(a);	}
+	static Function<Number, Double> log1p() {		return (a)-> Math.log1p(a.doubleValue());	}
 
-	static Function<Double, Double> logFact() {		return (a)-> { 
+	static Function<Number, Double> logFact() {		return (a)-> { 
 		double logFactorial = 0;
-		for (int j = 2; j <= a; j++) {
+		for (int j = 2; j <= a.doubleValue(); j++) {
 		  logFactorial += Math.log(j);
 		}
 		return logFactorial;
 	};
 	}
 
-	static Function<Double, Double> logGamma() {		return (a)-> org.apache.commons.math3.special.Gamma.logGamma(a);	}
+	static Function<Number, Double> logGamma() {		return (a)-> org.apache.commons.math3.special.Gamma.logGamma(a.doubleValue());	}
 
-	static Function<Double, Double> logit() {		return (a)-> Math.log(a) - Math.log(1 - a);	}
+	static Function<Number, Double> logit() {		return (a)-> Math.log(a.doubleValue()) - Math.log(1 - a.doubleValue());	}
 
-	static Function<Double, Double> phi() {		return (a)-> (new NormalDistribution()).cumulativeProbability(a);	}
+	static Function<Number, Double> phi() {		return (a)-> (new NormalDistribution()).cumulativeProbability(a.doubleValue());	}
 
-	static Function<Double, Double> probit() {		return (a)-> Math.sqrt(2) * org.apache.commons.math3.special.Erf.erf(2*a - 1);	}
+	static Function<Number, Double> probit() {		return (a)-> Math.sqrt(2) * org.apache.commons.math3.special.Erf.erf(2*a.doubleValue() - 1);	}
 
-	static Function<Double, Double> round() {		return (a)-> (double) Math.round(a);	}
+	static Function<Number, Double> round() {		return (a)-> (double) Math.round(a.doubleValue());	}
 
-	static Function<Double, Double> signum() {		return (a)-> Math.signum(a);	}
+	static Function<Number, Double> signum() {		return (a)-> Math.signum(a.doubleValue());	}
 
-	static Function<Double, Double> sin() {		return (a)-> Math.sin(a);	}
+	static Function<Number, Double> sin() {		return (a)-> Math.sin(a.doubleValue());	}
 
-	static Function<Double, Double> sinh() {		return (a)-> Math.sinh(a);	}
+	static Function<Number, Double> sinh() {		return (a)-> Math.sinh(a.doubleValue());	}
 
-	static Function<Double, Double> sqrt() {		return (a)-> Math.sqrt(a);	}
+	static Function<Number, Double> sqrt() {		return (a)-> Math.sqrt(a.doubleValue());	}
 
-	static Function<Double, Double> step() {		return (a)-> a > 0.0 ? 1.0 : 0.0;	}
+	static Function<Number, Double> step() {		return (a)-> a.doubleValue() > 0.0 ? 1.0 : 0.0;	}
 
-	static Function<Double, Double> tan() {		return (a)-> Math.tan(a);	}
+	static Function<Number, Double> tan() {		return (a)-> Math.tan(a.doubleValue());	}
 
-	static Function<Double, Double> tanh() {		return (a)-> Math.tanh(a);	}
+	static Function<Number, Double> tanh() {		return (a)-> Math.tanh(a.doubleValue());	}
 
 
 }
