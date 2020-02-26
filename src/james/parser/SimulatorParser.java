@@ -21,10 +21,10 @@ public class SimulatorParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
-		T__31=32, T__32=33, T__33=34, T__34=35, VAR=36, DATA=37, MODEL=38, NAME=39, 
-		ARROW=40, LENGTH=41, DIM=42, DECIMAL_LITERAL=43, HEX_LITERAL=44, OCT_LITERAL=45, 
-		BINARY_LITERAL=46, FLOAT_LITERAL=47, HEX_FLOAT_LITERAL=48, TILDE=49, WS=50, 
-		COMMENT=51, LINE_COMMENT=52, FUNC=53;
+		T__31=32, T__32=33, T__33=34, T__34=35, NAME=36, ARROW=37, LENGTH=38, 
+		DIM=39, DECIMAL_LITERAL=40, HEX_LITERAL=41, OCT_LITERAL=42, BINARY_LITERAL=43, 
+		FLOAT_LITERAL=44, HEX_FLOAT_LITERAL=45, STRING_LITERAL=46, TILDE=47, WS=48, 
+		COMMENT=49, LINE_COMMENT=50, FUNC=51;
 	public static final int
 		RULE_input = 0, RULE_relations = 1, RULE_relation_list = 2, RULE_relation = 3, 
 		RULE_for_loop = 4, RULE_counter = 5, RULE_assignment = 6, RULE_determ_relation = 7, 
@@ -48,9 +48,8 @@ public class SimulatorParser extends Parser {
 			null, "'{'", "'}'", "';'", "'for'", "'('", "'in'", "')'", "'='", "'T'", 
 			"','", "'I'", "'['", "']'", "'-'", "'true'", "'false'", "'++'", "'--'", 
 			"'+'", "'**'", "'*'", "'/'", "'%'", "'<'", "'>'", "'<='", "'>='", "'=='", 
-			"'!='", "'&'", "'^'", "'|'", "'&&'", "'||'", "':'", "'var'", "'data'", 
-			"'model'", null, "'<-'", "'length'", "'dim'", null, null, null, null, 
-			null, null, "'~'"
+			"'!='", "'&'", "'^'", "'|'", "'&&'", "'||'", "':'", null, "'<-'", "'length'", 
+			"'dim'", null, null, null, null, null, null, null, "'~'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -59,8 +58,8 @@ public class SimulatorParser extends Parser {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			"VAR", "DATA", "MODEL", "NAME", "ARROW", "LENGTH", "DIM", "DECIMAL_LITERAL", 
-			"HEX_LITERAL", "OCT_LITERAL", "BINARY_LITERAL", "FLOAT_LITERAL", "HEX_FLOAT_LITERAL", 
+			"NAME", "ARROW", "LENGTH", "DIM", "DECIMAL_LITERAL", "HEX_LITERAL", "OCT_LITERAL", 
+			"BINARY_LITERAL", "FLOAT_LITERAL", "HEX_FLOAT_LITERAL", "STRING_LITERAL", 
 			"TILDE", "WS", "COMMENT", "LINE_COMMENT", "FUNC"
 		};
 	}
@@ -1027,6 +1026,7 @@ public class SimulatorParser extends Parser {
 		public TerminalNode OCT_LITERAL() { return getToken(SimulatorParser.OCT_LITERAL, 0); }
 		public TerminalNode HEX_LITERAL() { return getToken(SimulatorParser.HEX_LITERAL, 0); }
 		public TerminalNode HEX_FLOAT_LITERAL() { return getToken(SimulatorParser.HEX_FLOAT_LITERAL, 0); }
+		public TerminalNode STRING_LITERAL() { return getToken(SimulatorParser.STRING_LITERAL, 0); }
 		public ConstantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1065,7 +1065,7 @@ public class SimulatorParser extends Parser {
 
 			setState(152);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__14) | (1L << T__15) | (1L << DECIMAL_LITERAL) | (1L << HEX_LITERAL) | (1L << OCT_LITERAL) | (1L << FLOAT_LITERAL) | (1L << HEX_FLOAT_LITERAL))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__14) | (1L << T__15) | (1L << DECIMAL_LITERAL) | (1L << HEX_LITERAL) | (1L << OCT_LITERAL) | (1L << FLOAT_LITERAL) | (1L << HEX_FLOAT_LITERAL) | (1L << STRING_LITERAL))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1810,7 +1810,7 @@ public class SimulatorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\67\u0102\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\65\u0102\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\3\2\3\2\5\2/\n\2\3\3\3\3\3\3"+
@@ -1830,7 +1830,7 @@ public class SimulatorParser extends Parser {
 		"\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
 		"\3\26\3\26\3\26\3\26\3\26\3\26\3\26\7\26\u00fd\n\26\f\26\16\26\u0100\13"+
 		"\26\3\26\2\5\6\32*\27\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*\2"+
-		"\n\4\2\n\n**\5\2\21\22-/\61\62\4\2\20\20\23\25\3\2\26\31\4\2\20\20\25"+
+		"\n\4\2\n\n\'\'\5\2\21\22*,.\60\4\2\20\20\23\25\3\2\26\31\4\2\20\20\25"+
 		"\25\3\2\32\35\3\2\36\37\3\2\23\24\2\u010e\2.\3\2\2\2\4\60\3\2\2\2\6\64"+
 		"\3\2\2\2\bG\3\2\2\2\nI\3\2\2\2\fL\3\2\2\2\16S\3\2\2\2\20`\3\2\2\2\22p"+
 		"\3\2\2\2\24r\3\2\2\2\26y\3\2\2\2\30\u0086\3\2\2\2\32\u0088\3\2\2\2\34"+
@@ -1841,16 +1841,16 @@ public class SimulatorParser extends Parser {
 		"\2\28:\5\b\5\29\67\3\2\2\2:=\3\2\2\2;9\3\2\2\2;<\3\2\2\2<\7\3\2\2\2=;"+
 		"\3\2\2\2>?\5\22\n\2?@\7\5\2\2@H\3\2\2\2AB\5\20\t\2BC\7\5\2\2CH\3\2\2\2"+
 		"DE\5\n\6\2EF\7\5\2\2FH\3\2\2\2G>\3\2\2\2GA\3\2\2\2GD\3\2\2\2H\t\3\2\2"+
-		"\2IJ\5\f\7\2JK\5\4\3\2K\13\3\2\2\2LM\7\6\2\2MN\7\7\2\2NO\7)\2\2OP\7\b"+
+		"\2IJ\5\f\7\2JK\5\4\3\2K\13\3\2\2\2LM\7\6\2\2MN\7\7\2\2NO\7&\2\2OP\7\b"+
 		"\2\2PQ\5\34\17\2QR\7\t\2\2R\r\3\2\2\2ST\t\2\2\2T\17\3\2\2\2UV\5\30\r\2"+
-		"VW\5\16\b\2WX\5*\26\2Xa\3\2\2\2YZ\7\67\2\2Z[\7\7\2\2[\\\7)\2\2\\]\7\t"+
+		"VW\5\16\b\2WX\5*\26\2Xa\3\2\2\2YZ\7\65\2\2Z[\7\7\2\2[\\\7&\2\2\\]\7\t"+
 		"\2\2]^\5\16\b\2^_\5*\26\2_a\3\2\2\2`U\3\2\2\2`Y\3\2\2\2a\21\3\2\2\2bc"+
-		"\5\30\r\2cd\7\63\2\2de\5&\24\2eq\3\2\2\2fg\5\30\r\2gh\7\63\2\2hi\5&\24"+
-		"\2ij\5\24\13\2jq\3\2\2\2kl\5\30\r\2lm\7\63\2\2mn\5&\24\2no\5\26\f\2oq"+
+		"\5\30\r\2cd\7\61\2\2de\5&\24\2eq\3\2\2\2fg\5\30\r\2gh\7\61\2\2hi\5&\24"+
+		"\2ij\5\24\13\2jq\3\2\2\2kl\5\30\r\2lm\7\61\2\2mn\5&\24\2no\5\26\f\2oq"+
 		"\3\2\2\2pb\3\2\2\2pf\3\2\2\2pk\3\2\2\2q\23\3\2\2\2rs\7\13\2\2st\7\7\2"+
 		"\2tu\5*\26\2uv\7\f\2\2vw\5*\26\2wx\7\t\2\2x\25\3\2\2\2yz\7\r\2\2z{\7\7"+
 		"\2\2{|\5*\26\2|}\7\f\2\2}~\5*\26\2~\177\7\t\2\2\177\27\3\2\2\2\u0080\u0087"+
-		"\7)\2\2\u0081\u0082\7)\2\2\u0082\u0083\7\16\2\2\u0083\u0084\5\32\16\2"+
+		"\7&\2\2\u0081\u0082\7&\2\2\u0082\u0083\7\16\2\2\u0083\u0084\5\32\16\2"+
 		"\u0084\u0085\7\17\2\2\u0085\u0087\3\2\2\2\u0086\u0080\3\2\2\2\u0086\u0081"+
 		"\3\2\2\2\u0087\31\3\2\2\2\u0088\u0089\b\16\1\2\u0089\u008a\5\34\17\2\u008a"+
 		"\u0090\3\2\2\2\u008b\u008c\f\3\2\2\u008c\u008d\7\f\2\2\u008d\u008f\5\34"+
@@ -1863,13 +1863,13 @@ public class SimulatorParser extends Parser {
 		"\u00a3\3\2\2\2\u00a1\u009f\3\2\2\2\u00a1\u00a2\3\2\2\2\u00a2!\3\2\2\2"+
 		"\u00a3\u00a1\3\2\2\2\u00a4\u00a9\5*\26\2\u00a5\u00a6\7\f\2\2\u00a6\u00a8"+
 		"\5*\26\2\u00a7\u00a5\3\2\2\2\u00a8\u00ab\3\2\2\2\u00a9\u00a7\3\2\2\2\u00a9"+
-		"\u00aa\3\2\2\2\u00aa#\3\2\2\2\u00ab\u00a9\3\2\2\2\u00ac\u00ad\7)\2\2\u00ad"+
+		"\u00aa\3\2\2\2\u00aa#\3\2\2\2\u00ab\u00a9\3\2\2\2\u00ac\u00ad\7&\2\2\u00ad"+
 		"\u00af\7\7\2\2\u00ae\u00b0\5 \21\2\u00af\u00ae\3\2\2\2\u00af\u00b0\3\2"+
 		"\2\2\u00b0\u00b1\3\2\2\2\u00b1\u00b2\7\t\2\2\u00b2%\3\2\2\2\u00b3\u00b4"+
-		"\7)\2\2\u00b4\u00b5\7\7\2\2\u00b5\u00b6\5 \21\2\u00b6\u00b7\7\t\2\2\u00b7"+
-		"\'\3\2\2\2\u00b8\u00b9\7)\2\2\u00b9\u00ba\7\n\2\2\u00ba\u00bb\5*\26\2"+
+		"\7&\2\2\u00b4\u00b5\7\7\2\2\u00b5\u00b6\5 \21\2\u00b6\u00b7\7\t\2\2\u00b7"+
+		"\'\3\2\2\2\u00b8\u00b9\7&\2\2\u00b9\u00ba\7\n\2\2\u00ba\u00bb\5*\26\2"+
 		"\u00bb)\3\2\2\2\u00bc\u00bd\b\26\1\2\u00bd\u00cb\5\36\20\2\u00be\u00cb"+
-		"\7)\2\2\u00bf\u00c0\7\7\2\2\u00c0\u00c1\5*\26\2\u00c1\u00c2\7\t\2\2\u00c2"+
+		"\7&\2\2\u00bf\u00c0\7\7\2\2\u00c0\u00c1\5*\26\2\u00c1\u00c2\7\t\2\2\u00c2"+
 		"\u00cb\3\2\2\2\u00c3\u00c4\7\16\2\2\u00c4\u00c5\5\"\22\2\u00c5\u00c6\7"+
 		"\17\2\2\u00c6\u00cb\3\2\2\2\u00c7\u00cb\5$\23\2\u00c8\u00c9\t\4\2\2\u00c9"+
 		"\u00cb\5*\26\16\u00ca\u00bc\3\2\2\2\u00ca\u00be\3\2\2\2\u00ca\u00bf\3"+

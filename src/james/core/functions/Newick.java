@@ -18,7 +18,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
 
     final String paramName;
 
-    public Newick(@ParameterInfo(name = "0", description = "the tree in Newick format.") Value<String> x) {
+    public Newick(@ParameterInfo(name = "tree", description = "the tree in Newick format.") Value<String> x) {
         paramName = getParamName(0);
         setParam(paramName, x);
     }

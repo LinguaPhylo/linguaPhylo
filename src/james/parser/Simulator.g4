@@ -54,7 +54,7 @@ range_element:
 | expression 
 ;
 
-constant : '-'? (FLOAT_LITERAL|DECIMAL_LITERAL|OCT_LITERAL|HEX_LITERAL|HEX_FLOAT_LITERAL|'true'|'false');
+constant : '-'? (FLOAT_LITERAL|DECIMAL_LITERAL|OCT_LITERAL|HEX_LITERAL|HEX_FLOAT_LITERAL|STRING_LITERAL|'true'|'false');
 
 expression_list
     : named_expression (',' named_expression)*
@@ -108,9 +108,9 @@ expression
 
 //C:                   'c';graphicalModelSimulation/
 
-VAR:                 'var';
-DATA:                'data';
-MODEL:               'model';
+//VAR:                 'var';
+//DATA:                'data';
+//MODEL:               'model';
 
 NAME:                Letter LetterOrDigit*;
 //FUNC:                Letter LetterOrDigit*;
@@ -156,6 +156,7 @@ HEX_FLOAT_LITERAL:  '0' [xX] (HexDigits '.'? | HexDigits? '.' HexDigits) [pP] [+
 //CHAR_LITERAL:       '\'' (~['\\\r\n] | EscapeSequence) '\'';
 //
 //STRING_LITERAL:     '"' (~["\\\r\n] | EscapeSequence)* '"';
+STRING_LITERAL:     '"' .*? '"';
 //
 //NULL_LITERAL:       'null';
 

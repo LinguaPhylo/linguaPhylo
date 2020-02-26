@@ -31,10 +31,7 @@ import james.core.functions.JukesCantor;
 import james.core.functions.K80;
 import james.core.functions.Newick;
 import james.graphicalModel.*;
-import james.graphicalModel.types.DoubleArray2DValue;
-import james.graphicalModel.types.DoubleArrayValue;
-import james.graphicalModel.types.DoubleValue;
-import james.graphicalModel.types.IntegerValue;
+import james.graphicalModel.types.*;
 import james.parser.SimulatorParser.*;
 
 public class SimulatorListenerImpl extends SimulatorBaseListener {
@@ -155,6 +152,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 		@Override
 		public Value visitConstant(SimulatorParser.ConstantContext ctx) {
 			String text = ctx.getText();
+			if (text.startsWith("\"")) {
+				String id = nextID("StringValue");
+				StringValue v = new StringValue(id, text);
+				return v;
+			}
 			double d = 0;
 			try {
 				d = Long.parseLong(text);
