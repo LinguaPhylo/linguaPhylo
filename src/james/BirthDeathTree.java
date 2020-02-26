@@ -11,10 +11,10 @@ import java.util.*;
  */
 public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
 
-    private final String birthRateParamName;
-    private final String deathRateParamName;
-    private final String rhoParamName;
-    private final String rootAgeParamName;
+    final String birthRateParamName;
+    final String deathRateParamName;
+    final String rhoParamName;
+    final String rootAgeParamName;
     private Value<Double> birthRate;
     private Value<Double> deathRate;
     private Value<Double> rho;
@@ -162,6 +162,7 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
     private void doDeath(List<TimeTreeNode> activeNodes, double age) {
         TimeTreeNode deadNode = activeNodes.remove(random.nextInt(activeNodes.size()));
         deadNode.setAge(age);
+        markForRemoval(deadNode);
     }
 
 
