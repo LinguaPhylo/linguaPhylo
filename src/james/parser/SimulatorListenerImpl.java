@@ -24,12 +24,15 @@ import james.core.ErrorModel;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.distributions.*;
+import james.core.functions.BinaryRateMatrix;
 import james.core.functions.GTR;
 import james.core.functions.HKY;
 import james.core.functions.JukesCantor;
 import james.core.functions.K80;
 import james.core.functions.Newick;
 import james.graphicalModel.*;
+import james.graphicalModel.types.DoubleArray2DValue;
+import james.graphicalModel.types.DoubleArrayValue;
 import james.graphicalModel.types.DoubleValue;
 import james.graphicalModel.types.IntegerValue;
 import james.parser.SimulatorParser.*;
@@ -59,7 +62,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 	        }
 	
 	        Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-	                Newick.class};
+	                Newick.class, james.core.functions.BinaryRateMatrix.class};
 	
 	        for (Class<?> functionClass : functionClasses) {
 	            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -310,7 +313,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					};
 //				}
 //				return visit(ctx.getChild(0));
-//			}
+			}
 			ExpressionNode expression = null;
 			if (ctx.getChildCount() >= 2) {
 				String s = ctx.getChild(1).getText();
@@ -360,19 +363,37 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					case ":": transform = new ExpressionNode(ctx.getText(), ExpressionNode.range(), f1,f2); break;
 					}
 					return expression; 
-				} else if (s.equals("!")) {
+				} 
+				s = ctx.getChild(0).getText();
+
+				if (s.equals("!")) {
 					Value f1 = (Value) visit(ctx.getChild(2));
 					expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
+					return expression;
 //				} else if (s.equals("~")) {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
 //					transform = new Complement(f1);
-//				} else if (s.equals("[")) {
-//					JFunction var = (JFunction) visit(ctx.getChild(0));
-//					JFunction f1 = (JFunction) visit(ctx.getChild(2));
-//					transform = new Index(var, f1);
+				} else if (s.equals("[")) {
+					Value [] var = (Value[]) visit(ctx.getChild(1));
+					if (var[0].value() instanceof Double[]) {
+						Double[][] value = new Double[var.length][];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Double[]) var[i].value();
+						}
+						DoubleArray2DValue v = new DoubleArray2DValue(null, value);
+						return v;
+					} else if (var[0].value() instanceof Double) {
+						Double[] value = new Double[var.length];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Double) var[i].value();
+						}
+						DoubleArrayValue v = new DoubleArrayValue(null, value);
+						return v;
+					} else {
+						throw new RuntimeException("Don't know how to handle 3D matrics");
+					}
 //				}
 				}
-			}
 			}
 			return super.visitExpression(ctx);
 		}
@@ -451,6 +472,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			return list.toArray(new Value[] {});
 		}
 		
+		@Override
+		public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
+			List<Value> list = new ArrayList<>();
+			for (int i = 0; i < ctx.getChildCount(); i+= 2) {
+				list.add((Value) visit(ctx.getChild(i)));
+			}
+			return list.toArray(new Value[] {});
+		}
+
 		@Override
 		public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 //			Transform transform = null;
@@ -658,7 +688,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
             fin.close();
 			Object o = parser.parse(buf.toString());
-
+			System.err.println("OK Done!");
 		} else {
 			throw new IllegalArgumentException("Expected 1 argument: a file name");
 		}
