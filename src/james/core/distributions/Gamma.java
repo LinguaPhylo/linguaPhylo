@@ -39,7 +39,7 @@ public class Gamma implements GenerativeDistribution<Double> {
         constructGammaDistribution();
     }
 
-    @GenerativeDistributionInfo(description = "The gamma probability distribution.")
+    @GenerativeDistributionInfo(name="Gamma", description = "The gamma probability distribution.")
     public RandomVariable<Double> sample() {
         constructGammaDistribution();
         double x = gammaDistribution.sample();

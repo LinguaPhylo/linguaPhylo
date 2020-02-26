@@ -24,7 +24,7 @@ public class Geometric implements GenerativeDistribution<Integer> {
         pParamName = getParamName(0);
     }
 
-    @GenerativeDistributionInfo(description="The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.")
+    @GenerativeDistributionInfo(name="Gamma", description="The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {
 
         GeometricDistribution geom = new GeometricDistribution(p.value());

@@ -43,7 +43,6 @@ public abstract class Func implements Parameterized, Viewable {
         Method[] methods = c.getMethods();
 
         for (Method method : methods) {
-            Annotation[] annotations = method.getAnnotations();
             for (Annotation annotation : method.getAnnotations()) {
                 if (annotation instanceof FunctionInfo) {
                     return (FunctionInfo) annotation;

@@ -35,7 +35,14 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
     }
 
     default String getName() {
-        return this.getClass().getSimpleName();
+
+        String name = this.getClass().getSimpleName();
+
+        GenerativeDistributionInfo ginfo = getInfo();
+        if (ginfo != null) {
+            name = ginfo.name();
+        }
+        return name;
     }
 
     default String getRichDescription(int index) {
@@ -77,6 +84,30 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         return null;
     }
 
+    static GenerativeDistributionInfo getGenerativeDistributionInfo(Class c) {
+
+        Method[] methods = c.getMethods();
+
+        for (Method method : methods) {
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation instanceof GenerativeDistributionInfo) {
+                    return (GenerativeDistributionInfo) annotation;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    static String getGenerativeDistributionInfoName(Class c) {
+        GenerativeDistributionInfo ginfo = getGenerativeDistributionInfo(c);
+
+        if (ginfo != null) return ginfo.name();
+
+        return c.getSimpleName();
+    }
+
+
     default JComponent getViewer() {
         return new JLabel(getRichDescription(0));
     }
@@ -109,7 +140,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         List<ParameterInfo> pInfo = Parameterized.getParameterInfo(aClass, 0);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(aClass.getSimpleName() + "(");
+        builder.append(getGenerativeDistributionInfoName(aClass) + "(");
         if (pInfo.size() > 0) {
             builder.append(pInfo.get(0).name());
             for (int i = 1; i < pInfo.size(); i++) {

@@ -1,6 +1,7 @@
 package james.app;
 
 import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,6 +21,7 @@ public class CircleButton extends JButton {
     public CircleButton(String text, Color backgroundColor, Color borderColor) {
 
         super(text);
+        setBorder(new EmptyBorder(0,0,0,0));
 
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;

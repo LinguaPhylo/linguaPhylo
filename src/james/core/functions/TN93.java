@@ -27,7 +27,7 @@ public class TN93 extends RateMatrix {
     }
 
 
-    @FunctionInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
+    @FunctionInfo(name = "tn93", description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa1 = getParams().get(kappa1ParamName);
         Value<Double> kappa2 = getParams().get(kappa2ParamName);

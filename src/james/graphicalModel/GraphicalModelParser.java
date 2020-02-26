@@ -29,7 +29,7 @@ public class GraphicalModelParser {
     List<String> lines = new ArrayList<>();
 
     // PARSER STATE
-    public Map<String, Class> genDistDictionary = new TreeMap<>();
+    public Map<String, Set<Class>> genDistDictionary = new TreeMap<>();
     Map<String, Class> functionDictionary = new TreeMap<>();
     Map<String, Command> commandDictionary = new TreeMap<>();
 
@@ -39,12 +39,12 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
+        Class[] genClasses = {Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, BirthDeathTree.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
         for (Class genClass : genClasses) {
-            genDistDictionary.put(genClass.getSimpleName(), genClass);
+            addGenerativeDistribution(genClass);
         }
 
         Class[] functionClasses = {
@@ -56,6 +56,17 @@ public class GraphicalModelParser {
         }
 
         addCommand(new Remove(this));
+    }
+
+    private void addGenerativeDistribution(Class genClass) {
+        String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
+
+        Set<Class> genDistSet = genDistDictionary.get(name);
+        if (genDistSet == null) {
+            genDistSet = new HashSet<>();
+            genDistDictionary.put(name, genDistSet);
+        }
+        genDistSet.add(genClass);
     }
 
     public void addCommand(Command command) {
@@ -108,9 +119,11 @@ public class GraphicalModelParser {
                 }
 
                 @Override
-                public void visitGenDist(GenerativeDistribution genDist) {}
+                public void visitGenDist(GenerativeDistribution genDist) {
+                }
 
-                public void visitFunction(DeterministicFunction f) {}
+                public void visitFunction(DeterministicFunction f) {
+                }
             }, true);
         }
         return builder.toString();
@@ -126,7 +139,9 @@ public class GraphicalModelParser {
         keywords.addAll(commandDictionary.keySet());
 
         Set<Class> classes = new HashSet<>();
-        classes.addAll(genDistDictionary.values());
+        for (Set<Class> genDistClasses : genDistDictionary.values()) {
+            classes.addAll(genDistClasses);
+        }
         classes.addAll(functionDictionary.values());
 
         for (Class c : classes) {
@@ -463,7 +478,7 @@ public class GraphicalModelParser {
         String id = line.substring(0, firstEquals).trim();
         String remainder = line.substring(firstEquals + 1);
 
-        if (remainder.endsWith(";")) remainder = remainder.substring(0, remainder.length()-1);
+        if (remainder.endsWith(";")) remainder = remainder.substring(0, remainder.length() - 1);
         String functionString = remainder;
         Value val = parseDeterministicFunction(id, functionString, lineNumber);
         dictionary.put(val.getId(), val);
@@ -478,7 +493,7 @@ public class GraphicalModelParser {
         String name = parts[0].trim();
         String remainder = parts[1].trim();
 
-        if (remainder.endsWith(")")) remainder = remainder.substring(0, remainder.length()-1);
+        if (remainder.endsWith(")")) remainder = remainder.substring(0, remainder.length() - 1);
         String argumentString = remainder;
 
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
@@ -536,297 +551,300 @@ public class GraphicalModelParser {
         String argumentString = remainder.substring(0, remainder.length() - 1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
-        Class genDistClass = genDistDictionary.get(name);
-        if (genDistClass == null)
-            throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
+        Set<Class> genDistClasses = genDistDictionary.get(name);
 
-        try {
-            List<Object> initargs = new ArrayList<>();
-            Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-            if (constructor == null)
-                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
+        if (genDistClasses == null) throw new RuntimeException("Found no implementation for generative distribution " + name);
 
-            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
-            for (String parameterName : arguments.keySet()) {
-                Value value = arguments.get(parameterName);
-                dist.setInput(parameterName, arguments.get(parameterName));
-            }
-            return dist;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
-        }
-    }
+        for (Class genDistClass : genDistClasses) {
+            try {
+                List<Object> initargs = new ArrayList<>();
+                Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
 
-    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
-        System.out.println(genDistClass.getSimpleName() + " " + arguments);
-        for (Constructor constructor : genDistClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
-            if (match(arguments, pInfo)) {
-                for (int i = 0; i < pInfo.size(); i++) {
-                    Value arg = arguments.get(pInfo.get(i).name());
-                    if (arg != null) {
-                        initargs.add(arg);
-                    } else if (!pInfo.get(i).optional()) {
-                        throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
-                    } else {
-                        initargs.add(null);
+                if (constructor != null) {
+                    GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
+                    for (String parameterName : arguments.keySet()) {
+                        Value value = arguments.get(parameterName);
+                        dist.setInput(parameterName, value);
                     }
+                    return dist;
                 }
-                return constructor;
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
             }
         }
-        return null;
+        throw new RuntimeException("Parser exception: no constructor found for " + genString);
     }
 
-    /**
-     * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
-     *
-     * @param arguments
-     * @param pInfo
-     * @return
-     */
-    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
-
-        Set<String> requiredArguments = new TreeSet<>();
-        Set<String> optionalArguments = new TreeSet<>();
-        for (ParameterInfo pinfo : pInfo) {
-            if (pinfo.optional()) {
-                optionalArguments.add(pinfo.name());
-            } else {
-                requiredArguments.add(pinfo.name());
-            }
-        }
-
-        if (!arguments.keySet().containsAll(requiredArguments)) {
-            return false;
-        }
-        Set<String> allArguments = optionalArguments;
-        allArguments.addAll(requiredArguments);
-        return allArguments.containsAll(arguments.keySet());
-    }
-
-    private String[] parseArguments(String argumentString) {
-
-        if (argumentString.length() == 0) return new String[] {};
-
-        String argumentSplitterPattern =
-                ",(?=(([^']*'){2})*[^']*$)(?=(([^\"]*\"){2})*[^\"]*$)(?![^()]*\\))(?![^\\[]*\\])";
-
-        return argumentString.split(argumentSplitterPattern);
-    }
-
-    private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
-
-        String[] argumentStrings = parseArguments(argumentString);
-
-        TreeMap<String, Value> arguments = new TreeMap<>();
-        int argumentCount = 0;
-        for (int i = 0; i < argumentStrings.length; i++) {
-
-            String argumentPair = argumentStrings[i];
-            System.out.println("arg" + i + ": " + argumentPair);
-
-            if (argumentPair.indexOf('=') < 0) {
-                argumentPair = argumentCount + "=" + argumentPair;
-            }
-            int pos = argumentPair.indexOf('=');
-
-            String key = argumentPair.substring(0, pos).trim();
-            String valueString = argumentPair.substring(pos + 1).trim();
-
-            Value val = parseValueExpression(valueString, lineNumber);
-            arguments.put(key, val);
-            argumentCount += 1;
-        }
-        return arguments;
-    }
-
-    private String consumeArgument(String argumentString, int lineNumber) {
-
-        int firstQuote = argumentString.indexOf('"');
-        int firstComma = argumentString.indexOf(',');
-
-        // if next argument is a string or contains a string return immediately
-        if (firstQuote >= 0 && firstQuote < firstComma) {
-            System.out.println("next argument contains quotes: " + argumentString);
-            return argumentString.substring(0, argumentString.indexOf("\"", firstQuote+1)+1);
-        }
-
-        int pos = firstComma;
-        if (pos > 0) {
-            String nextArgument = argumentString.substring(0, pos);
-            while (pos > 0 && !matchingBrackets(nextArgument)) {
-                pos = argumentString.indexOf(',', pos + 1);
-                if (pos > 0) nextArgument = argumentString.substring(0, pos);
-            }
-            if (matchingBrackets(nextArgument)) {
-                return nextArgument;
-            } else
-                throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
-        } else {
-            return argumentString;
-        }
-    }
-
-    private boolean matchingBrackets(String string) {
-        return string.replace(")", "").length() == string.replace("(", "").length();
-    }
-
-    public boolean isFunctionLine(String line) {
-        int firstEquals = line.indexOf('=');
-        if (firstEquals > 0) {
-            String id = line.substring(0, firstEquals).trim();
-            String remainder = line.substring(firstEquals + 1).trim();
-            return isFunction(remainder);
-        } else return false;
-    }
-
-    public static boolean isRandomVariableLine(String line) {
-        return (line.indexOf('~') > 0);
-    }
-
-    public static boolean isFixedParameterLine(String line) {
-        int firstEquals = line.indexOf('=');
-        if (firstEquals > 0) {
-            String id = line.substring(0, firstEquals).trim();
-
-            String remainder = line.substring(firstEquals + 1).trim();
-            String valueString = remainder.substring(0, remainder.indexOf(';'));
-            valueString = valueString.trim();
-
-            return isLiteral(valueString);
-
-        } else return false;
-    }
-
-    public List<String> getLines() {
-        return lines;
-    }
-
-    /**
-     * Sample the current model
-     * @param reps the number of times to sample
-     * @param loggers the loggers to log to
-     */
-    public void sample(int reps, RandomVariableLogger[] loggers) {
-
-        for (int i = 0; i < reps; i++) {
-            Set<String> sampled = new TreeSet<>();
-            Set<Value> roots = getRoots();
-            for (RandomVariable var : getAllVariablesFromRoots()) {
-                dictionary.remove(var.getId());
-            }
-            for (Value value : roots) {
-
-                if (value instanceof RandomVariable) {
-                    RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
-                    variable.setId(value.id);
-                    dictionary.put(variable.getId(), variable);
-                }
-            }
-
-            if (loggers != null) {
-                List<RandomVariable> variables = getAllVariablesFromRoots();
-                for (RandomVariableLogger logger : loggers) {
-                    logger.log(variables);
-                }
-            }
-        }
-        notifyListeners();
-    }
-
-    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {
-
-        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
-            generativeDistribution.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
-        }
-
-        return generativeDistribution.sample();
-    }
-
-    private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
-
-        for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
-            function.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
-        }
-
-        return function.apply();
-    }
-
-    private void addValueToDictionary(Value value) {
-
-        if (!value.isAnonymous()) {
-            String id = value.getId();
-            Value oldValue = dictionary.get(id);
-            if (oldValue != null) {
-                oldValue.setId(id + ".old");
-            }
-
-            dictionary.put(id, value);
-        }
-    }
-
-    private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
-        Map<String, Value> params = parameterized.getParams();
-
-        Map<String, Value> newlySampledParams = new TreeMap<>();
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-
-            Value val = e.getValue();
-
-            if (val.isRandom()) {
-                if (val.isAnonymous() || !sampled.contains(val.getId())) {
-                    // needs to be sampled
-
-                    if (val instanceof RandomVariable) {
-                        RandomVariable v = (RandomVariable) e.getValue();
-
-                        RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
-                        nv.setId(v.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        sampled.add(v.getId());
-                    } else {
-                        Value v = e.getValue();
-                        DeterministicFunction f = e.getValue().getFunction();
-
-                        Value nv = sampleAll(f, sampled);
-                        nv.setId(v.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        if (!v.isAnonymous()) sampled.add(v.getId());
+        private Constructor getConstructorByArguments (Map < String, Value > arguments, Class genDistClass, List < Object > initargs){
+            System.out.println(genDistClass.getSimpleName() + " " + arguments);
+            for (Constructor constructor : genDistClass.getConstructors()) {
+                List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
+                if (match(arguments, pInfo)) {
+                    for (int i = 0; i < pInfo.size(); i++) {
+                        Value arg = arguments.get(pInfo.get(i).name());
+                        if (arg != null) {
+                            initargs.add(arg);
+                        } else if (!pInfo.get(i).optional()) {
+                            throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
+                        } else {
+                            initargs.add(null);
+                        }
                     }
+                    return constructor;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
+         *
+         * @param arguments
+         * @param pInfo
+         * @return
+         */
+        private boolean match (Map < String, Value > arguments, List < ParameterInfo > pInfo){
+
+            Set<String> requiredArguments = new TreeSet<>();
+            Set<String> optionalArguments = new TreeSet<>();
+            for (ParameterInfo pinfo : pInfo) {
+                if (pinfo.optional()) {
+                    optionalArguments.add(pinfo.name());
                 } else {
-                    // already been sampled
-                    String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), dictionary.get(id));
+                    requiredArguments.add(pinfo.name());
                 }
             }
-        }
-        return newlySampledParams;
-    }
 
-    public static void main(String[] args) {
-
-        GraphicalModelParser parser = new GraphicalModelParser();
-
-        String argumentString = "conc=[1,1,1,1],Q=jukesCantor(),label=\"foo,bar\",newick=newick(\"((A,B),C)\")";
-
-        String[] arguments = parser.parseArguments(argumentString);
-
-        for (int i = 0; i < arguments.length; i++) {
-            System.out.println("arg" + i + ": " + arguments[i]);
+            if (!arguments.keySet().containsAll(requiredArguments)) {
+                return false;
+            }
+            Set<String> allArguments = optionalArguments;
+            allArguments.addAll(requiredArguments);
+            return allArguments.containsAll(arguments.keySet());
         }
 
-    }
+        private String[] parseArguments (String argumentString){
 
-}
+            if (argumentString.length() == 0) return new String[]{};
+
+            String argumentSplitterPattern =
+                    ",(?=(([^']*'){2})*[^']*$)(?=(([^\"]*\"){2})*[^\"]*$)(?![^()]*\\))(?![^\\[]*\\])";
+
+            return argumentString.split(argumentSplitterPattern);
+        }
+
+        private Map<String, Value> parseArguments (String argumentString,int lineNumber){
+
+            String[] argumentStrings = parseArguments(argumentString);
+
+            TreeMap<String, Value> arguments = new TreeMap<>();
+            int argumentCount = 0;
+            for (int i = 0; i < argumentStrings.length; i++) {
+
+                String argumentPair = argumentStrings[i];
+                System.out.println("arg" + i + ": " + argumentPair);
+
+                if (argumentPair.indexOf('=') < 0) {
+                    argumentPair = argumentCount + "=" + argumentPair;
+                }
+                int pos = argumentPair.indexOf('=');
+
+                String key = argumentPair.substring(0, pos).trim();
+                String valueString = argumentPair.substring(pos + 1).trim();
+
+                Value val = parseValueExpression(valueString, lineNumber);
+                arguments.put(key, val);
+                argumentCount += 1;
+            }
+            return arguments;
+        }
+
+        private String consumeArgument (String argumentString,int lineNumber){
+
+            int firstQuote = argumentString.indexOf('"');
+            int firstComma = argumentString.indexOf(',');
+
+            // if next argument is a string or contains a string return immediately
+            if (firstQuote >= 0 && firstQuote < firstComma) {
+                System.out.println("next argument contains quotes: " + argumentString);
+                return argumentString.substring(0, argumentString.indexOf("\"", firstQuote + 1) + 1);
+            }
+
+            int pos = firstComma;
+            if (pos > 0) {
+                String nextArgument = argumentString.substring(0, pos);
+                while (pos > 0 && !matchingBrackets(nextArgument)) {
+                    pos = argumentString.indexOf(',', pos + 1);
+                    if (pos > 0) nextArgument = argumentString.substring(0, pos);
+                }
+                if (matchingBrackets(nextArgument)) {
+                    return nextArgument;
+                } else
+                    throw new RuntimeException("Failed to parse argument string on line " + lineNumber + ". nextArgument=" + nextArgument);
+            } else {
+                return argumentString;
+            }
+        }
+
+        private boolean matchingBrackets (String string){
+            return string.replace(")", "").length() == string.replace("(", "").length();
+        }
+
+        public boolean isFunctionLine (String line){
+            int firstEquals = line.indexOf('=');
+            if (firstEquals > 0) {
+                String id = line.substring(0, firstEquals).trim();
+                String remainder = line.substring(firstEquals + 1).trim();
+                return isFunction(remainder);
+            } else return false;
+        }
+
+        public static boolean isRandomVariableLine (String line){
+            return (line.indexOf('~') > 0);
+        }
+
+        public static boolean isFixedParameterLine (String line){
+            int firstEquals = line.indexOf('=');
+            if (firstEquals > 0) {
+                String id = line.substring(0, firstEquals).trim();
+
+                String remainder = line.substring(firstEquals + 1).trim();
+                String valueString = remainder.substring(0, remainder.indexOf(';'));
+                valueString = valueString.trim();
+
+                return isLiteral(valueString);
+
+            } else return false;
+        }
+
+        public List<String> getLines () {
+            return lines;
+        }
+
+        /**
+         * Sample the current model
+         * @param reps the number of times to sample
+         * @param loggers the loggers to log to
+         */
+        public void sample ( int reps, RandomVariableLogger[] loggers){
+
+            for (int i = 0; i < reps; i++) {
+                Set<String> sampled = new TreeSet<>();
+                Set<Value> roots = getRoots();
+                for (RandomVariable var : getAllVariablesFromRoots()) {
+                    dictionary.remove(var.getId());
+                }
+                for (Value value : roots) {
+
+                    if (value instanceof RandomVariable) {
+                        RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
+                        variable.setId(value.id);
+                        dictionary.put(variable.getId(), variable);
+                    }
+                }
+
+                if (loggers != null) {
+                    List<RandomVariable> variables = getAllVariablesFromRoots();
+                    for (RandomVariableLogger logger : loggers) {
+                        logger.log(variables);
+                    }
+                }
+            }
+            notifyListeners();
+        }
+
+        private RandomVariable sampleAll (GenerativeDistribution generativeDistribution, Set < String > sampled){
+
+            for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
+                generativeDistribution.setInput(e.getKey(), e.getValue());
+                if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
+            }
+
+            return generativeDistribution.sample();
+        }
+
+        private Value sampleAll (DeterministicFunction function, Set < String > sampled){
+
+            for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
+                function.setInput(e.getKey(), e.getValue());
+                if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
+            }
+
+            return function.apply();
+        }
+
+        private void addValueToDictionary (Value value){
+
+            if (!value.isAnonymous()) {
+                String id = value.getId();
+                Value oldValue = dictionary.get(id);
+                if (oldValue != null) {
+                    oldValue.setId(id + ".old");
+                }
+
+                dictionary.put(id, value);
+            }
+        }
+
+        private Map<String, Value> getNewlySampledParams (Parameterized parameterized, Set < String > sampled){
+            Map<String, Value> params = parameterized.getParams();
+
+            Map<String, Value> newlySampledParams = new TreeMap<>();
+            for (Map.Entry<String, Value> e : params.entrySet()) {
+
+                Value val = e.getValue();
+
+                if (val.isRandom()) {
+                    if (val.isAnonymous() || !sampled.contains(val.getId())) {
+                        // needs to be sampled
+
+                        if (val instanceof RandomVariable) {
+                            RandomVariable v = (RandomVariable) e.getValue();
+
+                            RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
+                            nv.setId(v.getId());
+                            newlySampledParams.put(e.getKey(), nv);
+                            addValueToDictionary(nv);
+                            sampled.add(v.getId());
+                        } else {
+                            Value v = e.getValue();
+                            DeterministicFunction f = e.getValue().getFunction();
+
+                            Value nv = sampleAll(f, sampled);
+                            nv.setId(v.getId());
+                            newlySampledParams.put(e.getKey(), nv);
+                            addValueToDictionary(nv);
+                            if (!v.isAnonymous()) sampled.add(v.getId());
+                        }
+                    } else {
+                        // already been sampled
+                        String id = e.getValue().getId();
+                        newlySampledParams.put(e.getKey(), dictionary.get(id));
+                    }
+                }
+            }
+            return newlySampledParams;
+        }
+
+        public static void main (String[]args){
+
+            GraphicalModelParser parser = new GraphicalModelParser();
+
+            String argumentString = "conc=[1,1,1,1],Q=jukesCantor(),label=\"foo,bar\",newick=newick(\"((A,B),C)\")";
+
+            String[] arguments = parser.parseArguments(argumentString);
+
+            for (int i = 0; i < arguments.length; i++) {
+                System.out.println("arg" + i + ": " + arguments[i]);
+            }
+
+        }
+
+    }

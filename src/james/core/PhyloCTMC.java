@@ -21,6 +21,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> freq;
     Value<Double[][]> Q;
     Value<Double[]> siteRates;
+    Value<Double[]> branchRates;
     Value<Integer> L;
     RandomGenerator random;
 
@@ -29,6 +30,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     String rootFreqParamName;
     String QParamName;
     String siteRatesParamName;
+    String branchRatesParamName;
     String LParamName;
 
     int numStates;
@@ -48,6 +50,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
+                     @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L) {
 
         this.tree = tree;
@@ -55,6 +58,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.freq = rootFreq;
         this.clockRate = mu;
         this.siteRates = siteRates;
+        this.branchRates = branchRates;
         this.L = L;
         numStates = Q.value().length;
         this.random = Utils.getRandom();
@@ -65,7 +69,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         rootFreqParamName = getParamName(2);
         QParamName = getParamName(3);
         siteRatesParamName = getParamName(4);
-        LParamName = getParamName(5);
+        branchRatesParamName = getParamName(5);
+        LParamName = getParamName(6);
     }
 
     @Override
@@ -76,6 +81,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (freq != null) map.put(rootFreqParamName, freq);
         map.put(QParamName, Q);
         if (siteRates != null) map.put(siteRatesParamName, siteRates);
+        if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
         return map;
     }
@@ -87,6 +93,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(rootFreqParamName)) freq = value;
         else if (paramName.equals(QParamName)) Q = value;
         else if (paramName.equals(siteRatesParamName)) siteRates = value;
+        else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
@@ -128,6 +135,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
+    @GenerativeDistributionInfo(name="PhyloCTMC", description="The phylogenetic continuous-time Markov chain distribution. " +
+            "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
 
         setup();
@@ -197,6 +206,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
             for (int i = 0; i < children.size(); i++) {
                 TimeTreeNode child = children.get(i);
                 double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
+
+                if (branchRates != null) {
+                    branchLength *= branchRates.value()[child.getIndex()];
+                }
 
                 getTransitionProbabilities(branchLength, transProb);
                 int state = drawState(transProb[nodeState]);

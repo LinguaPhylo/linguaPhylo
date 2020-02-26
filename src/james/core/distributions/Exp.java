@@ -21,7 +21,7 @@ public class Exp implements GenerativeDistribution<Double> {
         rateParamName = getParamName(0);
     }
 
-    @GenerativeDistributionInfo(description="The exponential probability distribution.")
+    @GenerativeDistributionInfo(name="Exp", description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 
         double x = - Math.log(random.nextDouble()) / rate.value();

@@ -22,7 +22,7 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
         pParamName = getParamName(0);
     }
 
-    @GenerativeDistributionInfo(description="The coin toss distribution. With true (heads) having probability p.")
+    @GenerativeDistributionInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {
 
         return new RandomVariable<>("x", random.nextBoolean(), this);

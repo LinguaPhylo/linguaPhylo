@@ -37,7 +37,7 @@ public class Normal implements GenerativeDistribution<Double> {
         sdParamName = getParamName(1);
     }
 
-    @GenerativeDistributionInfo(description="The normal probability distribution.")
+    @GenerativeDistributionInfo(name="Normal", description="The normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         // in case the mean is type integer

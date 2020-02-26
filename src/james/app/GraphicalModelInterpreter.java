@@ -61,8 +61,17 @@ public class GraphicalModelInterpreter extends JPanel {
 
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Class> entry : parser.genDistDictionary.entrySet()) {
-            final String message = GenerativeDistribution.getSignature(entry.getValue());
+        for (Map.Entry<String, Set<Class>> entry : parser.genDistDictionary.entrySet()) {
+
+            Set<Class> classes = entry.getValue();
+            Iterator iterator = classes.iterator();
+
+            StringBuilder builder = new StringBuilder();
+            for (Class c : classes) {
+                builder.append(GenerativeDistribution.getSignature((Class) iterator.next()));
+                builder.append("; ");
+            }
+            final String message = builder.toString();
 
             autoComplete.getActionMap().put(entry.getKey(), new AbstractAction() {
                 @Override
