@@ -1,8 +1,6 @@
-package james.app.graphmodelcomponent;
+package james.app.graphicalmodelcomponent;
 
-import javax.xml.soap.Node;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 
@@ -28,13 +26,14 @@ public class SugiyamaLayoutAlgorithm {
     public final static int VERTICAL = 2;
 
     // Internal constants
-    private static final int MAX_LAYERS = 10;
+    private static final int MAX_LAYERS = 20;
     private static final int MAX_SWEEPS = 35;
     private static final int PADDING = -1;
 
     private class NodeWrapper {
         int index;
         double x;
+        double dx = 0.0;
         final int layer;
         final NodeLayout node;
         final List<NodeWrapper> pred = new LinkedList<>();
@@ -75,7 +74,7 @@ public class SugiyamaLayoutAlgorithm {
             double barycenter = 0.0;
             for (NodeWrapper node : list)
                 barycenter += node.index;
-            return (int)Math.round(barycenter / list.size()); // always rounding off to
+            return (int) Math.round(barycenter / list.size()); // always rounding off to
             // avoid wrap around in
             // position refining!!!
         }
@@ -164,9 +163,133 @@ public class SugiyamaLayoutAlgorithm {
         }
         reduceCrossings();
 
+        //removePadding();
+
         getXByBaryCentre();
+//        for (int i =0; i < 1000; i++) {
+//            relax();
+//        }
+
+        for (int i = 0; i < layers.size(); i++) { // reduce and refine
+            for (NodeWrapper nw : layers.get(i)) {
+                nw.x = nw.index;
+            }
+        }
 
         calculatePositions();
+    }
+
+    private void removePadding() {
+
+        for (int i = 0; i < layers.size(); i++) {
+            List<NodeWrapper> toRemove = new ArrayList<>();
+            for (NodeWrapper n : layers.get(0)) {
+                if (n.isPadding()) toRemove.add(n);
+            }
+            layers.removeAll(toRemove);
+        }
+    }
+
+    public double SPRING_STRENGTH = 0.1;
+    public double TORQUE_STRENGTH = 0.25;
+    public static double TARGET_LEN = Math.sqrt(2.0);
+    public double REPULSION_STRENGTH = 10;
+    public double REPULSION_LIMIT = 2000.0;
+    int REPULSION_TYPE = 0; // 0: (1-r)/r   1: 1-r   2: (1-r)^2
+    public double FRICTION_FACTOR=0.75;
+
+    public synchronized void relax() {
+
+//        // go through all the nodes
+//        for (int i = 0; i < layers.size(); i++) {
+//            for (NodeWrapper n : layers.get(i)) {
+//                n.dx = 0.0;
+//            }
+//        }
+
+        // go through all the edges
+        for (int i = 1; i < layers.size(); i++) {
+            for (NodeWrapper to : layers.get(i)) {
+                for (NodeWrapper from : to.pred) {
+                    double vx = to.x - from.x;
+                    double vy = to.layer - from.layer;
+                    double len = Math.sqrt(vx * vx + vy * vy);
+
+                    if (len > 0) {
+                        double f = SPRING_STRENGTH * (TARGET_LEN - len) / len;
+                        double dx = f * vx;
+                        double dy = f * vy;
+
+                        double phi = Math.atan2(vx, vy);
+                        double dir = -Math.sin(4 * phi);
+                        dx += TORQUE_STRENGTH * vy * dir / len;
+
+                        to.dx += dx;
+                        from.dx += -dx;
+                    }
+                }
+            }
+        }
+
+        // go through all the nodes
+        for (int i = 0; i < layers.size(); i++) {
+            for (NodeWrapper n1 : layers.get(i)) {
+
+                double dx = 0;
+                double dy = 0;
+                for (int j = 0; j < layers.size(); j++) {
+                    for (NodeWrapper n2 : layers.get(j)) {
+
+                        if (n1 == n2) {
+                            continue;
+                        }
+                        double vx = n1.x - n2.x;
+                        double vy = n1.layer - n2.layer;
+                        double lensqr = vx * vx + vy * vy;
+                        double len = Math.sqrt(lensqr);
+                        if (len == 0) {
+                            dx += REPULSION_STRENGTH * Math.random();
+                            dy += REPULSION_STRENGTH * Math.random();
+                        } else if (len < REPULSION_LIMIT) {
+                            // Normalize length.
+                            vx = vx / REPULSION_LIMIT;
+                            vy = vy / REPULSION_LIMIT;
+                            len = len / REPULSION_LIMIT;
+                            // Compute force.
+                            double f = 0;
+
+                            switch (REPULSION_TYPE) {
+                                case 0:
+                                    f = 0.5 * (1 - len) / len;
+                                    break;
+                                case 1:
+                                    f = 1 - len;
+                                    break;
+                                case 2:
+                                    f = 2 * (1 - len) * (1 - len);
+                                    break;
+                            }
+
+                            f *= REPULSION_STRENGTH;
+                            dx += f * vx;
+                            dy += f * vy;
+                        }
+                    }
+                }
+                n1.dx += dx;
+            }
+        }
+
+        // go through all the nodes
+        for (int i = 0; i < layers.size(); i++) {
+            for (NodeWrapper n : layers.get(i)) {
+                    n.x += Math.max(-5, Math.min(5, n.dx));
+                    if (n.x < 0) {
+                        n.x = 0;
+                    }
+                n.dx *= FRICTION_FACTOR;
+            }
+        }
     }
 
     private void getXByBaryCentre() {
@@ -213,6 +336,41 @@ public class SugiyamaLayoutAlgorithm {
             predecessors.addAll(layer);
             addLayer(layer);
             System.out.println("layer " + level + " = " + layer);
+        }
+    }
+
+    private void createLayersFromSinks() {
+        List<NodeLayout> nodes = new LinkedList<>();
+        nodes.addAll(context.getNodes());
+        List<NodeLayout> successors = findSinks(nodes);
+
+        nodes.removeAll(successors); // nodes now contains only nodes that are not roots;
+
+        List<List<NodeLayout>> layers = new ArrayList<>();
+
+        List<NodeLayout> layer1 = new ArrayList<>();
+        layer1.addAll(successors);
+        layers.add(layer1);
+        int level = 1;
+        while (!nodes.isEmpty()) {
+            if (level > MAX_LAYERS)
+                throw new RuntimeException(
+                        "Graphical tree exceeds maximum depth of " + MAX_LAYERS
+                                + "! (Graph not directed? Cycles?)");
+            List<NodeLayout> layer = new ArrayList<>();
+            for (NodeLayout item : nodes) {
+                if (successors.containsAll(item.getSuccessingNodes())) {
+                    layer.add(item);
+                }
+            }
+            nodes.removeAll(layer);
+            successors.addAll(layer);
+            layers.add(layer);
+            level += 1;
+        }
+        for (int i = layers.size() - 1; i >= 0; i--) {
+            System.out.println("layer " + (layers.size() - i - 1) + ":" + layers.get(i));
+            addLayer(layers.get(i));
         }
     }
 
@@ -367,23 +525,32 @@ public class SugiyamaLayoutAlgorithm {
 
     private void calculatePositions() {
 
+        double minX = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        for (int i = 0; i < layers.size(); i++) {
+            for (NodeWrapper n : layers.get(i)) {
+                if (n.x > maxX) maxX = n.x;
+                if (n.x < minX) minX = n.x;
+            }
+        }
+
         double dx = dimension.getWidth() / layers.size();
-        double dy = dimension.getHeight() / (last + 1);
+        double dy = dimension.getHeight() / ((maxX-minX) + 1);
 
         if (direction == VERTICAL) {
-            dx = dimension.getWidth() / (last + 1);
+            dx = dimension.getWidth() / ((maxX-minX) + 1);
             dy = dimension.getHeight() / layers.size();
         }
 
         if (direction == HORIZONTAL)
             for (NodeLayout node : context.getNodes()) {
                 NodeWrapper nw = map.get(node);
-                node.setLocation((nw.layer + 0.5d) * dx, (nw.x + 0.5d) * dy);
+                node.setLocation((nw.layer + 0.5d) * dx, (nw.x-minX + 0.5d) * dy);
             }
         else
             for (NodeLayout node : context.getNodes()) {
                 NodeWrapper nw = map.get(node);
-                node.setLocation((nw.x + 0.5d) * dx, (nw.layer + 0.5d) * dy);
+                node.setLocation((nw.x-minX + 0.5d) * dx, (nw.layer + 0.5d) * dy);
             }
     }
 
@@ -394,7 +561,18 @@ public class SugiyamaLayoutAlgorithm {
             if (iter.getPredecessingNodes().size() == 0)
                 roots.add(iter);
         }
-        return (roots);
+        return roots;
+    }
+
+    private static List<NodeLayout> findSinks(List<NodeLayout> list) {
+        List<NodeLayout> sinks = new ArrayList<>();
+        for (NodeLayout iter : list) { // no successors means: this is a sink,
+            // add it to list
+            if (iter.getSuccessingNodes().size() == 0) {
+                sinks.add(iter);
+            }
+        }
+        return sinks;
     }
 
     private static void updateIndex(List<NodeWrapper> list) {

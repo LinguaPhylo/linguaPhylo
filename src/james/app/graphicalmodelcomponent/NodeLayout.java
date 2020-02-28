@@ -1,4 +1,4 @@
-package james.app.graphmodelcomponent;
+package james.app.graphicalmodelcomponent;
 
 import james.TimeTree;
 import james.graphicalModel.*;

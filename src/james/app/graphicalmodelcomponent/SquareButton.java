@@ -1,12 +1,10 @@
-package james.app.graphmodelcomponent;
+package james.app.graphicalmodelcomponent;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 public class SquareButton extends JButton {

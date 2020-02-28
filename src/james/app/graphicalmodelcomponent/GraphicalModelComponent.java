@@ -1,4 +1,4 @@
-package james.app.graphmodelcomponent;
+package james.app.graphicalmodelcomponent;
 
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
@@ -12,7 +12,7 @@ import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
 
-import static james.app.graphmodelcomponent.NodeLayout.*;
+import static james.app.graphicalmodelcomponent.NodeLayout.*;
 
 /**
  * Created by adru001 on 18/12/19.

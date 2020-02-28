@@ -1,4 +1,4 @@
-package james.app.graphmodelcomponent;
+package james.app.graphicalmodelcomponent;
 
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;

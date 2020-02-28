@@ -41,6 +41,10 @@ public class LinguaPhyloStudio {
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
+    private static final int MAX_WIDTH = 1600;
+    private static final int MAX_HEIGHT = 1200;
+
+
     GraphicalModelParser parser = new GraphicalModelParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
@@ -140,12 +144,15 @@ public class LinguaPhyloStudio {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(dim.width * 9 / 10, dim.height * 9 / 10);
+
+        int width = Math.min(MAX_WIDTH, dim.width * 9 / 10);
+        int height = Math.min(MAX_HEIGHT, dim.height * 9 / 10);
+
+        frame.setSize(width, height);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
-
 
         openMenuItem.addActionListener(e -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());

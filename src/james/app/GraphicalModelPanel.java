@@ -1,6 +1,6 @@
 package james.app;
 
-import james.app.graphmodelcomponent.GraphicalModelComponent;
+import james.app.graphicalmodelcomponent.GraphicalModelComponent;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 
