@@ -89,6 +89,12 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         }
     }
 
+    // returns a unique id for this value for internal purposes.
+    public String getUniqueId() {
+        if (!isAnonymous()) return getId();
+        return hashCode() + "";
+    }
+
     public String getId() {
         return id;
     }
@@ -166,5 +172,8 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     public boolean isAnonymous() {
         return id == null || id.equals("");
     }
-    
+
+    public boolean isConstant() {
+        return !(this instanceof RandomVariable) && getFunction() == null;
+    }
 }

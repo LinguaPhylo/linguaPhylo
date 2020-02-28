@@ -1,27 +1,23 @@
-package james.app;
+package james.app.graphmodelcomponent;
 
 import javax.swing.JButton;
-import javax.swing.border.EmptyBorder;
-import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class CircleButton extends JButton {
+public class DiamondButton extends JButton {
 
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    private Color backgroundColor = Color.white;
-    private Color borderColor = Color.black;
+    private Color backgroundColor;
+    private Color borderColor;
 
-    public CircleButton(String text, Color backgroundColor, Color borderColor) {
+    public DiamondButton(String text, Color backgroundColor, Color borderColor) {
 
         super(text);
-        setBorder(new EmptyBorder(0,0,0,0));
 
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
@@ -70,7 +66,7 @@ public class CircleButton extends JButton {
     }
 
     @Override
-    public Dimension getPreferredSize() {
+    public Dimension getPreferredSize(){
         FontMetrics metrics = getGraphics().getFontMetrics(getFont());
         int minDiameter = 10 + Math.max(metrics.stringWidth(getText()), metrics.getHeight());
         return new Dimension(minDiameter, minDiameter);
@@ -88,13 +84,22 @@ public class CircleButton extends JButton {
         int diameter = getDiameter();
         int radius = diameter/2;
 
+        Graphics2D g2d= (Graphics2D)g;
+
+        GeneralPath path = new GeneralPath();
+        path.moveTo(getWidth()/2.0f - radius, getHeight()/2.0f);
+        path.lineTo(getWidth()/2.0f, getHeight()/2.0f - radius);
+        path.lineTo(getWidth()/2.0f + radius, getHeight()/2.0f);
+        path.lineTo(getWidth()/2.0f, getHeight()/2.0f + radius);
+        path.closePath();
+
         if(mousePressed){
             g.setColor(Color.LIGHT_GRAY);
         }
         else{
             g.setColor(backgroundColor);
         }
-        g.fillOval(getWidth()/2 - radius, getHeight()/2 - radius, diameter, diameter);
+        g2d.fill(path);
 
         if(mouseOver){
             g.setColor(Color.BLUE);
@@ -102,7 +107,7 @@ public class CircleButton extends JButton {
         else{
             g.setColor(borderColor);
         }
-        g.drawOval(getWidth()/2 - radius, getHeight()/2 - radius, diameter, diameter);
+        g2d.draw(path);
 
         super.paintComponent(g);
     }

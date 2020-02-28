@@ -1,5 +1,7 @@
-package james.app;
+package james.app.graphmodelcomponent;
 
+import james.app.GraphicalModelChangeListener;
+import james.app.GraphicalModelListener;
 import james.graphicalModel.*;
 
 import javax.swing.*;
@@ -10,7 +12,7 @@ import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
 
-import static james.app.RenderNode.*;
+import static james.app.graphmodelcomponent.NodeLayout.*;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -26,9 +28,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    RenderNodePool pool;
+    LayoutContext pool;
 
-    RenderNode selectedNode;
+    NodeLayout selectedNode;
 
     boolean sizeChanged = true;
     boolean showArgumentLabels = false;
@@ -50,7 +52,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         parser.addGraphicalModelChangeListener(this::setup);
     }
 
-    void shiftLeft() {
+    public void shiftLeft() {
 
         pool.shiftLeft(selectedNode);
         sizeChanged = true;
@@ -72,13 +74,13 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        pool = new RenderNodePool(parser, showNonRandomValues);
+        pool = new LayoutContext(parser, showNonRandomValues);
 
         for (Value val : parser.getRoots()) {
             pool.addRoot(val);
         }
         
-        for (RenderNode node : pool.getRenderNodes()) {
+        for (NodeLayout node : pool.getNodes()) {
 
             if (node.hasButton()) {
                 JButton button = node.getButton();
@@ -115,7 +117,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         double delta = g.getFontMetrics().getAscent()/2.0;
 
         if (sizeChanged) {
-            pool.locateAll(getWidth(), getHeight());
+            SugiyamaLayoutAlgorithm layoutAlgorithm = new SugiyamaLayoutAlgorithm(SugiyamaLayoutAlgorithm.VERTICAL, getSize());
+            layoutAlgorithm.setLayoutContext(pool);
+            layoutAlgorithm.applyLayout(true);
             sizeChanged = false;
         }
 
@@ -127,14 +131,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        for (RenderNode node : pool.getRenderNodes()) {
+        for (NodeLayout node : pool.getNodes()) {
 
             if (node.value() instanceof Value) {
 
                 double x1 = node.point.getX();
                 double y1 = node.point.getY() + VAR_HEIGHT / 2;
 
-                for (RenderNode parent : (List<RenderNode>) node.outputs) {
+                for (NodeLayout parent : node.getSuccessingNodes()) {
 
                     if (parent != pool.rootNode) {
                         double x2 = parent.point.getX();
@@ -153,7 +157,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                 String str = gen.getName();
                 Point2D p = node.point;
-                Point2D q = ((List<RenderNode>) node.outputs).get(0).point;
+                Point2D q = node.getSuccessingNodes().get(0).point;
 
 
                 g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));

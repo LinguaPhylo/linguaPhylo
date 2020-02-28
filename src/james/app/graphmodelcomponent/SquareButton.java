@@ -1,23 +1,27 @@
-package james.app;
+package james.app.graphmodelcomponent;
 
-import javax.swing.JButton;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
-public class DiamondButton extends JButton {
+public class SquareButton extends JButton {
 
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    private Color backgroundColor;
-    private Color borderColor;
+    private Color backgroundColor = Color.white;
+    private Color borderColor = Color.black;
 
-    public DiamondButton(String text, Color backgroundColor, Color borderColor) {
+    public SquareButton(String text, Color backgroundColor, Color borderColor) {
 
         super(text);
+
+        setBorder(new EmptyBorder(0,0,0,0));
 
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
@@ -60,11 +64,6 @@ public class DiamondButton extends JButton {
         addMouseMotionListener(mouseListener);
     }
 
-    private int getDiameter(){
-        int diameter = Math.min(getWidth(), getHeight());
-        return diameter;
-    }
-
     @Override
     public Dimension getPreferredSize(){
         FontMetrics metrics = getGraphics().getFontMetrics(getFont());
@@ -73,25 +72,11 @@ public class DiamondButton extends JButton {
     }
 
     @Override
-    public boolean contains(int x, int y){
-        int radius = getDiameter()/2;
-        return Point2D.distance(x, y, getWidth()/2, getHeight()/2) < radius;
-    }
-
-    @Override
     public void paintComponent(Graphics g) {
 
-        int diameter = getDiameter();
-        int radius = diameter/2;
-
-        Graphics2D g2d= (Graphics2D)g;
-
-        GeneralPath path = new GeneralPath();
-        path.moveTo(getWidth()/2.0f - radius, getHeight()/2.0f);
-        path.lineTo(getWidth()/2.0f, getHeight()/2.0f - radius);
-        path.lineTo(getWidth()/2.0f + radius, getHeight()/2.0f);
-        path.lineTo(getWidth()/2.0f, getHeight()/2.0f + radius);
-        path.closePath();
+        int width = getWidth();
+        int height = getHeight();
+        int size = Math.min(width-1, height-1);
 
         if(mousePressed){
             g.setColor(Color.LIGHT_GRAY);
@@ -99,7 +84,12 @@ public class DiamondButton extends JButton {
         else{
             g.setColor(backgroundColor);
         }
-        g2d.fill(path);
+
+        Graphics2D g2d = (Graphics2D)g;
+
+        Rectangle2D rect = new Rectangle2D.Double((width-size)/2.0, (height-size)/2.0, size, size);
+
+        g2d.fill(rect);
 
         if(mouseOver){
             g.setColor(Color.BLUE);
@@ -107,7 +97,7 @@ public class DiamondButton extends JButton {
         else{
             g.setColor(borderColor);
         }
-        g2d.draw(path);
+        g2d.draw(rect);
 
         super.paintComponent(g);
     }

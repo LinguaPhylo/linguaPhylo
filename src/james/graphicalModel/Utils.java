@@ -1,10 +1,7 @@
 package james.graphicalModel;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Utils {
 
@@ -45,12 +42,12 @@ public class Utils {
                 builder.append(toGraphvizDot(child, done));
             }
 
-            String name = graphvizName(node);
+            String name = node.getUniqueId();
             builder.append(graphvizNodeString(node, name) );
             builder.append(";\n");
 
             for (GraphicalModelNode child : (List<GraphicalModelNode>) node.getInputs()) {
-                builder.append(graphvizName(child));
+                builder.append(child.getUniqueId());
                 builder.append(" -> ");
 
                 builder.append(name);
@@ -78,22 +75,6 @@ public class Utils {
         return "[" + label + edgestyle + "tailport=s]";
     }
 
-    private static String graphvizName(GraphicalModelNode node) {
-        String name = null;
-
-        if (node instanceof Value) {
-            if (((Value) node).isAnonymous()) {
-
-                name = ""+node.hashCode();
-            } else {
-                name = ((Value) node).getId();
-            }
-        } else if (node instanceof Parameterized) {
-            name = ""+node.hashCode();
-        }
-        return name;
-    }
-
     private static String graphvizLabel(GraphicalModelNode node) {
         String label = null;
 
@@ -104,6 +85,10 @@ public class Utils {
                 Object val = ((Value) node).value();
                 if (val instanceof Double || val instanceof Integer) {
                     label = node.toString();
+                } else if (val instanceof Double[] && ((Double[])val).length < 7) {
+                    label = Arrays.toString((Double[])val);
+                } else {
+                    label = slot;
                 }
             } else if (((Value)node).function == null  && !(node instanceof RandomVariable)) {
                 label = node.toString();
@@ -119,11 +104,14 @@ public class Utils {
     private static String graphvizNodeString(GraphicalModelNode node, String name) {
         String labelString = "label=\"" + graphvizLabel(node) + "\", ";
 
-        if (node instanceof Parameterized) {
+        if (node instanceof GenerativeDistribution) {
             return name + "[" + labelString + "shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
             //, label=\"" + ((Parameterized)node).getName() + "\"]";
-        } else if (node instanceof RandomVariable) {
-            return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=green, style=filled]";
+        } if (node instanceof DeterministicFunction) {
+            return name + "[" + labelString + "shape=diamond, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
+            //, label=\"" + ((Parameterized)node).getName() + "\"]";
+        }  else if (node instanceof RandomVariable) {
+            return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#66ff66\"\t, style=filled]";
         } else if (node instanceof Value) {
             if (((Value)node).function != null) {
                 return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=red, style=filled]";

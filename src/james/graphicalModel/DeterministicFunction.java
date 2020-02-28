@@ -8,4 +8,9 @@ public abstract class DeterministicFunction<T> extends Func {
     public T value() {
     	return apply().value();
     }
+
+    @Override
+    public String getUniqueId() {
+        return hashCode() + "";
+    }
 }

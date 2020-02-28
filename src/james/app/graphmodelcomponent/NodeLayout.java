@@ -1,4 +1,4 @@
-package james.app;
+package james.app.graphmodelcomponent;
 
 import james.TimeTree;
 import james.graphicalModel.*;
@@ -11,13 +11,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderNode<T> {
+public class NodeLayout {
 
     private JButton button;
     Point2D point;
-    List<RenderNode> inputs = new ArrayList<>();
-    List<RenderNode> outputs = new ArrayList<>();
-    private T value;
+    private List<NodeLayout> inputs = new ArrayList<>();
+    private List<NodeLayout> outputs = new ArrayList<>();
+    private Object value;
     int level;
 
     String name = null;
@@ -32,7 +32,7 @@ public class RenderNode<T> {
 
     GraphicalModelParser parser;
 
-    public RenderNode(T value, GraphicalModelParser parser) {
+    public NodeLayout(Object value, GraphicalModelParser parser) {
         this.value = value;
         this.parser = parser;
 
@@ -45,7 +45,7 @@ public class RenderNode<T> {
         }
     }
 
-    public void addOutput(RenderNode output) {
+    public void addOutput(NodeLayout output) {
         outputs.add(output);
 
         if (outputs.size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
@@ -147,28 +147,23 @@ public class RenderNode<T> {
         button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
     }
 
-    public T value() {
+    public Object value() {
         return value;
     }
 
     public boolean isLeaf() {
         return inputs.size() == 0;
     }
-
-    public void locate(Point2D point) {
-        this.point = point;
-        if (hasButton()) button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
-    }
-
+    
     void setLevel() {
         int maxLevel = -1;
-        for (RenderNode node : outputs) {
+        for (NodeLayout node : outputs) {
             if (node.level >= maxLevel) maxLevel = node.level;
         }
         level = maxLevel + 1;
     }
 
-    public int siblingCount(RenderNode parent) {
+    public int siblingCount(NodeLayout parent) {
         if (parent.inputs.contains(this)) {
             return parent.inputs.size() - 1;
         } else {
@@ -176,7 +171,7 @@ public class RenderNode<T> {
         }
     }
 
-    public double getRelativeIndex(RenderNode parent) {
+    public double getRelativeIndex(NodeLayout parent) {
         double index = parent.inputs.indexOf(this);
 
         return index - ((parent.inputs.size()-1.0) / 2.0);
@@ -185,17 +180,34 @@ public class RenderNode<T> {
     public double getPreferredX(double preferredSpacing) {
         double x = 0;
 
-        for (RenderNode parent : outputs) {
+        for (NodeLayout parent : outputs) {
             x += getPreferredX(parent, preferredSpacing);
         }
         return x / outputs.size();
     }
 
-    public double getPreferredX(RenderNode parent, double preferredSpacing) {
+    public double getPreferredX(NodeLayout parent, double preferredSpacing) {
         return getRelativeIndex(parent) * preferredSpacing + parent.point.getX();
     }
 
     public JButton getButton() {
         return button;
+    }
+
+    public List<NodeLayout> getPredecessingNodes() {
+        return inputs;
+    }
+
+    public List<NodeLayout> getSuccessingNodes() {
+        return outputs;
+    }
+
+    public void setLocation(double x, double y) {
+        point = new Point2D.Double(x,y);
+        if (hasButton()) button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
+    }
+
+    public String toString() {
+        return value.toString();
     }
 }

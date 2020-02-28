@@ -45,6 +45,10 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         return name;
     }
 
+    default String getUniqueId() {
+        return hashCode() + "";
+    }
+
     default String getRichDescription(int index) {
 
         List<ParameterInfo> pInfo = getParameterInfo( index);

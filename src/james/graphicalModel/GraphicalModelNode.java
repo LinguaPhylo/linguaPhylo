@@ -9,9 +9,12 @@ public interface GraphicalModelNode<T> {
      * @return
      */
     List<GraphicalModelNode> getInputs();
-    
+
+    String getUniqueId();
+
     /**
      * @return current value of the Constant, DeterministicFunction (or GenerativeDistribution?)
      */
     T value();
+
 }
