@@ -18,11 +18,7 @@ import james.app.GraphicalModelListener;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GraphicalModelParser {
@@ -80,7 +76,7 @@ public class GraphicalModelParser {
 
     public List<Value> getAllValuesFromRoots() {
         List<Value> values = new ArrayList<>();
-        for (Value v : getRoots()) {
+        for (Value v : getSinks()) {
             getAllValues(v, values);
         }
         return values;
@@ -106,7 +102,7 @@ public class GraphicalModelParser {
         Set<Value> visited = new HashSet<>();
 
         StringBuilder builder = new StringBuilder();
-        for (Value value : getRoots()) {
+        for (Value value : getSinks()) {
 
             Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
@@ -196,7 +192,12 @@ public class GraphicalModelParser {
         return dictionary;
     }
 
-    public Set<Value> getRoots() {
+    /**
+     * The "sinks" are those nodes in the graphical model that have no successors. They are the endpoints that
+     * are not parameters of any further functions or generative distributions.
+     * @return
+     */
+    public Set<Value> getSinks() {
         SortedSet<Value> nonArguments = new TreeSet<>(Comparator.comparing(Value::getId));
         dictionary.values().forEach((val) -> {
             if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
@@ -744,11 +745,11 @@ public class GraphicalModelParser {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
-            Set<Value> roots = getRoots();
+            Set<Value> sinks = getSinks();
             for (RandomVariable var : getAllVariablesFromRoots()) {
                 dictionary.remove(var.getId());
             }
-            for (Value value : roots) {
+            for (Value value : sinks) {
 
                 if (value instanceof RandomVariable) {
                     RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
@@ -867,6 +868,5 @@ public class GraphicalModelParser {
         for (int i = 0; i < arguments.length; i++) {
             System.out.println("arg" + i + ": " + arguments[i]);
         }
-
     }
 }

@@ -12,7 +12,7 @@ import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
 
-import static james.app.graphicalmodelcomponent.NodeLayout.*;
+import static james.app.graphicalmodelcomponent.LayeredGNode.*;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -28,13 +28,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    LayoutContext pool;
-
-    NodeLayout selectedNode;
+    LayeredNode selectedNode;
 
     boolean sizeChanged = true;
     boolean showArgumentLabels = false;
     boolean showNonRandomValues = false;
+    LayeredGraph layeredGraph = null;
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -52,19 +51,19 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         parser.addGraphicalModelChangeListener(this::setup);
     }
 
-    public void shiftLeft() {
-
-        pool.shiftLeft(selectedNode);
-        sizeChanged = true;
-        repaint();
-
-    }
-
-    public void shiftRight() {
-        pool.shiftRight(selectedNode);
-        sizeChanged = true;
-        repaint();
-    }
+//    public void shiftLeft() {
+//
+//        pool.shiftLeft(selectedNode);
+//        sizeChanged = true;
+//        repaint();
+//
+//    }
+//
+//    public void shiftRight() {
+//        pool.shiftRight(selectedNode);
+//        sizeChanged = true;
+//        repaint();
+//    }
 
     public void setShowArgumentLabels(boolean show) {
         showArgumentLabels = show;
@@ -74,13 +73,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        pool = new LayoutContext(parser, showNonRandomValues);
+        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, showNonRandomValues);
 
-        for (Value val : parser.getRoots()) {
-            pool.addRoot(val);
-        }
-        
-        for (NodeLayout node : pool.getNodes()) {
+        for (LayeredNode lnode : layeredGraph.getNodes()) {
+
+            LayeredGNode node = (LayeredGNode)lnode;
 
             if (node.hasButton()) {
                 JButton button = node.getButton();
@@ -114,11 +111,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public void paintComponent(Graphics g) {
 
-        double delta = g.getFontMetrics().getAscent()/2.0;
+        double delta = g.getFontMetrics().getAscent() / 2.0;
 
         if (sizeChanged) {
-            SugiyamaLayoutAlgorithm layoutAlgorithm = new SugiyamaLayoutAlgorithm(SugiyamaLayoutAlgorithm.VERTICAL, getSize());
-            layoutAlgorithm.setLayoutContext(pool);
+            Layering layering = new Layering.LongestPathAlgorithm();
+            SugiyamaLayeredGraph layoutAlgorithm = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layering);
+            layoutAlgorithm.setLayeredGraph(layeredGraph);
             layoutAlgorithm.applyLayout(true);
             sizeChanged = false;
         }
@@ -131,25 +129,25 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        for (NodeLayout node : pool.getNodes()) {
+        for (LayeredNode lnode : layeredGraph.getNodes()) {
+
+            LayeredGNode node = (LayeredGNode)lnode;
 
             if (node.value() instanceof Value) {
 
-                double x1 = node.point.getX();
-                double y1 = node.point.getY() + VAR_HEIGHT / 2;
+                double x1 = node.getX();
+                double y1 = node.getY() + VAR_HEIGHT / 2;
 
-                for (NodeLayout parent : node.getSuccessingNodes()) {
+                for (LayeredNode parent : node.getSuccessors()) {
 
-                    if (parent != pool.rootNode) {
-                        double x2 = parent.point.getX();
-                        double y2 = parent.point.getY() - FACTOR_SIZE;
-                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
-                        if (showArgumentLabels) {
-                            String label = ((Parameterized)parent.value()).getParamName((Value)node.value());
-                            g.setColor(Color.gray);
-                            g.drawString(label, (int)Math.round((x1+x2)/2.0 - g.getFontMetrics().stringWidth(label)/2.0), (int)Math.round((y1+y2)/2.0+delta));
-                            g.setColor(Color.black);
-                        }
+                    double x2 = parent.getX();
+                    double y2 = parent.getY() - FACTOR_SIZE;
+                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    if (showArgumentLabels) {
+                        String label = ((Parameterized) ((LayeredGNode)parent).value()).getParamName((Value) node.value());
+                        g.setColor(Color.gray);
+                        g.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
+                        g.setColor(Color.black);
                     }
                 }
             } else if (node.value() instanceof Parameterized) {
@@ -157,8 +155,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
                 String str = gen.getName();
                 Point2D p = node.point;
-                Point2D q = node.getSuccessingNodes().get(0).point;
-
+                Point2D q = node.getSuccessors().get(0).getPosition();
 
                 g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
 

@@ -27,8 +27,8 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelParser parser;
 
     JButton sampleButton = new JButton("Sample");
-    JButton shiftLeftButton = new JButton("<");
-    JButton shiftRightButton = new JButton(">");
+//    JButton shiftLeftButton = new JButton("<");
+//    JButton shiftRightButton = new JButton(">");
     JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
 
     JSplitPane horizSplitPane;
@@ -47,13 +47,13 @@ public class GraphicalModelPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(sampleButton);
-        buttonPanel.add(shiftLeftButton);
-        buttonPanel.add(shiftRightButton);
+//        buttonPanel.add(shiftLeftButton);
+//        buttonPanel.add(shiftRightButton);
         buttonPanel.add(showNonRandomValues);
 
         sampleButton.addActionListener(e -> sample(1));
-        shiftLeftButton.addActionListener(e -> component.shiftLeft());
-        shiftRightButton.addActionListener(e -> component.shiftRight());
+//        shiftLeftButton.addActionListener(e -> component.shiftLeft());
+//        shiftRightButton.addActionListener(e -> component.shiftRight());
 
         showNonRandomValues.addActionListener(new AbstractAction() {
             @Override
@@ -138,8 +138,8 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Trees", new JScrollPane(treeLog));
         horizSplitPane.setRightComponent(rightPane);
 
-        if (parser.getRoots().size() > 0) {
-            showValue(parser.getRoots().iterator().next());
+        if (parser.getSinks().size() > 0) {
+            showValue(parser.getSinks().iterator().next());
         }
     }
 
@@ -155,7 +155,7 @@ public class GraphicalModelPanel extends JPanel {
         if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));
         } else {
-            showValue(parser.getRoots().iterator().next());
+            showValue(parser.getSinks().iterator().next());
         }
         long end = System.currentTimeMillis();
         System.out.println("sample(" + reps + ") took " + (end-start) + " ms.");

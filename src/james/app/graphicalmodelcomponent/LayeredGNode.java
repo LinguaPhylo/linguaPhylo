@@ -1,8 +1,11 @@
 package james.app.graphicalmodelcomponent;
 
 import james.TimeTree;
-import james.graphicalModel.*;
-import james.graphicalModel.types.*;
+import james.graphicalModel.Parameterized;
+import james.graphicalModel.RandomVariable;
+import james.graphicalModel.Value;
+import james.graphicalModel.ValueUtils;
+import james.graphicalModel.types.DoubleValue;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +14,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeLayout {
+public class LayeredGNode implements LayeredNode {
 
     private JButton button;
-    Point2D point;
-    private List<NodeLayout> inputs = new ArrayList<>();
-    private List<NodeLayout> outputs = new ArrayList<>();
+    Point2D point = new Point2D.Double();
+    private List<LayeredNode> inputs = new ArrayList<>();
+    private List<LayeredNode> outputs = new ArrayList<>();
     private Object value;
-    int level;
+    int layer;
+    int index;
 
     String name = null;
 
@@ -30,11 +34,11 @@ public class NodeLayout {
 
     static DecimalFormat format = new DecimalFormat();
 
-    GraphicalModelParser parser;
+    //GraphicalModelParser parser;
 
-    public NodeLayout(Object value, GraphicalModelParser parser) {
+    public LayeredGNode(Object value) {//, GraphicalModelParser parser) {
         this.value = value;
-        this.parser = parser;
+        //this.parser = parser;
 
         if (value instanceof Value) {
             name = ((Value)value).getId();
@@ -45,7 +49,7 @@ public class NodeLayout {
         }
     }
 
-    public void addOutput(NodeLayout output) {
+    public void addOutput(LayeredGNode output) {
         outputs.add(output);
 
         if (outputs.size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
@@ -118,10 +122,10 @@ public class NodeLayout {
         }
 
 
-        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
-            backgroundColor = backgroundColor.darker();
-            borderColor = borderColor.darker();
-        }
+//        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
+//            backgroundColor = backgroundColor.darker();
+//            borderColor = borderColor.darker();
+//        }
 
         String str = getButtonString((Value)value);
 
@@ -151,19 +155,70 @@ public class NodeLayout {
         return value;
     }
 
-    public boolean isLeaf() {
+    public boolean isSource() {
         return inputs.size() == 0;
     }
-    
-    void setLevel() {
-        int maxLevel = -1;
-        for (NodeLayout node : outputs) {
-            if (node.level >= maxLevel) maxLevel = node.level;
-        }
-        level = maxLevel + 1;
+
+    public void setY(double y) {
+        setLocation(point.getX(), y);
     }
 
-    public int siblingCount(NodeLayout parent) {
+    public void setX(double x) {
+        setLocation(x, point.getY());
+    }
+
+    public double getX() {
+        return point.getX();
+    }
+
+    public double getY() {
+        return point.getY();
+    }
+
+    @Override
+    public int getLayer() {
+        return layer;
+    }
+
+    @Override
+    public void setLayer(int layer) {
+        this.layer = layer;
+    }
+
+    @Override
+    public Point2D getPosition() {
+        return point;
+    }
+
+    @Override
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    public List<LayeredNode> getSuccessors() {
+        return outputs;
+    }
+
+    @Override
+    public List<LayeredNode> getPredecessors() {
+        return inputs;
+    }
+
+    void setLayer() {
+        int maxLayer = -1;
+        for (LayeredNode node : outputs) {
+            if (node.getLayer() >= maxLayer) maxLayer = node.getLayer();
+        }
+        layer = maxLayer + 1;
+    }
+
+    public int siblingCount(LayeredGNode parent) {
         if (parent.inputs.contains(this)) {
             return parent.inputs.size() - 1;
         } else {
@@ -171,7 +226,7 @@ public class NodeLayout {
         }
     }
 
-    public double getRelativeIndex(NodeLayout parent) {
+    public double getRelativeIndex(LayeredGNode parent) {
         double index = parent.inputs.indexOf(this);
 
         return index - ((parent.inputs.size()-1.0) / 2.0);
@@ -180,26 +235,18 @@ public class NodeLayout {
     public double getPreferredX(double preferredSpacing) {
         double x = 0;
 
-        for (NodeLayout parent : outputs) {
-            x += getPreferredX(parent, preferredSpacing);
+        for (LayeredNode parent : outputs) {
+            x += getPreferredX((LayeredGNode)parent, preferredSpacing);
         }
         return x / outputs.size();
     }
 
-    public double getPreferredX(NodeLayout parent, double preferredSpacing) {
+    public double getPreferredX(LayeredGNode parent, double preferredSpacing) {
         return getRelativeIndex(parent) * preferredSpacing + parent.point.getX();
     }
 
     public JButton getButton() {
         return button;
-    }
-
-    public List<NodeLayout> getPredecessingNodes() {
-        return inputs;
-    }
-
-    public List<NodeLayout> getSuccessingNodes() {
-        return outputs;
     }
 
     public void setLocation(double x, double y) {
