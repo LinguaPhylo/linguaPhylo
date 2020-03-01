@@ -14,16 +14,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LayeredGNode implements LayeredNode {
+public class LayeredGNode extends LayeredNode.Default {
 
     private JButton button;
-    Point2D point = new Point2D.Double();
-    private List<LayeredNode> inputs = new ArrayList<>();
-    private List<LayeredNode> outputs = new ArrayList<>();
     private Object value;
-    int layer;
-    int index;
-
     String name = null;
 
     static double VAR_WIDTH = 90;
@@ -37,6 +31,8 @@ public class LayeredGNode implements LayeredNode {
     //GraphicalModelParser parser;
 
     public LayeredGNode(Object value) {//, GraphicalModelParser parser) {
+        super(0,0);
+
         this.value = value;
         //this.parser = parser;
 
@@ -50,9 +46,9 @@ public class LayeredGNode implements LayeredNode {
     }
 
     public void addOutput(LayeredGNode output) {
-        outputs.add(output);
+        getSuccessors().add(output);
 
-        if (outputs.size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
+        if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
             name = "[" + ((Parameterized)output.value).getParamName(((Value) value)) + "]";
             button.setText(getButtonString((Value)value));
         }
@@ -155,90 +151,35 @@ public class LayeredGNode implements LayeredNode {
         return value;
     }
 
-    public boolean isSource() {
-        return inputs.size() == 0;
-    }
-
-    public void setY(double y) {
-        setLocation(point.getX(), y);
-    }
-
-    public void setX(double x) {
-        setLocation(x, point.getY());
-    }
-
-    public double getX() {
-        return point.getX();
-    }
-
-    public double getY() {
-        return point.getY();
-    }
-
-    @Override
-    public int getLayer() {
-        return layer;
-    }
-
-    @Override
-    public void setLayer(int layer) {
-        this.layer = layer;
-    }
-
-    @Override
-    public Point2D getPosition() {
-        return point;
-    }
-
-    @Override
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public List<LayeredNode> getSuccessors() {
-        return outputs;
-    }
-
-    @Override
-    public List<LayeredNode> getPredecessors() {
-        return inputs;
-    }
-
     void setLayer() {
         int maxLayer = -1;
-        for (LayeredNode node : outputs) {
+        for (LayeredNode node : getSuccessors()) {
             if (node.getLayer() >= maxLayer) maxLayer = node.getLayer();
         }
         layer = maxLayer + 1;
     }
 
     public int siblingCount(LayeredGNode parent) {
-        if (parent.inputs.contains(this)) {
-            return parent.inputs.size() - 1;
+        if (parent.getPredecessors().contains(this)) {
+            return parent.getPredecessors().size() - 1;
         } else {
             return -1;
         }
     }
 
     public double getRelativeIndex(LayeredGNode parent) {
-        double index = parent.inputs.indexOf(this);
+        double index = parent.getPredecessors().indexOf(this);
 
-        return index - ((parent.inputs.size()-1.0) / 2.0);
+        return index - ((parent.getPredecessors().size()-1.0) / 2.0);
     }
 
     public double getPreferredX(double preferredSpacing) {
         double x = 0;
 
-        for (LayeredNode parent : outputs) {
+        for (LayeredNode parent : getSuccessors()) {
             x += getPreferredX((LayeredGNode)parent, preferredSpacing);
         }
-        return x / outputs.size();
+        return x / getSuccessors().size();
     }
 
     public double getPreferredX(LayeredGNode parent, double preferredSpacing) {
@@ -249,12 +190,21 @@ public class LayeredGNode implements LayeredNode {
         return button;
     }
 
+    public void setX(double x) {
+        setLocation(x, getY());
+    }
+
+    public void setY(double y) {
+        setLocation(getX(), y);
+    }
+
     public void setLocation(double x, double y) {
         point = new Point2D.Double(x,y);
         if (hasButton()) button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
     }
 
     public String toString() {
-        return value.toString();
+
+        return "v(" + getLayer() + ", " + getIndex() + ") = " + value.toString();
     }
 }

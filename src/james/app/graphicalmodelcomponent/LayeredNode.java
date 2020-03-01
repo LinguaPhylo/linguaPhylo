@@ -48,6 +48,8 @@ public interface LayeredNode {
         setY(y);
     }
 
+    boolean isDummy();
+
     default double getXBarycenter(boolean predecessors, boolean successors) {
         double centre = 0.0;
         int count = 0;
@@ -89,4 +91,109 @@ public interface LayeredNode {
      * @param index the index of the node in its layer
      */
     void setIndex(int index);
+
+    class Default implements LayeredNode {
+
+        Point2D point = new Point2D.Double();
+        private List<LayeredNode> successors = new ArrayList<>();
+        private List<LayeredNode> predecessors = new ArrayList<>();
+        int layer;
+        int index;
+
+        public Default(int layer, int index) {
+            this.layer = layer;
+            this.index = index;
+        }
+
+        @Override
+        public List<LayeredNode> getSuccessors() {
+            return successors;
+        }
+
+        @Override
+        public List<LayeredNode> getPredecessors() {
+            return predecessors;
+        }
+
+        public void addSuccessor(LayeredNode successor) {
+            getSuccessors().add(successor);
+            if (!successor.getPredecessors().contains(this)) {
+                successor.getPredecessors().add(this);
+            };
+        }
+
+        @Override
+        public int getLayer() {
+            return layer;
+        }
+
+        @Override
+        public void setLayer(int layer) {
+            this.layer = layer;
+        }
+
+        @Override
+        public boolean isDummy() {
+            return false;
+        }
+
+        @Override
+        public double getX() {
+            return point.getX();
+        }
+
+        @Override
+        public double getY() {
+            return point.getY();
+        }
+
+        @Override
+        public void setX(double x) {
+            point.setLocation(x, point.getY());
+        }
+
+        @Override
+        public void setY(double y) {
+            point.setLocation(point.getX(), y);
+
+        }
+
+        @Override
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public boolean isSource() {
+            return predecessors.size() == 0;
+        }
+
+        public String toString() {
+            return "v(" + layer + "," + index + ")";
+        }
+    }
+
+    class Dummy extends Default {
+
+        public Dummy(int layer) {
+            super(layer, 0);
+        }
+
+        public Dummy(int layer, int index) {
+            super(layer, index);
+        }
+
+
+        public boolean isDummy() {
+            return true;
+        }
+
+        public String toString() {
+            return "dummy(" + layer + "," + index + ")";
+        }
+    }
 }

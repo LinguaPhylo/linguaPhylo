@@ -115,9 +115,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         if (sizeChanged) {
             Layering layering = new Layering.LongestPathAlgorithm();
-            SugiyamaLayeredGraph layoutAlgorithm = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layering);
-            layoutAlgorithm.setLayeredGraph(layeredGraph);
-            layoutAlgorithm.applyLayout(true);
+            SugiyamaLayeredGraph layoutAlgorithm = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layeredGraph, layering);
             sizeChanged = false;
         }
 

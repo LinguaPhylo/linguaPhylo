@@ -18,6 +18,14 @@ public class LayeredGraphFactory {
         List<LayeredNode> nodes = new ArrayList<>();
         nodes.addAll(allNodes.values());
 
+        int maxLayer = 0;
+        for (LayeredNode v : allNodes.values()) {
+            if (v.getLayer() > maxLayer) maxLayer = v.getLayer();
+        }
+        for (LayeredNode v : allNodes.values()) {
+            v.setLayer(maxLayer-v.getLayer());
+        }
+
         return new LayeredGraph(nodes);
     }
 

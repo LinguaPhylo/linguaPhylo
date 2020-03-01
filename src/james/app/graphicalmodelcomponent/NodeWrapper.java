@@ -40,7 +40,7 @@ class NodeWrapper implements LayeredNode {
         succ.add(node);
     }
 
-    boolean isDummy() {
+    public boolean isDummy() {
         return ((node == null) && !padding);
     }
 

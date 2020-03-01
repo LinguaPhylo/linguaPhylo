@@ -21,7 +21,7 @@ import java.util.List;
  * @author Rene Kuhlemann
  * @version 1.2
  */
-public class SugiyamaLayeredGraph extends LayeredGraph {
+public class SugiyamaLayeredGraph extends ProperLayeredGraph {
 
     // Tree direction constants
     public final static int HORIZONTAL = 1;
@@ -30,11 +30,8 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
     // Internal constants
     private static final int MAX_SWEEPS = 35;
 
-    private final Map<LayeredNode, NodeWrapper> map = new IdentityHashMap<>();
     private final int direction;
     private final Dimension dimension;
-    private LayeredGraph layeredGraph;
-    private Layering layering;
 
     private int last; // index of the last element in a layer after padding
     // process
@@ -46,30 +43,23 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
      *            {@link SugiyamaLayeredGraph#VERTICAL}: top to bottom
      * @param dim - desired size of the layout area.
      */
-    public SugiyamaLayeredGraph(int dir, Dimension dim, Layering layering) {
+    public SugiyamaLayeredGraph(int dir, Dimension dim, LayeredGraph wrappedGraph, Layering layering) {
+
+        super(wrappedGraph, layering);
         if (dir == HORIZONTAL)
             direction = HORIZONTAL;
         else
             direction = VERTICAL;
         dimension = dim;
-        this.layering = layering;
-    }
-
-    public void setLayeredGraph(LayeredGraph layeredGraph) {
-        this.layeredGraph = layeredGraph;
+        calculatePositions();
     }
 
     /*
-     * applyLayout
+     * setup
      */
-    public void applyLayout(boolean clean) {
+    public void setup() {
 
-
-        if (!clean)
-            return;
-        layers.clear();
-        map.clear();
-        createLayers();
+        makeProper();
         padLayers();
         for (int i = 0; i < layers.size(); i++) { // reduce and refine
             // iteratively, depending on
@@ -80,53 +70,17 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
         reduceCrossings();
 
         for (int i = 0; i < layers.size(); i++) {
-            int length = layers.get(i).size();
             for (int j = 0; j < layers.get(i).size(); j++) {
                 NodeWrapper nw = (NodeWrapper) layers.get(i).get(j);
                 nw.setX(nw.getIndex());
             }
         }
 
-//        removePadding();
-//
-//        int widest = 0;
-//        for (int i = 0; i < layers.size(); i++) {
-//            int length = layers.get(i).size();
-//            if (length > widest) widest = length;
-//        }
-//
-//        for (int i = 0; i < layers.size(); i++) {
-//            int length = layers.get(i).size();
-//            for (int j = 0; j < layers.get(i).size(); j++) {
-//                NodeWrapper nw = (NodeWrapper) layers.get(i).get(j);
-//
-//                double equalSpaceX = ((double)j+0.5)/(double)length*(double)widest;
-//
-//                nw.setX(equalSpaceX);
-//            }
-//        }
-//
-//        for (LayeredNode node : getNodes()) {
-//            if (node.isSink()) {
-//                System.out.println("Sink: index = " + node.getIndex() + "; " + node);
-//            }
-//        }
-//
-//        relax(1000);
+        removePadding();
 
-        calculatePositions();
-    }
 
-    private void createLayers() {
-        layeredGraph.applyLayering(layering);
-        int i = 0;
-        for (List<LayeredNode> layer : layeredGraph.layers) {
-            System.out.println("Layer " + i + ": " + layer);
-            i += 1;
-        }
-        for (List<LayeredNode> layer : layeredGraph.layers) {
-            addLayer(layer);
-        }
+        new BrandesKopfHorizontalCoordinateAssignment(this);
+
     }
 
     private void removePadding() {
@@ -141,51 +95,6 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
         }
     }
 
-    public List<LayeredNode> getNodes() {
-        ArrayList<LayeredNode> nodes = new ArrayList<>();
-        for (List<LayeredNode> layer : layers) {
-            nodes.addAll(layer);
-        }
-        return nodes;
-    }
-
-    public void relax(int reps) {
-
-        int nodeCount = getNodes().size();
-
-        if (nodeCount > 0) {
-            for (int i = 0; i < reps; i++) {
-
-                int nodeIndex = Utils.getRandom().nextInt(nodeCount);
-                LayeredNode node = getNodes().get(nodeIndex);
-
-                if (node.getLayer() > 0 && !node.isSink()) {
-                    double x = node.getX();
-                    double nx = node.getXBarycenter(true, true);
-
-                    //System.out.println("x = " + x + "; nx = " + nx);
-
-                    node.setX(nx);
-                }
-            }
-        }
-    }
-
-    private void getXByBaryCentre() {
-
-        if (layers.size() > 0) {
-            for (int i = 0; i < layers.get(0).size(); i++) {
-                LayeredNode nw = layers.get(0).get(i);
-                nw.setX(i);
-            }
-
-            // remove padding
-            for (int index = 1; index < layers.size(); index++) {
-                refineXLayersDown(layers.get(index));
-            }
-        }
-    }
-
     private void refineXLayersDown(List<LayeredNode> layer) {
 
         // second, remove padding from the layer's end and place them in front
@@ -193,53 +102,6 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
         for (LayeredNode node : layer) {
             node.setX(((NodeWrapper)node).getXBaryCenter(node.getPredecessors())); // distance
         }
-    }
-
-    /**
-     * Wraps all {@link LayeredNode} objects into an internal presentation
-     * {@link NodeWrapper} and inserts dummy wrappers into the layers between an
-     * object and their predecessing nodes if necessary. Finally, all nodes are
-     * chained over immediate adjacent layers down to their predecessors. This
-     * is necessary to apply the final step of the Sugiyama algorithm to refine
-     * the node position within a layer.
-     *
-     * @param list : List of all {@link LayeredNode} objects within the current
-     *             layer
-     */
-    private void addLayer(List<LayeredNode> list) {
-        ArrayList<LayeredNode> layer = new ArrayList<>(list.size());
-        for (LayeredNode node : list) {
-            // wrap each NodeLayout with the internal data object and provide a
-            // corresponding mapping
-            NodeWrapper nw = new NodeWrapper(node, layers.size());
-            map.put(node, nw);
-            layer.add(nw);
-            // insert dummy nodes if the adjacent layer does not contain the
-            // predecessor
-            for (LayeredNode node_predecessor : node.getPredecessors()) { // for
-                // all
-                // predecessors
-                NodeWrapper nw_predecessor = map.get(node_predecessor);
-                if (nw_predecessor == null) {
-                    throw new RuntimeException("Node wrapped Predecessor of node " + node + " was null!");
-                }
-
-                for (int layerIndex = nw_predecessor.getLayer() + 1; layerIndex < nw.getLayer(); layerIndex++) {
-                    // add "virtual" wrappers (dummies) to the layers in between
-                    // virtual wrappers are in fact parts of a double linked
-                    // list
-                    NodeWrapper nw_dummy = new NodeWrapper(layerIndex);
-                    nw_dummy.addPredecessor(nw_predecessor);
-                    nw_predecessor.addSuccessor(nw_dummy);
-                    nw_predecessor = nw_dummy;
-                    layers.get(layerIndex).add(nw_dummy);
-                }
-                nw.addPredecessor(nw_predecessor);
-                nw_predecessor.addSuccessor(nw);
-            }
-        }
-        layers.add(layer);
-        updateIndex(layers.size()-1);
     }
 
     /**
@@ -372,12 +234,12 @@ public class SugiyamaLayeredGraph extends LayeredGraph {
         }
 
         if (direction == HORIZONTAL)
-            for (LayeredNode node : layeredGraph.getNodes()) {
+            for (LayeredNode node : wrappedGraph.getNodes()) {
                 NodeWrapper nw = map.get(node);
                 node.setPosition((nw.getLayer() + 0.5d) * dx, (nw.getX()-minX + 0.5d) * dy);
             }
         else
-            for (LayeredNode node : layeredGraph.getNodes()) {
+            for (LayeredNode node : wrappedGraph.getNodes()) {
                 NodeWrapper nw = map.get(node);
                 if (nw == null) throw new RuntimeException("Couldn't find node wrapper for node " + node);
                 node.setPosition((nw.getX()-minX + 0.5d) * dx, (nw.getLayer() + 0.5d) * dy);
