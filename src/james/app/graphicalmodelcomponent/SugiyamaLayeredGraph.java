@@ -267,15 +267,15 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         }
 
         if (direction == HORIZONTAL)
-            for (LayeredNode node : wrappedGraph.getNodes()) {
-                NodeWrapper nw = map.get(node);
-                node.setPosition((nw.getLayer() + 0.5d) * dx, (nw.getX()-minX + 0.5d) * dy);
+            for (LayeredNode node : getNodes()) {
+                //NodeWrapper nw = map.get(node);
+                node.setPosition((node.getLayer() + 0.5d) * dx, (node.getX()-minX + 0.5d) * dy);
             }
         else
-            for (LayeredNode node : wrappedGraph.getNodes()) {
-                NodeWrapper nw = map.get(node);
-                if (nw == null) throw new RuntimeException("Couldn't find node wrapper for node " + node);
-                node.setPosition((nw.getX()-minX + 0.5d) * dx, (nw.getLayer() + 0.5d) * dy);
+            for (LayeredNode node : getNodes()) {
+                //NodeWrapper nw = map.get(node);
+                //if (nw == null) throw new RuntimeException("Couldn't find node wrapper for node " + node);
+                node.setPosition((node.getX()-minX + 0.5d) * dx, (node.getLayer() + 0.5d) * dy);
             }
     }
 }

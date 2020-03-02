@@ -35,6 +35,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     boolean showArgumentLabels = false;
     boolean showNonRandomValues = false;
     LayeredGraph layeredGraph = null;
+    SugiyamaLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathAlgorithm();
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
@@ -65,7 +66,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         for (LayeredNode lnode : layeredGraph.getNodes()) {
 
-            LayeredGNode node = (LayeredGNode)lnode;
+            LayeredGNode node = (LayeredGNode) lnode;
 
             if (node.hasButton()) {
                 JButton button = node.getButton();
@@ -109,7 +110,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         if (sizeChanged) {
             layeredGraph.applyLayering(layering);
-            SugiyamaLayeredGraph layoutAlgorithm = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layeredGraph, layering);
+            properLayeredGraph = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layeredGraph, layering);
             sizeChanged = false;
         }
 
@@ -121,48 +122,87 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        for (LayeredNode lnode : layeredGraph.getNodes()) {
+        for (LayeredNode lnode : properLayeredGraph.getNodes()) {
 
-            LayeredGNode node = (LayeredGNode)lnode;
+            double x1 = lnode.getX();
+            double y1 = lnode.getY();
 
-            if (node.value() instanceof Value) {
+            if (lnode.isDummy()) {
+//                Ellipse2D ellipse2D = new Ellipse2D.Double(lnode.getX()-5, lnode.getY()-5, 10, 10);
+//                g2d.fill(ellipse2D);
 
-                double x1 = node.getX();
-                double y1 = node.getY() + VAR_HEIGHT / 2;
-
-                for (LayeredNode parent : node.getSuccessors()) {
-
-                    double x2 = parent.getX();
-                    double y2 = parent.getY() - FACTOR_SIZE;
-                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
-                    if (showArgumentLabels) {
-                        String label = ((Parameterized) ((LayeredGNode)parent).value()).getParamName((Value) node.value());
-                        g.setColor(Color.gray);
-                        g.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
-                        g.setColor(Color.black);
+                for (LayeredNode successor : lnode.getSuccessors()) {
+                    double x2 = successor.getX();
+                    double y2 = successor.getY();
+                    if (isWrappedParameterized(successor)) {
+                        y2 -= FACTOR_SIZE;
+                    } else if (isWrappedValue(successor)) {
+                        y2 -= VAR_HEIGHT / 2;
                     }
+                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
                 }
-            } else if (node.value() instanceof Parameterized) {
-                Parameterized gen = (Parameterized) node.value();
+            } else {
 
-                String str = gen.getName();
-                Point2D p = node.point;
-                Point2D q = node.getSuccessors().get(0).getPosition();
+                y1 +=  VAR_HEIGHT / 2;
 
-                g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
+                NodeWrapper nodeWrapper = (NodeWrapper) lnode;
+                LayeredGNode node = (LayeredGNode)nodeWrapper.wrappedNode();
 
-                double x1 = p.getX();
-                double y1 = p.getY() + FACTOR_SIZE;
-                double x2 = q.getX();
-                double y2 = q.getY() - VAR_HEIGHT / 2;
+                if (node.value() instanceof Value) {
 
-                //Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
-                //g2d.fill(rect);
+                    for (LayeredNode successor : lnode.getSuccessors()) {
 
-                drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+                        double x2 = successor.getX();
+                        double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
+                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                        if (showArgumentLabels) {
+                            String label = ((Parameterized) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName((Value) node.value());
+                            g.setColor(Color.gray);
+                            g.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
+                            g.setColor(Color.black);
+                        }
+                    }
+                } else if (node.value() instanceof Parameterized) {
+                    Parameterized gen = (Parameterized) node.value();
+
+                    String str = gen.getName();
+                    Point2D p = node.point;
+
+                    LayeredNode properSuccessor = lnode.getSuccessors().get(0);
+
+                    Point2D q = properSuccessor.getPosition();
+
+                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
+
+                    x1 = p.getX();
+                    y1 = p.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
+                    double x2 = q.getX();
+                    double y2 = q.getY() - VAR_HEIGHT / 2;
+
+                    //Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
+                    //g2d.fill(rect);
+
+                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+                }
             }
         }
     }
+
+    private LayeredGNode getUnwrappedNonDummySuccessor(LayeredNode successor) {
+        if (successor.isDummy()) return getUnwrappedNonDummySuccessor(successor.getSuccessors().get(0));
+        return (LayeredGNode)((NodeWrapper)successor).wrappedNode();
+    }
+
+    private boolean isWrappedParameterized(LayeredNode v) {
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper)v).wrappedNode() instanceof LayeredGNode &&
+                        ((LayeredGNode)((NodeWrapper)v).wrappedNode()).value() instanceof Parameterized;
+    }
+
+    private boolean isWrappedValue(LayeredNode v) {
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper)v).wrappedNode() instanceof LayeredGNode &&
+                ((LayeredGNode)((NodeWrapper)v).wrappedNode()).value() instanceof Value;
+    }
+
 
     /**
      * Draw an arrow line between two points.

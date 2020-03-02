@@ -48,6 +48,10 @@ class NodeWrapper implements LayeredNode {
         return ((node == null) && padding);
     }
 
+    public LayeredNode wrappedNode() {
+        return node;
+    }
+
     public double getXBaryCenter(List<LayeredNode> list) {
         if (list.isEmpty())
             return (this.x);

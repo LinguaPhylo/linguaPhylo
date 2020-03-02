@@ -62,8 +62,6 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(showNonRandomValues);
 
         sampleButton.addActionListener(e -> sample(1));
-//        shiftLeftButton.addActionListener(e -> component.shiftLeft());
-//        shiftRightButton.addActionListener(e -> component.shiftRight());
 
         showNonRandomValues.addActionListener(new AbstractAction() {
             @Override
