@@ -12,7 +12,7 @@ public class LayeredGraphFactory {
     public static LayeredGraph createLayeredGraph(GraphicalModelParser parser, boolean showAllNodes) {
         Map<Object, LayeredGNode> allNodes = new HashMap<>();
         for (Value value : parser.getSinks()) {
-            createAndAddNode(value, null, allNodes, showAllNodes);
+            createAndAddNode(parser, value, null, allNodes, showAllNodes);
         }
 
         List<LayeredNode> nodes = new ArrayList<>();
@@ -36,13 +36,13 @@ public class LayeredGraphFactory {
      * @param allNodes
      * @return
      */
-    private static LayeredNode createAndAddNode(Value value, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredNode createAndAddNode(GraphicalModelParser parser, Value value, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
 
         LayeredGNode node = allNodes.get(value);
         boolean newNode = (node == null);
 
         if (newNode && (value.isRandom() || showAllNodes)) {
-            node = new LayeredGNode(value);
+            node = new LayeredGNode(value, parser);
         }
 
         if (node != null) {
@@ -61,7 +61,7 @@ public class LayeredGraphFactory {
                 }
 
                 if (child != null) {
-                    LayeredGNode childNode = createAndAddNode(child, node, allNodes, showAllNodes);
+                    LayeredGNode childNode = createAndAddNode(parser, child, node, allNodes, showAllNodes);
                     if (childNode != null) node.getPredecessors().add(childNode);
                 }
             }
@@ -70,17 +70,17 @@ public class LayeredGraphFactory {
         return node;
     }
 
-    private static LayeredGNode createAndAddNode(Parameterized g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredGNode createAndAddNode(GraphicalModelParser parser, Parameterized g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
-            node = new LayeredGNode(g);
+            node = new LayeredGNode(g, parser);
             node.addOutput(parentNode);
             node.setLayer();
             allNodes.put(node.value(), node);
 
             Map<String, Value> params = g.getParams();
             for (String key : params.keySet()) {
-                LayeredNode child = createAndAddNode(params.get(key), node, allNodes, showAllNodes);
+                LayeredNode child = createAndAddNode(parser, params.get(key), node, allNodes, showAllNodes);
                 if (child != null) node.getPredecessors().add(child);
             }
         }

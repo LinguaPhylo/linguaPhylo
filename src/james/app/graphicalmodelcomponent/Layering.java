@@ -8,7 +8,7 @@ public interface Layering {
 
     void apply(List<LayeredNode> nodes);
 
-    class LongestPathAlgorithm implements Layering {
+    class LongestPathFromSinks implements Layering {
 
         @Override
         public void apply(List<LayeredNode> nodes) {
@@ -41,11 +41,11 @@ public interface Layering {
         }
 
         public String toString() {
-            return "Longest Path Algorithm";
+            return "Longest Path From Sinks";
         }
     }
 
-    class FromSources implements Layering {
+    class LongestPathFromSources implements Layering {
 
         int MAX_LAYERS = 20;
 
@@ -74,7 +74,7 @@ public interface Layering {
         }
 
         public String toString() {
-            return "Aligned top-level";
+            return "Longest Path From Sources";
         }
 
     }

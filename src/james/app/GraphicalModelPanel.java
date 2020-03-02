@@ -6,7 +6,6 @@ import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -30,7 +29,7 @@ public class GraphicalModelPanel extends JPanel {
 
     JButton sampleButton = new JButton("Sample");
     JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
-    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[] {new Layering.LongestPathAlgorithm(), new Layering.FromSources()});
+    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[] {new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;

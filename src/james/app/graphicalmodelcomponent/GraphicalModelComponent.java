@@ -3,7 +3,6 @@ package james.app.graphicalmodelcomponent;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
 import james.graphicalModel.*;
-import sun.plugin.javascript.navig4.Layer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,9 +35,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     boolean showNonRandomValues = false;
     LayeredGraph layeredGraph = null;
     ProperLayeredGraph properLayeredGraph = null;
-    Layering layering = new Layering.LongestPathAlgorithm();
+    Layering layering = new Layering.LongestPathFromSinks();
     Ordering ordering = new Ordering();
-    Position position = new Position();
+    Positioning positioning = new Positioning();
+    int BORDER = 20;
+    Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -115,7 +116,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             properLayeredGraph = new ProperLayeredGraph(layeredGraph, layering);
             ordering.order(properLayeredGraph);
             BrandesKopfHorizontalCoordinateAssignment assignment = new BrandesKopfHorizontalCoordinateAssignment(properLayeredGraph);
-            position.position(properLayeredGraph, getSize());
+            positioning.position(properLayeredGraph, getSize(), insets);
             sizeChanged = false;
         }
 
@@ -127,14 +128,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
-        for (LayeredNode lnode : properLayeredGraph.getNodes()) {
+        for (LayeredNode properNode : properLayeredGraph.getNodes()) {
 
-            double x1 = lnode.getX();
-            double y1 = lnode.getY();
+            double x1 = properNode.getX();
+            double y1 = properNode.getY();
 
-            if (lnode.isDummy()) {
+            if (properNode.isDummy()) {
 
-                for (LayeredNode successor : lnode.getSuccessors()) {
+                for (LayeredNode successor : properNode.getSuccessors()) {
                     double x2 = successor.getX();
                     double y2 = successor.getY();
                     if (isWrappedParameterized(successor)) {
@@ -142,22 +143,22 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     } else if (isWrappedValue(successor)) {
                         y2 -= VAR_HEIGHT / 2;
                     }
-                    drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                    drawLine(g2d, x1, y1, x2, y2);
                 }
             } else {
 
-                y1 +=  VAR_HEIGHT / 2;
+                y1 += VAR_HEIGHT / 2;
 
-                NodeWrapper nodeWrapper = (NodeWrapper) lnode;
-                LayeredGNode node = (LayeredGNode)nodeWrapper.wrappedNode();
+                NodeWrapper nodeWrapper = (NodeWrapper) properNode;
+                LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
 
                 if (node.value() instanceof Value) {
 
-                    for (LayeredNode successor : lnode.getSuccessors()) {
+                    for (LayeredNode successor : properNode.getSuccessors()) {
 
                         double x2 = successor.getX();
                         double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
-                        drawArrowLine(g2d, x1, y1, x2, y2, 0, 0);
+                        drawLine(g2d, x1, y1, x2, y2);
                         if (showArgumentLabels) {
                             String label = ((Parameterized) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName((Value) node.value());
                             g.setColor(Color.gray);
@@ -171,7 +172,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     String str = gen.getName();
                     Point2D p = node.point;
 
-                    LayeredNode properSuccessor = lnode.getSuccessors().get(0);
+                    LayeredNode properSuccessor = properNode.getSuccessors().get(0);
 
                     Point2D q = properSuccessor.getPosition();
 
@@ -182,30 +183,32 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     double x2 = q.getX();
                     double y2 = q.getY() - VAR_HEIGHT / 2;
 
-                    //Rectangle2D rect = new Rectangle2D.Double(x1 - FACTOR_SIZE, y1 - FACTOR_SIZE * 2, FACTOR_SIZE * 2, FACTOR_SIZE * 2);
-                    //g2d.fill(rect);
-
                     drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
                 }
             }
         }
+
     }
 
     private LayeredGNode getUnwrappedNonDummySuccessor(LayeredNode successor) {
         if (successor.isDummy()) return getUnwrappedNonDummySuccessor(successor.getSuccessors().get(0));
-        return (LayeredGNode)((NodeWrapper)successor).wrappedNode();
+        return (LayeredGNode) ((NodeWrapper) successor).wrappedNode();
     }
 
     private boolean isWrappedParameterized(LayeredNode v) {
-        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper)v).wrappedNode() instanceof LayeredGNode &&
-                        ((LayeredGNode)((NodeWrapper)v).wrappedNode()).value() instanceof Parameterized;
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
+                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Parameterized;
     }
 
     private boolean isWrappedValue(LayeredNode v) {
-        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper)v).wrappedNode() instanceof LayeredGNode &&
-                ((LayeredGNode)((NodeWrapper)v).wrappedNode()).value() instanceof Value;
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
+                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Value;
     }
 
+    private void drawLine(Graphics2D g, double x1, double y1, double x2, double y2) {
+        Line2D line = new Line2D.Double(x1, y1, x2, y2);
+        g.draw(line);
+    }
 
     /**
      * Draw an arrow line between two points.

@@ -1,10 +1,7 @@
 package james.app.graphicalmodelcomponent;
 
 import james.TimeTree;
-import james.graphicalModel.Parameterized;
-import james.graphicalModel.RandomVariable;
-import james.graphicalModel.Value;
-import james.graphicalModel.ValueUtils;
+import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleValue;
 
 import javax.swing.*;
@@ -24,17 +21,17 @@ public class LayeredGNode extends LayeredNode.Default {
     static double VAR_HEIGHT = 50;
 
     static double FACTOR_SIZE = 7;
-    static double FACTOR_LABEL_GAP = 10;
+    static double FACTOR_LABEL_GAP = 7;
 
     static DecimalFormat format = new DecimalFormat();
 
-    //GraphicalModelParser parser;
+    GraphicalModelParser parser;
 
-    public LayeredGNode(Object value) {//, GraphicalModelParser parser) {
+    public LayeredGNode(Object value, GraphicalModelParser parser) {
         super(0,0);
 
         this.value = value;
-        //this.parser = parser;
+        this.parser = parser;
 
         if (value instanceof Value) {
             name = ((Value)value).getId();
@@ -118,10 +115,10 @@ public class LayeredGNode extends LayeredNode.Default {
         }
 
 
-//        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
-//            backgroundColor = backgroundColor.darker();
-//            borderColor = borderColor.darker();
-//        }
+        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
+            backgroundColor = backgroundColor.darker();
+            borderColor = borderColor.darker();
+        }
 
         String str = getButtonString((Value)value);
 
