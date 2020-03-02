@@ -3,6 +3,7 @@ package james.app.graphicalmodelcomponent;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
 import james.graphicalModel.*;
+import sun.plugin.javascript.navig4.Layer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +35,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     boolean showArgumentLabels = false;
     boolean showNonRandomValues = false;
     LayeredGraph layeredGraph = null;
+    Layering layering = new Layering.LongestPathAlgorithm();
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -50,20 +52,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         setup();
         parser.addGraphicalModelChangeListener(this::setup);
     }
-
-//    public void shiftLeft() {
-//
-//        pool.shiftLeft(selectedNode);
-//        sizeChanged = true;
-//        repaint();
-//
-//    }
-//
-//    public void shiftRight() {
-//        pool.shiftRight(selectedNode);
-//        sizeChanged = true;
-//        repaint();
-//    }
 
     public void setShowArgumentLabels(boolean show) {
         showArgumentLabels = show;
@@ -109,12 +97,18 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         listeners.add(listener);
     }
 
+    public void setLayering(Layering layering) {
+        this.layering = layering;
+        sizeChanged = true;
+        repaint();
+    }
+
     public void paintComponent(Graphics g) {
 
         double delta = g.getFontMetrics().getAscent() / 2.0;
 
         if (sizeChanged) {
-            Layering layering = new Layering.LongestPathAlgorithm();
+            layeredGraph.applyLayering(layering);
             SugiyamaLayeredGraph layoutAlgorithm = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layeredGraph, layering);
             sizeChanged = false;
         }

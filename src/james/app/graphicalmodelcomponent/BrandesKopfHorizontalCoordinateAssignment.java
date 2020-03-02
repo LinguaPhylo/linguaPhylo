@@ -121,22 +121,23 @@ public class BrandesKopfHorizontalCoordinateAssignment {
         return edges.contains(upper);
     }
 
-    void verticalAlignment(Alignment a) {
+    void verticalAlignment(Alignment a, boolean reverse) {
 
         for (LayeredNode v : g.getNodes()) {
             a.root.put(v, v);
             a.align.put(v, v);
         }
 
-        for (List<LayeredNode> layer : g.layers) {
+        int layerCount = g.layers.size();
+        for (int k = 0; k < layerCount; k++) {
+            List<LayeredNode> layer = reverse ? g.layers.get(layerCount - k - 1) : g.layers.get(k);
             int r = -1;
-            for (int k = 0; k < layer.size(); k++) {
-                LayeredNode v_ki = layer.get(k);
-                if (hasOrderedPredecessors(v_ki)) {
-                    int d = v_ki.getPredecessors().size();
+            for (LayeredNode v_ki : layer) {
+                if (hasOrderedUppers(v_ki, reverse)) {
+                    int d = getUppersSize(v_ki, reverse);
 
                     for (int m = (int) Math.floor((d + 1.0) / 2.0) - 1; m <= (int) Math.ceil((d + 1.0) / 2.0) - 1; m++) {
-                        LayeredNode um = upper(v_ki, m);
+                        LayeredNode um = upper(v_ki, m, reverse);
 
                         if (a.align(v_ki) == v_ki) {
                             if (!marked(um, v_ki) && r < um.getIndex()) {
@@ -152,13 +153,17 @@ public class BrandesKopfHorizontalCoordinateAssignment {
         }
     }
 
-    private boolean hasOrderedPredecessors(LayeredNode node) {
-        List<LayeredNode> predecessors = node.getPredecessors();
-        if (predecessors.size() == 0) return false;
-        for (int i = 1; i < predecessors.size(); i++) {
-            if (predecessors.get(i).getIndex() < predecessors.get(i - 1).getIndex()) return false;
+    private boolean hasOrderedUppers(LayeredNode node, boolean reverse) {
+        List<LayeredNode> uppers = reverse ? node.getSuccessors() : node.getPredecessors();
+        if (uppers.size() == 0) return false;
+        for (int i = 1; i < uppers.size(); i++) {
+            if (uppers.get(i).getIndex() < uppers.get(i - 1).getIndex()) return false;
         }
         return true;
+    }
+
+    private int getUppersSize(LayeredNode node, boolean reverse) {
+        return reverse ? node.getSuccessors().size() : node.getPredecessors().size();
     }
 
     LayeredNode pred(LayeredNode v) {
@@ -190,7 +195,7 @@ public class BrandesKopfHorizontalCoordinateAssignment {
 
     void horizontalCompaction(Alignment a) {
         for (LayeredNode v : g.getNodes()) {
-            a.sink.put(v,v);
+            a.sink.put(v, v);
             a.shift.put(v, Integer.MAX_VALUE);
         }
         a.x.clear();
@@ -210,25 +215,48 @@ public class BrandesKopfHorizontalCoordinateAssignment {
 
         preprocessing();
 
-        // do left
-        Alignment l = new Alignment();
+        // do left up
+        Alignment lu = new Alignment();
 
-        verticalAlignment(l);
-        horizontalCompaction(l);
+        verticalAlignment(lu, false);
+        horizontalCompaction(lu);
 
-        int maxXLeft = l.computeFinalX();
+        int maxXLeftUp = lu.computeFinalX();
 
-        // do right
-        Alignment r = new Alignment();
+        // do left down
+        Alignment ld = new Alignment();
+
+        verticalAlignment(ld, true);
+        horizontalCompaction(ld);
+
+        int maxXLeftDown = ld.computeFinalX();
+
         reverseLayers();
 
-        verticalAlignment(r);
-        horizontalCompaction(r);
+        // do right up
+        Alignment ru = new Alignment();
 
-        int maxXRight = r.computeFinalX();
+        verticalAlignment(ru, false);
+        horizontalCompaction(ru);
+
+        int maxXRightUp = ru.computeFinalX();
+
+        // do right down
+        Alignment rd = new Alignment();
+
+        verticalAlignment(rd, true);
+        horizontalCompaction(rd);
+
+        int maxXRightDown = rd.computeFinalX();
+
 
         for (LayeredNode v : g.getNodes()) {
-            v.setX((l.finalX(v) + (maxXRight - r.finalX(v))) / 2.0);
+            v.setX(
+                    (lu.finalX(v) +
+                            ld.finalX(v) +
+                            (maxXRightUp - ru.finalX(v)) +
+                            (maxXRightDown - rd.finalX(v))
+                    ) / 4.0);
         }
 
         // return layers to original order
@@ -242,8 +270,8 @@ public class BrandesKopfHorizontalCoordinateAssignment {
         g.updateIndex();
     }
 
-    private LayeredNode upper(LayeredNode node, int i) {
-        return node.getPredecessors().get(i);
+    private LayeredNode upper(LayeredNode node, int i, boolean reverse) {
+        return reverse ? node.getSuccessors().get(i) : node.getPredecessors().get(i);
     }
 
     private boolean isInnerSegmentAbove(LayeredNode layeredNode) {
@@ -277,29 +305,44 @@ public class BrandesKopfHorizontalCoordinateAssignment {
             return maxX;
         }
 
-        int x(LayeredNode v) { return x.get(v); }
+        int x(LayeredNode v) {
+            return x.get(v);
+        }
 
-        int finalX(LayeredNode v) { return finalX.get(v); }
+        int finalX(LayeredNode v) {
+            return finalX.get(v);
+        }
 
-        int shift(LayeredNode v) { return shift.get(v); }
-        LayeredNode align(LayeredNode v) { return align.get(v); }
-        LayeredNode sink(LayeredNode v) { return sink.get(v); }
-        LayeredNode root(LayeredNode v) { return root.get(v); }
+        int shift(LayeredNode v) {
+            return shift.get(v);
+        }
+
+        LayeredNode align(LayeredNode v) {
+            return align.get(v);
+        }
+
+        LayeredNode sink(LayeredNode v) {
+            return sink.get(v);
+        }
+
+        LayeredNode root(LayeredNode v) {
+            return root.get(v);
+        }
     }
 
     public static void main(String[] args) throws IOException {
 
-        GraphicalModelParser parser = new GraphicalModelParser();
+//        GraphicalModelParser parser = new GraphicalModelParser();
+//
+//        String fileName = System.getProperty("user.dir") + File.separator + "examples" + File.separator + "bdRelaxed.lphy";
+//
+//        File file = new File(fileName);
+//
+//        parser.source(file);
+//
+//        LayeredGraph layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, true);
 
-        String fileName = System.getProperty("user.dir") + File.separator + "examples" + File.separator + "bdRelaxed.lphy";
-
-        File file = new File(fileName);
-
-        parser.source(file);
-
-        LayeredGraph layeredGraph = LayeredGraphFactory.createLayeredGraph(parser,true);
-
-        //LayeredGraph layeredGraph = LayeredGraph.testGraph();
+        LayeredGraph layeredGraph = LayeredGraph.testGraph();
 
         BrandesKopfHorizontalCoordinateAssignment bkhca = new BrandesKopfHorizontalCoordinateAssignment(layeredGraph);
 

@@ -1,10 +1,12 @@
 package james.app;
 
 import james.app.graphicalmodelcomponent.GraphicalModelComponent;
+import james.app.graphicalmodelcomponent.Layering;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -27,9 +29,8 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelParser parser;
 
     JButton sampleButton = new JButton("Sample");
-//    JButton shiftLeftButton = new JButton("<");
-//    JButton shiftRightButton = new JButton(">");
     JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
+    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[] {new Layering.LongestPathAlgorithm(), new Layering.FromSources()});
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;
@@ -46,9 +47,18 @@ public class GraphicalModelPanel extends JPanel {
         
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+
+        layeringAlgorithm.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                component.setLayering((Layering)layeringAlgorithm.getSelectedItem());
+            }
+        });
+        layeringAlgorithm.setPreferredSize(new Dimension(200,20));
+
         buttonPanel.add(sampleButton);
-//        buttonPanel.add(shiftLeftButton);
-//        buttonPanel.add(shiftRightButton);
+        buttonPanel.add(new JLabel(" Layering algorithm:"));
+        buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showNonRandomValues);
 
         sampleButton.addActionListener(e -> sample(1));
@@ -76,9 +86,6 @@ public class GraphicalModelPanel extends JPanel {
         verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreter);
         verticalSplitPane.setResizeWeight(0.75);
         add(verticalSplitPane, BorderLayout.CENTER);
-
-        System.out.println("top.preferredSize = " + horizSplitPane.getPreferredSize());
-        System.out.println("bottom.preferredSize = " + interpreter.getPreferredSize());
 
         GraphicalModelListener listener = new GraphicalModelListener() {
             @Override

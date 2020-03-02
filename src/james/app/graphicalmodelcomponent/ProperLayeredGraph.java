@@ -96,7 +96,7 @@ public class ProperLayeredGraph extends LayeredGraph {
                     // add "virtual" wrappers (dummies) to the layers in between
                     // virtual wrappers are in fact parts of a double linked
                     // list
-                    LayeredNode nw_dummy = new LayeredNode.Dummy(layerIndex);
+                    NodeWrapper nw_dummy = new NodeWrapper(layerIndex);
                     nw_dummy.getPredecessors().add(nw_predecessor);
                     nw_predecessor.getSuccessors().add(nw_dummy);
                     nw_predecessor = nw_dummy;

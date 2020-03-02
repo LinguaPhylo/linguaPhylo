@@ -124,7 +124,7 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
 
     private static void reduceCrossingsDown(List<LayeredNode> layer) {
         for (LayeredNode node : layer) {
-            node.setIndex(((NodeWrapper)node).getBaryCenter(node.getPredecessors()));
+            node.setIndex(getBarycenter(node, node.getPredecessors()));
         }
         layer.sort(Comparator.comparingDouble(LayeredNode::getIndex));
         updateIndex(layer);
@@ -132,10 +132,21 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
 
     private static void reduceCrossingsUp(List<LayeredNode> layer) {
         for (LayeredNode node : layer) {
-            node.setIndex(((NodeWrapper)node).getBaryCenter(node.getSuccessors()));
+            node.setIndex(getBarycenter(node, node.getSuccessors()));
         }
         layer.sort(Comparator.comparingDouble(LayeredNode::getIndex));
         updateIndex(layer);
+    }
+
+    static int getBarycenter(LayeredNode v, List<LayeredNode> list) {
+        if (list.isEmpty())
+            return (v.getIndex());
+        double barycenter = 0.0;
+        for (LayeredNode node : list)
+            barycenter += node.getIndex();
+        return (int) Math.round(barycenter / list.size()); // always rounding off to
+        // avoid wrap around in
+        // position refining!!!
     }
 
     /**
@@ -172,8 +183,8 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         // first, get a priority list
         List<NodeWrapper> list = new ArrayList<>();
         layer.forEach((node) -> list.add((NodeWrapper)node));
-        Collections.sort(list, (node1, node2) -> {
-            return (node2.getPriorityDown() - node1.getPriorityDown()); // descending
+        list.sort((node1, node2) -> {
+            return (getPriorityDown(node2) - getPriorityDown(node1)); // descending
             // ordering!!!
         });
         // second, remove padding from the layer's end and place them in front
@@ -181,7 +192,7 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         for (NodeWrapper node : list) {
             if (node.isPadding())
                 break; // break, if there are no more "real" nodes
-            int delta = node.getBaryCenter(node.getPredecessors()) - node.getIndex(); // distance
+            int delta = getBarycenter(node, node.getPredecessors()) - node.getIndex(); // distance
             // to new
             // position
             for (int i = 0; i < delta; i++)
@@ -195,8 +206,8 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         List<NodeWrapper> list = new ArrayList<>();
         layer.forEach((node) -> list.add((NodeWrapper)node));
 
-        Collections.sort(list, (node1, node2) -> {
-            return (node2.getPriorityUp() - node1.getPriorityUp()); // descending
+        list.sort((node1, node2) -> {
+            return (getPriorityUp(node2) - getPriorityUp(node1)); // descending
             // ordering!!!
         });
         // second, remove padding from the layer's end and place them in front
@@ -204,7 +215,7 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         for (NodeWrapper node : list) {
             if (node.isPadding())
                 break; // break, if there are no more "real" nodes
-            int delta = node.getBaryCenter(node.getSuccessors()) - node.getIndex(); // distance
+            int delta = getBarycenter(node, node.getSuccessors()) - node.getIndex(); // distance
             // to new
             // position
             for (int i = 0; i < delta; i++) {
@@ -213,6 +224,28 @@ public class SugiyamaLayeredGraph extends ProperLayeredGraph {
         }
         updateIndex(layer);
     }
+
+
+    int getPriorityDown(LayeredNode v) {
+        if (v.isDummy()) {
+            if (v.getSuccessors().get(0).isDummy())
+                return (Integer.MAX_VALUE); // part of a straight line
+            else
+                return (Integer.MAX_VALUE >> 1); // start of a straight line
+        }
+        return (v.getPredecessors().size());
+    }
+
+    int getPriorityUp(LayeredNode v) {
+        if (v.isDummy()) {
+            if (v.getPredecessors().get(0).isDummy())
+                return (Integer.MAX_VALUE); // part of a straight line
+            else
+                return (Integer.MAX_VALUE >> 1); // start of a straight line
+        }
+        return (v.getSuccessors().size());
+    }
+
 
     private void calculatePositions() {
 

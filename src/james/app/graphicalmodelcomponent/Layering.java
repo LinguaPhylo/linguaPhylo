@@ -39,6 +39,10 @@ public interface Layering {
                 traverseToSetLayers(child, layer - 1, minLayer);
             }
         }
+
+        public String toString() {
+            return "Longest Path Algorithm";
+        }
     }
 
     class FromSources implements Layering {
@@ -68,6 +72,11 @@ public interface Layering {
                 setLayer(layer, layerIndex);
             }
         }
+
+        public String toString() {
+            return "Aligned top-level";
+        }
+
     }
 
     static List<LayeredNode> getSinks(List<LayeredNode> nodes) {

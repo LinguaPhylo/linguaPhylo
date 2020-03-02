@@ -48,17 +48,6 @@ class NodeWrapper implements LayeredNode {
         return ((node == null) && padding);
     }
 
-    int getBaryCenter(List<LayeredNode> list) {
-        if (list.isEmpty())
-            return (this.index);
-        double barycenter = 0.0;
-        for (LayeredNode node : list)
-            barycenter += node.getIndex();
-        return (int) Math.round(barycenter / list.size()); // always rounding off to
-        // avoid wrap around in
-        // position refining!!!
-    }
-
     public double getXBaryCenter(List<LayeredNode> list) {
         if (list.isEmpty())
             return (this.x);
@@ -66,31 +55,6 @@ class NodeWrapper implements LayeredNode {
         for (LayeredNode node : list)
             barycenter += node.getX();
         return barycenter / (double)list.size();
-    }
-
-
-    int getPriorityDown() {
-        if (isPadding())
-            return (0);
-        if (isDummy()) {
-            if (((NodeWrapper)succ.get(0)).isDummy())
-                return (Integer.MAX_VALUE); // part of a straight line
-            else
-                return (Integer.MAX_VALUE >> 1); // start of a straight line
-        }
-        return (pred.size());
-    }
-
-    int getPriorityUp() {
-        if (isPadding())
-            return (0);
-        if (isDummy()) {
-            if (((NodeWrapper)pred.get(0)).isDummy())
-                return (Integer.MAX_VALUE); // part of a straight line
-            else
-                return (Integer.MAX_VALUE >> 1); // start of a straight line
-        }
-        return (succ.size());
     }
 
     @Override
