@@ -8,7 +8,6 @@ import java.util.List;
 public class LayeredGraph {
 
     List<LayeredNode> nodes = new ArrayList<>();
-
     List<List<LayeredNode>> layers = new ArrayList<>();
 
     public LayeredGraph() {}
@@ -38,6 +37,10 @@ public class LayeredGraph {
     public void addNode(LayeredNode node) {
         nodes.add(node);
         addNodeToLayers(node);
+    }
+
+    public int getLayerCount() {
+        return layers.size();
     }
 
     public int getMaxIndex() {
@@ -94,9 +97,11 @@ public class LayeredGraph {
 
     }
 
-    public void updateIndex(int layerIndex) {
+    void updateIndex(int layerIndex) {
         updateIndex(getLayer(layerIndex));
     }
+
+
 
     /**
      * Expects a list representing a layer in this layered graph

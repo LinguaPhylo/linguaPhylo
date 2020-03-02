@@ -35,8 +35,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     boolean showArgumentLabels = false;
     boolean showNonRandomValues = false;
     LayeredGraph layeredGraph = null;
-    SugiyamaLayeredGraph properLayeredGraph = null;
+    ProperLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathAlgorithm();
+    Ordering ordering = new Ordering();
+    Position position = new Position();
 
     public GraphicalModelComponent(GraphicalModelParser parser) {
         this.parser = parser;
@@ -110,7 +112,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         if (sizeChanged) {
             layeredGraph.applyLayering(layering);
-            properLayeredGraph = new SugiyamaLayeredGraph(SugiyamaLayeredGraph.VERTICAL, getSize(), layeredGraph, layering);
+            properLayeredGraph = new ProperLayeredGraph(layeredGraph, layering);
+            ordering.order(properLayeredGraph);
+            BrandesKopfHorizontalCoordinateAssignment assignment = new BrandesKopfHorizontalCoordinateAssignment(properLayeredGraph);
+            position.position(properLayeredGraph, getSize());
             sizeChanged = false;
         }
 
@@ -128,8 +133,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             double y1 = lnode.getY();
 
             if (lnode.isDummy()) {
-//                Ellipse2D ellipse2D = new Ellipse2D.Double(lnode.getX()-5, lnode.getY()-5, 10, 10);
-//                g2d.fill(ellipse2D);
 
                 for (LayeredNode successor : lnode.getSuccessors()) {
                     double x2 = successor.getX();
