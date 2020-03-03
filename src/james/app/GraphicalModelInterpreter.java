@@ -2,6 +2,8 @@ package james.app;
 
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.GraphicalModelParser;
+import james.utils.Message;
+import james.utils.MessageListener;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -155,6 +157,15 @@ public class GraphicalModelInterpreter extends JPanel {
         layout.setHorizontalGroup(horizParallelGroup);
 
         layout.setVerticalGroup(vertSequentialGroup);
+
+        Message.addMessageListener((type, message, source) -> {
+            switch (type) {
+                case WARNING: message = "WARNING: " + message; break;
+                case ERROR: message = "ERROR: " + message; break;
+                case INFO: break;
+            }
+            infoLine.setText(message);
+        });
     }
 
     private void setMessage(String message) {
@@ -185,8 +196,8 @@ public class GraphicalModelInterpreter extends JPanel {
                 if (line.charAt(line.length() - 1) != ';') {
                     line = line + ";";
                 }
-                parser.parseLine(line);
                 textPane.addLine(line);
+                parser.parseLine(line);
             }
         }
     }

@@ -213,6 +213,7 @@ public class GraphicalModelParser {
     }
 
     public void parseLine(String line) {
+        lines.add(line);
         int lineNumber = nextLineNumber();
         if (isRandomVariableLine(line)) {
             parseRandomVariable(line, lineNumber);
@@ -227,7 +228,6 @@ public class GraphicalModelParser {
         } else {
             throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
         }
-        lines.add(line);
         notifyListeners();
     }
 

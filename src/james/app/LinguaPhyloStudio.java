@@ -4,6 +4,8 @@ import james.graphicalModel.Command;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
 import james.graphicalModel.Value;
+import james.utils.Message;
+import james.utils.MessageListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -13,6 +15,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+
+import static james.utils.Message.*;
+import static james.utils.Message.error;
 
 public class LinguaPhyloStudio {
 
@@ -258,6 +263,42 @@ public class LinguaPhyloStudio {
 
             public void execute(Map<String, Value> params) {
                 saveToFile(panel.treeLog.getText());
+            }
+        });
+
+        parser.addCommand(new Command() {
+            public String getName() {
+                return "source";
+            }
+
+            public void execute(Map<String, Value> params) {
+
+                Value fileName = params.get("0");
+                if (fileName == null) {
+                    fileName = params.get("file");
+                    if (fileName == null) {
+                        error("source command requires a file name argument (optional name 'file').", this);
+                    }
+                }
+
+                if (fileName != null) {
+
+                    if (fileName.value() instanceof String) {
+                        try {
+                            FileReader fileReader = new FileReader(new File((String)fileName.value()));
+                            BufferedReader reader = new BufferedReader(fileReader);
+                            source(reader);
+                        } catch (FileNotFoundException e) {
+                            error("File node found: " + fileName.value().toString(), this);
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            error("I/O exception will reading file: " + fileName.value().toString(), this);
+                            e.printStackTrace();
+                        }
+                    } else {
+                        error("Argument to source command must be a string!", this);
+                    }
+                }
             }
         });
     }
