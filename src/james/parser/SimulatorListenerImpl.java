@@ -450,7 +450,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             String name = ctx.getChild(0).getText();
             Value value = (Value) visit(ctx.getChild(2));
             // TODO: do we really need a new object here?
-            value.setId(name);
+            // value.setId(name);
             //Value v = new Value(name, value.value());
             NamedValue v = new NamedValue(name, value);
 
@@ -463,7 +463,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         @Override
         public Object visitDistribution(SimulatorParser.DistributionContext ctx) {
-            super.visitDistribution(ctx);
+            // super.visitDistribution(ctx);
 
             String name = ctx.getChild(0).getText();
             NamedValue[] f = (NamedValue[]) visit(ctx.getChild(2));
