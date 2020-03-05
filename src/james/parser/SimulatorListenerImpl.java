@@ -436,12 +436,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
 
+        class NamedValue {
+        	public NamedValue(String name, Value value) {
+				this.name = name;
+				this.value = value;
+			}
+			String name;
+        	Value value;
+        }
+        
         @Override
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             Value value = (Value) visit(ctx.getChild(2));
             // TODO: do we really need a new object here?
-            Value v = new Value(name, value.value());
+            value.setId(name);
+            //Value v = new Value(name, value.value());
+            NamedValue v = new NamedValue(name, value);
 
             System.out.println("Visiting named expression:");
             System.out.println("  name: " + name);
@@ -455,10 +466,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             super.visitDistribution(ctx);
 
             String name = ctx.getChild(0).getText();
-            Value[] f = (Value[]) visit(ctx.getChild(2));
+            NamedValue[] f = (NamedValue[]) visit(ctx.getChild(2));
             Map<String, Value> arguments = new HashMap<>();
-            for (Value v : f) {
-                arguments.put(v.getId(), v);
+            for (NamedValue v : f) {
+                arguments.put(v.name, v.value);
             }
 
             Set<Class<?>> genDistClasses = genDistDictionary.get(name);
@@ -540,11 +551,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         @Override
         public Object visitExpression_list(Expression_listContext ctx) {
-            List<Value> list = new ArrayList<>();
+            List<NamedValue> list = new ArrayList<>();
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
-                list.add((Value) visit(ctx.getChild(i)));
+                list.add((NamedValue) visit(ctx.getChild(i)));
             }
-            return list.toArray(new Value[]{});
+            return list.toArray(new NamedValue[]{});
         }
 
         @Override
@@ -562,9 +573,18 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
-            Value[] f1 = ctx2.getText().equals(")") ?
-                    new Value[]{} :
-                    (Value[]) visit(ctx2);
+            Value[] f1 = null;
+            NamedValue[] values = new NamedValue[]{};
+            if (ctx2.getText().equals(")")) {
+                    f1 = new Value[]{};
+            } else {
+            	values = (NamedValue[]) visit(ctx2);
+            	f1 = new Value[values.length];
+            	for (int i = 0; i < values.length; i++) {
+            		f1[i] = values[i].value;
+            	}
+            	
+            }
 
             if (univarfunctions.contains(functionName)) {
                 ExpressionNode expression = null;
@@ -671,8 +691,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 Class functionClass = functionDictionary.get(functionName);
 
                 Map<String, Value> arguments = new HashMap<>();
-                for (Value v : f1) {
-                    arguments.put(v.getId(), v);
+                for (NamedValue v : values) {
+                    arguments.put(v.name, v.value);
                 }
 
                 try {
