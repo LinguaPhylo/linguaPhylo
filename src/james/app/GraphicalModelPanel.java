@@ -29,11 +29,11 @@ public class GraphicalModelPanel extends JPanel {
     Log log = new Log();
     TreeLog treeLog = new TreeLog();
 
-    LPhyParser parser;
+    GraphicalLPhyParser parser;
 
     JButton sampleButton = new JButton("Sample");
     JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
-    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[] {new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
+    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;
@@ -42,22 +42,22 @@ public class GraphicalModelPanel extends JPanel {
 
     JScrollPane currentSelectionContainer = new JScrollPane();
 
-    GraphicalModelPanel(LPhyParser parser) {
+    GraphicalModelPanel(GraphicalLPhyParser parser) {
 
         this.parser = parser;
 
         interpreter = new GraphicalModelInterpreter(parser);
-        
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
 
         layeringAlgorithm.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                component.setLayering((Layering)layeringAlgorithm.getSelectedItem());
+                component.setLayering((Layering) layeringAlgorithm.getSelectedItem());
             }
         });
-        layeringAlgorithm.setPreferredSize(new Dimension(200,20));
+        layeringAlgorithm.setPreferredSize(new Dimension(200, 20));
 
         buttonPanel.add(sampleButton);
         buttonPanel.add(new JLabel(" Layering algorithm:"));
@@ -110,9 +110,11 @@ public class GraphicalModelPanel extends JPanel {
         };
 
         component.addGraphicalModelListener(listener);
-        //TODO need a new way to deal with model changes
-//        parser.addGraphicalModelChangeListener(component);
-//        parser.addGraphicalModelListener(new GraphicalModelListener() {
+        parser.addGraphicalModelChangeListener(component);
+
+        //TODO need a new way to deal with this model listener interaction
+
+        //        parser.addGraphicalModelListener(new GraphicalModelListener() {
 //            @Override
 //            public void valueSelected(Value value) {
 //
@@ -156,11 +158,11 @@ public class GraphicalModelPanel extends JPanel {
         long start = System.currentTimeMillis();
 
         String id = null;
-        if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
-            id = ((Value)displayedElement).getId();
+        if (displayedElement instanceof Value && !((Value) displayedElement).isAnonymous()) {
+            id = ((Value) displayedElement).getId();
         }
         Sampler sampler = new Sampler(parser);
-        sampler.sample(reps, new RandomVariableLogger[] {log, treeLog});
+        sampler.sample(reps, new RandomVariableLogger[]{log, treeLog});
         //parser.sample(reps, null);
         if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));
@@ -168,7 +170,7 @@ public class GraphicalModelPanel extends JPanel {
             showValue(parser.getSinks().iterator().next());
         }
         long end = System.currentTimeMillis();
-        System.out.println("sample(" + reps + ") took " + (end-start) + " ms.");
+        System.out.println("sample(" + reps + ") took " + (end - start) + " ms.");
     }
 
     public JComponent getViewer(Object object) {
@@ -203,7 +205,7 @@ public class GraphicalModelPanel extends JPanel {
         currentSelectionContainer.setViewportView(viewer);
         currentSelectionContainer.setBorder(
                 BorderFactory.createTitledBorder(
-                        BorderFactory.createMatteBorder(0,0,0,0, viewer.getBackground()),
+                        BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
         repaint();
     }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StatePanel extends JPanel {
 
-    LPhyParser parser;
+    GraphicalLPhyParser parser;
 
     List<JLabel> labels = new ArrayList<>();
     List<JComponent> editors = new ArrayList<>();
@@ -21,7 +21,7 @@ public class StatePanel extends JPanel {
     boolean includeRandomValues = true;
     boolean includeFixedValues = true;
 
-    public StatePanel(LPhyParser parser, boolean includeFixedValues, boolean includeRandomValues) {
+    public StatePanel(GraphicalLPhyParser parser, boolean includeFixedValues, boolean includeRandomValues) {
         this.parser = parser;
 
         this.includeFixedValues = includeFixedValues;
@@ -31,8 +31,7 @@ public class StatePanel extends JPanel {
 
         generateComponents();
 
-        // TODO find another way to communicate model changes
-        //parser.addGraphicalModelChangeListener(() -> generateComponents());
+        parser.addGraphicalModelChangeListener(this::generateComponents);
     }
 
     void generateComponents() {

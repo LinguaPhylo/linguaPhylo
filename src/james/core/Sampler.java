@@ -1,15 +1,15 @@
 package james.core;
 
+import james.app.GraphicalLPhyParser;
 import james.graphicalModel.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Sampler {
 
-    LPhyParser parser;
+    GraphicalLPhyParser parser;
 
-    public Sampler(LPhyParser parser) {
+    public Sampler(GraphicalLPhyParser parser) {
         this.parser = parser;
     }
 
@@ -53,8 +53,7 @@ public class Sampler {
                 }
             }
         }
-        // TODO work out another way to notify interested parties
-        //notifyListeners();
+        parser.notifyListeners();
     }
 
     private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {

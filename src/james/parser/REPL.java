@@ -15,7 +15,6 @@ public class REPL implements LPhyParser {
 
 	public REPL() {
 	}
-	
 
 	public void doREPL() {
 		while (true) {

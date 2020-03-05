@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CanonicalModelPanel extends JComponent {
-    LPhyParser parser;
+    GraphicalLPhyParser parser;
     JTextArea area = new JTextArea();
     JScrollPane scrollPane;
 
-    public CanonicalModelPanel(LPhyParser parser) {
+    public CanonicalModelPanel(GraphicalLPhyParser parser) {
         this.parser = parser;
 
         area.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -29,8 +29,7 @@ public class CanonicalModelPanel extends JComponent {
         add(new JLabel("Canonical model description."));
         add(scrollPane);
 
-        // TODO find another way to communicate changes to model
-        //parser.addGraphicalModelChangeListener(this::setText);
+        parser.addGraphicalModelChangeListener(this::setText);
     }
 
     private void setText() {

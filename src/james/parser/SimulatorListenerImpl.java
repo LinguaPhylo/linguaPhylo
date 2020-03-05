@@ -442,6 +442,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             Value value = (Value) visit(ctx.getChild(2));
             // TODO: do we really need a new object here?
             Value v = new Value(name, value.value());
+
+            System.out.println("Visiting named expression:");
+            System.out.println("  name: " + name);
+            System.out.println(" value: " + value);
+
             return v;
         }
 

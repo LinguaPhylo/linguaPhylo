@@ -126,7 +126,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
             }
         }
 
-        // TODO this should not be done on every branch. Can be done just once!!
         luinverse(Evec, Ievc, numStates);
 
         rootFreqs = freq;

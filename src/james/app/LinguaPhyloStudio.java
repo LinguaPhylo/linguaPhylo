@@ -1,13 +1,9 @@
 package james.app;
 
 import james.core.LPhyParser;
-import james.graphicalModel.Command;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
-import james.graphicalModel.Value;
 import james.parser.REPL;
-import james.utils.Message;
-import james.utils.MessageListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -16,10 +12,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-
-import static james.utils.Message.*;
-import static james.utils.Message.error;
 
 public class LinguaPhyloStudio {
 
@@ -52,7 +44,7 @@ public class LinguaPhyloStudio {
     private static final int MAX_HEIGHT = 1200;
 
 
-    LPhyParser parser = new REPL();
+    GraphicalLPhyParser parser = createParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
 
@@ -60,7 +52,6 @@ public class LinguaPhyloStudio {
 
     public LinguaPhyloStudio() {
 
-        initParser();
         panel = new GraphicalModelPanel(parser);
 
         JMenuBar menuBar;
@@ -116,7 +107,7 @@ public class LinguaPhyloStudio {
                         BufferedReader reader = null;
                         try {
                             reader = new BufferedReader(new FileReader(exampleFile));
-                            initParser();
+                            createParser();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -198,9 +189,9 @@ public class LinguaPhyloStudio {
         reader.close();
     }
 
-    private void initParser() {
+    private GraphicalLPhyParser createParser() {
 
-        parser = new GraphicalModelParser();
+        return new GraphicalLPhyParser(new REPL());
 
 //        Command sampleCommand = new Command() {
 //            @Override

@@ -1,5 +1,6 @@
 package james.app.graphicalmodelcomponent;
 
+import james.app.GraphicalLPhyParser;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
 import james.core.LPhyParser;
@@ -20,7 +21,7 @@ import static james.app.graphicalmodelcomponent.LayeredGNode.*;
  */
 public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
 
-    LPhyParser parser;
+    GraphicalLPhyParser parser;
 
     double ARROWHEAD_WIDTH = 4;
     double ARROWHEAD_DEPTH = 10;
@@ -42,7 +43,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     int BORDER = 20;
     Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);
 
-    public GraphicalModelComponent(LPhyParser parser) {
+    public GraphicalModelComponent(GraphicalLPhyParser parser) {
         this.parser = parser;
 
         addComponentListener(new ComponentAdapter() {
@@ -55,8 +56,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         });
 
         setup();
-        // TODO work out new way to deal with repainting
-        //parser.addGraphicalModelChangeListener(this::setup);
+        parser.addGraphicalModelChangeListener(this::setup);
     }
 
     public void setShowArgumentLabels(boolean show) {
