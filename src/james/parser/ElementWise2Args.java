@@ -105,8 +105,15 @@ public interface ElementWise2Args<R,S> {
 		return (a,b,o) -> {
 			Integer va = (Integer) a.value();
 			Integer vb = (Integer) b.value();
-			Integer r = (Integer) o.apply(va, vb);
-			return new IntegerValue("", r);
+
+			Object result = o.apply(va, vb);
+			Integer r = null;
+			if (result instanceof Integer) {
+				r = (Integer)result;
+			} else if (result instanceof Number) {
+				r = ((Number)result).intValue();
+			}
+			return new IntegerValue(null, r);
 		};
 	}
 
