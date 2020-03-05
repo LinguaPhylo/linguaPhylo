@@ -22,7 +22,7 @@ public class JukesCantor extends RateMatrix {
         Value<Double> rateValue = getParams().get(paramName);
         double rate = (rateValue != null) ? rateValue.value() : 1.0;
         String id = (rateValue != null) ? rateValue.getId() : "";
-        return new DoubleArray2DValue(getName() + "(" + id + ")", jc(rate), this);
+        return new DoubleArray2DValue( jc(rate), this);
     }
 
     private Double[][] jc(Double meanRate) {

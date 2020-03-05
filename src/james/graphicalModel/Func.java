@@ -28,7 +28,7 @@ public abstract class Func implements Parameterized, Viewable {
         return paramMap;
     }
 
-    public void setParam(String paramName, Value value) {
+    public void setParam(String paramName, Value<?> value) {
         paramMap.put(paramName, value);
     }
 
@@ -87,7 +87,8 @@ public abstract class Func implements Parameterized, Viewable {
                 builder.append(Parameterized.getArgumentCodeString(entry));
                 while (iterator.hasNext()) {
                     entry = iterator.next();
-                    builder.append(", " + Parameterized.getArgumentCodeString(entry));
+                    builder.append(", ");
+                    builder.append(Parameterized.getArgumentCodeString(entry));
                 }
             }
         }

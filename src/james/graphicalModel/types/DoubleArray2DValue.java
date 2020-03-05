@@ -16,6 +16,15 @@ public class DoubleArray2DValue extends Value<Double[][]> {
         super(id, value, function);
     }
 
+    /**
+     * Constructs an anonymous value of type Value<Double[][]>
+     * @param value
+     * @param function
+     */
+    public DoubleArray2DValue(Double[][] value, DeterministicFunction function) {
+        super(null, value, function);
+    }
+
     public JComponent getViewer() {
         return new DoubleArray2DEditor(value(), false);
     }

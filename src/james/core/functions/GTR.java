@@ -26,7 +26,7 @@ public class GTR extends RateMatrix {
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(rateParamName);
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new DoubleArray2DValue(getName() + "(" + rates.getId() + ", " + freq.getId() + ")", gtr(rates.value(), freq.value()), this);
+        return new DoubleArray2DValue( gtr(rates.value(), freq.value()), this);
     }
 
     private Double[][] gtr(Double[] rates, Double[] freqs) {

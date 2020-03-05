@@ -23,7 +23,7 @@ public class HKY extends RateMatrix {
     public Value<Double[][]> apply() {
         Value<Double> kappa = getParams().get(kappaParamName);
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new DoubleArray2DValue(getName() + "(" + kappa.getId() + ", " + freq.getId() + ")", hky(kappa.value(), freq.value()), this);
+        return new DoubleArray2DValue(hky(kappa.value(), freq.value()), this);
     }
 
     private Double[][] hky(double kappa, Double[] freqs) {

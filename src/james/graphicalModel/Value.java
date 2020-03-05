@@ -33,6 +33,16 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         this.function = function;
     }
 
+    /**
+     * Constructs an anonymous value.
+     * @param value
+     * @param function
+     */
+    public Value(T value, DeterministicFunction<T> function) {
+        this(null, value);
+        this.function = function;
+    }
+
     public final T value() {
         return value;
     }

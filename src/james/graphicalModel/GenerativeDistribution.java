@@ -72,12 +72,11 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     default GenerativeDistributionInfo getInfo() {
 
-        Class classElement = getClass();
+        Class<?> classElement = getClass();
 
         Method[] methods = classElement.getMethods();
 
         for (Method method : methods) {
-            Annotation[] annotations = method.getAnnotations();
             for (Annotation annotation : method.getAnnotations()) {
                 if (annotation instanceof GenerativeDistributionInfo) {
                     return (GenerativeDistributionInfo) annotation;
@@ -88,7 +87,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         return null;
     }
 
-    static GenerativeDistributionInfo getGenerativeDistributionInfo(Class c) {
+    static GenerativeDistributionInfo getGenerativeDistributionInfo(Class<?> c) {
 
         Method[] methods = c.getMethods();
 
@@ -103,7 +102,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
         return null;
     }
 
-    static String getGenerativeDistributionInfoName(Class c) {
+    static String getGenerativeDistributionInfoName(Class<?> c) {
         GenerativeDistributionInfo ginfo = getGenerativeDistributionInfo(c);
 
         if (ginfo != null) return ginfo.name();
@@ -139,12 +138,13 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
     	return null;
     }
 
-    static String getSignature(Class aClass) {
+    static String getSignature(Class<?> aClass) {
 
         List<ParameterInfo> pInfo = Parameterized.getParameterInfo(aClass, 0);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getGenerativeDistributionInfoName(aClass) + "(");
+        builder.append(getGenerativeDistributionInfoName(aClass));
+        builder.append("(");
         if (pInfo.size() > 0) {
             builder.append(pInfo.get(0).name());
             for (int i = 1; i < pInfo.size(); i++) {

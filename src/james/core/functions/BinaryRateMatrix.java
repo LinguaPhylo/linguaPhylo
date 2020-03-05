@@ -26,7 +26,7 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
                     "</pre>")
     public Value<Double[][]> apply() {
         Value<Double> lambda = getParams().get(paramName);
-        return new DoubleArray2DValue(getName() + "(" + lambda.getId() + ")", binaryCTMC(lambda.value()), this);
+        return new DoubleArray2DValue(binaryCTMC(lambda.value()), this);
     }
 
     private Double[][] binaryCTMC(double lambda) {

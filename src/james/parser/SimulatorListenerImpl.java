@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import james.*;
 import james.core.distributions.Exp;
 import james.core.functions.*;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -18,9 +19,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import james.Coalescent;
-import james.StructuredCoalescent;
-import james.Yule;
 import james.core.ErrorModel;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
@@ -43,7 +41,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
-        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
+        Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, Yule.class, Beta.class, StructuredCoalescent.class};
 
@@ -145,27 +143,27 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         public Value visitConstant(SimulatorParser.ConstantContext ctx) {
             String text = ctx.getText();
             if (text.startsWith("\"")) {
-                String id = nextID("StringValue");
-                StringValue v = new StringValue(id, text);
+                //String id = nextID("StringValue");
+                StringValue v = new StringValue(null, text);
                 return v;
             }
             double d = 0;
             try {
                 d = Long.parseLong(text);
-                String id = nextID("IntegerValue");
+                //String id = nextID("IntegerValue");
                 // TODO: should be a LongValue?
-                Value<Integer> v = new IntegerValue(id, (int) d);
+                Value<Integer> v = new IntegerValue(null, (int) d);
                 return v;
             } catch (NumberFormatException e) {
                 try {
                     d = Double.parseDouble(text);
-                    String id = nextID("DoubleValue");
-                    Value<Double> v = new DoubleValue(id, d);
+                    //String id = nextID("DoubleValue");
+                    Value<Double> v = new DoubleValue(null, d);
                     return v;
                 } catch (NumberFormatException e2) {
                     int i = Boolean.parseBoolean(text) ? 1 : 0;
-                    String id = nextID("IntegerValue");
-                    Value<Integer> v = new IntegerValue(id, i);
+                    //String id = nextID("IntegerValue");
+                    Value<Integer> v = new IntegerValue(null, i);
                     return v;
                 }
             }
@@ -486,6 +484,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                         GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
                         for (String parameterName : arguments.keySet()) {
                             Value value = arguments.get(parameterName);
+
                             dist.setInput(parameterName, value);
                         }
                         return dist;

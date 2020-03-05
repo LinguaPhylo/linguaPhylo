@@ -32,7 +32,7 @@ public class Rep<U> extends DeterministicFunction<U[]> {
         U[] array = (U[]) Array.newInstance(c, times.value());
         Arrays.fill(array, v.value());
 
-        return new Value<>("rep(" + v.getId() + ", " + times.value() + ")", array, this);
+        return new Value<>( array, this);
     }
 
     public Map<String, Value> getParams() {

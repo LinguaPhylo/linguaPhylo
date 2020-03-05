@@ -17,6 +17,15 @@ public class IntegerValue extends NumberValue<Integer> {
         super(id, value, function);
     }
 
+    /**
+     * Constructs an anonymous integer value produced by the given function.
+     * @param value
+     * @param function
+     */
+    public IntegerValue(Integer value, DeterministicFunction function) {
+        super(null, value, function);
+    }
+
     @Override
     public JComponent getViewer() {
         if (getFunction() == null) {

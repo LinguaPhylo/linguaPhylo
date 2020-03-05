@@ -21,7 +21,7 @@ public class F81 extends RateMatrix {
     @FunctionInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new DoubleArray2DValue(getName() + "(" + freq.getId() + ")", f81(freq.value()), this);
+        return new DoubleArray2DValue( f81(freq.value()), this);
     }
 
     private Double[][] f81(Double[] freqs) {

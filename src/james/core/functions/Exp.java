@@ -15,7 +15,7 @@ public class Exp extends DeterministicFunction<Double> {
     @FunctionInfo(name="exp",description = "The exponential function: e^x")
     public Value<Double> apply(Value<Double> v) {
         setParam("0", v);
-        return new DoubleValue("exp(" + v.getId() + ")", Math.exp(v.value()), this);
+        return new DoubleValue(Math.exp(v.value()), this);
     }
 
     @Override

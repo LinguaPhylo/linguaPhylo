@@ -29,7 +29,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
 
         TimeTree tree = parseNewick(newickValue.value());
 
-        return new Value<>("newick " + newickValue.getId(), tree, this);
+        return new Value<>(tree, this);
     }
 
     private TimeTree parseNewick(String newick) {

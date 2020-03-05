@@ -19,6 +19,6 @@ public class NTaxa extends DeterministicFunction<Integer> {
     @FunctionInfo(name="ntaxa",description = "The number of taxa in the tree")
     public Value<Integer> apply() {
         Value<TimeTree> v = (Value<TimeTree>)getParams().get(paramName);
-        return new IntegerValue("ntaxa(" + v.getLabel() + ")", v.value().n(), this);
+        return new IntegerValue( v.value().n(), this);
     }
 }

@@ -24,8 +24,6 @@ public class Pow extends DeterministicFunction<Double> {
         Value<Double> b = getParams().get(bparamName);
         Value<Double> x = getParams().get(bparamName);
 
-        return new DoubleValue(
-                "pow(" + b.getLabel() + ", " + x.getLabel() + ")",
-                Math.pow(b.value(), x.value()), this);
+        return new DoubleValue(Math.pow(b.value(), x.value()), this);
     }
 }

@@ -34,7 +34,7 @@ public class MigrationMatrix extends DeterministicFunction<Double[][]> {
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(ratesParamName);
         Value<Double[]> popSizes = getParams().get(thetaParamName);
-        return new DoubleArray2DValue(getName() + "(" + popSizes.getId() + ", " + rates.getId() + ")", migrationMatrix(popSizes.value(), rates.value()), this);
+        return new DoubleArray2DValue( migrationMatrix(popSizes.value(), rates.value()), this);
     }
 
     private Double[][] migrationMatrix(Double[] popSizes, Double[] rates) {

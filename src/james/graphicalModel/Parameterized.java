@@ -16,13 +16,10 @@ public interface Parameterized extends GraphicalModelNode {
     }
 
     default String getParamName(int paramIndex) {
-//        if (this instanceof Function) {
-//            return getParameterInfo("apply").get(paramIndex).name();
-//        }
         return getParamName(paramIndex, 0);
     }
 
-    static List<ParameterInfo> getParameterInfo(Class c, int constructorIndex) {
+    static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
         return getParameterInfo(c.getConstructors()[constructorIndex]);
     }
 
@@ -34,14 +31,13 @@ public interface Parameterized extends GraphicalModelNode {
 
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
 
-        Class classElement = getClass();
+        Class<?> classElement = getClass();
 
         Method[] methods = classElement.getMethods();
-        for (int i =0; i < methods.length; i++) {
-            if (methods[i].getName().equals("apply")) {
-                Annotation[][] annotations = methods[i].getParameterAnnotations();
-                for (int j = 0; j < annotations.length; i++) {
-                    Annotation[] annotations1 = annotations[i];
+        for (Method method : methods) {
+            if (method.getName().equals("apply")) {
+                Annotation[][] annotations = method.getParameterAnnotations();
+                for (Annotation[] annotations1 : annotations) {
                     for (Annotation annotation : annotations1) {
                         if (annotation instanceof ParameterInfo) {
                             pInfo.add((ParameterInfo) annotation);
@@ -85,14 +81,14 @@ public interface Parameterized extends GraphicalModelNode {
 
     Map<String, Value> getParams();
 
-    void setParam(String paramName, Value value);
+    void setParam(String paramName, Value<?> value);
 
-    default void setInput(String paramName, Value value) {
+    default void setInput(String paramName, Value<?> value) {
         setParam(paramName, value);
         value.addOutput(this);
     }
 
-    default String getParamName(Value value) {
+    default String getParamName(Value<?> value) {
         Map<String, Value> params = getParams();
         for (String key : params.keySet()) {
             if (params.get(key) == value) return key;
@@ -121,7 +117,7 @@ public interface Parameterized extends GraphicalModelNode {
      * or are themselves that result of a function with random parameters as arguments.
      */
     default boolean hasRandomParameters() {
-        for (Value v : getParams().values()) {
+        for (Value<?> v : getParams().values()) {
             if (v.isRandom()) return true;
         }
         return false;

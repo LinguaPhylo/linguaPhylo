@@ -15,6 +15,6 @@ public class Log extends DeterministicFunction<Double> {
     @FunctionInfo(name="log",description = "The natural logarithm function: ln x")
     public Value<Double> apply() {
         Value<Double> v = (Value<Double>)getParams().get(paramName);
-        return new DoubleValue("log " + v.getId(), Math.log(v.value()), this);
+        return new DoubleValue( Math.log(v.value()), this);
     }
 }

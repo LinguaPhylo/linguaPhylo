@@ -3,7 +3,5 @@
 m01 ~ LogNormal(meanlog=-3.0, sdlog=1.0);
 m10 ~ LogNormal(meanlog=-3.0, sdlog=1.0);
 
-
-
-ψ ~ StructuredCoalescent(theta=[[Θ1, m],[m, Θ2]], n=[8,8]);
+ψ ~ StructuredCoalescent(theta=[[Θ1, m01],[m10, Θ2]], n=[8,8]);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
