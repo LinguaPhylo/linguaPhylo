@@ -94,7 +94,8 @@ public interface LayeredNode {
 
     class Default implements LayeredNode {
 
-        Point2D point = new Point2D.Double();
+        double x = 0.0;
+        double y = 0.0;
         private List<LayeredNode> successors = new ArrayList<>();
         private List<LayeredNode> predecessors = new ArrayList<>();
         int layer;
@@ -139,22 +140,22 @@ public interface LayeredNode {
 
         @Override
         public double getX() {
-            return point.getX();
+            return x;
         }
 
         @Override
         public double getY() {
-            return point.getY();
+            return y;
         }
 
         @Override
         public void setX(double x) {
-            point.setLocation(x, point.getY());
+            this.x = x;
         }
 
         @Override
         public void setY(double y) {
-            point.setLocation(point.getX(), y);
+            this.y = y;
 
         }
 

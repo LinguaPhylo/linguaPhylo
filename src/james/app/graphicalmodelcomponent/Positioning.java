@@ -14,11 +14,12 @@ public class Positioning {
             }
         }
 
-        double dx = (dimension.getWidth() - insets.left - insets.right) / (maxX - minX);
-        double dy = (dimension.getHeight() - insets.top - insets.bottom) / (layeredGraph.layers.size() - 1);
+        double dx = (dimension.getWidth() - insets.left - insets.right) / (maxX-minX+1);
+
+        double dy = (dimension.getHeight() - insets.top - insets.bottom) / (layeredGraph.layers.size());
 
         for (LayeredNode node : layeredGraph.getNodes()) {
-            node.setPosition((node.getX() - minX) * dx + insets.left, node.getLayer() * dy + insets.top);
+            node.setPosition((node.getX()+0.5 - minX) * dx + insets.left, (node.getLayer()+0.5) * dy + insets.top);
         }
     }
 }

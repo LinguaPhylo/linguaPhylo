@@ -4,6 +4,7 @@ import james.TimeTree;
 import james.core.LPhyParser;
 import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleValue;
+import james.utils.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -181,7 +182,7 @@ public class LayeredGNode extends LayeredNode.Default {
     }
 
     public double getPreferredX(LayeredGNode parent, double preferredSpacing) {
-        return getRelativeIndex(parent) * preferredSpacing + parent.point.getX();
+        return getRelativeIndex(parent) * preferredSpacing + parent.getX();
     }
 
     public JButton getButton() {
@@ -189,7 +190,11 @@ public class LayeredGNode extends LayeredNode.Default {
     }
 
     public void setX(double x) {
-        setLocation(x, getY());
+        if (!Double.isNaN(x)) {
+            setLocation(x, getY());
+        } else {
+            Message.error("Tried to set x coordinate of node " + this + " to NaN!", this);
+        }
     }
 
     public void setY(double y) {
@@ -197,8 +202,9 @@ public class LayeredGNode extends LayeredNode.Default {
     }
 
     public void setLocation(double x, double y) {
-        point = new Point2D.Double(x,y);
-        if (hasButton()) button.setLocation((int) (point.getX() - button.getWidth()/2), (int) (point.getY() - button.getHeight()/2));
+        this.x = x;
+        this.y = y;
+        if (hasButton()) button.setLocation((int) (x - button.getWidth()/2), (int) (y - button.getHeight()/2));
     }
 
     public String toString() {

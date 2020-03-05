@@ -11,6 +11,7 @@ import java.util.*;
 import james.*;
 import james.core.distributions.Exp;
 import james.core.functions.*;
+import james.utils.Message;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -141,7 +142,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         @Override
         public Value visitConstant(SimulatorParser.ConstantContext ctx) {
+
             String text = ctx.getText();
+            Message.info(" visitConstant: " + text, this);
             if (text.startsWith("\"")) {
                 //String id = nextID("StringValue");
                 StringValue v = new StringValue(null, text);
@@ -181,8 +184,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
             // TODO: why not Func -- Func has no apply()?
+            Message.info(" visitDeterm_relation", this);
+
             Object expr = visit(ctx.getChild(2));
             String id = ctx.children.get(0).getText();
+            Message.info("   id = " + id, this);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
@@ -190,8 +196,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 return value;
             } else if (expr instanceof Value) {
                 Value value = (Value) expr;
+                value.setId(id);
+
                 dictionary.put(id, value);
+                Message.info("   adding value " + value + " to the dictionary", this);
                 return value;
+            } else {
+                Message.info("   not a function or a value!", this);
+
             }
             return null;
 //			if (id.indexOf('[') >= 0) {
@@ -259,8 +271,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         @Override
         public Object visitVar(VarContext ctx) {
+
             String id = ctx.getChild(0).getText();
-//			JFunction var = (JFunction) doc.pluginmap.get(id);
+
+            Message.info("  visitVar: " + id, this);
+
+            //			JFunction var = (JFunction) doc.pluginmap.get(id);
 //			if (ctx.getChildCount() == 1) {
 //				// variable not indexed
 //				return var;
@@ -452,9 +468,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             //Value v = new Value(name, value.value());
             NamedValue v = new NamedValue(name, value);
 
-            System.out.println("Visiting named expression:");
-            System.out.println("  name: " + name);
-            System.out.println(" value: " + value);
+            Message.info(" Visiting named expression:", this);
+            Message.info("   name: " + name + " value: " + value, this);
 
             return v;
         }

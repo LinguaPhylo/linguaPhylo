@@ -5,6 +5,7 @@ import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
 import james.core.LPhyParser;
 import james.graphicalModel.*;
+import james.utils.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -172,19 +173,18 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     Parameterized gen = (Parameterized) node.value();
 
                     String str = gen.getName();
-                    Point2D p = node.point;
 
                     LayeredNode properSuccessor = properNode.getSuccessors().get(0);
 
                     Point2D q = properSuccessor.getPosition();
 
-                    g2d.drawString(str, (float) (p.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (p.getY() + FACTOR_SIZE - STROKE_SIZE));
+                    g2d.drawString(str, (float) (node.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (node.getY() + FACTOR_SIZE - STROKE_SIZE));
 
-                    x1 = p.getX();
-                    y1 = p.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
+                    x1 = node.getX();
+                    y1 = node.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
                     double x2 = q.getX();
                     double y2 = q.getY() - VAR_HEIGHT / 2;
-
+                    
                     drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
                 }
             }
@@ -221,30 +221,33 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
      */
     private void drawArrowLine(Graphics2D g, double x1, double y1, double x2, double y2, double d, double h) {
 
-        double dx = x2 - x1, dy = y2 - y1;
-        double D = Math.sqrt(dx * dx + dy * dy);
-        double xm = D - d, xn = xm, ym = h, yn = -h, x;
-        double sin = dy / D, cos = dx / D;
+        if (!Double.isNaN(x1) && !Double.isNaN(x2)) {
 
-        x = xm * cos - ym * sin + x1;
-        ym = xm * sin + ym * cos + y1;
-        xm = x;
+            double dx = x2 - x1, dy = y2 - y1;
+            double D = Math.sqrt(dx * dx + dy * dy);
+            double xm = D - d, xn = xm, ym = h, yn = -h, x;
+            double sin = dy / D, cos = dx / D;
 
-        x = xn * cos - yn * sin + x1;
-        yn = xn * sin + yn * cos + y1;
-        xn = x;
+            x = xm * cos - ym * sin + x1;
+            ym = xm * sin + ym * cos + y1;
+            xm = x;
 
-        Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
+            x = xn * cos - yn * sin + x1;
+            yn = xn * sin + yn * cos + y1;
+            xn = x;
 
-        GeneralPath p = new GeneralPath();
-        p.moveTo(x2, y2);
-        p.lineTo(xm, ym);
-        p.lineTo(xn, yn);
-        p.closePath();
+            Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
+
+            GeneralPath p = new GeneralPath();
+            p.moveTo(x2, y2);
+            p.lineTo(xm, ym);
+            p.lineTo(xn, yn);
+            p.closePath();
 
 
-        g.draw(line);
-        g.fill(p);
+            g.draw(line);
+            g.fill(p);
+        }
     }
 
     @Override

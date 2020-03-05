@@ -1,6 +1,7 @@
 package james.app.graphicalmodelcomponent;
 
 import james.graphicalModel.GraphicalModelParser;
+import james.utils.Message;
 
 import javax.swing.*;
 import java.io.File;
@@ -251,12 +252,20 @@ public class BrandesKopfHorizontalCoordinateAssignment {
 
 
         for (LayeredNode v : g.getNodes()) {
-            v.setX(
-                    (lu.finalX(v) +
-                            ld.finalX(v) +
-                            (maxXRightUp - ru.finalX(v)) +
-                            (maxXRightDown - rd.finalX(v))
-                    ) / 4.0);
+            double newX = (lu.finalX(v) +
+                    ld.finalX(v) +
+                    (maxXRightUp - ru.finalX(v)) +
+                    (maxXRightDown - rd.finalX(v))
+            ) / 4.0;
+
+            if (!Double.isNaN(newX)) {
+                v.setX(newX);
+
+            } else {
+                Message.error("  x pos is NaN!", this);
+                Message.error("  maxXRightUp = " + maxXRightUp, this);
+            }
+
         }
 
         // return layers to original order

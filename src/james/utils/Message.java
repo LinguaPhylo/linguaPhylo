@@ -5,6 +5,11 @@ import java.util.List;
 
 public class Message {
 
+    public static void info(String message, Object source) {
+        System.out.println(message);
+        notifyListeners(Type.INFO, message, source);
+    }
+
     public enum Type {
         ERROR,
         WARNING,
