@@ -14,13 +14,14 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     TimeTreeNode rootNode;
 
-    List<TimeTreeNode> nodes;
+    private List<TimeTreeNode> nodes;
 
     // number of leaves
     int n = 0;
 
     public void setRoot(TimeTreeNode timeTreeNode) {
         rootNode = timeTreeNode;
+        rootNode.tree = this;
         nodes = new ArrayList<>();
 
         fillNodeList(rootNode);
@@ -30,11 +31,17 @@ public class TimeTree implements HasComponentView<TimeTree> {
         return nodes.size();
     }
 
+    public List<TimeTreeNode> getNodes() {
+        return nodes;
+    }
+
     private int fillNodeList(TimeTreeNode node) {
         if (node.isRoot()) {
             nodes.clear();
             n = 0;
         }
+
+        node.tree = this;
 
         if (node.isLeaf()) {
             nodes.add(node);

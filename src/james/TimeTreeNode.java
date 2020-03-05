@@ -118,6 +118,7 @@ public class TimeTreeNode {
     }
 
     public final int getChildCount() {
+        if (children == null) return 0;
         return children.size();
     }
 
@@ -158,5 +159,18 @@ public class TimeTreeNode {
             }
             children.sort(Comparator.comparingInt(o -> o.index));
         }
+    }
+
+    /**
+     * Get total node count including this node and all descendants.
+     * @return
+     */
+    public int getTotalDescendantNodeCount() {
+        if (isLeaf()) return 1;
+        int count = 1;
+        for (TimeTreeNode child : getChildren()) {
+            count += child.getTotalDescendantNodeCount();
+        }
+        return count;
     }
 }

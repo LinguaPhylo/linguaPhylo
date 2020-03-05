@@ -313,7 +313,7 @@ public class TimeTreeComponent extends JComponent {
         // finally draw all the node decorations
         if (node.isRoot()) {
             if (leafDecorator != null) {
-                for (TimeTreeNode aNode : tree.nodes) {
+                for (TimeTreeNode aNode : tree.getNodes()) {
                     if (leafDecorator != null && aNode.isLeaf()) {
                         drawNode(getTransformedPoint2D(getCanonicalNodePoint2D(aNode)), g, leafDecorator);
                     }
@@ -331,7 +331,7 @@ public class TimeTreeComponent extends JComponent {
         if (!borderSet) {
             int maxWidth = 0;
             FontMetrics metrics = g.getFontMetrics();
-            for (TimeTreeNode node : tree.nodes) {
+            for (TimeTreeNode node : tree.getNodes()) {
                 if (node.getId() != null) {
                     int stringWidth = metrics.stringWidth(node.getId());
                     if (stringWidth > maxWidth) maxWidth = stringWidth;

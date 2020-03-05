@@ -109,7 +109,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         if (ages.length != timeTree.n() - 1)
             throw new IllegalArgumentException("Ages array size must be equal to the number of internal nodes in the tree.");
         int i = 0;
-        for (TimeTreeNode node : timeTree.nodes) {
+        for (TimeTreeNode node : timeTree.getNodes()) {
             if (!node.isLeaf()) {
                 ages[i] = node.getAge();
                 i += 1;
