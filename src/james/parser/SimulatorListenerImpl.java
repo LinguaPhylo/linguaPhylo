@@ -19,6 +19,7 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import james.Coalescent;
+import james.StructuredCoalescent;
 import james.Yule;
 import james.core.ErrorModel;
 import james.core.PhyloBrownian;
@@ -52,7 +53,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 			
 	        Class<?>[] genClasses = {Normal.class, LogNormal.class, Exp.class, Coalescent.class,
 	                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-	                ErrorModel.class, Yule.class, Beta.class};
+	                ErrorModel.class, Yule.class, Beta.class, StructuredCoalescent.class};
 	
 	        for (Class<?> genClass : genClasses) {
 	            String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
@@ -392,6 +393,21 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 						}
 						DoubleArrayValue v = new DoubleArrayValue(null, value);
 						return v;
+					} if (var[0].value() instanceof Integer[]) {
+						Integer[][] value = new Integer[var.length][];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Integer[]) var[i].value();
+						}
+						IntegerArray2DValue v = new IntegerArray2DValue(null, value);
+						return v;
+					} else if (var[0].value() instanceof Integer) {
+						Integer[] value = new Integer[var.length];
+						for (int i = 0; i < value.length; i++) {
+							value[i] = (Integer) var[i].value();
+						}
+						IntegerArrayValue v = new IntegerArrayValue(null, value);
+						return v;
+
 					} else {
 						throw new RuntimeException("Don't know how to handle 3D matrics");
 					}
