@@ -5,6 +5,7 @@ import james.BirthDeathTreeDT;
 import james.Coalescent;
 import james.Yule;
 import james.core.ErrorModel;
+import james.core.LPhyParser;
 import james.core.PhyloBrownian;
 import james.core.PhyloCTMC;
 import james.core.commands.Remove;
@@ -21,17 +22,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GraphicalModelParser {
+public class GraphicalModelParser implements LPhyParser {
 
     // CURRENT MODEL STATE
-    private SortedMap<String, Value> dictionary = new TreeMap<>();
+    private SortedMap<String, Value<?>> dictionary = new TreeMap<>();
 
     // HISTORY OF LINES PARSED
     List<String> lines = new ArrayList<>();
 
     // PARSER STATE
-    public Map<String, Set<Class>> genDistDictionary = new TreeMap<>();
-    Map<String, Class> functionDictionary = new TreeMap<>();
+    public Map<String, Set<Class<?>>> genDistDictionary = new TreeMap<>();
+    Map<String, Class<?>> functionDictionary = new TreeMap<>();
     Map<String, Command> commandDictionary = new TreeMap<>();
 
 
@@ -40,33 +41,29 @@ public class GraphicalModelParser {
 
     public GraphicalModelParser() {
 
-        Class[] genClasses = {Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
+        Class<?>[] genClasses = {Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, BirthDeathTree.class, BirthDeathTreeDT.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
-        for (Class genClass : genClasses) {
+        for (Class<?> genClass : genClasses) {
             addGenerativeDistribution(genClass);
         }
 
-        Class[] functionClasses = {
+        Class<?>[] functionClasses = {
                 james.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, TN93.class,
                 GTR.class, BinaryRateMatrix.class, Newick.class, Rep.class, NTaxa.class, NodeCount.class};
 
-        for (Class functionClass : functionClasses) {
+        for (Class<?> functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
         }
 
         addCommand(new Remove(this));
     }
 
-    private void addGenerativeDistribution(Class genClass) {
+    private void addGenerativeDistribution(Class<?> genClass) {
         String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
 
-        Set<Class> genDistSet = genDistDictionary.get(name);
-        if (genDistSet == null) {
-            genDistSet = new HashSet<>();
-            genDistDictionary.put(name, genDistSet);
-        }
+        Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
         genDistSet.add(genClass);
     }
 
@@ -82,7 +79,7 @@ public class GraphicalModelParser {
         return values;
     }
 
-    public List<RandomVariable> getAllVariablesFromRoots() {
+    public List<RandomVariable> getAllVariablesFromSinks() {
         return getAllValuesFromRoots().stream()
                 .filter(RandomVariable.class::isInstance)
                 .map(RandomVariable.class::cast)
@@ -98,37 +95,7 @@ public class GraphicalModelParser {
         }
     }
 
-    public String getCanonicalScript() {
-        Set<Value> visited = new HashSet<>();
 
-        StringBuilder builder = new StringBuilder();
-        for (Value value : getSinks()) {
-
-            Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
-                @Override
-                public void visitValue(Value value) {
-
-                    if (!visited.contains(value)) {
-
-                        if (!value.isAnonymous()) {
-                            String str = value.codeString();
-                            if (!str.endsWith(";")) str += ";";
-                            builder.append(str).append("\n");
-                        }
-                        visited.add(value);
-                    }
-                }
-
-                @Override
-                public void visitGenDist(GenerativeDistribution genDist) {
-                }
-
-                public void visitFunction(DeterministicFunction f) {
-                }
-            }, true);
-        }
-        return builder.toString();
-    }
 
     /**
      * @return a list of keywords including names of distributions, functions, commands, and param names.
@@ -139,13 +106,13 @@ public class GraphicalModelParser {
         keywords.addAll(functionDictionary.keySet());
         keywords.addAll(commandDictionary.keySet());
 
-        Set<Class> classes = new HashSet<>();
-        for (Set<Class> genDistClasses : genDistDictionary.values()) {
+        Set<Class<?>> classes = new HashSet<>();
+        for (Set<Class<?>> genDistClasses : genDistDictionary.values()) {
             classes.addAll(genDistClasses);
         }
         classes.addAll(functionDictionary.values());
 
-        for (Class c : classes) {
+        for (Class<?> c : classes) {
             Parameterized.getAllParameterInfo(c).forEach((pinfo) -> {
                 String name = pinfo.name();
                 if (name.length() > 2 && !keywords.contains(name)) keywords.add(name);
@@ -188,22 +155,17 @@ public class GraphicalModelParser {
         gmListeners.add(listener);
     }
 
-    public SortedMap<String, Value> getDictionary() {
+    public SortedMap<String, Value<?>> getDictionary() {
         return dictionary;
     }
 
-    /**
-     * The "sinks" are those nodes in the graphical model that have no successors. They are the endpoints that
-     * are not parameters of any further functions or generative distributions.
-     * @return
-     */
-    public Set<Value> getSinks() {
-        SortedSet<Value> nonArguments = new TreeSet<>(Comparator.comparing(Value::getId));
-        dictionary.values().forEach((val) -> {
-            if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
-        });
+    public void parse(String code) {
+        parseLine(code);
+    }
 
-        return nonArguments;
+    @Override
+    public Map<String, Set<Class<?>>> getGenerativeDistributionClasses() {
+        return genDistDictionary;
     }
 
     public void parseLines(String[] lines) {
@@ -548,6 +510,19 @@ public class GraphicalModelParser {
         addValueToDictionary(var);
     }
 
+    private void addValueToDictionary(Value value) {
+
+        if (!value.isAnonymous()) {
+            String id = value.getId();
+            Value oldValue = dictionary.get(id);
+            if (oldValue != null) {
+                oldValue.setId(id + ".old");
+            }
+
+            dictionary.put(id, value);
+        }
+    }
+
     private GenerativeDistribution parseGenDist(String genString, int lineNumber) {
 
         int pos = genString.indexOf('(');
@@ -557,7 +532,7 @@ public class GraphicalModelParser {
         String argumentString = remainder.substring(0, remainder.length() - 1);
         Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
 
-        Set<Class> genDistClasses = genDistDictionary.get(name);
+        Set<Class<?>> genDistClasses = genDistDictionary.get(name);
 
         if (genDistClasses == null)
             throw new RuntimeException("Found no implementation for generative distribution " + name);
@@ -733,112 +708,6 @@ public class GraphicalModelParser {
 
     public List<String> getLines() {
         return lines;
-    }
-
-    /**
-     * Sample the current model
-     *
-     * @param reps    the number of times to sample
-     * @param loggers the loggers to log to
-     */
-    public void sample(int reps, RandomVariableLogger[] loggers) {
-
-        for (int i = 0; i < reps; i++) {
-            Set<String> sampled = new TreeSet<>();
-            Set<Value> sinks = getSinks();
-            for (RandomVariable var : getAllVariablesFromRoots()) {
-                dictionary.remove(var.getId());
-            }
-            for (Value value : sinks) {
-
-                if (value instanceof RandomVariable) {
-                    RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
-                    variable.setId(value.id);
-                    dictionary.put(variable.getId(), variable);
-                }
-            }
-
-            if (loggers != null) {
-                List<RandomVariable> variables = getAllVariablesFromRoots();
-                for (RandomVariableLogger logger : loggers) {
-                    logger.log(variables);
-                }
-            }
-        }
-        notifyListeners();
-    }
-
-    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {
-
-        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
-            generativeDistribution.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
-        }
-
-        return generativeDistribution.sample();
-    }
-
-    private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
-
-        for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
-            function.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
-        }
-
-        return function.apply();
-    }
-
-    private void addValueToDictionary(Value value) {
-
-        if (!value.isAnonymous()) {
-            String id = value.getId();
-            Value oldValue = dictionary.get(id);
-            if (oldValue != null) {
-                oldValue.setId(id + ".old");
-            }
-
-            dictionary.put(id, value);
-        }
-    }
-
-    private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
-        Map<String, Value> params = parameterized.getParams();
-
-        Map<String, Value> newlySampledParams = new TreeMap<>();
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-
-            Value val = e.getValue();
-
-            if (val.isRandom()) {
-                if (val.isAnonymous() || !sampled.contains(val.getId())) {
-                    // needs to be sampled
-
-                    if (val instanceof RandomVariable) {
-                        RandomVariable v = (RandomVariable) e.getValue();
-
-                        RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
-                        nv.setId(v.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        sampled.add(v.getId());
-                    } else {
-                        Value v = e.getValue();
-                        DeterministicFunction f = e.getValue().getFunction();
-
-                        Value nv = sampleAll(f, sampled);
-                        nv.setId(v.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        if (!v.isAnonymous()) sampled.add(v.getId());
-                    }
-                } else {
-                    // already been sampled
-                    String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), dictionary.get(id));
-                }
-            }
-        }
-        return newlySampledParams;
     }
 
     /**

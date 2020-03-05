@@ -1,9 +1,13 @@
 package james.app;
 
+import com.sun.org.apache.regexp.internal.RE;
 import james.app.graphicalmodelcomponent.GraphicalModelComponent;
 import james.app.graphicalmodelcomponent.Layering;
+import james.core.LPhyParser;
+import james.core.Sampler;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
+import james.parser.REPL;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +29,7 @@ public class GraphicalModelPanel extends JPanel {
     Log log = new Log();
     TreeLog treeLog = new TreeLog();
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
 
     JButton sampleButton = new JButton("Sample");
     JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
@@ -38,7 +42,7 @@ public class GraphicalModelPanel extends JPanel {
 
     JScrollPane currentSelectionContainer = new JScrollPane();
 
-    GraphicalModelPanel(GraphicalModelParser parser) {
+    GraphicalModelPanel(LPhyParser parser) {
 
         this.parser = parser;
 
@@ -106,24 +110,25 @@ public class GraphicalModelPanel extends JPanel {
         };
 
         component.addGraphicalModelListener(listener);
-        parser.addGraphicalModelChangeListener(component);
-        parser.addGraphicalModelListener(new GraphicalModelListener() {
-            @Override
-            public void valueSelected(Value value) {
-
-                showValue(value);
-            }
-
-            @Override
-            public void generativeDistributionSelected(GenerativeDistribution g) {
-
-            }
-
-            @Override
-            public void functionSelected(DeterministicFunction f) {
-
-            }
-        });
+        //TODO need a new way to deal with model changes
+//        parser.addGraphicalModelChangeListener(component);
+//        parser.addGraphicalModelListener(new GraphicalModelListener() {
+//            @Override
+//            public void valueSelected(Value value) {
+//
+//                showValue(value);
+//            }
+//
+//            @Override
+//            public void generativeDistributionSelected(GenerativeDistribution g) {
+//
+//            }
+//
+//            @Override
+//            public void functionSelected(DeterministicFunction f) {
+//
+//            }
+//        });
 
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -154,7 +159,8 @@ public class GraphicalModelPanel extends JPanel {
         if (displayedElement instanceof Value && !((Value)displayedElement).isAnonymous()) {
             id = ((Value)displayedElement).getId();
         }
-        parser.sample(reps, new RandomVariableLogger[] {log, treeLog});
+        Sampler sampler = new Sampler(parser);
+        sampler.sample(reps, new RandomVariableLogger[] {log, treeLog});
         //parser.sample(reps, null);
         if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));
@@ -208,7 +214,8 @@ public class GraphicalModelPanel extends JPanel {
             String mimeType = Files.probeContentType(path);
 
             if (mimeType.equals("text/plain")) {
-                parser.clear();
+                // TODO need to find another way to do this
+                //parser.clear();
                 interpreter.clear();
 
                 FileReader reader = new FileReader(scriptFile);

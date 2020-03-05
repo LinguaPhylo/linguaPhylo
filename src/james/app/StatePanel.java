@@ -1,5 +1,6 @@
 package james.app;
 
+import james.core.LPhyParser;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class StatePanel extends JPanel {
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
 
     List<JLabel> labels = new ArrayList<>();
     List<JComponent> editors = new ArrayList<>();
@@ -20,7 +21,7 @@ public class StatePanel extends JPanel {
     boolean includeRandomValues = true;
     boolean includeFixedValues = true;
 
-    public StatePanel(GraphicalModelParser parser, boolean includeFixedValues, boolean includeRandomValues) {
+    public StatePanel(LPhyParser parser, boolean includeFixedValues, boolean includeRandomValues) {
         this.parser = parser;
 
         this.includeFixedValues = includeFixedValues;
@@ -30,7 +31,8 @@ public class StatePanel extends JPanel {
 
         generateComponents();
 
-        parser.addGraphicalModelChangeListener(() -> generateComponents());
+        // TODO find another way to communicate model changes
+        //parser.addGraphicalModelChangeListener(() -> generateComponents());
     }
 
     void generateComponents() {
@@ -41,7 +43,7 @@ public class StatePanel extends JPanel {
 
         ;
 
-        for (Value value : parser.getAllValuesFromRoots()) {
+        for (Value value : LPhyParser.Utils.getAllValuesFromSinks(parser)) {
             if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);

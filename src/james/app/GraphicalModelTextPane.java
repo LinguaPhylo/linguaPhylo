@@ -1,5 +1,6 @@
 package james.app;
 
+import james.core.LPhyParser;
 import james.graphicalModel.GraphicalModelParser;
 
 import javax.swing.*;
@@ -10,10 +11,10 @@ import java.util.List;
 
 public class GraphicalModelTextPane extends JTextPane {
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelTextPane(GraphicalModelParser parser) {
+    public GraphicalModelTextPane(LPhyParser parser) {
         this.parser = parser;
         setEditable(false);
 

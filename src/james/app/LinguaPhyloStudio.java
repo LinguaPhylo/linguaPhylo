@@ -1,9 +1,11 @@
 package james.app;
 
+import james.core.LPhyParser;
 import james.graphicalModel.Command;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
 import james.graphicalModel.Value;
+import james.parser.REPL;
 import james.utils.Message;
 import james.utils.MessageListener;
 
@@ -50,7 +52,7 @@ public class LinguaPhyloStudio {
     private static final int MAX_HEIGHT = 1200;
 
 
-    GraphicalModelParser parser = new GraphicalModelParser();
+    LPhyParser parser = new REPL();
     GraphicalModelPanel panel = null;
     JFrame frame;
 
@@ -114,7 +116,7 @@ public class LinguaPhyloStudio {
                         BufferedReader reader = null;
                         try {
                             reader = new BufferedReader(new FileReader(exampleFile));
-                            parser.clear();
+                            initParser();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -172,7 +174,7 @@ public class LinguaPhyloStudio {
             }
         });
 
-        saveAsMenuItem.addActionListener(e -> saveToFile(parser.getCanonicalScript()));
+        saveAsMenuItem.addActionListener(e -> saveToFile(LPhyParser.Utils.getCanonicalScript(parser)));
         showArgumentLabels.addActionListener(e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
         showTreeInAlignmentView.addActionListener(e -> {
             AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState();
@@ -198,109 +200,111 @@ public class LinguaPhyloStudio {
 
     private void initParser() {
 
-        Command sampleCommand = new Command() {
-            @Override
-            public String getName() {
-                return "sample";
-            }
+        parser = new GraphicalModelParser();
 
-            public void execute(Map<String, Value> params) {
-                Value val = params.values().iterator().next();
-                if (val.value() instanceof Integer) {
-                    panel.sample((Integer) val.value());
-                }
-            }
-        };
+//        Command sampleCommand = new Command() {
+//            @Override
+//            public String getName() {
+//                return "sample";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                Value val = params.values().iterator().next();
+//                if (val.value() instanceof Integer) {
+//                    panel.sample((Integer) val.value());
+//                }
+//            }
+//        };
+//
+//        Command quitCommand = new Command() {
+//            @Override
+//            public String getName() {
+//                return "quit";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                quit();
+//            }
+//        };
 
-        Command quitCommand = new Command() {
-            @Override
-            public String getName() {
-                return "quit";
-            }
-
-            public void execute(Map<String, Value> params) {
-                quit();
-            }
-        };
-
-        parser.addCommand(sampleCommand);
-        parser.addCommand(quitCommand);
-
-        parser.addCommand(new Command() {
-            public String getName() {
-                return "clearlog";
-            }
-
-            public void execute(Map<String, Value> params) {
-                panel.log.clear();
-            }
-        });
-
-        parser.addCommand(new Command() {
-            public String getName() {
-                return "cleartrees";
-            }
-
-            public void execute(Map<String, Value> params) {
-                panel.treeLog.clear();
-            }
-        });
-
-        parser.addCommand(new Command() {
-            public String getName() {
-                return "savelog";
-            }
-
-            public void execute(Map<String, Value> params) {
-                saveToFile(panel.log.getText());
-            }
-        });
-
-        parser.addCommand(new Command() {
-            public String getName() {
-                return "savetrees";
-            }
-
-            public void execute(Map<String, Value> params) {
-                saveToFile(panel.treeLog.getText());
-            }
-        });
-
-        parser.addCommand(new Command() {
-            public String getName() {
-                return "source";
-            }
-
-            public void execute(Map<String, Value> params) {
-
-                Value fileName = params.get("0");
-                if (fileName == null) {
-                    fileName = params.get("file");
-                    if (fileName == null) {
-                        error("source command requires a file name argument (optional name 'file').", this);
-                    }
-                }
-
-                if (fileName != null) {
-
-                    if (fileName.value() instanceof String) {
-                        try {
-                            FileReader fileReader = new FileReader(new File((String)fileName.value()));
-                            BufferedReader reader = new BufferedReader(fileReader);
-                            source(reader);
-                        } catch (FileNotFoundException e) {
-                            error("File node found: " + fileName.value().toString(), this);
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            error("I/O exception will reading file: " + fileName.value().toString(), this);
-                            e.printStackTrace();
-                        }
-                    } else {
-                        error("Argument to source command must be a string!", this);
-                    }
-                }
-            }
-        });
+//        parser.addCommand(sampleCommand);
+//        parser.addCommand(quitCommand);
+//
+//        parser.addCommand(new Command() {
+//            public String getName() {
+//                return "clearlog";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                panel.log.clear();
+//            }
+//        });
+//
+//        parser.addCommand(new Command() {
+//            public String getName() {
+//                return "cleartrees";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                panel.treeLog.clear();
+//            }
+//        });
+//
+//        parser.addCommand(new Command() {
+//            public String getName() {
+//                return "savelog";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                saveToFile(panel.log.getText());
+//            }
+//        });
+//
+//        parser.addCommand(new Command() {
+//            public String getName() {
+//                return "savetrees";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//                saveToFile(panel.treeLog.getText());
+//            }
+//        });
+//
+//        parser.addCommand(new Command() {
+//            public String getName() {
+//                return "source";
+//            }
+//
+//            public void execute(Map<String, Value> params) {
+//
+//                Value fileName = params.get("0");
+//                if (fileName == null) {
+//                    fileName = params.get("file");
+//                    if (fileName == null) {
+//                        error("source command requires a file name argument (optional name 'file').", this);
+//                    }
+//                }
+//
+//                if (fileName != null) {
+//
+//                    if (fileName.value() instanceof String) {
+//                        try {
+//                            FileReader fileReader = new FileReader(new File((String)fileName.value()));
+//                            BufferedReader reader = new BufferedReader(fileReader);
+//                            source(reader);
+//                        } catch (FileNotFoundException e) {
+//                            error("File node found: " + fileName.value().toString(), this);
+//                            e.printStackTrace();
+//                        } catch (IOException e) {
+//                            error("I/O exception will reading file: " + fileName.value().toString(), this);
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        error("Argument to source command must be a string!", this);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void quit() {

@@ -2,14 +2,16 @@ package james.parser;
 
 
 import java.io.*;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
+import james.core.LPhyParser;
 import james.graphicalModel.Value;
 
 /** A simple Read-Eval-Print-Loop for the graphicalModelSimulator language **/ 
-public class REPL {
+public class REPL implements LPhyParser {
 	SortedMap<String, Value<?>> dictionary = new TreeMap<>();
+
+	private List<String> lines = new ArrayList<>();
 
 	public REPL() {
 	}
@@ -20,18 +22,22 @@ public class REPL {
 			System.out.print(">");
 			try {
 				String cmd = (new BufferedReader(new InputStreamReader(System.in))).readLine();
-				processCmd(cmd);
+				parse(cmd);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public void processCmd(String cmd) {
+
+	public Map<String, Value<?>> getDictionary() {
+		return dictionary;
+	}
+
+	public void parse(String cmd) {
 		if (cmd == null) {
 			return;
 		}
-		if (cmd.startsWith("quit") || cmd.startsWith("end") || cmd == null) {
+		if (cmd.startsWith("quit") || cmd.startsWith("end")) {
 			System.exit(0);
 		} else if (cmd.trim().length() == 0) {
 			// ignore empty lines
@@ -51,6 +57,17 @@ public class REPL {
 				System.err.println("Error: " + e.getMessage());
 			}
 		}
+		lines.add(cmd);
+	}
+
+	@Override
+	public Map<String, Set<Class<?>>> getGenerativeDistributionClasses() {
+		return SimulatorListenerImpl.genDistDictionary;
+	}
+
+	@Override
+	public List<String> getLines() {
+		return lines;
 	}
 
 

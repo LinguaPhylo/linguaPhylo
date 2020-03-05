@@ -1,5 +1,6 @@
 package james.app;
 
+import james.core.LPhyParser;
 import james.graphicalModel.GenerativeDistribution;
 import james.graphicalModel.GraphicalModelParser;
 import james.utils.Message;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class GraphicalModelInterpreter extends JPanel {
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
@@ -43,7 +44,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
-    public GraphicalModelInterpreter(GraphicalModelParser parser) {
+    public GraphicalModelInterpreter(LPhyParser parser) {
         this.parser = parser;
 
         textPane = new GraphicalModelTextPane(parser);
@@ -63,9 +64,9 @@ public class GraphicalModelInterpreter extends JPanel {
 
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Set<Class>> entry : parser.genDistDictionary.entrySet()) {
+        for (Map.Entry<String, Set<Class<?>>> entry : parser.getGenerativeDistributionClasses().entrySet()) {
 
-            Set<Class> classes = entry.getValue();
+            Set<Class<?>> classes = entry.getValue();
             Iterator iterator = classes.iterator();
 
             StringBuilder builder = new StringBuilder();
@@ -197,7 +198,7 @@ public class GraphicalModelInterpreter extends JPanel {
                     line = line + ";";
                 }
                 textPane.addLine(line);
-                parser.parseLine(line);
+                parser.parse(line);
             }
         }
     }

@@ -1,6 +1,7 @@
 package james.app.graphicalmodelcomponent;
 
 import james.TimeTree;
+import james.core.LPhyParser;
 import james.graphicalModel.*;
 import james.graphicalModel.types.DoubleValue;
 
@@ -25,9 +26,9 @@ public class LayeredGNode extends LayeredNode.Default {
 
     static DecimalFormat format = new DecimalFormat();
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
 
-    public LayeredGNode(Object value, GraphicalModelParser parser) {
+    public LayeredGNode(Object value, LPhyParser parser) {
         super(0,0);
 
         this.value = value;

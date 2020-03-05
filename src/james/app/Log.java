@@ -67,7 +67,7 @@ public class Log extends JTextArea implements RandomVariableLogger {
         rep = 0;
     }
 
-    public void log(List<RandomVariable> variables) {
+    public void log(List<RandomVariable<?>> variables) {
         if (rep < 1000) {
             StringBuilder builder = new StringBuilder();
             if (getText().length() == 0) {

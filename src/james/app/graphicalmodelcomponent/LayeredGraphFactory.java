@@ -1,5 +1,6 @@
 package james.app.graphicalmodelcomponent;
 
+import james.core.LPhyParser;
 import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Parameterized;
 import james.graphicalModel.RandomVariable;
@@ -9,7 +10,7 @@ import java.util.*;
 
 public class LayeredGraphFactory {
 
-    public static LayeredGraph createLayeredGraph(GraphicalModelParser parser, boolean showAllNodes) {
+    public static LayeredGraph createLayeredGraph(LPhyParser parser, boolean showAllNodes) {
         Map<Object, LayeredGNode> allNodes = new HashMap<>();
         for (Value value : parser.getSinks()) {
             createAndAddNode(parser, value, null, allNodes, showAllNodes);
@@ -36,7 +37,7 @@ public class LayeredGraphFactory {
      * @param allNodes
      * @return
      */
-    private static LayeredNode createAndAddNode(GraphicalModelParser parser, Value value, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredNode createAndAddNode(LPhyParser parser, Value value, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
 
         LayeredGNode node = allNodes.get(value);
         boolean newNode = (node == null);
@@ -70,7 +71,7 @@ public class LayeredGraphFactory {
         return node;
     }
 
-    private static LayeredGNode createAndAddNode(GraphicalModelParser parser, Parameterized g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredGNode createAndAddNode(LPhyParser parser, Parameterized g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
             node = new LayeredGNode(g, parser);
