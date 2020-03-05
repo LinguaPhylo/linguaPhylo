@@ -8,6 +8,7 @@ import java.util.function.*;
 
 import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
+import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
 
@@ -16,7 +17,10 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 	BinaryOperator func;
 	ElementWise2Args elementWise;
 
-	public ExpressionNode2Args(String expression, BinaryOperator func, GraphicalModelNode... values) {
+	public ExpressionNode2Args(
+			@ParameterInfo(name="expression",description="string description of the complete expression") String expression, 
+			@ParameterInfo(name="fun",description="top level function in the expression") BinaryOperator func, 
+			@ParameterInfo(name="inputs",description="values used as inputs for the expression") GraphicalModelNode... values) {
 		this.expression = expression;
 		this.func = func;
 		params = new LinkedHashMap<>();

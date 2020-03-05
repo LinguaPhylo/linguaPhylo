@@ -7,6 +7,7 @@ import java.util.function.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import james.graphicalModel.GraphicalModelNode;
+import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.Value;
 
 /** anonymous container holding a DeterministicFunction with 1 argument **/
@@ -14,7 +15,10 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
 	Function func;
 	ElementWise1Arg elementWise;
 
-	public ExpressionNode1Arg(String expression, Function func, GraphicalModelNode... values) {
+	public ExpressionNode1Arg(
+			@ParameterInfo(name="expression",description="string description of the complete expression") String expression, 
+			@ParameterInfo(name="fun",description="top level function in the expression") Function func, 
+			@ParameterInfo(name="inputs",description="values used as inputs for the expression") GraphicalModelNode... values) {
 		this.expression = expression;
 		this.func = func;
 		params = new LinkedHashMap<>();
