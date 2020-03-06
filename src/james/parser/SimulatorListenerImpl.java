@@ -192,6 +192,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
+                value.setFunction(f);
+                value.setId(id);
                 dictionary.put(id, value);
                 return value;
             } else if (expr instanceof Value) {
@@ -324,8 +326,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
                 if (bivarOperators.contains(s)) {
-                    Value f1 = (Value) visit(ctx.getChild(0));
-                    Value f2 = (Value) visit(ctx.getChild(ctx.getChildCount() - 1));
+                    Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
+
+                    Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
 
 
                     switch (s) {
@@ -449,6 +452,27 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return super.visitExpression(ctx);
         }
 
+        class ValueOrFunction {
+
+            Object obj;
+
+            public ValueOrFunction(Object obj) {
+                this.obj = obj;
+                if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) throw new RuntimeException();
+            }
+
+
+            Value getValue() {
+                if (obj instanceof Value) return (Value)obj;
+                if (obj instanceof DeterministicFunction) {
+                    DeterministicFunction func = (DeterministicFunction)obj;
+                    Value val = func.apply();
+                    val.setFunction(func);
+                    return val;
+                }
+                throw new RuntimeException();
+            }
+        }
 
         class NamedValue {
         	public NamedValue(String name, Value value) {

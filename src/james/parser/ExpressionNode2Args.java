@@ -3,7 +3,10 @@ package james.parser;
 import java.util.*;
 import java.util.function.*;
 
+import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
+import james.graphicalModel.ParameterInfo;
+import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
 import james.utils.Message;
 

@@ -13,6 +13,9 @@ public class Sampler {
         this.parser = parser;
     }
 
+    /**
+     * @return a list of all random variables reachable (i.e. that are depended on by) the sinks.
+     */
     public List<RandomVariable<?>> getAllVariablesFromSinks() {
         List<RandomVariable<?>> variables = new ArrayList<>();
         for (Value<?> value: LPhyParser.Utils.getAllValuesFromSinks(parser)) {
@@ -39,10 +42,15 @@ public class Sampler {
             }
             for (Value<?> value : sinks) {
 
-                if (value instanceof RandomVariable) {
-                    RandomVariable variable = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
-                    variable.setId(value.getId());
-                    parser.getDictionary().put(variable.getId(), variable);
+                if (value.isRandom()) {
+                    Value randomValue = null;
+                    if (value instanceof RandomVariable) {
+                        randomValue = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
+                    } else if (value.getFunction() != null) {
+                        randomValue = sampleAll(value.getFunction(), sampled);
+                    } else throw new RuntimeException();
+                    randomValue.setId(value.getId());
+                    parser.getDictionary().put(randomValue.getId(), randomValue);
                 }
             }
 
