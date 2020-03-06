@@ -22,8 +22,7 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	
 	@Override
 	public String getName() {
-		// Anonymous expression
-		return null;
+		return expression;
 	}
 
 	@Override

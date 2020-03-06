@@ -462,16 +462,24 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
-            Value value = (Value) visit(ctx.getChild(2));
-            // TODO: do we really need a new object here?
-            // value.setId(name);
-            //Value v = new Value(name, value.value());
-            NamedValue v = new NamedValue(name, value);
+            Object obj = visit(ctx.getChild(2));
 
             Message.info(" Visiting named expression:", this);
-            Message.info("   name: " + name + " value: " + value, this);
+            Message.info("   name: " + name + " child2: " + obj, this);
 
-            return v;
+            if (obj instanceof DeterministicFunction) {
+                Value value = ((DeterministicFunction) obj).apply();
+                value.setFunction(((DeterministicFunction) obj));
+                NamedValue v = new NamedValue(name, value);
+                return v;
+            }
+
+            if (obj instanceof Value) {
+                Value value = (Value) obj;
+                NamedValue v = new NamedValue(name, value);
+                return v;
+            }
+            return obj;
         }
 
         @Override

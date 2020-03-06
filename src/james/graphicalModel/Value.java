@@ -49,7 +49,9 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
     public String getLabel() {
         if (isAnonymous()) {
-            return "[" + ((Parameterized)getOutputs().get(0)).getParamName(this) + "]";
+            if (getOutputs().size() > 0) {
+                return "[" + ((Parameterized) getOutputs().get(0)).getParamName(this) + "]";
+            } else return "[anonymous]";
         } else return getId();
     }
 
@@ -185,5 +187,9 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
     public boolean isConstant() {
         return !(this instanceof RandomVariable) && getFunction() == null;
+    }
+
+    public void setFunction(DeterministicFunction f) {
+        this.function = f;
     }
 }

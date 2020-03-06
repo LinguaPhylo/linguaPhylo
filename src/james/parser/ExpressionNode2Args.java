@@ -1,39 +1,59 @@
 package james.parser;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.*;
 
-import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
-import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
+import james.utils.Message;
 
 /** anonymous container holding a DeterministicFunction with 2 arguments **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
 	BinaryOperator func;
 	ElementWise2Args elementWise;
 
+	List<Set<String>> valuesToIds = new ArrayList();
+
 	public ExpressionNode2Args(String expression, BinaryOperator func, GraphicalModelNode... values) {
 		this.expression = expression;
 		this.func = func;
 		params = new LinkedHashMap<>();
+
 		for (GraphicalModelNode value : values) {
+			Set<String> ids = new HashSet<>();
 			if (value instanceof ExpressionNode) {
 				for (Object o : ((ExpressionNode) value).getInputs()) {
 					Value value2 = (Value) o;
 					params.put(value2.getId(), value2);
+					ids.add(value2.getId());
 				}
 			} else if (value instanceof Value) {
-				params.put(((Value) value).getId(), (Value) value);
+				String id = ((Value) value).getId();
+				params.put(id, (Value) value);
+				ids.add(id);
 			}
+			valuesToIds.add(ids);
 		}
 		inputValues = values;
 		
 		elementWise = ElementWise2Args.elementFactory(values);
 	}
+
+	public void setParam(String paramName, Value value) {
+
+		params.put(paramName, value);
+
+		for (int i = 0; i < valuesToIds.size(); i++) {
+			if (valuesToIds.get(i).contains(paramName)) {
+				if (inputValues[i] instanceof Value) {
+					inputValues[i] = value;
+				} else if (inputValues[i] instanceof ExpressionNode) {
+					((ExpressionNode)inputValues[i]).setParam(paramName, value);
+				}
+			}
+		}
+	}
+
 
 	@Override
 	public Value<T> apply() {

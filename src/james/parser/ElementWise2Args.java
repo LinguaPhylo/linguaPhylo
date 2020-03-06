@@ -11,7 +11,7 @@ public interface ElementWise2Args<R,S> {
 	
 	Value apply(R a, S b, BinaryOperator o);
 	
-	static ElementWise2Args<DoubleValue, DoubleValue> elementWiseDD() {
+	static ElementWise2Args<Value<Double>, Value<Double>> elementWiseDD() {
 		return (a,b,o) -> {
 			Double va = (Double) a.value();
 			Double vb = (Double) b.value();
