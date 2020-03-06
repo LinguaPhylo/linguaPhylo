@@ -23,7 +23,7 @@ relation: stoch_relation ';'
 for_loop: counter relations 
 ;
 
-counter: 'for' '(' NAME 'in' range_element ')' 
+counter: 'for' '(' NAME 'in' range_element ')'
 ;
 
 assignment: ARROW 
@@ -35,12 +35,12 @@ determ_relation: var assignment expression
 ;
 
 stoch_relation:	var TILDE distribution 
-| var '~' distribution truncated 
-| var '~' distribution interval 
+//| var '~' distribution truncated 
+//| var '~' distribution interval 
 ;
 
-truncated: 'T' '(' expression ','  expression ')' ;
-interval: 'I' '(' expression ','  expression ')' ;
+//truncated: 'T' '(' expression ','  expression ')' ;
+//interval: 'I' '(' expression ','  expression ')' ;
 
 
 var: NAME 

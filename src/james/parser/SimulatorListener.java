@@ -98,26 +98,6 @@ public interface SimulatorListener extends ParseTreeListener {
 	 */
 	void exitStoch_relation(SimulatorParser.Stoch_relationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimulatorParser#truncated}.
-	 * @param ctx the parse tree
-	 */
-	void enterTruncated(SimulatorParser.TruncatedContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimulatorParser#truncated}.
-	 * @param ctx the parse tree
-	 */
-	void exitTruncated(SimulatorParser.TruncatedContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimulatorParser#interval}.
-	 * @param ctx the parse tree
-	 */
-	void enterInterval(SimulatorParser.IntervalContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimulatorParser#interval}.
-	 * @param ctx the parse tree
-	 */
-	void exitInterval(SimulatorParser.IntervalContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SimulatorParser#var}.
 	 * @param ctx the parse tree
 	 */
