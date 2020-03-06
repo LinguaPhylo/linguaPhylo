@@ -3,12 +3,8 @@ package james.parser;
 import java.util.*;
 import java.util.function.*;
 
-import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
-import james.graphicalModel.ParameterInfo;
-import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
-import james.utils.Message;
 
 /** anonymous container holding a DeterministicFunction with 2 arguments **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
@@ -25,15 +21,16 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 		for (GraphicalModelNode value : values) {
 			Set<String> ids = new HashSet<>();
 			if (value instanceof ExpressionNode) {
-				for (Object o : ((ExpressionNode) value).getInputs()) {
-					Value value2 = (Value) o;
-					params.put(value2.getId(), value2);
-					ids.add(value2.getId());
-				}
+//				for (Object o : ((ExpressionNode) value).getInputs()) {
+//					Value value2 = (Value) o;
+//					params.put(value2.getId(), value2);
+//					ids.add(value2.getId());
+//				}
 			} else if (value instanceof Value) {
 				String id = ((Value) value).getId();
 				params.put(id, (Value) value);
 				ids.add(id);
+				((Value) value).addOutput(this);
 			}
 			valuesToIds.add(ids);
 		}
@@ -42,16 +39,17 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 		elementWise = ElementWise2Args.elementFactory(values);
 	}
 
-	public void setParam(String paramName, Value value) {
+	public Map<String, Value> getParams() {
+		return params;
+	}
 
+	public void setParam(String paramName, Value value) {
 		params.put(paramName, value);
 
 		for (int i = 0; i < valuesToIds.size(); i++) {
 			if (valuesToIds.get(i).contains(paramName)) {
 				if (inputValues[i] instanceof Value) {
 					inputValues[i] = value;
-				} else if (inputValues[i] instanceof ExpressionNode) {
-					((ExpressionNode)inputValues[i]).setParam(paramName, value);
 				}
 			}
 		}
@@ -60,7 +58,9 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
 	@Override
 	public Value<T> apply() {
-		return elementWise.apply(inputValues[0], inputValues[1], func);
+		Value value = elementWise.apply(inputValues[0], inputValues[1], func);
+		value.setFunction(this);
+		return value;
 	}
 
 

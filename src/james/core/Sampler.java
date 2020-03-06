@@ -2,6 +2,7 @@ package james.core;
 
 import james.app.GraphicalLPhyParser;
 import james.graphicalModel.*;
+import james.utils.Message;
 
 import java.util.*;
 
@@ -40,6 +41,7 @@ public class Sampler {
             for (RandomVariable<?> var : getAllVariablesFromSinks()) {
                 parser.getDictionary().remove(var.getId());
             }
+
             for (Value<?> value : sinks) {
 
                 if (value.isRandom()) {

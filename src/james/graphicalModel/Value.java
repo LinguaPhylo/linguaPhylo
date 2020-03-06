@@ -164,7 +164,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     }
 
     public void addOutput(Parameterized p) {
-        outputs.add(p);
+        if (!outputs.contains(p)) outputs.add(p);
     }
 
     public void removeOutput(Parameterized p) {
