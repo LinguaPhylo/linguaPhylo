@@ -11,6 +11,7 @@ import james.graphicalModel.FunctionInfo;
 import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.Value;
 import james.graphicalModel.types.IntegerValue;
+import james.utils.Message;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -33,7 +34,6 @@ public class Newick extends DeterministicFunction<TimeTree> {
     }
 
     private TimeTree parseNewick(String newick) {
-
 
         CharStream charStream = CharStreams.fromString(newick);
 
@@ -72,6 +72,8 @@ public class Newick extends DeterministicFunction<TimeTree> {
 
         TimeTree tree = new TimeTree();
         tree.setRoot(root);
+
+        Message.info("Parsed tree: " + tree, this);
 
         return tree;
     }

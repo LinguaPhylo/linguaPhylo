@@ -22,7 +22,8 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     static final String populationLabel = "deme";
 
 
-    public StructuredCoalescent(@ParameterInfo(name = "theta", description = "effective population sizes and migration rates. Off-diagonal migration rates are in units of expected migrants per *generation*.") Value<Double[][]> theta,
+    public StructuredCoalescent(@ParameterInfo(name = "M", description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
+            "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
                                 @ParameterInfo(name = "n", description = "the number of taxa in each population.") Value<Integer[]> n) {
         this.theta = theta;
         this.n = n;

@@ -54,7 +54,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
         Class<?>[] functionClasses = {james.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, james.core.functions.BinaryRateMatrix.class, NodeCount.class};
+                Newick.class, james.core.functions.BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class};
 
         for (Class<?> functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -62,57 +62,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
     }
-
-//	private static void initMap(Class baseClass, Map<String, String> mapNameToClass) {
-//		List<String> classes = PackageManager.find(baseClass, "jags");
-//		for (String _class : classes) {
-//			try {
-//				Class _impl = Class.forName(_class);
-//					if (!Modifier.isAbstract(_impl.getModifiers())) {
-//					Constructor<?> ctor;
-//					Object t = null;
-//					try {
-//						ctor = _impl.getConstructor();
-//						t = ctor.newInstance();
-//					} catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-//						// ignore
-//					}
-//					if (t != null) {
-//						String name =
-//								t instanceof JFunction ?
-//								((JFunction)t).getJAGSName() :
-//								((JAGSDistribution)t).getName();
-//						mapNameToClass.put(name, _class);
-//						if (t instanceof JFunction) {
-//							name = ((JFunction) t).getJAGSAlias();
-//							if (name != null) {
-//								mapNameToClass.put(name, _class);
-//							}
-//						}
-//					}
-//				}
-//			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//		}		
-//	}
-
-//	static JFunction fun0 = new JFunction() {		
-//		@Override
-//		public int getDimension() {return 1;}
-//		
-//		@Override
-//		public double getArrayValue(int dim) {return 0;}
-//		
-//		@Override
-//		public double getArrayValue() {return 0;}
-//		
-//		@Override
-//		public int getDimensionCount() {return 1;}
-//		
-//		@Override
-//		public int getDimension(int dim) {return 1;}
-//	};
 
     public SimulatorListenerImpl(SortedMap<String, Value<?>> dictionary) {
         this.dictionary = dictionary;
@@ -139,15 +88,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         }
 
-
         @Override
         public Value visitConstant(SimulatorParser.ConstantContext ctx) {
 
             String text = ctx.getText();
-            Message.info(" visitConstant: " + text, this);
             if (text.startsWith("\"")) {
                 //String id = nextID("StringValue");
-                StringValue v = new StringValue(null, text);
+                StringValue v = new StringValue(null, stripQuotes(text));
                 return v;
             }
             double d = 0;
@@ -170,6 +117,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     return v;
                 }
             }
+        }
+
+        private String stripQuotes(String stringWithQuotes) {
+            if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
+                return stringWithQuotes.substring(1, stringWithQuotes.length()-1);
+            } else throw new RuntimeException();
         }
 
         private String nextID(String id) {
@@ -460,7 +413,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 this.obj = obj;
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) throw new RuntimeException();
             }
-
 
             Value getValue() {
                 if (obj instanceof Value) return (Value)obj;

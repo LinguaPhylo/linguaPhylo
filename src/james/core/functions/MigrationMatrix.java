@@ -14,8 +14,8 @@ public class MigrationMatrix extends DeterministicFunction<Double[][]> {
     String thetaParamName;
     String ratesParamName;
 
-    public MigrationMatrix(@ParameterInfo(name = "Theta", description = "the population sizes.") Value<Double[]> popSizes,
-                           @ParameterInfo(name = "migrationRates", description = "the migration rates between each pair of demes (row-major order minus diagonals).") Value<Double[]> rates) {
+    public MigrationMatrix(@ParameterInfo(name = "theta", description = "the population sizes.") Value<Double[]> popSizes,
+                           @ParameterInfo(name = "m", description = "the migration rates between each pair of demes (row-major order minus diagonals).") Value<Double[]> rates) {
         thetaParamName = getParamName(0);
         ratesParamName = getParamName(1);
 
@@ -30,7 +30,7 @@ public class MigrationMatrix extends DeterministicFunction<Double[][]> {
     }
 
 
-    @FunctionInfo(name = "migrationMatrix", description = "The population process matrix. Diagonals will be population sizes, off-diagonals will be the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).")
+    @FunctionInfo(name = "migrationMatrix", description = "This function constructs the population process rate matrix. Diagonals are the population sizes, off-diagonals are populated with the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(ratesParamName);
         Value<Double[]> popSizes = getParams().get(thetaParamName);

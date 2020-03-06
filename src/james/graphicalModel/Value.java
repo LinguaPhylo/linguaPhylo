@@ -2,9 +2,9 @@ package james.graphicalModel;
 
 import james.app.DoubleArrayLabel;
 import james.app.HasComponentView;
+import james.app.IntegerArrayLabel;
 
 import javax.swing.*;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +86,10 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
         if (value() instanceof Double[]) {
             return new DoubleArrayLabel((Value<Double[]>)this);
+        }
+
+        if (value() instanceof Integer[]) {
+            return new IntegerArrayLabel((Value<Integer[]>)this);
         }
 
         if (value.toString().length() < 130) {
