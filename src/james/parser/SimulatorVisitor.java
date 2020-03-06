@@ -65,18 +65,6 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStoch_relation(SimulatorParser.Stoch_relationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#truncated}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTruncated(SimulatorParser.TruncatedContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#interval}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInterval(SimulatorParser.IntervalContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SimulatorParser#var}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
