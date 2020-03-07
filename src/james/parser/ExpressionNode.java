@@ -62,4 +62,25 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	public String toString() {
 		return getName();
 	}
+
+	public Value updateInputsAndApply() {
+
+		Value[] newInputValues = new Value[inputValues.length];
+		for (int i = 0; i < inputValues.length; i++) {
+			if (inputValues[i] instanceof Value) {
+				Value v = (Value) inputValues[i];
+				if (v.getFunction() instanceof DeterministicFunction) {
+					DeterministicFunction f = (DeterministicFunction) v.getFunction();
+
+					Value newValue = f.apply();
+					if (!v.isAnonymous()) {
+						newValue.setId(v.getId());
+						paramMap.put(v.getId(), newValue);
+					}
+					inputValues[i] = newValue;
+				}
+			} else throw new RuntimeException("This code assumes all inputs are values!");
+		}
+		return apply();
+	}
 }

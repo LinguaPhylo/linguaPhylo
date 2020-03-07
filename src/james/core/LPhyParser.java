@@ -64,10 +64,14 @@ public interface LPhyParser {
         private static boolean wrapExpressionNodes(Value value) {
             for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {
                 if (node instanceof ExpressionNode) {
-                    Message.info("  Wrapped " + node + ".", null);
-                    ExpressionNodeWrapper wrapper = new ExpressionNodeWrapper((ExpressionNode)node);
-                    value.setFunction(wrapper);
-                    return true;
+                    ExpressionNode eNode = (ExpressionNode)node;
+
+                    if (ExpressionNodeWrapper.expressionSubtreeSize(eNode) > 1) {
+                        Message.info("  Wrapped " + node + ".", null);
+                        ExpressionNodeWrapper wrapper = new ExpressionNodeWrapper((ExpressionNode) node);
+                        value.setFunction(wrapper);
+                        return true;
+                    }
                 }
             }
             for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {

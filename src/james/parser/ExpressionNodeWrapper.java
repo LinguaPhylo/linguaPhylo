@@ -24,34 +24,53 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         rewireAllOutputs(nodeToWrap, false);
     }
 
-    private void rewireAllOutputs(ExpressionNode expressionNode, boolean makeAnonymous) {
-        for (GraphicalModelNode childNode : (List<GraphicalModelNode>)expressionNode.getInputs()) {
+    /**
+     * Returns size of this expression (i.e. how many expression nodes are involved, including expressionNodes that produce the inputs to this one).
+     * @param eNode
+     * @return
+     */
+    public static int expressionSubtreeSize(ExpressionNode eNode) {
+
+        int size = 1;
+        for (GraphicalModelNode childNode : (List<GraphicalModelNode>) eNode.getInputs()) {
             if (childNode instanceof Value) {
-                Value v = (Value)childNode;
+                Value v = (Value) childNode;
+                if (v.getFunction() instanceof ExpressionNode) {
+                    size += expressionSubtreeSize((ExpressionNode) v.getFunction());
+                }
+            }
+        }
+       return size;
+    }
+
+    private void rewireAllOutputs(ExpressionNode expressionNode, boolean makeAnonymous) {
+        for (GraphicalModelNode childNode : (List<GraphicalModelNode>) expressionNode.getInputs()) {
+            if (childNode instanceof Value) {
+                Value v = (Value) childNode;
                 if (v.getFunction() instanceof ExpressionNode) {
                     rewireAllOutputs((ExpressionNode) v.getFunction(), true);
                 }
             }
         }
         expressionNode.getParams().forEach((key, value) -> {
-            ((Value)value).removeOutput((Parameterized)((Value) value).getOutputs().get(0));
-            ((Value)value).addOutput(this);
+            ((Value) value).removeOutput((Parameterized) ((Value) value).getOutputs().get(0));
+            ((Value) value).addOutput(this);
         });
         if (makeAnonymous) expressionNode.setAnonymous(true);
     }
 
     private void extractAllParams(ExpressionNode expressionNode) {
-        for (GraphicalModelNode childNode : (List<GraphicalModelNode>)expressionNode.getInputs()) {
+        for (GraphicalModelNode childNode : (List<GraphicalModelNode>) expressionNode.getInputs()) {
             if (childNode instanceof Value) {
-                Value v = (Value)childNode;
+                Value v = (Value) childNode;
                 if (v.getFunction() instanceof ExpressionNode) {
                     extractAllParams((ExpressionNode) v.getFunction());
                 }
             }
         }
         expressionNode.getParams().forEach((key, value) -> {
-            if (!(((Value)value).isAnonymous())) {
-                paramMap.put((String)key, (Value)value);
+            if (!(((Value) value).isAnonymous())) {
+                paramMap.put((String) key, (Value) value);
             }
         });
     }
@@ -76,13 +95,13 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         if (expressionNode.getParams().containsKey(paramName)) {
             expressionNode.setParam(paramName, value);
         } else {
-            for (GraphicalModelNode childNode : (List<GraphicalModelNode>)expressionNode.getInputs()) {
+            for (GraphicalModelNode childNode : expressionNode.inputValues) {
                 if (childNode instanceof Value) {
-                    Value v = (Value)childNode;
+                    Value v = (Value) childNode;
                     if (v.getFunction() instanceof ExpressionNode) {
-                        setParamRecursively(paramName, value, (ExpressionNode)v.getFunction());
+                        setParamRecursively(paramName, value, (ExpressionNode) v.getFunction());
                     }
-                }
+                } else throw new RuntimeException("This code assumes all inputs are values!");
             }
         }
     }
@@ -90,12 +109,39 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
     @Override
     public Value apply() {
 
-        // can't just call apply here for a sample.
-        // because after wrapping the traversal will not include the substructre of this wrapped expression node
+        // this is a bit inefficient!
+        // It ensures that the Sampler works, but if random variables haven't changed it is unnecessary.
+        return applyRecursively();
+//        Value v = nodeToWrap.apply();
+//        v.setFunction(this);
+//        return v;
+    }
 
-        Value v = nodeToWrap.apply();
+    public Value applyRecursively() {
+        Value v =  applyRecursively(nodeToWrap);
         v.setFunction(this);
         return v;
+    }
+
+    private Value applyRecursively(ExpressionNode expressionNode) {
+
+        Value[] newInputValues = new Value[expressionNode.inputValues.length];
+        for (int i = 0; i < expressionNode.inputValues.length; i++) {
+            if (expressionNode.inputValues[i] instanceof Value) {
+                Value v = (Value) expressionNode.inputValues[i];
+                if (v.getFunction() instanceof ExpressionNode) {
+                    ExpressionNode childExpressionNode = (ExpressionNode) v.getFunction();
+
+                    Value newValue = applyRecursively(childExpressionNode);
+                    if (!v.isAnonymous()) {
+                        newValue.setId(v.getId());
+                        paramMap.put(v.getId(), newValue);
+                    }
+                    expressionNode.inputValues[i] = newValue;
+                }
+            } else throw new RuntimeException("This code assumes all inputs are values!");
+        }
+        return expressionNode.apply();
     }
 
     public String codeString() {

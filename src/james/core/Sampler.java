@@ -2,6 +2,8 @@ package james.core;
 
 import james.app.GraphicalLPhyParser;
 import james.graphicalModel.*;
+import james.parser.ExpressionNode;
+import james.parser.ExpressionNodeWrapper;
 import james.utils.Message;
 
 import java.util.*;
@@ -78,7 +80,8 @@ public class Sampler {
 
     private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
 
-        for (Map.Entry<String, Value> e : getNewlySampledParams(function, sampled).entrySet()) {
+        Map<String, Value> newParams = getNewlySampledParams(function, sampled);
+        for (Map.Entry<String, Value> e : newParams.entrySet()) {
             function.setInput(e.getKey(), e.getValue());
             if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
         }
@@ -109,14 +112,13 @@ public class Sampler {
                         addValueToDictionary(nv);
                         sampled.add(v.getId());
                     } else {
-                        Value v = e.getValue();
-                        DeterministicFunction f = e.getValue().getFunction();
+                        DeterministicFunction f = val.getFunction();
 
                         Value nv = sampleAll(f, sampled);
-                        nv.setId(v.getId());
+                        nv.setId(val.getId());
                         newlySampledParams.put(e.getKey(), nv);
                         addValueToDictionary(nv);
-                        if (!v.isAnonymous()) sampled.add(v.getId());
+                        if (!val.isAnonymous()) sampled.add(val.getId());
                     }
                 } else {
                     // already been sampled
@@ -135,9 +137,10 @@ public class Sampler {
         if (!value.isAnonymous()) {
             String id = value.getId();
             Value oldValue = parser.getDictionary().get(id);
-            if (oldValue != null) {
-                oldValue.setId(id + ".old");
-            }
+            // Can't change the name as this will mess with updating of expression nodes!
+//            if (oldValue != null) {
+//                oldValue.setId(id + ".old");
+//            }
             Message.info("  parser.getDictionary().put(" + id + ":" + value + ")", this);
 
             parser.getDictionary().put(id, value);
