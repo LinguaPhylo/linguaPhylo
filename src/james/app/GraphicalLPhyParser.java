@@ -25,6 +25,7 @@ public class GraphicalLPhyParser implements LPhyParser {
     @Override
     public void parse(String code) {
         wrappedParser.parse(code);
+        LPhyParser.Utils.wrapExpressionNodes(wrappedParser);
         notifyListeners();
     }
 

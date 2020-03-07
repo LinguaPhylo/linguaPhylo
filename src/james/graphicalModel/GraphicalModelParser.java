@@ -60,6 +60,10 @@ public class GraphicalModelParser implements LPhyParser {
         addCommand(new Remove(this));
     }
 
+    public static boolean isCommentLine(String line) {
+        return line.trim().startsWith("//");
+    }
+
     private void addGenerativeDistribution(Class<?> genClass) {
         String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
 

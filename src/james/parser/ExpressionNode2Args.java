@@ -5,6 +5,7 @@ import java.util.function.*;
 
 import james.graphicalModel.GraphicalModelNode;
 import james.graphicalModel.Value;
+import james.utils.Message;
 
 /** anonymous container holding a DeterministicFunction with 2 arguments **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
@@ -50,6 +51,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 			if (valuesToIds.get(i).contains(paramName)) {
 				if (inputValues[i] instanceof Value) {
 					inputValues[i] = value;
+					Message.info("Setting input value " + i + " to " + value, this);
 				}
 			}
 		}

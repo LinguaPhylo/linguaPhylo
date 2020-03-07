@@ -1,6 +1,9 @@
 package james.core;
 
 import james.graphicalModel.*;
+import james.parser.ExpressionNode;
+import james.parser.ExpressionNodeWrapper;
+import james.utils.Message;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +42,43 @@ public interface LPhyParser {
     List<String> getLines();
 
     class Utils {
+
+        /**
+         * Wraps recursively defined functions into a single graphical model node.
+         * @param parser
+         */
+        public static void wrapExpressionNodes(LPhyParser parser) {
+
+            int wrappedExpressionNodeCount = 0;
+            boolean found = false;
+            do {
+                for (Value value : parser.getSinks()) {
+                    found = wrapExpressionNodes(value);
+                    wrappedExpressionNodeCount += 1;
+                }
+
+            } while (found);
+            Message.info("Wrapped " + wrappedExpressionNodeCount + " expression subtrees.", null);
+        }
+
+        private static boolean wrapExpressionNodes(Value value) {
+            for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {
+                if (node instanceof ExpressionNode) {
+                    ExpressionNodeWrapper wrapper = new ExpressionNodeWrapper((ExpressionNode)node);
+                    value.setFunction(wrapper);
+                    return true;
+                } else if (node instanceof Parameterized) {
+                    Parameterized p = (Parameterized)node;
+                    for (GraphicalModelNode v : p.getInputs()) {
+                        if (v instanceof Value) {
+                            return wrapExpressionNodes((Value)v);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
 
         public static String getCanonicalScript(LPhyParser parser) {
             Set<Value> visited = new HashSet<>();

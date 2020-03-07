@@ -45,14 +45,14 @@ public class Sampler {
             for (Value<?> value : sinks) {
 
                 if (value.isRandom()) {
-                    Value randomValue = null;
+                    Value randomValue;
                     if (value instanceof RandomVariable) {
                         randomValue = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
                     } else if (value.getFunction() != null) {
                         randomValue = sampleAll(value.getFunction(), sampled);
                     } else throw new RuntimeException();
                     randomValue.setId(value.getId());
-                    parser.getDictionary().put(randomValue.getId(), randomValue);
+                    addValueToDictionary(randomValue);
                 }
             }
 
@@ -87,6 +87,8 @@ public class Sampler {
     }
 
     private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
+
+        Message.info("getNewlySampledParams(" + parameterized.getName() + ")", this);
         Map<String, Value> params = parameterized.getParams();
 
         Map<String, Value> newlySampledParams = new TreeMap<>();
@@ -128,12 +130,15 @@ public class Sampler {
 
     private void addValueToDictionary(Value value) {
 
+        Message.info("addValueToDictionary(" + value + ")", this);
+
         if (!value.isAnonymous()) {
             String id = value.getId();
             Value oldValue = parser.getDictionary().get(id);
             if (oldValue != null) {
                 oldValue.setId(id + ".old");
             }
+            Message.info("  parser.getDictionary().put(" + id + ":" + value + ")", this);
 
             parser.getDictionary().put(id, value);
         }

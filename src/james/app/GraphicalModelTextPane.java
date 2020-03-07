@@ -27,7 +27,14 @@ public class GraphicalModelTextPane extends JTextPane {
     }
 
     void addLine(String line) {
-        if (GraphicalModelParser.isRandomVariableLine(line)) {
+
+
+
+        if (GraphicalModelParser.isCommentLine(line)) {
+            addColoredTextLine(GraphicalModelTextPane.this,
+                    new String[] {line},
+                    new Color[] {Color.gray});
+        } else if (GraphicalModelParser.isRandomVariableLine(line)) {
             String[] parts = line.split("~");
             String genDist = parts[1].substring(0, parts[1].indexOf('('));
             String rest = parts[1].substring(parts[1].indexOf('('));

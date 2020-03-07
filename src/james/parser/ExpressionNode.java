@@ -15,6 +15,7 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	String expression;
 	Map<String, Value> params;
 	GraphicalModelNode[] inputValues;
+	boolean isAnonymous = false;
 
 	ExpressionNode() {
 		
@@ -32,7 +33,8 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 
 	@Override
 	public void setParam(String paramName, Value value) {
-		((Value) params.get(paramName)).setValue(value);
+		//((Value) params.get(paramName)).setValue(value);
+		params.put(paramName, value);
 	}
 
 	@Override
@@ -44,5 +46,16 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	public List<GraphicalModelNode> getInputs() {
 		return new ArrayList<>(params.values());
 	}
-	
+
+	public boolean isAnonymous() {
+		return isAnonymous;
+	}
+
+	/**
+	 *
+	 * @param b
+	 */
+	public void setAnonymous(boolean b) {
+		isAnonymous = b;
+	}
 }

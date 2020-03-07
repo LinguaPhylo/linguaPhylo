@@ -22,7 +22,7 @@ public abstract class Func implements Parameterized, Viewable {
         return "";
     }
 
-    TreeMap<String, Value> paramMap = new TreeMap<>();
+    protected TreeMap<String, Value> paramMap = new TreeMap<>();
 
     public Map<String, Value> getParams() {
         return paramMap;
