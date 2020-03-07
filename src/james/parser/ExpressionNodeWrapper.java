@@ -89,6 +89,10 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
     @Override
     public Value apply() {
+
+        // can't just call apply here for a sample.
+        // because after wrapping the traversal will not include the substructre of this wrapped expression node
+
         Value v = nodeToWrap.apply();
         v.setFunction(this);
         return v;

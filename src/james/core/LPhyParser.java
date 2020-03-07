@@ -54,7 +54,7 @@ public interface LPhyParser {
             do {
                 for (Value value : parser.getSinks()) {
                     found = wrapExpressionNodes(value);
-                    wrappedExpressionNodeCount += 1;
+                    if (found) wrappedExpressionNodeCount += 1;
                 }
 
             } while (found);
@@ -64,14 +64,18 @@ public interface LPhyParser {
         private static boolean wrapExpressionNodes(Value value) {
             for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {
                 if (node instanceof ExpressionNode) {
+                    Message.info("  Wrapped " + node + ".", null);
                     ExpressionNodeWrapper wrapper = new ExpressionNodeWrapper((ExpressionNode)node);
                     value.setFunction(wrapper);
                     return true;
-                } else if (node instanceof Parameterized) {
-                    Parameterized p = (Parameterized)node;
+                }
+            }
+            for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {
+                if (node instanceof Parameterized) {
+                    Parameterized p = (Parameterized) node;
                     for (GraphicalModelNode v : p.getInputs()) {
                         if (v instanceof Value) {
-                            return wrapExpressionNodes((Value)v);
+                            return wrapExpressionNodes((Value) v);
                         }
                     }
                 }

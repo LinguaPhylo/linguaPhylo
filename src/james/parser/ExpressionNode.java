@@ -58,4 +58,8 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	public void setAnonymous(boolean b) {
 		isAnonymous = b;
 	}
+
+	public String toString() {
+		return getName();
+	}
 }

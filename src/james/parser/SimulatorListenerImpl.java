@@ -133,7 +133,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return id + k;
         }
 
-
         @Override
         public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
             // TODO: why not Func -- Func has no apply()?

@@ -22,6 +22,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 		for (GraphicalModelNode value : values) {
 			Set<String> ids = new HashSet<>();
 			if (value instanceof ExpressionNode) {
+				throw new RuntimeException();
 //				for (Object o : ((ExpressionNode) value).getInputs()) {
 //					Value value2 = (Value) o;
 //					params.put(value2.getId(), value2);
@@ -60,12 +61,11 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
 	@Override
 	public Value<T> apply() {
+
 		Value value = elementWise.apply(inputValues[0], inputValues[1], func);
 		value.setFunction(this);
 		return value;
 	}
-
-
 
 	// binary operators
 	static BinaryOperator<Number> plus() {
@@ -131,7 +131,4 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 	static BinaryOperator<Number> mod() {
 		return (a, b) -> a.doubleValue() % b.doubleValue();
 	}
-
-	
-
 }

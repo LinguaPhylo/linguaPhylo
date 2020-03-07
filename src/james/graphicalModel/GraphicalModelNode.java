@@ -16,5 +16,4 @@ public interface GraphicalModelNode<T> {
      * @return current value of the Constant, DeterministicFunction (or GenerativeDistribution?)
      */
     T value();
-
 }

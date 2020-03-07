@@ -186,6 +186,7 @@ public class LinguaPhyloStudio {
             panel.interpreter.interpretInput(line);
             line = reader.readLine();
         }
+        panel.repaint();
         reader.close();
     }
 
