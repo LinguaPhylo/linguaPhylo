@@ -65,11 +65,14 @@ public class GraphicalModelPanel extends JPanel {
         showConstantNodes.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                component.setShowNonRandomNodes(showConstantNodes.isSelected());
+                component.setShowConstantNodes(showConstantNodes.isSelected());
             }
         });
 
         component = new GraphicalModelComponent(parser);
+
+        showConstantNodes.setSelected(component.getShowConstantNodes());
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(component);
@@ -89,7 +92,6 @@ public class GraphicalModelPanel extends JPanel {
             public void valueSelected(Value value) {
 
                 showValue(value);
-                rightPane.setSelectedIndex(0);
             }
 
             @Override
@@ -203,6 +205,9 @@ public class GraphicalModelPanel extends JPanel {
                 BorderFactory.createTitledBorder(
                         BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
+
+        rightPane.setSelectedComponent(currentSelectionContainer);
+
         repaint();
     }
 

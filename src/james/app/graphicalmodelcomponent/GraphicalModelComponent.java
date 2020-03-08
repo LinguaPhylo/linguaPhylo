@@ -12,6 +12,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import static james.app.graphicalmodelcomponent.LayeredGNode.*;
 
@@ -19,6 +20,8 @@ import static james.app.graphicalmodelcomponent.LayeredGNode.*;
  * Created by adru001 on 18/12/19.
  */
 public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
+
+    public static Preferences preferences = Preferences.userNodeForPackage(GraphicalModelComponent.class);
 
     GraphicalLPhyParser parser;
 
@@ -33,7 +36,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     boolean sizeChanged = true;
     boolean showArgumentLabels = false;
-    boolean showNonRandomNodes = false;
     boolean showValues = false;
     LayeredGraph layeredGraph = null;
     ProperLayeredGraph properLayeredGraph = null;
@@ -68,7 +70,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, showNonRandomNodes);
+        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, getShowConstantNodes());
 
         for (LayeredNode lnode : layeredGraph.getNodes()) {
 
@@ -255,10 +257,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         repaint();
     }
 
-    public void setShowNonRandomNodes(boolean showNonRandomNodes) {
-        this.showNonRandomNodes = showNonRandomNodes;
+    public void setShowConstantNodes(boolean showConstantNodes) {
+        preferences.putBoolean("showConstantNodes", showConstantNodes);
         setup();
         repaint();
+    }
+
+    public boolean getShowConstantNodes() {
+        return preferences.getBoolean("showConstantNodes", true);
     }
 
     public void setShowValues(boolean showValues) {
