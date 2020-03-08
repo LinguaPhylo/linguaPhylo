@@ -16,7 +16,7 @@ public class TidyComboBox<U> extends JComboBox<U> {
     public Dimension getMaximumSize() {
         Dimension max = super.getMaximumSize();
         max.height = getPreferredSize().height;
-        max.width = getPreferredSize().width;
+        max.width = getPreferredSize().width + max.height;
         return max;
     }
 }

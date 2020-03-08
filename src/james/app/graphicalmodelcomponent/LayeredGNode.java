@@ -1,17 +1,15 @@
 package james.app.graphicalmodelcomponent;
 
 import james.TimeTree;
+import james.core.Alignment;
 import james.core.LPhyParser;
 import james.graphicalModel.*;
-import james.graphicalModel.types.DoubleValue;
 import james.utils.Message;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class LayeredGNode extends LayeredNode.Default {
 
@@ -28,6 +26,7 @@ public class LayeredGNode extends LayeredNode.Default {
     static DecimalFormat format = new DecimalFormat();
 
     LPhyParser parser;
+    boolean showValue;
 
     public LayeredGNode(Object value, LPhyParser parser) {
         super(0,0);
@@ -49,7 +48,7 @@ public class LayeredGNode extends LayeredNode.Default {
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
             name = "[" + ((Parameterized)output.value).getParamName(((Value) value)) + "]";
-            button.setText(getButtonString((Value)value));
+            button.setText(getButtonString((Value)value, true));
         }
     }
     
@@ -57,51 +56,46 @@ public class LayeredGNode extends LayeredNode.Default {
         return button != null;
     }
 
-    private String getButtonString(Value value) {
-        String str = value.getId();
-
-        if (!(value instanceof RandomVariable)) {
-            str = displayString(name, value);
-        } else {
-            if (str.length() > 5) {
-                str = "<small>" + str + "</small>";
-            }
-
-            Object obj = value.value();
-
-            if (obj instanceof TimeTree || obj instanceof Double[] || obj instanceof Double[][] || obj instanceof Integer[] || obj instanceof Integer[][]) {
-                str = "<b>" + str + "</b>";
-            }
-            return "<html><center><p>" + str + "</p></center></html>";
-
-        }
-        return str;
-    }
-
-    private String displayString(String name, Value v) {
+    private String getButtonString(Value v, boolean showValue) {
 
         Object value = v.value();
 
         if (name == null) name = "null";
 
-        String valueString;
-        if (v instanceof DoubleValue) {
-            valueString = format.format(((DoubleValue) v).value());
-        } else if (tooLarge(value)) {
-            if (name.length() < 5) {
-                return "<html><center><p><font color=\"#808080\" ><b>" + name + "</b></p></font></center></html>";
-            } else {
-                return "<html><center><p><font color=\"#808080\" ><b><small>" + name + "</small></b></p></font></center></html>";
-            }
-        } else {
-            valueString = v.value().toString();
+        String displayName = name;
+
+        if (displayName.length() > 7) {
+            displayName = "<small>" + displayName + "</small>";
         }
-        
-        return "<html><center><p><small><font color=\"#808080\" >" + name + "</p></font></small><p>" + valueString + "</p></center></html>";
+
+        if (multiDimensional(value)) {
+            return "<html><center><p><b>" + displayName + "</b></p></center></html>";
+        }
+
+        String valueString = "";
+        if (showValue) {
+            if (v.value() instanceof Double) {
+                valueString = format.format(v.value());
+            } else {
+                valueString = v.value().toString();
+                if (v.value() instanceof String) {
+                    if (valueString.length() > 8) {
+                        valueString = valueString.length() + " chars";
+                        if (valueString.length() > 10) {
+                            valueString = "string";
+                        }
+                    }
+                }
+            }
+            valueString = "<p><font color=\"#808080\" ><small>" + valueString + "</small></font></p>";
+        }
+
+        return "<html><center><p>" + displayName + "</p>" + valueString + "</center></html>";
     }
 
-    private boolean tooLarge(Object v) {
-        return (v instanceof TimeTree || v instanceof Integer[] || v instanceof Double[] || v instanceof Double[][] || v instanceof Integer[][] || v.toString().length()>10);
+    private boolean multiDimensional(Object v) {
+        return (v instanceof Map || v instanceof Alignment || v instanceof TimeTree || v instanceof Integer[] ||
+                v instanceof Double[] || v instanceof Double[][] || v instanceof Integer[][]);
     }
 
     private void createValueButton() {
@@ -116,13 +110,12 @@ public class LayeredGNode extends LayeredNode.Default {
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
         }
 
-
         if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
             backgroundColor = backgroundColor.darker();
             borderColor = borderColor.darker();
         }
 
-        String str = getButtonString((Value)value);
+        String str = getButtonString((Value)value, true);
 
         if (button == null) {
             if (((Value) value).getFunction() != null) {
@@ -136,12 +129,10 @@ public class LayeredGNode extends LayeredNode.Default {
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value)));
+        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value, true)));
     }
 
     private void createParameterizedButton() {
-        String dtr = ((Parameterized) value).getName();
-
         button = new JButton("");
         button.setSize((int) FACTOR_SIZE * 2, (int) FACTOR_SIZE * 2);
     }

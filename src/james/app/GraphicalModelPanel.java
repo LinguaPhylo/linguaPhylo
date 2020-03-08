@@ -1,13 +1,9 @@
 package james.app;
 
-import com.sun.org.apache.regexp.internal.RE;
 import james.app.graphicalmodelcomponent.GraphicalModelComponent;
 import james.app.graphicalmodelcomponent.Layering;
-import james.core.LPhyParser;
 import james.core.Sampler;
-import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.*;
-import james.parser.REPL;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +28,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalLPhyParser parser;
 
     JButton sampleButton = new JButton("Sample");
-    JCheckBox showNonRandomValues = new JCheckBox("Show non-random values");
+    JCheckBox showConstantNodes = new JCheckBox("Show constant nodes");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
 
     JSplitPane horizSplitPane;
@@ -62,14 +58,14 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(sampleButton);
         buttonPanel.add(new JLabel(" Layering algorithm:"));
         buttonPanel.add(layeringAlgorithm);
-        buttonPanel.add(showNonRandomValues);
+        buttonPanel.add(showConstantNodes);
 
         sampleButton.addActionListener(e -> sample(1));
 
-        showNonRandomValues.addActionListener(new AbstractAction() {
+        showConstantNodes.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                component.setShowNonRandomValues(showNonRandomValues.isSelected());
+                component.setShowNonRandomNodes(showConstantNodes.isSelected());
             }
         });
 
@@ -142,7 +138,7 @@ public class GraphicalModelPanel extends JPanel {
 
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", currentSelectionContainer);
-        rightPane.addTab("Values", valueScrollPane);
+        rightPane.addTab("Constants", valueScrollPane);
         rightPane.addTab("Variables", variablesScrollPane);
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
         rightPane.addTab("Log", new JScrollPane(log));

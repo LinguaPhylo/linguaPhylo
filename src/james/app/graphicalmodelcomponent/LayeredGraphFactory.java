@@ -37,7 +37,8 @@ public class LayeredGraphFactory {
      * @param allNodes
      * @return
      */
-    private static LayeredNode createAndAddNode(LPhyParser parser, Value value, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredNode createAndAddNode(LPhyParser parser, Value value, LayeredGNode parentNode,
+                                                Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
 
         LayeredGNode node = allNodes.get(value);
         boolean newNode = (node == null);

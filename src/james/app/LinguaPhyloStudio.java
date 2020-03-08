@@ -1,7 +1,6 @@
 package james.app;
 
 import james.core.LPhyParser;
-import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.Utils;
 import james.parser.REPL;
 
@@ -10,7 +9,6 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -123,10 +121,15 @@ public class LinguaPhyloStudio {
         viewMenu.setMnemonic(KeyEvent.VK_V);
         menuBar.add(viewMenu);
 
-        JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Argument Names");
+        JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
         showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
         showArgumentLabels.setState(false);
         viewMenu.add(showArgumentLabels);
+
+        JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
+        showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
+        showSampledValues.setState(false);
+        viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
         showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
@@ -167,7 +170,12 @@ public class LinguaPhyloStudio {
         });
 
         saveAsMenuItem.addActionListener(e -> saveToFile(LPhyParser.Utils.getCanonicalScript(parser)));
-        showArgumentLabels.addActionListener(e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
+        showArgumentLabels.addActionListener(
+                e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
+
+        showSampledValues.addActionListener(
+                e -> panel.component.setShowValues(showSampledValues.getState()));
+
         showTreeInAlignmentView.addActionListener(e -> {
             AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState();
             panel.repaint();

@@ -3,9 +3,7 @@ package james.app.graphicalmodelcomponent;
 import james.app.GraphicalLPhyParser;
 import james.app.GraphicalModelChangeListener;
 import james.app.GraphicalModelListener;
-import james.core.LPhyParser;
 import james.graphicalModel.*;
-import james.utils.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,14 +33,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     boolean sizeChanged = true;
     boolean showArgumentLabels = false;
-    boolean showNonRandomValues = false;
+    boolean showNonRandomNodes = false;
+    boolean showValues = false;
     LayeredGraph layeredGraph = null;
     ProperLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathFromSinks();
     Ordering ordering = new Ordering();
     Positioning positioning = new Positioning();
     int BORDER = 20;
-    Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);
+    Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER,
+            (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);
 
     public GraphicalModelComponent(GraphicalLPhyParser parser) {
         this.parser = parser;
@@ -68,7 +68,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private void setup() {
 
         removeAll();
-        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, showNonRandomValues);
+        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, showNonRandomNodes);
 
         for (LayeredNode lnode : layeredGraph.getNodes()) {
 
@@ -118,7 +118,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             layeredGraph.applyLayering(layering);
             properLayeredGraph = new ProperLayeredGraph(layeredGraph, layering);
             ordering.order(properLayeredGraph);
-            BrandesKopfHorizontalCoordinateAssignment assignment = new BrandesKopfHorizontalCoordinateAssignment(properLayeredGraph);
+            new BrandesKopfHorizontalCoordinateAssignment(properLayeredGraph);
             positioning.position(properLayeredGraph, getSize(), insets);
             sizeChanged = false;
         }
@@ -189,7 +189,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 }
             }
         }
-
     }
 
     private LayeredGNode getUnwrappedNonDummySuccessor(LayeredNode successor) {
@@ -256,9 +255,13 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         repaint();
     }
 
-    public void setShowNonRandomValues(boolean showNonRandomValues) {
-        this.showNonRandomValues = showNonRandomValues;
+    public void setShowNonRandomNodes(boolean showNonRandomNodes) {
+        this.showNonRandomNodes = showNonRandomNodes;
         setup();
         repaint();
+    }
+
+    public void setShowValues(boolean showValues) {
+        this.showValues = showValues;
     }
 }
