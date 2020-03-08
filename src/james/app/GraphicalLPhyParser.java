@@ -39,6 +39,12 @@ public class GraphicalLPhyParser implements LPhyParser {
         return wrappedParser.getLines();
     }
 
+    @Override
+    public void clear() {
+        wrappedParser.clear();
+        notifyListeners();
+    }
+
     public void addGraphicalModelChangeListener(GraphicalModelChangeListener listener) {
         listeners.add(listener);
     }

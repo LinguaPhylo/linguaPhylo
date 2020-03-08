@@ -106,7 +106,7 @@ public class LinguaPhyloStudio {
                         BufferedReader reader = null;
                         try {
                             reader = new BufferedReader(new FileReader(exampleFile));
-                            createParser();
+                            parser.clear();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();

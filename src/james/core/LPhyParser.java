@@ -41,6 +41,11 @@ public interface LPhyParser {
 
     List<String> getLines();
 
+    /**
+     * Clears the dictionary and lines of this parser.
+     */
+    void clear();
+
     class Utils {
 
         /**

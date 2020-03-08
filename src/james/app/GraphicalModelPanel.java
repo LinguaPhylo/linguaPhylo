@@ -206,7 +206,7 @@ public class GraphicalModelPanel extends JPanel {
                         BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
 
-        rightPane.setSelectedComponent(currentSelectionContainer);
+        //rightPane.setSelectedComponent(currentSelectionContainer);
 
         repaint();
     }
