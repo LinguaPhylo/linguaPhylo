@@ -22,7 +22,7 @@ public class GraphicalModelPanel extends JPanel {
     JLabel dummyLabel = new JLabel("");
     GraphicalModelInterpreter interpreter;
     JTabbedPane rightPane;
-    Log log = new Log();
+    VariableLog variableLog = new VariableLog();
     TreeLog treeLog = new TreeLog();
 
     GraphicalLPhyParser parser;
@@ -143,8 +143,8 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Constants", valueScrollPane);
         rightPane.addTab("Variables", variablesScrollPane);
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
-        rightPane.addTab("Log", new JScrollPane(log));
-        rightPane.addTab("Trees", new JScrollPane(treeLog));
+        rightPane.addTab("Variable Log", new JScrollPane(variableLog));
+        rightPane.addTab("Tree Log", new JScrollPane(treeLog));
         horizSplitPane.setRightComponent(rightPane);
 
         if (parser.getSinks().size() > 0) {
@@ -160,7 +160,7 @@ public class GraphicalModelPanel extends JPanel {
             id = ((Value) displayedElement).getId();
         }
         Sampler sampler = new Sampler(parser);
-        sampler.sample(reps, new RandomVariableLogger[]{log, treeLog});
+        sampler.sample(reps, new RandomVariableLogger[]{variableLog, treeLog});
         //parser.sample(reps, null);
         if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));

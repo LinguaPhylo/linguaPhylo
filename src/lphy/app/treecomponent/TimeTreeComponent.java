@@ -1,6 +1,7 @@
 package lphy.app.treecomponent;
 
 import lphy.ColorTable;
+import lphy.StructuredCoalescent;
 import lphy.TimeTree;
 import lphy.TimeTreeNode;
 
@@ -64,7 +65,9 @@ public class TimeTreeComponent extends JComponent {
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));
         //setPreferredSize(new Dimension(minimumWidth+maximumWidth/2, (minimumHeight+maximumHeight)/2));
 
-        setColorTraitName("deme");
+        if (tree.getRoot().getMetaData(StructuredCoalescent.populationLabel) != null) {
+            setColorTraitName(StructuredCoalescent.populationLabel);
+        }
     }
 
     public void setBorder(Border border) {
@@ -276,7 +279,7 @@ public class TimeTreeComponent extends JComponent {
 
         if (colorTraitName != null) {
             int colorIndex = getIntegerTrait(node, colorTraitName);
-            g.setColor(traitColorTable.getColor(colorIndex));
+            if (colorIndex >= 0) g.setColor(traitColorTable.getColor(colorIndex));
         }
         treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(),  g);
     }

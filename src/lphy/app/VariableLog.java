@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Log extends JTextArea implements RandomVariableLogger {
+public class VariableLog extends JTextArea implements RandomVariableLogger {
 
     int rep = 0;
     Map<Class, Loggable> loggableMap = new HashMap<>();
 
-    public Log() {
+    public VariableLog() {
 
         setTabSize(4);
         setEditable(false);

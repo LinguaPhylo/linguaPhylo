@@ -4,7 +4,7 @@ import lphy.TimeTree;
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.Value;
 
-public class TreeLog extends Log {
+public class TreeLog extends VariableLog {
 
 
     public TreeLog() {

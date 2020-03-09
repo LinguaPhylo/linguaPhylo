@@ -75,10 +75,10 @@ public class LinguaPhyloStudio {
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
 
-        JMenuItem saveLogAsMenuItem = new JMenuItem("Save Log to File...");
+        JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
         fileMenu.add(saveLogAsMenuItem);
 
-        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree Log to File...");
+        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
 
         fileMenu.addSeparator();
@@ -109,6 +109,8 @@ public class LinguaPhyloStudio {
                         try {
                             reader = new BufferedReader(new FileReader(exampleFile));
                             parser.clear();
+                            panel.treeLog.clear();
+                            panel.variableLog.clear();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -188,7 +190,7 @@ public class LinguaPhyloStudio {
         });
 
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
-        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.log.getText()));
+        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.variableLog.getText()));
     }
 
     private void source(BufferedReader reader) throws IOException {
@@ -239,7 +241,7 @@ public class LinguaPhyloStudio {
 //            }
 //
 //            public void execute(Map<String, Value> params) {
-//                panel.log.clear();
+//                panel.variableLog.clear();
 //            }
 //        });
 //
@@ -259,7 +261,7 @@ public class LinguaPhyloStudio {
 //            }
 //
 //            public void execute(Map<String, Value> params) {
-//                saveToFile(panel.log.getText());
+//                saveToFile(panel.variableLog.getText());
 //            }
 //        });
 //
