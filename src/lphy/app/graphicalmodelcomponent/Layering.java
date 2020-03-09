@@ -41,7 +41,7 @@ public interface Layering {
         }
 
         public String toString() {
-            return "Longest Path From Sinks";
+            return "From Sinks";
         }
     }
 
@@ -74,7 +74,7 @@ public interface Layering {
         }
 
         public String toString() {
-            return "Longest Path From Sources";
+            return "From Sources";
         }
 
     }

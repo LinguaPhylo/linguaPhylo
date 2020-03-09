@@ -28,7 +28,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalLPhyParser parser;
 
     JButton sampleButton = new JButton("Sample");
-    JCheckBox showConstantNodes = new JCheckBox("Show constant nodes");
+    JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
 
     JSplitPane horizSplitPane;
