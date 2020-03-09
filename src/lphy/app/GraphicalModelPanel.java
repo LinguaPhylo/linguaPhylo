@@ -56,7 +56,7 @@ public class GraphicalModelPanel extends JPanel {
         layeringAlgorithm.setPreferredSize(new Dimension(200, 20));
 
         buttonPanel.add(sampleButton);
-        buttonPanel.add(new JLabel(" Layering algorithm:"));
+        buttonPanel.add(new JLabel(" Layering:"));
         buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
 

@@ -1,5 +1,5 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=10.0, n=100);
+ψ ~ Yule(birthRate=10.0, n=10);
 Q=binaryRateMatrix(lambda=λ);
 S ~ PhyloCTMC(L=1000, Q=Q, tree=ψ);
 D ~ ErrorModel(alpha=0.01, beta=0.01, alignment=S);

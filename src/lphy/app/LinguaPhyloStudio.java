@@ -111,6 +111,7 @@ public class LinguaPhyloStudio {
                             parser.clear();
                             panel.treeLog.clear();
                             panel.variableLog.clear();
+                            panel.interpreter.clear();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();

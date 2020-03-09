@@ -51,7 +51,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
         	Value v = (Value)inputValues[i];
             if (!v.isAnonymous() && v.getId().equals(paramName)) {
                 inputValues[i] = value;
-                LoggerUtils.log.info("Setting input value " + i + " to " + value);
+                LoggerUtils.log.fine("Setting input value " + i + " to " + value);
             }
         }
     }
