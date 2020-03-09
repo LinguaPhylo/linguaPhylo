@@ -6,7 +6,5 @@ package james.graphicalModel;
 public interface GraphicalModelNodeVisitor {
     void visitValue(Value value);
 
-    void visitGenDist(GenerativeDistribution genDist);
-
-    void visitFunction(DeterministicFunction f);
+    void visitGenerator(Generator g);
 }

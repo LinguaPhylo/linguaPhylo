@@ -42,7 +42,7 @@ public class LayeredGNode extends LayeredNode.Default {
             name = ((Value)value).getId();
             createValueButton();
 
-        } else if (value instanceof Parameterized) {
+        } else if (value instanceof Generator) {
             createParameterizedButton();
         }
     }
@@ -51,7 +51,7 @@ public class LayeredGNode extends LayeredNode.Default {
         getSuccessors().add(output);
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
-            name = "[" + ((Parameterized)output.value).getParamName(((Value) value)) + "]";
+            name = "[" + ((Generator)output.value).getParamName(((Value) value)) + "]";
             button.setText(getButtonString((Value)value));
         }
     }
@@ -118,7 +118,7 @@ public class LayeredGNode extends LayeredNode.Default {
         if (ValueUtils.isFixedValue((Value) value)) {
             backgroundColor = Color.white;
             borderColor = Color.black;
-        } else if (ValueUtils.isValueOfFunction((Value) value)) {
+        } else if (ValueUtils.isValueOfDeterministicFunction((Value) value)) {
             backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
         }
@@ -131,12 +131,12 @@ public class LayeredGNode extends LayeredNode.Default {
         String str = getButtonString((Value)value);
 
         if (button == null) {
-            if (((Value) value).getFunction() != null) {
+            if (value instanceof RandomVariable) {
+                button = new CircleButton(str, backgroundColor, borderColor);
+            } else if (((Value) value).getGenerator() != null) {
                 button = new DiamondButton(str, backgroundColor, borderColor);
             } else if (!(value instanceof RandomVariable)) {
                 button = new SquareButton(str, backgroundColor, borderColor);
-            } else {
-                button = new CircleButton(str, backgroundColor, borderColor);
             }
         }
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);

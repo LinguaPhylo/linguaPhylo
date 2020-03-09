@@ -1,7 +1,6 @@
 package james.app;
 
 import james.core.LPhyParser;
-import james.graphicalModel.GraphicalModelParser;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
@@ -72,6 +71,6 @@ public class StatePanel extends JPanel {
     }
 
     private boolean isFixedValue(Value value) {
-        return !(value instanceof RandomVariable) && value.getFunction() == null;
+        return !(value instanceof RandomVariable) && value.getGenerator() == null;
     }
 }

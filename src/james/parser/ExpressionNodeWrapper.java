@@ -1,8 +1,8 @@
 package james.parser;
 
 import james.graphicalModel.DeterministicFunction;
+import james.graphicalModel.Generator;
 import james.graphicalModel.GraphicalModelNode;
-import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
 import james.utils.LoggerUtils;
 
@@ -34,8 +34,8 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         for (GraphicalModelNode childNode : (List<GraphicalModelNode>) eNode.getInputs()) {
             if (childNode instanceof Value) {
                 Value v = (Value) childNode;
-                if (v.getFunction() instanceof ExpressionNode) {
-                    size += expressionSubtreeSize((ExpressionNode) v.getFunction());
+                if (v.getGenerator() instanceof ExpressionNode) {
+                    size += expressionSubtreeSize((ExpressionNode) v.getGenerator());
                 }
             }
         }
@@ -46,13 +46,13 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         for (GraphicalModelNode childNode : (List<GraphicalModelNode>) expressionNode.getInputs()) {
             if (childNode instanceof Value) {
                 Value v = (Value) childNode;
-                if (v.getFunction() instanceof ExpressionNode) {
-                    rewireAllOutputs((ExpressionNode) v.getFunction(), true);
+                if (v.getGenerator() instanceof ExpressionNode) {
+                    rewireAllOutputs((ExpressionNode) v.getGenerator(), true);
                 }
             }
         }
         expressionNode.getParams().forEach((key, value) -> {
-            ((Value) value).removeOutput((Parameterized) ((Value) value).getOutputs().get(0));
+            ((Value) value).removeOutput((Generator) ((Value) value).getOutputs().get(0));
             ((Value) value).addOutput(this);
         });
         if (makeAnonymous) expressionNode.setAnonymous(true);
@@ -62,8 +62,8 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         for (GraphicalModelNode childNode : (List<GraphicalModelNode>) expressionNode.getInputs()) {
             if (childNode instanceof Value) {
                 Value v = (Value) childNode;
-                if (v.getFunction() instanceof ExpressionNode) {
-                    extractAllParams((ExpressionNode) v.getFunction());
+                if (v.getGenerator() instanceof ExpressionNode) {
+                    extractAllParams((ExpressionNode) v.getGenerator());
                 }
             }
         }
@@ -75,7 +75,7 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
     }
 
     @Override
-    public void setParam(String paramName, Value<?> value) {
+    public void setParam(String paramName, Value value) {
         paramMap.put(paramName, value);
         setParamRecursively(paramName, value, nodeToWrap);
     }
@@ -97,8 +97,8 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
             for (GraphicalModelNode childNode : expressionNode.inputValues) {
                 if (childNode instanceof Value) {
                     Value v = (Value) childNode;
-                    if (v.getFunction() instanceof ExpressionNode) {
-                        setParamRecursively(paramName, value, (ExpressionNode) v.getFunction());
+                    if (v.getGenerator() instanceof ExpressionNode) {
+                        setParamRecursively(paramName, value, (ExpressionNode) v.getGenerator());
                     }
                 } else throw new RuntimeException("This code assumes all inputs are values!");
             }
@@ -128,8 +128,8 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         for (int i = 0; i < expressionNode.inputValues.length; i++) {
             if (expressionNode.inputValues[i] instanceof Value) {
                 Value v = (Value) expressionNode.inputValues[i];
-                if (v.getFunction() instanceof ExpressionNode) {
-                    ExpressionNode childExpressionNode = (ExpressionNode) v.getFunction();
+                if (v.getGenerator() instanceof ExpressionNode) {
+                    ExpressionNode childExpressionNode = (ExpressionNode) v.getGenerator();
 
                     Value newValue = applyRecursively(childExpressionNode);
                     if (!v.isAnonymous()) {

@@ -1,8 +1,7 @@
 package james.app.graphicalmodelcomponent;
 
 import james.core.LPhyParser;
-import james.graphicalModel.GraphicalModelParser;
-import james.graphicalModel.Parameterized;
+import james.graphicalModel.Generator;
 import james.graphicalModel.RandomVariable;
 import james.graphicalModel.Value;
 
@@ -55,12 +54,7 @@ public class LayeredGraphFactory {
 
             if (newNode) {
                 allNodes.put(node.value(), node);
-                Parameterized child;
-                if (value instanceof RandomVariable) {
-                    child = ((RandomVariable) value).getGenerativeDistribution();
-                } else {
-                    child = value.getFunction();
-                }
+                Generator child = value.getGenerator();
 
                 if (child != null) {
                     LayeredGNode childNode = createAndAddNode(parser, child, node, allNodes, showAllNodes);
@@ -72,7 +66,7 @@ public class LayeredGraphFactory {
         return node;
     }
 
-    private static LayeredGNode createAndAddNode(LPhyParser parser, Parameterized g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredGNode createAndAddNode(LPhyParser parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
             node = new LayeredGNode(g, parser);

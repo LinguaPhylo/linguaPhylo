@@ -2,12 +2,12 @@ package james.graphicalModel;
 
 public class ValueUtils {
 
-    public static boolean isValueOfFunction(Value value) {
-        return value.getFunction() != null;
+    public static boolean isValueOfDeterministicFunction(Value value) {
+        return !isRandomVariable(value) && value.getGenerator() != null;
     }
 
     public static boolean isFixedValue(Value value) {
-        return value.getFunction() == null && !(value instanceof RandomVariable);
+        return value.getGenerator() == null && !(value instanceof RandomVariable);
     }
 
     public static boolean isRandomVariable(Value value) {

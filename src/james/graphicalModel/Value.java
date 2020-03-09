@@ -50,7 +50,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     public String getLabel() {
         if (isAnonymous()) {
             if (getOutputs().size() > 0) {
-                return "[" + ((Parameterized) getOutputs().get(0)).getParamName(this) + "]";
+                return "[" + ((Generator) getOutputs().get(0)).getParamName(this) + "]";
             } else return "[anonymous]";
         } else return getId();
     }
@@ -119,7 +119,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         this.id = id;
     }
 
-    public DeterministicFunction<T> getFunction() {
+    public Generator<T> getGenerator() {
         return function;
     }
 
@@ -137,41 +137,28 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor, boolean post) {
         if (!post) visitor.visitValue(value);
 
-        if (value instanceof RandomVariable) {
-            traverseGraphicalModel(((RandomVariable) value).getGenerativeDistribution(), visitor, post);
-        } else if (value.getFunction() != null) {
-            traverseGraphicalModel(value.getFunction(), visitor, post);
+        if (value.getGenerator() != null) {
+            traverseGraphicalModel(value.getGenerator(), visitor, post);
         }
         if (post) visitor.visitValue(value);
     }
 
-    private static void traverseGraphicalModel(DeterministicFunction function, GraphicalModelNodeVisitor visitor, boolean post) {
-        if (!post) visitor.visitFunction(function);
+    private static void traverseGraphicalModel(Generator generator, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitGenerator(generator);
 
-        Map<String, Value> map = function.getParams();
-
-        for (Map.Entry<String, Value> e : map.entrySet()) {
-            traverseGraphicalModel(e.getValue(), visitor, post);
-        }
-        if (post) visitor.visitFunction(function);
-    }
-
-    public static void traverseGraphicalModel(GenerativeDistribution genDist, GraphicalModelNodeVisitor visitor, boolean post) {
-        if (!post) visitor.visitGenDist(genDist);
-
-        Map<String, Value> map = genDist.getParams();
+        Map<String, Value> map = generator.getParams();
 
         for (Map.Entry<String, Value> e : map.entrySet()) {
             traverseGraphicalModel(e.getValue(), visitor, post);
         }
-        if (post) visitor.visitGenDist(genDist);
+        if (post) visitor.visitGenerator(generator);
     }
 
-    public void addOutput(Parameterized p) {
+    public void addOutput(Generator p) {
         if (!outputs.contains(p)) outputs.add(p);
     }
 
-    public void removeOutput(Parameterized p) {
+    public void removeOutput(Generator p) {
         outputs.remove(p);
     }
 
@@ -190,7 +177,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     }
 
     public boolean isConstant() {
-        return !(this instanceof RandomVariable) && getFunction() == null;
+        return !(this instanceof RandomVariable) && getGenerator() == null;
     }
 
     public void setFunction(DeterministicFunction f) {

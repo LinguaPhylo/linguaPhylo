@@ -184,7 +184,7 @@ public class GraphicalModelPanel extends JPanel {
         if (value != null) showObject(value.getLabel(), value);
     }
 
-    private void showParameterized(Parameterized g) {
+    private void showParameterized(Generator g) {
         showObject(g.codeString(), g);
     }
 

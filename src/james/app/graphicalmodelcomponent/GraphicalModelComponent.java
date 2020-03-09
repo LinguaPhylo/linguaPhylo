@@ -163,14 +163,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                         double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
                         drawLine(g2d, x1, y1, x2, y2);
                         if (showArgumentLabels) {
-                            String label = ((Parameterized) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName((Value) node.value());
+                            String label = ((Generator) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName((Value) node.value());
                             g.setColor(Color.gray);
                             g.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
                             g.setColor(Color.black);
                         }
                     }
-                } else if (node.value() instanceof Parameterized) {
-                    Parameterized gen = (Parameterized) node.value();
+                } else if (node.value() instanceof Generator) {
+                    Generator gen = (Generator) node.value();
 
                     String str = gen.getName();
 
@@ -198,7 +198,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     private boolean isWrappedParameterized(LayeredNode v) {
         return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
-                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Parameterized;
+                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Generator;
     }
 
     private boolean isWrappedValue(LayeredNode v) {

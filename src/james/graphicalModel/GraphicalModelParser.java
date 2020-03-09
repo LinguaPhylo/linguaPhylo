@@ -117,7 +117,7 @@ public class GraphicalModelParser implements LPhyParser {
         classes.addAll(functionDictionary.values());
 
         for (Class<?> c : classes) {
-            Parameterized.getAllParameterInfo(c).forEach((pinfo) -> {
+            Generator.getAllParameterInfo(c).forEach((pinfo) -> {
                 String name = pinfo.name();
                 if (name.length() > 2 && !keywords.contains(name)) keywords.add(name);
             });
@@ -571,7 +571,7 @@ public class GraphicalModelParser implements LPhyParser {
     private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
         System.out.println(genDistClass.getSimpleName() + " " + arguments);
         for (Constructor constructor : genDistClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
+            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = arguments.get(pInfo.get(i).name());

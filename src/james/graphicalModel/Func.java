@@ -1,14 +1,13 @@
 package james.graphicalModel;
 
 import javax.swing.*;
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class Func implements Parameterized, Viewable {
+public abstract class Func implements Generator, Viewable {
 
     public String getName() {
         FunctionInfo fInfo = getFunctionInfo();
@@ -28,10 +27,9 @@ public abstract class Func implements Parameterized, Viewable {
         return paramMap;
     }
 
-    public void setParam(String paramName, Value<?> value) {
+    public void setParam(String paramName, Value value) {
         paramMap.put(paramName, value);
     }
-
 
     public FunctionInfo getFunctionInfo() {
 
@@ -81,14 +79,14 @@ public abstract class Func implements Parameterized, Viewable {
             Map.Entry<String, Value> entry = iterator.next();
 
             if (getParams().size() == 1) {
-                builder.append(Parameterized.getArgumentValue(entry));
+                builder.append(Generator.getArgumentValue(entry));
             } else {
 
-                builder.append(Parameterized.getArgumentCodeString(entry));
+                builder.append(Generator.getArgumentCodeString(entry));
                 while (iterator.hasNext()) {
                     entry = iterator.next();
                     builder.append(", ");
-                    builder.append(Parameterized.getArgumentCodeString(entry));
+                    builder.append(Generator.getArgumentCodeString(entry));
                 }
             }
         }

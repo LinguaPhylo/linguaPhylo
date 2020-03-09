@@ -16,6 +16,10 @@ public class RandomVariable<T> extends Value<T> {
         this.g = g;
     }
 
+    public Generator<T> getGenerator() {
+        return g;
+    }
+
     public GenerativeDistribution<T> getGenerativeDistribution() {
         return g;
     }

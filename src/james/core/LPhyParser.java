@@ -79,9 +79,9 @@ public interface LPhyParser {
                 }
             }
             for (GraphicalModelNode node : (List<GraphicalModelNode>)value.getInputs()) {
-                if (node instanceof Parameterized) {
-                    Parameterized p = (Parameterized) node;
-                    for (GraphicalModelNode v : p.getInputs()) {
+                if (node instanceof Generator) {
+                    Generator p = (Generator) node;
+                    for (GraphicalModelNode v : (List<GraphicalModelNode>)p.getInputs()) {
                         if (v instanceof Value) {
                             return wrapExpressionNodes((Value) v);
                         }
@@ -113,9 +113,7 @@ public interface LPhyParser {
                         }
                     }
 
-                    public void visitGenDist(GenerativeDistribution genDist) {}
-
-                    public void visitFunction(DeterministicFunction f) {}
+                    public void visitGenerator(Generator generator) {}
                 }, true);
             }
             return builder.toString();

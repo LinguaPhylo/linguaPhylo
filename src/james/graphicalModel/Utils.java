@@ -62,13 +62,13 @@ public class Utils {
         String label = "";
         String edgestyle = " arrowhead=vee, ";
 
-        if (child instanceof Parameterized) {
-            label = "taillabel=\"" + ((Parameterized)child).getName() + "\", " ;
+        if (child instanceof Generator) {
+            label = "taillabel=\"" + ((Generator)child).getName() + "\", " ;
         } else if (child instanceof Value && ((Value) child).isAnonymous()) {
             label = "label=\"" + ((Value)child).getLabel() + "\", ";
         }
 
-        if (node instanceof Parameterized) {
+        if (node instanceof Generator) {
             edgestyle = "arrowhead=none, ";
         }
 
@@ -80,7 +80,7 @@ public class Utils {
 
         if (node instanceof Value) {
             if (((Value) node).isAnonymous()) {
-                //label = ((Parameterized)((Value) node).getOutputs().get(0)).getParamName((Value) node) + " = " + node.toString();
+                //label = ((Generator)((Value) node).getOutputs().get(0)).getParamName((Value) node) + " = " + node.toString();
                 String slot = ((Value)node).getLabel();
                 Object val = ((Value) node).value();
                 if (val instanceof Double || val instanceof Integer) {
@@ -95,7 +95,7 @@ public class Utils {
             } else {
                 label = ((Value) node).getId();
             }
-        } else if (node instanceof Parameterized) {
+        } else if (node instanceof Generator) {
             label = "";
         }
         return label;
@@ -106,10 +106,10 @@ public class Utils {
 
         if (node instanceof GenerativeDistribution) {
             return name + "[" + labelString + "shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
-            //, label=\"" + ((Parameterized)node).getName() + "\"]";
+            //, label=\"" + ((Generator)node).getName() + "\"]";
         } if (node instanceof DeterministicFunction) {
             return name + "[" + labelString + "shape=diamond, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
-            //, label=\"" + ((Parameterized)node).getName() + "\"]";
+            //, label=\"" + ((Generator)node).getName() + "\"]";
         }  else if (node instanceof RandomVariable) {
             return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#66ff66\"\t, style=filled]";
         } else if (node instanceof Value) {

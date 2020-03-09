@@ -29,8 +29,6 @@ import james.graphicalModel.*;
 import james.graphicalModel.types.*;
 import james.parser.SimulatorParser.*;
 
-import james.utils.LoggerUtils.*;
-
 public class SimulatorListenerImpl extends SimulatorBaseListener {
 
     // CURRENT MODEL STATE
@@ -726,7 +724,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
     private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
         System.out.println(genDistClass.getSimpleName() + " " + arguments);
         for (Constructor constructor : genDistClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Parameterized.getParameterInfo(constructor);
+            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = arguments.get(pInfo.get(i).name());

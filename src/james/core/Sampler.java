@@ -46,10 +46,8 @@ public class Sampler {
 
                 if (value.isRandom()) {
                     Value randomValue;
-                    if (value instanceof RandomVariable) {
-                        randomValue = sampleAll(((RandomVariable) value).getGenerativeDistribution(), sampled);
-                    } else if (value.getFunction() != null) {
-                        randomValue = sampleAll(value.getFunction(), sampled);
+                    if (value.getGenerator() != null) {
+                        randomValue = sampleAll(value.getGenerator(), sampled);
                     } else throw new RuntimeException();
                     randomValue.setId(value.getId());
                     addValueToDictionary(randomValue);
@@ -66,30 +64,19 @@ public class Sampler {
         parser.notifyListeners();
     }
 
-    private RandomVariable sampleAll(GenerativeDistribution generativeDistribution, Set<String> sampled) {
+    private Value sampleAll(Generator generator, Set<String> sampled) {
 
-        for (Map.Entry<String, Value> e : getNewlySampledParams(generativeDistribution, sampled).entrySet()) {
-            generativeDistribution.setInput(e.getKey(), e.getValue());
+        for (Map.Entry<String, Value> e : getNewlySampledParams(generator, sampled).entrySet()) {
+            generator.setInput(e.getKey(), e.getValue());
             if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
         }
 
-        return generativeDistribution.sample();
+        return generator.generate();
     }
 
-    private Value sampleAll(DeterministicFunction function, Set<String> sampled) {
+    private Map<String, Value> getNewlySampledParams(Generator parameterized, Set<String> sampled) {
 
-        Map<String, Value> newParams = getNewlySampledParams(function, sampled);
-        for (Map.Entry<String, Value> e : newParams.entrySet()) {
-            function.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
-        }
-
-        return function.apply();
-    }
-
-    private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
-
-        LoggerUtils.log.info("getNewlySampledParams(" + parameterized.getName() + ")");
+        LoggerUtils.log.fine("getNewlySampledParams(" + parameterized.getName() + ")");
         Map<String, Value> params = parameterized.getParams();
 
         Map<String, Value> newlySampledParams = new TreeMap<>();
@@ -100,24 +87,12 @@ public class Sampler {
             if (val.isRandom()) {
                 if (val.isAnonymous() || !sampled.contains(val.getId())) {
                     // needs to be sampled
+                    Value nv = sampleAll(val.getGenerator(), sampled);
+                    nv.setId(val.getId());
+                    newlySampledParams.put(e.getKey(), nv);
+                    addValueToDictionary(nv);
+                    if (!val.isAnonymous()) sampled.add(val.getId());
 
-                    if (val instanceof RandomVariable) {
-                        RandomVariable v = (RandomVariable) e.getValue();
-
-                        RandomVariable nv = sampleAll(v.getGenerativeDistribution(), sampled);
-                        nv.setId(v.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        sampled.add(v.getId());
-                    } else {
-                        DeterministicFunction f = val.getFunction();
-
-                        Value nv = sampleAll(f, sampled);
-                        nv.setId(val.getId());
-                        newlySampledParams.put(e.getKey(), nv);
-                        addValueToDictionary(nv);
-                        if (!val.isAnonymous()) sampled.add(val.getId());
-                    }
                 } else {
                     // already been sampled
                     String id = e.getValue().getId();
@@ -130,7 +105,7 @@ public class Sampler {
 
     private void addValueToDictionary(Value value) {
 
-        LoggerUtils.log.info("addValueToDictionary(" + value + ")");
+        LoggerUtils.log.fine("addValueToDictionary(" + value + ")");
 
         if (!value.isAnonymous()) {
             String id = value.getId();
@@ -139,7 +114,7 @@ public class Sampler {
 //            if (oldValue != null) {
 //                oldValue.setId(id + ".old");
 //            }
-            LoggerUtils.log.info("  parser.getDictionary().put(" + id + ":" + value + ")");
+            LoggerUtils.log.fine("  parser.getDictionary().put(" + id + ":" + value + ")");
 
             parser.getDictionary().put(id, value);
         }

@@ -9,9 +9,13 @@ import java.util.List;
 /**
  * Created by adru001 on 17/12/19.
  */
-public interface GenerativeDistribution<T> extends Parameterized, Viewable {
+public interface GenerativeDistribution<T> extends Generator, Viewable {
 
     RandomVariable<T> sample();
+
+    default Value generate() {
+        return sample();
+    }
 
 //    default RandomVariable<T[]> sample(int dim, T[] array) {
 //        for (int i = 0; i < array.length; i++) {
@@ -124,10 +128,10 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(getName()).append("(").append(Parameterized.getArgumentCodeString(entry));
+        builder.append(getName()).append("(").append(Generator.getArgumentCodeString(entry));
         while (iterator.hasNext()) {
             entry = iterator.next();
-            builder.append(", ").append(Parameterized.getArgumentCodeString(entry));
+            builder.append(", ").append(Generator.getArgumentCodeString(entry));
         }
         builder.append(");");
         return builder.toString();
@@ -140,7 +144,7 @@ public interface GenerativeDistribution<T> extends Parameterized, Viewable {
 
     static String getSignature(Class<?> aClass) {
 
-        List<ParameterInfo> pInfo = Parameterized.getParameterInfo(aClass, 0);
+        List<ParameterInfo> pInfo = Generator.getParameterInfo(aClass, 0);
 
         StringBuilder builder = new StringBuilder();
         builder.append(getGenerativeDistributionInfoName(aClass));

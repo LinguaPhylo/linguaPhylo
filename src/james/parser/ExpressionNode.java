@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import james.graphicalModel.DeterministicFunction;
+import james.graphicalModel.Generator;
 import james.graphicalModel.GraphicalModelNode;
-import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
 
-abstract public class ExpressionNode<T> extends DeterministicFunction<T> implements Parameterized {
+abstract public class ExpressionNode<T> extends DeterministicFunction<T> implements Generator {
 
 	String expression;
 	Map<String, Value> params;
@@ -69,8 +69,8 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 		for (int i = 0; i < inputValues.length; i++) {
 			if (inputValues[i] instanceof Value) {
 				Value v = (Value) inputValues[i];
-				if (v.getFunction() instanceof DeterministicFunction) {
-					DeterministicFunction f = (DeterministicFunction) v.getFunction();
+				if (v.getGenerator() instanceof DeterministicFunction) {
+					DeterministicFunction f = (DeterministicFunction) v.getGenerator();
 
 					Value newValue = f.apply();
 					if (!v.isAnonymous()) {

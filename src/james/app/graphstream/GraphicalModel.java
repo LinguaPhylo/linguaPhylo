@@ -30,16 +30,16 @@ public class GraphicalModel {
             addNode(value);
             if (value instanceof RandomVariable) {
                 addNode(((RandomVariable)value).getGenerativeDistribution());
-            } else if (value.getFunction() != null) {
-                addNode(value.getFunction());
+            } else if (value.getGenerator() != null) {
+                addNode(value.getGenerator());
             }
         }
         for (Value value : parser.getAllValuesFromRoots()) {
             addEdges(value);
             if (value instanceof RandomVariable) {
                 addEdges(((RandomVariable)value).getGenerativeDistribution());
-            } else if (value.getFunction() != null) {
-                addEdges(value.getFunction());
+            } else if (value.getGenerator() != null) {
+                addEdges(value.getGenerator());
             }
         }
     }
@@ -62,7 +62,7 @@ public class GraphicalModel {
             gsnode.setAttribute("ui.label", ((GenerativeDistribution)node).getName());
         } else if (node instanceof RandomVariable) {
             gsnode.setAttribute("ui.class", "randomVariable");
-        } else if (node instanceof Value && ((Value)node).getFunction() != null) {
+        } else if (node instanceof Value && ((Value)node).getGenerator() != null) {
             gsnode.setAttribute("ui.class", "functionValue");
         } else {
             gsnode.setAttribute("ui.class", "constant");
