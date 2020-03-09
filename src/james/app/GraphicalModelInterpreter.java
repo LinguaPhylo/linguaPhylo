@@ -2,9 +2,7 @@ package james.app;
 
 import james.core.LPhyParser;
 import james.graphicalModel.GenerativeDistribution;
-import james.graphicalModel.GraphicalModelParser;
-import james.utils.Message;
-import james.utils.MessageListener;
+import james.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -15,6 +13,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class GraphicalModelInterpreter extends JPanel {
 
@@ -159,13 +160,32 @@ public class GraphicalModelInterpreter extends JPanel {
 
         layout.setVerticalGroup(vertSequentialGroup);
 
-        Message.addMessageListener((type, message, source) -> {
-            switch (type) {
-                case WARNING: message = "WARNING: " + message; break;
-                case ERROR: message = "ERROR: " + message; break;
-                case INFO: break;
+        LoggerUtils.log.addHandler(new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+
+                String message = record.getMessage();
+
+                if (record.getLevel() == Level.SEVERE) {
+                    message = "<html><font color=\"red\">SEVERE: " + message + "</font></html>";
+                } else if (record.getLevel() == Level.WARNING) {
+                    message = "<html><font color=\"#FFA500\">WARNING: " + message + "</font></html>";
+                } else if (record.getLevel() != Level.INFO) {
+                    return;
+                }
+                infoLine.setText(message);
             }
-            infoLine.setText(message);
+
+            @Override
+            public void flush() {
+                infoLine.setText("");
+            }
+
+            @Override
+            public void close() throws SecurityException {
+                infoLine.setText("");
+
+            }
         });
     }
 

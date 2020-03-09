@@ -1,5 +1,7 @@
 package james.app;
 
+import james.app.graphicalmodelcomponent.GraphicalModelComponent;
+import james.app.graphicalmodelcomponent.LayeredGNode;
 import james.core.LPhyParser;
 import james.graphicalModel.Utils;
 import james.parser.REPL;
@@ -123,12 +125,12 @@ public class LinguaPhyloStudio {
 
         JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
         showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
-        showArgumentLabels.setState(false);
+        showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
         viewMenu.add(showArgumentLabels);
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
         showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
-        showSampledValues.setState(false);
+        showSampledValues.setState(LayeredGNode.getShowValueInNode());
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
@@ -174,10 +176,10 @@ public class LinguaPhyloStudio {
                 e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
 
         showSampledValues.addActionListener(
-                e -> panel.component.setShowValues(showSampledValues.getState()));
+                e -> panel.component.setShowValueInNode(showSampledValues.getState()));
 
         showTreeInAlignmentView.addActionListener(e -> {
-            AlignmentComponent.showTreeIfAvailable = showTreeInAlignmentView.getState();
+            AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(showTreeInAlignmentView.getState());
             panel.repaint();
         });
         showErrorsInErrorAlignmentView.addActionListener(e -> {

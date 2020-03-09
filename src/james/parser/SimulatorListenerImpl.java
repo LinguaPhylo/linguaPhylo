@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.logging.Level;
 
 import james.*;
 import james.core.distributions.Exp;
 import james.core.functions.*;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -27,6 +28,8 @@ import james.core.distributions.*;
 import james.graphicalModel.*;
 import james.graphicalModel.types.*;
 import james.parser.SimulatorParser.*;
+
+import james.utils.LoggerUtils.*;
 
 public class SimulatorListenerImpl extends SimulatorBaseListener {
 
@@ -136,11 +139,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
             // TODO: why not Func -- Func has no apply()?
-            Message.info(" visitDeterm_relation", this);
+            LoggerUtils.log.info(" visitDeterm_relation");
 
             Object expr = visit(ctx.getChild(2));
             String id = ctx.children.get(0).getText();
-            Message.info("   id = " + id, this);
+            LoggerUtils.log.info("   id = " + id);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
@@ -153,10 +156,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 value.setId(id);
 
                 dictionary.put(id, value);
-                Message.info("   adding value " + value + " to the dictionary", this);
+                LoggerUtils.log.info("   adding value " + value + " to the dictionary");
                 return value;
             } else {
-                Message.info("   not a function or a value!", this);
+                LoggerUtils.log.info("   not a function or a value!");
 
             }
             return null;
@@ -228,7 +231,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             String id = ctx.getChild(0).getText();
 
-            Message.info("  visitVar: " + id, this);
+            LoggerUtils.log.log(Level.FINE, "  visitVar: " + id);
 
             //			JFunction var = (JFunction) doc.pluginmap.get(id);
 //			if (ctx.getChildCount() == 1) {
@@ -439,8 +442,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             String name = ctx.getChild(0).getText();
             Object obj = visit(ctx.getChild(2));
 
-            Message.info(" Visiting named expression:", this);
-            Message.info("   name: " + name + " child2: " + obj, this);
+            LoggerUtils.log.log(Level.FINE, " Visiting named expression:");
+            LoggerUtils.log.log(Level.FINE, "   name: " + name + " child2: " + obj);
 
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();

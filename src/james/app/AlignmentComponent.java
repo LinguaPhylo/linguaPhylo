@@ -14,11 +14,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.prefs.Preferences;
 
 import static james.app.Utils.MAX_FONT_SIZE;
 import static james.app.Utils.MIN_FONT_SIZE;
 
 public class AlignmentComponent extends JComponent {
+
+    static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
     public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.black, Color.green};
 
@@ -33,7 +36,6 @@ public class AlignmentComponent extends JComponent {
 
     int spacer = 5;
 
-    static boolean showTreeIfAvailable = true;
     static boolean showErrorsIfAvailable = true;
 
     public AlignmentComponent(Value<Alignment> av, Color[] colors) {
@@ -53,7 +55,7 @@ public class AlignmentComponent extends JComponent {
             public void mouseClicked(MouseEvent e) {
 
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    showTreeIfAvailable = !showTreeIfAvailable;
+                    setShowTreeInAlignmentViewerIfAvailable(!getShowTreeInAlignmentViewerIfAvailable());
                 } else {
                     showErrorsIfAvailable = !showErrorsIfAvailable;
                 }
@@ -69,7 +71,14 @@ public class AlignmentComponent extends JComponent {
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(100, minimumHeight));
+    }
 
+    static boolean getShowTreeInAlignmentViewerIfAvailable() {
+        return preferences.getBoolean("showTreeInAlignmentViewerIfAvailable", true);
+    }
+
+    static void setShowTreeInAlignmentViewerIfAvailable(boolean showTreeInAlignmentViewerIfAvailable) {
+        preferences.putBoolean("showTreeInAlignmentViewerIfAvailable", showTreeInAlignmentViewerIfAvailable);
     }
 
     public void paintComponent(Graphics g) {
@@ -156,6 +165,6 @@ public class AlignmentComponent extends JComponent {
     }
 
     boolean isShowingTree() {
-        return showTreeIfAvailable && timeTree != null;
+        return getShowTreeInAlignmentViewerIfAvailable() && timeTree != null;
     }
 }

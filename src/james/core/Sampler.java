@@ -2,9 +2,7 @@ package james.core;
 
 import james.app.GraphicalLPhyParser;
 import james.graphicalModel.*;
-import james.parser.ExpressionNode;
-import james.parser.ExpressionNodeWrapper;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
 import java.util.*;
 
@@ -91,7 +89,7 @@ public class Sampler {
 
     private Map<String, Value> getNewlySampledParams(Parameterized parameterized, Set<String> sampled) {
 
-        Message.info("getNewlySampledParams(" + parameterized.getName() + ")", this);
+        LoggerUtils.log.info("getNewlySampledParams(" + parameterized.getName() + ")");
         Map<String, Value> params = parameterized.getParams();
 
         Map<String, Value> newlySampledParams = new TreeMap<>();
@@ -132,7 +130,7 @@ public class Sampler {
 
     private void addValueToDictionary(Value value) {
 
-        Message.info("addValueToDictionary(" + value + ")", this);
+        LoggerUtils.log.info("addValueToDictionary(" + value + ")");
 
         if (!value.isAnonymous()) {
             String id = value.getId();
@@ -141,7 +139,7 @@ public class Sampler {
 //            if (oldValue != null) {
 //                oldValue.setId(id + ".old");
 //            }
-            Message.info("  parser.getDictionary().put(" + id + ":" + value + ")", this);
+            LoggerUtils.log.info("  parser.getDictionary().put(" + id + ":" + value + ")");
 
             parser.getDictionary().put(id, value);
         }

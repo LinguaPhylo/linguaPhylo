@@ -35,8 +35,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     LayeredNode selectedNode;
 
     boolean sizeChanged = true;
-    boolean showArgumentLabels = false;
-    boolean showValues = false;
+
+    private static final String SHOW_CONSTANT_NODES = "showConstantNodes";
+    private static final String SHOW_ARGUMENT_LABELS = "showArgumentLabels";
+    private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
+
     LayeredGraph layeredGraph = null;
     ProperLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathFromSinks();
@@ -60,11 +63,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         setup();
         parser.addGraphicalModelChangeListener(this::setup);
-    }
-
-    public void setShowArgumentLabels(boolean show) {
-        showArgumentLabels = show;
-        repaint();
     }
 
     private void setup() {
@@ -258,16 +256,28 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     public void setShowConstantNodes(boolean showConstantNodes) {
-        preferences.putBoolean("showConstantNodes", showConstantNodes);
+        preferences.putBoolean(SHOW_CONSTANT_NODES, showConstantNodes);
         setup();
         repaint();
     }
 
     public boolean getShowConstantNodes() {
-        return preferences.getBoolean("showConstantNodes", true);
+        return preferences.getBoolean(SHOW_CONSTANT_NODES, true);
     }
 
-    public void setShowValues(boolean showValues) {
-        this.showValues = showValues;
+    public void setShowValueInNode(boolean showValues) {
+        LayeredGNode.setShowValueInNode(showValues);
+        setup();
+        repaint();
+    }
+
+    public static boolean getShowArgumentLabels() {
+        return showArgumentLabels;
+    }
+
+    public void setShowArgumentLabels(boolean show) {
+        preferences.putBoolean(SHOW_ARGUMENT_LABELS, show);
+        showArgumentLabels = show;
+        repaint();
     }
 }

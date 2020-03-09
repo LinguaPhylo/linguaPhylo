@@ -4,9 +4,8 @@ import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
 import james.graphicalModel.Parameterized;
 import james.graphicalModel.Value;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
         extractAllParams(nodeToWrap);
 
-        Message.info("expression node wrapper keys:" + paramMap.keySet(), this);
+        LoggerUtils.log.info("expression node wrapper keys:" + paramMap.keySet());
 
         rewireAllOutputs(nodeToWrap, false);
     }

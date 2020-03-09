@@ -4,14 +4,17 @@ import james.TimeTree;
 import james.core.Alignment;
 import james.core.LPhyParser;
 import james.graphicalModel.*;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class LayeredGNode extends LayeredNode.Default {
+
+    static Preferences preferences = Preferences.userNodeForPackage(LayeredGNode.class);
 
     private JButton button;
     private Object value;
@@ -26,7 +29,8 @@ public class LayeredGNode extends LayeredNode.Default {
     static DecimalFormat format = new DecimalFormat();
 
     LPhyParser parser;
-    boolean showValue;
+
+    private static boolean showValue = getShowValueInNode();
 
     public LayeredGNode(Object value, LPhyParser parser) {
         super(0,0);
@@ -48,15 +52,24 @@ public class LayeredGNode extends LayeredNode.Default {
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
             name = "[" + ((Parameterized)output.value).getParamName(((Value) value)) + "]";
-            button.setText(getButtonString((Value)value, true));
+            button.setText(getButtonString((Value)value));
         }
     }
-    
+
+    public static boolean getShowValueInNode() {
+        return preferences.getBoolean("showValueInNode", true);
+    }
+
+    public static void setShowValueInNode(boolean showValueInNode) {
+        preferences.putBoolean("showValueInNode", showValueInNode);
+        showValue = showValueInNode;
+    }
+
     public boolean hasButton() {
         return button != null;
     }
 
-    private String getButtonString(Value v, boolean showValue) {
+    private String getButtonString(Value v) {
 
         Object value = v.value();
 
@@ -115,7 +128,7 @@ public class LayeredGNode extends LayeredNode.Default {
             borderColor = borderColor.darker();
         }
 
-        String str = getButtonString((Value)value, true);
+        String str = getButtonString((Value)value);
 
         if (button == null) {
             if (((Value) value).getFunction() != null) {
@@ -129,7 +142,7 @@ public class LayeredGNode extends LayeredNode.Default {
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value, true)));
+        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value)));
     }
 
     private void createParameterizedButton() {
@@ -149,13 +162,13 @@ public class LayeredGNode extends LayeredNode.Default {
         layer = maxLayer + 1;
     }
 
-    public int siblingCount(LayeredGNode parent) {
-        if (parent.getPredecessors().contains(this)) {
-            return parent.getPredecessors().size() - 1;
-        } else {
-            return -1;
-        }
-    }
+//    public int siblingCount(LayeredGNode parent) {
+//        if (parent.getPredecessors().contains(this)) {
+//            return parent.getPredecessors().size() - 1;
+//        } else {
+//            return -1;
+//        }
+//    }
 
     public double getRelativeIndex(LayeredGNode parent) {
         double index = parent.getPredecessors().indexOf(this);
@@ -163,14 +176,14 @@ public class LayeredGNode extends LayeredNode.Default {
         return index - ((parent.getPredecessors().size()-1.0) / 2.0);
     }
 
-    public double getPreferredX(double preferredSpacing) {
-        double x = 0;
-
-        for (LayeredNode parent : getSuccessors()) {
-            x += getPreferredX((LayeredGNode)parent, preferredSpacing);
-        }
-        return x / getSuccessors().size();
-    }
+//    public double getPreferredX(double preferredSpacing) {
+//        double x = 0;
+//
+//        for (LayeredNode parent : getSuccessors()) {
+//            x += getPreferredX((LayeredGNode)parent, preferredSpacing);
+//        }
+//        return x / getSuccessors().size();
+//    }
 
     public double getPreferredX(LayeredGNode parent, double preferredSpacing) {
         return getRelativeIndex(parent) * preferredSpacing + parent.getX();
@@ -184,7 +197,7 @@ public class LayeredGNode extends LayeredNode.Default {
         if (!Double.isNaN(x)) {
             setLocation(x, getY());
         } else {
-            Message.error("Tried to set x coordinate of node " + this + " to NaN!", this);
+            LoggerUtils.log.warning("Tried to set x coordinate of node " + this + " to NaN!");
         }
     }
 

@@ -3,10 +3,9 @@ package james.core;
 import james.graphicalModel.*;
 import james.parser.ExpressionNode;
 import james.parser.ExpressionNodeWrapper;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public interface LPhyParser {
 
@@ -63,7 +62,7 @@ public interface LPhyParser {
                 }
 
             } while (found);
-            Message.info("Wrapped " + wrappedExpressionNodeCount + " expression subtrees.", null);
+            LoggerUtils.log.fine("Wrapped " + wrappedExpressionNodeCount + " expression subtrees.");
         }
 
         private static boolean wrapExpressionNodes(Value value) {
@@ -72,7 +71,7 @@ public interface LPhyParser {
                     ExpressionNode eNode = (ExpressionNode)node;
 
                     if (ExpressionNodeWrapper.expressionSubtreeSize(eNode) > 1) {
-                        Message.info("  Wrapped " + node + ".", null);
+                        LoggerUtils.log.info("  Wrapped " + node + ".");
                         ExpressionNodeWrapper wrapper = new ExpressionNodeWrapper((ExpressionNode) node);
                         value.setFunction(wrapper);
                         return true;

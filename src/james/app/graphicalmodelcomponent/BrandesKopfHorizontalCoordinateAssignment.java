@@ -1,10 +1,8 @@
 package james.app.graphicalmodelcomponent;
 
-import james.graphicalModel.GraphicalModelParser;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -262,8 +260,8 @@ public class BrandesKopfHorizontalCoordinateAssignment {
                 v.setX(newX);
 
             } else {
-                Message.error("  x pos is NaN!", this);
-                Message.error("  maxXRightUp = " + maxXRightUp, this);
+                LoggerUtils.log.severe("  x pos is NaN!");
+                LoggerUtils.log.severe("  maxXRightUp = " + maxXRightUp);
             }
 
         }

@@ -10,8 +10,7 @@ import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.FunctionInfo;
 import james.graphicalModel.ParameterInfo;
 import james.graphicalModel.Value;
-import james.graphicalModel.types.IntegerValue;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -73,7 +72,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
         TimeTree tree = new TimeTree();
         tree.setRoot(root);
 
-        Message.info("Parsed tree: " + tree, this);
+        LoggerUtils.log.info("Parsed tree: " + tree);
 
         return tree;
     }

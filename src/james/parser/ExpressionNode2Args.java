@@ -3,10 +3,9 @@ package james.parser;
 import java.util.*;
 import java.util.function.*;
 
-import james.graphicalModel.DeterministicFunction;
 import james.graphicalModel.GraphicalModelNode;
 import james.graphicalModel.Value;
-import james.utils.Message;
+import james.utils.LoggerUtils;
 
 /**
  * anonymous container holding a DeterministicFunction with 2 arguments
@@ -52,7 +51,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
         	Value v = (Value)inputValues[i];
             if (!v.isAnonymous() && v.getId().equals(paramName)) {
                 inputValues[i] = value;
-                Message.info("Setting input value " + i + " to " + value, this);
+                LoggerUtils.log.info("Setting input value " + i + " to " + value);
             }
         }
     }
