@@ -8,7 +8,7 @@ import java.util.*;
 
 import org.junit.Test;
 
-import james.parser.SimulatorListenerImpl;
+import lphy.parser.SimulatorListenerImpl;
 import junit.framework.TestCase;
 
 public class ParserTest extends TestCase {

@@ -83,7 +83,7 @@
         </archives>
       </restrict>
       <manifest>
-        <attribute name="Main-Class" value="james.app.LinguaPhyloStudio"/>
+        <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
       </manifest>
     </jar>
     
