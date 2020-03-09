@@ -63,6 +63,8 @@ public class TimeTreeComponent extends JComponent {
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));
         //setPreferredSize(new Dimension(minimumWidth+maximumWidth/2, (minimumHeight+maximumHeight)/2));
+
+        setColorTraitName("deme");
     }
 
     public void setBorder(Border border) {
@@ -272,6 +274,10 @@ public class TimeTreeComponent extends JComponent {
 
         Point2D nodePoint = getTransformedNodePoint2D(node);
 
+        if (colorTraitName != null) {
+            int colorIndex = getIntegerTrait(node, colorTraitName);
+            g.setColor(traitColorTable.getColor(colorIndex));
+        }
         treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(),  g);
     }
 

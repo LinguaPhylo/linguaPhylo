@@ -55,7 +55,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
         Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, lphy.core.functions.BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class};
+                Newick.class, lphy.core.functions.BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class};
 
         for (Class<?> functionClass : functionClasses) {
             functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
@@ -137,11 +137,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Value visitDeterm_relation(SimulatorParser.Determ_relationContext ctx) {
             // TODO: why not Func -- Func has no apply()?
-            LoggerUtils.log.info(" visitDeterm_relation");
+            LoggerUtils.log.fine(" visitDeterm_relation");
 
             Object expr = visit(ctx.getChild(2));
             String id = ctx.children.get(0).getText();
-            LoggerUtils.log.info("   id = " + id);
+            LoggerUtils.log.fine("   id = " + id);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
@@ -154,10 +154,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 value.setId(id);
 
                 dictionary.put(id, value);
-                LoggerUtils.log.info("   adding value " + value + " to the dictionary");
+                LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
                 return value;
             } else {
-                LoggerUtils.log.info("   not a function or a value!");
+                LoggerUtils.log.severe("in visitDeterm_relation() expecting a function or a value!");
 
             }
             return null;

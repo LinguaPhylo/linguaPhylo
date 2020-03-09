@@ -17,9 +17,21 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
+    public static int countMigrations(TimeTree timeTree) {
+        int migrationCount = 0;
+        for (TimeTreeNode node : timeTree.getNodes()) {
+            if (node.getChildCount() == 1) {
+                if (!node.getMetaData(populationLabel).equals(node.getChildren().get(0).getMetaData(populationLabel))) {
+                    migrationCount += 1;
+                }
+            }
+        }
+        return migrationCount;
+    }
+
     enum EventType {coalescent, migration}
 
-    static final String populationLabel = "deme";
+    public static final String populationLabel = "deme";
 
 
     public StructuredCoalescent(@ParameterInfo(name = "M", description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
