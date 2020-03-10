@@ -1,16 +1,16 @@
 package lphy.core.commands;
 
+import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
-import lphy.graphicalModel.GraphicalModelParser;
 import lphy.graphicalModel.Value;
 
 import java.util.Map;
 
 public class Remove implements Command {
 
-    GraphicalModelParser parser;
+    LPhyParser parser;
 
-    public Remove(GraphicalModelParser parser) {
+    public Remove(LPhyParser parser) {
         this.parser = parser;
     }
 

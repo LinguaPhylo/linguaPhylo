@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.LayeredGNode;
 import lphy.core.LPhyParser;
+import lphy.core.commands.Remove;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.Value;
@@ -212,19 +213,22 @@ public class LinguaPhyloStudio {
         GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
 
         parser.addCommand(new SampleCommand(this));
+        parser.addCommand(new Remove(parser));
+
+        Command quitCommand = new Command() {
+            @Override
+            public String getName() {
+                return "quit";
+            }
+
+            public void execute(Map<String, Value<?>> params) {
+                quit();
+            }
+        };
+
+        parser.addCommand(quitCommand);
 
         return parser;
-//
-//        Command quitCommand = new Command() {
-//            @Override
-//            public String getName() {
-//                return "quit";
-//            }
-//
-//            public void execute(Map<String, Value> params) {
-//                quit();
-//            }
-//        };
 
 //        parser.addCommand(sampleCommand);
 //        parser.addCommand(quitCommand);
