@@ -46,7 +46,7 @@ public class MVN implements GenerativeDistribution<Double[]> {
 
     }
 
-    @GenerativeDistributionInfo(name="MVN", description="The normal probability distribution.")
+    @GeneratorInfo(name="MVN", description="The normal probability distribution.")
     public RandomVariable<Double[]> sample() {
 
         double[] sample = multivariateNormalDistribution.sample();

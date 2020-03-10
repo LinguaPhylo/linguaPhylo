@@ -1,7 +1,9 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.Command;
 import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.Generator;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class GraphicalModelInterpreter extends JPanel {
 
@@ -63,16 +67,20 @@ public class GraphicalModelInterpreter extends JPanel {
         List<String> keywords = parser.getKeywords();
         keywords.addAll(Arrays.asList(greekLetterCodes));
 
+        List<String> commandStrings =
+                parser.getCommands().stream().map(Command::getName).collect(Collectors.toList());
+        keywords.addAll(commandStrings);
+
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Set<Class<?>>> entry : parser.getGenerativeDistributionClasses().entrySet()) {
+        for (Map.Entry<String, Set<Class<?>>> entry : parser.getGeneratorClasses().entrySet()) {
 
             Set<Class<?>> classes = entry.getValue();
             Iterator iterator = classes.iterator();
 
             StringBuilder builder = new StringBuilder();
             for (Class c : classes) {
-                builder.append(GenerativeDistribution.getSignature((Class) iterator.next()));
+                builder.append(Generator.getSignature((Class) iterator.next()));
                 builder.append("; ");
             }
             final String message = builder.toString();
@@ -81,6 +89,15 @@ public class GraphicalModelInterpreter extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setMessage(message);
+                }
+            });
+        }
+
+        for (Command command : parser.getCommands()) {
+            autoComplete.getActionMap().put(command.getName(), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setMessage(command.getSignature());
                 }
             });
         }

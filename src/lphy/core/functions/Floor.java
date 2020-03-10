@@ -12,7 +12,7 @@ public class Floor extends DeterministicFunction<Integer> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="floor",description = "The floor function.")
+    @GeneratorInfo(name="floor",description = "The floor function.")
     public Value<Integer> apply() {
         Value<Double> v = (Value<Double>)getParams().get(paramName);
         return new IntegerValue((int)Math.floor(v.value()), this);

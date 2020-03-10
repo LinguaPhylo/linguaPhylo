@@ -1,5 +1,6 @@
 package lphy.app;
 
+import lphy.core.VarFileLogger;
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomVariableLogger;
@@ -12,79 +13,44 @@ import java.util.Map;
 
 public class VariableLog extends JTextArea implements RandomVariableLogger {
 
-    int rep = 0;
-    Map<Class, Loggable> loggableMap = new HashMap<>();
+    Map<Class, Loggable> loggableMap;
 
     public VariableLog() {
 
         setTabSize(4);
         setEditable(false);
 
-        loggableMap.put(Integer.class, new Loggable<Integer>() {
-            @Override
-            public String[] getLogTitles(Value<Integer> value) {
-                return new String[] {value.getId()};
-            }
-
-            public String[] getLogValues(Value<Integer> value) {
-                return new String[] {value.value().toString()};
-            }
-        });
-
-        loggableMap.put(Double.class, new Loggable<Double>() {
-            @Override
-            public String[] getLogTitles(Value<Double> value) {
-                return new String[] {value.getId()};
-            }
-
-            public String[] getLogValues(Value<Double> value) {
-                return new String[] {value.value().toString()};
-            }
-        });
-
-        loggableMap.put(Double[].class, new Loggable<Double[]>() {
-            @Override
-            public String[] getLogTitles(Value<Double[]> value) {
-                String[] names = new String[value.value().length];
-                for (int i = 0; i < names.length; i++) {
-                    names[i] = value.getId() + "." + i;
-                }
-                return names;
-            }
-
-            public String[] getLogValues(Value<Double[]> value) {
-                String[] vals = new String[value.value().length];
-                for (int i = 0; i < vals.length; i++) {
-                    vals[i] = value.value()[i].toString();
-                }
-                return vals;
-            }
-        });
+        setLoggableMap(VarFileLogger.loggableMap);
     }
 
     public void clear() {
         setText("");
-        rep = 0;
     }
 
-    public void log(List<RandomVariable<?>> variables) {
-        if (rep < 1000) {
-            StringBuilder builder = new StringBuilder();
-            if (getText().length() == 0) {
-                // start with titles
-                builder.append("rep");
-                for (RandomVariable variable : variables) {
-                    Loggable loggable = loggableMap.get(variable.value().getClass());
-                    if (loggable != null) {
-                        for (String title : loggable.getLogTitles(variable)) {
-                            builder.append("\t");
-                            builder.append(title);
-                        }
+    public void setLoggableMap(Map<Class, Loggable> loggableMap) {
+        this.loggableMap = loggableMap;
+    }
+
+    public void log(int rep, List<RandomVariable<?>> variables) {
+        StringBuilder builder = new StringBuilder();
+
+        if (rep == 0) {
+            clear();
+            // start with titles
+            builder.append("sample");
+            for (RandomVariable variable : variables) {
+                Loggable loggable = loggableMap.get(variable.value().getClass());
+                if (loggable != null) {
+                    for (String title : loggable.getLogTitles(variable)) {
+                        builder.append("\t");
+                        builder.append(title);
                     }
                 }
-                builder.append("\n");
             }
+            builder.append("\n");
 
+        }
+        if (rep < 1000) {
             builder.append(rep);
             for (RandomVariable variable : variables) {
                 Loggable loggable = loggableMap.get(variable.value().getClass());
@@ -96,8 +62,12 @@ public class VariableLog extends JTextArea implements RandomVariableLogger {
                 }
             }
             builder.append("\n");
-            append(builder.toString());
-            rep += 1;
         }
+        append(builder.toString());
+    }
+
+    @Override
+    public void close() {
+
     }
 }

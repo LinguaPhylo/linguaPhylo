@@ -5,11 +5,15 @@ import java.io.*;
 import java.util.*;
 
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Value;
 
 /** A simple Read-Eval-Print-Loop for the graphicalModelSimulator language **/ 
 public class REPL implements LPhyParser {
+
 	SortedMap<String, Value<?>> dictionary = new TreeMap<>();
+
+	SortedMap<String, Command> commands = new TreeMap<>();
 
 	private List<String> lines = new ArrayList<>();
 
@@ -28,40 +32,70 @@ public class REPL implements LPhyParser {
 		}
 	}
 
-	public Map<String, Value<?>> getDictionary() {
+	final public Map<String, Value<?>> getDictionary() {
 		return dictionary;
+	}
+
+	@Override
+	public void addCommand(Command command) {
+		commands.put(command.getName(), command);
+	}
+
+	@Override
+	public Collection<Command> getCommands() {
+		return commands.values();
 	}
 
 	public void parse(String cmd) {
 		if (cmd == null) {
 			return;
 		}
-		if (cmd.startsWith("quit") || cmd.startsWith("end")) {
-			System.exit(0);
-		} else if (cmd.trim().length() == 0) {
-			// ignore empty lines
-		} else if (!cmd.startsWith("?")) {
-			try {
-				SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
-				if (!cmd.endsWith(";")) {
-					cmd = cmd + ";";
-				}
-				Object o = parser.parse(cmd);
-				//parser.parse(cmd);
-			} catch (SimulatorParsingException e) {
-				System.out.println(cmd);
-				System.out.println(e.getMessage());
-			} catch (Exception e) {
-				e.printStackTrace(System.err);
-				System.err.println("Error: " + e.getMessage());
+
+		final String commandString = cmd;
+
+		final boolean[] found = new boolean[1];
+		commands.forEach((key, command) -> {
+			if (commandString.startsWith(key)) {
+				command.execute(commandString, dictionary);
+				found[0] = true;
 			}
+		});
+
+		if (!found[0]) {
+			if (cmd.trim().length() == 0) {
+				// ignore empty lines
+				return;
+			} else if (!cmd.startsWith("?")) {
+				try {
+					SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
+					if (!cmd.endsWith(";")) {
+						cmd = cmd + ";";
+					}
+					Object o = parser.parse(cmd);
+					//parser.parse(cmd);
+				} catch (SimulatorParsingException e) {
+					System.out.println(cmd);
+					System.out.println(e.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+					System.err.println("Error: " + e.getMessage());
+				}
+				lines.add(cmd);
+
+				// wrap the ExpressionNodes before returning from parse
+				LPhyParser.Utils.wrapExpressionNodes(this);
+			} else throw new RuntimeException();
 		}
-		lines.add(cmd);
 	}
 
 	@Override
-	public Map<String, Set<Class<?>>> getGenerativeDistributionClasses() {
-		return SimulatorListenerImpl.genDistDictionary;
+	public Map<String, Set<Class<?>>> getGeneratorClasses() {
+		SortedMap<String, Set<Class<?>>> generatorClasses = new TreeMap<>();
+
+		generatorClasses.putAll(SimulatorListenerImpl.genDistDictionary);
+		generatorClasses.putAll(SimulatorListenerImpl.functionDictionary);
+
+		return generatorClasses;
 	}
 
 	@Override

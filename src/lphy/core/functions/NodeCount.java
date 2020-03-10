@@ -2,7 +2,7 @@ package lphy.core.functions;
 
 import lphy.TimeTree;
 import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
@@ -16,7 +16,7 @@ public class NodeCount extends DeterministicFunction<Integer> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="nodecount",description = "The number of nodes in the tree")
+    @GeneratorInfo(name="nodecount",description = "The number of nodes in the tree")
     public Value<Integer> apply() {
         Value<TimeTree> v = (Value<TimeTree>)getParams().get(paramName);
         return new IntegerValue(v.value().getNodeCount(), this);

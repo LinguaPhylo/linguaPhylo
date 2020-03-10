@@ -7,7 +7,7 @@ import lphy.core.functions.newickParser.NewickLexer;
 import lphy.core.functions.newickParser.NewickParser;
 import lphy.core.functions.newickParser.TreeParsingException;
 import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.utils.LoggerUtils;
@@ -23,7 +23,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="newick",description = "A function that parses a tree from a newick formatted string.")
+    @GeneratorInfo(name="newick",description = "A function that parses a tree from a newick formatted string.")
     public Value<TimeTree> apply() {
         Value<String> newickValue = (Value<String>)getParams().get(paramName);
 

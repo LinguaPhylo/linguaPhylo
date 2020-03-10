@@ -17,6 +17,8 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     private List<TimeTreeNode> nodes;
 
+    String[] taxaNames = null;
+
     // number of leaves
     int n = 0;
 
@@ -46,6 +48,7 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
         if (node.isLeaf()) {
             nodes.add(node);
+            node.setLeafIndex(n);
             n += 1;
         } else {
             for (TimeTreeNode child : node.getChildren()) {
@@ -98,5 +101,17 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     public TimeTreeNode getRoot() {
         return rootNode;
+    }
+
+    public String[] getTaxaNames() {
+        if (taxaNames == null) {
+            taxaNames = new String[n()];
+            for (TimeTreeNode node : getNodes()) {
+                if (node.isLeaf()) {
+                    taxaNames[node.getLeafIndex()] = node.getId();
+                }
+            }
+        }
+        return taxaNames;
     }
 }

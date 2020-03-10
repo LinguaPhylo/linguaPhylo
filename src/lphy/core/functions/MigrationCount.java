@@ -3,7 +3,7 @@ package lphy.core.functions;
 import lphy.StructuredCoalescent;
 import lphy.TimeTree;
 import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
@@ -17,7 +17,7 @@ public class MigrationCount extends DeterministicFunction<Integer> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="countMigrations",
+    @GeneratorInfo(name="countMigrations",
             description = "The number of single-child nodes in the tree where the '" +
                     StructuredCoalescent.populationLabel + "' attribute changes.")
     public Value<Integer> apply() {

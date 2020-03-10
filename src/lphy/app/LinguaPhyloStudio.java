@@ -3,7 +3,9 @@ package lphy.app;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.LayeredGNode;
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Utils;
+import lphy.graphicalModel.Value;
 import lphy.parser.REPL;
 
 import javax.swing.*;
@@ -13,6 +15,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 public class LinguaPhyloStudio {
 
@@ -206,21 +209,11 @@ public class LinguaPhyloStudio {
 
     private GraphicalLPhyParser createParser() {
 
-        return new GraphicalLPhyParser(new REPL());
+        GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
 
-//        Command sampleCommand = new Command() {
-//            @Override
-//            public String getName() {
-//                return "sample";
-//            }
-//
-//            public void execute(Map<String, Value> params) {
-//                Value val = params.values().iterator().next();
-//                if (val.value() instanceof Integer) {
-//                    panel.sample((Integer) val.value());
-//                }
-//            }
-//        };
+        parser.addCommand(new SampleCommand(this));
+
+        return parser;
 //
 //        Command quitCommand = new Command() {
 //            @Override

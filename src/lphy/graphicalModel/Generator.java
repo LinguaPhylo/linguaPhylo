@@ -15,6 +15,9 @@ public interface Generator<T> extends GraphicalModelNode {
 
     String getName();
 
+    /**
+     * @return
+     */
     Value<T> generate();
 
     default String getParamName(int paramIndex, int constructorIndex) {
@@ -31,29 +34,6 @@ public interface Generator<T> extends GraphicalModelNode {
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
         return getParameterInfo(this.getClass(), constructorIndex);
-    }
-
-    default List<ParameterInfo> getParameterInfo(String methodName) {
-
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-
-        Class<?> classElement = getClass();
-
-        Method[] methods = classElement.getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals("apply")) {
-                Annotation[][] annotations = method.getParameterAnnotations();
-                for (Annotation[] annotations1 : annotations) {
-                    for (Annotation annotation : annotations1) {
-                        if (annotation instanceof ParameterInfo) {
-                            pInfo.add((ParameterInfo) annotation);
-                        }
-                    }
-                }
-                return pInfo;
-            }
-        }
-        return null;
     }
 
     static List<ParameterInfo> getParameterInfo(Constructor constructor) {
@@ -78,6 +58,43 @@ public interface Generator<T> extends GraphicalModelNode {
             pInfo.addAll(getParameterInfo(constructor));
         }
         return pInfo;
+    }
+
+    static String getSignature(Class<?> aClass) {
+
+        List<ParameterInfo> pInfo = Generator.getParameterInfo(aClass, 0);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(getGeneratorName(aClass));
+        builder.append("(");
+        if (pInfo.size() > 0) {
+            builder.append(pInfo.get(0).name());
+            for (int i = 1; i < pInfo.size(); i++) {
+                builder.append(", ");
+                builder.append(pInfo.get(i).name());
+            }
+        }
+        builder.append(")");
+        return builder.toString();
+    }
+
+    static String getGeneratorName(Class<?> c) {
+        GeneratorInfo ginfo = getGeneratorInfo(c);
+        if (ginfo != null) return ginfo.name();
+        return c.getSimpleName();
+    }
+
+    static GeneratorInfo getGeneratorInfo(Class<?> c) {
+
+        Method[] methods = c.getMethods();
+        for (Method method : methods) {
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation instanceof GeneratorInfo) {
+                    return (GeneratorInfo) annotation;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

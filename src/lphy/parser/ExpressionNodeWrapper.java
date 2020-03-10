@@ -1,5 +1,6 @@
 package lphy.parser;
 
+import lphy.core.functions.Log;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GraphicalModelNode;
@@ -8,6 +9,7 @@ import lphy.utils.LoggerUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class ExpressionNodeWrapper extends DeterministicFunction {
 
@@ -17,8 +19,6 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         this.nodeToWrap = nodeToWrap;
 
         extractAllParams(nodeToWrap);
-
-        LoggerUtils.log.info("expression node wrapper keys:" + paramMap.keySet());
 
         rewireAllOutputs(nodeToWrap, false);
     }
@@ -107,13 +107,7 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
     @Override
     public Value apply() {
-
-        // this is a bit inefficient!
-        // It ensures that the Sampler works, but if random variables haven't changed it is unnecessary.
         return applyRecursively();
-//        Value v = nodeToWrap.apply();
-//        v.setFunction(this);
-//        return v;
     }
 
     public Value applyRecursively() {
@@ -124,7 +118,6 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
     private Value applyRecursively(ExpressionNode expressionNode) {
 
-        Value[] newInputValues = new Value[expressionNode.inputValues.length];
         for (int i = 0; i < expressionNode.inputValues.length; i++) {
             if (expressionNode.inputValues[i] instanceof Value) {
                 Value v = (Value) expressionNode.inputValues[i];

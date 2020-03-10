@@ -33,7 +33,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GenerativeDistributionInfo(name="Yule", description="The Yule tree distribution over tip-labelled time trees.")
+    @GeneratorInfo(name="Yule", description="The Yule tree distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();

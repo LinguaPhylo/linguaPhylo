@@ -1,12 +1,10 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Value;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GraphicalLPhyParser implements LPhyParser {
 
@@ -23,15 +21,23 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
+    public void addCommand(Command command) {
+        wrappedParser.addCommand(command);
+    }
+
+    public Collection<Command> getCommands() {
+        return wrappedParser.getCommands();
+    }
+
+    @Override
     public void parse(String code) {
         wrappedParser.parse(code);
-        LPhyParser.Utils.wrapExpressionNodes(wrappedParser);
         notifyListeners();
     }
 
     @Override
-    public Map<String, Set<Class<?>>> getGenerativeDistributionClasses() {
-        return wrappedParser.getGenerativeDistributionClasses();
+    public Map<String, Set<Class<?>>> getGeneratorClasses() {
+        return wrappedParser.getGeneratorClasses();
     }
 
     @Override

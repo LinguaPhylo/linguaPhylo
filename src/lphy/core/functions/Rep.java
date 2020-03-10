@@ -24,7 +24,7 @@ public class Rep<U> extends DeterministicFunction<U[]> {
         timesParamName = getParamName(1);
     }
 
-    @FunctionInfo(name = "rep", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
+    @GeneratorInfo(name = "rep", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
     public Value<U[]> apply(Value<U> v, Value<Integer> times) {
         setParam("x", v);
 

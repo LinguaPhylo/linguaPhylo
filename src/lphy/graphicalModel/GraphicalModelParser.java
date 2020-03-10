@@ -15,6 +15,7 @@ import lphy.core.functions.*;
 import lphy.graphicalModel.types.*;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
+import lphy.parser.SimulatorListenerImpl;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -32,7 +33,7 @@ public class GraphicalModelParser implements LPhyParser {
 
     // PARSER STATE
     public Map<String, Set<Class<?>>> genDistDictionary = new TreeMap<>();
-    Map<String, Class<?>> functionDictionary = new TreeMap<>();
+    Map<String, Set<Class<?>>> functionDictionary = new TreeMap<>();
     Map<String, Command> commandDictionary = new TreeMap<>();
 
 
@@ -46,7 +47,7 @@ public class GraphicalModelParser implements LPhyParser {
                 ErrorModel.class, BirthDeathTree.class, BirthDeathTreeDT.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
         for (Class<?> genClass : genClasses) {
-            addGenerativeDistribution(genClass);
+            addGenerator(genClass, genDistDictionary);
         }
 
         Class<?>[] functionClasses = {
@@ -54,7 +55,7 @@ public class GraphicalModelParser implements LPhyParser {
                 GTR.class, BinaryRateMatrix.class, Newick.class, Rep.class, NTaxa.class, NodeCount.class};
 
         for (Class<?> functionClass : functionClasses) {
-            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
+            addGenerator(functionClass, functionDictionary);
         }
 
         addCommand(new Remove(this));
@@ -64,15 +65,20 @@ public class GraphicalModelParser implements LPhyParser {
         return line.trim().startsWith("//");
     }
 
-    private void addGenerativeDistribution(Class<?> genClass) {
-        String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
+    private void addGenerator(Class<?> generatorClass, Map<String, Set<Class<?>>> setDictionary) {
+        String name = Generator.getGeneratorName(generatorClass);
 
-        Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-        genDistSet.add(genClass);
+        Set<Class<?>> generatorSet = setDictionary.computeIfAbsent(name, k -> new HashSet<>());
+        generatorSet.add(generatorClass);
     }
 
     public void addCommand(Command command) {
         commandDictionary.put(command.getName(), command);
+    }
+
+    @Override
+    public Collection<Command> getCommands() {
+        return commandDictionary.values();
     }
 
     public List<Value> getAllValuesFromRoots() {
@@ -99,8 +105,6 @@ public class GraphicalModelParser implements LPhyParser {
         }
     }
 
-
-
     /**
      * @return a list of keywords including names of distributions, functions, commands, and param names.
      */
@@ -114,7 +118,9 @@ public class GraphicalModelParser implements LPhyParser {
         for (Set<Class<?>> genDistClasses : genDistDictionary.values()) {
             classes.addAll(genDistClasses);
         }
-        classes.addAll(functionDictionary.values());
+        for (Set<Class<?>> functionClasses : functionDictionary.values()) {
+            classes.addAll(functionClasses);
+        }
 
         for (Class<?> c : classes) {
             Generator.getAllParameterInfo(c).forEach((pinfo) -> {
@@ -168,8 +174,13 @@ public class GraphicalModelParser implements LPhyParser {
     }
 
     @Override
-    public Map<String, Set<Class<?>>> getGenerativeDistributionClasses() {
-        return genDistDictionary;
+    public Map<String, Set<Class<?>>> getGeneratorClasses() {
+        SortedMap<String, Set<Class<?>>> generatorClasses = new TreeMap<>();
+
+        generatorClasses.putAll(genDistDictionary);
+        generatorClasses.putAll(functionDictionary);
+
+        return generatorClasses;
     }
 
     public void parseLines(String[] lines) {
@@ -267,7 +278,7 @@ public class GraphicalModelParser implements LPhyParser {
 
         String remainder = line.substring(command.getName().length());
         remainder = trim(remainder);
-        Map<String, Value> arguments = parseArguments(remainder.substring(1, remainder.length() - 1), lineNumber);
+        Map<String, Value<?>> arguments = parseArguments(remainder.substring(1, remainder.length() - 1), lineNumber);
         command.execute(arguments);
     }
 
@@ -468,39 +479,43 @@ public class GraphicalModelParser implements LPhyParser {
         if (remainder.endsWith(")")) remainder = remainder.substring(0, remainder.length() - 1);
         String argumentString = remainder;
 
-        Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
+        Map<String, Value<?>> arguments = parseArguments(argumentString, lineNumber);
 
-        Class functionClass = functionDictionary.get(name);
-        if (functionClass == null)
-            throw new RuntimeException("Parsing error: Unrecognised deterministic function: " + name);
+        Set<Class<?>> functionClasses = functionDictionary.get(name);
 
-        try {
-            List<Object> initargs = new ArrayList<>();
-            Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
-            if (constructor == null) {
-                System.err.println("DeterministicFunction class: " + functionClass);
-                System.err.println("     Arguments: " + arguments);
-                throw new RuntimeException("Parser error: no constructor found for deterministic function " + name + " with arguments " + arguments);
+        if (functionClasses == null)
+            throw new RuntimeException("Found no implementation for generative distribution " + name);
+
+        for (Class functionClass : functionClasses) {
+            try {
+                List<Object> initargs = new ArrayList<>();
+                Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
+                if (constructor == null) {
+                    System.err.println("DeterministicFunction class: " + functionClass);
+                    System.err.println("     Arguments: " + arguments);
+                    throw new RuntimeException("Parser error: no constructor found for deterministic function " + name + " with arguments " + arguments);
+                }
+
+                DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
+                for (String parameterName : arguments.keySet()) {
+                    Value value = arguments.get(parameterName);
+                    func.setInput(parameterName, value);
+                }
+                Value val = func.apply();
+                val.setId(id);
+                return val;
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
             }
-
-            DeterministicFunction func = (DeterministicFunction) constructor.newInstance(initargs.toArray());
-            for (String parameterName : arguments.keySet()) {
-                Value value = arguments.get(parameterName);
-                func.setInput(parameterName, value);
-            }
-            Value val = func.apply();
-            val.setId(id);
-            return val;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Parsing generative distribution " + name + " failed on line " + lineNumber);
         }
+        throw new RuntimeException("Parser exception: no constructor found for " + functionString);
     }
 
     private void parseRandomVariable(String line, int lineNumber) {
@@ -534,7 +549,7 @@ public class GraphicalModelParser implements LPhyParser {
         String name = parts[0].trim();
         String remainder = parts[1].trim();
         String argumentString = remainder.substring(0, remainder.length() - 1);
-        Map<String, Value> arguments = parseArguments(argumentString, lineNumber);
+        Map<String, Value<?>> arguments = parseArguments(argumentString, lineNumber);
 
         Set<Class<?>> genDistClasses = genDistDictionary.get(name);
 
@@ -568,7 +583,7 @@ public class GraphicalModelParser implements LPhyParser {
         throw new RuntimeException("Parser exception: no constructor found for " + genString);
     }
 
-    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
+    private Constructor getConstructorByArguments(Map<String, Value<?>> arguments, Class genDistClass, List<Object> initargs) {
         System.out.println(genDistClass.getSimpleName() + " " + arguments);
         for (Constructor constructor : genDistClass.getConstructors()) {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
@@ -596,7 +611,7 @@ public class GraphicalModelParser implements LPhyParser {
      * @param pInfo
      * @return
      */
-    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
+    private boolean match(Map<String, Value<?>> arguments, List<ParameterInfo> pInfo) {
 
         Set<String> requiredArguments = new TreeSet<>();
         Set<String> optionalArguments = new TreeSet<>();
@@ -626,11 +641,11 @@ public class GraphicalModelParser implements LPhyParser {
         return argumentString.split(argumentSplitterPattern);
     }
 
-    private Map<String, Value> parseArguments(String argumentString, int lineNumber) {
+    private Map<String, Value<?>> parseArguments(String argumentString, int lineNumber) {
 
         String[] argumentStrings = parseArguments(argumentString);
 
-        TreeMap<String, Value> arguments = new TreeMap<>();
+        TreeMap<String, Value<?>> arguments = new TreeMap<>();
         int argumentCount = 0;
         for (int i = 0; i < argumentStrings.length; i++) {
 

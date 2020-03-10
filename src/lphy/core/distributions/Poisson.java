@@ -23,7 +23,7 @@ public class Poisson implements GenerativeDistribution<Integer> {
         lambdaParamName = getParamName(0);
     }
 
-    @GenerativeDistributionInfo(name="Poisson", description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
+    @GeneratorInfo(name="Poisson", description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {
 
         PoissonDistribution poisson = new PoissonDistribution(lambda.value());

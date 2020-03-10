@@ -39,7 +39,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
         constructGammaDistribution();
     }
 
-    @GenerativeDistributionInfo(name="G", description = "The discretized gamma probability distribution with mean = 1.")
+    @GeneratorInfo(name="G", description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double[]> sample() {
         constructGammaDistribution();
 

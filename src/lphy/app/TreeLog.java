@@ -4,13 +4,14 @@ import lphy.TimeTree;
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.Value;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TreeLog extends VariableLog {
 
+    public static Map<Class, Loggable> loggableMap = new HashMap<>();
 
-    public TreeLog() {
-
-        loggableMap.clear();
-
+    static {
         loggableMap.put(TimeTree.class, new Loggable<TimeTree>() {
             @Override
             public String[] getLogTitles(Value<TimeTree> value) {
@@ -21,5 +22,9 @@ public class TreeLog extends VariableLog {
                 return new String[]{value.value().toString()};
             }
         });
+    }
+
+    public TreeLog() {
+        setLoggableMap(loggableMap);
     }
 }

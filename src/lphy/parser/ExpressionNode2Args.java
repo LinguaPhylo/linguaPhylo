@@ -8,7 +8,7 @@ import lphy.graphicalModel.Value;
 import lphy.utils.LoggerUtils;
 
 /**
- * anonymous container holding a DeterministicFunction with 2 arguments
+ * container holding a DeterministicFunction with 2 arguments
  **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
     BinaryOperator func;

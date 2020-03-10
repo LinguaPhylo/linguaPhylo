@@ -33,7 +33,7 @@ public class Sampler {
      * @param reps    the number of times to sample
      * @param loggers the loggers to log to
      */
-    public void sample(int reps, RandomVariableLogger[] loggers) {
+    public void sample(int reps, List<RandomVariableLogger> loggers) {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
@@ -57,8 +57,14 @@ public class Sampler {
             if (loggers != null) {
                 List<RandomVariable<?>> variables = getAllVariablesFromSinks();
                 for (RandomVariableLogger logger : loggers) {
-                    logger.log(variables);
+                    logger.log(i, variables);
                 }
+            }
+        }
+        if (loggers != null) {
+            List<RandomVariable<?>> variables = getAllVariablesFromSinks();
+            for (RandomVariableLogger logger : loggers) {
+                logger.close();
             }
         }
         parser.notifyListeners();

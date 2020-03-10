@@ -1,6 +1,6 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
@@ -26,7 +26,7 @@ public class TN93 extends RateMatrix {
     }
 
 
-    @FunctionInfo(name = "tn93", description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
+    @GeneratorInfo(name = "tn93", description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa1 = getParams().get(kappa1ParamName);
         Value<Double> kappa2 = getParams().get(kappa2ParamName);

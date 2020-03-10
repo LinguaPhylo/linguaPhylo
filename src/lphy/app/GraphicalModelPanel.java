@@ -16,6 +16,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
@@ -153,19 +157,29 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     void sample(int reps) {
+        sample(reps, new LinkedList<>());
+    }
+
+    void sample(int reps, List<RandomVariableLogger> loggers) {
+
         long start = System.currentTimeMillis();
 
         String id = null;
         if (displayedElement instanceof Value && !((Value) displayedElement).isAnonymous()) {
             id = ((Value) displayedElement).getId();
         }
+
+        loggers.add(variableLog);
+        loggers.add(treeLog);
+
         Sampler sampler = new Sampler(parser);
-        sampler.sample(reps, new RandomVariableLogger[]{variableLog, treeLog});
-        //parser.sample(reps, null);
+        sampler.sample(reps, loggers);
+
         if (id != null && parser.getDictionary().get(id) != null) {
             showValue(parser.getDictionary().get(id));
         } else {
-            showValue(parser.getSinks().iterator().next());
+            Set<Value<?>> sinks = parser.getSinks();
+            if (sinks.size() > 0) showValue(sinks.iterator().next());
         }
         long end = System.currentTimeMillis();
         System.out.println("sample(" + reps + ") took " + (end - start) + " ms.");

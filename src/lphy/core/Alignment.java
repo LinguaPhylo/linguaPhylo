@@ -4,6 +4,7 @@ import lphy.graphicalModel.Value;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
 
+import javax.naming.directory.Attribute;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Map;
@@ -81,4 +82,45 @@ public class Alignment implements HasComponentView<Alignment> {
         builder.append("}");
         return builder.toString();
     }
+
+    public int getSiteCount() {
+        return L();
+    }
+
+    public String getDataTypeDescription() {
+        switch (numStates) {
+            case 2: return "binary";
+            case 4: return "nucleotide";
+            default: return "standard";
+        }
+    }
+
+    public int getTaxonCount() {
+        return n();
+    }
+
+    public String[] getTaxaNames() {
+        String[] taxaNames = new String[n()];
+        for (int i = 0; i < taxaNames.length; i++) {
+            taxaNames[i] = reverseMap.get(i);
+        }
+        return taxaNames;
+    }
+
+    public String getSequence(int taxonIndex) {
+        StringBuilder builder = new StringBuilder();
+        for (int j = 0; j < alignment[taxonIndex].length; j++) {
+            builder.append(getChar(alignment[taxonIndex][j]));
+        }
+        return builder.toString();
+    }
+
+    private char getChar(int state) {
+        if (numStates == 4) {
+            return DNA[state];
+        }
+        return (char)('0' + state);
+    }
+
+    char[] DNA = {'A', 'C', 'G', 'T'};
 }

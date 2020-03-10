@@ -45,7 +45,7 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
         nParamName = getParamName(1);
     }
 
-    @GenerativeDistributionInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
+    @GeneratorInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();

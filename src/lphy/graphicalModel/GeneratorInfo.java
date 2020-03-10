@@ -10,8 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-
-public @interface FunctionInfo {
+public @interface GeneratorInfo {
     String name();
     String description();
 }

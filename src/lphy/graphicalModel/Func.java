@@ -9,16 +9,27 @@ import java.util.TreeMap;
 
 public abstract class Func implements Generator, Viewable {
 
+    private String name = null;
+    private String description = null;
+
     public String getName() {
-        FunctionInfo fInfo = getFunctionInfo();
-        if (fInfo != null) return fInfo.name();
-        return getClass().getSimpleName();
+        if (name == null) {
+            GeneratorInfo fInfo = Generator.getGeneratorInfo(getClass());
+            if (fInfo != null) {
+                name = fInfo.name();
+            } else name = getClass().getSimpleName();
+        }
+        return name;
     }
 
     public String getDescription() {
-        FunctionInfo fInfo = getFunctionInfo();
-        if (fInfo != null) return fInfo.description();
-        return "";
+        if (description == null) {
+            GeneratorInfo fInfo = Generator.getGeneratorInfo(getClass());
+            if (fInfo != null) {
+                description = fInfo.name();
+            } else description = getClass().getSimpleName();
+        }
+        return description;
     }
 
     protected TreeMap<String, Value> paramMap = new TreeMap<>();
@@ -29,30 +40,6 @@ public abstract class Func implements Generator, Viewable {
 
     public void setParam(String paramName, Value value) {
         paramMap.put(paramName, value);
-    }
-
-    public FunctionInfo getFunctionInfo() {
-
-       return getFunctionInfo(getClass());
-    }
-
-    public static FunctionInfo getFunctionInfo(Class c) {
-
-        Method[] methods = c.getMethods();
-
-        for (Method method : methods) {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof FunctionInfo) {
-                    return (FunctionInfo) annotation;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static String getFunctionName(Class c) {
-        return getFunctionInfo(c).name();
     }
 
     public String getRichDescription() {

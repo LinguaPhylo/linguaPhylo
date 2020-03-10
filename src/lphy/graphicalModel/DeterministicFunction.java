@@ -4,7 +4,7 @@ public abstract class DeterministicFunction<T> extends Func {
 
     public abstract Value<T> apply();
 
-    public Value generate() {
+    public Value<T> generate() {
         return apply();
     }
 

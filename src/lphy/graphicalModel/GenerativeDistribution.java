@@ -42,7 +42,7 @@ public interface GenerativeDistribution<T> extends Generator, Viewable {
 
         String name = this.getClass().getSimpleName();
 
-        GenerativeDistributionInfo ginfo = getInfo();
+        GeneratorInfo ginfo = getInfo();
         if (ginfo != null) {
             name = ginfo.name();
         }
@@ -62,7 +62,7 @@ public interface GenerativeDistribution<T> extends Generator, Viewable {
         StringBuilder html = new StringBuilder("<html><h3>");
         html.append(getName());
         html.append(" distribution</h3>");
-        GenerativeDistributionInfo info = getInfo();
+        GeneratorInfo info = getInfo();
         if (info != null) {
             html.append("<p>").append(getInfo().description()).append("</p>");
         }
@@ -74,7 +74,7 @@ public interface GenerativeDistribution<T> extends Generator, Viewable {
         return html.toString();
     }
 
-    default GenerativeDistributionInfo getInfo() {
+    default GeneratorInfo getInfo() {
 
         Class<?> classElement = getClass();
 
@@ -82,38 +82,14 @@ public interface GenerativeDistribution<T> extends Generator, Viewable {
 
         for (Method method : methods) {
             for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof GenerativeDistributionInfo) {
-                    return (GenerativeDistributionInfo) annotation;
+                if (annotation instanceof GeneratorInfo) {
+                    return (GeneratorInfo) annotation;
                 }
             }
         }
 
         return null;
     }
-
-    static GenerativeDistributionInfo getGenerativeDistributionInfo(Class<?> c) {
-
-        Method[] methods = c.getMethods();
-
-        for (Method method : methods) {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof GenerativeDistributionInfo) {
-                    return (GenerativeDistributionInfo) annotation;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    static String getGenerativeDistributionInfoName(Class<?> c) {
-        GenerativeDistributionInfo ginfo = getGenerativeDistributionInfo(c);
-
-        if (ginfo != null) return ginfo.name();
-
-        return c.getSimpleName();
-    }
-
 
     default JComponent getViewer() {
         return new JLabel(getRichDescription(0));
@@ -140,23 +116,5 @@ public interface GenerativeDistribution<T> extends Generator, Viewable {
     @Override
     default T value() {
     	return null;
-    }
-
-    static String getSignature(Class<?> aClass) {
-
-        List<ParameterInfo> pInfo = Generator.getParameterInfo(aClass, 0);
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(getGenerativeDistributionInfoName(aClass));
-        builder.append("(");
-        if (pInfo.size() > 0) {
-            builder.append(pInfo.get(0).name());
-            for (int i = 1; i < pInfo.size(); i++) {
-                builder.append(", ");
-                builder.append(pInfo.get(i).name());
-            }
-        }
-        builder.append(")");
-        return builder.toString();
     }
 }

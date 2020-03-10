@@ -2,7 +2,7 @@ package lphy.core.functions;
 
 import lphy.TimeTree;
 import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
@@ -29,7 +29,7 @@ public class CoalescentCorrection extends DeterministicFunction<Double[][]> {
         thetaParamName = getParamName(1);
     }
 
-    @FunctionInfo(name = "coalescentCorrection", description = "Constructs the expected variance-covariance matrix of a gene tree from given species tree and population sizes.")
+    @GeneratorInfo(name = "coalescentCorrection", description = "Constructs the expected variance-covariance matrix of a gene tree from given species tree and population sizes.")
     public Value<Double[][]> apply() {
 
         // TODO implement Fabio's coalescent correction

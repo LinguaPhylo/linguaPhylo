@@ -1,7 +1,7 @@
 package lphy.core.functions;
 
 import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.FunctionInfo;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleValue;
@@ -19,7 +19,7 @@ public class Pow extends DeterministicFunction<Double> {
         setParam(xparamName, x);
     }
 
-    @FunctionInfo(name = "pow", description = "The power function: b^x")
+    @GeneratorInfo(name = "pow", description = "The power function: b^x")
     public Value<Double> apply() {
         Value<Double> b = getParams().get(bparamName);
         Value<Double> x = getParams().get(bparamName);

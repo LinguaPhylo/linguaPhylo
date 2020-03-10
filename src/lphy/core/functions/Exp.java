@@ -12,7 +12,7 @@ public class Exp extends DeterministicFunction<Double> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="exp",description = "The exponential function: e^x")
+    @GeneratorInfo(name="exp",description = "The exponential function: e^x")
     public Value<Double> apply(Value<Double> v) {
         setParam("0", v);
         return new DoubleValue(Math.exp(v.value()), this);

@@ -16,7 +16,7 @@ public class K80 extends RateMatrix {
     }
 
 
-    @FunctionInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
+    @GeneratorInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa = getParams().get(paramName);
         return new DoubleArray2DValue(k80(kappa.value()), this);

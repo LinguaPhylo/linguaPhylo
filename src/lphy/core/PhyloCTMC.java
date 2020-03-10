@@ -134,7 +134,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    @GenerativeDistributionInfo(name="PhyloCTMC", description="The phylogenetic continuous-time Markov chain distribution. " +
+    @GeneratorInfo(name="PhyloCTMC", description="The phylogenetic continuous-time Markov chain distribution. " +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
 

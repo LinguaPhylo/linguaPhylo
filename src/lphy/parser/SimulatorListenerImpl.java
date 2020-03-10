@@ -36,7 +36,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
     // PARSER STATE
     static Map<String, Set<Class<?>>> genDistDictionary;
-    static Map<String, Class<?>> functionDictionary;
+    static Map<String, Set<Class<?>>> functionDictionary;
     static Set<String> bivarOperators, univarfunctions;
 
     static {
@@ -48,7 +48,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 ErrorModel.class, Yule.class, Beta.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {
-            String name = GenerativeDistribution.getGenerativeDistributionInfoName(genClass);
+            String name = Generator.getGeneratorName(genClass);
 
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
@@ -58,7 +58,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 Newick.class, lphy.core.functions.BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class};
 
         for (Class<?> functionClass : functionClasses) {
-            functionDictionary.put(Func.getFunctionName(functionClass), functionClass);
+
+            String name = Generator.getGeneratorName(functionClass);
+
+            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
+            funcSet.add(functionClass);
         }
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
@@ -122,7 +126,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         private String stripQuotes(String stringWithQuotes) {
             if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
-                return stringWithQuotes.substring(1, stringWithQuotes.length()-1);
+                return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
             } else throw new RuntimeException();
         }
 
@@ -365,40 +369,41 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //				} else if (s.equals("~")) {
 //					JFunction f1 = (JFunction) visit(ctx.getChild(2));
 //					transform = new Complement(f1);
-				} else if (s.equals("[")) {
-					Value [] var = (Value[]) visit(ctx.getChild(1));
-					if (var[0].value() instanceof Double[]) {
-						Double[][] value = new Double[var.length][];
-						for (int i = 0; i < value.length; i++) {
-							value[i] = (Double[]) var[i].value();
-						}
-						DoubleArray2DValue v = new DoubleArray2DValue(null, value);
-						return v;
-					} else if (var[0].value() instanceof Double) {
-						Double[] value = new Double[var.length];
-						for (int i = 0; i < value.length; i++) {
-							value[i] = (Double) var[i].value();
-						}
-						DoubleArrayValue v = new DoubleArrayValue(null, value);
-						return v;
-					} if (var[0].value() instanceof Integer[]) {
-						Integer[][] value = new Integer[var.length][];
-						for (int i = 0; i < value.length; i++) {
-							value[i] = (Integer[]) var[i].value();
-						}
-						IntegerArray2DValue v = new IntegerArray2DValue(null, value);
-						return v;
-					} else if (var[0].value() instanceof Integer) {
-						Integer[] value = new Integer[var.length];
-						for (int i = 0; i < value.length; i++) {
-							value[i] = (Integer) var[i].value();
-						}
-						IntegerArrayValue v = new IntegerArrayValue(null, value);
-						return v;
+                } else if (s.equals("[")) {
+                    Value[] var = (Value[]) visit(ctx.getChild(1));
+                    if (var[0].value() instanceof Double[]) {
+                        Double[][] value = new Double[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (Double[]) var[i].value();
+                        }
+                        DoubleArray2DValue v = new DoubleArray2DValue(null, value);
+                        return v;
+                    } else if (var[0].value() instanceof Double) {
+                        Double[] value = new Double[var.length];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (Double) var[i].value();
+                        }
+                        DoubleArrayValue v = new DoubleArrayValue(null, value);
+                        return v;
+                    }
+                    if (var[0].value() instanceof Integer[]) {
+                        Integer[][] value = new Integer[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (Integer[]) var[i].value();
+                        }
+                        IntegerArray2DValue v = new IntegerArray2DValue(null, value);
+                        return v;
+                    } else if (var[0].value() instanceof Integer) {
+                        Integer[] value = new Integer[var.length];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (Integer) var[i].value();
+                        }
+                        IntegerArrayValue v = new IntegerArrayValue(null, value);
+                        return v;
 
-					} else {
-						throw new RuntimeException("Don't know how to handle 3D matrics");
-					}
+                    } else {
+                        throw new RuntimeException("Don't know how to handle 3D matrics");
+                    }
 //				}
                 }
             }
@@ -415,9 +420,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
 
             Value getValue() {
-                if (obj instanceof Value) return (Value)obj;
+                if (obj instanceof Value) return (Value) obj;
                 if (obj instanceof DeterministicFunction) {
-                    DeterministicFunction func = (DeterministicFunction)obj;
+                    DeterministicFunction func = (DeterministicFunction) obj;
                     Value val = func.apply();
                     val.setFunction(func);
                     return val;
@@ -427,14 +432,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
         class NamedValue {
-        	public NamedValue(String name, Value value) {
-				this.name = name;
-				this.value = value;
-			}
-			String name;
-        	Value value;
+            public NamedValue(String name, Value value) {
+                this.name = name;
+                this.value = value;
+            }
+
+            String name;
+            Value value;
         }
-        
+
         @Override
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
@@ -567,21 +573,20 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         @Override
         public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
-//			Transform transform = null;
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
             Value[] f1 = null;
             NamedValue[] values = new NamedValue[]{};
             if (ctx2.getText().equals(")")) {
-                    f1 = new Value[]{};
+                f1 = new Value[]{};
             } else {
-            	values = (NamedValue[]) visit(ctx2);
-            	f1 = new Value[values.length];
-            	for (int i = 0; i < values.length; i++) {
-            		f1[i] = values[i].value;
-            	}
-            	
+                values = (NamedValue[]) visit(ctx2);
+                f1 = new Value[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    f1[i] = values[i].value;
+                }
+
             }
 
             if (univarfunctions.contains(functionName)) {
@@ -684,46 +689,50 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 return expression;
             }
 
+            Set<Class<?>> functionClasses = functionDictionary.get(functionName);
 
-            if (functionDictionary.containsKey(functionName)) {
-                Class functionClass = functionDictionary.get(functionName);
+            if (functionClasses == null)
+                throw new RuntimeException("Found no implementation for function " + functionName);
 
-                Map<String, Value> arguments = new HashMap<>();
-                for (NamedValue v : values) {
-                    arguments.put(v.name, v.value);
-                }
+            Map<String, Value> arguments = new HashMap<>();
+            for (NamedValue v : values) {
+                arguments.put(v.name, v.value);
+            }
 
+            for (Class functionClass : functionClasses) {
                 try {
                     List<Object> initargs = new ArrayList<>();
                     Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
-                    if (constructor == null) {
-                        System.err.println("DeterministicFunction class: " + functionClass);
-                        System.err.println("     Arguments: " + arguments);
-                        throw new RuntimeException("Parser error: no constructor found for deterministic function " + functionName + " with arguments " + arguments);
-                    }
 
-                    DeterministicFunction f = (DeterministicFunction) constructor.newInstance(initargs.toArray());
-                    for (String parameterName : arguments.keySet()) {
-                        Value value = arguments.get(parameterName);
-                        f.setInput(parameterName, value);
+                    if (constructor != null) {
+                        DeterministicFunction f = (DeterministicFunction) constructor.newInstance(initargs.toArray());
+                        for (String parameterName : arguments.keySet()) {
+                            Value value = arguments.get(parameterName);
+
+                            f.setInput(parameterName, value);
+                        }
+                        Value val = f.apply();
+                        return val;
                     }
-                    Value val = f.apply();
-                    //val.setId(id);
-                    return val;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                } catch (InstantiationException e) {
                     e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + functionClass + " failed. " + e.getMessage());
+                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
                 }
-
             }
-            throw new RuntimeException("Function name not recognised: " + functionName);
+            throw new RuntimeException("Parser exception: no constructor found for " + functionName);
+
         }
 
     }
 
-    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class genDistClass, List<Object> initargs) {
-        System.out.println(genDistClass.getSimpleName() + " " + arguments);
-        for (Constructor constructor : genDistClass.getConstructors()) {
+    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class generatorClass, List<Object> initargs) {
+        for (Constructor constructor : generatorClass.getConstructors()) {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {

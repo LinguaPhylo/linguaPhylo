@@ -12,7 +12,7 @@ public class Log extends DeterministicFunction<Double> {
         setParam(paramName, x);
     }
 
-    @FunctionInfo(name="log",description = "The natural logarithm function: ln x")
+    @GeneratorInfo(name="log",description = "The natural logarithm function: ln x")
     public Value<Double> apply() {
         Value<Double> v = (Value<Double>)getParams().get(paramName);
         return new DoubleValue( Math.log(v.value()), this);

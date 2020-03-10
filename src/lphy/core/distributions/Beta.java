@@ -25,7 +25,7 @@ public class Beta implements GenerativeDistribution<Double> {
         betaParamName = getParamName(1);
     }
 
-    @GenerativeDistributionInfo(name="Beta", description="The dirichlet probability distribution.")
+    @GeneratorInfo(name="Beta", description="The dirichlet probability distribution.")
     public RandomVariable<Double> sample() {
 
         BetaDistribution betaDistribution = new BetaDistribution(alpha.value(), beta.value());

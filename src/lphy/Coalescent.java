@@ -29,7 +29,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         nParamName = getParamName(1);
     }
 
-    @GenerativeDistributionInfo(name="Coalescent", description="The Kingman coalescent distribution over tip-labelled time trees.")
+    @GeneratorInfo(name="Coalescent", description="The Kingman coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();

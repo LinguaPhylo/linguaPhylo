@@ -22,7 +22,7 @@ public class GTR extends RateMatrix {
     }
 
 
-    @FunctionInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
+    @GeneratorInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(rateParamName);
         Value<Double[]> freq = getParams().get(freqParamName);

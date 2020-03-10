@@ -38,7 +38,7 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
         nParamName = getParamName(2);
     }
 
-    @GenerativeDistributionInfo(name="LogNormal", description="The log-normal probability distribution.")
+    @GeneratorInfo(name="LogNormal", description="The log-normal probability distribution.")
     public RandomVariable<Double[]> sample() {
 
         logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
