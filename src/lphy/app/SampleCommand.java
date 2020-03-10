@@ -28,18 +28,33 @@ public class SampleCommand implements Command {
         return "sample";
     }
 
+    public String[] getArgumentNames() {
+        return arguments;
+    }
+
+    public Object[] getDefaultValues() {
+        return defaults;
+    }
+
     public String getSignature() {
+        String[] argumentNames = getArgumentNames();
+        Object[] defaultValues = getDefaultValues();
+
         StringBuilder builder = new StringBuilder();
         builder.append(getName());
         builder.append("(");
-        builder.append(arguments[0]);
-        builder.append("= ");
-        builder.append(defaults[0]);
-        for (int i = 1; i < arguments.length; i++) {
+        builder.append(argumentNames[0]);
+        builder.append("=");
+        builder.append(defaultValues[0]);
+        for (int i = 1; i < argumentNames.length; i++) {
             builder.append(", ");
-            builder.append(arguments[i]);
+            builder.append(argumentNames[i]);
             builder.append("= ");
-            builder.append(defaults[i]);
+            String defaultValue = defaultValues[i].toString();
+            if (defaultValues[i] instanceof String) {
+                defaultValue = "\"" + defaultValue + "\"";
+            }
+            builder.append(defaultValue);
         }
         builder.append(");");
         return builder.toString();
