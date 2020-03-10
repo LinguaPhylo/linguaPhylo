@@ -45,7 +45,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, StructuredCoalescent.class};
+                ErrorModel.class, Yule.class, Beta.class, SerialCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);

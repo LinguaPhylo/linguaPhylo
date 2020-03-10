@@ -16,6 +16,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     private final String nParamName;
     private Value<Double> theta;
     private Value<Integer> n;
+    private Value<Double[]> times;
 
     RandomGenerator random;
 
@@ -106,7 +107,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     private double[] getInternalNodeAges(TimeTree timeTree, double[] ages) {
         if (ages == null) ages = new double[timeTree.n() - 1];
         if (ages.length != timeTree.n() - 1)
-            throw new IllegalArgumentException("Ages array size must be equal to the number of internal nodes in the tree.");
+            throw new IllegalArgumentException("Ages array size must one more than the number of internal nodes in the tree.");
         int i = 0;
         for (TimeTreeNode node : timeTree.getNodes()) {
             if (!node.isLeaf()) {
