@@ -9,24 +9,15 @@ import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.*;
-import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.time.format.TextStyle;
 import java.util.*;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CodeColorizer extends SimulatorBaseListener {
 
@@ -41,7 +32,20 @@ public class CodeColorizer extends SimulatorBaseListener {
     static Map<String, Set<Class<?>>> functionDictionary;
     static Set<String> bivarOperators, univarfunctions;
 
-    static Color randomVarColor = new Color(0,196,0);
+    static Color randomVarColor = new Color(0, 196, 0);
+    static Color constantColor = Color.magenta;
+    static Color argumentNameColor = Color.gray;
+    static Color functionColor = new Color(196,0,196);
+
+    static int argumentNameSize = 10;
+
+    Style randomVarStyle;
+    Style constantStyle;
+    Style argumentNameStyle;
+    Style functionStyle;
+    Style genDistStyle;
+    Style punctuationStyle;
+    Style funValueStyle;
 
     static {
         genDistDictionary = new TreeMap<>();
@@ -76,6 +80,29 @@ public class CodeColorizer extends SimulatorBaseListener {
 
         this.dictionary = dictionary;
         textPane = pane;
+
+        functionStyle = textPane.addStyle("functionStyle", null);
+        StyleConstants.setForeground(functionStyle, functionColor);
+
+        genDistStyle = textPane.addStyle("genDistStyle", null);
+        StyleConstants.setForeground(genDistStyle, Color.blue);
+        StyleConstants.setBold(genDistStyle, true);
+
+        randomVarStyle = textPane.addStyle("randomVarStyle", null);
+        StyleConstants.setForeground(randomVarStyle, randomVarColor);
+
+        funValueStyle = textPane.addStyle("funValueStyle", null);
+        StyleConstants.setForeground(funValueStyle, Color.black);
+
+        argumentNameStyle = textPane.addStyle("argumentNameStyle", null);
+        StyleConstants.setForeground(argumentNameStyle, argumentNameColor);
+        StyleConstants.setFontSize(argumentNameStyle, argumentNameSize);
+
+        constantStyle = textPane.addStyle("constantStyle", null);
+        StyleConstants.setForeground(constantStyle, constantColor);
+
+        punctuationStyle = textPane.addStyle("punctuationStyle", null);
+        StyleConstants.setForeground(punctuationStyle, Color.black);
     }
 
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
@@ -98,10 +125,8 @@ public class CodeColorizer extends SimulatorBaseListener {
             StyledDocument doc = textPane.getStyledDocument();
 
             for (int i = 0; i < element.text.size(); i++) {
-                Style style = textPane.addStyle("Color Style", null);
-                StyleConstants.setForeground(style, element.color.get(i));
                 try {
-                    doc.insertString(doc.getLength(), element.text.get(i), style);
+                    doc.insertString(doc.getLength(), element.text.get(i), element.style.get(i));
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
@@ -111,20 +136,20 @@ public class CodeColorizer extends SimulatorBaseListener {
         @Override
         public Object visitConstant(ConstantContext ctx) {
 
-            return new TextElement(ctx.getText(),Color.cyan);
+            return new TextElement(ctx.getText(), constantStyle);
         }
 
         @Override
         public Object visitDeterm_relation(Determ_relationContext ctx) {
 
-            TextElement element = new TextElement(ctx.getChild(0).getText(),Color.black);
+            TextElement element = new TextElement(ctx.getChild(0).getText(), funValueStyle);
 
-            element.add(" = ", Color.black);
+            element.add(" = ", punctuationStyle);
 
-            TextElement expr = (TextElement)visit(ctx.getChild(2));
+            TextElement expr = (TextElement) visit(ctx.getChild(2));
 
             element.add(expr);
-            element.add("\n", Color.black);
+            element.add("\n", punctuationStyle);
 
             addTextElement(element);
             return element;
@@ -133,9 +158,9 @@ public class CodeColorizer extends SimulatorBaseListener {
         @Override
         public Object visitStoch_relation(Stoch_relationContext ctx) {
 
-            TextElement var = new TextElement(ctx.getChild(0).getText(), randomVarColor);
+            TextElement var = new TextElement(ctx.getChild(0).getText(), randomVarStyle);
 
-            var.add(" " + ctx.getChild(1).getText() + " ", Color.black);
+            var.add(" " + ctx.getChild(1).getText() + " ", punctuationStyle);
 
             addTextElement(var);
 
@@ -148,7 +173,7 @@ public class CodeColorizer extends SimulatorBaseListener {
 
         @Override
         public Object visitVar(VarContext ctx) {
-            return new TextElement(ctx.getText(), randomVarColor);
+            return new TextElement(ctx.getText(), randomVarStyle);
         }
 
         @Override
@@ -156,18 +181,59 @@ public class CodeColorizer extends SimulatorBaseListener {
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
                 if (dictionary.containsKey(key)) {
-                    return new TextElement(key, randomVarColor);
+                    return new TextElement(key, randomVarStyle);
                 }
             }
 
-            return new TextElement(ctx.getText(), Color.magenta);
+            if (ctx.getChildCount() >= 2) {
+                String s = ctx.getChild(1).getText();
+                if (bivarOperators.contains(s)) {
+                    TextElement element = (TextElement) visit(ctx.getChild(0));
+
+                    element.add(s, punctuationStyle);
+
+                    element.add((TextElement) visit(ctx.getChild(ctx.getChildCount() - 1)));
+                    return element;
+                }
+                s = ctx.getChild(0).getText();
+
+                if (s.equals("!")) {
+                    TextElement element = new TextElement(s, punctuationStyle);
+
+                    element.add(ctx.getChild(0).getText(), punctuationStyle);
+                    element.add((TextElement) visit(ctx.getChild(2)));
+                    return element;
+                } else if (s.equals("[")) {
+
+                    TextElement e = new TextElement("[", punctuationStyle);
+                    e.add((TextElement) visit(ctx.getChild(1)));
+                    e.add("]", punctuationStyle);
+
+                    return e;
+                }
+            }
+
+            Object exp = super.visitExpression(ctx);
+            if (exp instanceof TextElement) {
+                System.out.println("exp was a text element: " + exp.toString());
+                return exp;
+            }
+
+            if (exp instanceof String) {
+                System.out.println("exp was a String: " + exp);
+                return new TextElement((String) exp, constantStyle);
+            }
+
+            throw new RuntimeException(exp + " of type " + exp.getClass());
+
+            //return new TextElement(ctx.getText(), Color.magenta);
         }
 
         @Override
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
-            TextElement element = new TextElement(name + "=", Color.darkGray);
-            element.add((TextElement)visit(ctx.getChild(2)));
+            TextElement element = new TextElement(name + "=", argumentNameStyle);
+            element.add((TextElement) visit(ctx.getChild(2)));
 
             return element;
         }
@@ -175,13 +241,13 @@ public class CodeColorizer extends SimulatorBaseListener {
         @Override
         public Object visitDistribution(DistributionContext ctx) {
 
-            TextElement name = new TextElement(ctx.getChild(0).getText(), Color.blue);
+            TextElement name = new TextElement(ctx.getChild(0).getText(), genDistStyle);
 
-            TextElement arguments = (TextElement)visit(ctx.getChild(2));
+            TextElement arguments = (TextElement) visit(ctx.getChild(2));
 
-            name.add("(", Color.black);
+            name.add("(", punctuationStyle);
             name.add(arguments);
-            name.add(")\n", Color.black);
+            name.add(")\n", punctuationStyle);
 
             return name;
         }
@@ -193,8 +259,8 @@ public class CodeColorizer extends SimulatorBaseListener {
 
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
                 element.add((TextElement) visit(ctx.getChild(i)));
-                if (i < ctx.getChildCount()-1) {
-                    element.add(", ", Color.black);
+                if (i < ctx.getChildCount() - 1) {
+                    element.add(", ", punctuationStyle);
                 }
             }
             return element;
@@ -202,14 +268,35 @@ public class CodeColorizer extends SimulatorBaseListener {
 
         @Override
         public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
-            return new TextElement(ctx.getText(), Color.black);
-        }
+            TextElement element = new TextElement();
+
+            for (int i = 0; i < ctx.getChildCount(); i += 2) {
+                element.add((TextElement) visit(ctx.getChild(i)));
+                if (i < ctx.getChildCount() - 1) {
+                    element.add(", ", punctuationStyle);
+                }
+            }
+            return element;        }
 
         @Override
         public Object visitMethodCall(MethodCallContext ctx) {
 
-            addTextElement(new TextElement(ctx.getText(), Color.darkGray));
-            return ctx.getText();
+            String functionName = ctx.children.get(0).getText();
+
+            TextElement e = new TextElement(functionName, functionStyle);
+
+            e.add("(", punctuationStyle);
+
+            ParseTree ctx2 = ctx.getChild(2);
+            if (ctx2.getText().equals(")")) {
+                // no arguments
+            } else {
+                e.add((TextElement)visit(ctx2));
+            }
+            e.add(")", punctuationStyle);
+
+
+            return e;
         }
     }
 
@@ -273,28 +360,32 @@ public class CodeColorizer extends SimulatorBaseListener {
 
     private class TextElement {
         List<String> text = new ArrayList<>();
-        List<Color> color = new ArrayList<>();
+        List<Style> style = new ArrayList<>();
 
-        public TextElement() {}
-
-        public TextElement(String text, Color color) {
-            add(text, color);
+        public TextElement() {
         }
 
-        void add(String text, Color color) {
+        public TextElement(String text, Style style) {
+            add(text, style);
+        }
+
+        void add(String text, Style style) {
             this.text.add(text);
-            this.color.add(color);
+            this.style.add(style);
         }
 
         void add(TextElement e) {
             for (int i = 0; i < e.text.size(); i++) {
-                add(e.text.get(i), e.color.get(i));
+                add(e.text.get(i), e.style.get(i));
             }
         }
 
-        void insert(int pos, String text, Color color) {
-            this.text.set(pos,text);
-            this.color.set(pos, color);
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (String t : text) {
+                builder.append(t);
+            }
+            return builder.toString();
         }
     }
 }

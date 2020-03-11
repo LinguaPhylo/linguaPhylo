@@ -334,9 +334,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     Value f1 = (Value) visit(ctx.getChild(2));
                     expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
                     return expression;
-//				} else if (s.equals("~")) {
-//					JFunction f1 = (JFunction) visit(ctx.getChild(2));
-//					transform = new Complement(f1);
                 } else if (s.equals("[")) {
                     Value[] var = (Value[]) visit(ctx.getChild(1));
                     if (var[0].value() instanceof Double[]) {
@@ -370,7 +367,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                         return v;
 
                     } else {
-                        throw new RuntimeException("Don't know how to handle 3D matrics");
+                        throw new RuntimeException("Don't know how to handle 3D matrices");
                     }
 //				}
                 }
