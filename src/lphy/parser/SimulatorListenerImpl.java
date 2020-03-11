@@ -235,14 +235,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             LoggerUtils.log.log(Level.FINE, "  visitVar: " + id);
 
-            //			JFunction var = (JFunction) doc.pluginmap.get(id);
-//			if (ctx.getChildCount() == 1) {
-//				// variable not indexed
-//				return var;
-//			}
-//			JFunction index = (JFunction) visit(ctx.getChild(2));
-//			JFunction element = new Index(var, index);
-//			return element;
             return id;
         }
 
@@ -254,30 +246,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 if (dictionary.containsKey(key)) {
                     return dictionary.get(key);
                 }
-//				if (iteratorValue.containsKey(key)) {
-//					final int ivalue = iteratorValue.get(key);
-//					return new JFunction() {						
-//						@Override
-//						public int getDimension() {return 1;}
-//						
-//						@Override
-//						public double getArrayValue(int dim) {
-//							return ivalue;
-//						}
-//						
-//						@Override
-//						public double getArrayValue() {
-//							return ivalue;
-//						}
-//						
-//						@Override
-//						public int getDimensionCount() {return 1;}
-//						
-//						@Override
-//						public int getDimension(int dim) {return 1;}
-//					};
-//				}
-//				return visit(ctx.getChild(0));
             }
             ExpressionNode expression = null;
             if (ctx.getChildCount() >= 2) {

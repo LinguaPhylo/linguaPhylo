@@ -28,24 +28,35 @@ public class GraphicalModelTextPane extends JTextPane {
 
     void addLine(String line) {
 
+        String[] commentParts = line.split("//(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        String comment = null;
 
+        if (commentParts.length == 2) {
+            line = commentParts[0];
+            comment = commentParts[1];
+        }
 
-        if (GraphicalModelParser.isCommentLine(line)) {
-            addColoredTextLine(GraphicalModelTextPane.this,
-                    new String[] {line},
-                    new Color[] {Color.gray});
-        } else if (GraphicalModelParser.isRandomVariableLine(line)) {
-            String[] parts = line.split("~");
-            String genDist = parts[1].substring(0, parts[1].indexOf('('));
-            String rest = parts[1].substring(parts[1].indexOf('('));
+        if (!line.equals("")) {
+            if (GraphicalModelParser.isRandomVariableLine(line)) {
+                String[] parts = line.split("~");
+                String genDist = parts[1].substring(0, parts[1].indexOf('('));
+                String rest = parts[1].substring(parts[1].indexOf('('));
 
+                addColoredTextLine(GraphicalModelTextPane.this,
+                        new String[]{parts[0], "~", genDist, rest},
+                        new Color[]{Color.green, Color.black, Color.blue, Color.black}, true);
+            } else {
+                addColoredTextLine(GraphicalModelTextPane.this,
+                        new String[]{line},
+                        new Color[]{Color.black}, true);
+            }
+        }
+        setCaretPosition(getDocument().getLength());
+        if (comment != null) {
+            System.out.println("Found comment after " + line);
             addColoredTextLine(GraphicalModelTextPane.this,
-                    new String[] {parts[0], "~", genDist,rest},
-                    new Color[] {Color.green, Color.black, Color.blue, Color.black});
-        } else {
-            addColoredTextLine(GraphicalModelTextPane.this,
-                    new String[] {line},
-                    new Color[] {Color.black});
+                    new String[]{"//"+comment},
+                    new Color[]{Color.gray},line.equals(""));
         }
         setCaretPosition(getDocument().getLength());
     }
@@ -74,10 +85,10 @@ public class GraphicalModelTextPane extends JTextPane {
         }
     }
 
-    private void addColoredTextLine(JTextPane pane, String[] text, Color[] color) {
+    private void addColoredTextLine(JTextPane pane, String[] text, Color[] color, boolean newlineFirst) {
         StyledDocument doc = pane.getStyledDocument();
 
-        if (doc.getLength() > 0) text[0] = "\n" + text[0];
+        if (doc.getLength() > 0 && newlineFirst) text[0] = "\n" + text[0];
         for (int i = 0; i < text.length; i++) {
             Style style = pane.addStyle("Color Style", null);
             StyleConstants.setForeground(style, color[i]);

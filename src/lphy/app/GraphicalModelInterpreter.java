@@ -4,6 +4,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
+import lphy.parser.CodeColorizer;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -224,20 +225,25 @@ public class GraphicalModelInterpreter extends JPanel {
 
     public void interpretInput(String input) {
 
-        // split on ; that are not in string
-        String[] lines = input.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+//        // split on ; that are not in string
+//        String[] lines = input.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+//
+//        for (String line : lines) {
+//            line = line.trim();
+//
+//            if (!line.equals("")) {
+//
+//                if (line.charAt(line.length() - 1) != ';') {
+//                    line = line + ";";
+//                }
+//                textPane.addLine(line);
+//                parser.parse(line);
+//            }
+//        }
 
-        for (String line : lines) {
-            line = line.trim();
-            if (!line.equals("")) {
-
-                if (line.charAt(line.length() - 1) != ';') {
-                    line = line + ";";
-                }
-                textPane.addLine(line);
-                parser.parse(line);
-            }
-        }
+        parser.parse(input);
+        CodeColorizer codeColorizer = new CodeColorizer(parser.getDictionary(), textPane);
+        codeColorizer.parse(input);
     }
 
     public void clear() {
