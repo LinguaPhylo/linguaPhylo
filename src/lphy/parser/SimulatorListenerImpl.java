@@ -307,12 +307,18 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                         DoubleArray2DValue v = new DoubleArray2DValue(null, value);
                         return v;
                     } else if (var[0].value() instanceof Double) {
-                        Double[] value = new Double[var.length];
-                        for (int i = 0; i < value.length; i++) {
-                            value[i] = (Double) var[i].value();
+
+                        if (allConstants(var)) {
+                            Double[] value = new Double[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (Double) var[i].value();
+                            }
+                            DoubleArrayValue v = new DoubleArrayValue(null, value);
+                            return v;
+                        } else {
+                            DoubleArray doubleArray = new DoubleArray(var);
+                            return doubleArray.apply();
                         }
-                        DoubleArrayValue v = new DoubleArrayValue(null, value);
-                        return v;
                     }
                     if (var[0].value() instanceof Integer[]) {
                         Integer[][] value = new Integer[var.length][];
@@ -322,13 +328,17 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                         IntegerArray2DValue v = new IntegerArray2DValue(null, value);
                         return v;
                     } else if (var[0].value() instanceof Integer) {
-                        Integer[] value = new Integer[var.length];
-                        for (int i = 0; i < value.length; i++) {
-                            value[i] = (Integer) var[i].value();
+                        if (allConstants(var)) {
+                            Integer[] value = new Integer[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (Integer) var[i].value();
+                            }
+                            IntegerArrayValue v = new IntegerArrayValue(null, value);
+                            return v;
+                        } else {
+                            IntegerArray intArray = new IntegerArray(var);
+                            return intArray.apply();
                         }
-                        IntegerArrayValue v = new IntegerArrayValue(null, value);
-                        return v;
-
                     } else {
                         throw new RuntimeException("Don't know how to handle 3D matrices");
                     }
@@ -657,6 +667,13 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
         }
 
+    }
+
+    private boolean allConstants(Value[] var) {
+        for (Value v : var) {
+            if (!v.isConstant()) return false;
+        }
+        return true;
     }
 
     private Constructor getConstructorByArguments(Map<String, Value> arguments, Class generatorClass, List<Object> initargs) {
