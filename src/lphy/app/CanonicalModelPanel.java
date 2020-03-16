@@ -45,6 +45,8 @@ public class CanonicalModelPanel extends JComponent {
 
         String text = LPhyParser.Utils.getCanonicalScript(parser);
 
+        System.out.println(text);
+
         CodeColorizer codeColorizer = new CodeColorizer(parser.getDictionary(), pane);
         codeColorizer.parse(text);
     }

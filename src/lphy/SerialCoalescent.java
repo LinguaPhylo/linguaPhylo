@@ -40,9 +40,7 @@ public class SerialCoalescent implements GenerativeDistribution<TimeTree> {
         Double[] agesArray = ages.value();
 
         double time = 0.0;
-
-
-
+        
         for (int i = 0; i < agesArray.length; i++) {
 
             TimeTreeNode leaf = new TimeTreeNode(i+"", tree);

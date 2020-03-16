@@ -65,9 +65,9 @@ public abstract class Func implements Generator, Viewable {
         if (iterator.hasNext()) {
             Map.Entry<String, Value> entry = iterator.next();
 
-            if (getParams().size() == 1) {
-                builder.append(Generator.getArgumentValue(entry));
-            } else {
+//            if (getParams().size() == 1) {
+//                builder.append(Generator.getArgumentValue(entry));
+//            } else {
 
                 builder.append(Generator.getArgumentCodeString(entry));
                 while (iterator.hasNext()) {
@@ -75,7 +75,7 @@ public abstract class Func implements Generator, Viewable {
                     builder.append(", ");
                     builder.append(Generator.getArgumentCodeString(entry));
                 }
-            }
+//            }
         }
         builder.append(")");
         return builder.toString();
