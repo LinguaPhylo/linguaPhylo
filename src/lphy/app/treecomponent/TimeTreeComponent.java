@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.prefs.Preferences;
 
 import static lphy.app.Utils.MAX_FONT_SIZE;
 import static lphy.app.Utils.MIN_FONT_SIZE;
@@ -19,6 +20,8 @@ import static lphy.app.Utils.MIN_FONT_SIZE;
  * @author Alexei Drummond
  */
 public class TimeTreeComponent extends JComponent {
+
+    static Preferences preferences = Preferences.userNodeForPackage(TimeTreeComponent.class);
 
     TimeTreeDrawing treeDrawing;
     TreeDrawingOrientation orientation = TreeDrawingOrientation.RIGHT;
@@ -46,6 +49,7 @@ public class TimeTreeComponent extends JComponent {
             Color.cyan, Color.gray, Color.darkGray, Color.lightGray, Color.black};
     private ColorTable traitColorTable = new ColorTable(Arrays.asList(traitColors));
 
+    private boolean showNodeIndices = preferences.getBoolean("showNodeIndices", false);
 
     public TimeTreeComponent() {
     }
@@ -57,9 +61,9 @@ public class TimeTreeComponent extends JComponent {
         int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 
         int maximumWidth = desktopWidth;
-        int maximumHeight = MAX_FONT_SIZE*tree.n();
+        int maximumHeight = MAX_FONT_SIZE * tree.n();
         int minimumWidth = 100;
-        int minimumHeight = MIN_FONT_SIZE*tree.n();
+        int minimumHeight = MIN_FONT_SIZE * tree.n();
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));
@@ -281,7 +285,7 @@ public class TimeTreeComponent extends JComponent {
             int colorIndex = getIntegerTrait(node, colorTraitName);
             if (colorIndex >= 0) g.setColor(traitColorTable.getColor(colorIndex));
         }
-        treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(),  g);
+        treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(), g);
     }
 
     /**
@@ -333,6 +337,16 @@ public class TimeTreeComponent extends JComponent {
 
                 }
             }
+            if (showNodeIndices) {
+                for (TimeTreeNode aNode : tree.getNodes()) {
+                    if (!aNode.isLeaf()) {
+                        Point2D p = getTransformedPoint2D(getCanonicalNodePoint2D(aNode));
+                        g.setColor(Color.blue);
+                        g.drawString(aNode.getIndex() + "", (int) p.getX(), (int) p.getY());
+                        g.setColor(Color.black);
+                    }
+                }
+            }
         }
     }
 
@@ -347,22 +361,22 @@ public class TimeTreeComponent extends JComponent {
                     if (stringWidth > maxWidth) maxWidth = stringWidth;
                 }
             }
-            setBorder(BorderFactory.createEmptyBorder(metrics.getHeight()/2+1,1,metrics.getHeight()/2+1,maxWidth));
+            setBorder(BorderFactory.createEmptyBorder(metrics.getHeight() / 2 + 1, 1, metrics.getHeight() / 2 + 1, maxWidth));
         }
 
         Insets insets = getInsets();
-        g.translate(insets.left,insets.top);
-        int width = getWidth()-insets.left-insets.right;
-        int height = getHeight()-insets.top-insets.bottom;
+        g.translate(insets.left, insets.top);
+        int width = getWidth() - insets.left - insets.right;
+        int height = getHeight() - insets.top - insets.bottom;
 
         setBounds(new Rectangle2D.Double(0, 0, width, height));
 
-        Graphics2D g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D) g;
 
         TimeTree tree = treeDrawing.getTree();
 
         draw(treeDrawing, tree.getRoot(), g2d);
-        g.translate(-insets.left,-insets.top);
+        g.translate(-insets.left, -insets.top);
     }
 
     public void setCaption(String caption) {

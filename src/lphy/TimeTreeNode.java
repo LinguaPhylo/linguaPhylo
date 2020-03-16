@@ -10,7 +10,7 @@ public class TimeTreeNode {
     private List<TimeTreeNode> children;
     private TimeTreeNode parent = null;
     private int index;
-    private int leafIndex;
+    private int leafIndex = -1;
 
     double age = 0.0;
     String id = null;

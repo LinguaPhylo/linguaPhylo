@@ -6,6 +6,7 @@ import lphy.app.HasComponentView;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,6 +29,21 @@ public class TimeTree implements HasComponentView<TimeTree> {
         nodes = new ArrayList<>();
 
         fillNodeList(rootNode);
+        indexNodes(rootNode, new int[]{n});
+        // root node now last in list, first n nodes are leaves
+        nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
+    }
+
+    private void indexNodes(TimeTreeNode node, int[] nextInternalIndex) {
+        if (node.isLeaf()) {
+            node.setIndex(node.getLeafIndex());
+        } else {
+            for (TimeTreeNode child : node.getChildren()) {
+                indexNodes(child, nextInternalIndex);
+            }
+            node.setIndex(nextInternalIndex[0]);
+            nextInternalIndex[0] += 1;
+        }
     }
 
     public int getNodeCount() {
@@ -48,7 +64,7 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
         if (node.isLeaf()) {
             nodes.add(node);
-            node.setLeafIndex(n);
+            if (node.getLeafIndex() == -1) node.setLeafIndex(n);
             n += 1;
         } else {
             for (TimeTreeNode child : node.getChildren()) {
@@ -113,5 +129,11 @@ public class TimeTree implements HasComponentView<TimeTree> {
             }
         }
         return taxaNames;
+    }
+
+    public TimeTreeNode getNodeByIndex(int index) {
+        TimeTreeNode node = getNodes().get(index);
+        if (node.getIndex() != index) throw new RuntimeException();
+        return node;
     }
 }

@@ -40,7 +40,9 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         activeNodes.clear();
 
         for (int i = 0; i < n.value(); i++) {
-            activeNodes.add(new TimeTreeNode(i + "", tree));
+            TimeTreeNode node = new TimeTreeNode(i + "", tree);
+            node.setLeafIndex(i);
+            activeNodes.add(node);
         }
 
         double time = 0.0;
