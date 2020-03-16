@@ -80,10 +80,10 @@ public class Sampler {
         return generator.generate();
     }
 
-    private Map<String, Value> getNewlySampledParams(Generator parameterized, Set<String> sampled) {
+    private Map<String, Value> getNewlySampledParams(Generator generator, Set<String> sampled) {
 
-        LoggerUtils.log.fine("getNewlySampledParams(" + parameterized.getName() + ")");
-        Map<String, Value> params = parameterized.getParams();
+        LoggerUtils.log.fine("getNewlySampledParams(" + generator.getName() + ")");
+        Map<String, Value> params = generator.getParams();
 
         Map<String, Value> newlySampledParams = new TreeMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {

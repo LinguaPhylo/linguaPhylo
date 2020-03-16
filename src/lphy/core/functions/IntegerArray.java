@@ -15,7 +15,7 @@ public class IntegerArray extends DeterministicFunction<Integer[]> {
         this.x = x;
 
         for (int i = 0; i < length; i++) {
-            setParam(i + "", x[i]);
+            setInput(i + "", x[i]);
         }
     }
 

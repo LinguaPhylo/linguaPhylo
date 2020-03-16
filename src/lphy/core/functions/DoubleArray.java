@@ -1,13 +1,9 @@
 package lphy.core.functions;
 
-import lphy.TimeTree;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArrayValue;
-import lphy.graphicalModel.types.DoubleValue;
-import scala.util.parsing.combinator.testing.Str;
 
 public class DoubleArray extends DeterministicFunction<Double[]> {
 
@@ -19,7 +15,7 @@ public class DoubleArray extends DeterministicFunction<Double[]> {
         this.x = x;
 
         for (int i = 0; i < length; i++) {
-            setParam(i + "", x[i]);
+            setInput(i + "", x[i]);
         }
     }
 
