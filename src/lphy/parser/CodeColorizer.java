@@ -19,18 +19,11 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class CodeColorizer extends SimulatorBaseListener {
+public class CodeColorizer extends AbstractBaseListener {
 
     // CURRENT MODEL STATE
 
-    Map<String, Value<?>> dictionary;
-
     private JTextPane textPane;
-
-    // PARSER STATE
-    static Map<String, Set<Class<?>>> genDistDictionary;
-    static Map<String, Set<Class<?>>> functionDictionary;
-    static Set<String> bivarOperators, univarfunctions;
 
     static Color randomVarColor = new Color(0, 196, 0);
     static Color constantColor = Color.magenta;
@@ -46,35 +39,6 @@ public class CodeColorizer extends SimulatorBaseListener {
     Style genDistStyle;
     Style punctuationStyle;
     Style funValueStyle;
-
-    static {
-        genDistDictionary = new TreeMap<>();
-        functionDictionary = new TreeMap<>();
-
-        Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, SerialCoalescent.class, StructuredCoalescent.class};
-
-        for (Class<?> genClass : genClasses) {
-            String name = Generator.getGeneratorName(genClass);
-
-            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            genDistSet.add(genClass);
-        }
-
-        Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class};
-
-        for (Class<?> functionClass : functionClasses) {
-
-            String name = Generator.getGeneratorName(functionClass);
-
-            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            funcSet.add(functionClass);
-        }
-        System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
-        System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
-    }
 
     public CodeColorizer(Map<String, Value<?>> dictionary, JTextPane pane) {
 
@@ -96,7 +60,7 @@ public class CodeColorizer extends SimulatorBaseListener {
 
         argumentNameStyle = textPane.addStyle("argumentNameStyle", null);
         StyleConstants.setForeground(argumentNameStyle, argumentNameColor);
-        StyleConstants.setFontSize(argumentNameStyle, argumentNameSize);
+        //StyleConstants.setFontSize(argumentNameStyle, argumentNameSize);
 
         constantStyle = textPane.addStyle("constantStyle", null);
         StyleConstants.setForeground(constantStyle, constantColor);
@@ -149,7 +113,7 @@ public class CodeColorizer extends SimulatorBaseListener {
             TextElement expr = (TextElement) visit(ctx.getChild(2));
 
             element.add(expr);
-            element.add("\n", punctuationStyle);
+            element.add(";\n", punctuationStyle);
 
             addTextElement(element);
             return element;
@@ -247,7 +211,7 @@ public class CodeColorizer extends SimulatorBaseListener {
 
             name.add("(", punctuationStyle);
             name.add(arguments);
-            name.add(")\n", punctuationStyle);
+            name.add(");\n", punctuationStyle);
 
             return name;
         }

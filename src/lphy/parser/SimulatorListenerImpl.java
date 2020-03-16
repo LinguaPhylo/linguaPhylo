@@ -29,44 +29,7 @@ import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.*;
 
-public class SimulatorListenerImpl extends SimulatorBaseListener {
-
-    // CURRENT MODEL STATE
-    private SortedMap<String, Value<?>> dictionary;
-
-    // PARSER STATE
-    static Map<String, Set<Class<?>>> genDistDictionary;
-    static Map<String, Set<Class<?>>> functionDictionary;
-    static Set<String> bivarOperators, univarfunctions;
-
-    static {
-        genDistDictionary = new TreeMap<>();
-        functionDictionary = new TreeMap<>();
-
-        Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, SerialCoalescent.class, StructuredCoalescent.class};
-
-        for (Class<?> genClass : genClasses) {
-            String name = Generator.getGeneratorName(genClass);
-
-            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            genDistSet.add(genClass);
-        }
-
-        Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, lphy.core.functions.BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class};
-
-        for (Class<?> functionClass : functionClasses) {
-
-            String name = Generator.getGeneratorName(functionClass);
-
-            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            funcSet.add(functionClass);
-        }
-        System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
-        System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
-    }
+public class SimulatorListenerImpl extends AbstractBaseListener {
 
     public SimulatorListenerImpl(SortedMap<String, Value<?>> dictionary) {
         this.dictionary = dictionary;
