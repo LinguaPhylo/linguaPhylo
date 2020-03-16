@@ -8,14 +8,14 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 
-public class DiscreteDistribution implements GenerativeDistribution<Integer> {
+public class Categorical implements GenerativeDistribution<Integer> {
 
     Value<Double[]> probs;
     RandomGenerator random;
 
     String probsParamName;
 
-    public DiscreteDistribution(@ParameterInfo(name = "p", description = "the probability distribution over integer states.") Value<Double[]> probs) {
+    public Categorical(@ParameterInfo(name = "p", description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs) {
 
         this.probs = probs;
         probsParamName = getParamName(0);
@@ -42,11 +42,14 @@ public class DiscreteDistribution implements GenerativeDistribution<Integer> {
 
     @Override
     public Map<String, Value> getParams() {
+
+        //TODO
         return null;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
+        //TODO
 
     }
 }

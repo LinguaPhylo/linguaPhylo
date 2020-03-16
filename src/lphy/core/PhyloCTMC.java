@@ -2,7 +2,7 @@ package lphy.core;
 
 import lphy.TimeTree;
 import lphy.TimeTreeNode;
-import lphy.core.distributions.DiscreteDistribution;
+import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.linear.*;
@@ -152,7 +152,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
 
         for (int i = 0; i < length; i++) {
-            int rootState = DiscreteDistribution.sample(rootFreqs.value(), random);
+            int rootState = Categorical.sample(rootFreqs.value(), random);
             traverseTree(tree.value().getRoot(), rootState, alignment, i, transProb, mu,
                     (siteRates == null) ? 1.0 : siteRates.value()[i]);
         }
