@@ -122,12 +122,16 @@ public interface Generator<T> extends GraphicalModelNode {
     String codeString();
 
     static String getArgumentCodeString(Map.Entry<String, Value> entry) {
+        return getArgumentCodeString(entry.getKey(), entry.getValue());
+    }
+
+    static String getArgumentCodeString(String name, Value value) {
         String prefix = "";
-        if (!Utils.isInteger(entry.getKey())) {
-            prefix = entry.getKey() + "=";
+        if (!Utils.isInteger(name)) {
+            prefix = name + "=";
         }
-        if (entry.getValue().isAnonymous()) return prefix + entry.getValue().codeString();
-        return prefix + entry.getValue().getId();
+        if (value.isAnonymous()) return prefix + value.codeString();
+        return prefix + value.getId();
     }
 
     static String getArgumentValue(Map.Entry<String, Value> entry) {

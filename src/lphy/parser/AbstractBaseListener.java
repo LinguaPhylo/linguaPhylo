@@ -40,7 +40,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
 
         Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, SerialCoalescent.class, StructuredCoalescent.class};
+                ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);
@@ -50,7 +50,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         }
 
         Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, RootAge.class};
+                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class};
 
         for (Class<?> functionClass : functionClasses) {
 

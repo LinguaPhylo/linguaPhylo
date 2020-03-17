@@ -2,8 +2,10 @@ package lphy.graphicalModel;
 
 import javax.swing.*;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -57,17 +59,27 @@ public abstract class Func implements Generator, Viewable {
     public String codeString() {
         Map<String, Value> map = getParams();
 
-        Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
         StringBuilder builder = new StringBuilder();
         builder.append(getName());
         builder.append("(");
 
-        if (iterator.hasNext()) {
-            Map.Entry<String, Value> entry = iterator.next();
+        Constructor[] constructors = getClass().getConstructors();
 
-//            if (getParams().size() == 1) {
-//                builder.append(Generator.getArgumentValue(entry));
-//            } else {
+        if (constructors.length == 1) {
+            List<ParameterInfo> parameterInfoList = getParameterInfo(0);
+            if (parameterInfoList.size() > 0) {
+                String name = parameterInfoList.get(0).name();
+                builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                for (int i = 1; i < parameterInfoList.size(); i++) {
+                    name = parameterInfoList.get(i).name();
+                    builder.append(", ");
+                    builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                }
+            }
+        } else {
+            Iterator<Map.Entry<String, Value>> iterator = map.entrySet().iterator();
+            if (iterator.hasNext()) {
+                Map.Entry<String, Value> entry = iterator.next();
 
                 builder.append(Generator.getArgumentCodeString(entry));
                 while (iterator.hasNext()) {
@@ -76,6 +88,7 @@ public abstract class Func implements Generator, Viewable {
                     builder.append(Generator.getArgumentCodeString(entry));
                 }
 //            }
+            }
         }
         builder.append(")");
         return builder.toString();

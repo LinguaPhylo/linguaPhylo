@@ -9,8 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
-import lphy.*;
-import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -21,10 +19,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import lphy.core.ErrorModel;
-import lphy.core.PhyloBrownian;
-import lphy.core.PhyloCTMC;
-import lphy.core.distributions.*;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.*;
@@ -54,6 +48,20 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 univarfunctions.add(s);
             }
 
+        }
+
+        public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
+
+            System.out.println("Visiting a range list:" + ctx.getText());
+
+            return visitChildren(ctx);
+        }
+
+        public Object visitRange_element(SimulatorParser.Range_elementContext ctx) {
+
+            System.out.println("Visiting a range element:" + ctx.getText());
+
+            return visitChildren(ctx);
         }
 
         @Override
@@ -287,7 +295,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 //					case "<<": transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 //					case ">>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
 //					case ">>>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
-//					case ":": transform = new ExpressionNode(ctx.getText(), ExpressionNode.range(), f1,f2); break;
+					case ":": return new Range(f1, f2);
                     }
                     return expression;
                 }

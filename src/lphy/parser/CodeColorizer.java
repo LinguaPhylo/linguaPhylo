@@ -188,6 +188,8 @@ public class CodeColorizer extends AbstractBaseListener {
                 return new TextElement((String) exp, constantStyle);
             }
 
+            if (exp == null) throw new RuntimeException("exp is null for expression context: " + ctx.getText());
+
             throw new RuntimeException(exp + " of type " + exp.getClass());
 
             //return new TextElement(ctx.getText(), Color.magenta);

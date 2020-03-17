@@ -1,0 +1,8 @@
+// two population sizes
+Θ0 ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+Θ1 ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+m01 ~ LogNormal(meanlog=0.0, sdlog=1.0);
+m10 ~ LogNormal(meanlog=0.0, sdlog=1.0);
+ψ ~ StructuredCoalescent(M=[[Θ0, m01],[m10, Θ1]], n=[8,8]);
+C = countMigrations(tree=ψ);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);

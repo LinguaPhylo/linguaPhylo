@@ -1,5 +1,5 @@
 κ ~ LogNormal(meanlog=1.0, sdlog=0.5);
-π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
 ψ ~ Coalescent(n=16, theta=Θ);
 σ2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
