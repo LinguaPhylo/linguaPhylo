@@ -54,14 +54,34 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
             System.out.println("Visiting a range list:" + ctx.getText());
 
-            return visitChildren(ctx);
+            List<Integer> range = new ArrayList<>();
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+            	Object o = visit(ctx.getChild(i));
+            	if (o instanceof Integer) {
+            		range.add((Integer) o);
+            	} else if (o == null) {
+            		// ignore commas
+            	} else {
+                    throw new IllegalArgumentException("Expected integer value, but don't know how to handle " + 
+                    		o == null ? "null" : o.getClass().getName());            		
+            	}
+            }
+            return range;
         }
 
         public Object visitRange_element(SimulatorParser.Range_elementContext ctx) {
 
             System.out.println("Visiting a range element:" + ctx.getText());
 
-            return visitChildren(ctx);
+            Object o = visitChildren(ctx);
+            if (o instanceof DoubleValue) {
+            	return new Integer((int)(double)((DoubleValue) o).value());
+            }
+            if (o instanceof IntegerValue) {
+            	return ((IntegerValue) o).value();            	
+            }
+            throw new IllegalArgumentException("Expected integer value, but don't know how to handle " + 
+            		(o == null ? "null" : o.getClass().getName()));
         }
 
         @Override
@@ -115,21 +135,50 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             LoggerUtils.log.fine(" visitDeterm_relation");
 
             Object expr = visit(ctx.getChild(2));
-            String id = ctx.children.get(0).getText();
+            Object o = visit(ctx.children.get(0));
+            String id = o instanceof String ? (String) o : ((RangedVar) o).id;
+            
             LoggerUtils.log.fine("   id = " + id);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
                 value.setFunction(f);
                 value.setId(id);
-                dictionary.put(id, value);
+                if (o instanceof RangedVar) {
+                	
+                	if (dictionary.containsKey(id)) {
+                		Value v = dictionary.get(id);
+                		List<Integer> range = ((RangedVar)o).range;
+                		for (int i = 0; i < range.size(); i++) {
+                			int index = range.get(i);
+                			// TODO: figure out  what to do here?
+                		}
+                	}
+                	
+                } else {
+                	dictionary.put(id, value);
+                    LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
+                }
                 return value;
             } else if (expr instanceof Value) {
                 Value value = (Value) expr;
                 value.setId(id);
 
-                dictionary.put(id, value);
-                LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
+                if (o instanceof RangedVar) {
+
+                	if (dictionary.containsKey(id)) {
+                		Value v = dictionary.get(id);
+                		List<Integer> range = ((RangedVar)o).range;
+                		for (int i = 0; i < range.size(); i++) {
+                			int index = range.get(i);
+                			// TODO: figure out  what to do here?
+                		}
+                	}
+                	
+                } else {
+                	dictionary.put(id, value);
+                    LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
+                }
                 return value;
             } else {
                 LoggerUtils.log.severe("in visitDeterm_relation() expecting a function or a value!");
@@ -198,11 +247,31 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             }
             return aggregate;
         }
+        
+        class RangedVar {
+        	String id;
+        	List<Integer> range;
+        	RangedVar(String id, List<Integer> range) {
+        		this.id = id;
+        		this.range = range;
+        	}
+        }
 
         @Override
         public Object visitVar(VarContext ctx) {
 
             String id = ctx.getChild(0).getText();
+            if (ctx.getChildCount() > 1) {
+            	// variable of the form NAME '[' range ']'
+            	Object o = visit(ctx.getChild(2));
+            	if (o instanceof List) {
+            		List<Integer> range = (List<Integer>) o;
+                	return new RangedVar(id, range);
+            	} else {
+                    throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " + 
+                    		o == null ? "null" : o.getClass().getName());            		
+            	}
+            }
 
             LoggerUtils.log.log(Level.FINE, "  visitVar: " + id);
 
