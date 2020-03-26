@@ -1,30 +1,15 @@
 package lphy.parser;
 
 
-import lphy.*;
-import lphy.core.ErrorModel;
-import lphy.core.PhyloBrownian;
-import lphy.core.PhyloCTMC;
-import lphy.core.PhyloCircularBrownian;
-import lphy.core.distributions.*;
-import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
+import lphy.core.lightweight.distributions.*;
+import lphy.core.lightweight.distributions.Exp;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
-import lphy.parser.SimulatorParser.*;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
 
-import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
-public class AbstractBaseListener extends SimulatorBaseListener {
+public class AbstractLightweightBaseListener extends SimulatorBaseListener {
 
     // CURRENT MODEL STATE
 
@@ -39,9 +24,8 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
-        Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
+        Class<?>[] genClasses = { Normal.class, LogNormal.class, Exp.class,
+                Dirichlet.class, Gamma.class, DiscretizedGamma.class, Beta.class, Poisson.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);

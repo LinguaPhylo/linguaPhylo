@@ -93,13 +93,17 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
 
                 double variance = diffusionRate * (node.getAge() - child.getAge());
 
-                //TODO I don't want to do a new on every branch! Should be made efficient :)
-                NormalDistribution distribution = new NormalDistribution(nodeState.value(), Math.sqrt(variance));
-
-                double newState = distribution.sample();
+                double newState = getNewState(nodeState.value(), variance);
 
                 traverseTree(child, new DoubleValue("x", newState), tipValues, diffusionRate, idMap);
             }
         }
+    }
+
+    protected double getNewState(double oldState, double variance) {
+        //TODO I don't want to do a new on every branch! Should be made efficient :)
+        NormalDistribution distribution = new NormalDistribution(oldState, Math.sqrt(variance));
+
+        return distribution.sample();
     }
 }

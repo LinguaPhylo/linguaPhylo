@@ -12,7 +12,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
     private final String concParamName;
     private Value<Double[]> concentration;
 
-    public Dirichlet(@ParameterInfo(name="conc", description="the concentration parameters of a Dirichlet distribution.") Value<Double[]> concentration) {
+    public Dirichlet(@ParameterInfo(name="conc", description="the concentration parameters of a Dirichlet distribution.", type=Double[].class) Value<Double[]> concentration) {
 
         this.concentration = concentration;
         concParamName = getParamName(0);

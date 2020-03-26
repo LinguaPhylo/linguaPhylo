@@ -1,7 +1,9 @@
 package lphy.graphicalModel;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,10 @@ public interface Generator<T> extends GraphicalModelNode {
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
         return getParameterInfo(this.getClass(), constructorIndex);
+    }
+
+    default Class<?> getType(String name) {
+        return getParams().get(name).getType();
     }
 
     static List<ParameterInfo> getParameterInfo(Constructor constructor) {
@@ -104,7 +110,18 @@ public interface Generator<T> extends GraphicalModelNode {
 
     Map<String, Value> getParams();
 
-    void setParam(String paramName, Value<?> value);
+    default void setParam(String paramName, Value<?> value) {
+        try {
+            Method method = getClass().getMethod("set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1), value.value().getClass());
+            method.invoke(value.value());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
 
     default void setInput(String paramName, Value<?> value) {
         setParam(paramName, value);

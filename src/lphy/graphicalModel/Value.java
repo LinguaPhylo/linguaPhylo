@@ -33,6 +33,10 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         this.function = function;
     }
 
+    public final Class getType() {
+        return value.getClass();
+    }
+
     /**
      * Constructs an anonymous value.
      * @param value

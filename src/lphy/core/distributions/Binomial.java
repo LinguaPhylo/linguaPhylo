@@ -19,8 +19,8 @@ public class Binomial implements GenerativeDistribution<Integer> {
 
     private RandomGenerator random;
 
-    public Binomial(@ParameterInfo(name="prob", description="the probability of a success.") Value<Double> p,
-                    @ParameterInfo(name="n", description="number of trials.") Value<Integer> n) {
+    public Binomial(@ParameterInfo(name="prob", description="the probability of a success.", type=Double.class) Value<Double> p,
+                    @ParameterInfo(name="n", description="number of trials.", type=Integer.class) Value<Integer> n) {
         this.p = p;
         this.n = n;
         this.random = Utils.getRandom();

@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * Created by adru001 on 17/12/19.
  */
-public interface GenerativeDistribution<T> extends Generator, Viewable {
+public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
 
     RandomVariable<T> sample();
 
-    default Value generate() {
+    default Value<T> generate() {
         return sample();
     }
 

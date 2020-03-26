@@ -1,8 +1,6 @@
 grammar Simulator;
 
-
 // grammar adapted from parser.yy in JAGS-4.3.0 source code
-
 
 input:   /* empty */
 | relation_list
@@ -106,7 +104,7 @@ expression
    
 // JAGS tokens
 
-//C:                   'c';graphicalModelSimulation/
+//C:                   'c';
 
 //VAR:                 'var';
 //DATA:                'data';

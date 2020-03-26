@@ -15,7 +15,7 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
 
     private RandomGenerator random;
 
-    public Bernoulli(@ParameterInfo(name="p", description="the probability of success.") Value<Double> p) {
+    public Bernoulli(@ParameterInfo(name="p", description="the probability of success.", type=Double.class) Value<Double> p) {
         this.p = p;
         this.random = Utils.getRandom();
         pParamName = getParamName(0);
