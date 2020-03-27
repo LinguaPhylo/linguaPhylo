@@ -2,10 +2,7 @@ package lphy.parser;
 
 
 import lphy.*;
-import lphy.core.ErrorModel;
-import lphy.core.PhyloBrownian;
-import lphy.core.PhyloCTMC;
-import lphy.core.PhyloCircularBrownian;
+import lphy.core.*;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
@@ -40,7 +37,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         functionDictionary = new TreeMap<>();
 
         Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
+                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloToroidalBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {

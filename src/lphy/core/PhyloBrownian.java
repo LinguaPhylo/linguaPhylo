@@ -100,10 +100,14 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
         }
     }
 
-    protected double getNewState(double oldState, double variance) {
+    private double getNewState(double oldState, double variance) {
         //TODO I don't want to do a new on every branch! Should be made efficient :)
         NormalDistribution distribution = new NormalDistribution(oldState, Math.sqrt(variance));
 
-        return distribution.sample();
+        return handleBoundaries(distribution.sample());
+    }
+
+    protected double handleBoundaries(double rawValue) {
+        return rawValue;
     }
 }

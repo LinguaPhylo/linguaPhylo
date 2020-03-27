@@ -35,24 +35,23 @@ public class PhyloCircularBrownian extends PhyloBrownian {
         }
     }
 
-    protected double getNewState(double oldAngle, double variance) {
-        //TODO I don't want to do a new on every branch! Should be made efficient :)
-        NormalDistribution distribution = new NormalDistribution(oldAngle, Math.sqrt(variance));
+    protected double handleBoundaries(double rawAngle) {
+        return wrapToMaxAngle(rawAngle, MAX_ANGLE_VALUE);
+    }
 
-        double newAngle =  distribution.sample();
-
-        if (newAngle > MAX_ANGLE_VALUE) {
-            int K = (int)Math.floor(newAngle / MAX_ANGLE_VALUE);
-            double fractionRemainder = newAngle / MAX_ANGLE_VALUE - K;
+    static double wrapToMaxAngle(double rawAngle, double MAX_ANGLE_VALUE) {
+        if (rawAngle > MAX_ANGLE_VALUE) {
+            int K = (int)Math.floor(rawAngle / MAX_ANGLE_VALUE);
+            double fractionRemainder = rawAngle / MAX_ANGLE_VALUE - K;
             return fractionRemainder * MAX_ANGLE_VALUE;
         }
 
-        if (newAngle < 0.0) {
-            int K = (int)Math.floor(-newAngle / MAX_ANGLE_VALUE);
-            double fractionRemainder = (-newAngle / MAX_ANGLE_VALUE) - K;
+        if (rawAngle < 0.0) {
+            int K = (int)Math.floor(-rawAngle / MAX_ANGLE_VALUE);
+            double fractionRemainder = (-rawAngle / MAX_ANGLE_VALUE) - K;
             return MAX_ANGLE_VALUE - (fractionRemainder * MAX_ANGLE_VALUE);
         }
 
-        return newAngle;
+        return rawAngle;
     }
 }

@@ -99,25 +99,35 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
 
                 double branchLength = node.getAge() - child.getAge();
 
-                double[] means = new double[nodeState.value().length];
-                double[][] covariances = new double[diffusionMatrix.length][diffusionMatrix[0].length];
-                for (int i = 0; i < covariances.length; i++) {
-                    means[i] = nodeState.value()[i];
-                    for (int j = 0; j < covariances.length; j++) {
-                        covariances[i][j] = diffusionMatrix[i][j] * branchLength;
-                    }
-                }
+                Double[] newValue = getNewValue(nodeState.value(), diffusionMatrix, branchLength);
 
-                MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(means, covariances);
-
-                double[] newState = mvn.sample();
-                Double[] ns2 =  new Double[newState.length];
-                for (int i = 0; i < newState.length; i++) {ns2[i] = newState[i];}
-
-                DoubleArrayValue ns = new DoubleArrayValue(null, ns2);
+                DoubleArrayValue ns = new DoubleArrayValue(null, newValue);
 
                 traverseTree(child, ns, tipValues, diffusionMatrix, idMap);
             }
         }
+    }
+
+    private Double[] getNewValue(Double[] oldValue, Double[][] diffusionMatrix, double branchLength) {
+        double[] means = new double[oldValue.length];
+        double[][] covariances = new double[diffusionMatrix.length][diffusionMatrix[0].length];
+        for (int i = 0; i < covariances.length; i++) {
+            means[i] = oldValue[i];
+            for (int j = 0; j < covariances.length; j++) {
+                covariances[i][j] = diffusionMatrix[i][j] * branchLength;
+            }
+        }
+
+        MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(means, covariances);
+        return handleBoundaries(mvn.sample());
+
+    }
+
+    protected Double[] handleBoundaries(double[] rawValues) {
+
+        Double[] ns2 =  new Double[rawValues.length];
+        for (int i = 0; i < rawValues.length; i++) {ns2[i] = rawValues[i];}
+
+        return ns2;
     }
 }
