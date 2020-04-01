@@ -11,17 +11,17 @@ import java.util.Map;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class AngularDiffusionMatrix extends DeterministicFunction<Double[][]> {
+public class DihedralAngleDiffusionMatrix extends DeterministicFunction<Double[][]> {
 
     String lengthParamName;
     String phiVarParamName;
     String psiVarParamName;
     String covarParamName;
 
-    public AngularDiffusionMatrix(@ParameterInfo(name = "length", description = "the length of the peptide backbone to model the angular diffusion of.") Value<Integer> length,
-                                  @ParameterInfo(name = "phiVariance", description = "the variance of the phi angles.") Value<Double> phiVariance,
-                                  @ParameterInfo(name = "psiVariance", description = "the variance of the psi angles.") Value<Double> psiVariance,
-                                  @ParameterInfo(name = "covariance", description = "the covariance between phi and psi angles.") Value<Double> covariance) {
+    public DihedralAngleDiffusionMatrix(@ParameterInfo(name = "length", description = "the length of the peptide backbone to model the angular diffusion of.") Value<Integer> length,
+                                        @ParameterInfo(name = "phiVariance", description = "the variance of the phi angles.") Value<Double> phiVariance,
+                                        @ParameterInfo(name = "psiVariance", description = "the variance of the psi angles.") Value<Double> psiVariance,
+                                        @ParameterInfo(name = "covariance", description = "the covariance between phi and psi angles.") Value<Double> covariance) {
         lengthParamName = getParamName(0);
         phiVarParamName = getParamName(1);
         psiVarParamName = getParamName(2);
@@ -34,7 +34,7 @@ public class AngularDiffusionMatrix extends DeterministicFunction<Double[][]> {
     }
 
 
-    @GeneratorInfo(name = "angularDiffusionMatrix", description = "This function constructs a variance covariance matrix for the neutral angular diffusion model.")
+    @GeneratorInfo(name = "dihedralAngleDiffusionMatrix", description = "This function constructs a variance covariance matrix for the neutral angular diffusion model.")
     public Value<Double[][]> apply() {
 
         Map<String, Value> params = getParams();

@@ -8,18 +8,8 @@ import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
-import lphy.parser.SimulatorParser.*;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
 
-import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class AbstractBaseListener extends SimulatorBaseListener {
 
@@ -48,7 +38,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         }
 
         Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class, AngularDiffusionMatrix.class};
+                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class, DihedralAngleDiffusionMatrix.class};
 
         for (Class<?> functionClass : functionClasses) {
 
