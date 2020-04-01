@@ -67,7 +67,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
 
-        Map<String, Double[]> tipValues = new TreeMap<>();
+        Map<String, Double[]> tipValues = new StringDoubleArrayMap();
 
         traverseTree(tree.value().getRoot(), y, tipValues, diffusionMatrix.value(), idMap);
 

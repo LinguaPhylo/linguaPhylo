@@ -48,7 +48,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         }
 
         Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, HKY.class, GTR.class,
-                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class};
+                Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class, AngularDiffusionMatrix.class};
 
         for (Class<?> functionClass : functionClasses) {
 

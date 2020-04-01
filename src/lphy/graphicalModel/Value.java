@@ -5,10 +5,7 @@ import lphy.app.HasComponentView;
 import lphy.app.IntegerArrayLabel;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -71,8 +68,12 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     }
 
     public String toString() {
-        if (isAnonymous()) return value.toString();
-        return id + " = " + value;
+        if (isAnonymous()) return valueToString();
+        return id + " = " + valueToString();
+    }
+
+    public String valueToString() {
+        return value.toString();
     }
 
     public void setValue(T value) {
