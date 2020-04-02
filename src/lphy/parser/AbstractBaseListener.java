@@ -6,6 +6,9 @@ import lphy.core.*;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
+import lphy.toroidalDiffusion.DihedralAngleDiffusionMatrix;
+import lphy.toroidalDiffusion.PhyloCircularBrownian;
+import lphy.toroidalDiffusion.PhyloToroidalBrownian;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 

@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.toroidalDiffusion;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;

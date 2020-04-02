@@ -1,19 +1,9 @@
-package lphy.core;
+package lphy.toroidalDiffusion;
 
 import lphy.TimeTree;
-import lphy.TimeTreeNode;
-import lphy.core.distributions.Utils;
-import lphy.graphicalModel.GenerativeDistribution;
+import lphy.core.PhyloBrownian;
 import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.DoubleValue;
-import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Created by adru001 on 2/02/20.
