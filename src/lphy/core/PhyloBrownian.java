@@ -94,14 +94,14 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
 
                 double variance = diffusionRate * (node.getAge() - child.getAge());
 
-                double newState = sampleNewState(nodeState.value(), variance);
+                double newState = sampleNewState(nodeState.value(), variance, child.getIndex());
 
                 traverseTree(child, new DoubleValue("x", newState), tipValues, diffusionRate, idMap);
             }
         }
     }
 
-    protected double sampleNewState(double initialState, double time) {
+    protected double sampleNewState(double initialState, double time, int nodeIndex) {
         NormalDistribution distribution = new NormalDistribution(initialState, Math.sqrt(time*diffusionRate.value()));
         return handleBoundaries(distribution.sample());
     }

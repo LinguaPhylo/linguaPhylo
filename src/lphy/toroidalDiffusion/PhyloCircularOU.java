@@ -4,10 +4,6 @@ import lphy.TimeTree;
 import lphy.core.PhyloOU;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import org.apache.commons.math3.distribution.NormalDistribution;
-
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import static lphy.toroidalDiffusion.ToroidalUtils.wrapToMaxAngle;
 
@@ -22,22 +18,11 @@ public class PhyloCircularOU extends PhyloOU {
                            @ParameterInfo(name = "alpha", description = "the drift term that determines the rate of drift towards the optimal value.") Value<Double> alpha,
                            @ParameterInfo(name = "y0", description = "the value of continuous trait at the root.") Value<Double> y0) {
 
-        super(tree, variance, theta, alpha, y0);
+        super(tree, variance, theta, alpha, y0, null);
     }
 
-    protected double sampleNewState(double initialState, double time) {
-
-        double a = alpha.value();
-
-        double v = diffusionRate.value()/(2*a);
-
-        double weight = Math.exp(-a*time);
-
-        double mean = (1.0-weight)*theta.value() + weight*initialState;
-
-        double variance = v * (1.0 - Math.exp(-2.0*a*time));
-
-        NormalDistribution distribution = new NormalDistribution(mean, Math.sqrt(variance));
-        return wrapToMaxAngle(distribution.sample(), 2*Math.PI);
+    @Override
+    protected double handleBoundaries(double rawValue) {
+        return wrapToMaxAngle(rawValue, 2*Math.PI);
     }
 }
