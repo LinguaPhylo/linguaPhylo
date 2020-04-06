@@ -26,7 +26,7 @@ public class PhyloToroidalBrownian extends PhyloMultivariateBrownian {
         Double[] newValues = new Double[rawValues.length];
 
         for (int i = 0; i < rawValues.length; i++) {
-            newValues[i] = PhyloCircularBrownian.wrapToMaxAngle(rawValues[i], MAX_ANGLE_VALUE);
+            newValues[i] = ToroidalUtils.wrapToMaxAngle(rawValues[i], MAX_ANGLE_VALUE);
         }
         return newValues;
     }

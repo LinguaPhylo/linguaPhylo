@@ -8,6 +8,7 @@ import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.toroidalDiffusion.DihedralAngleDiffusionMatrix;
 import lphy.toroidalDiffusion.PhyloCircularBrownian;
+import lphy.toroidalDiffusion.PhyloCircularOU;
 import lphy.toroidalDiffusion.PhyloToroidalBrownian;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
@@ -30,7 +31,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         functionDictionary = new TreeMap<>();
 
         Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
-                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloToroidalBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
+                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {

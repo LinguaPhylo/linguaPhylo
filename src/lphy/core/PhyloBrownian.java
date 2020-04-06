@@ -16,15 +16,13 @@ import java.util.*;
 public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>> {
 
     Value<TimeTree> tree;
-    Value<Double> diffusionRate;
+    protected Value<Double> diffusionRate;
     Value<Double> y0;
     RandomGenerator random;
 
     String treeParamName;
     String diffusionRateParamName;
-    String y0RateParam;
-
-    int numStates;
+    String y0RateParamName;
 
     public PhyloBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                          @ParameterInfo(name = "diffRate", description = "the diffusion rate.") Value<Double> diffusionRate,
@@ -36,15 +34,18 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
 
         treeParamName = getParamName(0);
         diffusionRateParamName = getParamName(1);
-        y0RateParam = getParamName(2);
+        y0RateParamName = getParamName(2);
     }
+
+    // constructor for subclasses that don't wish to call the above one, for example because arguments are reordered.
+    PhyloBrownian() {}
 
     @Override
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, tree);
         map.put(diffusionRateParamName, diffusionRate);
-        map.put(y0RateParam, y0);
+        map.put(y0RateParamName, y0);
         return map;
     }
 
@@ -52,7 +53,7 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
     public void setParam(String paramName, Value value) {
         if (paramName.equals(treeParamName)) tree = value;
         else if (paramName.equals(diffusionRateParamName)) diffusionRate = value;
-        else if (paramName.equals(y0RateParam)) y0 = value;
+        else if (paramName.equals(y0RateParamName)) y0 = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -93,17 +94,15 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
 
                 double variance = diffusionRate * (node.getAge() - child.getAge());
 
-                double newState = getNewState(nodeState.value(), variance);
+                double newState = sampleNewState(nodeState.value(), variance);
 
                 traverseTree(child, new DoubleValue("x", newState), tipValues, diffusionRate, idMap);
             }
         }
     }
 
-    private double getNewState(double oldState, double variance) {
-        //TODO I don't want to do a new on every branch! Should be made efficient :)
-        NormalDistribution distribution = new NormalDistribution(oldState, Math.sqrt(variance));
-
+    protected double sampleNewState(double initialState, double time) {
+        NormalDistribution distribution = new NormalDistribution(initialState, Math.sqrt(time*diffusionRate.value()));
         return handleBoundaries(distribution.sample());
     }
 
