@@ -50,6 +50,15 @@ public class TimeTree implements HasComponentView<TimeTree> {
         return nodes.size();
     }
 
+    public int getSingleChildNodeCount() {
+        int count = 0;
+        for (TimeTreeNode node : nodes) {
+            if (node.getChildCount() == 1) count += 1;
+        }
+        return count;
+    }
+
+
     public List<TimeTreeNode> getNodes() {
         return nodes;
     }
@@ -61,6 +70,10 @@ public class TimeTree implements HasComponentView<TimeTree> {
         }
 
         node.tree = this;
+
+        if (node.getMetaData("remove") != null) {
+            throw new RuntimeException("A node that should be removed has not been!" + node.id);
+        }
 
         if (node.isLeaf()) {
             nodes.add(node);

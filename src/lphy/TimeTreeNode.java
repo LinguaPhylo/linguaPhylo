@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class TimeTreeNode {
 
-    private List<TimeTreeNode> children;
+    private List<TimeTreeNode> children = new ArrayList<>();
     private TimeTreeNode parent = null;
     private int index;
     private int leafIndex = -1;

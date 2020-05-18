@@ -358,14 +358,22 @@ public class WrappedBivariateDiffusion {
         double[] sigmaarr = {2.0, 2.0}; // variance term
         double[] alphaarr = {0.2, 0.2, 0.05}; // drift term
         diff.setParameters(muarr, alphaarr, sigmaarr); // set the diffusion parameters
-        
-        System.out.println(diff.loglikwndstat(0.0, 0.0)); // calculate the stationary density of the point (0.0, 0.0)        
-        diff.setParameters(1.0); // set the time parameter
-        System.out.println(diff.loglikwndtpd(0.0, 0.0, 1.0, 1.0)); // calculate the transition density of the point (0.0, 0.0) transitioning to (1.0, 1.0) in time t=1.0
-        
-        diff.setParameters(0.7); // change the time parameter
-        System.out.println(diff.loglikwndtpd(0.0, 0.0, 1.0, 1.0)); // calculate the transition density for the same points, but for a different time (t=0.7)
-        
+        System.out.println(diff.loglikwndstat(0.0, 0.0)); // calculate the stationary density of the point (0.0, 0.0)
+
+        int gridSize = 100;
+
+        for (int i = 0; i < gridSize; i++) {
+            double phit = (i+0.5)*Math.PI/(double)gridSize;
+            for (int j = 0; j < gridSize; j++) {
+                double psit = (j+0.5)*Math.PI/(double)gridSize;
+
+                diff.setParameters(1.0); // set the time parameter
+                System.out.println(i +"\t"+ j + "\t" + diff.loglikwndtpd(0.0, 0.0, phit, psit)); // calculate the transition density of the point (0.0, 0.0) transitioning to (1.0, 1.0) in time t=1.0
+
+                //diff.setParameters(0.7); // change the time parameter
+                //System.out.println(diff.loglikwndtpd(0.0, 0.0, 1.0, 1.0)); // calculate the transition density for the same points, but for a different time (t=0.7)
+            }
+        }
     }
 
 }

@@ -63,6 +63,7 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(meanLogParamName, M);
         map.put(sdLogParamName, S);
+        map.put(nParamName, n);
         return map;
     }
 
