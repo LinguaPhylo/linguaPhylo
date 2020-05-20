@@ -30,15 +30,19 @@ public class TimeTree implements HasComponentView<TimeTree> {
         setRoot(treeToCopy.getRoot().deepCopy(this));
     }
 
-    public void setRoot(TimeTreeNode timeTreeNode) {
+    public void setRoot(TimeTreeNode timeTreeNode, boolean reindexLeaves) {
         rootNode = timeTreeNode;
         rootNode.tree = this;
         nodes = new ArrayList<>();
 
-        fillNodeList(rootNode);
+        fillNodeList(rootNode, reindexLeaves);
         indexNodes(rootNode, new int[]{n});
         // root node now last in list, first n nodes are leaves
         nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
+    }
+
+    public void setRoot(TimeTreeNode timeTreeNode) {
+        setRoot(timeTreeNode, false);
     }
 
     private void indexNodes(TimeTreeNode node, int[] nextInternalIndex) {
@@ -70,7 +74,7 @@ public class TimeTree implements HasComponentView<TimeTree> {
         return nodes;
     }
 
-    private int fillNodeList(TimeTreeNode node) {
+    private int fillNodeList(TimeTreeNode node, boolean reindexLeaves) {
         if (node.isRoot()) {
             nodes.clear();
             n = 0;
@@ -84,11 +88,11 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
         if (node.isLeaf()) {
             nodes.add(node);
-            if (node.getLeafIndex() == -1) node.setLeafIndex(n);
+            if (node.getLeafIndex() == -1 || reindexLeaves) node.setLeafIndex(n);
             n += 1;
         } else {
             for (TimeTreeNode child : node.getChildren()) {
-                fillNodeList(child);
+                fillNodeList(child, reindexLeaves);
             }
             nodes.add(node);
         }

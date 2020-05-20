@@ -61,7 +61,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
         removeSingleChildNodes(newRoot);
 
-        sampleTree.setRoot(newRoot);
+        sampleTree.setRoot(newRoot, true);
 
         return new RandomVariable<>("\u03C8", sampleTree, this);
     }
