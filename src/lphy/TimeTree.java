@@ -5,6 +5,7 @@ import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
 import javax.swing.*;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +23,12 @@ public class TimeTree implements HasComponentView<TimeTree> {
 
     // number of leaves
     int n = 0;
+
+    public TimeTree() {}
+
+    public TimeTree(TimeTree treeToCopy) {
+        setRoot(treeToCopy.getRoot().deepCopy(this));
+    }
 
     public void setRoot(TimeTreeNode timeTreeNode) {
         rootNode = timeTreeNode;

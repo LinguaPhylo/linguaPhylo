@@ -82,6 +82,10 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
                 }
             }
 
+            for (TimeTreeNode node : activeNodes) {
+                node.setAge(0.0);
+            }
+
             System.out.println("activeLineages.size= " + activeNodes.size());
 
             success = activeNodes.size() > 0;

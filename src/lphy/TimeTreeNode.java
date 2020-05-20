@@ -33,6 +33,17 @@ public class TimeTreeNode {
         }
     }
 
+    TimeTreeNode deepCopy(TimeTree tree) {
+        TimeTreeNode copy = new TimeTreeNode(id, tree);
+        copy.index = index;
+        copy.age = age;
+        copy.leafIndex = leafIndex;
+        for (TimeTreeNode child : children) {
+            copy.addChild(child.deepCopy(tree));
+        }
+        return copy;
+    }
+
     public boolean isRoot() {
         return parent == null;
     }

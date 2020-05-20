@@ -30,7 +30,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
-        Class<?>[] genClasses = {BirthDeathTree.class, BirthDeathTreeDT.class, BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
+        Class<?>[] genClasses = {RhoSampleTree.class, BirthDeathTree.class, BirthDeathTreeDT.class, BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
                 ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
 

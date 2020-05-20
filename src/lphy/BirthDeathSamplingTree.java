@@ -49,75 +49,12 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
-        boolean success = false;
-        TimeTree tree = new TimeTree();
-        TimeTreeNode root = null;
-        while (!success) {
-            activeNodes.clear();
+        BirthDeathTree birthDeathTree = new BirthDeathTree(birthRate, deathRate, rootAge);
+        RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
-            root = new TimeTreeNode(0 + "", tree);
-            root.setAge(rootAge.value());
+        RhoSampleTree rhoSampleTree = new RhoSampleTree(fullTree, rho);
 
-            activeNodes.add(root);
-
-            double time = root.getAge();
-            double birthRate = this.birthRate.value();
-            double deathRate = this.deathRate.value();
-
-            int[] nextNum = {1};
-            doBirth(activeNodes, time, nextNum, tree);
-
-            while (time > 0.0 && activeNodes.size() > 0) {
-                int k = activeNodes.size();
-
-                double totalRate = (birthRate + deathRate) * (double) k;
-
-                // random exponential variate
-                double x = -Math.log(random.nextDouble()) / totalRate;
-                time -= x;
-
-                if (time < 0) break;
-
-
-                double U = random.nextDouble();
-                if (U < birthRate / (birthRate + deathRate)) {
-                    doBirth(activeNodes, time, nextNum, tree);
-                } else {
-                    doDeath(activeNodes, time);
-                }
-            }
-
-            System.out.println("activeLineages.size= " + activeNodes.size());
-
-            int numToRemove = 0;
-            int numToKeep = 0;
-            for (TimeTreeNode node : activeNodes) {
-                node.setAge(0.0);
-                if (random.nextDouble() > rho.value()) {
-                    markForRemoval(node);
-                    numToRemove += 1;
-                } else {
-                    numToKeep += 1;
-                }
-            }
-            System.out.println("numToRemove= " + numToRemove);
-            System.out.println("numToKeep= " + numToKeep);
-
-            while (removeAllMarked(root)) {};
-
-            while (singleChildNodeCount(root) > 0) {
-                root = removeTwoDegreeNodes(root, root);
-            }
-            
-            success = (numToKeep > 0);
-        }
-
-        tree.setRoot(root);
-        System.out.println("tree.n()=" + tree.n());
-        System.out.println("tree.singleChildNodeCount()=" + tree.getSingleChildNodeCount());
-        System.out.println("tree.getNodeCount()=" + tree.getNodeCount());
-
-        return new RandomVariable<>("\u03C8", tree, this);
+        return rhoSampleTree.sample();
     }
 
     private int singleChildNodeCount(TimeTreeNode node) {

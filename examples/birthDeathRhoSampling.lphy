@@ -1,0 +1,10 @@
+diversification ~ Exp(rate=10.0);
+turnover ~ Beta(alpha=2.0, beta=2.0) ;
+root_time ~ LogNormal(meanlog=2.366645, sdlog=0.25);
+//F ~ BirthDeath(diversification=diversification, turnover=turnover, rootAge=root_time);
+//T ~ RhoSampleTree(tree=F, rho=0.5);
+T ~ BirthDeathSampling(diversification=diversification, turnover=turnover, rho=0.5, rootAge=root_time);
+sf ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0]);
+er ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
+Q = gtr(freq=sf, rates=er); // construct the GTR instantaneous rate matrix
+D ~ PhyloCTMC(tree=T, Q=Q, mu=0.5, L=1000);
