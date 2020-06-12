@@ -5,7 +5,13 @@
  */
 package lphy.toroidalDiffusion;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import lphy.core.distributions.Utils;
+import org.apache.commons.math3.random.RandomGenerator;
 import org.ejml.simple.SimpleMatrix;
 
 /**
@@ -176,6 +182,33 @@ public class WrappedBivariateDiffusion {
                  }
             }
         }
+    }
+
+    public double[][] sampleByRejection(double phi0, double psi0, int nsamples) {
+
+        double[][] samples = new double[nsamples][2];
+        int count = 0;
+        int rejection = 0;
+
+        double maxP = Math.exp(loglikwndtpd(phi0, psi0,phi0, psi0)) * 1.01;
+
+        RandomGenerator random = Utils.getRandom();
+        while (count < samples.length) {
+
+            double ph = random.nextDouble()*2.0*Math.PI;
+            double ps = random.nextDouble()*2.0*Math.PI;
+            double density = random.nextDouble()*maxP;
+
+            if (density < Math.exp(loglikwndtpd(phi0, psi0,ph, ps))) {
+                samples[count][0] = ph;
+                samples[count][1] = ps;
+                count += 1;
+            } else {
+                rejection += 1;
+            }
+        }
+        System.out.println(rejection + " rejections to sample " + count + " points.");
+        return samples;
     }
     
     public double loglikwndtpd(double phi0, double psi0, double phit, double psit)
@@ -352,28 +385,48 @@ public class WrappedBivariateDiffusion {
          }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         WrappedBivariateDiffusion diff = new WrappedBivariateDiffusion();
         double[] muarr = {0.0, 0.0}; // mean of the diffusion
-        double[] sigmaarr = {2.0, 2.0}; // variance term
-        double[] alphaarr = {0.2, 0.2, 0.05}; // drift term
+        double[] sigmaarr = {2.0, 3.0}; // variance term
+        double[] alphaarr = {1.2, 1.2, -0.5}; // drift term
         diff.setParameters(muarr, alphaarr, sigmaarr); // set the diffusion parameters
         System.out.println(diff.loglikwndstat(0.0, 0.0)); // calculate the stationary density of the point (0.0, 0.0)
 
-        int gridSize = 100;
+        int gridSize = 200;
+        String filename = "wrappedNormal.txt";
 
+        double maxDegrees = 2 * Math.PI;
+        double phi0 = Math.PI/4;
+        double psi0 = Math.PI;
+
+        PrintWriter writer = new PrintWriter(new FileWriter(filename));
+        writer.println("phit\tpsit\tlogP\tdensity");
         for (int i = 0; i < gridSize; i++) {
-            double phit = (i+0.5)*Math.PI/(double)gridSize;
+            double phit = (i+0.5)*maxDegrees/(double)gridSize;
             for (int j = 0; j < gridSize; j++) {
-                double psit = (j+0.5)*Math.PI/(double)gridSize;
+                double psit = (j+0.5)*maxDegrees/(double)gridSize;
 
-                diff.setParameters(1.0); // set the time parameter
-                System.out.println(i +"\t"+ j + "\t" + diff.loglikwndtpd(0.0, 0.0, phit, psit)); // calculate the transition density of the point (0.0, 0.0) transitioning to (1.0, 1.0) in time t=1.0
+                double logP = diff.loglikwndtpd(phi0,psi0, phit, psit);
+
+                diff.setParameters(0.5); // set the time parameter
+                writer.println(phit +"\t"+ psit + "\t" + logP + "\t" + Math.exp(logP)); // calculate the transition density of the point (0.0, 0.0) transitioning to (1.0, 1.0) in time t=1.0
 
                 //diff.setParameters(0.7); // change the time parameter
                 //System.out.println(diff.loglikwndtpd(0.0, 0.0, 1.0, 1.0)); // calculate the transition density for the same points, but for a different time (t=0.7)
             }
         }
+        writer.flush();
+        writer.close();
+
+        double[][] samples = diff.sampleByRejection(phi0, psi0, 1000);
+        writer = new PrintWriter(new FileWriter("wrappedNormalSample.txt"));
+        writer.println("phit\tpsit");
+        for (int i = 0; i < samples.length; i++) {
+            writer.println(samples[i][0] + "\t" + samples[i][1]);
+        }
+        writer.flush();
+        writer.close();
     }
 
 }
