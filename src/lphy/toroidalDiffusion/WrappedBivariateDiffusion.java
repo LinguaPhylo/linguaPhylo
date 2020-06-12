@@ -387,20 +387,38 @@ public class WrappedBivariateDiffusion {
 
     public static void main(String[] args) throws IOException {
         WrappedBivariateDiffusion diff = new WrappedBivariateDiffusion();
-        double[] muarr = {0.0, 0.0}; // mean of the diffusion
-        double[] sigmaarr = {2.0, 3.0}; // variance term
-        double[] alphaarr = {1.2, 1.2, -0.5}; // drift term
+        double[] muarr = {Math.PI*0.65, Math.PI*0.8}; // mean of the diffusion
+        double[] sigmaarr = {0.5, 0.75}; // variance term
+        double[] alphaarr = {1.0, 1.0, 0.5}; // drift term
         diff.setParameters(muarr, alphaarr, sigmaarr); // set the diffusion parameters
         System.out.println(diff.loglikwndstat(0.0, 0.0)); // calculate the stationary density of the point (0.0, 0.0)
 
+        String filename = "wrappedNormalStationary.txt";
         int gridSize = 200;
-        String filename = "wrappedNormal.txt";
-
         double maxDegrees = 2 * Math.PI;
+
+        PrintWriter writer = new PrintWriter(new FileWriter(filename));
+        writer.println("phi\tpsi\tlogP\tdensity");
+        for (int i = 0; i < gridSize; i++) {
+            double phi = (i+0.5)*maxDegrees/(double)gridSize;
+            for (int j = 0; j < gridSize; j++) {
+                double psi = (j+0.5)*maxDegrees/(double)gridSize;
+
+                double logP = diff.loglikwndstat(phi,psi);
+
+                diff.setParameters(0.5); // set the time parameter
+                writer.println(phi +"\t"+ psi + "\t" + logP + "\t" + Math.exp(logP)); // calculate the transition density of the point (0.0, 0.0) transitioning to (1.0, 1.0) in time t=1.0
+            }
+        }
+        writer.flush();
+        writer.close();
+
+        filename = "wrappedNormal.txt";
+
         double phi0 = Math.PI/4;
         double psi0 = Math.PI;
 
-        PrintWriter writer = new PrintWriter(new FileWriter(filename));
+        writer = new PrintWriter(new FileWriter(filename));
         writer.println("phit\tpsit\tlogP\tdensity");
         for (int i = 0; i < gridSize; i++) {
             double phit = (i+0.5)*maxDegrees/(double)gridSize;
