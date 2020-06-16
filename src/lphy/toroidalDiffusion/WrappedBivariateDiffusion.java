@@ -9,8 +9,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import lphy.core.distributions.Utils;
+import org.apache.commons.math3.optim.InitialGuess;
+import org.apache.commons.math3.optim.MaxEval;
+import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.SimpleBounds;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.ejml.simple.SimpleMatrix;
 
@@ -187,9 +195,22 @@ public class WrappedBivariateDiffusion {
         double[][] samples = new double[nsamples][2];
         int count = 0;
         int rejection = 0;
+        WrappedBivariateDiffusionTransitionProbabilityFunction func = new WrappedBivariateDiffusionTransitionProbabilityFunction(this, phi0, psi0);
 
-        // TODO this is wrong. MaxP position will be at a point that is the weighted average between phi0, psi0 and mu0,mu1
-        double maxP = Math.exp(loglikwndtpd(phi0, psi0, phi0, psi0)) * 1.01;
+        BOBYQAOptimizer optimizer =  new BOBYQAOptimizer(5);
+
+        PointValuePair pvp = optimizer.optimize(
+                new MaxEval(200),
+                GoalType.MAXIMIZE,
+                new InitialGuess(new double[] {phi0, psi0}),
+                new ObjectiveFunction(func),
+                new SimpleBounds(new double[] {0,0}, new double[] {2.0*Math.PI, 2.0*Math.PI}));
+
+        double[] p = pvp.getPoint();
+
+        System.out.println("Maximum is at " + Arrays.toString(p) + " with value " + Math.exp(pvp.getValue()));
+
+        double maxP = Math.exp(pvp.getValue()) * 1.01;
 
         RandomGenerator random = Utils.getRandom();
         while (count < samples.length) {
@@ -206,7 +227,7 @@ public class WrappedBivariateDiffusion {
                 rejection += 1;
             }
         }
-        //System.out.println(rejection + " rejections to sample " + count + " points.");
+        System.out.println(rejection + " rejections to sample " + count + " points.");
         return samples;
     }
 
