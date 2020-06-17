@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import lphy.core.distributions.Utils;
 import org.apache.commons.math3.optim.InitialGuess;
@@ -77,6 +76,13 @@ public class WrappedBivariateDiffusion {
         setParameters(muarr, alphaarr, sigmaarr);
         setParameters(t);
     }
+
+    public void setParameters(Double[] muarr, Double[] alphaarr, Double[] sigmaarr) {
+        setParameters(new double[] {muarr[0], muarr[1]},
+                new double[] {alphaarr[0], alphaarr[1], alphaarr[2]},
+                new double[] {sigmaarr[0], sigmaarr[1]});
+    }
+
 
     public void setParameters(double[] muarr, double[] alphaarr, double[] sigmaarr) {
         mu.set(0, 0, muarr[0]);
@@ -197,14 +203,14 @@ public class WrappedBivariateDiffusion {
         int rejection = 0;
         WrappedBivariateDiffusionTransitionProbabilityFunction func = new WrappedBivariateDiffusionTransitionProbabilityFunction(this, phi0, psi0);
 
-        BOBYQAOptimizer optimizer =  new BOBYQAOptimizer(5);
+        BOBYQAOptimizer optimizer = new BOBYQAOptimizer(5);
 
         PointValuePair pvp = optimizer.optimize(
                 new MaxEval(200),
                 GoalType.MAXIMIZE,
-                new InitialGuess(new double[] {phi0, psi0}),
+                new InitialGuess(new double[]{phi0, psi0}),
                 new ObjectiveFunction(func),
-                new SimpleBounds(new double[] {0,0}, new double[] {2.0*Math.PI, 2.0*Math.PI}));
+                new SimpleBounds(new double[]{0, 0}, new double[]{2.0 * Math.PI, 2.0 * Math.PI}));
 
         //double[] p = pvp.getPoint();
 
