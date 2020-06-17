@@ -206,9 +206,7 @@ public class WrappedBivariateDiffusion {
                 new ObjectiveFunction(func),
                 new SimpleBounds(new double[] {0,0}, new double[] {2.0*Math.PI, 2.0*Math.PI}));
 
-        double[] p = pvp.getPoint();
-
-        System.out.println("Maximum is at " + Arrays.toString(p) + " with value " + Math.exp(pvp.getValue()));
+        //double[] p = pvp.getPoint();
 
         double maxP = Math.exp(pvp.getValue()) * 1.01;
 
@@ -227,7 +225,7 @@ public class WrappedBivariateDiffusion {
                 rejection += 1;
             }
         }
-        System.out.println(rejection + " rejections to sample " + count + " points.");
+        //System.out.println(rejection + " rejections to sample " + count + " points.");
         return samples;
     }
 

@@ -13,22 +13,26 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class ToroidalPlot extends JComponent {
 
-    double torusSize = 2.0 * Math.PI;
+    final double torusSize = 2.0 * Math.PI;
+    final double halfTorusSize = torusSize/2.0;
 
     Point2D mu;
-    Point2D[] x;
+    Point2D[] path;
 
-    int cellWidth = 768;
+    int cellWidth = 1024;
     double ellipseWidth = 8;
+    double pointWidth = 5;
 
     WrappedBivariateDiffusion diffusion;
 
     boolean plotStationaryDistribution = true;
-    boolean plotTPDistribution = true;
+    boolean plotTPDistribution = false;
 
     public ToroidalPlot(WrappedBivariateDiffusion diffusion) {
 
@@ -36,9 +40,12 @@ public class ToroidalPlot extends JComponent {
 
         mu = new Point2D.Double(diffusion.mu.get(0), diffusion.mu.get(1));
 
-        x = new Point2D[1];
-        for (int i = 0; i < x.length; i++) {
-            x[i] = new Point2D.Double(Math.PI*2*Math.random(), Math.PI*2*Math.random());
+        int steps = 2000;
+
+        double[][] p = diffusion.simulatePath(0, 0, 0.02, steps);
+        path = new Point2D[steps];
+        for (int i = 0; i < path.length; i++) {
+            path[i] = new Point2D.Double(p[i][0],p[i][1]);
         }
 
         setPreferredSize(new Dimension(cellWidth, cellWidth));
@@ -48,15 +55,17 @@ public class ToroidalPlot extends JComponent {
         double dx = Math.abs(x2 - x1);
         double dy = Math.abs(y2 - y1);
 
-        if (dx > 0.5) {
-            dx = 1.0 - dx;
+        if (dx > halfTorusSize) {
+            dx = torusSize - dx;
         }
 
-        if (dy > 0.5) {
-            dy = 1.0 - dy;
+        if (dy > halfTorusSize) {
+            dy = torusSize - dy;
         }
 
-        return Math.sqrt(dx*dx + dy*dy);
+        double td = Math.sqrt(dx*dx + dy*dy);
+
+        return td;
     }
 
     /**
@@ -127,17 +136,25 @@ public class ToroidalPlot extends JComponent {
 //            }
 //        }
 
-        for (int i = 0; i < x.length; i++) {
-            g2d.setColor(Color.yellow);
-            g2d.draw(transform(shortestLine(x[i].getX(), x[i].getY(), mu.getX(), mu.getY())));
-            g2d.draw(transform(shortestLine(mu.getX(), mu.getY(), x[i].getX(), x[i].getY())));
+        if (path.length > 1) {
+            for (int i = 1; i < path.length; i++) {
+                g2d.setColor(Color.yellow);
+                g2d.draw(transform(shortestLine(path[i-1].getX(), path[i-1].getY(), path[i].getX(), path[i].getY())));
 
+                double euclideanDist = path[i-1].distance(path[i]);
+                double toroidalDistance = toroidalDistance(path[i-1].getX(), path[i-1].getY(), path[i].getX(), path[i].getY());
+
+                if (Math.abs(toroidalDistance - euclideanDist) > 1e-8) {
+                    g2d.draw(transform(shortestLine(path[i].getX(), path[i].getY(), path[i-1].getX(), path[i-1].getY())));
+                } else {
+                }
+            }
         }
 
-        for (int i = 0; i < x.length; i++) {
-            double sx1 = getPixelX(x[i].getX());
-            double sy1 = getPixelY(x[i].getY());
-            Ellipse2D xEllipse = new Ellipse2D.Double(sx1 - ellipseWidth / 2.0, sy1 - ellipseWidth / 2.0, ellipseWidth, ellipseWidth);
+        for (int i = 0; i < path.length; i++) {
+            double sx1 = getPixelX(path[i].getX());
+            double sy1 = getPixelY(path[i].getY());
+            Ellipse2D xEllipse = new Ellipse2D.Double(sx1 - pointWidth / 2.0, sy1 - pointWidth / 2.0, pointWidth, pointWidth);
             g2d.setColor(Color.green);
             g2d.fill(xEllipse);
         }
@@ -192,7 +209,7 @@ public class ToroidalPlot extends JComponent {
             double worldX = (double)i/(double)resolution * torusSize;
             for (int j = 0; j < resolution; j++) {
                 double worldY = (double)j/(double)resolution * torusSize;
-                density[i][j] = Math.exp(diffusion.loglikwndtpd(x[0].getX(), x[0].getY(), worldX, worldY));
+                density[i][j] = Math.exp(diffusion.loglikwndtpd(path[0].getX(), path[0].getY(), worldX, worldY));
                 if (density[i][j] > maxDensity) {
                     maxDensity = density[i][j];
                 }
