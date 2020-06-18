@@ -108,7 +108,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
         }
     }
 
-    private Double[] getNewValue(Double[] oldValue, Double[][] diffusionMatrix, double branchLength) {
+    Double[] getNewValue(Double[] oldValue, Double[][] diffusionMatrix, double branchLength) {
         double[] means = new double[oldValue.length];
         double[][] covariances = new double[diffusionMatrix.length][diffusionMatrix[0].length];
         for (int i = 0; i < covariances.length; i++) {

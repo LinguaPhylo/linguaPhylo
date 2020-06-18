@@ -1,0 +1,7 @@
+λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Yule(birthRate=λ, n=100);
+mu = [2.0, 2.5];
+alpha = [1.0, 1.0, 0.5];
+σ = [0.5, 0.75];
+y0 = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
+y ~ PhyloWrappedBivariateDiffusion(mu=mu, sigma=σ, alpha=alpha, y=y0, tree=ψ);
