@@ -30,16 +30,6 @@ public class GraphicalModelInterpreter extends JPanel {
     JTextField interpreterField;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
 
-    static String[] greekLetterCodes = {
-            "\\alpha", "\\beta", "\\gamma", "\\delta", "\\epsilon", "\\zeta", "\\eta", "\\theta", "\\iota", "\\kappa",
-            "\\lambda", "\\mu", "\\nu", "\\xi", "\\omicron", "\\pi", "\\rho", "\\sigma", "\\tau", "\\upsilon",
-            "\\phi", "\\chi", "\\psi", "\\omega", "\\Gamma", "\\Delta", "\\Theta", "\\Lambda", "\\Xi", "\\Pi",
-            "\\Sigma", "\\Omega"};
-
-    String[] greekLetters = {
-            "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ",
-            "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω"};
-
     private static final String COMMIT_ACTION = "commit";
 
     Font interpreterFont = new Font("monospaced", Font.PLAIN, 12);
@@ -66,7 +56,7 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.setFocusTraversalKeysEnabled(false);
 
         List<String> keywords = parser.getKeywords();
-        keywords.addAll(Arrays.asList(greekLetterCodes));
+        keywords.addAll(Arrays.asList(Symbols.greekLetterCodes));
 
         List<String> commandStrings =
                 parser.getCommands().stream().map(Command::getName).collect(Collectors.toList());
@@ -112,12 +102,9 @@ public class GraphicalModelInterpreter extends JPanel {
             interpreterField.setText("");
         });
 
-        if (greekLetterCodes.length != greekLetters.length) {
-            throw new RuntimeException("Error! Mismatched array lengths for greek letter codes and symbols");
-        }
 
-        for (int i = 0; i < greekLetterCodes.length; i++) {
-            canonicalWords.put(greekLetterCodes[i], greekLetters[i]);
+        for (int i = 0; i < Symbols.greekLetterCodes.length; i++) {
+            canonicalWords.put(Symbols.greekLetterCodes[i], Symbols.greekLetters[i]);
         }
 
         interpreterField.addKeyListener(new KeyAdapter() {

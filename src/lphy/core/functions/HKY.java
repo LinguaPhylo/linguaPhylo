@@ -21,9 +21,17 @@ public class HKY extends RateMatrix {
 
     @GeneratorInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
     public Value<Double[][]> apply() {
-        Value<Double> kappa = getParams().get(kappaParamName);
-        Value<Double[]> freq = getParams().get(freqParamName);
+        Value<Double> kappa = getKappa();
+        Value<Double[]> freq = getFreq();
         return new DoubleArray2DValue(hky(kappa.value(), freq.value()), this);
+    }
+
+    public Value<Double> getKappa() {
+        return getParams().get(kappaParamName);
+    }
+
+    public Value<Double[]> getFreq() {
+        return getParams().get(freqParamName);
     }
 
     private Double[][] hky(double kappa, Double[] freqs) {

@@ -160,6 +160,18 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         return new RandomVariable<>("D", alignment, this);
     }
 
+    public Value<Double[]> getSiteRates() {
+        return siteRates;
+    }
+
+    public Value<Double> getClockRate() {
+        return clockRate;
+    }
+
+    public Value<Double[][]> getQ() {
+        return Q;
+    }
+
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
         getTransitionProbabilities(100, transProb);
         Double[] freqs = new Double[transProb.length];

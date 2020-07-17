@@ -3,6 +3,7 @@ package lphy.graphicalModel;
 import lphy.app.DoubleArrayLabel;
 import lphy.app.HasComponentView;
 import lphy.app.IntegerArrayLabel;
+import lphy.app.Symbols;
 
 import javax.swing.*;
 import java.util.*;
@@ -118,6 +119,10 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
     public String getId() {
         return id;
+    }
+
+    public final String getCanonicalId() {
+        return Symbols.getCanonical(getId());
     }
 
     public void setId(String id) {
