@@ -7,10 +7,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.parser.REPL;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class BEASTAnalysis {
 
@@ -26,15 +23,25 @@ public class BEASTAnalysis {
 
     public static void main(String[] args) throws IOException {
 
+        String infile = "examples/simpleCoalescent.lphy";
+        String outfile = "examples/simpleCoalescent.xml";
+
+
         LPhyParser parser = new REPL();
 
-        File file = new File("examples/simpleCoalescent.lphy");
+        File file = new File(infile);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         source(reader, parser);
 
         RandomVariable<Alignment> alignment = (RandomVariable<Alignment>)parser.getDictionary().get("D");
 
         BEAST2Context context = new BEAST2Context();
-        System.out.println(context.toBEASTXML(alignment));
+        String xml = context.toBEASTXML(alignment);
+
+        PrintWriter writer = new PrintWriter(new FileWriter(outfile));
+
+        writer.println(xml);
+        writer.flush();
+        writer.close();
     }
 }
