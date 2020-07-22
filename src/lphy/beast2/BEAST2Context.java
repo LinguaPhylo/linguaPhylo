@@ -9,7 +9,10 @@ import beast.evolution.alignment.Alignment;
 import beast.evolution.alignment.Sequence;
 import beast.evolution.branchratemodel.StrictClockModel;
 import beast.evolution.likelihood.TreeLikelihood;
+import beast.evolution.operators.Exchange;
 import beast.evolution.operators.ScaleOperator;
+import beast.evolution.operators.SubtreeSlide;
+import beast.evolution.operators.Uniform;
 import beast.evolution.sitemodel.SiteModel;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.substitutionmodel.SubstitutionModel;
@@ -375,6 +378,10 @@ public class BEAST2Context {
                 operators.add(createBEASTOperator((RealParameter) stateNode));
             } else if (stateNode instanceof Tree) {
                 operators.add(createTreeScaleOperator((Tree) stateNode));
+                operators.add(createExchangeOperator((Tree) stateNode, true));
+                operators.add(createExchangeOperator((Tree) stateNode, false));
+                operators.add(createSubtreeSlideOperator((Tree) stateNode));
+                operators.add(createTreeUniformOperator((Tree) stateNode));
             }
         }
 
@@ -435,10 +442,43 @@ public class BEAST2Context {
         return operator;
     }
 
+    private Operator createTreeUniformOperator(Tree tree) {
+        Uniform uniform = new Uniform();
+        uniform.setInputValue("tree", tree);
+        uniform.setInputValue("weight", 1.0);
+        uniform.initAndValidate();
+        elements.add(uniform);
+
+        return uniform;
+    }
+
+    private Operator createSubtreeSlideOperator(Tree tree) {
+        SubtreeSlide subtreeSlide = new SubtreeSlide();
+        subtreeSlide.setInputValue("tree", tree);
+        subtreeSlide.setInputValue("weight", 1.0);
+        subtreeSlide.setInputValue("size", tree.getRoot().getHeight()/10.0);
+        subtreeSlide.initAndValidate();
+        elements.add(subtreeSlide);
+
+        return subtreeSlide;
+    }
+
+    private Operator createExchangeOperator(Tree tree, boolean isNarrow) {
+        Exchange exchange = new Exchange();
+        exchange.setInputValue("tree", tree);
+        exchange.setInputValue("weight", 1.0);
+        exchange.setInputValue("isNarrow", isNarrow);
+        exchange.initAndValidate();
+        elements.add(exchange);
+
+        return exchange;
+    }
+
     private Operator createBEASTOperator(RealParameter parameter) {
         ScaleOperator operator = new ScaleOperator();
         operator.setInputValue("parameter", parameter);
         operator.setInputValue("weight", 1.0);
+        operator.setInputValue("scaleFactor", 0.75);
         operator.initAndValidate();
         elements.add(operator);
 
