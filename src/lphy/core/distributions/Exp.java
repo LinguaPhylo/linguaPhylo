@@ -12,19 +12,26 @@ public class Exp implements GenerativeDistribution<Double> {
 
     private final String meanParamName;
     private Value<Double> mean;
+    //private final String rateParamName;
+    //private Value<Double> rate;
 
     private RandomGenerator random;
 
     public Exp(@ParameterInfo(name="mean", description="the mean of an exponential distribution.") Value<Double> mean) {
         this.mean = mean;
+        //this.rate = rate;
+
+        //if (mean != null && rate != null) throw new IllegalArgumentException("Only one of mean and rate can be specified.");
+
         this.random = Utils.getRandom();
         meanParamName = getParamName(0);
+        //rateParamName = getParamName(1);
     }
 
     @GeneratorInfo(name="Exp", description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 
-        double x = - Math.log(random.nextDouble()) * mean.value();
+        double x = - Math.log(random.nextDouble()) * getMean();
         return new RandomVariable<>("x", x, this);
     }
 
@@ -45,6 +52,12 @@ public class Exp implements GenerativeDistribution<Double> {
         } else {
             throw new RuntimeException("Only valid parameter name is " + meanParamName);
         }
+    }
+
+    public double getMean() {
+        if (mean != null) return mean.value();
+        //if (rate != null) return 1.0/rate.value();
+        return 1.0;
     }
 
     public void setMean(double mean) {

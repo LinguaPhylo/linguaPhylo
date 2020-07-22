@@ -1,4 +1,4 @@
-b ~ Exp(rate=1.0);
-c ~ Exp(rate=2.0);
-d ~ Exp(rate=3.0);
+b ~ Exp(mean=1.0);
+c ~ Exp(mean=0.5);
+d ~ Exp(mean=0.33333);
 a = b + c * d;
