@@ -1,7 +1,5 @@
 package lphy.beast2;
 
-import beast.evolution.likelihood.TreeLikelihood;
-import beast.util.XMLProducer;
 import lphy.core.Alignment;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
@@ -33,10 +31,8 @@ public class BEASTAnalysis {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         source(reader, parser);
 
-        RandomVariable<Alignment> alignment = (RandomVariable<Alignment>)parser.getDictionary().get("D");
-
-        BEAST2Context context = new BEAST2Context();
-        String xml = context.toBEASTXML(alignment);
+        BEAST2Context context = new BEAST2Context(parser);
+        String xml = context.toBEASTXML();
 
         PrintWriter writer = new PrintWriter(new FileWriter(outfile));
 

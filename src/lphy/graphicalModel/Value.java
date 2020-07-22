@@ -122,7 +122,8 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     }
 
     public final String getCanonicalId() {
-        return Symbols.getCanonical(getId());
+        if (!isAnonymous()) return Symbols.getCanonical(getId());
+        return null;
     }
 
     public void setId(String id) {

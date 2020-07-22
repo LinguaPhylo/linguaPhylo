@@ -25,13 +25,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Integer> L;
     RandomGenerator random;
 
-    String treeParamName;
-    String muParamName;
-    String rootFreqParamName;
-    String QParamName;
-    String siteRatesParamName;
-    String branchRatesParamName;
-    String LParamName;
+    public final String treeParamName;
+    public final String muParamName;
+    public final String rootFreqParamName;
+    public final String QParamName;
+    public final String siteRatesParamName;
+    public final String branchRatesParamName;
+    public final String LParamName;
 
     int numStates;
 
@@ -164,6 +164,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         return siteRates;
     }
 
+    public Value<Double[]> getBranchRates() {
+        return branchRates;
+    }
+
     public Value<Double> getClockRate() {
         return clockRate;
     }
@@ -171,6 +175,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public Value<Double[][]> getQ() {
         return Q;
     }
+
+    public Value<TimeTree> getTree() { return tree; }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
         getTransitionProbabilities(100, transProb);

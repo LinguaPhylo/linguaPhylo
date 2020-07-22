@@ -16,7 +16,6 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     private final String nParamName;
     private Value<Double> theta;
     private Value<Integer> n;
-    private Value<Double[]> times;
 
     RandomGenerator random;
 
@@ -138,5 +137,9 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
     public String toString() {
         return getName();
+    }
+
+    public GraphicalModelNode<?> getTheta() {
+        return theta;
     }
 }

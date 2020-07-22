@@ -53,6 +53,19 @@ public interface LPhyParser {
 
     class Utils {
 
+        /**
+         * @return a list of all random variables reachable (i.e. that are depended on by) the sinks.
+         */
+        public static List<RandomVariable<?>> getAllVariablesFromSinks(LPhyParser parser) {
+            List<RandomVariable<?>> variables = new ArrayList<>();
+            for (Value<?> value: getAllValuesFromSinks(parser)) {
+                if (value instanceof RandomVariable<?>) {
+                    variables.add((RandomVariable<?>)value);
+                }
+            }
+            return variables;
+        }
+
         public static void parseCommand(Command command, String commandString, Map<String, Value<?>> dictionary) {
             commandString = commandString.trim();
             if (!commandString.startsWith(command.getName())) {

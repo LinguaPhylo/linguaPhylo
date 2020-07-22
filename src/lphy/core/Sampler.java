@@ -15,19 +15,6 @@ public class Sampler {
     }
 
     /**
-     * @return a list of all random variables reachable (i.e. that are depended on by) the sinks.
-     */
-    public List<RandomVariable<?>> getAllVariablesFromSinks() {
-        List<RandomVariable<?>> variables = new ArrayList<>();
-        for (Value<?> value: LPhyParser.Utils.getAllValuesFromSinks(parser)) {
-            if (value instanceof RandomVariable<?>) {
-                variables.add((RandomVariable<?>)value);
-            }
-        }
-        return variables;
-    }
-
-    /**
      * Sample the current model
      *
      * @param reps    the number of times to sample
@@ -38,7 +25,7 @@ public class Sampler {
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
             Set<Value<?>> sinks = parser.getSinks();
-            for (RandomVariable<?> var : getAllVariablesFromSinks()) {
+            for (RandomVariable<?> var : LPhyParser.Utils.getAllVariablesFromSinks(parser)) {
                 parser.getDictionary().remove(var.getId());
             }
 
@@ -55,14 +42,14 @@ public class Sampler {
             }
 
             if (loggers != null) {
-                List<RandomVariable<?>> variables = getAllVariablesFromSinks();
+                List<RandomVariable<?>> variables = LPhyParser.Utils.getAllVariablesFromSinks(parser);
                 for (RandomVariableLogger logger : loggers) {
                     logger.log(i, variables);
                 }
             }
         }
         if (loggers != null) {
-            List<RandomVariable<?>> variables = getAllVariablesFromSinks();
+            List<RandomVariable<?>> variables = LPhyParser.Utils.getAllVariablesFromSinks(parser);
             for (RandomVariableLogger logger : loggers) {
                 logger.close();
             }
