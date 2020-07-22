@@ -4,7 +4,6 @@ import lphy.graphicalModel.Value;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
 
-import javax.naming.directory.Attribute;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Map;

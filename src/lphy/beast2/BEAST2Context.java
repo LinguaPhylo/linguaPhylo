@@ -28,6 +28,8 @@ import lphy.TimeTree;
 import lphy.core.LPhyParser;
 import lphy.core.PhyloCTMC;
 import lphy.core.distributions.*;
+import lphy.core.functions.F81;
+import lphy.core.functions.GTR;
 import lphy.core.functions.HKY;
 import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
@@ -97,8 +99,12 @@ public class BEAST2Context {
             clone = createBEASTCoalescent((Coalescent) generator, (Tree) cloneMap.get(value));
         } else if (generator instanceof JukesCantor) {
             clone = createBEASTJukesCantor((JukesCantor) generator);
+        } else if (generator instanceof F81) {
+            clone = createBEASTF81((F81)generator);
         } else if (generator instanceof HKY) {
             clone = createBEASTHKY((HKY)generator);
+        } else if (generator instanceof GTR) {
+            clone = createBEASTGTR((GTR)generator);
         } else if (generator instanceof LogNormal) {
             clone = createBEASTDistribution((LogNormal)generator, (Parameter)cloneMap.get(value));
         } else if (generator instanceof Exp) {
@@ -221,10 +227,31 @@ public class BEAST2Context {
         return beastJC;
     }
 
+    public beast.evolution.substitutionmodel.GTR createBEASTGTR(GTR gtr) {
+        beast.evolution.substitutionmodel.GTR beastGTR = new beast.evolution.substitutionmodel.GTR();
+
+        Value<Double[]> rates = gtr.getRates();
+
+        beastGTR.setInputValue("rates", cloneMap.get(rates));
+        beastGTR.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(gtr.getFreq())));
+        beastGTR.initAndValidate();
+        elements.add(beastGTR);
+        return beastGTR;
+    }
+
     public beast.evolution.substitutionmodel.HKY createBEASTHKY(HKY hky) {
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
         beastHKY.setInputValue("kappa", cloneMap.get(hky.getKappa()));
         beastHKY.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(hky.getFreq())));
+        beastHKY.initAndValidate();
+        elements.add(beastHKY);
+        return beastHKY;
+    }
+
+    public beast.evolution.substitutionmodel.HKY createBEASTF81(F81 f81) {
+        beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
+        beastHKY.setInputValue("kappa", new RealParameter("1.0"));
+        beastHKY.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(f81.getFreq())));
         beastHKY.initAndValidate();
         elements.add(beastHKY);
         return beastHKY;

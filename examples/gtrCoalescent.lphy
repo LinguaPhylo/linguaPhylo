@@ -1,0 +1,7 @@
+κ ~ LogNormal(meanlog=1.0, sdlog=0.5);
+π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]);
+Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Coalescent(n=16, theta=Θ);
+er ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
+Q = gtr(freq=π, rates=er); // construct the GTR instantaneous rate matrix
+D ~ PhyloCTMC(L=200, Q=Q, tree=ψ);

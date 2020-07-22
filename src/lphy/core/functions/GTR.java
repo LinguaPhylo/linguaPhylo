@@ -21,18 +21,17 @@ public class GTR extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-
     @GeneratorInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
-        Value<Double[]> rates = getParams().get(rateParamName);
+        Value<Double[]> rates = getRates();
         Value<Double[]> freq = getParams().get(freqParamName);
-        return new DoubleArray2DValue( gtr(rates.value(), freq.value()), this);
+        return new DoubleArray2DValue(gtr(rates.value(), freq.value()), this);
     }
 
     private Double[][] gtr(Double[] rates, Double[] freqs) {
 
         int numStates = 4;
-        
+
         Double[][] Q = new Double[numStates][numStates];
 
         double[] totalRates = new double[numStates];
@@ -40,12 +39,10 @@ public class GTR extends RateMatrix {
         // construct off-diagonals
         int upper = 0;
         for (int i = 0; i < numStates; i++) {
-            for (int j = i; j < numStates; j++) {
-                if (j > i) {
-                    Q[i][j] = rates[upper] * freqs[j];
-                    Q[j][i] = rates[upper] * freqs[i];
-                    upper += 1;
-                }
+            for (int j = i + 1; j < numStates; j++) {
+                Q[i][j] = rates[upper] * freqs[j];
+                Q[j][i] = rates[upper] * freqs[i];
+                upper += 1;
             }
         }
 
@@ -63,5 +60,13 @@ public class GTR extends RateMatrix {
         normalize(freqs, Q);
 
         return Q;
+    }
+
+    public Value<Double[]> getRates() {
+        return getParams().get(rateParamName);
+    }
+
+    public GraphicalModelNode<?> getFreq() {
+        return getParams().get(freqParamName);
     }
 }

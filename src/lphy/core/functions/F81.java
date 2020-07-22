@@ -1,6 +1,7 @@
 package lphy.core.functions;
 
 import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
@@ -18,9 +19,9 @@ public class F81 extends RateMatrix {
     }
 
 
-    @GeneratorInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies and produces an HKY85 rate matrix.")
+    @GeneratorInfo(name = "f81", description = "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.")
     public Value<Double[][]> apply() {
-        Value<Double[]> freq = getParams().get(freqParamName);
+        Value<Double[]> freq = getFreq();
         return new DoubleArray2DValue( f81(freq.value()), this);
     }
 
@@ -46,5 +47,9 @@ public class F81 extends RateMatrix {
         normalize(freqs, Q);
 
         return Q;
+    }
+
+    public Value<Double[]> getFreq() {
+        return  getParams().get(freqParamName);
     }
 }

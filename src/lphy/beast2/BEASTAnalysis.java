@@ -1,8 +1,6 @@
 package lphy.beast2;
 
-import lphy.core.Alignment;
 import lphy.core.LPhyParser;
-import lphy.graphicalModel.RandomVariable;
 import lphy.parser.REPL;
 
 import java.io.*;
@@ -21,9 +19,8 @@ public class BEASTAnalysis {
 
     public static void main(String[] args) throws IOException {
 
-        String infile = "hkyCoalescent.lphy";
-        String outfile = "hkyCoalescent.xml";
-
+        String infile = "gtrCoalescent.lphy";
+        String outfile = "gtrCoalescent.xml";
 
         LPhyParser parser = new REPL();
 
