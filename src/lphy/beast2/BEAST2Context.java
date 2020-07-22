@@ -31,13 +31,13 @@ import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BEAST2Context {
 
     List<StateNode> state = new ArrayList<>();
 
     Set<BEASTInterface> elements = new HashSet<>();
-
 
     // a map of graphical model nodes to equivalent BEASTInterface objects
     Map<GraphicalModelNode<?>, BEASTInterface> cloneMap = new HashMap<>();
@@ -119,17 +119,25 @@ public class BEAST2Context {
         } else if (val.value() instanceof lphy.core.Alignment) {
             clone = createBEASTAlignment((Value<lphy.core.Alignment>) val);
         }
-        if (clone == null)
+        if (clone == null) {
             throw new RuntimeException("Unhandled value in cloneValue(): " + val);
+        }
 
         addToContext(val, clone);
         return clone;
     }
 
     private void addToContext(GraphicalModelNode node, BEASTInterface beastInterface) {
-        System.out.println("Add to Context: " + node + " -> " + beastInterface);
         cloneMap.put(node, beastInterface);
         elements.add(beastInterface);
+
+        if (node instanceof RandomVariable) {
+            RandomVariable<?> var = (RandomVariable<?>)node;
+
+            if (var.getOutputs().size() > 0 && !state.contains(beastInterface)) {
+                state.add((StateNode) beastInterface);
+            }
+        }
     }
 
     private beast.evolution.tree.coalescent.Coalescent createBEASTCoalescent(lphy.Coalescent coalescent, Tree tree) {
@@ -283,9 +291,6 @@ public class BEAST2Context {
         if (!value.isAnonymous()) parameter.setID(value.getCanonicalId());
         elements.add(parameter);
 
-        if (value instanceof RandomVariable) {
-            state.add(parameter);
-        }
         return parameter;
     }
 
@@ -360,16 +365,6 @@ public class BEAST2Context {
         return seq;
     }
 
-    public OperatorSchedule createOperatorSchedule() {
-
-        OperatorSchedule schedule = new OperatorSchedule();
-        schedule.setInputValue("operator", createOperators());
-        schedule.initAndValidate();
-        elements.add(schedule);
-
-        return schedule;
-    }
-
     public List<Operator> createOperators() {
 
         List<Operator> operators = new ArrayList<>();
@@ -386,21 +381,48 @@ public class BEAST2Context {
         return operators;
     }
 
-    private List<Logger> createLoggers(int logEvery) {
+    private List<Logger> createLoggers(int logEvery, String fileName) {
         List<Logger> loggers = new ArrayList<>();
 
         loggers.add(createScreenLogger(logEvery));
+        loggers.add(createLogger(logEvery, fileName + ".log"));
+        loggers.add(createTreeLogger(logEvery, fileName + ".trees"));
 
         return loggers;
     }
 
-    private Logger createScreenLogger(int logEvery) {
+    private Logger createLogger(int logEvery, String fileName) {
+
+        List<StateNode> nonTrees = state.stream()
+                .filter(stateNode -> !(stateNode instanceof Tree))
+                .collect(Collectors.toList());
+
         Logger logger = new Logger();
         logger.setInputValue("logEvery", logEvery);
-        logger.setInputValue("log", state);
+        logger.setInputValue("log", nonTrees);
+        if (fileName != null) logger.setInputValue("fileName", fileName);
+        logger.initAndValidate();
+        elements.add(logger);
+        return logger;    }
+
+    private Logger createTreeLogger(int logEvery, String fileName) {
+
+        List<Tree> trees = state.stream()
+                .filter(stateNode -> stateNode instanceof Tree)
+                .map (stateNode -> (Tree) stateNode)
+                .collect(Collectors.toList());
+
+        Logger logger = new Logger();
+        logger.setInputValue("logEvery", logEvery);
+        logger.setInputValue("log", trees);
+        if (fileName != null) logger.setInputValue("fileName", fileName);
         logger.initAndValidate();
         elements.add(logger);
         return logger;
+    }
+
+    private Logger createScreenLogger(int logEvery) {
+        return createLogger(logEvery, null);
     }
 
     private Operator createTreeScaleOperator(Tree tree) {
@@ -443,8 +465,7 @@ public class BEAST2Context {
     }
 
 
-    public MCMC createMCMC(long chainLength, int logEvery) {
-        clear();
+    public MCMC createMCMC(long chainLength, int logEvery, String fileName) {
 
         CompoundDistribution posterior = createBEASTPosterior();
 
@@ -453,7 +474,7 @@ public class BEAST2Context {
         mcmc.setInputValue("chainLength", chainLength);
 
         mcmc.setInputValue("operator", createOperators());
-        mcmc.setInputValue("logger", createLoggers(logEvery));
+        mcmc.setInputValue("logger", createLoggers(logEvery, fileName));
 
         mcmc.initAndValidate();
         return mcmc;
@@ -462,11 +483,12 @@ public class BEAST2Context {
     public void clear() {
         state.clear();
         elements.clear();
+        cloneMap.clear();
     }
 
-    public String toBEASTXML() {
+    public String toBEASTXML(String fileNameStem) {
 
-        MCMC mcmc = createMCMC(1000000, 1000);
+        MCMC mcmc = createMCMC(1000000, 1000, fileNameStem);
 
         String xml = new XMLProducer().toXML(mcmc, elements);
 

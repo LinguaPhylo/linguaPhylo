@@ -21,8 +21,8 @@ public class BEASTAnalysis {
 
     public static void main(String[] args) throws IOException {
 
-        String infile = "examples/simpleCoalescent.lphy";
-        String outfile = "examples/simpleCoalescent.xml";
+        String infile = "simpleCoalescent.lphy";
+        String outfile = "simpleCoalescent.xml";
 
 
         LPhyParser parser = new REPL();
@@ -32,7 +32,10 @@ public class BEASTAnalysis {
         source(reader, parser);
 
         BEAST2Context context = new BEAST2Context(parser);
-        String xml = context.toBEASTXML();
+
+        String fileNameStem = outfile.substring(0, outfile.indexOf("."));
+
+        String xml = context.toBEASTXML(fileNameStem);
 
         PrintWriter writer = new PrintWriter(new FileWriter(outfile));
 
