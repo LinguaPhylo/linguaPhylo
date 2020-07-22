@@ -45,6 +45,10 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         return Collections.singletonMap(getParamName(0), concentration);
     }
 
+    public Value<Double[]> getConcentration() {
+        return concentration;
+    }
+
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(concParamName)) {

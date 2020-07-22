@@ -21,8 +21,8 @@ public class BEASTAnalysis {
 
     public static void main(String[] args) throws IOException {
 
-        String infile = "simpleCoalescent.lphy";
-        String outfile = "simpleCoalescent.xml";
+        String infile = "hkyCoalescent.lphy";
+        String outfile = "hkyCoalescent.xml";
 
 
         LPhyParser parser = new REPL();

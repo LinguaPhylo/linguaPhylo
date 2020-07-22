@@ -9,9 +9,7 @@ import beast.evolution.alignment.Alignment;
 import beast.evolution.alignment.Sequence;
 import beast.evolution.branchratemodel.StrictClockModel;
 import beast.evolution.likelihood.TreeLikelihood;
-import beast.evolution.operators.Exchange;
-import beast.evolution.operators.ScaleOperator;
-import beast.evolution.operators.SubtreeSlide;
+import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.sitemodel.SiteModel;
 import beast.evolution.substitutionmodel.Frequencies;
@@ -19,7 +17,9 @@ import beast.evolution.substitutionmodel.SubstitutionModel;
 import beast.evolution.tree.Tree;
 import beast.evolution.tree.coalescent.ConstantPopulation;
 import beast.evolution.tree.coalescent.TreeIntervals;
+import beast.math.distributions.Exponential;
 import beast.math.distributions.LogNormalDistributionModel;
+import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.TreeParser;
 import beast.util.XMLProducer;
@@ -27,8 +27,7 @@ import lphy.Coalescent;
 import lphy.TimeTree;
 import lphy.core.LPhyParser;
 import lphy.core.PhyloCTMC;
-import lphy.core.distributions.LogNormal;
-import lphy.core.distributions.LogNormalMulti;
+import lphy.core.distributions.*;
 import lphy.core.functions.HKY;
 import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
@@ -44,6 +43,8 @@ public class BEAST2Context {
 
     // a map of graphical model nodes to equivalent BEASTInterface objects
     Map<GraphicalModelNode<?>, BEASTInterface> cloneMap = new HashMap<>();
+
+    Map<BEASTInterface, GraphicalModelNode<?>> reverseCloneMap = new HashMap<>();
 
     LPhyParser parser;
 
@@ -94,12 +95,18 @@ public class BEAST2Context {
             clone = createTreeLikelihood((PhyloCTMC) generator, (Alignment) cloneMap.get(value));
         } else if (generator instanceof Coalescent) {
             clone = createBEASTCoalescent((Coalescent) generator, (Tree) cloneMap.get(value));
-            addToContext(generator, clone);
         } else if (generator instanceof JukesCantor) {
             clone = createBEASTJukesCantor((JukesCantor) generator);
-            addToContext(generator, clone);
+        } else if (generator instanceof HKY) {
+            clone = createBEASTHKY((HKY)generator);
         } else if (generator instanceof LogNormal) {
-            clone = createBEASTLogNormalDistribution((LogNormal)generator, (Parameter)cloneMap.get(value));
+            clone = createBEASTDistribution((LogNormal)generator, (Parameter)cloneMap.get(value));
+        } else if (generator instanceof Exp) {
+            clone = createBEASTDistribution((Exp)generator, (Parameter)cloneMap.get(value));
+        } else if (generator instanceof Beta) {
+            clone = createBEASTDistribution((Beta)generator, (Parameter)cloneMap.get(value));
+        } else if (generator instanceof Dirichlet) {
+            clone = createBEASTDistribution((Dirichlet) generator, (Parameter)cloneMap.get(value));
         }
 
         if (clone == null) {
@@ -132,6 +139,7 @@ public class BEAST2Context {
 
     private void addToContext(GraphicalModelNode node, BEASTInterface beastInterface) {
         cloneMap.put(node, beastInterface);
+        reverseCloneMap.put(beastInterface, node);
         elements.add(beastInterface);
 
         if (node instanceof RandomVariable) {
@@ -213,45 +221,68 @@ public class BEAST2Context {
         return beastJC;
     }
 
-    public SubstitutionModel createBEASTHKY(HKY hky) {
+    public beast.evolution.substitutionmodel.HKY createBEASTHKY(HKY hky) {
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
-        beastHKY.setInputValue("kappa", hky.getKappa());
-        beastHKY.setInputValue("frequencies", createBEASTFrequencies(hky.getFreq()));
+        beastHKY.setInputValue("kappa", cloneMap.get(hky.getKappa()));
+        beastHKY.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(hky.getFreq())));
         beastHKY.initAndValidate();
         elements.add(beastHKY);
         return beastHKY;
     }
 
-    public Frequencies createBEASTFrequencies(Value<Double[]> freq) {
+    public Frequencies createBEASTFrequencies(RealParameter freqParameter) {
         Frequencies frequencies = new Frequencies();
-        frequencies.setInputValue("frequencies", createBEASTRealParameter(freq));
+        frequencies.setInputValue("frequencies", freqParameter);
         frequencies.initAndValidate();
         elements.add(frequencies);
         return frequencies;
     }
 
-    public LogNormalDistributionModel createBEASTLogNormalDistribution(LogNormalMulti logNormalMulti) {
-        LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
-        logNormalDistributionModel.setInputValue("M", createBEASTRealParameter(logNormalMulti.getParams().get("meanlog")));
-        logNormalDistributionModel.setInputValue("S", createBEASTRealParameter(logNormalMulti.getParams().get("sdlog")));
-        logNormalDistributionModel.initAndValidate();
-        elements.add(logNormalDistributionModel);
-        return logNormalDistributionModel;
-    }
-
-    public Prior createBEASTLogNormalDistribution(LogNormal logNormal, Parameter parameter) {
+    public Prior createBEASTDistribution(LogNormal logNormal, Parameter parameter) {
         LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
         logNormalDistributionModel.setInputValue("M", cloneMap.get(logNormal.getParams().get("meanlog")));
         logNormalDistributionModel.setInputValue("S", cloneMap.get(logNormal.getParams().get("sdlog")));
         logNormalDistributionModel.initAndValidate();
         elements.add(logNormalDistributionModel);
 
+        return createPrior(logNormalDistributionModel, parameter);
+    }
+
+    public Prior createPrior(ParametricDistribution distr, Parameter parameter) {
         Prior prior = new Prior();
-        prior.setInputValue("distr", logNormalDistributionModel);
+        prior.setInputValue("distr", distr);
         prior.setInputValue("x", parameter);
         prior.initAndValidate();
 
         return prior;
+    }
+
+    public Prior createBEASTDistribution(Beta beta, Parameter parameter) {
+        beast.math.distributions.Beta betaDistribution = new beast.math.distributions.Beta();
+        betaDistribution.setInputValue("alpha", cloneMap.get(beta.getParams().get("alpha")));
+        betaDistribution.setInputValue("beta", cloneMap.get(beta.getParams().get("beta")));
+        betaDistribution.initAndValidate();
+        elements.add(betaDistribution);
+
+        return createPrior(betaDistribution, parameter);
+    }
+
+    public Prior createBEASTDistribution(Exp exp, Parameter parameter) {
+        Exponential exponential = new Exponential();
+        exponential.setInputValue("mean", cloneMap.get(exp.getParams().get("mean")));
+        exponential.initAndValidate();
+        elements.add(exponential);
+
+        return createPrior(exponential, parameter);
+    }
+
+    public Prior createBEASTDistribution(Dirichlet dirichlet, Parameter parameter) {
+        beast.math.distributions.Dirichlet beastDirichlet = new beast.math.distributions.Dirichlet();
+        beastDirichlet.setInputValue("alpha", cloneMap.get(dirichlet.getConcentration()));
+        beastDirichlet.initAndValidate();
+        elements.add(beastDirichlet);
+
+        return createPrior(beastDirichlet, parameter);
     }
 
     private RealParameter createRealParameter(double value) {
@@ -475,10 +506,19 @@ public class BEAST2Context {
     }
 
     private Operator createBEASTOperator(RealParameter parameter) {
-        ScaleOperator operator = new ScaleOperator();
-        operator.setInputValue("parameter", parameter);
-        operator.setInputValue("weight", 1.0);
-        operator.setInputValue("scaleFactor", 0.75);
+        RandomVariable<?> variable = ( RandomVariable<?>)reverseCloneMap.get(parameter);
+
+        Operator operator;
+        if (variable.getGenerativeDistribution() instanceof Dirichlet) {
+            operator = new DeltaExchangeOperator();
+            operator.setInputValue("parameter", parameter);
+            operator.setInputValue("weight", 1.0);
+        } else {
+            operator = new ScaleOperator();
+            operator.setInputValue("parameter", parameter);
+            operator.setInputValue("weight", 1.0);
+            operator.setInputValue("scaleFactor", 0.75);
+        }
         operator.initAndValidate();
         elements.add(operator);
 
