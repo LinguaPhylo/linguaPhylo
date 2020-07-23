@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.Domain;
 
 import java.util.*;
 
@@ -61,4 +62,5 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
     public String toString() {
         return getName();
     }
+
 }

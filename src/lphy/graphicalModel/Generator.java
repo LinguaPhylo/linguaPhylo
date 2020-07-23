@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import lphy.graphicalModel.types.Domain;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

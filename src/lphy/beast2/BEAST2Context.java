@@ -33,7 +33,7 @@ import lphy.core.functions.GTR;
 import lphy.core.functions.HKY;
 import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.Utils;
+import lphy.graphicalModel.types.Domain;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -337,6 +337,12 @@ public class BEAST2Context {
             List<Double> values = Arrays.asList((Double[]) value.value());
             parameter.setInputValue("value", values);
             parameter.setInputValue("dimension", values.size());
+
+            if (value.getGenerator() instanceof Dirichlet) {
+                parameter.setInputValue("upper", 1.0);
+                parameter.setInputValue("lower",  0.0);
+            }
+
             parameter.initAndValidate();
         } else if (value.value() instanceof Double[][]) {
 
@@ -623,6 +629,14 @@ public class BEAST2Context {
 
         mcmc.setInputValue("operator", createOperators());
         mcmc.setInputValue("logger", createLoggers(logEvery, fileName));
+
+        State state = new State();
+        state.setInputValue("stateNode", this.state);
+        state.initAndValidate();
+        elements.add(state);
+
+        // TODO make sure the stateNode list is being correctly populated
+        mcmc.setInputValue("state", state);
 
         mcmc.initAndValidate();
         return mcmc;
