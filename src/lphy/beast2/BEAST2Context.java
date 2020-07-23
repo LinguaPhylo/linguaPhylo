@@ -33,6 +33,7 @@ import lphy.core.functions.GTR;
 import lphy.core.functions.HKY;
 import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.Utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -164,12 +165,14 @@ public class BEAST2Context {
         TreeIntervals treeIntervals = new TreeIntervals();
         treeIntervals.setInputValue("tree", tree);
         treeIntervals.initAndValidate();
+        elements.add(treeIntervals);
 
         beastCoalescent.setInputValue("treeIntervals", treeIntervals);
 
         ConstantPopulation populationFunction = new ConstantPopulation();
         populationFunction.setInputValue("popSize", cloneMap.get(coalescent.getTheta()));
         populationFunction.initAndValidate();
+        elements.add(populationFunction);
 
         beastCoalescent.setInputValue("populationModel", populationFunction);
 
@@ -198,6 +201,7 @@ public class BEAST2Context {
             } else {
                 clockModel.setInputValue("clock.rate", createRealParameter(1.0));
             }
+            elements.add(clockModel);
             treeLikelihood.setInputValue("branchRateModel", clockModel);
         }
 
@@ -210,6 +214,7 @@ public class BEAST2Context {
             SiteModel siteModel = new SiteModel();
             siteModel.setInputValue("substModel", substitutionModel);
             siteModel.initAndValidate();
+            elements.add(siteModel);
 
             treeLikelihood.setInputValue("siteModel", siteModel);
         }
@@ -227,8 +232,9 @@ public class BEAST2Context {
         return beastJC;
     }
 
-    public beast.evolution.substitutionmodel.GTR createBEASTGTR(GTR gtr) {
-        beast.evolution.substitutionmodel.GTR beastGTR = new beast.evolution.substitutionmodel.GTR();
+    public substmodels.nucleotide.GTR createBEASTGTR(GTR gtr) {
+
+        substmodels.nucleotide.GTR beastGTR = new substmodels.nucleotide.GTR();
 
         Value<Double[]> rates = gtr.getRates();
 
@@ -249,12 +255,12 @@ public class BEAST2Context {
     }
 
     public beast.evolution.substitutionmodel.HKY createBEASTF81(F81 f81) {
-        beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
-        beastHKY.setInputValue("kappa", new RealParameter("1.0"));
-        beastHKY.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(f81.getFreq())));
-        beastHKY.initAndValidate();
-        elements.add(beastHKY);
-        return beastHKY;
+        beast.evolution.substitutionmodel.HKY beastF81 = new beast.evolution.substitutionmodel.HKY();
+        beastF81.setInputValue("kappa", new RealParameter("1.0"));
+        beastF81.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(f81.getFreq())));
+        beastF81.initAndValidate();
+        elements.add(beastF81);
+        return beastF81;
     }
 
     public Frequencies createBEASTFrequencies(RealParameter freqParameter) {
@@ -280,7 +286,7 @@ public class BEAST2Context {
         prior.setInputValue("distr", distr);
         prior.setInputValue("x", parameter);
         prior.initAndValidate();
-
+        elements.add(prior);
         return prior;
     }
 
@@ -316,7 +322,7 @@ public class BEAST2Context {
         RealParameter parameter = new RealParameter();
         parameter.setInputValue("value", value);
         parameter.initAndValidate();
-
+        elements.add(parameter);
         return parameter;
     }
 
@@ -372,9 +378,6 @@ public class BEAST2Context {
         if (!value.isAnonymous()) parameter.setID(value.getCanonicalId());
         elements.add(parameter);
 
-        if (value instanceof RandomVariable) {
-            state.add(parameter);
-        }
         return parameter;
     }
 
@@ -388,8 +391,7 @@ public class BEAST2Context {
 
         tree.initAndValidate();
         tree.setID(timeTree.getCanonicalId());
-        addToContext(timeTree, tree);
-
+        elements.add(tree);
         return tree;
     }
 
@@ -468,7 +470,8 @@ public class BEAST2Context {
         if (fileName != null) logger.setInputValue("fileName", fileName);
         logger.initAndValidate();
         elements.add(logger);
-        return logger;    }
+        return logger;
+    }
 
     private Logger createTreeLogger(int logEvery, String fileName) {
 
@@ -556,19 +559,57 @@ public class BEAST2Context {
 
         cloneAll();
 
-        List<Distribution> distributions = new ArrayList<>();
-        for (BEASTInterface beastInterface : cloneMap.values()) {
-            if (beastInterface instanceof Distribution) {
-                distributions.add((Distribution) beastInterface);
+        List<Distribution> priorList = new ArrayList<>();
+
+        List<Distribution> likelihoodList = new ArrayList<>();
+
+        for (Map.Entry<GraphicalModelNode<?>, BEASTInterface> entry : cloneMap.entrySet()) {
+            if (entry.getValue() instanceof Distribution) {
+                GenerativeDistribution g = (GenerativeDistribution)entry.getKey();
+
+                if (generatorOfSink(g)) {
+                    likelihoodList.add((Distribution) entry.getValue());
+                } else {
+                    priorList.add((Distribution) entry.getValue());
+                }
             }
         }
 
+        System.out.println("Found " + likelihoodList.size() + " likelihoods.");
+        System.out.println("Found " + priorList.size() + " priors.");
+
+        CompoundDistribution priors = new CompoundDistribution();
+        priors.setInputValue("distribution", priorList);
+        priors.initAndValidate();
+        priors.setID("prior");
+        elements.add(priors);
+
+        CompoundDistribution likelihoods = new CompoundDistribution();
+        likelihoods.setInputValue("distribution", likelihoodList);
+        likelihoods.initAndValidate();
+        likelihoods.setID("likelihood");
+        elements.add(likelihoods);
+
+        List<Distribution> posteriorList = new ArrayList<>();
+        posteriorList.add(priors);
+        posteriorList.add(likelihoods);
+
         CompoundDistribution posterior = new CompoundDistribution();
-        posterior.setInputValue("distribution", distributions);
+        posterior.setInputValue("distribution", posteriorList);
         posterior.initAndValidate();
         posterior.setID("posterior");
+        elements.add(posterior);
 
         return posterior;
+    }
+
+    private boolean generatorOfSink(GenerativeDistribution g) {
+        for (Value<?> var : parser.getSinks()) {
+            if (var.getGenerator() == g) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
