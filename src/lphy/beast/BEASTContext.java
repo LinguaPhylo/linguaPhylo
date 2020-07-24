@@ -5,19 +5,15 @@ import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
-import beast.evolution.alignment.Alignment;
 import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.tree.Tree;
-import beast.math.distributions.Exponential;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
-import beast.util.TreeParser;
 import beast.util.XMLProducer;
 import lphy.beast.tobeast.AlignmentToBEAST;
 import lphy.beast.tobeast.TimeTreeToBEAST;
-import lphy.evolution.tree.TimeTree;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.*;
 import lphy.graphicalModel.*;
@@ -37,7 +33,8 @@ public class BEASTContext {
     // a map of graphical model nodes to equivalent BEASTInterface objects
     Map<GraphicalModelNode<?>, BEASTInterface> beastObjects = new HashMap<>();
 
-    Map<BEASTInterface, GraphicalModelNode<?>> reverseCloneMap = new HashMap<>();
+    // a map of BEASTInterface to graphical model nodes that they represent
+    Map<BEASTInterface, GraphicalModelNode<?>> BEASTToLPHYMap = new HashMap<>();
 
     Map<Class, ValueToBEAST> valueToBEASTMap = new HashMap<>();
 
@@ -130,7 +127,7 @@ public class BEASTContext {
 
     private void addToContext(GraphicalModelNode node, BEASTInterface beastInterface) {
         beastObjects.put(node, beastInterface);
-        reverseCloneMap.put(beastInterface, node);
+        BEASTToLPHYMap.put(beastInterface, node);
         elements.add(beastInterface);
 
         if (node instanceof RandomVariable) {
@@ -334,7 +331,7 @@ public class BEASTContext {
     }
 
     private Operator createBEASTOperator(RealParameter parameter) {
-        RandomVariable<?> variable = (RandomVariable<?>) reverseCloneMap.get(parameter);
+        RandomVariable<?> variable = (RandomVariable<?>) BEASTToLPHYMap.get(parameter);
 
         Operator operator;
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
