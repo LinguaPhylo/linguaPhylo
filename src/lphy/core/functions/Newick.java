@@ -1,7 +1,7 @@
 package lphy.core.functions;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.functions.newickParser.NewickASTVisitor;
 import lphy.core.functions.newickParser.NewickLexer;
 import lphy.core.functions.newickParser.NewickParser;

@@ -1,6 +1,8 @@
-package lphy;
+package lphy.evolution.coalescent;
 
-import lphy.core.distributions.Exp;
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -131,4 +133,5 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
     public String toString() {
         return getName();
     }
+    
 }

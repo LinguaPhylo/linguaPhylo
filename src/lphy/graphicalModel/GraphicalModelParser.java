@@ -2,20 +2,20 @@ package lphy.graphicalModel;
 
 import lphy.BirthDeathTree;
 import lphy.BirthDeathTreeDT;
-import lphy.Coalescent;
+import lphy.evolution.coalescent.Coalescent;
 import lphy.Yule;
-import lphy.core.ErrorModel;
+import lphy.evolution.alignment.ErrorModel;
 import lphy.core.LPhyParser;
 import lphy.core.PhyloBrownian;
-import lphy.core.PhyloCTMC;
+import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.core.commands.Remove;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
+import lphy.evolution.substitutionmodel.*;
 import lphy.graphicalModel.types.*;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
-import lphy.parser.SimulatorListenerImpl;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

@@ -1,5 +1,7 @@
-package lphy;
+package lphy.evolution.coalescent;
 
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
 import junit.framework.TestCase;
 

@@ -1,4 +1,4 @@
-package lphy.core;
+package lphy.evolution.alignment;
 
 import lphy.graphicalModel.Value;
 import lphy.app.AlignmentComponent;

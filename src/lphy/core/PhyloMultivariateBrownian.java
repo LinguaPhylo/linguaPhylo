@@ -1,17 +1,12 @@
 package lphy.core;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
-import lphy.core.functions.DoubleArray;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArrayValue;
-import lphy.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
-import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -130,4 +125,5 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
 
         return ns2;
     }
+
 }

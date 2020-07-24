@@ -17,7 +17,7 @@
 
 package lphy.nexus;
 
-import lphy.core.Alignment;
+import lphy.evolution.alignment.Alignment;
 
 import java.util.ArrayList;
 import java.util.List;

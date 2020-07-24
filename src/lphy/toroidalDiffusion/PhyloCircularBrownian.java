@@ -1,6 +1,6 @@
 package lphy.toroidalDiffusion;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.core.PhyloBrownian;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;

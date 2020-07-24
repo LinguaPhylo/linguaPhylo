@@ -1,12 +1,12 @@
 package lphy.core.functions;
 
-import lphy.StructuredCoalescent;
-import lphy.TimeTree;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import beast.core.BEASTInterface;
+import lphy.evolution.coalescent.StructuredCoalescent;
+import lphy.evolution.tree.TimeTree;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
+
+import java.util.Map;
 
 public class MigrationCount extends DeterministicFunction<Integer> {
 

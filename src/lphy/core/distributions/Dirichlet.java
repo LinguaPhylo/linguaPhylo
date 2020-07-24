@@ -1,7 +1,9 @@
 package lphy.core.distributions;
 
+import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
+import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.types.Domain;
 
 import java.util.*;
 
@@ -63,4 +65,11 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         return getName();
     }
 
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        beast.math.distributions.Dirichlet beastDirichlet = new beast.math.distributions.Dirichlet();
+        beastDirichlet.setInputValue("alpha", beastObjects.get(getConcentration()));
+        beastDirichlet.initAndValidate();
+
+        return BEASTContext.createPrior(beastDirichlet, (RealParameter)value);
+    }
 }

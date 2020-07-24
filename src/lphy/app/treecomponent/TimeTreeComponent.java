@@ -1,9 +1,9 @@
 package lphy.app.treecomponent;
 
 import lphy.ColorTable;
-import lphy.StructuredCoalescent;
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import lphy.evolution.coalescent.StructuredCoalescent;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,12 +1,11 @@
-package lphy.core;
+package lphy.evolution.alignment;
 
+import beast.core.BEASTInterface;
 import lphy.core.distributions.Utils;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 

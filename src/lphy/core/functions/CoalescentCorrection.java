@@ -1,6 +1,6 @@
 package lphy.core.functions;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;

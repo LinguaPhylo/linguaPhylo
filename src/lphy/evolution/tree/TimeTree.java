@@ -1,11 +1,10 @@
-package lphy;
+package lphy.evolution.tree;
 
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
 import javax.swing.*;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

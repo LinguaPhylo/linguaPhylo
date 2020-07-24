@@ -19,8 +19,8 @@
 
 package lphy.nexus;
 
-import lphy.TimeTree;
-import lphy.core.Alignment;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.alignment.Alignment;
 
 import java.io.PrintStream;
 import java.util.List;

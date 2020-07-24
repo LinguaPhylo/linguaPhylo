@@ -1,5 +1,6 @@
 package lphy.core.distributions;
 
+import beast.core.BEASTInterface;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
@@ -58,4 +59,14 @@ public class Beta implements GenerativeDistribution<Double> {
     public String toString() {
         return getName();
     }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        beast.math.distributions.Beta betaDistribution = new beast.math.distributions.Beta();
+        betaDistribution.setInputValue("alpha", beastObjects.get(getParams().get("alpha")));
+        betaDistribution.setInputValue("beta", beastObjects.get(getParams().get("beta")));
+        betaDistribution.initAndValidate();
+        return betaDistribution;
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package lphy.beast2;
+package lphy.beast;
 
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
@@ -28,7 +28,7 @@ public class BEASTAnalysis {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         source(reader, parser);
 
-        BEAST2Context context = new BEAST2Context(parser);
+        BEASTContext context = new BEASTContext(parser);
 
         String fileNameStem = outfile.substring(0, outfile.indexOf("."));
 

@@ -1,6 +1,6 @@
 package lphy.app;
 
-import lphy.core.AlignmentFileLogger;
+import lphy.evolution.alignment.AlignmentFileLogger;
 import lphy.core.Arguments;
 import lphy.core.TreeFileLogger;
 import lphy.core.VarFileLogger;

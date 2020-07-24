@@ -1,4 +1,6 @@
-package lphy.core;
+package lphy.evolution.alignment;
+
+import lphy.evolution.alignment.Alignment;
 
 import java.util.Map;
 

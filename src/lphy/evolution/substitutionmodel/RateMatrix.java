@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.evolution.substitutionmodel;
 
 import lphy.graphicalModel.DeterministicFunction;
 

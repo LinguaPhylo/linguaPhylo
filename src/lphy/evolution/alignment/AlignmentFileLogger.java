@@ -1,6 +1,6 @@
-package lphy.core;
+package lphy.evolution.alignment;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomVariableLogger;
 import lphy.nexus.NexusWriter;

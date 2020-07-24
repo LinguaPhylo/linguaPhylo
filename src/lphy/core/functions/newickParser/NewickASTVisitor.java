@@ -1,6 +1,6 @@
 package lphy.core.functions.newickParser;
 
-import lphy.TimeTreeNode;
+import lphy.evolution.tree.TimeTreeNode;
 
 import java.util.ArrayList;
 import java.util.BitSet;

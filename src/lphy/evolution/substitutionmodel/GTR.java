@@ -1,7 +1,12 @@
-package lphy.core.functions;
+package lphy.evolution.substitutionmodel;
 
+import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
+import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
+
+import java.util.Map;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -68,5 +73,17 @@ public class GTR extends RateMatrix {
 
     public GraphicalModelNode<?> getFreq() {
         return getParams().get(freqParamName);
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+
+        substmodels.nucleotide.GTR beastGTR = new substmodels.nucleotide.GTR();
+
+        Value<Double[]> rates = getRates();
+
+        beastGTR.setInputValue("rates", beastObjects.get(rates));
+        beastGTR.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) beastObjects.get(getFreq())));
+        beastGTR.initAndValidate();
+        return beastGTR;
     }
 }

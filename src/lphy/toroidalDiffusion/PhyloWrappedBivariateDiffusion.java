@@ -1,8 +1,8 @@
 package lphy.toroidalDiffusion;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
-import lphy.core.PhyloMultivariateBrownian;
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.StringDoubleArrayMap;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.GenerativeDistribution;
@@ -10,7 +10,6 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArrayValue;
-import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -143,5 +142,9 @@ public class PhyloWrappedBivariateDiffusion implements GenerativeDistribution<Ma
             newValues[i + 1] = samples[0][1];
         }
         return newValues;
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

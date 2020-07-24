@@ -1,10 +1,10 @@
 package lphy.app;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.app.treecomponent.TimeTreeComponent;
-import lphy.core.Alignment;
-import lphy.core.ErrorAlignment;
-import lphy.core.PhyloCTMC;
+import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.ErrorAlignment;
+import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;

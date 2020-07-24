@@ -1,7 +1,16 @@
-package lphy.core;
+package lphy.evolution.likelihood;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import beast.core.BEASTInterface;
+import beast.evolution.branchratemodel.StrictClockModel;
+import beast.evolution.likelihood.TreeLikelihood;
+import beast.evolution.sitemodel.SiteModel;
+import beast.evolution.substitutionmodel.SubstitutionModel;
+import beast.evolution.tree.Tree;
+import lphy.beast.BEASTContext;
+import lphy.beast.ValueToBEAST;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
+import lphy.evolution.alignment.Alignment;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
@@ -382,5 +391,46 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         wk = null;
         index = null;
         omtrx = null;
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+
+        TreeLikelihood treeLikelihood = new TreeLikelihood();
+
+        assert value instanceof beast.evolution.alignment.Alignment;
+        treeLikelihood.setInputValue("data", value);
+
+        Tree tree = (Tree) beastObjects.get(getTree());
+        treeLikelihood.setInputValue("tree", tree);
+
+        if (getBranchRates() != null) {
+            throw new RuntimeException("Relaxed clock models not handled yet.");
+        } else {
+            StrictClockModel clockModel = new StrictClockModel();
+            Value<Double> clockRate = getClockRate();
+            if (clockRate != null) {
+                clockModel.setInputValue("clock.rate", beastObjects.get(clockRate));
+            } else {
+                clockModel.setInputValue("clock.rate", BEASTContext.createRealParameter(1.0));
+            }
+            treeLikelihood.setInputValue("branchRateModel", clockModel);
+        }
+
+        Generator qGenerator = getQ().getGenerator();
+        if (qGenerator == null) {
+            throw new RuntimeException("BEAST2 does not support a fixed Q matrix.");
+        } else {
+            SubstitutionModel substitutionModel = (SubstitutionModel) beastObjects.get(qGenerator);
+
+            SiteModel siteModel = new SiteModel();
+            siteModel.setInputValue("substModel", substitutionModel);
+            siteModel.initAndValidate();
+
+            treeLikelihood.setInputValue("siteModel", siteModel);
+        }
+
+        treeLikelihood.initAndValidate();
+
+        return treeLikelihood;
     }
 }

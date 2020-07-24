@@ -1,13 +1,6 @@
 package lphy.parser;
 
 
-import lphy.*;
-import lphy.core.ErrorModel;
-import lphy.core.PhyloBrownian;
-import lphy.core.PhyloCTMC;
-import lphy.core.distributions.*;
-import lphy.core.distributions.Exp;
-import lphy.core.functions.*;
 import lphy.graphicalModel.*;
 import lphy.parser.SimulatorParser.*;
 import org.antlr.v4.runtime.*;

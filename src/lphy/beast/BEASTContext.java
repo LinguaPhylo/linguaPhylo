@@ -1,4 +1,4 @@
-package lphy.beast2;
+package lphy.beast;
 
 import beast.core.*;
 import beast.core.parameter.IntegerParameter;
@@ -6,70 +6,76 @@ import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.alignment.Alignment;
-import beast.evolution.alignment.Sequence;
-import beast.evolution.branchratemodel.StrictClockModel;
-import beast.evolution.likelihood.TreeLikelihood;
 import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
-import beast.evolution.sitemodel.SiteModel;
 import beast.evolution.substitutionmodel.Frequencies;
-import beast.evolution.substitutionmodel.SubstitutionModel;
 import beast.evolution.tree.Tree;
-import beast.evolution.tree.coalescent.ConstantPopulation;
-import beast.evolution.tree.coalescent.TreeIntervals;
 import beast.math.distributions.Exponential;
-import beast.math.distributions.LogNormalDistributionModel;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.TreeParser;
 import beast.util.XMLProducer;
-import lphy.Coalescent;
-import lphy.TimeTree;
+import lphy.beast.tobeast.AlignmentToBEAST;
+import lphy.beast.tobeast.TimeTreeToBEAST;
+import lphy.evolution.tree.TimeTree;
 import lphy.core.LPhyParser;
-import lphy.core.PhyloCTMC;
 import lphy.core.distributions.*;
-import lphy.core.functions.F81;
-import lphy.core.functions.GTR;
-import lphy.core.functions.HKY;
-import lphy.core.functions.JukesCantor;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.types.Domain;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BEAST2Context {
+public class BEASTContext {
 
     List<StateNode> state = new ArrayList<>();
 
     Set<BEASTInterface> elements = new HashSet<>();
 
     // a map of graphical model nodes to equivalent BEASTInterface objects
-    Map<GraphicalModelNode<?>, BEASTInterface> cloneMap = new HashMap<>();
+    Map<GraphicalModelNode<?>, BEASTInterface> beastObjects = new HashMap<>();
 
     Map<BEASTInterface, GraphicalModelNode<?>> reverseCloneMap = new HashMap<>();
 
+    Map<Class, ValueToBEAST> valueToBEASTMap = new HashMap<>();
+
     LPhyParser parser;
 
-    public BEAST2Context(LPhyParser phyParser) {
+    public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
+
+        valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
+        valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
+    }
+
+    public static RealParameter createRealParameter(Double[] value) {
+        return new RealParameter(value);
+    }
+
+    public static RealParameter createRealParameter(double value) {
+        RealParameter parameter = new RealParameter();
+        parameter.setInputValue("value", value);
+        parameter.initAndValidate();
+        return parameter;
     }
 
     /**
      * Clone the current model to BEAST2
      */
-    public void cloneAll() {
+    public void createBEASTObjects() {
 
         Set<Value<?>> sinks = parser.getSinks();
 
         for (Value<?> value : sinks) {
-            cloneAll(value);
+            createBEASTObjects(value);
         }
     }
 
-    private void cloneAll(Value<?> value) {
+    private void createBEASTObjects(Value<?> value) {
 
-        cloneValue(value);
+        valueToBEAST(value);
 
         Generator<?> generator = value.getGenerator();
 
@@ -77,10 +83,10 @@ public class BEAST2Context {
 
             for (Object inputObject : generator.getParams().values()) {
                 Value<?> input = (Value<?>) inputObject;
-                cloneAll(input);
+                createBEASTObjects(input);
             }
 
-            cloneGenerator(value, generator);
+            generatorToBEAST(value, generator);
         }
     }
 
@@ -91,66 +97,44 @@ public class BEAST2Context {
      * @param value
      * @param generator
      */
-    private void cloneGenerator(Value value, Generator generator) {
-        BEASTInterface clone = null;
+    private void generatorToBEAST(Value value, Generator generator) {
+        BEASTInterface beastGenerator = generator.toBEAST(beastObjects.get(value), beastObjects);
 
-        if (generator instanceof PhyloCTMC) {
-            clone = createTreeLikelihood((PhyloCTMC) generator, (Alignment) cloneMap.get(value));
-        } else if (generator instanceof Coalescent) {
-            clone = createBEASTCoalescent((Coalescent) generator, (Tree) cloneMap.get(value));
-        } else if (generator instanceof JukesCantor) {
-            clone = createBEASTJukesCantor((JukesCantor) generator);
-        } else if (generator instanceof F81) {
-            clone = createBEASTF81((F81)generator);
-        } else if (generator instanceof HKY) {
-            clone = createBEASTHKY((HKY)generator);
-        } else if (generator instanceof GTR) {
-            clone = createBEASTGTR((GTR)generator);
-        } else if (generator instanceof LogNormal) {
-            clone = createBEASTDistribution((LogNormal)generator, (Parameter)cloneMap.get(value));
-        } else if (generator instanceof Exp) {
-            clone = createBEASTDistribution((Exp)generator, (Parameter)cloneMap.get(value));
-        } else if (generator instanceof Beta) {
-            clone = createBEASTDistribution((Beta)generator, (Parameter)cloneMap.get(value));
-        } else if (generator instanceof Dirichlet) {
-            clone = createBEASTDistribution((Dirichlet) generator, (Parameter)cloneMap.get(value));
-        }
-
-        if (clone == null) {
+        if (beastGenerator == null) {
             throw new RuntimeException("Generator " + generator + " not handled in cloneGenerator()");
         } else {
-            addToContext(generator, clone);
+            addToContext(generator, beastGenerator);
         }
     }
 
-    private BEASTInterface cloneValue(Value<?> val) {
+    private BEASTInterface valueToBEAST(Value<?> val) {
 
-        BEASTInterface clone = null;
+        BEASTInterface beastValue = null;
 
-        if (val.value() instanceof TimeTree) {
-            clone = createBEASTTree((Value<TimeTree>) val, null);
+        ValueToBEAST toBEAST = valueToBEASTMap.get(val.value().getClass());
+
+        if (toBEAST != null) {
+            beastValue = toBEAST.valueToBEAST(val, beastObjects);
         } else if (val.value() instanceof Double || val.value() instanceof Double[] || val.value() instanceof Double[][]) {
-            clone = createBEASTRealParameter(val);
+            beastValue = createBEASTRealParameter(val);
         } else if (val.value() instanceof Integer || val.value() instanceof Integer[]) {
-            clone = createBEASTIntegerParameter(val);
-        } else if (val.value() instanceof lphy.core.Alignment) {
-            clone = createBEASTAlignment((Value<lphy.core.Alignment>) val);
+            beastValue = createBEASTIntegerParameter(val);
         }
-        if (clone == null) {
-            throw new RuntimeException("Unhandled value in cloneValue(): " + val);
+        if (beastValue == null) {
+            throw new RuntimeException("Unhandled value in valueToBEAST(): " + val);
         }
 
-        addToContext(val, clone);
-        return clone;
+        addToContext(val, beastValue);
+        return beastValue;
     }
 
     private void addToContext(GraphicalModelNode node, BEASTInterface beastInterface) {
-        cloneMap.put(node, beastInterface);
+        beastObjects.put(node, beastInterface);
         reverseCloneMap.put(beastInterface, node);
         elements.add(beastInterface);
 
         if (node instanceof RandomVariable) {
-            RandomVariable<?> var = (RandomVariable<?>)node;
+            RandomVariable<?> var = (RandomVariable<?>) node;
 
             if (var.getOutputs().size() > 0 && !state.contains(beastInterface)) {
                 state.add((StateNode) beastInterface);
@@ -158,172 +142,19 @@ public class BEAST2Context {
         }
     }
 
-    private beast.evolution.tree.coalescent.Coalescent createBEASTCoalescent(lphy.Coalescent coalescent, Tree tree) {
-
-        beast.evolution.tree.coalescent.Coalescent beastCoalescent = new beast.evolution.tree.coalescent.Coalescent();
-
-        TreeIntervals treeIntervals = new TreeIntervals();
-        treeIntervals.setInputValue("tree", tree);
-        treeIntervals.initAndValidate();
-        elements.add(treeIntervals);
-
-        beastCoalescent.setInputValue("treeIntervals", treeIntervals);
-
-        ConstantPopulation populationFunction = new ConstantPopulation();
-        populationFunction.setInputValue("popSize", cloneMap.get(coalescent.getTheta()));
-        populationFunction.initAndValidate();
-        elements.add(populationFunction);
-
-        beastCoalescent.setInputValue("populationModel", populationFunction);
-
-        beastCoalescent.initAndValidate();
-        elements.add(beastCoalescent);
-
-        return beastCoalescent;
-    }
-
-    public TreeLikelihood createTreeLikelihood(PhyloCTMC phyloCTMC, Alignment alignment) {
-
-        TreeLikelihood treeLikelihood = new TreeLikelihood();
-
-        treeLikelihood.setInputValue("data", alignment);
-
-        Tree tree = (Tree) cloneMap.get(phyloCTMC.getTree());
-        treeLikelihood.setInputValue("tree", tree);
-
-        if (phyloCTMC.getBranchRates() != null) {
-            throw new RuntimeException("Relaxed clock models not handled yet.");
-        } else {
-            StrictClockModel clockModel = new StrictClockModel();
-            Value<Double> clockRate = phyloCTMC.getClockRate();
-            if (clockRate != null) {
-                clockModel.setInputValue("clock.rate", cloneMap.get(clockRate));
-            } else {
-                clockModel.setInputValue("clock.rate", createRealParameter(1.0));
-            }
-            elements.add(clockModel);
-            treeLikelihood.setInputValue("branchRateModel", clockModel);
-        }
-
-        Generator qGenerator = phyloCTMC.getQ().getGenerator();
-        if (qGenerator == null) {
-            throw new RuntimeException("BEAST2 does not support a fixed Q matrix.");
-        } else {
-            SubstitutionModel substitutionModel = (SubstitutionModel)cloneMap.get(qGenerator);
-
-            SiteModel siteModel = new SiteModel();
-            siteModel.setInputValue("substModel", substitutionModel);
-            siteModel.initAndValidate();
-            elements.add(siteModel);
-
-            treeLikelihood.setInputValue("siteModel", siteModel);
-        }
-
-        treeLikelihood.initAndValidate();
-        elements.add(treeLikelihood);
-
-        return treeLikelihood;
-    }
-
-    private beast.evolution.substitutionmodel.JukesCantor createBEASTJukesCantor(JukesCantor generator) {
-        beast.evolution.substitutionmodel.JukesCantor beastJC = new beast.evolution.substitutionmodel.JukesCantor();
-        beastJC.initAndValidate();
-        elements.add(beastJC);
-        return beastJC;
-    }
-
-    public substmodels.nucleotide.GTR createBEASTGTR(GTR gtr) {
-
-        substmodels.nucleotide.GTR beastGTR = new substmodels.nucleotide.GTR();
-
-        Value<Double[]> rates = gtr.getRates();
-
-        beastGTR.setInputValue("rates", cloneMap.get(rates));
-        beastGTR.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(gtr.getFreq())));
-        beastGTR.initAndValidate();
-        elements.add(beastGTR);
-        return beastGTR;
-    }
-
-    public beast.evolution.substitutionmodel.HKY createBEASTHKY(HKY hky) {
-        beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
-        beastHKY.setInputValue("kappa", cloneMap.get(hky.getKappa()));
-        beastHKY.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(hky.getFreq())));
-        beastHKY.initAndValidate();
-        elements.add(beastHKY);
-        return beastHKY;
-    }
-
-    public beast.evolution.substitutionmodel.HKY createBEASTF81(F81 f81) {
-        beast.evolution.substitutionmodel.HKY beastF81 = new beast.evolution.substitutionmodel.HKY();
-        beastF81.setInputValue("kappa", new RealParameter("1.0"));
-        beastF81.setInputValue("frequencies", createBEASTFrequencies((RealParameter)cloneMap.get(f81.getFreq())));
-        beastF81.initAndValidate();
-        elements.add(beastF81);
-        return beastF81;
-    }
-
-    public Frequencies createBEASTFrequencies(RealParameter freqParameter) {
+    public static Frequencies createBEASTFrequencies(RealParameter freqParameter) {
         Frequencies frequencies = new Frequencies();
         frequencies.setInputValue("frequencies", freqParameter);
         frequencies.initAndValidate();
-        elements.add(frequencies);
         return frequencies;
     }
 
-    public Prior createBEASTDistribution(LogNormal logNormal, Parameter parameter) {
-        LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
-        logNormalDistributionModel.setInputValue("M", cloneMap.get(logNormal.getParams().get("meanlog")));
-        logNormalDistributionModel.setInputValue("S", cloneMap.get(logNormal.getParams().get("sdlog")));
-        logNormalDistributionModel.initAndValidate();
-        elements.add(logNormalDistributionModel);
-
-        return createPrior(logNormalDistributionModel, parameter);
-    }
-
-    public Prior createPrior(ParametricDistribution distr, Parameter parameter) {
+    public static Prior createPrior(ParametricDistribution distr, Parameter parameter) {
         Prior prior = new Prior();
         prior.setInputValue("distr", distr);
         prior.setInputValue("x", parameter);
         prior.initAndValidate();
-        elements.add(prior);
         return prior;
-    }
-
-    public Prior createBEASTDistribution(Beta beta, Parameter parameter) {
-        beast.math.distributions.Beta betaDistribution = new beast.math.distributions.Beta();
-        betaDistribution.setInputValue("alpha", cloneMap.get(beta.getParams().get("alpha")));
-        betaDistribution.setInputValue("beta", cloneMap.get(beta.getParams().get("beta")));
-        betaDistribution.initAndValidate();
-        elements.add(betaDistribution);
-
-        return createPrior(betaDistribution, parameter);
-    }
-
-    public Prior createBEASTDistribution(Exp exp, Parameter parameter) {
-        Exponential exponential = new Exponential();
-        exponential.setInputValue("mean", cloneMap.get(exp.getParams().get("mean")));
-        exponential.initAndValidate();
-        elements.add(exponential);
-
-        return createPrior(exponential, parameter);
-    }
-
-    public Prior createBEASTDistribution(Dirichlet dirichlet, Parameter parameter) {
-        beast.math.distributions.Dirichlet beastDirichlet = new beast.math.distributions.Dirichlet();
-        beastDirichlet.setInputValue("alpha", cloneMap.get(dirichlet.getConcentration()));
-        beastDirichlet.initAndValidate();
-        elements.add(beastDirichlet);
-
-        return createPrior(beastDirichlet, parameter);
-    }
-
-    private RealParameter createRealParameter(double value) {
-        RealParameter parameter = new RealParameter();
-        parameter.setInputValue("value", value);
-        parameter.initAndValidate();
-        elements.add(parameter);
-        return parameter;
     }
 
     public RealParameter createBEASTRealParameter(Value value) {
@@ -332,15 +163,23 @@ public class BEAST2Context {
         if (value.value() instanceof Double) {
             parameter.setInputValue("value", Collections.singletonList(value.value()));
             parameter.setInputValue("dimension", 1);
+
+            // check domain
+            if (value.getGenerator() instanceof LogNormal || value.getGenerator() instanceof Exp) {
+                parameter.setInputValue("lower", 0.0);
+            }
             parameter.initAndValidate();
         } else if (value.value() instanceof Double[]) {
             List<Double> values = Arrays.asList((Double[]) value.value());
             parameter.setInputValue("value", values);
             parameter.setInputValue("dimension", values.size());
 
+            // check domain
             if (value.getGenerator() instanceof Dirichlet) {
                 parameter.setInputValue("upper", 1.0);
-                parameter.setInputValue("lower",  0.0);
+                parameter.setInputValue("lower", 0.0);
+            } else if (value.getGenerator() instanceof LogNormal || value.getGenerator() instanceof Exp) {
+                parameter.setInputValue("lower", 0.0);
             }
 
             parameter.initAndValidate();
@@ -385,53 +224,6 @@ public class BEAST2Context {
         elements.add(parameter);
 
         return parameter;
-    }
-
-
-    public Tree createBEASTTree(Value<TimeTree> timeTree, Alignment alignment) {
-
-        TreeParser tree = new TreeParser();
-        tree.setInputValue("newick", timeTree.value().toString());
-        tree.setInputValue("IsLabelledNewick", true);
-        tree.setInputValue("taxa", alignment);
-
-        tree.initAndValidate();
-        tree.setID(timeTree.getCanonicalId());
-        elements.add(tree);
-        return tree;
-    }
-
-    public Alignment createBEASTAlignment(Value<lphy.core.Alignment> lpAlignment) {
-
-        List<Sequence> sequences = new ArrayList<>();
-
-        lphy.core.Alignment alignment = lpAlignment.value();
-
-        String[] taxaNames = alignment.getTaxaNames();
-
-        for (int i = 0; i < alignment.getTaxonCount(); i++) {
-            sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
-        }
-
-        Alignment beastAlignment = new Alignment();
-        beastAlignment.setInputValue("sequence", sequences);
-        beastAlignment.initAndValidate();
-
-        beastAlignment.setID(lpAlignment.getCanonicalId());
-        addToContext(lpAlignment, beastAlignment);
-
-        return beastAlignment;
-    }
-
-    public Sequence createBEASTSequence(String taxon, String sequence) {
-        Sequence seq = new Sequence();
-        seq.setInputValue("taxon", taxon);
-        seq.setInputValue("value", sequence);
-        seq.initAndValidate();
-
-        elements.add(seq);
-
-        return seq;
     }
 
     public List<Operator> createOperators() {
@@ -483,7 +275,7 @@ public class BEAST2Context {
 
         List<Tree> trees = state.stream()
                 .filter(stateNode -> stateNode instanceof Tree)
-                .map (stateNode -> (Tree) stateNode)
+                .map(stateNode -> (Tree) stateNode)
                 .collect(Collectors.toList());
 
         Logger logger = new Logger();
@@ -523,7 +315,7 @@ public class BEAST2Context {
         SubtreeSlide subtreeSlide = new SubtreeSlide();
         subtreeSlide.setInputValue("tree", tree);
         subtreeSlide.setInputValue("weight", 1.0);
-        subtreeSlide.setInputValue("size", tree.getRoot().getHeight()/10.0);
+        subtreeSlide.setInputValue("size", tree.getRoot().getHeight() / 10.0);
         subtreeSlide.initAndValidate();
         elements.add(subtreeSlide);
 
@@ -542,7 +334,7 @@ public class BEAST2Context {
     }
 
     private Operator createBEASTOperator(RealParameter parameter) {
-        RandomVariable<?> variable = ( RandomVariable<?>)reverseCloneMap.get(parameter);
+        RandomVariable<?> variable = (RandomVariable<?>) reverseCloneMap.get(parameter);
 
         Operator operator;
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
@@ -563,15 +355,15 @@ public class BEAST2Context {
 
     private CompoundDistribution createBEASTPosterior() {
 
-        cloneAll();
+        createBEASTObjects();
 
         List<Distribution> priorList = new ArrayList<>();
 
         List<Distribution> likelihoodList = new ArrayList<>();
 
-        for (Map.Entry<GraphicalModelNode<?>, BEASTInterface> entry : cloneMap.entrySet()) {
+        for (Map.Entry<GraphicalModelNode<?>, BEASTInterface> entry : beastObjects.entrySet()) {
             if (entry.getValue() instanceof Distribution) {
-                GenerativeDistribution g = (GenerativeDistribution)entry.getKey();
+                GenerativeDistribution g = (GenerativeDistribution) entry.getKey();
 
                 if (generatorOfSink(g)) {
                     likelihoodList.add((Distribution) entry.getValue());
@@ -618,7 +410,6 @@ public class BEAST2Context {
         return false;
     }
 
-
     public MCMC createMCMC(long chainLength, int logEvery, String fileName) {
 
         CompoundDistribution posterior = createBEASTPosterior();
@@ -645,7 +436,22 @@ public class BEAST2Context {
     public void clear() {
         state.clear();
         elements.clear();
-        cloneMap.clear();
+        beastObjects.clear();
+    }
+
+    public void runBEAST(String fileNameStem) {
+
+        MCMC mcmc = createMCMC(1000000, 1000, fileNameStem);
+
+        try {
+            mcmc.run();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     public String toBEASTXML(String fileNameStem) {

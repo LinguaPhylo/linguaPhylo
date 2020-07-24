@@ -1,14 +1,10 @@
 package lphy.core;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 

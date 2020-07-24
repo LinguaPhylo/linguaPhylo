@@ -1,6 +1,9 @@
 package lphy;
 
+import beast.core.BEASTInterface;
 import lphy.core.distributions.Utils;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -41,7 +44,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
         while (sampleTips.size() == 0) {
             for (TimeTreeNode node : sampleTree.getNodes()) {
-                if (node.isLeaf() && node.age == 0.0 && random.nextDouble() < p) {
+                if (node.isLeaf() && node.getAge() == 0.0 && random.nextDouble() < p) {
                     sampleTips.add(node);
                 }
             }
@@ -131,5 +134,9 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
     public String toString() {
         return getName();
+    }
+    
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

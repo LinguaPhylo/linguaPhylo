@@ -1,4 +1,4 @@
-package lphy;
+package lphy.evolution.tree;
 
 import java.util.*;
 

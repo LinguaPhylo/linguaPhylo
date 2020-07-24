@@ -1,6 +1,6 @@
 package lphy.app;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.Value;
 

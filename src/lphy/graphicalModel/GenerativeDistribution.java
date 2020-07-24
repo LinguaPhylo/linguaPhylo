@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import beast.core.BEASTInterface;
+
 import javax.swing.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -117,4 +119,10 @@ public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
     default T value() {
     	return null;
     }
+
+
+    default public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
+    }
+
 }

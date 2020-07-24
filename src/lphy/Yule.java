@@ -1,6 +1,10 @@
 package lphy;
 
+import beast.core.BEASTInterface;
+import beast.evolution.speciation.YuleModel;
 import lphy.core.distributions.Utils;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -81,6 +85,21 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         map.put(birthRateParamName, birthRate);
         map.put(nParamName, n);
         return map;
+    }
+
+    @Override
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        YuleModel yuleModel = new YuleModel();
+
+        yuleModel.setInputValue("tree", value);
+        yuleModel.setInputValue("birthDiffRate", beastObjects.get(getBirthRate()));
+        yuleModel.initAndValidate();
+
+        return yuleModel;
+    }
+
+    public Value<Double> getBirthRate() {
+        return birthRate;
     }
 
     @Override

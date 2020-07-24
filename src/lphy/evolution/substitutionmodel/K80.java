@@ -1,7 +1,12 @@
-package lphy.core.functions;
+package lphy.evolution.substitutionmodel;
 
+import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
+import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
+
+import java.util.Map;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -18,7 +23,7 @@ public class K80 extends RateMatrix {
 
     @GeneratorInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
     public Value<Double[][]> apply() {
-        Value<Double> kappa = getParams().get(paramName);
+        Value<Double> kappa = getKappa();
         return new DoubleArray2DValue(k80(kappa.value()), this);
     }
 
@@ -47,5 +52,17 @@ public class K80 extends RateMatrix {
         normalize(new Double[] {0.25, 0.25, 0.25, 0.25}, Q);
 
         return Q;
+    }
+
+    public Value<Double> getKappa() {
+        return getParams().get(paramName);
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
+        beastHKY.setInputValue("kappa", beastObjects.get(getKappa()));
+        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies(BEASTContext.createRealParameter(new Double[] {0.25, 0.25, 0.25, 0.25})));
+        beastHKY.initAndValidate();
+        return beastHKY;
     }
 }

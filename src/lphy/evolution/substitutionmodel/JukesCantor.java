@@ -1,7 +1,10 @@
-package lphy.core.functions;
+package lphy.evolution.substitutionmodel;
 
+import beast.core.BEASTInterface;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
+
+import java.util.Map;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -38,5 +41,13 @@ public class JukesCantor extends RateMatrix {
             }
         }
         return Q;
+    }
+
+
+    @Override
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        beast.evolution.substitutionmodel.JukesCantor beastJC = new beast.evolution.substitutionmodel.JukesCantor();
+        beastJC.initAndValidate();
+        return beastJC;
     }
 }

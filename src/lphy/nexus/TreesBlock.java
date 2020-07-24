@@ -17,7 +17,7 @@
 
 package lphy.nexus;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 
 import java.util.ArrayList;
 import java.util.List;

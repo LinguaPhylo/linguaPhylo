@@ -1,12 +1,10 @@
 package lphy.core;
 
-import lphy.TimeTree;
-import lphy.TimeTreeNode;
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

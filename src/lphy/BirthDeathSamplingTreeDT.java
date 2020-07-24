@@ -1,7 +1,10 @@
 package lphy;
 
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -83,5 +86,9 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
 
     public String toString() {
         return getName();
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

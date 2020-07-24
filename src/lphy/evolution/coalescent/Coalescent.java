@@ -1,5 +1,10 @@
-package lphy;
+package lphy.evolution.coalescent;
 
+import beast.core.BEASTInterface;
+import beast.evolution.tree.coalescent.ConstantPopulation;
+import beast.evolution.tree.coalescent.TreeIntervals;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
@@ -139,7 +144,28 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         return getName();
     }
 
-    public GraphicalModelNode<?> getTheta() {
+    public Value<Double> getTheta() {
         return theta;
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+
+        beast.evolution.tree.coalescent.Coalescent beastCoalescent = new beast.evolution.tree.coalescent.Coalescent();
+
+        TreeIntervals treeIntervals = new TreeIntervals();
+        treeIntervals.setInputValue("tree", value);
+        treeIntervals.initAndValidate();
+
+        beastCoalescent.setInputValue("treeIntervals", treeIntervals);
+
+        ConstantPopulation populationFunction = new ConstantPopulation();
+        populationFunction.setInputValue("popSize", beastObjects.get(getTheta()));
+        populationFunction.initAndValidate();
+
+        beastCoalescent.setInputValue("populationModel", populationFunction);
+
+        beastCoalescent.initAndValidate();
+
+        return beastCoalescent;
     }
 }

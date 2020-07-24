@@ -1,7 +1,7 @@
 package lphy.app.graphicalmodelcomponent;
 
-import lphy.TimeTree;
-import lphy.core.Alignment;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.alignment.Alignment;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
 import lphy.utils.LoggerUtils;

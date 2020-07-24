@@ -1,5 +1,6 @@
 package lphy.core.distributions;
 
+import beast.core.BEASTInterface;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -55,5 +56,9 @@ public class Poisson implements GenerativeDistribution<Integer> {
 
     public String toString() {
         return getName();
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

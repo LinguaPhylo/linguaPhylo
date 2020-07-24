@@ -1,5 +1,8 @@
-package lphy;
+package lphy.evolution.coalescent;
 
+import beast.core.BEASTInterface;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
@@ -272,5 +275,5 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     public String toString() {
         return getName();
     }
-
+    
 }

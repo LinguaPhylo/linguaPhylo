@@ -1,12 +1,10 @@
 package lphy.core;
 
-import lphy.TimeTree;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomVariableLogger;
 import lphy.nexus.NexusWriter;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 

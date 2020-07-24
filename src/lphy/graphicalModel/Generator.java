@@ -1,9 +1,8 @@
 package lphy.graphicalModel;
 
-import lphy.graphicalModel.types.Domain;
+import beast.core.BEASTInterface;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -168,4 +167,12 @@ public interface Generator<T> extends GraphicalModelNode {
         }
         return false;
     }
+
+    /**
+     * converts this generator to an equivalent BEAST object
+     * @param value the value that this generator produced for the conversion
+     * @param beastObjects the other beast objects already converted for this graphical model
+     * @return a new BEAST object representing this generator
+     */
+    BEASTInterface toBEAST(BEASTInterface value, Map<GraphicalModelNode, BEASTInterface> beastObjects);
 }
