@@ -1,9 +1,9 @@
 package lphy.graphicalModel;
 
-import lphy.BirthDeathTree;
-import lphy.BirthDeathTreeDT;
+import lphy.evolution.birthdeath.BirthDeathTree;
+import lphy.evolution.birthdeath.BirthDeathTreeDT;
 import lphy.evolution.coalescent.Coalescent;
-import lphy.Yule;
+import lphy.evolution.birthdeath.Yule;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.core.LPhyParser;
 import lphy.core.PhyloBrownian;

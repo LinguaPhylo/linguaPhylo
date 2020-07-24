@@ -1,5 +1,8 @@
 package lphy.core.distributions;
 
+import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
+import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -77,6 +80,14 @@ public class Gamma implements GenerativeDistribution<Double> {
 
     public String toString() {
         return getName();
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+        beast.math.distributions.Gamma gammaDistribution = new beast.math.distributions.Gamma();
+        gammaDistribution.setInputValue("shape", beastObjects.get(getParams().get(shapeParamName)));
+        gammaDistribution.setInputValue("scale", beastObjects.get(getParams().get(scaleParamName)));
+        gammaDistribution.initAndValidate();
+        return BEASTContext.createPrior(gammaDistribution, (RealParameter)value);
     }
 
 }

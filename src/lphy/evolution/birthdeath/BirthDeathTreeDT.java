@@ -1,4 +1,4 @@
-package lphy;
+package lphy.evolution.birthdeath;
 
 import beast.core.BEASTInterface;
 import lphy.evolution.tree.TimeTree;

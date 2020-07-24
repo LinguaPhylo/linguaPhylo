@@ -1,12 +1,12 @@
 package lphy.parser;
 
 
-import lphy.*;
 import lphy.core.*;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.evolution.alignment.ErrorModel;
+import lphy.evolution.birthdeath.*;
 import lphy.evolution.coalescent.Coalescent;
 import lphy.evolution.coalescent.MultispeciesCoalescent;
 import lphy.evolution.coalescent.SerialCoalescent;
