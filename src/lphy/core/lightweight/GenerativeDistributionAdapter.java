@@ -1,6 +1,7 @@
 package lphy.core.lightweight;
 
 import beast.core.BEASTInterface;
+import lphy.beast.BEASTContext;
 import lphy.core.lightweight.distributions.Beta;
 import lphy.graphicalModel.*;
 
@@ -16,7 +17,7 @@ public class GenerativeDistributionAdapter<T> extends GeneratorAdapter<T> implem
         return sample(null);
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         throw new UnsupportedOperationException("LightweightGenerativeDistribution.toBEAST not implemented yet!");
     }
 

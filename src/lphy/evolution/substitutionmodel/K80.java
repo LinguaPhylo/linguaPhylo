@@ -58,9 +58,9 @@ public class K80 extends RateMatrix {
         return getParams().get(paramName);
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
-        beastHKY.setInputValue("kappa", beastObjects.get(getKappa()));
+        beastHKY.setInputValue("kappa", context.getBEASTObject(getKappa()));
         beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies(BEASTContext.createRealParameter(new Double[] {0.25, 0.25, 0.25, 0.25})));
         beastHKY.initAndValidate();
         return beastHKY;

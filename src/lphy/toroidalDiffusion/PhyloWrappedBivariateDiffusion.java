@@ -144,7 +144,4 @@ public class PhyloWrappedBivariateDiffusion implements GenerativeDistribution<Ma
         return newValues;
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
-    }
 }

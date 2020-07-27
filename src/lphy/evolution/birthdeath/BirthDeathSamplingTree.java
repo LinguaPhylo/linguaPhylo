@@ -1,6 +1,7 @@
 package lphy.evolution.birthdeath;
 
 import beast.core.BEASTInterface;
+import lphy.beast.BEASTContext;
 import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -184,7 +185,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

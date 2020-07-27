@@ -82,10 +82,10 @@ public class Gamma implements GenerativeDistribution<Double> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Gamma gammaDistribution = new beast.math.distributions.Gamma();
-        gammaDistribution.setInputValue("shape", beastObjects.get(getParams().get(shapeParamName)));
-        gammaDistribution.setInputValue("scale", beastObjects.get(getParams().get(scaleParamName)));
+        gammaDistribution.setInputValue("shape", context.getBEASTObject(getParams().get(shapeParamName)));
+        gammaDistribution.setInputValue("scale", context.getBEASTObject(getParams().get(scaleParamName)));
         gammaDistribution.initAndValidate();
         return BEASTContext.createPrior(gammaDistribution, (RealParameter)value);
     }

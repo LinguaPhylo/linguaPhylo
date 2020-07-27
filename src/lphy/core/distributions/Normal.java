@@ -45,7 +45,7 @@ public class Normal implements GenerativeDistribution<Double> {
         // in case the mean is type integer
         double d =((Number)mean.value()).doubleValue();
 
-        normalDistribution = new NormalDistribution(d, sd.value());
+        normalDistribution = new NormalDistribution(random, d, sd.value());
         double x = normalDistribution.sample();
         return new RandomVariable<>("x", x, this);
     }
@@ -73,10 +73,10 @@ public class Normal implements GenerativeDistribution<Double> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Normal normal = new beast.math.distributions.Normal();
-        normal.setInputValue("mean", beastObjects.get(getParams().get(meanParamName)));
-        normal.setInputValue("sigma", beastObjects.get(getParams().get(sdParamName)));
+        normal.setInputValue("mean", context.getBEASTObject(getParams().get(meanParamName)));
+        normal.setInputValue("sigma", context.getBEASTObject(getParams().get(sdParamName)));
         normal.initAndValidate();
 
         return BEASTContext.createPrior(normal, (RealParameter)value);

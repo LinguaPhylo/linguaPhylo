@@ -65,9 +65,9 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Dirichlet beastDirichlet = new beast.math.distributions.Dirichlet();
-        beastDirichlet.setInputValue("alpha", beastObjects.get(getConcentration()));
+        beastDirichlet.setInputValue("alpha", context.getBEASTObject(getConcentration()));
         beastDirichlet.initAndValidate();
 
         return BEASTContext.createPrior(beastDirichlet, (RealParameter)value);

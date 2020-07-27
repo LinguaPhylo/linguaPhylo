@@ -2,6 +2,7 @@ package lphy.evolution.birthdeath;
 
 import beast.core.BEASTInterface;
 import beast.evolution.speciation.YuleModel;
+import lphy.beast.BEASTContext;
 import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -88,11 +89,11 @@ public class Yule implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         YuleModel yuleModel = new YuleModel();
 
         yuleModel.setInputValue("tree", value);
-        yuleModel.setInputValue("birthDiffRate", beastObjects.get(getBirthRate()));
+        yuleModel.setInputValue("birthDiffRate", context.getBEASTObject(getBirthRate()));
         yuleModel.initAndValidate();
 
         return yuleModel;

@@ -72,9 +72,9 @@ public class Exp implements GenerativeDistribution<Double> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         Exponential exponential = new Exponential();
-        exponential.setInputValue("mean", beastObjects.get(getParams().get("mean")));
+        exponential.setInputValue("mean", context.getBEASTObject(getParams().get("mean")));
         exponential.initAndValidate();
         return BEASTContext.createPrior(exponential, (RealParameter)value);
     }

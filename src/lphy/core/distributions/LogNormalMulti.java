@@ -83,10 +83,10 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
-        logNormalDistributionModel.setInputValue("M", beastObjects.get(getParams().get(meanLogParamName)));
-        logNormalDistributionModel.setInputValue("S", beastObjects.get(getParams().get(sdLogParamName)));
+        logNormalDistributionModel.setInputValue("M", context.getBEASTObject(getParams().get(meanLogParamName)));
+        logNormalDistributionModel.setInputValue("S", context.getBEASTObject(getParams().get(sdLogParamName)));
         logNormalDistributionModel.initAndValidate();
 
         return BEASTContext.createPrior(logNormalDistributionModel, (RealParameter)value);

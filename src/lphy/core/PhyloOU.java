@@ -73,7 +73,6 @@ public class PhyloOU extends PhyloBrownian {
             th = branchThetas.value()[nodeIndex];
         }
 
-
         double a = alpha.value();
 
         double v = diffusionRate.value()/(2*a);

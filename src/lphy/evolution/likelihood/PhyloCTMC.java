@@ -393,14 +393,14 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         omtrx = null;
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
 
         TreeLikelihood treeLikelihood = new TreeLikelihood();
 
         assert value instanceof beast.evolution.alignment.Alignment;
         treeLikelihood.setInputValue("data", value);
 
-        Tree tree = (Tree) beastObjects.get(getTree());
+        Tree tree = (Tree) context.getBEASTObject(getTree());
         treeLikelihood.setInputValue("tree", tree);
 
         if (getBranchRates() != null) {
@@ -409,7 +409,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
             StrictClockModel clockModel = new StrictClockModel();
             Value<Double> clockRate = getClockRate();
             if (clockRate != null) {
-                clockModel.setInputValue("clock.rate", beastObjects.get(clockRate));
+                clockModel.setInputValue("clock.rate", context.getBEASTObject(clockRate));
             } else {
                 clockModel.setInputValue("clock.rate", BEASTContext.createRealParameter(1.0));
             }
@@ -420,7 +420,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (qGenerator == null) {
             throw new RuntimeException("BEAST2 does not support a fixed Q matrix.");
         } else {
-            SubstitutionModel substitutionModel = (SubstitutionModel) beastObjects.get(qGenerator);
+            SubstitutionModel substitutionModel = (SubstitutionModel) context.getBEASTObject(qGenerator);
 
             SiteModel siteModel = new SiteModel();
             siteModel.setInputValue("substModel", substitutionModel);

@@ -150,7 +150,4 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
-    }
 }

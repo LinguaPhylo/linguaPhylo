@@ -1,6 +1,13 @@
 package lphy.evolution.birthdeath;
 
 import beast.core.BEASTInterface;
+import beast.core.Distribution;
+import beast.core.parameter.RealParameter;
+import beast.evolution.speciation.BirthDeathGernhard08Model;
+import beast.evolution.tree.Tree;
+import beast.math.distributions.MRCAPrior;
+import beast.math.distributions.Prior;
+import lphy.beast.BEASTContext;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 
@@ -9,7 +16,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * A Birth-death tree generative distribution
+ * A Birth-death-sampling tree generative distribution
  */
 public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree> {
 
@@ -84,11 +91,51 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
+    public Value<Double> getDiversificationRate() {
+        return getParams().get(diversificationParamName);
+    }
+
+    public Value<Double> getTurnover() {
+        return getParams().get(turnoverParamName);
+    }
+
+    public Value<Double> getRho() {
+        return rho;
+    }
+
     public String toString() {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
+    public BEASTInterface toBEAST(BEASTInterface tree, BEASTContext context) {
+        BirthDeathGernhard08Model beastBirthDeath = new BirthDeathGernhard08Model();
+        beastBirthDeath.setInputValue("birthDiffRate", context.getBEASTObject(getDiversificationRate()));
+        beastBirthDeath.setInputValue("relativeDeathRate", context.getBEASTObject(getTurnover()));
+        beastBirthDeath.setInputValue("sampleProbability", context.getBEASTObject(getRho()));
+        beastBirthDeath.setInputValue("type", "labeled");
+        beastBirthDeath.setInputValue("conditionalOnRoot", true);
+        beastBirthDeath.setInputValue("tree", tree);
+        beastBirthDeath.initAndValidate();
+
+        BEASTInterface beastRootAge = context.getBEASTObject(rootAge);
+        BEASTInterface beastRootAgeGenerator = context.getBEASTObject(rootAge.getGenerator());
+
+        if (beastRootAge instanceof RealParameter && beastRootAgeGenerator instanceof Prior) {
+            RealParameter rootAgeParameter = (RealParameter)beastRootAge;
+            Prior rootAgePrior = (Prior)beastRootAgeGenerator;
+
+            MRCAPrior prior = new MRCAPrior();
+            prior.setInputValue("distr", rootAgePrior.distInput.get());
+            prior.setInputValue("tree", tree);
+            prior.setInputValue("taxonset", ((Tree)tree).getTaxonset());
+            prior.initAndValidate();
+            context.addBEASTObject(prior);
+            context.removeBEASTObject(beastRootAge);
+            context.removeBEASTObject(beastRootAgeGenerator);
+        } else {
+            throw new RuntimeException("Can't map BirthDeathSamplingTree.rootAge prior to tree in BEAST conversion.");
+        }
+
+        return beastBirthDeath;
     }
 }

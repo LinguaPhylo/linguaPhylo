@@ -67,10 +67,10 @@ public class HKY extends RateMatrix {
         return Q;
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
-        beastHKY.setInputValue("kappa", beastObjects.get(getKappa()));
-        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) beastObjects.get(getFreq())));
+        beastHKY.setInputValue("kappa", context.getBEASTObject(getKappa()));
+        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
         beastHKY.initAndValidate();
         return beastHKY;
     }

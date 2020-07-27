@@ -9,6 +9,7 @@ import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.tree.Tree;
+import beast.math.distributions.MRCAPrior;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
@@ -31,7 +32,7 @@ public class BEASTContext {
     Set<BEASTInterface> elements = new HashSet<>();
 
     // a map of graphical model nodes to equivalent BEASTInterface objects
-    Map<GraphicalModelNode<?>, BEASTInterface> beastObjects = new HashMap<>();
+    private Map<GraphicalModelNode<?>, BEASTInterface> beastObjects = new HashMap<>();
 
     // a map of BEASTInterface to graphical model nodes that they represent
     Map<BEASTInterface, GraphicalModelNode<?>> BEASTToLPHYMap = new HashMap<>();
@@ -45,6 +46,29 @@ public class BEASTContext {
 
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
+    }
+
+    public BEASTInterface getBEASTObject(GraphicalModelNode<?> node) {
+        return beastObjects.get(node);
+    }
+
+    public void addBEASTObject(BEASTInterface newBEASTObject) {
+        elements.add(newBEASTObject);
+    }
+
+    public void removeBEASTObject(BEASTInterface beastObject) {
+        elements.remove(beastObject);
+        state.remove(beastObject);
+        BEASTToLPHYMap.remove(beastObject);
+
+        GraphicalModelNode matchingKey = null;
+        for (GraphicalModelNode key : beastObjects.keySet()) {
+            if (getBEASTObject(key) == beastObject) {
+                matchingKey = key;
+                break;
+            }
+        }
+        if (matchingKey != null) beastObjects.remove(matchingKey);
     }
 
     public static RealParameter createRealParameter(Double[] value) {
@@ -95,7 +119,7 @@ public class BEASTContext {
      * @param generator
      */
     private void generatorToBEAST(Value value, Generator generator) {
-        BEASTInterface beastGenerator = generator.toBEAST(beastObjects.get(value), beastObjects);
+        BEASTInterface beastGenerator = generator.toBEAST(beastObjects.get(value), this);
 
         if (beastGenerator == null) {
             throw new RuntimeException("Generator " + generator + " not handled in cloneGenerator()");
@@ -367,6 +391,12 @@ public class BEASTContext {
                 } else {
                     priorList.add((Distribution) entry.getValue());
                 }
+            }
+        }
+
+        for (BEASTInterface beastInterface : elements) {
+            if (beastInterface instanceof Distribution && !likelihoodList.contains(beastInterface) && !priorList.contains(beastInterface)) {
+                priorList.add((Distribution) beastInterface);
             }
         }
 

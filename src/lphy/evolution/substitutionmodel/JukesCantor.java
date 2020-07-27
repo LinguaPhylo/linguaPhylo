@@ -1,6 +1,7 @@
 package lphy.evolution.substitutionmodel;
 
 import beast.core.BEASTInterface;
+import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
@@ -45,7 +46,7 @@ public class JukesCantor extends RateMatrix {
 
 
     @Override
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.evolution.substitutionmodel.JukesCantor beastJC = new beast.evolution.substitutionmodel.JukesCantor();
         beastJC.initAndValidate();
         return beastJC;

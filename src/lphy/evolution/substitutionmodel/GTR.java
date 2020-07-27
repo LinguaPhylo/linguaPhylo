@@ -75,14 +75,14 @@ public class GTR extends RateMatrix {
         return getParams().get(freqParamName);
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
 
         substmodels.nucleotide.GTR beastGTR = new substmodels.nucleotide.GTR();
 
         Value<Double[]> rates = getRates();
 
-        beastGTR.setInputValue("rates", beastObjects.get(rates));
-        beastGTR.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) beastObjects.get(getFreq())));
+        beastGTR.setInputValue("rates", context.getBEASTObject(rates));
+        beastGTR.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
         beastGTR.initAndValidate();
         return beastGTR;
     }

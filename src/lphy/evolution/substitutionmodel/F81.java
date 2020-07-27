@@ -58,10 +58,10 @@ public class F81 extends RateMatrix {
     }
 
     @Override
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.evolution.substitutionmodel.HKY beastF81 = new beast.evolution.substitutionmodel.HKY();
         beastF81.setInputValue("kappa", new RealParameter("1.0"));
-        beastF81.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) beastObjects.get(getFreq())));
+        beastF81.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
         beastF81.initAndValidate();
         return beastF81;
     }

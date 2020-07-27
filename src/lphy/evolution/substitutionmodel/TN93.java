@@ -79,11 +79,11 @@ public class TN93 extends RateMatrix {
     }
 
     @Override
-    public BEASTInterface toBEAST(BEASTInterface value, Map beastObjects) {
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
         beast.evolution.substitutionmodel.TN93 tn93 = new beast.evolution.substitutionmodel.TN93();
-        tn93.setInputValue("kappa1", beastObjects.get(getKappa1()));
-        tn93.setInputValue("kappa2", beastObjects.get(getKappa2()));
-        tn93.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) beastObjects.get(getFreq())));
+        tn93.setInputValue("kappa1", context.getBEASTObject(getKappa1()));
+        tn93.setInputValue("kappa2", context.getBEASTObject(getKappa2()));
+        tn93.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
         tn93.initAndValidate();
         return tn93;
     }
