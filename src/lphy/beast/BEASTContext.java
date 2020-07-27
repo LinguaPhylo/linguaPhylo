@@ -312,10 +312,14 @@ public class BEASTContext {
         return createLogger(logEvery, null);
     }
 
+    private double getWeight(int size) {
+        return Math.pow(size, 0.7);
+    }
+
     private Operator createTreeScaleOperator(Tree tree) {
         ScaleOperator operator = new ScaleOperator();
         operator.setInputValue("tree", tree);
-        operator.setInputValue("weight", 1.0);
+        operator.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
         operator.initAndValidate();
         elements.add(operator);
 
@@ -325,7 +329,7 @@ public class BEASTContext {
     private Operator createTreeUniformOperator(Tree tree) {
         Uniform uniform = new Uniform();
         uniform.setInputValue("tree", tree);
-        uniform.setInputValue("weight", 1.0);
+        uniform.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
         uniform.initAndValidate();
         elements.add(uniform);
 
@@ -335,7 +339,7 @@ public class BEASTContext {
     private Operator createSubtreeSlideOperator(Tree tree) {
         SubtreeSlide subtreeSlide = new SubtreeSlide();
         subtreeSlide.setInputValue("tree", tree);
-        subtreeSlide.setInputValue("weight", 1.0);
+        subtreeSlide.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
         subtreeSlide.setInputValue("size", tree.getRoot().getHeight() / 10.0);
         subtreeSlide.initAndValidate();
         elements.add(subtreeSlide);
@@ -346,7 +350,7 @@ public class BEASTContext {
     private Operator createExchangeOperator(Tree tree, boolean isNarrow) {
         Exchange exchange = new Exchange();
         exchange.setInputValue("tree", tree);
-        exchange.setInputValue("weight", 1.0);
+        exchange.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
         exchange.setInputValue("isNarrow", isNarrow);
         exchange.initAndValidate();
         elements.add(exchange);
@@ -361,11 +365,11 @@ public class BEASTContext {
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
             operator = new DeltaExchangeOperator();
             operator.setInputValue("parameter", parameter);
-            operator.setInputValue("weight", 1.0);
+            operator.setInputValue("weight", getWeight(parameter.getDimension()-1));
         } else {
             operator = new ScaleOperator();
             operator.setInputValue("parameter", parameter);
-            operator.setInputValue("weight", 1.0);
+            operator.setInputValue("weight", getWeight(parameter.getDimension()));
             operator.setInputValue("scaleFactor", 0.75);
         }
         operator.initAndValidate();

@@ -2,12 +2,15 @@ package lphy.evolution.likelihood;
 
 import beast.core.BEASTInterface;
 import beast.evolution.branchratemodel.StrictClockModel;
+import beast.evolution.branchratemodel.UCRelaxedClockModel;
 import beast.evolution.likelihood.TreeLikelihood;
 import beast.evolution.sitemodel.SiteModel;
 import beast.evolution.substitutionmodel.SubstitutionModel;
 import beast.evolution.tree.Tree;
+import beast.math.distributions.Prior;
 import lphy.beast.BEASTContext;
 import lphy.beast.ValueToBEAST;
+import lphy.core.distributions.LogNormalMulti;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.evolution.alignment.Alignment;
@@ -404,7 +407,22 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         treeLikelihood.setInputValue("tree", tree);
 
         if (getBranchRates() != null) {
-            throw new RuntimeException("Relaxed clock models not handled yet.");
+
+            if (getBranchRates().getGenerator() instanceof LogNormalMulti) {
+
+                UCRelaxedClockModel relaxedClockModel = new UCRelaxedClockModel();
+
+                Prior logNormalPrior = (Prior)context.getBEASTObject(getBranchRates().getGenerator());
+
+                relaxedClockModel.setInputValue("rates", context.getBEASTObject(getBranchRates()));
+                relaxedClockModel.setInputValue("tree", tree);
+                relaxedClockModel.setInputValue("distr", logNormalPrior.distInput.get());
+                relaxedClockModel.initAndValidate();
+
+            } else {
+                throw new RuntimeException("Only lognormal relaxed clock model currently supported in BEAST2 conversion");
+            }
+
         } else {
             StrictClockModel clockModel = new StrictClockModel();
             Value<Double> clockRate = getClockRate();

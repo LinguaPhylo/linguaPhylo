@@ -19,8 +19,8 @@ public class BEASTAnalysis {
 
     public static void main(String[] args) throws IOException {
 
-        String infile = "birthDeathRhoSampling.lphy";
-        String outfile = "birthDeathRhoSampling.xml";
+        String infile = "simpleRelaxedClock.lphy";
+        String outfile = "simpleRelaxedClock.xml";
 
         LPhyParser parser = new REPL();
 
