@@ -9,7 +9,6 @@ import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.tree.Tree;
-import beast.math.distributions.MRCAPrior;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
@@ -38,6 +37,8 @@ public class BEASTContext {
     Map<BEASTInterface, GraphicalModelNode<?>> BEASTToLPHYMap = new HashMap<>();
 
     Map<Class, ValueToBEAST> valueToBEASTMap = new HashMap<>();
+
+    private List<Operator> extraOperators = new ArrayList<>();
 
     LPhyParser parser;
 
@@ -264,6 +265,8 @@ public class BEASTContext {
             }
         }
 
+        operators.addAll(extraOperators);
+
         return operators;
     }
 
@@ -312,14 +315,14 @@ public class BEASTContext {
         return createLogger(logEvery, null);
     }
 
-    private double getWeight(int size) {
+    public static double getOperatorWeight(int size) {
         return Math.pow(size, 0.7);
     }
 
     private Operator createTreeScaleOperator(Tree tree) {
         ScaleOperator operator = new ScaleOperator();
         operator.setInputValue("tree", tree);
-        operator.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
+        operator.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         operator.initAndValidate();
         elements.add(operator);
 
@@ -329,7 +332,7 @@ public class BEASTContext {
     private Operator createTreeUniformOperator(Tree tree) {
         Uniform uniform = new Uniform();
         uniform.setInputValue("tree", tree);
-        uniform.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
+        uniform.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         uniform.initAndValidate();
         elements.add(uniform);
 
@@ -339,7 +342,7 @@ public class BEASTContext {
     private Operator createSubtreeSlideOperator(Tree tree) {
         SubtreeSlide subtreeSlide = new SubtreeSlide();
         subtreeSlide.setInputValue("tree", tree);
-        subtreeSlide.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
+        subtreeSlide.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         subtreeSlide.setInputValue("size", tree.getRoot().getHeight() / 10.0);
         subtreeSlide.initAndValidate();
         elements.add(subtreeSlide);
@@ -350,7 +353,7 @@ public class BEASTContext {
     private Operator createExchangeOperator(Tree tree, boolean isNarrow) {
         Exchange exchange = new Exchange();
         exchange.setInputValue("tree", tree);
-        exchange.setInputValue("weight", getWeight(tree.getInternalNodeCount()));
+        exchange.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         exchange.setInputValue("isNarrow", isNarrow);
         exchange.initAndValidate();
         elements.add(exchange);
@@ -365,11 +368,11 @@ public class BEASTContext {
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
             operator = new DeltaExchangeOperator();
             operator.setInputValue("parameter", parameter);
-            operator.setInputValue("weight", getWeight(parameter.getDimension()-1));
+            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()-1));
         } else {
             operator = new ScaleOperator();
             operator.setInputValue("parameter", parameter);
-            operator.setInputValue("weight", getWeight(parameter.getDimension()));
+            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()));
             operator.setInputValue("scaleFactor", 0.75);
         }
         operator.initAndValidate();
@@ -468,6 +471,7 @@ public class BEASTContext {
         state.clear();
         elements.clear();
         beastObjects.clear();
+        extraOperators.clear();
     }
 
     public void runBEAST(String fileNameStem) {
@@ -492,5 +496,9 @@ public class BEASTContext {
         String xml = new XMLProducer().toXML(mcmc, elements);
 
         return xml;
+    }
+
+    public void addExtraOperator(Operator operator) {
+        extraOperators.add(operator);
     }
 }

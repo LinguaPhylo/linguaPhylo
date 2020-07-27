@@ -1,6 +1,7 @@
 package lphy.evolution.likelihood;
 
 import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
 import beast.evolution.branchratemodel.StrictClockModel;
 import beast.evolution.branchratemodel.UCRelaxedClockModel;
 import beast.evolution.likelihood.TreeLikelihood;
@@ -8,8 +9,11 @@ import beast.evolution.sitemodel.SiteModel;
 import beast.evolution.substitutionmodel.SubstitutionModel;
 import beast.evolution.tree.Tree;
 import beast.math.distributions.Prior;
+import consoperators.BigPulley;
+import consoperators.InConstantDistanceOperator;
+import consoperators.SimpleDistance;
+import consoperators.SmallPulley;
 import lphy.beast.BEASTContext;
-import lphy.beast.ValueToBEAST;
 import lphy.core.distributions.LogNormalMulti;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -58,7 +62,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     private double[] Eval;
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                     @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional=true) Value<Double> mu,
+                     @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional = true) Value<Double> mu,
                      @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
@@ -146,7 +150,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    @GeneratorInfo(name="PhyloCTMC", description="The phylogenetic continuous-time Markov chain distribution. " +
+    @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. " +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
 
@@ -188,7 +192,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         return Q;
     }
 
-    public Value<TimeTree> getTree() { return tree; }
+    public Value<TimeTree> getTree() {
+        return tree;
+    }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
         getTransitionProbabilities(100, transProb);
@@ -412,12 +418,17 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
                 UCRelaxedClockModel relaxedClockModel = new UCRelaxedClockModel();
 
-                Prior logNormalPrior = (Prior)context.getBEASTObject(getBranchRates().getGenerator());
+                Prior logNormalPrior = (Prior) context.getBEASTObject(getBranchRates().getGenerator());
 
-                relaxedClockModel.setInputValue("rates", context.getBEASTObject(getBranchRates()));
+                RealParameter branchRates = (RealParameter) context.getBEASTObject(getBranchRates());
+
+                relaxedClockModel.setInputValue("rates", branchRates);
                 relaxedClockModel.setInputValue("tree", tree);
                 relaxedClockModel.setInputValue("distr", logNormalPrior.distInput.get());
                 relaxedClockModel.initAndValidate();
+                treeLikelihood.setInputValue("branchRateModel", relaxedClockModel);
+
+                addRelaxedClockOperators(tree, relaxedClockModel, branchRates, context);
 
             } else {
                 throw new RuntimeException("Only lognormal relaxed clock model currently supported in BEAST2 conversion");
@@ -450,5 +461,46 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         treeLikelihood.initAndValidate();
 
         return treeLikelihood;
+    }
+
+    private void addRelaxedClockOperators(Tree tree, UCRelaxedClockModel relaxedClockModel, RealParameter rates, BEASTContext context) {
+
+        double tWindowSize = tree.getRoot().getHeight() / 10.0;
+
+        InConstantDistanceOperator inConstantDistanceOperator = new InConstantDistanceOperator();
+        inConstantDistanceOperator.setInputValue("clockModel", relaxedClockModel);
+        inConstantDistanceOperator.setInputValue("tree", tree);
+        inConstantDistanceOperator.setInputValue("rates", rates);
+        inConstantDistanceOperator.setInputValue("twindowSize", tWindowSize);
+        inConstantDistanceOperator.setInputValue("weight", BEASTContext.getOperatorWeight(tree.getNodeCount()));
+        inConstantDistanceOperator.initAndValidate();
+        context.addExtraOperator(inConstantDistanceOperator);
+
+        SimpleDistance simpleDistance = new SimpleDistance();
+        simpleDistance.setInputValue("clockModel", relaxedClockModel);
+        simpleDistance.setInputValue("tree", tree);
+        simpleDistance.setInputValue("rates", rates);
+        simpleDistance.setInputValue("twindowSize", tWindowSize);
+        simpleDistance.setInputValue("weight", BEASTContext.getOperatorWeight(2));
+        simpleDistance.initAndValidate();
+        context.addExtraOperator(simpleDistance);
+
+        BigPulley bigPulley = new BigPulley();
+        bigPulley.setInputValue("tree", tree);
+        bigPulley.setInputValue("rates", rates);
+        bigPulley.setInputValue("twindowSize", tWindowSize);
+        bigPulley.setInputValue("dwindowSize", 0.1);
+        bigPulley.setInputValue("weight", BEASTContext.getOperatorWeight(2));
+        bigPulley.initAndValidate();
+        context.addExtraOperator(bigPulley);
+
+        SmallPulley smallPulley = new SmallPulley();
+        smallPulley.setInputValue("clockModel", relaxedClockModel);
+        smallPulley.setInputValue("tree", tree);
+        smallPulley.setInputValue("rates", rates);
+        smallPulley.setInputValue("dwindowSize", 0.1);
+        smallPulley.setInputValue("weight", BEASTContext.getOperatorWeight(2));
+        smallPulley.initAndValidate();
+        context.addExtraOperator(smallPulley);
     }
 }
