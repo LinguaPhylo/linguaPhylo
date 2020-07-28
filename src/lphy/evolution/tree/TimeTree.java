@@ -159,4 +159,13 @@ public class TimeTree implements HasComponentView<TimeTree> {
         if (node.getIndex() != index) throw new RuntimeException();
         return node;
     }
+
+    public boolean isUlrametric() {
+        for (TimeTreeNode node : getNodes()) {
+            if (node.isLeaf() && node.getAge() != 0.0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

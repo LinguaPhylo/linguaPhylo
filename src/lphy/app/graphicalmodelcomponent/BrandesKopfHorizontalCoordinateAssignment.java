@@ -339,16 +339,6 @@ public class BrandesKopfHorizontalCoordinateAssignment {
 
     public static void main(String[] args) throws IOException {
 
-//        GraphicalModelParser parser = new GraphicalModelParser();
-//
-//        String fileName = System.getProperty("user.dir") + File.separator + "examples" + File.separator + "bdRelaxed.lphy";
-//
-//        File file = new File(fileName);
-//
-//        parser.source(file);
-//
-//        LayeredGraph layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, true);
-
         LayeredGraph layeredGraph = LayeredGraph.testGraph();
 
         BrandesKopfHorizontalCoordinateAssignment bkhca = new BrandesKopfHorizontalCoordinateAssignment(layeredGraph);
@@ -357,12 +347,5 @@ public class BrandesKopfHorizontalCoordinateAssignment {
         frame.setSize(1200, 800);
         frame.getContentPane().add(new LayeredGraphComponent(layeredGraph));
         frame.setVisible(true);
-
-
-//        System.out.println(layeredGraph.layers.size() + " layers");
-//
-//        ProperLayeredGraph proper = new ProperLayeredGraph(layeredGraph, new Layering.FromSources());
-//
-
     }
 }
