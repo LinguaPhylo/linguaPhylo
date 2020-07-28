@@ -37,7 +37,10 @@
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}" includeantruntime="false">
       <classpath>
 	<pathelement path="${classpath}"/>
-	<fileset dir="lib" includes="commons-math3-3.6.1.jar"/>
+	<fileset dir="lib">
+      <include name="commons-math3-3.6.1.jar"/>
+      <include name="antlr-runtime-4.8.jar"/>
+      </fileset>
 	<fileset dir="${build-lib}" includes="*.jar"/>
       </classpath>
     </javac>
@@ -110,6 +113,10 @@
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}" includeantruntime="false">
       <classpath>
 	<pathelement path="${classpath}"/>
+        <fileset dir="lib">
+          <include name="commons-math3-3.6.1.jar"/>
+          <include name="antlr-runtime-4.8.jar"/>
+        </fileset>
 	<pathelement path="${build}" />
 	<fileset dir="${build-lib}" includes="*.jar"/>
       </classpath>
@@ -122,6 +129,10 @@
     <junit printsummary="yes" failureproperty="testFailed">
       <classpath>
 	<pathelement path="${classpath}"/>
+        <fileset dir="lib">
+          <include name="commons-math3-3.6.1.jar"/>
+          <include name="antlr-runtime-4.8.jar"/>
+        </fileset>
 	<pathelement path="${build}" />
 	<pathelement path="${build-test}" />
 	<fileset dir="${build-lib}" includes="*.jar"/>
