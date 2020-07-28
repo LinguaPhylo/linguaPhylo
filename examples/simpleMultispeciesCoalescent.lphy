@@ -1,8 +1,5 @@
 Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, n=7);
-n = [1,1,1,1];
 λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
 sp ~ Yule(birthRate=λ, n=4);
-// agesp = rootAge(tree=sp);
-g ~ MultispeciesCoalescent(theta=Θ, n=n, S=sp);
-// ageg = rootAge(tree=g);
+g ~ MultispeciesCoalescent(theta=Θ, n=[1,1,1,1], S=sp);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g);

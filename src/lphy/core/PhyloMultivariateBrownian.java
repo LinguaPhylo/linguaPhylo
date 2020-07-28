@@ -1,11 +1,22 @@
 package lphy.core;
 
 import beast.core.BEASTInterface;
+import beast.core.parameter.RealParameter;
+import beast.evolution.branchratemodel.StrictClockModel;
+import beast.evolution.branchratemodel.UCRelaxedClockModel;
+import beast.evolution.likelihood.TreeLikelihood;
+import beast.evolution.sitemodel.SiteModel;
+import beast.evolution.substitutionmodel.SubstitutionModel;
+import beast.evolution.tree.Tree;
+import beast.math.distributions.Prior;
+import lphy.beast.BEASTContext;
+import lphy.core.distributions.LogNormalMulti;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArrayValue;
+import multivariatelikelihood.FastPCMBMLikelihood;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -126,4 +137,12 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
         return ns2;
     }
 
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
+
+        //FastPCMBMLikelihood treeLikelihood = new FastPCMBMLikelihood();
+
+        // TODO
+
+        return null;
+    }
 }

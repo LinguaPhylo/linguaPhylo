@@ -1,6 +1,13 @@
 package lphy.evolution.coalescent;
 
 import beast.core.BEASTInterface;
+import beast.evolution.alignment.Taxon;
+import beast.evolution.alignment.TaxonSet;
+import beast.evolution.speciation.GeneTreeForSpeciesTreeDistribution;
+import beast.evolution.speciation.SpeciesTreePopFunction;
+import beast.evolution.speciation.SpeciesTreePrior;
+import beast.evolution.tree.Tree;
+import lphy.beast.BEASTContext;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -22,6 +29,8 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
     private Value<TimeTree> S;
 
     RandomGenerator random;
+
+    private final String separator = "_";
 
     public MultispeciesCoalescent(@ParameterInfo(name = "theta", description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
                                   @ParameterInfo(name = "n", description = "the number of sampled taxa in the gene tree for each extant species.") Value<Integer[]> n,
@@ -48,7 +57,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
             List<TimeTreeNode> taxaInSp = new ArrayList<>();
             activeNodes.add(taxaInSp);
             for (int k = 0; k < n.value()[sp]; k++) {
-                TimeTreeNode node = new TimeTreeNode(i + "", geneTree);
+                TimeTreeNode node = new TimeTreeNode(sp + separator + k, geneTree);
 
                 // set age to the age of the species.
                 node.setAge(S.value().getNodeByIndex(sp).getAge());
@@ -133,5 +142,61 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
     public String toString() {
         return getName();
     }
-    
+
+    private Value<TimeTree> getSpeciesTree() {
+        return S;
+    }
+
+    private Value<Double[]> getPopulationSizes() {
+        return theta;
+    }
+
+    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
+
+        GeneTreeForSpeciesTreeDistribution starbeast = new GeneTreeForSpeciesTreeDistribution();
+
+        Tree speciesTree = (Tree)context.getBEASTObject(getSpeciesTree());
+        Tree geneTree = (Tree)value;
+
+
+        // This is the mapping from gene tree taxa to species tree taxa
+        TaxonSet taxonSuperSet = new TaxonSet();
+        List<Taxon> spTaxonSets = new ArrayList<>();
+        for (int sp = 0; sp < n.value().length; sp++) {
+            TaxonSet spTaxonSet = new TaxonSet();
+            List<Taxon> taxonList = new ArrayList<>();
+            for (int k = 0; k < n.value()[sp]; k++) {
+                String id = sp + separator + k;
+                taxonList.add(geneTree.getTaxonset().getTaxon(id));
+            }
+            spTaxonSet.setInputValue("taxon", taxonList);
+            spTaxonSet.initAndValidate();
+            spTaxonSet.setID(sp+"");
+            spTaxonSets.add(spTaxonSet);
+        }
+        taxonSuperSet.setInputValue("taxon", spTaxonSets);
+        taxonSuperSet.initAndValidate();
+
+        if (speciesTree.getTaxonset() != null) {
+            speciesTree.m_taxonset.set(taxonSuperSet);
+            speciesTree.initAndValidate();
+        }
+
+        starbeast.setInputValue("speciesTree", speciesTree);
+        starbeast.setInputValue("tree", geneTree);
+
+        SpeciesTreePopFunction speciesTreePopFunction = new SpeciesTreePopFunction();
+        speciesTreePopFunction.setInputValue("tree", speciesTree);
+        speciesTreePopFunction.setInputValue("bottomPopSize", context.getBEASTObject(getPopulationSizes()));
+        speciesTreePopFunction.setInputValue("taxonset", taxonSuperSet);
+
+        speciesTreePopFunction.initAndValidate();
+
+        starbeast.setInputValue("speciesTreePrior", speciesTreePopFunction);
+
+        starbeast.initAndValidate();
+
+        return starbeast;
+    }
+
 }
