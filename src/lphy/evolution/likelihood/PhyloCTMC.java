@@ -410,6 +410,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         treeLikelihood.setInputValue("data", value);
 
         Tree tree = (Tree) context.getBEASTObject(getTree());
+        tree.setInputValue("taxa", value);
+        tree.initAndValidate();
+
         treeLikelihood.setInputValue("tree", tree);
 
         if (getBranchRates() != null) {

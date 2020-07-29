@@ -1,0 +1,8 @@
+Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, n=7);
+λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
+sp ~ Yule(birthRate=λ, n=4);
+n=[1,1,1,1];
+g1 ~ MultispeciesCoalescent(theta=Θ, n=n, S=sp);
+g2 ~ MultispeciesCoalescent(theta=Θ, n=n, S=sp);
+D1 ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g1);
+D2 ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g2);

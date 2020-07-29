@@ -5,6 +5,7 @@ import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
+import beast.evolution.alignment.Taxon;
 import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
@@ -39,6 +40,8 @@ public class BEASTContext {
     Map<Class, ValueToBEAST> valueToBEASTMap = new HashMap<>();
 
     private List<Operator> extraOperators = new ArrayList<>();
+
+    SortedMap<String, Taxon> allTaxa = new TreeMap<>();
 
     LPhyParser parser;
 
@@ -97,10 +100,11 @@ public class BEASTContext {
 
     private void createBEASTObjects(Value<?> value) {
 
-        valueToBEAST(value);
+        if (beastObjects.get(value) == null) {
+            valueToBEAST(value);
+        }
 
         Generator<?> generator = value.getGenerator();
-
         if (generator != null) {
 
             for (Object inputObject : generator.getParams().values()) {
@@ -136,7 +140,7 @@ public class BEASTContext {
         ValueToBEAST toBEAST = valueToBEASTMap.get(val.value().getClass());
 
         if (toBEAST != null) {
-            beastValue = toBEAST.valueToBEAST(val, beastObjects);
+            beastValue = toBEAST.valueToBEAST(val, this);
         } else if (val.value() instanceof Double || val.value() instanceof Double[] || val.value() instanceof Double[][]) {
             beastValue = createBEASTRealParameter(val);
         } else if (val.value() instanceof Integer || val.value() instanceof Integer[]) {
@@ -500,5 +504,25 @@ public class BEASTContext {
 
     public void addExtraOperator(Operator operator) {
         extraOperators.add(operator);
+    }
+
+    public void addTaxon(String taxonID) {
+        if (!allTaxa.containsKey(taxonID)) {
+            allTaxa.put(taxonID, new Taxon(taxonID));
+        }
+    }
+
+    public List<Taxon> createTaxonList(List<String> ids) {
+        List<Taxon> taxonList = new ArrayList<>();
+        for (String id : ids) {
+            Taxon taxon = allTaxa.get(id);
+            if (taxon == null) {
+                addTaxon(id);
+                taxonList.add(allTaxa.get(id));
+            } else {
+                taxonList.add(taxon);
+            }
+        }
+        return taxonList;
     }
 }

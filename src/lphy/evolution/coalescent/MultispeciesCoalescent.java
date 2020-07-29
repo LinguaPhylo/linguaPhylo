@@ -155,32 +155,50 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
         GeneTreeForSpeciesTreeDistribution starbeast = new GeneTreeForSpeciesTreeDistribution();
 
-        Tree speciesTree = (Tree)context.getBEASTObject(getSpeciesTree());
-        Tree geneTree = (Tree)value;
-
+        Tree speciesTree = (Tree) context.getBEASTObject(getSpeciesTree());
+        Tree geneTree = (Tree) value;
 
         // This is the mapping from gene tree taxa to species tree taxa
-        TaxonSet taxonSuperSet = new TaxonSet();
+        TaxonSet taxonSuperSet = speciesTree.getTaxonset();
         List<Taxon> spTaxonSets = new ArrayList<>();
         for (int sp = 0; sp < n.value().length; sp++) {
-            TaxonSet spTaxonSet = new TaxonSet();
-            List<Taxon> taxonList = new ArrayList<>();
+            String speciesId = sp + "";
+            Taxon spTaxon = taxonSuperSet.getTaxon(speciesId);
+            TaxonSet spTaxonSet;
+            List<Taxon> geneTaxonList = new ArrayList<>();
+
+            if (spTaxon instanceof TaxonSet) {
+                spTaxonSet = (TaxonSet) spTaxon;
+                System.out.println("Adding existing taxa: " + spTaxonSet.getTaxonSet().size());
+                geneTaxonList.addAll(spTaxonSet.getTaxonSet());
+            } else {
+                spTaxonSet = new TaxonSet();
+            }
+
             for (int k = 0; k < n.value()[sp]; k++) {
                 String id = sp + separator + k;
-                taxonList.add(geneTree.getTaxonset().getTaxon(id));
+                Taxon toAdd = geneTree.getTaxonset().getTaxon(id);
+                if (!containsId(geneTaxonList, id)) {
+                    geneTaxonList.add(toAdd);
+                }
             }
-            spTaxonSet.setInputValue("taxon", taxonList);
+
+            if (spTaxonSet.taxonsetInput.get() != null) {
+                spTaxonSet.taxonsetInput.get().clear();
+            }
+            spTaxonSet.setInputValue("taxon", geneTaxonList);
             spTaxonSet.initAndValidate();
-            spTaxonSet.setID(sp+"");
+            spTaxonSet.setID(speciesId);
             spTaxonSets.add(spTaxonSet);
+        }
+        if (taxonSuperSet.taxonsetInput.get() != null) {
+            taxonSuperSet.taxonsetInput.get().clear();
         }
         taxonSuperSet.setInputValue("taxon", spTaxonSets);
         taxonSuperSet.initAndValidate();
 
-        if (speciesTree.getTaxonset() != null) {
-            speciesTree.m_taxonset.set(taxonSuperSet);
-            speciesTree.initAndValidate();
-        }
+        speciesTree.setInputValue("taxonset", taxonSuperSet);
+        speciesTree.initAndValidate();
 
         starbeast.setInputValue("speciesTree", speciesTree);
         starbeast.setInputValue("tree", geneTree);
@@ -193,10 +211,16 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         speciesTreePopFunction.initAndValidate();
 
         starbeast.setInputValue("speciesTreePrior", speciesTreePopFunction);
-
         starbeast.initAndValidate();
 
         return starbeast;
+    }
+
+    private boolean containsId(List<Taxon> taxonList, String id) {
+        for (Taxon taxon : taxonList) {
+            if (taxon.getID().equals(id)) return true;
+        }
+        return false;
     }
 
 }

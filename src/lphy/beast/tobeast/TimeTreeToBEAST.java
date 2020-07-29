@@ -5,20 +5,19 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
 import beast.util.TreeParser;
+import lphy.beast.BEASTContext;
 import lphy.beast.ValueToBEAST;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<TimeTree> timeTreeValue, Map<GraphicalModelNode, BEASTInterface> beastObjects) {
+    public BEASTInterface valueToBEAST(Value<TimeTree> timeTreeValue, BEASTContext context) {
 
         TimeTree timeTree = timeTreeValue.value();
         
@@ -27,7 +26,7 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         tree.setInputValue("IsLabelledNewick", true);
 
         TaxonSet taxa = new TaxonSet();
-        List<Taxon> taxonList = createTaxonList(timeTree);
+        List<Taxon> taxonList = context.createTaxonList(getTaxaNames(timeTree));
         taxa.setInputValue("taxon", taxonList);
         taxa.initAndValidate();
         tree.setInputValue("taxonset", taxa);
@@ -48,14 +47,14 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         return tree;
     }
 
-    private List<Taxon> createTaxonList(TimeTree timeTree) {
-        List<Taxon> taxonList = new ArrayList<>();
+    private List<String> getTaxaNames(TimeTree timeTree) {
+        List<String> taxaNames = new ArrayList<>();
         for (TimeTreeNode node : timeTree.getNodes()) {
             if (node.isLeaf()) {
-                taxonList.add(new Taxon(node.getId()));
+                taxaNames.add(node.getId());
             }
         }
-        return taxonList;
+        return taxaNames;
     }
 
     private String createAgeTraitString(TimeTree tree) {

@@ -2,19 +2,18 @@ package lphy.beast.tobeast;
 
 import beast.core.BEASTInterface;
 import beast.evolution.alignment.Sequence;
+import lphy.beast.BEASTContext;
 import lphy.beast.ValueToBEAST;
 import lphy.evolution.alignment.Alignment;
-import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AlignmentToBEAST implements ValueToBEAST<Alignment> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Alignment> alignmentValue, Map<GraphicalModelNode, BEASTInterface> beastObjects) {
+    public BEASTInterface valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
 
         List<Sequence> sequences = new ArrayList<>();
 
@@ -23,6 +22,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment> {
         String[] taxaNames = alignment.getTaxaNames();
 
         for (int i = 0; i < alignment.getTaxonCount(); i++) {
+            context.addTaxon(taxaNames[i]);
             sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
         }
 
