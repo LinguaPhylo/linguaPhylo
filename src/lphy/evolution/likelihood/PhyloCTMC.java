@@ -407,7 +407,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         TreeLikelihood treeLikelihood = new TreeLikelihood();
 
         assert value instanceof beast.evolution.alignment.Alignment;
-        treeLikelihood.setInputValue("data", value);
+        beast.evolution.alignment.Alignment alignment = (beast.evolution.alignment.Alignment)value;
+        treeLikelihood.setInputValue("data", alignment);
 
         Tree tree = (Tree) context.getBEASTObject(getTree());
         tree.setInputValue("taxa", value);
@@ -462,6 +463,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
 
         treeLikelihood.initAndValidate();
+        treeLikelihood.setID(alignment.getID() + ".treeLikelihood");
 
         return treeLikelihood;
     }

@@ -270,6 +270,7 @@ public class BEASTContext {
         }
 
         operators.addAll(extraOperators);
+        operators.sort(Comparator.comparing(BEASTObject::getID));
 
         return operators;
     }
@@ -279,7 +280,7 @@ public class BEASTContext {
 
         loggers.add(createScreenLogger(logEvery));
         loggers.add(createLogger(logEvery, fileName + ".log"));
-        loggers.add(createTreeLogger(logEvery, fileName + ".trees"));
+        loggers.addAll(createTreeLoggers(logEvery, fileName));
 
         return loggers;
     }
@@ -299,20 +300,36 @@ public class BEASTContext {
         return logger;
     }
 
-    private Logger createTreeLogger(int logEvery, String fileName) {
+    private List<Logger> createTreeLoggers(int logEvery, String fileNameStem) {
 
         List<Tree> trees = state.stream()
                 .filter(stateNode -> stateNode instanceof Tree)
                 .map(stateNode -> (Tree) stateNode)
+                .sorted(Comparator.comparing(BEASTObject::getID))
                 .collect(Collectors.toList());
 
-        Logger logger = new Logger();
-        logger.setInputValue("logEvery", logEvery);
-        logger.setInputValue("log", trees);
-        if (fileName != null) logger.setInputValue("fileName", fileName);
-        logger.initAndValidate();
-        elements.add(logger);
-        return logger;
+        boolean multipleTrees = trees.size() > 1;
+
+        List<Logger> treeLoggers = new ArrayList<>();
+
+        for (Tree tree : trees) {
+            Logger logger = new Logger();
+            logger.setInputValue("logEvery", logEvery);
+            logger.setInputValue("log", tree);
+
+            String fileName = fileNameStem + ".trees";
+
+            if (multipleTrees) {
+                fileName = fileNameStem + "_" + tree.getID() + ".trees";
+            }
+
+            if (fileNameStem != null) logger.setInputValue("fileName", fileName);
+            logger.initAndValidate();
+            logger.setID(tree.getID() + ".treeLogger");
+            treeLoggers.add(logger);
+            elements.add(logger);
+        }
+        return treeLoggers;
     }
 
     private Logger createScreenLogger(int logEvery) {
@@ -328,6 +345,7 @@ public class BEASTContext {
         operator.setInputValue("tree", tree);
         operator.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         operator.initAndValidate();
+        operator.setID(tree.getID() + "." + "scale");
         elements.add(operator);
 
         return operator;
@@ -338,6 +356,7 @@ public class BEASTContext {
         uniform.setInputValue("tree", tree);
         uniform.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         uniform.initAndValidate();
+        uniform.setID(tree.getID() + "." + "uniform");
         elements.add(uniform);
 
         return uniform;
@@ -349,6 +368,7 @@ public class BEASTContext {
         subtreeSlide.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         subtreeSlide.setInputValue("size", tree.getRoot().getHeight() / 10.0);
         subtreeSlide.initAndValidate();
+        subtreeSlide.setID(tree.getID() + "." + "subtreeSlide");
         elements.add(subtreeSlide);
 
         return subtreeSlide;
@@ -360,6 +380,7 @@ public class BEASTContext {
         exchange.setInputValue("weight", getOperatorWeight(tree.getInternalNodeCount()));
         exchange.setInputValue("isNarrow", isNarrow);
         exchange.initAndValidate();
+        exchange.setID(tree.getID() + "." + ((isNarrow) ? "narrow" : "wide") + "Exchange");
         elements.add(exchange);
 
         return exchange;
@@ -373,13 +394,16 @@ public class BEASTContext {
             operator = new DeltaExchangeOperator();
             operator.setInputValue("parameter", parameter);
             operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()-1));
+            operator.initAndValidate();
+            operator.setID(parameter.getID() + ".deltaExchange");
         } else {
             operator = new ScaleOperator();
             operator.setInputValue("parameter", parameter);
             operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()));
             operator.setInputValue("scaleFactor", 0.75);
+            operator.initAndValidate();
+            operator.setID(parameter.getID() + ".scale");
         }
-        operator.initAndValidate();
         elements.add(operator);
 
         return operator;
