@@ -3,7 +3,7 @@ package lphy.core.distributions;
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import beast.math.distributions.Exponential;
-import lphy.beast.BEASTContext;
+import lphy2beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -70,12 +70,5 @@ public class Exp implements GenerativeDistribution<Double> {
 
     public String toString() {
         return getName();
-    }
-
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        Exponential exponential = new Exponential();
-        exponential.setInputValue("mean", context.getBEASTObject(getParams().get("mean")));
-        exponential.initAndValidate();
-        return BEASTContext.createPrior(exponential, (RealParameter)value);
     }
 }

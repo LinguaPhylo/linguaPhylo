@@ -1,7 +1,5 @@
 package lphy.core.distributions;
 
-import beast.core.BEASTInterface;
-import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

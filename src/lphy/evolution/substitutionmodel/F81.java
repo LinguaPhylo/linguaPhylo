@@ -1,8 +1,5 @@
 package lphy.evolution.substitutionmodel;
 
-import beast.core.BEASTInterface;
-import beast.core.parameter.RealParameter;
-import lphy.beast.BEASTContext;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
@@ -57,12 +54,4 @@ public class F81 extends RateMatrix {
         return getParams().get(freqParamName);
     }
 
-    @Override
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        beast.evolution.substitutionmodel.HKY beastF81 = new beast.evolution.substitutionmodel.HKY();
-        beastF81.setInputValue("kappa", new RealParameter("1.0"));
-        beastF81.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
-        beastF81.initAndValidate();
-        return beastF81;
-    }
 }

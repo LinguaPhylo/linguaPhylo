@@ -2,14 +2,12 @@ package lphy.core.distributions;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
-import beast.math.distributions.LogNormalDistributionModel;
 import beast.math.distributions.Normal;
-import lphy.beast.BEASTContext;
+import lphy2beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
-import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -97,12 +95,11 @@ public class NormalMulti implements GenerativeDistribution<Double[]> {
         normalDistribution = new NormalDistributionImpl(mean.value(), sd.value());
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        Normal normal = new Normal();
-        normal.setInputValue("mean", context.getBEASTObject(getParams().get(meanParamName)));
-        normal.setInputValue("sigma", context.getBEASTObject(getParams().get(sdParamName)));
-        normal.initAndValidate();
+    public Value<Double> getMean() {
+        return mean;
+    }
 
-        return BEASTContext.createPrior(normal, (RealParameter)value);
+    public Value<Double> getSd() {
+        return sd;
     }
 }

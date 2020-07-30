@@ -1,9 +1,9 @@
-package lphy.beast.tobeast;
+package lphy2beast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.evolution.alignment.Sequence;
-import lphy.beast.BEASTContext;
-import lphy.beast.ValueToBEAST;
+import lphy2beast.BEASTContext;
+import lphy2beast.ValueToBEAST;
 import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.Value;
 

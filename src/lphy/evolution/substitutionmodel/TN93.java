@@ -1,14 +1,9 @@
 package lphy.evolution.substitutionmodel;
 
-import beast.core.BEASTInterface;
-import beast.core.parameter.RealParameter;
-import beast.evolution.substitutionmodel.GTR;
-import lphy.beast.BEASTContext;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
-import substmodels.nucleotide.TrN;
 
 import java.util.Map;
 
@@ -78,13 +73,4 @@ public class TN93 extends RateMatrix {
         return getParams().get(freqParamName);
     }
 
-    @Override
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        beast.evolution.substitutionmodel.TN93 tn93 = new beast.evolution.substitutionmodel.TN93();
-        tn93.setInputValue("kappa1", context.getBEASTObject(getKappa1()));
-        tn93.setInputValue("kappa2", context.getBEASTObject(getKappa2()));
-        tn93.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(getFreq())));
-        tn93.initAndValidate();
-        return tn93;
-    }
 }

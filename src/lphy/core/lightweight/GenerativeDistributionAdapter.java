@@ -1,7 +1,7 @@
 package lphy.core.lightweight;
 
 import beast.core.BEASTInterface;
-import lphy.beast.BEASTContext;
+import lphy2beast.BEASTContext;
 import lphy.core.lightweight.distributions.Beta;
 import lphy.graphicalModel.*;
 

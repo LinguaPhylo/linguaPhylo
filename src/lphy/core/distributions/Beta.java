@@ -2,7 +2,7 @@ package lphy.core.distributions;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
-import lphy.beast.BEASTContext;
+import lphy2beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
@@ -61,14 +61,4 @@ public class Beta implements GenerativeDistribution<Double> {
     public String toString() {
         return getName();
     }
-
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        beast.math.distributions.Beta betaDistribution = new beast.math.distributions.Beta();
-        betaDistribution.setInputValue("alpha", context.getBEASTObject(getParams().get("alpha")));
-        betaDistribution.setInputValue("beta", context.getBEASTObject(getParams().get("beta")));
-        betaDistribution.initAndValidate();
-        return BEASTContext.createPrior(betaDistribution, (RealParameter)value);
-    }
-
-
 }

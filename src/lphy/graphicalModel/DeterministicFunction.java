@@ -1,9 +1,7 @@
 package lphy.graphicalModel;
 
 import beast.core.BEASTInterface;
-import lphy.beast.BEASTContext;
-
-import java.util.Map;
+import lphy2beast.BEASTContext;
 
 public abstract class DeterministicFunction<T> extends Func {
 

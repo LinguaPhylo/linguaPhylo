@@ -1,13 +1,5 @@
 package lphy.evolution.coalescent;
 
-import beast.core.BEASTInterface;
-import beast.evolution.alignment.Taxon;
-import beast.evolution.alignment.TaxonSet;
-import beast.evolution.speciation.GeneTreeForSpeciesTreeDistribution;
-import beast.evolution.speciation.SpeciesTreePopFunction;
-import beast.evolution.speciation.SpeciesTreePrior;
-import beast.evolution.tree.Tree;
-import lphy.beast.BEASTContext;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -30,7 +22,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
     RandomGenerator random;
 
-    private final String separator = "_";
+    public final static String separator = "_";
 
     public MultispeciesCoalescent(@ParameterInfo(name = "theta", description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
                                   @ParameterInfo(name = "n", description = "the number of sampled taxa in the gene tree for each extant species.") Value<Integer[]> n,
@@ -143,84 +135,16 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         return getName();
     }
 
-    private Value<TimeTree> getSpeciesTree() {
+    public Value<TimeTree> getSpeciesTree() {
         return S;
     }
 
-    private Value<Double[]> getPopulationSizes() {
+    public Value<Double[]> getPopulationSizes() {
         return theta;
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-
-        GeneTreeForSpeciesTreeDistribution starbeast = new GeneTreeForSpeciesTreeDistribution();
-
-        Tree speciesTree = (Tree) context.getBEASTObject(getSpeciesTree());
-        Tree geneTree = (Tree) value;
-
-        // This is the mapping from gene tree taxa to species tree taxa
-        TaxonSet taxonSuperSet = speciesTree.getTaxonset();
-        List<Taxon> spTaxonSets = new ArrayList<>();
-        for (int sp = 0; sp < n.value().length; sp++) {
-            String speciesId = sp + "";
-            Taxon spTaxon = taxonSuperSet.getTaxon(speciesId);
-            TaxonSet spTaxonSet;
-            List<Taxon> geneTaxonList = new ArrayList<>();
-
-            if (spTaxon instanceof TaxonSet) {
-                spTaxonSet = (TaxonSet) spTaxon;
-                System.out.println("Adding existing taxa: " + spTaxonSet.getTaxonSet().size());
-                geneTaxonList.addAll(spTaxonSet.getTaxonSet());
-            } else {
-                spTaxonSet = new TaxonSet();
-            }
-
-            for (int k = 0; k < n.value()[sp]; k++) {
-                String id = sp + separator + k;
-                Taxon toAdd = geneTree.getTaxonset().getTaxon(id);
-                if (!containsId(geneTaxonList, id)) {
-                    geneTaxonList.add(toAdd);
-                }
-            }
-
-            if (spTaxonSet.taxonsetInput.get() != null) {
-                spTaxonSet.taxonsetInput.get().clear();
-            }
-            spTaxonSet.setInputValue("taxon", geneTaxonList);
-            spTaxonSet.initAndValidate();
-            spTaxonSet.setID(speciesId);
-            spTaxonSets.add(spTaxonSet);
-        }
-        if (taxonSuperSet.taxonsetInput.get() != null) {
-            taxonSuperSet.taxonsetInput.get().clear();
-        }
-        taxonSuperSet.setInputValue("taxon", spTaxonSets);
-        taxonSuperSet.initAndValidate();
-
-        speciesTree.setInputValue("taxonset", taxonSuperSet);
-        speciesTree.initAndValidate();
-
-        starbeast.setInputValue("speciesTree", speciesTree);
-        starbeast.setInputValue("tree", geneTree);
-
-        SpeciesTreePopFunction speciesTreePopFunction = new SpeciesTreePopFunction();
-        speciesTreePopFunction.setInputValue("tree", speciesTree);
-        speciesTreePopFunction.setInputValue("bottomPopSize", context.getBEASTObject(getPopulationSizes()));
-        speciesTreePopFunction.setInputValue("taxonset", taxonSuperSet);
-
-        speciesTreePopFunction.initAndValidate();
-
-        starbeast.setInputValue("speciesTreePrior", speciesTreePopFunction);
-        starbeast.initAndValidate();
-
-        return starbeast;
-    }
-
-    private boolean containsId(List<Taxon> taxonList, String id) {
-        for (Taxon taxon : taxonList) {
-            if (taxon.getID().equals(id)) return true;
-        }
-        return false;
+    public Value<Integer[]> getN() {
+        return n;
     }
 
 }

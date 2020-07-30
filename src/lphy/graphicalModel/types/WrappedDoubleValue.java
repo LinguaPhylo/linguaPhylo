@@ -1,9 +1,7 @@
 package lphy.graphicalModel.types;
 
 import beast.core.BEASTInterface;
-import lphy.beast.BEASTContext;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.Func;
+import lphy2beast.BEASTContext;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 

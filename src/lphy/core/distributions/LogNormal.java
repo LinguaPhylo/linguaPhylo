@@ -1,9 +1,5 @@
 package lphy.core.distributions;
 
-import beast.core.BEASTInterface;
-import beast.core.parameter.RealParameter;
-import beast.math.distributions.LogNormalDistributionModel;
-import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -65,13 +61,11 @@ public class LogNormal implements GenerativeDistribution<Double> {
         return getName();
     }
 
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
-        logNormalDistributionModel.setInputValue("M", context.getBEASTObject(getParams().get(meanLogParamName)));
-        logNormalDistributionModel.setInputValue("S", context.getBEASTObject(getParams().get(sdLogParamName)));
-        logNormalDistributionModel.initAndValidate();
-
-        return BEASTContext.createPrior(logNormalDistributionModel, (RealParameter)value);
+    public Value<Double> getMeanLog() {
+        return M;
     }
 
+    public Value<Double> getSDLog() {
+        return S;
+    }
 }

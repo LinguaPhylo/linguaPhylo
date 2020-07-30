@@ -1,12 +1,12 @@
-package lphy.beast.tobeast;
+package lphy2beast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
 import beast.util.TreeParser;
-import lphy.beast.BEASTContext;
-import lphy.beast.ValueToBEAST;
+import lphy2beast.BEASTContext;
+import lphy2beast.ValueToBEAST;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;

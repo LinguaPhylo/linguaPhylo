@@ -1,9 +1,6 @@
 package lphy.core.distributions;
 
-import beast.core.BEASTInterface;
-import lphy.beast.BEASTContext;
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -68,9 +65,5 @@ public class Uniform implements GenerativeDistribution<Double> {
 
     public String toString() {
         return getName();
-    }
-
-    public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-        throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
     }
 }

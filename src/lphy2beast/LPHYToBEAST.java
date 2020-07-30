@@ -1,11 +1,11 @@
-package lphy.beast;
+package lphy2beast;
 
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
 
 import java.io.*;
 
-public class BEASTAnalysis {
+public class LPHYToBEAST {
 
     private static void source(BufferedReader reader, LPhyParser parser) throws IOException {
         String line = reader.readLine();

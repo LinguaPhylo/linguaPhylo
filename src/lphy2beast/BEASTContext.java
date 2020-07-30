@@ -1,4 +1,4 @@
-package lphy.beast;
+package lphy2beast;
 
 import beast.core.*;
 import beast.core.parameter.IntegerParameter;
@@ -13,8 +13,9 @@ import beast.evolution.tree.Tree;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
-import lphy.beast.tobeast.AlignmentToBEAST;
-import lphy.beast.tobeast.TimeTreeToBEAST;
+import lphy2beast.tobeast.generators.*;
+import lphy2beast.tobeast.values.AlignmentToBEAST;
+import lphy2beast.tobeast.values.TimeTreeToBEAST;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.*;
 import lphy.graphicalModel.*;
@@ -38,6 +39,7 @@ public class BEASTContext {
     Map<BEASTInterface, GraphicalModelNode<?>> BEASTToLPHYMap = new HashMap<>();
 
     Map<Class, ValueToBEAST> valueToBEASTMap = new HashMap<>();
+    Map<Class, GeneratorToBEAST> generatorToBEASTMap = new HashMap<>();
 
     private List<Operator> extraOperators = new ArrayList<>();
 
@@ -50,6 +52,41 @@ public class BEASTContext {
 
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
+
+        Class[] generatorToBEASTs = {
+                BetaToBEAST.class,
+                BirthDeathSampleTreeDTToBEAST.class,
+                CoalescentToBEAST.class,
+                DirichletToBEAST.class,
+                ExpToBEAST.class,
+                F81ToBEAST.class,
+                GammaToBEAST.class,
+                GTRToBEAST.class,
+                HKYToBEAST.class,
+                JukesCantorToBEAST.class,
+                K80ToBEAST.class,
+                LogNormalMultiToBEAST.class,
+                LogNormalToBEAST.class,
+                MultispeciesCoalescentToBEAST.class,
+                NormalMultiToBEAST.class,
+                NormalToBEAST.class,
+                PhyloCTMCToBEAST.class,
+                SerialCoalescentToBEAST.class,
+                TN93ToBEAST.class,
+                YuleToBEAST.class
+        };
+
+        for (Class c : generatorToBEASTs) {
+            try {
+                GeneratorToBEAST generatorToBEAST = (GeneratorToBEAST)c.newInstance();
+                generatorToBEASTMap.put(generatorToBEAST.getGeneratorClass(), generatorToBEAST);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public BEASTInterface getBEASTObject(GraphicalModelNode<?> node) {
@@ -87,7 +124,7 @@ public class BEASTContext {
     }
 
     /**
-     * Clone the current model to BEAST2
+     * Make a BEAST2 model from the current model in parser.
      */
     public void createBEASTObjects() {
 
@@ -117,17 +154,25 @@ public class BEASTContext {
     }
 
     /**
-     * This is called after cloneValue has been called on both the generated value and the input values.
-     * Side-effect of this method is to create a clone object of the generator and put it in the cloneMap of this BEAST2Context.
+     * This is called after valueToBEAST has been called on both the generated value and the input values.
+     * Side-effect of this method is to create an equivalent BEAST object of the generator and put it in the beastObjects map of this BEASTContext.
      *
      * @param value
      * @param generator
      */
     private void generatorToBEAST(Value value, Generator generator) {
-        BEASTInterface beastGenerator = generator.toBEAST(beastObjects.get(value), this);
+
+
+        BEASTInterface beastGenerator = null;
+
+        GeneratorToBEAST toBEAST = generatorToBEASTMap.get(generator.getClass());
+
+        if (toBEAST != null) {
+            beastGenerator = toBEAST.generatorToBEAST(generator, beastObjects.get(value), this);
+        }
 
         if (beastGenerator == null) {
-            throw new RuntimeException("Generator " + generator + " not handled in cloneGenerator()");
+            throw new RuntimeException("Unhandled generator in generatorToBEAST(): " + generator);
         } else {
             addToContext(generator, beastGenerator);
         }

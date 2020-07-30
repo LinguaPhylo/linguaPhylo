@@ -1,4 +1,4 @@
-package lphy.beast;
+package lphy2beast;
 
 import beast.core.BEASTInterface;
 import lphy.graphicalModel.Value;
