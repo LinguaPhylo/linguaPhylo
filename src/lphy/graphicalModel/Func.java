@@ -71,11 +71,20 @@ public abstract class Func implements Generator, Viewable {
             List<ParameterInfo> parameterInfoList = getParameterInfo(0);
             if (parameterInfoList.size() > 0) {
                 String name = parameterInfoList.get(0).name();
-                builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+
+                if (parameterInfoList.get(0).optional() && map.get(name) == null) {
+                    // DO NOTHING - this is an optional parameter with no value
+                } else {
+                    builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                }
                 for (int i = 1; i < parameterInfoList.size(); i++) {
                     name = parameterInfoList.get(i).name();
-                    builder.append(", ");
-                    builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                    if (parameterInfoList.get(i).optional() && map.get(name) == null) {
+                        // DO NOTHING - this is an optional parameter with no value
+                    } else {
+                        builder.append(", ");
+                        builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                    }
                 }
             }
         } else {

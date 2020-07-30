@@ -146,6 +146,11 @@ public interface Generator<T> extends GraphicalModelNode {
         if (!Utils.isInteger(name)) {
             prefix = name + "=";
         }
+
+        if (value == null) {
+            throw new RuntimeException("Value of " + name + " is null!");
+        }
+
         if (value.isAnonymous()) return prefix + value.codeString();
         return prefix + value.getId();
     }
