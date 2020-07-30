@@ -1,9 +1,5 @@
 package lphy.core.distributions;
 
-import beast.core.BEASTInterface;
-import beast.core.parameter.RealParameter;
-import beast.math.distributions.Exponential;
-import lphy2beast.BEASTContext;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 

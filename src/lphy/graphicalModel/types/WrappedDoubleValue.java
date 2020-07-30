@@ -1,7 +1,5 @@
 package lphy.graphicalModel.types;
 
-import beast.core.BEASTInterface;
-import lphy2beast.BEASTContext;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 
@@ -62,10 +60,6 @@ public class WrappedDoubleValue extends Value<Double[]> {
         @Override
         public Object value() {
             return null;
-        }
-
-        public BEASTInterface toBEAST(BEASTInterface value, BEASTContext context) {
-            throw new UnsupportedOperationException(getClass().getSimpleName() + ".toBEAST not implemented yet!");
         }
     }
 }

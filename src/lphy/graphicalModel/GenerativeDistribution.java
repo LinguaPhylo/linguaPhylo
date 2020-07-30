@@ -1,8 +1,5 @@
 package lphy.graphicalModel;
 
-import beast.core.BEASTInterface;
-import lphy2beast.BEASTContext;
-
 import javax.swing.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
