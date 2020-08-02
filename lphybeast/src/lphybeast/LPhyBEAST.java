@@ -5,7 +5,7 @@ import lphy.parser.REPL;
 
 import java.io.*;
 
-public class LPHYToBEAST {
+public class LPhyBEAST {
 
     private static void source(BufferedReader reader, LPhyParser parser) throws IOException {
         String line = reader.readLine();

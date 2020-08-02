@@ -6,7 +6,9 @@ A new paradigm for scientific computing and data science has begun to emerged in
 
 Although standard tools for statistical phylogenetics provide a degree of reproducibility and reusability through popular open-source software and computer-readable data file formats, there is still much to do. The ability to construct and accurately communicate probabilistic models in phylogenetics is frustratingly underdeveloped. There is low interoperability between different inference packages (e.g. BEAST1, BEAST2, MrBayes, RevBayes), and the file formats that these software use have low readability for researchers.
 
-## LinguaPhylo (or LPhy for short - pronounced el-fee)
+This repository contains two related projects: LinguaPhylo (LPhy for short) and LPhyBEAST.
+
+## LinguaPhylo (LPhy for short - pronounced el-fee)
 
 In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is an example:
 
@@ -20,8 +22,13 @@ Each of the lines in this specification expresses how a random variable (to the 
 
 The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. As you can see, each of the random variables depends on the last, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
 
-## LinguaPhylo Studio
+### LinguaPhylo Studio
 
 Along with the language definition, we also want to provide software tools to specify and visualise models as well as simulate data from models defined in LPhy. 
 
 This software will also provide the ability for models specified in the LPhy language to be applied to data using standard inference tools such as MrBayes, RevBayes, BEAST1 and BEAST2. This will require software that can convert an LPhy specification into an input file that these inference engines understand.
+
+## LPhyBEAST (pronounced el-fee-beast)
+
+LPhyBEAST is a command-line program that takes an LPhy model specification, and some data and produces a BEAST2 XML input file.
+It is therefore an alternative way to succinctly express and communicate BEAST analyses.

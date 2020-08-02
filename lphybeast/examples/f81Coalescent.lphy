@@ -1,0 +1,4 @@
+π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Coalescent(n=16, theta=Θ);
+D ~ PhyloCTMC(L=200, Q=f81(freq=π), tree=ψ);
