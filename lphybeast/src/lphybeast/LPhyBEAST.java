@@ -19,8 +19,8 @@ public class LPhyBEAST {
 
     public static void main(String[] args) throws IOException {
 
-        String infile = "twoGeneMultispeciesCoalescent.lphy";
-        String outfile = "twoGeneMultispeciesCoalescent.xml";
+        String infile = "simpleSerialCoalescentWithTaxa.lphy";
+        String outfile = "simpleSerialCoalescentWithTaxa.xml";
 
         LPhyParser parser = new REPL();
 

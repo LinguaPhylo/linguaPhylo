@@ -172,7 +172,7 @@ public class BEASTContext {
         }
 
         if (beastGenerator == null) {
-            throw new RuntimeException("Unhandled generator in generatorToBEAST(): " + generator);
+            System.err.println("Unhandled generator in generatorToBEAST(): " + generator);
         } else {
             addToContext(generator, beastGenerator);
         }
@@ -192,10 +192,10 @@ public class BEASTContext {
             beastValue = createBEASTIntegerParameter(val);
         }
         if (beastValue == null) {
-            throw new RuntimeException("Unhandled value in valueToBEAST(): " + val);
+            System.err.println("Unhandled value in valueToBEAST(): " + val);
+        } else {
+            addToContext(val, beastValue);
         }
-
-        addToContext(val, beastValue);
         return beastValue;
     }
 
