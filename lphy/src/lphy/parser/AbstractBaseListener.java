@@ -18,6 +18,7 @@ import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 
 import java.util.*;
+import java.util.Map;
 
 public class AbstractBaseListener extends SimulatorBaseListener {
 
@@ -45,7 +46,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
             genDistSet.add(genClass);
         }
 
-        Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class,
+        Class<?>[] functionClasses = {lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, lphy.core.functions.Map.class,
                 Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class, DihedralAngleDiffusionMatrix.class};
 
         for (Class<?> functionClass : functionClasses) {

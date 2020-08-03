@@ -12,6 +12,7 @@ import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 
 import java.util.*;
+import java.util.Map;
 
 public class AbstractLightweightBaseListener extends SimulatorBaseListener {
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.Map;
 import java.util.logging.Level;
 
 import lphy.core.functions.*;
@@ -411,6 +412,25 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                                 value[i] = (Integer) var[i].value();
                             }
                             IntegerArrayValue v = new IntegerArrayValue(null, value);
+                            return v;
+                        } else {
+                            IntegerArray intArray = new IntegerArray(var);
+                            return intArray.apply();
+                        }
+                    } if (var[0].value() instanceof String[]) {
+                        String[][] value = new String[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (String[]) var[i].value();
+                        }
+                        StringArray2DValue v = new StringArray2DValue(null, value);
+                        return v;
+                    } else if (var[0].value() instanceof String) {
+                        if (allConstants(var)) {
+                            String[] value = new String[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (String) var[i].value();
+                            }
+                            StringArrayValue v = new StringArrayValue(null, value);
                             return v;
                         } else {
                             IntegerArray intArray = new IntegerArray(var);

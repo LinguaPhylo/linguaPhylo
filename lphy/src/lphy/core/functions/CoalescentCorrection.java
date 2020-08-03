@@ -36,7 +36,7 @@ public class CoalescentCorrection extends DeterministicFunction<Double[][]> {
         return null;
     }
 
-    public Map<String, Value> getParams() {
+    public java.util.Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, speciesTree);
         map.put(thetaParamName, theta);

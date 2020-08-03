@@ -35,7 +35,7 @@ public class Rep<U> extends DeterministicFunction<U[]> {
         return new Value<>( array, this);
     }
 
-    public Map<String, Value> getParams() {
+    public java.util.Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(xParamName, x);
         map.put(timesParamName, times);
