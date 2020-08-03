@@ -15,6 +15,7 @@ import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.AlignmentToBEAST;
+import lphybeast.tobeast.values.MapValueToBEAST;
 import lphybeast.tobeast.values.TimeTreeToBEAST;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.*;
@@ -52,6 +53,7 @@ public class BEASTContext {
 
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
+        valueToBEASTMap.put(java.util.Map.class, new MapValueToBEAST());
 
         Class[] generatorToBEASTs = {
                 BetaToBEAST.class,
@@ -190,9 +192,16 @@ public class BEASTContext {
             beastValue = createBEASTRealParameter(val);
         } else if (val.value() instanceof Integer || val.value() instanceof Integer[]) {
             beastValue = createBEASTIntegerParameter(val);
+        } else {
+            for (Class c : valueToBEASTMap.keySet()) {
+                if (c.isAssignableFrom(val.value().getClass())) {
+                    toBEAST = valueToBEASTMap.get(c);
+                    beastValue = toBEAST.valueToBEAST(val, this);
+                }
+            }
         }
         if (beastValue == null) {
-            System.err.println("Unhandled value in valueToBEAST(): " + val);
+            System.err.println("Unhandled value in valueToBEAST(): " + val + " of type " + val.value().getClass());
         } else {
             addToContext(val, beastValue);
         }
