@@ -1,6 +1,6 @@
 mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
 Θ ~ LogNormal(meanlog=3.0, sdlog=0.5);
 taxa = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
-ages = arange(start=0.0, stop=9.0, step=1.0);
+ages = arange(start=0.0, stop=4.5, step=0.5);
 ψ ~ Coalescent(theta=Θ, taxaAges=map(keys=taxa, values=ages));
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=mu, tree=ψ);

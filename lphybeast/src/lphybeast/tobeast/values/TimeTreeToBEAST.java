@@ -22,7 +22,7 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         TimeTree timeTree = timeTreeValue.value();
         
         TreeParser tree = new TreeParser();
-        tree.setInputValue("newick", timeTree.toString());
+        tree.setInputValue("newick", timeTree.toNewick(false));
         tree.setInputValue("IsLabelledNewick", true);
 
         TaxonSet taxa = new TaxonSet();
@@ -47,7 +47,7 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         return tree;
     }
 
-    private List<String> getTaxaNames(TimeTree timeTree) {
+    public static List<String> getTaxaNames(TimeTree timeTree) {
         List<String> taxaNames = new ArrayList<>();
         for (TimeTreeNode node : timeTree.getNodes()) {
             if (node.isLeaf()) {

@@ -57,4 +57,13 @@ public class MigrationMatrix extends DeterministicFunction<Double[][]> {
         }
         return matrix;
     }
+
+    public Value<Double[]> getTheta() {
+        return getParams().get(thetaParamName);
+    }
+
+    public Value<Double[]> getMigrationRates() {
+        return getParams().get(ratesParamName);
+    }
+
 }

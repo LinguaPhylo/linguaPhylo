@@ -15,7 +15,7 @@ public class TimeTreeNode {
     double age = 0.0;
     String id = null;
 
-    Map<String, Object> metaData = new TreeMap<>();
+    SortedMap<String, Object> metaData = new TreeMap<>();
 
     TimeTree tree;
 
@@ -78,6 +78,10 @@ public class TimeTreeNode {
 
     public Object getMetaData(String key) {
         return metaData.get(key);
+    }
+
+    public SortedMap<String, Object> getMetaData() {
+        return metaData;
     }
 
     public TimeTreeNode getParent() {

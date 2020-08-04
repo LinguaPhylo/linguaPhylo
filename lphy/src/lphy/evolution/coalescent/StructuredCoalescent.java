@@ -238,6 +238,14 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
+    public Value<Double[][]> getM() {
+        return theta;
+    }
+
+    public String getPopulationLabel() {
+        return populationLabel;
+    }
+
     public static void main(String[] args) {
 
         for (int n = 2; n < 10; n++) {

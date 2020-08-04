@@ -74,6 +74,7 @@ public class BEASTContext {
                 NormalToBEAST.class,
                 PhyloCTMCToBEAST.class,
                 SerialCoalescentToBEAST.class,
+                StructuredCoalescentToBEAST.class,
                 TN93ToBEAST.class,
                 YuleToBEAST.class
         };
@@ -93,6 +94,10 @@ public class BEASTContext {
 
     public BEASTInterface getBEASTObject(GraphicalModelNode<?> node) {
         return beastObjects.get(node);
+    }
+
+    public GraphicalModelNode getGraphicalModelNode(BEASTInterface beastInterface) {
+        return BEASTToLPHYMap.get(beastInterface);
     }
 
     public void addBEASTObject(BEASTInterface newBEASTObject) {
@@ -234,6 +239,7 @@ public class BEASTContext {
         prior.setInputValue("distr", distr);
         prior.setInputValue("x", parameter);
         prior.initAndValidate();
+        prior.setID(parameter.getID() + ".prior");
         return prior;
     }
 

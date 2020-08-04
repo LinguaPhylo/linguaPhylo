@@ -5,9 +5,7 @@ import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by adru001 on 17/12/19.
@@ -23,7 +21,8 @@ public class TimeTree implements HasComponentView<TimeTree> {
     // number of leaves
     int n = 0;
 
-    public TimeTree() {}
+    public TimeTree() {
+    }
 
     public TimeTree(TimeTree treeToCopy) {
         setRoot(treeToCopy.getRoot().deepCopy(this));
@@ -112,29 +111,45 @@ public class TimeTree implements HasComponentView<TimeTree> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         //builder.append("\"");
-        toNewick(rootNode, builder);
+        toNewick(rootNode, builder, true);
         //builder.append("\"");
         return builder.toString();
     }
 
-    private void toNewick(TimeTreeNode node, StringBuilder builder) {
-        if (node.isLeaf()) {
-            builder.append(node.id);
+    private void toNewick(TimeTreeNode node, StringBuilder builder, boolean includeSingleChildNodes) {
+        if (!includeSingleChildNodes && node.getChildCount() == 1) {
+            System.out.println("Skip single child node " + node.getId());
+            toNewick(node.getChildren().get(0), builder, includeSingleChildNodes);
         } else {
-            builder.append("(");
-            List<TimeTreeNode> children = node.getChildren();
-            toNewick(children.get(0), builder);
-            for (int i = 1; i < children.size(); i++) {
-                builder.append(",");
-                toNewick(children.get(i), builder);
+            if (node.isLeaf()) {
+                builder.append(node.id);
+                SortedMap<String, Object> metaData = node.metaData;
+                if (metaData.size() > 0) {
+                    builder.append("[&");
+                    for (Map.Entry<String, Object> entry : metaData.entrySet()) {
+                        builder.append(entry.getKey());
+                        builder.append("=");
+                        builder.append(entry.getValue());
+                    }
+                    builder.append("]");
+                }
+            } else {
+
+                builder.append("(");
+                List<TimeTreeNode> children = node.getChildren();
+                toNewick(children.get(0), builder, includeSingleChildNodes);
+                for (int i = 1; i < children.size(); i++) {
+                    builder.append(",");
+                    toNewick(children.get(i), builder, includeSingleChildNodes);
+                }
+                builder.append(")");
             }
-            builder.append(")");
-        }
-        if (node.isRoot()) {
-            builder.append(":0.0;");
-        } else {
-            builder.append(":");
-            builder.append(node.getParent().age-node.age);
+            if (node.isRoot()) {
+                builder.append(":0.0;");
+            } else {
+                builder.append(":");
+                builder.append(node.getParent().age - node.age);
+            }
         }
     }
 
@@ -167,5 +182,13 @@ public class TimeTree implements HasComponentView<TimeTree> {
             }
         }
         return true;
+    }
+
+    public String toNewick(boolean includeSingleChildNodes) {
+        StringBuilder builder = new StringBuilder();
+        //builder.append("\"");
+        toNewick(rootNode, builder, includeSingleChildNodes);
+        //builder.append("\"");
+        return builder.toString();
     }
 }
