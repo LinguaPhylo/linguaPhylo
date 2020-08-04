@@ -61,6 +61,7 @@ public class StructuredCoalescentToBEAST implements GeneratorToBEAST<StructuredC
             structuredTreeIntervals.initAndValidate();
 
             mascot.setInputValue("structuredTreeIntervals", structuredTreeIntervals);
+            mascot.setInputValue("tree", value);
 
             mascot.initAndValidate();
 

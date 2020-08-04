@@ -148,9 +148,21 @@ public class TimeTree implements HasComponentView<TimeTree> {
                 builder.append(":0.0;");
             } else {
                 builder.append(":");
-                builder.append(node.getParent().age - node.age);
+                double branchLength = getBranchLength(node, includeSingleChildNodes);
+                builder.append(branchLength);
             }
         }
+    }
+
+    private double getBranchLength(TimeTreeNode node, boolean includeSingleChildNodes) {
+        TimeTreeNode parent = node.getParent();
+        if (!includeSingleChildNodes) {
+            if (parent.getChildCount() == 1) {
+                parent = parent.getParent();
+            }
+        }
+        if (parent != null) return parent.age - node.age;
+        return 0.0;
     }
 
     public TimeTreeNode getRoot() {
