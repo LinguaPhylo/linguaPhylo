@@ -7,10 +7,7 @@ import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
-import lphy.evolution.coalescent.Coalescent;
-import lphy.evolution.coalescent.MultispeciesCoalescent;
-import lphy.evolution.coalescent.SerialCoalescent;
-import lphy.evolution.coalescent.StructuredCoalescent;
+import lphy.evolution.coalescent.*;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
 import lphy.toroidalDiffusion.*;
@@ -37,7 +34,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
 
         Class<?>[] genClasses = {RhoSampleTree.class, BirthDeathTree.class, BirthDeathTreeDT.class, BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, Normal.class, NormalMulti.class,  LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, StructuredCoalescent.class};
+                ErrorModel.class, Yule.class, Beta.class, MultispeciesCoalescent.class, Poisson.class, SerialCoalescent.class, SkylineCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);

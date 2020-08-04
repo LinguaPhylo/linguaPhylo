@@ -1,0 +1,3 @@
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=16);
+ψ ~ SkylineCoalescent(theta=Θ);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);

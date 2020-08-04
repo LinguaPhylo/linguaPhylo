@@ -11,24 +11,24 @@ public class SerialCoalescentToBEAST implements GeneratorToBEAST<SerialCoalescen
     @Override
     public BEASTInterface generatorToBEAST(SerialCoalescent coalescent, BEASTInterface value, BEASTContext context) {
 
-            beast.evolution.tree.coalescent.Coalescent beastCoalescent = new beast.evolution.tree.coalescent.Coalescent();
+        beast.evolution.tree.coalescent.Coalescent beastCoalescent = new beast.evolution.tree.coalescent.Coalescent();
 
-            TreeIntervals treeIntervals = new TreeIntervals();
-            treeIntervals.setInputValue("tree", value);
-            treeIntervals.initAndValidate();
+        TreeIntervals treeIntervals = new TreeIntervals();
+        treeIntervals.setInputValue("tree", value);
+        treeIntervals.initAndValidate();
 
-            beastCoalescent.setInputValue("treeIntervals", treeIntervals);
+        beastCoalescent.setInputValue("treeIntervals", treeIntervals);
 
-            ConstantPopulation populationFunction = new ConstantPopulation();
-            populationFunction.setInputValue("popSize", context.getBEASTObject(coalescent.getTheta()));
-            populationFunction.initAndValidate();
+        ConstantPopulation populationFunction = new ConstantPopulation();
+        populationFunction.setInputValue("popSize", context.getBEASTObject(coalescent.getTheta()));
+        populationFunction.initAndValidate();
 
-            beastCoalescent.setInputValue("populationModel", populationFunction);
+        beastCoalescent.setInputValue("populationModel", populationFunction);
 
-            beastCoalescent.initAndValidate();
+        beastCoalescent.initAndValidate();
 
-            return beastCoalescent;
-        }
+        return beastCoalescent;
+    }
 
     @Override
     public Class<SerialCoalescent> getGeneratorClass() {
