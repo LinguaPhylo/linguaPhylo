@@ -227,9 +227,17 @@ public class BEASTContext {
         }
     }
 
-    public static Frequencies createBEASTFrequencies(RealParameter freqParameter) {
+    /**
+     *
+     * @param freqParameter
+     * @param stateNames the names of the states in a space-delimited string
+     * @return
+     */
+    public static Frequencies createBEASTFrequencies(RealParameter freqParameter, String stateNames) {
         Frequencies frequencies = new Frequencies();
         frequencies.setInputValue("frequencies", freqParameter);
+        freqParameter.setInputValue("keys", stateNames);
+        freqParameter.initAndValidate();
         frequencies.initAndValidate();
         return frequencies;
     }
@@ -384,9 +392,11 @@ public class BEASTContext {
 
         Operator operator;
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
+            Double[] value = (Double[])variable.value();
             operator = new DeltaExchangeOperator();
             operator.setInputValue("parameter", parameter);
             operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()-1));
+            operator.setInputValue("delta", 1.0/value.length);
             operator.initAndValidate();
             operator.setID(parameter.getID() + ".deltaExchange");
         } else {

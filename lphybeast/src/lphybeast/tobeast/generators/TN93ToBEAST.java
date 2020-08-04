@@ -13,7 +13,7 @@ public class TN93ToBEAST implements GeneratorToBEAST<TN93> {
         beast.evolution.substitutionmodel.TN93 beastTn93 = new beast.evolution.substitutionmodel.TN93();
         beastTn93.setInputValue("kappa1", context.getBEASTObject(tn93.getKappa1()));
         beastTn93.setInputValue("kappa2", context.getBEASTObject(tn93.getKappa2()));
-        beastTn93.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(tn93.getFreq())));
+        beastTn93.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(tn93.getFreq()),"A C G T"));
         beastTn93.initAndValidate();
         return beastTn93;
     }

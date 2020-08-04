@@ -12,7 +12,7 @@ public class HKYToBEAST implements GeneratorToBEAST<HKY> {
 
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
         beastHKY.setInputValue("kappa", context.getBEASTObject(hky.getKappa()));
-        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(hky.getFreq())));
+        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(hky.getFreq()),"A C G T"));
         beastHKY.initAndValidate();
         return beastHKY;
     }

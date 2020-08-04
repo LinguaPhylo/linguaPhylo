@@ -11,7 +11,7 @@ public class K80ToBEAST implements GeneratorToBEAST<K80> {
 
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
         beastHKY.setInputValue("kappa", context.getBEASTObject(k80.getKappa()));
-        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies(BEASTContext.createRealParameter(new Double[]{0.25, 0.25, 0.25, 0.25})));
+        beastHKY.setInputValue("frequencies", BEASTContext.createBEASTFrequencies(BEASTContext.createRealParameter(new Double[]{0.25, 0.25, 0.25, 0.25}),"A C G T"));
         beastHKY.initAndValidate();
         return beastHKY;
     }

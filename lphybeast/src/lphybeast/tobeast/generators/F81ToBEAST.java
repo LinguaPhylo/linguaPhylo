@@ -12,7 +12,7 @@ public class F81ToBEAST implements GeneratorToBEAST<F81> {
 
         beast.evolution.substitutionmodel.HKY beastF81 = new beast.evolution.substitutionmodel.HKY();
         beastF81.setInputValue("kappa", new RealParameter("1.0"));
-        beastF81.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(f81.getFreq())));
+        beastF81.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(f81.getFreq()),"A C G T"));
         beastF81.initAndValidate();
         return beastF81;
     }

@@ -20,7 +20,11 @@ public class LPhyBEAST {
     public static void main(String[] args) throws IOException {
 
         String infile = "simpleStructuredCoalescent.lphy";
-        String outfile = "simpleStructuredCoalescent.xml";
+        if (args.length > 0) {
+            infile = args[0];
+        }
+
+        String outfile = infile.substring(0, infile.lastIndexOf('.')) + ".xml";
 
         LPhyParser parser = new REPL();
 

@@ -15,8 +15,12 @@ public class GTRToBEAST implements GeneratorToBEAST<GTR> {
 
         Value<Double[]> rates = gtr.getRates();
 
-        beastGTR.setInputValue("rates", context.getBEASTObject(rates));
-        beastGTR.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(gtr.getFreq())));
+        RealParameter ratesParameter = (RealParameter)context.getBEASTObject(rates);
+        ratesParameter.setInputValue("keys", "AC AG AT CG CT GT");
+        ratesParameter.initAndValidate();
+
+        beastGTR.setInputValue("rates", ratesParameter);
+        beastGTR.setInputValue("frequencies", BEASTContext.createBEASTFrequencies((RealParameter) context.getBEASTObject(gtr.getFreq()), "A C G T"));
         beastGTR.initAndValidate();
         return beastGTR;
     }
