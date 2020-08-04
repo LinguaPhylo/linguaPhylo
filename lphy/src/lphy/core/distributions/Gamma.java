@@ -11,7 +11,7 @@ import java.util.TreeMap;
 /**
  * Gamma distribution
  */
-public class Gamma implements GenerativeDistribution<Double> {
+public class Gamma implements GenerativeDistribution1D<Double> {
 
     private final String shapeParamName;
     private final String scaleParamName;
@@ -85,5 +85,10 @@ public class Gamma implements GenerativeDistribution<Double> {
 
     public Value<Double> getShape() {
         return shape;
+    }
+
+    private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};
+    public Double[] getDomainBounds() {
+        return domainBounds;
     }
 }

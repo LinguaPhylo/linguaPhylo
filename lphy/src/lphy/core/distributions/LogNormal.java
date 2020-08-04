@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class LogNormal implements GenerativeDistribution<Double> {
+public class LogNormal implements GenerativeDistribution1D<Double> {
 
     private final String meanLogParamName;
     private final String sdLogParamName;
@@ -67,5 +67,10 @@ public class LogNormal implements GenerativeDistribution<Double> {
 
     public Value<Double> getSDLog() {
         return S;
+    }
+
+    private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};
+    public Double[] getDomainBounds() {
+        return domainBounds;
     }
 }

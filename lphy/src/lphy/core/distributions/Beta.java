@@ -10,7 +10,7 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Beta implements GenerativeDistribution<Double> {
+public class Beta implements GenerativeDistribution1D<Double> {
 
     private final String alphaParamName;
     private final String betaParamName;
@@ -57,5 +57,10 @@ public class Beta implements GenerativeDistribution<Double> {
 
     public String toString() {
         return getName();
+    }
+
+    private static final Double[] domainBounds = {0.0, 1.0};
+    public Double[] getDomainBounds() {
+        return domainBounds;
     }
 }

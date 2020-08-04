@@ -11,7 +11,7 @@ import java.util.TreeMap;
 /**
  * Normal distribution
  */
-public class Normal implements GenerativeDistribution<Double> {
+public class Normal implements GenerativeDistribution1D<Double> {
 
     private final String meanParamName;
     private final String sdParamName;
@@ -78,4 +78,8 @@ public class Normal implements GenerativeDistribution<Double> {
         return sd;
     }
 
+    private static final Double[] domainBounds = {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY};
+    public Double[] getDomainBounds() {
+        return domainBounds;
+    }
 }

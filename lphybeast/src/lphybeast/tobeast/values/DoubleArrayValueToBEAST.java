@@ -3,8 +3,6 @@ package lphybeast.tobeast.values;
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import lphy.core.distributions.Dirichlet;
-import lphy.core.distributions.Exp;
-import lphy.core.distributions.LogNormal;
 import lphy.core.distributions.LogNormalMulti;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
@@ -25,8 +23,8 @@ public class DoubleArrayValueToBEAST implements ValueToBEAST<Double[]> {
 
         // check domain
         if (value.getGenerator() instanceof Dirichlet) {
-            parameter.setInputValue("upper", 1.0);
             parameter.setInputValue("lower", 0.0);
+            parameter.setInputValue("upper", 1.0);
         } else if (value.getGenerator() instanceof LogNormalMulti) {
             parameter.setInputValue("lower", 0.0);
         }

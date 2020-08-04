@@ -3,6 +3,7 @@ package lphy.core.distributions;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import scala.Int;
 
 import java.util.Collections;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Poisson implements GenerativeDistribution<Integer> {
+public class Poisson implements GenerativeDistribution1D<Integer> {
 
     private final String lambdaParamName;
     private Value<Double> lambda;
@@ -57,4 +58,8 @@ public class Poisson implements GenerativeDistribution<Integer> {
         return getName();
     }
 
+    private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
+    public Integer[] getDomainBounds() {
+        return domainBounds;
+    }
 }

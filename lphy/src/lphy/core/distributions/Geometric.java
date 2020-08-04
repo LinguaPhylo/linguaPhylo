@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Geometric implements GenerativeDistribution<Integer> {
+public class Geometric implements GenerativeDistribution1D<Integer> {
 
     private final String pParamName;
     private Value<Double> p;
@@ -55,5 +55,10 @@ public class Geometric implements GenerativeDistribution<Integer> {
 
     public String toString() {
         return getName();
+    }
+
+    private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
+    public Integer[] getDomainBounds() {
+        return domainBounds;
     }
 }
