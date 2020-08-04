@@ -24,11 +24,11 @@ The first line creates a random variable, λ, that is log-normally distributed. 
 
 ### LinguaPhylo Studio
 
-Along with the language definition, we also want to provide software tools to specify and visualise models as well as simulate data from models defined in LPhy. 
+Along with the language definition, we also provide software to specify and visualise models as well as simulate data from models defined in LPhy. 
 
-This software will also provide the ability for models specified in the LPhy language to be applied to data using standard inference tools such as MrBayes, RevBayes, BEAST1 and BEAST2. This will require software that can convert an LPhy specification into an input file that these inference engines understand.
+This software will also provide the ability for models specified in the LPhy language to be applied to data using standard inference tools such as MrBayes, RevBayes, BEAST1 and BEAST2. This will require software that can convert an LPhy specification into an input file that these inference engines understand. The first such software converter is LPhyBEAST described below.
 
 ## LPhyBEAST (pronounced el-fee-beast)
 
-LPhyBEAST is a command-line program that takes an LPhy model specification, and some data and produces a BEAST2 XML input file.
+LPhyBEAST is a command-line program that takes an LPhy model specification, and some data and produces a BEAST 2 XML input file.
 It is therefore an alternative way to succinctly express and communicate BEAST analyses.
