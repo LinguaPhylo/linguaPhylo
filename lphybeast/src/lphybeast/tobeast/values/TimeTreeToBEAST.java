@@ -43,7 +43,7 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         }
 
         tree.initAndValidate();
-        tree.setID(timeTreeValue.getCanonicalId());
+        if (!timeTreeValue.isAnonymous()) tree.setID(timeTreeValue.getCanonicalId());
         return tree;
     }
 

@@ -1,7 +1,6 @@
 package lphybeast;
 
 import beast.core.*;
-import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
@@ -14,9 +13,7 @@ import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
 import lphybeast.tobeast.generators.*;
-import lphybeast.tobeast.values.AlignmentToBEAST;
-import lphybeast.tobeast.values.MapValueToBEAST;
-import lphybeast.tobeast.values.TimeTreeToBEAST;
+import lphybeast.tobeast.values.*;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.*;
 import lphy.graphicalModel.*;
@@ -54,6 +51,11 @@ public class BEASTContext {
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
         valueToBEASTMap.put(java.util.Map.class, new MapValueToBEAST());
+        valueToBEASTMap.put(Double.class, new DoubleValueToBEAST());
+        valueToBEASTMap.put(Double[].class, new DoubleArrayValueToBEAST());
+        valueToBEASTMap.put(Double[][].class, new DoubleArray2DValueToBEAST());
+        valueToBEASTMap.put(Integer.class, new IntegerValueToBEAST());
+        valueToBEASTMap.put(Integer[].class, new IntegerArrayValueToBEAST());
 
         Class[] generatorToBEASTs = {
                 BetaToBEAST.class,
@@ -74,7 +76,7 @@ public class BEASTContext {
                 NormalToBEAST.class,
                 PhyloCTMCToBEAST.class,
                 SerialCoalescentToBEAST.class,
-                StructuredCoalescentToBEAST.class,
+                StructuredCoalescentToMascot.class,
                 TN93ToBEAST.class,
                 YuleToBEAST.class
         };
@@ -169,19 +171,21 @@ public class BEASTContext {
      */
     private void generatorToBEAST(Value value, Generator generator) {
 
+        if (getBEASTObject(generator) == null) {
 
-        BEASTInterface beastGenerator = null;
+            BEASTInterface beastGenerator = null;
 
-        GeneratorToBEAST toBEAST = generatorToBEASTMap.get(generator.getClass());
+            GeneratorToBEAST toBEAST = generatorToBEASTMap.get(generator.getClass());
 
-        if (toBEAST != null) {
-            beastGenerator = toBEAST.generatorToBEAST(generator, beastObjects.get(value), this);
-        }
+            if (toBEAST != null) {
+                beastGenerator = toBEAST.generatorToBEAST(generator, beastObjects.get(value), this);
+            }
 
-        if (beastGenerator == null) {
-            System.err.println("Unhandled generator in generatorToBEAST(): " + generator);
-        } else {
-            addToContext(generator, beastGenerator);
+            if (beastGenerator == null) {
+                System.err.println("Unhandled generator in generatorToBEAST(): " + generator);
+            } else {
+                addToContext(generator, beastGenerator);
+            }
         }
     }
 
@@ -193,10 +197,6 @@ public class BEASTContext {
 
         if (toBEAST != null) {
             beastValue = toBEAST.valueToBEAST(val, this);
-        } else if (val.value() instanceof Double || val.value() instanceof Double[] || val.value() instanceof Double[][]) {
-            beastValue = createBEASTRealParameter(val);
-        } else if (val.value() instanceof Integer || val.value() instanceof Integer[]) {
-            beastValue = createBEASTIntegerParameter(val);
         } else {
             for (Class c : valueToBEASTMap.keySet()) {
                 if (c.isAssignableFrom(val.value().getClass())) {
@@ -243,74 +243,7 @@ public class BEASTContext {
         return prior;
     }
 
-    public RealParameter createBEASTRealParameter(Value value) {
 
-        RealParameter parameter = new RealParameter();
-        if (value.value() instanceof Double) {
-            parameter.setInputValue("value", Collections.singletonList(value.value()));
-            parameter.setInputValue("dimension", 1);
-
-            // check domain
-            if (value.getGenerator() instanceof LogNormal || value.getGenerator() instanceof Exp) {
-                parameter.setInputValue("lower", 0.0);
-            }
-            parameter.initAndValidate();
-        } else if (value.value() instanceof Double[]) {
-            List<Double> values = Arrays.asList((Double[]) value.value());
-            parameter.setInputValue("value", values);
-            parameter.setInputValue("dimension", values.size());
-
-            // check domain
-            if (value.getGenerator() instanceof Dirichlet) {
-                parameter.setInputValue("upper", 1.0);
-                parameter.setInputValue("lower", 0.0);
-            } else if (value.getGenerator() instanceof LogNormal || value.getGenerator() instanceof Exp) {
-                parameter.setInputValue("lower", 0.0);
-            }
-
-            parameter.initAndValidate();
-        } else if (value.value() instanceof Double[][]) {
-
-            Double[][] val = (Double[][]) value.value();
-
-            List<Double> values = new ArrayList<>(val.length * val[0].length);
-            for (int i = 0; i < val.length; i++) {
-                for (int j = 0; j < val[0].length; j++) {
-                    values.add(val[i][j]);
-                }
-            }
-            parameter.setInputValue("value", values);
-            parameter.setInputValue("dimension", values.size());
-            parameter.setInputValue("minordimension", val[0].length); // TODO check this!
-            parameter.initAndValidate();
-        } else {
-            throw new IllegalArgumentException();
-        }
-        if (!value.isAnonymous()) parameter.setID(value.getCanonicalId());
-        elements.add(parameter);
-
-        return parameter;
-    }
-
-    private IntegerParameter createBEASTIntegerParameter(Value<?> value) {
-        IntegerParameter parameter = new IntegerParameter();
-        if (value.value() instanceof Integer) {
-            parameter.setInputValue("value", Collections.singletonList(value.value()));
-            parameter.setInputValue("dimension", 1);
-            parameter.initAndValidate();
-        } else if (value.value() instanceof Integer[]) {
-            List<Integer> values = Arrays.asList((Integer[]) value.value());
-            parameter.setInputValue("value", values);
-            parameter.setInputValue("dimension", values.size());
-            parameter.initAndValidate();
-        } else {
-            throw new IllegalArgumentException();
-        }
-        if (!value.isAnonymous()) parameter.setID(value.getCanonicalId());
-        elements.add(parameter);
-
-        return parameter;
-    }
 
     public List<Operator> createOperators() {
 

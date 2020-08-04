@@ -30,7 +30,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment> {
         beastAlignment.setInputValue("sequence", sequences);
         beastAlignment.initAndValidate();
 
-        beastAlignment.setID(alignmentValue.getCanonicalId());
+        if (!alignmentValue.isAnonymous()) beastAlignment.setID(alignmentValue.getCanonicalId());
 
         return beastAlignment;
     }

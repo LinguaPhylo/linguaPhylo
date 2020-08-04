@@ -49,7 +49,7 @@ public class MapValueToBEAST implements ValueToBEAST<Map<String, Double>> {
         parameter.setInputValue("value", values);
         parameter.setInputValue("keys", builder.toString());
         parameter.initAndValidate();
-        parameter.setID(value.getId());
+        if (!value.isAnonymous()) parameter.setID(value.getCanonicalId());
 
         return parameter;
     }
