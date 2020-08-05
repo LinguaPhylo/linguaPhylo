@@ -1,0 +1,9 @@
+initialMean ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+N ~ ExpMarkovChain(initialMean=initialMean, n=16);
+// the line above is equivalent to:
+// N[0] ~ Exp(mean=initialMean);
+// for (i in 0:15) {
+//     N[i+1] ~ Exp(mean=N[i])
+// }
+ψ ~ SkylineCoalescent(theta=N);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);

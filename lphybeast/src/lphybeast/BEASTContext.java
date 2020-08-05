@@ -9,6 +9,7 @@ import beast.evolution.operators.*;
 import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.tree.Tree;
+import beast.math.distributions.ExcludablePrior;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
@@ -79,7 +80,8 @@ public class BEASTContext {
                 SerialCoalescentToBEAST.class,
                 StructuredCoalescentToMascot.class,
                 TN93ToBEAST.class,
-                YuleToBEAST.class
+                YuleToBEAST.class,
+                ExpMarkovChainToBEAST.class
         };
 
         for (Class c : generatorToBEASTs) {
@@ -552,5 +554,9 @@ public class BEASTContext {
             }
         }
         return taxonList;
+    }
+
+    public void putBEASTObject(GraphicalModelNode node, BEASTInterface beastInterface) {
+        beastObjects.put(node, beastInterface);
     }
 }
