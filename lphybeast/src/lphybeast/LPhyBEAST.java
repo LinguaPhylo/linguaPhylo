@@ -4,6 +4,7 @@ import lphy.core.LPhyParser;
 import lphy.parser.REPL;
 
 import java.io.*;
+import java.nio.file.Paths;
 
 public class LPhyBEAST {
 
@@ -19,6 +20,8 @@ public class LPhyBEAST {
 
     public static void main(String[] args) throws IOException {
 
+        String dir = System.getProperty("user.home") + "/WorkSpace/linguaPhylo/lphybeast/examples/";
+
         String infile = "simpleStructuredCoalescent.lphy";
         if (args.length > 0) {
             infile = args[0];
@@ -28,7 +31,8 @@ public class LPhyBEAST {
 
         LPhyParser parser = new REPL();
 
-        File file = new File(infile);
+        // add path to file
+        File file = Paths.get(dir, infile).toFile();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         source(reader, parser);
 
@@ -38,7 +42,7 @@ public class LPhyBEAST {
 
         String xml = context.toBEASTXML(fileNameStem);
 
-        PrintWriter writer = new PrintWriter(new FileWriter(outfile));
+        PrintWriter writer = new PrintWriter(new FileWriter(Paths.get(dir, outfile).toFile()));
 
         writer.println(xml);
         writer.flush();
