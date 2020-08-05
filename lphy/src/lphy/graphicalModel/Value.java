@@ -1,9 +1,6 @@
 package lphy.graphicalModel;
 
-import lphy.app.DoubleArrayLabel;
-import lphy.app.HasComponentView;
-import lphy.app.IntegerArrayLabel;
-import lphy.app.Symbols;
+import lphy.app.*;
 
 import javax.swing.*;
 import java.util.*;
@@ -37,6 +34,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
     /**
      * Constructs an anonymous value.
+     *
      * @param value
      * @param function
      */
@@ -74,6 +72,39 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     }
 
     public String valueToString() {
+
+        if (value.getClass().isArray()) {
+
+            System.err.println("Handling array for value.toString()!");
+
+            Class<?> componentType;
+            componentType = value.getClass().getComponentType();
+
+            if (componentType.isPrimitive()) {
+
+                if (boolean.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((boolean[]) value);
+                } else if (byte.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((byte[]) value);
+                } else if (char.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((char[]) value);
+                } else if (double.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((double[]) value);
+                } else if (float.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((float[]) value);
+                } else if (int.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((int[]) value);
+                } else if (long.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((long[]) value);
+                } else if (short.class.isAssignableFrom(componentType)) {
+                    return Arrays.toString((short[]) value);
+                }
+                /* No else. No other primitive types exist. */
+            } else {
+                return Arrays.toString((Object[]) value);
+            }
+        }
+
         return value.toString();
     }
 
@@ -91,11 +122,15 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         }
 
         if (value() instanceof Double[]) {
-            return new DoubleArrayLabel((Value<Double[]>)this);
+            return new DoubleArrayLabel((Value<Double[]>) this);
         }
 
         if (value() instanceof Integer[]) {
-            return new IntegerArrayLabel((Value<Integer[]>)this);
+            return new IntegerArrayLabel((Value<Integer[]>) this);
+        }
+
+        if (value() instanceof Boolean[]) {
+            return new BooleanArrayLabel((Value<Boolean[]>) this);
         }
 
         if (value.toString().length() < 130) {

@@ -24,11 +24,12 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
     @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {
 
-        return new RandomVariable<>("x", random.nextBoolean(), this);
+        boolean success = (random.nextDouble() < p.value());
+        return new RandomVariable<>("x", success, this);
     }
 
-    public double density(Boolean i) {
-        return i ? p.value() : (1.0 - p.value());
+    public double density(Boolean success) {
+        return success ? p.value() : (1.0 - p.value());
     }
 
     @Override

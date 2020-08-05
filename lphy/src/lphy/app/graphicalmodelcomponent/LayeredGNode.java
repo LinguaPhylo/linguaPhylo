@@ -107,8 +107,7 @@ public class LayeredGNode extends LayeredNode.Default {
     }
 
     private boolean multiDimensional(Object v) {
-        return (v instanceof Map || v instanceof Alignment || v instanceof TimeTree || v instanceof Integer[] ||
-                v instanceof Double[] || v instanceof Double[][] || v instanceof Integer[][]);
+        return (v instanceof Map || v instanceof Alignment || v instanceof TimeTree || v.getClass().isArray());
     }
 
     private void createValueButton() {
