@@ -19,8 +19,11 @@ public class LPhyBEAST {
     @Parameters(paramLabel = "LPhy", description = "File of the LPhy model specification")
     File infile;
 
-    @Option(names = {"-h", "--help"}, usageHelp = true, description = "display this help and exit")
-    boolean helpRequested;
+    @Option(names = {"-V", "--version"}, versionHelp = true, description = "display version info")
+    boolean versionInfoRequested;
+
+    @Option(names = {"-h", "--help"}, usageHelp = true, description = "display this help message")
+    boolean usageHelpRequested;
 
     @Option(names = {"-o", "--out"},      description = "BEAST 2 XML")  File outfile;
     @Option(names = {"-d", "--data"},     description = "Alignment and traits")    File datafile;
