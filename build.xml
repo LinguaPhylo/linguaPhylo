@@ -1,9 +1,9 @@
 <project default="build" basedir=".">
 
   <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
-  <property name="src" location="src"/>
-  <property name="test" location="test"/>
-  <property name="lib" location="lib"/>
+<!--  <property name="test" location="test"/>-->
+  <property name="lphy" location="lphy"/>
+  <property name="lphybe" location="lphybeast"/>
 
   <property name="sourceVersion" value="1.8"/>
   <property name="targetVersion" value="1.8"/>
@@ -12,52 +12,89 @@
 
   <!-- Names of temporary build/test directories -->
   <property name="build" location="build"/>
-  <property name="build-lib" location="build-lib"/>
   <property name="build-test" location="build-test"/>
   <property name="test-reports" location="test-reports"/>
   <property name="dist" location="dist"/>
 
+  <property name="lphyName" value="lphy"/>
+  <property name="lphybeName" value="lphybeast"/>
+  <property name="projName" value="LinguaPhylo" />
+  <property name="projVersion" value="0.0.1" />
 
   <!-- Prepare for compilation -->
   <target name="init">
-
-    <property name="projName" value="graphicalModelSimulator" />
-    <property name="projVersion" value="0.0.1" />
-
     <mkdir dir="${build}"/>
-    <mkdir dir="${build-lib}"/>
+<!--    <mkdir dir="${build-lib}"/>-->
     <mkdir dir="${dist}"/>
-    <copy todir="${build-lib}">
-      <fileset dir="${lib}" includes="*.jar"/>
-    </copy>
+<!--    <copy todir="${build-lib}">-->
+<!--      <fileset dir="${lphy}/lib" includes="*.jar"/>-->
+<!--      <fileset dir="${lphybe}/lib" includes="*.jar"/>-->
+<!--    </copy>-->
   </target>
 
   <!-- Compile -->
-  <target name="compile" depends="init">
-    <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}" includeantruntime="false">
+  <target name="compile" depends="compile-l,compile-lb"/>
+
+  <target name="compile-l" depends="init">
+    <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/src" destdir="${build}" includeantruntime="false">
       <classpath>
-	<pathelement path="${classpath}"/>
-	<fileset dir="lib">
-      <include name="commons-math3-3.6.1.jar"/>
-      <include name="antlr-runtime-4.8.jar"/>
-      </fileset>
-	<fileset dir="${build-lib}" includes="*.jar"/>
+        <pathelement path="${classpath}"/>
+        <fileset dir="${lphy}/lib" includes="*.jar"/>
       </classpath>
     </javac>
   </target>
 
-  <target name="build-dist" depends="compile">
+  <target name="compile-lb" depends="init">
+    <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphybe}/src" destdir="${build}" includeantruntime="false">
+      <classpath>
+        <pathelement path="${classpath}"/>
+        <fileset dir="${lphybe}/lib" includes="*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- Release -->
+  <property name="pack" value="${dist}/package"/>
+
+  <target name="dist-lphy" depends="compile-l">
+    <mkdir dir="${pack}"/>
+    <jar jarfile="${pack}/${lphyName}.src.jar" >
+      <fileset dir="${lphy}/src"/>
+    </jar>
+
+    <jar jarfile="${pack}/${lphyName}.v${projVersion}.jar">
+      <fileset dir="${build}" includes="${lphyName}/**"/>
+      <manifest>
+        <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
+      </manifest>
+      <zipgroupfileset dir="${lphy}/lib" includes="*.jar" />
+    </jar>
+  </target>
+
+  <target name="dist-lphybe" depends="compile-lb">
+    <mkdir dir="${pack}"/>
+    <jar jarfile="${pack}/${lphybeName}.src.jar" >
+      <fileset dir="${lphybe}/src"/>
+    </jar>
+
+    <!-- lphybeast depends on lphy -->
+    <jar jarfile="${pack}/${lphybeName}.v${projVersion}.jar">
+      <fileset dir="${build}"/>
+      <!-- TODO main -->
+      <manifest>
+        <attribute name="Main-Class" value="lphybeast.LPhyBEAST"/>
+      </manifest>
+      <zipgroupfileset dir="${lphy}/lib" includes="*.jar" />
+      <zipgroupfileset dir="${lphybe}/lib" includes="*.jar" />
+    </jar>
+  </target>
+
+  <!-- dist all -->
+  <target name="dist" depends="build,dist-lphy,dist-lphybe">
     <property name="packageName" value="${projName}.v${projVersion}"/>
-    <property name="pack" location="${dist}/package"/>
     <mkdir dir="${pack}"/>
 
-    <jar jarfile="${pack}/${packageName}.src.jar" basedir="${src}" />
-
-    <mkdir dir="${pack}/lib"/>
-    <copy todir="${pack}/lib">
-      <fileset dir="${lib}" includes="*.jar" />
-    </copy>
-    <jar jarfile="${pack}/lib/${packageName}.jar" basedir="${build}" />
+    <!-- 2 jars from dist-*  -->
 
     <copy file="README.md" tofile="${pack}/README" />
 <!--
@@ -67,31 +104,14 @@
     </copy>
 -->
     <mkdir dir="${pack}/examples" />
+    <!-- TODO 2 examples ? -->
     <copy todir="${pack}/examples">
-      <fileset dir="examples" includes="*.lphy" />
+      <fileset dir="${lphy}/examples" includes="*.lphy" />
     </copy>
 
-
-    <jar jarfile="${pack}/${projName}.jar">
-      <fileset dir="${build}"/>
-      <restrict>
-        <not>
-          <name name="META-INF/**"/>
-        </not>
-        <archives>
-          <zips>
-            <fileset dir="${build-lib}" includes="**/*.jar"/>
-          </zips>
-        </archives>
-      </restrict>
-      <manifest>
-        <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
-      </manifest>
-    </jar>
-    
     <zip destfile="${dist}/${packageName}.zip" basedir="${pack}" />
 
-    <delete dir="${pack}"/>
+<!--    <delete dir="${pack}"/>-->
 
     <echo/>
     <echo/>
@@ -99,46 +119,37 @@
   </target>
 
 
-  <target name="build" depends="compile,build-dist"/>
+  <target name="build" depends="clean, compile"/>
   
   <!-- Prepare for unit test compilation -->
-  <target name="init-test" depends="init">
+  <target name="init-test">
     <mkdir dir="${build-test}"/>
     <mkdir dir="${test-reports}"/>
   </target>
 
 
   <!-- Compile unit tests -->
-  <target name="compile-test" depends="init-test,compile">
-    <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}" includeantruntime="false">
+  <target name="compile-test-l" depends="init-test,compile">
+    <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/test" destdir="${build-test}" includeantruntime="false">
       <classpath>
-	<pathelement path="${classpath}"/>
-        <fileset dir="lib">
-          <include name="commons-math3-3.6.1.jar"/>
-          <include name="antlr-runtime-4.8.jar"/>
-        </fileset>
-	<pathelement path="${build}" />
-	<fileset dir="${build-lib}" includes="*.jar"/>
+        <pathelement path="${classpath}"/>
+        <pathelement path="${build}"/>
+        <fileset dir="${lphy}/lib" includes="*.jar"/>
       </classpath>
     </javac>
   </target>
 
 
   <!-- Run unit tests -->
-  <target name="test" depends="compile-test">
+  <target name="test" depends="compile-test-l">
     <junit printsummary="yes" failureproperty="testFailed">
       <classpath>
-	<pathelement path="${classpath}"/>
-        <fileset dir="lib">
-          <include name="commons-math3-3.6.1.jar"/>
-          <include name="antlr-runtime-4.8.jar"/>
-        </fileset>
-	<pathelement path="${build}" />
-	<pathelement path="${build-test}" />
-	<fileset dir="${build-lib}" includes="*.jar"/>
-      </classpath>
-      <batchtest fork="yes" todir="${test-reports}">
-	<fileset dir="${test}">
+        <pathelement path="${classpath}"/>
+        <pathelement path="${build}"/>
+        <pathelement path="${build-test}"/>
+        <fileset dir="${lphy}/lib" includes="*.jar"/>
+      </classpath>      <batchtest fork="yes" todir="${test-reports}">
+	<fileset dir="${lphy}/test">
 	  <include name="**/*Test.java"/>
 	</fileset>
 	<formatter type="plain"/>
@@ -153,7 +164,6 @@
   <!-- Revert to pristine state. -->
   <target name="clean">
     <delete dir="${build}" />
-    <delete dir="${build-lib}" />
     <delete dir="${dist}" />
     <delete dir="${build-test}" />
     <delete dir="${test-reports}" />
