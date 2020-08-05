@@ -81,7 +81,7 @@
     <!-- lphybeast depends on lphy -->
     <jar jarfile="${pack}/${lphybeName}.v${projVersion}.jar">
       <fileset dir="${build}"/>
-      <!-- TODO main -->
+      <!-- TODO main in dev -->
       <manifest>
         <attribute name="Main-Class" value="lphybeast.LPhyBEAST"/>
       </manifest>
@@ -105,14 +105,14 @@
     </copy>
 -->
     <mkdir dir="${pack}/examples" />
-    <!-- TODO 2 examples ? -->
+    <!-- TODO why 2 examples ? -->
     <copy todir="${pack}/examples">
       <fileset dir="${lphy}/examples" includes="*.lphy" />
     </copy>
 
     <zip destfile="${dist}/${packageName}.zip" basedir="${pack}" />
 
-    <delete dir="${pack}"/>
+<!--    <delete dir="${pack}"/>-->
 
     <echo/>
     <echo/>
