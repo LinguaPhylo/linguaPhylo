@@ -5,6 +5,7 @@
   <property name="lphy" location="lphy"/>
   <property name="lphybe" location="lphybeast"/>
 
+  <!-- TODO java 11 bug to create corrupted zip  -->
   <property name="sourceVersion" value="1.8"/>
   <property name="targetVersion" value="1.8"/>
   <property name="beastSrcRevision" value="master"/>
@@ -89,7 +90,7 @@
     </jar>
   </target>
 
-  <!-- dist all -->
+  <!-- TODO now 1 zip contains both lphy and lphybeast -->
   <target name="dist" depends="build,dist-lphy,dist-lphybe">
     <property name="packageName" value="${projName}.v${projVersion}"/>
     <mkdir dir="${pack}"/>
@@ -111,12 +112,13 @@
 
     <zip destfile="${dist}/${packageName}.zip" basedir="${pack}" />
 
-<!--    <delete dir="${pack}"/>-->
+    <delete dir="${pack}"/>
 
     <echo/>
     <echo/>
     <echo>** Package ${dist}/${packageName}.zip created successfuly! **</echo>
   </target>
+
 
 
   <target name="build" depends="clean, compile"/>
