@@ -53,16 +53,16 @@ public class LPhyBEAST implements Callable<Integer> {
         BEASTContext context = new BEASTContext(parser);
 
         //*** Write BEAST 2 XML ***//
-        String wkdir = infile.getParent().toString();
+//        String wkdir = infile.getParent().toString();
         String fileName = infile.getFileName().toString();
         String fileNameStem = fileName.substring(0, fileName.indexOf("."));
-
+        // avoid to add dir into fileNameStem passed into XML logger
         String xml = context.toBEASTXML(fileNameStem);
 
-        String outfileName = fileNameStem + ".xml";
         if (outfile == null) {
+            String outPath = infile.toString().substring(0, infile.toString().indexOf(".")) + ".xml";
             // create outfile in the same dir of infile as default
-            outfile = Paths.get(wkdir, outfileName);
+            outfile = Paths.get(outPath);
         }
 
         PrintWriter writer = new PrintWriter(new FileWriter(outfile.toFile()));
@@ -71,7 +71,7 @@ public class LPhyBEAST implements Callable<Integer> {
         writer.flush();
         writer.close();
 
-        System.out.println("\nCreate BEAST 2 XML : " + outfile);
+        System.out.println("\nCreate BEAST 2 XML : " + outfile + " in " + System.getProperty("user.dir"));
         return 0;
     }
 
