@@ -8,6 +8,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
@@ -18,18 +19,18 @@ public class LPhyBEAST implements Callable<Integer> {
     public static final String VERSION = "0.0.1 alpha";
 
     @Parameters(paramLabel = "LPhy", description = "File of the LPhy model specification")
-    File infile;
+    Path infile;
 
     @Option(names = {"-V", "--version"}, versionHelp = true, description = "display version info")
     boolean versionInfoRequested;
-
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "display this help message")
     boolean usageHelpRequested;
 
-    @Option(names = {"-o", "--out"},     description = "BEAST 2 XML")  File outfile;
-    @Option(names = {"-d", "--data"},    description = "File containing alignment or traits")
-    File datafile;
-    @Option(names = {"-m", "--mapping"}, description = "mapping file") File mapfile;
+//    @Option(names = {"-wd", "--workdir"}, description = "Working directory") Path wd;
+    @Option(names = {"-o", "--out"},     description = "BEAST 2 XML")  Path outfile;
+//    @Option(names = {"-d", "--data"},    description = "File containing alignment or traits")
+    Path datafile;
+//    @Option(names = {"-m", "--mapping"}, description = "mapping file") Path mapfile;
 
 
     public static void main(String[] args) throws IOException {
@@ -37,59 +38,40 @@ public class LPhyBEAST implements Callable<Integer> {
         int exitCode = new CommandLine(new LPhyBEAST()).execute(args);
         System.exit(exitCode);
 
-
-//        String dir = System.getProperty("user.home") + "/WorkSpace/linguaPhylo/lphybeast/examples/";
-//
-//        String infile = "simpleStructuredCoalescent.lphy";
-//        if (args.length > 0) {
-//            infile = args[0];
-//        }
-//
-//        String outfile = infile.substring(0, infile.lastIndexOf('.')) + ".xml";
-//
-//        LPhyParser parser = new REPL();
-//
-//        // add path to file
-//        File file = Paths.get(dir, infile).toFile();
-//        BufferedReader reader = new BufferedReader(new FileReader(file));
-//        source(reader, parser);
-//
-//        BEASTContext context = new BEASTContext(parser);
-//
-//        String fileNameStem = outfile.substring(0, outfile.indexOf("."));
-//
-//        String xml = context.toBEASTXML(fileNameStem);
-//
-//        PrintWriter writer = new PrintWriter(new FileWriter(Paths.get(dir, outfile).toFile()));
-//
-//        writer.println(xml);
-//        writer.flush();
-//        writer.close();
     }
 
 
     @Override
     public Integer call() throws Exception { // business logic goes here...
 
-        BufferedReader reader = new BufferedReader(new FileReader(infile));
+        BufferedReader reader = new BufferedReader(new FileReader(infile.toFile()));
 
+        //*** Parse LPhy file ***//
         LPhyParser parser = new REPL();
         source(reader, parser);
 
         BEASTContext context = new BEASTContext(parser);
 
-        //TODO
-        String outfile = infile.getName().substring(0, infile.getName().lastIndexOf('.')) + ".xml";
-        String fileNameStem = outfile.substring(0, outfile.indexOf("."));
+        //*** Write BEAST 2 XML ***//
+        String wkdir = infile.getParent().toString();
+        String fileName = infile.getFileName().toString();
+        String fileNameStem = fileName.substring(0, fileName.indexOf("."));
 
         String xml = context.toBEASTXML(fileNameStem);
 
-        PrintWriter writer = new PrintWriter(new FileWriter(outfile));
+        String outfileName = fileNameStem + ".xml";
+        if (outfile == null) {
+            // create outfile in the same dir of infile as default
+            outfile = Paths.get(wkdir, outfileName);
+        }
+
+        PrintWriter writer = new PrintWriter(new FileWriter(outfile.toFile()));
 
         writer.println(xml);
         writer.flush();
         writer.close();
 
+        System.out.println("\nCreate BEAST 2 XML : " + outfile);
         return 0;
     }
 
