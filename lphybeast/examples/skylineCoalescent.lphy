@@ -1,9 +1,11 @@
+numGroups = 4;
 initialMean ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-N ~ ExpMarkovChain(initialMean=initialMean, n=16);
+N ~ ExpMarkovChain(initialMean=initialMean, n=numGroups);
 // the line above is equivalent to:
 // N[0] ~ Exp(mean=initialMean);
-// for (i in 0:15) {
-//     N[i+1] ~ Exp(mean=N[i])
+// for (i in 1:(numGroups-1)) {
+//     N[i] ~ Exp(mean=N[i-1])
 // }
-ψ ~ SkylineCoalescent(theta=N);
+groupSizes ~ RandomComposition(n=16, k=numGroups);
+ψ ~ SkylineCoalescent(theta=N, groupSizes=groupSizes);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);

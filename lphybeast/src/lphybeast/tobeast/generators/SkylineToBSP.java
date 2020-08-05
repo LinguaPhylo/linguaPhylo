@@ -28,14 +28,19 @@ public class SkylineToBSP implements GeneratorToBEAST<SkylineCoalescent> {
 
         bsp.setInputValue("popSizes", context.getBEASTObject(coalescent.getTheta()));
 
-        IntegerParameter groupSizeParameter = new IntegerParameter();
-        List<Integer> groupSizes = new ArrayList<>();
-        for (int i = 0; i < coalescent.getTheta().value().length; i++) {
-            groupSizes.add(1);
+        IntegerParameter groupSizeParameter = null;
+        if (coalescent.getGroupSizes() != null) {
+            groupSizeParameter = (IntegerParameter)context.getBEASTObject(coalescent.getGroupSizes());
+        } else {
+            groupSizeParameter = new IntegerParameter();
+            List<Integer> groupSizes = new ArrayList<>();
+            for (int i = 0; i < coalescent.getTheta().value().length; i++) {
+                groupSizes.add(1);
+            }
+            groupSizeParameter.setInputValue("value", groupSizes);
+            groupSizeParameter.setInputValue("dimension", groupSizes.size());
+            groupSizeParameter.initAndValidate();
         }
-        groupSizeParameter.setInputValue("value", groupSizes);
-        groupSizeParameter.setInputValue("dimension", groupSizes.size());
-        groupSizeParameter.initAndValidate();
 
         bsp.setInputValue("groupSizes", groupSizeParameter);
         bsp.initAndValidate();

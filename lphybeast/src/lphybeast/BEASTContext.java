@@ -1,6 +1,7 @@
 package lphybeast;
 
 import beast.core.*;
+import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
@@ -13,6 +14,7 @@ import beast.math.distributions.ExcludablePrior;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
+import lphy.evolution.likelihood.PhyloCTMC;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.*;
 import lphy.core.LPhyParser;
@@ -86,7 +88,7 @@ public class BEASTContext {
 
         for (Class c : generatorToBEASTs) {
             try {
-                GeneratorToBEAST generatorToBEAST = (GeneratorToBEAST)c.newInstance();
+                GeneratorToBEAST generatorToBEAST = (GeneratorToBEAST) c.newInstance();
                 generatorToBEASTMap.put(generatorToBEAST.getGeneratorClass(), generatorToBEAST);
             } catch (InstantiationException e) {
                 e.printStackTrace();
@@ -231,9 +233,8 @@ public class BEASTContext {
     }
 
     /**
-     *
      * @param freqParameter
-     * @param stateNames the names of the states in a space-delimited string
+     * @param stateNames    the names of the states in a space-delimited string
      * @return
      */
     public static Frequencies createBEASTFrequencies(RealParameter freqParameter, String stateNames) {
@@ -255,7 +256,6 @@ public class BEASTContext {
     }
 
 
-
     public List<Operator> createOperators() {
 
         List<Operator> operators = new ArrayList<>();
@@ -264,6 +264,8 @@ public class BEASTContext {
             System.out.println("State node" + stateNode);
             if (stateNode instanceof RealParameter) {
                 operators.add(createBEASTOperator((RealParameter) stateNode));
+            } else if (stateNode instanceof IntegerParameter) {
+                operators.add(createBEASTOperator((IntegerParameter) stateNode));
             } else if (stateNode instanceof Tree) {
                 operators.add(createTreeScaleOperator((Tree) stateNode));
                 operators.add(createExchangeOperator((Tree) stateNode, true));
@@ -395,11 +397,11 @@ public class BEASTContext {
 
         Operator operator;
         if (variable.getGenerativeDistribution() instanceof Dirichlet) {
-            Double[] value = (Double[])variable.value();
+            Double[] value = (Double[]) variable.value();
             operator = new DeltaExchangeOperator();
             operator.setInputValue("parameter", parameter);
-            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()-1));
-            operator.setInputValue("delta", 1.0/value.length);
+            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension() - 1));
+            operator.setInputValue("delta", 1.0 / value.length);
             operator.initAndValidate();
             operator.setID(parameter.getID() + ".deltaExchange");
         } else {
@@ -412,6 +414,33 @@ public class BEASTContext {
         }
         elements.add(operator);
 
+        return operator;
+    }
+
+    private Operator createBEASTOperator(IntegerParameter parameter) {
+        RandomVariable<?> variable = (RandomVariable<?>) BEASTToLPHYMap.get(parameter);
+
+        Operator operator;
+        if (variable.getGenerativeDistribution() instanceof RandomComposition) {
+            System.out.println("Constructing operator for randomComposition");
+            operator = new DeltaExchangeOperator();
+            operator.setInputValue("intparameter", parameter);
+            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension() - 1));
+            operator.setInputValue("delta", 2.0);
+            operator.setInputValue("integer", true);
+            operator.initAndValidate();
+            operator.setID(parameter.getID() + ".deltaExchange");
+        } else {
+            operator = new IntRandomWalkOperator();
+            operator.setInputValue("parameter", parameter);
+            operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()));
+
+            // TODO implement an optimizable int random walk that uses a reflected Poisson distribution for the jump size with the mean of the Poisson being the optimizable parameter
+            operator.setInputValue("windowSize", 1);
+            operator.initAndValidate();
+            operator.setID(parameter.getID() + ".randomWalk");
+        }
+        elements.add(operator);
         return operator;
     }
 
@@ -486,7 +515,12 @@ public class BEASTContext {
         mcmc.setInputValue("distribution", posterior);
         mcmc.setInputValue("chainLength", chainLength);
 
-        mcmc.setInputValue("operator", createOperators());
+        List<Operator> operators =  createOperators();
+        for (int i = 0; i < operators.size(); i++) {
+            System.out.println(operators.get(i));
+        }
+
+        mcmc.setInputValue("operator",operators);
         mcmc.setInputValue("logger", createLoggers(logEvery, fileName));
 
         State state = new State();

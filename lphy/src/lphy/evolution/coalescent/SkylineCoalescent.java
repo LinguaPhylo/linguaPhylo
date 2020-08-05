@@ -10,35 +10,41 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.*;
 
 /**
- * A classic skyline coalescent tree generative distribution
+ * A skyline coalescent tree generative distribution.
+ * Time-stamped leaves and piecewise constant population function that optionally groups coalescent intervals is implemented.
  */
 public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
 
     private final String thetaParamName;
+    private final String groupSizesParamName;
     private final String agesParamName;
     private final String nParamName;
     private final String taxaAgesParamName;
     private Value<Double[]> theta;
+    private Value<Integer[]> groupSizes;
     private Value<Integer> n;
     private Value<Double[]> ages;
     private Value<Map<String, Double>> taxaAges;
 
     RandomGenerator random;
 
-    public SkylineCoalescent(@ParameterInfo(name = "theta", description = "effective population size, one value for each coalescent interval, ordered from present to past. Possibly scaled to mutations or calendar units.") Value<Double[]> theta,
+    public SkylineCoalescent(@ParameterInfo(name = "theta", description = "effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units.") Value<Double[]> theta,
+                             @ParameterInfo(name = "groupSizes", description = "A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent.", optional=true) Value<Integer[]> groupSizes,
                              @ParameterInfo(name = "n", description = "number of taxa.", optional = true) Value<Integer> n,
                              @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages,
                              @ParameterInfo(name = "taxaAges", description = "an array of leaf node ages.", optional = true) Value<Map<String, Double>> taxaAges) {
         this.theta = theta;
+        this.groupSizes = groupSizes;
         this.n = n;
         this.ages = ages;
         this.taxaAges = taxaAges;
         this.random = Utils.getRandom();
 
         thetaParamName = getParamName(0);
-        nParamName = getParamName(1);
-        agesParamName = getParamName(2);
-        taxaAgesParamName = getParamName(3);
+        groupSizesParamName = getParamName(1);
+        nParamName = getParamName(2);
+        agesParamName = getParamName(3);
+        taxaAgesParamName = getParamName(4);
 
         int c = (ages == null ? 0 : 1) + (taxaAges == null ? 0 : 1) + (n == null ? 0 : 1);
 
@@ -65,7 +71,13 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
     }
 
     private int n() {
-        return theta.value().length + 1;
+        if (groupSizes != null) {
+            int sum = 0;
+            for (int groupSize : groupSizes.value()) {
+                sum += groupSize;
+            }
+            return sum + 1;
+        } else return theta.value().length + 1;
     }
 
     @GeneratorInfo(name = "SkylineCoalescent", description = "The classic coalescent distribution over tip-labelled time trees.")
@@ -91,6 +103,8 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
 
         Double[] theta = this.theta.value();
         int thetaIndex = 0;
+        int groupIndex = 0;
+        int countWithinGroup = 0;
         while ((activeNodes.size() + leavesToBeAdded.size()) > 1) {
             int k = activeNodes.size();
 
@@ -113,7 +127,19 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
 
                     TimeTreeNode parent = new TimeTreeNode(time, new TimeTreeNode[]{a, b});
                     activeNodes.add(parent);
-                    thetaIndex += 1;
+                    if (groupSizes != null) {
+                        int groupSize = groupSizes.value()[groupIndex];
+                        if (countWithinGroup == (groupSize - 1)) {
+                            groupIndex += 1;
+                            countWithinGroup = 0;
+                            thetaIndex += 1;
+                        } else {
+                            countWithinGroup += 1;
+                        }
+
+                    } else {
+                        thetaIndex += 1;
+                    }
                 }
             }
 
@@ -126,6 +152,9 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
         tree.setRoot(activeNodes.get(0));
         if (thetaIndex != theta.length) {
             throw new AssertionError("Programmer error in indexing the theta array during simulation!");
+        }
+        if (groupSizes != null && (countWithinGroup != 0 || groupIndex != groupSizes.value().length)) {
+            throw new AssertionError("Programmer error in indexing the groupSizes array during simulation." + countWithinGroup + " " + groupIndex + Arrays.toString(groupSizes.value()));
         }
 
         return new RandomVariable<>("\u03C8", tree, this);
@@ -178,6 +207,7 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(thetaParamName, theta);
+        if (groupSizes != null) map.put(groupSizesParamName, groupSizes);
         if (n != null) map.put(nParamName, n);
         if (ages != null) map.put(agesParamName, ages);
         if (taxaAges != null) map.put(taxaAgesParamName, taxaAges);
@@ -187,6 +217,7 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(thetaParamName)) theta = value;
+        else if (paramName.equals(groupSizesParamName)) groupSizes = value;
         else if (paramName.equals(nParamName)) n = value;
         else if (paramName.equals(agesParamName)) ages = value;
         else if (paramName.equals(taxaAgesParamName)) taxaAges = value;
@@ -200,4 +231,9 @@ public class SkylineCoalescent implements GenerativeDistribution<TimeTree> {
     public Value<Double[]> getTheta() {
         return theta;
     }
+
+    public Value<Integer[]> getGroupSizes() {
+        return groupSizes;
+    }
+
 }

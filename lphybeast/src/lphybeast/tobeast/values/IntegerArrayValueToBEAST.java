@@ -6,6 +6,7 @@ import beast.core.parameter.RealParameter;
 import lphy.core.distributions.Dirichlet;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.LogNormal;
+import lphy.core.distributions.RandomComposition;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
@@ -22,6 +23,12 @@ public class IntegerArrayValueToBEAST implements ValueToBEAST<Integer[]> {
         List<Integer> values = Arrays.asList(value.value());
         parameter.setInputValue("value", values);
         parameter.setInputValue("dimension", values.size());
+
+        // check domain
+        if (value.getGenerator() instanceof RandomComposition) {
+            parameter.setInputValue("lower", 1);
+        }
+
         parameter.initAndValidate();
         ValueToParameter.setID(parameter, value);
         return parameter;

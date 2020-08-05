@@ -70,12 +70,8 @@ public class LPhyBEAST implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception { // business logic goes here...
-        //TODO
-        String dir = System.getProperty("user.home") + "/WorkSpace/linguaPhylo/lphybeast/examples/";
 
-        // add path to file
-        File file = Paths.get(dir, infile.toString()).toFile();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader = new BufferedReader(new FileReader(infile));
 
         LPhyParser parser = new REPL();
         source(reader, parser);
@@ -88,7 +84,7 @@ public class LPhyBEAST implements Callable<Integer> {
 
         String xml = context.toBEASTXML(fileNameStem);
 
-        PrintWriter writer = new PrintWriter(new FileWriter(Paths.get(dir, outfile).toFile()));
+        PrintWriter writer = new PrintWriter(new FileWriter(outfile));
 
         writer.println(xml);
         writer.flush();
