@@ -30,6 +30,6 @@ public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {
         for (int i = 0; i < k.length; i++) {
             map.put(k[i], v[i]);
         }
-        return new Value<>("x", map, this);
+        return new Value<>(null, map, this);
     }
 }
