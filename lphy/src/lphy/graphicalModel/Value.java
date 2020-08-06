@@ -100,12 +100,31 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
                     return Arrays.toString((short[]) value);
                 }
                 /* No else. No other primitive types exist. */
+            } else if (String.class.isAssignableFrom(componentType)) {
+                String[] stringArray = (String[])value;
+                StringBuilder builder = new StringBuilder();
+                builder.append("[");
+                if (stringArray.length > 0) {
+                    builder.append(quotedString(stringArray[0]));
+                }
+                for (int i = 1; i < stringArray.length; i++) {
+                    builder.append(", ");
+                    builder.append(quotedString(stringArray[i]));
+                }
+                builder.append("]");
+                return builder.toString();
             } else {
                 return Arrays.toString((Object[]) value);
             }
         }
 
+        if (value instanceof String) return quotedString(value.toString());
+
         return value.toString();
+    }
+
+    public static String quotedString(String str) {
+        return "\"" + str + "\"";
     }
 
     public void setValue(T value) {
@@ -131,6 +150,10 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
         if (value() instanceof Boolean[]) {
             return new BooleanArrayLabel((Value<Boolean[]>) this);
+        }
+
+        if (value() instanceof String[]) {
+            return new StringArrayLabel((Value<String[]>) this);
         }
 
         if (value.toString().length() < 130) {
