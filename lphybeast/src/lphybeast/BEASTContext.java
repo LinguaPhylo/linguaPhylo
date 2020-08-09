@@ -51,6 +51,8 @@ public class BEASTContext {
     public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
 
+        // TODO parameterize AlignmentToBEAST with the true alignments
+
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
         valueToBEASTMap.put(java.util.Map.class, new MapValueToBEAST());
@@ -446,8 +448,6 @@ public class BEASTContext {
 
     private CompoundDistribution createBEASTPosterior() {
 
-        createBEASTObjects();
-
         List<Distribution> priorList = new ArrayList<>();
 
         List<Distribution> likelihoodList = new ArrayList<>();
@@ -508,6 +508,8 @@ public class BEASTContext {
     }
 
     public MCMC createMCMC(long chainLength, int logEvery, String fileName) {
+
+        createBEASTObjects();
 
         CompoundDistribution posterior = createBEASTPosterior();
 
