@@ -2,13 +2,14 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import beast.math.distributions.Prior;
 import lphy.core.distributions.Gamma;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class GammaToBEAST implements GeneratorToBEAST<Gamma> {
+public class GammaToBEAST implements GeneratorToBEAST<Gamma, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(Gamma generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(Gamma generator, BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Gamma gammaDistribution = new beast.math.distributions.Gamma();
         gammaDistribution.setInputValue("shape", context.getBEASTObject(generator.getShape()));
         gammaDistribution.setInputValue("scale", context.getBEASTObject(generator.getScale()));
@@ -22,7 +23,7 @@ public class GammaToBEAST implements GeneratorToBEAST<Gamma> {
     }
 
     @Override
-    public Class<beast.math.distributions.Gamma> getBEASTClass() {
-        return beast.math.distributions.Gamma.class;
+    public Class<Prior> getBEASTClass() {
+        return Prior.class;
     }
 }

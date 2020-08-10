@@ -3,13 +3,14 @@ package lphybeast.tobeast.generators;
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import beast.math.distributions.LogNormalDistributionModel;
+import beast.math.distributions.Prior;
 import lphy.core.distributions.LogNormal;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class LogNormalToBEAST implements GeneratorToBEAST<LogNormal> {
+public class LogNormalToBEAST implements GeneratorToBEAST<LogNormal, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(LogNormal generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(LogNormal generator, BEASTInterface value, BEASTContext context) {
         LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
         logNormalDistributionModel.setInputValue("M", context.getBEASTObject(generator.getMeanLog()));
         logNormalDistributionModel.setInputValue("S", context.getBEASTObject(generator.getSDLog()));
@@ -24,7 +25,7 @@ public class LogNormalToBEAST implements GeneratorToBEAST<LogNormal> {
     }
 
     @Override
-    public Class<LogNormalDistributionModel> getBEASTClass() {
-        return LogNormalDistributionModel.class;
+    public Class<Prior> getBEASTClass() {
+        return Prior.class;
     }
 }

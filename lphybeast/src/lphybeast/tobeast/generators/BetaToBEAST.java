@@ -7,9 +7,9 @@ import lphy.core.distributions.Beta;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class BetaToBEAST implements GeneratorToBEAST<Beta> {
+public class BetaToBEAST implements GeneratorToBEAST<Beta, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(Beta generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(Beta generator, BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Beta betaDistribution = new beast.math.distributions.Beta();
         betaDistribution.setInputValue("alpha", context.getBEASTObject(generator.getParams().get("alpha")));
         betaDistribution.setInputValue("beta", context.getBEASTObject(generator.getParams().get("beta")));

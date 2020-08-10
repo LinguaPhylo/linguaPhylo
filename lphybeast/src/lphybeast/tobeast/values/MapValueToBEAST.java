@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
@@ -8,10 +7,10 @@ import lphybeast.ValueToBEAST;
 
 import java.util.*;
 
-public class MapValueToBEAST implements ValueToBEAST<Map<String, Double>> {
+public class MapValueToBEAST implements ValueToBEAST<Map<String, Double>, RealParameter> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Map<String, Double>> value, BEASTContext context) {
+    public RealParameter valueToBEAST(Value<Map<String, Double>> value, BEASTContext context) {
 
         Map<String, Double> map = value.value();
 

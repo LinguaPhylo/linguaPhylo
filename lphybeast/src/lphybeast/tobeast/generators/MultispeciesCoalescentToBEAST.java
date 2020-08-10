@@ -13,9 +13,10 @@ import lphybeast.GeneratorToBEAST;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultispeciesCoalescentToBEAST implements GeneratorToBEAST<MultispeciesCoalescent> {
+public class MultispeciesCoalescentToBEAST implements
+        GeneratorToBEAST<MultispeciesCoalescent, GeneTreeForSpeciesTreeDistribution> {
     @Override
-    public BEASTInterface generatorToBEAST(MultispeciesCoalescent generator, BEASTInterface value, BEASTContext context) {
+    public GeneTreeForSpeciesTreeDistribution generatorToBEAST(MultispeciesCoalescent generator, BEASTInterface value, BEASTContext context) {
 
         GeneTreeForSpeciesTreeDistribution starbeast = new GeneTreeForSpeciesTreeDistribution();
 

@@ -7,9 +7,9 @@ import lphy.core.distributions.Dirichlet;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class DirichletToBEAST implements GeneratorToBEAST<Dirichlet> {
+public class DirichletToBEAST implements GeneratorToBEAST<Dirichlet, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(Dirichlet generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(Dirichlet generator, BEASTInterface value, BEASTContext context) {
             beast.math.distributions.Dirichlet beastDirichlet = new beast.math.distributions.Dirichlet();
             beastDirichlet.setInputValue("alpha", context.getBEASTObject(generator.getConcentration()));
             beastDirichlet.initAndValidate();

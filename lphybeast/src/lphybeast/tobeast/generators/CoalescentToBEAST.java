@@ -7,9 +7,9 @@ import lphy.evolution.coalescent.Coalescent;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class CoalescentToBEAST implements GeneratorToBEAST<Coalescent> {
+public class CoalescentToBEAST implements GeneratorToBEAST<Coalescent, beast.evolution.tree.coalescent.Coalescent> {
     @Override
-    public BEASTInterface generatorToBEAST(Coalescent coalescent, BEASTInterface value, BEASTContext context) {
+    public beast.evolution.tree.coalescent.Coalescent generatorToBEAST(Coalescent coalescent, BEASTInterface value, BEASTContext context) {
 
             beast.evolution.tree.coalescent.Coalescent beastCoalescent = new beast.evolution.tree.coalescent.Coalescent();
 

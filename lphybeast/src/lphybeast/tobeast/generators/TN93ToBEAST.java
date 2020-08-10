@@ -6,9 +6,9 @@ import lphy.evolution.substitutionmodel.TN93;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class TN93ToBEAST implements GeneratorToBEAST<TN93> {
+public class TN93ToBEAST implements GeneratorToBEAST<TN93, beast.evolution.substitutionmodel.TN93> {
     @Override
-    public BEASTInterface generatorToBEAST(TN93 tn93, BEASTInterface value, BEASTContext context) {
+    public beast.evolution.substitutionmodel.TN93 generatorToBEAST(TN93 tn93, BEASTInterface value, BEASTContext context) {
 
         beast.evolution.substitutionmodel.TN93 beastTn93 = new beast.evolution.substitutionmodel.TN93();
         beastTn93.setInputValue("kappa1", context.getBEASTObject(tn93.getKappa1()));

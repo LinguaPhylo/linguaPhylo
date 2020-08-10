@@ -8,9 +8,9 @@ import lphy.core.distributions.LogNormalMulti;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class LogNormalMultiToBEAST implements GeneratorToBEAST<LogNormalMulti> {
+public class LogNormalMultiToBEAST implements GeneratorToBEAST<LogNormalMulti, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(LogNormalMulti generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(LogNormalMulti generator, BEASTInterface value, BEASTContext context) {
         LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
         logNormalDistributionModel.setInputValue("M", context.getBEASTObject(generator.getMeanLog()));
         logNormalDistributionModel.setInputValue("S", context.getBEASTObject(generator.getSDLog()));

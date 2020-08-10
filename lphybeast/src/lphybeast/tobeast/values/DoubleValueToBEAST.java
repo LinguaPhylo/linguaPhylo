@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import lphy.graphicalModel.GenerativeDistribution1D;
 import lphy.graphicalModel.Value;
@@ -9,10 +8,10 @@ import lphybeast.ValueToBEAST;
 
 import java.util.Collections;
 
-public class DoubleValueToBEAST implements ValueToBEAST<Double> {
+public class DoubleValueToBEAST implements ValueToBEAST<Double, RealParameter> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Double> value, BEASTContext context) {
+    public RealParameter valueToBEAST(Value<Double> value, BEASTContext context) {
 
         RealParameter parameter = new RealParameter();
         parameter.setInputValue("value", Collections.singletonList(value.value()));

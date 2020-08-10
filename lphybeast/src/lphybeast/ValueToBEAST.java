@@ -3,14 +3,14 @@ package lphybeast;
 import beast.core.BEASTInterface;
 import lphy.graphicalModel.Value;
 
-public interface ValueToBEAST<T> {
+public interface ValueToBEAST<T, S extends BEASTInterface> {
 
     /**
      * @param value the value to be converted
      * @param context all beast objects already converted by the value-inorder generator-postorder traversal.
      * @return
      */
-    BEASTInterface valueToBEAST(Value<T> value, BEASTContext context);
+    S valueToBEAST(Value<T> value, BEASTContext context);
 
     /**
      * The class of value that can be converted to BEAST.
@@ -23,7 +23,7 @@ public interface ValueToBEAST<T> {
      *
      * @return
      */
-    default Class<? extends BEASTInterface> getBEASTClass() {
-        return BEASTInterface.class;
+    default Class<S> getBEASTClass() {
+        return (Class<S>)BEASTInterface.class;
     }
 }

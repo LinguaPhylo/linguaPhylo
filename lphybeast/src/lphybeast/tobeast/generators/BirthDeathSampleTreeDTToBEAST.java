@@ -10,10 +10,11 @@ import lphy.evolution.birthdeath.BirthDeathSamplingTreeDT;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class BirthDeathSampleTreeDTToBEAST implements GeneratorToBEAST<BirthDeathSamplingTreeDT> {
+public class BirthDeathSampleTreeDTToBEAST implements
+        GeneratorToBEAST<BirthDeathSamplingTreeDT,BirthDeathGernhard08Model> {
 
     @Override
-    public BEASTInterface generatorToBEAST(BirthDeathSamplingTreeDT generator, BEASTInterface tree, BEASTContext context) {
+    public BirthDeathGernhard08Model generatorToBEAST(BirthDeathSamplingTreeDT generator, BEASTInterface tree, BEASTContext context) {
 
 
         BirthDeathGernhard08Model beastBirthDeath = new BirthDeathGernhard08Model();

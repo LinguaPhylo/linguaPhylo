@@ -8,9 +8,9 @@ import lphy.core.distributions.Exp;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class ExpToBEAST implements GeneratorToBEAST<Exp> {
+public class ExpToBEAST implements GeneratorToBEAST<Exp, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(Exp generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(Exp generator, BEASTInterface value, BEASTContext context) {
         Exponential exponential = new Exponential();
         exponential.setInputValue("mean", context.getBEASTObject(generator.getParams().get("mean")));
         exponential.initAndValidate();

@@ -20,9 +20,9 @@ import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC> {
+public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC, TreeLikelihood> {
 
-    public BEASTInterface generatorToBEAST(PhyloCTMC phyloCTMC, BEASTInterface value, BEASTContext context) {
+    public TreeLikelihood generatorToBEAST(PhyloCTMC phyloCTMC, BEASTInterface value, BEASTContext context) {
 
         TreeLikelihood treeLikelihood = new TreeLikelihood();
 

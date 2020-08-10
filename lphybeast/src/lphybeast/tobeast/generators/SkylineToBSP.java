@@ -10,9 +10,10 @@ import lphybeast.GeneratorToBEAST;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkylineToBSP implements GeneratorToBEAST<SkylineCoalescent> {
+public class SkylineToBSP implements
+        GeneratorToBEAST<SkylineCoalescent, beast.evolution.tree.coalescent.BayesianSkyline> {
     @Override
-    public BEASTInterface generatorToBEAST(SkylineCoalescent coalescent, BEASTInterface value, BEASTContext context) {
+    public beast.evolution.tree.coalescent.BayesianSkyline generatorToBEAST(SkylineCoalescent coalescent, BEASTInterface value, BEASTContext context) {
 
         beast.evolution.tree.coalescent.BayesianSkyline bsp = new beast.evolution.tree.coalescent.BayesianSkyline();
 

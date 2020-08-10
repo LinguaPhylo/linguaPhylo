@@ -6,10 +6,10 @@ import lphy.evolution.birthdeath.Yule;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class YuleToBEAST implements GeneratorToBEAST<Yule> {
+public class YuleToBEAST implements GeneratorToBEAST<Yule, YuleModel> {
 
     @Override
-    public BEASTInterface generatorToBEAST(Yule generator, BEASTInterface value, BEASTContext context) {
+    public YuleModel generatorToBEAST(Yule generator, BEASTInterface value, BEASTContext context) {
         YuleModel yuleModel = new YuleModel();
 
         yuleModel.setInputValue("tree", value);

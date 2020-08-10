@@ -3,7 +3,7 @@ package lphybeast;
 import beast.core.BEASTInterface;
 import lphy.graphicalModel.Generator;
 
-public interface GeneratorToBEAST<T extends Generator> {
+public interface GeneratorToBEAST<T extends Generator,S extends BEASTInterface> {
 
     /**
      * converts a generator to an equivalent BEAST object
@@ -12,7 +12,7 @@ public interface GeneratorToBEAST<T extends Generator> {
      * @param context the BEASTContext object holding other Beast objects already converted
      * @return a new BEAST object representing this generator
      */
-    BEASTInterface generatorToBEAST(T generator, BEASTInterface value, BEASTContext context);
+    S generatorToBEAST(T generator, BEASTInterface value, BEASTContext context);
 
     /**
      * The class of value that can be converted to BEAST.
@@ -25,8 +25,8 @@ public interface GeneratorToBEAST<T extends Generator> {
      *
      * @return
      */
-    default Class<? extends BEASTInterface> getBEASTClass() {
-        return BEASTInterface.class;
+    default Class<S> getBEASTClass() {
+        return (Class<S>)BEASTInterface.class;
     }
 
 }

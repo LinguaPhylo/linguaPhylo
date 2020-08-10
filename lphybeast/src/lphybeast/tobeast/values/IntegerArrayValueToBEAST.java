@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.core.parameter.IntegerParameter;
 import lphy.core.distributions.RandomComposition;
 import lphy.graphicalModel.Value;
@@ -10,10 +9,10 @@ import lphybeast.ValueToBEAST;
 import java.util.Arrays;
 import java.util.List;
 
-public class IntegerArrayValueToBEAST implements ValueToBEAST<Integer[]> {
+public class IntegerArrayValueToBEAST implements ValueToBEAST<Integer[], IntegerParameter> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Integer[]> value, BEASTContext context) {
+    public IntegerParameter valueToBEAST(Value<Integer[]> value, BEASTContext context) {
 
         IntegerParameter parameter = new IntegerParameter();
         List<Integer> values = Arrays.asList(value.value());

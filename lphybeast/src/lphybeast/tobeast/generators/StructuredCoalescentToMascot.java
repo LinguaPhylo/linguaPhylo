@@ -17,10 +17,11 @@ import lphybeast.tobeast.values.TimeTreeToBEAST;
 
 import java.util.List;
 
-public class StructuredCoalescentToMascot implements GeneratorToBEAST<StructuredCoalescent> {
+public class StructuredCoalescentToMascot implements
+        GeneratorToBEAST<StructuredCoalescent, beast.mascot.distribution.Mascot> {
 
     @Override
-    public BEASTInterface generatorToBEAST(StructuredCoalescent coalescent, BEASTInterface value, BEASTContext context) {
+    public beast.mascot.distribution.Mascot generatorToBEAST(StructuredCoalescent coalescent, BEASTInterface value, BEASTContext context) {
 
         beast.mascot.distribution.Mascot mascot = new beast.mascot.distribution.Mascot();
 

@@ -7,9 +7,9 @@ import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class GTRToBEAST implements GeneratorToBEAST<GTR> {
+public class GTRToBEAST implements GeneratorToBEAST<GTR, substmodels.nucleotide.GTR> {
     @Override
-    public BEASTInterface generatorToBEAST(GTR gtr, BEASTInterface value, BEASTContext context) {
+    public substmodels.nucleotide.GTR generatorToBEAST(GTR gtr, BEASTInterface value, BEASTContext context) {
 
         substmodels.nucleotide.GTR beastGTR = new substmodels.nucleotide.GTR();
 

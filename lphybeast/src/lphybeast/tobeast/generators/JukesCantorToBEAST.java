@@ -5,9 +5,10 @@ import lphy.evolution.substitutionmodel.JukesCantor;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class JukesCantorToBEAST implements GeneratorToBEAST<JukesCantor> {
+public class JukesCantorToBEAST implements
+        GeneratorToBEAST<JukesCantor, beast.evolution.substitutionmodel.JukesCantor> {
     @Override
-    public BEASTInterface generatorToBEAST(JukesCantor jukesCantor, BEASTInterface value, BEASTContext context) {
+    public beast.evolution.substitutionmodel.JukesCantor generatorToBEAST(JukesCantor jukesCantor, BEASTInterface value, BEASTContext context) {
 
 
         beast.evolution.substitutionmodel.JukesCantor beastJC = new beast.evolution.substitutionmodel.JukesCantor();

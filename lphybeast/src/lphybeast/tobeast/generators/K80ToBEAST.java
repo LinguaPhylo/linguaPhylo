@@ -5,9 +5,9 @@ import lphy.evolution.substitutionmodel.K80;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class K80ToBEAST implements GeneratorToBEAST<K80> {
+public class K80ToBEAST implements GeneratorToBEAST<K80, beast.evolution.substitutionmodel.HKY> {
     @Override
-    public BEASTInterface generatorToBEAST(K80 k80, BEASTInterface value, BEASTContext context) {
+    public beast.evolution.substitutionmodel.HKY generatorToBEAST(K80 k80, BEASTInterface value, BEASTContext context) {
 
         beast.evolution.substitutionmodel.HKY beastHKY = new beast.evolution.substitutionmodel.HKY();
         beastHKY.setInputValue("kappa", context.getBEASTObject(k80.getKappa()));

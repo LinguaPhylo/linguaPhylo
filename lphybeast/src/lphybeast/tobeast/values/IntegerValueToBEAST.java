@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.core.parameter.IntegerParameter;
 import lphy.graphicalModel.GenerativeDistribution1D;
 import lphy.graphicalModel.Value;
@@ -9,10 +8,10 @@ import lphybeast.ValueToBEAST;
 
 import java.util.Collections;
 
-public class IntegerValueToBEAST implements ValueToBEAST<Integer> {
+public class IntegerValueToBEAST implements ValueToBEAST<Integer, IntegerParameter> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Integer> value, BEASTContext context) {
+    public IntegerParameter valueToBEAST(Value<Integer> value, BEASTContext context) {
 
         IntegerParameter parameter = new IntegerParameter();
         parameter.setInputValue("value", Collections.singletonList(value.value()));

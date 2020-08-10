@@ -2,13 +2,14 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import beast.math.distributions.Prior;
 import lphy.core.distributions.NormalMulti;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class NormalMultiToBEAST implements GeneratorToBEAST<NormalMulti> {
+public class NormalMultiToBEAST implements GeneratorToBEAST<NormalMulti, Prior> {
     @Override
-    public BEASTInterface generatorToBEAST(NormalMulti generator, BEASTInterface value, BEASTContext context) {
+    public Prior generatorToBEAST(NormalMulti generator, BEASTInterface value, BEASTContext context) {
         beast.math.distributions.Normal normal = new beast.math.distributions.Normal();
         normal.setInputValue("mean", context.getBEASTObject(generator.getMean()));
         normal.setInputValue("sigma", context.getBEASTObject(generator.getSd()));
@@ -23,7 +24,7 @@ public class NormalMultiToBEAST implements GeneratorToBEAST<NormalMulti> {
     }
 
     @Override
-    public Class<beast.math.distributions.Normal> getBEASTClass() {
-        return beast.math.distributions.Normal.class;
+    public Class<Prior> getBEASTClass() {
+        return Prior.class;
     }
 }

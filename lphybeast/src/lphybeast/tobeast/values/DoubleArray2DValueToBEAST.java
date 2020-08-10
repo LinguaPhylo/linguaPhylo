@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
@@ -10,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DoubleArray2DValueToBEAST implements ValueToBEAST<Double[][]> {
+public class DoubleArray2DValueToBEAST implements ValueToBEAST<Double[][], RealParameter> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<Double[][]> value, BEASTContext context) {
+    public RealParameter valueToBEAST(Value<Double[][]> value, BEASTContext context) {
 
         RealParameter parameter = new RealParameter();
 

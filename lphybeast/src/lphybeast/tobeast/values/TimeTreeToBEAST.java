@@ -1,6 +1,5 @@
 package lphybeast.tobeast.values;
 
-import beast.core.BEASTInterface;
 import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
@@ -14,10 +13,10 @@ import lphybeast.ValueToBEAST;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
+public class TimeTreeToBEAST implements ValueToBEAST<TimeTree, TreeParser> {
 
     @Override
-    public BEASTInterface valueToBEAST(Value<TimeTree> timeTreeValue, BEASTContext context) {
+    public TreeParser valueToBEAST(Value<TimeTree> timeTreeValue, BEASTContext context) {
 
         TimeTree timeTree = timeTreeValue.value();
         
