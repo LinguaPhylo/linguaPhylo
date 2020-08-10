@@ -2,12 +2,6 @@ package lphybeast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
-import beast.evolution.alignment.Taxon;
-import beast.evolution.alignment.TaxonSet;
-import beast.evolution.tree.TraitSet;
-import beast.util.TreeParser;
-import lphy.evolution.tree.TimeTree;
-import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
@@ -54,7 +48,14 @@ public class MapValueToBEAST implements ValueToBEAST<Map<String, Double>> {
         return parameter;
     }
 
+    @Override
     public Class getValueClass() {
         return java.util.Map.class;
     }
+
+    @Override
+    public Class<RealParameter> getBEASTClass() {
+        return RealParameter.class;
+    }
+
 }

@@ -2,9 +2,6 @@ package lphybeast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.IntegerParameter;
-import beast.core.parameter.RealParameter;
-import lphy.core.distributions.Exp;
-import lphy.core.distributions.LogNormal;
 import lphy.graphicalModel.GenerativeDistribution1D;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
@@ -36,7 +33,14 @@ public class IntegerValueToBEAST implements ValueToBEAST<Integer> {
         return parameter;
     }
 
+    @Override
     public Class getValueClass() {
         return Integer.class;
     }
+
+    @Override
+    public Class<IntegerParameter> getBEASTClass() {
+        return IntegerParameter.class;
+    }
+
 }

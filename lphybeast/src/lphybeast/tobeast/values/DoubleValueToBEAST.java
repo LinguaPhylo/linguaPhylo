@@ -2,15 +2,12 @@ package lphybeast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
-import lphy.core.distributions.Beta;
-import lphy.core.distributions.Exp;
-import lphy.core.distributions.LogNormal;
 import lphy.graphicalModel.GenerativeDistribution1D;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
 
-import java.util.*;
+import java.util.Collections;
 
 public class DoubleValueToBEAST implements ValueToBEAST<Double> {
 
@@ -35,7 +32,14 @@ public class DoubleValueToBEAST implements ValueToBEAST<Double> {
         return parameter;
     }
 
+    @Override
     public Class getValueClass() {
         return Double.class;
     }
+
+    @Override
+    public Class<RealParameter> getBEASTClass() {
+        return RealParameter.class;
+    }
+
 }

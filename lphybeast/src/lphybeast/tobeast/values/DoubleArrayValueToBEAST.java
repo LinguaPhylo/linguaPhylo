@@ -34,7 +34,14 @@ public class DoubleArrayValueToBEAST implements ValueToBEAST<Double[]> {
         return parameter;
     }
 
+    @Override
     public Class getValueClass() {
         return Double[].class;
     }
+
+    @Override
+    public Class<RealParameter> getBEASTClass() {
+        return RealParameter.class;
+    }
+
 }

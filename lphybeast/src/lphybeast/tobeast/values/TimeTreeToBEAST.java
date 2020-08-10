@@ -5,11 +5,11 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
 import beast.util.TreeParser;
-import lphybeast.BEASTContext;
-import lphybeast.ValueToBEAST;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
+import lphybeast.BEASTContext;
+import lphybeast.ValueToBEAST;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,13 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree> {
         return builder.toString();
     }
 
+    @Override
     public Class getValueClass() {
         return TimeTree.class;
+    }
+
+    @Override
+    public Class<TreeParser> getBEASTClass() {
+        return TreeParser.class;
     }
 }

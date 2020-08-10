@@ -2,10 +2,10 @@ package lphybeast.tobeast.values;
 
 import beast.core.BEASTInterface;
 import beast.evolution.alignment.Sequence;
-import lphybeast.BEASTContext;
-import lphybeast.ValueToBEAST;
 import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.Value;
+import lphybeast.BEASTContext;
+import lphybeast.ValueToBEAST;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,13 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment> {
         return seq;
     }
 
+    @Override
     public Class getValueClass() {
         return Alignment.class;
+    }
+
+    @Override
+    public Class<beast.evolution.alignment.Alignment> getBEASTClass() {
+        return beast.evolution.alignment.Alignment.class;
     }
 }
