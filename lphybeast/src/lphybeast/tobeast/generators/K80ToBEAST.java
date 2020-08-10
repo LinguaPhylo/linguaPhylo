@@ -1,9 +1,9 @@
 package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
+import lphy.evolution.substitutionmodel.K80;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphy.evolution.substitutionmodel.K80;
 
 public class K80ToBEAST implements GeneratorToBEAST<K80> {
     @Override
@@ -19,5 +19,10 @@ public class K80ToBEAST implements GeneratorToBEAST<K80> {
     @Override
     public Class<K80> getGeneratorClass() {
         return K80.class;
+    }
+
+    @Override
+    public Class<beast.evolution.substitutionmodel.HKY> getBEASTClass() {
+        return beast.evolution.substitutionmodel.HKY.class;
     }
 }

@@ -2,16 +2,12 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.IntegerParameter;
-import beast.evolution.tree.coalescent.ConstantPopulation;
 import beast.evolution.tree.coalescent.TreeIntervals;
-import lphy.evolution.coalescent.SerialCoalescent;
 import lphy.evolution.coalescent.SkylineCoalescent;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphybeast.tobeast.values.ValueToParameter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SkylineToBSP implements GeneratorToBEAST<SkylineCoalescent> {
@@ -51,5 +47,10 @@ public class SkylineToBSP implements GeneratorToBEAST<SkylineCoalescent> {
     @Override
     public Class<SkylineCoalescent> getGeneratorClass() {
         return SkylineCoalescent.class;
+    }
+
+    @Override
+    public Class<beast.evolution.tree.coalescent.BayesianSkyline> getBEASTClass() {
+        return beast.evolution.tree.coalescent.BayesianSkyline.class;
     }
 }

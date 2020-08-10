@@ -3,9 +3,9 @@ package lphybeast.tobeast.generators;
 import beast.core.BEASTInterface;
 import beast.evolution.tree.coalescent.ConstantPopulation;
 import beast.evolution.tree.coalescent.TreeIntervals;
+import lphy.evolution.coalescent.Coalescent;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphy.evolution.coalescent.Coalescent;
 
 public class CoalescentToBEAST implements GeneratorToBEAST<Coalescent> {
     @Override
@@ -33,5 +33,10 @@ public class CoalescentToBEAST implements GeneratorToBEAST<Coalescent> {
     @Override
     public Class<Coalescent> getGeneratorClass() {
         return Coalescent.class;
+    }
+
+    @Override
+    public Class<beast.evolution.tree.coalescent.Coalescent> getBEASTClass() {
+        return beast.evolution.tree.coalescent.Coalescent.class;
     }
 }

@@ -2,9 +2,9 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import lphy.evolution.substitutionmodel.TN93;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphy.evolution.substitutionmodel.TN93;
 
 public class TN93ToBEAST implements GeneratorToBEAST<TN93> {
     @Override
@@ -21,5 +21,10 @@ public class TN93ToBEAST implements GeneratorToBEAST<TN93> {
     @Override
     public Class<TN93> getGeneratorClass() {
         return TN93.class;
+    }
+
+    @Override
+    public Class<beast.evolution.substitutionmodel.TN93> getBEASTClass() {
+        return beast.evolution.substitutionmodel.TN93.class;
     }
 }

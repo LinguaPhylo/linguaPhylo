@@ -91,4 +91,9 @@ public class MultispeciesCoalescentToBEAST implements GeneratorToBEAST<Multispec
     public Class<MultispeciesCoalescent> getGeneratorClass() {
         return MultispeciesCoalescent.class;
     }
+
+    @Override
+    public Class<GeneTreeForSpeciesTreeDistribution> getBEASTClass() {
+        return GeneTreeForSpeciesTreeDistribution.class;
+    }
 }

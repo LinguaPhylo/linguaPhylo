@@ -34,4 +34,9 @@ public class SerialCoalescentToBEAST implements GeneratorToBEAST<SerialCoalescen
     public Class<SerialCoalescent> getGeneratorClass() {
         return SerialCoalescent.class;
     }
+
+    @Override
+    public Class<beast.evolution.tree.coalescent.Coalescent> getBEASTClass() {
+        return beast.evolution.tree.coalescent.Coalescent.class;
+    }
 }

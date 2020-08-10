@@ -2,10 +2,10 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
-import lphybeast.BEASTContext;
-import lphybeast.GeneratorToBEAST;
 import lphy.evolution.substitutionmodel.GTR;
 import lphy.graphicalModel.Value;
+import lphybeast.BEASTContext;
+import lphybeast.GeneratorToBEAST;
 
 public class GTRToBEAST implements GeneratorToBEAST<GTR> {
     @Override
@@ -27,4 +27,9 @@ public class GTRToBEAST implements GeneratorToBEAST<GTR> {
 
     @Override
     public Class<GTR> getGeneratorClass() { return GTR.class; }
+
+    @Override
+    public Class<substmodels.nucleotide.GTR> getBEASTClass() {
+        return substmodels.nucleotide.GTR.class;
+    }
 }

@@ -89,4 +89,9 @@ public class StructuredCoalescentToMascot implements GeneratorToBEAST<Structured
     public Class<StructuredCoalescent> getGeneratorClass() {
         return StructuredCoalescent.class;
     }
+
+    @Override
+    public Class<beast.mascot.distribution.Mascot> getBEASTClass() {
+        return beast.mascot.distribution.Mascot.class;
+    }
 }

@@ -13,12 +13,12 @@ import consoperators.BigPulley;
 import consoperators.InConstantDistanceOperator;
 import consoperators.SimpleDistance;
 import consoperators.SmallPulley;
-import lphybeast.BEASTContext;
-import lphybeast.GeneratorToBEAST;
 import lphy.core.distributions.LogNormalMulti;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
+import lphybeast.BEASTContext;
+import lphybeast.GeneratorToBEAST;
 
 public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC> {
 
@@ -134,5 +134,10 @@ public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC> {
     @Override
     public Class<PhyloCTMC> getGeneratorClass() {
         return PhyloCTMC.class;
+    }
+
+    @Override
+    public Class<TreeLikelihood> getBEASTClass() {
+        return TreeLikelihood.class;
     }
 }

@@ -2,6 +2,7 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import beast.math.distributions.Prior;
 import lphy.core.distributions.Beta;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
@@ -19,5 +20,10 @@ public class BetaToBEAST implements GeneratorToBEAST<Beta> {
     @Override
     public Class<Beta> getGeneratorClass() {
         return Beta.class;
+    }
+
+    @Override
+    public Class<Prior> getBEASTClass() {
+        return Prior.class;
     }
 }

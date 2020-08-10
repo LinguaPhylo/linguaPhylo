@@ -2,6 +2,7 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import beast.math.distributions.Prior;
 import lphy.core.distributions.Dirichlet;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
@@ -19,5 +20,10 @@ public class DirichletToBEAST implements GeneratorToBEAST<Dirichlet> {
     @Override
     public Class<Dirichlet> getGeneratorClass() {
         return Dirichlet.class;
+    }
+
+    @Override
+    public Class<Prior> getBEASTClass() {
+        return Prior.class;
     }
 }

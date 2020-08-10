@@ -51,4 +51,9 @@ public class BirthDeathSampleTreeDTToBEAST implements GeneratorToBEAST<BirthDeat
     public Class<BirthDeathSamplingTreeDT> getGeneratorClass() {
         return BirthDeathSamplingTreeDT.class;
     }
+
+    @Override
+    public Class<BirthDeathGernhard08Model> getBEASTClass() {
+        return BirthDeathGernhard08Model.class;
+    }
 }

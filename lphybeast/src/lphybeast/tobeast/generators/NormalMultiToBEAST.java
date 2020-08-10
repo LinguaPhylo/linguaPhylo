@@ -21,4 +21,9 @@ public class NormalMultiToBEAST implements GeneratorToBEAST<NormalMulti> {
     public Class<NormalMulti> getGeneratorClass() {
         return NormalMulti.class;
     }
+
+    @Override
+    public Class<beast.math.distributions.Normal> getBEASTClass() {
+        return beast.math.distributions.Normal.class;
+    }
 }

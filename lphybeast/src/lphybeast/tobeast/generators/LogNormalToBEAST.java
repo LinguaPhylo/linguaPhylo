@@ -22,4 +22,9 @@ public class LogNormalToBEAST implements GeneratorToBEAST<LogNormal> {
     public Class<LogNormal> getGeneratorClass() {
         return LogNormal.class;
     }
+
+    @Override
+    public Class<LogNormalDistributionModel> getBEASTClass() {
+        return LogNormalDistributionModel.class;
+    }
 }

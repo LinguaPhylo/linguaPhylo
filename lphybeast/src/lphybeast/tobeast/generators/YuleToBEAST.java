@@ -23,4 +23,9 @@ public class YuleToBEAST implements GeneratorToBEAST<Yule> {
     public Class<Yule> getGeneratorClass() {
         return Yule.class;
     }
+
+    @Override
+    public Class<YuleModel> getBEASTClass() {
+        return YuleModel.class;
+    }
 }

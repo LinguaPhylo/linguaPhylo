@@ -47,4 +47,9 @@ public class ExpMarkovChainToBEAST implements GeneratorToBEAST<ExpMarkovChain> {
     public Class<ExpMarkovChain> getGeneratorClass() {
         return ExpMarkovChain.class;
     }
+
+    @Override
+    public Class<MarkovChainDistribution> getBEASTClass() {
+        return MarkovChainDistribution.class;
+    }
 }

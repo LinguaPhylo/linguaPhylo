@@ -1,9 +1,9 @@
 package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
+import lphy.evolution.substitutionmodel.JukesCantor;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphy.evolution.substitutionmodel.JukesCantor;
 
 public class JukesCantorToBEAST implements GeneratorToBEAST<JukesCantor> {
     @Override
@@ -18,5 +18,10 @@ public class JukesCantorToBEAST implements GeneratorToBEAST<JukesCantor> {
     @Override
     public Class<JukesCantor> getGeneratorClass() {
         return JukesCantor.class;
+    }
+
+    @Override
+    public Class<beast.evolution.substitutionmodel.JukesCantor> getBEASTClass() {
+        return beast.evolution.substitutionmodel.JukesCantor.class;
     }
 }

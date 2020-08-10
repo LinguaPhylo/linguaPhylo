@@ -20,4 +20,9 @@ public class GammaToBEAST implements GeneratorToBEAST<Gamma> {
     public Class<Gamma> getGeneratorClass() {
         return Gamma.class;
     }
+
+    @Override
+    public Class<beast.math.distributions.Gamma> getBEASTClass() {
+        return beast.math.distributions.Gamma.class;
+    }
 }

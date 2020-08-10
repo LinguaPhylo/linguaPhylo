@@ -2,9 +2,9 @@ package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
 import beast.core.parameter.RealParameter;
+import lphy.evolution.substitutionmodel.HKY;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import lphy.evolution.substitutionmodel.HKY;
 
 public class HKYToBEAST implements GeneratorToBEAST<HKY> {
     @Override
@@ -20,5 +20,10 @@ public class HKYToBEAST implements GeneratorToBEAST<HKY> {
     @Override
     public Class<HKY> getGeneratorClass() {
         return HKY.class;
+    }
+
+    @Override
+    public Class<beast.evolution.substitutionmodel.HKY> getBEASTClass() {
+        return beast.evolution.substitutionmodel.HKY.class;
     }
 }

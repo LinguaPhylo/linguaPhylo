@@ -21,4 +21,9 @@ public class NormalToBEAST implements GeneratorToBEAST<Normal> {
     public Class<Normal> getGeneratorClass() {
         return Normal.class;
     }
+
+    @Override
+    public Class<beast.math.distributions.Normal> getBEASTClass() {
+        return beast.math.distributions.Normal.class;
+    }
 }
