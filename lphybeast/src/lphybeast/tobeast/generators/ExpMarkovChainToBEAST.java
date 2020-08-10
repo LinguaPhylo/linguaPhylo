@@ -6,9 +6,9 @@ import lphy.core.distributions.ExpMarkovChain;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class ExpMarkovChainToBEAST implements GeneratorToBEAST<ExpMarkovChain> {
+public class ExpMarkovChainToBEAST implements GeneratorToBEAST<ExpMarkovChain, MarkovChainDistribution> {
     @Override
-    public BEASTInterface generatorToBEAST(ExpMarkovChain generator, BEASTInterface value, BEASTContext context) {
+    public MarkovChainDistribution generatorToBEAST(ExpMarkovChain generator, BEASTInterface value, BEASTContext context) {
 
         MarkovChainDistribution mcd = new MarkovChainDistribution();
         mcd.setInputValue("shape", 1.0);
