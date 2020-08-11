@@ -1,12 +1,12 @@
 package lphy.parser;
 
-
 import lphy.core.*;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
+import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.*;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
@@ -48,7 +48,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
             genDistSet.add(genClass);
         }
 
-        Class<?>[] functionClasses = {ARange.class, lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, lphy.core.functions.Map.class,
+        Class<?>[] functionClasses = {ARange.class, lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, LocalBranchRates.class, lphy.core.functions.Map.class,
                 Newick.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class, MigrationCount.class, Range.class, RootAge.class, DihedralAngleDiffusionMatrix.class};
 
         for (Class<?> functionClass : functionClasses) {

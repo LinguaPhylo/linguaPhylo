@@ -13,8 +13,8 @@ public interface ValueToBEAST<T, S extends BEASTInterface> {
     S valueToBEAST(Value<T> value, BEASTContext context);
 
     /**
-     * The class of value that can be converted to BEAST.
-     * @return
+     * The type of value that will be produced by valueToBEAST method.
+     * @return a class representing the type of value that will be produced.
      */
     Class getValueClass();
 
