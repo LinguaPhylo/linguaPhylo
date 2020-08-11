@@ -1,21 +1,20 @@
 package lphybeast.tobeast.generators;
 
 import beast.core.BEASTInterface;
-import beast.core.parameter.RealParameter;
-import beast.math.distributions.LogNormalDistributionModel;
-import beast.math.distributions.Prior;
+import beast.math.distributions.BernoulliDistribution;
 import lphy.core.distributions.BernoulliMulti;
-import lphy.core.distributions.LogNormalMulti;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
 
-public class BernoulliMultiToBEAST implements GeneratorToBEAST<BernoulliMulti, Prior> {
+public class BernoulliMultiToBEAST implements GeneratorToBEAST<BernoulliMulti, BernoulliDistribution> {
     @Override
-    public Prior generatorToBEAST(BernoulliMulti generator, BEASTInterface value, BEASTContext context) {
+    public BernoulliDistribution generatorToBEAST(BernoulliMulti generator, BEASTInterface value, BEASTContext context) {
 
-        // TODO need to add a Bernoulli or Binomial prior to BEAST2 so this can be converted.
-
-        return null;
+        BernoulliDistribution bernoulliDistribution = new BernoulliDistribution();
+        bernoulliDistribution.setInputValue("p", context.getBEASTObject(generator.getP()));
+        bernoulliDistribution.setInputValue("parameter", value);
+        bernoulliDistribution.initAndValidate();
+        return bernoulliDistribution;
     }
 
     @Override
@@ -24,7 +23,7 @@ public class BernoulliMultiToBEAST implements GeneratorToBEAST<BernoulliMulti, P
     }
 
     @Override
-    public Class<Prior> getBEASTClass() {
-        return Prior.class;
+    public Class<BernoulliDistribution> getBEASTClass() {
+        return BernoulliDistribution.class;
     }
 }

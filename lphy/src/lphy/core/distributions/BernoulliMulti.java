@@ -75,4 +75,8 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     public String toString() {
         return getName();
     }
+
+    public Value<Double> getP() {
+        return getParams().get(pParamName);
+    }
 }

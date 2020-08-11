@@ -65,6 +65,7 @@ public class BEASTContext {
         valueToBEASTMap.put(Boolean[].class, new BooleanArrayValueToBEAST());
 
         Class[] generatorToBEASTs = {
+                BernoulliMultiToBEAST.class,
                 BetaToBEAST.class,
                 BirthDeathSampleTreeDTToBEAST.class,
                 CoalescentToBEAST.class,
