@@ -1,0 +1,8 @@
+λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Yule(birthRate=λ, n=16);
+rawRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, n=31);
+numRateChanges ~ Poisson(lambda=1);
+i1 = concat(rep(true, times=numRateChanges), rep(false, times=(30-numRateChanges)))
+indicators ~ RandomPermutation(i1);
+branchRates = localBranchRates(tree=ψ, indicators=indicators, rates=rawRates);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ, branchRates=branchRates);

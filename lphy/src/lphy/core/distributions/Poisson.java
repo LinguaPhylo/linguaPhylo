@@ -62,4 +62,8 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
     public Integer[] getDomainBounds() {
         return domainBounds;
     }
+
+    public Value<Double> getLambda() {
+        return lambda;
+    }
 }

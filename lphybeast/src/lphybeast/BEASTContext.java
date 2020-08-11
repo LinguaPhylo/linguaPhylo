@@ -84,6 +84,7 @@ public class BEASTContext {
                 NormalMultiToBEAST.class,
                 NormalToBEAST.class,
                 PhyloCTMCToBEAST.class,
+                PoissonToBEAST.class,
                 SkylineToBSP.class,
                 SerialCoalescentToBEAST.class,
                 StructuredCoalescentToMascot.class,
