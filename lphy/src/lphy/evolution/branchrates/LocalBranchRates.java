@@ -2,10 +2,8 @@ package lphy.evolution.branchrates;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
+
 import java.util.Map;
 
 public class LocalBranchRates extends DeterministicFunction<Double[]> {
@@ -58,5 +56,17 @@ public class LocalBranchRates extends DeterministicFunction<Double[]> {
         for (TimeTreeNode child : node.getChildren()) {
             traverseTree(child, branchRates, rawRates, indicators);
         }
+    }
+
+    public Value<TimeTree> getTree() {
+        return getParams().get(treeParamName);
+    }
+
+    public Value<Double[]> getRates() {
+        return getParams().get(ratesParamName);
+    }
+
+    public Value<Boolean[]> getIndicators() {
+        return getParams().get(indicatorsParamName);
     }
 }

@@ -1,6 +1,7 @@
 package lphybeast;
 
 import beast.core.*;
+import beast.core.parameter.BooleanParameter;
 import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
 import beast.core.parameter.RealParameter;
@@ -61,6 +62,7 @@ public class BEASTContext {
         valueToBEASTMap.put(Double[][].class, new DoubleArray2DValueToBEAST());
         valueToBEASTMap.put(Integer.class, new IntegerValueToBEAST());
         valueToBEASTMap.put(Integer[].class, new IntegerArrayValueToBEAST());
+        valueToBEASTMap.put(Boolean[].class, new BooleanArrayValueToBEAST());
 
         Class[] generatorToBEASTs = {
                 BetaToBEAST.class,
@@ -74,6 +76,7 @@ public class BEASTContext {
                 HKYToBEAST.class,
                 JukesCantorToBEAST.class,
                 K80ToBEAST.class,
+                LocalBranchRatesToBEAST.class,
                 LogNormalMultiToBEAST.class,
                 LogNormalToBEAST.class,
                 MultispeciesCoalescentToBEAST.class,
@@ -268,6 +271,8 @@ public class BEASTContext {
                 operators.add(createBEASTOperator((RealParameter) stateNode));
             } else if (stateNode instanceof IntegerParameter) {
                 operators.add(createBEASTOperator((IntegerParameter) stateNode));
+            } else if (stateNode instanceof BooleanParameter) {
+                operators.add(createBEASTOperator((BooleanParameter) stateNode));
             } else if (stateNode instanceof Tree) {
                 operators.add(createTreeScaleOperator((Tree) stateNode));
                 operators.add(createExchangeOperator((Tree) stateNode, true));
@@ -419,6 +424,16 @@ public class BEASTContext {
         return operator;
     }
 
+    private Operator createBEASTOperator(BooleanParameter parameter) {
+        Operator operator = new BitFlipOperator();
+        operator.setInputValue("parameter", parameter);
+        operator.setInputValue("weight", getOperatorWeight(parameter.getDimension()));
+        operator.initAndValidate();
+        operator.setID(parameter.getID() + ".bitFlip");
+
+        return operator;
+    }
+
     private Operator createBEASTOperator(IntegerParameter parameter) {
         RandomVariable<?> variable = (RandomVariable<?>) BEASTToLPHYMap.get(parameter);
 
@@ -517,12 +532,12 @@ public class BEASTContext {
         mcmc.setInputValue("distribution", posterior);
         mcmc.setInputValue("chainLength", chainLength);
 
-        List<Operator> operators =  createOperators();
+        List<Operator> operators = createOperators();
         for (int i = 0; i < operators.size(); i++) {
             System.out.println(operators.get(i));
         }
 
-        mcmc.setInputValue("operator",operators);
+        mcmc.setInputValue("operator", operators);
         mcmc.setInputValue("logger", createLoggers(logEvery, fileName));
 
         State state = new State();
