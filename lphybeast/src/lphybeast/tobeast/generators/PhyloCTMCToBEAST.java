@@ -14,6 +14,7 @@ import consoperators.InConstantDistanceOperator;
 import consoperators.SimpleDistance;
 import consoperators.SmallPulley;
 import lphy.core.distributions.LogNormalMulti;
+import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
@@ -56,8 +57,10 @@ public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC, TreeLikelih
 
                 addRelaxedClockOperators(tree, relaxedClockModel, beastBranchRates, context);
 
+            } else if (branchRates.getGenerator() instanceof LocalBranchRates) {
+                treeLikelihood.setInputValue("branchRateModel", context.getBEASTObject(branchRates.getGenerator()));
             } else {
-                throw new RuntimeException("Only lognormal relaxed clock model currently supported in BEAST2 conversion");
+                throw new RuntimeException("Only localBranchRates and lognormally distributed branchRates currently supported for BEAST2 conversion");
             }
 
         } else {
