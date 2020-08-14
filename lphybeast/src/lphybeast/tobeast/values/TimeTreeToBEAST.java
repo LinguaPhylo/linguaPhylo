@@ -4,21 +4,41 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
 import beast.util.TreeParser;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
+import lphybeast.tobeast.data.DataExchanger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimeTreeToBEAST implements ValueToBEAST<TimeTree, TreeParser> {
 
+    protected DataExchanger dataExchanger;
+
+    /**
+     * Call this to use simulated alignment {@link Alignment}.
+     */
+    public TimeTreeToBEAST() { }
+
+    /**
+     * Call this to use given (real data) alignment.
+     * @param dataExchanger using {@link beast.evolution.alignment.Alignment} (real data)
+     */
+    public TimeTreeToBEAST(DataExchanger dataExchanger) { this.dataExchanger = dataExchanger; }
+
     @Override
     public TreeParser valueToBEAST(Value<TimeTree> timeTreeValue, BEASTContext context) {
 
         TimeTree timeTree = timeTreeValue.value();
+
+        //TODO replace taxa name wisely
+        if (dataExchanger != null) {
+            dataExchanger.replaceTaxaNamesByOrder(timeTree);
+        }
         
         TreeParser tree = new TreeParser();
         tree.setInputValue("newick", timeTree.toNewick(false));

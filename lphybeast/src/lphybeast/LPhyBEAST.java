@@ -2,6 +2,7 @@ package lphybeast;
 
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
+import lphybeast.tobeast.data.DataExchanger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -28,8 +29,8 @@ public class LPhyBEAST implements Callable<Integer> {
 
 //    @Option(names = {"-wd", "--workdir"}, description = "Working directory") Path wd;
     @Option(names = {"-o", "--out"},     description = "BEAST 2 XML")  Path outfile;
-//    @Option(names = {"-d", "--data"},    description = "File containing alignment or traits")
-    Path datafile;
+    @Option(names = {"-n", "--nex"},    description = "BEAST 2 Nexus file containing alignment or traits")
+    Path nexfile;
 //    @Option(names = {"-m", "--mapping"}, description = "mapping file") Path mapfile;
 
 
@@ -50,7 +51,29 @@ public class LPhyBEAST implements Callable<Integer> {
         LPhyParser parser = new REPL();
         source(reader, parser);
 
-        BEASTContext context = new BEASTContext(parser);
+        BEASTContext context;
+        if (nexfile != null) {
+            assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
+            System.out.println("Use the given alignment from " + nexfile.getFileName());
+
+//            NexusParser beastParser = new NexusParser();
+//            beastParser.parseFile(nexfile.toFile());
+//            beast.evolution.alignment.Alignment beastAlignment = beastParser.m_alignment;
+
+            //TODO a lot parsing data to get from nex
+//            beastParser.taxa;
+//            beastParser.traitSet;
+//            beastParser.trees;
+//            beastParser.calibrations;
+//            beastParser.filteredAlignments;
+
+//            DataExchanger dataExchanger = new DataExchanger(beastAlignment);
+            DataExchanger dataExchanger = new DataExchanger(null);
+            context = new BEASTContext(parser, dataExchanger);
+
+        } else {
+            context = new BEASTContext(parser);
+        }
 
         //*** Write BEAST 2 XML ***//
 //        String wkdir = infile.getParent().toString();

@@ -5,33 +5,57 @@ import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
+import lphybeast.tobeast.data.DataExchanger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution.alignment.Alignment> {
 
+    protected DataExchanger dataExchanger;
+
+    /**
+     * Call this to use simulated alignment {@link Alignment}.
+     */
+    public AlignmentToBEAST() { }
+
+    /**
+     * Call this to use given (real data) alignment.
+     * @param dataExchanger using {@link beast.evolution.alignment.Alignment} (real data)
+     */
+    public AlignmentToBEAST(DataExchanger dataExchanger) { this.dataExchanger = dataExchanger; }
+
     @Override
     public beast.evolution.alignment.Alignment valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
 
-        List<Sequence> sequences = new ArrayList<>();
-
         Alignment alignment = alignmentValue.value();
 
-        String[] taxaNames = alignment.getTaxaNames();
+        if (dataExchanger == null) {
+            List<Sequence> sequences = new ArrayList<>();
 
-        for (int i = 0; i < alignment.getTaxonCount(); i++) {
-            context.addTaxon(taxaNames[i]);
-            sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
+            String[] taxaNames = alignment.getTaxaNames();
+
+            for (int i = 0; i < alignment.getTaxonCount(); i++) {
+                context.addTaxon(taxaNames[i]);
+                sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
+            }
+
+            beast.evolution.alignment.Alignment beastAlignment = new beast.evolution.alignment.Alignment();
+            beastAlignment.setInputValue("sequence", sequences);
+            beastAlignment.initAndValidate();
+
+            if (!alignmentValue.isAnonymous()) beastAlignment.setID(alignmentValue.getCanonicalId());
+
+            return beastAlignment;
+        } else {
+            // validation and map taxa
+            beast.evolution.alignment.Alignment beastAlignment = dataExchanger.getAlignment();
+
+            // TODO allow diff
+            assert alignment.getTaxonCount() == beastAlignment.getTaxonCount();
+
+            return beastAlignment;
         }
-
-        beast.evolution.alignment.Alignment beastAlignment = new beast.evolution.alignment.Alignment();
-        beastAlignment.setInputValue("sequence", sequences);
-        beastAlignment.initAndValidate();
-
-        if (!alignmentValue.isAnonymous()) beastAlignment.setID(alignmentValue.getCanonicalId());
-
-        return beastAlignment;
     }
 
     private Sequence createBEASTSequence(String taxon, String sequence) {

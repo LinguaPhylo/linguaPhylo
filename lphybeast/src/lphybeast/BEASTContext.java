@@ -8,19 +8,18 @@ import beast.core.parameter.RealParameter;
 import beast.core.util.CompoundDistribution;
 import beast.evolution.alignment.Taxon;
 import beast.evolution.operators.*;
-import beast.evolution.operators.Uniform;
 import beast.evolution.substitutionmodel.Frequencies;
 import beast.evolution.tree.Tree;
-import beast.math.distributions.ExcludablePrior;
 import beast.math.distributions.ParametricDistribution;
 import beast.math.distributions.Prior;
 import beast.util.XMLProducer;
-import lphy.evolution.likelihood.PhyloCTMC;
+import lphy.core.LPhyParser;
+import lphy.core.distributions.Dirichlet;
+import lphy.core.distributions.RandomComposition;
+import lphy.graphicalModel.*;
+import lphybeast.tobeast.data.DataExchanger;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.*;
-import lphy.core.LPhyParser;
-import lphy.core.distributions.*;
-import lphy.graphicalModel.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,12 +50,22 @@ public class BEASTContext {
 
     public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
-
-        // TODO parameterize AlignmentToBEAST with the true alignments
-
+        // simulated alignment
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
-        valueToBEASTMap.put(java.util.Map.class, new MapValueToBEAST());
+        init();
+    }
+
+    public BEASTContext(LPhyParser phyParser, DataExchanger dataExchanger) {
+        parser = phyParser;
+        // real data alignment
+        valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST(dataExchanger));
+        valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST(dataExchanger));
+        init();
+    }
+
+    private void init() {
+        valueToBEASTMap.put(Map.class, new MapValueToBEAST());
         valueToBEASTMap.put(Double.class, new DoubleValueToBEAST());
         valueToBEASTMap.put(Double[].class, new DoubleArrayValueToBEAST());
         valueToBEASTMap.put(Double[][].class, new DoubleArray2DValueToBEAST());
@@ -103,7 +112,6 @@ public class BEASTContext {
                 e.printStackTrace();
             }
         }
-
     }
 
     public BEASTInterface getBEASTObject(GraphicalModelNode<?> node) {
