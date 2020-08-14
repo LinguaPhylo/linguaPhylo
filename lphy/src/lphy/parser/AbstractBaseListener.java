@@ -38,7 +38,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
                 Coalescent.class, PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
                 Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
-                MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, SerialCoalescent.class,
+                MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class, SerialCoalescent.class,
                 SkylineCoalescent.class, StructuredCoalescent.class};
 
         for (Class<?> genClass : genClasses) {
