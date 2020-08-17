@@ -3,6 +3,7 @@ package lphybeast;
 import beast.util.NexusParser;
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
+import lphy.utils.LoggerUtils;
 import lphybeast.tobeast.data.DataExchanger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -48,24 +49,25 @@ public class LPhyBEAST implements Callable<Integer> {
 
         BufferedReader reader = new BufferedReader(new FileReader(infile.toFile()));
 
-        //*** Parse LPhy file ***//
-        LPhyParser parser = new REPL();
-        source(reader, parser);
-
-        BEASTContext context;
+        DataExchanger dataExchanger = null;
         if (nexfile != null) {
             assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
+            // TODO LoggerUtils.log.info print twice?
             System.out.println("Use the given alignment from " + nexfile.getFileName());
 
             NexusParser beastParser = new NexusParser();
             beastParser.parseFile(nexfile.toFile());
 
-            DataExchanger dataExchanger = new DataExchanger(beastParser);
-            context = new BEASTContext(parser, dataExchanger);
+            dataExchanger = new DataExchanger(beastParser);
 
-        } else {
-            context = new BEASTContext(parser);
         }
+
+        //*** Parse LPhy file ***//
+        LPhyParser parser = new REPL();
+        source(reader, parser, dataExchanger);
+
+        // If dataExchanger is null, then using simulated alignment
+        BEASTContext context = new BEASTContext(parser, dataExchanger);
 
         //*** Write BEAST 2 XML ***//
 //        String wkdir = infile.getParent().toString();
@@ -81,7 +83,6 @@ public class LPhyBEAST implements Callable<Integer> {
         }
 
         PrintWriter writer = new PrintWriter(new FileWriter(outfile.toFile()));
-
         writer.println(xml);
         writer.flush();
         writer.close();
@@ -90,9 +91,14 @@ public class LPhyBEAST implements Callable<Integer> {
         return 0;
     }
 
-    private static void source(BufferedReader reader, LPhyParser parser) throws IOException {
+    private static void source(BufferedReader reader, LPhyParser parser, DataExchanger dataExchanger)
+            throws IOException {
         String line = reader.readLine();
         while (line != null) {
+            // assign real data to line
+            if (dataExchanger != null)
+                line = dataExchanger.assignArgsTo(line);
+
             parser.parse(line);
             line = reader.readLine();
         }

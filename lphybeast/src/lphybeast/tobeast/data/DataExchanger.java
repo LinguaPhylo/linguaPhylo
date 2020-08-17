@@ -6,17 +6,26 @@ import beast.util.NexusParser;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 /**
  * @author Walter Xie
  */
 public class DataExchanger {
 
+
     final protected NexusParser nexusParser;
     final protected beast.evolution.alignment.Alignment beastAlignment;
+
+    Pattern pattern;
+    Map<String,String> args;
 
     public DataExchanger(NexusParser nexusParser) {
         this.nexusParser = nexusParser;
@@ -35,15 +44,58 @@ public class DataExchanger {
 //            beastParser.trees;
 //            beastParser.calibrations;
 //            beastParser.filteredAlignments;
+
+        int ntaxa = getAlignment().getTaxonCount();
+        int L = getAlignment().getSiteCount();
+
+        args = new HashMap<>();
+        // real data
+        args.put("%ntaxa%", Integer.toString(ntaxa));
+        args.put("%ages%", "");
+        args.put("%L%", Integer.toString(L));
+
+        //TODO trouble to use $ or () reserved in regx
+        // Create pattern of the format "...|..."
+        StringBuilder patternString = new StringBuilder();
+        int i = 0;
+        for (String key : args.keySet()) {
+//            key = "\\$" + key + "\\$";
+            if (i == 0) patternString.append(key);
+            else        patternString.append("|").append(key);
+            i++;
+        }
+        pattern = Pattern.compile(patternString.toString(), CASE_INSENSITIVE);
     }
 
     public Alignment getAlignment() {
+        if (beastAlignment == null) throw new IllegalArgumentException("Alignment must be available !");
         return beastAlignment;
     }
 
+    //****** before LPhyParser ******//
+
+    // replace var in cmd
+    public String assignArgsTo(String line) {
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            // Get the group matched
+            String regx = matcher.group();
+            String replacement = args.get(regx);
+            line = line.replaceAll(regx, replacement);
+
+            System.out.println("Find argument " + matcher.group() + " in LPhy and replace to " + replacement);
+        }
+        return line;
+    }
+
+
+
+    //****** after LPhyParser ******//
+
+    // replace taxa names in TimeTree
     public void replaceTaxaNamesByOrder(TimeTree timeTree) {
         List<String> beastTaxaNm = beastAlignment.getTaxaNames();
-        //TODO allow diff
+        //TODO allow taxa diff ?
         if (beastTaxaNm.size() != timeTree.getTaxaNames().length)
             throw new IllegalArgumentException("The given taxa have to match the taxa in the LPhy model !\n"
                     + beastTaxaNm.size() + " != " + timeTree.getTaxaNames().length);
@@ -120,6 +172,4 @@ public class DataExchanger {
         }
 
     }
-
-
 }

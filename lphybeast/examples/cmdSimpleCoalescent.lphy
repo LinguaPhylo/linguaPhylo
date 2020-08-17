@@ -1,0 +1,3 @@
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+ψ ~ Coalescent(theta=Θ, n=%ntaxa%);
+D ~ PhyloCTMC(L=%L%, Q=jukesCantor(), tree=ψ);

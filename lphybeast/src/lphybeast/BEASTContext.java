@@ -48,6 +48,7 @@ public class BEASTContext {
 
     LPhyParser parser;
 
+    @Deprecated
     public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
         // simulated alignment
@@ -56,6 +57,13 @@ public class BEASTContext {
         init();
     }
 
+    /**
+     * If {@link DataExchanger} is null, then it is using simulated alignment,
+     * which is same to {@link #BEASTContext(LPhyParser)}. Otherwise it will take
+     * the real data from files.
+     * @param phyParser      {@link LPhyParser}
+     * @param dataExchanger  Passing real data to the parser
+     */
     public BEASTContext(LPhyParser phyParser, DataExchanger dataExchanger) {
         parser = phyParser;
         // real data alignment
