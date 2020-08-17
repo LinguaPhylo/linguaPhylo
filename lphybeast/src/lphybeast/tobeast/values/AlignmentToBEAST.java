@@ -52,7 +52,10 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
             beast.evolution.alignment.Alignment beastAlignment = dataExchanger.getAlignment();
 
             // TODO allow diff
-            assert alignment.getTaxonCount() == beastAlignment.getTaxonCount();
+//            assert alignment.getTaxonCount() == beastAlignment.getTaxonCount();
+            if (beastAlignment.getTaxonCount() != alignment.getTaxonCount())
+                throw new IllegalArgumentException("The given taxa have to match the taxa in the LPhy model !\n"
+                        + beastAlignment.getTaxonCount() + " != " + alignment.getTaxonCount());
 
             return beastAlignment;
         }

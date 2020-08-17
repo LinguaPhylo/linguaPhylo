@@ -1,5 +1,6 @@
 package lphybeast;
 
+import beast.util.NexusParser;
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
 import lphybeast.tobeast.data.DataExchanger;
@@ -56,19 +57,10 @@ public class LPhyBEAST implements Callable<Integer> {
             assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
             System.out.println("Use the given alignment from " + nexfile.getFileName());
 
-//            NexusParser beastParser = new NexusParser();
-//            beastParser.parseFile(nexfile.toFile());
-//            beast.evolution.alignment.Alignment beastAlignment = beastParser.m_alignment;
+            NexusParser beastParser = new NexusParser();
+            beastParser.parseFile(nexfile.toFile());
 
-            //TODO a lot parsing data to get from nex
-//            beastParser.taxa;
-//            beastParser.traitSet;
-//            beastParser.trees;
-//            beastParser.calibrations;
-//            beastParser.filteredAlignments;
-
-//            DataExchanger dataExchanger = new DataExchanger(beastAlignment);
-            DataExchanger dataExchanger = new DataExchanger(null);
+            DataExchanger dataExchanger = new DataExchanger(beastParser);
             context = new BEASTContext(parser, dataExchanger);
 
         } else {
@@ -94,7 +86,7 @@ public class LPhyBEAST implements Callable<Integer> {
         writer.flush();
         writer.close();
 
-        System.out.println("\nCreate BEAST 2 XML : " + outfile + " in " + System.getProperty("user.dir"));
+        System.out.println("\nCreate BEAST 2 XML : " + Paths.get(System.getProperty("user.dir"), outfile.toString()));
         return 0;
     }
 

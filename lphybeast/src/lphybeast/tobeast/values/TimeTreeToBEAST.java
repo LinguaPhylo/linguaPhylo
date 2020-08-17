@@ -62,6 +62,7 @@ public class TimeTreeToBEAST implements ValueToBEAST<TimeTree, TreeParser> {
         }
 
         tree.initAndValidate();
+        tree.setRoot(tree.parseNewick(tree.newickInput.get()));
         if (!timeTreeValue.isAnonymous()) tree.setID(timeTreeValue.getCanonicalId());
         return tree;
     }
