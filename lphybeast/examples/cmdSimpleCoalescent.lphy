@@ -1,3 +1,6 @@
+n=argi(name="n", default=10);
+L=argi(name="L", default=300);
+
 Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-ψ ~ Coalescent(theta=Θ, n=%ntaxa%);
-D ~ PhyloCTMC(L=%L%, Q=jukesCantor(), tree=ψ);
+ψ ~ Coalescent(theta=Θ, n=n);
+D ~ PhyloCTMC(L=L, Q=jukesCantor(), tree=ψ);
