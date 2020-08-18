@@ -1,91 +1,80 @@
 package lphybeast.tobeast.data;
 
 import beast.evolution.alignment.Alignment;
-import beast.evolution.alignment.Taxon;
-import beast.util.NexusParser;
+import lphy.core.LPhyParser;
+import lphy.core.functions.ArgI;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 
-import java.util.HashMap;
+import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 /**
  * @author Walter Xie
  */
 public class DataExchanger {
 
-
     final protected NexusParser nexusParser;
-    final protected beast.evolution.alignment.Alignment beastAlignment;
 
-    Pattern pattern;
-    Map<String,String> args;
+    final protected Map<String, String> varMap; // LPhy <=> Nex
 
-    public DataExchanger(NexusParser nexusParser) {
-        this.nexusParser = nexusParser;
-        // must have alignment
-        this.beastAlignment = nexusParser.m_alignment;
-        assert beastAlignment != null;
 
-        parse(nexusParser);
-    }
-
-    private void parse(NexusParser nexusParser) {
-//            beastParser.traitSet;
-
-        //TODO a lot parsing data to get from nex
-//            beastParser.taxa;
-//            beastParser.trees;
-//            beastParser.calibrations;
-//            beastParser.filteredAlignments;
-
-        int ntaxa = getAlignment().getTaxonCount();
-        int L = getAlignment().getSiteCount();
-
-        args = new HashMap<>();
-        // real data
-        args.put("%ntaxa%", Integer.toString(ntaxa));
-        args.put("%ages%", "");
-        args.put("%L%", Integer.toString(L));
-
-        //TODO trouble to use $ or () reserved in regx
-        // Create pattern of the format "...|..."
-        StringBuilder patternString = new StringBuilder();
-        int i = 0;
-        for (String key : args.keySet()) {
-//            key = "\\$" + key + "\\$";
-            if (i == 0) patternString.append(key);
-            else        patternString.append("|").append(key);
-            i++;
-        }
-        pattern = Pattern.compile(patternString.toString(), CASE_INSENSITIVE);
+    public DataExchanger(Path nexfile, Map<String, String> varMap) {
+        this.varMap = varMap;
+        nexusParser = new NexusParser(nexfile);
     }
 
     public Alignment getAlignment() {
-        if (beastAlignment == null) throw new IllegalArgumentException("Alignment must be available !");
-        return beastAlignment;
+        return nexusParser.getAlignment();
     }
 
     //****** before LPhyParser ******//
 
-    // replace var in cmd
-    public String assignArgsTo(String line) {
-        Matcher matcher = pattern.matcher(line);
-        while (matcher.find()) {
-            // Get the group matched
-            String regx = matcher.group();
-            String replacement = args.get(regx);
-            line = line.replaceAll(regx, replacement);
+    public void preloadArgs() {
+        // run ArgI.putArgument before LPhy
+        for (Map.Entry<String, String> entry : varMap.entrySet()) {
+            String lphyVar = entry.getKey();
+            String nexusVar = entry.getValue();
+            String nexusValue = nexusParser.getVal(nexusVar);
 
-            System.out.println("Find argument " + matcher.group() + " in LPhy and replace to " + replacement);
+            ArgI.putArgument(lphyVar, Integer.parseInt(nexusValue));
         }
-        return line;
+    }
+
+
+    // replace var in cmd
+    public void updateArgs(LPhyParser parser) {
+
+//        for (Map.Entry<String, Value<?>> entry : parser.getDictionary().entrySet()) {
+//
+//            String lphyVar = entry.getKey();
+//
+//            if (varMap.containsKey(lphyVar)) {
+//                String nexVar = varMap.get(lphyVar);
+//                if ( nexusParser.getVal() !=  entry.getValue() ) {
+//                    ArgI.putArgument(lphyVar, value);
+//                }
+//
+//
+//            }
+//
+//        }
+
+
+
+//        Matcher matcher = pattern.matcher(line);
+//        while (matcher.find()) {
+//            // Get the group matched
+//            String regx = matcher.group();
+//            String replacement = args.get(regx);
+//            line = line.replaceAll(regx, replacement);
+//
+//            System.out.println("Find argument " + matcher.group() + " in LPhy and replace to " + replacement);
+//        }
+//        return line;
+
     }
 
 
@@ -94,7 +83,7 @@ public class DataExchanger {
 
     // replace taxa names in TimeTree
     public void replaceTaxaNamesByOrder(TimeTree timeTree) {
-        List<String> beastTaxaNm = beastAlignment.getTaxaNames();
+        List<String> beastTaxaNm = nexusParser.getAlignment().getTaxaNames();
         //TODO allow taxa diff ?
         if (beastTaxaNm.size() != timeTree.getTaxaNames().length)
             throw new IllegalArgumentException("The given taxa have to match the taxa in the LPhy model !\n"
@@ -107,6 +96,18 @@ public class DataExchanger {
                 i++;
             }
         }
+    }
+
+    public void printVarMap(PrintStream out){
+        out.println("Map variable from LPhy script to Nexus data : ");
+        for (Map.Entry<String, String> entry : varMap.entrySet()) {
+            out.println(entry.getKey() + " => " + entry.getValue());
+        }
+        out.println();
+    }
+
+    public boolean containsArg(String line) {
+        return line.trim().toLowerCase().contains("argi(");
     }
 
 // TODO map taxa names
@@ -154,22 +155,21 @@ public class DataExchanger {
 //        replaceAllTaxaBy(allTaxa, alg); // TODO cannot access taxonset in Tree
 //
 //    }
-
-
-    private void replaceAllTaxaBy(final SortedMap<String, Taxon> allTaxa, final Alignment alg) {
-        assert allTaxa.size() == alg.getTaxonCount();
-
-        List<String> tn = alg.getTaxaNames();
-        allTaxa.clear();//TODO
-        for (String taxonID : tn) {
-            if (!allTaxa.containsKey(taxonID)) {
-                allTaxa.put(taxonID, new Taxon(taxonID));
-            }
-        }
-
-        for (Map.Entry<String, Taxon> pair : allTaxa.entrySet()) {
-//             pair.getKey()  pair.getValue();
-        }
-
-    }
+//
+//    private void replaceAllTaxaBy(final SortedMap<String, Taxon> allTaxa, final Alignment alg) {
+//        assert allTaxa.size() == alg.getTaxonCount();
+//
+//        List<String> tn = alg.getTaxaNames();
+//        allTaxa.clear();//TODO
+//        for (String taxonID : tn) {
+//            if (!allTaxa.containsKey(taxonID)) {
+//                allTaxa.put(taxonID, new Taxon(taxonID));
+//            }
+//        }
+//
+//        for (Map.Entry<String, Taxon> pair : allTaxa.entrySet()) {
+////             pair.getKey()  pair.getValue();
+//        }
+//
+//    }
 }

@@ -1,9 +1,7 @@
 package lphybeast;
 
-import beast.util.NexusParser;
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
-import lphy.utils.LoggerUtils;
 import lphybeast.tobeast.data.DataExchanger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -13,6 +11,7 @@ import picocli.CommandLine.Parameters;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Command(name = "lphybeast", version = "LPhyBEAST " + LPhyBEAST.VERSION, footer = "Copyright(c) 2020",
@@ -34,7 +33,10 @@ public class LPhyBEAST implements Callable<Integer> {
     @Option(names = {"-n", "--nex"},    description = "BEAST 2 Nexus file containing alignment or traits")
     Path nexfile;
 //    @Option(names = {"-m", "--mapping"}, description = "mapping file") Path mapfile;
-
+    // TODO Mutually Dependent to -n
+    @Option(names = {"-m", "--varmap"}, split = "\\|", splitSynopsisLabel = "|",
+            description = "LPhy var <=> Nexus keyword")
+    Map<String, String> varmap;
 
     public static void main(String[] args) throws IOException {
 
@@ -53,12 +55,10 @@ public class LPhyBEAST implements Callable<Integer> {
         if (nexfile != null) {
             assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
             // TODO LoggerUtils.log.info print twice?
-            System.out.println("Use the given alignment from " + nexfile.getFileName());
+            System.out.println("Load the alignment from " + nexfile.getFileName());
 
-            NexusParser beastParser = new NexusParser();
-            beastParser.parseFile(nexfile.toFile());
-
-            dataExchanger = new DataExchanger(beastParser);
+            dataExchanger = new DataExchanger(nexfile, varmap);
+            dataExchanger.printVarMap(System.out);
 
         }
 
@@ -93,13 +93,19 @@ public class LPhyBEAST implements Callable<Integer> {
 
     private static void source(BufferedReader reader, LPhyParser parser, DataExchanger dataExchanger)
             throws IOException {
+        if (dataExchanger != null) dataExchanger.preloadArgs();
+
         String line = reader.readLine();
         while (line != null) {
-            // assign real data to line
-            if (dataExchanger != null)
-                line = dataExchanger.assignArgsTo(line);
-
             parser.parse(line);
+            // replace real data in ArgI
+//            if (dataExchanger != null) {
+//
+//                if (!dataExchanger.containsArg(line))
+//                    dataExchanger.updateArgs(parser);
+//
+//            }
+
             line = reader.readLine();
         }
         reader.close();
