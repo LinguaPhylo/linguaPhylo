@@ -29,6 +29,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
     public beast.evolution.alignment.Alignment valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
 
         Alignment alignment = alignmentValue.value();
+        beast.evolution.alignment.Alignment beastAlignment;
 
         if (dataExchanger == null) {
             List<Sequence> sequences = new ArrayList<>();
@@ -40,16 +41,14 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
                 sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
             }
 
-            beast.evolution.alignment.Alignment beastAlignment = new beast.evolution.alignment.Alignment();
+            beastAlignment = new beast.evolution.alignment.Alignment();
             beastAlignment.setInputValue("sequence", sequences);
             beastAlignment.initAndValidate();
 
-            if (!alignmentValue.isAnonymous()) beastAlignment.setID(alignmentValue.getCanonicalId());
 
-            return beastAlignment;
         } else {
             // validation and map taxa
-            beast.evolution.alignment.Alignment beastAlignment = dataExchanger.getAlignment();
+            beastAlignment = dataExchanger.getAlignment();
 
             // TODO allow diff
 //            assert alignment.getTaxonCount() == beastAlignment.getTaxonCount();
@@ -57,8 +56,10 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
                 throw new IllegalArgumentException("The given taxa have to match the taxa in the LPhy model !\n"
                         + beastAlignment.getTaxonCount() + " != " + alignment.getTaxonCount());
 
-            return beastAlignment;
         }
+        // using LPhy var as ID allows multiple alignments
+        if (!alignmentValue.isAnonymous()) beastAlignment.setID(alignmentValue.getCanonicalId());
+        return beastAlignment;
     }
 
     private Sequence createBEASTSequence(String taxon, String sequence) {
