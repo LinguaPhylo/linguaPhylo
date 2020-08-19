@@ -1,0 +1,12 @@
+package lphy.evolution;
+
+/**
+ * An interface that site-dimensioned objects can implement, such as Alignment.
+ */
+public interface NChar {
+
+    /**
+     * @return the number of sites this object has.
+     */
+    int nchar();
+}

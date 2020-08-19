@@ -1,5 +1,7 @@
 package lphy.evolution.alignment;
 
+import lphy.evolution.DataFrame;
+import lphy.evolution.NTaxa;
 import lphy.graphicalModel.Value;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
@@ -12,32 +14,34 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class Alignment implements HasComponentView<Alignment> {
+public class Alignment extends DataFrame implements NTaxa, HasComponentView<Alignment> {
 
     int[][] alignment;
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
     int numStates;
 
-    public Alignment(int taxa, int length, Map<String, Integer> idMap, int numStates) {
-        alignment = new int[taxa][length];
+    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
+        super(ntaxa, nchar);
+
+        alignment = new int[ntaxa][nchar];
+        this.numStates = numStates;
         this.idMap = idMap;
 
         reverseMap = new TreeMap<>();
         for (String key : idMap.keySet()) {
             reverseMap.put(idMap.get(key), key);
         }
-
-        this.numStates = numStates;
     }
 
     public void setState(int taxon, int position, int state) {
 
-        if (state < 0 || state > numStates-1) throw new IllegalArgumentException("Tried to set a state outside of the range!");
+        if (state < 0 || state > numStates-1) throw new IllegalArgumentException("Tried to set a state outside of the range! ");
         alignment[taxon][position] = state;
     }
 
     public void setState(String taxon, int position, int state) {
+
         alignment[idMap.get(taxon)][position] = state;
     }
 
@@ -94,10 +98,6 @@ public class Alignment implements HasComponentView<Alignment> {
         }
     }
 
-    public int getTaxonCount() {
-        return n();
-    }
-
     public String[] getTaxaNames() {
         String[] taxaNames = new String[n()];
         for (int i = 0; i < taxaNames.length; i++) {
@@ -122,4 +122,8 @@ public class Alignment implements HasComponentView<Alignment> {
     }
 
     char[] DNA = {'A', 'C', 'G', 'T'};
+
+    public void setNumStates(int numStates) {
+        this.numStates = numStates;
+    }
 }

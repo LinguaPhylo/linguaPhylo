@@ -22,7 +22,7 @@ public class Pow extends DeterministicFunction<Double> {
     @GeneratorInfo(name = "pow", description = "The power function: b^x")
     public Value<Double> apply() {
         Value<Double> b = getParams().get(bparamName);
-        Value<Double> x = getParams().get(bparamName);
+        Value<Double> x = getParams().get(xparamName);
 
         return new DoubleValue(Math.pow(b.value(), x.value()), this);
     }

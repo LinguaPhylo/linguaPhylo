@@ -53,7 +53,7 @@ public class GraphicalModelParser implements LPhyParser {
 
         Class<?>[] functionClasses = {
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, TN93.class,
-                GTR.class, BinaryRateMatrix.class, Newick.class, Rep.class, NTaxa.class, NodeCount.class};
+                GTR.class, BinaryRateMatrix.class, Newick.class, Rep.class, NTaxaFunction.class, NodeCount.class};
 
         for (Class<?> functionClass : functionClasses) {
             addGenerator(functionClass, functionDictionary);

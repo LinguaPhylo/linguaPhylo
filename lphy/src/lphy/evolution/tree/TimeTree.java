@@ -1,6 +1,7 @@
 package lphy.evolution.tree;
 
 import lphy.app.treecomponent.TimeTreeComponent;
+import lphy.evolution.NTaxa;
 import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
@@ -10,7 +11,7 @@ import java.util.*;
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree implements HasComponentView<TimeTree> {
+public class TimeTree implements NTaxa, HasComponentView<TimeTree> {
 
     TimeTreeNode rootNode;
 
@@ -202,5 +203,10 @@ public class TimeTree implements HasComponentView<TimeTree> {
         toNewick(rootNode, builder, includeSingleChildNodes);
         //builder.append("\"");
         return builder.toString();
+    }
+
+    @Override
+    public int ntaxa() {
+        return n();
     }
 }
