@@ -29,14 +29,13 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
     public beast.evolution.alignment.Alignment valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
 
         Alignment alignment = alignmentValue.value();
+        String[] taxaNames = alignment.getTaxaNames();
         beast.evolution.alignment.Alignment beastAlignment;
 
         if (dataExchanger == null) {
             List<Sequence> sequences = new ArrayList<>();
 
-            String[] taxaNames = alignment.getTaxaNames();
-
-            for (int i = 0; i < alignment.getTaxonCount(); i++) {
+            for (int i = 0; i < taxaNames.length; i++) {
                 context.addTaxon(taxaNames[i]);
                 sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
             }
@@ -47,14 +46,17 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
 
 
         } else {
-            // validation and map taxa
-            beastAlignment = dataExchanger.getAlignment();
+            String algID = alignmentValue.getCanonicalId();
+            assert algID != null;
 
+            // validation and map taxa
+//            beastAlignment = dataExchanger.getBEASTAlignment(algID);
+            beastAlignment = dataExchanger.getAlignment();
             // TODO allow diff
 //            assert alignment.getTaxonCount() == beastAlignment.getTaxonCount();
-            if (beastAlignment.getTaxonCount() != alignment.getTaxonCount())
+            if (beastAlignment.getTaxonCount() != taxaNames.length)
                 throw new IllegalArgumentException("The given taxa have to match the taxa in the LPhy model !\n"
-                        + beastAlignment.getTaxonCount() + " != " + alignment.getTaxonCount());
+                        + beastAlignment.getTaxonCount() + " != " + taxaNames.length);
 
         }
         // using LPhy var as ID allows multiple alignments
