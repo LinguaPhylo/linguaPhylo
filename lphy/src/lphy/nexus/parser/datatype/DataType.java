@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @version $Id: DataType.java,v 1.13 2005/05/24 20:25:56 rambaut Exp $
  */
 public abstract class DataType implements Serializable {
-    public static final String DATA_TYPE = "dataType";
+//    public static final String DATA_TYPE = "dataType";
 
 
     public static final int NUCLEOTIDES = 0;
@@ -71,6 +71,25 @@ public abstract class DataType implements Serializable {
         } else {
             return AminoAcids.INSTANCE;
         }
+    }
+
+    public static DataType getDataType(String dataTypeName) {
+        switch (dataTypeName) {
+            case "rna":
+            case "dna":
+            case "nucleotide":
+                return Nucleotides.INSTANCE;
+            case "aminoacid":
+            case "protein":
+                return AminoAcids.INSTANCE;
+            case "binary":
+                return TwoStates.INSTANCE;
+//            case "standard":
+            default:
+                throw new UnsupportedOperationException(dataTypeName);
+//                return Standard(nrOfState); // TODO nrOfState = symbols.length();
+        }
+
     }
 
     /**
