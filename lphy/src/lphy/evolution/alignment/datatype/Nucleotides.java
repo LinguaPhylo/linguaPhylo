@@ -1,5 +1,5 @@
 
-package lphy.nexus.parser.datatype;
+package lphy.evolution.alignment.datatype;
 
 /**
  * implements DataType for nucleotides with ambiguous characters

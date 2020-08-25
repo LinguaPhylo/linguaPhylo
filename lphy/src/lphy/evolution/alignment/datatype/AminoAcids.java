@@ -1,13 +1,12 @@
 
-package lphy.nexus.parser.datatype;
+package lphy.evolution.alignment.datatype;
 
 /**
  * implements DataType for amino acids.
  *
  * Modified from BEAST 1
  */
-public class AminoAcids extends DataType
-{
+public class AminoAcids extends DataType {
 	/**
 	 * Name of data type. For XML and human reading of data type.
 	 */
