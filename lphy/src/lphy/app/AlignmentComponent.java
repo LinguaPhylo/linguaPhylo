@@ -23,7 +23,7 @@ public class AlignmentComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
-    public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.black, Color.green};
+    public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.yellow, Color.green, Color.gray};
 
     public static Color[] BINARY_COLORS = {Color.red, Color.blue};
 
@@ -147,7 +147,10 @@ public class AlignmentComponent extends JComponent {
 
             for (int j = 0; j < alignment.L(); j++) {
 
-                Color c = colors[alignment.getState(i, j)];
+                int state = alignment.getState(i, j);
+                //TODO other datatype?
+                int col = state > 3 ? 4 : state;
+                Color c = colors[col];
 
                 if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
                     c = new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue());

@@ -1,6 +1,6 @@
 package lphy.nexus.parser;
 
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.evolution.tree.TimeTree;
 
@@ -20,13 +20,14 @@ import java.util.Map;
  */
 public class NexusParser {
 
-    final protected Path nexfile;
+    final protected Path nexFile; // lock to 1 file now
 
     public List<String> taxa; // this will empty if no "taxlabels"
-    public Alignment alignment;
+    public SimpleAlignment alignment; // "charset"s stored in DataFrame[] parts
+
     public Map<String, Double> taxaAges;
 
-    public Map<String, List<CharSetBlock>> charsetMap;
+//    public Map<String, List<CharSetBlock>> charsetMap;
 
 //    public TraitSet traitSet;
 //    public List<MRCAPrior> calibrations;
@@ -49,17 +50,15 @@ public class NexusParser {
 //    }
 
 
-    public NexusParser(Path nexfile) {
-        this.nexfile = nexfile;
-        assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
+    public NexusParser(Path nexFile) {
+        this.nexFile = nexFile;
 
-
-        final String fileNameStem = nexfile.getFileName().toString().
-                replaceAll(".*[\\/\\\\]", "").
-                replaceAll("\\..*", "");
+//        final String fileNameStem = nexFile.getFileName().toString().
+//                replaceAll(".*[\\/\\\\]", "").
+//                replaceAll("\\..*", "");
 
         try {
-            parseFile();
+            parseFile(nexFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,12 +67,18 @@ public class NexusParser {
     /**
      * parse DataFrame from nexus
      */
-    public void parseFile() throws IOException {
+    public void parseFile(Path nexFile) throws IOException {
+        if(! (nexFile.toString().endsWith("nex") ||  nexFile.toString().endsWith("nexus") ||
+                nexFile.toString().endsWith("nxs") ) )
+            throw new IOException("Nexus file name's suffix is invalid ! " + nexFile);
+        if(!nexFile.toFile().exists() || nexFile.toFile().isDirectory())
+            throw new IOException("Cannot find Nexus file ! " + nexFile);
+
         final NexusBlockParser blockParser = new NexusBlockParser(); // eventually move to subclasses
         final DataBlockParser dataBlockParser = new DataBlockParser();
         final CalibrationsBlockParser calibrationsBlockParser = new CalibrationsBlockParser();
 
-        final BufferedReader reader = Files.newBufferedReader(nexfile); // StandardCharsets.UTF_8
+        final BufferedReader reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
         int ln = 0;
         try {
 //            while (reader.ready()) {
@@ -115,7 +120,10 @@ public class NexusParser {
                     calibrationsBlockParser.parseAssumptionsBlock(reader); // TODO CharSetAlignment
                     ln = calibrationsBlockParser.getLineNr();
 
-                    charsetMap = calibrationsBlockParser.getCharsetMap();
+                    Map<String, List<CharSetBlock>> charsetMap = calibrationsBlockParser.getCharsetMap();
+                    if (charsetMap != null) {
+                        alignment.fillinParts(charsetMap);
+                    }
 
 
                 } else if (lower.matches("^\\s*begin\\s+trees;\\s*$")) {
@@ -184,14 +192,16 @@ public class NexusParser {
                 System.out.println(Arrays.toString(parser.taxa.toArray(new String[parser.taxa.size()])));
             }
             if (parser.alignment != null) {
-                if (parser.charsetMap != null) {
+                SimpleAlignment alignment = parser.alignment;
+                if (alignment.hasParts()) {
                     // primate-mtDNA.nex
-                    for (Map.Entry<String, List<CharSetBlock>> entry : parser.charsetMap.entrySet()) {
-                        System.out.println(entry.getKey() + " : " + Arrays.toString(entry.getValue().toArray()));
-                    }
+                    System.out.println(alignment);
+//                    for (Map.Entry<String, List<CharSetBlock>> entry : parser.charsetMap.entrySet()) {
+//                        System.out.println(entry.getKey() + " : " + Arrays.toString(entry.getValue().toArray()));
+//                    }
 
                 } else {
-                    System.out.println(parser.alignment.toJSON());
+                    System.out.println(alignment.toJSON());
                 }
             }
             if (parser.taxaAges != null) {

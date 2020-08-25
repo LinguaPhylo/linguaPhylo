@@ -2,11 +2,11 @@ package lphy.evolution;
 
 public class DataFrame implements NTaxa, NChar {
 
-    int ntaxa;
-    Integer[] partNChar = null;
-    String[] partNames = null;
-    DataFrame[] parts = null;
-    int nchar;
+    protected int ntaxa;
+    protected Integer[] partNChar = null;
+    protected String[] partNames = null;
+    protected DataFrame[] parts = null;
+    protected int nchar;
 
     public DataFrame(int ntaxa, int nchar) {
         this.ntaxa = ntaxa;
@@ -53,6 +53,15 @@ public class DataFrame implements NTaxa, NChar {
     }
 
     public String toString() {
-        return ntaxa + " by " + nchar;
+        final String SEP = ", ";
+        String s = ntaxa + " by " + nchar;
+        if (hasParts()) {
+            s += " where ";
+            for (int i = 0; i < partNChar.length; i++) {
+                s += (partNames[i] + " = " + partNChar[i] + SEP);
+            }
+        }
+        if (s.endsWith(SEP)) s = s.substring(0, s.lastIndexOf(SEP));
+        return s;
     }
 }

@@ -1,7 +1,5 @@
+package lphy.evolution.alignment.datatype;
 
-package lphy.nexus.parser.datatype;
-
-import java.io.Serializable;
 
 /**
  * Base class for sequence data types.
@@ -10,9 +8,8 @@ import java.io.Serializable;
  * @author Alexei Drummond
  * @version $Id: DataType.java,v 1.13 2005/05/24 20:25:56 rambaut Exp $
  */
-public abstract class DataType implements Serializable {
-//    public static final String DATA_TYPE = "dataType";
-
+public abstract class DataType {
+//    private static final long serialVersionUID = 2L;
 
     public static final int NUCLEOTIDES = 0;
     public static final int AMINO_ACIDS = 1;
@@ -91,6 +88,7 @@ public abstract class DataType implements Serializable {
         }
 
     }
+
 
     /**
      * return the set of valid chars if they are defined, if not defined then return null
@@ -228,43 +226,6 @@ public abstract class DataType implements Serializable {
         return stateSet;
     }
 
-    /**
-     * returns the uncorrected distance between two states
-     */
-    public double getObservedDistance(int state1, int state2) {
-        if (!isAmbiguousState(state1) && !isAmbiguousState(state2) && state1 != state2) {
-            return 1.0;
-        }
-
-        return 0.0;
-    }
-
-    /**
-     * returns the uncorrected distance between two states with full
-     * treatment of ambiguity.
-     */
-    public double getObservedDistanceWithAmbiguity(int state1, int state2) {
-        boolean[] stateSet1 = getStateSet(state1);
-        boolean[] stateSet2 = getStateSet(state2);
-
-        double sumMatch = 0.0;
-        double sum1 = 0.0;
-        double sum2 = 0.0;
-        for (int i = 0; i < stateCount; i++) {
-            if (stateSet1[i]) {
-                sum1 += 1.0;
-                if (stateSet1[i] == stateSet2[i]) {
-                    sumMatch += 1.0;
-                }
-            }
-            if (stateSet2[i]) {
-                sum2 += 1.0;
-            }
-        }
-
-        return (1.0 - (sumMatch / (sum1 * sum2)));
-    }
-
     public String toString() {
         return getDescription();
     }
@@ -366,5 +327,42 @@ public abstract class DataType implements Serializable {
         return getType();
     }
 
+
+    /**
+     * returns the uncorrected distance between two states
+     */
+//    public double getObservedDistance(int state1, int state2) {
+//        if (!isAmbiguousState(state1) && !isAmbiguousState(state2) && state1 != state2) {
+//            return 1.0;
+//        }
+//
+//        return 0.0;
+//    }
+
+    /**
+     * returns the uncorrected distance between two states with full
+     * treatment of ambiguity.
+     */
+//    public double getObservedDistanceWithAmbiguity(int state1, int state2) {
+//        boolean[] stateSet1 = getStateSet(state1);
+//        boolean[] stateSet2 = getStateSet(state2);
+//
+//        double sumMatch = 0.0;
+//        double sum1 = 0.0;
+//        double sum2 = 0.0;
+//        for (int i = 0; i < stateCount; i++) {
+//            if (stateSet1[i]) {
+//                sum1 += 1.0;
+//                if (stateSet1[i] == stateSet2[i]) {
+//                    sumMatch += 1.0;
+//                }
+//            }
+//            if (stateSet2[i]) {
+//                sum2 += 1.0;
+//            }
+//        }
+//
+//        return (1.0 - (sumMatch / (sum1 * sum2)));
+//    }
 
 }

@@ -1,7 +1,7 @@
 package lphy.nexus.parser;
 
-import lphy.evolution.alignment.Alignment;
-import lphy.nexus.parser.datatype.DataType;
+import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.alignment.datatype.DataType;
 import lphy.utils.LoggerUtils;
 
 import java.io.BufferedReader;
@@ -71,12 +71,12 @@ public class DataBlockParser extends NexusBlockParser {
     /**
      * parse data block and create Alignment *
      */
-    public Alignment parseDataBlock(final BufferedReader fin) throws IOException {
+    public SimpleAlignment parseDataBlock(final BufferedReader fin) throws IOException {
 
         String str;
         int ntax = -1;
         int nchar = -1;
-        int nrOfState = 4;
+//        int nrOfState = 4;
         String missing = "?";
         String gap = "-";
         DataType dataType = null;
@@ -122,10 +122,10 @@ public class DataBlockParser extends NexusBlockParser {
                     dataTypeName = dataTypeName.toLowerCase();
                 }
 
-                //TODO "standard"
+                //TODO "standard" DataType.getDataType(dataTypeName, symbols);
                 dataType = DataType.getDataType(dataTypeName);
-                nrOfState = dataType.getStateCount();
-                System.out.println("Detect dataType " + dataType + ", number of data states = "+ nrOfState);
+//                nrOfState = dataType.getStateCount();
+                System.out.println("Detect dataType " + dataType + ", number of data states = "+ dataType.getStateCount());
 
                 
                 final String missingChar = getAttValue("missing", str);
@@ -244,7 +244,7 @@ public class DataBlockParser extends NexusBlockParser {
         }
 //        seqLen = seqMap.get(taxa.get(0)).length(); // ? seqLen != nchar here
 //        alignment[idMap.get(taxon)][position] = state;
-        final Alignment alignment = new Alignment(ntax, nchar, idMap, nrOfState);
+        final SimpleAlignment alignment = new SimpleAlignment(ntax, nchar, idMap, dataType);
         //****** create alignment above ******//
 
 

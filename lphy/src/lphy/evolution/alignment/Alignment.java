@@ -21,17 +21,28 @@ public class Alignment extends DataFrame implements NTaxa, HasComponentView<Alig
     Map<Integer, String> reverseMap;
     int numStates;
 
-    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
+    // for nex
+    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap) {
         super(ntaxa, nchar);
 
         alignment = new int[ntaxa][nchar];
-        this.numStates = numStates;
         this.idMap = idMap;
 
+        fillRevMap(idMap);
+    }
+
+    // for inheritance
+    protected void fillRevMap(Map<String, Integer> idMap) {
         reverseMap = new TreeMap<>();
         for (String key : idMap.keySet()) {
             reverseMap.put(idMap.get(key), key);
         }
+    }
+
+    // for simulators
+    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
+        this(ntaxa, nchar, idMap);
+        this.numStates = numStates;
     }
 
     public void setState(int taxon, int position, int state) {
