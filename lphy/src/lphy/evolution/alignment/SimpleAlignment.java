@@ -33,7 +33,7 @@ public class SimpleAlignment extends Alignment {
         // sort names
         SortedSet<String> nameSet = new TreeSet<>(charsetMap.keySet());
 
-        partNames = nameSet.toArray(String[]::new);
+        partNames = nameSet.toArray(new String[0]);
         partNChar = new Integer[partNames.length];
         parts = new DataFrame[partNames.length];
         // by name
@@ -45,7 +45,7 @@ public class SimpleAlignment extends Alignment {
             tot += partNChar[i];
             parts[i] = new DataFrame(ntaxa, partNChar[i]);
         }
-//        assert tot == nchar; // Cannot, sometime there are extra options
+//        assert tot == nchar; // Cannot, sometime there are extra charsets
     }
 
     @Override
