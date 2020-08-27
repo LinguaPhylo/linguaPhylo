@@ -1,6 +1,6 @@
 package lphy.evolution;
 
-public class DataFrame implements NTaxa, NChar {
+public class DataFrame implements Taxa, NChar {
 
     protected int ntaxa;
     protected Integer[] partNChar = null;

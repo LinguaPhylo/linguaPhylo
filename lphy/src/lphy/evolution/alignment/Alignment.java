@@ -1,20 +1,18 @@
 package lphy.evolution.alignment;
 
 import lphy.evolution.DataFrame;
-import lphy.evolution.NTaxa;
+import lphy.evolution.Taxa;
 import lphy.graphicalModel.Value;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by adru001 on 2/02/20.
  */
-public class Alignment extends DataFrame implements NTaxa, HasComponentView<Alignment> {
+public class Alignment extends DataFrame implements Taxa, HasComponentView<Alignment> {
 
     int[][] alignment;
     Map<String, Integer> idMap;
@@ -43,6 +41,14 @@ public class Alignment extends DataFrame implements NTaxa, HasComponentView<Alig
         for (String key : idMap.keySet()) {
             reverseMap.put(idMap.get(key), key);
         }
+    }
+
+    public String[] getTaxa() {
+        String[] taxa = new String[ntaxa()];
+        for (int i = 0; i < ntaxa(); i++) {
+            taxa[i] = reverseMap.get(i);
+        }
+        return taxa;
     }
 
     public Map<Integer, String> getReverseIdMap() {
