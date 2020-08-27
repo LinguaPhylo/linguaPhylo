@@ -1,6 +1,7 @@
 package lphy.evolution.likelihood;
 
 import lphy.evolution.DataFrame;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.evolution.alignment.Alignment;
@@ -27,6 +28,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Integer> L;
     Value<DataFrame> frame;
     RandomGenerator random;
+    Value<Integer> toClamp;
 
     public final String treeParamName;
     public final String muParamName;
@@ -36,6 +38,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public final String branchRatesParamName;
     public final String LParamName;
     public final String frameParamName;
+    public final String clampParamName;
 
     int numStates;
 
@@ -56,7 +59,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L,
-                     @ParameterInfo(name = "frame", description = "data frame, either specify the length or a data frame but not both.", optional = true) Value<DataFrame> frame) {
+                     @ParameterInfo(name = "frame", description = "data frame, either specify the length or a data frame but not both.", optional = true) Value<DataFrame> frame,
+                     @ParameterInfo(name = "clamp", description = "clamp data if frame is observation", optional = true) Value<Integer> toClamp) {
 
         this.tree = tree;
         this.Q = Q;
@@ -66,6 +70,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.branchRates = branchRates;
         this.L = L;
         this.frame = frame;
+        this.toClamp = toClamp;
 
         numStates = Q.value().length;
         this.random = Utils.getRandom();
@@ -79,6 +84,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         branchRatesParamName = getParamName(5);
         LParamName = getParamName(6);
         frameParamName = getParamName(7);
+        clampParamName = getParamName(8);
 
         checkCompatibilities();
     }
@@ -130,6 +136,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
         if (frame != null) map.put(frameParamName, frame);
+        if (toClamp != null) map.put(clampParamName, toClamp);
         return map;
     }
 
@@ -143,6 +150,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
         else if (paramName.equals(frameParamName)) frame = value;
+        else if (paramName.equals(clampParamName)) toClamp = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -199,7 +207,37 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                     (siteRates == null) ? 1.0 : siteRates.value()[i]);
         }
 
+        if (toClamp != null && toClamp.value() > 0) // TODO why Value<Boolean> not working?
+            clamp(a, tree.value());
+
         return new RandomVariable<>("D", a, this);
+    }
+
+    // TODO need smarter replacing method
+    // replace alg and taxa in tre into those retrieved from frame
+    public void clamp(Alignment alg, TimeTree tre) {
+        if (frame == null || ! (frame.value() instanceof SimpleAlignment) )
+            throw new IllegalArgumentException("");
+
+        alg = (SimpleAlignment) frame.value();
+        final Map<Integer, String> revIdMap = alg.getReverseIdMap();
+
+//        String[] taxaNames = alg.getTaxaNames();
+        replaceTaxaNamesByOrder(tre, revIdMap);
+    }
+    protected void replaceTaxaNamesByOrder(TimeTree timeTree, final Map<Integer, String> revIdMap) {
+
+        if (revIdMap.size() != timeTree.getTaxaNames().length)
+            throw new IllegalArgumentException("The clamp data must have the same taxa number in the LPhy model !\n"
+                    + revIdMap.size() + " != " + timeTree.getTaxaNames().length);
+
+        for (TimeTreeNode node : timeTree.getNodes()) {
+            if (node.isLeaf()) {
+                int lI = node.getLeafIndex();
+                String tN = revIdMap.get(lI);
+                node.setId(tN);
+            }
+        }
     }
 
     public Value<Double[]> getSiteRates() {

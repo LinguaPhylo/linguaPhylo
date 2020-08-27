@@ -32,8 +32,7 @@ public class Nexus extends DeterministicFunction<SimpleAlignment> {
 
     @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
     public Value<SimpleAlignment> apply() {
-        //TODO NullPointerException if Value<SimpleAlignment> in Generator.hasRandomParameters(Generator.java:169)
-//same Value<DataFrame>
+
         Value<String> fileName = getParams().get(fileParamName);
         Path nexFile = Paths.get(fileName.value());
 
