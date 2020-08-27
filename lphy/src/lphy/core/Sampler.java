@@ -20,7 +20,7 @@ public class Sampler {
      * @param reps    the number of times to sample
      * @param loggers the loggers to log to
      */
-    public void sample(int reps, List<RandomVariableLogger> loggers) {
+    public void sample(int reps, List<RandomValueLogger> loggers) {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
@@ -30,7 +30,6 @@ public class Sampler {
             }
 
             for (Value<?> value : sinks) {
-
                 if (value.isRandom()) {
                     Value randomValue;
                     if (value.getGenerator() != null) {
@@ -42,15 +41,14 @@ public class Sampler {
             }
 
             if (loggers != null) {
-                List<RandomVariable<?>> variables = LPhyParser.Utils.getAllVariablesFromSinks(parser);
-                for (RandomVariableLogger logger : loggers) {
-                    logger.log(i, variables);
+                List<Value<?>> values = LPhyParser.Utils.getAllValuesFromSinks(parser);
+                for (RandomValueLogger logger : loggers) {
+                    logger.log(i, values);
                 }
             }
         }
         if (loggers != null) {
-            List<RandomVariable<?>> variables = LPhyParser.Utils.getAllVariablesFromSinks(parser);
-            for (RandomVariableLogger logger : loggers) {
+            for (RandomValueLogger logger : loggers) {
                 logger.close();
             }
         }

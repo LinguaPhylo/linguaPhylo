@@ -16,7 +16,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
     private final String birthRateParamName;
     private final String nParamName;
     private final String rootAgeParamName;
-    private Value<Double> birthRate;
+    private Value<Number> birthRate;
     private Value<Integer> n;
     private Value<Double> rootAge;
 
@@ -24,7 +24,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
-    public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Double> birthRate,
+    public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
                 @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n,
                 @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Double> rootAge) {
         this.birthRate = birthRate;
@@ -52,7 +52,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         }
 
         double time = 0.0;
-        double birthRate = this.birthRate.value();
+        double birthRate = this.birthRate.value().doubleValue();
 
         double[] times = new double[activeNodes.size() - 1];
 
@@ -112,7 +112,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         return map;
     }
 
-    public Value<Double> getBirthRate() {
+    public Value<Number> getBirthRate() {
         return birthRate;
     }
 

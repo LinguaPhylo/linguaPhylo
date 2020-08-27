@@ -3,22 +3,27 @@ package lphy.app;
 import lphy.core.VarFileLogger;
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.RandomVariableLogger;
+import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VariableLog extends JTextArea implements RandomVariableLogger {
+public class VariableLog extends JTextArea implements RandomValueLogger {
 
     Map<Class, Loggable> loggableMap;
 
-    public VariableLog() {
+    boolean logVariables;
+    boolean logStatistics;
+
+    public VariableLog(boolean logStatistics, boolean logVariables) {
 
         setTabSize(4);
         setEditable(false);
+
+        this.logStatistics = logStatistics;
+        this.logVariables = logVariables;
 
         setLoggableMap(VarFileLogger.loggableMap);
     }
@@ -31,19 +36,21 @@ public class VariableLog extends JTextArea implements RandomVariableLogger {
         this.loggableMap = loggableMap;
     }
 
-    public void log(int rep, List<RandomVariable<?>> variables) {
+    public void log(int rep, List<Value<?>> randomValues) {
         StringBuilder builder = new StringBuilder();
 
         if (rep == 0) {
             clear();
             // start with titles
             builder.append("sample");
-            for (RandomVariable variable : variables) {
-                Loggable loggable = loggableMap.get(variable.value().getClass());
-                if (loggable != null) {
-                    for (String title : loggable.getLogTitles(variable)) {
-                        builder.append("\t");
-                        builder.append(title);
+            for (Value randomValue : randomValues) {
+                if (isLogged(randomValue)) {
+                    Loggable loggable = loggableMap.get(randomValue.value().getClass());
+                    if (loggable != null) {
+                        for (String title : loggable.getLogTitles(randomValue)) {
+                            builder.append("\t");
+                            builder.append(title);
+                        }
                     }
                 }
             }
@@ -52,18 +59,24 @@ public class VariableLog extends JTextArea implements RandomVariableLogger {
         }
         if (rep < 1000) {
             builder.append(rep);
-            for (RandomVariable variable : variables) {
-                Loggable loggable = loggableMap.get(variable.value().getClass());
-                if (loggable != null) {
-                    for (String logValue : loggable.getLogValues(variable)) {
-                        builder.append("\t");
-                        builder.append(logValue);
+            for (Value randomValue : randomValues) {
+                if (isLogged(randomValue)) {
+                    Loggable loggable = loggableMap.get(randomValue.value().getClass());
+                    if (loggable != null) {
+                        for (String logValue : loggable.getLogValues(randomValue)) {
+                            builder.append("\t");
+                            builder.append(logValue);
+                        }
                     }
                 }
             }
             builder.append("\n");
         }
         append(builder.toString());
+    }
+
+    public boolean isLogged(Value randomValue) {
+        return ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
     }
 
     @Override

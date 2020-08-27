@@ -260,6 +260,7 @@ public class CodeColorizer extends AbstractBaseListener {
     }
 
     public Object parse(String CASentence) {
+
         // Custom parse/lexer error listener
         BaseErrorListener errorListener = new BaseErrorListener() {
             @Override

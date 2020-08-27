@@ -5,7 +5,7 @@ import lphy.core.Arguments;
 import lphy.core.TreeFileLogger;
 import lphy.core.VarFileLogger;
 import lphy.graphicalModel.Command;
-import lphy.graphicalModel.RandomVariableLogger;
+import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 
 import java.util.*;
@@ -70,11 +70,11 @@ public class SampleCommand implements Command {
         boolean writeAlignmentsToFile = args.getBoolean(arguments[3], defaults[3]);
         String name = args.getString(arguments[4], defaults[4]);
 
-        List<RandomVariableLogger> loggers = new ArrayList<>();
+        List<RandomValueLogger> loggers = new ArrayList<>();
 
         if (writeVarsToFile) {
             System.out.println("writing to file!");
-            loggers.add(new VarFileLogger(name));
+            loggers.add(new VarFileLogger(name, true, true));
         }
         if (writeTreesToFile) loggers.add(new TreeFileLogger(name));
         if (writeAlignmentsToFile) loggers.add(new AlignmentFileLogger(name));

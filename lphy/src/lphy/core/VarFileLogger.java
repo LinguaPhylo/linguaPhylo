@@ -2,11 +2,9 @@ package lphy.core;
 
 import lphy.graphicalModel.Loggable;
 import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.RandomVariableLogger;
+import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 
-import javax.swing.filechooser.FileSystemView;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -14,7 +12,7 @@ import java.util.*;
 /**
  * Created by adru001 on 10/03/20.
  */
-public class VarFileLogger implements RandomVariableLogger {
+public class VarFileLogger implements RandomValueLogger {
 
     public static Map<Class, Loggable> loggableMap = new HashMap<>();
 
@@ -65,24 +63,32 @@ public class VarFileLogger implements RandomVariableLogger {
 
     List<String> lines;
 
-    public VarFileLogger(String name) {
+    boolean logVariables;
+    boolean logStatistics;
+
+    public VarFileLogger(String name, boolean logStatistics, boolean logVariables) {
 
         this.name = name;
+
+        this.logStatistics = logStatistics;
+        this.logVariables = logVariables;
     }
 
-    public void log(int rep, List<RandomVariable<?>> variables) {
+    public void log(int rep, List<Value<?>> randomValues) {
         StringBuilder builder = new StringBuilder();
 
         if (rep == 0) {
             lines = new ArrayList<>();
             // start with titles
             builder.append("sample");
-            for (RandomVariable variable : variables) {
-                Loggable loggable = VarFileLogger.loggableMap.get(variable.value().getClass());
-                if (loggable != null) {
-                    for (String title : loggable.getLogTitles(variable)) {
-                        builder.append("\t");
-                        builder.append(title);
+            for (Value randomValue : randomValues) {
+                if (isLogged(randomValue)) {
+                    Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
+                    if (loggable != null) {
+                        for (String title : loggable.getLogTitles(randomValue)) {
+                            builder.append("\t");
+                            builder.append(title);
+                        }
                     }
                 }
             }
@@ -90,12 +96,14 @@ public class VarFileLogger implements RandomVariableLogger {
 
         }
         builder.append(rep);
-        for (RandomVariable variable : variables) {
-            Loggable loggable = VarFileLogger.loggableMap.get(variable.value().getClass());
-            if (loggable != null) {
-                for (String logValue : loggable.getLogValues(variable)) {
-                    builder.append("\t");
-                    builder.append(logValue);
+        for (Value randomValue : randomValues) {
+            if (isLogged(randomValue)) {
+                Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
+                if (loggable != null) {
+                    for (String logValue : loggable.getLogValues(randomValue)) {
+                        builder.append("\t");
+                        builder.append(logValue);
+                    }
                 }
             }
         }
@@ -116,5 +124,9 @@ public class VarFileLogger implements RandomVariableLogger {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isLogged(Value randomValue) {
+        return ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
     }
 }

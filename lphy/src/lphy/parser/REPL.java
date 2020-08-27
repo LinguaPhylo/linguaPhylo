@@ -77,8 +77,8 @@ public class REPL implements LPhyParser {
 					System.out.println(cmd);
 					System.out.println(e.getMessage());
 				} catch (Exception e) {
+					System.err.println("Error parsing " + cmd);
 					e.printStackTrace(System.err);
-					System.err.println("Error: " + e.getMessage());
 				}
 				lines.add(cmd);
 

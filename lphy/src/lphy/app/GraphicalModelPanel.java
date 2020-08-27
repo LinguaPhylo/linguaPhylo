@@ -26,7 +26,7 @@ public class GraphicalModelPanel extends JPanel {
     JLabel dummyLabel = new JLabel("");
     GraphicalModelInterpreter interpreter;
     JTabbedPane rightPane;
-    VariableLog variableLog = new VariableLog();
+    VariableLog variableLog = new VariableLog(true, true);
     TreeLog treeLog = new TreeLog();
 
     GraphicalLPhyParser parser;
@@ -160,7 +160,7 @@ public class GraphicalModelPanel extends JPanel {
         sample(reps, new LinkedList<>());
     }
 
-    void sample(int reps, List<RandomVariableLogger> loggers) {
+    void sample(int reps, List<RandomValueLogger> loggers) {
 
         long start = System.currentTimeMillis();
 

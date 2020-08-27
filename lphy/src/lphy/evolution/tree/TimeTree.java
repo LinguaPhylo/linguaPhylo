@@ -155,6 +155,17 @@ public class TimeTree implements NTaxa, HasComponentView<TimeTree> {
         }
     }
 
+    public Double treeLength() {
+
+        double TL = 0;
+        for (TimeTreeNode node : getNodes()) {
+            if (!node.isRoot()) {
+                TL += node.getParent().age - node.age;
+            }
+        }
+        return TL;
+    }
+
     private double getBranchLength(TimeTreeNode node, boolean includeSingleChildNodes) {
         TimeTreeNode parent = node.getParent();
         if (!includeSingleChildNodes) {

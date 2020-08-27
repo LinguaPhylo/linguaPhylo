@@ -2,7 +2,8 @@ package lphy.evolution.alignment;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.RandomVariableLogger;
+import lphy.graphicalModel.RandomValueLogger;
+import lphy.graphicalModel.Value;
 import lphy.nexus.NexusWriter;
 
 import java.io.FileWriter;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by adru001 on 10/03/20.
  */
-public class AlignmentFileLogger implements RandomVariableLogger {
+public class AlignmentFileLogger implements RandomValueLogger {
 
     String name;
     List<FileWriter> fileWriter = new ArrayList<>();
@@ -25,9 +26,9 @@ public class AlignmentFileLogger implements RandomVariableLogger {
         this.name = name;
     }
 
-    public void log(int rep, List<RandomVariable<?>> variables) {
+    public void log(int rep, List<Value<?>> values) {
 
-        for (RandomVariable<Alignment> v : getAlignmentVariables(variables)) {
+        for (Value<Alignment> v : getAlignmentValues(values)) {
             try {
                 logAlignment(v, rep);
             } catch (IOException e) {
@@ -53,17 +54,17 @@ public class AlignmentFileLogger implements RandomVariableLogger {
         }
     }
 
-    private List<RandomVariable<Alignment>> getAlignmentVariables(List<RandomVariable<?>> variables) {
-        List<RandomVariable<Alignment>> alignments = new ArrayList<>();
-        for (RandomVariable v : variables) {
+    private List<Value<Alignment>> getAlignmentValues(List<Value<?>> values) {
+        List<Value<Alignment>> alignments = new ArrayList<>();
+        for (Value v : values) {
             if (v.value() instanceof Alignment) {
-                alignments.add((RandomVariable<Alignment>)v);
+                alignments.add((Value<Alignment>)v);
             }
         }
         return alignments;
     }
 
-    private void logAlignment(RandomVariable<Alignment> alignment, int rep) throws IOException {
+    private void logAlignment(Value<Alignment> alignment, int rep) throws IOException {
         String fileName = name + "_" + alignment.getId() + "_" + rep + ".nexus";
         PrintStream stream = new PrintStream(fileName);
 

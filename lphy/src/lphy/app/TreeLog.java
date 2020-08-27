@@ -25,6 +25,7 @@ public class TreeLog extends VariableLog {
     }
 
     public TreeLog() {
+        super(true, true);
         setLoggableMap(loggableMap);
     }
 }
