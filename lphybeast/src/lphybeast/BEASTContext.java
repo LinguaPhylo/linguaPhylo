@@ -48,7 +48,7 @@ public class BEASTContext {
 
     LPhyParser parser;
 
-    @Deprecated
+
     public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
         // simulated alignment
@@ -64,6 +64,7 @@ public class BEASTContext {
      * @param phyParser      {@link LPhyParser}
      * @param dataExchanger  Passing real data to the parser
      */
+    @Deprecated
     public BEASTContext(LPhyParser phyParser, DataExchanger dataExchanger) {
         parser = phyParser;
         // real data alignment
@@ -235,7 +236,8 @@ public class BEASTContext {
             }
         }
         if (beastValue == null) {
-            System.err.println("Unhandled value in valueToBEAST(): " + val + " of type " + val.value().getClass());
+            throw new IllegalArgumentException("Unhandled value in valueToBEAST(): " +
+                    val + " of type " + val.value().getClass());
         } else {
             addToContext(val, beastValue);
         }
