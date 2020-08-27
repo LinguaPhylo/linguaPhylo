@@ -108,9 +108,9 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                     Value<Double> v = new DoubleValue(null, d);
                     return v;
                 } catch (NumberFormatException e2) {
-                    int i = Boolean.parseBoolean(text) ? 1 : 0;
+                    boolean bool = Boolean.parseBoolean(text);
                     //String id = nextID("IntegerValue");
-                    Value<Integer> v = new IntegerValue(null, i);
+                    Value<Boolean> v = new BooleanValue(null, bool);
                     return v;
                 }
             }
