@@ -31,6 +31,8 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalLPhyParser parser;
 
+    JLabel repsLabel = new JLabel("reps:");
+    JTextField repsField = new JTextField("1", 6);
     JButton sampleButton = new JButton("Sample");
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
@@ -59,12 +61,14 @@ public class GraphicalModelPanel extends JPanel {
         });
         layeringAlgorithm.setPreferredSize(new Dimension(200, 20));
 
+        buttonPanel.add(repsLabel);
+        buttonPanel.add(repsField);
         buttonPanel.add(sampleButton);
         buttonPanel.add(new JLabel(" Layering:"));
         buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
 
-        sampleButton.addActionListener(e -> sample(1));
+        sampleButton.addActionListener(e -> sample(getReps()));
 
         showConstantNodes.addActionListener(new AbstractAction() {
             @Override
@@ -154,6 +158,17 @@ public class GraphicalModelPanel extends JPanel {
         if (parser.getSinks().size() > 0) {
             showValue(parser.getSinks().iterator().next());
         }
+    }
+
+    private int getReps() {
+        int reps = 1;
+        try {
+            reps = Integer.parseInt(repsField.getText());
+        } catch (NumberFormatException nfe) {
+            repsField.setText("1");
+            reps = 1;
+        }
+        return reps;
     }
 
     void sample(int reps) {

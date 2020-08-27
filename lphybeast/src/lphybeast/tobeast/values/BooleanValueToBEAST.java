@@ -5,18 +5,14 @@ import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class BooleanArrayValueToBEAST implements ValueToBEAST<Boolean[], BooleanParameter> {
+public class BooleanValueToBEAST implements ValueToBEAST<Boolean, BooleanParameter> {
 
     @Override
-    public BooleanParameter valueToBEAST(Value<Boolean[]> value, BEASTContext context) {
+    public BooleanParameter valueToBEAST(Value<Boolean> value, BEASTContext context) {
 
         BooleanParameter parameter = new BooleanParameter();
-        List<Boolean> values = Arrays.asList(value.value());
-        parameter.setInputValue("value", values);
-        parameter.setInputValue("dimension", values.size());
+        parameter.setInputValue("value", value.value());
+        parameter.setInputValue("dimension", 1);
 
         parameter.initAndValidate();
         ValueToParameter.setID(parameter, value);
@@ -25,7 +21,7 @@ public class BooleanArrayValueToBEAST implements ValueToBEAST<Boolean[], Boolean
 
     @Override
     public Class getValueClass() {
-        return Boolean[].class;
+        return Boolean.class;
     }
 
     @Override

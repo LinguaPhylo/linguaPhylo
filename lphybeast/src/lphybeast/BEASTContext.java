@@ -80,6 +80,7 @@ public class BEASTContext {
         valueToBEASTMap.put(Integer.class, new IntegerValueToBEAST());
         valueToBEASTMap.put(Integer[].class, new IntegerArrayValueToBEAST());
         valueToBEASTMap.put(Boolean[].class, new BooleanArrayValueToBEAST());
+        valueToBEASTMap.put(Boolean.class, new BooleanValueToBEAST());
 
         Class[] generatorToBEASTs = {
                 BernoulliMultiToBEAST.class,
