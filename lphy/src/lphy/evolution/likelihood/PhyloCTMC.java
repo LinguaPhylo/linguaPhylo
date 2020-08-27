@@ -28,7 +28,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Integer> L;
     Value<DataFrame> frame;
     RandomGenerator random;
-    Value<Integer> toClamp;
+    Value<Boolean> toClamp;
 
     public final String treeParamName;
     public final String muParamName;
@@ -60,7 +60,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L,
                      @ParameterInfo(name = "frame", description = "data frame, either specify the length or a data frame but not both.", optional = true) Value<DataFrame> frame,
-                     @ParameterInfo(name = "clamp", description = "clamp data if frame is observation", optional = true) Value<Integer> toClamp) {
+                     @ParameterInfo(name = "clamp", description = "clamp data if frame is observation", optional = true) Value<Boolean> toClamp) {
 
         this.tree = tree;
         this.Q = Q;
@@ -207,7 +207,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                     (siteRates == null) ? 1.0 : siteRates.value()[i]);
         }
 
-        if (toClamp != null && toClamp.value() > 0) // TODO why Value<Boolean> not working?
+        if (toClamp != null && toClamp.value() == Boolean.TRUE)
             clamp(a, tree.value());
 
         return new RandomVariable<>("D", a, this);
