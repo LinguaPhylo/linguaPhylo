@@ -212,7 +212,7 @@ public class BEASTContext {
             }
 
             if (beastGenerator == null) {
-                System.err.println("Unhandled generator in generatorToBEAST(): " + generator);
+                throw new UnsupportedOperationException("Unhandled generator in generatorToBEAST(): " + generator);
             } else {
                 addToContext(generator, beastGenerator);
             }
@@ -236,7 +236,8 @@ public class BEASTContext {
             }
         }
         if (beastValue == null) {
-            throw new IllegalArgumentException("Unhandled value in valueToBEAST(): " +
+            if (! (val.value() instanceof String) ) // ignore all String: d = nexus(file="Dengue4.nex");
+                 throw new UnsupportedOperationException("Unhandled value in valueToBEAST(): " +
                     val + " of type " + val.value().getClass());
         } else {
             addToContext(val, beastValue);
