@@ -1,5 +1,6 @@
 package lphy.evolution.coalescent;
 
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Exp;
@@ -16,19 +17,43 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
     private final String thetaParamName;
     private final String nParamName;
+    private final String taxaParamName;
     private Value<Double> theta;
     private Value<Integer> n;
+    private Value taxa;
 
     RandomGenerator random;
 
     public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
-                      @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n) {
+                      @ParameterInfo(name = "n", description = "the number of taxa.", optional=true) Value<Integer> n,
+                      @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa) {
         this.theta = theta;
         this.n = n;
-        this.random = Utils.getRandom();
+        this.taxa = taxa;
 
         thetaParamName = getParamName(0);
         nParamName = getParamName(1);
+        taxaParamName = getParamName(2);
+
+        if (taxa == null && n == null) {
+            throw new IllegalArgumentException("At least one of " + nParamName + ", " + taxaParamName + " must be specified.");
+
+        }
+
+        if (taxa != null && n != null) {
+            if (taxaLength(taxa) != n.value()) {
+                throw new IllegalArgumentException(nParamName + " and " + taxaParamName + " are incompatible.");
+            }
+        }
+
+        this.random = Utils.getRandom();
+
+    }
+
+    private int taxaLength(Value taxa) {
+        if (taxa.value() instanceof String[]) return ((String[])taxa.value()).length;
+        if (taxa.value() instanceof Taxa) return ((Taxa)taxa.value()).ntaxa();
+        throw new IllegalArgumentException(taxaParamName + " must be of type String[] or Taxa.");
     }
 
     @GeneratorInfo(name="Coalescent", description="The Kingman coalescent distribution over tip-labelled time trees.")
@@ -38,8 +63,14 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
 
         List<TimeTreeNode> activeNodes = new ArrayList<>();
 
-        for (int i = 0; i < n.value(); i++) {
-            TimeTreeNode node = new TimeTreeNode(i + "", tree);
+        int ntaxa = n();
+
+        String[] taxaNames = null;
+        if (taxa != null) taxaNames = taxaNames();
+
+        for (int i = 0; i < ntaxa; i++) {
+            TimeTreeNode node = new TimeTreeNode(taxa == null ? i+"" : taxaNames[i], tree);
+            System.out.println(node.getId());
             node.setLeafIndex(i);
             activeNodes.add(node);
         }
@@ -66,6 +97,25 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         tree.setRoot(activeNodes.get(0));
 
         return new RandomVariable<>("\u03C8", tree, this);
+    }
+
+    private String[] taxaNames() {
+        String[] taxaNames = new String[n()];
+        if (taxa == null) {
+            for (int i = 0; i < taxaNames.length; i++) {
+                taxaNames[i] = i + "";
+            }
+        } else if (taxa.value() instanceof String[]) {
+            return (String[])taxa.value();
+        } else if (taxa.value() instanceof Taxa) {
+            return ((Taxa)taxa.value()).getTaxa();
+        }
+        throw new IllegalArgumentException(taxaParamName + " must be of type String[] or Taxa.");
+    }
+
+    private int n() {
+        if (n != null) return n.value();
+        return taxaLength(taxa);
     }
 
     @Override
@@ -96,7 +146,8 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(thetaParamName, theta);
-        map.put(nParamName, n);
+        if (n != null) map.put(nParamName, n);
+        if (taxa != null) map.put(taxaParamName, taxa);
         return map;
     }
 
@@ -104,6 +155,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
     public void setParam(String paramName, Value value) {
         if (paramName.equals(thetaParamName)) theta = value;
         else if (paramName.equals(nParamName)) n = value;
+        else if (paramName.equals(taxaParamName)) taxa = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -131,7 +183,7 @@ public class Coalescent implements GenerativeDistribution<TimeTree> {
         RandomVariable<Double> theta = exp.sample("\u0398");
         Value<Integer> n = new Value<>("n", 20);
 
-        Coalescent coalescent = new Coalescent(theta, n);
+        Coalescent coalescent = new Coalescent(theta, n, null);
 
         RandomVariable<TimeTree> g = coalescent.sample();
 

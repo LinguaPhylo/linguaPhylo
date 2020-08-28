@@ -32,7 +32,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalLPhyParser parser;
 
     JLabel repsLabel = new JLabel("reps:");
-    JTextField repsField = new JTextField("1", 6);
+    JTextField repsField = new TidyTextField("1", 4);
     JButton sampleButton = new JButton("Sample");
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});

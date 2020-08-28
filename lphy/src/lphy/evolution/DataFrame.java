@@ -17,6 +17,15 @@ public class DataFrame implements Taxa, NChar {
         this.ntaxa = ntaxa;
         this.partNChar = partNChar;
         this.partNames = partNames;
+
+        if (partNames==null) {
+            if (partNChar.length == 1) {
+                partNames = new String[]{"data"};
+            } else {
+                throw new IllegalArgumentException("A multipart data frame must declare part names.");
+            }
+        }
+
         this.parts = new DataFrame[partNames.length];
         for (int i = 0; i < partNChar.length; i++) {
             nchar += partNChar[i];
