@@ -16,10 +16,6 @@ import beast.util.XMLProducer;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.Dirichlet;
 import lphy.core.distributions.RandomComposition;
-import lphy.core.functions.DataFrameConstruction;
-import lphy.core.functions.NTaxaFunction;
-import lphy.core.functions.Nexus;
-import lphy.evolution.DataFrame;
 import lphy.graphicalModel.*;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.*;
@@ -199,8 +195,7 @@ public class BEASTContext {
             }
 
             if (beastGenerator == null) {
-                if ( ! ((generator instanceof NTaxaFunction) || (generator instanceof DataFrameConstruction) ||
-                        (generator instanceof Nexus)) )
+                if ( ! Exclusion.isExcludedGenerator(generator) )
                    throw new UnsupportedOperationException("Unhandled generator in generatorToBEAST(): " + generator);
             } else {
                 addToContext(generator, beastGenerator);
@@ -226,7 +221,7 @@ public class BEASTContext {
         }
         if (beastValue == null) {
             // ignore all String: d = nexus(file="Dengue4.nex");
-            if (! ((val.value() instanceof String) || (val.value() instanceof DataFrame)) )
+            if (! Exclusion.isExcludedValue(val) )
                  throw new UnsupportedOperationException("Unhandled value in valueToBEAST(): " +
                     val + " of type " + val.value().getClass());
         } else {
