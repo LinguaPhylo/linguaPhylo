@@ -2,9 +2,10 @@ package lphybeast.tobeast.data;
 
 import beast.evolution.alignment.Alignment;
 import lphy.core.LPhyParser;
-import lphy.core.functions.ArgI;
+import lphy.evolution.DataFrame;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
+import lphy.graphicalModel.Value;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -14,53 +15,87 @@ import java.util.Map;
 /**
  * @author Walter Xie
  */
+@Deprecated
 public class DataExchanger {
 
-    final protected NexusParser nexusParser;
+    protected NexusParser nexusParser;
 
-    final protected Map<String, String> varMap; // LPhy <=> Nex
+    // if null, then 1 partition
+    protected Map<String, String> partitionMap; // LPhy <=> Nex
 
+    // parse partition(s) from CMD --nex
+    // create Path
+    public DataExchanger(Map<String, String> partitionMap) {
+        Path[] nexfile = getNexFiles(partitionMap);
 
-    public DataExchanger(Path nexfile, Map<String, String> varMap) {
-        this.varMap = varMap;
+//        nexusParser = new NexusParser(nexfile);
+    }
+
+    private Path[] getNexFiles(Map<String, String> partitionMap) {
+        return new Path[0];
+    }
+
+    // Single file, if partitionMap null, then 1 partition
+    public DataExchanger(Path nexfile, Map<String, String> partitionMap) {
+        this.partitionMap = partitionMap;
         nexusParser = new NexusParser(nexfile);
     }
 
+    public Alignment getBEASTAlignment(String partitionName) {
+        if (partitionMap != null) {
+            //TODO
+        }
+        return nexusParser.getAlignment();
+    }
+    @Deprecated
     public Alignment getAlignment() {
         return nexusParser.getAlignment();
     }
+//    public Alignment getAlignment(String algID) {
+//        return nexusParser.getAlignment(algID); //TODO
+//    }
 
     //****** before LPhyParser ******//
 
-    public void preloadArgs() {
-        // run ArgI.putArgument before LPhy
-        for (Map.Entry<String, String> entry : varMap.entrySet()) {
-            String lphyVar = entry.getKey();
-            String nexusVar = entry.getValue();
-            String nexusValue = nexusParser.getVal(nexusVar);
-
-            ArgI.putArgument(lphyVar, Integer.parseInt(nexusValue));
-        }
-    }
-
-
-    // replace var in cmd
-    public void updateArgs(LPhyParser parser) {
-
-//        for (Map.Entry<String, Value<?>> entry : parser.getDictionary().entrySet()) {
-//
+//    public void preloadArgs() {
+//        // run ArgI.putArgument before LPhy
+//        for (Map.Entry<String, String> entry : varMap.entrySet()) {
 //            String lphyVar = entry.getKey();
+//            String nexusVar = entry.getValue();
+//            String nexusValue = nexusParser.getVal(nexusVar);
 //
-//            if (varMap.containsKey(lphyVar)) {
-//                String nexVar = varMap.get(lphyVar);
-//                if ( nexusParser.getVal() !=  entry.getValue() ) {
-//                    ArgI.putArgument(lphyVar, value);
-//                }
-//
-//
-//            }
-//
+//            ArgI.putArgument(lphyVar, Integer.parseInt(nexusValue));
 //        }
+//    }
+
+
+    // replace dataframe to nexus
+    public void updateDF(LPhyParser parser) {
+
+        for (Map.Entry<String, Value<?>> entry : parser.getDictionary().entrySet()) {
+
+            String lphyVar = entry.getKey();
+            DataFrame df = (DataFrame) entry.getValue().value();
+
+
+
+            if (partitionMap.containsKey(lphyVar)) {
+                String partName = partitionMap.get(lphyVar);
+
+//                if (df.get.hasParts()) {
+//
+//                }
+
+
+
+                Alignment beastAlign = getBEASTAlignment(partName);
+                int ntax = beastAlign.getTaxonCount();
+                int nchar = beastAlign.getSiteCount();
+
+
+            }
+
+        }
 
 
 
@@ -81,7 +116,7 @@ public class DataExchanger {
 
     //****** after LPhyParser ******//
 
-    // replace taxa names in TimeTree
+    // replace taxa names in TimeTree TODO how to map to alignment
     public void replaceTaxaNamesByOrder(TimeTree timeTree) {
         List<String> beastTaxaNm = nexusParser.getAlignment().getTaxaNames();
         //TODO allow taxa diff ?
@@ -98,16 +133,18 @@ public class DataExchanger {
         }
     }
 
-    public void printVarMap(PrintStream out){
-        out.println("Map variable from LPhy script to Nexus data : ");
-        for (Map.Entry<String, String> entry : varMap.entrySet()) {
-            out.println(entry.getKey() + " => " + entry.getValue());
+    public void printPartMap(PrintStream out){
+        if (partitionMap != null) {
+            out.println("Map LPhy script partitions to Nexus data : ");
+            for (Map.Entry<String, String> entry : partitionMap.entrySet()) {
+                out.println(entry.getKey() + " => " + entry.getValue());
+            }
+            out.println();
         }
-        out.println();
     }
 
-    public boolean containsArg(String line) {
-        return line.trim().toLowerCase().contains("argi(");
+    public boolean containsDF(String line) {
+        return line.trim().toLowerCase().contains("dataframe(");
     }
 
 // TODO map taxa names

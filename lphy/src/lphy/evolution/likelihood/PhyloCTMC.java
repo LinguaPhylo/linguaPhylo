@@ -208,37 +208,20 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
 
         if (toClamp != null && toClamp.value() == Boolean.TRUE)
-            clamp(a, tree.value());
+            clamp(a);
 
         return new RandomVariable<>("D", a, this);
     }
 
     // TODO need smarter replacing method
     // replace alg and taxa in tre into those retrieved from frame
-    public void clamp(Alignment alg, TimeTree tre) {
+    public void clamp(Alignment alg) {
         if (frame == null || ! (frame.value() instanceof SimpleAlignment) )
             throw new IllegalArgumentException("");
 
         alg = (SimpleAlignment) frame.value();
-        final Map<Integer, String> revIdMap = alg.getReverseIdMap();
-
-//        String[] taxaNames = alg.getTaxaNames();
-        replaceTaxaNamesByOrder(tre, revIdMap);
     }
-    protected void replaceTaxaNamesByOrder(TimeTree timeTree, final Map<Integer, String> revIdMap) {
 
-        if (revIdMap.size() != timeTree.getTaxaNames().length)
-            throw new IllegalArgumentException("The clamp data must have the same taxa number in the LPhy model !\n"
-                    + revIdMap.size() + " != " + timeTree.getTaxaNames().length);
-
-        for (TimeTreeNode node : timeTree.getNodes()) {
-            if (node.isLeaf()) {
-                int lI = node.getLeafIndex();
-                String tN = revIdMap.get(lI);
-                node.setId(tN);
-            }
-        }
-    }
 
     public Value<Double[]> getSiteRates() {
         return siteRates;

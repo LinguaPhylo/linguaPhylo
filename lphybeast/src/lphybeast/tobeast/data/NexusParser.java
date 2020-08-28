@@ -1,16 +1,14 @@
 package lphybeast.tobeast.data;
 
 import beast.evolution.alignment.Alignment;
-import lphy.core.LPhyParser;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Walter Xie
  */
+@Deprecated
 public class NexusParser extends beast.util.NexusParser {
 
     // TODO not sure how they can be changed
@@ -21,15 +19,17 @@ public class NexusParser extends beast.util.NexusParser {
     public final static String CHARSET = "charset";
 
 
-    Map<String, String> keywdVal;
+    final Path nexfile;
 
+//    Map<String, String> keywdVal; // Nexus keyword <=> its parsed value
 
-    public NexusParser() {
-        super();
-    }
+//    public NexusParser() {
+//        super();
+//    }
 
     public NexusParser(Path nexfile) {
         super();
+        this.nexfile = nexfile;
         try {
             super.parseFile(nexfile.toFile());
         } catch (IOException e) {
@@ -51,15 +51,17 @@ public class NexusParser extends beast.util.NexusParser {
 //            beastParser.calibrations;
 //            beastParser.filteredAlignments;
 
+
+        // TODO how to apply to FilteredAlignment?
         int ntaxa = getAlignment().getTaxonCount();
         int L = getAlignment().getSiteCount();
 
-        keywdVal = new HashMap<>();
-        // real data
-        keywdVal.put(NTAX, Integer.toString(ntaxa));
-        keywdVal.put(NCHAR, Integer.toString(L));
-
-        keywdVal.put(TIP_DATE, "");
+//        keywdVal = new HashMap<>();
+//        // real data
+//        keywdVal.put(NTAX, Integer.toString(ntaxa));
+//        keywdVal.put(NCHAR, Integer.toString(L));
+//
+//        keywdVal.put(TIP_DATE, "");
 
     }
 
@@ -68,13 +70,16 @@ public class NexusParser extends beast.util.NexusParser {
         return m_alignment;
     }
 
-    public String getVal(String nexusVar) {
-        return keywdVal.get(nexusVar);
+
+
+    public Alignment getFilteredAlignment(String algID) {
+        throw new UnsupportedOperationException("TODO");
+//        return FilteredAlignment();
     }
 
-    public String assignArgsTo(LPhyParser parser) {
-return "";
-    }
+//    public String getVal(String nexusVar) {
+//        return keywdVal.get(nexusVar);
+//    }
 
 
 

@@ -2,7 +2,6 @@ package lphybeast;
 
 import lphy.core.LPhyParser;
 import lphy.parser.REPL;
-import lphybeast.tobeast.data.DataExchanger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -11,7 +10,6 @@ import picocli.CommandLine.Parameters;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Command(name = "lphybeast", version = "LPhyBEAST " + LPhyBEAST.VERSION, footer = "Copyright(c) 2020",
@@ -30,13 +28,13 @@ public class LPhyBEAST implements Callable<Integer> {
 
 //    @Option(names = {"-wd", "--workdir"}, description = "Working directory") Path wd;
     @Option(names = {"-o", "--out"},     description = "BEAST 2 XML")  Path outfile;
-    @Option(names = {"-n", "--nex"},    description = "BEAST 2 Nexus file containing alignment or traits")
+    @Option(names = {"-n", "--nex"},    description = "BEAST 2 partitions defined in Nexus file")
     Path nexfile;
+//    Map<String, String> partitionMap; // d1=primates.nex:noncoding|d2=primates.nex:coding   //
 //    @Option(names = {"-m", "--mapping"}, description = "mapping file") Path mapfile;
-    // TODO Mutually Dependent to -n
-    @Option(names = {"-m", "--varmap"}, split = "\\|", splitSynopsisLabel = "|",
-            description = "LPhy var <=> Nexus keyword")
-    Map<String, String> varmap;
+//    @Option(names = {"-p", "--partition"}, split = "\\|", splitSynopsisLabel = "|",
+//            description = "LPhy var <=> Nexus keyword")
+//    Map<String, String> partitionMap;  // -m D1=firsthalf|D2=secondhalf
 
     public static void main(String[] args) throws IOException {
 
@@ -51,23 +49,24 @@ public class LPhyBEAST implements Callable<Integer> {
 
         BufferedReader reader = new BufferedReader(new FileReader(infile.toFile()));
 
-        DataExchanger dataExchanger = null;
+//        DataExchanger dataExchanger = null;
         if (nexfile != null) {
+//            dataExchanger = new DataExchanger(nexfile, partitionMap);
             assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
             // TODO LoggerUtils.log.info print twice?
             System.out.println("Load the alignment from " + nexfile.getFileName());
 
-            dataExchanger = new DataExchanger(nexfile, varmap);
-            dataExchanger.printVarMap(System.out);
+//            dataExchanger.printPartMap(System.out);
+            throw new UnsupportedOperationException("This feature moved to LPhy script.");
 
         }
 
         //*** Parse LPhy file ***//
         LPhyParser parser = new REPL();
-        source(reader, parser, dataExchanger);
+        source(reader, parser);
 
         // If dataExchanger is null, then using simulated alignment
-        BEASTContext context = new BEASTContext(parser, dataExchanger);
+        BEASTContext context = new BEASTContext(parser);
 
         //*** Write BEAST 2 XML ***//
 //        String wkdir = infile.getParent().toString();
@@ -91,18 +90,18 @@ public class LPhyBEAST implements Callable<Integer> {
         return 0;
     }
 
-    private static void source(BufferedReader reader, LPhyParser parser, DataExchanger dataExchanger)
+    private static void source(BufferedReader reader, LPhyParser parser)
             throws IOException {
-        if (dataExchanger != null) dataExchanger.preloadArgs();
+//        if (dataExchanger != null) dataExchanger.preloadArgs();
 
         String line = reader.readLine();
         while (line != null) {
             parser.parse(line);
-            // replace real data in ArgI
+            // replace dataframe to nexus ntax nchar
 //            if (dataExchanger != null) {
 //
-//                if (!dataExchanger.containsArg(line))
-//                    dataExchanger.updateArgs(parser);
+//                if (dataExchanger.containsDF(line))
+//                    dataExchanger.updateDF(parser);
 //
 //            }
 

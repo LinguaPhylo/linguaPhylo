@@ -1,0 +1,4 @@
+d = nexus(file="Dengue4.nex");
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+ψ ~ Coalescent(theta=Θ, taxa=d);
+D ~ PhyloCTMC(frame=d, Q=jukesCantor(), tree=ψ, clamp=true);

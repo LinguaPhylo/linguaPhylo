@@ -16,8 +16,11 @@ import beast.util.XMLProducer;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.Dirichlet;
 import lphy.core.distributions.RandomComposition;
+import lphy.core.functions.DataFrameConstruction;
+import lphy.core.functions.NTaxaFunction;
+import lphy.core.functions.Nexus;
+import lphy.evolution.DataFrame;
 import lphy.graphicalModel.*;
-import lphybeast.tobeast.data.DataExchanger;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.*;
 import org.xml.sax.SAXException;
@@ -54,22 +57,6 @@ public class BEASTContext {
         // simulated alignment
         valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
         valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
-        init();
-    }
-
-    /**
-     * If {@link DataExchanger} is null, then it is using simulated alignment,
-     * which is same to {@link #BEASTContext(LPhyParser)}. Otherwise it will take
-     * the real data from files.
-     * @param phyParser      {@link LPhyParser}
-     * @param dataExchanger  Passing real data to the parser
-     */
-    @Deprecated
-    public BEASTContext(LPhyParser phyParser, DataExchanger dataExchanger) {
-        parser = phyParser;
-        // real data alignment
-        valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST(dataExchanger));
-        valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST(dataExchanger));
         init();
     }
 
@@ -212,7 +199,9 @@ public class BEASTContext {
             }
 
             if (beastGenerator == null) {
-                throw new UnsupportedOperationException("Unhandled generator in generatorToBEAST(): " + generator);
+                if ( ! ((generator instanceof NTaxaFunction) || (generator instanceof DataFrameConstruction) ||
+                        (generator instanceof Nexus)) )
+                   throw new UnsupportedOperationException("Unhandled generator in generatorToBEAST(): " + generator);
             } else {
                 addToContext(generator, beastGenerator);
             }
@@ -236,7 +225,8 @@ public class BEASTContext {
             }
         }
         if (beastValue == null) {
-            if (! (val.value() instanceof String) ) // ignore all String: d = nexus(file="Dengue4.nex");
+            // ignore all String: d = nexus(file="Dengue4.nex");
+            if (! ((val.value() instanceof String) || (val.value() instanceof DataFrame)) )
                  throw new UnsupportedOperationException("Unhandled value in valueToBEAST(): " +
                     val + " of type " + val.value().getClass());
         } else {
