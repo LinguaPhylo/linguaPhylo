@@ -13,4 +13,9 @@ public class ValueUtils {
     public static boolean isRandomVariable(Value value) {
         return value instanceof RandomVariable;
     }
+
+    public static boolean isNumberOrNumberArray(Value value) {
+        Class<?> valueClass = value.value().getClass();
+        return Number.class.isAssignableFrom(valueClass) || (valueClass.isArray() && Number.class.isAssignableFrom(valueClass.getComponentType()));
+    }
 }

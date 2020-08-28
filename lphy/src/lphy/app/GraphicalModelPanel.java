@@ -27,6 +27,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelInterpreter interpreter;
     JTabbedPane rightPane;
     VariableLog variableLog = new VariableLog(true, true);
+    VariableSummary variableSummary = new VariableSummary(true, true);
     TreeLog treeLog = new TreeLog();
 
     GraphicalLPhyParser parser;
@@ -151,6 +152,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Constants", valueScrollPane);
         rightPane.addTab("Variables", variablesScrollPane);
         rightPane.addTab("Model", new CanonicalModelPanel(parser));
+        rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
         horizSplitPane.setRightComponent(rightPane);
@@ -186,6 +188,7 @@ public class GraphicalModelPanel extends JPanel {
 
         loggers.add(variableLog);
         loggers.add(treeLog);
+        loggers.add(variableSummary);
 
         Sampler sampler = new Sampler(parser);
         sampler.sample(reps, loggers);
