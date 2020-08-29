@@ -18,4 +18,13 @@ public class ValueUtils {
         Class<?> valueClass = value.value().getClass();
         return Number.class.isAssignableFrom(valueClass) || (valueClass.isArray() && Number.class.isAssignableFrom(valueClass.getComponentType()));
     }
+
+    /**
+     * useful function to get a number value as a double;
+     * @param value
+     * @return
+     */
+    public static double doubleValue(Value<Number> value) {
+        return value.value().doubleValue();
+    }
 }

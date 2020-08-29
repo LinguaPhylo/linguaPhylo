@@ -6,6 +6,8 @@ import lphy.graphicalModel.*;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * A Birth-death-sampling tree generative distribution
  */
@@ -14,18 +16,18 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
     private final String diversificationParamName;
     private final String turnoverParamName;
 
-    private Value<Double> diversificationRate;
-    private Value<Double> turnover;
-    private Value<Double> rho;
-    private Value<Double> rootAge;
+    private Value<Number> diversificationRate;
+    private Value<Number> turnover;
+    private Value<Number> rho;
+    private Value<Number> rootAge;
 
     BirthDeathSamplingTree wrapped;
 
-    public BirthDeathSamplingTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Double> diversification,
-                                    @ParameterInfo(name = "turnover", description = "turnover.") Value<Double> turnover,
-                                    @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Double> rho,
-                                    @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Double> rootAge
-                          ) {
+    public BirthDeathSamplingTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Number> diversification,
+                                    @ParameterInfo(name = "turnover", description = "turnover.") Value<Number> turnover,
+                                    @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Number> rho,
+                                    @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge
+    ) {
 
         this.turnover = turnover;
         this.diversificationRate = diversification;
@@ -35,8 +37,7 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
         setup();
     }
 
-
-    @GeneratorInfo(name="BirthDeathSampling", description="The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name = "BirthDeathSampling", description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
@@ -46,15 +47,17 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
     }
 
     private void setup() {
-        double denom = Math.abs(1.0 - turnover.value());
-        double birth_rate = diversificationRate.value() / denom;
-        double death_rate = (turnover.value() * diversificationRate.value()) / denom;
+        double turno = doubleValue(turnover);
+        double divers = doubleValue(diversificationRate);
 
-        wrapped =
-                new BirthDeathSamplingTree(
-                        new Value<>("birthRate", birth_rate),
-                        new Value<>("deathRate", death_rate),
-                        rho, rootAge);
+        double denom = Math.abs(1.0 - turno);
+        double birth_rate = divers / denom;
+        double death_rate = (turno * divers) / denom;
+
+        wrapped = new BirthDeathSamplingTree(
+                new Value<>("birthRate", birth_rate),
+                new Value<>("deathRate", death_rate),
+                rho, rootAge);
     }
 
     @Override
@@ -82,25 +85,19 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public Value<Double> getDiversificationRate() {
-        return getParams().get(diversificationParamName);
+    public Value<Number> getDiversificationRate() {
+        return diversificationRate;
     }
 
-    public Value<Double> getTurnover() {
-        return getParams().get(turnoverParamName);
+    public Value<Number> getTurnover() {
+        return turnover;
     }
 
-    public Value<Double> getRho() {
+    public Value<Number> getRho() {
         return rho;
     }
 
-    public Value<Double> getRootAge() {
+    public Value<Number> getRootAge() {
         return rootAge;
     }
-
-    public String toString() {
-        return getName();
-    }
-
-
 }

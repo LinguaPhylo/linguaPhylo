@@ -5,6 +5,8 @@ import lphy.graphicalModel.*;
 
 import java.util.*;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * A Birth-death tree generative distribution
  */
@@ -13,15 +15,15 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
     private final String diversificationParamName;
     private final String turnoverParamName;
 
-    private Value<Double> diversificationRate;
-    private Value<Double> turnover;
-    private Value<Double> rootAge;
+    private Value<Number> diversificationRate;
+    private Value<Number> turnover;
+    private Value<Number> rootAge;
 
     BirthDeathTree wrapped;
 
-    public BirthDeathTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Double> diversification,
-                            @ParameterInfo(name = "turnover", description = "turnover.") Value<Double> turnover,
-                            @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Double> rootAge
+    public BirthDeathTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Number> diversification,
+                            @ParameterInfo(name = "turnover", description = "turnover.") Value<Number> turnover,
+                            @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge
                           ) {
 
         this.turnover = turnover;
@@ -44,9 +46,13 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
     }
 
     private void setup() {
-        double denom = Math.abs(1.0 - turnover.value());
-        double birth_rate = diversificationRate.value() / denom;
-        double death_rate = (turnover.value() * diversificationRate.value()) / denom;
+
+        double turno = doubleValue(turnover);
+        double divers = doubleValue(diversificationRate);
+
+        double denom = Math.abs(1.0 - turno);
+        double birth_rate = divers / denom;
+        double death_rate = (turno * divers) / denom;
 
         wrapped =
                 new BirthDeathTree(

@@ -8,6 +8,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * A Birth-death tree generative distribution
  */
@@ -16,12 +18,12 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
     final String treeParamName;
     final String rhoParamName;
     private Value<TimeTree> tree;
-    private Value<Double> rho;
+    private Value<Number> rho;
 
     RandomGenerator random;
 
     public RhoSampleTree(@ParameterInfo(name = "tree", description = "the full tree to sample") Value<TimeTree> tree,
-                         @ParameterInfo(name = "rho", description = "the probability that each tip at time zero is sampled") Value<Double> rho) {
+                         @ParameterInfo(name = "rho", description = "the probability that each tip at time zero is sampled") Value<Number> rho) {
 
         this.tree = tree;
         this.rho = rho;
@@ -37,7 +39,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
     public RandomVariable<TimeTree> sample() {
 
         TimeTree sampleTree = new TimeTree(tree.value());
-        double p = rho.value();
+        double p = doubleValue(rho);
 
         List<TimeTreeNode> sampleTips = new ArrayList<>();
 

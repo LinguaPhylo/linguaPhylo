@@ -8,6 +8,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * A Birth-death tree generative distribution
  */
@@ -16,18 +18,17 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
     final String birthRateParamName;
     final String deathRateParamName;
     final String rootAgeParamName;
-    private Value<Double> birthRate;
-    private Value<Double> deathRate;
-    private Value<Double> rootAge;
+    private Value<Number> birthRate;
+    private Value<Number> deathRate;
+    private Value<Number> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
     RandomGenerator random;
 
-    public BirthDeathTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Double> birthRate,
-                          @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Double> deathRate,
-                          @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Double> rootAge
-                          ) {
+    public BirthDeathTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
+                          @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
+                          @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
@@ -42,24 +43,26 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GeneratorInfo(name="BirthDeath", description="The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name="BirthDeath", description="A birth-death tree with both extant and extinct species.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
         boolean success = false;
         TimeTree tree = new TimeTree();
         TimeTreeNode root = null;
+
+        double lambda = doubleValue(birthRate);
+        double mu = doubleValue(deathRate);
+
         while (!success) {
             activeNodes.clear();
 
             root = new TimeTreeNode(0 + "", tree);
-            root.setAge(rootAge.value());
+            root.setAge(doubleValue(rootAge));
 
             activeNodes.add(root);
 
             double time = root.getAge();
-            double birthRate = this.birthRate.value();
-            double deathRate = this.deathRate.value();
 
             int[] nextNum = {1};
             doBirth(activeNodes, time, nextNum, tree);
@@ -67,7 +70,7 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
             while (time > 0.0 && activeNodes.size() > 0) {
                 int k = activeNodes.size();
 
-                double totalRate = (birthRate + deathRate) * (double) k;
+                double totalRate = (lambda + mu) * (double) k;
 
                 // random exponential variate
                 double x = -Math.log(random.nextDouble()) / totalRate;
@@ -77,7 +80,7 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
 
 
                 double U = random.nextDouble();
-                if (U < birthRate / (birthRate + deathRate)) {
+                if (U < lambda / (lambda + mu)) {
                     doBirth(activeNodes, time, nextNum, tree);
                 } else {
                     doDeath(activeNodes, time);

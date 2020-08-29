@@ -17,19 +17,19 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
     final String deathRateParamName;
     final String rhoParamName;
     final String rootAgeParamName;
-    private Value<Double> birthRate;
-    private Value<Double> deathRate;
-    private Value<Double> rho;
-    private Value<Double> rootAge;
+    private Value<Number> birthRate;
+    private Value<Number> deathRate;
+    private Value<Number> rho;
+    private Value<Number> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
     RandomGenerator random;
 
-    public BirthDeathSamplingTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Double> birthRate,
-                                  @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Double> deathRate,
-                                  @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Double> rho,
-                                  @ParameterInfo(name = "rootAge", description = "the age of the root of the tree.") Value<Double> rootAge) {
+    public BirthDeathSamplingTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
+                                  @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
+                                  @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Number> rho,
+                                  @ParameterInfo(name = "rootAge", description = "the age of the root of the tree.") Value<Number> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;

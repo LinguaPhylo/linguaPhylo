@@ -1,42 +1,44 @@
 package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
+import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
 /**
  * A Yule tree generative distribution
  */
-public class Yule implements GenerativeDistribution<TimeTree> {
+public class Yule extends TaxaConditionedTreeGenerator {
 
     private final String birthRateParamName;
-    private final String nParamName;
     private final String rootAgeParamName;
     private Value<Number> birthRate;
-    private Value<Integer> n;
     private Value<Double> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
-    RandomGenerator random;
-
     public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
-                @ParameterInfo(name = "n", description = "the number of taxa.") Value<Integer> n,
+                @ParameterInfo(name = "n", description = "the number of taxa.", optional=true) Value<Integer> n,
+                @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
                 @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Double> rootAge) {
+
+        super(n, taxa);
+
         this.birthRate = birthRate;
-        this.n = n;
         this.rootAge = rootAge;
         this.random = Utils.getRandom();
 
         birthRateParamName = getParamName(0);
         nParamName = getParamName(1);
-        rootAgeParamName = getParamName(2);
+        taxaParamName = getParamName(2);
+        rootAgeParamName = getParamName(3);
 
-        activeNodes = new ArrayList<>(2 * n.value());
+        checkTaxaParameters(true);
+
+        activeNodes = new ArrayList<>(2 * n());
     }
 
     @GeneratorInfo(name = "Yule", description = "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.")
@@ -45,11 +47,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
         TimeTree tree = new TimeTree();
         activeNodes.clear();
 
-        for (int i = 0; i < n.value(); i++) {
-            TimeTreeNode node = new TimeTreeNode(i + "", tree);
-            node.setLeafIndex(i);
-            activeNodes.add(node);
-        }
+        createLeafNodes(tree, activeNodes);
 
         double time = 0.0;
         double birthRate = this.birthRate.value().doubleValue();
@@ -79,8 +77,8 @@ public class Yule implements GenerativeDistribution<TimeTree> {
 
         for (int i = 0; i < times.length; i++) {
 
-            TimeTreeNode a = activeNodes.remove(random.nextInt(activeNodes.size()));
-            TimeTreeNode b = activeNodes.remove(random.nextInt(activeNodes.size()));
+            TimeTreeNode a = drawRandomNode(activeNodes);
+            TimeTreeNode b = drawRandomNode(activeNodes);
             TimeTreeNode parent = new TimeTreeNode(times[i], new TimeTreeNode[]{a, b});
             activeNodes.add(parent);
         }
@@ -105,9 +103,8 @@ public class Yule implements GenerativeDistribution<TimeTree> {
 
     @Override
     public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
+        SortedMap<String, Value> map = super.getParams();
         map.put(birthRateParamName, birthRate);
-        map.put(nParamName, n);
         if (rootAge != null) map.put(rootAgeParamName, rootAge);
         return map;
     }
@@ -119,9 +116,7 @@ public class Yule implements GenerativeDistribution<TimeTree> {
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(birthRateParamName)) birthRate = value;
-        else if (paramName.equals(nParamName)) n = value;
-        else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        else super.setParam(paramName, value);
     }
 
     public String toString() {
