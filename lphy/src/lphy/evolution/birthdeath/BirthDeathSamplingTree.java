@@ -29,8 +29,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
     public BirthDeathSamplingTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Double> birthRate,
                                   @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Double> deathRate,
                                   @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Double> rho,
-                                  @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Double> rootAge
-                          ) {
+                                  @ParameterInfo(name = "rootAge", description = "the age of the root of the tree.") Value<Double> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;

@@ -1,0 +1,5 @@
+λ = 10.0;
+tmrca = 0.1;
+ψ ~ BirthDeath(lambda=λ, mu=0.0, rootAge=tmrca);
+TL = treeLength(tree=ψ);
+rootAge = rootAge(tree=ψ);

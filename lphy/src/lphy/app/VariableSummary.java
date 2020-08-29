@@ -21,6 +21,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
     List<String> variableNames;
     List<Double>[] values;
     double[] means;
+    double[] stdev;
     double[] stderr;
 
     public VariableSummary(boolean logStatistics, boolean logVariables) {
@@ -38,7 +39,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
             @Override
             public int getColumnCount() {
-                return 3;
+                return 4;
             }
 
             @Override
@@ -49,6 +50,8 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                     case 1:
                         return "Mean";
                     case 2:
+                        return "Std. dev.";
+                    case 3:
                         return "Std. err.";
                 }
                 return "";
@@ -60,8 +63,8 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                     case 0:
                         return String.class;
                     case 1:
-                        return Double.class;
                     case 2:
+                    case 3:
                         return Double.class;
                 }
                 return Object.class;
@@ -86,6 +89,12 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                             return Double.NaN;
                         }
                     case 2:
+                        if (stdev != null) {
+                            return stdev[rowIndex];
+                        } else {
+                            return Double.NaN;
+                        }
+                    case 3:
                         if (stderr != null) {
                             return stderr[rowIndex];
                         } else {
@@ -159,6 +168,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
     @Override
     public void close() {
         means = new double[variableNames.size()];
+        stdev = new double[variableNames.size()];
         stderr = new double[variableNames.size()];
 
         for (int i = 0; i < variableNames.size(); i++) {
@@ -168,13 +178,15 @@ public class VariableSummary extends JTable implements RandomValueLogger {
             means[i] /= values[i].size();
             for (int j = 0; j < values[i].size(); j++) {
                 double deviation = means[i] - values[i].get(j);
-                stderr[i] += deviation * deviation;
+                stdev[i] += deviation * deviation;
             }
             // variance
-            stderr[i] /= values[i].size();
+            stdev[i] /= values[i].size();
+            // stdev
+            stdev[i] = Math.sqrt(stdev[i]);
 
             // stderr = stdev / sqrt(N)
-            stderr[i] = Math.sqrt(stderr[i]) / Math.sqrt(values[i].size());
+            stderr[i] = stdev[i] / Math.sqrt(values[i].size());
         }
     }
 }
