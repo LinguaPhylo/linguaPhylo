@@ -19,8 +19,6 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
     private final String thetaParamName;
     private Value<Double> theta;
 
-    RandomGenerator random;
-
     public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
                       @ParameterInfo(name = "n", description = "the number of taxa. Provide this or taxa.", optional=true) Value<Integer> n,
                       @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree). Provide this or n.", optional=true) Value taxa) {
