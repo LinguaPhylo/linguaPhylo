@@ -1,19 +1,26 @@
 package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
+import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RandomVariable;
+import lphy.graphicalModel.Value;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.SortedMap;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * A Birth-death tree generative distribution
  */
-public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
+public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
     final String birthRateParamName;
     final String deathRateParamName;
@@ -22,13 +29,13 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
     private Value<Number> deathRate;
     private Value<Number> rootAge;
 
-    private List<TimeTreeNode> activeNodes;
-
-    RandomGenerator random;
-
     public BirthDeathTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
                           @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
-                          @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge) {
+                          @ParameterInfo(name = "n", description = "the number of taxa. optional.", optional = true) Value<Integer> n,
+                          @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.", optional = true) Value taxa,
+                          @ParameterInfo(name = "rootAge", description = "the age of the root.") Value<Number> rootAge) {
+
+        super(n, taxa);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
@@ -37,103 +44,64 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
 
         birthRateParamName = getParamName(0);
         deathRateParamName = getParamName(1);
-        rootAgeParamName = getParamName(2);
+        nParamName = getParamName(2);
+        taxaParamName = getParamName(3);
+        rootAgeParamName = getParamName(4);
 
-        activeNodes = new ArrayList<>();
+        checkTaxaParameters(true);
     }
 
-
-    @GeneratorInfo(name="BirthDeath", description="A birth-death tree with both extant and extinct species.<br>" +
-            "Conditioned on root age.")
+    @GeneratorInfo(name = "BirthDeath", description = "A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
+            "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {
 
-        boolean success = false;
+        List<TimeTreeNode> activeNodes = new ArrayList<>();
         TimeTree tree = new TimeTree();
-        TimeTreeNode root = null;
 
         double lambda = doubleValue(birthRate);
         double mu = doubleValue(deathRate);
 
-        while (!success) {
-            activeNodes.clear();
+        double t = doubleValue(rootAge);
 
-            root = new TimeTreeNode(0 + "", tree);
-            root.setAge(doubleValue(rootAge));
+        createLeafNodes(tree, activeNodes);
+        double[] times = new double[activeNodes.size() - 1];
 
-            activeNodes.add(root);
+        for (int i = 0; i < times.length - 1; i++) {
+            times[i] = birthDeathInternalQ(random.nextDouble(), lambda, mu, t);
+        }
+        times[times.length - 1] = t;
+        Arrays.sort(times);
 
-            double time = root.getAge();
-
-            int[] nextNum = {1};
-            doBirth(activeNodes, time, nextNum, tree);
-
-            while (time > 0.0 && activeNodes.size() > 0) {
-                int k = activeNodes.size();
-
-                double totalRate = (lambda + mu) * (double) k;
-
-                // random exponential variate
-                double x = -Math.log(random.nextDouble()) / totalRate;
-                time -= x;
-
-                if (time < 0) break;
-
-
-                double U = random.nextDouble();
-                if (U < lambda / (lambda + mu)) {
-                    doBirth(activeNodes, time, nextNum, tree);
-                } else {
-                    doDeath(activeNodes, time);
-                }
-            }
-
-            for (TimeTreeNode node : activeNodes) {
-                node.setAge(0.0);
-            }
-
-            System.out.println("activeLineages.size= " + activeNodes.size());
-
-            success = activeNodes.size() > 0;
+        for (int i = 0; i < times.length; i++) {
+            TimeTreeNode a = drawRandomNode(activeNodes);
+            TimeTreeNode b = drawRandomNode(activeNodes);
+            TimeTreeNode parent = new TimeTreeNode(times[i], new TimeTreeNode[]{a, b});
+            activeNodes.add(parent);
         }
 
-        tree.setRoot(root);
-        System.out.println("tree.n()=" + tree.n());
-        System.out.println("tree.singleChildNodeCount()=" + tree.getSingleChildNodeCount());
-        System.out.println("tree.getNodeCount()=" + tree.getNodeCount());
+        tree.setRoot(activeNodes.get(0));
 
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
-    private void doBirth(List<TimeTreeNode> activeNodes, double age, int[] nextnum, TimeTree tree) {
-        TimeTreeNode parent = activeNodes.remove(random.nextInt(activeNodes.size()));
-        parent.setAge(age);
-        TimeTreeNode child1 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
-        TimeTreeNode child2 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
-        child1.setAge(age);
-        child2.setAge(age);
-        parent.addChild(child1);
-        parent.addChild(child2);
-        activeNodes.add(child1);
-        activeNodes.add(child2);
-    }
+    private double birthDeathInternalQ(double p, double lambda, double mu, double rootHeight) {
 
-    private void doDeath(List<TimeTreeNode> activeNodes, double age) {
-        TimeTreeNode deadNode = activeNodes.remove(random.nextInt(activeNodes.size()));
-        deadNode.setAge(age);
+        if (lambda == mu) return p * rootHeight / (1 + lambda * rootHeight * (1 - p));
+        double h = lambda - mu;
+        double e1 = Math.exp(-h * rootHeight);
+        double a1 = lambda - mu * e1;
+        double a2 = p * (1 - e1);
+        return (1 / h) * Math.log((a1 - mu * a2) / (a1 - lambda * a2));
     }
-
 
     @Override
     public double logDensity(TimeTree timeTree) {
-
         throw new UnsupportedOperationException("Not implemented!");
     }
 
     @Override
     public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
+        SortedMap<String, Value> map = super.getParams();
         map.put(birthRateParamName, birthRate);
         map.put(deathRateParamName, deathRate);
         map.put(rootAgeParamName, rootAge);
@@ -145,11 +113,6 @@ public class BirthDeathTree implements GenerativeDistribution<TimeTree> {
         if (paramName.equals(birthRateParamName)) birthRate = value;
         else if (paramName.equals(deathRateParamName)) deathRate = value;
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        else super.setParam(paramName, value);
     }
-
-    public String toString() {
-        return getName();
-    }
-
 }

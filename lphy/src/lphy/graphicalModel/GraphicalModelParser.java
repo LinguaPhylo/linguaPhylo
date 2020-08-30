@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-import lphy.evolution.birthdeath.BirthDeathTree;
+import lphy.evolution.birthdeath.FullBirthDeathTree;
 import lphy.evolution.birthdeath.BirthDeathTreeDT;
 import lphy.evolution.coalescent.Coalescent;
 import lphy.evolution.birthdeath.Yule;
@@ -45,7 +45,7 @@ public class GraphicalModelParser implements LPhyParser {
 
         Class<?>[] genClasses = {Normal.class, LogNormal.class, LogNormalMulti.class, Exp.class, Coalescent.class,
                 PhyloCTMC.class, PhyloBrownian.class, Dirichlet.class, Gamma.class, DiscretizedGamma.class,
-                ErrorModel.class, BirthDeathTree.class, BirthDeathTreeDT.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
+                ErrorModel.class, FullBirthDeathTree.class, BirthDeathTreeDT.class, Yule.class, Beta.class, Geometric.class, Bernoulli.class};
 
         for (Class<?> genClass : genClasses) {
             addGenerator(genClass, genDistDictionary);

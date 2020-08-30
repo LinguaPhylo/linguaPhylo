@@ -19,7 +19,7 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
     private Value<Number> turnover;
     private Value<Number> rootAge;
 
-    BirthDeathTree wrapped;
+    FullBirthDeathTree wrapped;
 
     public BirthDeathTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Number> diversification,
                             @ParameterInfo(name = "turnover", description = "turnover.") Value<Number> turnover,
@@ -55,7 +55,7 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
         double death_rate = (turno * divers) / denom;
 
         wrapped =
-                new BirthDeathTree(
+                new FullBirthDeathTree(
                         new Value<>("birthRate", birth_rate),
                         new Value<>("deathRate", death_rate),
                         rootAge);
