@@ -2,6 +2,7 @@ package lphy.evolution.tree;
 
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.Taxa;
+import lphy.evolution.TaxaAges;
 import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
@@ -11,7 +12,7 @@ import java.util.*;
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree implements Taxa, HasComponentView<TimeTree> {
+public class TimeTree implements TaxaAges, HasComponentView<TimeTree> {
 
     TimeTreeNode rootNode;
 
@@ -224,5 +225,20 @@ public class TimeTree implements Taxa, HasComponentView<TimeTree> {
     public String[] getTaxa() {
         // defensive copy
         return Arrays.copyOf(taxaNames, taxaNames.length);
+    }
+
+    @Override
+    public Double[] getAges() {
+        Double[] ages = new Double[taxaNames.length];
+        for (TimeTreeNode node : getNodes()) {
+
+            if (node.isLeaf()) {
+                if (node.getId().equals(taxaNames[node.getIndex()])) {
+                    throw new RuntimeException("Assertion failed!");
+                }
+                ages[node.getIndex()] = node.getAge();
+            }
+        }
+        return ages;
     }
 }
