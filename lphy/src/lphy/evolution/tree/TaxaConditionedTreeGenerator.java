@@ -42,12 +42,17 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
             for (int i = 0; i < taxaNames.length; i++) {
                 taxaNames[i] = i + "";
             }
-        } else if (taxa.value() instanceof String[]) {
-            return (String[]) taxa.value();
+            return taxaNames;
+        } else if (taxa.value().getClass().isArray()) {
+            Object[] taxaObjects = (Object[])taxa.value();
+            for (int i = 0; i < taxaNames.length; i++) {
+                taxaNames[i] = taxaObjects[i].toString();
+            }
+            return taxaNames;
         } else if (taxa.value() instanceof Taxa) {
             return ((Taxa) taxa.value()).getTaxa();
         }
-        throw new IllegalArgumentException(taxaParamName + " must be of type String[] or Taxa.");
+        throw new IllegalArgumentException(taxaParamName + " must be of type Object[] or Taxa, but it is type " + taxa.value().getClass());
     }
 
     /**
@@ -64,7 +69,7 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
 
     protected int taxaLength(Value taxa) {
         if (taxa == null) throw new IllegalArgumentException("No taxa available");
-        if (taxa.value() instanceof String[]) return ((String[]) taxa.value()).length;
+        if (taxa.value() instanceof Object[]) return ((Object[]) taxa.value()).length;
         if (taxa.value() instanceof Taxa) return ((Taxa) taxa.value()).ntaxa();
         throw new IllegalArgumentException(taxaParamName + " must be of type String[] or Taxa.");
     }

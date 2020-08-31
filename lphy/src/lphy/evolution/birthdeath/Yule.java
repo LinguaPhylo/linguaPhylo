@@ -8,6 +8,8 @@ import lphy.graphicalModel.*;
 
 import java.util.*;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * A Yule tree generative distribution
  */
@@ -16,14 +18,14 @@ public class Yule extends TaxaConditionedTreeGenerator {
     private final String birthRateParamName;
     private final String rootAgeParamName;
     private Value<Number> birthRate;
-    private Value<Double> rootAge;
+    private Value<Number> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
     public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
                 @ParameterInfo(name = "n", description = "the number of taxa.", optional=true) Value<Integer> n,
                 @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
-                @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Double> rootAge) {
+                @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {
 
         super(n, taxa);
 
@@ -50,14 +52,14 @@ public class Yule extends TaxaConditionedTreeGenerator {
         createLeafNodes(tree, activeNodes);
 
         double time = 0.0;
-        double birthRate = this.birthRate.value().doubleValue();
+        double lambda = doubleValue(birthRate);
 
         double[] times = new double[activeNodes.size() - 1];
 
         if (rootAge == null) {
             int k = activeNodes.size();
             for (int i = 0; i < times.length; i++) {
-                double totalRate = birthRate * (double) k;
+                double totalRate = lambda * (double) k;
 
                 // random exponential variate
                 double x = -Math.log(random.nextDouble()) / totalRate;
@@ -66,9 +68,9 @@ public class Yule extends TaxaConditionedTreeGenerator {
                 k -= 1;
             }
         } else {
-            double t = rootAge.value();
+            double t = doubleValue(rootAge);
             for (int i = 0; i < times.length-1; i++) {
-                times[i] = yuleInternalQ(random.nextDouble(), birthRate, t);
+                times[i] = yuleInternalQ(random.nextDouble(), lambda, t);
             }
             times[times.length-1] = t;
             Arrays.sort(times);
@@ -116,6 +118,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(birthRateParamName)) birthRate = value;
+        else if (paramName.equals(rootAgeParamName)) rootAge = value;
         else super.setParam(paramName, value);
     }
 
