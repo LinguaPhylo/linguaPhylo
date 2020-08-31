@@ -5,7 +5,7 @@ import lphy.evolution.alignment.datatype.DataType;
 import java.util.Map;
 
 /**
- * TODO 1) move datatype up? 2) move charset down?
+ * TODO 1) move datatype up?
  * @author Walter Xie
  */
 public class SimpleAlignment extends Alignment {
@@ -36,5 +36,13 @@ public class SimpleAlignment extends Alignment {
         alignment[taxon][position] = state;
     }
 
+    @Override
+    public String getSequence(int taxonIndex) {
+        StringBuilder builder = new StringBuilder();
+        for (int j = 0; j < alignment[taxonIndex].length; j++) {
+            builder.append(dataType.getChar(alignment[taxonIndex][j]));
+        }
+        return builder.toString();
+    }
 
 }

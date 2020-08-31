@@ -27,6 +27,13 @@ public class CharSetAlignment extends SimpleAlignment {
      */
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
                             final SimpleAlignment parentAlignment) {
+        initAlignment(parentAlignment);
+
+        initParts(charsetMap, partNames);
+        fillinParts(charsetMap, parentAlignment);
+    }
+
+    protected void initAlignment(SimpleAlignment parentAlignment) {
         this.ntaxa = parentAlignment.ntaxa();
         this.nchar = parentAlignment.nchar();
         // int[][] alignment = null
@@ -34,9 +41,6 @@ public class CharSetAlignment extends SimpleAlignment {
         fillRevMap(idMap);
 
         this.dataType = parentAlignment.getDataType();
-
-        initParts(charsetMap, partNames);
-        fillinParts(charsetMap, parentAlignment);
     }
 
     protected void initParts(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames) {
