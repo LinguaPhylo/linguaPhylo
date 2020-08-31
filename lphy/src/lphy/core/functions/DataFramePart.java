@@ -23,7 +23,7 @@ public class DataFramePart extends DeterministicFunction<DataFrame> {
     public Value<DataFrame> apply() {
         Value<DataFrame> frame = getParams().get(frameParamName);
         Value<String> name = getParams().get(nameParamName);
-
+//TODO id=name.value() throw Exp in line 184 CodeColorizer
         return new Value<>(null, frame.value().part(name.value()), this);
     }
 }

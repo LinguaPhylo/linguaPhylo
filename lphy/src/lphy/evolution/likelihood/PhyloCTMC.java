@@ -217,7 +217,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     // replace alg and taxa in tre into those retrieved from frame
     public void clamp(Alignment alg) {
         if (frame == null || ! (frame.value() instanceof SimpleAlignment) )
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Clamping needs SimpleAlignment in dataframe ! " + frame);
 
         alg = (SimpleAlignment) frame.value();
     }
