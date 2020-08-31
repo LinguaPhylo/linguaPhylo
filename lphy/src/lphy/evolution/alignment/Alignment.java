@@ -25,7 +25,10 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         this.numStates = numStates;
     }
 
-    // for nex
+    // for inheritance
+    public Alignment() {  }
+
+    // for inheritance
     public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap) {
         super(ntaxa, nchar);
 
@@ -57,7 +60,8 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
 
     public void setState(int taxon, int position, int state) {
 
-        if (state < 0 || state > numStates-1) throw new IllegalArgumentException("Tried to set a state outside of the range! ");
+        if (state < 0 || state > numStates-1)
+            throw new IllegalArgumentException("Tried to set a state outside of the range! state = " + state);
         alignment[taxon][position] = state;
     }
 

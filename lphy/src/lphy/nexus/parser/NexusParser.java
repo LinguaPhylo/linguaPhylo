@@ -1,5 +1,6 @@
 package lphy.nexus.parser;
 
+import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.evolution.tree.TimeTree;
@@ -24,6 +25,7 @@ public class NexusParser {
 
     public List<String> taxa; // this will empty if no "taxlabels"
     public SimpleAlignment alignment; // "charset"s stored in DataFrame[] parts
+    public String[] partNames; // select "charset" if any extra exists
 
     public Map<String, Double> taxaAges;
 
@@ -50,8 +52,9 @@ public class NexusParser {
 //    }
 
 
-    public NexusParser(Path nexFile) {
+    public NexusParser(Path nexFile, String[] partNames) {
         this.nexFile = nexFile;
+        this.partNames = partNames;
 
 //        final String fileNameStem = nexFile.getFileName().toString().
 //                replaceAll(".*[\\/\\\\]", "").
@@ -63,6 +66,12 @@ public class NexusParser {
             e.printStackTrace();
         }
     }
+
+    public NexusParser(Path nexFile) {
+        this(nexFile, null);
+    }
+
+
 
     /**
      * parse DataFrame from nexus
@@ -117,12 +126,12 @@ public class NexusParser {
                         lower.matches("^\\s*begin\\s+sets;\\s*$") ||
                         lower.matches("^\\s*begin\\s+mrbayes;\\s*$")) {
                     calibrationsBlockParser.setLineNr(ln);
-                    calibrationsBlockParser.parseAssumptionsBlock(reader); // TODO CharSetAlignment
+                    calibrationsBlockParser.parseAssumptionsBlock(reader); // TODO more
                     ln = calibrationsBlockParser.getLineNr();
 
                     Map<String, List<CharSetBlock>> charsetMap = calibrationsBlockParser.getCharsetMap();
                     if (charsetMap != null) {
-                        alignment.fillinParts(charsetMap);
+                        alignment = new CharSetAlignment(charsetMap, partNames, alignment);
                     }
 
 

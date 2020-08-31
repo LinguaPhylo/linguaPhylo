@@ -1,6 +1,6 @@
 data = dataframe(parts=["noncoding", "coding"], nchar=[200,200], ntaxa=16);
 Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-ψ ~ Coalescent(theta=Θ, n=ntaxa(taxa=data));
+ψ ~ Coalescent(theta=Θ, taxa=data);
 π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 Q = f81(freq=π);
 D1 ~ PhyloCTMC(frame=part(frame=data, name="noncoding"), Q=Q, tree=ψ);

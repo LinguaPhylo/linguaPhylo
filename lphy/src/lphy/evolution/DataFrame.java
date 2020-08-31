@@ -8,6 +8,8 @@ public class DataFrame implements Taxa, NChar {
     protected DataFrame[] parts = null;
     protected int nchar;
 
+    public DataFrame() {  }
+
     public DataFrame(int ntaxa, int nchar) {
         this.ntaxa = ntaxa;
         this.nchar = nchar;
