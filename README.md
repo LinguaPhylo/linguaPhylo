@@ -27,6 +27,7 @@ The first line creates a random variable, λ, that is log-normally distributed. 
 More details on the available tree generative distributions can be found here: 
 
 * [Birth-death generative distributions](lphy/doc/lphy/evolution/birthdeath.md)
+* [Coalescent generative distributions](lphy/doc/lphy/evolution/coalescent.md)
 
 ### LinguaPhylo Studio
 

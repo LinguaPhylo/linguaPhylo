@@ -23,7 +23,7 @@ It is also possible to give explicit taxa labels to the generative distribution:
 
 ## Classic skyline coalescent model
 
-A highly parameteric version of the coalescent is also possible, where a series of theta values are provided, one for each
+A highly parametric version of the coalescent is also possible, where a series of theta values are provided, one for each
 group of consecutive coalescent intervals. If the groupSizes are specified then each coalescent interval is given its
 own population size. The following code would generate a tree of five taxa, since there are four theta values provided:
 
@@ -34,6 +34,16 @@ own population size. The following code would generate a tree of five taxa, sinc
 The theta values are indexed from the present into the past. So the first coalescent interval (starting from the leaves)
 would be generated assuming a population size parameter of 0.1, while the last coalescent interval (culimating at the
 root of the tree) would be generated from a population size parameter of 0.4.
+
+It is also possible to add taxa and/or taxa age information:
+
+```
+taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]); 
+T ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3], taxaAges=taxaAges);
+```
+
+This will produce a serial coalescent tree with three distinct epochs of population size on four taxa with distinct ages.
+
 
 ## Generalized skyline coalescent model
 
