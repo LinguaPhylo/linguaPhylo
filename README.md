@@ -22,6 +22,12 @@ Each of the lines in this specification expresses how a random variable (to the 
 
 The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. As you can see, each of the random variables depends on the last, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
 
+### Tree generative distributions
+
+More details on the available tree generative distributions can be found here: 
+
+* [Birth-death generative distributions](lphy/doc/lphy/evolution/birthdeath.md)
+
 ### LinguaPhylo Studio
 
 Along with the language definition, we also provide software to specify and visualise models as well as simulate data from models defined in LPhy. 
