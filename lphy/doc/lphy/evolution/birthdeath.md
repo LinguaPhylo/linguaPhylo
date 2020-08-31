@@ -8,14 +8,14 @@ so that the number of lineages grows monotonically forward in time.
 
 ## Yule model
 
-In it's simplest form the Yule model has a stopping criterion based on the final number of lineages. The following
-code will generate a random Yule tree with 16 leaf nodes:
+In its simplest form the Yule model has a stopping criterion based on the final number of leaves in the tree. 
+The following code will generate a random Yule tree with 16 leaves:
 
 ```
 ψ ~ Yule(birthRate=1.0, n=16);
 ```
 
-It is also possible to give explicit taxa labels to the generated tree:
+It is also possible to give explicit taxa labels to the generative distribution:
 
 ```
 taxa = 1:16;
