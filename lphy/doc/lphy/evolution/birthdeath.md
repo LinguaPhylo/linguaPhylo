@@ -3,7 +3,7 @@
 This LPHY package describes a family of birth-death-sampling generative distributions that produce TimeTrees.
 
 The simplest model in this package is the one parameter model Yule. The birth rate (lambda) parameter determines at 
-what rate, per unit time, each lineage bifurcates to produce two daughter lineages. This describes a per-birth process,
+what rate, per unit time, each lineage bifurcates to produce two daughter lineages. This describes a pure birth process,
 so that the number of lineages grows monotonically forward in time. 
 
 ## Yule model
