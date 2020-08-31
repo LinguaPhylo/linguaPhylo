@@ -72,6 +72,8 @@ public class AlignmentComponent extends JComponent {
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(100, minimumHeight));
     }
+    // for CharSetAlignment
+    public AlignmentComponent() { }
 
     static boolean getShowTreeInAlignmentViewerIfAvailable() {
         return preferences.getBoolean("showTreeInAlignmentViewerIfAvailable", true);

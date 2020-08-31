@@ -1,7 +1,9 @@
 package lphy.evolution.alignment;
 
 import lphy.evolution.traits.CharSetBlock;
+import lphy.graphicalModel.Value;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -19,7 +21,7 @@ public class CharSetAlignment extends SimpleAlignment {
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames, final SimpleAlignment parentAlignment) {
         this.ntaxa = parentAlignment.ntaxa();
         this.nchar = parentAlignment.nchar();
-        this.alignment = new int[ntaxa][nchar]; // but no seqs
+//        this.alignment = new int[ntaxa][nchar]; // but no seqs
         this.idMap = new TreeMap<>(parentAlignment.idMap);
         fillRevMap(idMap);
 
@@ -109,16 +111,27 @@ public class CharSetAlignment extends SimpleAlignment {
         }
     }
 
-    //*** TODO Override ***//
+    //*** TODO more Override ***//
 
     @Override
     public String toJSON() {
-        if (hasParts())
-            return "TODO";
+        if (hasParts()) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < this.partNames.length; i++) {
+                SimpleAlignment part = (SimpleAlignment) parts[i];
+                builder.append( partNames[i] + " : " );
+                builder.append( part.toJSON() );
+                builder.append("\n");
+            }
+            return builder.toString();
+        }
         return super.toJSON();
     }
 
-
+    @Override
+    public JComponent getComponent(Value<Alignment> value) {
+        return new JLabel(toString());
+    }
 
 
 
