@@ -11,17 +11,25 @@ import java.util.*;
  */
 public class CharSetAlignment extends SimpleAlignment {
 
-    Map<String, List<CharSetBlock>> charsetMap;
+//    Map<String, List<CharSetBlock>> charsetMap;
 
 
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final SimpleAlignment parentAlignment) {
         this(charsetMap, null, parentAlignment);
     }
 
-    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames, final SimpleAlignment parentAlignment) {
+    /**
+     * Multiple partitions. The sequences <code>int[][]</code> will be stored in each of parts,
+     * <code>DataFrame[] parts = SimpleAlignment[]</code>. <code>int[][] this.alignment = null</code>.
+     * @param charsetMap      key is part (charset) name, value is the list of {@link CharSetBlock}.
+     * @param partNames       if not null, then only choose these names from <code>charsetMap.
+     * @param parentAlignment parent alignment before partitioning.
+     */
+    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
+                            final SimpleAlignment parentAlignment) {
         this.ntaxa = parentAlignment.ntaxa();
         this.nchar = parentAlignment.nchar();
-//        this.alignment = new int[ntaxa][nchar]; // but no seqs
+        // int[][] alignment = null
         this.idMap = new TreeMap<>(parentAlignment.idMap);
         fillRevMap(idMap);
 
@@ -33,7 +41,7 @@ public class CharSetAlignment extends SimpleAlignment {
 
     protected void initParts(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames) {
         assert charsetMap != null;
-        this.charsetMap = charsetMap;
+//        this.charsetMap = charsetMap;
 
         // sort names
         SortedSet<String> nameSet = new TreeSet<>();
@@ -111,7 +119,7 @@ public class CharSetAlignment extends SimpleAlignment {
         }
     }
 
-    //*** TODO more Override ***//
+    //*** TODO more Override ? ***//
 
     @Override
     public String toJSON() {
@@ -130,11 +138,25 @@ public class CharSetAlignment extends SimpleAlignment {
 
     @Override
     public JComponent getComponent(Value<Alignment> value) {
-        return new JLabel(toString());
+        return new JLabel(toString()); // avoid to show, because int[][] alignment = null
     }
 
 
+    @Override
+    public int getState(int taxon, int position) {
+        throw new UnsupportedOperationException("in dev");
+//        return super.getState(taxon, position); // difficult to map parent alignment position
+    }
 
+    @Override
+    public int n() {
+        return ((SimpleAlignment) parts[0]).n();
+    }
+
+    @Override
+    public int L() {
+        return Arrays.stream(parts).mapToInt( a -> ((SimpleAlignment) a).L()).sum();
+    }
 
 //    private int[] filter(List<CharSetBlock> charSetBlocks, int[] parentSeq) {
 //        List<Integer> filtered = new ArrayList<>();

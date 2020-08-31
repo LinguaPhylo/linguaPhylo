@@ -82,11 +82,11 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 
-    public final int n() {
+    public int n() {
         return alignment.length;
     }
 
-    public final int L() {
+    public int L() {
         return alignment[0].length;
     }
 
