@@ -1,7 +1,7 @@
 package lphy.core.functions;
 
 import lphy.evolution.alignment.CharSetAlignment;
-import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 /**
  * data = nexus(file="primate-mtDNA.nex");
  */
-public class Nexus extends DeterministicFunction<SimpleAlignment> {
+public class Nexus extends DeterministicFunction<Alignment> {
 
     private final String fileParamName;
     private final String partsParamName;
@@ -33,14 +33,14 @@ public class Nexus extends DeterministicFunction<SimpleAlignment> {
     }
 
     @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
-    public Value<SimpleAlignment> apply() {
+    public Value<Alignment> apply() {
 
         Value<String> fileName = getParams().get(fileParamName);
         Path nexFile = Paths.get(fileName.value());
 
         Value<String[]> parts = getParams().get(partsParamName);
 
-        SimpleAlignment alignment;
+        Alignment alignment;
         if (parts != null) {
             alignment = parseNexus(nexFile, parts.value());
         } else {
@@ -50,9 +50,9 @@ public class Nexus extends DeterministicFunction<SimpleAlignment> {
         return new Value<>(alignment, this);
     }
 
-    private SimpleAlignment parseNexus(Path nexFile, String[] value) {
+    private Alignment parseNexus(Path nexFile, String[] value) {
         final NexusParser parser = new NexusParser(nexFile, value);
-        SimpleAlignment alignment = parser.alignment;
+        Alignment alignment = parser.alignment;
 
         if (alignment.hasParts()) return (CharSetAlignment) alignment;
         return alignment;

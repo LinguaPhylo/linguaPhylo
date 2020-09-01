@@ -89,6 +89,19 @@ public abstract class DataType {
 
     }
 
+    /**
+     * @param numStates  Not counting ambiguous characters
+     * @return
+     */
+    public static DataType guessDataType(int numStates) {
+        switch (numStates) {
+            case 2: return TwoStates.INSTANCE;
+            case 4: return Nucleotides.INSTANCE;
+            case 20: return AminoAcids.INSTANCE;
+            default: return Standard.INSTANCE; //TODO Standard(nrOfState)?
+        }
+    }
+
 
     /**
      * return the set of valid chars if they are defined, if not defined then return null
@@ -327,42 +340,5 @@ public abstract class DataType {
         return getType();
     }
 
-
-    /**
-     * returns the uncorrected distance between two states
-     */
-//    public double getObservedDistance(int state1, int state2) {
-//        if (!isAmbiguousState(state1) && !isAmbiguousState(state2) && state1 != state2) {
-//            return 1.0;
-//        }
-//
-//        return 0.0;
-//    }
-
-    /**
-     * returns the uncorrected distance between two states with full
-     * treatment of ambiguity.
-     */
-//    public double getObservedDistanceWithAmbiguity(int state1, int state2) {
-//        boolean[] stateSet1 = getStateSet(state1);
-//        boolean[] stateSet2 = getStateSet(state2);
-//
-//        double sumMatch = 0.0;
-//        double sum1 = 0.0;
-//        double sum2 = 0.0;
-//        for (int i = 0; i < stateCount; i++) {
-//            if (stateSet1[i]) {
-//                sum1 += 1.0;
-//                if (stateSet1[i] == stateSet2[i]) {
-//                    sumMatch += 1.0;
-//                }
-//            }
-//            if (stateSet2[i]) {
-//                sum2 += 1.0;
-//            }
-//        }
-//
-//        return (1.0 - (sumMatch / (sum1 * sum2)));
-//    }
 
 }

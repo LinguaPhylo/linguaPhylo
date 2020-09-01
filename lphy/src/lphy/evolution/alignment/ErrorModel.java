@@ -67,7 +67,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
 
         for (int i = 0; i < newAlignment.n(); i++) {
             for (int j = 0; j < newAlignment.L(); j++) {
-                newAlignment.setState(i, j, error(original.getState(i, j), a, b));
+                newAlignment.setState(i, j, error(original.getState(i, j), a, b), false);
             }
         }
 

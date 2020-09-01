@@ -1,18 +1,22 @@
 package lphy.evolution.likelihood;
 
-import lphy.evolution.DataFrame;
-import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.tree.TimeTree;
-import lphy.evolution.tree.TimeTreeNode;
-import lphy.evolution.alignment.Alignment;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
+import lphy.evolution.DataFrame;
+import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.datatype.DataType;
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
-import java.util.*;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created by adru001 on 2/02/20.
@@ -197,7 +201,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         int length = checkCompatibilities();
 
-        Alignment a = new Alignment(tree.value().n(), length, idMap, transProb.length);
+//        Alignment a = new Alignment(tree.value().n(), length, idMap, transProb.length);
+        DataType dataType = DataType.guessDataType(transProb.length);
+        Alignment a = new Alignment(tree.value().n(), length, idMap, dataType);
 
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
 
@@ -216,10 +222,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     // TODO need smarter replacing method
     // replace alg and taxa in tre into those retrieved from frame
     public void clamp(Alignment alg) {
-        if (frame == null || ! (frame.value() instanceof SimpleAlignment) )
+        if (frame == null || ! (frame.value() instanceof Alignment) )
             throw new IllegalArgumentException("Clamping needs SimpleAlignment in dataframe ! " + frame);
 
-        alg = (SimpleAlignment) frame.value();
+        alg = (Alignment) frame.value();
     }
 
 
@@ -282,7 +288,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     private void traverseTree(TimeTreeNode node, int nodeState, Alignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
 
         if (node.isLeaf()) {
-            alignment.setState(node.getLeafIndex(), pos, nodeState);
+            alignment.setState(node.getLeafIndex(), pos, nodeState, false);
         } else {
             List<TimeTreeNode> children = node.getChildren();
             for (int i = 0; i < children.size(); i++) {
