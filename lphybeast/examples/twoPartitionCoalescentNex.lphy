@@ -1,0 +1,9 @@
+data = nexus(file="primate-mtDNA.nex", parts=["noncoding", "coding"]);
+coding = part(frame=data, name="coding");
+noncoding = part(frame=data, name="noncoding");
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+ψ ~ Coalescent(theta=Θ, taxa=data);
+π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+Q = f81(freq=π);
+D1 ~ PhyloCTMC(frame=coding, Q=Q, tree=ψ, clamp=true);
+D2 ~ PhyloCTMC(frame=noncoding, Q=Q, tree=ψ, clamp=true);

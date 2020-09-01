@@ -9,34 +9,37 @@ import java.util.*;
 /**
  * @author Walter Xie
  */
-public class CharSetAlignment extends SimpleAlignment {
+public class CharSetAlignment extends Alignment {
 
 //    Map<String, List<CharSetBlock>> charsetMap;
 
-
-    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final SimpleAlignment parentAlignment) {
-        this(charsetMap, null, parentAlignment);
-    }
+//    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final Alignment parentAlignment) {
+//        this(charsetMap, null, parentAlignment);
+//    }
 
     /**
      * Multiple partitions. The sequences <code>int[][]</code> will be stored in each of parts,
-     * <code>DataFrame[] parts = SimpleAlignment[]</code>. <code>int[][] this.alignment = null</code>.
+     * <code>DataFrame[] parts = Alignment[]</code>. <code>int[][] this.alignment = null</code>.
      * @param charsetMap      key is part (charset) name, value is the list of {@link CharSetBlock}.
      * @param partNames       if not null, then only choose these names from <code>charsetMap.
      * @param parentAlignment parent alignment before partitioning.
      */
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
-                            final SimpleAlignment parentAlignment) {
+                            final Alignment parentAlignment) {
+        initAlignment(parentAlignment);
+
+        initParts(charsetMap, partNames);
+        fillinParts(charsetMap, parentAlignment);
+    }
+
+    protected void initAlignment(Alignment parentAlignment) {
         this.ntaxa = parentAlignment.ntaxa();
         this.nchar = parentAlignment.nchar();
         // int[][] alignment = null
         this.idMap = new TreeMap<>(parentAlignment.idMap);
-        fillRevMap(idMap);
+        fillRevMap();
 
         this.dataType = parentAlignment.getDataType();
-
-        initParts(charsetMap, partNames);
-        fillinParts(charsetMap, parentAlignment);
     }
 
     protected void initParts(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames) {
@@ -56,12 +59,12 @@ public class CharSetAlignment extends SimpleAlignment {
         }
         this.partNames = nameSet.toArray(new String[0]);
         partNChar = new Integer[this.partNames.length];
-        parts = new SimpleAlignment[this.partNames.length];
+        parts = new Alignment[this.partNames.length];
     }
 
-    //*** DataFrame[] parts are SimpleAlignment with sequences ***//
+    //*** DataFrame[] parts are Alignment with sequences ***//
 
-    protected void fillinParts(Map<String, List<CharSetBlock>> charsetMap, final SimpleAlignment parentAlignment) {
+    protected void fillinParts(Map<String, List<CharSetBlock>> charsetMap, final Alignment parentAlignment) {
         // by name
         int tot = 0;
         for (int i = 0; i < this.partNames.length; i++) {
@@ -71,10 +74,10 @@ public class CharSetAlignment extends SimpleAlignment {
 
             partNChar[i] = getFilteredNChar(charSetBlocks, this.nchar);
             tot += partNChar[i];
-            parts[i] = new SimpleAlignment(this.ntaxa, partNChar[i], this.idMap, this.dataType);
+            parts[i] = new Alignment(this.ntaxa, partNChar[i], this.idMap, this.dataType);
 
             // fill filtered seqs
-            fillSeqsInParts(charSetBlocks, (SimpleAlignment) parts[i], parentAlignment);
+            fillSeqsInParts(charSetBlocks, (Alignment) parts[i], parentAlignment);
         }
 
         // sometime there are extra charsets
@@ -99,8 +102,8 @@ public class CharSetAlignment extends SimpleAlignment {
         return s;
     }
 
-    private void fillSeqsInParts(List<CharSetBlock> charSetBlocks, SimpleAlignment part,
-                                 final SimpleAlignment parentAlignment) {
+    private void fillSeqsInParts(List<CharSetBlock> charSetBlocks, Alignment part,
+                                 final Alignment parentAlignment) {
         for (int t=0; t < this.ntaxa; t++) {
             int pos = 0;
             for (CharSetBlock block : charSetBlocks) {
@@ -111,7 +114,7 @@ public class CharSetAlignment extends SimpleAlignment {
                 for (int i = block.getFrom(); i <= toSite; i += block.getEvery()) {
                     // the -1 comes from the fact that charsets are indexed from 1 whereas strings are indexed from 0
                     int state = parentAlignment.getState(t,(i - 1));
-                    part.setState(t, pos, state);
+                    part.setState(t, pos, state, true);
                     pos++;
                 }
             }
@@ -126,7 +129,7 @@ public class CharSetAlignment extends SimpleAlignment {
         if (hasParts()) {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < this.partNames.length; i++) {
-                SimpleAlignment part = (SimpleAlignment) parts[i];
+                Alignment part = (Alignment) parts[i];
                 builder.append( partNames[i] + " : " );
                 builder.append( part.toJSON() );
                 builder.append("\n");
@@ -150,12 +153,12 @@ public class CharSetAlignment extends SimpleAlignment {
 
     @Override
     public int n() {
-        return ((SimpleAlignment) parts[0]).n();
+        return ((Alignment) parts[0]).n();
     }
 
     @Override
     public int L() {
-        return Arrays.stream(parts).mapToInt( a -> ((SimpleAlignment) a).L()).sum();
+        return Arrays.stream(parts).mapToInt( a -> ((Alignment) a).L()).sum();
     }
 
 //    private int[] filter(List<CharSetBlock> charSetBlocks, int[] parentSeq) {

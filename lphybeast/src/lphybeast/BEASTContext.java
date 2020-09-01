@@ -16,6 +16,7 @@ import beast.util.XMLProducer;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.Dirichlet;
 import lphy.core.distributions.RandomComposition;
+import lphy.evolution.alignment.CharSetAlignment;
 import lphy.graphicalModel.*;
 import lphybeast.tobeast.generators.*;
 import lphybeast.tobeast.values.*;
@@ -50,23 +51,36 @@ public class BEASTContext {
 
     public BEASTContext(LPhyParser phyParser) {
         parser = phyParser;
-        // simulated alignment
-        valueToBEASTMap.put(lphy.evolution.alignment.Alignment.class, new AlignmentToBEAST());
-        valueToBEASTMap.put(lphy.evolution.tree.TimeTree.class, new TimeTreeToBEAST());
-        init();
+        registerValues();
+        registerGenerators();
     }
 
-    private void init() {
-        valueToBEASTMap.put(Map.class, new MapValueToBEAST());
-        valueToBEASTMap.put(Double.class, new DoubleValueToBEAST());
-        valueToBEASTMap.put(Double[].class, new DoubleArrayValueToBEAST());
-        valueToBEASTMap.put(Double[][].class, new DoubleArray2DValueToBEAST());
-        valueToBEASTMap.put(Integer.class, new IntegerValueToBEAST());
-        valueToBEASTMap.put(Integer[].class, new IntegerArrayValueToBEAST());
-        valueToBEASTMap.put(Boolean[].class, new BooleanArrayValueToBEAST());
-        valueToBEASTMap.put(Boolean.class, new BooleanValueToBEAST());
+    private void registerValues() {
+        final Class[] valuesToBEASTs = {
+                AlignmentToBEAST.class, // simulated alignment
+                TimeTreeToBEAST.class,
+                MapValueToBEAST.class,
+                DoubleValueToBEAST.class,
+                DoubleArrayValueToBEAST.class,
+                DoubleArray2DValueToBEAST.class,
+                IntegerValueToBEAST.class,
+                IntegerArrayValueToBEAST.class,
+                BooleanArrayValueToBEAST.class,
+                BooleanValueToBEAST.class
+        };
 
-        Class[] generatorToBEASTs = {
+        for (Class c : valuesToBEASTs) {
+            try {
+                ValueToBEAST valueToBEAST = (ValueToBEAST) c.newInstance();
+                valueToBEASTMap.put(valueToBEAST.getValueClass(), valueToBEAST);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerGenerators() {
+        final Class[] generatorToBEASTs = {
                 BernoulliMultiToBEAST.class,
                 BetaToBEAST.class,
                 BirthDeathSampleTreeDTToBEAST.class,
@@ -99,9 +113,7 @@ public class BEASTContext {
             try {
                 GeneratorToBEAST generatorToBEAST = (GeneratorToBEAST) c.newInstance();
                 generatorToBEASTMap.put(generatorToBEAST.getGeneratorClass(), generatorToBEAST);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -215,7 +227,8 @@ public class BEASTContext {
             for (Class c : valueToBEASTMap.keySet()) {
                 if (c.isAssignableFrom(val.value().getClass())) {
                     toBEAST = valueToBEASTMap.get(c);
-                    beastValue = toBEAST.valueToBEAST(val, this);
+                    if (! (val.value() instanceof CharSetAlignment))
+                        beastValue = toBEAST.valueToBEAST(val, this);
                 }
             }
         }

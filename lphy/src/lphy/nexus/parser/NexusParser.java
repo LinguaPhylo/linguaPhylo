@@ -1,7 +1,7 @@
 package lphy.nexus.parser;
 
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
-import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.evolution.tree.TimeTree;
 
@@ -24,7 +24,7 @@ public class NexusParser {
     final protected Path nexFile; // lock to 1 file now
 
     public List<String> taxa; // this will empty if no "taxlabels"
-    public SimpleAlignment alignment; // "charset"s stored in DataFrame[] parts
+    public Alignment alignment; // "charset"s stored in DataFrame[] parts
     public String[] partNames; // select "charset" if any extra exists
 
     public Map<String, Double> taxaAges;
@@ -206,7 +206,7 @@ public class NexusParser {
                 System.out.println(Arrays.toString(parser.taxa.toArray(new String[parser.taxa.size()])));
             }
             if (parser.alignment != null) {
-                SimpleAlignment alignment = parser.alignment;
+                Alignment alignment = parser.alignment;
                 System.out.println(alignment.toJSON());
             }
             if (parser.taxaAges != null) {

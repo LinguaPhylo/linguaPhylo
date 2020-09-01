@@ -1,7 +1,5 @@
 package lphy.evolution.alignment;
 
-import lphy.evolution.alignment.Alignment;
-
 import java.util.Map;
 
 /**
@@ -12,7 +10,7 @@ public class ErrorAlignment extends Alignment {
     Alignment parent;
 
     public ErrorAlignment(int taxa, int length, Map<String, Integer> idMap, Alignment parent) {
-        super(taxa, length, idMap, parent.numStates);
+        super(taxa, length, idMap, parent.getDataType());
 
         this.parent = parent;
     }

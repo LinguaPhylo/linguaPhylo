@@ -1,6 +1,6 @@
 package lphy.nexus.parser;
 
-import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.datatype.DataType;
 import lphy.utils.LoggerUtils;
 
@@ -71,7 +71,7 @@ public class DataBlockParser extends NexusBlockParser {
     /**
      * parse data block and create Alignment *
      */
-    public SimpleAlignment parseDataBlock(final BufferedReader fin) throws IOException {
+    public Alignment parseDataBlock(final BufferedReader fin) throws IOException {
 
         String str;
         int ntax = -1;
@@ -244,7 +244,7 @@ public class DataBlockParser extends NexusBlockParser {
         }
 //        seqLen = seqMap.get(taxa.get(0)).length(); // ? seqLen != nchar here
 //        alignment[idMap.get(taxon)][position] = state;
-        final SimpleAlignment alignment = new SimpleAlignment(ntax, nchar, idMap, dataType);
+        final Alignment alignment = new Alignment(ntax, nchar, idMap, dataType);
         //****** create alignment above ******//
 
 
@@ -283,7 +283,7 @@ public class DataBlockParser extends NexusBlockParser {
             for (int i = 0; i < sequence.length(); i++){
                 char c = sequence.charAt(i);
                 int state = dataType.getState(c);
-                alignment.setState(taxon, i, state);
+                alignment.setState(taxon, i, state, true);
             }
 
         }
