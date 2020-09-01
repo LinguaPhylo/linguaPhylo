@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * Discretized Gamma distribution
  */
@@ -15,7 +17,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     private final String shapeParamName;
     private final String ncatParamName;
     private final String repsParamName;
-    private Value<Double> shape;
+    private Value<Number> shape;
     private Value<Integer> ncat;
     private Value<Integer> reps;
 
@@ -23,9 +25,9 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     double[] rates;
 
 
-    public DiscretizedGamma(@ParameterInfo(name = "shape", description = "the shape of the discretized gamma distribution.", type=Double.class) Value<Double> shape,
-                            @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.", type=Integer.class) Value<Integer> ncat,
-                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.", type=Integer.class, optional = true) Value<Integer> reps) {
+    public DiscretizedGamma(@ParameterInfo(name = "shape", description = "the shape of the discretized gamma distribution.") Value<Number> shape,
+                            @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.") Value<Integer> ncat,
+                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.", optional = true) Value<Integer> reps) {
 
         this.shape = shape;
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
@@ -78,8 +80,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     }
 
     private void constructGammaDistribution() {
-        // in case the shape is type integer
-        double sh = ((Number) shape.value()).doubleValue();
+        double sh = doubleValue(shape);
 
         gammaDistribution = new GammaDistribution(sh, 1.0/sh);
 

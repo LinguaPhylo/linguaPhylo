@@ -1,11 +1,11 @@
 package lphy.evolution;
 
-import lphy.graphicalModel.Multidimensional;
+import lphy.graphicalModel.MultiDimensional;
 
 /**
  * An interface that taxa-dimensioned objects with age information.
  */
-public interface TaxaAges extends Taxa, Multidimensional {
+public interface TaxaAges extends Taxa, MultiDimensional {
 
     /**
      * @return the ages of the taxa in the same order as the taxa.

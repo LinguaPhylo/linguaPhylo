@@ -126,7 +126,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (L != null) return L.value();
         if (frame != null) return frame.value().nchar();
         if (siteRates != null) return siteRates.value().length;
-        throw new RuntimeException("One of " + LParamName + ", " + frame + " or " + siteRatesParamName + " must be specified.");
+        throw new RuntimeException("One of " + LParamName + ", " + frameParamName + " or " + siteRatesParamName + " must be specified.");
     }
 
     @Override

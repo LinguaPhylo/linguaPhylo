@@ -1,6 +1,5 @@
 package lphy.app.graphicalmodelcomponent;
 
-import lphy.evolution.tree.TimeTree;
 import lphy.evolution.alignment.Alignment;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
@@ -107,7 +106,7 @@ public class LayeredGNode extends LayeredNode.Default {
     }
 
     private boolean multiDimensional(Object v) {
-        return (v instanceof Multidimensional || v instanceof Map || v instanceof Alignment || v.getClass().isArray());
+        return (v instanceof MultiDimensional || v instanceof Map || v instanceof Alignment || v.getClass().isArray());
     }
 
     private void createValueButton() {

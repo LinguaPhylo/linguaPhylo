@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-public interface Multidimensional {
+public interface MultiDimensional {
 
     int getDimension();
 }
