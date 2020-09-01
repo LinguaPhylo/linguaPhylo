@@ -26,6 +26,11 @@ public class TaxaAgesFunction extends DeterministicFunction<TaxaAges> {
 
         TaxaAges taxaAges = new TaxaAges() {
             @Override
+            public int getDimension() {
+                return ntaxa();
+            }
+
+            @Override
             public Double[] getAges() {
                 return ages.value();
             }

@@ -38,7 +38,7 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
                                      " number of taxa. By default all group sizes are 1 which is equivalent to the" +
                                      " classic skyline coalescent.", optional=true) Value<Integer[]> groupSizes,
                              @ParameterInfo(name = "n", description = "number of taxa.", optional = true) Value<Integer> n,
-                             @ParameterInfo(name = "taxaAges", description = "TaxaAges object, including  time tree", optional = true) Value<TaxaAges> taxaAges,
+                             @ParameterInfo(name = "taxaAges", description = "TaxaAges object, (e.g. TaxaAges or TimeTree)", optional = true) Value<TaxaAges> taxaAges,
                              @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
 
         super(n, taxaAges);
@@ -60,7 +60,7 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
             throw new IllegalArgumentException("One one of " + nParamName + ", " + agesParamName + " and " + taxaParamName + " may be specified in " + getName());
         }
         checkThetaDimensions();
-        super.checkTaxaParameters(true);
+        super.checkTaxaParameters(false);
         checkDimensions();
     }
 

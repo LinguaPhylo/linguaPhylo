@@ -14,7 +14,14 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     protected String nParamName;
     protected String taxaParamName;
 
+    /**
+     * A value holding the number of taxa.
+     */
     protected Value<Integer> n;
+
+    /**
+     * A value holding the taxa, either as a class implementing Taxa interface, or as an Object[]
+     */
     protected Value taxa;
 
     protected RandomGenerator random;
@@ -24,6 +31,10 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
         this.taxa = taxa;
     }
 
+    /**
+     * Tests whether the values n and taxa are valid.
+     * @param atLeastOneRequired
+     */
     protected void checkTaxaParameters(boolean atLeastOneRequired) {
         if (atLeastOneRequired && taxa == null && n == null) {
             throw new IllegalArgumentException("At least one of " + nParamName + ", " + taxaParamName + " must be specified.");
