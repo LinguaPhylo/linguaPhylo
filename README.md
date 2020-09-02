@@ -29,6 +29,13 @@ More details on the available tree generative distributions can be found here:
 * [Birth-death generative distributions](lphy/doc/lphy/evolution/birthdeath.md)
 * [Coalescent generative distributions](lphy/doc/lphy/evolution/coalescent.md)
 
+### Models of evolutionary rates and sequence evolution
+
+You can read more details about the PhyloCTMC generative distribution and how to specify substitution models, 
+site rates and branch rates here:
+
+* [PhyloCTMC generative distribution](lphy/doc/lphy/evolution/likelihood.md)
+
 ### LinguaPhylo Studio
 
 Along with the language definition, we also provide software to specify and visualise models as well as simulate data from models defined in LPhy. 
