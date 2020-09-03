@@ -24,7 +24,7 @@ In this paper we describe two related project, LinguaPhylo (LPhy for short) and 
 
 LinguaPhylo is a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a {\it lingua franca} for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is an example:
 
-\begin{minted}{Jags}
+\begin{minted}{Stan}
 lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
 tree ~ Yule(birthRate=lambda, n=16);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=tree);
@@ -34,17 +34,116 @@ Each of the lines in this specification expresses how a random variable (to the 
 
 The first line creates a random variable (\texttt{lambda}), that is log-normally distributed. The second line creates a tree (\texttt{tree}) with 16 taxa from the Yule process with a lineage birth rate equal to \texttt{lambda}. The third line produces a multiple sequence alignment (\texttt{D}) with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branches of  \texttt{tree}. As you can see, each of the random variables depends on the previous, so this is a hierarchical model that ultimately defines a probability distribution over sequence alignments of size $16 \times 200$.
 
-\subsection{Tree generative distributions}
+\section{Tree generative distributions}
 
-There are many statistical programming languages such as JAGS, BUGS and Stan that provide the possibility of succinctly describing statistical models. The unique feature of phylogenetic analysis the phylogenetic tree. This is a complex high-dimensional object, part discrete, part continuous. There is no bijection between tree space and Euclidean space, so it can not be treated with standard statistical distributions. As a result specialist software is needed to perform inference.
+There are many statistical programming languages such as Stan, BUGS and Stan that provide the possibility of succinctly describing statistical models. The unique feature of phylogenetic analysis is the phylogenetic tree. This is a complex high-dimensional object, part discrete, part continuous. There is no bijection between tree space and Euclidean space, so it can not be treated with standard statistical distributions. As a result specialist software is needed to perform inference.
 
-The aim of LPhy is describe the standard phylogenetic tree distributions succinctly and precisely. 
+The aim of LPhy is describe the standard phylogenetic tree distributions succinctly and precisely.
+
+\subsection{Coalescent generative distributions for time trees}
+
+LPhy has describes a family of coalescent generative distributions that produce TimeTrees.
+
+The simplest model in this package is the one parameter model constant-population size coalescent.
+The generation-time-scaled population size parameter (theta) parameter determines at
+what rate, per unit time, a pair of lineages coalesce, backwards in time.
+
+\subsubsection{Constant population size coalescent model}
+
+In its simplest form (Kingman; 1981) the coalescent model produces a tree on a fixed number of leaves based on a population size
+parameter (theta):
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, n=16);
+\end{minted}
+
+It is also possible to give explicit taxa labels to the generative distribution:
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, taxa=["a", "b", "c", "d"]);
+\end{minted}
+
+It is also possible to handle serially-sampled (time-stamped) data by adding ages. There are two ways to do that:
+
+Ages without taxa names:
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, ages=[0.0, 0.1, 0.2, 0.3]);
+\end{minted}
+
+Ages and taxa names:
+
+\begin{minted}{Stan}
+taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
+g ~ Coalescent(theta=0.1, taxaAges=taxaAges);
+\end{minted}
+
+
+
+\subsubsection{Classic skyline coalescent model}
+
+A highly parametric version of the coalescent is also possible, where a series of theta values are provided, one for each
+group of consecutive coalescent intervals. If the groupSizes are specified then each coalescent interval is given its
+own population size. The following code would generate a tree of five taxa, since there are four theta values provided:
+
+\begin{minted}{Stan}
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4]);
+\end{minted}
+
+The theta values are indexed from the present into the past. So the first coalescent interval (starting from the leaves)
+would be generated assuming a population size parameter of 0.1, while the last coalescent interval (culimating at the
+root of the tree) would be generated from a population size parameter of 0.4.
+
+It is also possible to add taxa and/or taxa age information:
+
+\begin{minted}{Stan}
+taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3], taxaAges=taxaAges);
+\end{minted}
+
+This will produce a serial coalescent tree with three distinct epochs of population size on four taxa with distinct ages.
+
+
+\subsubsection{Generalized skyline coalescent model}
+
+The following generative distribution call will produce a tree of size n=11 taxa, since 4+3+2+1=10= coalescent intervals.
+The first four intervals will all have theta=0.1, the next three will have theta=0.2, the next two will have theta=0.3,
+and the last coalescent interval will have theta=0.4:
+
+\begin{minted}{Stan}
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
+\end{minted}
+
+\subsubsection{Structured coalescent}
+
+A structured coalescent process takes a migration matrix (M) with population sizes of each deme on the diagonal:
+For K demes, theta is an K-tuple and the dimension of m is $K^2 - K$. $n$ is a tuple of sample sizes, one
+dimension for each deme:
+
+\begin{minted}{Stan}
+M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
+g ~ StructuredCoalescent(M=M, n=[15, 15]);
+\end{minted}
+
+\subsubsection{Multispecies coalescent}
+
+This model allows for gene tree-species tree discordance, and is a hierarchical model of phylogeny. A simple
+multispecies coalescent model has one distribution define a species tree, and a second distribution define a gene tree
+based on the species tree:
+
+\begin{minted}{Stan}
+S ~ Yule(birthRate=5, n=4);
+theta = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+g ~ MultispeciesCoalescent(theta=theta, n=[2, 2, 2, 2], S=S);
+\end{minted}
+
+Each branch in the species tree has its own theta value. The n value describes how many individuals are represented in
+the gene tree for each species. It is a tuple of integers with length equal to the number of species in the species
+tree.
 
 \subsection{Models of evolutionary rates and sequence evolution}
 
 Another key distribution necessary to perform phylogenetic inference is the phylogenetic continuous-time Markov process and its inference equivalent the phylogenetic likelihood. 
-
-
 
 
 \subsection{LinguaPhylo Studio}
