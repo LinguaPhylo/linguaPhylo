@@ -1,11 +1,11 @@
 package lphy.evolution.alignment;
 
+import jebl.evolution.sequences.DataType;
+import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
 import lphy.evolution.DataFrame;
 import lphy.evolution.Taxa;
-import lphy.evolution.alignment.datatype.DataType;
-import lphy.evolution.alignment.datatype.TwoStates;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
 
-    DataType dataType; // encapsulate stateCount, ambiguousState, and getChar() ...
+    SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
     @Deprecated
     // for simulators
@@ -33,19 +33,19 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         fillRevMap();
 
         alignment = new int[ntaxa][nchar];
-        dataType = DataType.guessDataType(numStates);
+        sequenceType = DataType.guessSequenceType(numStates);
     }
 
     // for inheritance
     public Alignment() {  }
 
-    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, DataType dataType) {
+    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, SequenceType sequenceType) {
         super(ntaxa, nchar);
         this.idMap = idMap;
         fillRevMap();
 
         alignment = new int[ntaxa][nchar];
-        this.dataType = dataType;
+        this.sequenceType = sequenceType;
     }
 
     // for inheritance
@@ -75,9 +75,9 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
      */
     public void setState(int taxon, int position, int state, boolean ambiguous) {
 
-        if (state < 0 || state > dataType.getStateCount()-1) {
-            if (ambiguous && state < dataType.getAmbiguousStateCount())
-                System.err.println("There is ambiguous state " + state + " = " + dataType.getChar(state));
+        if (state < 0 || state > sequenceType.getStateCount()-1) {
+            if (ambiguous && state < sequenceType.getStateCount())
+                System.err.println("There is ambiguous state " + state + " = " + sequenceType.getState(state));
             else
                 throw new IllegalArgumentException("Tried to set a state outside of the range! state = " + state);
         }
@@ -95,7 +95,7 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     @Override
     public JComponent getComponent(Value<Alignment> value) {
 
-        if (dataType instanceof TwoStates)
+        if ( DataType.isSame(DataType.BINARY, sequenceType) )
             return new AlignmentComponent(value, AlignmentComponent.BINARY_COLORS);
         else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
@@ -133,12 +133,12 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         return L();
     }
 
-    public DataType getDataType() {
-        return dataType;
+    public SequenceType getSequenceType() {
+        return sequenceType;
     }
 
     public String getDataTypeDescription() {
-        return dataType.getDescription();
+        return sequenceType.getName();
     }
 
     public String[] getTaxaNames() {
@@ -152,7 +152,7 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     public String getSequence(int taxonIndex) {
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
-            builder.append(dataType.getChar(alignment[taxonIndex][j]));
+            builder.append(sequenceType.getState(alignment[taxonIndex][j]));
         }
         return builder.toString();
     }

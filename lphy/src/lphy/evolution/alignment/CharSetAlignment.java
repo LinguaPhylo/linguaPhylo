@@ -39,7 +39,7 @@ public class CharSetAlignment extends Alignment {
         this.idMap = new TreeMap<>(parentAlignment.idMap);
         fillRevMap();
 
-        this.dataType = parentAlignment.getDataType();
+        this.sequenceType = parentAlignment.getSequenceType();
     }
 
     protected void initParts(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames) {
@@ -74,7 +74,7 @@ public class CharSetAlignment extends Alignment {
 
             partNChar[i] = getFilteredNChar(charSetBlocks, this.nchar);
             tot += partNChar[i];
-            parts[i] = new Alignment(this.ntaxa, partNChar[i], this.idMap, this.dataType);
+            parts[i] = new Alignment(this.ntaxa, partNChar[i], this.idMap, this.sequenceType);
 
             // fill filtered seqs
             fillSeqsInParts(charSetBlocks, (Alignment) parts[i], parentAlignment);

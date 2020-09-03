@@ -1,12 +1,12 @@
 package lphy.core.functions;
 
-import lphy.evolution.alignment.CharSetAlignment;
+import jebl.evolution.io.NexusParser;
 import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.CharSetAlignment;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.nexus.parser.NexusParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,8 +51,9 @@ public class Nexus extends DeterministicFunction<Alignment> {
     }
 
     private Alignment parseNexus(Path nexFile, String[] value) {
-        final NexusParser parser = new NexusParser(nexFile, value);
-        Alignment alignment = parser.alignment;
+        final NexusParser parser = new NexusParser(nexFile);
+
+        Alignment alignment = parser.getLPhyAlignment(value);
 
         if (alignment.hasParts()) return (CharSetAlignment) alignment;
         return alignment;

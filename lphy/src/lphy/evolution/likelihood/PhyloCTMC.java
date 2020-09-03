@@ -1,10 +1,11 @@
 package lphy.evolution.likelihood;
 
+import jebl.evolution.sequences.DataType;
+import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.DataFrame;
 import lphy.evolution.alignment.Alignment;
-import lphy.evolution.alignment.datatype.DataType;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
@@ -202,7 +203,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         int length = checkCompatibilities();
 
 //        Alignment a = new Alignment(tree.value().n(), length, idMap, transProb.length);
-        DataType dataType = DataType.guessDataType(transProb.length);
+        SequenceType dataType = DataType.guessSequenceType(transProb.length);
         Alignment a = new Alignment(tree.value().n(), length, idMap, dataType);
 
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
@@ -288,7 +289,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     private void traverseTree(TimeTreeNode node, int nodeState, Alignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
 
         if (node.isLeaf()) {
-            alignment.setState(node.getLeafIndex(), pos, nodeState, false);
+            alignment.setState(node.getLeafIndex(), pos, nodeState, false); // no ambiguous state
         } else {
             List<TimeTreeNode> children = node.getChildren();
             for (int i = 0; i < children.size(); i++) {

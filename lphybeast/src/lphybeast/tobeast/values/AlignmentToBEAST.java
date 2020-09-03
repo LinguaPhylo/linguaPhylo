@@ -1,10 +1,12 @@
 package lphybeast.tobeast.values;
 
 import beast.evolution.alignment.Sequence;
+import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
+import lphybeast.tobeast.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
     public beast.evolution.alignment.Alignment valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
 
         Alignment alignment = alignmentValue.value();
+        SequenceType sequenceType = alignment.getSequenceType();
         String[] taxaNames = alignment.getTaxaNames();
         beast.evolution.alignment.Alignment beastAlignment;
 
@@ -27,10 +30,14 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
 
         for (int i = 0; i < taxaNames.length; i++) {
             context.addTaxon(taxaNames[i]);
-            sequences.add(createBEASTSequence(taxaNames[i], alignment.getSequence(i)));
+            // have to convert to string, cannot use integer state
+            String s = alignment.getSequence(i);
+            sequences.add(createBEASTSequence(taxaNames[i], s));
         }
 
         beastAlignment = new beast.evolution.alignment.Alignment();
+        // e.g. "nucleotide", "binary" // TODO: check if match BEAST 2 data type?
+        beastAlignment.setInputValue("dataType", Utils.guessDataType(sequenceType));
         beastAlignment.setInputValue("sequence", sequences);
         beastAlignment.initAndValidate();
 
