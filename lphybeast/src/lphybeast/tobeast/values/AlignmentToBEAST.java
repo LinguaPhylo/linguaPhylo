@@ -37,7 +37,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
 
         beastAlignment = new beast.evolution.alignment.Alignment();
         // e.g. "nucleotide", "binary" // TODO: check if match BEAST 2 data type?
-        beastAlignment.setInputValue("dataType", Utils.guessDataType(sequenceType));
+        beastAlignment.setInputValue("dataType", Utils.guessDataType(sequenceType).getTypeDescription());
         beastAlignment.setInputValue("sequence", sequences);
         beastAlignment.initAndValidate();
 
