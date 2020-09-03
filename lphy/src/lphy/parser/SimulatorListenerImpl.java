@@ -1,28 +1,26 @@
 package lphy.parser;
 
 
+import lphy.core.functions.DoubleArray;
+import lphy.core.functions.IntegerArray;
+import lphy.core.functions.Range;
+import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.*;
+import lphy.parser.SimulatorParser.Expression_listContext;
+import lphy.parser.SimulatorParser.Named_expressionContext;
+import lphy.parser.SimulatorParser.Unnamed_expression_listContext;
+import lphy.parser.SimulatorParser.VarContext;
+import lphy.utils.LoggerUtils;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.Map;
 import java.util.logging.Level;
-
-import lphy.core.functions.*;
-import lphy.utils.LoggerUtils;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.tree.ParseTree;
-
-import lphy.graphicalModel.*;
-import lphy.graphicalModel.types.*;
-import lphy.parser.SimulatorParser.*;
 
 public class SimulatorListenerImpl extends AbstractBaseListener {
 
@@ -770,9 +768,9 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
                                 f.setInput(parameterName, value);
                             }
-                        } else {
+                        } else if (f1.length > 0) {
                             f.setInput(f.getParamName(0), f1[0]);
-                        }
+                        } // else f1 empty and cannot setInput
                         Value val = f.apply();
                         return val;
                     }
@@ -831,6 +829,10 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
             if (values.length == 1 && pInfo.size() == 1) {
                 initargs.add(values[0]);
+                return constructor;
+            }
+            if (values.length == 0 && pInfo.size() == 1) {
+                initargs.add(null);
                 return constructor;
             }
         }
