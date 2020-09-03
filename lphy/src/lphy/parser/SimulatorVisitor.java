@@ -1,4 +1,4 @@
-// Generated from Simulator.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/Simulator.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 

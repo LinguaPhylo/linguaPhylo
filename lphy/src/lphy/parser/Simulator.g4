@@ -29,7 +29,7 @@ assignment: ARROW
 ;
 
 determ_relation: var assignment expression 
-| FUNC '(' NAME ')' assignment expression 
+//| FUNC '(' NAME ')' assignment expression
 ;
 
 stoch_relation:	var TILDE distribution 
@@ -64,6 +64,7 @@ unnamed_expression_list
 
 methodCall
     : NAME '(' expression_list? ')'
+    | NAME '(' unnamed_expression_list? ')'
     ;
 
 distribution

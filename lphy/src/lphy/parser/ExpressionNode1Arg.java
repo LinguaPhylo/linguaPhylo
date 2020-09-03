@@ -26,10 +26,12 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
 			if (value instanceof ExpressionNode) {
 				for (Object o : ((ExpressionNode) value).getInputs()) {
 					Value value2 = (Value) o;
+					value2.addOutput(this);
 					params.put(value2.getId(), value2);
 				}
 			} else if (value instanceof Value) {
-				params.put(((Value) value).getId(), (Value) value);
+				((Value) value).addOutput(this);
+				params.put(((Value) value).getId(), value);
 			}
 		}
 		inputValues = values;
@@ -41,8 +43,6 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
 	public Value<T> apply() {
 		return elementWise.apply(inputValues[0], func);
 	}
-
-
 
 	// unary operators
 	static Function<Number, Number> not() {

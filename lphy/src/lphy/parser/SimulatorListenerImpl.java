@@ -32,10 +32,6 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
-//		List<Distribution> distributions = new ArrayList<>();
-
-        //Map<String, Integer> iteratorValue = new HashMap<>();
-        //Map<String, Integer> iteratorDimension = new HashMap<>();
 
         public SimulatorASTVisitor() {
             //initNameMap();
@@ -57,15 +53,15 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
             List<Integer> range = new ArrayList<>();
             for (int i = 0; i < ctx.getChildCount(); i++) {
-            	Object o = visit(ctx.getChild(i));
-            	if (o instanceof Integer) {
-            		range.add((Integer) o);
-            	} else if (o == null) {
-            		// ignore commas
-            	} else {
-                    throw new IllegalArgumentException("Expected integer value, but don't know how to handle " + 
-                    		o == null ? "null" : o.getClass().getName());            		
-            	}
+                Object o = visit(ctx.getChild(i));
+                if (o instanceof Integer) {
+                    range.add((Integer) o);
+                } else if (o == null) {
+                    // ignore commas
+                } else {
+                    throw new IllegalArgumentException("Expected integer value, but don't know how to handle " +
+                            o == null ? "null" : o.getClass().getName());
+                }
             }
             return range;
         }
@@ -76,13 +72,13 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
             Object o = visitChildren(ctx);
             if (o instanceof DoubleValue) {
-            	return new Integer((int)(double)((DoubleValue) o).value());
+                return new Integer((int) (double) ((DoubleValue) o).value());
             }
             if (o instanceof IntegerValue) {
-            	return ((IntegerValue) o).value();            	
+                return ((IntegerValue) o).value();
             }
-            throw new IllegalArgumentException("Expected integer value, but don't know how to handle " + 
-            		(o == null ? "null" : o.getClass().getName()));
+            throw new IllegalArgumentException("Expected integer value, but don't know how to handle " +
+                    (o == null ? "null" : o.getClass().getName()));
         }
 
         @Override
@@ -138,7 +134,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             Object expr = visit(ctx.getChild(2));
             Object o = visit(ctx.children.get(0));
             String id = o instanceof String ? (String) o : ((RangedVar) o).id;
-            
+
             LoggerUtils.log.fine("   id = " + id);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
@@ -146,18 +142,18 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 value.setFunction(f);
                 value.setId(id);
                 if (o instanceof RangedVar) {
-                	
-                	if (dictionary.containsKey(id)) {
-                		Value v = dictionary.get(id);
-                		List<Integer> range = ((RangedVar)o).range;
-                		for (int i = 0; i < range.size(); i++) {
-                			int index = range.get(i);
-                			// TODO: figure out  what to do here?
-                		}
-                	}
-                	
+
+                    if (dictionary.containsKey(id)) {
+                        Value v = dictionary.get(id);
+                        List<Integer> range = ((RangedVar) o).range;
+                        for (int i = 0; i < range.size(); i++) {
+                            int index = range.get(i);
+                            // TODO: figure out  what to do here?
+                        }
+                    }
+
                 } else {
-                	dictionary.put(id, value);
+                    dictionary.put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
                 }
                 return value;
@@ -167,17 +163,17 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
                 if (o instanceof RangedVar) {
 
-                	if (dictionary.containsKey(id)) {
-                		Value v = dictionary.get(id);
-                		List<Integer> range = ((RangedVar)o).range;
-                		for (int i = 0; i < range.size(); i++) {
-                			int index = range.get(i);
-                			// TODO: figure out  what to do here?
-                		}
-                	}
-                	
+                    if (dictionary.containsKey(id)) {
+                        Value v = dictionary.get(id);
+                        List<Integer> range = ((RangedVar) o).range;
+                        for (int i = 0; i < range.size(); i++) {
+                            int index = range.get(i);
+                            // TODO: figure out  what to do here?
+                        }
+                    }
+
                 } else {
-                	dictionary.put(id, value);
+                    dictionary.put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
                 }
                 return value;
@@ -248,14 +244,15 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             }
             return aggregate;
         }
-        
+
         class RangedVar {
-        	String id;
-        	List<Integer> range;
-        	RangedVar(String id, List<Integer> range) {
-        		this.id = id;
-        		this.range = range;
-        	}
+            String id;
+            List<Integer> range;
+
+            RangedVar(String id, List<Integer> range) {
+                this.id = id;
+                this.range = range;
+            }
         }
 
         @Override
@@ -263,15 +260,15 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
             String id = ctx.getChild(0).getText();
             if (ctx.getChildCount() > 1) {
-            	// variable of the form NAME '[' range ']'
-            	Object o = visit(ctx.getChild(2));
-            	if (o instanceof List) {
-            		List<Integer> range = (List<Integer>) o;
-                	return new RangedVar(id, range);
-            	} else {
-                    throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " + 
-                    		o == null ? "null" : o.getClass().getName());            		
-            	}
+                // variable of the form NAME '[' range ']'
+                Object o = visit(ctx.getChild(2));
+                if (o instanceof List) {
+                    List<Integer> range = (List<Integer>) o;
+                    return new RangedVar(id, range);
+                } else {
+                    throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " +
+                            o == null ? "null" : o.getClass().getName());
+                }
             }
 
             LoggerUtils.log.log(Level.FINE, "  visitVar: " + id);
@@ -282,6 +279,8 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
+
+            // Deals with single token expressions -- probably an id referring to previously defined constant or variable
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
                 if (dictionary.containsKey(key)) {
@@ -295,7 +294,6 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
 
                     Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
-
 
                     switch (s) {
                         case "+":
@@ -365,7 +363,8 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 //					case "<<": transform = new ExpressionNode(ctx.getText(), ExpressionNode.leftShift(), f1,f2); break;
 //					case ">>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.rightShift(), f1,f2); break;
 //					case ">>>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
-					case ":": return new Range(f1, f2);
+                        case ":":
+                            return new Range(f1, f2);
                     }
                     return expression;
                 }
@@ -417,7 +416,8 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                             IntegerArray intArray = new IntegerArray(var);
                             return intArray.apply();
                         }
-                    } if (var[0].value() instanceof String[]) {
+                    }
+                    if (var[0].value() instanceof String[]) {
                         String[][] value = new String[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             value[i] = (String[]) var[i].value();
@@ -601,7 +601,17 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
         public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
             List<Value> list = new ArrayList<>();
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
-                list.add((Value) visit(ctx.getChild(i)));
+
+                Object obj = visit(ctx.getChild(i));
+
+                if (obj instanceof DeterministicFunction) {
+                    Value value = ((DeterministicFunction) obj).apply();
+                    value.setFunction(((DeterministicFunction) obj));
+                    list.add(value);
+                } else if (obj instanceof Value) {
+                    Value value = (Value) obj;
+                    list.add(value);
+                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list");
             }
             return list.toArray(new Value[]{});
         }
@@ -612,16 +622,21 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
             Value[] f1 = null;
-            NamedValue[] values = new NamedValue[]{};
+            Object argumentObject = null;
+            NamedValue[] namedValues = null;
             if (ctx2.getText().equals(")")) {
                 f1 = new Value[]{};
             } else {
-                values = (NamedValue[]) visit(ctx2);
-                f1 = new Value[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    f1[i] = values[i].value;
+                argumentObject = visit(ctx2);
+                if (argumentObject instanceof Value[]) {
+                    f1 = (Value[]) argumentObject;
+                } else if (argumentObject instanceof NamedValue[]) {
+                    namedValues = (NamedValue[]) argumentObject;
+                    f1 = new Value[namedValues.length];
+                    for (int i = 0; i < namedValues.length; i++) {
+                        f1[i] = namedValues[i].value;
+                    }
                 }
-
             }
 
             if (univarfunctions.contains(functionName)) {
@@ -730,21 +745,33 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 throw new RuntimeException("Found no implementation for function " + functionName);
 
             Map<String, Value> arguments = new HashMap<>();
-            for (NamedValue v : values) {
-                arguments.put(v.name, v.value);
+            if (namedValues != null) {
+                for (NamedValue v : namedValues) {
+                    arguments.put(v.name, v.value);
+                }
             }
 
             for (Class functionClass : functionClasses) {
                 try {
                     List<Object> initargs = new ArrayList<>();
-                    Constructor constructor = getConstructorByArguments(arguments, functionClass, initargs);
+                    Constructor constructor = null;
+                    if (namedValues != null) {
+                        constructor = getConstructorByArguments(arguments, functionClass, initargs);
+                    } else {
+                        constructor = getConstructorByArguments(f1, functionClass, initargs);
+                    }
 
                     if (constructor != null) {
                         DeterministicFunction f = (DeterministicFunction) constructor.newInstance(initargs.toArray());
-                        for (String parameterName : arguments.keySet()) {
-                            Value value = arguments.get(parameterName);
 
-                            f.setInput(parameterName, value);
+                        if (namedValues != null) {
+                            for (String parameterName : arguments.keySet()) {
+                                Value value = arguments.get(parameterName);
+
+                                f.setInput(parameterName, value);
+                            }
+                        } else {
+                            f.setInput(f.getParamName(0), f1[0]);
                         }
                         Value val = f.apply();
                         return val;
@@ -763,7 +790,6 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             throw new RuntimeException("Parser exception: no constructor found for " + functionName);
 
         }
-
     }
 
     private boolean allConstants(Value[] var) {
@@ -776,6 +802,12 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
     private Constructor getConstructorByArguments(Map<String, Value> arguments, Class generatorClass, List<Object> initargs) {
         for (Constructor constructor : generatorClass.getConstructors()) {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
+
+            if (arguments.size() == 1 && pInfo.size() == 1) {
+                initargs.add(arguments.values().iterator().next());
+                return constructor;
+            }
+
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = arguments.get(pInfo.get(i).name());
@@ -792,6 +824,19 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
         }
         return null;
     }
+
+    private Constructor getConstructorByArguments(Value[] values, Class generatorClass, List<Object> initargs) {
+        for (Constructor constructor : generatorClass.getConstructors()) {
+            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
+
+            if (values.length == 1 && pInfo.size() == 1) {
+                initargs.add(values[0]);
+                return constructor;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.

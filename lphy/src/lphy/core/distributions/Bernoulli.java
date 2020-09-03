@@ -6,16 +6,18 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Bernoulli implements GenerativeDistribution<Boolean> {
     private final String pParamName;
-    private Value<Double> p;
+    private Value<Number> p;
 
     private RandomGenerator random;
 
-    public Bernoulli(@ParameterInfo(name="p", description="the probability of success.", type=Double.class) Value<Double> p) {
+    public Bernoulli(@ParameterInfo(name="p", description="the probability of success.") Value<Number> p) {
         this.p = p;
         this.random = Utils.getRandom();
         pParamName = getParamName(0);
@@ -24,12 +26,12 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
     @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {
 
-        boolean success = (random.nextDouble() < p.value());
+        boolean success = (random.nextDouble() < doubleValue(p));
         return new RandomVariable<>("x", success, this);
     }
 
     public double density(Boolean success) {
-        return success ? p.value() : (1.0 - p.value());
+        return success ? doubleValue(p) : (1.0 - doubleValue(p));
     }
 
     @Override
@@ -46,7 +48,7 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
         }
     }
 
-    public void setSuccessProbability(double p) {
+    public void setP(Double p) {
         this.p.setValue(p);
     }
 
