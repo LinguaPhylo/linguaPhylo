@@ -116,15 +116,14 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
         for (int i = 0; i < n(); i++) {
-            builder.append("  ");
-            builder.append(reverseMap.get(i));
-            builder.append(" = ");
-            builder.append(Arrays.toString(alignment[i]));
-            if (i < n()-1) {
-                builder.append(",");
-            }
+            builder.append("  ").append(reverseMap.get(i));
+            builder.append(" = ").append(Arrays.toString(alignment[i]));
+//            if (i < n()-1)
+            builder.append(",");
             builder.append("\n");
         }
+        builder.append("  nchar = ").append(nchar);
+        builder.append(", ntax = ").append(ntaxa).append("\n");
         builder.append("}");
         return builder.toString();
     }

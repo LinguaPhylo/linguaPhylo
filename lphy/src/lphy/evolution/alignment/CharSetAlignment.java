@@ -32,6 +32,8 @@ public class CharSetAlignment extends Alignment {
         fillinParts(charsetMap, parentAlignment);
     }
 
+
+
     protected void initAlignment(Alignment parentAlignment) {
         this.ntaxa = parentAlignment.ntaxa();
         this.nchar = parentAlignment.nchar();
@@ -57,6 +59,10 @@ public class CharSetAlignment extends Alignment {
         } else {
             nameSet.addAll(charsetMap.keySet());
         }
+
+        if (nameSet.size() < 2)
+            throw new IllegalArgumentException("Cannot create multi-partition, size = " + nameSet.size());
+
         this.partNames = nameSet.toArray(new String[0]);
         partNChar = new Integer[this.partNames.length];
         parts = new Alignment[this.partNames.length];
@@ -128,7 +134,7 @@ public class CharSetAlignment extends Alignment {
     public String toJSON() {
         if (hasParts()) {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < this.partNames.length; i++) {
+            for (int i = 0; i < partNames.length; i++) {
                 Alignment part = (Alignment) parts[i];
                 builder.append( partNames[i] + " : " );
                 builder.append( part.toJSON() );
@@ -137,6 +143,19 @@ public class CharSetAlignment extends Alignment {
             return builder.toString();
         }
         return super.toJSON();
+    }
+
+    @Override
+    public String toString() {
+        if (hasParts()) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < partNames.length; i++) {
+                builder.append( partNames[i] + " : " );
+                builder.append( parts[i].toString() ).append("\n");
+            }
+            return builder.toString();
+        }
+        return super.toString();
     }
 
     @Override
