@@ -13,7 +13,8 @@ public abstract class DataType implements SequenceType {
      * @param dataTypeName  keywords in Nexus or data type descriptions
      */
     public static SequenceType getDataType(String dataTypeName) {
-        switch (dataTypeName) {
+        // change to no space, all lower case
+        switch (dataTypeName.trim().toLowerCase()) {
             case "rna":
             case "dna":
             case "nucleotide":
@@ -24,10 +25,10 @@ public abstract class DataType implements SequenceType {
             case "binary":
                 return BINARY;
             case "standard":
-                return STANDARD;
+            case "continuous": // TODO need to check
+                return STANDARD; // TODO nrOfState = symbols.length();
             default:
                 throw new UnsupportedOperationException(dataTypeName);
-//                return Standard(nrOfState); // TODO nrOfState = symbols.length();
         }
     }
 
@@ -37,7 +38,7 @@ public abstract class DataType implements SequenceType {
     public static SequenceType guessSequenceType(int numStates) {
         switch (numStates) {
             case 2: return BINARY;
-            case 4: return NUCLEOTIDE;
+            case 4: return NUCLEOTIDE; // make it default ?
             case 20: return AMINO_ACID;
             // TODO Codon.INSTANCE;
             default: return STANDARD; //TODO Standard(nrOfState)?
