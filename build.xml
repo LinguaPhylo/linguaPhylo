@@ -49,6 +49,7 @@
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphybe}/src" destdir="${build}" includeantruntime="false">
       <classpath>
         <pathelement path="${classpath}"/>
+        <fileset dir="${lphy}/lib" includes="*.jar"/>
         <fileset dir="${lphybe}/lib" includes="*.jar"/>
       </classpath>
     </javac>
@@ -150,11 +151,12 @@
         <pathelement path="${build}"/>
         <pathelement path="${build-test}"/>
         <fileset dir="${lphy}/lib" includes="*.jar"/>
-      </classpath>      <batchtest fork="yes" todir="${test-reports}">
-	<fileset dir="${lphy}/test">
-	  <include name="**/*Test.java"/>
-	</fileset>
-	<formatter type="plain"/>
+      </classpath>
+      <batchtest fork="yes" todir="${test-reports}">
+        <fileset dir="${lphy}/test">
+          <include name="**/*Test.java"/>
+        </fileset>
+        <formatter type="plain"/>
       </batchtest>
     </junit>
 
