@@ -1,12 +1,23 @@
 %% This BibTeX bibliography file was created using BibDesk.
 %% http://bibdesk.sourceforge.net/
 
-%% Created for Alexei Drummond at 2020-05-26 15:27:12 +1200 
+%% Created for Alexei Drummond at 2020-09-04 09:58:09 +1200 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
 
 
+
+@article{carpenter2017stan,
+	Author = {Carpenter, Bob and Gelman, Andrew and Hoffman, Matthew D and Lee, Daniel and Goodrich, Ben and Betancourt, Michael and Brubaker, Marcus and Guo, Jiqiang and Li, Peter and Riddell, Allen},
+	Date-Added = {2020-09-04 09:57:54 +1200},
+	Date-Modified = {2020-09-04 09:57:54 +1200},
+	Journal = {Journal of statistical software},
+	Number = {1},
+	Publisher = {Columbia Univ., New York, NY (United States); Harvard Univ., Cambridge, MA~{\ldots}},
+	Title = {Stan: A probabilistic programming language},
+	Volume = {76},
+	Year = {2017}}
 
 @article{douglas2020bayesian,
 	Abstract = {Transcription elongation can be modelled as a three step process, involving polymerase translocation, NTP binding, and nucleotide incorporation into the nascent mRNA. This cycle of events can be simulated at the single-molecule level as a continuous-time Markov process using parameters derived from single-molecule experiments. Previously developed models differ in the way they are parameterised, and in their incorporation of partial equilibrium approximations. We have formulated a hierarchical network comprised of 12 sequence-dependent transcription elongation models. The simplest model has two parameters and assumes that both translocation and NTP binding can be modelled as equilibrium processes. The most complex model has six parameters makes no partial equilibrium assumptions. We systematically compared the ability of these models to explain published force-velocity data, using approximate Bayesian computation. This analysis was performed using data for the RNA polymerase complexes of E. coli, S. cerevisiae and Bacteriophage T7. Our analysis indicates that the polymerases differ significantly in their translocation rates, with the rates in T7 pol being fast compared to E. coli RNAP and S. cerevisiae pol II. Different models are applicable in different cases. We also show that all three RNA polymerases have an energetic preference for the posttranslocated state over the pretranslocated state. A Bayesian inference and model selection framework, like the one presented in this publication, should be routinely applicable to the interrogation of single-molecule datasets.},
@@ -38,7 +49,8 @@
 	Publisher = {BioMed Central},
 	Title = {Improving the performance of Bayesian phylogenetic inference under relaxed clock models},
 	Volume = {20},
-	Year = {2020}}
+	Year = {2020},
+	Bdsk-Url-1 = {https://doi.org/10.1186/s12862-020-01609-4}}
 
 @article{vaughan2019estimating,
 	Abstract = {Modern phylodynamic methods interpret an inferred phylogenetic tree as a partial transmission chain providing information about the dynamic process of transmission and removal (where removal may be due to recovery, death, or behavior change). Birth-death and coalescent processes have been introduced to model the stochastic dynamics of epidemic spread under common epidemiological models such as the SIS and SIR models and are successfully used to infer phylogenetic trees together with transmission (birth) and removal (death) rates. These methods either integrate analytically over past incidence and prevalence to infer rate parameters, and thus cannot explicitly infer past incidence or prevalence, or allow such inference only in the coalescent limit of large population size. Here, we introduce a particle filtering framework to explicitly infer prevalence and incidence trajectories along with phylogenies and epidemiological model parameters from genomic sequences and case count data in a manner consistent with the underlying birth-death model. After demonstrating the accuracy of this method on simulated data, we use it to assess the prevalence through time of the early 2014 Ebola outbreak in Sierra Leone.},
