@@ -1,4 +1,4 @@
-data = nexus(file="primate-mtDNA.nex", parts=["noncoding", "coding"]);
+data = nexus(file="examples/primate-mtDNA.nex", parts=["noncoding", "coding"]);
 coding = part(frame=data, name="coding");
 noncoding = part(frame=data, name="noncoding");
 Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);

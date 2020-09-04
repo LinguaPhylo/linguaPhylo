@@ -151,8 +151,10 @@ public class CharSetAlignment extends Alignment {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < partNames.length; i++) {
                 builder.append( partNames[i] + " : " );
-                builder.append( parts[i].toString() ).append("\n");
+                builder.append( parts[i].toString() );
+                if (i < partNames.length-1) builder.append(", ");
             }
+            builder.append("\n");
             return builder.toString();
         }
         return super.toString();
