@@ -99,8 +99,8 @@ public class REPL implements LPhyParser {
 	public Map<String, Set<Class<?>>> getGeneratorClasses() {
 		SortedMap<String, Set<Class<?>>> generatorClasses = new TreeMap<>();
 
-		generatorClasses.putAll(SimulatorListenerImpl.genDistDictionary);
-		generatorClasses.putAll(SimulatorListenerImpl.functionDictionary);
+		generatorClasses.putAll(ParserTools.genDistDictionary);
+		generatorClasses.putAll(ParserTools.functionDictionary);
 
 		return generatorClasses;
 	}

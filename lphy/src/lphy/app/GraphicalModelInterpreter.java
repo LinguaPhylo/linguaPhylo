@@ -229,7 +229,7 @@ public class GraphicalModelInterpreter extends JPanel {
 //        }
 
         parser.parse(input, context);
-        CodeColorizer codeColorizer = new CodeColorizer(parser, textPane);
+        CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
         codeColorizer.parse(input);
     }
 

@@ -25,9 +25,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
-public class SimulatorListenerImpl extends AbstractBaseListener {
+public class SimulatorListenerImpl extends SimulatorBaseListener {
 
     LPhyParser.Context context;
+    LPhyParser parser;
 
     public SimulatorListenerImpl(LPhyParser parser, LPhyParser.Context context) {
         this.parser = parser;
@@ -54,19 +55,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
 
-        public SimulatorASTVisitor() {
-            //initNameMap();
-
-            bivarOperators = new HashSet<>();
-            for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
-                bivarOperators.add(s);
-            }
-            univarfunctions = new HashSet<>();
-            for (String s : new String[]{"abs", "acos", "acosh", "asin", "asinh", "atan", "atanh", "cLogLog", "cbrt", "ceil", "cos", "cosh", "exp", "expm1", "floor", "log", "log10", "log1p", "logFact", "logGamma", "logit", "phi", "probit", "round", "signum", "sin", "sinh", "sqrt", "step", "tan", "tanh"}) {
-                univarfunctions.add(s);
-            }
-
-        }
+        public SimulatorASTVisitor() {}
 
         public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
 
@@ -293,7 +282,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             ExpressionNode expression = null;
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (bivarOperators.contains(s)) {
+                if (ParserTools.bivarOperators.contains(s)) {
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
 
                     Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
@@ -513,7 +502,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 arguments.put(v.name, v.value);
             }
 
-            Set<Class<?>> genDistClasses = genDistDictionary.get(name);
+            Set<Class<?>> genDistClasses = ParserTools.getGenerativeDistributionClasses(name);
 
             if (genDistClasses == null)
                 throw new RuntimeException("Found no implementation for generative distribution " + name);
@@ -642,7 +631,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 }
             }
 
-            if (univarfunctions.contains(functionName)) {
+            if (ParserTools.univarfunctions.contains(functionName)) {
                 ExpressionNode expression = null;
                 switch (functionName) {
                     case "abs":
@@ -742,7 +731,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 return expression;
             }
 
-            Set<Class<?>> functionClasses = functionDictionary.get(functionName);
+            Set<Class<?>> functionClasses = ParserTools.getFunctionClasses(functionName);
 
             if (functionClasses == null)
                 throw new RuntimeException("Found no implementation for function " + functionName);

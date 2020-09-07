@@ -4,47 +4,67 @@ package lphy.parser;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.parser.SimulatorParser.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
-import javax.swing.text.*;
-import java.util.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CodeColorizer extends SimulatorBaseListener {
+public class DataModelCodeColorizer extends DataModelBaseListener {
 
     // CURRENT MODEL STATE
 
     private JTextPane textPane;
 
-    LPhyParser parser;
-    LPhyParser.Context context;
+    static Color randomVarColor = new Color(0, 196, 0);
+    static Color constantColor = Color.magenta;
+    static Color keywordColor = Color.black;
+    static Color argumentNameColor = Color.gray;
+    static Color functionColor = new Color(196,0,196);
 
-    Style punctuationStyle;
-    Style constantStyle;
-    Style genDistStyle;
+    static int argumentNameSize = 10;
+
+    Style randomVarStyle;
+    Style literalStyle;
     Style argumentNameStyle;
     Style functionStyle;
+    Style genDistStyle;
+    Style punctuationStyle;
+    Style valueStyle;
+    Style keywordStyle;
 
-    public CodeColorizer(LPhyParser parser, LPhyParser.Context context, JTextPane pane) {
+    LPhyParser parser;
+
+    LPhyParser.Context context = LPhyParser.Context.model;
+
+    final String indent = "  ";
+
+    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane) {
 
         this.parser = parser;
-        this.context = context;
         textPane = pane;
 
         ColorizerStyles.addStyles(pane);
-        punctuationStyle = pane.getStyle("punctuationStyle");
-        constantStyle = pane.getStyle("constantStyle");
-        genDistStyle = pane.getStyle("genDistStyle");
-        argumentNameStyle = pane.getStyle("argumentNameStyle");
-        functionStyle = pane.getStyle("functionStyle");
+
+        keywordStyle = textPane.getStyle("keywordStyle");
+        functionStyle = textPane.getStyle("functionStyle");
+        genDistStyle = textPane.getStyle("genDistStyle");
+        randomVarStyle = textPane.getStyle("randomVarStyle");
+        valueStyle = textPane.getStyle("valueStyle");
+        argumentNameStyle = textPane.getStyle("argumentNameStyle");
+        literalStyle = textPane.getStyle("literalStyle");
+        punctuationStyle = textPane.getStyle("punctuationStyle");
     }
 
-    public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
+    public class DataModelASTVisitor extends DataModelBaseVisitor<Object> {
 
-        public SimulatorASTVisitor() { }
+        public DataModelASTVisitor() { }
 
         private void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
@@ -58,34 +78,54 @@ public class CodeColorizer extends SimulatorBaseListener {
             }
         }
 
-        @Override
-        public Object visitConstant(ConstantContext ctx) {
+        @Override public Object visitDatablock(DataModelParser.DatablockContext ctx) {
 
-            return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
+            context = LPhyParser.Context.data;
+
+            addTextElement(new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle));
+            Object children = visitChildren(ctx);
+            addTextElement(new TextElement("}\n", keywordStyle));
+            return children;
+        }
+
+        @Override public Object visitModelblock(DataModelParser.ModelblockContext ctx) {
+
+            context = LPhyParser.Context.model;
+
+            addTextElement(new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle));
+            Object children = visitChildren(ctx);
+            addTextElement(new TextElement("}\n", keywordStyle));
+            return children;
         }
 
         @Override
-        public Object visitDeterm_relation(Determ_relationContext ctx) {
+        public Object visitConstant(DataModelParser.ConstantContext ctx) {
 
-            TextElement element = new TextElement(ctx.getChild(0).getText(), textPane.getStyle("valueStyle"));
+            return new TextElement(ctx.getText(), literalStyle);
+        }
 
-            element.add(" = ", textPane.getStyle("punctuationStyle"));
+        @Override
+        public Object visitDeterm_relation(DataModelParser.Determ_relationContext ctx) {
+
+            TextElement element = new TextElement(indent + ctx.getChild(0).getText(), valueStyle);
+
+            element.add(" = ", punctuationStyle);
 
             TextElement expr = (TextElement) visit(ctx.getChild(2));
 
             element.add(expr);
-            element.add(";\n", textPane.getStyle("punctuationStyle"));
+            element.add(";\n", punctuationStyle);
 
             addTextElement(element);
             return element;
         }
 
         @Override
-        public Object visitStoch_relation(Stoch_relationContext ctx) {
+        public Object visitStoch_relation(DataModelParser.Stoch_relationContext ctx) {
 
-            TextElement var = new TextElement(ctx.getChild(0).getText(), textPane.getStyle("randomVarStyle"));
+            TextElement var = new TextElement(indent + ctx.getChild(0).getText(), randomVarStyle);
 
-            var.add(" " + ctx.getChild(1).getText() + " ", textPane.getStyle("punctuationStyle"));
+            var.add(" " + ctx.getChild(1).getText() + " ", punctuationStyle);
 
             addTextElement(var);
 
@@ -97,25 +137,26 @@ public class CodeColorizer extends SimulatorBaseListener {
         }
 
         @Override
-        public Object visitVar(VarContext ctx) {
-            return new TextElement(ctx.getText(), textPane.getStyle("randomVarStyle"));
+        public Object visitVar(DataModelParser.VarContext ctx) {
+            return new TextElement(ctx.getText(), randomVarStyle);
         }
 
         @Override
-        public Object visitExpression(ExpressionContext ctx) {
+        public Object visitExpression(DataModelParser.ExpressionContext ctx) {
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
                 if (parser.hasValue(key, context)) {
                     Value value = parser.getValue(key, context);
-                    return new TextElement(key, value instanceof RandomVariable ? textPane.getStyle("randomVarStyle") : textPane.getStyle("valueStyle") );
+                    return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle );
                 }
             }
+
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
                 if (ParserTools.bivarOperators.contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
-                    element.add(s, textPane.getStyle("punctuationStyle"));
+                    element.add(s, punctuationStyle);
 
                     element.add((TextElement) visit(ctx.getChild(ctx.getChildCount() - 1)));
                     return element;
@@ -146,7 +187,7 @@ public class CodeColorizer extends SimulatorBaseListener {
 
             if (exp instanceof String) {
                 System.out.println("exp was a String: " + exp);
-                return new TextElement((String) exp, constantStyle);
+                return new TextElement((String) exp, literalStyle);
             }
 
             if (exp == null) throw new RuntimeException("exp is null for expression context: " + ctx.getText());
@@ -157,7 +198,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         }
 
         @Override
-        public Object visitNamed_expression(Named_expressionContext ctx) {
+        public Object visitNamed_expression(DataModelParser.Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             TextElement element = new TextElement(name + "=", argumentNameStyle);
             element.add((TextElement) visit(ctx.getChild(2)));
@@ -166,7 +207,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         }
 
         @Override
-        public Object visitDistribution(DistributionContext ctx) {
+        public Object visitDistribution(DataModelParser.DistributionContext ctx) {
 
             TextElement name = new TextElement(ctx.getChild(0).getText(), genDistStyle);
 
@@ -180,7 +221,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         }
 
         @Override
-        public Object visitExpression_list(Expression_listContext ctx) {
+        public Object visitExpression_list(DataModelParser.Expression_listContext ctx) {
 
             TextElement element = new TextElement();
 
@@ -194,7 +235,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         }
 
         @Override
-        public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
+        public Object visitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx) {
             TextElement element = new TextElement();
 
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
@@ -206,7 +247,7 @@ public class CodeColorizer extends SimulatorBaseListener {
             return element;        }
 
         @Override
-        public Object visitMethodCall(MethodCallContext ctx) {
+        public Object visitMethodCall(DataModelParser.MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -260,7 +301,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         };
 
         // Get our lexer
-        SimulatorLexer lexer = new SimulatorLexer(CharStreams.fromString(CASentence));
+        DataModelLexer lexer = new DataModelLexer(CharStreams.fromString(CASentence));
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
 
@@ -268,7 +309,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         // Pass the tokens to the parser
-        SimulatorParser parser = new SimulatorParser(tokens);
+        DataModelParser parser = new DataModelParser(tokens);
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
@@ -283,7 +324,7 @@ public class CodeColorizer extends SimulatorBaseListener {
 
 
         // Traverse parse tree, constructing BEAST tree along the way
-        SimulatorASTVisitor visitor = new SimulatorASTVisitor();
+        DataModelASTVisitor visitor = new DataModelASTVisitor();
 
         return visitor.visit(parseTree);
     }

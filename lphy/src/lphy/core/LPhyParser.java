@@ -256,6 +256,9 @@ public interface LPhyParser {
         public static String getCanonicalScript(LPhyParser parser) {
             Set<Value> visited = new HashSet<>();
 
+            List<String> dataLines = new ArrayList<>();
+            List<String> modelLines = new ArrayList<>();
+
             StringBuilder builder = new StringBuilder();
             for (Value value : parser.getModelSinks()) {
 
@@ -268,7 +271,11 @@ public interface LPhyParser {
                             if (!value.isAnonymous()) {
                                 String str = value.codeString();
                                 if (!str.endsWith(";")) str += ";";
-                                builder.append(str).append("\n");
+                                if (parser.isDataValue(value)) {
+                                    dataLines.add(str);
+                                } else {
+                                    modelLines.add(str);
+                                }
                             }
                             visited.add(value);
                         }
@@ -278,6 +285,27 @@ public interface LPhyParser {
                     }
                 }, true);
             }
+
+            if (dataLines.size() > 0) {
+                builder.append("data {\n");
+                for (String dataLine : dataLines) {
+                    builder.append("  ");
+                    builder.append(dataLine);
+                    builder.append("\n");
+                }
+                builder.append("}\n");
+            }
+            if (modelLines.size() > 0) {
+                builder.append("model {\n");
+
+                for (String modelLine : modelLines) {
+                    builder.append("  ");
+                    builder.append(modelLine);
+                    builder.append("\n");
+                }
+                builder.append("}\n");
+            }
+
             return builder.toString();
         }
 
@@ -297,5 +325,9 @@ public interface LPhyParser {
                 getAllValues(childNode, values);
             }
         }
+    }
+
+    default boolean isDataValue(Value value) {
+        return (!value.isAnonymous() && !(value instanceof RandomVariable) && hasValue(value.getId(), Context.data));
     }
 }

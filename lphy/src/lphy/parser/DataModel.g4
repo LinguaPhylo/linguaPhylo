@@ -1,4 +1,4 @@
-grammar DataModelGrammar;
+grammar DataModel;
 
 // this grammar defines a full LPHY file containing either, or both a data and model block.
 
@@ -11,7 +11,7 @@ datablock: DATA relations
 modelblock: MODEL relations
 ;
 
-relations:'{' relation_list '}'
+relations:'{' relation_list? '}'
 ;
 
 relation_list:	relation 
