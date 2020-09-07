@@ -1,6 +1,6 @@
 package lphy.core.functions;
 
-import jebl.evolution.io.NexusParser;
+import lphy.evolution.io.NexusParser;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.graphicalModel.DeterministicFunction;

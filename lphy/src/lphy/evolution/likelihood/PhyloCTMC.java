@@ -1,6 +1,6 @@
 package lphy.evolution.likelihood;
 
-import jebl.evolution.sequences.DataType;
+import lphy.evolution.sequences.DataType;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
@@ -202,9 +202,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         int length = checkCompatibilities();
 
-//        Alignment a = new Alignment(tree.value().n(), length, idMap, transProb.length);
         SequenceType dataType = DataType.guessSequenceType(transProb.length);
-        Alignment a = new Alignment(tree.value().n(), length, idMap, dataType);
+        Alignment a;
+        if (dataType == null) // if datatype is not available, e.g. binary
+            a = new Alignment(tree.value().n(), length, idMap, transProb.length);
+        else
+            a = new Alignment(tree.value().n(), length, idMap, dataType);
+
 
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
 

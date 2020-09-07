@@ -1,21 +1,21 @@
 
 
-package jebl.evolution.io;
+package lphy.evolution.io;
 
 import jebl.evolution.alignments.Alignment;
-import jebl.evolution.alignments.BasicAlignment;
+import jebl.evolution.io.ImportException;
 import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
 import jebl.evolution.taxa.Taxon;
+import lphy.evolution.alignment.CharSetAlignment;
+import lphy.evolution.traits.CharSetBlock;
 
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,8 +24,9 @@ import java.util.TreeMap;
  * Apply {@link ExtNexusImporter} to parsing Nexus into LPhy objects.
  */
 public class NexusParser {
-    protected final int READ_AHEAD_LIMIT = 50000;
-    BufferedReader reader;
+    @Deprecated protected final int READ_AHEAD_LIMIT = 50000;
+    @Deprecated BufferedReader reader;
+
     ExtNexusImporter importer;
 
     protected Path nexFile; // lock to 1 file now
@@ -41,7 +42,7 @@ public class NexusParser {
                 throw new IOException("Cannot find Nexus file ! " + nexFile);
 
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
-            // Marks the present position in the stream.
+            //@Deprecated Marks the present position in the stream.
             reader.mark(READ_AHEAD_LIMIT);
             this.importer = new ExtNexusImporter(reader);
         } catch (IOException e) {
@@ -53,25 +54,27 @@ public class NexusParser {
      * Be careful. Resets the stream to the most recent mark.
      * @see BufferedReader#reset()
      */
+    @Deprecated
     protected void resetReader() throws IOException {
         this.reader.reset();
         this.importer = new ExtNexusImporter(reader);
     }
 
+
     public lphy.evolution.alignment.Alignment getLPhyAlignment(String[] partNames) {
-        List<Alignment> alignmentList = null;
+
         try {
-            alignmentList = this.importAlignments();
+            importer.importNexus();
 //            resetReader();
 //            importer.importCharsets();
         } catch (IOException | ImportException e) {
             e.printStackTrace();
         }
-
-        if (alignmentList == null)
-            throw new IllegalArgumentException("JEBL alignment list cannot be null !");
-        if (alignmentList.size() != 1)
-            throw new UnsupportedOperationException("multiple alignments are not supported ! " + alignmentList.size());
+        final List<Alignment> alignmentList = importer.getAlignments();
+        if (alignmentList.size() < 1)
+            throw new IllegalArgumentException("Cannot find alignment !");
+        if (alignmentList.size() > 1)
+            throw new UnsupportedOperationException("Multiple alignments are not supported ! " + alignmentList.size());
 
         Alignment jeblAlg = alignmentList.get(0);
         int nchar = jeblAlg.getSiteCount();
@@ -87,7 +90,7 @@ public class NexusParser {
         final lphy.evolution.alignment.Alignment lphyAlg = new
                 lphy.evolution.alignment.Alignment(ntax, nchar, idMap, sequenceType);
 
-        // fill in sequences
+        // fill in sequences for single partition
         for (final Taxon taxon : taxa) {
             Sequence sequence = jeblAlg.getSequence(taxon);
             for (int i = 0; i < sequence.getLength(); i++) {
@@ -98,72 +101,18 @@ public class NexusParser {
 
         }
 
-// TODO
-//        CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
-//        final lphy.evolution.alignment.Alignment parentAlignment)
-
-        return lphyAlg;
+        final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
+        if (charsetMap.size() > 0) { // multi-partition
+//            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
+            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
+            System.out.println(charSetAlignment);
+            return charSetAlignment;
+        }
+        return lphyAlg; // sing partition
     }
 
-    // **************************************************************
-    // Extesion of NexusImporter
-    // **************************************************************
-
-    public List<jebl.evolution.alignments.Alignment> importAlignments() throws IOException, ImportException {
-        boolean done = false;
-
-        List<Taxon> taxonList = null;
-        List<jebl.evolution.alignments.Alignment> alignments = new ArrayList<>();
-
-        while (!done) {
-            try {
-
-                ExtNexusImporter.ExtNexusBlock block = importer.findNextBlockExt();
-
-                if (block == ExtNexusImporter.ExtNexusBlock.TAXA) {
-                    //TODO new datatype
-                    taxonList = importer.parseTaxaBlock();
-
-                } else if (block == ExtNexusImporter.ExtNexusBlock.CHARACTERS) {
-
-                    if (taxonList == null) {
-                        throw new NexusImporter.MissingBlockException("TAXA block is missing");
-                    }
-
-                    List<Sequence> sequences = importer.parseCharactersBlock(taxonList);
-                    alignments.add(new BasicAlignment(sequences));
-
-                } else if (block == ExtNexusImporter.ExtNexusBlock.DATA) {
-
-                    // A data block doesn't need a taxon block before it
-                    // but if one exists then it will use it.
-                    List<Sequence> sequences = importer.parseDataBlock(taxonList);
-                    alignments.add(new BasicAlignment(sequences));
-
-                } else if (block == ExtNexusImporter.ExtNexusBlock.ASSUMPTIONS) {
 
 
-
-                } else if (block == ExtNexusImporter.ExtNexusBlock.CALIBRATION) {
-                    //TODO should be in another method
-                    System.err.println("Warning: parsing CALIBRATION not implemented !");
-
-                } else {
-                    //TODO new block
-                }
-
-            } catch (EOFException ex) {
-                done = true;
-            }
-        }
-
-        if (alignments.size() == 0) {
-            throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
-        }
-
-        return alignments;
-//        return importer.importAlignments();
-    }
 
 
     public static void main(final String[] args) {
