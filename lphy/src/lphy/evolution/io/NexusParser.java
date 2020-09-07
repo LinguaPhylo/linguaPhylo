@@ -39,7 +39,7 @@ public class NexusParser {
                     nexFile.toString().endsWith("nxs")))
                 throw new IOException("Nexus file name's suffix is invalid ! " + nexFile);
             if (!nexFile.toFile().exists() || nexFile.toFile().isDirectory())
-                throw new IOException("Cannot find Nexus file: " + nexFile);
+                throw new IOException("Cannot find Nexus file ! " + nexFile);
 
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
             //@Deprecated Marks the present position in the stream.
@@ -129,7 +129,7 @@ public class NexusParser {
                     parser.getLPhyAlignment(new String[]{"noncoding", "coding"});
             System.out.println(lphyAlg.toJSON());
 
-
+            System.out.println(parser.importer.getAgeMap());
 
         } catch (Exception e) {
             e.printStackTrace();
