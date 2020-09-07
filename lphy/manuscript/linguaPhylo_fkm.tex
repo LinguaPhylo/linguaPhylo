@@ -1,0 +1,308 @@
+\documentclass[oneside]{article}
+
+\usepackage{natbib} % bibliography
+\usepackage{blindtext} % dummy text
+\usepackage{graphicx} % figures
+\usepackage{color} % colored text
+\usepackage{float} % forcing figure placement
+\usepackage{enumerate} % for bullet point lists
+\usepackage{setspace} % line spacing
+\usepackage{booktabs} % horizontal rules in tables
+\usepackage{amsmath} % text in equations
+\usepackage{titlesec} % customization of titles
+\usepackage{titling} % customizing the title section
+\usepackage[cache=false]{minted} % code boxes; FKM cache=false was
+                                % necessary to work on my mac os X
+% \usepackage{microtype} % slightly tweak font spacing for aestheticsgins
+\usepackage[margin=1in]{geometry} % margins
+\usepackage[breakable]{tcolorbox} % text box
+\usepackage[sc]{mathpazo} % Palatino font
+\usepackage[T1]{fontenc} % use 8-bit encoding that has 256 glyphs
+\usepackage[small,labelfont=bf,up,up]{caption} % custom captions under/above floats in tables or figures
+\usepackage[hidelinks]{hyperref} % hyperlinks in the PDF
+
+\usepackage[shortlabels]{enumitem} % customized lists (shortlabels
+                                % necessary to have i., ii., etc., in enumerate)
+\setlist[itemize]{noitemsep} % make itemize lists more compact
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{fancyhdr} % headers and footers
+\pagestyle{fancy} % all pages have headers and footers
+\fancyhead{} % blank out the default header
+\fancyfoot{} % blank out the default footer
+\fancyhead[C]{Authors et al. $\bullet$ August 2018 $\bullet$ bio{\color{red}R}$\chi$ve} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+\bibliographystyle{apalike}
+
+\setlength\columnsep{20pt}
+
+%%% Local Variables:
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\pretitle{\begin{center}\Huge\bfseries} % title formatting
+\posttitle{\end{center}} % title closing formatting
+\title{Lingua Phylo: a probabilistic model specification language for
+  reproducible phylogenetic analyses}
+\author{\textsc{Alexei J. Drummond$^{1,2*}$}, \textsc{F\'{a}bio K. Mendes$^{1,2}$}\\%, \\ \textsc{Yet another author here$^{1*}$},
+%  \textsc{Last author here$^{1*}$} \\
+\small $^1$School of Biological Sciences, The University of Auckland\\
+\small $^2$School of Computer Science, The University of Auckland\\
+\small
+\href{mailto:alexei@cs.auckland.ac.nz}{Corresponding author$^*$: alexei@cs.auckland.ac.nz}
+%\href{mailto:someone@auckland.ac.nz}{another.email@auckland.ac.nz}
+%\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
+%\textsc{Jane Smith}\thanks{Corresponding author} \\[1ex] % Second author's name
+%\normalsize University of Utah \\ % Second author's institution
+%\normalsize \href{mailto:jane@smith.com}{jane@smith.com} % Second author's email address
+}
+\date{\today} % Leave empty to omit a date
+\renewcommand{\maketitlehookd}{%
+\begin{abstract}
+  \noindent \blindtext
+\end{abstract}
+\centering [Probabilistic models, Bayesian models, reproducibility]
+}
+
+%----------------------------------------------------------------------------------------
+
+\doublespacing
+
+\begin{document}
+
+% Print the title
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+A new paradigm for scientific computing and data science has begun to
+emerged in the last decade.
+A recent example is the publication of the
+first ``computationally reproducible article'' using eLife's
+Reproducible Document Stack which blends features of a traditional
+manuscript with live code, data and interactive figures. 
+
+Although standard tools for statistical phylogenetics provide a degree
+of reproducibility and reusability through popular open-source
+software and computer-readable data file formats, there is still much
+to do.
+The ability to construct and accurately communicate
+probabilistic models in phylogenetics is frustratingly
+underdeveloped.
+There is low interoperability between different
+inference packages (e.g. BEAST1, BEAST2, MrBayes, RevBayes), and the
+file formats that these software use have low readability for
+researchers. 
+
+In this paper we describe two related project, LinguaPhylo (LPhy for
+short) and LPhyBEAST.  
+
+\section{LinguaPhylo}
+
+LinguaPhylo is a model specification language to concisely and
+precisely define probabilistic phylogenetic models.
+The aim is to work
+towards a {\it lingua franca} for probabilistic models of phylogenetic
+evolution.
+This language should be readable by both humans and
+computers.
+Here is an example: 
+
+{\singlespacing
+\begin{minted}{Stan}
+lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
+tree ~ Yule(birthRate=lambda, n=16);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=tree);
+\end{minted}
+}
+
+Each of the lines in this specification expresses how a random
+variable (to the left of the tilde) is generated by a generative
+distribution to the right. 
+
+The first line creates a random variable (\texttt{lambda}), that is
+log-normally distributed.
+The second line creates a tree (\texttt{tree}) with 16 taxa from the
+Yule process with a lineage birth rate equal to \texttt{lambda}.
+The third line produces a multiple sequence alignment (\texttt{D})
+with a length of 200, by simulating a Jukes Cantor model of sequence
+evolution down the branches of  \texttt{tree}.
+As you can see, each of the random variables depends on the previous,
+so this is a hierarchical model that ultimately defines a probability
+distribution over sequence alignments of size $16 \times 200$.
+
+\section{Tree generative distributions}
+
+There are many statistical programming languages such as Stan
+\cite{carpenter2017stan}, BUGS and Stan that provide the possibility
+of succinctly describing statistical models. The unique feature of
+phylogenetic analysis is the phylogenetic tree.
+This is a complex high-dimensional object, part discrete, part
+continuous.
+There is no bijection between tree space and Euclidean space, so it
+can not be treated with standard statistical distributions.
+As a result specialist software is needed to perform inference.
+
+The aim of LPhy is describe the standard phylogenetic tree
+distributions succinctly and precisely.
+
+\subsection{Coalescent generative distributions for time trees}
+
+LPhy has describes a family of coalescent generative distributions
+that produce TimeTrees.
+
+The simplest model in this package is the one parameter model
+constant-population size coalescent.
+The generation-time-scaled population size parameter (theta) parameter determines at
+what rate, per unit time, a pair of lineages coalesce, backwards in time.
+
+\subsubsection{Constant population size coalescent model}
+
+In its simplest form (Kingman; 1981) the coalescent model produces a
+tree on a fixed number of leaves based on a population size parameter (theta):
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, n=16);
+\end{minted}
+
+It is also possible to give explicit taxa labels to the generative
+distribution: 
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, taxa=["a", "b", "c", "d"]);
+\end{minted}
+
+It is also possible to handle serially-sampled (time-stamped) data by
+adding ages.
+There are two ways to do that: 
+
+Ages without taxa names:
+
+\begin{minted}{Stan}
+g ~ Coalescent(theta=0.1, ages=[0.0, 0.1, 0.2, 0.3]);
+\end{minted}
+
+Ages and taxa names:
+
+\begin{minted}{Stan}
+taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2,
+0.3]);
+g ~ Coalescent(theta=0.1, taxaAges=taxaAges);
+\end{minted}
+
+\subsubsection{Classic skyline coalescent model}
+
+A highly parametric version of the coalescent is also possible, where
+a series of theta values are provided, one for each group of consecutive coalescent intervals.
+If the groupSizes are specified then each coalescent interval is given its
+own population size.
+The following code would generate a tree of five taxa, since there are four theta values provided:
+
+\begin{minted}{Stan}
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4]);
+\end{minted}
+
+The theta values are indexed from the present into the past.
+So the first coalescent interval (starting from the leaves)
+would be generated assuming a population size parameter of 0.1, while
+the last coalescent interval (culimating at the root of the tree)
+would be generated from a population size parameter of 0.4.
+
+It is also possible to add taxa and/or taxa age information:
+
+\begin{minted}{Stan}
+taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3], taxaAges=taxaAges);
+\end{minted}
+
+This will produce a serial coalescent tree with three distinct epochs
+of population size on four taxa with distinct ages.
+
+\subsubsection{Generalized skyline coalescent model}
+
+The following generative distribution call will produce a tree of size
+n=11 taxa, since 4+3+2+1=10= coalescent intervals.
+The first four intervals will all have theta=0.1, the next three will
+have theta=0.2, the next two will have theta=0.3, and the last
+coalescent interval will have theta=0.4:
+
+\begin{minted}{Stan}
+g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
+\end{minted}
+
+\subsubsection{Structured coalescent}
+
+A structured coalescent process takes a migration matrix (M) with
+population sizes of each deme on the diagonal:
+For K demes, theta is an K-tuple and the dimension of m is $K^2 -
+K$. $n$ is a tuple of sample sizes, one dimension for each deme:
+
+\begin{minted}{Stan}
+M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
+g ~ StructuredCoalescent(M=M, n=[15, 15]);
+\end{minted}
+
+\subsubsection{Multispecies coalescent}
+
+This model allows for gene tree-species tree discordance, and is a
+hierarchical model of phylogeny.
+A simple multispecies coalescent model has one distribution define a
+species tree, and a second distribution define a gene tree based on
+the species tree:
+
+\begin{minted}{Stan}
+S ~ Yule(birthRate=5, n=4);
+theta = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+g ~ MultispeciesCoalescent(theta=theta, n=[2, 2, 2, 2], S=S);
+\end{minted}
+
+Each branch in the species tree has its own theta value.
+The $n$ value describes how many individuals are represented in
+the gene tree for each species.
+It is a tuple of integers with length equal to the number of species
+in the species tree.
+
+\subsection{Models of evolutionary rates and sequence evolution}
+
+Another key distribution necessary to perform phylogenetic inference
+is the phylogenetic continuous-time Markov process and its inference
+equivalent the phylogenetic likelihood.
+
+\subsection{LinguaPhylo Studio}
+
+Along with the language definition, we also provide software to
+specify and visualise models as well as simulate data from models
+defined in LPhy.
+
+This software will also provide the ability for models specified in
+the LPhy language to be applied to data using standard inference tools
+such as MrBayes, RevBayes, BEAST1 and BEAST2
+\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
+This will require software that can convert an LPhy specification into
+an input file that these inference engines understand.
+The first such software converter is LPhyBEAST described below.
+
+\subsection{LPhyBEAST}
+
+LPhyBEAST is a command-line program that takes an LPhy model
+specification, and some data and produces a BEAST 2 XML input file.
+It is therefore an alternative way to succinctly express and
+communicate BEAST analyses. 
+
+\bibliographystyle{unsrt}
+\bibliography{linguaPhylo}
+
+
+\end{document}
