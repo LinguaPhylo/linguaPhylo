@@ -6,6 +6,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * Created by adru001 on 18/12/19.
  */
@@ -13,19 +15,16 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
 
     private final String meanLogParamName;
     private final String sdLogParamName;
-    private Value<Double> M;
-    private Value<Double> S;
-
-    private RandomGenerator random;
+    private Value<Number> M;
+    private Value<Number> S;
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Double> M,
-                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Double> S) {
+    public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Number> M,
+                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Number> S) {
 
         this.M = M;
         this.S = S;
-        this.random = Utils.getRandom();
 
         meanLogParamName = getParamName(0);
         sdLogParamName = getParamName(1);
@@ -34,7 +33,7 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
     @GeneratorInfo(name="LogNormal", description="The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
 
-        logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
+        logNormalDistribution = new LogNormalDistribution(doubleValue(M), doubleValue(S));
         return new RandomVariable<>("x",  logNormalDistribution.sample(), this);
     }
 
@@ -61,11 +60,11 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
         return getName();
     }
 
-    public Value<Double> getMeanLog() {
+    public Value<Number> getMeanLog() {
         return M;
     }
 
-    public Value<Double> getSDLog() {
+    public Value<Number> getSDLog() {
         return S;
     }
 

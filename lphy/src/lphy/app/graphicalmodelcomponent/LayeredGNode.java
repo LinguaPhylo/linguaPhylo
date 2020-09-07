@@ -39,7 +39,7 @@ public class LayeredGNode extends LayeredNode.Default {
 
         if (value instanceof Value) {
             name = ((Value)value).getId();
-            createValueButton();
+            createValueButton((Value)value);
 
         } else if (value instanceof Generator) {
             createParameterizedButton();
@@ -109,38 +109,67 @@ public class LayeredGNode extends LayeredNode.Default {
         return (v instanceof MultiDimensional || v instanceof Map || v instanceof Alignment || v.getClass().isArray());
     }
 
-    private void createValueButton() {
+    private void createValueButton(Value value) {
         Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
         Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
 
-        if (ValueUtils.isFixedValue((Value) value)) {
+        if (ValueUtils.isFixedValue(value)) {
             backgroundColor = Color.white;
             borderColor = Color.black;
-        } else if (ValueUtils.isValueOfDeterministicFunction((Value) value)) {
+        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
             backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
         }
 
-        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
+        if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyParser.Context.model) != value) {
             backgroundColor = backgroundColor.darker();
             borderColor = borderColor.darker();
         }
 
-        String str = getButtonString((Value)value);
+        String str = getButtonString(value);
+
+        boolean inData = inData(value);
 
         if (button == null) {
             if (value instanceof RandomVariable) {
                 button = new CircleButton(str, backgroundColor, borderColor);
-            } else if (((Value) value).getGenerator() != null) {
-                button = new DiamondButton(str, backgroundColor, borderColor);
-            } else if (!(value instanceof RandomVariable)) {
-                button = new SquareButton(str, backgroundColor, borderColor);
+            } else if (value.getGenerator() != null) {
+                if (inData){
+                    button = new DataDiamondButton(str);
+                } else {
+                    button = new DiamondButton(str, backgroundColor, borderColor);
+                }
+            } else {
+                if (inData){
+                    button = new DataButton(str);
+                } else {
+                    button = new SquareButton(str, backgroundColor, borderColor);
+                }
             }
         }
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        ((Value)value).addValueListener(() -> button.setText(getButtonString((Value)value)));
+        value.addValueListener(() -> button.setText(getButtonString((Value)this.value)));
+    }
+
+    private boolean inData(Value value) {
+        if (!value.isAnonymous()) {
+            return parser.hasValue(value.getId(), LPhyParser.Context.data);
+        }
+//        else {
+//            boolean success = false;
+//            for (Object output : value.getOutputs()) {
+//                if (output instanceof Value && inData((Value)output)) {
+//                    return true;
+//                } else if (output instanceof Generator) {
+//                    for (Object output2 : ((GraphicalModelNode)output).) {
+//
+//                    }
+//            }
+//            return success;
+//        }
+            return false;
     }
 
     private void createParameterizedButton() {

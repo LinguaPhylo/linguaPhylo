@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 public class SquareButton extends JButton {
@@ -14,6 +15,8 @@ public class SquareButton extends JButton {
 
     private Color backgroundColor = Color.white;
     private Color borderColor = Color.black;
+
+    Point2D origin = new Point2D.Double(0,0);
 
     public SquareButton(String text, Color backgroundColor, Color borderColor) {
 
@@ -83,9 +86,11 @@ public class SquareButton extends JButton {
             g.setColor(backgroundColor);
         }
 
+        origin.setLocation((width-size)/2.0, (height-size)/2.0);
+
         Graphics2D g2d = (Graphics2D)g;
 
-        Rectangle2D rect = new Rectangle2D.Double((width-size)/2.0, (height-size)/2.0, size, size);
+        Rectangle2D rect = new Rectangle2D.Double(origin.getX(), origin.getY(), size, size);
 
         g2d.fill(rect);
 

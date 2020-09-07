@@ -24,10 +24,15 @@ import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static lphy.core.LPhyParser.Context.data;
+import static lphy.core.LPhyParser.Context.model;
+
 public class GraphicalModelParser implements LPhyParser {
 
     // CURRENT MODEL STATE
-    private SortedMap<String, Value<?>> dictionary = new TreeMap<>();
+    private SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();
+
+    private SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
 
     // HISTORY OF LINES PARSED
     List<String> lines = new ArrayList<>();
@@ -40,6 +45,8 @@ public class GraphicalModelParser implements LPhyParser {
 
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     List<GraphicalModelListener> gmListeners = new ArrayList<>();
+
+    private Context context = model;
 
     public GraphicalModelParser() {
 
@@ -84,7 +91,7 @@ public class GraphicalModelParser implements LPhyParser {
 
     public List<Value> getAllValuesFromRoots() {
         List<Value> values = new ArrayList<>();
-        for (Value v : getSinks()) {
+        for (Value v : getModelSinks()) {
             getAllValues(v, values);
         }
         return values;
@@ -135,7 +142,7 @@ public class GraphicalModelParser implements LPhyParser {
 
     public List<RandomVariable> getRandomVariables() {
         ArrayList<RandomVariable> randomVariables = new ArrayList<>();
-        dictionary.values().forEach((val) -> {
+        modelDictionary.values().forEach((val) -> {
             if (val instanceof RandomVariable) randomVariables.add((RandomVariable) val);
         });
         return randomVariables;
@@ -143,15 +150,17 @@ public class GraphicalModelParser implements LPhyParser {
 
     public List<RandomVariable> collectRandomVariablesFromRoots() {
         ArrayList<RandomVariable> randomVariables = new ArrayList<>();
-        dictionary.values().forEach((val) -> {
+        modelDictionary.values().forEach((val) -> {
             if (val instanceof RandomVariable) randomVariables.add((RandomVariable) val);
         });
         return randomVariables;
     }
 
     public void clear() {
+        // clear current data state
+        dataDictionary.clear();
         // clear current model state
-        dictionary.clear();
+        modelDictionary.clear();
 
         // clear history of lines
         lines.clear();
@@ -166,11 +175,17 @@ public class GraphicalModelParser implements LPhyParser {
         gmListeners.add(listener);
     }
 
-    public SortedMap<String, Value<?>> getDictionary() {
-        return dictionary;
+    @Override
+    public Map<String, Value<?>> getDataDictionary() {
+        return null;
     }
 
-    public void parse(String code) {
+    @Override
+    public Map<String, Value<?>> getModelDictionary() {
+        return null;
+    }
+
+    public void parse(String code, Context context) {
         parseLine(code);
     }
 
@@ -202,7 +217,7 @@ public class GraphicalModelParser implements LPhyParser {
         } else if (isCommandLine(line)) {
             parseCommandLine(line, lineNumber);
         } else if (isValueId(trim(line))) {
-            selectValue(dictionary.get(trim(line)));
+            selectValue(getValue(trim(line), context));
         } else {
             throw new RuntimeException("Parse error on line " + lineNumber + ": " + line);
         }
@@ -217,7 +232,7 @@ public class GraphicalModelParser implements LPhyParser {
     private Value parseValueExpression(String valueString, int lineNumber) {
 
         if (isValueId(valueString)) {
-            return dictionary.get(valueString);
+            return getValue(valueString, context);
         } else if (isLiteral(valueString)) {
             return parseLiteralValue(null, valueString, lineNumber);
         } else if (isFunction(valueString)) {
@@ -255,7 +270,7 @@ public class GraphicalModelParser implements LPhyParser {
     }
 
     private boolean isValueId(String valueString) {
-        return dictionary.keySet().contains(valueString);
+        return dataDictionary.containsKey(valueString) || modelDictionary.containsKey(valueString);
     }
 
     private String trim(String str) {
@@ -313,7 +328,17 @@ public class GraphicalModelParser implements LPhyParser {
             }
 
             Value literalValue = parseLiteralValue(id, remainder, lineNumber);
-            dictionary.put(literalValue.getId(), literalValue);
+            put(literalValue.getId(), literalValue);
+        }
+    }
+
+    void put(String id, Value<?> value) {
+        switch (context) {
+            case data:
+                dataDictionary.put(id, value);
+                break;
+            case model: default:
+                modelDictionary.put(id, value);
         }
     }
 
@@ -465,7 +490,7 @@ public class GraphicalModelParser implements LPhyParser {
         if (remainder.endsWith(";")) remainder = remainder.substring(0, remainder.length() - 1);
         String functionString = remainder;
         Value val = parseDeterministicFunction(id, functionString, lineNumber);
-        dictionary.put(val.getId(), val);
+        put(val.getId(), val);
     }
 
     /**
@@ -534,12 +559,15 @@ public class GraphicalModelParser implements LPhyParser {
 
         if (!value.isAnonymous()) {
             String id = value.getId();
-            Value oldValue = dictionary.get(id);
+            Value oldValue;
+            switch (context) {
+                case data: oldValue = dataDictionary.get(id); break;
+                case model: default: oldValue = modelDictionary.get(id); break;
+            }
             if (oldValue != null) {
                 oldValue.setId(id + ".old");
             }
-
-            dictionary.put(id, value);
+            put(id, value);
         }
     }
 

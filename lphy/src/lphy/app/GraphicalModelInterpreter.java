@@ -2,7 +2,6 @@ package lphy.app;
 
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
-import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.parser.CodeColorizer;
 import lphy.utils.LoggerUtils;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class GraphicalModelInterpreter extends JPanel {
@@ -29,6 +27,7 @@ public class GraphicalModelInterpreter extends JPanel {
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
+    LPhyParser.Context context;
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -40,8 +39,9 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
-    public GraphicalModelInterpreter(LPhyParser parser) {
+    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context) {
         this.parser = parser;
+        this.context = context;
 
         textPane = new GraphicalModelTextPane(parser);
         textPane.setBorder(textBorder);
@@ -98,7 +98,7 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
 
         interpreterField.addActionListener(e -> {
-            interpretInput(interpreterField.getText());
+            interpretInput(interpreterField.getText(), context);
             interpreterField.setText("");
         });
 
@@ -210,7 +210,7 @@ public class GraphicalModelInterpreter extends JPanel {
         return words[words.length - 1];
     }
 
-    public void interpretInput(String input) {
+    public void interpretInput(String input, LPhyParser.Context context) {
 
 //        // split on ; that are not in string
 //        String[] lines = input.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -228,8 +228,8 @@ public class GraphicalModelInterpreter extends JPanel {
 //            }
 //        }
 
-        parser.parse(input);
-        CodeColorizer codeColorizer = new CodeColorizer(parser.getDictionary(), textPane);
+        parser.parse(input, context);
+        CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
         codeColorizer.parse(input);
     }
 

@@ -10,8 +10,8 @@ public interface Command {
 
     void execute(Map<String, Value<?>> params);
 
-    default void execute(String commandString, Map<String, Value<?>> dictionary) {
-        LPhyParser.Utils.parseCommand(this, commandString, dictionary);
+    default void execute(String commandString, LPhyParser parser) {
+        LPhyParser.Utils.parseCommand(this, commandString, parser);
     }
 
     default String getSignature() {

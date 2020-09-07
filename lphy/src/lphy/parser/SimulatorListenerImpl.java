@@ -1,9 +1,11 @@
 package lphy.parser;
 
 
+import lphy.core.LPhyParser;
 import lphy.core.functions.DoubleArray;
 import lphy.core.functions.IntegerArray;
 import lphy.core.functions.Range;
+import lphy.evolution.DataFrame;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.Expression_listContext;
@@ -14,6 +16,7 @@ import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,28 +25,37 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
-public class SimulatorListenerImpl extends AbstractBaseListener {
+public class SimulatorListenerImpl extends SimulatorBaseListener {
 
-    public SimulatorListenerImpl(SortedMap<String, Value<?>> dictionary) {
-        this.dictionary = dictionary;
+    LPhyParser.Context context;
+    LPhyParser parser;
+
+    public SimulatorListenerImpl(LPhyParser parser, LPhyParser.Context context) {
+        this.parser = parser;
+        this.context = context;
+
+    }
+
+    private void put(String id, Value val) {
+        switch (context) {
+            case data: parser.getDataDictionary().put(id, val); break;
+            case model: default:
+                parser.getModelDictionary().put(id, val);
+        }
+    }
+
+    private Value<?> get(String id) {
+        return parser.getValue(id, context);
+    }
+
+    private boolean containsKey(String id) {
+        return parser.hasValue(id,context);
     }
 
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
 
-        public SimulatorASTVisitor() {
-            //initNameMap();
-
-            bivarOperators = new HashSet<>();
-            for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
-                bivarOperators.add(s);
-            }
-            univarfunctions = new HashSet<>();
-            for (String s : new String[]{"abs", "acos", "acosh", "asin", "asinh", "atan", "atanh", "cLogLog", "cbrt", "ceil", "cos", "cosh", "exp", "expm1", "floor", "log", "log10", "log1p", "logFact", "logGamma", "logit", "phi", "probit", "round", "signum", "sin", "sinh", "sqrt", "step", "tan", "tanh"}) {
-                univarfunctions.add(s);
-            }
-
-        }
+        public SimulatorASTVisitor() {}
 
         public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
 
@@ -118,7 +130,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
         private String nextID(String id) {
             int k = 0;
-            while (dictionary.containsKey(id + k)) {
+            while (parser.hasValue(id + k, context)) {
                 k++;
             }
             return id + k;
@@ -141,8 +153,8 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 value.setId(id);
                 if (o instanceof RangedVar) {
 
-                    if (dictionary.containsKey(id)) {
-                        Value v = dictionary.get(id);
+                    if (parser.hasValue(id, context)) {
+                        Value v = parser.getValue(id, context);
                         List<Integer> range = ((RangedVar) o).range;
                         for (int i = 0; i < range.size(); i++) {
                             int index = range.get(i);
@@ -151,7 +163,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                     }
 
                 } else {
-                    dictionary.put(id, value);
+                    put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
                 }
                 return value;
@@ -161,8 +173,8 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
                 if (o instanceof RangedVar) {
 
-                    if (dictionary.containsKey(id)) {
-                        Value v = dictionary.get(id);
+                    if (containsKey(id)) {
+                        Value v = get(id);
                         List<Integer> range = ((RangedVar) o).range;
                         for (int i = 0; i < range.size(); i++) {
                             int index = range.get(i);
@@ -171,7 +183,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                     }
 
                 } else {
-                    dictionary.put(id, value);
+                    put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
                 }
                 return value;
@@ -204,34 +216,16 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
         @Override
         public Value visitStoch_relation(SimulatorParser.Stoch_relationContext ctx) {
-//			System.out.println(2);
+
+            if (context == LPhyParser.Context.data) {
+                throw new RuntimeException("Generative distributions are not allowed in the data block!");
+            }
+
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
             String id = ctx.getChild(0).getText();
-//			JFunction f;JFunction
-//			if (id.indexOf('[') == -1) {
-//				f = (JFunction) doc.pluginmap.get(id);
-//			} else {
-//				id = ctx.getChild(0).getChild(0).getText() + '[';
-//				for (int i = 2; i < ctx.getChild(0).getChildCount() -1; i++) {
-//					id += (int) ((JFunction) visit(ctx.getChild(0).getChild(i))).getArrayValue();
-//					if (i < ctx.getChild(0).getChildCount() -2) {
-//						id += ',';
-//					}
-//				}
-//				id += ']';
-//				f = (JFunction) visit(ctx.getChild(0));
-//			}
-//			
-//			Distribution distribution = new Distribution(distr, f);
-//			distribution.setID("logP." + id);
-//			
-//			distributions.add(distribution);
-//			doc.registerPlugin(distribution);
-//			
-//			return distribution;
 
             RandomVariable var = genDist.sample(id);
-            dictionary.put(var.getId(), var);
+            put(var.getId(), var);
             return var;
         }
 
@@ -281,14 +275,14 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
             // Deals with single token expressions -- probably an id referring to previously defined constant or variable
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
-                if (dictionary.containsKey(key)) {
-                    return dictionary.get(key);
+                if (containsKey(key)) {
+                    return get(key);
                 }
             }
             ExpressionNode expression = null;
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (bivarOperators.contains(s)) {
+                if (ParserTools.bivarOperators.contains(s)) {
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
 
                     Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
@@ -508,7 +502,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 arguments.put(v.name, v.value);
             }
 
-            Set<Class<?>> genDistClasses = genDistDictionary.get(name);
+            Set<Class<?>> genDistClasses = ParserTools.getGenerativeDistributionClasses(name);
 
             if (genDistClasses == null)
                 throw new RuntimeException("Found no implementation for generative distribution " + name);
@@ -609,7 +603,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 } else if (obj instanceof Value) {
                     Value value = (Value) obj;
                     list.add(value);
-                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list");
+                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list: " + obj);
             }
             return list.toArray(new Value[]{});
         }
@@ -637,7 +631,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 }
             }
 
-            if (univarfunctions.contains(functionName)) {
+            if (ParserTools.univarfunctions.contains(functionName)) {
                 ExpressionNode expression = null;
                 switch (functionName) {
                     case "abs":
@@ -737,7 +731,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 return expression;
             }
 
-            Set<Class<?>> functionClasses = functionDictionary.get(functionName);
+            Set<Class<?>> functionClasses = ParserTools.getFunctionClasses(functionName);
 
             if (functionClasses == null)
                 throw new RuntimeException("Found no implementation for function " + functionName);
@@ -789,6 +783,13 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
         }
     }
+
+//    private Map<String, Value<?>> dictionary() {
+//        switch (context) {
+//            case data: return parser.getDataDictionary();
+//
+//        }
+//    }
 
     private boolean allConstants(Value[] var) {
         for (Value v : var) {
@@ -928,7 +929,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
 
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
-            SimulatorListenerImpl parser = new SimulatorListenerImpl(new TreeMap());
+            SimulatorListenerImpl parser = new SimulatorListenerImpl(new REPL(), LPhyParser.Context.model);
             BufferedReader fin = new BufferedReader(new FileReader(args[0]));
             StringBuffer buf = new StringBuffer();
             String str = null;

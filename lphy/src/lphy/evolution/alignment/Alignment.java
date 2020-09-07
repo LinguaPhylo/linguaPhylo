@@ -1,6 +1,5 @@
 package lphy.evolution.alignment;
 
-import jebl.evolution.sequences.DataType;
 import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
@@ -22,18 +21,21 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     int[][] alignment;
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
+    @Deprecated int numStates;
 
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
     @Deprecated
-    // for simulators
+    // for simulators, and datatype not available
     public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
         super(ntaxa, nchar);
         this.idMap = idMap;
         fillRevMap();
 
         alignment = new int[ntaxa][nchar];
-        sequenceType = DataType.guessSequenceType(numStates);
+//        sequenceType = DataType.guessSequenceType(numStates);
+        sequenceType = null;
+        this.numStates = numStates;
     }
 
     // for inheritance
@@ -46,6 +48,7 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
 
         alignment = new int[ntaxa][nchar];
         this.sequenceType = sequenceType;
+        this.numStates = sequenceType.getCanonicalStateCount();
     }
 
     // for inheritance
@@ -95,7 +98,8 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     @Override
     public JComponent getComponent(Value<Alignment> value) {
 
-        if ( DataType.isSame(DataType.BINARY, sequenceType) )
+//        if ( DataType.isSame(DataType.BINARY, sequenceType) )
+        if (numStates == 2) // TODO BINARY
             return new AlignmentComponent(value, AlignmentComponent.BINARY_COLORS);
         else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
@@ -137,6 +141,10 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     }
 
     public String getDataTypeDescription() {
+        if (sequenceType == null) { // TODO BINARY
+            if (numStates == 2) return "binary";
+            else throw new IllegalArgumentException("Please use SequenceType !");
+        }
         return sequenceType.getName();
     }
 
@@ -151,9 +159,17 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
     public String getSequence(int taxonIndex) {
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
-            builder.append(sequenceType.getState(alignment[taxonIndex][j]));
+            if (sequenceType == null) // TODO BINARY
+                builder.append(getBinaryChar(alignment[taxonIndex][j]));
+            else
+                builder.append(sequenceType.getState(alignment[taxonIndex][j]));
         }
         return builder.toString();
     }
 
+    // TODO BINARY
+    private char getBinaryChar(int state) {
+        if (numStates != 2) throw new IllegalArgumentException("Please use SequenceType !");
+        return (char)('0' + state);
+    }
 }

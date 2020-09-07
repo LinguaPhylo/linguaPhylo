@@ -1,0 +1,64 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>compevol</groupId>
+    <artifactId>lphy</artifactId>
+    <version>0.0.1</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-master</artifactId>
+            <version>4.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ejml.core</groupId>
+            <artifactId>ejml-core</artifactId>
+            <version>3.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>ejml-ddense</artifactId>
+            <version>0.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>ejml-simple</artifactId>
+            <version>0.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graphstream</groupId>
+            <artifactId>gs-algo</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graphstream</groupId>
+            <artifactId>gs-core</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graphstream</groupId>
+            <artifactId>gs-ui</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jebl</groupId>
+            <artifactId>jebl</artifactId>
+            <version>2.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jebl-23-07-2020.jar</systemPath>
+        </dependency>
+
+    </dependencies>
+</project>

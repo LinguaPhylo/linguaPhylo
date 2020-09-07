@@ -1,6 +1,7 @@
 package lphy.parser;
 
-import lphy.core.*;
+import lphy.core.PhyloBrownian;
+import lphy.core.PhyloOU;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
@@ -10,22 +11,19 @@ import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.*;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
-import lphy.toroidalDiffusion.*;
 import lphy.graphicalModel.Generator;
+import lphy.toroidalDiffusion.*;
 
 import java.util.*;
 import java.util.Map;
 
-public class AbstractBaseListener extends SimulatorBaseListener {
+public class ParserTools {
 
-    // CURRENT MODEL STATE
-
-    LPhyParser parser;
-
-    // PARSER STATE
     static Map<String, Set<Class<?>>> genDistDictionary;
     static Map<String, Set<Class<?>>> functionDictionary;
-    static Set<String> bivarOperators, univarfunctions;
+    static Set<String> bivarOperators;
+    static Set<String> univarfunctions;
+
 
     static {
         genDistDictionary = new TreeMap<>();
@@ -64,5 +62,22 @@ public class AbstractBaseListener extends SimulatorBaseListener {
         }
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
+
+        bivarOperators = new HashSet<>();
+        for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
+            bivarOperators.add(s);
+        }
+        univarfunctions = new HashSet<>();
+        for (String s : new String[]{"abs", "acos", "acosh", "asin", "asinh", "atan", "atanh", "cLogLog", "cbrt", "ceil", "cos", "cosh", "exp", "expm1", "floor", "log", "log10", "log1p", "logFact", "logGamma", "logit", "phi", "probit", "round", "signum", "sin", "sinh", "sqrt", "step", "tan", "tanh"}) {
+            univarfunctions.add(s);
+        }
+    }
+
+    static Set<Class<?>> getGenerativeDistributionClasses(String name) {
+        return genDistDictionary.get(name);
+    }
+
+    static Set<Class<?>> getFunctionClasses(String name) {
+        return functionDictionary.get(name);
     }
 }

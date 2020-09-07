@@ -2,8 +2,8 @@ package lphybeast.tobeast;
 
 import beast.evolution.datatype.Aminoacid;
 import beast.evolution.datatype.Nucleotide;
-import beast.evolution.datatype.StandardData;
-import jebl.evolution.sequences.*;
+import jebl.evolution.sequences.SequenceType;
+import lphy.evolution.sequences.DataType;
 
 /**
  * @author Walter Xie
@@ -15,10 +15,10 @@ public class Utils {
             return new Nucleotide();
         } else if (DataType.isSame(DataType.AMINO_ACID, sequenceType)) {
             return new Aminoacid();
-        } else if (DataType.isSame(DataType.BINARY, sequenceType)) {
-            return new beast.evolution.datatype.Binary();
-        } else if (DataType.isSame(DataType.STANDARD, sequenceType)) {
-            return new StandardData();
+//        } else if (DataType.isSame(DataType.BINARY, sequenceType)) {
+//            return new beast.evolution.datatype.Binary();
+//        } else if (DataType.isSame(DataType.STANDARD, sequenceType)) {
+//            return new StandardData();
         }
         throw new UnsupportedOperationException(sequenceType.getName());
     }

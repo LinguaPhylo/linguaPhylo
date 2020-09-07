@@ -2,6 +2,7 @@ package lphy.app;
 
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.Layering;
+import lphy.core.LPhyParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.*;
 
@@ -24,7 +25,8 @@ public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
     JLabel dummyLabel = new JLabel("");
-    GraphicalModelInterpreter interpreter;
+    GraphicalModelInterpreter modelInterpreter;
+    GraphicalModelInterpreter dataInterpreter;
     JTabbedPane rightPane;
     VariableLog variableLog = new VariableLog(true, true);
     VariableSummary variableSummary = new VariableSummary(true, true);
@@ -49,7 +51,8 @@ public class GraphicalModelPanel extends JPanel {
 
         this.parser = parser;
 
-        interpreter = new GraphicalModelInterpreter(parser);
+        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
+        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
@@ -92,7 +95,11 @@ public class GraphicalModelPanel extends JPanel {
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel, dummyLabel);
         horizSplitPane.setResizeWeight(0.5);
 
-        verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreter);
+        JTabbedPane interpreterPane = new JTabbedPane();
+        interpreterPane.add("data", dataInterpreter);
+        interpreterPane.add("model", modelInterpreter);
+
+        verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreterPane);
         verticalSplitPane.setResizeWeight(0.75);
         add(verticalSplitPane, BorderLayout.CENTER);
 
@@ -157,8 +164,8 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
         horizSplitPane.setRightComponent(rightPane);
 
-        if (parser.getSinks().size() > 0) {
-            showValue(parser.getSinks().iterator().next());
+        if (parser.getModelSinks().size() > 0) {
+            showValue(parser.getModelSinks().iterator().next());
         }
     }
 
@@ -193,10 +200,13 @@ public class GraphicalModelPanel extends JPanel {
         Sampler sampler = new Sampler(parser);
         sampler.sample(reps, loggers);
 
-        if (id != null && parser.getDictionary().get(id) != null) {
-            showValue(parser.getDictionary().get(id));
+        if (id != null) {
+            Value<?> selectedValue = parser.getValue(id, LPhyParser.Context.model);
+            if (selectedValue != null) {
+                showValue(selectedValue);
+            }
         } else {
-            Set<Value<?>> sinks = parser.getSinks();
+            Set<Value<?>> sinks = parser.getModelSinks();
             if (sinks.size() > 0) showValue(sinks.iterator().next());
         }
         long end = System.currentTimeMillis();
@@ -251,13 +261,15 @@ public class GraphicalModelPanel extends JPanel {
             if (mimeType.equals("text/plain")) {
                 // TODO need to find another way to do this
                 //parser.clear();
-                interpreter.clear();
+                dataInterpreter.clear();
+                modelInterpreter.clear();
 
                 FileReader reader = new FileReader(scriptFile);
                 BufferedReader bufferedReader = new BufferedReader(reader);
                 String line = bufferedReader.readLine();
                 while (line != null) {
-                    interpreter.interpretInput(line);
+                    dataInterpreter.clear();
+                    modelInterpreter.clear();
                     line = bufferedReader.readLine();
                 }
                 bufferedReader.close();
