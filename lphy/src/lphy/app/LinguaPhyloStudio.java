@@ -206,7 +206,7 @@ public class LinguaPhyloStudio {
             if (line.trim().startsWith("data")) {
                 context = LPhyParser.Context.data;
             } else if (line.trim().startsWith("model")) {
-                context = LPhyParser.Context.data;
+                context = LPhyParser.Context.model;
             } else if (line.trim().startsWith("}")) {
                 // do nothing as this line is just closing a data or model block.
             } else {

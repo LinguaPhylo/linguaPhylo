@@ -1,0 +1,9 @@
+data {
+  L = 200;
+  taxa = 1:16;
+}
+model {
+  theta ~ LogNormal(meanlog=3, sdlog=1);
+  T ~ Coalescent(theta=theta, taxa=taxa);
+  D ~ PhyloCTMC(tree=T, L=L, Q=jukesCantor());
+}

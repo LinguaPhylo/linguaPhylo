@@ -1,13 +1,12 @@
 package lphy.app.graphicalmodelcomponent;
 
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class DataButton extends SquareButton {
+public class DataDiamondButton extends DiamondButton {
 
-    public DataButton(String text) {
-
+    public DataDiamondButton(String text) {
         super(text, Color.orange, Color.darkGray);
-
     }
 
     @Override
@@ -18,6 +17,6 @@ public class DataButton extends SquareButton {
         ((Graphics2D)g).setStroke(new BasicStroke(1.0f));
 
         //g.setColor(Color.lightGray);
-        //((Graphics2D)g).drawString("data", (float)origin.getX(), (float)origin.getY()+10.0f);
+        //g.drawString("data", 0, 0);
     }
 }

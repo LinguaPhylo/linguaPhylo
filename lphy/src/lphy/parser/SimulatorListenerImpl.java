@@ -614,7 +614,7 @@ public class SimulatorListenerImpl extends AbstractBaseListener {
                 } else if (obj instanceof Value) {
                     Value value = (Value) obj;
                     list.add(value);
-                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list");
+                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list: " + obj);
             }
             return list.toArray(new Value[]{});
         }
