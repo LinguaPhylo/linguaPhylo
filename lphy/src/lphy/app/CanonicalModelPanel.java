@@ -3,9 +3,7 @@ package lphy.app;
 import lphy.core.LPhyParser;
 import lphy.parser.CodeColorizer;
 
-import javax.print.attribute.AttributeSetUtilities;
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 
@@ -47,7 +45,7 @@ public class CanonicalModelPanel extends JComponent {
 
         System.out.println(text);
 
-        CodeColorizer codeColorizer = new CodeColorizer(parser.getDictionary(), pane);
+        CodeColorizer codeColorizer = new CodeColorizer(parser, pane);
         codeColorizer.parse(text);
     }
 }

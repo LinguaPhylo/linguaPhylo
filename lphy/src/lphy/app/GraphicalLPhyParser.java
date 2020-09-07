@@ -16,8 +16,18 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
-    public Map<String, Value<?>> getDictionary() {
-        return wrappedParser.getDictionary();
+    public Map<String, Value<?>> getDataDictionary() {
+        return wrappedParser.getDataDictionary();
+    }
+
+    @Override
+    public Map<String, Value<?>> getModelDictionary() {
+        return wrappedParser.getModelDictionary();
+    }
+
+    @Override
+    public Value<?> getValue(String id, Context context) {
+        return wrappedParser.getValue(id, context);
     }
 
     @Override
@@ -30,8 +40,8 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
-    public void parse(String code) {
-        wrappedParser.parse(code);
+    public void parse(String code, Context context) {
+        wrappedParser.parse(code, context);
         notifyListeners();
     }
 

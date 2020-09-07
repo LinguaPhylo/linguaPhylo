@@ -24,9 +24,9 @@ public class Sampler {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
-            Set<Value<?>> sinks = parser.getSinks();
+            Set<Value<?>> sinks = parser.getModelSinks();
             for (RandomVariable<?> var : LPhyParser.Utils.getAllVariablesFromSinks(parser)) {
-                parser.getDictionary().remove(var.getId());
+                parser.getModelDictionary().remove(var.getId());
             }
 
             for (Value<?> value : sinks) {
@@ -36,7 +36,7 @@ public class Sampler {
                         randomValue = sampleAll(value.getGenerator(), sampled);
                     } else throw new RuntimeException();
                     randomValue.setId(value.getId());
-                    addValueToDictionary(randomValue);
+                    addValueToModelDictionary(randomValue);
                 }
             }
 
@@ -81,33 +81,33 @@ public class Sampler {
                     Value nv = sampleAll(val.getGenerator(), sampled);
                     nv.setId(val.getId());
                     newlySampledParams.put(e.getKey(), nv);
-                    addValueToDictionary(nv);
+                    addValueToModelDictionary(nv);
                     if (!val.isAnonymous()) sampled.add(val.getId());
 
                 } else {
                     // already been sampled
                     String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), parser.getDictionary().get(id));
+                    newlySampledParams.put(e.getKey(), parser.getModelDictionary().get(id));
                 }
             }
         }
         return newlySampledParams;
     }
 
-    private void addValueToDictionary(Value value) {
+    private void addValueToModelDictionary(Value value) {
 
         LoggerUtils.log.fine("addValueToDictionary(" + value + ")");
 
         if (!value.isAnonymous()) {
             String id = value.getId();
-            Value oldValue = parser.getDictionary().get(id);
+            Value oldValue = parser.getModelDictionary().get(id);
             // Can't change the name as this will mess with updating of expression nodes!
 //            if (oldValue != null) {
 //                oldValue.setId(id + ".old");
 //            }
             LoggerUtils.log.fine("  parser.getDictionary().put(" + id + ":" + value + ")");
 
-            parser.getDictionary().put(id, value);
+            parser.getModelDictionary().put(id, value);
         }
     }
 }

@@ -5,24 +5,54 @@ import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.ExpressionNode;
 import lphy.parser.ExpressionNodeWrapper;
-import lphy.utils.LoggerUtils;
 
 import java.util.*;
 
 public interface LPhyParser {
 
+    enum Context {
+        data,
+        model
+    }
+
     /**
-     * @return the dictionary of parsed values with id's, keyed by id
+     * @return the data dictionary of parsed values with id's, keyed by id
      */
-    Map<String, Value<?>> getDictionary();
+    Map<String, Value<?>> getDataDictionary();
+
+    /**
+     * @return the model dictionary of parsed values with id's, keyed by id
+     */
+    Map<String, Value<?>> getModelDictionary();
+
+    /**
+     * @return the value with the given id in the given context, or null if the value id doesn't exist in given context.
+     */
+    default Value getValue(String id, Context context) {
+        switch (context) {
+            case data: return getDataDictionary().get(id);
+            case model: default:
+                Map<String, Value<?>> data = getDataDictionary();
+                if (data.containsKey(id)) return data.get(id);
+                return getModelDictionary().get(id);
+        }
+    }
+
+    default boolean hasValue(String id, Context context) {
+        return getValue(id, context) != null;
+    }
+
+    default boolean isClamped(String id) {
+        return (getDataDictionary().containsKey(id) && getModelDictionary().containsKey(id));
+    }
 
     void addCommand(Command command);
 
     Collection<Command> getCommands();
 
-    default Set<Value<?>> getSinks() {
+    default Set<Value<?>> getModelSinks() {
         SortedSet<Value<?>> nonArguments = new TreeSet<>(Comparator.comparing(Value::getId));
-        getDictionary().values().forEach((val) -> {
+        getModelDictionary().values().forEach((val) -> {
             if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
         });
         return nonArguments;
@@ -37,7 +67,11 @@ public interface LPhyParser {
         return keywords;
     }
 
-    void parse(String code);
+    default void parse(String code) {
+        parse(code, Context.model);
+    }
+
+    void parse(String code, Context context);
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy
@@ -66,7 +100,7 @@ public interface LPhyParser {
             return variables;
         }
 
-        public static void parseCommand(Command command, String commandString, Map<String, Value<?>> dictionary) {
+        public static void parseCommand(Command command, String commandString, LPhyParser parser) {
             commandString = commandString.trim();
             if (!commandString.startsWith(command.getName())) {
                 throw new RuntimeException();
@@ -77,11 +111,17 @@ public interface LPhyParser {
                 remainder = remainder.substring(0, remainder.length() - 1);
             }
             Map<String, Value<?>> arguments =
-                    parseArguments(remainder.substring(1, remainder.length() - 1), dictionary);
+                    parseArguments(remainder.substring(1, remainder.length() - 1), parser);
             command.execute(arguments);
         }
 
-        private static Map<String, Value<?>> parseArguments(String argumentString, Map<String, Value<?>> dictionary) {
+        /**
+         * Parses the arguments of a command. A command can't be in the data context.
+         * @param argumentString
+         * @param parser
+         * @return
+         */
+        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyParser parser) {
 
             String[] argumentStrings = splitArgumentString(argumentString);
 
@@ -100,7 +140,7 @@ public interface LPhyParser {
                 String key = argumentPair.substring(0, pos).trim();
                 String valueString = argumentPair.substring(pos + 1).trim();
 
-                Value val = parseValueExpression(valueString, dictionary);
+                Value val = parseValueExpression(valueString, parser, Context.model);
                 arguments.put(key, val);
                 argumentCount += 1;
             }
@@ -111,10 +151,12 @@ public interface LPhyParser {
          * @param valueString a piece of a string that can represent a value. Could be literal or an id of a value or a function call.
          * @return A Value constructed or produced from this expression
          */
-        private static Value parseValueExpression(String valueString, Map<String, Value<?>> dictionary) {
+        private static Value parseValueExpression(String valueString, LPhyParser parser, Context context) {
 
-            if (dictionary.keySet().contains(valueString)) {
-                return dictionary.get(valueString);
+            Value<?> val = parser.getValue(valueString, context);
+
+            if (val != null) {
+                return val;
             } else if (Command.CommandUtils.isLiteral(valueString)) {
                 return parseLiteralValue(null, valueString);
             }
@@ -177,7 +219,7 @@ public interface LPhyParser {
             int wrappedExpressionNodeCount = 0;
             boolean found = false;
             do {
-                for (Value value : parser.getSinks()) {
+                for (Value value : parser.getModelSinks()) {
                     found = wrapExpressionNodes(value);
                     if (found) wrappedExpressionNodeCount += 1;
                 }
@@ -215,7 +257,7 @@ public interface LPhyParser {
             Set<Value> visited = new HashSet<>();
 
             StringBuilder builder = new StringBuilder();
-            for (Value value : parser.getSinks()) {
+            for (Value value : parser.getModelSinks()) {
 
                 Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                     @Override
@@ -241,7 +283,7 @@ public interface LPhyParser {
 
         public static List<Value<?>> getAllValuesFromSinks(LPhyParser parser) {
             List<Value<?>> values = new ArrayList<>();
-            for (Value<?> v : parser.getSinks()) {
+            for (Value<?> v : parser.getModelSinks()) {
                 getAllValues(v, values);
             }
             return values;

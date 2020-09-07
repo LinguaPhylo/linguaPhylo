@@ -10,7 +10,7 @@ public class LayeredGraphFactory {
 
     public static LayeredGraph createLayeredGraph(LPhyParser parser, boolean showAllNodes) {
         Map<Object, LayeredGNode> allNodes = new HashMap<>();
-        for (Value value : parser.getSinks()) {
+        for (Value value : parser.getModelSinks()) {
             createAndAddNode(parser, value, null, allNodes, showAllNodes);
         }
 

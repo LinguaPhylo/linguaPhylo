@@ -21,7 +21,7 @@ public class AbstractBaseListener extends SimulatorBaseListener {
 
     // CURRENT MODEL STATE
 
-    Map<String, Value<?>> dictionary;
+    LPhyParser parser;
 
     // PARSER STATE
     static Map<String, Set<Class<?>>> genDistDictionary;

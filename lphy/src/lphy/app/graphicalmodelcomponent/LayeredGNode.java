@@ -121,7 +121,7 @@ public class LayeredGNode extends LayeredNode.Default {
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
         }
 
-        if (!((Value)value).isAnonymous() && parser.getDictionary().get(((Value)value).getId()) != value) {
+        if (!((Value)value).isAnonymous() && parser.getValue(((Value)value).getId(), LPhyParser.Context.model) != value) {
             backgroundColor = backgroundColor.darker();
             borderColor = borderColor.darker();
         }
@@ -134,7 +134,20 @@ public class LayeredGNode extends LayeredNode.Default {
             } else if (((Value) value).getGenerator() != null) {
                 button = new DiamondButton(str, backgroundColor, borderColor);
             } else if (!(value instanceof RandomVariable)) {
-                button = new SquareButton(str, backgroundColor, borderColor);
+                System.out.println("Checking value " + ((Value) value).getId());
+
+                boolean inModel = !((Value) value).isAnonymous() && parser.hasValue(((Value)value).getId(), LPhyParser.Context.model);
+                boolean inData = !((Value) value).isAnonymous() && parser.hasValue(((Value)value).getId(), LPhyParser.Context.data);
+
+                System.out.println("  in data context = " + inData);
+                System.out.println("  in model context = " + inModel);
+
+                if (inData){
+                    button = new DataButton(str);
+                } else {
+                    button = new SquareButton(str, backgroundColor, borderColor);
+                }
+
             }
         }
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);

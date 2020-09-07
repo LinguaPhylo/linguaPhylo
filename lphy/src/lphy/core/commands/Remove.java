@@ -18,7 +18,10 @@ public class Remove implements Command {
 
     public void execute(Map<String, Value<?>> params) {
         for (Value val: params.values()) {
-            if (!val.isAnonymous()) parser.getDictionary().remove(val.getId());
+            if (!val.isAnonymous()) {
+                parser.getModelDictionary().remove(val.getId());
+                parser.getDataDictionary().remove(val.getId());
+            }
         }
     }
 }
