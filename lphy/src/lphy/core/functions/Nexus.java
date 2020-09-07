@@ -53,6 +53,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
     private Alignment parseNexus(Path nexFile, String[] value) {
         final NexusParser parser = new NexusParser(nexFile);
 
+        // if value is null, ignoring charset return single partition
         Alignment alignment = parser.getLPhyAlignment(value);
 
         if (alignment.hasParts()) return (CharSetAlignment) alignment;
