@@ -101,12 +101,14 @@ public class NexusParser {
 
         }
 
-        final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
-        if (charsetMap.size() > 0) { // multi-partition
+        if (partNames != null) { // partNames is optional
+            final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
+            if (charsetMap.size() > 0) { // multi-partition
 //            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
-            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
-            System.out.println(charSetAlignment);
-            return charSetAlignment;
+                CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
+                System.out.println(charSetAlignment);
+                return charSetAlignment;
+            }
         }
         return lphyAlg; // sing partition
     }
@@ -126,6 +128,8 @@ public class NexusParser {
             lphy.evolution.alignment.Alignment lphyAlg =
                     parser.getLPhyAlignment(new String[]{"noncoding", "coding"});
             System.out.println(lphyAlg.toJSON());
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
