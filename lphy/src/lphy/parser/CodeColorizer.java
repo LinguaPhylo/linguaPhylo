@@ -1,6 +1,7 @@
 package lphy.parser;
 
 
+import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
 import lphy.parser.SimulatorParser.*;
 import org.antlr.v4.runtime.*;
@@ -33,9 +34,9 @@ public class CodeColorizer extends AbstractBaseListener {
     Style punctuationStyle;
     Style funValueStyle;
 
-    public CodeColorizer(Map<String, Value<?>> dictionary, JTextPane pane) {
+    public CodeColorizer(LPhyParser parser, JTextPane pane) {
 
-        this.dictionary = dictionary;
+        this.parser = parser;
         textPane = pane;
 
         functionStyle = textPane.addStyle("functionStyle", null);
@@ -137,7 +138,7 @@ public class CodeColorizer extends AbstractBaseListener {
         public Object visitExpression(ExpressionContext ctx) {
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
-                if (dictionary.containsKey(key)) {
+                if (parser.hasValue(key, LPhyParser.Context.model)) {
                     return new TextElement(key, randomVarStyle);
                 }
             }

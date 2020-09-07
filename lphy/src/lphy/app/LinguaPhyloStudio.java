@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class LinguaPhyloStudio {
 
-    private static String APP_NAME = "LinguaPhylo Studio";
-    private static String VERSION = "0.01";
+    private static String APP_NAME = "LPhy Studio";
+    private static String VERSION = "0.1";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
@@ -90,7 +90,7 @@ public class LinguaPhyloStudio {
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
         fileMenu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getSinks()))));
+        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()))));
 
         //Build the example menu.
         JMenu exampleMenu = new JMenu("Examples");
@@ -115,7 +115,8 @@ public class LinguaPhyloStudio {
                             parser.clear();
                             panel.treeLog.clear();
                             panel.variableLog.clear();
-                            panel.interpreter.clear();
+                            panel.dataInterpreter.clear();
+                            panel.modelInterpreter.clear();
                             source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -200,8 +201,24 @@ public class LinguaPhyloStudio {
 
     private void source(BufferedReader reader) throws IOException {
         String line = reader.readLine();
+        LPhyParser.Context context = LPhyParser.Context.model;
         while (line != null) {
-            panel.interpreter.interpretInput(line);
+            if (line.trim().startsWith("data")) {
+                context = LPhyParser.Context.data;
+            } else if (line.trim().startsWith("model")) {
+                context = LPhyParser.Context.data;
+            } else if (line.trim().startsWith("}")) {
+                // do nothing as this line is just closing a data or model block.
+            } else {
+                switch (context) {
+                    case data:
+                        panel.dataInterpreter.interpretInput(line, LPhyParser.Context.data);
+                        break;
+                    case model:
+                        panel.modelInterpreter.interpretInput(line, LPhyParser.Context.model);
+                        break;
+                }
+            }
             line = reader.readLine();
         }
         panel.repaint();

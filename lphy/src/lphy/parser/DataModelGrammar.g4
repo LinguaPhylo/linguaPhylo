@@ -1,12 +1,17 @@
-grammar Simulator;
+grammar DataModelGrammar;
 
-// this grammar defines a line in an LPHY file without data and model blocks.
+// this grammar defines a full LPHY file containing either, or both a data and model block.
 
-input:   /* empty */
-| relation_list
+input: datablock? modelblock?
 ;
 
-relations:'{' relation_list '}' 
+datablock: DATA relations
+;
+
+modelblock: MODEL relations
+;
+
+relations:'{' relation_list '}'
 ;
 
 relation_list:	relation 
@@ -108,8 +113,8 @@ expression
 //C:                   'c';
 
 //VAR:                 'var';
-//DATA:                'data';
-//MODEL:               'model';
+DATA:                'data';
+MODEL:               'model';
 
 NAME:                Letter LetterOrDigit*;
 //FUNC:                Letter LetterOrDigit*;

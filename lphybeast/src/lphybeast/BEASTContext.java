@@ -162,7 +162,7 @@ public class BEASTContext {
      */
     public void createBEASTObjects() {
 
-        Set<Value<?>> sinks = parser.getSinks();
+        Set<Value<?>> sinks = parser.getModelSinks();
 
         for (Value<?> value : sinks) {
             createBEASTObjects(value);
@@ -534,7 +534,7 @@ public class BEASTContext {
     }
 
     private boolean generatorOfSink(GenerativeDistribution g) {
-        for (Value<?> var : parser.getSinks()) {
+        for (Value<?> var : parser.getModelSinks()) {
             if (var.getGenerator() == g) {
                 return true;
             }

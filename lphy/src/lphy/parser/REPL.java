@@ -11,7 +11,8 @@ import lphy.graphicalModel.Value;
 /** A simple Read-Eval-Print-Loop for the graphicalModelSimulator language **/ 
 public class REPL implements LPhyParser {
 
-	SortedMap<String, Value<?>> dictionary = new TreeMap<>();
+	SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
+	SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();
 
 	SortedMap<String, Command> commands = new TreeMap<>();
 
@@ -32,8 +33,14 @@ public class REPL implements LPhyParser {
 		}
 	}
 
-	final public Map<String, Value<?>> getDictionary() {
-		return dictionary;
+	@Override
+	public Map<String, Value<?>> getDataDictionary() {
+		return dataDictionary;
+	}
+
+	@Override
+	public Map<String, Value<?>> getModelDictionary() {
+		return modelDictionary;
 	}
 
 	@Override
@@ -46,7 +53,7 @@ public class REPL implements LPhyParser {
 		return commands.values();
 	}
 
-	public void parse(String cmd) {
+	public void parse(String cmd, Context context) {
 		if (cmd == null) {
 			return;
 		}
@@ -56,7 +63,7 @@ public class REPL implements LPhyParser {
 		final boolean[] found = new boolean[1];
 		commands.forEach((key, command) -> {
 			if (commandString.startsWith(key)) {
-				command.execute(commandString, dictionary);
+				command.execute(commandString, this);
 				found[0] = true;
 			}
 		});
@@ -67,7 +74,7 @@ public class REPL implements LPhyParser {
 				return;
 			} else if (!cmd.startsWith("?")) {
 				try {
-					SimulatorListenerImpl parser = new SimulatorListenerImpl(dictionary);
+					SimulatorListenerImpl parser = new SimulatorListenerImpl(this, context);
 					if (!cmd.endsWith(";")) {
 						cmd = cmd + ";";
 					}
@@ -105,7 +112,8 @@ public class REPL implements LPhyParser {
 
 	@Override
 	public void clear() {
-		dictionary.clear();
+		dataDictionary.clear();
+		modelDictionary.clear();
 		lines.clear();
 	}
 

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.util.*;
 
+import lphy.core.LPhyParser;
+import lphy.parser.REPL;
 import org.junit.Test;
 
 import lphy.parser.SimulatorListenerImpl;
@@ -23,7 +25,7 @@ public class ParserTest extends TestCase {
 	}
 	
 	private Object parse(String cmd) {
-		SimulatorListenerImpl parser = new SimulatorListenerImpl(new TreeMap());
+		SimulatorListenerImpl parser = new SimulatorListenerImpl(new REPL(), LPhyParser.Context.model);
 		if (!cmd.endsWith(";")) {
 			cmd = cmd + ";";
 		}
