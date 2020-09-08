@@ -18,10 +18,8 @@ import java.awt.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,13 +33,14 @@ public class ExtNexusImporter extends NexusImporter {
 
     protected List<Alignment> alignments;
     protected Map<String, List<CharSetBlock>> charsetMap;
-
+    protected Map<String, String> ageMap;
 
     public ExtNexusImporter(Reader reader) {
         super(reader);
     }
 
-    /**TODO make it extendable
+    /**
+     * TODO make it extendable
      * interface NexusBlockImp{ public NexusBlock findNextBlock(); }
      * enum NexusBlock implements NexusBlockImp{ TAXA, ..., DATA; }
      * // or T extends Enum<? extends NexusBlockImp>
@@ -125,11 +124,11 @@ public class ExtNexusImporter extends NexusImporter {
 
                 } else if (block == ExtNexusImporter.ExtNexusBlock.ASSUMPTIONS) {
 
-                    charsetMap = readAssumptionsBlock();
+                    readAssumptionsBlock(); // only CHARSET
 
                 } else if (block == ExtNexusImporter.ExtNexusBlock.CALIBRATION) {
 
-                    System.err.println("Warning: parsing CALIBRATION not implemented !");
+                    readCalibrationBlock(); // only TIPCALIBRATION
 
                 } else {
                     //TODO new block
@@ -160,10 +159,12 @@ public class ExtNexusImporter extends NexusImporter {
         return charsetMap;
     }
 
+    public Map<String, String> getAgeMap() {
+        if (ageMap == null) ageMap = new TreeMap<>();
+        return ageMap;
+    }
 
-
-
-    //****** Data Type ******//
+//****** Data Type ******//
 
     /**
      * Extract data type after "DATATYPE" keyword, and convert into {@link SequenceType}.
@@ -175,10 +176,67 @@ public class ExtNexusImporter extends NexusImporter {
      */
     protected SequenceType getSequenceType(String token) throws ImportException.UnparsableDataException {
         try {
+            // new data type?
             return DataType.getNexusDataType(token);
         } catch (UnsupportedOperationException e) {
             throw new ImportException.UnparsableDataException(e.getMessage());
         }
+    }
+
+    //****** CALIBRATION Block : TIPCALIBRATION ******//
+
+    protected boolean isNotEnd(String token) {
+        return !token.equalsIgnoreCase("END") && !token.equalsIgnoreCase("ENDBLOCK");
+    }
+
+    protected void readCalibrationBlock() throws ImportException, IOException {
+
+        ageMap = new TreeMap<>();
+        String scale = null;
+
+        String token;
+        do {
+            token = helper.readToken(";");
+            if (token.equalsIgnoreCase("OPTIONS")) {
+                String token2 = helper.readToken("=");
+                if (token2.equalsIgnoreCase("SCALE"))
+                    scale = helper.readToken(";");
+
+            } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
+                if (scale == null)
+                    throw new ImportException("Cannot find SCALE unit, e.g. year");
+                if (scale.toLowerCase().endsWith("s"))
+                    scale = scale.substring(0, scale.length() - 1);
+
+                if (!scale.equalsIgnoreCase("year"))
+                    throw new UnsupportedOperationException();//TODO
+
+                // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
+                do {
+                    String date = null;
+                    String taxonNm = null;
+                    do {
+                        String token2 = helper.readToken(":,");
+
+                        if (helper.getLastDelimiter() == '=') {
+                            date = helper.readToken(":,");
+                        } else if (helper.getLastDelimiter() == ':') {
+                            if (date == null) date = token2; // no =
+                            taxonNm = helper.readToken(":,");
+                        }
+                    } while (helper.getLastDelimiter() != ',');
+
+                    if (date == null || taxonNm == null) throw new ImportException();
+
+                    ageMap.put(taxonNm, date);
+
+                } while (helper.getLastDelimiter() != ';');
+
+            } // end if else
+
+        } while (isNotEnd(token));
+
+        //validation ?
     }
 
 
@@ -190,10 +248,9 @@ public class ExtNexusImporter extends NexusImporter {
      * charset noncoding = 1 458-659 897-898;
      * end;
      */
-    protected Map<String, List<CharSetBlock>> readAssumptionsBlock() throws ImportException, IOException {
+    protected void readAssumptionsBlock() throws ImportException, IOException {
 
-        Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
-
+        charsetMap = new TreeMap<>();
         String token;
         do {
             token = helper.readToken(";");
@@ -229,9 +286,9 @@ public class ExtNexusImporter extends NexusImporter {
                             from = Integer.parseInt(parts[0].trim());
                             to = from;
                         } else
-                            throw new IllegalArgumentException("Charset " + charset + " = "  + token2 + " cannot be parsed");
+                            throw new ImportException("Charset " + charset + " = " + token2 + " cannot be parsed");
                     } catch (NumberFormatException nfe) {
-                        throw new IllegalArgumentException("Charset " + charset + " = "  + token2 + " cannot be parsed");
+                        throw new ImportException("Charset " + charset + " = " + token2 + " cannot be parsed");
                     }
 
                     charSetBlocks.add(new CharSetBlock(from, to, every));
@@ -240,11 +297,9 @@ public class ExtNexusImporter extends NexusImporter {
 
                 charsetMap.put(charset, charSetBlocks);
             }
-        } while ( !token.equalsIgnoreCase("END") && !token.equalsIgnoreCase("ENDBLOCK") );
-
-        return charsetMap;
+        } while (isNotEnd(token));
+        //validation ?
     }
-
 
 
     //****** Can be removed if pull request is accepted ******//
@@ -284,11 +339,11 @@ public class ExtNexusImporter extends NexusImporter {
 
         while (matcher.find()) {
             String label = matcher.group(1);
-            if( label.charAt(0) == '\"' ) {
+            if (label.charAt(0) == '\"') {
                 label = label.substring(1, label.length() - 1);
             }
             if (label == null || label.trim().length() == 0) {
-                throw new ImportException.BadFormatException("Badly formatted attribute: '"+ matcher.group()+"'");
+                throw new ImportException.BadFormatException("Badly formatted attribute: '" + matcher.group() + "'");
             }
             final String value = matcher.group(2);
             if (value != null && value.trim().length() > 0) {
@@ -314,7 +369,7 @@ public class ExtNexusImporter extends NexusImporter {
                 // and return an array
 
                 // need to match },{ but leave the brackets in place
-                value = value.replaceAll("\\},\\{","}@,@{");
+                value = value.replaceAll("\\},\\{", "}@,@{");
                 elements = value.split("@,@");
 
             } else {
@@ -346,7 +401,7 @@ public class ExtNexusImporter extends NexusImporter {
         }
 
         // A string qouted by the nexus exporter and such
-        if( value.startsWith("\"") && value.endsWith("\"") ) {
+        if (value.startsWith("\"") && value.endsWith("\"")) {
             return value.subSequence(1, value.length() - 1);
         }
 
