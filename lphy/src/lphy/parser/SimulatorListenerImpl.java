@@ -93,7 +93,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (o instanceof IntegerValue) {
                 return ((IntegerValue) o).value();
             }
-            throw new IllegalArgumentException("Expected integer value, but don't know how to handle " +
+
+            if (o instanceof Range) {
+                return ((Range)o).apply().value();
+            }
+
+            throw new IllegalArgumentException("Expected integer value, or range, but don't know how to handle " +
                     (o == null ? "null" : o.getClass().getName()));
         }
 
@@ -102,28 +107,24 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             String text = ctx.getText();
             if (text.startsWith("\"")) {
-                //String id = nextID("StringValue");
-                StringValue v = new StringValue(null, stripQuotes(text));
-                return v;
+                return new StringValue(null, stripQuotes(text));
             }
-            double d = 0;
+
+            // not currently allowed by grammar
+//            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
+//                return new CharacterValue(null, text.charAt(1));
+//            }
             try {
-                d = Long.parseLong(text);
-                //String id = nextID("IntegerValue");
+                long aLong = Long.parseLong(text);
                 // TODO: should be a LongValue?
-                Value<Integer> v = new IntegerValue(null, (int) d);
-                return v;
+                return new IntegerValue(null, (int) aLong);
             } catch (NumberFormatException e) {
                 try {
-                    d = Double.parseDouble(text);
-                    //String id = nextID("DoubleValue");
-                    Value<Double> v = new DoubleValue(null, d);
-                    return v;
+                    double d = Double.parseDouble(text);
+                    return new DoubleValue(null, d);
                 } catch (NumberFormatException e2) {
                     boolean bool = Boolean.parseBoolean(text);
-                    //String id = nextID("IntegerValue");
-                    Value<Boolean> v = new BooleanValue(null, bool);
-                    return v;
+                    return new BooleanValue(null, bool);
                 }
             }
         }
@@ -646,22 +647,31 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
 
-//		@Override // for_loop: counter relations 
+//		@Override // for_loop: counter relations
 //		public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
 //			ParseTree counter = ctx.getChild(0);
 //			// counter: FOR '(' NAME IN range_element ')'
 //			String name = counter.getChild(2).getText();
-//			JFunction range = (JFunction) visit(counter.getChild(4));
-//			iteratorDimension.remove(range.getDimension());
-//			for (int i = 0; i < range.getDimension(); i++) {
-//				int value = (int) range.getArrayValue(i);
-//				iteratorValue.put(name, value);
-//				visit(ctx.getChild(1));
-//			}
-//			iteratorValue.remove(name);
-//			iteratorDimension.remove(name);
-//			return null;
-//		}			return null;
+//			Object range = visit(counter.getChild(4));
+//
+//			if (range instanceof Integer[]) {
+//                System.out.println("for " + name + " in " + Arrays.toString((Integer[])range));
+//            }
+//
+//            ParseTree relations = ctx.getChild(1);
+//
+//			ParseTree relationList = relations.getChild(1);
+//
+//			for (int i = 0; i < relationList.getChildCount(); i++) {
+//
+//                System.out.println("relations " + i + " = " + visit(relationList.getChild(i)));
+//            }
+//
+//            Object o = visit(relations);
+//
+//
+//            return new Object();
+//		}
 
 
         @Override
