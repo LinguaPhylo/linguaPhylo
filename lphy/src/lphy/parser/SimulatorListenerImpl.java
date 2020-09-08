@@ -5,7 +5,6 @@ import lphy.core.LPhyParser;
 import lphy.core.functions.DoubleArray;
 import lphy.core.functions.IntegerArray;
 import lphy.core.functions.Range;
-import lphy.evolution.DataFrame;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.Expression_listContext;
@@ -20,6 +19,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -40,8 +40,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
     private void put(String id, Value val) {
         switch (context) {
-            case data: parser.getDataDictionary().put(id, val); break;
-            case model: default:
+            case data:
+                parser.getDataDictionary().put(id, val);
+                break;
+            case model:
+            default:
                 parser.getModelDictionary().put(id, val);
         }
     }
@@ -51,13 +54,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
     }
 
     private boolean containsKey(String id) {
-        return parser.hasValue(id,context);
+        return parser.hasValue(id, context);
     }
 
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
 
-        public SimulatorASTVisitor() {}
+        public SimulatorASTVisitor() {
+        }
 
         public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
 
@@ -153,130 +157,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 Value value = f.apply();
                 if (o instanceof RangedVar) {
 
-                    List<Integer> range = ((RangedVar) o).range;
-
-                    // get max index
-                    int max = max(range);
-
-                    if (parser.hasValue(id, context)) {
-                        Value v = parser.getValue(id, context);
-
-                        // TODO how to handle double arrays?
-
-                        // TODO if the value already exists then it now has two functional parents? Need to add a second parent?
-
-                        if (v.value() instanceof Double[]) {
-                            Double[] dv = (Double[]) v.value();
-
-                            if (dv.length <= max) {
-                                // need to enlarge array.
-                                Double[] newv = new Double[max + 1];
-                                for (int i = 0; i < dv.length; i++) {
-                                    newv[i] = dv[i];
-                                }
-                                v.setValue(newv);
-                                dv = newv;
-                            }
-
-                            Double[] newRangeV = ((Double[])value.value());
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                dv[index] = newRangeV[i];
-                            }
-                        } else if (v.value() instanceof Integer[]) {
-                            Integer[] dv = (Integer[]) v.value();
-
-                            if (dv.length <= max) {
-                                // need to enlarge array.
-                                Integer[] newv = new Integer[max + 1];
-                                for (int i = 0; i < dv.length; i++) {
-                                    newv[i] = dv[i];
-                                }
-                                v.setValue(newv);
-                                dv = newv;
-                            }
-
-                            Integer[] newRangeV = ((Integer[])value.value());
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                dv[index] = newRangeV[i];
-                            }
-                        } else if (v.value() instanceof Boolean[]) {
-                            Boolean[] dv = (Boolean[]) v.value();
-
-                            if (dv.length <= max) {
-                                // need to enlarge array.
-                                Boolean[] newv = new Boolean[max + 1];
-                                for (int i = 0; i < dv.length; i++) {
-                                    newv[i] = dv[i];
-                                }
-                                v.setValue(newv);
-                                dv = newv;
-                            }
-
-                            Boolean[] newRangeV = ((Boolean[])value.value());
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                dv[index] = newRangeV[i];
-                            }
-                        } else if (v.value() instanceof String[]) {
-                            String[] dv = (String[]) v.value();
-
-                            if (dv.length <= max) {
-                                // need to enlarge array.
-                                String[] newv = new String[max + 1];
-                                for (int i = 0; i < dv.length; i++) {
-                                    newv[i] = dv[i];
-                                }
-                                v.setValue(newv);
-                                dv = newv;
-                            }
-
-                            String[] newRangeV = ((String[])value.value());
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                dv[index] = newRangeV[i];
-                            }
-                        }
-
-                    } else {
-
-                        if (value.value() instanceof Double[]) {
-
-                            Double[] newv = new Double[max+1];
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                newv[index] = ((Double[])value.value())[i];
-                            }
-                            DoubleArrayValue v = new DoubleArrayValue(id,newv,f);
-                            put(id, v);
-                        } else if (value.value() instanceof Integer[]) {
-                            Integer[] newv = new Integer[max+1];
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                newv[index] = ((Integer[])value.value())[i];
-                            }
-                            IntegerArrayValue v = new IntegerArrayValue(id,newv,f);
-                            put(id, v);
-                        } else if (value.value() instanceof Boolean[]) {
-                            Boolean[] newv = new Boolean[max+1];
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                newv[index] = ((Boolean[])value.value())[i];
-                            }
-                            BooleanArrayValue v = new BooleanArrayValue(id,newv,f);
-                            put(id, v);
-                        } else if (value.value() instanceof String[]) {
-                            String[] newv = new String[max+1];
-                            for (int i = 0; i < range.size(); i++) {
-                                int index = range.get(i);
-                                newv[index] = ((String[])value.value())[i];
-                            }
-                            StringArrayValue v = new StringArrayValue(id,newv,f);
-                            put(id, v);
-                        }
-                    }
-
+                    return handleRangeVar(id, value, ((RangedVar) o).range, f);
                 } else {
                     value.setFunction(f);
                     value.setId(id);
@@ -289,16 +170,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 value.setId(id);
 
                 if (o instanceof RangedVar) {
-
-                    if (containsKey(id)) {
-                        Value v = get(id);
-                        List<Integer> range = ((RangedVar) o).range;
-                        for (int i = 0; i < range.size(); i++) {
-                            int index = range.get(i);
-                            // TODO: figure out  what to do here?
-                        }
-                    }
-
+                    return handleRangeVar(id, value, ((RangedVar) o).range, null);
                 } else {
                     put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
@@ -329,6 +201,101 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			doc.registerPlugin(c);
 //			System.out.println(c);			
 //			return c;<?>
+        }
+
+        private Value handleRangeVar(String id, Value value, List<Integer> range, DeterministicFunction f) {
+
+            // get max index
+            int max = max(range);
+
+            // if value already exists
+            if (parser.hasValue(id, context)) {
+                Value v = parser.getValue(id, context);
+
+                // TODO how to handle double arrays?
+
+                // TODO if the value already exists then it now has two functional parents? Need to add a second parent?
+
+                // Generic array support for all types of single dimension arrays
+                if (v.value().getClass().isArray()) {
+                    int currentLength = Array.getLength(v.value());
+
+                    if (currentLength <= max) {
+                        // need to enlarge array
+                        Object newArray = Array.newInstance(v.value().getClass().getComponentType(), max + 1);
+
+                        for (int i = 0; i < currentLength; i++) {
+                            Array.set(newArray, i, Array.get(v.value(), i));
+                        }
+                        v.setValue(newArray);
+                    }
+
+                    Object source = value.value();
+                    Object destinationArray = v.value();
+
+                    for (int i = 0; i < range.size(); i++) {
+                        int index = range.get(i);
+                        if (source.getClass().isArray()) {
+                            Array.set(destinationArray, index, Array.get(source, i));
+                        } else {
+                            Array.set(destinationArray, index, source);
+                        }
+                    }
+                }
+                return v;
+            } else {
+                // if this is a new value to be constructed
+                // generic support for array creation
+                if (value.value().getClass().isArray()) {
+                    Object sourceArray = value.value();
+
+                    Object destinationArray = Array.newInstance(sourceArray.getClass().getComponentType(), max + 1);
+                    for (int i = 0; i < range.size(); i++) {
+                        int index = range.get(i);
+
+                        Array.set(destinationArray, index, Array.get(sourceArray, i));
+                    }
+                    Value v = null;
+                    if (destinationArray instanceof Double[]) {
+                        v = new DoubleArrayValue(id, (Double[]) destinationArray, f);
+                    } else if (destinationArray instanceof Integer[]) {
+                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, f);
+                    } else if (destinationArray instanceof Boolean[]) {
+                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, f);
+                    } else if (destinationArray instanceof String[]) {
+                        v = new StringArrayValue(id, (String[]) destinationArray, f);
+                    } else {
+                        v = new Value(id, destinationArray, f);
+                    }
+                    put(id, v);
+                    LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
+                    return v;
+                } else {
+                    // handle singleton index
+                    Object sourceValue = value.value();
+
+                    Object destinationArray = Array.newInstance(sourceValue.getClass(), max + 1);
+                    for (int i = 0; i < range.size(); i++) {
+                        int index = range.get(i);
+                        Array.set(destinationArray, index, sourceValue);
+                    }
+                    Value v = null;
+                    if (destinationArray instanceof Double[]) {
+                        v = new DoubleArrayValue(id, (Double[]) destinationArray, f);
+                    } else if (destinationArray instanceof Integer[]) {
+                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, f);
+                    } else if (destinationArray instanceof Boolean[]) {
+                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, f);
+                    } else if (destinationArray instanceof String[]) {
+                        v = new StringArrayValue(id, (String[]) destinationArray, f);
+                    } else {
+                        v = new Value(id, destinationArray, f);
+                    }
+                    put(id, v);
+                    LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
+                    return v;
+                }
+            }
         }
 
         @Override
