@@ -10,15 +10,17 @@ This repository contains two related projects: LinguaPhylo (LPhy for short) and 
 
 ## LinguaPhylo (LPhy for short - pronounced el-fee)
 
-In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is an example:
+In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is a full example:
 
 ```
-λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=λ, n=16);
-D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
+model {
+  λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Yule(birthRate=λ, n=16);
+  D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
+}
 ```
 
-Each of the lines in this specification expresses how a random variable (to the left of the tilde) is generated from a generative distribution.
+Each of the lines in this  model block expresses how a random variable (to the left of the tilde) is generated from a generative distribution.
 
 The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. As you can see, each of the random variables depends on the last, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
 
