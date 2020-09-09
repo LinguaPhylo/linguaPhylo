@@ -188,4 +188,23 @@ public class TimeTreeNode {
         }
         return count;
     }
+
+    /**
+     * @param i
+     * @return the i'th child (zero-based index) or null if the i'th child doesn't exist.
+     */
+    public TimeTreeNode getChild(int i) {
+        if (index >= 0 && i < children.size()) return children.get(i);
+        return null;
+    }
+
+    public TimeTreeNode getLeft() {
+        if (!isLeaf()) return children.get(0);
+        return null;
+    }
+
+    public TimeTreeNode getRight() {
+        if (!isLeaf()) return children.get(children.size()-1);
+        return null;
+    }
 }

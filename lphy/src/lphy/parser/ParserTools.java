@@ -29,8 +29,9 @@ public class ParserTools {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
-        Class<?>[] genClasses = {RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
-                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
+        Class<?>[] genClasses = {
+                RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
+                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
                 Normal.class, NormalMulti.class,  LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
                 Coalescent.class, PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,

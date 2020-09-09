@@ -246,4 +246,5 @@ public class TimeTree implements TaxaAges, HasComponentView<TimeTree> {
     public int getDimension() {
         return ntaxa();
     }
+
 }
