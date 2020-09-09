@@ -33,8 +33,9 @@ public interface LPhyParser {
             case data: return getDataDictionary().get(id);
             case model: default:
                 Map<String, Value<?>> data = getDataDictionary();
-                if (data.containsKey(id)) return data.get(id);
-                return getModelDictionary().get(id);
+                Map<String, Value<?>> model = getModelDictionary();
+                if (model.containsKey(id)) return model.get(id);
+                return data.get(id);
         }
     }
 
