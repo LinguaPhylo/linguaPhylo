@@ -295,6 +295,9 @@ public class ExtNexusImporter extends NexusImporter {
         }
 
         if (isDate) { // guess date
+            if (!chronoUnit.equals(ChronoUnit.YEARS))
+                throw new UnsupportedOperationException("Only support unit of year for parsing dates !");
+
             vals = new double[dateMap.size()];
             DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" );
 
