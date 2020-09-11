@@ -7,25 +7,35 @@ import jebl.evolution.io.ImportException;
 import jebl.evolution.io.ImportHelper;
 import jebl.evolution.io.NexusImporter;
 import jebl.evolution.sequences.BasicSequence;
-import jebl.util.Attributable;
-import lphy.evolution.sequences.DataType;
 import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
+import jebl.util.Attributable;
+import lphy.evolution.sequences.DataType;
 import lphy.evolution.traits.CharSetBlock;
 
 import java.awt.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Extension of {@link NexusImporter}, adding
- * 1) multiple partitions, 2) dates
+ * 1) multiple partitions, 2) dates.
+ *
+ * The light version of {@link #importAlignments()} is replaced by
+ * {@link #importNexus()} which stores <code>List<Alignment></code>,
+ * <code>Map<String, List<CharSetBlock>></code>, and other parsed data.
+ * To retrieve the result, the getters have to be used, for example
+ * {@link #getAlignments()}, {@link #getCharsetMap()}.
  *
  * @author Walter Xie
  */
@@ -33,7 +43,8 @@ public class ExtNexusImporter extends NexusImporter {
 
     protected List<Alignment> alignments;
     protected Map<String, List<CharSetBlock>> charsetMap;
-    protected Map<String, String> ageMap;
+    protected Map<String, String> dateMap; // TODO replace to ageMap
+    protected ChronoUnit chronoUnit = null;
 
     public ExtNexusImporter(Reader reader) {
         super(reader);
@@ -159,9 +170,9 @@ public class ExtNexusImporter extends NexusImporter {
         return charsetMap;
     }
 
-    public Map<String, String> getAgeMap() {
-        if (ageMap == null) ageMap = new TreeMap<>();
-        return ageMap;
+    public Map<String, String> getDateMap() {
+        if (dateMap == null) dateMap = new TreeMap<>();
+        return dateMap;
     }
 
 //****** Data Type ******//
@@ -191,52 +202,140 @@ public class ExtNexusImporter extends NexusImporter {
 
     protected void readCalibrationBlock() throws ImportException, IOException {
 
-        ageMap = new TreeMap<>();
-        String scale = null;
+        dateMap = new LinkedHashMap<>();
 
         String token;
         do {
             token = helper.readToken(";");
             if (token.equalsIgnoreCase("OPTIONS")) {
                 String token2 = helper.readToken("=");
-                if (token2.equalsIgnoreCase("SCALE"))
-                    scale = helper.readToken(";");
+                if (token2.equalsIgnoreCase("SCALE")) {
+                    String scale = helper.readToken(";");
+                    if (scale.toLowerCase().endsWith("s"))
+                        scale = scale.substring(0, scale.length() - 1);
+
+                    switch (scale) {
+                        case "year":
+                            chronoUnit = ChronoUnit.YEARS; break;
+//                        case "month":
+//                            chronoUnit = ChronoUnit.MONTHS; break;
+//                        case "day":
+//                            chronoUnit = ChronoUnit.DAYS; break;
+                        default:
+                            throw new UnsupportedOperationException("Unsupported scale = " + scale);
+                    }
+                }
 
             } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
-                if (scale == null)
+                if (chronoUnit == null)
                     throw new ImportException("Cannot find SCALE unit, e.g. year");
-                if (scale.toLowerCase().endsWith("s"))
-                    scale = scale.substring(0, scale.length() - 1);
-
-                if (!scale.equalsIgnoreCase("year"))
-                    throw new UnsupportedOperationException();//TODO
 
                 // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
                 do {
                     String date = null;
                     String taxonNm = null;
+                    int lastDelimiter;
                     do {
-                        String token2 = helper.readToken(":,");
+                        String token2 = helper.readToken(":=,;");
 
-                        if (helper.getLastDelimiter() == '=') {
-                            date = helper.readToken(":,");
-                        } else if (helper.getLastDelimiter() == ':') {
-                            if (date == null) date = token2; // no =
-                            taxonNm = helper.readToken(":,");
+                        if (helper.getLastDelimiter() != '=') { // ignore date's labels, e.g. 94 =
+                            if (helper.getLastDelimiter() == ':')
+                                date = token2;
+                            else
+                                taxonNm = token2;
                         }
-                    } while (helper.getLastDelimiter() != ',');
 
-                    if (date == null || taxonNm == null) throw new ImportException();
+                        lastDelimiter = helper.getLastDelimiter();
+                        if (date != null && taxonNm != null) {
+                            // put inside loop for same date, 1984:D4Mexico84 D4Philip84 D4Thai84,
+                            dateMap.put(taxonNm, date);
+                        } else if (lastDelimiter == ',' || lastDelimiter == ';') throw new ImportException();
 
-                    ageMap.put(taxonNm, date);
-
+                    } while (lastDelimiter != ',' && lastDelimiter != ';');
+                    // next date mapping
                 } while (helper.getLastDelimiter() != ';');
+
+                if (dateMap.size() < 1)
+                    throw new ImportException("Cannot parse TIPCALIBRATION !");
+                if (dateMap.size() != taxonCount)
+                    System.err.println("Warning: " + dateMap.size() +
+                            " tips have dates, but taxon count = " + taxonCount);
 
             } // end if else
 
         } while (isNotEnd(token));
 
         //validation ?
+    }
+
+    /**
+     * TODO allow date "yyyy-M-dd"
+     * @param mode  forward backward age
+     * @return
+     * @throws DateTimeParseException
+     */
+    public Map<String, Double> getAgeMap(final String mode) {
+        // parse String to Double
+        double[] vals = new double[dateMap.size()]; // LinkedHashMap;
+        List<String> keys = new ArrayList<>(dateMap.keySet());
+
+        // parse the age value
+        boolean isDate = false;
+        for(int i = 0; i < keys.size(); i++) {
+            String taxon = keys.get(i);
+            String valStr = dateMap.get(taxon);
+            try {
+                vals[i] = Double.parseDouble(valStr);
+            } catch (NumberFormatException e) {
+                isDate = true;
+                System.err.println("Warning: the age value (" + valStr +
+                        ") is not numeric, so guessing the date by uuuu-MM-dd");
+                break;
+            }
+        }
+
+        if (isDate) { // guess date
+            vals = new double[dateMap.size()];
+            DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" );
+
+            for(int i = 0; i < keys.size(); i++) {
+                String taxon = keys.get(i);
+                String valStr = dateMap.get(taxon);
+                try {
+                    LocalDate date = LocalDate.parse(valStr, f);
+                    // decimal year
+                    vals[i] = date.getYear() + (date.getDayOfYear()-1.0) / (date.isLeapYear() ? 366.0 : 365.0);
+                } catch (DateTimeParseException e) {
+                    throw new RuntimeException("Cannot parse the date string by uuuu-MM-dd ! " + valStr);
+                }
+            }
+        }
+
+        // find min max for forward or backward
+        double max = vals[0], min = vals[0];
+        for(int i = 1; i < keys.size(); i++) {
+            if (vals[i] > max) max = vals[i];
+            else if (vals[i] < min) min = vals[i];
+        }
+
+        Map<String, Double> ageMap = new LinkedHashMap<>();
+        for(int i = 0; i < keys.size(); i++) {
+            String taxon = keys.get(i);
+
+            if ("age".equalsIgnoreCase(mode)) {
+                ageMap.put(taxon, vals[i]);
+            } else if ("forward".equalsIgnoreCase(mode)) {
+                // like virus
+                ageMap.put(taxon, max-vals[i]);
+            } else if ("backward".equalsIgnoreCase(mode)) {
+                // like fossils
+                ageMap.put(taxon, vals[i]-min);
+            } else {
+                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + mode);
+            }
+        }
+
+        return ageMap;
     }
 
 

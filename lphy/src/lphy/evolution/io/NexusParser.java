@@ -22,6 +22,7 @@ import java.util.TreeMap;
 
 /**
  * Apply {@link ExtNexusImporter} to parsing Nexus into LPhy objects.
+ * @author Walter Xie
  */
 public class NexusParser {
     @Deprecated protected final int READ_AHEAD_LIMIT = 50000;
@@ -61,6 +62,13 @@ public class NexusParser {
     }
 
 
+    /**
+     * Parse Nexus to LPHY {@link lphy.evolution.alignment.Alignment}
+     * @param partNames   the selected partition names,
+     *                    if null, return single {@link lphy.evolution.alignment.Alignment},
+     *                    if not null, return {@link CharSetAlignment}.
+     * @return  LPHY {@link lphy.evolution.alignment.Alignment} or {@link CharSetAlignment}.
+     */
     public lphy.evolution.alignment.Alignment getLPhyAlignment(String[] partNames) {
 
         try {
@@ -129,7 +137,9 @@ public class NexusParser {
                     parser.getLPhyAlignment(new String[]{"noncoding", "coding"});
             System.out.println(lphyAlg.toJSON());
 
-            System.out.println(parser.importer.getAgeMap());
+            System.out.println(parser.importer.getDateMap());
+
+            System.out.println(parser.importer.getAgeMap("forward"));
 
         } catch (Exception e) {
             e.printStackTrace();
