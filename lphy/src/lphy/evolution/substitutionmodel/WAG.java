@@ -46,18 +46,14 @@ public class WAG extends RateMatrix {
         jebl.evolution.substmodel.WAG wag = new jebl.evolution.substmodel.WAG(f);
         // double[][] rate in WAG (jebl) is the symmetric matrix S.
         // fromQToR() should be fromSToQ, where Q={s_ij}x{pi_j}
-        // this triggers private WAG.handleRebuild() TODO make it public
-        wag.setDistance(0);
-        // this is Q
-        double[][] rates = wag.getRelativeRates();
+        // this triggers private WAG.rebuildRateMatrix() and incompleteFromQToR() TODO make them public
+        // no normalise
+        double totalRate = wag.setParametersNoScale(null);
+        // this is Q before normalise
+        double[][] Q = wag.getRelativeRates();
 
-        Double[][] Q = new Double[20][20];
-        for (int i = 0; i < Q.length; i++) {
-            for (int j = 0; j < Q[0].length; j++) {
-               Q[i][j] = rates[i][j];
-            }
-        }
-        return Q;
+        // normalise rate matrix to one expected substitution per unit time
+        return normalize(f, Q);
     }
 
     // can be null
