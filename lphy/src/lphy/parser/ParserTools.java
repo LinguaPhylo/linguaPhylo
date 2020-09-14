@@ -47,7 +47,7 @@ public class ParserTools {
         }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class, DataFrameConstruction.class, DataFramePart.class,
-                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class,
+                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
                 LocalBranchRates.class, lphy.core.functions.Map.class,
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, RootAge.class, TaxaAgesFunction.class, TaxaFunction.class, TreeLength.class, DihedralAngleDiffusionMatrix.class,
