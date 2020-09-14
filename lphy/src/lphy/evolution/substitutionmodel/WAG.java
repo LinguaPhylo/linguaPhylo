@@ -44,8 +44,11 @@ public class WAG extends RateMatrix {
             f = jebl.evolution.substmodel.WAG.getOriginalFrequencies();
         }
         jebl.evolution.substmodel.WAG wag = new jebl.evolution.substmodel.WAG(f);
+        // double[][] rate in WAG (jebl) is the symmetric matrix S.
+        // fromQToR() should be fromSToQ, where Q={s_ij}x{pi_j}
         // this triggers private WAG.handleRebuild() TODO make it public
         wag.setDistance(0);
+        // this is Q
         double[][] rates = wag.getRelativeRates();
 
         Double[][] Q = new Double[20][20];
