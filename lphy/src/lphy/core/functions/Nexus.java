@@ -1,8 +1,8 @@
 package lphy.core.functions;
 
-import lphy.evolution.io.NexusParser;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.AbstractAlignment;
 import lphy.evolution.alignment.CharSetAlignment;
+import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 /**
  * data = nexus(file="primate-mtDNA.nex");
  */
-public class Nexus extends DeterministicFunction<Alignment> {
+public class Nexus extends DeterministicFunction<AbstractAlignment> {
 
     private final String fileParamName;
     private final String partsParamName;
@@ -33,28 +33,22 @@ public class Nexus extends DeterministicFunction<Alignment> {
     }
 
     @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
-    public Value<Alignment> apply() {
+    public Value<AbstractAlignment> apply() {
 
         Value<String> fileName = getParams().get(fileParamName);
-        Path nexFile = Paths.get(fileName.value());
-
         Value<String[]> parts = getParams().get(partsParamName);
 
-        Alignment alignment;
-        if (parts != null) {
-            alignment = parseNexus(nexFile, parts.value());
-        } else {
-            alignment = parseNexus(nexFile, null);
-        }
-
+        AbstractAlignment alignment = parseNexus(fileName, parts);
         return new Value<>(alignment, this);
     }
 
-    private Alignment parseNexus(Path nexFile, String[] value) {
-        final NexusParser parser = new NexusParser(nexFile);
+    private AbstractAlignment parseNexus(Value<String> fileName, Value<String[]> parts) {
+        final Path nexFile = Paths.get(fileName.value());
+        NexusParser parser = new NexusParser(nexFile);
 
+        String[] partsArray = parts != null ? parts.value() : null;
         // if value is null, ignoring charset return single partition
-        Alignment alignment = parser.getLPhyAlignment(value);
+        AbstractAlignment alignment = parser.getLPhyAlignment(partsArray);
 
         if (alignment.hasParts()) return (CharSetAlignment) alignment;
         return alignment;

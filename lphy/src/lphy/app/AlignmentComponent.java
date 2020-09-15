@@ -1,10 +1,10 @@
 package lphy.app;
 
-import lphy.evolution.tree.TimeTree;
 import lphy.app.treecomponent.TimeTreeComponent;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.AbstractAlignment;
 import lphy.evolution.alignment.ErrorAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
+import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
@@ -29,8 +29,8 @@ public class AlignmentComponent extends JComponent {
 
 
     Color[] colors;
-    Value<Alignment> alignmentValue;
-    Alignment alignment;
+    Value<AbstractAlignment> alignmentValue;
+    AbstractAlignment alignment;
 
     Value<TimeTree> timeTree = null;
 
@@ -38,7 +38,7 @@ public class AlignmentComponent extends JComponent {
 
     static boolean showErrorsIfAvailable = true;
 
-    public AlignmentComponent(Value<Alignment> av, Color[] colors) {
+    public AlignmentComponent(Value<AbstractAlignment> av, Color[] colors) {
         this.colors = colors;
         this.alignmentValue = av;
         this.alignment = av.value();
