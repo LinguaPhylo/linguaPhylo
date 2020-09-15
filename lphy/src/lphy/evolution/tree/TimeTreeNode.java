@@ -88,6 +88,10 @@ public class TimeTreeNode {
         return parent;
     }
 
+    public void setParent(TimeTreeNode newParent) {
+        parent = newParent;
+    }
+
     public String toString() {
         if (isLeaf()) return getId();
         return super.toString();
@@ -115,7 +119,7 @@ public class TimeTreeNode {
             children = new ArrayList<>();
         }
         children.add(child);
-        child.parent = this;
+        if (child != null) child.parent = this;
     }
 
     public void removeChild(TimeTreeNode child) {
@@ -206,5 +210,24 @@ public class TimeTreeNode {
     public TimeTreeNode getRight() {
         if (!isLeaf()) return children.get(children.size()-1);
         return null;
+    }
+
+    public void setLeft(TimeTreeNode left) {
+        if (children.size() > 0) {
+            children.set(0, left);
+        } else {
+            addChild(left);
+        }
+    }
+
+    public void setRight(TimeTreeNode right) {
+        if (children.size() > 1) {
+            children.set(1, right);
+        } else {
+            if (children.size() < 1) {
+                addChild(null);
+            }
+            children.add(right);
+        }
     }
 }

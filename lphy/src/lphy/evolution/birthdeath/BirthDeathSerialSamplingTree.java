@@ -94,8 +94,9 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         TimeTree tree = randomTreeTopology();
         tree.getRoot().setAge(tmrca);
         drawDivTimes(tree);
-        repositionNodeWhenInvalid(tree);
 
+        //repositionNodeWhenInvalid(tree);
+        reconstructTree(tree);
 
         return new RandomVariable<>("\u03C8", tree, this);
     }
@@ -209,6 +210,88 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
                 tree.getNodeByIndex(j).setAge(x);
             }
         }
+    }
+
+    private void reconstructTree(TimeTree tree) {
+
+        List<TimeTreeNode> nodes = tree.getNodes();
+        // collect heights
+        final double[] heights = new double[nodes.size()];
+        final int[] reverseOrder = new int[nodes.size()];
+        collectHeights(tree.getRoot(), heights, reverseOrder, 0);
+
+        TimeTreeNode root = reconstructTree(nodes, heights, reverseOrder, 0, heights.length, new boolean[heights.length]);
+        tree.setRoot(root);
+    }
+
+    private TimeTreeNode reconstructTree(List<TimeTreeNode> nodes, final double[] heights, final int[] reverseOrder, final int from, final int to, final boolean[] hasParent) {
+        //nodeIndex = maxIndex(heights, 0, heights.length);
+        int nodeIndex = -1;
+        double max = Double.NEGATIVE_INFINITY;
+        for (int j = from; j < to; j++) {
+            if (max < heights[j] && !nodes.get(reverseOrder[j]).isLeaf()) {
+                max = heights[j];
+                nodeIndex = j;
+            }
+        }
+        if (nodeIndex < 0) {
+            return null;
+        }
+        final TimeTreeNode node = nodes.get(reverseOrder[nodeIndex]);
+
+        //int left = maxIndex(heights, 0, nodeIndex);
+        int left = -1;
+        max = Double.NEGATIVE_INFINITY;
+        for (int j = from; j < nodeIndex; j++) {
+            if (max < heights[j] && !hasParent[j]) {
+                max = heights[j];
+                left = j;
+            }
+        }
+
+        //int right = maxIndex(heights, nodeIndex+1, heights.length);
+        int right = -1;
+        max = Double.NEGATIVE_INFINITY;
+        for (int j = nodeIndex + 1; j < to; j++) {
+            if (max < heights[j] && !hasParent[j]) {
+                max = heights[j];
+                right = j;
+            }
+        }
+
+        node.setLeft(nodes.get(reverseOrder[left]));
+        node.getLeft().setParent(node);
+        node.setRight(nodes.get(reverseOrder[right]));
+        node.getRight().setParent(node);
+        if (node.getLeft().isLeaf()) {
+            heights[left] = Double.NEGATIVE_INFINITY;
+        }
+        if (node.getRight().isLeaf()) {
+            heights[right] = Double.NEGATIVE_INFINITY;
+        }
+        hasParent[left] = true;
+        hasParent[right] = true;
+        heights[nodeIndex] = Double.NEGATIVE_INFINITY;
+
+
+        reconstructTree(nodes, heights, reverseOrder, from, nodeIndex, hasParent);
+        reconstructTree(nodes, heights, reverseOrder, nodeIndex, to, hasParent);
+        return node;
+    }
+
+    private int collectHeights(final TimeTreeNode node, final double[] heights, final int[] reverseOrder, int current) {
+        if (node.isLeaf()) {
+            heights[current] = node.getAge();
+            reverseOrder[current] = node.getIndex();
+            current++;
+        } else {
+            current = collectHeights(node.getLeft(), heights, reverseOrder, current);
+            heights[current] = node.getAge();
+            reverseOrder[current] = node.getIndex();
+            current++;
+            current = collectHeights(node.getRight(), heights, reverseOrder, current);
+        }
+        return current;
     }
 
     /*
