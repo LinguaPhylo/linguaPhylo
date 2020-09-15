@@ -73,7 +73,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         agesParamName = getParamName(6);
         rootAgeParamName = getParamName(7);
 
-        checkTaxaParameters(true);
+        checkTaxaParameters(false);
     }
 
     @GeneratorInfo(name = "BirthDeathSerialSampling", description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
@@ -105,7 +105,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         TimeTree tree = new TimeTree();
         List<TimeTreeNode> activeNodes = createLeafTaxa(tree);
 
-        for (int i = 1; i < activeNodes.size(); i++) {
+        while (activeNodes.size() > 1) {
             TimeTreeNode a = drawRandomNode(activeNodes);
             TimeTreeNode b = drawRandomNode(activeNodes);
             TimeTreeNode parent = new TimeTreeNode(Math.max(a.getAge(), b.getAge()), new TimeTreeNode[]{a, b});
@@ -220,6 +220,9 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         final int[] reverseOrder = new int[nodes.size()];
         collectHeights(tree.getRoot(), heights, reverseOrder, 0);
 
+        System.out.println("Heights = " + Arrays.toString(heights));
+        System.out.println("reverseOrder = " + Arrays.toString(reverseOrder));
+
         TimeTreeNode root = reconstructTree(nodes, heights, reverseOrder, 0, heights.length, new boolean[heights.length]);
         tree.setRoot(root);
     }
@@ -280,6 +283,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     }
 
     private int collectHeights(final TimeTreeNode node, final double[] heights, final int[] reverseOrder, int current) {
+
         if (node.isLeaf()) {
             heights[current] = node.getAge();
             reverseOrder[current] = node.getIndex();

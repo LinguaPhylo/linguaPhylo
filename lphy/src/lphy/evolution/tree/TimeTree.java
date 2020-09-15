@@ -31,8 +31,9 @@ public class TimeTree implements TaxaAges, HasComponentView<TimeTree> {
     }
 
     public void setRoot(TimeTreeNode timeTreeNode, boolean reindexLeaves) {
-        rootNode.setParent(null);
+
         rootNode = timeTreeNode;
+        rootNode.setParent(null);
         rootNode.tree = this;
         nodes = new ArrayList<>();
 
