@@ -147,7 +147,7 @@ public class CharSetAlignment extends AbstractAlignment {
 
     @Override
     public JComponent getComponent(Value<AbstractAlignment> value) {
-        return new JLabel(toString()); // avoid to show, because int[][] alignment = null
+        return new JLabel(toString()); // avoid to show, no int[][] alignment
     }
 
 

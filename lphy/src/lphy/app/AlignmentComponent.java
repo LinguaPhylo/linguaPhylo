@@ -1,9 +1,11 @@
 package lphy.app;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.alignment.AbstractAlignment;
 import lphy.evolution.alignment.ErrorAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
+import lphy.evolution.sequences.DataType;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
@@ -23,11 +25,6 @@ public class AlignmentComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
-    public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.yellow, Color.green, Color.gray};
-
-    public static Color[] BINARY_COLORS = {Color.red, Color.blue};
-
-
     Color[] colors;
     Value<AbstractAlignment> alignmentValue;
     AbstractAlignment alignment;
@@ -38,10 +35,10 @@ public class AlignmentComponent extends JComponent {
 
     static boolean showErrorsIfAvailable = true;
 
-    public AlignmentComponent(Value<AbstractAlignment> av, Color[] colors) {
-        this.colors = colors;
+    public AlignmentComponent(Value<AbstractAlignment> av) {
         this.alignmentValue = av;
         this.alignment = av.value();
+        this.colors = alignment.getColors();
 
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
@@ -150,8 +147,13 @@ public class AlignmentComponent extends JComponent {
             for (int j = 0; j < alignment.L(); j++) {
 
                 int state = alignment.getState(i, j);
-                //TODO other datatype?
-                int col = state > 3 ? 4 : state;
+                //TODO col index not hard code
+                // other datatype?
+                int col = state;
+                if (DataType.isSame(SequenceType.NUCLEOTIDE, alignment.getSequenceType()) && state > 3)
+                    col = 4;
+                else if (DataType.isSame(SequenceType.AMINO_ACID, alignment.getSequenceType()) && state > 19)
+                    col = 20;
                 Color c = colors[col];
 
                 if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
