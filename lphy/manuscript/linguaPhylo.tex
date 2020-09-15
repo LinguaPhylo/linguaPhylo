@@ -40,9 +40,64 @@
 
 \setlength\columnsep{20pt}
 
-%%% Local Variables:
-%%% TeX-command-extra-options: "-shell-escape"
-%%% End:
+% lphy listing specification
+\usepackage{listings}
+\definecolor{bluevars}{rgb}{0.13,0.13,1}
+\definecolor{redkeywords}{rgb}{0.5,0,0}
+\definecolor{grayargs}{RGB}{169,169,169}
+
+\lstnewenvironment{fslisting}
+  {
+    \lstset{
+        language=FSharp,
+        basicstyle=\ttfamily,
+        breaklines=true,
+        columns=fullflexible}
+  }
+  {
+  }
+
+\lstdefinelanguage{LPHY}{
+  % more keywords specifies the distributions within lphy
+  morekeywords={
+    Yule,
+    LogNormal,
+    PhyloCTMC
+  },
+  keywordstyle=\color{redkeywords},  
+  sensitive=True
+  }
+    
+\lstnewenvironment{lphylisting} {
+  \lstset{
+    mathescape=true,
+    escapechar=*,
+    language=LPHY,
+    basicstyle=\ttfamily,
+    breaklines=true,
+    columns=fullflexible,
+    % random variables
+    emph={
+      D,
+      tree,
+      lambda
+    },
+    emphstyle=\color{bluevars},
+    % arguments to distributions
+    emph={[2]
+      file,
+      sites,
+      taxa,
+      meanlog,
+      sdlog,
+      theta,
+      L,
+      Q,
+      birthRate
+    },
+    emphstyle={[2]\color{grayargs}}
+  }
+}{}
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -87,6 +142,20 @@
 
 \section{Introduction}
 
+Replicability and reproducibility lie at the heart of the scientific
+endeavor.
+Despite this being a non-contentious point \citep{baker16},
+metaresearch in the past decade -- particularly in the domains of
+psychology, economics and medical biology -- revealed that
+reproducibility is often largely overlooked in pratice
+{\color{red}{[citations]}}.
+
+* This sparked efforts to circumvent the issue: book on
+reproducibility by NAS, \citep{sandve13}
+
+* No systematic work on replicability/reproducibility in CS, but easy
+to devise solutions
+
 A new paradigm for scientific computing and data science has begun to
 emerged in the last decade.
 A recent example is the publication of the
@@ -119,6 +188,14 @@ evolution.
 This language should be readable by both humans and
 computers.
 Here is an example: 
+  
+{\singlespacing
+  \begin{lphylisting}
+    lambda $\sim$ LogNormal(meanlog=3.0, sdlog=1.0);
+    tree $\sim$ Yule(birthRate=lambda, *\color{grayargs}{n}*=16);
+    D $\sim$ PhyloCTMC(L=200, Q=jukesCantor(), *\color{grayargs}{tree}*=tree);
+  \end{lphylisting}
+}
 
 {\singlespacing
 \begin{minted}{Stan}
@@ -306,3 +383,8 @@ communicate BEAST analyses.
 
 
 \end{document}
+
+% On Emacs, C-x C-n to evaluate the following before compiling
+%%% Local Variables:
+%%% LaTeX-command: "latex -shell-escape"
+%%% End:
