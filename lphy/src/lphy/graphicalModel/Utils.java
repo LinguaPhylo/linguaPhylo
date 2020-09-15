@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import lphy.core.LPhyParser;
+
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -10,52 +12,103 @@ public class Utils {
     static {
         FORMAT.setMaximumFractionDigits(6);
     }
+
+    static boolean clusters = true;
     
-    public static String toGraphvizDot(Collection<GraphicalModelNode> nodes) {
+    public static String toGraphvizDot(Collection<GraphicalModelNode> nodes, LPhyParser parser) {
 
         Set<GraphicalModelNode> done = new HashSet<>();
+        List<String> dataNodes = new ArrayList<>();
+        List<String> modelNodes = new ArrayList<>();
+        List<String> edges = new ArrayList<>();
 
         StringBuilder builder = new StringBuilder();
         builder.append("digraph G {\n");
         for (GraphicalModelNode node : nodes) {
-            String str = toGraphvizDot(node, done);
-            if (str != null) {
-                builder.append(str);
-                builder.append("\n");
-                done.add(node);
-            }
+            toGraphvizDot(node, done, dataNodes, modelNodes, edges, parser, isDataNode(node, parser));
         }
+
+        appendCluster("data", builder, dataNodes);
+        appendCluster("model", builder, modelNodes);
+
+        for (String edge : edges) {
+            builder.append(edge);
+        }
+
         builder.append("}\n");
         return builder.toString();
 
     }
 
-    private static String toGraphvizDot(GraphicalModelNode node, Set<GraphicalModelNode> done) {
+    private static void appendCluster(String name, StringBuilder builder, List<String> nodes) {
+        if (nodes.size() > 0) {
+            if (clusters) builder.append("subgraph cluster_").append(name).append(" {\n");
+            for (String node : nodes) {
+                builder.append("  ").append(node);
+            }
+            if (clusters) {
+                builder.append("  label = \"");
+                builder.append(name);
+                builder.append("\";\n");
+                //builder.append("  style=filled;\n");
+                builder.append("  color=blue;\n");
+                builder.append("  labeljust=\"l\";\n");
+                builder.append("  fontcolor=blue;\n");
+                builder.append("}\n");
+            }
+        }
+        builder.append("\n");
+    }
+
+    private static void toGraphvizDot(GraphicalModelNode node, Set<GraphicalModelNode> done, List<String> dataNodes, List<String> modelNodes, List<String> edges, LPhyParser parser, boolean isData) {
         if (done.contains(node)) {
-            return null;
+            // DO NOTHING
         } else {
-            StringBuilder builder = new StringBuilder();
-            // RRB: weirdly, the compiler complains that node.getInputs() returns objects, but 
-            // the method signature says it returns a List<GraphicalModelNode>, so no cast
-            // should be necessary
+            isData = isData || isDataNode(node, parser);
+
+
             for (GraphicalModelNode child : (List<GraphicalModelNode>) node.getInputs()) {
-                builder.append(toGraphvizDot(child, done));
+                toGraphvizDot(child, done, dataNodes, modelNodes, edges, parser, isData);
+                done.add(child);
             }
 
-            String name = node.getUniqueId();
-            builder.append(graphvizNodeString(node, name) );
-            builder.append(";\n");
+            String name = getUniqueId(node, parser);
+            String nodeString = graphvizNodeString(node, name) + ";\n";
+            if (isData) {
+                dataNodes.add(nodeString);
+            } else {
+                modelNodes.add(nodeString);
+            }
 
             for (GraphicalModelNode child : (List<GraphicalModelNode>) node.getInputs()) {
-                builder.append(child.getUniqueId());
+                StringBuilder builder = new StringBuilder();
+                builder.append(getUniqueId(child, parser));
                 builder.append(" -> ");
 
                 builder.append(name);
                 builder.append(graphvizEdgeLabel(node, child));
                 builder.append(";\n");
+                edges.add(builder.toString());
             }
-            return builder.toString();
         }
+    }
+
+    private static boolean isDataNode(GraphicalModelNode node, LPhyParser parser) {
+        if (node instanceof Value && !(node instanceof RandomVariable)) {
+            Value value = (Value)node;
+            if (!value.isAnonymous()) {
+                return (parser.hasValue(value.getId(), LPhyParser.Context.data));
+            }
+        }
+        return false;
+    }
+
+    private static String getUniqueId(GraphicalModelNode node, LPhyParser parser) {
+        String name = node.getUniqueId();
+        if (node instanceof Value && !((Value)node).isAnonymous() && parser.isClamped(((Value) node).getId())) {
+            name = node.hashCode()+"";
+        }
+        return name;
     }
 
     private static String graphvizEdgeLabel(GraphicalModelNode node, GraphicalModelNode child) {
@@ -87,6 +140,8 @@ public class Utils {
                     label = node.toString();
                 } else if (val instanceof Double[] && ((Double[])val).length < 7) {
                     label = Arrays.toString((Double[])val);
+                } else if (val instanceof String) {
+                    label = "'" + (String)val + "'";
                 } else {
                     label = slot;
                 }
@@ -98,6 +153,7 @@ public class Utils {
         } else if (node instanceof Generator) {
             label = "";
         }
+
         return label;
     }
 
@@ -114,7 +170,7 @@ public class Utils {
             return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#66ff66\"\t, style=filled]";
         } else if (node instanceof Value) {
             if (((Value)node).function != null) {
-                return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=red, style=filled]";
+                return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#ff6666\", style=filled]";
             } else return name + "[" + labelString +"shape=rect]";
         }
         return name;

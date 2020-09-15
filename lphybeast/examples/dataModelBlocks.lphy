@@ -1,5 +1,5 @@
 data {
-  D = nexus(file="examples/primate-mtDNA.nex");
+  D = nexus(file="examples/primate.nex");
   L = nchar(D);
   taxa = taxa(D);
 }

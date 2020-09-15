@@ -90,7 +90,7 @@ public class LinguaPhyloStudio {
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
         fileMenu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()))));
+        exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser)));
 
         //Build the example menu.
         JMenu exampleMenu = new JMenu("Examples");
@@ -333,7 +333,11 @@ public class LinguaPhyloStudio {
     }
 
     private void saveToFile(String text) {
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser jfc = new JFileChooser();
+
+        File chooserFile = new File(System.getProperty("user.dir"));
+        
+        jfc.setCurrentDirectory(chooserFile);
         jfc.setMultiSelectionEnabled(false);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 

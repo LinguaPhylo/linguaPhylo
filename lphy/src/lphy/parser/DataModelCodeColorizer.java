@@ -58,7 +58,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         randomVarStyle = textPane.getStyle("randomVarStyle");
         valueStyle = textPane.getStyle("valueStyle");
         argumentNameStyle = textPane.getStyle("argumentNameStyle");
-        literalStyle = textPane.getStyle("literalStyle");
+        literalStyle = textPane.getStyle("constantStyle");
         punctuationStyle = textPane.getStyle("punctuationStyle");
     }
 
