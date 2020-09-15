@@ -1,70 +1,28 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.app.AlignmentComponent;
-import lphy.app.HasComponentView;
-import lphy.evolution.DataFrame;
-import lphy.evolution.Taxa;
-import lphy.graphicalModel.Value;
 
-import javax.swing.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Alignment extends DataFrame implements Taxa, HasComponentView<Alignment> {
+public class Alignment extends AbstractAlignment {
 
     int[][] alignment;
-    Map<String, Integer> idMap;
-    Map<Integer, String> reverseMap;
-    @Deprecated int numStates;
 
-    SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
-
-    @Deprecated
     // for simulators, and datatype not available
+    @Deprecated
     public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
-        super(ntaxa, nchar);
-        this.idMap = idMap;
-        fillRevMap();
-
+        super(ntaxa, nchar, idMap, numStates);
         alignment = new int[ntaxa][nchar];
-//        sequenceType = DataType.guessSequenceType(numStates);
-        sequenceType = null;
-        this.numStates = numStates;
     }
-
-    // for inheritance
-    public Alignment() {  }
 
     public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, SequenceType sequenceType) {
-        super(ntaxa, nchar);
-        this.idMap = idMap;
-        fillRevMap();
-
+        super(ntaxa, nchar, idMap, sequenceType);
         alignment = new int[ntaxa][nchar];
-        this.sequenceType = sequenceType;
-        this.numStates = sequenceType.getCanonicalStateCount();
-    }
-
-    // for inheritance
-    protected void fillRevMap() {
-        reverseMap = new TreeMap<>();
-        for (String key : idMap.keySet()) {
-            reverseMap.put(idMap.get(key), key);
-        }
-    }
-
-    public String[] getTaxa() {
-        String[] taxa = new String[ntaxa()];
-        for (int i = 0; i < ntaxa(); i++) {
-            taxa[i] = reverseMap.get(i);
-        }
-        return taxa;
     }
 
     /**
@@ -87,21 +45,8 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         alignment[taxon][position] = state;
     }
 
-    public void setState(String taxon, int position, int state, boolean ambiguous) {
-        setState(idMap.get(taxon), position, state, ambiguous);
-    }
-
     public int getState(int taxon, int position) {
         return alignment[taxon][position];
-    }
-
-    @Override
-    public JComponent getComponent(Value<Alignment> value) {
-
-//        if ( DataType.isSame(DataType.BINARY, sequenceType) )
-        if (numStates == 2) // TODO BINARY
-            return new AlignmentComponent(value, AlignmentComponent.BINARY_COLORS);
-        else return new AlignmentComponent(value, AlignmentComponent.DNA_COLORS);
     }
 
     public int n() {
@@ -112,8 +57,8 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         return alignment[0].length;
     }
 
-    public String getId(int taxonIndex) {
-        return reverseMap.get(taxonIndex);
+    public int getSiteCount() {
+        return L();
     }
 
     public String toJSON() {
@@ -130,30 +75,6 @@ public class Alignment extends DataFrame implements Taxa, HasComponentView<Align
         builder.append(", ntax = ").append(ntaxa).append("\n");
         builder.append("}");
         return builder.toString();
-    }
-
-    public int getSiteCount() {
-        return L();
-    }
-
-    public SequenceType getSequenceType() {
-        return sequenceType;
-    }
-
-    public String getDataTypeDescription() {
-        if (sequenceType == null) { // TODO BINARY
-            if (numStates == 2) return "binary";
-            else throw new IllegalArgumentException("Please use SequenceType !");
-        }
-        return sequenceType.getName();
-    }
-
-    public String[] getTaxaNames() {
-        String[] taxaNames = new String[n()];
-        for (int i = 0; i < taxaNames.length; i++) {
-            taxaNames[i] = reverseMap.get(i);
-        }
-        return taxaNames;
     }
 
     public String getSequence(int taxonIndex) {

@@ -69,7 +69,7 @@ public class NexusParser {
      *                    if not null, return {@link CharSetAlignment}.
      * @return  LPHY {@link lphy.evolution.alignment.Alignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.Alignment getLPhyAlignment(String[] partNames) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(String[] partNames) {
 
         try {
             importer.importNexus();
@@ -133,7 +133,7 @@ public class NexusParser {
 //            List<Alignment> alignmentList = parser.importAlignments();
 //                alignmentList.forEach(System.out::println);
 
-            lphy.evolution.alignment.Alignment lphyAlg =
+            lphy.evolution.alignment.AbstractAlignment lphyAlg =
                     parser.getLPhyAlignment(new String[]{"noncoding", "coding"});
             System.out.println(lphyAlg.toJSON());
 

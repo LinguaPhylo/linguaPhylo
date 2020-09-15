@@ -7,41 +7,29 @@ import javax.swing.*;
 import java.util.*;
 
 /**
+ * Multiple partitions of {@link Alignment}.
+ * The sequences are in {@link lphy.evolution.DataFrame#parts},
+ * but here has no <code>int[][] alignment</code>.
  * @author Walter Xie
  */
-public class CharSetAlignment extends Alignment {
+public class CharSetAlignment extends AbstractAlignment {
 
 //    Map<String, List<CharSetBlock>> charsetMap;
 
-//    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final Alignment parentAlignment) {
-//        this(charsetMap, null, parentAlignment);
-//    }
-
     /**
      * Multiple partitions. The sequences <code>int[][]</code> will be stored in each of parts,
-     * <code>DataFrame[] parts = Alignment[]</code>. <code>int[][] this.alignment = null</code>.
+     * <code>DataFrame[] parts = Alignment[]</code>. Here has no <code>int[][] alignment</code>.
      * @param charsetMap      key is part (charset) name, value is the list of {@link CharSetBlock}.
      * @param partNames       if not null, then only choose these names from <code>charsetMap.
      * @param parentAlignment parent alignment before partitioning.
      */
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
                             final Alignment parentAlignment) {
-        initAlignment(parentAlignment);
+        // init alignment from parent
+        super(parentAlignment);
 
         initParts(charsetMap, partNames);
         fillinParts(charsetMap, parentAlignment);
-    }
-
-
-
-    protected void initAlignment(Alignment parentAlignment) {
-        this.ntaxa = parentAlignment.ntaxa();
-        this.nchar = parentAlignment.nchar();
-        // int[][] alignment = null
-        this.idMap = new TreeMap<>(parentAlignment.idMap);
-        fillRevMap();
-
-        this.sequenceType = parentAlignment.getSequenceType();
     }
 
     protected void initParts(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames) {
@@ -128,11 +116,10 @@ public class CharSetAlignment extends Alignment {
         }
     }
 
-    //*** TODO more Override ? ***//
+    //*** Override ***
 
     @Override
     public String toJSON() {
-        if (hasParts()) {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < partNames.length; i++) {
                 Alignment part = (Alignment) parts[i];
@@ -141,8 +128,6 @@ public class CharSetAlignment extends Alignment {
                 builder.append("\n");
             }
             return builder.toString();
-        }
-        return super.toJSON();
     }
 
     @Override
@@ -161,7 +146,7 @@ public class CharSetAlignment extends Alignment {
     }
 
     @Override
-    public JComponent getComponent(Value<Alignment> value) {
+    public JComponent getComponent(Value<AbstractAlignment> value) {
         return new JLabel(toString()); // avoid to show, because int[][] alignment = null
     }
 
@@ -173,6 +158,11 @@ public class CharSetAlignment extends Alignment {
     }
 
     @Override
+    public void setState(int taxon, int position, int state, boolean ambiguous) {
+        throw new UnsupportedOperationException("in dev");
+    }
+
+    @Override
     public int n() {
         return ((Alignment) parts[0]).n();
     }
@@ -181,22 +171,5 @@ public class CharSetAlignment extends Alignment {
     public int L() {
         return Arrays.stream(parts).mapToInt( a -> ((Alignment) a).L()).sum();
     }
-
-//    private int[] filter(List<CharSetBlock> charSetBlocks, int[] parentSeq) {
-//        List<Integer> filtered = new ArrayList<>();
-//        for (CharSetBlock block : charSetBlocks) {
-//            int toSite = block.getTo();
-//            if (toSite <= 0) {
-//                toSite = parentSeq.length;
-//            }
-//            for (int i = block.getFrom(); i <= toSite; i += block.getEvery()) {
-//                // the -1 comes from the fact that charsets are indexed from 1 whereas strings are indexed from 0
-//                filtered.add(parentSeq[i - 1]);
-//            }
-//        }
-//        return filtered.stream().mapToInt(i->i).toArray();
-//    }
-
-
 
 }
