@@ -1,32 +1,34 @@
 package lphy.graphicalModel;
 
-import lphy.evolution.birthdeath.FullBirthDeathTree;
-import lphy.evolution.birthdeath.BirthDeathTreeDT;
-import lphy.evolution.coalescent.Coalescent;
-import lphy.evolution.birthdeath.Yule;
-import lphy.evolution.alignment.ErrorModel;
-import lphy.core.LPhyParser;
-import lphy.core.PhyloBrownian;
-import lphy.evolution.likelihood.PhyloCTMC;
-import lphy.core.commands.Remove;
-import lphy.core.distributions.*;
-import lphy.core.distributions.Exp;
-import lphy.core.functions.*;
-import lphy.evolution.substitutionmodel.*;
-import lphy.graphicalModel.types.*;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
+import lphy.core.LPhyParser;
+import lphy.core.PhyloBrownian;
+import lphy.core.commands.Remove;
+import lphy.core.distributions.Exp;
+import lphy.core.distributions.*;
+import lphy.core.functions.*;
+import lphy.evolution.alignment.ErrorModel;
+import lphy.evolution.birthdeath.BirthDeathTreeDT;
+import lphy.evolution.birthdeath.FullBirthDeathTree;
+import lphy.evolution.birthdeath.Yule;
+import lphy.evolution.coalescent.Coalescent;
+import lphy.evolution.likelihood.PhyloCTMC;
+import lphy.evolution.substitutionmodel.*;
+import lphy.graphicalModel.types.*;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static lphy.core.LPhyParser.Context.data;
 import static lphy.core.LPhyParser.Context.model;
-
+@Deprecated
 public class GraphicalModelParser implements LPhyParser {
 
     // CURRENT MODEL STATE
