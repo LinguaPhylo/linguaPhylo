@@ -9,9 +9,9 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import org.apache.commons.math3.util.FastMath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -87,9 +87,9 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         tmrca = doubleValue(rootAge);
 
         // calculate the constants in the simulating functions
-        c1 = Math.sqrt(Math.pow(lambda - mu - psi, 2) + 4 * lambda * psi);
-        c2 = -(lambda - mu - 2 * lambda * rho - psi) / c1;
-        gt = 1 / (Math.exp(-c1 * tmrca) * (1 - c2) + (1 + c2));
+        c1 = Math.sqrt(Math.pow(lambda - mu - psi, 2.0) + 4.0 * lambda * psi);
+        c2 = -(lambda - mu - 2.0 * lambda * rho - psi) / c1;
+        gt = 1.0 / (FastMath.exp(-c1 * tmrca) * (1.0 - c2) + (1.0 + c2));
 
         TimeTree tree = randomTreeTopology();
         tree.getRoot().setAge(tmrca);
@@ -167,7 +167,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         return i;
     }
 
-
     private void drawDivTimes(TimeTree tree) {
         // index of leaf nodes
         int k;
@@ -190,21 +189,20 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
                 // step2
                 // calculate 1/g(z*)
-                double gzstar = 1 / (Math.exp(-c1 * zstar) * (1 - c2) + (1 + c2));
+                double gzstar = 1.0 / (FastMath.exp(-c1 * zstar) * (1.0 - c2) + (1.0 + c2));
                 // a2 = (1/g(t_mrca)) - (1/g(z^*))
                 double a2 = gt - gzstar;
 
-
                 // step4
                 // the constant part in the integral, which is H(zstar) and H is CDF of divergence times
-                double constantChildren = 1.0 / (a2 * (((1 - c2) * Math.exp(-c1 * zstar)) + (1 + c2)));
+                double constantChildren = 1.0 / (a2 * (((1 - c2) * Math.exp(-c1 * zstar)) + (1.0 + c2)));
 
                 // step5: drawn a random number of Uniform(0,1)
                 double y = random.nextDouble();
 
                 // calculate the inverse function, i.e. H^(-1)
                 double x;
-                x = Math.log((1 / (a2 * (y + constantChildren) * (1 - c2))) - ((1 + c2) / (1 - c2))) / (-c1);
+                x = Math.log((1.0 / (a2 * (y + constantChildren) * (1.0 - c2))) - ((1.0 + c2) / (1.0 - c2))) / (-c1);
 
                 // set the simulated divergence time
                 tree.getNodeByIndex(j).setAge(x);
@@ -219,9 +217,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         final double[] heights = new double[nodes.size()];
         final int[] reverseOrder = new int[nodes.size()];
         collectHeights(tree.getRoot(), heights, reverseOrder, 0);
-
-        System.out.println("Heights = " + Arrays.toString(heights));
-        System.out.println("reverseOrder = " + Arrays.toString(reverseOrder));
 
         TimeTreeNode root = reconstructTree(nodes, heights, reverseOrder, 0, heights.length, new boolean[heights.length]);
         tree.setRoot(root);
@@ -263,9 +258,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         }
 
         node.setLeft(nodes.get(reverseOrder[left]));
-        node.getLeft().setParent(node);
         node.setRight(nodes.get(reverseOrder[right]));
-        node.getRight().setParent(node);
         if (node.getLeft().isLeaf()) {
             heights[left] = Double.NEGATIVE_INFINITY;
         }
@@ -275,7 +268,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         hasParent[left] = true;
         hasParent[right] = true;
         heights[nodeIndex] = Double.NEGATIVE_INFINITY;
-
 
         reconstructTree(nodes, heights, reverseOrder, from, nodeIndex, hasParent);
         reconstructTree(nodes, heights, reverseOrder, nodeIndex, to, hasParent);
@@ -296,130 +288,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
             current = collectHeights(node.getRight(), heights, reverseOrder, current);
         }
         return current;
-    }
-
-    /*
-     * modify the simulated tree when an invalid node time appears
-     * this method is called after drawDivTimes()
-     */
-    private void repositionNodeWhenInvalid(TimeTree tree){
-        int[] index = new int[tree.ntaxa()-1];
-        traverseTree(tree.getRoot(), 0, index);
-
-        for(int nodeIdx : index) {
-            TimeTreeNode node = tree.getNodeByIndex(nodeIdx);
-            if(!node.isRoot() && !node.getParent().isRoot()) {
-                TimeTreeNode parent = node.getParent();
-
-                double tc = node.getAge();
-                double tp = node.getParent().getAge();
-
-                if (tc >= tp) {
-                    if (node == parent.getLeft()) {
-                        exchangeLeftChild(parent, node);
-                    } else {
-                        exchangeRightChild(parent, node);
-                    }
-                }
-            }
-        }
-    }
-    // This method applies to an internal node (Node child) is the LEFT child of its parent (Node parent)
-    // child: aNode
-    // parent: parent of aNode
-    private void exchangeLeftChild(TimeTreeNode parent, TimeTreeNode child){
-        // exchange heights so than parent is older than child
-        double tc = child.getAge();
-        double tp = parent.getAge();
-        child.setAge(tp);
-        parent.setAge(tc);
-
-        TimeTreeNode leftGrandChild = child.getChild(0); // gc1
-        TimeTreeNode rightGrandChild = child.getChild(1); // gc2
-        TimeTreeNode sibling = parent.getChild(1); // right child of parent, sibling of aNde (child)
-
-        // operator on the tree topology
-        replace(parent, child, leftGrandChild);
-        replace(parent, sibling, child);
-
-        // operator on the order of involved nodes
-        replace(child, rightGrandChild, sibling);
-        replace(child, leftGrandChild, rightGrandChild);
-        exchangeNodes(child.getChild(0), child.getChild(1),child,child);
-
-        // make sure the node times are valid after the previous operations
-        if (child.getAge() <= child.getLeft().getAge()){
-            exchangeLeftChild(child, child.getLeft());
-        }
-
-        if (child.getAge() <= child.getRight().getAge()){
-            exchangeRightChild(child, child.getRight());
-        }
-
-        if (parent.getAge() >= parent.getParent().getAge()){
-            if(parent == parent.getParent().getChild(0)) {
-                exchangeLeftChild(parent.getParent(), parent);
-            } else {
-                exchangeRightChild(parent.getParent(), parent);
-            }
-        }
-
-    }
-
-    // This method applies to an internal node (Node child) is the RIGHT child of its parent (Node parent)
-    private void exchangeRightChild(TimeTreeNode parent, TimeTreeNode child) {
-        // exchange heights so than parent is older than child
-        double tc = child.getAge();
-        double tp = parent.getAge();
-        child.setAge(tp);
-        parent.setAge(tc);
-
-
-        TimeTreeNode leftGrandChild = child.getChild(0); // gc1
-        TimeTreeNode rightGrandChild = child.getChild(1); // gc2
-        TimeTreeNode sibling = parent.getChild(0); // left child of parent, sibling of aNde (child)
-
-        // operate on topology
-        replace(parent, child, rightGrandChild);
-        replace(parent, sibling, child);
-
-        // operator on node order
-        replace(child, leftGrandChild, sibling);
-        replace(child, rightGrandChild, leftGrandChild);
-        exchangeNodes(parent.getChild(0), parent.getChild(1), parent, parent);
-
-        // make sure the node times are valid after the previous operations
-        if (child.getAge() <= child.getLeft().getAge()){
-            exchangeLeftChild(child, child.getLeft());
-        }
-
-        if (child.getAge() <= child.getRight().getAge()){
-            exchangeRightChild(child, child.getRight());
-        }
-
-        if (parent.getAge() >= parent.getParent().getAge()){
-            if(parent == parent.getParent().getChild(0)) {
-                exchangeLeftChild(parent.getParent(), parent);
-            } else {
-                exchangeRightChild(parent.getParent(), parent);
-            }
-        }
-    }
-
-    // this method exchanges node i and node j
-    // ip: parent of i
-    // jp: parent of j
-    private void exchangeNodes(TimeTreeNode i, TimeTreeNode j, TimeTreeNode ip, TimeTreeNode jP) {
-        replace(ip, i, j);
-        replace(jP, j, i);
-    }
-
-    /*
-     * this method is taken from TreeOperator
-     */
-    private void replace(final TimeTreeNode node, final TimeTreeNode child, final TimeTreeNode replacement) {
-        node.removeChild(child);
-        node.addChild(replacement);
     }
 
     @Override

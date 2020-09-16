@@ -160,7 +160,7 @@ public class TimeTree implements TaxaAges, HasComponentView<TimeTree> {
 
     public Double treeLength() {
 
-        double TL = 0;
+        double TL = 0.0;
         for (TimeTreeNode node : getNodes()) {
             if (!node.isRoot()) {
                 TL += node.getParent().age - node.age;

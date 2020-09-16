@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class TimeTreeNode {
 
-    private List<TimeTreeNode> children = new ArrayList<>();
+    private ArrayList<TimeTreeNode> children = new ArrayList<>();
     private TimeTreeNode parent = null;
     private int index;
     private int leafIndex = -1;
@@ -27,7 +27,10 @@ public class TimeTreeNode {
 
     public TimeTreeNode(double age, TimeTreeNode[] children) {
         this.age = age;
-        this.children = Arrays.asList(children);
+        this.children = new ArrayList<>();
+        for (int i = 0; i < children.length; i++) {
+            this.children.add(children[i]);
+        }
         for (int i = 0; i < children.length; i++) {
             children[i].parent = this;
         }
@@ -123,8 +126,8 @@ public class TimeTreeNode {
     }
 
     public void removeChild(TimeTreeNode child) {
-        children.remove(child);
         child.parent = null;
+        children.remove(child);
     }
 
 
@@ -208,13 +211,14 @@ public class TimeTreeNode {
     }
 
     public TimeTreeNode getRight() {
-        if (!isLeaf()) return children.get(children.size()-1);
+        if (!isLeaf()) return children.get(1);
         return null;
     }
 
     public void setLeft(TimeTreeNode left) {
         if (children.size() > 0) {
             children.set(0, left);
+            left.setParent(this);
         } else {
             addChild(left);
         }
@@ -229,5 +233,6 @@ public class TimeTreeNode {
             }
             children.add(right);
         }
+        right.setParent(this);
     }
 }

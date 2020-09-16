@@ -24,6 +24,7 @@ public class Utils {
 
         StringBuilder builder = new StringBuilder();
         builder.append("digraph G {\n");
+        builder.append("  ranksep=0.02;\n");
         for (GraphicalModelNode node : nodes) {
             toGraphvizDot(node, done, dataNodes, modelNodes, edges, parser, isDataNode(node, parser));
         }
