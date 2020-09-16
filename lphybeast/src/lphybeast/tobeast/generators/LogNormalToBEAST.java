@@ -12,8 +12,8 @@ public class LogNormalToBEAST implements GeneratorToBEAST<LogNormal, Prior> {
     @Override
     public Prior generatorToBEAST(LogNormal generator, BEASTInterface value, BEASTContext context) {
         LogNormalDistributionModel logNormalDistributionModel = new LogNormalDistributionModel();
-        logNormalDistributionModel.setInputValue("M", context.getBEASTObject(generator.getMeanLog()));
-        logNormalDistributionModel.setInputValue("S", context.getBEASTObject(generator.getSDLog()));
+        logNormalDistributionModel.setInputValue("M", context.getAsRealParameter(generator.getMeanLog()));
+        logNormalDistributionModel.setInputValue("S", context.getAsRealParameter(generator.getSDLog()));
         logNormalDistributionModel.initAndValidate();
 
         return BEASTContext.createPrior(logNormalDistributionModel, (RealParameter) value);

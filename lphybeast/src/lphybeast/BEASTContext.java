@@ -123,6 +123,17 @@ public class BEASTContext {
         return beastObjects.get(node);
     }
 
+    public RealParameter getAsRealParameter(Value<Number> value) {
+        Parameter param = (Parameter)beastObjects.get(value);
+        if (param instanceof RealParameter) return (RealParameter)param;
+        if (param instanceof IntegerParameter) {
+            RealParameter newParam = createRealParameter(param.getID(), ((IntegerParameter) param).getValue());
+            beastObjects.put(value, newParam);
+            return newParam;
+        }
+        throw new RuntimeException("No coercable parameter found.");
+    }
+
     public GraphicalModelNode getGraphicalModelNode(BEASTInterface beastInterface) {
         return BEASTToLPHYMap.get(beastInterface);
     }
@@ -151,9 +162,14 @@ public class BEASTContext {
     }
 
     public static RealParameter createRealParameter(double value) {
+        return createRealParameter(null, value);
+    }
+
+    public static RealParameter createRealParameter(String id, double value) {
         RealParameter parameter = new RealParameter();
         parameter.setInputValue("value", value);
         parameter.initAndValidate();
+        if (id != null) parameter.setID(id);
         return parameter;
     }
 
