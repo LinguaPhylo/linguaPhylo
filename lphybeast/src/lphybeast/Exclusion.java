@@ -1,9 +1,6 @@
 package lphybeast;
 
-import lphy.core.functions.DataFrameConstruction;
-import lphy.core.functions.DataFramePart;
-import lphy.core.functions.NTaxaFunction;
-import lphy.core.functions.Nexus;
+import lphy.core.functions.*;
 import lphy.evolution.DataFrame;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
@@ -22,7 +19,9 @@ public class Exclusion {
     }
 
     public static boolean isExcludedGenerator(Generator generator) {
-        return ((generator instanceof NTaxaFunction) || (generator instanceof DataFrameConstruction) ||
-                (generator instanceof DataFramePart) || (generator instanceof Nexus));
+        return ((generator instanceof NTaxaFunction) || (generator instanceof NCharFunction) ||
+                (generator instanceof TaxaFunction) || (generator instanceof DataFrameConstruction) ||
+                (generator instanceof DataFramePart) || (generator instanceof Nexus) ||
+                (generator instanceof Range) || (generator instanceof Partition) );
     }
 }

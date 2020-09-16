@@ -6,6 +6,10 @@ import lphy.graphicalModel.Value;
 
 import java.util.*;
 
+/**
+ * A wrapper for any implementation of LPhyParser that will be used in the Studio.
+ * @author Alexei Drummond
+ */
 public class GraphicalLPhyParser implements LPhyParser {
 
     LPhyParser wrappedParser;

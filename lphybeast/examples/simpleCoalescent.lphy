@@ -1,4 +1,9 @@
-d = dataframe(ntaxa=16, nchar=200);
-Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-ψ ~ Coalescent(theta=Θ, taxa=d);
-D ~ PhyloCTMC(frame=d, Q=jukesCantor(), tree=ψ);
+data {
+  L = 200;
+  taxa = 1:10;
+}
+model {
+  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+}

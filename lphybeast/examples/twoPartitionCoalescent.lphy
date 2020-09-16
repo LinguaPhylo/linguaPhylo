@@ -1,9 +1,12 @@
-data = dataframe(parts=["noncoding", "coding"], nchar=[200,200], ntaxa=16);
-coding = part(frame=data, name="coding");
-noncoding = part(frame=data, name="noncoding");
-Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-ψ ~ Coalescent(theta=Θ, taxa=data);
-π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-Q = f81(freq=π);
-D1 ~ PhyloCTMC(frame=coding, Q=Q, tree=ψ);
-D2 ~ PhyloCTMC(frame=noncoding, Q=Q, tree=ψ);
+data {
+  codingL = 200;
+  noncodingL = 300;
+  taxa = 1:10;
+}
+model {
+  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+  coding ~ PhyloCTMC(tree=ψ, L=codingL, Q=f81(freq=π));
+  noncoding ~ PhyloCTMC(tree=ψ, L=noncodingL, Q=f81(freq=π));
+}

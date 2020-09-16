@@ -26,15 +26,16 @@ public class LPhyBEAST implements Callable<Integer> {
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "display this help message")
     boolean usageHelpRequested;
 
-//    @Option(names = {"-wd", "--workdir"}, description = "Working directory") Path wd;
     @Option(names = {"-o", "--out"},     description = "BEAST 2 XML")  Path outfile;
-    @Option(names = {"-n", "--nex"},    description = "BEAST 2 partitions defined in Nexus file")
-    Path nexfile;
+
+//    @Option(names = {"-wd", "--workdir"}, description = "Working directory") Path wd;
+//    @Option(names = {"-n", "--nex"},    description = "BEAST 2 partitions defined in Nexus file")
+//    Path nexfile;
 //    Map<String, String> partitionMap; // d1=primates.nex:noncoding|d2=primates.nex:coding   //
 //    @Option(names = {"-m", "--mapping"}, description = "mapping file") Path mapfile;
 //    @Option(names = {"-p", "--partition"}, split = "\\|", splitSynopsisLabel = "|",
 //            description = "LPhy var <=> Nexus keyword")
-//    Map<String, String> partitionMap;  // -m D1=firsthalf|D2=secondhalf
+
 
     public static void main(String[] args) throws IOException {
 
@@ -48,18 +49,6 @@ public class LPhyBEAST implements Callable<Integer> {
     public Integer call() throws Exception { // business logic goes here...
 
         BufferedReader reader = new BufferedReader(new FileReader(infile.toFile()));
-
-//        DataExchanger dataExchanger = null;
-        if (nexfile != null) {
-//            dataExchanger = new DataExchanger(nexfile, partitionMap);
-            assert nexfile.toString().endsWith("nex") || nexfile.toString().endsWith("nexus");
-            // TODO LoggerUtils.log.info print twice?
-            System.out.println("Load the alignment from " + nexfile.getFileName());
-
-//            dataExchanger.printPartMap(System.out);
-            throw new UnsupportedOperationException("This feature moved to LPhy script.");
-
-        }
 
         //*** Parse LPhy file ***//
         LPhyParser parser = new REPL();
@@ -86,25 +75,33 @@ public class LPhyBEAST implements Callable<Integer> {
         writer.flush();
         writer.close();
 
-        System.out.println("\nCreate BEAST 2 XML : " + Paths.get(System.getProperty("user.dir"), outfile.toString()));
+        System.out.println("\nCreate BEAST 2 XML : " +
+                Paths.get(System.getProperty("user.dir"), outfile.toString()));
         return 0;
     }
 
     private static void source(BufferedReader reader, LPhyParser parser)
             throws IOException {
-//        if (dataExchanger != null) dataExchanger.preloadArgs();
+        LPhyParser.Context mode = null;
 
         String line = reader.readLine();
         while (line != null) {
-            parser.parse(line);
-            // replace dataframe to nexus ntax nchar
-//            if (dataExchanger != null) {
-//
-//                if (dataExchanger.containsDF(line))
-//                    dataExchanger.updateDF(parser);
-//
-//            }
+            String s = line.replaceAll("\\s+","");
+            if (s.isEmpty()) {
+                // skip empty lines
+            } else if (s.startsWith("data{"))
+                mode = LPhyParser.Context.data;
+            else if (s.startsWith("model{"))
+                mode = LPhyParser.Context.model;
+            else if (s.startsWith("}"))
+                mode = null; // reset
+            else {
+                if (mode == null)
+                    throw new IllegalArgumentException("Please use data{} to define data and " +
+                            "model{} to define models !\n" + line);
 
+                parser.parse(line, mode);
+            }
             line = reader.readLine();
         }
         reader.close();

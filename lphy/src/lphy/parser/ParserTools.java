@@ -51,7 +51,7 @@ public class ParserTools {
                 LocalBranchRates.class, lphy.core.functions.Map.class,
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, RootAge.class, TaxaAgesFunction.class, TaxaFunction.class, TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                Nexus.class
+                Nexus.class, Partition.class
         };
 
         for (Class<?> functionClass : functionClasses) {
