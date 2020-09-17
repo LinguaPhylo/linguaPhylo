@@ -381,6 +381,116 @@ the gene tree for each species.
 It is a tuple of integers with length equal to the number of species
 in the species tree.
 
+\subsection{Birth-death process generative distributions of trees}
+
+The other main family of tree distributions is the birth-death-sampling generative distributions.
+
+The simplest model in this family is the one parameter model Yule model \cite{yule1925ii}. 
+The birth rate (lambda) parameter determines at what rate, per unit time, each lineage bifurcates to produce two daughter lineages. 
+This describes a pure birth process, so that the number of lineages grows monotonically forward in time. 
+
+\subsubsection{Yule model}
+
+In its simplest form the Yule model has a stopping criterion based on the final number of leaves in the tree. 
+The following code will generate a random Yule tree with 16 leaves:
+
+\begin{minted}{Stan}
+tree ~ Yule(birthRate=1.0, n=16);
+\end{minted}
+
+It is also possible to give explicit taxa labels to the generative distribution:
+
+\begin{minted}{Stan}
+taxa = 1:16;
+tree ~ Yule(birthRate=1.0, taxa=taxa);
+\end{minted}
+
+or
+
+\begin{minted}{Stan}
+taxa = ["A", "B", "C", "D"];
+tree ~ Yule(birthRate=1.0, taxa=taxa);
+\end{minted}
+
+\subsubsection{Calibrated Yule model}
+
+It is also possible the generate a Yule tree with a given rootAge:
+
+\begin{minted}{Stan}
+tree ~ Yule(birthRate=1.0, n=16, rootAge=10);
+\end{minted}
+
+This is useful if you want to produce a calibrated analysis where there is a separate prior on the root age of the tree:
+
+\begin{minted}{Stan}
+rootAge ~ LogNormal(meanlog=2.0, sdlog=1.0);
+tree ~ Yule(birthRate=1.0, n=16, rootAge=rootAge);
+\end{minted}
+
+\subsubsection{Birth-death model}
+
+The birth-death tree process is a generalisation of the Yule model. A second rate of extinction (mu) is added alongside
+the rate of speciation (lambda). Running forward in time it is possible for the number of lineages to both grow and 
+shrink, and indeed for the tree process to go completely extinct. 
+
+\subsubsection{Calibrated Birth-Death process}
+
+A calibrated birth-death process can be describe like so:
+
+\begin{minted}{Stan}
+tree ~ BirthDeath(lambda=2.0, mu=1.0, n=16, rootAge=10);
+\end{minted}
+
+It is important to realise that the resulting tree will contain only the extant lineages. All extinct lineages will be
+suppressed. As with the Yule model it is possible to directly specify the taxa names:
+
+\begin{minted}{Stan}
+taxa = ["A", "B", "C", "D"];
+tree ~ BirthDeath(lambda=2.0, mu=1.0, taxa=taxa, rootAge=10);
+\end{minted}
+
+\subsubsection{Full birth-death process}
+
+It is possible to generate a full birth-death tree that includes also extinct lineages using the following generative
+distribution:
+
+\begin{minted}{Stan}
+tree ~ FullBirthDeath(lambda=2.0, mu=1.0, rootAge=10);
+\end{minted}
+
+Note that unlike the BirthDeath generative distribution, this process will generate a tree with a random number of
+leaf nodes, both in terms of extinct and extant lineages. The only conditioning is on the root age.
+
+\subsubsection{Birth-death-sampling process}
+
+A birth-death-sampling process adds a third parameter (rho) the probability of sampling each extant lineage. Again, 
+only extant lineages are leaves in the resulting tree and extinct lineages are suppressed:
+
+\begin{minted}{Stan}
+T ~ BirthDeathSampling(lambda=2.0, mu=1.0, rho=0.5, rootAge=3);
+\end{minted}
+
+An alternative parameterization allows specification of the diversification and turnover rates:
+
+\begin{minted}{Stan}
+T ~ BirthDeathSampling(diversification=1.0, turnover=0.5, rho=0.5, rootAge=3);
+\end{minted}
+
+Again it is important to note that the number of tips of the tree is a random variable, and is not conditioned on,
+unlike for the BirthDeath generative distribution above.
+
+\subsubsection{Birth-death-serial-sampling process}
+
+A birth-death-serial-sampling \cite{stadler2013dating} process adds a fourth parameter (psi), the rate of sampling each lineage per unit time. 
+Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled). 
+
+\begin{minted}{Stan}
+ages = [0.0,1.0,2.0,3.0,4.0];
+tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, psi=1, rootAge=5, ages=ages);
+\end{minted}
+
+In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
+
 \section{Models of evolutionary rates and sequence evolution}
 
 Another key distribution necessary to perform phylogenetic inference
