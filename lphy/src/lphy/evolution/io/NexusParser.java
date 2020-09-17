@@ -127,20 +127,32 @@ public class NexusParser {
 
     public static void main(final String[] args) {
         try {
-            Path nexFile = Paths.get(args[0]); // primate-mtDNA.nex, Dengue4.nex
+            Path nexFile = Paths.get(args[0]);
+            String fileName = nexFile.getFileName().toString();
+            System.out.println("Loading " + fileName);
             final NexusParser parser = new NexusParser(nexFile);
 
 //            List<Alignment> alignmentList = parser.importAlignments();
 //                alignmentList.forEach(System.out::println);
 
-            lphy.evolution.alignment.CharSetAlignment lphyAlg =
-                    (CharSetAlignment) parser.getLPhyAlignment(false);
-            System.out.println(lphyAlg.toJSON());
-//            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
-            System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
+            if (fileName.equals("Dengue4.nex")) {
+                lphy.evolution.alignment.Alignment lphyAlg =
+                        (lphy.evolution.alignment.Alignment) parser.getLPhyAlignment(true);
 
-            System.out.println(parser.importer.getDateMap());
-            System.out.println(parser.importer.getAgeMap("forward"));
+                System.out.println(parser.importer.getDateMap());
+                System.out.println(parser.importer.getAgeMap("forward"));
+
+            } else if (fileName.equals("primate.nex")) {
+                lphy.evolution.alignment.CharSetAlignment lphyAlg =
+                        (CharSetAlignment) parser.getLPhyAlignment(false);
+                System.out.println(lphyAlg.toJSON());
+//            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
+                System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
+
+            }
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

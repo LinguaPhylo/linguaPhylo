@@ -98,9 +98,9 @@ public class CharSetAlignment extends AbstractAlignment {
 
         // sometime there are extra charsets
         if (tot != this.nchar)
-            System.err.println("Warning: there is extra partition(s) defined in Nexus !\n" +
-                    "The total nchar in each part " + tot + " != " + nchar + " the length of full alignment !\n" +
-                    "Partitions (ntaxa by nchar) : " + partsMap);
+            System.err.println("Warning: there is extra partition(s) defined in Nexus, " +
+                    "where the total nchar in each part " + tot + " != " + nchar +
+                    " the length of full alignment !\nPartitions (ntaxa by nchar) : " + partsMap);
 
     }
 
