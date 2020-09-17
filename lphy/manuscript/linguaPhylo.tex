@@ -381,13 +381,76 @@ the gene tree for each species.
 It is a tuple of integers with length equal to the number of species
 in the species tree.
 
-\subsection{Models of evolutionary rates and sequence evolution}
+\section{Models of evolutionary rates and sequence evolution}
 
 Another key distribution necessary to perform phylogenetic inference
 is the phylogenetic continuous-time Markov process and its inference
-equivalent the phylogenetic likelihood.
+equivalent the phylogenetic likelihood \cite{felsenstein1981}.
 
-\subsection{LinguaPhylo Studio}
+In its simplest form the PhyloCTMC generative
+distribution takes an instantaneous transition matrix (Q), a number of sites (L) and a tree:
+
+\begin{minted}{Stan}
+tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100);
+\end{minted}
+
+\subsection{ Molecular clock}
+
+If the tree is not in units of substitutions per site, then it is possible to include a molecular clock rate
+to scale the branches of the tree from time to substitutions per site. This example will give the same
+result as the previous example, but the tree is now in units of time, so the mutation rate (mu) in units of
+substitutions per site per unit time is given.
+
+\begin{minted}{Stan}
+tree = newick(tree="((A:10,B:10):20,(C:15,D:15):15);");
+D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100, mu=0.01);
+\end{minted}
+
+\subsection{ Nucleotide substitution models}
+
+There are a number of built in functions to construct standard nucleotide rate matrices. Some examples:
+
+\begin{minted}{Stan}
+jc = jukesCantor();
+hky = hky(kappa=2.0, freq=[0.2, 0.25, 0.3, 0.25]);
+gtr = gtr(rates=[0.1, 0.25, 0.15, 0.15, 0.25, 0.1], freq=[0.2, 0.25, 0.3, 0.25]);
+\end{minted}
+
+The Dirichlet prior is a natural prior for relative rates and frequencies, so a full model for GTR could
+look like this:
+
+\begin{minted}{Stan}
+pi ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]); // dirichlet prior on base frequencies
+R ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]); // dirichlet prior on relative rates
+Q = gtr(freq=pi, rates=R); // construct the GTR instantaneous rate matrix
+\end{minted}
+
+\subsection{ Rate heterogeneity across sites}
+
+The PhyloCTMC generative distribution takes a parameter siteRates to describe rates across sites.
+For inference, a common model is the discretized Gamma distribution of site rate heterogeneity (Yang, 1994).
+
+To match this model for simulation in LPHY do the following:
+
+\begin{minted}{Stan}
+tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+siteRates ~ G(shape=0.5, ncat=4, reps=100); // generate 100 site rates from a discretized Gamma
+D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), siteRates=siteRates);
+\end{minted}
+
+\subsection{  Relaxed clock models (rate heterogeneity across branches) }
+
+The PhyloCTMC generative distribution can also take an optional parameter branchRates to describe the
+rates across branches:
+
+\begin{minted}{Stan}
+tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+branchRates = [0.5, 2.0, 1.0, 1.0, 2.0, 0.5];
+D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
+\end{minted}
+
+\section{LinguaPhylo Studio}
 
 Along with the language definition, we also provide software to
 specify and visualise models as well as simulate data from models
@@ -401,7 +464,7 @@ This will require software that can convert an LPhy specification into
 an input file that these inference engines understand.
 The first such software converter is LPhyBEAST described below.
 
-\subsection{LPhyBEAST}
+\section{LPhyBEAST}
 
 LPhyBEAST is a command-line program that takes an LPhy model
 specification, and some data and produces a BEAST 2 XML input file.
