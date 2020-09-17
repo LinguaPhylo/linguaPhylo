@@ -1,7 +1,6 @@
 package lphy.core.functions;
 
 import lphy.evolution.alignment.AbstractAlignment;
-import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -49,9 +48,6 @@ public class Nexus extends DeterministicFunction<AbstractAlignment> {
 
         String[] partsArray = charsets != null ? charsets.value() : null;
         // if value is null, ignoring charset return single partition
-        AbstractAlignment alignment = parser.getLPhyAlignment(partsArray);
-
-        if (alignment.hasParts()) return (CharSetAlignment) alignment;
-        return alignment;
+        return parser.getLPhyAlignment(partsArray);
     }
 }

@@ -4,7 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
-import lphy.evolution.DataFrame;
+import lphy.evolution.NChar;
 import lphy.evolution.Taxa;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
@@ -19,7 +19,10 @@ import java.util.TreeMap;
  * Everything related to Taxa, Data type
  * @author Walter Xie
  */
-public abstract class AbstractAlignment extends DataFrame implements Taxa, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView<AbstractAlignment> {
+
+    // may not have sequences
+    protected int nchar;
 
     Map<String, Integer> idMap;
     Map<Integer, String> reverseMap;
@@ -27,22 +30,27 @@ public abstract class AbstractAlignment extends DataFrame implements Taxa, HasCo
     @Deprecated int numStates;
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
-    @Deprecated
-    public AbstractAlignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
-        super(ntaxa, nchar);
+    /**
+     * Init alignment with taxa and number of site.
+     * @param idMap
+     * @param nchar
+     */
+    public AbstractAlignment(Map<String, Integer> idMap, int nchar) {
+        this.nchar = nchar;
         this.idMap = idMap;
         fillRevMap();
+    }
 
+    @Deprecated
+    public AbstractAlignment(Map<String, Integer> idMap, int nchar, int numStates) {
+        this(idMap, nchar);
         // sequenceType = DataType.guessSequenceType(numStates);
         sequenceType = null;
         this.numStates = numStates;
     }
 
-    public AbstractAlignment(int ntaxa, int nchar, Map<String, Integer> idMap, SequenceType sequenceType) {
-        super(ntaxa, nchar);
-        this.idMap = idMap;
-        fillRevMap();
-
+    public AbstractAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
+        this(idMap, nchar);
         this.sequenceType = sequenceType;
         this.numStates = sequenceType.getCanonicalStateCount();
     }
@@ -51,13 +59,14 @@ public abstract class AbstractAlignment extends DataFrame implements Taxa, HasCo
      * Copy constructor of AbstractAlignment
      */
     public AbstractAlignment(final AbstractAlignment source) {
-        this.ntaxa = Objects.requireNonNull(source).ntaxa();
-        this.nchar = source.nchar();
+        this.nchar = Objects.requireNonNull(source).nchar();
         this.idMap = new TreeMap<>(source.idMap);
         fillRevMap();
 
         this.sequenceType = source.getSequenceType();
     }
+
+    //****** Sequences ******
 
     public abstract int n();
     public abstract int L();
@@ -71,7 +80,18 @@ public abstract class AbstractAlignment extends DataFrame implements Taxa, HasCo
 
     public abstract String toJSON();
 
+    //****** Sites ******
+    @Override
+    public int nchar() {
+        return nchar;
+    }
+
     //****** Taxa ******
+
+    @Override
+    public int ntaxa() {
+        return idMap.size();
+    }
 
     protected void fillRevMap() {
         reverseMap = new TreeMap<>();
@@ -98,6 +118,10 @@ public abstract class AbstractAlignment extends DataFrame implements Taxa, HasCo
             taxa[i] = reverseMap.get(i);
         }
         return taxa;
+    }
+
+    public String toString() {
+        return ntaxa() + " by " + nchar;
     }
 
     //****** Data type ******
@@ -146,4 +170,6 @@ public abstract class AbstractAlignment extends DataFrame implements Taxa, HasCo
             return 20; // the last extra is always for ambiguous
         return state;
     }
+
+    public abstract boolean hasParts();
 }

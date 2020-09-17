@@ -10,7 +10,7 @@ public class ErrorAlignment extends Alignment {
     Alignment parent;
 
     public ErrorAlignment(int taxa, int length, Map<String, Integer> idMap, Alignment parent) {
-        super(taxa, length, idMap, parent.getSequenceType());
+        super(idMap, length, parent.getSequenceType());
 
         this.parent = parent;
     }
