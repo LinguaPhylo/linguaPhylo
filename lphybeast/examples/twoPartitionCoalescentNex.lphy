@@ -1,7 +1,6 @@
 data {
-  D = nexus(file="examples/primate.nex", charsets=["noncoding", "coding"]);
-  coding = partition(alignment=D, name="coding");
-  noncoding = partition(alignment=D, name="noncoding");
+  coding = nexus(file="examples/primate.nex", charset="coding");
+  noncoding = nexus(file="examples/primate.nex", charset="noncoding");
   L1 = nchar(coding);
   L2 = nchar(noncoding);
   taxa = taxa(coding);

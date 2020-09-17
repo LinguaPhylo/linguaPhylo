@@ -22,11 +22,14 @@ import java.util.TreeMap;
 
 /**
  * Apply {@link ExtNexusImporter} to parsing Nexus into LPhy objects.
+ *
  * @author Walter Xie
  */
 public class NexusParser {
-    @Deprecated protected final int READ_AHEAD_LIMIT = 50000;
-    @Deprecated BufferedReader reader;
+    @Deprecated
+    protected final int READ_AHEAD_LIMIT = 50000;
+    @Deprecated
+    BufferedReader reader;
 
     ExtNexusImporter importer;
 
@@ -53,6 +56,7 @@ public class NexusParser {
 
     /**
      * Be careful. Resets the stream to the most recent mark.
+     *
      * @see BufferedReader#reset()
      */
     @Deprecated
@@ -64,12 +68,13 @@ public class NexusParser {
 
     /**
      * Parse Nexus to LPHY {@link lphy.evolution.alignment.Alignment}
-     * @param partNames   the selected partition names,
-     *                    if null, return single {@link lphy.evolution.alignment.Alignment},
-     *                    if not null, return {@link CharSetAlignment}.
-     * @return  LPHY {@link lphy.evolution.alignment.Alignment} or {@link CharSetAlignment}.
+     *
+     * @param ignoreCharset If true, ignore charset in Nexus,
+     *                      only return single {@link lphy.evolution.alignment.Alignment}.
+     *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
+     * @return LPHY {@link lphy.evolution.alignment.Alignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(String[] partNames) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset) {
 
         try {
             importer.importNexus();
@@ -108,38 +113,46 @@ public class NexusParser {
             }
 
         }
+        final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
 
-        if (partNames != null) { // partNames is optional
-            final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
-            if (charsetMap.size() > 0) { // multi-partition
+        if (!ignoreCharset && charsetMap.size() > 0) { // charset is optional
 //            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
-                CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
-                System.out.println(charSetAlignment);
-                return charSetAlignment;
-            }
+//            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
+//            System.out.println(charSetAlignment);
+            // this imports all charsets
+            return new CharSetAlignment(charsetMap, lphyAlg);
         }
         return lphyAlg; // sing partition
     }
 
-
-
-
-
     public static void main(final String[] args) {
         try {
-            Path nexFile = Paths.get(args[0]); // primate-mtDNA.nex, Dengue4.nex
+            Path nexFile = Paths.get(args[0]);
+            String fileName = nexFile.getFileName().toString();
+            System.out.println("Loading " + fileName);
             final NexusParser parser = new NexusParser(nexFile);
 
 //            List<Alignment> alignmentList = parser.importAlignments();
 //                alignmentList.forEach(System.out::println);
 
-            lphy.evolution.alignment.AbstractAlignment lphyAlg =
-                    parser.getLPhyAlignment(new String[]{"noncoding", "coding"});
-            System.out.println(lphyAlg.toJSON());
+            if (fileName.equals("Dengue4.nex")) {
+                lphy.evolution.alignment.Alignment lphyAlg =
+                        (lphy.evolution.alignment.Alignment) parser.getLPhyAlignment(true);
 
-            System.out.println(parser.importer.getDateMap());
+                System.out.println(parser.importer.getDateMap());
+                System.out.println(parser.importer.getAgeMap("forward"));
 
-            System.out.println(parser.importer.getAgeMap("forward"));
+            } else if (fileName.equals("primate.nex")) {
+                lphy.evolution.alignment.CharSetAlignment lphyAlg =
+                        (CharSetAlignment) parser.getLPhyAlignment(false);
+                System.out.println(lphyAlg.toJSON());
+//            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
+                System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
+
+            }
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -20,18 +20,25 @@ public class CharSetAlignment extends AbstractAlignment {
 
     /**
      * Multiple partitions. The sequences <code>int[][]</code> will be stored in each of parts,
-     * <code>DataFrame[] parts = Alignment[]</code>. Here has no <code>int[][] alignment</code>.
+     * <code>Map<String, Alignment> partsMap</code>. Here has no <code>int[][] alignment</code>.
      *
      * @param charsetMap      key is part (charset) name, value is the list of {@link CharSetBlock}.
-     * @param partNames       if not null, then only choose these names from <code>charsetMap.
+     * @param partNames       if null, use all charsets,
+     *                        if not null, then only choose the subset of names from <code>charsetMap</code>.
      * @param parentAlignment parent alignment before partitioning.
      */
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
                             final Alignment parentAlignment) {
         // init this alignment from parent
         super(parentAlignment);
-
         createPartAlignments(charsetMap, partNames, parentAlignment);
+    }
+
+    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final Alignment parentAlignment) {
+        // init this alignment from parent
+        super(parentAlignment);
+        // import all charsets
+        createPartAlignments(charsetMap, null, parentAlignment);
     }
 
     public String[] getPartNames() {
@@ -39,9 +46,19 @@ public class CharSetAlignment extends AbstractAlignment {
     }
 
     public Alignment getPartAlignment(String partName) {
-        return partsMap.get(partName);
+        Alignment a = partsMap.get(partName);
+        if (a == null)
+            throw new IllegalArgumentException("Charset name " + partName + " not exist in CharSetAlignment !");
+        return a;
     }
 
+    public Alignment[] getPartAlignments(String[] partNames) {
+        List<Alignment> alignments = new ArrayList<>();
+        for (String name : partNames) {
+            alignments.add(getPartAlignment(name));
+        }
+        return alignments.toArray(Alignment[]::new);
+    }
 
     // if partNames is null, pull names from charsetMap.
     // init Alignment, and fill in sequences
@@ -81,8 +98,9 @@ public class CharSetAlignment extends AbstractAlignment {
 
         // sometime there are extra charsets
         if (tot != this.nchar)
-            throw new IllegalArgumentException("The sum of nchar in each part " + tot +
-                    " != " + nchar + " the length of parent alignment !\n" + partsMap);
+            System.err.println("Warning: there is extra partition(s) defined in Nexus, " +
+                    "where the total nchar in each part " + tot + " != " + nchar +
+                    " the length of full alignment !\nPartitions (ntaxa by nchar) : " + partsMap);
 
     }
 
@@ -125,10 +143,16 @@ public class CharSetAlignment extends AbstractAlignment {
 
     @Override
     public String toJSON() {
+        String[] partNames = getPartNames();
+        return toJSON(partNames);
+    }
+
+    public String toJSON(String[] partNames) {
         StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, Alignment> entry : partsMap.entrySet()) {
-            builder.append(entry.getKey()).append(" : ");
-            Alignment part = entry.getValue();
+        for (String name : partNames) {
+            Alignment part = getPartAlignment(name);
+            if (part == null) throw new IllegalArgumentException("Charset name " + name + " not exist in CharSetAlignment !");
+            builder.append(name).append(" : ");
             builder.append(part.toJSON());
             builder.append("\n");
         }
