@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * Created by adru001 on 18/12/19.
  */
@@ -14,11 +16,11 @@ public class Beta implements GenerativeDistribution1D<Double> {
 
     private final String alphaParamName;
     private final String betaParamName;
-    private Value<Double> alpha;
-    private Value<Double> beta;
+    private Value<Number> alpha;
+    private Value<Number> beta;
 
-    public Beta(@ParameterInfo(name="alpha", description="the first shape parameter.") Value<Double> alpha,
-                @ParameterInfo(name="beta", description="the second shape parameter.") Value<Double> beta) {
+    public Beta(@ParameterInfo(name="alpha", description="the first shape parameter.") Value<Number> alpha,
+                @ParameterInfo(name="beta", description="the second shape parameter.") Value<Number> beta) {
         this.alpha = alpha;
         this.beta = beta;
         alphaParamName = getParamName(0);
@@ -28,7 +30,7 @@ public class Beta implements GenerativeDistribution1D<Double> {
     @GeneratorInfo(name="Beta", description="The beta probability distribution.")
     public RandomVariable<Double> sample() {
 
-        BetaDistribution betaDistribution = new BetaDistribution(alpha.value(), beta.value());
+        BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));
 
         double randomVariable = betaDistribution.sample();
 
@@ -36,7 +38,7 @@ public class Beta implements GenerativeDistribution1D<Double> {
     }
 
     public double logDensity(Double d) {
-        BetaDistribution betaDistribution = new BetaDistribution(alpha.value(), beta.value());
+        BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));
         return betaDistribution.logDensity(d);
     }
 

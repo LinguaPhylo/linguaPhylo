@@ -111,7 +111,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     }
 
     public static void main(String[] args) {
-        Beta beta = new Beta(new Value<Double>("alpha", 2.0), new Value<Double>("beta", 2.0));
+        Beta beta = new Beta(new Value<>("alpha", 2.0), new Value<>("beta", 2.0));
 
         Map<String, Value> params = new HashMap<>();
         params.put("alpha", new Value<>("alpha", new Double[] {200.0, 200.0, 200.0, 3.0, 3.0, 3.0}));
