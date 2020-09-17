@@ -37,6 +37,16 @@ public interface Generator<T> extends GraphicalModelNode {
         return getParameterInfo(this.getClass(), constructorIndex);
     }
 
+    default Citation getCitation() {
+        Annotation[] annotations = getClass().getAnnotations();
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Citation) {
+                return (Citation) annotation;
+            }
+        }
+        return null;
+    }
+
     default Class<?> getType(String name) {
         return getParams().get(name).getType();
     }

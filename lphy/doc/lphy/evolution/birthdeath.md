@@ -95,3 +95,18 @@ T ~ BirthDeathSampling(diversification=1.0, turnover=0.5, rho=0.5, rootAge=3);
 
 Again it is important to note that the number of tips of the tree is a random variable, and is not conditioned on,
 unlike for the BirthDeath generative distribution above.
+
+### Birth-death-serial-sampling process
+
+A birth-death-serial-sampling (Stadler and Yang, 2013) process adds a fourth parameter (psi), the rate of sampling each lineage per unit time. 
+Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled). 
+
+```
+ψ ~ BirthDeathSerialSampling(lambda=1.0, mu=0.5, rho=0.1, psi=1.0, rootAge=5.0, ages=[0.0,1.0,2.0,3.0,4.0]);
+```
+
+In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
+
+## References
+
+* Tanja Stadler, Ziheng Yang (2013) "Dating Phylogenies with Sequentially Sampled Tips", Systematic Biology, 62(5):674–688 https://doi.org/10.1093/sysbio/syt030

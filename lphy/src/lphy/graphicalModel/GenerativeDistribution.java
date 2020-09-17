@@ -70,7 +70,23 @@ public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
         for (ParameterInfo pi : pInfo) {
             html.append("<li>").append(pi.name()).append(" (").append(paramValues.get(pi.name())).append("); <font color=\"#808080\">").append(pi.description()).append("</font></li>");
         }
-        html.append("</ul></p></html>");
+        html.append("</ul>");
+
+
+        Citation citation = getCitation();
+        if (citation != null) {
+            html.append("<h3>Reference</h3>");
+            html.append(citation.value());
+            if (citation.DOI().length()  > 0) {
+                String url = citation.DOI();
+                if (!url.startsWith("http")) {
+                    url = "http://doi.org/" + url;
+                }
+                html.append("<br><a href=\"" + url + "\">" + url + "</a><br>");
+            }
+        }
+
+        html.append("</p></html>");
         return html.toString();
     }
 

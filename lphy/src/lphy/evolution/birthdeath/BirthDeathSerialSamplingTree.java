@@ -5,10 +5,7 @@ import lphy.evolution.TaxaAges;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * A Birth-death tree generative distribution
  */
+@Citation(value="Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688", DOI="10.1093/sysbio/syt030", firstAuthorSurname = "Stadler", year=2013)
 public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
     final String birthRateParamName;
