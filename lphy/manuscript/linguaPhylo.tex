@@ -252,17 +252,18 @@ been observed, so that we will infer all the other random variables
 \section{Tree generative distributions}
 
 There are many statistical programming languages such as Stan
-\cite{carpenter2017stan}, BUGS and Stan that provide the possibility
-of succinctly describing statistical models. The unique feature of
+\cite{carpenter2017stan}, JAGS \cite{plummer2003jags} and BUGS \cite{lunn2009bugs, gilks1994language} that provide the possibility
+of succinctly describing statistical models. The unique model feature of
 phylogenetic analysis is the phylogenetic tree.
 This is a complex high-dimensional object, part discrete, part
 continuous.
 There is no bijection between tree space and Euclidean space, so it
 can not be treated with standard statistical distributions.
-As a result specialist software is needed to perform inference.
+As a result specialist software is needed to perform inference \cite{hohna2016revbayes,bouckaert2019beastanalysis}.
 
 The aim of LPhy is describe the standard phylogenetic tree
-distributions succinctly and precisely.
+distributions succinctly and precisely, while leaving out trivial algorithmic details related to the method
+of inference and the particular software employed to do the inference.
 
 \subsection{Coalescent generative distributions for time trees}
 
