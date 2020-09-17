@@ -6,8 +6,8 @@
   <property name="lphybe" location="lphybeast"/>
 
   <!-- TODO java 11 bug to create corrupted zip  -->
-  <property name="sourceVersion" value="1.8"/>
-  <property name="targetVersion" value="1.8"/>
+  <property name="sourceVersion" value="11"/>
+  <property name="targetVersion" value="11"/>
   <property name="beastSrcRevision" value="master"/>
   <!--*******************************************************************-->
 
@@ -39,7 +39,7 @@
   <target name="compile-l" depends="init">
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/src" destdir="${build}" includeantruntime="false">
       <classpath>
-        <pathelement path="${classpath}"/>
+        <pathelement path="${.}"/>
         <fileset dir="${lphy}/lib" includes="*.jar"/>
       </classpath>
     </javac>
@@ -128,6 +128,7 @@
   <target name="init-test">
     <mkdir dir="${build-test}"/>
     <mkdir dir="${test-reports}"/>
+    <echo message="Java ${java.version}" />
   </target>
 
 
