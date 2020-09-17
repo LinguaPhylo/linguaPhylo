@@ -1,6 +1,7 @@
 package lphybeast;
 
 import beast.core.*;
+import beast.core.Loggable;
 import beast.core.parameter.BooleanParameter;
 import beast.core.parameter.IntegerParameter;
 import beast.core.parameter.Parameter;
@@ -43,6 +44,7 @@ public class BEASTContext {
     Map<Class, GeneratorToBEAST> generatorToBEASTMap = new HashMap<>();
 
     private List<Operator> extraOperators = new ArrayList<>();
+    private List<Loggable> extraLoggables = new ArrayList<>();
 
     SortedMap<String, Taxon> allTaxa = new TreeMap<>();
 
@@ -105,6 +107,7 @@ public class BEASTContext {
                 SkylineToBSP.class,
                 SerialCoalescentToBEAST.class,
                 StructuredCoalescentToMascot.class,
+                TreeLengthToBEAST.class,
                 TN93ToBEAST.class,
                 YuleToBEAST.class,
                 ExpMarkovChainToBEAST.class
@@ -337,9 +340,11 @@ public class BEASTContext {
 
     private Logger createLogger(int logEvery, String fileName) {
 
-        List<StateNode> nonTrees = state.stream()
+        List<Loggable> nonTrees = state.stream()
                 .filter(stateNode -> !(stateNode instanceof Tree))
                 .collect(Collectors.toList());
+
+        nonTrees.addAll(extraLoggables);
 
         Logger logger = new Logger();
         logger.setInputValue("logEvery", logEvery);
@@ -646,5 +651,9 @@ public class BEASTContext {
 
     public void putBEASTObject(GraphicalModelNode node, BEASTInterface beastInterface) {
         beastObjects.put(node, beastInterface);
+    }
+
+    public void addExtraLogger(Loggable loggable) {
+        extraLoggables.add(loggable);
     }
 }
