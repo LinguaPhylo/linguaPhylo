@@ -39,7 +39,7 @@
   <target name="compile-l" depends="init">
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/src" destdir="${build}" includeantruntime="false">
       <classpath>
-        <pathelement path="${.}"/>
+        <pathelement path="${classpath}"/>
         <fileset dir="${lphy}/lib" includes="*.jar"/>
       </classpath>
     </javac>
