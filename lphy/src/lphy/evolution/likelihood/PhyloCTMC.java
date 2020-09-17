@@ -4,7 +4,6 @@ import lphy.evolution.sequences.DataType;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
-import lphy.evolution.DataFrame;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -31,7 +30,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> siteRates;
     Value<Double[]> branchRates;
     Value<Integer> L;
-    Value<DataFrame> frame;
     RandomGenerator random;
 
     public final String treeParamName;
@@ -41,7 +39,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public final String siteRatesParamName;
     public final String branchRatesParamName;
     public final String LParamName;
-    public final String frameParamName;
 
     int numStates;
 
@@ -61,8 +58,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L,
-                     @ParameterInfo(name = "frame", description = "data frame, either specify the length or a data frame but not both.", optional = true) Value<DataFrame> frame ) {
+                     @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L ) {
 
         this.tree = tree;
         this.Q = Q;
@@ -71,7 +67,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.siteRates = siteRates;
         this.branchRates = branchRates;
         this.L = L;
-        this.frame = frame;
 
         numStates = Q.value().length;
         this.random = Utils.getRandom();
@@ -84,45 +79,19 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         siteRatesParamName = getParamName(4);
         branchRatesParamName = getParamName(5);
         LParamName = getParamName(6);
-        frameParamName = getParamName(7);
 
         checkCompatibilities();
     }
 
     private int checkCompatibilities() {
-        // check L and alignment compatibility
-        if (L != null && frame != null) {
-            if (L.value() != frame.value().nchar()) {
-                throw new IllegalArgumentException(LParamName + " and " + frameParamName + " do not match!");
-            }
-        }
-
         // check L and siteRates compatibility
         if (L != null && siteRates != null && L.value() != siteRates.value().length) {
             throw new RuntimeException(LParamName + " and " + siteRatesParamName + " have incompatible values!");
         }
 
-        // check alignment and siteRates compatibility
-        if (frame != null && siteRates != null && frame.value().nchar() != siteRates.value().length) {
-            throw new RuntimeException(frameParamName + " and " + siteRatesParamName + " have incompatible values!");
-        }
-
-        if (frame != null) {
-            if (frame.value().ntaxa() != tree.value().ntaxa()) {
-
-                String treeName = tree.isAnonymous() ? "tree" : tree.getId();
-                String frameName = frame.isAnonymous() ? "frame" : frame.getId();
-
-                throw new IllegalArgumentException(treeParamName + " and " + frameParamName +
-                        " have different ntaxa! " + treeName + ".ntaxa=" +tree.value().ntaxa() + ", " + frameName +
-                        ".ntaxa=" + frame.value().ntaxa() );
-            }
-        }
-
         if (L != null) return L.value();
-        if (frame != null) return frame.value().nchar();
         if (siteRates != null) return siteRates.value().length;
-        throw new RuntimeException("One of " + LParamName + ", " + frameParamName + " or " + siteRatesParamName + " must be specified.");
+        throw new RuntimeException("One of " + LParamName + " or " + siteRatesParamName + " must be specified.");
     }
 
     @Override
@@ -135,7 +104,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (siteRates != null) map.put(siteRatesParamName, siteRates);
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
-        if (frame != null) map.put(frameParamName, frame);
         return map;
     }
 
@@ -148,7 +116,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(siteRatesParamName)) siteRates = value;
         else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
-        else if (paramName.equals(frameParamName)) frame = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -198,9 +165,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SequenceType dataType = DataType.guessSequenceType(transProb.length);
         Alignment a;
         if (dataType == null) // if datatype is not available, e.g. binary
-            a = new Alignment(tree.value().n(), length, idMap, transProb.length);
+            a = new Alignment(idMap, length, transProb.length);
         else
-            a = new Alignment(tree.value().n(), length, idMap, dataType);
+            a = new Alignment(idMap, length, dataType);
 
 
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();

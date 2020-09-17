@@ -96,7 +96,7 @@ public class NexusParser {
         System.out.println("Create " + sequenceType + " alignment, ntax = " + ntax + ", nchar = " + nchar);
 
         final lphy.evolution.alignment.Alignment lphyAlg = new
-                lphy.evolution.alignment.Alignment(ntax, nchar, idMap, sequenceType);
+                lphy.evolution.alignment.Alignment(idMap, nchar, sequenceType);
 
         // fill in sequences for single partition
         for (final Taxon taxon : taxa) {

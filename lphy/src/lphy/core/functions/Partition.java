@@ -25,8 +25,8 @@ public class Partition extends DeterministicFunction<Alignment> {
         Value<CharSetAlignment> charSetAlignment = getParams().get(alignmentParamName);
         Value<String> name = getParams().get(nameParamName);
 
-        Alignment alignment = (Alignment) charSetAlignment.value().part(name.value());
+        Alignment alignment = charSetAlignment.value().getPartAlignment(name.value());
 
-        return new Value<Alignment>(null, alignment, this);
+        return new Value<>(name.value(), alignment, this);
     }
 }

@@ -1,8 +1,5 @@
 package lphy.evolution;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.
  */

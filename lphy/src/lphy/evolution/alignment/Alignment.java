@@ -15,13 +15,15 @@ public class Alignment extends AbstractAlignment {
 
     // for simulators, and datatype not available
     @Deprecated
-    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, int numStates) {
-        super(ntaxa, nchar, idMap, numStates);
+    public Alignment(Map<String, Integer> idMap, int nchar, int numStates) {
+        super(idMap, nchar, numStates);
+        int ntaxa = super.ntaxa();
         alignment = new int[ntaxa][nchar];
     }
 
-    public Alignment(int ntaxa, int nchar, Map<String, Integer> idMap, SequenceType sequenceType) {
-        super(ntaxa, nchar, idMap, sequenceType);
+    public Alignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
+        super(idMap, nchar, sequenceType);
+        int ntaxa = super.ntaxa();
         alignment = new int[ntaxa][nchar];
     }
 
@@ -61,6 +63,11 @@ public class Alignment extends AbstractAlignment {
         return L();
     }
 
+    @Override
+    public boolean hasParts() {
+        return false;
+    }
+
     public String toJSON() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
@@ -72,7 +79,7 @@ public class Alignment extends AbstractAlignment {
             builder.append("\n");
         }
         builder.append("  nchar = ").append(nchar);
-        builder.append(", ntax = ").append(ntaxa).append("\n");
+        builder.append(", ntax = ").append(super.ntaxa()).append("\n");
         builder.append("}");
         return builder.toString();
     }

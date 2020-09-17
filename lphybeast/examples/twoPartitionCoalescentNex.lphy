@@ -7,7 +7,7 @@ data {
   taxa = taxa(coding);
 }
 model {
-  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  Θ ~ LogNormal(meanlog=3, sdlog=1);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
   coding ~ PhyloCTMC(tree=ψ, L=L1, Q=f81(freq=π));
