@@ -17,7 +17,7 @@
 # connect it to localhost (password: password) to observe
 # the graphical output of these tests.
 
-FROM openjdk:8
+FROM openjdk:11
 
 # Install Apache Ant
 RUN apt-get update && apt-get install -y ant

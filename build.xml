@@ -24,6 +24,7 @@
 
   <!-- Prepare for compilation -->
   <target name="init">
+    <echo message="Java version: ${java.version}" />
     <mkdir dir="${build}"/>
 <!--    <mkdir dir="${build-lib}"/>-->
     <mkdir dir="${dist}"/>
@@ -39,7 +40,7 @@
   <target name="compile-l" depends="init">
     <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/src" destdir="${build}" includeantruntime="false">
       <classpath>
-        <pathelement path="${classpath}"/>
+        <pathelement path="${lasspath}"/>
         <fileset dir="${lphy}/lib" includes="*.jar"/>
       </classpath>
     </javac>
@@ -128,7 +129,6 @@
   <target name="init-test">
     <mkdir dir="${build-test}"/>
     <mkdir dir="${test-reports}"/>
-    <echo message="Java ${java.version}" />
   </target>
 
 
