@@ -83,6 +83,7 @@ public class BEASTContext {
         final Class[] generatorToBEASTs = {
                 BernoulliMultiToBEAST.class,
                 BetaToBEAST.class,
+                BirthDeathSerialSamplingToBEAST.class,
                 BirthDeathSampleTreeDTToBEAST.class,
                 CoalescentToBEAST.class,
                 DirichletToBEAST.class,

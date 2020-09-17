@@ -317,4 +317,24 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
         else super.setParam(paramName, value);
     }
+
+    public Value<Number> getBirthRate() {
+        return birthRate;
+    }
+
+    public Value<Number> getDeathRate() {
+        return deathRate;
+    }
+
+    public Value<Number> getRho() {
+        return rhoVal;
+    }
+
+    public Value<Number> getPsi() {
+        return psiVal;
+    }
+
+    public Value<Number> getRootAge() {
+        return rootAge;
+    }
 }
