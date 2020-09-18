@@ -20,7 +20,7 @@
 package lphy.nexus;
 
 import lphy.evolution.tree.TimeTree;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -41,12 +41,12 @@ public class NexusWriter {
      * @param pstream Print stream where output is sent
      * @throws Exception
      */
-    public static void write(Alignment alignment, List<TimeTree> trees,
+    public static void write(SimpleAlignment alignment, List<TimeTree> trees,
                              PrintStream pstream) throws Exception {
         
         String[] taxa = null;
         if (alignment != null) {
-            taxa = alignment.getTaxaNames();
+            taxa = alignment.getTaxa();
         } else {
             if (trees != null && !trees.isEmpty()) {
                 taxa = trees.get(0).getTaxaNames();

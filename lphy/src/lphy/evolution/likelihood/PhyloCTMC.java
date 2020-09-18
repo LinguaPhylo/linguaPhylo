@@ -4,7 +4,7 @@ import lphy.evolution.sequences.DataType;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
@@ -21,7 +21,7 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class PhyloCTMC implements GenerativeDistribution<Alignment> {
+public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
     Value<TimeTree> tree;
     Value<Double> clockRate;
@@ -157,17 +157,17 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. " +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
-    public RandomVariable<Alignment> sample() {
+    public RandomVariable<SimpleAlignment> sample() {
         setup();
 
         int length = checkCompatibilities();
 
         SequenceType dataType = DataType.guessSequenceType(transProb.length);
-        Alignment a;
+        SimpleAlignment a;
         if (dataType == null) // if datatype is not available, e.g. binary
-            a = new Alignment(idMap, length, transProb.length);
+            a = new SimpleAlignment(idMap, length, transProb.length);
         else
-            a = new Alignment(idMap, length, dataType);
+            a = new SimpleAlignment(idMap, length, dataType);
 
 
         double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
@@ -237,10 +237,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    private void traverseTree(TimeTreeNode node, int nodeState, Alignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
-
+    private void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
+        // TODO validate state here ?
         if (node.isLeaf()) {
-            alignment.setState(node.getLeafIndex(), pos, nodeState, false); // no ambiguous state
+            alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
         } else {
             List<TimeTreeNode> children = node.getChildren();
             for (int i = 0; i < children.size(); i++) {

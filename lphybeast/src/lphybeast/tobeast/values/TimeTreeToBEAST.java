@@ -4,7 +4,7 @@ import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
 import beast.util.TreeParser;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
@@ -17,7 +17,7 @@ import java.util.List;
 public class TimeTreeToBEAST implements ValueToBEAST<TimeTree, TreeParser> {
 
     /**
-     * Call this to use simulated alignment {@link Alignment}.
+     * Call this to use simulated alignment {@link SimpleAlignment}.
      */
     public TimeTreeToBEAST() { }
 

@@ -10,11 +10,11 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class ErrorModel implements GenerativeDistribution<Alignment> {
+public class ErrorModel implements GenerativeDistribution<SimpleAlignment> {
 
     Value<Double> alpha;
     Value<Double> beta;
-    Value<Alignment> alignment;
+    Value<SimpleAlignment> alignment;
 
     String alphaParamName;
     String betaParamName;
@@ -24,7 +24,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
 
     public ErrorModel(@ParameterInfo(name = "alpha", description = "the false positive probability.") Value<Double> alpha,
                       @ParameterInfo(name = "beta", description = "the false negative probability.") Value<Double> beta,
-                      @ParameterInfo(name = "alignment", description = "the alignment without errors.") Value<Alignment> alignment) {
+                      @ParameterInfo(name = "alignment", description = "the alignment without errors.") Value<SimpleAlignment> alignment) {
 
         this.alpha = alpha;
         this.beta = beta;
@@ -57,17 +57,17 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public RandomVariable<Alignment> sample() {
+    public RandomVariable<SimpleAlignment> sample() {
 
-        Alignment original = alignment.value();
-        Alignment newAlignment = new ErrorAlignment(original.n(), original.L(), original.idMap, original);
+        SimpleAlignment original = alignment.value();
+        SimpleAlignment newAlignment = new ErrorAlignment(original.ntaxa(), original.nchar(), original.idMap, original);
 
         double a = alpha.value();
         double b = beta.value();
 
-        for (int i = 0; i < newAlignment.n(); i++) {
-            for (int j = 0; j < newAlignment.L(); j++) {
-                newAlignment.setState(i, j, error(original.getState(i, j), a, b), false);
+        for (int i = 0; i < newAlignment.ntaxa(); i++) {
+            for (int j = 0; j < newAlignment.nchar(); j++) {
+                newAlignment.setState(i, j, error(original.getState(i, j), a, b));
             }
         }
 

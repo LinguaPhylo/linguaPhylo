@@ -1,13 +1,13 @@
 package lphy.core.functions;
 
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
-public class Partition extends DeterministicFunction<Alignment> {
+public class Partition extends DeterministicFunction<SimpleAlignment> {
 
     String alignmentParamName;
     String nameParamName;
@@ -21,11 +21,11 @@ public class Partition extends DeterministicFunction<Alignment> {
     }
 
     @GeneratorInfo(name = "partition", description = "Extracts the partition alignment from a multi-partition alignment.")
-    public Value<Alignment> apply() {
+    public Value<SimpleAlignment> apply() {
         Value<CharSetAlignment> charSetAlignment = getParams().get(alignmentParamName);
         Value<String> name = getParams().get(nameParamName);
 
-        Alignment alignment = charSetAlignment.value().getPartAlignment(name.value());
+        SimpleAlignment alignment = charSetAlignment.value().getPartAlignment(name.value());
 
         return new Value<>(name.value(), alignment, this);
     }

@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.util.*;
 
 /**
- * Multiple partitions of {@link Alignment}.
+ * Multiple partitions of {@link SimpleAlignment}.
  * The sequences are stored in {@link lphy.evolution.alignment.CharSetAlignment#partsMap},
  * but here has no <code>int[][] alignment</code>.
  *
@@ -16,54 +16,55 @@ import java.util.*;
 public class CharSetAlignment extends AbstractAlignment {
 
     //    Map<String, List<CharSetBlock>> charsetMap;
-    protected Map<String, Alignment> partsMap = null;
+    protected Map<String, SimpleAlignment> partsMap = null;
 
     /**
      * Multiple partitions. The sequences <code>int[][]</code> will be stored in each of parts,
      * <code>Map<String, Alignment> partsMap</code>. Here has no <code>int[][] alignment</code>.
      *
      * @param charsetMap      key is part (charset) name, value is the list of {@link CharSetBlock}.
-     * @param partNames       if null, use all charsets,
+     * @param partNames       if null, import all charsets,
      *                        if not null, then only choose the subset of names from <code>charsetMap</code>.
      * @param parentAlignment parent alignment before partitioning.
      */
     public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, String[] partNames,
-                            final Alignment parentAlignment) {
+                            final SimpleAlignment parentAlignment) {
         // init this alignment from parent
         super(parentAlignment);
         createPartAlignments(charsetMap, partNames, parentAlignment);
     }
 
-    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final Alignment parentAlignment) {
-        // init this alignment from parent
-        super(parentAlignment);
-        // import all charsets
-        createPartAlignments(charsetMap, null, parentAlignment);
+    /**
+     * Import all charsets in <code>charsetMap</code>.
+     * @see #CharSetAlignment(Map, String[], SimpleAlignment)
+     */
+    public CharSetAlignment(final Map<String, List<CharSetBlock>> charsetMap, final SimpleAlignment parentAlignment) {
+        this(charsetMap, null, parentAlignment);
     }
 
     public String[] getPartNames() {
         return Objects.requireNonNull(partsMap).keySet().toArray(String[]::new);
     }
 
-    public Alignment getPartAlignment(String partName) {
-        Alignment a = partsMap.get(partName);
+    public SimpleAlignment getPartAlignment(String partName) {
+        SimpleAlignment a = partsMap.get(partName);
         if (a == null)
             throw new IllegalArgumentException("Charset name " + partName + " not exist in CharSetAlignment !");
         return a;
     }
 
-    public Alignment[] getPartAlignments(String[] partNames) {
-        List<Alignment> alignments = new ArrayList<>();
+    public SimpleAlignment[] getPartAlignments(String[] partNames) {
+        List<SimpleAlignment> alignments = new ArrayList<>();
         for (String name : partNames) {
             alignments.add(getPartAlignment(name));
         }
-        return alignments.toArray(Alignment[]::new);
+        return alignments.toArray(SimpleAlignment[]::new);
     }
 
     // if partNames is null, pull names from charsetMap.
     // init Alignment, and fill in sequences
     protected void createPartAlignments(final Map<String, List<CharSetBlock>> charsetMap,
-                                        String[] partNames, final Alignment parentAlignment) {
+                                        String[] partNames, final SimpleAlignment parentAlignment) {
         assert charsetMap != null;
 //        this.charsetMap = charsetMap;
 
@@ -89,7 +90,7 @@ public class CharSetAlignment extends AbstractAlignment {
 
             int partNChar = getFilteredNChar(charSetBlocks, this.nchar);
             tot += partNChar;
-            Alignment part = new Alignment(this.idMap, partNChar, this.sequenceType);
+            SimpleAlignment part = new SimpleAlignment(this.idMap, partNChar, this.sequenceType);
             // fill in sequences
             fillSeqsInParts(charSetBlocks, part, parentAlignment);
 
@@ -118,8 +119,8 @@ public class CharSetAlignment extends AbstractAlignment {
         return s;
     }
 
-    private void fillSeqsInParts(List<CharSetBlock> charSetBlocks, Alignment part,
-                                 final Alignment parentAlignment) {
+    private void fillSeqsInParts(List<CharSetBlock> charSetBlocks, SimpleAlignment part,
+                                 final SimpleAlignment parentAlignment) {
         // this CharSetAlignment has the same taxa mapping of all parts Alignment
         for (int t = 0; t < this.ntaxa(); t++) {
             int pos = 0;
@@ -131,7 +132,7 @@ public class CharSetAlignment extends AbstractAlignment {
                 for (int i = block.getFrom(); i <= toSite; i += block.getEvery()) {
                     // the -1 comes from the fact that charsets are indexed from 1 whereas strings are indexed from 0
                     int state = parentAlignment.getState(t, (i - 1));
-                    part.setState(t, pos, state, true);
+                    part.setState(t, pos, state);
                     pos++;
                 }
             }
@@ -150,7 +151,7 @@ public class CharSetAlignment extends AbstractAlignment {
     public String toJSON(String[] partNames) {
         StringBuilder builder = new StringBuilder();
         for (String name : partNames) {
-            Alignment part = getPartAlignment(name);
+            SimpleAlignment part = getPartAlignment(name);
             if (part == null) throw new IllegalArgumentException("Charset name " + name + " not exist in CharSetAlignment !");
             builder.append(name).append(" : ");
             builder.append(part.toJSON());
@@ -163,9 +164,9 @@ public class CharSetAlignment extends AbstractAlignment {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         int i = partsMap.size();
-        for (Map.Entry<String, Alignment> entry : partsMap.entrySet()) {
+        for (Map.Entry<String, SimpleAlignment> entry : partsMap.entrySet()) {
             builder.append(entry.getKey()).append(" : ");
-            Alignment part = entry.getValue();
+            SimpleAlignment part = entry.getValue();
             builder.append(part.toString());
             if (i > 1) builder.append(", ");
             i--;
@@ -187,18 +188,8 @@ public class CharSetAlignment extends AbstractAlignment {
     }
 
     @Override
-    public void setState(int taxon, int position, int state, boolean ambiguous) {
+    public void setState(int taxon, int position, int state) {
         throw new UnsupportedOperationException("in dev");
-    }
-
-    @Override
-    public int n() {
-        return partsMap.values().toArray(Alignment[]::new)[0].n();
-    }
-
-    @Override
-    public int L() {
-        return partsMap.values().stream().mapToInt(Alignment::L).sum();
     }
 
     @Override

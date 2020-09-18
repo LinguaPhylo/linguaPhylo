@@ -1,8 +1,8 @@
 package lphy.core.functions;
 
-import lphy.evolution.alignment.AbstractAlignment;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -54,13 +54,13 @@ public class Nexus extends DeterministicFunction<Alignment> {
             a = charSetAlignment.getPartAlignment(charset.value());
         } else {
             // must be Alignment
-            a = (Alignment) parseNexus(fileName, true);
+            a = (SimpleAlignment) parseNexus(fileName, true);
         }
         return new Value<>(a, this);
     }
 
     // if value is null, ignoring charset return single partition
-    private AbstractAlignment parseNexus(Value<String> fileName, boolean ignoreCharset) {
+    private Alignment parseNexus(Value<String> fileName, boolean ignoreCharset) {
         final Path nexFile = Paths.get(fileName.value());
         NexusParser parser = new NexusParser(nexFile);
 

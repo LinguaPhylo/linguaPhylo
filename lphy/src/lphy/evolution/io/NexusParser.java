@@ -9,6 +9,7 @@ import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
 import jebl.evolution.taxa.Taxon;
 import lphy.evolution.alignment.CharSetAlignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 
 import java.io.BufferedReader;
@@ -67,12 +68,12 @@ public class NexusParser {
 
 
     /**
-     * Parse Nexus to LPHY {@link lphy.evolution.alignment.Alignment}
+     * Parse Nexus to LPHY {@link SimpleAlignment}
      *
      * @param ignoreCharset If true, ignore charset in Nexus,
-     *                      only return single {@link lphy.evolution.alignment.Alignment}.
+     *                      only return single {@link SimpleAlignment}.
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
-     * @return LPHY {@link lphy.evolution.alignment.Alignment} or {@link CharSetAlignment}.
+     * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
     public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset) {
 
@@ -100,8 +101,8 @@ public class NexusParser {
         SequenceType sequenceType = jeblAlg.getSequenceType();
         System.out.println("Create " + sequenceType + " alignment, ntax = " + ntax + ", nchar = " + nchar);
 
-        final lphy.evolution.alignment.Alignment lphyAlg = new
-                lphy.evolution.alignment.Alignment(idMap, nchar, sequenceType);
+        final SimpleAlignment lphyAlg = new
+                SimpleAlignment(idMap, nchar, sequenceType);
 
         // fill in sequences for single partition
         for (final Taxon taxon : taxa) {
@@ -109,7 +110,7 @@ public class NexusParser {
             for (int i = 0; i < sequence.getLength(); i++) {
                 State state = sequence.getState(i);
                 int stateNum = state.getIndex();
-                lphyAlg.setState(taxon.getName(), i, stateNum, true);
+                lphyAlg.setState(taxon.getName(), i, stateNum);
             }
 
         }
@@ -136,8 +137,8 @@ public class NexusParser {
 //                alignmentList.forEach(System.out::println);
 
             if (fileName.equals("Dengue4.nex")) {
-                lphy.evolution.alignment.Alignment lphyAlg =
-                        (lphy.evolution.alignment.Alignment) parser.getLPhyAlignment(true);
+                SimpleAlignment lphyAlg =
+                        (SimpleAlignment) parser.getLPhyAlignment(true);
 
                 System.out.println(parser.importer.getDateMap());
                 System.out.println(parser.importer.getAgeMap("forward"));

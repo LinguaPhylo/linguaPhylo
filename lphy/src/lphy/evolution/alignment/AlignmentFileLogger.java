@@ -28,7 +28,7 @@ public class AlignmentFileLogger implements RandomValueLogger {
 
     public void log(int rep, List<Value<?>> values) {
 
-        for (Value<Alignment> v : getAlignmentValues(values)) {
+        for (Value<SimpleAlignment> v : getAlignmentValues(values)) {
             try {
                 logAlignment(v, rep);
             } catch (IOException e) {
@@ -54,17 +54,17 @@ public class AlignmentFileLogger implements RandomValueLogger {
         }
     }
 
-    private List<Value<Alignment>> getAlignmentValues(List<Value<?>> values) {
-        List<Value<Alignment>> alignments = new ArrayList<>();
+    private List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> values) {
+        List<Value<SimpleAlignment>> alignments = new ArrayList<>();
         for (Value v : values) {
-            if (v.value() instanceof Alignment) {
-                alignments.add((Value<Alignment>)v);
+            if (v.value() instanceof SimpleAlignment) {
+                alignments.add((Value<SimpleAlignment>)v);
             }
         }
         return alignments;
     }
 
-    private void logAlignment(Value<Alignment> alignment, int rep) throws IOException {
+    private void logAlignment(Value<SimpleAlignment> alignment, int rep) throws IOException {
         String fileName = name + "_" + alignment.getId() + "_" + rep + ".nexus";
         PrintStream stream = new PrintStream(fileName);
 

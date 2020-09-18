@@ -2,7 +2,7 @@ package lphybeast.tobeast.values;
 
 import beast.evolution.alignment.Sequence;
 import jebl.evolution.sequences.SequenceType;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.Value;
 import lphybeast.BEASTContext;
 import lphybeast.ValueToBEAST;
@@ -11,19 +11,19 @@ import lphybeast.tobeast.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution.alignment.Alignment> {
+public class AlignmentToBEAST implements ValueToBEAST<SimpleAlignment, beast.evolution.alignment.Alignment> {
 
     /**
-     * Call this to use simulated alignment {@link Alignment}.
+     * Call this to use simulated alignment {@link SimpleAlignment}.
      */
     public AlignmentToBEAST() { }
 
     @Override
-    public beast.evolution.alignment.Alignment valueToBEAST(Value<Alignment> alignmentValue, BEASTContext context) {
+    public beast.evolution.alignment.Alignment valueToBEAST(Value<SimpleAlignment> alignmentValue, BEASTContext context) {
 
-        Alignment alignment = alignmentValue.value();
+        SimpleAlignment alignment = alignmentValue.value();
         SequenceType sequenceType = alignment.getSequenceType();
-        String[] taxaNames = alignment.getTaxaNames();
+        String[] taxaNames = alignment.getTaxa();
         beast.evolution.alignment.Alignment beastAlignment;
 
         List<Sequence> sequences = new ArrayList<>();
@@ -56,7 +56,7 @@ public class AlignmentToBEAST implements ValueToBEAST<Alignment, beast.evolution
 
     @Override
     public Class getValueClass() {
-        return Alignment.class;
+        return SimpleAlignment.class;
     }
 
     @Override

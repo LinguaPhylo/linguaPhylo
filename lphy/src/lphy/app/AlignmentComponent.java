@@ -62,9 +62,9 @@ public class AlignmentComponent extends JComponent {
 
         int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 
-        int maximumWidth = Math.min(desktopWidth,MAX_FONT_SIZE*alignment.L());
-        int maximumHeight = MAX_FONT_SIZE*alignment.n();
-        int minimumHeight = MIN_FONT_SIZE*alignment.n();
+        int maximumWidth = Math.min(desktopWidth,MAX_FONT_SIZE*alignment.nchar());
+        int maximumHeight = MAX_FONT_SIZE*alignment.ntaxa();
+        int minimumHeight = MIN_FONT_SIZE*alignment.ntaxa();
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(100, minimumHeight));
@@ -91,7 +91,7 @@ public class AlignmentComponent extends JComponent {
 
         int xdelta = 0;
 
-        double h = height / (double) alignment.n();
+        double h = height / (double) alignment.ntaxa();
 
         Font f = g.getFont();
         if (h<9) {
@@ -123,20 +123,20 @@ public class AlignmentComponent extends JComponent {
         }
 
         int maxWidth = 0;
-        int[] sWidth = new int[alignment.n()];
+        int[] sWidth = new int[alignment.ntaxa()];
 
-        for (int i = 0; i < alignment.n(); i++) {
+        for (int i = 0; i < alignment.ntaxa(); i++) {
 
             sWidth[i] = g.getFontMetrics().stringWidth(alignment.getId(i));
             if (sWidth[i] > maxWidth) maxWidth = sWidth[i];
         }
 
-        double w = (width - maxWidth - spacer) / (double) alignment.L();
+        double w = (width - maxWidth - spacer) / (double) alignment.nchar();
 
         int ascent = g.getFontMetrics().getAscent();
         double ydelta = (h - ascent) / 2.0 + ascent;
 
-        for (int i = 0; i < alignment.n(); i++) {
+        for (int i = 0; i < alignment.ntaxa(); i++) {
             double y = i * h;
 
             if (!isShowingTree()) {
@@ -144,7 +144,7 @@ public class AlignmentComponent extends JComponent {
                 g.drawString(alignment.getId(i),maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
             }
 
-            for (int j = 0; j < alignment.L(); j++) {
+            for (int j = 0; j < alignment.nchar(); j++) {
 
                 int state = alignment.getState(i, j);
                 //TODO col index not hard code

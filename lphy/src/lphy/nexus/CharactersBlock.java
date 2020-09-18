@@ -17,7 +17,7 @@
 
 package lphy.nexus;
 
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ import java.util.logging.Logger;
  */
 public class CharactersBlock extends NexusBlock {
 
-    private final Alignment alignment;
+    private final SimpleAlignment alignment;
 
-    public CharactersBlock(Alignment alignment) {
+    public CharactersBlock(SimpleAlignment alignment) {
         this.alignment = alignment;
     }
     
@@ -47,7 +47,7 @@ public class CharactersBlock extends NexusBlock {
     public List<String> getBlockLines() {
         List<String> lines = new ArrayList<>();
         
-        lines.add("dimensions nchar=" + alignment.getSiteCount());
+        lines.add("dimensions nchar=" + alignment.nchar());
         
         // Assumes BEAST sequence data types map directly
         // onto nexus data types.  No doubt a bad idea in general...
@@ -56,7 +56,7 @@ public class CharactersBlock extends NexusBlock {
         StringBuilder matrix = new StringBuilder("matrix ");
         for (int i=0; i<alignment.ntaxa(); i++) {
             try {
-                String taxonName = alignment.getTaxaNames()[i];
+                String taxonName = alignment.getTaxa()[i];
                 String sequence = alignment.getSequence(i);
                 matrix.append("\n\t\t").append(taxonName).append(" ").append(sequence);
             } catch (Exception ex) {

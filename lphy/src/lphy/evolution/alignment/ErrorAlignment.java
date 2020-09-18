@@ -5,11 +5,11 @@ import java.util.Map;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class ErrorAlignment extends Alignment {
+public class ErrorAlignment extends SimpleAlignment {
 
-    Alignment parent;
+    SimpleAlignment parent;
 
-    public ErrorAlignment(int taxa, int length, Map<String, Integer> idMap, Alignment parent) {
+    public ErrorAlignment(int taxa, int length, Map<String, Integer> idMap, SimpleAlignment parent) {
         super(idMap, length, parent.getSequenceType());
 
         this.parent = parent;

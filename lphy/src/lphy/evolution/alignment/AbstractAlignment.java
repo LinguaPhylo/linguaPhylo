@@ -4,8 +4,6 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
-import lphy.evolution.NChar;
-import lphy.evolution.Taxa;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
 
@@ -19,7 +17,7 @@ import java.util.TreeMap;
  * Everything related to Taxa, Data type
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Alignment, HasComponentView<AbstractAlignment> {
 
     // may not have sequences
     protected int nchar;
@@ -66,19 +64,11 @@ public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView
         this.sequenceType = source.getSequenceType();
     }
 
-    //****** Sequences ******
-
-    public abstract int n();
-    public abstract int L();
-
-    public abstract int getState(int taxon, int position);
-    public abstract void setState(int taxon, int position, int state, boolean ambiguous);
-
-    public void setState(String taxon, int position, int state, boolean ambiguous) {
-        setState(idMap.get(taxon), position, state, ambiguous);
-    }
 
     public abstract String toJSON();
+
+    public abstract boolean hasParts();
+
 
     //****** Sites ******
     @Override
@@ -93,7 +83,7 @@ public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView
         return idMap.size();
     }
 
-    protected void fillRevMap() {
+    public void fillRevMap() {
         reverseMap = new TreeMap<>();
         for (String key : idMap.keySet()) {
             reverseMap.put(idMap.get(key), key);
@@ -104,14 +94,7 @@ public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView
         return reverseMap.get(taxonIndex);
     }
 
-    public String[] getTaxaNames() {
-        String[] taxaNames = new String[ntaxa()];
-        for (int i = 0; i < taxaNames.length; i++) {
-            taxaNames[i] = reverseMap.get(i);
-        }
-        return taxaNames;
-    }
-
+    @Override
     public String[] getTaxa() {
         String[] taxa = new String[ntaxa()];
         for (int i = 0; i < ntaxa(); i++) {
@@ -126,6 +109,7 @@ public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView
 
     //****** Data type ******
 
+    @Override
     public SequenceType getSequenceType() {
         return sequenceType;
     }
@@ -170,6 +154,4 @@ public abstract class AbstractAlignment implements Taxa, NChar, HasComponentView
             return 20; // the last extra is always for ambiguous
         return state;
     }
-
-    public abstract boolean hasParts();
 }
