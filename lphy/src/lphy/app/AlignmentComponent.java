@@ -127,7 +127,7 @@ public class AlignmentComponent extends JComponent {
 
         for (int i = 0; i < alignment.ntaxa(); i++) {
 
-            sWidth[i] = g.getFontMetrics().stringWidth(alignment.getId(i));
+            sWidth[i] = g.getFontMetrics().stringWidth(alignment.getTaxonName(i));
             if (sWidth[i] > maxWidth) maxWidth = sWidth[i];
         }
 
@@ -141,7 +141,7 @@ public class AlignmentComponent extends JComponent {
 
             if (!isShowingTree()) {
                 g.setColor(Color.black);
-                g.drawString(alignment.getId(i),maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
+                g.drawString(alignment.getTaxonName(i),maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
             }
 
             for (int j = 0; j < alignment.nchar(); j++) {

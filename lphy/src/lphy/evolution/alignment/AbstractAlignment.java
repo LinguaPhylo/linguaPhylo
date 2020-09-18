@@ -4,20 +4,23 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
+import lphy.evolution.TaxaAges;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
 /**
  * Everything related to Taxa, Data type
+ * @author Alexei Drummond
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Alignment, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Alignment, TaxaAges, HasComponentView<AbstractAlignment> {
 
     // may not have sequences
     protected int nchar;
@@ -27,6 +30,8 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     @Deprecated int numStates;
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
+
+    Map<String, Double> ageMap;
 
     /**
      * Init alignment with taxa and number of site.
@@ -62,6 +67,15 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         fillRevMap();
 
         this.sequenceType = source.getSequenceType();
+        if (source.ageMap != null)
+            this.ageMap = new LinkedHashMap<>(source.ageMap);
+    }
+
+    protected void fillRevMap() {
+        reverseMap = new TreeMap<>();
+        for (String key : idMap.keySet()) {
+            reverseMap.put(idMap.get(key), key);
+        }
     }
 
 
@@ -83,14 +97,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         return idMap.size();
     }
 
-    public void fillRevMap() {
-        reverseMap = new TreeMap<>();
-        for (String key : idMap.keySet()) {
-            reverseMap.put(idMap.get(key), key);
-        }
-    }
-
-    public String getId(int taxonIndex) {
+    /**
+     * This shares the same index with ages[]
+     * @param taxonIndex  the index of a taxon
+     * @return     the name of this taxon
+     */
+    public String getTaxonName(int taxonIndex) {
         return reverseMap.get(taxonIndex);
     }
 
@@ -98,9 +110,17 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     public String[] getTaxa() {
         String[] taxa = new String[ntaxa()];
         for (int i = 0; i < ntaxa(); i++) {
-            taxa[i] = reverseMap.get(i);
+            taxa[i] = getTaxonName(i);
         }
         return taxa;
+    }
+
+    /**
+     * @param taxon  Case sensitive
+     * @return   whether this alignment has the given taxon name
+     */
+    public boolean hasTaxon(String taxon) {
+        return idMap.containsKey(taxon);
     }
 
     public String toString() {
@@ -153,5 +173,37 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
             //TODO why jebl make AMINO_ACID 22 ?
             return 20; // the last extra is always for ambiguous
         return state;
+    }
+
+    //****** ages ******
+
+    public void setAgeMap(final Map<String, Double> ageMap) {
+        for (String taxon : Objects.requireNonNull(ageMap).keySet()) {
+            if (!hasTaxon(taxon))
+                throw new IllegalArgumentException("Taxon " + taxon + " not exist in the alignment !");
+        }
+        this.ageMap = ageMap;
+    }
+
+    /**
+     * This shares the same index with {@link #getTaxa()}
+     */
+    @Override
+    public Double[] getAges() {
+        if (ageMap == null) throw new IllegalArgumentException("No age information !");
+        Double[] ages = new Double[ntaxa()];
+
+        for (int i = 0; i < ntaxa(); i++) {
+            Double age = ageMap.get(getTaxonName(i));
+            if (age == null)
+                throw new IllegalArgumentException("Invalid age for taxon " + getTaxonName(i) + " at index " + i);
+            ages[i] = age;
+        }
+        return ages;
+    }
+
+    @Override
+    public int getDimension() {
+        return ntaxa();
     }
 }

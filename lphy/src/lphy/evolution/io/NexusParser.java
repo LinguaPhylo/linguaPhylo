@@ -114,6 +114,14 @@ public class NexusParser {
             }
 
         }
+
+        // add ages
+        final String ageMode = "forward";
+        final Map<String, Double> ageMap = importer.getAgeMap(ageMode);
+        if (ageMap != null) {
+            lphyAlg.setAgeMap(ageMap);
+        }
+
         final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
 
         if (!ignoreCharset && charsetMap.size() > 0) { // charset is optional
@@ -140,8 +148,7 @@ public class NexusParser {
                 SimpleAlignment lphyAlg =
                         (SimpleAlignment) parser.getLPhyAlignment(true);
 
-                System.out.println(parser.importer.getDateMap());
-                System.out.println(parser.importer.getAgeMap("forward"));
+                System.out.println(lphyAlg.toJSON());
 
             } else if (fileName.equals("primate.nex")) {
                 lphy.evolution.alignment.CharSetAlignment lphyAlg =

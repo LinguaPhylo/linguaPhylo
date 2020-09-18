@@ -1,7 +1,6 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.evolution.TaxaAges;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.Map;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class SimpleAlignment extends AbstractAlignment implements TaxaAges {
+public class SimpleAlignment extends AbstractAlignment {
 
     int[][] alignment;
 
@@ -60,7 +59,7 @@ public class SimpleAlignment extends AbstractAlignment implements TaxaAges {
     public String toJSON() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
-        for (int i = 0; i < nchar(); i++) {
+        for (int i = 0; i < ntaxa(); i++) {
             builder.append("  ").append(reverseMap.get(i));
             builder.append(" = ").append(Arrays.toString(alignment[i]));
 //            if (i < n()-1)
@@ -68,8 +67,10 @@ public class SimpleAlignment extends AbstractAlignment implements TaxaAges {
             builder.append("\n");
         }
         builder.append("  nchar = ").append(nchar);
-        builder.append(", ntax = ").append(super.ntaxa()).append("\n");
-        builder.append("}");
+        builder.append(", ntax = ").append(super.ntaxa());
+        if (ageMap != null)
+            builder.append(",\n").append("  ageMap = ").append(ageMap.toString());
+        builder.append("\n").append("}");
         return builder.toString();
     }
 
@@ -90,13 +91,4 @@ public class SimpleAlignment extends AbstractAlignment implements TaxaAges {
         return (char)('0' + state);
     }
 
-    @Override
-    public Double[] getAges() {
-        return new Double[0];
-    }
-
-    @Override
-    public int getDimension() {
-        return 0;
-    }
 }

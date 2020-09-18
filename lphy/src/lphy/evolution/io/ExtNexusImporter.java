@@ -275,6 +275,8 @@ public class ExtNexusImporter extends NexusImporter {
      * @throws DateTimeParseException
      */
     public Map<String, Double> getAgeMap(final String mode) {
+        if (dateMap==null || dateMap.size() < 1) return null;
+
         // parse String to Double
         double[] vals = new double[dateMap.size()]; // LinkedHashMap;
         List<String> keys = new ArrayList<>(dateMap.keySet());
