@@ -191,6 +191,98 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         }
     }
 
+    public String toTikz() {
+       return toTikz(10.0/getWidth(), properLayeredGraph.getLayerCount()*1.5/getHeight());
+    }
+
+    private String toTikz(double xScale, double yScale) {
+
+        StringBuilder nodes = new StringBuilder();
+        StringBuilder factors = new StringBuilder();
+
+        for (LayeredNode properNode : properLayeredGraph.getNodes()) {
+
+            double x1 = properNode.getX();
+            double y1 = properNode.getY();
+
+            if (!properNode.isDummy()) {
+
+                y1 += VAR_HEIGHT / 2;
+
+                NodeWrapper nodeWrapper = (NodeWrapper) properNode;
+                LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
+
+                if (node.value() instanceof Value) {
+
+                    nodes.append(valueToTikz(node, (Value)node.value(), xScale, yScale)).append("\n");
+
+                } else if (node.value() instanceof Generator) {
+                    factors.append(generatorToTikz(node, (Generator)node.value())).append("\n");
+
+                }
+            }
+        }
+
+        String preamble = "\\documentclass[border=3mm]{standalone} % For LaTeX2e\n" +
+                "\\usepackage{tikz}\n" +
+                "\\usepackage{bm}\n" +
+                "\\usetikzlibrary{bayesnet}\n" +
+                "\n" +
+                "\\begin{document}\n" +
+                "\n" +
+                "\\begin{tikzpicture}[\n" +
+                "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
+                "vstyle/.style={draw=green,fill=green!20},\n" +
+                "detstyle/.style={draw=red!50,fill=red!20}\n" +
+                "]\n";
+
+        String postamble = "\\end{tikzpicture}\n" +
+                " \\end{document}";
+
+        return preamble + nodes.toString() + factors.toString() + postamble;
+    }
+
+    private String valueToTikz(LayeredGNode gNode, Value value, double xScale, double yScale) {
+
+        String type = "const";
+        String style = null;
+        if (value instanceof RandomVariable) {
+            type = "latent";
+            style = "vstyle";
+        } else if (value.getGenerator() != null) {
+            type = "det";
+            style = "detstyle";
+        }
+
+        String label = (value.isAnonymous() ? value.toString() : value.getId());
+        label = gNode.name;
+
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.x*xScale + ", -" + gNode.y*yScale + ") (" + value.getUniqueId() + ") {" + label + "};";
+    }
+
+    private String generatorToTikz(LayeredGNode gNode, Generator generator) {
+
+        Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
+
+        String factorName = generator.getName() + value.getUniqueId();
+
+        String predecessors = "";
+
+        List<LayeredNode> pred = gNode.getPredecessors();
+
+        if (pred.size() > 0) {
+            predecessors = ((Value)((LayeredGNode)pred.get(0)).value()).getUniqueId();
+        }
+        for (int i = 1; i < pred.size(); i++) {
+            predecessors += ", " + ((Value)((LayeredGNode)pred.get(i)).value()).getUniqueId();
+        }
+
+        String factorString =  "\\factor[above=of " + value.getUniqueId() + "] {" + factorName + "} {left:" + generator.getName() + "} {} {} ; %\n";
+        String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + value.getUniqueId() + "}; %";
+
+        return factorString + factorEdgeString;
+    }
+
     private LayeredGNode getUnwrappedNonDummySuccessor(LayeredNode successor) {
         if (successor.isDummy()) return getUnwrappedNonDummySuccessor(successor.getSuccessors().get(0));
         return (LayeredGNode) ((NodeWrapper) successor).wrappedNode();

@@ -101,8 +101,9 @@ unlike for the BirthDeath generative distribution above.
 A birth-death-serial-sampling (Stadler and Yang, 2013) process adds a fourth parameter (psi), the rate of sampling each lineage per unit time. 
 Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled). 
 
-```
-ψ ~ BirthDeathSerialSampling(lambda=1.0, mu=0.5, rho=0.1, psi=1.0, rootAge=5.0, ages=[0.0,1.0,2.0,3.0,4.0]);
+```             
+ages = [0.0,1.0,2.0,3.0,4.0];
+ψ ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, psi=1, rootAge=5, ages=ages);
 ```
 
 In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
