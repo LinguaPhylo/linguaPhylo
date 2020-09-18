@@ -16,6 +16,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 
 public class LinguaPhyloStudio {
@@ -92,6 +93,11 @@ public class LinguaPhyloStudio {
         fileMenu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser)));
 
+        JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
+        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
+        fileMenu.add(exportTikzMenuItem);
+        exportTikzMenuItem.addActionListener(e -> saveToFile(panel.component.toTikz()));
+
         //Build the example menu.
         JMenu exampleMenu = new JMenu("Examples");
         exampleMenu.setMnemonic(KeyEvent.VK_X);
@@ -101,7 +107,7 @@ public class LinguaPhyloStudio {
         File file = new File("examples");
         File[] files = file.listFiles();
         if (files != null) {
-            Arrays.sort(files, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+            Arrays.sort(files, Comparator.comparing(File::getName));
             for (int i = 0; i < files.length; i++) {
                 String name = files[i].getName();
                 if (files[i].getName().endsWith(".lphy")) {
