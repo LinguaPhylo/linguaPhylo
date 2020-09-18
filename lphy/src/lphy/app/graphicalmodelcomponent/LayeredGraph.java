@@ -43,6 +43,9 @@ public class LayeredGraph {
         return layers.size();
     }
 
+    /**
+     * @return the maximum x index across all the layers.
+     */
     public int getMaxIndex() {
         int maxIndex = 0;
         for (LayeredNode v : getNodes()) {

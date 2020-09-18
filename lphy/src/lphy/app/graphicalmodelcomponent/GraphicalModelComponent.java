@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import static lphy.app.graphicalmodelcomponent.LayeredGNode.*;
+import static lphy.graphicalModel.ValueUtils.isNumber;
 
 /**
  * Created by adru001 on 18/12/19.
@@ -192,7 +193,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     public String toTikz() {
-       return toTikz(10.0/getWidth(), properLayeredGraph.getLayerCount()*1.5/getHeight());
+
+        double xIndexScale = 3.0;
+        double yIndexScale = 2.0;
+
+        return toTikz((properLayeredGraph.getMaxIndex()+1)*xIndexScale/getWidth(), properLayeredGraph.getLayerCount()*yIndexScale/getHeight());
     }
 
     private String toTikz(double xScale, double yScale) {
@@ -257,7 +262,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         String label = (value.isAnonymous() ? value.toString() : value.getId());
         label = gNode.name;
 
+        if (value.isAnonymous() && isNumber(value)) {
+            label = unbracket(gNode.name) + " = " + value.value().toString();
+        }
+
         return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.x*xScale + ", -" + gNode.y*yScale + ") (" + value.getUniqueId() + ") {" + label + "};";
+    }
+
+    private String unbracket(String str) {
+        if (str.startsWith("[") && str.endsWith("]")) return str.substring(1, str.indexOf(']'));
+        return str;
     }
 
     private String generatorToTikz(LayeredGNode gNode, Generator generator) {

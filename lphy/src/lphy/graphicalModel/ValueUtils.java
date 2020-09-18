@@ -19,6 +19,11 @@ public class ValueUtils {
         return Number.class.isAssignableFrom(valueClass) || (valueClass.isArray() && Number.class.isAssignableFrom(valueClass.getComponentType()));
     }
 
+    public static boolean isNumber(Value value) {
+        Object val = value.value();
+        return val instanceof Number;
+    }
+
     /**
      * useful function to get a number value as a double;
      * @param value
