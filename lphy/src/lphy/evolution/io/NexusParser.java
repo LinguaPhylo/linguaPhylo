@@ -115,9 +115,8 @@ public class NexusParser {
 
         }
 
-        // add ages
-        final String ageMode = "forward";
-        final Map<String, Double> ageMap = importer.getAgeMap(ageMode);
+        // forward backward age
+        final Map<String, Double> ageMap = importer.getAgeMap();
         if (ageMap != null) {
             lphyAlg.setAgeMap(ageMap);
         }
