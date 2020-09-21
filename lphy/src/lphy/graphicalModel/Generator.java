@@ -175,7 +175,14 @@ public interface Generator<T> extends GraphicalModelNode {
      * or are themselves that result of a function with random parameters as arguments.
      */
     default boolean hasRandomParameters() {
-        for (Value<?> v : getParams().values()) {
+        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+
+            Value<?> v = entry.getValue();
+
+            if (v == null) {
+                throw new RuntimeException("Unexpected null value for param " + entry.getKey() + " in generator " + getName());
+            }
+
             if (v.isRandom()) return true;
         }
         return false;

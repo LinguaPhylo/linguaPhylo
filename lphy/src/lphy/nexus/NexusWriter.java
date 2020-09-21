@@ -46,7 +46,7 @@ public class NexusWriter {
         
         String[] taxa = null;
         if (alignment != null) {
-            taxa = alignment.getTaxa();
+            taxa = alignment.getTaxaNames();
         } else {
             if (trees != null && !trees.isEmpty()) {
                 taxa = trees.get(0).getTaxaNames();

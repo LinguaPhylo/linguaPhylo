@@ -1,6 +1,7 @@
 package lphy.evolution.tree;
 
 import lphy.evolution.Taxa;
+import lphy.evolution.Taxon;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -13,6 +14,7 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
 
     protected String nParamName;
     protected String taxaParamName;
+    protected String agesParamName;
 
     /**
      * A value holding the number of taxa.
@@ -22,83 +24,110 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     /**
      * A value holding the taxa, either as a class implementing Taxa interface, or as an Object[]
      */
-    protected Value taxa;
+    protected Value taxaValue;
+
+    /**
+     * A value holding the taxa ages, only permitted if taxaValue is not specified
+     */
+    protected Value<Double[]> ages;
+
+    private Taxa taxa;
+    private boolean taxaConstructed = false;
 
     protected RandomGenerator random;
 
-    public TaxaConditionedTreeGenerator(Value<Integer> n, Value taxa) {
+
+
+    public TaxaConditionedTreeGenerator(Value<Integer> n, Value taxaValue, Value<Double[]> ages) {
         this.n = n;
-        this.taxa = taxa;
+        this.taxaValue = taxaValue;
+        this.ages = ages;
     }
 
     /**
      * Tests whether the values n and taxa are valid.
+     *
      * @param atLeastOneRequired
      */
     protected void checkTaxaParameters(boolean atLeastOneRequired) {
-        if (atLeastOneRequired && taxa == null && n == null) {
-            throw new IllegalArgumentException("At least one of " + nParamName + ", " + taxaParamName + " must be specified.");
+        if (atLeastOneRequired && taxaValue == null && n == null && ages == null) {
+            throw new IllegalArgumentException("At least one of " + nParamName + ", " + taxaParamName + ", " + agesParamName + " must be specified.");
         }
 
-        if (taxa != null && n != null) {
-            if (taxaLength(taxa) != n.value()) {
-                throw new IllegalArgumentException(nParamName + " and " + taxaParamName + " are incompatible.");
+        if (taxaValue != null && n != null) {
+            if (getTaxa().ntaxa() != n.value()) {
+                throw new IllegalArgumentException(nParamName + " and " + taxaParamName + " values are incompatible.");
             }
+        }
+
+        if (ages != null && n != null) {
+            if (ages.value().length != n.value()) {
+                throw new IllegalArgumentException(nParamName + " and " + agesParamName + " values are incompatible.");
+            }
+        }
+
+        if (ages != null && taxaValue != null) {
+            throw new IllegalArgumentException("Only one of " + taxaParamName + " and " + agesParamName + " may be specified.");
         }
     }
 
-    protected String[] taxaNames() {
-        String[] taxaNames = new String[n()];
-        if (taxa == null) {
-            for (int i = 0; i < taxaNames.length; i++) {
-                taxaNames[i] = i + "";
+    private void constructTaxa() {
+
+        if (taxaValue == null) {
+            if (ages != null) {
+                // create taxa from ages
+                taxa = Taxa.createTaxa(ages.value());
+            } else {
+                taxa = Taxa.createTaxa(n());
             }
-            return taxaNames;
-        } else if (taxa.value().getClass().isArray()) {
-            Object[] taxaObjects = (Object[])taxa.value();
-            for (int i = 0; i < taxaNames.length; i++) {
-                taxaNames[i] = taxaObjects[i].toString();
+        } else if (taxaValue.value() instanceof Taxa) {
+            taxa = (Taxa)taxaValue.value();
+        } else if (taxaValue.value().getClass().isArray()) {
+            if (taxaValue.value() instanceof Taxon[]) {
+                taxa = Taxa.createTaxa((Taxon[]) taxaValue.value());
+            } else {
+                taxa = Taxa.createTaxa((Object[]) taxaValue.value());
             }
-            return taxaNames;
-        } else if (taxa.value() instanceof Taxa) {
-            return ((Taxa) taxa.value()).getTaxa();
+        } else {
+            throw new IllegalArgumentException(taxaParamName + " must be of type Object[] or Taxa, but it is type " + taxaValue.value().getClass());
         }
-        throw new IllegalArgumentException(taxaParamName + " must be of type Object[] or Taxa, but it is type " + taxa.value().getClass());
+        taxaConstructed = true;
     }
 
-    /**
-     * @return true if either an n or a taxa value available.
-     */
-    protected boolean hasTaxa() {
-        return n != null || taxa != null;
+    public Taxa getTaxa() {
+        if (!taxaConstructed) {
+            constructTaxa();
+        }
+        return taxa;
     }
 
     protected int n() {
         if (n != null) return n.value();
-        return taxaLength(taxa);
-    }
-
-    protected int taxaLength(Value taxa) {
-        if (taxa == null) throw new IllegalArgumentException("No taxa available");
-        if (taxa.value() instanceof Object[]) return ((Object[]) taxa.value()).length;
-        if (taxa.value() instanceof Taxa) return ((Taxa) taxa.value()).ntaxa();
-        throw new IllegalArgumentException(taxaParamName + " must be of type String[] or Taxa.");
+        return getTaxa().ntaxa();
     }
 
     /**
-     * @param tree the tree these nodes are being constructed for.
+     * @param tree     the tree these nodes are being constructed for.
      * @param nodeList the list to add the created leaf nodes to.
      */
     protected void createLeafNodes(TimeTree tree, List<TimeTreeNode> nodeList) {
-        String[] taxaNames = null;
-        if (taxa != null) taxaNames = taxaNames();
-        int ntaxa = n();
 
-        for (int i = 0; i < ntaxa; i++) {
-            TimeTreeNode node = new TimeTreeNode(taxa == null ? i+"" : taxaNames[i], tree);
+        if (!taxaConstructed) constructTaxa();
+        String[] names = taxa.getTaxaNames();
+        Double[] ages = taxa.getAges();
+
+        for (int i = 0; i < names.length; i++) {
+            TimeTreeNode node = new TimeTreeNode(names[i], tree);
+            node.setAge(ages[i]);
             node.setLeafIndex(i);
             nodeList.add(node);
         }
+    }
+
+    protected List<TimeTreeNode> createLeafTaxa(TimeTree tree) {
+        List<TimeTreeNode> leafNodes = new ArrayList<>();
+        createLeafNodes(tree, leafNodes);
+        return leafNodes;
     }
 
     protected TimeTreeNode drawRandomNode(List<TimeTreeNode> nodeList) {
@@ -108,15 +137,18 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         if (n != null) map.put(nParamName, n);
-        if (taxa != null) map.put(taxaParamName, taxa);
+        if (taxaValue != null) map.put(taxaParamName, taxaValue);
+        if (ages != null) map.put(agesParamName, ages);
         return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(nParamName)) n = value;
-        else if (paramName.equals(taxaParamName)) taxa = value;
+        else if (paramName.equals(taxaParamName)) taxaValue = value;
+        else if (paramName.equals(agesParamName)) ages = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        constructTaxa();
     }
 
     public String toString() {

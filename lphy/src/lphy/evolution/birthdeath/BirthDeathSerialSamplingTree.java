@@ -1,7 +1,7 @@
 package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
-import lphy.evolution.TaxaAges;
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -25,13 +25,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     final String rhoParamName;
     final String psiParamName;
     final String rootAgeParamName;
-    final String agesParamName;
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;
     private Value<Number> rhoVal;
     private Value<Number> rootAge;
-    private Value<Double[]> ages;
 
     private double c1;
     private double c2;
@@ -48,11 +46,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
                                         @ParameterInfo(name = "rho", description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
                                         @ParameterInfo(name = "psi", description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
                                         @ParameterInfo(name = "n", description = "the number of taxa. optional.", optional = true) Value<Integer> n,
-                                        @ParameterInfo(name = "taxaAges", description = "TaxaAges object, (e.g. TaxaAges or TimeTree)", optional = true) Value<TaxaAges> taxaAges,
+                                        @ParameterInfo(name = "taxa", description = "Taxa object", optional = true) Value<Taxa> taxa,
                                         @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages,
                                         @ParameterInfo(name = "rootAge", description = "the age of the root.") Value<Number> rootAge) {
 
-        super(n, taxaAges);
+        super(n, taxa, ages);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
@@ -114,42 +112,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         return tree;
     }
 
-    private List<TimeTreeNode> createLeafTaxa(TimeTree tree) {
-        List<TimeTreeNode> leafNodes = new ArrayList<>();
 
-        if (ages != null) {
-
-            Double[] leafAges = ages.value();
-
-            for (int i = 0; i < leafAges.length; i++) {
-                TimeTreeNode node = new TimeTreeNode(i + "", tree);
-                node.setAge(leafAges[i]);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-
-        } else if (taxa != null) {
-
-            TaxaAges taxaAges = (TaxaAges)taxa.value();
-            String[] taxaNames = taxaAges.getTaxa();
-            Double[] ages = taxaAges.getAges();
-
-            for (int i = 0; i < taxaNames.length; i++) {
-                TimeTreeNode node = new TimeTreeNode(taxaNames[i], tree);
-                node.setAge(ages[i]);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-
-        } else {
-            for (int i = 0; i < n(); i++) {
-                TimeTreeNode node = new TimeTreeNode(i + "", tree);
-                node.setAge(0.0);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-        }
-    }
 
     /*
      * This method traverses the tree from left to right (inorder)
@@ -300,7 +263,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         map.put(deathRateParamName, deathRate);
         map.put(rhoParamName, rhoVal);
         map.put(psiParamName, psiVal);
-        if (ages != null) map.put(agesParamName, ages);
         map.put(rootAgeParamName, rootAge);
         return map;
     }
@@ -311,7 +273,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         else if (paramName.equals(deathRateParamName)) deathRate = value;
         else if (paramName.equals(rhoParamName)) rhoVal = value;
         else if (paramName.equals(psiParamName)) psiVal = value;
-        else if (paramName.equals(agesParamName)) ages = value;
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
         else super.setParam(paramName, value);
     }

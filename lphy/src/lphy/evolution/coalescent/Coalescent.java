@@ -23,7 +23,7 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
                       @ParameterInfo(name = "n", description = "the number of taxa. Provide this or taxa.", optional=true) Value<Integer> n,
                       @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree). Provide this or n.", optional=true) Value taxa) {
 
-        super(n, taxa);
+        super(n, taxa, null);
 
         this.theta = theta;
 
@@ -40,9 +40,7 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
 
         TimeTree tree = new TimeTree();
 
-        List<TimeTreeNode> activeNodes = new ArrayList<>();
-
-        createLeafNodes(tree, activeNodes);
+        List<TimeTreeNode> activeNodes = createLeafTaxa(tree);
 
         double time = 0.0;
         double theta = this.theta.value();

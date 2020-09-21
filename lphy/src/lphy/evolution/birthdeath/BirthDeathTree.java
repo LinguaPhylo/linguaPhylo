@@ -35,7 +35,7 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
                           @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.", optional = true) Value taxa,
                           @ParameterInfo(name = "rootAge", description = "the age of the root.") Value<Number> rootAge) {
 
-        super(n, taxa);
+        super(n, taxa, null);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
@@ -55,15 +55,14 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
             "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {
 
-        List<TimeTreeNode> activeNodes = new ArrayList<>();
         TimeTree tree = new TimeTree();
+        List<TimeTreeNode> activeNodes = createLeafTaxa(tree);
 
         double lambda = doubleValue(birthRate);
         double mu = doubleValue(deathRate);
 
         double t = doubleValue(rootAge);
 
-        createLeafNodes(tree, activeNodes);
         double[] times = new double[activeNodes.size() - 1];
 
         for (int i = 0; i < times.length - 1; i++) {

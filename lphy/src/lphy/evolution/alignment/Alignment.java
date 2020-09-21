@@ -41,7 +41,7 @@ public interface Alignment extends Taxa, NChar {
     /**
      * @return get taxa names.
      */
-    String[] getTaxa();
+    String[] getTaxaNames();
 
     /**
      * @return get data types.
