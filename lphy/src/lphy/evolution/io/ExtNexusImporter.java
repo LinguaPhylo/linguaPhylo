@@ -216,33 +216,23 @@ public class ExtNexusImporter extends NexusImporter {
         do {
             token = helper.readToken(";");
             if (token.equalsIgnoreCase("OPTIONS")) {
-                do {
-                    String token2 = helper.readToken("=");
-                    if (token2.equalsIgnoreCase("SCALE")) {
-                        String scale = helper.readToken("=;");
-                        if (scale.toLowerCase().endsWith("s"))
-                            scale = scale.substring(0, scale.length() - 1);
+                String token2 = helper.readToken("=");
+                if (token2.equalsIgnoreCase("SCALE")) {
+                    String scale = helper.readToken(";");
+                    if (scale.toLowerCase().endsWith("s"))
+                        scale = scale.substring(0, scale.length() - 1);
 
-                        switch (scale) {
-                            case "year":
-                                chronoUnit = ChronoUnit.YEARS;
-                                break;
+                    switch (scale) {
+                        case "year":
+                            chronoUnit = ChronoUnit.YEARS; break;
 //                        case "month":
 //                            chronoUnit = ChronoUnit.MONTHS; break;
 //                        case "day":
 //                            chronoUnit = ChronoUnit.DAYS; break;
-                            default:
-                                throw new UnsupportedOperationException("Unsupported scale = " + scale);
-                        }
-                    } else if (token2.equalsIgnoreCase("AGEMODE")) {
-                        String mode = helper.readToken("=;");
-                        try {
-                            ageMode = AgeMode.valueOf(mode.toLowerCase());
-                        } catch (IllegalArgumentException e) {
-                            ageMode = null;
-                        }
+                        default:
+                            throw new UnsupportedOperationException("Unsupported scale = " + scale);
                     }
-                } while (helper.getLastDelimiter() != ';');
+                }
 
             } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
                 if (chronoUnit == null)
@@ -288,16 +278,17 @@ public class ExtNexusImporter extends NexusImporter {
 
     /**
      * TODO allow date "yyyy-M-dd"
-     * convert dateMap into ageMap, given ageMode.
-     *
+     * @param mode  forward backward age
      * @return
      * @throws DateTimeParseException
      */
-    public Map<String, Double> getAgeMap() {
-        if (dateMap == null || dateMap.size() < 1) return null;
-        if (ageMode == null)
-            throw new IllegalArgumentException("Please define one of valid AGEMODE in CALIBRATION OPTIONS, " +
-                    "AGEMODE = {forward, backward, age} !");
+    public Map<String, Double> getAgeMap(final String mode) {
+        if (dateMap==null || dateMap.size() < 1) return null;
+        try {
+            ageMode = AgeMode.valueOf(mode.toLowerCase());
+        } catch (IllegalArgumentException e) {
+            ageMode = null;
+        }
 
         // parse String to Double
         double[] vals = new double[dateMap.size()]; // LinkedHashMap;

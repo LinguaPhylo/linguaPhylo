@@ -75,7 +75,7 @@ public class NexusParser {
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, final String ageMode) {
 
         try {
             importer.importNexus();
@@ -116,7 +116,7 @@ public class NexusParser {
         }
 
         // forward backward age
-        final Map<String, Double> ageMap = importer.getAgeMap();
+        final Map<String, Double> ageMap = importer.getAgeMap(ageMode);
         if (ageMap != null) {
             lphyAlg.setAgeMap(ageMap);
         }
@@ -145,13 +145,13 @@ public class NexusParser {
 
             if (fileName.equals("Dengue4.nex")) {
                 SimpleAlignment lphyAlg =
-                        (SimpleAlignment) parser.getLPhyAlignment(true);
+                        (SimpleAlignment) parser.getLPhyAlignment(true, "forward");
 
                 System.out.println(lphyAlg.toJSON());
 
             } else if (fileName.equals("primate.nex")) {
                 lphy.evolution.alignment.CharSetAlignment lphyAlg =
-                        (CharSetAlignment) parser.getLPhyAlignment(false);
+                        (CharSetAlignment) parser.getLPhyAlignment(false, null);
                 System.out.println(lphyAlg.toJSON());
 //            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
                 System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
