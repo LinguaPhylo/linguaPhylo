@@ -180,6 +180,20 @@ short) and LPhyBEAST.
 
 \section{LinguaPhylo}
 
+\subsection{Why do we need a new language?}
+
+A concise universal formal language to describe only the data and model would enable easy yet precise communication about modelling and inference intentions, without the need to understand all the implementation details of a particular software package. This is akin to the concept of encapsulation in object-oriented programming. We want to avoid exposing users to unnecessary complexity of implementation details. 
+Current input files for popular Bayesian inference software are replete with unnecessary implementation details.
+For example the BEAST2 input file format exposes the user to a wide array of details beyond the statistical model and data:
+\begin{itemize}
+\item The XML language
+\item A mapping from XML to Java classes in the BEAST2 source code
+\item The Java class names defined in the BEAST2 source code
+\item A model structure dictated by the internal BEASTObject hierarchy in BEAST2 source code
+\item Operator schedules, weights {\it et cetera}
+\item Details of the output loggers
+\end{itemize}
+
 LinguaPhylo is a model specification language to concisely and
 precisely define probabilistic phylogenetic models.
 The aim is to work
@@ -240,14 +254,16 @@ model {
 }
 
 These two blocks of statements contain all the information needed to define
-a Bayesian phylogenetic analysis of a multiple sequence alignment. Any random variable 
-in the model that has
-a corresponding assignment to a variable of the same name in the data block is ``clamped'' 
-to that data for the purposes of statistical inference. Generative distributions can only appear in 
-the model block, and not in the data block. By assigning the alignment in file
-``primate.nex'' to the name D we are saying that the random variable in the model named D has 
-been observed, so that we will infer all the other random variables 
-(tree and lambda in this example) from that observed sequence alignment.
+a Bayesian phylogenetic analysis of a multiple sequence alignment. 
+The data block may contain literals, and deterministic values, including those read in from a file, but not random variables or generative distributions.
+The model block contains all random variables, generative distributions and boundary conditions that define the model.
+If a value in the data block has the same name as a random variable in the model block, then that signifies that the data block value is an observation of the random variable with the same name.
+
+
+So by assigning the alignment in file
+``primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has 
+been observed, and we will infer all the other random variables 
+(tree and lambda in this example) in the model from that observed sequence alignment.
 
 \section{Tree generative distributions}
 

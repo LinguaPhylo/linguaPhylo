@@ -56,7 +56,7 @@ public class CharactersBlock extends NexusBlock {
         StringBuilder matrix = new StringBuilder("matrix ");
         for (int i=0; i<alignment.ntaxa(); i++) {
             try {
-                String taxonName = alignment.getTaxa()[i];
+                String taxonName = alignment.getTaxaNames()[i];
                 String sequence = alignment.getSequence(i);
                 matrix.append("\n\t\t").append(taxonName).append(" ").append(sequence);
             } catch (Exception ex) {

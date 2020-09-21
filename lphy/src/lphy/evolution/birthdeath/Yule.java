@@ -27,7 +27,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
                 @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
                 @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {
 
-        super(n, taxa);
+        super(n, taxa, null);
 
         this.birthRate = birthRate;
         this.rootAge = rootAge;

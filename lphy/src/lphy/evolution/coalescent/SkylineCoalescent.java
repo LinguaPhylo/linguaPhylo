@@ -1,12 +1,11 @@
 package lphy.evolution.coalescent;
 
 import lphy.core.distributions.Utils;
-import lphy.evolution.TaxaAges;
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
@@ -24,10 +23,8 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 
     private final String thetaParamName;
     private final String groupSizesParamName;
-    private final String agesParamName;
     private Value<Double[]> theta;
     private Value<Integer[]> groupSizes;
-    private Value<Double[]> ages;
 
     public SkylineCoalescent(@ParameterInfo(name = "theta", description = "effective population size, one value for" +
             " each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or" +
@@ -38,14 +35,13 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
                                      " number of taxa. By default all group sizes are 1 which is equivalent to the" +
                                      " classic skyline coalescent.", optional=true) Value<Integer[]> groupSizes,
                              @ParameterInfo(name = "n", description = "number of taxa.", optional = true) Value<Integer> n,
-                             @ParameterInfo(name = "taxaAges", description = "TaxaAges object, (e.g. TaxaAges or TimeTree)", optional = true) Value<TaxaAges> taxaAges,
+                             @ParameterInfo(name = "taxa", description = "Taxa object, (e.g. Taxa or Object[])", optional = true) Value<Taxa> taxa,
                              @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
 
-        super(n, taxaAges);
+        super(n, taxa, ages);
 
         this.theta = theta;
         this.groupSizes = groupSizes;
-        this.ages = ages;
         this.random = Utils.getRandom();
 
         thetaParamName = getParamName(0);
@@ -54,7 +50,7 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
         taxaParamName = getParamName(3);
         agesParamName = getParamName(4);
 
-        int c = (ages == null ? 0 : 1) + (taxaAges == null ? 0 : 1) + (n == null ? 0 : 1);
+        int c = (ages == null ? 0 : 1) + (taxa == null ? 0 : 1) + (n == null ? 0 : 1);
 
         if (c > 1) {
             throw new IllegalArgumentException("One one of " + nParamName + ", " + agesParamName + " and " + taxaParamName + " may be specified in " + getName());
@@ -172,43 +168,6 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
         }
 
         return new RandomVariable<>("\u03C8", tree, this);
-    }
-
-    private List<TimeTreeNode> createLeafTaxa(TimeTree tree) {
-        List<TimeTreeNode> leafNodes = new ArrayList<>();
-
-        if (ages != null) {
-
-            Double[] leafAges = ages.value();
-
-            for (int i = 0; i < leafAges.length; i++) {
-                TimeTreeNode node = new TimeTreeNode(i + "", tree);
-                node.setAge(leafAges[i]);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-
-        } else if (taxa != null) {
-
-            TaxaAges taxaAges = (TaxaAges)taxa.value();
-            String[] taxaNames = taxaAges.getTaxa();
-            Double[] ages = taxaAges.getAges();
-
-            for (int i = 0; i < taxaNames.length; i++) {
-                TimeTreeNode node = new TimeTreeNode(taxaNames[i], tree);
-                node.setAge(ages[i]);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-
-        } else {
-            for (int i = 0; i < n(); i++) {
-                TimeTreeNode node = new TimeTreeNode(i + "", tree);
-                node.setAge(0.0);
-                leafNodes.add(node);
-            }
-            return leafNodes;
-        }
     }
 
     @Override

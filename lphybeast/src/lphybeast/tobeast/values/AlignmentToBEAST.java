@@ -23,7 +23,7 @@ public class AlignmentToBEAST implements ValueToBEAST<SimpleAlignment, beast.evo
 
         SimpleAlignment alignment = alignmentValue.value();
         SequenceType sequenceType = alignment.getSequenceType();
-        String[] taxaNames = alignment.getTaxa();
+        String[] taxaNames = alignment.getTaxaNames();
         beast.evolution.alignment.Alignment beastAlignment;
 
         List<Sequence> sequences = new ArrayList<>();

@@ -4,23 +4,21 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
-import lphy.evolution.TaxaAges;
+import lphy.evolution.Taxa;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
+import scala.Array;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Everything related to Taxa, Data type
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Alignment, TaxaAges, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Alignment, Taxa, HasComponentView<AbstractAlignment> {
 
     // may not have sequences
     protected int nchar;
@@ -107,7 +105,7 @@ public abstract class AbstractAlignment implements Alignment, TaxaAges, HasCompo
     }
 
     @Override
-    public String[] getTaxa() {
+    public String[] getTaxaNames() {
         String[] taxa = new String[ntaxa()];
         for (int i = 0; i < ntaxa(); i++) {
             taxa[i] = getTaxonName(i);
@@ -186,12 +184,16 @@ public abstract class AbstractAlignment implements Alignment, TaxaAges, HasCompo
     }
 
     /**
-     * This shares the same index with {@link #getTaxa()}
+     * This shares the same index with {@link #getTaxaNames()}
      */
     @Override
     public Double[] getAges() {
-        if (ageMap == null) throw new IllegalArgumentException("No age information !");
         Double[] ages = new Double[ntaxa()];
+
+        if (ageMap == null) {
+            Arrays.fill(ages, 0.0);
+            return ages;
+        }
 
         for (int i = 0; i < ntaxa(); i++) {
             Double age = ageMap.get(getTaxonName(i));

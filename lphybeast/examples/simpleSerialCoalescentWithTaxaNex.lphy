@@ -1,10 +1,10 @@
 data {
-  D = nexus(file="examples/Dengue4.nex");
+  D = nexus(file="examples/Dengue4.nex", ageMode="forward");
   L = nchar(D);
 }
 model {
   mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
   Θ ~ LogNormal(meanlog=3.0, sdlog=0.5);
-  ψ ~ Coalescent(theta=Θ, taxaAges=D);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa(D));
   D ~ PhyloCTMC(L=L, Q=jukesCantor(), mu=mu, tree=ψ);
 }

@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Extension of {@link NexusImporter}, adding
  * 1) multiple partitions, 2) dates.
- *
+ * <p>
  * The light version of {@link #importAlignments()} is replaced by
  * {@link #importNexus()} which stores <code>List<Alignment></code>,
  * <code>Map<String, List<CharSetBlock>></code>, and other parsed data.
@@ -45,6 +45,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, List<CharSetBlock>> charsetMap;
     protected Map<String, String> dateMap; // TODO replace to ageMap
     protected ChronoUnit chronoUnit = null;
+    protected AgeMode ageMode = null;
 
     public ExtNexusImporter(Reader reader) {
         super(reader);
@@ -77,6 +78,13 @@ public class ExtNexusImporter extends NexusImporter {
         DISTANCES,
         TREES
     }
+
+    public enum AgeMode {
+        forward, // virus
+        backward, // fossils
+        age
+    }
+
 
     //****** NexusBlock ******//
 
@@ -276,6 +284,11 @@ public class ExtNexusImporter extends NexusImporter {
      */
     public Map<String, Double> getAgeMap(final String mode) {
         if (dateMap==null || dateMap.size() < 1) return null;
+        try {
+            ageMode = AgeMode.valueOf(mode.toLowerCase());
+        } catch (IllegalArgumentException e) {
+            ageMode = null;
+        }
 
         // parse String to Double
         double[] vals = new double[dateMap.size()]; // LinkedHashMap;
@@ -283,12 +296,13 @@ public class ExtNexusImporter extends NexusImporter {
 
         // parse the age value
         boolean isDate = false;
-        for(int i = 0; i < keys.size(); i++) {
+        for (int i = 0; i < keys.size(); i++) {
             String taxon = keys.get(i);
             String valStr = dateMap.get(taxon);
             try {
                 vals[i] = Double.parseDouble(valStr);
             } catch (NumberFormatException e) {
+                // the val is Date not Number
                 isDate = true;
                 System.err.println("Warning: the age value (" + valStr +
                         ") is not numeric, so guessing the date by uuuu-MM-dd");
@@ -296,20 +310,21 @@ public class ExtNexusImporter extends NexusImporter {
             }
         }
 
-        if (isDate) { // guess date
+        // if val is date, compute the age based on unit
+        if (isDate) {
             if (!chronoUnit.equals(ChronoUnit.YEARS))
                 throw new UnsupportedOperationException("Only support unit of year for parsing dates !");
 
             vals = new double[dateMap.size()];
-            DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" );
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
-            for(int i = 0; i < keys.size(); i++) {
+            for (int i = 0; i < keys.size(); i++) {
                 String taxon = keys.get(i);
                 String valStr = dateMap.get(taxon);
                 try {
                     LocalDate date = LocalDate.parse(valStr, f);
                     // decimal year
-                    vals[i] = date.getYear() + (date.getDayOfYear()-1.0) / (date.isLeapYear() ? 366.0 : 365.0);
+                    vals[i] = date.getYear() + (date.getDayOfYear() - 1.0) / (date.isLeapYear() ? 366.0 : 365.0);
                 } catch (DateTimeParseException e) {
                     throw new RuntimeException("Cannot parse the date string by uuuu-MM-dd ! " + valStr);
                 }
@@ -318,25 +333,25 @@ public class ExtNexusImporter extends NexusImporter {
 
         // find min max for forward or backward
         double max = vals[0], min = vals[0];
-        for(int i = 1; i < keys.size(); i++) {
+        for (int i = 1; i < keys.size(); i++) {
             if (vals[i] > max) max = vals[i];
             else if (vals[i] < min) min = vals[i];
         }
 
         Map<String, Double> ageMap = new LinkedHashMap<>();
-        for(int i = 0; i < keys.size(); i++) {
+        for (int i = 0; i < keys.size(); i++) {
             String taxon = keys.get(i);
 
-            if ("age".equalsIgnoreCase(mode)) {
+            if (AgeMode.age.equals(ageMode)) {
                 ageMap.put(taxon, vals[i]);
-            } else if ("forward".equalsIgnoreCase(mode)) {
+            } else if (AgeMode.forward.equals(ageMode)) {
                 // like virus
-                ageMap.put(taxon, max-vals[i]);
-            } else if ("backward".equalsIgnoreCase(mode)) {
+                ageMap.put(taxon, max - vals[i]);
+            } else if (AgeMode.backward.equals(ageMode)) {
                 // like fossils
-                ageMap.put(taxon, vals[i]-min);
+                ageMap.put(taxon, vals[i] - min);
             } else {
-                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + mode);
+                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + ageMode);
             }
         }
 

@@ -5,10 +5,9 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.IntegerValue;
 import lphy.graphicalModel.types.StringArrayValue;
 
-public class TaxaFunction extends DeterministicFunction<String[]> {
+public class TaxaFunction extends DeterministicFunction<Taxa> {
 
     final String paramName;
 
@@ -17,9 +16,9 @@ public class TaxaFunction extends DeterministicFunction<String[]> {
         setParam(paramName, x);
     }
 
-    @GeneratorInfo(name="taxa",description = "The taxa in the given taxa-dimensioned value (e.g. alignment, tree et cetera).")
-    public Value<String[]> apply() {
+    @GeneratorInfo(name="taxa",description = "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).")
+    public Value<Taxa> apply() {
         Value<Taxa> v = (Value<Taxa>)getParams().get(paramName);
-        return new StringArrayValue( null, v.value().getTaxa(), this);
+        return new Value<>( null, v.value(), this);
     }
 }
