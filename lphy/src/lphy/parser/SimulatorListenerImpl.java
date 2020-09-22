@@ -9,6 +9,7 @@ import lphy.parser.SimulatorParser.Expression_listContext;
 import lphy.parser.SimulatorParser.Named_expressionContext;
 import lphy.parser.SimulatorParser.Unnamed_expression_listContext;
 import lphy.parser.SimulatorParser.VarContext;
+import lphy.parser.functions.RangeList;
 import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -28,7 +29,10 @@ import static java.util.Collections.max;
 
 public class SimulatorListenerImpl extends SimulatorBaseListener {
 
+    // the current context during parsing, either data block or model block.
     LPhyParser.Context context;
+
+    // the parser object that stores all parsed values.
     LPhyParser parser;
 
     public SimulatorListenerImpl(LPhyParser parser, LPhyParser.Context context) {
@@ -37,6 +41,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
     }
 
+    /**
+     * Puts the given value in the parser dictionary under the given id, based on the current context.
+     *
+     * @param id
+     * @param val
+     */
     private void put(String id, Value val) {
         switch (context) {
             case data:
@@ -62,38 +72,42 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         public SimulatorASTVisitor() {
         }
 
+        /**
+         * @param ctx
+         * @return a RangeList function.
+         */
         public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
 
-            List<Integer> range = new ArrayList<>();
+            List<GraphicalModelNode> nodes = new ArrayList<>();
+
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 Object o = visit(ctx.getChild(i));
-                if (o instanceof Integer) {
-                    range.add((Integer) o);
-                } else if (o instanceof Integer[]) {
-                    Collections.addAll(range, (Integer[]) o);
+                if (o instanceof IntegerValue || o instanceof IntegerArrayValue || o instanceof Range) {
+                    nodes.add((GraphicalModelNode) o);
                 } else if (o == null) {
                     // ignore commas
                 } else {
-                    throw new IllegalArgumentException("Expected integer value, but don't know how to handle " +
+                    LoggerUtils.log.severe("Expected Integer value, or Range, in range list, but found: " + o);
+                    throw new IllegalArgumentException("Expected Integer value, or Range, in range list, but don't know how to handle " +
                             o == null ? "null" : o.getClass().getName());
                 }
             }
-            return range;
+            return new RangeList(nodes.toArray(new GraphicalModelNode[0]));
         }
 
+        /**
+         * @param ctx
+         * @return either and IntegerValue or a Range function.
+         */
         public Object visitRange_element(SimulatorParser.Range_elementContext ctx) {
 
             Object o = visitChildren(ctx);
-            if (o instanceof DoubleValue) {
-                return (int) (double) ((DoubleValue) o).value();
-            }
-            if (o instanceof IntegerValue) {
-                return ((IntegerValue) o).value();
+
+            if (o instanceof IntegerValue || o instanceof IntegerArrayValue || o instanceof Range) {
+                return o;
             }
 
-            if (o instanceof Range) {
-                return ((Range) o).apply().value();
-            }
+            LoggerUtils.log.severe("Expected Integer value, or Range, in range element, but found: " + o);
 
             throw new IllegalArgumentException("Expected integer value, or range, but don't know how to handle " +
                     (o == null ? "null" : o.getClass().getName()));
@@ -354,32 +368,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 LoggerUtils.log.severe("Expected value " + array + " to be an array.");
             }
 
-            List indexRange = (List) visit(ctx.getChild(2));
+            RangeList rangeList = (RangeList) visit(ctx.getChild(2));
+            Value<Integer[]> indices = rangeList.apply();
 
-            if (indexRange.size() == 1) {
-                Object firstElement = indexRange.get(0);
-                if (firstElement instanceof Integer) {
-                    return new ElementAt(new IntegerValue(null, (Integer) firstElement), array);
-                } else if (firstElement instanceof Integer[]) {
-                    Integer[] indices = (Integer[]) firstElement;
-                    if (indices.length == 1) {
-                        return new ElementAt(new Value<>(null, indices[0]), array);
-                    } else {
-                        return new ElementsAt(new Value<>(null, indices), array);
-                    }
-                } else {
-                    LoggerUtils.log.severe("Unhandled index range: " + ctx.getText());
-                    return indexRange;
-                }
-            } else {
-                Integer[] indices = new Integer[indexRange.size()];
-                for (int i = 0; i < indices.length; i++) {
-                    indices[i] = (Integer) indexRange.get(i);
-                }
-
-                return new ElementsAt(new Value<>(null, indices), array);
-            }
-
+            return new ElementsAt(indices, array);
         }
 
         @Override
@@ -463,7 +455,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                         case "%":
                             expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.mod(), f1, f2);
                             break;
-
                         case "&":
                             expression = new ExpressionNode2Args(ctx.getText(), ExpressionNode2Args.bitwiseand(), f1, f2);
                             break;
