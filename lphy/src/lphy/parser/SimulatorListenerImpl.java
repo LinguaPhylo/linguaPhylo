@@ -374,7 +374,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             } else {
                 Integer[] indices = new Integer[indexRange.size()];
                 for (int i = 0; i < indices.length; i++) {
-                    indices[i] = (Integer)indexRange.get(i);
+                    indices[i] = (Integer) indexRange.get(i);
                 }
 
                 return new ElementsAt(new Value<>(null, indices), array);
@@ -488,60 +488,58 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
                     return expression;
                 } else if (s.equals("[")) {
-                    Value[] var = (Value[]) visit(ctx.getChild(1));
-                    if (var[0].value() instanceof Double[]) {
-                        Double[][] value = new Double[var.length][];
-                        for (int i = 0; i < value.length; i++) {
-                            value[i] = (Double[]) var[i].value();
-                        }
-                        DoubleArray2DValue v = new DoubleArray2DValue(null, value);
-                        return v;
-                    } else if (var[0].value() instanceof Double) {
 
+                    // get unnamed expression list
+                    Value[] var = (Value[]) visit(ctx.getChild(1));
+                    Value firstNonNull = firstNonNull(var);
+
+                    // if all values null assume double array
+                    if (firstNonNull == null || firstNonNull.value() instanceof Double) {
                         if (allConstants(var)) {
                             Double[] value = new Double[var.length];
                             for (int i = 0; i < value.length; i++) {
-                                value[i] = (Double) var[i].value();
+                                if (var[i] != null) value[i] = (Double) var[i].value();
                             }
-                            DoubleArrayValue v = new DoubleArrayValue(null, value);
-                            return v;
+                            return new DoubleArrayValue(null, value);
                         } else {
                             DoubleArray doubleArray = new DoubleArray(var);
                             return doubleArray.apply();
                         }
-                    }
-                    if (var[0].value() instanceof Integer[]) {
+                    } else if (firstNonNull.value() instanceof Double[]) {
+                        Double[][] value = new Double[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            if (var[i] != null) value[i] = (Double[]) var[i].value();
+                        }
+                        return new DoubleArray2DValue(null, value);
+                    } else if (firstNonNull.value() instanceof Integer[]) {
                         Integer[][] value = new Integer[var.length][];
                         for (int i = 0; i < value.length; i++) {
-                            value[i] = (Integer[]) var[i].value();
+                            if (var[i] != null) value[i] = (Integer[]) var[i].value();
                         }
-                        IntegerArray2DValue v = new IntegerArray2DValue(null, value);
-                        return v;
-                    } else if (var[0].value() instanceof Integer) {
+                        return new IntegerArray2DValue(null, value);
+                    } else if (firstNonNull.value() instanceof Integer) {
                         if (allConstants(var)) {
                             Integer[] value = new Integer[var.length];
                             for (int i = 0; i < value.length; i++) {
-                                value[i] = (Integer) var[i].value();
+                                if (var[i] != null) value[i] = (Integer) var[i].value();
                             }
-                            IntegerArrayValue v = new IntegerArrayValue(null, value);
-                            return v;
+                            return new IntegerArrayValue(null, value);
                         } else {
                             IntegerArray intArray = new IntegerArray(var);
                             return intArray.apply();
                         }
-                    }
-                    if (var[0].value() instanceof Boolean[]) {
+                    } else if (firstNonNull.value() instanceof Boolean[]) {
                         Boolean[][] value = new Boolean[var.length][];
                         for (int i = 0; i < value.length; i++) {
-                            value[i] = (Boolean[]) var[i].value();
+                            if (var[i] != null) value[i] = (Boolean[]) var[i].value();
                         }
                         BooleanArray2DValue v = new BooleanArray2DValue(null, value);
                         return v;
-                    } else if (var[0].value() instanceof Boolean) {
+                    } else if (firstNonNull.value() instanceof Boolean) {
                         if (allConstants(var)) {
                             Boolean[] value = new Boolean[var.length];
                             for (int i = 0; i < value.length; i++) {
-                                value[i] = (Boolean) var[i].value();
+                                if (var[i] != null) value[i] = (Boolean) var[i].value();
                             }
                             BooleanArrayValue v = new BooleanArrayValue(null, value);
                             return v;
@@ -549,16 +547,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             BooleanArray booleanArray = new BooleanArray(var);
                             return booleanArray.apply();
                         }
-                    }
-
-                    if (var[0].value() instanceof String[]) {
+                    } else if (firstNonNull.value() instanceof String[]) {
                         String[][] value = new String[var.length][];
                         for (int i = 0; i < value.length; i++) {
-                            value[i] = (String[]) var[i].value();
+                            if (var[i] != null) value[i] = (String[]) var[i].value();
                         }
                         StringArray2DValue v = new StringArray2DValue(null, value);
                         return v;
-                    } else if (var[0].value() instanceof String) {
+                    } else if (firstNonNull.value() instanceof String) {
                         if (allConstants(var)) {
                             String[] value = new String[var.length];
                             for (int i = 0; i < value.length; i++) {
@@ -579,6 +575,17 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             LoggerUtils.log.fine("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
 
             return super.visitExpression(ctx);
+        }
+
+        /**
+         * @param var
+         * @return the first non null value in the value array.
+         */
+        private Value firstNonNull(Value[] var) {
+            for (Value value : var) {
+                if (value != null) return value;
+            }
+            return null;
         }
 
         class ValueOrFunction {
@@ -759,6 +766,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 } else if (obj instanceof Value) {
                     Value value = (Value) obj;
                     list.add(value);
+                } else if (obj == null) {
+                    list.add(null);
                 } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list: " + obj);
             }
             return list.toArray(new Value[]{});
@@ -940,16 +949,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
     }
 
-//    private Map<String, Value<?>> dictionary() {
-//        switch (context) {
-//            case data: return parser.getDataDictionary();
-//
-//        }
-//    }
-
+    /**
+     * @param var
+     * @return true if all values are null or constant.
+     */
     private boolean allConstants(Value[] var) {
         for (Value v : var) {
-            if (!v.isConstant()) return false;
+            if (v != null && !v.isConstant()) return false;
         }
         return true;
     }

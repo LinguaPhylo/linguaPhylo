@@ -2,6 +2,7 @@ package lphy.app;
 
 import lphy.core.LPhyParser;
 import lphy.parser.DataModelCodeColorizer;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -46,8 +47,13 @@ public class CanonicalModelPanel extends JComponent {
         System.out.println(text);
 
         if (text.length() > 0) {
-            DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane);
-            codeColorizer.parse(text);
+            try {
+                DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane);
+                codeColorizer.parse(text);
+            }  catch (Exception e) {
+                pane.setText(text);
+                LoggerUtils.log.severe("DataModelCodeColorizer failed with exception: " + e.getMessage());
+            }
         }
     }
 }

@@ -229,8 +229,15 @@ public class GraphicalModelInterpreter extends JPanel {
 //        }
 
         parser.parse(input, context);
-        CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
-        codeColorizer.parse(input);
+
+
+        try {
+            CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
+            codeColorizer.parse(input);
+        } catch (Exception e) {
+            textPane.setText(input);
+            LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
+        }
     }
 
     public void clear() {

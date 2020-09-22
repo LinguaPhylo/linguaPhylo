@@ -157,7 +157,10 @@ public class CodeColorizer extends SimulatorBaseListener {
                 return new TextElement((String) exp, constantStyle);
             }
 
-            if (exp == null) throw new RuntimeException("exp is null for expression context: " + ctx.getText());
+            if (exp == null) {
+                return new TextElement("null", constantStyle);
+                //throw new RuntimeException("exp is null for expression context: " + ctx.getText());
+            }
 
             throw new RuntimeException(exp + " of type " + exp.getClass());
 

@@ -205,7 +205,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
             }
 
             if (exp == null) {
-                throw new RuntimeException("exp is null for expression context: " + ctx.getText() + " child count = " + ctx.getChildCount());
+                return new TextElement("null", literalStyle);
+                //throw new RuntimeException("exp is null for expression context: " + ctx.getText() + " child count = " + ctx.getChildCount());
             }
 
             throw new RuntimeException(exp + " of type " + exp.getClass());
