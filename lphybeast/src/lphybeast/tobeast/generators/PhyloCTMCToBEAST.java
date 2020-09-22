@@ -27,11 +27,6 @@ public class PhyloCTMCToBEAST implements GeneratorToBEAST<PhyloCTMC, TreeLikelih
 
         TreeLikelihood treeLikelihood = new TreeLikelihood();
 
-        // THESE TWO LINES ALLOW INFERENCE OF CLAMPED ALIGNMENTS
-        if (context.isClamped(value.getID())) {
-            value = context.getBEASTObject(context.getClampedValue(value.getID()));
-        }
-
         assert value instanceof beast.evolution.alignment.Alignment;
         beast.evolution.alignment.Alignment alignment = (beast.evolution.alignment.Alignment)value;
         treeLikelihood.setInputValue("data", alignment);

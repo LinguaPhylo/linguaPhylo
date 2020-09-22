@@ -252,7 +252,13 @@ public class BEASTContext {
             GeneratorToBEAST toBEAST = generatorToBEASTMap.get(generator.getClass());
 
             if (toBEAST != null) {
-                beastGenerator = toBEAST.generatorToBEAST(generator, beastObjects.get(value), this);
+                BEASTInterface beastValue = beastObjects.get(value);
+                // If this is a generative distribution then swap to the clamped value if it exists
+                if (generator instanceof GenerativeDistribution && isClamped(value.getId())) {
+                    beastValue = getBEASTObject(getClampedValue(value.getId()));
+                }
+
+                beastGenerator = toBEAST.generatorToBEAST(generator, beastValue, this);
             }
 
             if (beastGenerator == null) {
