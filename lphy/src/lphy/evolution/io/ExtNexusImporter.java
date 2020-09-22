@@ -389,7 +389,9 @@ public class ExtNexusImporter extends NexusImporter {
                             // from site
                             from = Integer.parseInt(parts[0].trim());
 
-                            // codons
+                            // codons : 629\3
+                            if (parts[1].contains("/"))
+                                throw new ImportException("Invalid delimiter for codon positions ! " + parts[1]);
                             String[] toParts = parts[1].split("\\\\");
                             // to site
                             if (toParts[0].trim().equals("."))
