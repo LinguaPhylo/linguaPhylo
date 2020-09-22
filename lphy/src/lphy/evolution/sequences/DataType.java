@@ -2,52 +2,78 @@ package lphy.evolution.sequences;
 
 
 import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * suppose to contain more data types not available from {@link SequenceType}.
+ * Define the subclasses of {@link SequenceType},
+ * implement parsing char/string to integers.
+ * The supplement of data types not available from {@link SequenceType}.
  * @author Walter Xie
  */
-public abstract class DataType implements SequenceType {
-
-    /**
-     * @param dataTypeName  keywords in Nexus or data type descriptions
-     */
-    public static SequenceType getNexusDataType(String dataTypeName) {
-        // change to no space, all lower case
-        switch (dataTypeName.trim().toLowerCase()) {
-            case "rna":
-            case "dna":
-            case "nucleotide":
-                return NUCLEOTIDE;
-            case "aminoacid":
-            case "protein":
-                return AMINO_ACID;
-//            case "binary":
-//                return BINARY;
-//            case "standard":
-//            case "continuous": // TODO need to check
-//                return STANDARD; // TODO ? nrOfState = symbols.length()
-            default:
-                throw new UnsupportedOperationException(dataTypeName);
-        }
-    }
-
-    /**
-     * @param numStates  Not counting ambiguous characters
-     * @return  {@link SequenceType}, or null if not implemented
-     */
-    public static SequenceType guessSequenceType(int numStates) {
-        switch (numStates) {
-//            case 2: return BINARY;
-            case 4: return NUCLEOTIDE;
-            case 20: return AMINO_ACID;
-            // TODO BINARY STANDARD, Codon;
-            default: return null; //not implemented;
-        }
-    }
+public abstract class DataType implements SequenceType { // TODO SequenceType implements Comparable
 
     public static boolean isSame(SequenceType type1, SequenceType type2) {
         return type1.getName().equals(type2.getName());
+    }
+
+    //*** these should be inherited to reduce duplicated code ***//
+
+    protected static final int STATES_BY_CODE_SIZE = 128;
+
+    /**
+     * @return A list of all possible states, including the gap and ambiguity states.
+     */
+    @Override
+    public abstract List<State> getStates();
+
+    @Override
+    public State getState(char code) {
+        if (code < 0 || code >= STATES_BY_CODE_SIZE)
+            return null;
+        State[] statesByCode = getStatesByCode();
+        return statesByCode[code];
+    }
+
+    @Override
+    public State getState(String code) {
+        return getState(code.charAt(0));
+    }
+
+    protected State[] getStatesByCode() {
+        State[] statesByCode = new State[STATES_BY_CODE_SIZE];
+        // Undefined characters are mapped to null
+        Arrays.fill(statesByCode, null);
+
+        for (State state : getStates()) {
+            final char code = state.getCode().charAt(0);
+            statesByCode[code] = state;
+            statesByCode[Character.toLowerCase(code)] = state;
+        }
+        return statesByCode;
+    }
+
+
+    // TODO review: may not need
+
+    @Override
+    public State[] toStateArray(String sequenceString) {
+        State[] seq = new State[sequenceString.length()];
+        for (int i = 0; i < seq.length; i++) {
+            seq[i] = getState(sequenceString.charAt(i));
+        }
+        return seq;
+    }
+
+    @Override
+    public State[] toStateArray(byte[] indexArray) {
+        State[] seq = new State[indexArray.length];
+        for (int i = 0; i < seq.length; i++) {
+            seq[i] = getState(indexArray[i]);
+        }
+        return seq;
     }
 
 

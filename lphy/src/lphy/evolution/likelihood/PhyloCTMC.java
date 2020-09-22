@@ -1,10 +1,10 @@
 package lphy.evolution.likelihood;
 
-import lphy.evolution.sequences.DataType;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
@@ -51,6 +51,8 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     private double[][] transProb;
     private double[][] iexp;
     private double[] Eval;
+
+    protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
     public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional = true) Value<Double> mu,
@@ -162,7 +164,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
         int length = checkCompatibilities();
 
-        SequenceType dataType = DataType.guessSequenceType(transProb.length);
+        SequenceType dataType = sequenceTypeFactory.guessSequenceType(transProb.length);
         SimpleAlignment a;
         if (dataType == null) // if datatype is not available, e.g. binary
             a = new SimpleAlignment(idMap, length, transProb.length);

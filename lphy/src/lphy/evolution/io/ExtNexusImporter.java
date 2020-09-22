@@ -11,7 +11,7 @@ import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
-import lphy.evolution.sequences.DataType;
+import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
 
 import java.awt.*;
@@ -46,6 +46,8 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, String> dateMap; // TODO replace to ageMap
     protected ChronoUnit chronoUnit = null;
     protected AgeMode ageMode = null;
+
+    protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
     public ExtNexusImporter(Reader reader) {
         super(reader);
@@ -196,7 +198,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected SequenceType getSequenceType(String token) throws ImportException.UnparsableDataException {
         try {
             // new data type?
-            return DataType.getNexusDataType(token);
+            return sequenceTypeFactory.getNexusDataType(token);
         } catch (UnsupportedOperationException e) {
             throw new ImportException.UnparsableDataException(e.getMessage());
         }
