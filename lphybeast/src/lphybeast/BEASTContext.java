@@ -189,9 +189,38 @@ public class BEASTContext {
         }
     }
 
+    /**
+     * @param id
+     * @return true if the given id has a value in the data block and random variable in the model block
+     */
+    public boolean isClamped(String id) {
+        if (id != null) {
+            Value dataValue = parser.getValue(id, LPhyParser.Context.data);
+            Value modelValue = parser.getModelDictionary().get(id);
+            return (dataValue != null && modelValue != null && modelValue instanceof RandomVariable);
+        }
+        return false;
+    }
+
+    /**
+     * @param id the id of the value
+     * @return the value with this id from the data context if it exits, or if not, then the value from the model context if exists, or if neither exist, then returns null.
+     */
+    public Value getClampedValue(String id) {
+        if (id != null) {
+            Value clampedValue = parser.getValue(id, LPhyParser.Context.data);
+            if (clampedValue != null) {
+                return clampedValue;
+            }
+            return  parser.getValue(id, LPhyParser.Context.model);
+        }
+        return null;
+    }
+
     private void createBEASTObjects(Value<?> value) {
 
         if (beastObjects.get(value) == null) {
+
             valueToBEAST(value);
         }
 
