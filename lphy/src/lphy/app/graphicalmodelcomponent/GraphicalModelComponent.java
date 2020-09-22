@@ -194,8 +194,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz() {
 
-        double xIndexScale = 3.0;
-        double yIndexScale = 2.0;
+        double xIndexScale = 2.0;
+        double yIndexScale = 1.0;
 
         return toTikz((properLayeredGraph.getMaxIndex()+1)*xIndexScale/getWidth(), properLayeredGraph.getLayerCount()*yIndexScale/getHeight());
     }
@@ -251,7 +251,11 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         String type = "const";
         String style = null;
-        if (value instanceof RandomVariable) {
+
+        if (parser.isClampedVariable(value)) {
+            type = "obs";
+            style = "dstyle";
+        } else if (value instanceof RandomVariable) {
             type = "latent";
             style = "vstyle";
         } else if (value.getGenerator() != null) {
@@ -259,14 +263,28 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             style = "detstyle";
         }
 
-        String label = (value.isAnonymous() ? value.toString() : value.getId());
-        label = gNode.name;
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.x*xScale + ", -" + gNode.y*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
+    }
+
+    private String getLabel(LayeredGNode gNode) {
+        Value value = (Value)gNode.value();
+        String label = gNode.name;
+        if (parser.isClamped(value.getId()) && parser.isDataValue(value)) {
+            label = "'" + label + "'";
+        }
 
         if (value.isAnonymous() && isNumber(value)) {
             label = unbracket(gNode.name) + " = " + value.value().toString();
         }
+        return label;
+    }
 
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.x*xScale + ", -" + gNode.y*yScale + ") (" + value.getUniqueId() + ") {" + label + "};";
+    private String getUniqueId(Value value) {
+        String uniqueId = value.getUniqueId();
+        if (parser.isClamped(value.getId()) && parser.isDataValue(value)) {
+            uniqueId = "'" + uniqueId + "'";
+        }
+        return uniqueId;
     }
 
     private String unbracket(String str) {
@@ -280,19 +298,19 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         String factorName = generator.getName() + value.getUniqueId();
 
-        String predecessors = "";
+        StringBuilder predecessors = new StringBuilder();
 
         List<LayeredNode> pred = gNode.getPredecessors();
 
         if (pred.size() > 0) {
-            predecessors = ((Value)((LayeredGNode)pred.get(0)).value()).getUniqueId();
+            predecessors = new StringBuilder(getUniqueId((Value) ((LayeredGNode) pred.get(0)).value()));
         }
         for (int i = 1; i < pred.size(); i++) {
-            predecessors += ", " + ((Value)((LayeredGNode)pred.get(i)).value()).getUniqueId();
+            predecessors.append(", ").append(getUniqueId((Value) ((LayeredGNode) pred.get(i)).value()));
         }
 
-        String factorString =  "\\factor[above=of " + value.getUniqueId() + "] {" + factorName + "} {left:" + generator.getName() + "} {} {} ; %\n";
-        String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + value.getUniqueId() + "}; %";
+        String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:" + generator.getName() + "} {} {} ; %\n";
+        String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + getUniqueId(value) + "}; %";
 
         return factorString + factorEdgeString;
     }

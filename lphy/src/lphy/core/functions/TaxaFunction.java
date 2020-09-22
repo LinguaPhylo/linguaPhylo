@@ -1,6 +1,7 @@
 package lphy.core.functions;
 
 import lphy.evolution.Taxa;
+import lphy.evolution.Taxon;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -19,6 +20,45 @@ public class TaxaFunction extends DeterministicFunction<Taxa> {
     @GeneratorInfo(name="taxa",description = "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).")
     public Value<Taxa> apply() {
         Value<Taxa> v = (Value<Taxa>)getParams().get(paramName);
-        return new Value<>( null, v.value(), this);
+
+        Taxa rawTaxa = v.value();
+
+        Taxa wrappedTaxa = new Taxa() {
+            @Override
+            public int ntaxa() {
+                return rawTaxa.ntaxa();
+            }
+
+            @Override
+            public Double[] getAges() {
+                return rawTaxa.getAges();
+            }
+
+            @Override
+            public String[] getSpecies() {
+                return rawTaxa.getSpecies();
+            }
+
+            @Override
+            public String[] getTaxaNames() {
+                return rawTaxa.getTaxaNames();
+            }
+
+            public Taxon[] getTaxa() {
+                return rawTaxa.getTaxa();
+            }
+
+            @Override
+            public String toString() {
+                StringBuilder builder = new StringBuilder();
+                for (Taxon taxon : getTaxa()) {
+                    builder.append(taxon.toString());
+                    builder.append("\n");
+                }
+                return builder.toString();
+            }
+        };
+
+        return new Value<>( null, wrappedTaxa, this);
     }
 }

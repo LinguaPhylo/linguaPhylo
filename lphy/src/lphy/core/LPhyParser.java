@@ -43,8 +43,16 @@ public interface LPhyParser {
         return getValue(id, context) != null;
     }
 
+    /**
+     * @param id a value id
+     * @return true if this id is contained in both the data block and the model block and the model id is a random variable.
+     */
     default boolean isClamped(String id) {
-        return (getDataDictionary().containsKey(id) && getModelDictionary().containsKey(id));
+        return (id != null && getDataDictionary().containsKey(id) && getModelDictionary().containsKey(id) && getModelDictionary().get(id) instanceof RandomVariable);
+    }
+
+    default boolean isClampedVariable(Value value) {
+        return value instanceof RandomVariable && isClamped(value.getId());
     }
 
     void addCommand(Command command);
@@ -328,6 +336,10 @@ public interface LPhyParser {
         }
     }
 
+    /**
+     * @param value
+     * @return true if this is a named value in the data block.
+     */
     default boolean isDataValue(Value value) {
         return (!value.isAnonymous() && !(value instanceof RandomVariable) && hasValue(value.getId(), Context.data));
     }

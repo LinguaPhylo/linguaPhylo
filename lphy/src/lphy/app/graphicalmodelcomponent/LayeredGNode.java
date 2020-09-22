@@ -119,6 +119,9 @@ public class LayeredGNode extends LayeredNode.Default {
         } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
             backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
+        } else if (parser.isClampedVariable(value)) {
+            backgroundColor = new Color(0.2f, 0.2f, 1.0f, 0.5f);
+            borderColor = new Color(0.15f, 0.15f, 0.75f, 1.0f);
         }
 
         if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyParser.Context.model) != value) {

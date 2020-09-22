@@ -36,4 +36,8 @@ public class Taxon {
         if (species == null) return name;
         return species;
     }
+
+    public String toString() {
+        return name + ((species != null && !species.equals(name)) ? "/" + species : "") + "=" + age;
+    }
 }
