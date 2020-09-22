@@ -26,7 +26,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
     static Color constantColor = Color.magenta;
     static Color keywordColor = Color.black;
     static Color argumentNameColor = Color.gray;
-    static Color functionColor = new Color(196,0,196);
+    static Color functionColor = new Color(196, 0, 196);
 
     static int argumentNameSize = 10;
 
@@ -64,7 +64,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
     public class DataModelASTVisitor extends DataModelBaseVisitor<Object> {
 
-        public DataModelASTVisitor() { }
+        public DataModelASTVisitor() {
+        }
 
         private void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
@@ -78,7 +79,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
             }
         }
 
-        @Override public Object visitDatablock(DataModelParser.DatablockContext ctx) {
+        @Override
+        public Object visitDatablock(DataModelParser.DatablockContext ctx) {
 
             context = LPhyParser.Context.data;
 
@@ -88,7 +90,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
             return children;
         }
 
-        @Override public Object visitModelblock(DataModelParser.ModelblockContext ctx) {
+        @Override
+        public Object visitModelblock(DataModelParser.ModelblockContext ctx) {
 
             context = LPhyParser.Context.model;
 
@@ -143,11 +146,12 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
         @Override
         public Object visitExpression(DataModelParser.ExpressionContext ctx) {
+
             if (ctx.getChildCount() == 1) {
                 String key = ctx.getChild(0).getText();
                 if (parser.hasValue(key, context)) {
                     Value value = parser.getValue(key, context);
-                    return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle );
+                    return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle);
                 }
             }
 
@@ -160,7 +164,17 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
                     element.add((TextElement) visit(ctx.getChild(ctx.getChildCount() - 1)));
                     return element;
+                } else if (s.equals("[")) {
+
+                    TextElement e = (TextElement) visit(ctx.getChild(0));
+                    e.add(new TextElement("[", punctuationStyle));
+                    e.add((TextElement) visit(ctx.getChild(2)));
+                    e.add("]", punctuationStyle);
+
+                    return e;
                 }
+
+
                 s = ctx.getChild(0).getText();
 
                 if (s.equals("!")) {
@@ -190,7 +204,9 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
                 return new TextElement((String) exp, literalStyle);
             }
 
-            if (exp == null) throw new RuntimeException("exp is null for expression context: " + ctx.getText());
+            if (exp == null) {
+                throw new RuntimeException("exp is null for expression context: " + ctx.getText() + " child count = " + ctx.getChildCount());
+            }
 
             throw new RuntimeException(exp + " of type " + exp.getClass());
 
@@ -244,7 +260,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
                     element.add(", ", punctuationStyle);
                 }
             }
-            return element;        }
+            return element;
+        }
 
         @Override
         public Object visitMethodCall(DataModelParser.MethodCallContext ctx) {
@@ -259,7 +276,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
             if (ctx2.getText().equals(")")) {
                 // no arguments
             } else {
-                e.add((TextElement)visit(ctx2));
+                e.add((TextElement) visit(ctx2));
             }
             e.add(")", punctuationStyle);
 

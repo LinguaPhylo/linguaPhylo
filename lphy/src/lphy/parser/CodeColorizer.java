@@ -115,10 +115,18 @@ public class CodeColorizer extends SimulatorBaseListener {
                 if (ParserTools.bivarOperators.contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
-                    element.add(s, textPane.getStyle("punctuationStyle"));
+                    element.add(s, punctuationStyle);
 
                     element.add((TextElement) visit(ctx.getChild(ctx.getChildCount() - 1)));
                     return element;
+                } else if (s.equals("[")) {
+
+                    TextElement e = (TextElement) visit(ctx.getChild(0));
+                    e.add(new TextElement("[", punctuationStyle));
+                    e.add((TextElement) visit(ctx.getChild(2)));
+                    e.add("]", punctuationStyle);
+
+                    return e;
                 }
                 s = ctx.getChild(0).getText();
 

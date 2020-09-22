@@ -64,13 +64,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         public Object visitRange_list(SimulatorParser.Range_listContext ctx) {
 
-            System.out.println("Visiting a range list:" + ctx.getText());
-
             List<Integer> range = new ArrayList<>();
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof Integer) {
                     range.add((Integer) o);
+                } else if (o instanceof Integer[]) {
+                    Collections.addAll(range, (Integer[]) o);
                 } else if (o == null) {
                     // ignore commas
                 } else {
@@ -83,8 +83,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         public Object visitRange_element(SimulatorParser.Range_elementContext ctx) {
 
-            System.out.println("Visiting a range element:" + ctx.getText());
-
             Object o = visitChildren(ctx);
             if (o instanceof DoubleValue) {
                 return (int) (double) ((DoubleValue) o).value();
@@ -94,7 +92,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
 
             if (o instanceof Range) {
-                return ((Range)o).apply().value();
+                return ((Range) o).apply().value();
             }
 
             throw new IllegalArgumentException("Expected integer value, or range, but don't know how to handle " +
@@ -132,14 +130,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
                 return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
             } else throw new RuntimeException();
-        }
-
-        private String nextID(String id) {
-            int k = 0;
-            while (parser.hasValue(id + k, context)) {
-                k++;
-            }
-            return id + k;
         }
 
         @Override
@@ -352,6 +342,45 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return id;
         }
 
+        /**
+         * @param ctx
+         * @return an ElementAt or ElementsAt function
+         */
+        private Object visitIndexRange(SimulatorParser.ExpressionContext ctx) {
+
+            Value array = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
+
+            if (!array.value().getClass().isArray()) {
+                LoggerUtils.log.severe("Expected value " + array + " to be an array.");
+            }
+
+            List indexRange = (List) visit(ctx.getChild(2));
+
+            if (indexRange.size() == 1) {
+                Object firstElement = indexRange.get(0);
+                if (firstElement instanceof Integer) {
+                    return new ElementAt(new IntegerValue(null, (Integer) firstElement), array);
+                } else if (firstElement instanceof Integer[]) {
+                    Integer[] indices = (Integer[]) firstElement;
+                    if (indices.length == 1) {
+                        return new ElementAt(new Value<>(null, indices[0]), array);
+                    } else {
+                        return new ElementsAt(new Value<>(null, indices), array);
+                    }
+                } else {
+                    LoggerUtils.log.severe("Unhandled index range: " + ctx.getText());
+                    return indexRange;
+                }
+            } else {
+                Integer[] indices = new Integer[indexRange.size()];
+                for (int i = 0; i < indices.length; i++) {
+                    indices[i] = (Integer)indexRange.get(i);
+                }
+
+                return new ElementsAt(new Value<>(null, indices), array);
+            }
+
+        }
 
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
@@ -366,7 +395,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             ExpressionNode expression = null;
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
+
+                if (s.equals("[")) {
+                    return visitIndexRange(ctx);
+                }
+
                 if (ParserTools.bivarOperators.contains(s)) {
+
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
 
                     Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
@@ -441,6 +476,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					case ">>>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
                         case ":":
                             return new Range(f1, f2);
+                        case "[":
+
                     }
                     return expression;
                 }
@@ -536,9 +573,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     } else {
                         throw new RuntimeException("Don't know how to handle 3D matrices");
                     }
-//				}
                 }
             }
+
+            LoggerUtils.log.severe("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
+
             return super.visitExpression(ctx);
         }
 
@@ -548,7 +587,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             public ValueOrFunction(Object obj) {
                 this.obj = obj;
-                if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) throw new RuntimeException();
+                if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
+                    LoggerUtils.log.severe("Expected value or function but got " + obj + " of class " + obj.getClass().getName());
+                    throw new RuntimeException();
+                }
             }
 
             Value getValue() {
