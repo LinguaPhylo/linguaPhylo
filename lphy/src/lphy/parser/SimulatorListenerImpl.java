@@ -576,7 +576,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 }
             }
 
-            LoggerUtils.log.severe("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
+            LoggerUtils.log.fine("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
 
             return super.visitExpression(ctx);
         }
