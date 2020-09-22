@@ -10,6 +10,9 @@ public interface GraphicalModelNode<T> {
      */
     List<GraphicalModelNode> getInputs();
 
+    /**
+     * @return a unique string representing this graphical model node. For named variables it should be the name.
+     */
     String getUniqueId();
 
     /**

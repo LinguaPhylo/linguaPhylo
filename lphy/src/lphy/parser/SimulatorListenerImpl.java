@@ -2,9 +2,7 @@ package lphy.parser;
 
 
 import lphy.core.LPhyParser;
-import lphy.core.functions.DoubleArray;
-import lphy.core.functions.IntegerArray;
-import lphy.core.functions.Range;
+import lphy.core.functions.*;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.Expression_listContext;
@@ -23,6 +21,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.Map;
 import java.util.logging.Level;
 
 import static java.util.Collections.max;
@@ -494,6 +493,27 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             return intArray.apply();
                         }
                     }
+                    if (var[0].value() instanceof Boolean[]) {
+                        Boolean[][] value = new Boolean[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            value[i] = (Boolean[]) var[i].value();
+                        }
+                        BooleanArray2DValue v = new BooleanArray2DValue(null, value);
+                        return v;
+                    } else if (var[0].value() instanceof Boolean) {
+                        if (allConstants(var)) {
+                            Boolean[] value = new Boolean[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (Boolean) var[i].value();
+                            }
+                            BooleanArrayValue v = new BooleanArrayValue(null, value);
+                            return v;
+                        } else {
+                            BooleanArray booleanArray = new BooleanArray(var);
+                            return booleanArray.apply();
+                        }
+                    }
+
                     if (var[0].value() instanceof String[]) {
                         String[][] value = new String[var.length][];
                         for (int i = 0; i < value.length; i++) {
@@ -510,8 +530,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             StringArrayValue v = new StringArrayValue(null, value);
                             return v;
                         } else {
-                            IntegerArray intArray = new IntegerArray(var);
-                            return intArray.apply();
+                            StringArray stringArray = new StringArray(var);
+                            return stringArray.apply();
                         }
                     } else {
                         throw new RuntimeException("Don't know how to handle 3D matrices");
