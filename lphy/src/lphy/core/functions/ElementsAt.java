@@ -1,11 +1,11 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
+import lphy.utils.LoggerUtils;
 
-public class ElementsAt<T> extends DeterministicFunction<T[]> {
+import java.lang.reflect.Array;
+
+public class ElementsAt<T> extends DeterministicFunction {
 
     String indexParamName;
     String arrayParamName;
@@ -21,17 +21,20 @@ public class ElementsAt<T> extends DeterministicFunction<T[]> {
 
     @Override
     @GeneratorInfo(name = "elementsAt", description = "A function to extract some element from an array by index.")
-    public Value<T[]> apply() {
+    public Value apply() {
 
         Value<T[]> array = array();
         Integer[] index = index().value();
 
-        T[] newArray = (T[]) new Object[index.length];
-        for (int i = 0; i < index.length; i++) {
-            newArray[i] = array.value()[index[i]];
+        if (index.length > 1) {
+            T[] newArray = (T[])Array.newInstance(array.value().getClass().getComponentType(), index.length);
+            for (int i = 0; i < index.length; i++) {
+                newArray[i] = array.value()[index[i]];
+            }
+            return ValueUtils.createValue(newArray, this);
+        } else {
+            return ValueUtils.createValue(array.value()[index[0]], this);
         }
-
-        return new Value<>(null, newArray, this);
     }
 
     public Value<T[]> array() {
@@ -53,7 +56,7 @@ public class ElementsAt<T> extends DeterministicFunction<T[]> {
         String indexString = index().codeString();
 
         if (!index().isAnonymous()) {
-            return indexString = index().getId();
+            return super.codeString();
         }
         return arrayString + "[" + indexString + "]";
     }

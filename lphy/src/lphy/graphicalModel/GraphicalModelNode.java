@@ -16,7 +16,7 @@ public interface GraphicalModelNode<T> {
     String getUniqueId();
 
     /**
-     * @return current value of the Constant, DeterministicFunction (or GenerativeDistribution?)
+     * @return the raw value (without Value wrapper) of the Constant, DeterministicFunction (or GenerativeDistribution?)
      */
     T value();
 }

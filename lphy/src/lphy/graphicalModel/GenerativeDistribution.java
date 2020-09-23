@@ -129,9 +129,12 @@ public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
         return builder.toString();
     }
 
-    @Override
+    /**
+     * Implementation of GraphicalModelNode value method. Unsupported for Generative Distributions.
+     * @throws UnsupportedOperationException
+     */
     default T value() {
-    	return null;
+        throw new UnsupportedOperationException();
     }
 
 }

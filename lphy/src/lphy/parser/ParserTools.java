@@ -46,7 +46,7 @@ public class ParserTools {
             genDistSet.add(genClass);
         }
 
-        Class<?>[] functionClasses = {ARange.class, ArgI.class, ElementAt.class,
+        Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
                 LocalBranchRates.class, lphy.core.functions.Map.class,
                 CreateTaxa.class,
