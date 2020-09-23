@@ -1,6 +1,6 @@
 data {
-  coding = nexus(file="examples/primate.nex", charset="coding");
-  noncoding = nexus(file="examples/primate.nex", charset="noncoding");
+  coding = nexus(file="examples/primate.nex", part="coding");
+  noncoding = nexus(file="examples/primate.nex", part="noncoding");
   L1 = nchar(coding);
   L2 = nchar(noncoding);
   taxa = taxa(coding);

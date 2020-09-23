@@ -75,7 +75,7 @@ public class NexusParser {
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, final String ageMode) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, final String ageType) {
 
         try {
             importer.importNexus();
@@ -116,7 +116,7 @@ public class NexusParser {
         }
 
         // forward backward age
-        final Map<String, Double> ageMap = importer.getAgeMap(ageMode);
+        final Map<String, Double> ageMap = importer.getAgeMap(ageType);
         if (ageMap != null) {
             lphyAlg.setAgeMap(ageMap);
         }

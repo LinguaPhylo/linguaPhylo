@@ -11,6 +11,7 @@ import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
+import lphy.evolution.io.TaxaAttr.AgeType;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
 
@@ -18,8 +19,6 @@ import java.awt.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -45,7 +44,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, List<CharSetBlock>> charsetMap;
     protected Map<String, String> dateMap; // TODO replace to ageMap
     protected ChronoUnit chronoUnit = null;
-    protected AgeMode ageMode = null;
+    protected AgeType ageType = null;
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
@@ -79,12 +78,6 @@ public class ExtNexusImporter extends NexusImporter {
         UNALIGNED,
         DISTANCES,
         TREES
-    }
-
-    public enum AgeMode {
-        forward, // virus
-        backward, // fossils
-        age
     }
 
 
@@ -279,85 +272,21 @@ public class ExtNexusImporter extends NexusImporter {
     }
 
     /**
-     * TODO allow date "yyyy-M-dd"
-     * @param mode  forward backward age
+     * TODO parse date "uuuu-MM-dd"
+     * @param type  forward backward age
      * @return
      * @throws DateTimeParseException
      */
-    public Map<String, Double> getAgeMap(final String mode) {
+    public Map<String, Double> getAgeMap(final String type) {
         if (dateMap==null || dateMap.size() < 1) return null;
-        try {
-            ageMode = AgeMode.valueOf(mode.toLowerCase());
-        } catch (IllegalArgumentException e) {
-            ageMode = null;
-        }
 
-        // parse String to Double
-        double[] vals = new double[dateMap.size()]; // LinkedHashMap;
-        List<String> keys = new ArrayList<>(dateMap.keySet());
+        // LinkedHashMap supposes to maintain the order in keySet() and values()
+        String[] taxaNames = dateMap.keySet().toArray(String[]::new);
+        String[] datesStr = dateMap.values().toArray(String[]::new);
 
-        // parse the age value
-        boolean isDate = false;
-        for (int i = 0; i < keys.size(); i++) {
-            String taxon = keys.get(i);
-            String valStr = dateMap.get(taxon);
-            try {
-                vals[i] = Double.parseDouble(valStr);
-            } catch (NumberFormatException e) {
-                // the val is Date not Number
-                isDate = true;
-                System.err.println("Warning: the age value (" + valStr +
-                        ") is not numeric, so guessing the date by uuuu-MM-dd");
-                break;
-            }
-        }
-
-        // if val is date, compute the age based on unit
-        if (isDate) {
-            if (!chronoUnit.equals(ChronoUnit.YEARS))
-                throw new UnsupportedOperationException("Only support unit of year for parsing dates !");
-
-            vals = new double[dateMap.size()];
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("uuuu-MM-dd");
-
-            for (int i = 0; i < keys.size(); i++) {
-                String taxon = keys.get(i);
-                String valStr = dateMap.get(taxon);
-                try {
-                    LocalDate date = LocalDate.parse(valStr, f);
-                    // decimal year
-                    vals[i] = date.getYear() + (date.getDayOfYear() - 1.0) / (date.isLeapYear() ? 366.0 : 365.0);
-                } catch (DateTimeParseException e) {
-                    throw new RuntimeException("Cannot parse the date string by uuuu-MM-dd ! " + valStr);
-                }
-            }
-        }
-
-        // find min max for forward or backward
-        double max = vals[0], min = vals[0];
-        for (int i = 1; i < keys.size(); i++) {
-            if (vals[i] > max) max = vals[i];
-            else if (vals[i] < min) min = vals[i];
-        }
-
-        Map<String, Double> ageMap = new LinkedHashMap<>();
-        for (int i = 0; i < keys.size(); i++) {
-            String taxon = keys.get(i);
-
-            if (AgeMode.age.equals(ageMode)) {
-                ageMap.put(taxon, vals[i]);
-            } else if (AgeMode.forward.equals(ageMode)) {
-                // like virus
-                ageMap.put(taxon, max - vals[i]);
-            } else if (AgeMode.backward.equals(ageMode)) {
-                // like fossils
-                ageMap.put(taxon, vals[i] - min);
-            } else {
-                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + ageMode);
-            }
-        }
-
-        return ageMap;
+        TaxaAttr taxaAttr = new TaxaAttr(taxaNames, datesStr, type.toLowerCase());
+        ageType = taxaAttr.getAgeType();
+        return taxaAttr.getTaxaAgeMap();
     }
 
 
