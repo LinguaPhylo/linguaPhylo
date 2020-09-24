@@ -1,5 +1,5 @@
 data {
-  D = nexus(file="examples/Dengue4.nex", ageType="forward");
+  D = nexus(file="examples/Dengue4.nex", tipcalibrations="forward");
   L = nchar(D);
 }
 model {

@@ -1,0 +1,19 @@
+data {
+  codon1 = nexus(file="examples/RSV2.nex", charset="1-629\3");
+  codon2 = nexus(file="examples/RSV2.nex", charset="2-629\3");
+  codon3 = nexus(file="examples/RSV2.nex", charset="3-629\3");
+  taxa = guessAges(taxa=codon1, regx="s(\d+)$", ageType="forward");
+  L1 = nchar(codon1);
+  L2 = nchar(codon2);
+  L3 = nchar(codon3);
+}
+model {
+  mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
+  Θ ~ LogNormal(meanlog=3, sdlog=1);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+  codon1 ~ PhyloCTMC(tree=ψ, L=L1, Q=f81(freq=π), mu=mu);
+  codon2 ~ PhyloCTMC(tree=ψ, L=L2, Q=f81(freq=π), mu=mu);
+  codon3 ~ PhyloCTMC(tree=ψ, L=L3, Q=f81(freq=π), mu=mu);
+}
+

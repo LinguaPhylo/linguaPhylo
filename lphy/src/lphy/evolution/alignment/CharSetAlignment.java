@@ -88,12 +88,9 @@ public class CharSetAlignment extends AbstractAlignment {
         for (String partName : nameSet) {
             List<CharSetBlock> charSetBlocks = charsetMap.get(partName);
 
-            int partNChar = getFilteredNChar(charSetBlocks, this.nchar);
-            tot += partNChar;
-            SimpleAlignment part = new SimpleAlignment(this.idMap, partNChar, this.sequenceType);
-            // fill in sequences
-            fillSeqsInParts(charSetBlocks, part, parentAlignment);
+            SimpleAlignment part = getPartition(charSetBlocks, parentAlignment);
 
+            tot += part.nchar();
             partsMap.put(partName, part);
         }
 
@@ -105,7 +102,21 @@ public class CharSetAlignment extends AbstractAlignment {
 
     }
 
-    private int getFilteredNChar(List<CharSetBlock> charSetBlocks, int length) {
+    //*** Utils ***
+
+    /**
+     * @return a {@link SimpleAlignment} partition with sequences
+     * split from the parent alignment by list of {@link CharSetBlock}.
+     */
+    public static SimpleAlignment getPartition(List<CharSetBlock> charSetBlocks, final SimpleAlignment parentAlignment) {
+        int partNChar = getFilteredNChar(charSetBlocks, parentAlignment.nchar());
+        SimpleAlignment part = new SimpleAlignment(parentAlignment.idMap, partNChar, parentAlignment.getSequenceType());
+        // fill in sequences
+        fillSeqsInParts(charSetBlocks, part, parentAlignment);
+        return part;
+    }
+
+    private static int getFilteredNChar(List<CharSetBlock> charSetBlocks, int length) {
         int s = 0;
         for (CharSetBlock block : charSetBlocks) {
             int toSite = block.getTo();
@@ -119,15 +130,15 @@ public class CharSetAlignment extends AbstractAlignment {
         return s;
     }
 
-    private void fillSeqsInParts(List<CharSetBlock> charSetBlocks, SimpleAlignment part,
-                                 final SimpleAlignment parentAlignment) {
+    private static void fillSeqsInParts(List<CharSetBlock> charSetBlocks, SimpleAlignment part,
+                                        final SimpleAlignment parentAlignment) {
         // this CharSetAlignment has the same taxa mapping of all parts Alignment
-        for (int t = 0; t < this.ntaxa(); t++) {
+        for (int t = 0; t < parentAlignment.ntaxa(); t++) {
             int pos = 0;
             for (CharSetBlock block : charSetBlocks) {
                 int toSite = block.getTo();
                 if (toSite <= 0) {
-                    toSite = this.nchar;
+                    toSite = parentAlignment.nchar();
                 }
                 for (int i = block.getFrom(); i <= toSite; i += block.getEvery()) {
                     // the -1 comes from the fact that charsets are indexed from 1 whereas strings are indexed from 0
@@ -139,6 +150,7 @@ public class CharSetAlignment extends AbstractAlignment {
             assert pos == part.nchar();
         }
     }
+
 
     //*** Override ***
 

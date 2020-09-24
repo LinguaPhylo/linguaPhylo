@@ -32,7 +32,7 @@ public class NexusParser {
     @Deprecated
     BufferedReader reader;
 
-    ExtNexusImporter importer;
+    private ExtNexusImporter importer;
 
     protected Path nexFile; // lock to 1 file now
 
@@ -73,9 +73,11 @@ public class NexusParser {
      * @param ignoreCharset If true, ignore charset in Nexus,
      *                      only return single {@link SimpleAlignment}.
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
+     * @param tipcalibrations  either forward or backward,
+     *                         if null and nex has TIPCALIBRATION block, then assume forward.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, final String ageType) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String tipcalibrations) {
 
         try {
             importer.importNexus();
@@ -116,7 +118,7 @@ public class NexusParser {
         }
 
         // forward backward age
-        final Map<String, Double> ageMap = importer.getAgeMap(ageType);
+        final Map<String, Double> ageMap = importer.getAgeMap(tipcalibrations);
         if (ageMap != null) {
             lphyAlg.setAgeMap(ageMap);
         }
@@ -131,6 +133,10 @@ public class NexusParser {
             return new CharSetAlignment(charsetMap, lphyAlg);
         }
         return lphyAlg; // sing partition
+    }
+
+    public ExtNexusImporter getImporter() {
+        return importer;
     }
 
     public static void main(final String[] args) {

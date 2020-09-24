@@ -11,7 +11,7 @@ import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
-import lphy.evolution.io.TaxaAttr.AgeType;
+import lphy.evolution.io.TaxaAttr.TipCalibrationType;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
 
@@ -44,7 +44,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, List<CharSetBlock>> charsetMap;
     protected Map<String, String> dateMap; // TODO replace to ageMap
     protected ChronoUnit chronoUnit = null;
-    protected AgeType ageType = null;
+    protected TipCalibrationType ageType = null;
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
@@ -219,7 +219,8 @@ public class ExtNexusImporter extends NexusImporter {
 
                     switch (scale) {
                         case "year":
-                            chronoUnit = ChronoUnit.YEARS; break;
+                            chronoUnit = ChronoUnit.YEARS;
+                            break;
 //                        case "month":
 //                            chronoUnit = ChronoUnit.MONTHS; break;
 //                        case "day":
@@ -272,20 +273,21 @@ public class ExtNexusImporter extends NexusImporter {
     }
 
     /**
-     * TODO parse date "uuuu-MM-dd"
-     * @param type  forward backward age
+     * @param tipcalibrations either forward or backward
      * @return
      * @throws DateTimeParseException
      */
-    public Map<String, Double> getAgeMap(final String type) {
-        if (dateMap==null || dateMap.size() < 1) return null;
+    public Map<String, Double> getAgeMap(String tipcalibrations) {
+        if (dateMap == null || dateMap.size() < 1) return null;
 
         // LinkedHashMap supposes to maintain the order in keySet() and values()
         String[] taxaNames = dateMap.keySet().toArray(String[]::new);
         String[] datesStr = dateMap.values().toArray(String[]::new);
 
-        TaxaAttr taxaAttr = new TaxaAttr(taxaNames, datesStr, type.toLowerCase());
-        ageType = taxaAttr.getAgeType();
+        if (tipcalibrations == null) // default to forward
+            tipcalibrations = TipCalibrationType.forward.toString(); //TODO is this a good assumption?
+        TaxaAttr taxaAttr = new TaxaAttr(taxaNames, datesStr, tipcalibrations.toLowerCase());
+        ageType = taxaAttr.getTipCalibrationType();
         return taxaAttr.getTaxaAgeMap();
     }
 
@@ -309,48 +311,81 @@ public class ExtNexusImporter extends NexusImporter {
                 String charset = helper.readToken("=");
                 List<CharSetBlock> charSetBlocks = new ArrayList<>();
                 do {
-                    String token2 = helper.readToken(";");
-                    String[] parts = token2.split("-");
-
-                    int from, to, every = 1;
+                    String oneBlock = helper.readToken(";");
                     try {
-                        if (parts.length == 2) {
-                            // from site
-                            from = Integer.parseInt(parts[0].trim());
-
-                            // codons : 629\3
-                            if (parts[1].contains("/"))
-                                throw new ImportException("Invalid delimiter for codon positions ! " + parts[1]);
-                            String[] toParts = parts[1].split("\\\\");
-                            // to site
-                            if (toParts[0].trim().equals("."))
-                                to = -1; // if (to <= 0) toSite = nchar;
-                            else
-                                to = Integer.parseInt(toParts[0].trim());
-                            // codon position
-                            if (toParts.length > 1)
-                                every = Integer.parseInt(toParts[1].trim());
-                            else
-                                every = 1;
-
-                        } else if (parts.length == 1) {
-                            // only 1 site
-                            from = Integer.parseInt(parts[0].trim());
-                            to = from;
-                        } else
-                            throw new ImportException("Charset " + charset + " = " + token2 + " cannot be parsed");
-                    } catch (NumberFormatException nfe) {
-                        throw new ImportException("Charset " + charset + " = " + token2 + " cannot be parsed");
+                        CharSetBlock charSetBlock = parseCharSet(oneBlock);
+                        charSetBlocks.add(charSetBlock);
+                    } catch (IllegalArgumentException e) {
+                        throw new ImportException("Charset " + charset + e.getMessage());
                     }
-
-                    charSetBlocks.add(new CharSetBlock(from, to, every));
-
                 } while (helper.getLastDelimiter() != ';');
 
                 charsetMap.put(charset, charSetBlocks);
             }
         } while (isNotEnd(token));
         //validation ?
+    }
+
+    //****** CharSet Utils ******//
+
+    /**
+     * @see #parseCharSet(String)
+     * @param charset  such as "2-457\3 660-896\3".
+     * @return
+     */
+    public List<CharSetBlock> getCharSetBlocks(String charset) {
+        String[] blocks = charset.split("\\s+");
+        List<CharSetBlock> charSetBlocks = new ArrayList<>();
+        for (String oneBlock : blocks) {
+            CharSetBlock charSetBlock = parseCharSet(oneBlock);
+            charSetBlocks.add(charSetBlock);
+        }
+        return charSetBlocks;
+    }
+
+    /**
+     * @param charSet1Block the string only has one block, which is separated by space.
+     *                      "2-457\3 660-896\3" is considered as 2 charset blocks.
+     *                      Use <code>split("\\s+")</code> to spilt charset blocks before call this method.
+     * @return only 1 {@link CharSetBlock} parsed from string
+     * @throws IllegalArgumentException
+     */
+    public CharSetBlock parseCharSet(String charSet1Block) throws IllegalArgumentException {
+
+        String[] parts = Objects.requireNonNull(charSet1Block).split("-");
+
+        int from, to, every = 1;
+        try {
+            if (parts.length == 2) {
+                // from site
+                from = Integer.parseInt(parts[0].trim());
+
+                // codons : 629\3
+                if (parts[1].contains("/")) // to avoid typo
+                    throw new IllegalArgumentException("Invalid delimiter for codon positions ! " + parts[1]);
+                String[] toParts = parts[1].split("\\\\");
+                // to site
+                if (toParts[0].trim().equals("."))
+                    to = -1; // if (to <= 0) toSite = nchar;
+                else
+                    to = Integer.parseInt(toParts[0].trim());
+                // codon position
+                if (toParts.length > 1)
+                    every = Integer.parseInt(toParts[1].trim());
+                else
+                    every = 1;
+
+            } else if (parts.length == 1) {
+                // only 1 site
+                from = Integer.parseInt(parts[0].trim());
+                to = from;
+            } else
+                throw new NumberFormatException();
+        } catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("block " + charSet1Block + " cannot be parsed");
+        }
+
+        return new CharSetBlock(from, to, every);
     }
 
 

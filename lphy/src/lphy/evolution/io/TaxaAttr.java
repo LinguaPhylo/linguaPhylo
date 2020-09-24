@@ -20,29 +20,29 @@ import java.util.regex.Pattern;
 public class TaxaAttr implements Taxa {
 
 //    protected final Pattern regx;
-    protected final AgeType ageType;
+    protected final TipCalibrationType tipCalibType;
     // use map to guarantee mapping correct
     protected Map<String, Double> taxaAgeMap;
 
     //TODO speciesMap
 
 
-    public enum AgeType {
+    public enum TipCalibrationType {
         forward, // virus
-        backward, // fossils
-        age
+        backward // fossils
+//        age
     }
 
     /**
      * To guess the date from taxa names and compute ages
-     * according to {@link AgeType}
+     * according to {@link TipCalibrationType}
      * @param taxaNames    taxa names.
      * @param regxStr      Java regular expression.
      * @param ageTypeStr   age type (i.e. forward, backward, age)
      */
     public TaxaAttr(String[] taxaNames, String regxStr, String ageTypeStr) {
         // lower case, forward backward age
-        this.ageType = AgeType.valueOf(ageTypeStr.toLowerCase());
+        this.tipCalibType = TipCalibrationType.valueOf(ageTypeStr.toLowerCase());
 
         String[] datesStr = new String[Objects.requireNonNull(taxaNames).length];
         // guess dates
@@ -62,11 +62,11 @@ public class TaxaAttr implements Taxa {
      * @param taxaNames   taxa names.
      * @param datesStr     the date strings of corresponding taxa names.
      * @param ageTypeStr  age type (i.e. forward, backward, age).
-     * @see AgeType
+     * @see TipCalibrationType
      */
     public TaxaAttr(String[] taxaNames, String[] datesStr, String ageTypeStr) {
         // lower case, forward backward age
-        this.ageType = AgeType.valueOf(ageTypeStr.toLowerCase());
+        this.tipCalibType = TipCalibrationType.valueOf(ageTypeStr.toLowerCase());
 
         createTaxaAgeMap(taxaNames, datesStr);
     }
@@ -86,16 +86,14 @@ public class TaxaAttr implements Taxa {
         taxaAgeMap = new LinkedHashMap<>();
         for (int i = 0; i < taxaNames.length; i++) {
 
-            if (AgeType.age.equals(ageType)) {
-                taxaAgeMap.put(taxaNames[i], ages[i]);
-            } else if (AgeType.forward.equals(ageType)) {
-                // like virus
-                taxaAgeMap.put(taxaNames[i], max - ages[i]);
-            } else if (AgeType.backward.equals(ageType)) {
-                // like fossils
-                taxaAgeMap.put(taxaNames[i], ages[i] - min);
+//            if (TipCalibrationType.age.equals(tipCalibType)) {
+//                taxaAgeMap.put(taxaNames[i], ages[i]);
+            if (TipCalibrationType.forward.equals(tipCalibType)) {
+                taxaAgeMap.put(taxaNames[i], max - ages[i]); // like virus
+            } else if (TipCalibrationType.backward.equals(tipCalibType)) {
+                taxaAgeMap.put(taxaNames[i], ages[i] - min); // like fossils
             } else {
-                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + ageType);
+                throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + tipCalibType);
             }
         }
     }
@@ -151,8 +149,8 @@ public class TaxaAttr implements Taxa {
         return taxaAgeMap;
     }
 
-    public AgeType getAgeType() {
-        return ageType;
+    public TipCalibrationType getTipCalibrationType() {
+        return tipCalibType;
     }
 
     @Override
