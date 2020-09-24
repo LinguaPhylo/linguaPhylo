@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -73,11 +74,11 @@ public class NexusParser {
      * @param ignoreCharset If true, ignore charset in Nexus,
      *                      only return single {@link SimpleAlignment}.
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
-     * @param tipcalibrations  either forward or backward,
+     * @param tipCalibrationType  either forward or backward,
      *                         if null and nex has TIPCALIBRATION block, then assume forward.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String tipcalibrations) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String tipCalibrationType) {
 
         try {
             importer.importNexus();
@@ -117,10 +118,11 @@ public class NexusParser {
 
         }
 
-        // forward backward age
-        final Map<String, Double> ageMap = importer.getAgeMap(tipcalibrations);
-        if (ageMap != null) {
-            lphyAlg.setAgeMap(ageMap);
+        final Map<String, String> dateMap = importer.getDateMap();
+        if (dateMap != null) { // if null, no TIPCALIBRATION
+            // forward backward
+            Map<String, lphy.evolution.Taxon> taxonMap = getTaxonMap(dateMap, tipCalibrationType);
+            lphyAlg.setTaxonMap(taxonMap);
         }
 
         final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
@@ -133,6 +135,23 @@ public class NexusParser {
             return new CharSetAlignment(charsetMap, lphyAlg);
         }
         return lphyAlg; // sing partition
+    }
+
+    /**
+     * @param tipcalibrations either forward or backward
+     * @return
+     * @throws DateTimeParseException
+     */
+    protected Map<String, lphy.evolution.Taxon> getTaxonMap(final Map<String, String> dateMap, String tipcalibrations) {
+        if (dateMap == null || dateMap.size() < 1) return null;
+
+        // LinkedHashMap supposes to maintain the order in keySet() and values()
+        String[] taxaNames = dateMap.keySet().toArray(String[]::new);
+        String[] datesStr = dateMap.values().toArray(String[]::new);
+
+        TaxaData taxaData = new TaxaData(taxaNames, datesStr, tipcalibrations);
+
+        return taxaData.getTaxonMap();
     }
 
     public ExtNexusImporter getImporter() {

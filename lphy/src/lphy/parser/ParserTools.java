@@ -53,7 +53,7 @@ public class ParserTools {
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, RootAge.class, TaxaFunction.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                Nexus.class, Partition.class, GuessAges.class,
+                Nexus.class, Partition.class,
                 Species.class
         };
 

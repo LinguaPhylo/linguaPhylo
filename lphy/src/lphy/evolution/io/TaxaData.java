@@ -1,28 +1,28 @@
 package lphy.evolution.io;
 
-import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Guess ages from taxa name.
- * No time unit.
+ * Create Taxon map from dates. No time unit.
  * TODO what about species?
  * @author Walter Xie
  */
-public class TaxaAttr implements Taxa {
+public class TaxaData {
 
 //    protected final Pattern regx;
     protected final TipCalibrationType tipCalibType;
     // use map to guarantee mapping correct
-    protected Map<String, Double> taxaAgeMap;
+    protected Map<String, Taxon> taxonMap;
 
     //TODO speciesMap
 
@@ -34,14 +34,15 @@ public class TaxaAttr implements Taxa {
     }
 
     /**
-     * To guess the date from taxa names and compute ages
+     * To extract the date from taxa names and compute ages
      * according to {@link TipCalibrationType}
      * @param taxaNames    taxa names.
      * @param regxStr      Java regular expression.
      * @param ageTypeStr   age type (i.e. forward, backward, age)
      */
-    public TaxaAttr(String[] taxaNames, String regxStr, String ageTypeStr) {
-        // lower case, forward backward age
+    public TaxaData(String[] taxaNames, String regxStr, String ageTypeStr) {
+        if (ageTypeStr == null) // default to forward
+            ageTypeStr = TaxaData.TipCalibrationType.forward.toString(); //TODO is this a good assumption?
         this.tipCalibType = TipCalibrationType.valueOf(ageTypeStr.toLowerCase());
 
         String[] datesStr = new String[Objects.requireNonNull(taxaNames).length];
@@ -64,8 +65,9 @@ public class TaxaAttr implements Taxa {
      * @param ageTypeStr  age type (i.e. forward, backward, age).
      * @see TipCalibrationType
      */
-    public TaxaAttr(String[] taxaNames, String[] datesStr, String ageTypeStr) {
-        // lower case, forward backward age
+    public TaxaData(String[] taxaNames, String[] datesStr, String ageTypeStr) {
+        if (ageTypeStr == null) // default to forward
+            ageTypeStr = TaxaData.TipCalibrationType.forward.toString(); //TODO is this a good assumption?
         this.tipCalibType = TipCalibrationType.valueOf(ageTypeStr.toLowerCase());
 
         createTaxaAgeMap(taxaNames, datesStr);
@@ -83,15 +85,17 @@ public class TaxaAttr implements Taxa {
             else if (ages[i] < min) min = ages[i];
         }
 
-        taxaAgeMap = new LinkedHashMap<>();
+        taxonMap = new LinkedHashMap<>();
         for (int i = 0; i < taxaNames.length; i++) {
 
 //            if (TipCalibrationType.age.equals(tipCalibType)) {
 //                taxaAgeMap.put(taxaNames[i], ages[i]);
             if (TipCalibrationType.forward.equals(tipCalibType)) {
-                taxaAgeMap.put(taxaNames[i], max - ages[i]); // like virus
+                // like virus
+                taxonMap.put(taxaNames[i], new Taxon(taxaNames[i], max - ages[i]) );
             } else if (TipCalibrationType.backward.equals(tipCalibType)) {
-                taxaAgeMap.put(taxaNames[i], ages[i] - min); // like fossils
+                // like fossils
+                taxonMap.put(taxaNames[i], new Taxon(taxaNames[i], ages[i] - min) );
             } else {
                 throw new IllegalArgumentException("Not recognised mode to convert dates to ages : " + tipCalibType);
             }
@@ -145,38 +149,12 @@ public class TaxaAttr implements Taxa {
 
     //*** getters and overrides ***//
 
-    public Map<String, Double> getTaxaAgeMap() {
-        return taxaAgeMap;
+    public Map<String, Taxon> getTaxonMap() {
+        return taxonMap;
     }
 
     public TipCalibrationType getTipCalibrationType() {
         return tipCalibType;
     }
 
-    @Override
-    public int ntaxa() {
-        return taxaAgeMap.size();
-    }
-
-    @Override
-    public Double[] getAges() {
-        // suppose to maintain the order
-        return taxaAgeMap.values().toArray(Double[]::new);
-    }
-
-    @Override
-    public String[] getTaxaNames() {
-        // suppose to maintain the order
-        return taxaAgeMap.keySet().toArray(String[]::new);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (Taxon taxon : getTaxa()) {
-            builder.append(taxon.toString());
-            builder.append("\n");
-        }
-        return builder.toString();
-    }
 }

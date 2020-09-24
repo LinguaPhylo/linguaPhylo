@@ -1,10 +1,10 @@
 package lphy.core.functions;
 
 import lphy.evolution.alignment.AbstractAlignment;
-import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.NexusParser;
+import lphy.evolution.io.TaxaData;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -19,12 +19,13 @@ import java.util.List;
  * data = nexus(file="primate.nex");
  * or coding = nexus(file="primate.nex", charset="coding");
  */
-public class Nexus extends DeterministicFunction<Alignment> {
+public class Nexus extends DeterministicFunction<AbstractAlignment> {
 
     private final String fileParamName;
     private final String partParamName;
     private final String charsetParamName;
     private final String ageTypeParamName;
+    private final String regxParamName;
 
     // cache the partitions from one Nexus file
     private static AbstractAlignment cachedAlignment = null;
@@ -35,8 +36,10 @@ public class Nexus extends DeterministicFunction<Alignment> {
                          "if none then return the full alignment.", optional=true) Value<String> part,
                  @ParameterInfo(name = "charset", description = "the charset defined by Nexus syntax, " +
                          "but cannot use with argument 'part' together.", optional=true) Value<String> charset,
-                 @ParameterInfo(name = "tipcalibrations", description = "age type (i.e. forward, backward, age).",
-                         optional=true) Value<String> ageType) {
+                 @ParameterInfo(name = "tipCalibrations", description = "age type (i.e. forward, backward, age).",
+                         optional=true) Value<String> ageType,
+                 @ParameterInfo(name = "agesFromNames", description = "Java regular expression to extract dates.",
+                         optional=true) Value<String> regx ) {
 
 
         if (fileName == null) throw new IllegalArgumentException("The file name can't be null!");
@@ -45,33 +48,37 @@ public class Nexus extends DeterministicFunction<Alignment> {
         partParamName = getParamName(1);
         charsetParamName = getParamName(2);
         ageTypeParamName = getParamName(3);
+        regxParamName = getParamName(4);
+
         setParam(fileParamName, fileName);
         if (part != null) setParam(partParamName, part);
         if (charset != null) setParam(charsetParamName, charset);
         if (ageType != null) setParam(ageTypeParamName, ageType);
+        if (regx != null) setParam(regxParamName, regx);
 
         if (part != null && charset != null)
             throw new IllegalArgumentException("Argument 'part' and 'charset' cannnot use together");
     }
 
     @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
-    public Value<Alignment> apply() {
+    public Value<AbstractAlignment> apply() {
 
         Value<String> fileName = getParams().get(fileParamName);
         Value<String> part = getParams().get(partParamName);
         Value<String> charset = getParams().get(charsetParamName);
         Value<String> ageType = getParams().get(ageTypeParamName);
+        Value<String> regx = getParams().get(regxParamName);
 
         final Path nexFile = Paths.get(fileName.value());
         NexusParser parser = new NexusParser(nexFile);
-        String type = ageType == null ? null : ageType.value();
+        String tipCalibType = ageType == null ? null : ageType.value();
 
-        Alignment a;
+        AbstractAlignment a;
         if (part != null) {
             // must be CharSetAlignment
             if (cachedAlignment == null || !currentFileName.equalsIgnoreCase(fileName.value()) ||
                     !(cachedAlignment instanceof CharSetAlignment) ) {
-                cachedAlignment = parser.getLPhyAlignment(false, type);
+                cachedAlignment = parser.getLPhyAlignment(false, tipCalibType);
                 currentFileName = fileName.value();
             }
             a = ((CharSetAlignment)  cachedAlignment).getPartAlignment(part.value());
@@ -81,7 +88,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
             if (cachedAlignment == null || !currentFileName.equalsIgnoreCase(fileName.value()) ||
                     !(cachedAlignment instanceof SimpleAlignment) ) {
                 // ignore charset in Nexus file
-                cachedAlignment = parser.getLPhyAlignment(true, type);
+                cachedAlignment = parser.getLPhyAlignment(true, tipCalibType);
                 currentFileName = fileName.value();
             }
             List<CharSetBlock> charSetBlocks = parser.getImporter().getCharSetBlocks(charset.value());
@@ -89,8 +96,14 @@ public class Nexus extends DeterministicFunction<Alignment> {
 
         } else {
             // must be SimpleAlignment
-            a = parser.getLPhyAlignment(true, type);
+            a = parser.getLPhyAlignment(true, tipCalibType);
         }
+
+        if (regx != null) {
+            TaxaData taxaData = new TaxaData(a.getTaxaNames(), regx.value(), ageType.value());
+            a.setTaxonMap(taxaData.getTaxonMap());
+        }
+
         return new Value<>(a, this);
     }
 

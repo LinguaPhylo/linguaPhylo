@@ -110,7 +110,8 @@ public class CharSetAlignment extends AbstractAlignment {
      */
     public static SimpleAlignment getPartition(List<CharSetBlock> charSetBlocks, final SimpleAlignment parentAlignment) {
         int partNChar = getFilteredNChar(charSetBlocks, parentAlignment.nchar());
-        SimpleAlignment part = new SimpleAlignment(parentAlignment.idMap, partNChar, parentAlignment.getSequenceType());
+        // copy parentAlignment except of nchar
+        SimpleAlignment part = new SimpleAlignment(partNChar, parentAlignment);
         // fill in sequences
         fillSeqsInParts(charSetBlocks, part, parentAlignment);
         return part;

@@ -17,14 +17,17 @@ public class SimpleAlignment extends AbstractAlignment {
     @Deprecated
     public SimpleAlignment(Map<String, Integer> idMap, int nchar, int numStates) {
         super(idMap, nchar, numStates);
-        int ntaxa = super.ntaxa();
-        alignment = new int[ntaxa][nchar];
+        alignment = new int[ntaxa()][nchar];
     }
 
     public SimpleAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
         super(idMap, nchar, sequenceType);
-        int ntaxa = super.ntaxa();
-        alignment = new int[ntaxa][nchar];
+        alignment = new int[ntaxa()][nchar];
+    }
+
+    public SimpleAlignment(int nchar, AbstractAlignment source) {
+        super(nchar, source);
+        alignment = new int[ntaxa()][nchar];
     }
 
     /**
@@ -68,8 +71,8 @@ public class SimpleAlignment extends AbstractAlignment {
         }
         builder.append("  nchar = ").append(nchar);
         builder.append(", ntax = ").append(super.ntaxa());
-        if (ageMap != null)
-            builder.append(",\n").append("  ageMap = ").append(ageMap.toString());
+        if (taxonMap != null)
+            builder.append(",\n").append("  ageMap = ").append(taxonMap.toString());
         builder.append("\n").append("}");
         return builder.toString();
     }

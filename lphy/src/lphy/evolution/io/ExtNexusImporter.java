@@ -11,7 +11,6 @@ import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
-import lphy.evolution.io.TaxaAttr.TipCalibrationType;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
 
@@ -19,7 +18,6 @@ import java.awt.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
@@ -42,9 +40,9 @@ public class ExtNexusImporter extends NexusImporter {
 
     protected List<Alignment> alignments;
     protected Map<String, List<CharSetBlock>> charsetMap;
-    protected Map<String, String> dateMap; // TODO replace to ageMap
+    protected Map<String, String> dateMap; // Taxon name <=> date string
     protected ChronoUnit chronoUnit = null;
-    protected TipCalibrationType ageType = null;
+    protected TaxaData.TipCalibrationType ageType = null;
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
@@ -174,8 +172,8 @@ public class ExtNexusImporter extends NexusImporter {
     }
 
     public Map<String, String> getDateMap() {
-        if (dateMap == null) dateMap = new TreeMap<>();
-        return dateMap;
+//        if (dateMap == null) dateMap = new LinkedHashMap<>();
+        return dateMap; // if null, no TIPCALIBRATION
     }
 
 //****** Data Type ******//
@@ -205,8 +203,6 @@ public class ExtNexusImporter extends NexusImporter {
 
     protected void readCalibrationBlock() throws ImportException, IOException {
 
-        dateMap = new LinkedHashMap<>();
-
         String token;
         do {
             token = helper.readToken(";");
@@ -231,10 +227,12 @@ public class ExtNexusImporter extends NexusImporter {
                 }
 
             } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
-                if (chronoUnit == null)
+
+                if (chronoUnit == null) // TODO is it necessary?
                     throw new ImportException("Cannot find SCALE unit, e.g. year");
 
                 // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
+                dateMap = new LinkedHashMap<>();
                 do {
                     String date = null;
                     String taxonNm = null;
@@ -270,25 +268,6 @@ public class ExtNexusImporter extends NexusImporter {
         } while (isNotEnd(token));
 
         //validation ?
-    }
-
-    /**
-     * @param tipcalibrations either forward or backward
-     * @return
-     * @throws DateTimeParseException
-     */
-    public Map<String, Double> getAgeMap(String tipcalibrations) {
-        if (dateMap == null || dateMap.size() < 1) return null;
-
-        // LinkedHashMap supposes to maintain the order in keySet() and values()
-        String[] taxaNames = dateMap.keySet().toArray(String[]::new);
-        String[] datesStr = dateMap.values().toArray(String[]::new);
-
-        if (tipcalibrations == null) // default to forward
-            tipcalibrations = TipCalibrationType.forward.toString(); //TODO is this a good assumption?
-        TaxaAttr taxaAttr = new TaxaAttr(taxaNames, datesStr, tipcalibrations.toLowerCase());
-        ageType = taxaAttr.getTipCalibrationType();
-        return taxaAttr.getTaxaAgeMap();
     }
 
 

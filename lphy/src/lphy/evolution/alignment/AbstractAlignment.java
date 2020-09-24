@@ -5,9 +5,9 @@ import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
 import lphy.evolution.Taxa;
+import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
-import scala.Array;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,8 @@ public abstract class AbstractAlignment implements Alignment, Taxa, HasComponent
     @Deprecated int numStates;
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
-    Map<String, Double> ageMap;
+    // same index as Map<Integer, String> reverseMap
+    Map<String, Taxon> taxonMap; // TODO duplicate to reverseMap ?
 
     /**
      * Init alignment with taxa and number of site.
@@ -57,16 +58,23 @@ public abstract class AbstractAlignment implements Alignment, Taxa, HasComponent
     }
 
     /**
-     * Copy constructor of AbstractAlignment
+     * Copy constructor, where nchar input allows partition to create from the parent Alignment
      */
-    public AbstractAlignment(final AbstractAlignment source) {
-        this.nchar = Objects.requireNonNull(source).nchar();
-        this.idMap = new TreeMap<>(source.idMap);
+    public AbstractAlignment(int nchar, final AbstractAlignment source) {
+        this.nchar = nchar;
+        this.idMap = new TreeMap<>(Objects.requireNonNull(source).idMap);
         fillRevMap();
 
         this.sequenceType = source.getSequenceType();
-        if (source.ageMap != null)
-            this.ageMap = new LinkedHashMap<>(source.ageMap);
+        if (source.taxonMap != null)
+            this.taxonMap = new LinkedHashMap<>(source.taxonMap);
+    }
+
+    /**
+     * @see #AbstractAlignment(int, AbstractAlignment)
+     */
+    public AbstractAlignment(final AbstractAlignment source) {
+        this(Objects.requireNonNull(source).nchar(), source);
     }
 
     protected void fillRevMap() {
@@ -175,12 +183,12 @@ public abstract class AbstractAlignment implements Alignment, Taxa, HasComponent
 
     //****** ages ******
 
-    public void setAgeMap(final Map<String, Double> ageMap) {
-        for (String taxon : Objects.requireNonNull(ageMap).keySet()) {
+    public void setTaxonMap(final Map<String, Taxon> taxonMap) {
+        for (String taxon : Objects.requireNonNull(taxonMap).keySet()) {
             if (!hasTaxon(taxon))
                 throw new IllegalArgumentException("Taxon " + taxon + " not exist in the alignment !");
         }
-        this.ageMap = ageMap;
+        this.taxonMap = taxonMap;
     }
 
     /**
@@ -190,16 +198,14 @@ public abstract class AbstractAlignment implements Alignment, Taxa, HasComponent
     public Double[] getAges() {
         Double[] ages = new Double[ntaxa()];
 
-        if (ageMap == null) {
+        if (taxonMap == null) {
             Arrays.fill(ages, 0.0);
             return ages;
         }
 
         for (int i = 0; i < ntaxa(); i++) {
-            Double age = ageMap.get(getTaxonName(i));
-            if (age == null)
-                throw new IllegalArgumentException("Invalid age for taxon " + getTaxonName(i) + " at index " + i);
-            ages[i] = age;
+            Taxon taxon = taxonMap.get(getTaxonName(i));
+            ages[i] = taxon.getAge();
         }
         return ages;
     }
