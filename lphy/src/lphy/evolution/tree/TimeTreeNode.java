@@ -1,5 +1,7 @@
 package lphy.evolution.tree;
 
+import lphy.evolution.Taxon;
+
 import java.util.*;
 
 /**
@@ -34,6 +36,12 @@ public class TimeTreeNode {
         for (int i = 0; i < children.length; i++) {
             children[i].parent = this;
         }
+    }
+
+    public TimeTreeNode(Taxon taxon, TimeTree tree) {
+        this.age = taxon.getAge();
+        this.id = taxon.getName();
+        this.tree = tree;
     }
 
     TimeTreeNode deepCopy(TimeTree tree) {

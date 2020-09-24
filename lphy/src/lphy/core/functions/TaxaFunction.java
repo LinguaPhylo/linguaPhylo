@@ -6,7 +6,6 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.StringArrayValue;
 
 public class TaxaFunction extends DeterministicFunction<Taxa> {
 

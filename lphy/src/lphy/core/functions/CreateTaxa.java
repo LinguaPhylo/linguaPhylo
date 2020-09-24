@@ -6,6 +6,8 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
+import java.util.Arrays;
+
 public class CreateTaxa extends DeterministicFunction<Taxa> {
 
     final String taxaParamName;
@@ -14,26 +16,34 @@ public class CreateTaxa extends DeterministicFunction<Taxa> {
 
     public CreateTaxa(@ParameterInfo(name = "names", description = "the taxa names") Value<String[]> taxa,
                       @ParameterInfo(name = "species", description = "the species of the taxa", optional=true) Value<String[]> species,
-                      @ParameterInfo(name = "ages", description = "the ages of the taxa") Value<Double[]> ages) {
+                      @ParameterInfo(name = "ages", description = "the ages of the taxa", optional=true) Value<Double[]> ages) {
         taxaParamName = getParamName(0);
         speciesParamName = getParamName(1);
         agesParamName = getParamName(2);
         setParam(taxaParamName, taxa);
         if (species != null) setParam(speciesParamName, species);
-        setParam(agesParamName, ages);
+        if (ages != null) setParam(agesParamName, ages);
     }
 
     @GeneratorInfo(name="taxa",description = "A set of taxa with species and ages defined in parallel arrays.")
     public Value<Taxa> apply() {
         Value<String[]> names = (Value<String[]>)getParams().get(taxaParamName);
         Value<String[]> speciesValue = (Value<String[]>)getParams().get(speciesParamName);
-        Value<Double[]> ages = (Value<Double[]>)getParams().get(agesParamName);
+        Value<Double[]> agesValue = (Value<Double[]>)getParams().get(agesParamName);
+
+        final Double[] ages;
 
         final String[] species;
         if (speciesValue == null) {
             species = names.value();
         } else {
             species = speciesValue.value();
+        }
+        if (agesValue == null) {
+            ages = new Double[names.value().length];
+            Arrays.fill(ages, 0.0);
+        } else {
+            ages = agesValue.value();
         }
 
         Taxa taxa = new Taxa() {
@@ -44,7 +54,7 @@ public class CreateTaxa extends DeterministicFunction<Taxa> {
 
             @Override
             public Double[] getAges() {
-                return ages.value();
+                return ages;
             }
 
             @Override
@@ -67,7 +77,7 @@ public class CreateTaxa extends DeterministicFunction<Taxa> {
                     if (i != 0) builder.append(", ");
                     builder.append(names.value()[i]);
                     builder.append("=");
-                    builder.append(ages.value()[i]);
+                    builder.append(ages[i]);
                 }
                 builder.append("};");
                 return builder.toString();

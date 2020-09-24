@@ -103,7 +103,7 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
 
     @Override
     public TimeTreeNode visitNode(NewickParser.NodeContext ctx) {
-        TimeTreeNode node = new TimeTreeNode(null, null);
+        TimeTreeNode node = new TimeTreeNode((String)null, null);
 
         for (NewickParser.NodeContext ctxChild : ctx.node()) {
             node.addChild(visit(ctxChild));
