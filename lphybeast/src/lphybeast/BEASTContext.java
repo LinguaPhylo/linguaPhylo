@@ -87,7 +87,6 @@ public class BEASTContext {
                 BetaToBEAST.class,
                 BirthDeathSerialSamplingToBEAST.class,
                 BirthDeathSampleTreeDTToBEAST.class,
-                CoalescentToBEAST.class,
                 DirichletToBEAST.class,
                 ExpToBEAST.class,
                 F81ToBEAST.class,

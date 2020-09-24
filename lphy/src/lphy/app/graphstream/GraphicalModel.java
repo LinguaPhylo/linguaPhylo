@@ -1,6 +1,8 @@
 package lphy.app.graphstream;
 
+import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
+import lphy.parser.REPL;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -25,8 +27,8 @@ public class GraphicalModel {
         this.drawConstants = drawConstants;
     }
 
-    public void addFromParser(GraphicalModelParser parser) {
-        for (Value value : parser.getAllValuesFromRoots()) {
+    public void addFromParser(LPhyParser parser) {
+        for (Value value : LPhyParser.Utils.getAllValuesFromSinks(parser)) {
             addNode(value);
             if (value instanceof RandomVariable) {
                 addNode(((RandomVariable)value).getGenerativeDistribution());
@@ -34,7 +36,7 @@ public class GraphicalModel {
                 addNode(value.getGenerator());
             }
         }
-        for (Value value : parser.getAllValuesFromRoots()) {
+        for (Value value : LPhyParser.Utils.getAllValuesFromSinks(parser)) {
             addEdges(value);
             if (value instanceof RandomVariable) {
                 addEdges(((RandomVariable)value).getGenerativeDistribution());
@@ -92,7 +94,7 @@ public class GraphicalModel {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         //System.setProperty("org.graphstream.ui.layout", "org.graphstream.ui.layout.HierarchicalLayout");
 
-        GraphicalModelParser parser = new GraphicalModelParser();
+        REPL parser = new REPL();
 
         String fileName = System.getProperty("user.dir") + File.separator + "examples" + File.separator + "errorModel2.lphy";
         String styleSheetFileName = System.getProperty("user.dir") + File.separator + "css" + File.separator + "graphicalModel.css";

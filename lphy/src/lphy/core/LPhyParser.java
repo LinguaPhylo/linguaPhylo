@@ -6,6 +6,10 @@ import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.ExpressionNode;
 import lphy.parser.ExpressionNodeWrapper;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public interface LPhyParser {
@@ -94,7 +98,36 @@ public interface LPhyParser {
      */
     void clear();
 
+    /**
+     * @param sourceFile the lphy source file
+     */
+    default void source(File sourceFile) throws IOException {
+
+        FileReader reader = new FileReader(sourceFile);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+
+        StringBuilder builder= new StringBuilder();
+
+        String line = bufferedReader.readLine();
+        while (line != null) {
+            builder.append(line);
+            builder.append("\n");
+            line = bufferedReader.readLine();
+        }
+        bufferedReader.close();
+        reader.close();
+        parse(builder.toString());
+    }
+
     class Utils {
+
+        /**
+         * @param line a line of LPhy code
+         * @return true if the line of code is declaring a random variable.
+         */
+        public static boolean isRandomVariableLine(String line) {
+            return (line.indexOf('~') > 0);
+        }
 
         /**
          * @return a list of all random variables reachable (i.e. that are depended on by) the sinks.

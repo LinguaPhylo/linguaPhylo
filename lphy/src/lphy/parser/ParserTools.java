@@ -33,7 +33,7 @@ public class ParserTools {
                 RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
                 Normal.class, NormalMulti.class,  LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
-                Coalescent.class, PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class,
+                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
                 Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
                 MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class, SerialCoalescent.class,
