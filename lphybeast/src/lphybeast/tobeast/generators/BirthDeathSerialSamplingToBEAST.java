@@ -7,20 +7,13 @@ import beast.math.distributions.Prior;
 import lphy.evolution.birthdeath.BirthDeathSerialSamplingTree;
 import lphybeast.BEASTContext;
 import lphybeast.GeneratorToBEAST;
-import treeprior.BirthDeathSequentialSampling;
+import bdtree.likelihood.BirthDeathSequentialSampling;
 
 public class BirthDeathSerialSamplingToBEAST implements
-        GeneratorToBEAST<BirthDeathSerialSamplingTree,BirthDeathSequentialSampling> {
+        GeneratorToBEAST<BirthDeathSerialSamplingTree, BirthDeathSequentialSampling> {
 
     @Override
     public BirthDeathSequentialSampling generatorToBEAST(BirthDeathSerialSamplingTree generator, BEASTInterface tree, BEASTContext context) {
-
-        //           <distribution id="BDSS.TreePrior" spec="treeprior.BirthDeathSequentialSampling" tree="@Tree.t:carnivores" upper="66.0" lower="37.3">
-        //          <parameter id="birthRate.t" name="birthRate" spec="parameter.RealParameter" value ="1.0"/>
-        //          <parameter id="deathRate.t" name="deathRate" spec="parameter.RealParameter" value="1.0"/>
-        //          <parameter id="rho.t" name="rho" spec="parameter.RealParameter" value="0.1"/>
-        //          <parameter id="psi.t" name="psi" spec="parameter.RealParameter" value="0.001"/>
-        //          </distribution>
 
         BirthDeathSequentialSampling beastBDSS = new BirthDeathSequentialSampling();
         beastBDSS.setInputValue("birthRate", context.getAsRealParameter(generator.getBirthRate()));

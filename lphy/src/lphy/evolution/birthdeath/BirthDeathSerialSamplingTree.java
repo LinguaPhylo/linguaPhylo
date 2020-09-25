@@ -8,7 +8,6 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.util.FastMath;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -92,7 +91,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         drawDivTimes(tree);
 
         //repositionNodeWhenInvalid(tree);
-        reconstructTree(tree);
+        constructTree(tree);
 
         return new RandomVariable<>("\u03C8", tree, this);
     }
@@ -111,8 +110,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         tree.setRoot(activeNodes.get(0));
         return tree;
     }
-
-
 
     /*
      * This method traverses the tree from left to right (inorder)
@@ -171,7 +168,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         }
     }
 
-    private void reconstructTree(TimeTree tree) {
+    private void constructTree(TimeTree tree) {
 
         List<TimeTreeNode> nodes = tree.getNodes();
         // collect heights
@@ -179,14 +176,16 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         final int[] reverseOrder = new int[nodes.size()];
         collectHeights(tree.getRoot(), heights, reverseOrder, 0);
 
-        TimeTreeNode root = reconstructTree(nodes, heights, reverseOrder, 0, heights.length, new boolean[heights.length]);
+        TimeTreeNode root = constructTree(nodes, heights, reverseOrder, 0, heights.length, new boolean[heights.length]);
         tree.setRoot(root);
     }
 
-    private TimeTreeNode reconstructTree(List<TimeTreeNode> nodes, final double[] heights, final int[] reverseOrder, final int from, final int to, final boolean[] hasParent) {
+    private TimeTreeNode constructTree(List<TimeTreeNode> nodes, final double[] heights, final int[] reverseOrder, final int from, final int to, final boolean[] hasParent) {
         //nodeIndex = maxIndex(heights, 0, heights.length);
         int nodeIndex = -1;
         double max = Double.NEGATIVE_INFINITY;
+
+        // finding the oldest internal node between from and to
         for (int j = from; j < to; j++) {
             if (max < heights[j] && !nodes.get(reverseOrder[j]).isLeaf()) {
                 max = heights[j];
@@ -196,9 +195,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         if (nodeIndex < 0) {
             return null;
         }
+
+        // the oldest internal node between from and to
         final TimeTreeNode node = nodes.get(reverseOrder[nodeIndex]);
 
-        //int left = maxIndex(heights, 0, nodeIndex);
+        // oldest node to the left that does not yet have a parent assigned by reconstructTree recursion
         int left = -1;
         max = Double.NEGATIVE_INFINITY;
         for (int j = from; j < nodeIndex; j++) {
@@ -208,7 +209,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
             }
         }
 
-        //int right = maxIndex(heights, nodeIndex+1, heights.length);
+        // oldest node to the right that does not yet have a parent assigned by reconstructTree recursion
         int right = -1;
         max = Double.NEGATIVE_INFINITY;
         for (int j = nodeIndex + 1; j < to; j++) {
@@ -230,8 +231,8 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         hasParent[right] = true;
         heights[nodeIndex] = Double.NEGATIVE_INFINITY;
 
-        reconstructTree(nodes, heights, reverseOrder, from, nodeIndex, hasParent);
-        reconstructTree(nodes, heights, reverseOrder, nodeIndex, to, hasParent);
+        constructTree(nodes, heights, reverseOrder, from, nodeIndex, hasParent);
+        constructTree(nodes, heights, reverseOrder, nodeIndex, to, hasParent);
         return node;
     }
 
