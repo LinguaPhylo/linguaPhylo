@@ -889,8 +889,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             Set<Class<?>> functionClasses = ParserTools.getFunctionClasses(functionName);
 
-            if (functionClasses == null)
-                throw new RuntimeException("Found no implementation for function " + functionName);
+            if (functionClasses == null) {
+                throw new RuntimeException("Found no implementation for function with name " + functionName);
+            }
 
             Map<String, Value> arguments = new HashMap<>();
             if (namedValues != null) {
@@ -902,7 +903,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             for (Class functionClass : functionClasses) {
                 try {
                     List<Object> initargs = new ArrayList<>();
-                    Constructor constructor = null;
+                    Constructor constructor;
                     if (namedValues != null) {
                         constructor = getConstructorByArguments(arguments, functionClass, initargs);
                     } else {
@@ -981,8 +982,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         for (Constructor constructor : generatorClass.getConstructors()) {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
 
-            if (values.length == 1 && pInfo.size() == 1) {
-                initargs.add(values[0]);
+            if (values.length == pInfo.size() && values.length > 0 && values.length <= 2) {
+                initargs.addAll(Arrays.asList(values));
                 return constructor;
             }
             if (values.length == 0 && pInfo.size() == 1) {

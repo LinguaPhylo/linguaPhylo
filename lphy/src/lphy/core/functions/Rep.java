@@ -12,7 +12,7 @@ public class Rep<U> extends DeterministicFunction<U[]> {
     private Value<U> x;
     private Value<Integer> times;
 
-    public Rep(@ParameterInfo(name = "0", description = "the element to replicate.") Value<U> x,
+    public Rep(@ParameterInfo(name = "element", description = "the element to replicate.") Value<U> x,
                @ParameterInfo(name = "times", description = "the standard deviation of the distribution.") Value<Integer> times) {
 
         this.x = x;
@@ -26,7 +26,6 @@ public class Rep<U> extends DeterministicFunction<U[]> {
 
     @GeneratorInfo(name = "rep", description = "The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.")
     public Value<U[]> apply(Value<U> v, Value<Integer> times) {
-        setParam("x", v);
 
         Class c = v.value().getClass();
         U[] array = (U[]) Array.newInstance(c, times.value());
