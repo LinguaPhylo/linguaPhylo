@@ -657,19 +657,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 case 0:
                     LoggerUtils.log.severe("Found no generative distribution matching arguments for " + name);
                     return null;
-                case 1:
+                case 1: default:
+                    if (matches.size() > 1) LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
                     generator = matches.get(0);
+                    // must be done so that Values all know their outputs
                     for (Map.Entry<String,Value> entry : arguments.entrySet()) {
                         generator.setInput(entry.getKey(), entry.getValue());
                     }
                     return generator;
-                default:
-                    LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
-                    generator = matches.get(0);
-                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
-                        generator.setInput(entry.getKey(), entry.getValue());
-                    }
-                    return generator;            }
+            }
 
 //	        Class genDistClass = genDistDictionary.get(name);
 //	        if (genDistClass == null) {
@@ -902,15 +898,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 case 0:
                     LoggerUtils.log.severe("Found no function matching arguments for " + functionName);
                     return null;
-                case 1:
+                case 1: default:
+                    if (matches.size() > 1) LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
                     generator = matches.get(0);
-                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
-                        generator.setInput(entry.getKey(), entry.getValue());
-                    }
-                    return generator.generate();
-                default:
-                    LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
-                    generator = matches.get(0);
+                    // must be done so that Values all know their outputs
                     for (Map.Entry<String,Value> entry : arguments.entrySet()) {
                         generator.setInput(entry.getKey(), entry.getValue());
                     }
