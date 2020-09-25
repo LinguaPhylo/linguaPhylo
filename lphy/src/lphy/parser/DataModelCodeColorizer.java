@@ -10,7 +10,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (ParserTools.bivarOperators.contains(s)) {
+                if (ParserUtils.bivarOperators.contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
                     element.add(s, punctuationStyle);

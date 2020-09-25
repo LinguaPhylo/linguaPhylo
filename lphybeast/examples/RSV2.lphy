@@ -11,8 +11,9 @@ model {
   Θ ~ LogNormal(meanlog=3, sdlog=1);
   ψ ~ Coalescent(theta=Θ, taxa=taxa(codon1));
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  codon1 ~ PhyloCTMC(tree=ψ, L=L1, Q=f81(freq=π), mu=mu);
-  codon2 ~ PhyloCTMC(tree=ψ, L=L2, Q=f81(freq=π), mu=mu);
-  codon3 ~ PhyloCTMC(tree=ψ, L=L3, Q=f81(freq=π), mu=mu);
+  Q=f81(freq=π);
+  codon1 ~ PhyloCTMC(tree=ψ, L=L1, Q=Q, mu=mu);
+  codon2 ~ PhyloCTMC(tree=ψ, L=L2, Q=Q, mu=mu);
+  codon3 ~ PhyloCTMC(tree=ψ, L=L3, Q=Q, mu=mu);
 }
 

@@ -392,7 +392,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     return visitIndexRange(ctx);
                 }
 
-                if (ParserTools.bivarOperators.contains(s)) {
+                if (ParserUtils.bivarOperators.contains(s)) {
 
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
 
@@ -636,7 +636,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return obj;
         }
 
-        @Override
+        /**
+         *
+         * @param ctx
+         * @return A generative distribution object if a match can be found.
+         */
         public Object visitDistribution(SimulatorParser.DistributionContext ctx) {
             // super.visitDistribution(ctx);
 
@@ -647,38 +651,25 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 arguments.put(v.name, v.value);
             }
 
-            Set<Class<?>> genDistClasses = ParserTools.getGenerativeDistributionClasses(name);
-
-            if (genDistClasses == null)
-                throw new RuntimeException("Found no implementation for generative distribution " + name);
-
-            for (Class genDistClass : genDistClasses) {
-                try {
-                    List<Object> initargs = new ArrayList<>();
-                    Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-
-                    if (constructor != null) {
-                        GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
-                        for (String parameterName : arguments.keySet()) {
-                            Value value = arguments.get(parameterName);
-
-                            dist.setInput(parameterName, value);
-                        }
-                        return dist;
+            Generator generator;
+            List<Generator> matches = ParserUtils.getMatchingGenerativeDistributions(name, arguments);
+            switch (matches.size()) {
+                case 0:
+                    LoggerUtils.log.severe("Found no generative distribution matching arguments for " + name);
+                    return null;
+                case 1:
+                    generator = matches.get(0);
+                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                        generator.setInput(entry.getKey(), entry.getValue());
                     }
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + name + " failed.");
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + name + " failed.");
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + name + " failed.");
-                }
-            }
-            throw new RuntimeException("Parser exception: no constructor found for " + name);
-
+                    return generator;
+                default:
+                    LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
+                    generator = matches.get(0);
+                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                        generator.setInput(entry.getKey(), entry.getValue());
+                    }
+                    return generator;            }
 
 //	        Class genDistClass = genDistDictionary.get(name);
 //	        if (genDistClass == null) {
@@ -787,7 +778,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 }
             }
 
-            if (ParserTools.univarfunctions.contains(functionName)) {
+            if (ParserUtils.univarfunctions.contains(functionName)) {
                 ExpressionNode expression = null;
                 switch (functionName) {
                     case "abs":
@@ -887,7 +878,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 return expression;
             }
 
-            Set<Class<?>> functionClasses = ParserTools.getFunctionClasses(functionName);
+            Set<Class<?>> functionClasses = ParserUtils.getFunctionClasses(functionName);
 
             if (functionClasses == null) {
                 throw new RuntimeException("Found no implementation for function with name " + functionName);
@@ -900,43 +891,31 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 }
             }
 
-            for (Class functionClass : functionClasses) {
-                try {
-                    List<Object> initargs = new ArrayList<>();
-                    Constructor constructor;
-                    if (namedValues != null) {
-                        constructor = getConstructorByArguments(arguments, functionClass, initargs);
-                    } else {
-                        constructor = getConstructorByArguments(f1, functionClass, initargs);
-                    }
-
-                    if (constructor != null) {
-                        DeterministicFunction f = (DeterministicFunction) constructor.newInstance(initargs.toArray());
-
-                        if (namedValues != null) {
-                            for (String parameterName : arguments.keySet()) {
-                                Value value = arguments.get(parameterName);
-
-                                f.setInput(parameterName, value);
-                            }
-                        } else if (f1.length > 0) {
-                            f.setInput(f.getParamName(0), f1[0]);
-                        } // else f1 empty and cannot setInput
-                        Value val = f.apply();
-                        return val;
-                    }
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Parsing generative distribution " + functionName + " failed.");
-                }
+            Generator generator;
+            List<Generator> matches;
+            if (namedValues == null) {
+                matches = ParserUtils.getMatchingFunctions(functionName, f1);
+            } else {
+                matches = ParserUtils.getMatchingFunctions(functionName, arguments);
             }
-            throw new RuntimeException("Parser exception: no constructor found for " + functionName);
+            switch (matches.size()) {
+                case 0:
+                    LoggerUtils.log.severe("Found no function matching arguments for " + functionName);
+                    return null;
+                case 1:
+                    generator = matches.get(0);
+                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                        generator.setInput(entry.getKey(), entry.getValue());
+                    }
+                    return generator.generate();
+                default:
+                    LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
+                    generator = matches.get(0);
+                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                        generator.setInput(entry.getKey(), entry.getValue());
+                    }
+                    return generator.generate();
+            }
 
         }
     }
@@ -950,76 +929,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (v != null && !v.isConstant()) return false;
         }
         return true;
-    }
-
-    private Constructor getConstructorByArguments(Map<String, Value> arguments, Class generatorClass, List<Object> initargs) {
-        for (Constructor constructor : generatorClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
-
-            if (arguments.size() == 1 && pInfo.size() == 1) {
-                initargs.add(arguments.values().iterator().next());
-                return constructor;
-            }
-
-            if (match(arguments, pInfo)) {
-                for (int i = 0; i < pInfo.size(); i++) {
-                    Value arg = arguments.get(pInfo.get(i).name());
-                    if (arg != null) {
-                        initargs.add(arg);
-                    } else if (!pInfo.get(i).optional()) {
-                        throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
-                    } else {
-                        initargs.add(null);
-                    }
-                }
-                return constructor;
-            }
-        }
-        return null;
-    }
-
-    private Constructor getConstructorByArguments(Value[] values, Class generatorClass, List<Object> initargs) {
-        for (Constructor constructor : generatorClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
-
-            if (values.length == pInfo.size() && values.length > 0 && values.length <= 2) {
-                initargs.addAll(Arrays.asList(values));
-                return constructor;
-            }
-            if (values.length == 0 && pInfo.size() == 1) {
-                initargs.add(null);
-                return constructor;
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
-     *
-     * @param arguments
-     * @param pInfo
-     * @return
-     */
-    private boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
-
-        Set<String> requiredArguments = new TreeSet<>();
-        Set<String> optionalArguments = new TreeSet<>();
-        for (ParameterInfo pinfo : pInfo) {
-            if (pinfo.optional()) {
-                optionalArguments.add(pinfo.name());
-            } else {
-                requiredArguments.add(pinfo.name());
-            }
-        }
-
-        if (!arguments.keySet().containsAll(requiredArguments)) {
-            return false;
-        }
-        Set<String> allArguments = optionalArguments;
-        allArguments.addAll(requiredArguments);
-        return allArguments.containsAll(arguments.keySet());
     }
 
     public Object parse(String CASentence) {

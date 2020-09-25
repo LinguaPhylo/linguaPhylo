@@ -2,7 +2,6 @@ package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
-import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -13,36 +12,27 @@ import java.util.*;
  */
 public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> {
 
-    final String birthRateParamName;
-    final String deathRateParamName;
-    final String rhoParamName;
-    final String rootAgeParamName;
+    final static String birthRateParamName = "lambda";
+    final static String deathRateParamName = "mu";
+    final static String rhoParamName = "rho";
+    final static String rootAgeParamName = "rootAge";
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rho;
     private Value<Number> rootAge;
 
-    private List<TimeTreeNode> activeNodes;
-
     RandomGenerator random;
 
-    public BirthDeathSamplingTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
-                                  @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
-                                  @ParameterInfo(name = "rho", description = "the sampling proportion.") Value<Number> rho,
-                                  @ParameterInfo(name = "rootAge", description = "the age of the root of the tree.") Value<Number> rootAge) {
+    public BirthDeathSamplingTree(@ParameterInfo(name = birthRateParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
+                                  @ParameterInfo(name = deathRateParamName, description = "per-lineage death rate.") Value<Number> deathRate,
+                                  @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
+                                  @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree.") Value<Number> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rho = rho;
         this.rootAge = rootAge;
         this.random = Utils.getRandom();
-
-        birthRateParamName = getParamName(0);
-        deathRateParamName = getParamName(1);
-        rhoParamName = getParamName(2);
-        rootAgeParamName = getParamName(3);
-
-        activeNodes = new ArrayList<>();
     }
 
 
@@ -57,101 +47,6 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
 
         return rhoSampleTree.sample();
     }
-
-    private int singleChildNodeCount(TimeTreeNode node) {
-        int count = 0;
-        if (node.getChildCount() == 1) {
-            count += 1;
-        }
-        for (TimeTreeNode child : node.getChildren()) {
-            count += singleChildNodeCount(child);
-        }
-        return count;
-    }
-
-    private TimeTreeNode removeTwoDegreeNodes(TimeTreeNode node, TimeTreeNode root) {
-        if (node.getChildCount() == 1) {
-
-            if (!node.isRoot()) {
-                node.getParent().removeChild(node);
-            }
-            TimeTreeNode grandChild = node.getChildren().get(0);
-            node.removeChild(grandChild);
-            if (!node.isRoot()) {
-                node.getParent().addChild(grandChild);
-            } else {
-                root = grandChild;
-            }
-            return removeTwoDegreeNodes(grandChild, root);
-        } else {
-
-            List<TimeTreeNode> children = new ArrayList<>();
-            children.addAll(node.getChildren());
-
-            for (TimeTreeNode child : children) {
-                removeTwoDegreeNodes(child, root);
-            }
-        }
-        return root;
-    }
-
-    private boolean removeAllMarked(TimeTreeNode node) {
-
-        boolean found = false;
-        if (!node.isLeaf()) {
-            for (TimeTreeNode child : node.getChildren()) {
-                removeAllMarked(child);
-            }
-
-            Set<TimeTreeNode> nodesToRemove = new HashSet<>();
-            for (TimeTreeNode child : node.getChildren()) {
-                if (markedForRemoval(child)) {
-                    nodesToRemove.add(child);
-                    found = true;
-                }
-            }
-            for (TimeTreeNode child : nodesToRemove) {
-                node.removeChild(child);
-            }
-            if (node.getChildCount() == 0) {
-                markForRemoval(node);
-                found = true;
-            }
-        }
-        return found;
-    }
-
-    private boolean markedForRemoval(TimeTreeNode node) {
-        Object remove = node.getMetaData("remove");
-        return (remove instanceof Boolean && (Boolean)remove);
-    }
-
-
-    private void markForRemoval(TimeTreeNode node) {
-        node.setMetaData("remove", true);
-    }
-
-    private void doBirth(List<TimeTreeNode> activeNodes, double age, int[] nextnum, TimeTree tree) {
-        TimeTreeNode parent = activeNodes.remove(random.nextInt(activeNodes.size()));
-        parent.setAge(age);
-        TimeTreeNode child1 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
-        TimeTreeNode child2 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
-        child1.setAge(age);
-        child2.setAge(age);
-        parent.addChild(child1);
-        parent.addChild(child2);
-        activeNodes.add(child1);
-        activeNodes.add(child2);
-    }
-
-    private void doDeath(List<TimeTreeNode> activeNodes, double age) {
-        TimeTreeNode deadNode = activeNodes.remove(random.nextInt(activeNodes.size()));
-        deadNode.setAge(age);
-        markForRemoval(deadNode);
-    }
-
 
     @Override
     public double logDensity(TimeTree timeTree) {

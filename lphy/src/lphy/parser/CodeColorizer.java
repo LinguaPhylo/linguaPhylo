@@ -112,7 +112,7 @@ public class CodeColorizer extends SimulatorBaseListener {
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (ParserTools.bivarOperators.contains(s)) {
+                if (ParserUtils.bivarOperators.contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
                     element.add(s, punctuationStyle);
