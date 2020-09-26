@@ -1,5 +1,6 @@
 package lphy.core;
 
+import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -15,7 +16,7 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<String, Double[]>> {
+public class PhyloMultivariateBrownian implements GenerativeDistribution<ContinuousCharacterData> {
 
     Value<TimeTree> tree;
     Value<Double[][]> diffusionMatrix;
@@ -28,7 +29,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
 
     public PhyloMultivariateBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                                      @ParameterInfo(name = "diffusionMatrix", description = "the multivariate diffusion rates.") Value<Double[][]> diffusionRate,
-                                     @ParameterInfo(name = "y", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
+                                     @ParameterInfo(name = "y0", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
         this.tree = tree;
         this.diffusionMatrix = diffusionRate;
         this.y = y;
@@ -56,7 +57,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public RandomVariable<Map<String, Double[]>> sample() {
+    public RandomVariable<ContinuousCharacterData> sample() {
 
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
@@ -65,7 +66,12 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Map<Str
 
         traverseTree(tree.value().getRoot(), y, tipValues, diffusionMatrix.value(), idMap);
 
-        return new RandomVariable<>("x", tipValues, this);
+        Double[][] contData = new Double[tree.value().ntaxa()][y.value().length];
+        for (Map.Entry<String, Double[]> entry : tipValues.entrySet()) {
+            contData[tree.value().indexOfTaxon(entry.getKey())] = entry.getValue();
+        }
+
+        return new RandomVariable<>("x", new ContinuousCharacterData(tree.value(), contData), this);
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {

@@ -1,6 +1,7 @@
 package lphy.parser;
 
 import lphy.core.PhyloBrownian;
+import lphy.core.PhyloMultivariateBrownian;
 import lphy.core.PhyloOU;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
@@ -36,7 +37,7 @@ public class ParserUtils {
                 RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
                 Normal.class, NormalMulti.class, LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
-                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class,
+                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
                 Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
                 MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class, SerialCoalescent.class,
@@ -99,6 +100,7 @@ public class ParserUtils {
     public static List<Generator> getMatchingGenerativeDistributions(String name, Map<String, Value> arguments) {
         List<Generator> matches = new ArrayList<>();
         for (Class functionClass : getGenerativeDistributionClasses(name)) {
+            System.out.println("Found potential matching class: " + functionClass);
             matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
         }
         return matches;
