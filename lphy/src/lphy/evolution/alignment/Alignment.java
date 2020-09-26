@@ -5,7 +5,7 @@ import lphy.evolution.NChar;
 import lphy.evolution.Taxa;
 
 /**
- * For all kind of alignments.
+ * An alignment of discrete character states, returned as Integers.
  * @author Alexei Drummond
  * @author Walter Xie
  */
