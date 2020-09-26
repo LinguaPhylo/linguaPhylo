@@ -86,7 +86,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
             }
             System.out.println("gene tree has " + i + " nodes");
         } else if (taxa != null) {
-            Taxon[] taxonArray = taxa.value().getTaxa();
+            Taxon[] taxonArray = taxa.value().getTaxonArray();
 
             for (Taxon taxon : taxonArray) {
                 List<TimeTreeNode> taxaInSp = activeNodes.get(taxon.getSpecies());

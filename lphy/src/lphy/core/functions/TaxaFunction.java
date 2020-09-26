@@ -43,14 +43,14 @@ public class TaxaFunction extends DeterministicFunction<Taxa> {
                 return rawTaxa.getTaxaNames();
             }
 
-            public Taxon[] getTaxa() {
-                return rawTaxa.getTaxa();
+            public Taxon[] getTaxonArray() {
+                return rawTaxa.getTaxonArray();
             }
 
             @Override
             public String toString() {
                 StringBuilder builder = new StringBuilder();
-                for (Taxon taxon : getTaxa()) {
+                for (Taxon taxon : getTaxonArray()) {
                     builder.append(taxon.toString());
                     builder.append("\n");
                 }

@@ -50,6 +50,7 @@ public class SimpleAlignment extends AbstractAlignment {
         setState(idMap.get(taxon), position, state);
     }
 
+    @Override
     public int getState(int taxon, int position) {
         return alignment[taxon][position];
     }

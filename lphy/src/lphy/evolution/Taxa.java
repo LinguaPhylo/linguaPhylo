@@ -15,6 +15,18 @@ public interface Taxa extends MultiDimensional {
     int ntaxa();
 
     /**
+     * @param taxon
+     * @return the index of this taxon name, or -1 if this taxon name is not in this taxa object.
+     */
+    default int indexOfTaxon(String taxon) {
+        String[] names = getTaxaNames();
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(taxon)) return i;
+        }
+        return -1;
+    }
+
+    /**
      * @return the names of the taxa.
      */
     default String[] getTaxaNames() {
@@ -32,11 +44,6 @@ public interface Taxa extends MultiDimensional {
         return getTaxaNames();
     }
 
-    /**
-     * @return the ages of the taxa in the same order as the taxa.
-     */
-    Double[] getAges();
-
     default double getAge(String taxon) {
         String[] taxa = getTaxaNames();
 
@@ -47,9 +54,18 @@ public interface Taxa extends MultiDimensional {
     }
 
     /**
+     * @return the ages of the taxa in the same order as the taxa.
+     */
+    default Double[] getAges() {
+        Double[] ages = new Double[ntaxa()];
+        Arrays.fill(ages, 0.0);
+        return ages;
+    }
+
+    /**
      * @return an array of taxon objects.
      */
-    default Taxon[] getTaxa() {
+    default Taxon[] getTaxonArray() {
 
         String[] names = getTaxaNames();
         String[] species = getSpecies();
@@ -129,7 +145,7 @@ public interface Taxa extends MultiDimensional {
             }
 
             @Override
-            public Taxon[] getTaxa() {
+            public Taxon[] getTaxonArray() {
                 return taxa;
             }
         };

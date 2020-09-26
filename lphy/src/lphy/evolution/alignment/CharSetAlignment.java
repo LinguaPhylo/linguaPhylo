@@ -200,7 +200,6 @@ public class CharSetAlignment extends AbstractAlignment {
 //        return super.getState(taxon, position); // difficult to map parent alignment position
     }
 
-    @Override
     public void setState(int taxon, int position, int state) {
         throw new UnsupportedOperationException("in dev");
     }
