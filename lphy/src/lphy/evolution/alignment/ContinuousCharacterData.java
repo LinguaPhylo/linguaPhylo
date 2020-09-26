@@ -2,7 +2,7 @@ package lphy.evolution.alignment;
 
 import lphy.evolution.Taxa;
 
-public class ContinuousCharacterData<T> implements TaxaCharacterMatrix<Double> {
+public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
 
     Double[][] continousCharacterData;
     Taxa taxa;
