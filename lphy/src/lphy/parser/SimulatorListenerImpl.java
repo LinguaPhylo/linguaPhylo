@@ -14,15 +14,12 @@ import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import static java.util.Collections.max;
@@ -898,7 +895,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
             switch (matches.size()) {
                 case 0:
-                    LoggerUtils.log.severe("Found no function matching arguments for " + functionName);
+                    LoggerUtils.log.severe("Found no function for " + functionName + " matching arguments " + arguments);
                     return null;
                 case 1: default:
                     if (matches.size() > 1) LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
