@@ -1,7 +1,7 @@
 data {
-  codon1 = nexus(file="examples/RSV2.nex", charset="1-629\3", agesFromNames="s(\d+)$", tipCalibrations="forward");
-  codon2 = nexus(file="examples/RSV2.nex", charset="2-629\3");
-  codon3 = nexus(file="examples/RSV2.nex", charset="3-629\3");
+  codon1 = nexus(file="examples/RSV2.nex", charset="1-629\3", ageDirection="forward", ageRegex="s(\d+)$");
+  codon2 = nexus(file="examples/RSV2.nex", charset="2-629\3", ageDirection="forward", ageRegex="s(\d+)$");
+  codon3 = nexus(file="examples/RSV2.nex", charset="3-629\3", ageDirection="forward", ageRegex="s(\d+)$");
   L1 = nchar(codon1);
   L2 = nchar(codon2);
   L3 = nchar(codon3);
@@ -16,4 +16,3 @@ model {
   codon2 ~ PhyloCTMC(tree=ψ, L=L2, Q=Q, mu=mu);
   codon3 ~ PhyloCTMC(tree=ψ, L=L3, Q=Q, mu=mu);
 }
-

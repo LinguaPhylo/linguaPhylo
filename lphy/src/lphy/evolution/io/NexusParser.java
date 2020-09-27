@@ -74,11 +74,11 @@ public class NexusParser {
      * @param ignoreCharset If true, ignore charset in Nexus,
      *                      only return single {@link SimpleAlignment}.
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
-     * @param tipCalibrationType  either forward or backward,
+     * @param ageDirectionStr  either forward or backward,
      *                         if null and nex has TIPCALIBRATION block, then assume forward.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String tipCalibrationType) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String ageDirectionStr) {
 
         try {
             importer.importNexus();
@@ -121,7 +121,7 @@ public class NexusParser {
         final Map<String, String> dateMap = importer.getDateMap();
         if (dateMap != null) { // if null, no TIPCALIBRATION
             // forward backward
-            Map<String, lphy.evolution.Taxon> taxonMap = getTaxonMap(dateMap, tipCalibrationType);
+            Map<String, lphy.evolution.Taxon> taxonMap = getTaxonMap(dateMap, ageDirectionStr);
             lphyAlg.setTaxonMap(taxonMap);
         }
 
@@ -138,18 +138,18 @@ public class NexusParser {
     }
 
     /**
-     * @param tipcalibrations either forward or backward
+     * @param ageDirection either forward or backward
      * @return
      * @throws DateTimeParseException
      */
-    protected Map<String, lphy.evolution.Taxon> getTaxonMap(final Map<String, String> dateMap, String tipcalibrations) {
+    protected Map<String, lphy.evolution.Taxon> getTaxonMap(final Map<String, String> dateMap, String ageDirection) {
         if (dateMap == null || dateMap.size() < 1) return null;
 
         // LinkedHashMap supposes to maintain the order in keySet() and values()
         String[] taxaNames = dateMap.keySet().toArray(String[]::new);
         String[] datesStr = dateMap.values().toArray(String[]::new);
 
-        TaxaData taxaData = new TaxaData(taxaNames, datesStr, tipcalibrations);
+        TaxaData taxaData = new TaxaData(taxaNames, datesStr, ageDirection);
 
         return taxaData.getTaxonMap();
     }

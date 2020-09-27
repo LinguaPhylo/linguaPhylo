@@ -4,7 +4,6 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
-import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
@@ -18,7 +17,7 @@ import java.util.*;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Alignment, Taxa, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Alignment, HasComponentView<AbstractAlignment> {
 
     // may not have sequences
     protected int nchar;
@@ -208,6 +207,16 @@ public abstract class AbstractAlignment implements Alignment, Taxa, HasComponent
             ages[i] = taxon.getAge();
         }
         return ages;
+    }
+
+    @Override
+    public Taxon[] getTaxonArray() {
+        return new Taxon[0];
+    }
+
+    @Override
+    public String[] getSpecies() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

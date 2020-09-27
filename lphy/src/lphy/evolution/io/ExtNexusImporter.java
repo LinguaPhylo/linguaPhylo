@@ -42,7 +42,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, List<CharSetBlock>> charsetMap;
     protected Map<String, String> dateMap; // Taxon name <=> date string
     protected ChronoUnit chronoUnit = null;
-    protected TaxaData.TipCalibrationType ageType = null;
+    protected TaxaData.AgeDirection ageDirection = null;
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
