@@ -1,8 +1,8 @@
 <project default="build" basedir=".">
 
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
-    <!--  <property name="test" location="test"/>-->
-    <property name="lphy" location="lphy"/>
+    <!-- <property name="test" location="test"/>-->
+    <!-- <property name="lphy" location="lphy"/>-->
 
     <!-- Java 11 -->
     <property name="sourceVersion" value="11"/>
@@ -29,11 +29,11 @@
 
     <!-- Compile -->
     <target name="compile" depends="init">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/src" destdir="${build}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="src" destdir="${build}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
-                <fileset dir="${lphy}/lib" includes="*.jar"/>
+                <fileset dir="lib" includes="*.jar"/>
             </classpath>
         </javac>
     </target>
@@ -43,8 +43,9 @@
 
     <target name="dist-lphy" depends="compile">
         <mkdir dir="${pack}"/>
+        <!-- examples in ${packageName}.zip, not ${lphyName}.src.jar -->
         <jar jarfile="${pack}/${lphyName}.src.jar">
-            <fileset dir="${lphy}/src"/>
+            <fileset dir="src"/>
         </jar>
 
         <jar jarfile="${pack}/${lphyName}.v${projVersion}.jar">
@@ -52,7 +53,7 @@
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
             </manifest>
-            <zipgroupfileset dir="${lphy}/lib" includes="*.jar"/>
+            <zipgroupfileset dir="lib" includes="*.jar"/>
         </jar>
     </target>
 
@@ -69,8 +70,8 @@
         -->
         <mkdir dir="${pack}/examples"/>
         <copy todir="${pack}/examples">
-            <fileset dir="${lphy}/examples" includes="*.lphy"/>
-            <fileset dir="${lphy}/examples" includes="*.nex"/>
+            <fileset dir="examples" includes="*.lphy"/>
+            <fileset dir="examples" includes="*.nex"/>
         </copy>
 
         <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>
@@ -94,12 +95,12 @@
 
     <!-- Compile unit tests -->
     <target name="compile-test" depends="init-test,compile">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphy}/test" destdir="${build-test}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="test" destdir="${build-test}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
                 <pathelement path="${build}"/>
-                <fileset dir="${lphy}/lib" includes="*.jar"/>
+                <fileset dir="lib" includes="*.jar"/>
             </classpath>
         </javac>
     </target>
@@ -112,10 +113,10 @@
                 <pathelement path="${classpath}"/>
                 <pathelement path="${build}"/>
                 <pathelement path="${build-test}"/>
-                <fileset dir="${lphy}/lib" includes="*.jar"/>
+                <fileset dir="lib" includes="*.jar"/>
             </classpath>
             <batchtest fork="yes" todir="${test-reports}">
-                <fileset dir="${lphy}/test">
+                <fileset dir="test">
                     <include name="**/*Test.java"/>
                 </fileset>
                 <formatter type="plain"/>
