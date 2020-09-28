@@ -1,8 +1,6 @@
 data {
   codon = nexus(file="examples/RSV2.nex", charset=["3-629\3", "4-629\3", "5-629\3"], ageDirection="forward", ageRegex="s(\d+)$");
-  L1 = nchar(partition(codon, "1"));
-  L2 = nchar(partition(codon, "2"));
-  L3 = nchar(partition(codon, "3"));
+  L = nchar(codon);
 }
 model {
   mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
@@ -10,7 +8,7 @@ model {
   ψ ~ Coalescent(theta=Θ, taxa=taxa(codon));
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
   Q=f81(freq=π);
-  codon1 ~ PhyloCTMC(tree=ψ, L=L1, Q=Q, mu=mu);
-  codon2 ~ PhyloCTMC(tree=ψ, L=L2, Q=Q, mu=mu);
-  codon3 ~ PhyloCTMC(tree=ψ, L=L3, Q=Q, mu=mu);
+  codon1 ~ PhyloCTMC(tree=ψ, L=L[0], Q=Q, mu=mu);
+  codon2 ~ PhyloCTMC(tree=ψ, L=L[1], Q=Q, mu=mu);
+  codon3 ~ PhyloCTMC(tree=ψ, L=L[2], Q=Q, mu=mu);
 }

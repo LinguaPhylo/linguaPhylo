@@ -5,20 +5,33 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.types.IntegerArrayValue;
 import lphy.graphicalModel.types.IntegerValue;
 
-public class NCharFunction extends DeterministicFunction<Integer> {
+public class NCharFunction extends DeterministicFunction {
 
     final String paramName;
 
-    public NCharFunction(@ParameterInfo(name = "sites", description = "the site-dimensioned object (e.g. alignment).") Value<NChar> x) {
+    public NCharFunction(@ParameterInfo(name = "sites", description = "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.") Value sites) {
         paramName = getParamName(0);
-        setParam(paramName, x);
+        setParam(paramName, sites);
     }
 
-    @GeneratorInfo(name="nchar",description = "The number of sites in the given alignment.")
-    public Value<Integer> apply() {
-        Value<NChar> v = (Value<NChar>)getParams().get(paramName);
-        return new IntegerValue( v.value().nchar(), this);
+    @GeneratorInfo(name="nchar",description = "The number of sites in the given alignment(s).")
+    public Value apply() {
+        Value sites = getParams().get(paramName);
+        Object value = sites.value();
+
+        if (value instanceof NChar) {
+            return new IntegerValue( ((NChar)value).nchar(), this);
+        } else if (value instanceof NChar[]) {
+            NChar[] nChars = (NChar[])value;
+            Integer[] siteCounts = new Integer[nChars.length];
+            for (int i = 0; i < nChars.length; i++) {
+                siteCounts[i] = nChars[i].nchar();
+            }
+
+            return new IntegerArrayValue(null, siteCounts, this);
+        } else throw new IllegalArgumentException("the nchar function can only take type NChar or NChar[] as a value input!");
     }
 }
