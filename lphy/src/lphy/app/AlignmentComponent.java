@@ -2,7 +2,7 @@ package lphy.app;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.app.treecomponent.TimeTreeComponent;
-import lphy.evolution.alignment.AbstractAlignment;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ErrorAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.sequences.DataType;
@@ -26,8 +26,8 @@ public class AlignmentComponent extends JComponent {
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
     Color[] colors;
-    Value<AbstractAlignment> alignmentValue;
-    AbstractAlignment alignment;
+    Value<? extends Alignment> alignmentValue;
+    Alignment alignment;
 
     Value<TimeTree> timeTree = null;
 
@@ -35,7 +35,7 @@ public class AlignmentComponent extends JComponent {
 
     static boolean showErrorsIfAvailable = true;
 
-    public AlignmentComponent(Value<AbstractAlignment> av) {
+    public AlignmentComponent(Value<? extends Alignment> av) {
         this.alignmentValue = av;
         this.alignment = av.value();
         this.colors = alignment.getColors();

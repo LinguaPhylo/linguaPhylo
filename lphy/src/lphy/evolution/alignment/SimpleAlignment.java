@@ -1,6 +1,7 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.evolution.Taxon;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -23,6 +24,11 @@ public class SimpleAlignment extends AbstractAlignment {
     public SimpleAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
         super(idMap, nchar, sequenceType);
         alignment = new int[ntaxa()][nchar];
+    }
+
+    public SimpleAlignment(Taxon[] taxa, int nchar, SequenceType sequenceType) {
+        super(taxa, nchar, sequenceType);
+        this.alignment = new int[ntaxa()][nchar];
     }
 
     public SimpleAlignment(int nchar, AbstractAlignment source) {

@@ -76,9 +76,13 @@ public class NexusParser {
      *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
      * @param ageDirectionStr  either forward or backward,
      *                         if null and nex has TIPCALIBRATION block, then assume forward.
+     * @param dateRegxStr  Java regular expression to extract dates from taxa names.
+     *                     if null, check TIPCALIBRATION block,
+     *                     if not null, then ignore TIPCALIBRATION block.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String ageDirectionStr) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String ageDirectionStr,
+                                                                       String dateRegxStr) {
 
         try {
             importer.importNexus();
@@ -104,9 +108,28 @@ public class NexusParser {
         SequenceType sequenceType = jeblAlg.getSequenceType();
         System.out.println("Create " + sequenceType + " alignment, ntax = " + ntax + ", nchar = " + nchar);
 
-        final SimpleAlignment lphyAlg = new
-                SimpleAlignment(idMap, nchar, sequenceType);
+        //*** dates ***//
 
+        final Map<String, String> dateMap = importer.getDateMap();
+
+        final SimpleAlignment lphyAlg;
+        if (dateRegxStr != null) { // ignore TIPCALIBRATION in Nexus
+            // extract dates from names
+            TaxaData taxaData = new TaxaData(idMap, dateRegxStr, ageDirectionStr);
+            lphy.evolution.Taxon[] lphyTaxa = taxaData.getTaxa();
+            lphyAlg = new SimpleAlignment(lphyTaxa, nchar, sequenceType);
+
+        } else if (dateMap != null) { // if null, no TIPCALIBRATION
+            // forward backward
+            lphy.evolution.Taxon[] lphyTaxaNexus = getTaxa(dateMap, ageDirectionStr);
+            lphyAlg = new SimpleAlignment(lphyTaxaNexus, nchar, sequenceType);
+
+        } else  {
+            // no dates
+            lphyAlg = new SimpleAlignment(idMap, nchar, sequenceType);
+        }
+
+        //*** sequences ***//
         // fill in sequences for single partition
         for (final Taxon taxon : taxa) {
             Sequence sequence = jeblAlg.getSequence(taxon);
@@ -118,13 +141,7 @@ public class NexusParser {
 
         }
 
-        final Map<String, String> dateMap = importer.getDateMap();
-        if (dateMap != null) { // if null, no TIPCALIBRATION
-            // forward backward
-            Map<String, lphy.evolution.Taxon> taxonMap = getTaxonMap(dateMap, ageDirectionStr);
-            lphyAlg.setTaxonMap(taxonMap);
-        }
-
+        //*** charset ***//
         final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
 
         if (!ignoreCharset && charsetMap.size() > 0) { // charset is optional
@@ -142,7 +159,7 @@ public class NexusParser {
      * @return
      * @throws DateTimeParseException
      */
-    protected Map<String, lphy.evolution.Taxon> getTaxonMap(final Map<String, String> dateMap, String ageDirection) {
+    protected lphy.evolution.Taxon[] getTaxa(final Map<String, String> dateMap, String ageDirection) {
         if (dateMap == null || dateMap.size() < 1) return null;
 
         // LinkedHashMap supposes to maintain the order in keySet() and values()
@@ -151,7 +168,7 @@ public class NexusParser {
 
         TaxaData taxaData = new TaxaData(taxaNames, datesStr, ageDirection);
 
-        return taxaData.getTaxonMap();
+        return taxaData.getTaxa();
     }
 
     public ExtNexusImporter getImporter() {
@@ -170,13 +187,13 @@ public class NexusParser {
 
             if (fileName.equals("Dengue4.nex")) {
                 SimpleAlignment lphyAlg =
-                        (SimpleAlignment) parser.getLPhyAlignment(true, "forward");
+                        (SimpleAlignment) parser.getLPhyAlignment(true, "forward", null);
 
                 System.out.println(lphyAlg.toJSON());
 
             } else if (fileName.equals("primate.nex")) {
                 lphy.evolution.alignment.CharSetAlignment lphyAlg =
-                        (CharSetAlignment) parser.getLPhyAlignment(false, null);
+                        (CharSetAlignment) parser.getLPhyAlignment(false, null, null);
                 System.out.println(lphyAlg.toJSON());
 //            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
                 System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));

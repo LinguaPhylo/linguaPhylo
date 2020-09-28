@@ -38,19 +38,20 @@ public class TaxaData {
     /**
      * To extract the date from taxa names and compute ages
      * according to {@link AgeDirection}
-     * @param taxaNames    taxa names.
+     * @param idMap    taxa names Map<String, Integer>.
      * @param regxStr      Java regular expression.
      * @param ageDirectionStr   tip calibration type (i.e. forward, backward).
      */
-    public TaxaData(String[] taxaNames, String regxStr, String ageDirectionStr) {
+    public TaxaData(Map<String, Integer> idMap, String regxStr, String ageDirectionStr) {
         this.ageDirection = initType(ageDirectionStr);
 
-        String[] datesStr = new String[Objects.requireNonNull(taxaNames).length];
+        String[] datesStr = new String[Objects.requireNonNull(idMap).size()];
+        String[] taxaNames = new String[idMap.size()];
         // guess dates
         final Pattern regx = Pattern.compile(regxStr);
-        for (int i = 0; i < taxaNames.length; i++) {
-            String tN = taxaNames[i];
-            datesStr[i] = getAttr(tN, regx);
+        for (Map.Entry<String, Integer> entry : idMap.entrySet()) {
+            datesStr[entry.getValue()] = getAttr(entry.getKey(), regx);
+            taxaNames[entry.getValue()] = entry.getKey();
         }
 
         createTaxaAgeMap(taxaNames, datesStr);
@@ -158,6 +159,10 @@ public class TaxaData {
 
     public Map<String, Taxon> getTaxonMap() {
         return taxonMap;
+    }
+
+    public Taxon[] getTaxa() {
+        return taxonMap.values().toArray(Taxon[]::new);
     }
 
     public AgeDirection getAgeDirection() {

@@ -1,11 +1,9 @@
 package lphy.core.functions;
 
-import lphy.evolution.alignment.AbstractAlignment;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.NexusParser;
-import lphy.evolution.io.TaxaData;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -94,21 +92,21 @@ public class Nexus extends DeterministicFunction<Alignment> {
         final Path nexFile = Paths.get(fileName.value());
         NexusParser parser = new NexusParser(nexFile);
         String ageDirectionStr = ageDirection == null ? null : ageDirection.value();
+        String dateRegxStr = regx == null ? null : regx.value();
 
         List<List<CharSetBlock>> charsetsList = new ArrayList<>();
         Value<?> charset = getParams().get(charsetParamName);
         if (charset != null)
             charsetsList = parseCharsets(parser, charset);
 
-
-        //TODO implement Alignment ?
+        //*** alignments ***//
 
         Alignment a;
         if (part != null) {
             // must be CharSetAlignment
             if (cachedAlignment == null || !currentFileName.equalsIgnoreCase(fileName.value()) ||
                     !(cachedAlignment instanceof CharSetAlignment) ) {
-                cachedAlignment = parser.getLPhyAlignment(false, ageDirectionStr);
+                cachedAlignment = parser.getLPhyAlignment(false, ageDirectionStr, dateRegxStr);
                 currentFileName = fileName.value();
             }
             a = ((CharSetAlignment)  cachedAlignment).getPartAlignment(part.value());
@@ -118,7 +116,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
             if (cachedAlignment == null || !currentFileName.equalsIgnoreCase(fileName.value()) ||
                     !(cachedAlignment instanceof SimpleAlignment) ) {
                 // ignore charset in Nexus file
-                cachedAlignment = parser.getLPhyAlignment(true, ageDirectionStr);
+                cachedAlignment = parser.getLPhyAlignment(true, ageDirectionStr, dateRegxStr);
                 currentFileName = fileName.value();
             }
             a = CharSetAlignment.getPartition(charsetsList.get(0), (SimpleAlignment) cachedAlignment);
@@ -132,7 +130,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
                 Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
                 for (int i = 0; i < charsetsList.size(); i++)
                     charsetMap.put(Integer.toString(i+1), charsetsList.get(i));
-                SimpleAlignment parent = (SimpleAlignment) parser.getLPhyAlignment(true, ageDirectionStr);
+                SimpleAlignment parent = (SimpleAlignment) parser.getLPhyAlignment(true, ageDirectionStr, dateRegxStr);
                 cachedAlignment = new CharSetAlignment(charsetMap, parent);
 
                 currentFileName = fileName.value();
@@ -142,13 +140,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
 
         } else {
             // must be SimpleAlignment
-            a = parser.getLPhyAlignment(true, ageDirectionStr);
-        }
-
-        if (regx != null) {
-            TaxaData taxaData = new TaxaData(a.getTaxaNames(), regx.value(), ageDirection.value());
-            // TODO mv to constructor
-            ((AbstractAlignment)  a).setTaxonMap(taxaData.getTaxonMap());
+            a = parser.getLPhyAlignment(true, ageDirectionStr, dateRegxStr);
         }
 
         return new Value<>(a, this);

@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * Everything related to Taxa, Data type
+ * The abstract class defines everything related to Taxa, Data type, but except of sequences.
  * @author Alexei Drummond
  * @author Walter Xie
  */
@@ -29,7 +29,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
     // same index as Map<Integer, String> reverseMap
-    Map<String, Taxon> taxonMap; // TODO duplicate to reverseMap ?
+    Map<Integer, Taxon> taxonMap; // TODO duplicate to reverseMap ?
 
     /**
      * Init alignment with taxa and number of site.
@@ -54,6 +54,28 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         this(idMap, nchar);
         this.sequenceType = sequenceType;
         this.numStates = sequenceType.getCanonicalStateCount();
+    }
+
+    /**
+     * {@link Taxon} stores name, age, sepices.
+     * @param taxa    the array index will use as the key in {@link #taxonMap}.
+     * @param nchar   the number of sites.
+     * @param sequenceType  {@link SequenceType}
+     */
+    public AbstractAlignment(Taxon[] taxa, int nchar, SequenceType sequenceType) {
+        this.nchar = nchar;
+        this.sequenceType = sequenceType;
+        this.numStates = sequenceType.getCanonicalStateCount();
+
+        taxonMap = new TreeMap<>();
+        for (int i = 0; i < taxa.length; i++)
+            taxonMap.put(i, taxa[i]);
+
+        // fill idMap
+        idMap = new TreeMap<>();
+        for (int i = 0; i < taxa.length; i++)
+            idMap.put(taxa[i].getName(), i);
+        fillRevMap();
     }
 
     /**
@@ -120,12 +142,9 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         return taxa;
     }
 
-    /**
-     * @param taxon  Case sensitive
-     * @return   whether this alignment has the given taxon name
-     */
-    public boolean hasTaxon(String taxon) {
-        return idMap.containsKey(taxon);
+    @Override
+    public int indexOfTaxon(String taxon) {
+        return idMap.get(taxon);
     }
 
     public String toString() {
@@ -180,16 +199,6 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         return state;
     }
 
-    //****** ages ******
-
-    public void setTaxonMap(final Map<String, Taxon> taxonMap) {
-        for (String taxon : Objects.requireNonNull(taxonMap).keySet()) {
-            if (!hasTaxon(taxon))
-                throw new IllegalArgumentException("Taxon " + taxon + " not exist in the alignment !");
-        }
-        this.taxonMap = taxonMap;
-    }
-
     /**
      * This shares the same index with {@link #getTaxaNames()}
      */
@@ -203,15 +212,19 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         }
 
         for (int i = 0; i < ntaxa(); i++) {
-            Taxon taxon = taxonMap.get(getTaxonName(i));
-            ages[i] = taxon.getAge();
+            Taxon taxon = getTaxon(i);
+            if (taxon != null) ages[i] = taxon.getAge();
         }
         return ages;
     }
 
+    public Taxon getTaxon(int taxonIndex) {
+        return taxonMap.get(taxonIndex);
+    }
+
     @Override
     public Taxon[] getTaxonArray() {
-        return new Taxon[0];
+        return taxonMap.values().toArray(Taxon[]::new);
     }
 
     @Override
