@@ -1,4 +1,0 @@
-λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=λ, n=16);
-branchRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, n=30);
-D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ, branchRates=branchRates);

@@ -3,6 +3,6 @@
 // m01 and m10 migration rates backwards in time
 m ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
 M = migrationMatrix(theta=Θ, m=m);
-ψ ~ StructuredCoalescent(M=M, n=[8,8]);
+ψ ~ StructuredCoalescent(M=M, n=[15,15]);
 C = countMigrations(tree=ψ);
-D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
+D ~ PhyloCTMC(L=400, Q=jukesCantor(), tree=ψ);
