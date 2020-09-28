@@ -1,15 +1,13 @@
 data {
-  codon1 = nexus(file="examples/RSV2.nex", charset="1-629\3", ageDirection="forward", ageRegex="s(\d+)$");
-  codon2 = nexus(file="examples/RSV2.nex", charset="2-629\3", ageDirection="forward", ageRegex="s(\d+)$");
-  codon3 = nexus(file="examples/RSV2.nex", charset="3-629\3", ageDirection="forward", ageRegex="s(\d+)$");
-  L1 = nchar(codon1);
-  L2 = nchar(codon2);
-  L3 = nchar(codon3);
+  codon = nexus(file="examples/RSV2.nex", charset=["1-629\3", "2-629\3", "3-629\3"], ageDirection="forward", ageRegex="s(\d+)$");
+  L1 = nchar(partition(codon, "1"));
+  L2 = nchar(partition(codon, "2"));
+  L3 = nchar(partition(codon, "3"));
 }
 model {
   mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
   Θ ~ LogNormal(meanlog=3, sdlog=1);
-  ψ ~ Coalescent(theta=Θ, taxa=taxa(codon1));
+  ψ ~ Coalescent(theta=Θ, taxa=taxa(codon));
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
   Q=f81(freq=π);
   codon1 ~ PhyloCTMC(tree=ψ, L=L1, Q=Q, mu=mu);
