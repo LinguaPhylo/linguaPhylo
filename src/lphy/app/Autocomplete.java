@@ -1,13 +1,12 @@
 package lphy.app;
 
-import java.awt.event.ActionEvent;
-import java.util.Collections;
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.List;
 
 public class Autocomplete implements DocumentListener {
 
