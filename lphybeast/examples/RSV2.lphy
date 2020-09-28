@@ -1,5 +1,5 @@
 data {
-  codon = nexus(file="examples/RSV2.nex", charset=["1-629\3", "2-629\3", "3-629\3"], ageDirection="forward", ageRegex="s(\d+)$");
+  codon = nexus(file="examples/RSV2.nex", charset=["3-629\3", "4-629\3", "5-629\3"], ageDirection="forward", ageRegex="s(\d+)$");
   L1 = nchar(partition(codon, "1"));
   L2 = nchar(partition(codon, "2"));
   L3 = nchar(partition(codon, "3"));
