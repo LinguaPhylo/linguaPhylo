@@ -7,7 +7,7 @@
     <!-- Java 11 -->
     <property name="sourceVersion" value="11"/>
     <property name="targetVersion" value="11"/>
-    <property name="beastSrcRevision" value="master"/>
+
     <!--*******************************************************************-->
 
     <!-- Names of temporary build/test directories -->
