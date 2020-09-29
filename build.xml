@@ -37,6 +37,7 @@
                 <fileset dir="lib" includes="*.jar"/>
             </classpath>
         </javac>
+        <echo message="Successfully compiled ${lphyName}." />
     </target>
 
     <!-- Release -->
@@ -104,6 +105,7 @@
                 <fileset dir="lib" includes="*.jar"/>
             </classpath>
         </javac>
+        <echo message="Successfully compiled ${lphyName} tests." />
     </target>
 
 
@@ -124,7 +126,7 @@
             </batchtest>
         </junit>
 
-        <fail if="testFailed" status="1" message="Unit test failed."/>
+        <fail if="testFailed" status="1" message="Unit test of ${lphyName} failed."/>
     </target>
 
     <!-- Revert to pristine state. -->
