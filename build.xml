@@ -1,5 +1,5 @@
-<project default="build" basedir=".">
-
+<project default="build" basedir="." name="lphy" >
+    
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
     <!-- <property name="test" location="test"/>-->
     <!-- <property name="lphy" location="lphy"/>-->
