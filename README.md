@@ -46,5 +46,7 @@ This software will also provide the ability for models specified in the LPhy lan
 
 ## LPhyBEAST (pronounced el-fee-beast)
 
-LPhyBEAST is a command-line program that takes an LPhy model specification, and some data and produces a BEAST 2 XML input file.
-It is therefore an alternative way to succinctly express and communicate BEAST analyses.
+LPhyBEAST is a command-line program that takes an LPhy model specification, and a data block and produces a BEAST 2 XML input file.
+It therefore enables LPHY as an alternative way to succinctly express and communicate BEAST2 analyses.
+
+The source can be found here: (https://github.com/LinguaPhylo/LPhyBeast)[https://github.com/LinguaPhylo/LPhyBeast]
