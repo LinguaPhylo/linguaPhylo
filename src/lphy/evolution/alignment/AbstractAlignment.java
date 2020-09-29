@@ -224,12 +224,13 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     @Override
     public Taxon[] getTaxonArray() {
+        if (taxonMap == null) return Alignment.super.getTaxonArray();
         return taxonMap.values().toArray(Taxon[]::new);
     }
 
     @Override
     public String[] getSpecies() {
-        throw new UnsupportedOperationException();
+        return Alignment.super.getSpecies();
     }
 
     @Override

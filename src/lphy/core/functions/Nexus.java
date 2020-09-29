@@ -22,7 +22,7 @@ import java.util.TreeMap;
  * data = nexus(file="primate.nex");
  * or coding = nexus(file="primate.nex", charset="coding");
  */
-public class Nexus extends DeterministicFunction<Alignment> {
+public class Nexus extends DeterministicFunction {
 
     private final String fileParamName;
     private final String partParamName;
@@ -82,7 +82,7 @@ public class Nexus extends DeterministicFunction<Alignment> {
     }
 
     @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
-    public Value<Alignment> apply() {
+    public Value apply() {
 
         Value<String> fileName = getParams().get(fileParamName);
         Value<String> part = getParams().get(partParamName);
@@ -136,14 +136,15 @@ public class Nexus extends DeterministicFunction<Alignment> {
                 currentFileName = fileName.value();
             }
 
-            a = cachedAlignment;
+            Alignment[] alignments = ((CharSetAlignment) cachedAlignment).getPartAlignments();
+            return new Value(alignments, this);
 
         } else {
             // must be SimpleAlignment
             a = parser.getLPhyAlignment(true, ageDirectionStr, dateRegxStr);
         }
 
-        return new Value<>(a, this);
+        return new Value(a, this);
     }
 
     private List<List<CharSetBlock>> parseCharsets(final NexusParser parser, Object value) {

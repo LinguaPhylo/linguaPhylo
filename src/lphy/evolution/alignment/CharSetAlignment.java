@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.Value;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import java.util.*;
@@ -61,6 +62,10 @@ public class CharSetAlignment extends AbstractAlignment {
         return alignments.toArray(SimpleAlignment[]::new);
     }
 
+    public SimpleAlignment[] getPartAlignments() {
+        return partsMap.values().toArray(SimpleAlignment[]::new);
+    }
+
     // if partNames is null, pull names from charsetMap.
     // init Alignment, and fill in sequences
     protected void createPartAlignments(final Map<String, List<CharSetBlock>> charsetMap,
@@ -96,7 +101,7 @@ public class CharSetAlignment extends AbstractAlignment {
 
         // sometime there are extra charsets
         if (tot != this.nchar)
-            System.err.println("Warning: there is extra partition(s) defined in Nexus, " +
+            LoggerUtils.log.warning("Find extra partition(s) defined in Nexus, " +
                     "where the total nchar in each part " + tot + " != " + nchar +
                     " the length of full alignment !\nPartitions (ntaxa by nchar) : " + partsMap);
 
