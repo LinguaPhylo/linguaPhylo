@@ -15,6 +15,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author: Fabio K. Mendes
  */
@@ -24,9 +26,7 @@ import org.junit.Test;
  */
 public class PhyloMultivariateBrownianTest {
 
-    TimeTree tree;
-
-    public void initializeTree(String trNewick) {
+    public TimeTree initializeTree(String trNewick) {
 
         // antlr convoluted stuff (oof...)
         CharStream charStream = CharStreams.fromString(trNewick);
@@ -38,8 +38,10 @@ public class PhyloMultivariateBrownianTest {
 
         // lphy
         TimeTreeNode root = visitor.visit(parseTree);
-        tree = new TimeTree();
+        TimeTree tree = new TimeTree();
         tree.setRoot(root);
+
+        return tree;
     }
 
     /*
@@ -49,12 +51,12 @@ public class PhyloMultivariateBrownianTest {
     public void mvnMultipleTraitValuesStdErrTest() {
 
         // tree
-        initializeTree("(sp1:5.0,(sp2:3.0,(sp3:1.0,sp4:1.0)2:2.0)1:2.0)0:0.0;");
+        TimeTree tree = initializeTree("(sp1:5.0,(sp2:3.0,(sp3:1.0,sp4:1.0)2:2.0)1:2.0)0:0.0;");
         Value<TimeTree> trValue = new Value<TimeTree>("tree", tree);
 
         // rate matrix
         int nTraits = 3;
-        Double[][] rateMat = new Double[nTraits][nTraits];
+        Double[][] rateMat = new Double[][] { {1.0, 0.5, 0.25}, {0.5, 1.0, 0.25}, {0.25, 0.25, 1.0} };
         Value<Double[][]> rateMatValue = new Value<Double[][]>("rate", rateMat);
 
         // y0 root values
@@ -66,6 +68,9 @@ public class PhyloMultivariateBrownianTest {
 
         // sampling
         RandomVariable<ContinuousCharacterData> sample = phyloMB.sample();
+        ContinuousCharacterData dat = sample.value();
+
+        System.out.println(Arrays.toString(dat.getCharacterSequence("sp1")));
     }
 
 //    /*

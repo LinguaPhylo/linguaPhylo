@@ -4,16 +4,16 @@ import lphy.evolution.Taxa;
 
 public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
 
-    Double[][] continousCharacterData;
+    Double[][] continuousCharacterData;
     Taxa taxa;
 
-    public ContinuousCharacterData(Taxa taxa, Double[][] continousCharacterData) {
+    public ContinuousCharacterData(Taxa taxa, Double[][] continuousCharacterData) {
         this.taxa = taxa;
-        this.continousCharacterData = continousCharacterData;
+        this.continuousCharacterData = continuousCharacterData;
     }
 
-    public Double getState(String taxon, int column) {
-        return continousCharacterData[taxa.indexOfTaxon(taxon)][column];
+    public Double getState(String taxonName, int column) {
+        return continuousCharacterData[taxa.indexOfTaxon(taxonName)][column];
     }
 
     @Override
@@ -28,6 +28,6 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
 
     @Override
     public int nchar() {
-        return continousCharacterData[0].length;
+        return continuousCharacterData[0].length;
     }
 }
