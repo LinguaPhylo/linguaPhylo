@@ -7,12 +7,14 @@ import lphy.core.functions.newickParser.NewickParser;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -25,6 +27,8 @@ import java.util.Arrays;
  * Assortment of unit tests for PhyloMultivariateBrownian class
  */
 public class PhyloMultivariateBrownianTest {
+
+    StandardDeviation sd = new StandardDeviation();
 
     public TimeTree initializeTree(String trNewick) {
 
@@ -44,8 +48,31 @@ public class PhyloMultivariateBrownianTest {
         return tree;
     }
 
+    private int countHowManyWithinCI(int nTries, int nSamples, int traitIdx, double[][][] allSamplesFromOneSp, StandardDeviation sd) {
+
+        int count = 0;
+        for (int k=0; k<nTries; k++) {
+            double sampleStdErr = sd.evaluate(allSamplesFromOneSp[k][traitIdx]) / Math.sqrt(nSamples);
+            double bound = 1.96 * sampleStdErr;
+            double sampleMean = StatUtils.mean(allSamplesFromOneSp[k][traitIdx]);
+
+            if ((sampleMean > (sampleMean - bound)) && (sampleMean < (sampleMean + bound))) count++;
+        }
+
+        // System.out.println("Within 95% CI=" + count);
+        return count;
+    }
+
     /*
+     * This test carries out a batch of size 'nTries' simulations,
+     * in turn of size 'nSamples'. So we have a total of (nTries * nSamples)
+     * forward simulations along the specified phylogenetic tree.
      *
+     * Out of nTries, we should expect >95 simulations to have
+     * a species trait value contained within the 95%-CI defined
+     * as [mean(samples) - 1.96 * sd(samples)/sqrt(nSamples)),
+     *     (mean(samples) + 1.96 * sd(samples)/sqrt(nSamples)]
+     * by the central limit theorem.
      */
     @Test
     public void mvnMultipleTraitValuesStdErrTest() {
@@ -57,6 +84,7 @@ public class PhyloMultivariateBrownianTest {
         // rate matrix
         int nTraits = 3;
         Double[][] rateMat = new Double[][] { {1.0, 0.5, 0.25}, {0.5, 1.0, 0.25}, {0.25, 0.25, 1.0} };
+        // Double[][] rateMat = new Double[][] { {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0} }; // traits assumed independent (identity matrix)
         Value<Double[][]> rateMatValue = new Value<Double[][]>("rate", rateMat);
 
         // y0 root values
@@ -67,10 +95,42 @@ public class PhyloMultivariateBrownianTest {
         PhyloMultivariateBrownian phyloMB = new PhyloMultivariateBrownian(trValue, rateMatValue, y0Value);
 
         // sampling
-        RandomVariable<ContinuousCharacterData> sample = phyloMB.sample();
-        ContinuousCharacterData dat = sample.value();
+        int nTries = 100; // 95 out of 100 should be inside 95 CI
+        int nSamples = 100; // so 100 * 1000
+        ContinuousCharacterData[] samples = new ContinuousCharacterData[nSamples];
+        double[][][] sp1States = new double[nTries][nTraits][nSamples];
+        double[][][] sp3States = new double[nTries][nTraits][nSamples];
+        double[][][] sp4States = new double[nTries][nTraits][nSamples];
 
-        System.out.println(Arrays.toString(dat.getCharacterSequence("sp1")));
+        for (int k=0; k<nTries; k++) {
+            for (int j=0; j<nTraits; j++) {
+                for (int i = 0; i<nSamples; i++) {
+                    samples[i] = phyloMB.sample().value();
+                    sp1States[k][j][i] = samples[i].getState("sp1", j).doubleValue();
+                    sp3States[k][j][i] = samples[i].getState("sp3", j).doubleValue();
+                    sp4States[k][j][i] = samples[i].getState("sp4", j).doubleValue();
+                }
+            }
+        }
+
+        // trait 1
+        int nWithinSp1Tr1 = countHowManyWithinCI(nTries, nSamples, 0, sp1States, sd); // sp1
+        int nWithinSp4Tr1 = countHowManyWithinCI(nTries, nSamples, 0, sp4States, sd); // sp4
+
+        // trait 2
+        int nWithinSp1Tr2 = countHowManyWithinCI(nTries, nSamples, 1, sp1States, sd); // sp1
+        int nWithinSp4Tr2 = countHowManyWithinCI(nTries, nSamples, 1, sp4States, sd); // sp4
+
+        // trait 3
+        int nWithinSp1Tr3 = countHowManyWithinCI(nTries, nSamples, 2, sp1States, sd); // sp1
+        int nWithinSp4Tr3 = countHowManyWithinCI(nTries, nSamples, 2, sp4States, sd); // sp4
+
+        Assert.assertTrue(nWithinSp1Tr1 >= 95);
+        Assert.assertTrue(nWithinSp4Tr1 >= 95);
+        Assert.assertTrue(nWithinSp1Tr2 >= 95);
+        Assert.assertTrue(nWithinSp4Tr2 >= 95);
+        Assert.assertTrue(nWithinSp1Tr3 >= 95);
+        Assert.assertTrue(nWithinSp4Tr3 >= 95);
     }
 
 //    /*

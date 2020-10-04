@@ -111,14 +111,15 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
         }
     }
 
-    /*
     protected Double[] handleBoundaries(double[] rawValues) {
-        Double[] objValues =  new Double[rawValues.length];
-        for (int i = 0; i < rawValues.length; i++) { objValues[i] = rawValues[i]; }
+        /* original code */
+//        Double[] objValues =  new Double[rawValues.length];
+//        for (int i = 0; i < rawValues.length; i++) { objValues[i] = rawValues[i]; }
+//
+//        return objValues;
 
-        return objValues;
+        return ArrayUtils.toObject(rawValues);
     }
-    */
 
     /*
      * Getters and setters
@@ -152,8 +153,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
         MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(means, covariances);
 
-        return ArrayUtils.toObject(mvn.sample());
-        // return handleBoundaries(mvn.sample());
+        return handleBoundaries(mvn.sample());
     }
 
     // getParams is in the Generator interface
