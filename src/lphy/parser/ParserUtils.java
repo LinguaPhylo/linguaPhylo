@@ -52,7 +52,7 @@ public class ParserUtils {
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
-                LocalBranchRates.class, lphy.core.functions.Map.class,
+                LocalBranchRates.class,
                 CreateTaxa.class,
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, RootAge.class, TaxaFunction.class, Rep.class,

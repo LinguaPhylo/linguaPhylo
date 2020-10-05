@@ -5,6 +5,7 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
+@Deprecated
 public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {
 
     final String keysParamName;

@@ -603,16 +603,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
         }
 
-        class NamedValue {
-            public NamedValue(String name, Value value) {
-                this.name = name;
-                this.value = value;
-            }
-
-            String name;
-            Value value;
-        }
-
         @Override
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
@@ -624,13 +614,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();
                 value.setFunction(((DeterministicFunction) obj));
-                NamedValue v = new NamedValue(name, value);
+                ArgumentValue v = new ArgumentValue(name, value);
                 return v;
             }
 
             if (obj instanceof Value) {
                 Value value = (Value) obj;
-                NamedValue v = new NamedValue(name, value);
+                ArgumentValue v = new ArgumentValue(name, value);
                 return v;
             }
             return obj;
@@ -644,10 +634,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         public Object visitDistribution(SimulatorParser.DistributionContext ctx) {
 
             String name = ctx.getChild(0).getText();
-            NamedValue[] f = (NamedValue[]) visit(ctx.getChild(2));
+            ArgumentValue[] f = (ArgumentValue[]) visit(ctx.getChild(2));
             Map<String, Value> arguments = new HashMap<>();
-            for (NamedValue v : f) {
-                arguments.put(v.name, v.value);
+            for (ArgumentValue v : f) {
+                arguments.put(v.getName(), v.getValue());
             }
 
             Generator generator;
@@ -719,14 +709,16 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //            return new Object();
 //		}
 
-
-        @Override
+        /**
+         * @param ctx
+         * @return and array of ArgumentValue objects
+         */
         public Object visitExpression_list(Expression_listContext ctx) {
-            List<NamedValue> list = new ArrayList<>();
+            List<ArgumentValue> list = new ArrayList<>();
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
-                list.add((NamedValue) visit(ctx.getChild(i)));
+                list.add((ArgumentValue) visit(ctx.getChild(i)));
             }
-            return list.toArray(new NamedValue[]{});
+            return list.toArray(new ArgumentValue[]{});
         }
 
         @Override
@@ -750,25 +742,37 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return list.toArray(new Value[]{});
         }
 
-        @Override
+        /**
+         * @param ctx
+         * @return a Value or an Expression.
+         */
         public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
+
+            // handle special map function!
+            // TODO need to regularize this so that it is part of the function register!
+            if (functionName.equals("map")) {
+                ArgumentValue[] argumentObject = (ArgumentValue[])visit(ctx2);
+                Generator generator = new MapFunction(argumentObject);
+                return generator.generate();
+            }
+
             Value[] f1 = null;
             Object argumentObject = null;
-            NamedValue[] namedValues = null;
+            ArgumentValue[] argumentValues = null;
             if (ctx2.getText().equals(")")) {
                 f1 = new Value[]{};
             } else {
                 argumentObject = visit(ctx2);
                 if (argumentObject instanceof Value[]) {
                     f1 = (Value[]) argumentObject;
-                } else if (argumentObject instanceof NamedValue[]) {
-                    namedValues = (NamedValue[]) argumentObject;
-                    f1 = new Value[namedValues.length];
-                    for (int i = 0; i < namedValues.length; i++) {
-                        f1[i] = namedValues[i].value;
+                } else if (argumentObject instanceof ArgumentValue[]) {
+                    argumentValues = (ArgumentValue[]) argumentObject;
+                    f1 = new Value[argumentValues.length];
+                    for (int i = 0; i < argumentValues.length; i++) {
+                        f1[i] = argumentValues[i].getValue();
                     }
                 }
             }
@@ -880,15 +884,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
 
             Map<String, Value> arguments = new HashMap<>();
-            if (namedValues != null) {
-                for (NamedValue v : namedValues) {
-                    arguments.put(v.name, v.value);
+            if (argumentValues != null) {
+                for (ArgumentValue v : argumentValues) {
+                    arguments.put(v.getName(), v.getValue());
                 }
             }
 
             Generator generator;
             List<Generator> matches;
-            if (namedValues == null) {
+            if (argumentValues == null) {
                 matches = ParserUtils.getMatchingFunctions(functionName, f1);
             } else {
                 matches = ParserUtils.getMatchingFunctions(functionName, arguments);
