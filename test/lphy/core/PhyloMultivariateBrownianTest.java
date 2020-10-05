@@ -1,6 +1,5 @@
-package test.core;
+package lphy.core;
 
-import lphy.core.PhyloMultivariateBrownian;
 import lphy.core.functions.newickParser.NewickASTVisitor;
 import lphy.core.functions.newickParser.NewickLexer;
 import lphy.core.functions.newickParser.NewickParser;
@@ -16,8 +15,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 /**
  * @author: Fabio K. Mendes
