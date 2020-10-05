@@ -2,7 +2,6 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
@@ -13,28 +12,25 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class LogNormal implements GenerativeDistribution1D<Double> {
 
-    private final String meanLogParamName;
-    private final String sdLogParamName;
+    public static final String meanLogParamName = "meanlog";
+    public static final String sdLogParamName = "sdlog";
     private Value<Number> M;
     private Value<Number> S;
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormal(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Number> M,
-                     @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Number> S) {
+    public LogNormal(@ParameterInfo(name = meanLogParamName, description = "the mean of the distribution on the log scale.") Value<Number> M,
+                     @ParameterInfo(name = sdLogParamName, description = "the standard deviation of the distribution on the log scale.") Value<Number> S) {
 
         this.M = M;
         this.S = S;
-
-        meanLogParamName = getParamName(0);
-        sdLogParamName = getParamName(1);
     }
 
-    @GeneratorInfo(name="LogNormal", description="The log-normal probability distribution.")
+    @GeneratorInfo(name = "LogNormal", description = "The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         logNormalDistribution = new LogNormalDistribution(doubleValue(M), doubleValue(S));
-        return new RandomVariable<>("x",  logNormalDistribution.sample(), this);
+        return new RandomVariable<>(null, logNormalDistribution.sample(), this);
     }
 
     public double logDensity(Double x) {
@@ -43,10 +39,10 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(meanLogParamName, M);
-        map.put(sdLogParamName, S);
-        return map;
+        return new TreeMap<>() {{
+            put(meanLogParamName, M);
+            put(sdLogParamName, S);
+        }};
     }
 
     @Override
@@ -69,6 +65,7 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
     }
 
     private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};
+
     public Double[] getDomainBounds() {
         return domainBounds;
     }

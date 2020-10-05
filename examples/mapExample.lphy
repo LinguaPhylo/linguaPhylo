@@ -1,0 +1,4 @@
+model {
+  m = {a=1, b=2, c="three", d=jukesCantor()};
+  n = {d=1, e="two", f=m};
+}

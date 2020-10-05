@@ -7,27 +7,24 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
+import static lphy.core.distributions.DistributionConstants.pParamName;
+
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Geometric implements GenerativeDistribution1D<Integer> {
 
-    private final String pParamName;
     private Value<Double> p;
 
-    private RandomGenerator random;
-
-    public Geometric(@ParameterInfo(name="p", description="the probability of success.") Value<Double> p) {
+    public Geometric(@ParameterInfo(name=pParamName, description="the probability of success.") Value<Double> p) {
         this.p = p;
-        this.random = Utils.getRandom();
-        pParamName = getParamName(0);
     }
 
     @GeneratorInfo(name="Gamma", description="The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {
 
         GeometricDistribution geom = new GeometricDistribution(p.value());
-        return new RandomVariable<>("x", geom.sample(), this);
+        return new RandomVariable<>(null, geom.sample(), this);
     }
 
     public double density(Integer i) {
@@ -37,7 +34,7 @@ public class Geometric implements GenerativeDistribution1D<Integer> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(getParamName(0), p);
+        return Collections.singletonMap(pParamName, p);
     }
 
     @Override

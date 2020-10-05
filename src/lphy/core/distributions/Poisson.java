@@ -2,8 +2,6 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-import scala.Int;
 
 import java.util.Collections;
 import java.util.Map;
@@ -13,15 +11,11 @@ import java.util.Map;
  */
 public class Poisson implements GenerativeDistribution1D<Integer> {
 
-    private final String lambdaParamName;
+    private static final String lambdaParamName = "lambda";
     private Value<Double> lambda;
 
-    private RandomGenerator random;
-
-    public Poisson(@ParameterInfo(name="lambda", description="the expected number of events.") Value<Double> lambda) {
+    public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Double> lambda) {
         this.lambda = lambda;
-        this.random = Utils.getRandom();
-        lambdaParamName = getParamName(0);
     }
 
     @GeneratorInfo(name="Poisson", description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
@@ -38,7 +32,7 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(getParamName(0), lambda);
+        return Collections.singletonMap(lambdaParamName, lambda);
     }
 
     @Override

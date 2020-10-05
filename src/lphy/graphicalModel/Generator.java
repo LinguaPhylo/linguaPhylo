@@ -25,6 +25,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getParameterInfo(constructorIndex).get(paramIndex).name();
     }
 
+    @Deprecated
     default String getParamName(int paramIndex) {
         return getParamName(paramIndex, 0);
     }

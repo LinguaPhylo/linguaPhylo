@@ -1,21 +1,18 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-
 import java.util.*;
+import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Dirichlet implements GenerativeDistribution<Double[]> {
 
-    private final String concParamName;
     private Value<Double[]> concentration;
 
-    public Dirichlet(@ParameterInfo(name="conc", description="the concentration parameters of a Dirichlet distribution.", type=Double[].class) Value<Double[]> concentration) {
-
+    public Dirichlet(@ParameterInfo(name=concParamName, description="the concentration parameters of a Dirichlet distribution.", type=Double[].class) Value<Double[]> concentration) {
         this.concentration = concentration;
-        concParamName = getParamName(0);
     }
 
     @GeneratorInfo(name="Dirichlet", description="The dirichlet probability distribution.")
@@ -42,7 +39,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(getParamName(0), concentration);
+        return Collections.singletonMap(concParamName, concentration);
     }
 
     public Value<Double[]> getConcentration() {

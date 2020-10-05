@@ -2,37 +2,30 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Multivariate Normal distribution
  */
 public class MVN implements GenerativeDistribution<Double[]> {
 
-    private final String meanParamName;
-    private final String sdParamName;
+    private static final String covariancesParamName = "covariances";
     private Value<Double[]> mean;
     private Value<Double[][]> covariances;
 
-    private RandomGenerator random;
-
     MultivariateNormalDistribution multivariateNormalDistribution;
 
-    public MVN(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Double[]> mean,
-               @ParameterInfo(name = "covariances", description = "the variance-covariance matrix of the distribution.") Value<Double[][]> covariances) {
+    public MVN(@ParameterInfo(name = meanParamName, description = "the mean of the distribution.") Value<Double[]> mean,
+               @ParameterInfo(name = covariancesParamName, description = "the variance-covariance matrix of the distribution.") Value<Double[][]> covariances) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The means can't be null!");
         this.covariances = covariances;
         if (covariances == null) throw new IllegalArgumentException("The covariances can't be null!");
-        random = Utils.getRandom();
-
-        meanParamName = getParamName(0);
-        sdParamName = getParamName(1);
 
         double[] means = new double[mean.value().length];
         double[][] cv = new double[covariances.value().length][covariances.value().length];
@@ -70,17 +63,24 @@ public class MVN implements GenerativeDistribution<Double[]> {
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(meanParamName, mean);
-        map.put(sdParamName, covariances);
-        return map;
+        return new TreeMap<>() {{
+            put(meanParamName, mean);
+            put(covariancesParamName, covariances);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(meanParamName)) mean = value;
-        else if (paramName.equals(sdParamName)) covariances = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case meanParamName:
+                mean = value;
+                break;
+            case covariancesParamName:
+                covariances = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public String toString() {

@@ -920,7 +920,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
             switch (matches.size()) {
                 case 0:
-                    LoggerUtils.log.severe("Found no function for " + functionName + " matching arguments " + arguments);
+                    LoggerUtils.log.severe("Found no function for " + functionName + " matching arguments " + (argumentValues != null ? arguments : f1));
                     return null;
                 case 1:
                 default:

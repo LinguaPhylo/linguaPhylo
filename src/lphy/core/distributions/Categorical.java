@@ -6,19 +6,18 @@ import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.util.Collections;
 import java.util.Map;
+import static lphy.core.distributions.DistributionConstants.*;
 
 public class Categorical implements GenerativeDistribution<Integer> {
 
     Value<Double[]> probs;
     RandomGenerator random;
 
-    String probsParamName;
-
-    public Categorical(@ParameterInfo(name = "p", description = "the probability distribution over integer states 1 to K.", type=Double.class) Value<Double[]> probs) {
+    public Categorical(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.", type=Double.class) Value<Double[]> probs) {
 
         this.probs = probs;
-        probsParamName = getParamName(0);
         this.random = Utils.getRandom();
     }
     public RandomVariable<Integer> sample() {
@@ -41,15 +40,16 @@ public class Categorical implements GenerativeDistribution<Integer> {
     }
 
     @Override
-    public Map<String, Value> getParams() {
-
-        //TODO
-        return null;
+    public Map<String,Value> getParams() {
+        return Collections.singletonMap(pParamName, probs);
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        //TODO
-
+        if (paramName.equals(pParamName)) {
+            probs = value;
+        } else {
+            throw new RuntimeException("Only valid parameter name is " + pParamName);
+        }
     }
 }

@@ -8,24 +8,22 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static lphy.core.distributions.DistributionConstants.*;
+
 public class ExpMulti implements GenerativeDistribution<Double[]> {
 
-    private final String meanParamName;
     private Value<Double> mean;
-    private final String nParamName;
     private Value<Integer> n;
 
 
     private RandomGenerator random;
 
-    public ExpMulti(@ParameterInfo(name = "mean", description = "the mean of an exponential distribution.") Value<Double> mean,
-                    @ParameterInfo(name = "n", description = "the number of iid exponential draws.") Value<Integer> n) {
+    public ExpMulti(@ParameterInfo(name = meanParamName, description = "the mean of an exponential distribution.") Value<Double> mean,
+                    @ParameterInfo(name = nParamName, description = "the number of iid exponential draws.") Value<Integer> n) {
         this.mean = mean;
         this.n = n;
 
         this.random = Utils.getRandom();
-        meanParamName = getParamName(0);
-        nParamName = getParamName(1);
     }
 
     @GeneratorInfo(name = "Exp", description = "The exponential probability distribution.")
@@ -51,17 +49,21 @@ public class ExpMulti implements GenerativeDistribution<Double[]> {
 
     @Override
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(meanParamName, mean);
-        map.put(nParamName, n);
-        return map;
+        return new TreeMap<>() {{
+            put(meanParamName, mean);
+            put(nParamName, n);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(meanParamName)) mean = value;
-        else if (paramName.equals(nParamName)) n = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        if (meanParamName.equals(paramName)) {
+            mean = value;
+        } else if (nParamName.equals(paramName)) {
+            n = value;
+        } else {
+            throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public double getMean() {

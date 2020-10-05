@@ -6,17 +6,15 @@ import java.util.*;
 
 public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
 
-    private final String lengthParamName;
-    private final String hammingWeightParamName;
+    private static final String lengthParamName = "length";
+    private static final String hammingWeightParamName = "hammingWeight";
     private Value<Integer> length;
     private Value<Integer> hammingWeight;
 
-    public RandomBooleanArray(@ParameterInfo(name="length", description="the length of the boolean array to be generated.") Value<Integer> length,
-                              @ParameterInfo(name="hammingWeight", description="the number of true values in the boolean array.") Value<Integer> hammingWeight) {
+    public RandomBooleanArray(@ParameterInfo(name=lengthParamName, description="the length of the boolean array to be generated.") Value<Integer> length,
+                              @ParameterInfo(name=hammingWeightParamName, description="the number of true values in the boolean array.") Value<Integer> hammingWeight) {
         this.length = length;
         this.hammingWeight = hammingWeight;
-        lengthParamName = getParamName(0);
-        hammingWeightParamName = getParamName(1);
     }
 
     @GeneratorInfo(name="RandomBooleanArray", description="Samples a random boolean array of given length and given hamming weight. " +
@@ -45,10 +43,10 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(lengthParamName, length);
-        map.put(hammingWeightParamName, hammingWeight);
-        return map;
+        return new TreeMap<>() {{
+            put(lengthParamName, length);
+            put(hammingWeightParamName, hammingWeight);
+        }};
     }
 
     @Override

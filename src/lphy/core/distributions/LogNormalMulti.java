@@ -5,17 +5,16 @@ import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static lphy.core.distributions.LogNormal.*;
+import static lphy.core.distributions.DistributionConstants.nParamName;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class LogNormalMulti implements GenerativeDistribution<Double[]> {
 
-    private final String meanLogParamName;
-    private final String sdLogParamName;
-    private final String nParamName;
     private Value<Double> M;
     private Value<Double> S;
     private Value<Integer> n;
@@ -24,21 +23,18 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormalMulti(@ParameterInfo(name = "meanlog", description = "the mean of the distribution on the log scale.") Value<Double> M,
-                          @ParameterInfo(name = "sdlog", description = "the standard deviation of the distribution on the log scale.") Value<Double> S,
-                          @ParameterInfo(name = "n", description = "the dimension of the return.") Value<Integer> n) {
+    public LogNormalMulti(@ParameterInfo(name = meanLogParamName, description = "the mean of the distribution on the log scale.") Value<Double> M,
+                          @ParameterInfo(name = sdLogParamName, description = "the standard deviation of the distribution on the log scale.") Value<Double> S,
+                          @ParameterInfo(name = nParamName, description = "the dimension of the return.") Value<Integer> n) {
 
         this.M = M;
         this.S = S;
         this.n = n;
         this.random = Utils.getRandom();
 
-        meanLogParamName = getParamName(0);
-        sdLogParamName = getParamName(1);
-        nParamName = getParamName(2);
     }
 
-    @GeneratorInfo(name="LogNormal", description="The log-normal probability distribution.")
+    @GeneratorInfo(name = "LogNormal", description = "The log-normal probability distribution.")
     public RandomVariable<Double[]> sample() {
 
         logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
@@ -53,26 +49,35 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
     public double logDensity(Double[] x) {
 
         double logDensity = 0;
-        for (int i = 0; i < x.length; i++) {
-            logDensity += logNormalDistribution.logDensity(x[i]);
+        for (Double aDouble : x) {
+            logDensity += logNormalDistribution.logDensity(aDouble);
         }
         return logDensity;
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(meanLogParamName, M);
-        map.put(sdLogParamName, S);
-        map.put(nParamName, n);
-        return map;
+        return new TreeMap<>() {{
+            put(meanLogParamName, M);
+            put(sdLogParamName, S);
+            put(nParamName, n);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(meanLogParamName)) M = value;
-        else if (paramName.equals(sdLogParamName)) S = value;
-        else if (paramName.equals(nParamName)) n = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case meanLogParamName:
+                M = value;
+                break;
+            case sdLogParamName:
+                S = value;
+                break;
+            case nParamName:
+                n = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public String toString() {

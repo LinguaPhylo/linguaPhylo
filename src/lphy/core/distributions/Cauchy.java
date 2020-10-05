@@ -2,42 +2,34 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.CauchyDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Gamma distribution
  */
 public class Cauchy implements GenerativeDistribution<Double> {
 
-    private final String meanParamName;
-    private final String scaleParamName;
     private Value<Double> mean;
     private Value<Double> scale;
 
-    private RandomGenerator random;
-
     CauchyDistribution cauchyDistribution;
 
-    public Cauchy(@ParameterInfo(name = "mean", description = "the mean of the Cauchy distribution.", type=Double.class) Value<Double> mean,
-                  @ParameterInfo(name = "scale", description = "the scale of the Cauchy distribution.", type=Double.class) Value<Double> scale) {
+    public Cauchy(@ParameterInfo(name = meanParamName, description = "the mean of the Cauchy distribution.", type = Double.class) Value<Double> mean,
+                  @ParameterInfo(name = scaleParamName, description = "the scale of the Cauchy distribution.", type = Double.class) Value<Double> scale) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.scale = scale;
         if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
-        random = Utils.getRandom();
-
-        meanParamName = getParamName(0);
-        scaleParamName = getParamName(1);
 
         constructCauchyDistribution();
     }
 
-    @GeneratorInfo(name="Gamma", description = "The gamma probability distribution.")
+    @GeneratorInfo(name = "Gamma", description = "The gamma probability distribution.")
     public RandomVariable<Double> sample() {
         constructCauchyDistribution();
         double x = cauchyDistribution.sample();
@@ -50,10 +42,10 @@ public class Cauchy implements GenerativeDistribution<Double> {
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(meanParamName, mean);
-        map.put(scaleParamName, scale);
-        return map;
+        return new TreeMap<>() {{
+            put(meanParamName, mean);
+            put(scaleParamName, scale);
+        }};
     }
 
     @Override

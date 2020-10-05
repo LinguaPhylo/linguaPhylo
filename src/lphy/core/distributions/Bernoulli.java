@@ -6,21 +6,20 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
+import static lphy.core.distributions.DistributionConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Bernoulli implements GenerativeDistribution<Boolean> {
-    private final String pParamName;
     private Value<Number> p;
 
     private RandomGenerator random;
 
-    public Bernoulli(@ParameterInfo(name="p", description="the probability of success.") Value<Number> p) {
+    public Bernoulli(@ParameterInfo(name=pParamName, description="the probability of success.") Value<Number> p) {
         this.p = p;
         this.random = Utils.getRandom();
-        pParamName = getParamName(0);
     }
 
     @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
@@ -36,7 +35,7 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(getParamName(0), p);
+        return Collections.singletonMap(pParamName, p);
     }
 
     @Override

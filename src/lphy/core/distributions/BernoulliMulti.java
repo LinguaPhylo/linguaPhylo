@@ -4,27 +4,24 @@ import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * A Bernoulli process of n trials.
  */
 public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
-    private final String pParamName;
     private Value<Double> p;
-    private final String nParamName;
     private Value<Integer> n;
 
     private RandomGenerator random;
 
-    public BernoulliMulti(@ParameterInfo(name = "p", description = "the probability of success.", type = Double.class) Value<Double> p,
-                          @ParameterInfo(name = "n", description = "the number of bernoulli trials.", type = Integer.class) Value<Integer> n) {
+    public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.", type = Double.class) Value<Double> p,
+                          @ParameterInfo(name = nParamName, description = "the number of bernoulli trials.", type = Integer.class) Value<Integer> n) {
         this.p = p;
         this.n = n;
         this.random = Utils.getRandom();
-        pParamName = getParamName(0);
-        nParamName = getParamName(1);
     }
 
     @GeneratorInfo(name = "Bernoulli", description = "The Bernoulli process for n iid trials. The success (true) probability is p. Produces a boolean n-tuple.")
@@ -51,10 +48,10 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
     @Override
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(pParamName, p);
-        map.put(nParamName, n);
-        return map;
+        return new TreeMap<>() {{
+            put(pParamName, p);
+            put(nParamName, n);
+        }};
     }
 
     @Override

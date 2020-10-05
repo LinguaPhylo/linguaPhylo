@@ -1,6 +1,7 @@
 package lphy.parser.functions;
 
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.MapValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +18,13 @@ public class MapFunction extends DeterministicFunction<Map<String,Object>> {
     @GeneratorInfo(name="map",description = "A map defined by the argumentName=value pairs of its arguments.")
     public Value<Map<String, Object>> apply() {
 
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         Map<String, Value> valueMap = getParams();
 
         for (Map.Entry<String, Value> entry : valueMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().value());
         }
-        return new Value<>(null, map, this);
+        return new MapValue(null, map, this);
     }
 
     public String codeString() {
@@ -36,7 +37,11 @@ public class MapFunction extends DeterministicFunction<Map<String,Object>> {
             if (count > 0) builder.append(", ");
             builder.append(entry.getKey());
             builder.append("=");
-            builder.append(entry.getValue().codeString());
+            if (entry.getValue().isAnonymous()) {
+                builder.append(entry.getValue().codeString());
+            } else {
+                builder.append(entry.getValue().getId());
+            }
             count += 1;
         }
         builder.append("}");

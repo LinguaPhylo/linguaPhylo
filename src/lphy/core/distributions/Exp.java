@@ -5,27 +5,24 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.*;
+
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Exp implements GenerativeDistribution<Double> {
 
-    private final String meanParamName;
     private Value<Double> mean;
-    //private final String rateParamName;
-    //private Value<Double> rate;
 
     private RandomGenerator random;
 
-    public Exp(@ParameterInfo(name="mean", description="the mean of an exponential distribution.") Value<Double> mean) {
+    public Exp(@ParameterInfo(name=meanParamName, description="the mean of an exponential distribution.") Value<Double> mean) {
         this.mean = mean;
         //this.rate = rate;
 
         //if (mean != null && rate != null) throw new IllegalArgumentException("Only one of mean and rate can be specified.");
 
         this.random = Utils.getRandom();
-        meanParamName = getParamName(0);
-        //rateParamName = getParamName(1);
     }
 
     @GeneratorInfo(name="Exp", description="The exponential probability distribution.")
@@ -42,7 +39,7 @@ public class Exp implements GenerativeDistribution<Double> {
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(getParamName(0), mean);
+        return Collections.singletonMap(meanParamName, mean);
     }
 
     @Override
@@ -56,7 +53,6 @@ public class Exp implements GenerativeDistribution<Double> {
 
     public double getMean() {
         if (mean != null) return mean.value();
-        //if (rate != null) return 1.0/rate.value();
         return 1.0;
     }
 

@@ -75,8 +75,6 @@ public class ValueUtils {
 
         if (value.getClass().isArray()) {
 
-            System.err.println("Handling array for value.toString()!");
-
             Class<?> componentType;
             componentType = value.getClass().getComponentType();
 

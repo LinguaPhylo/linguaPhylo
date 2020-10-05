@@ -4,19 +4,17 @@ import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Discretized Gamma distribution
  */
 public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
 
-    private final String shapeParamName;
-    private final String ncatParamName;
-    private final String repsParamName;
+    private static final String ncatParamName = "ncat";
     private Value<Number> shape;
     private Value<Integer> ncat;
     private Value<Integer> reps;
@@ -25,23 +23,19 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     double[] rates;
 
 
-    public DiscretizedGamma(@ParameterInfo(name = "shape", description = "the shape of the discretized gamma distribution.") Value<Number> shape,
-                            @ParameterInfo(name = "ncat", description = "the number of bins in the discretization.") Value<Integer> ncat,
-                            @ParameterInfo(name = "reps", description = "the number of iid samples to produce.", optional = true) Value<Integer> reps) {
+    public DiscretizedGamma(@ParameterInfo(name = shapeParamName, description = "the shape of the discretized gamma distribution.") Value<Number> shape,
+                            @ParameterInfo(name = ncatParamName, description = "the number of bins in the discretization.") Value<Integer> ncat,
+                            @ParameterInfo(name = repsParamName, description = "the number of iid samples to produce.", optional = true) Value<Integer> reps) {
 
         this.shape = shape;
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
         this.ncat = ncat;
         this.reps = reps;
 
-        shapeParamName = getParamName(0);
-        ncatParamName = getParamName(1);
-        repsParamName = getParamName(2);
-
         constructGammaDistribution();
     }
 
-    @GeneratorInfo(name="G", description = "The discretized gamma probability distribution with mean = 1.")
+    @GeneratorInfo(name = "G", description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double[]> sample() {
         constructGammaDistribution();
 
@@ -49,7 +43,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
         if (reps != null) n = reps.value();
 
         Double[] x = new Double[n];
-        for (int i = 0; i < x.length; i++){
+        for (int i = 0; i < x.length; i++) {
             x[i] = rates[Utils.getRandom().nextInt(rates.length)];
         }
         return new RandomVariable<>("x", x, this);
@@ -61,20 +55,29 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(shapeParamName, shape);
-        map.put(ncatParamName, ncat);
-        map.put(repsParamName, reps);
-        return map;
+        return new TreeMap<>() {{
+            put(shapeParamName, shape);
+            put(ncatParamName, ncat);
+            put(repsParamName, reps);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
 
-        if (paramName.equals(shapeParamName)) shape = value;
-        else if (paramName.equals(ncatParamName)) ncat = value;
-        else if (paramName.equals(repsParamName)) reps = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case shapeParamName:
+                shape = value;
+                break;
+            case ncatParamName:
+                ncat = value;
+                break;
+            case repsParamName:
+                reps = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
 
         constructGammaDistribution();
     }
@@ -82,7 +85,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
     private void constructGammaDistribution() {
         double sh = doubleValue(shape);
 
-        gammaDistribution = new GammaDistribution(sh, 1.0/sh);
+        gammaDistribution = new GammaDistribution(sh, 1.0 / sh);
 
         rates = new double[ncat.value()];
 

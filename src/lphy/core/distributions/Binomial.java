@@ -2,33 +2,28 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.BinomialDistribution;
-import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static lphy.core.distributions.DistributionConstants.*;
 
 public class Binomial implements GenerativeDistribution<Integer> {
 
-    private final String pParamName;
-    private final String nParamName;
     private Value<Double> p;
     private Value<Integer> n;
 
     private RandomGenerator random;
 
-    public Binomial(@ParameterInfo(name="prob", description="the probability of a success.", type=Double.class) Value<Double> p,
-                    @ParameterInfo(name="n", description="number of trials.", type=Integer.class) Value<Integer> n) {
+    public Binomial(@ParameterInfo(name = pParamName, description = "the probability of a success.", type = Double.class) Value<Double> p,
+                    @ParameterInfo(name = nParamName, description = "number of trials.", type = Integer.class) Value<Integer> n) {
         this.p = p;
         this.n = n;
         this.random = Utils.getRandom();
-        pParamName = getParamName(0);
-        nParamName = getParamName(1);
     }
 
-    @GeneratorInfo(name="Binomial", description="The binomial distribution of x successes in n trials given probability p of success of a single trial.")
+    @GeneratorInfo(name = "Binomial", description = "The binomial distribution of x successes in n trials given probability p of success of a single trial.")
     public RandomVariable<Integer> sample() {
 
         BinomialDistribution binomial = new BinomialDistribution(n.value(), p.value());
@@ -41,12 +36,12 @@ public class Binomial implements GenerativeDistribution<Integer> {
     }
 
     @Override
-    public Map<String,Value> getParams() {
+    public Map<String, Value> getParams() {
 
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(pParamName, p);
-        map.put(nParamName, n);
-        return map;
+        return new TreeMap<>() {{
+            put(pParamName, p);
+            put(nParamName, n);
+        }};
     }
 
     @Override
