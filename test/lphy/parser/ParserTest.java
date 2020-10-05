@@ -1,4 +1,4 @@
-package parser;
+package lphy.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,10 +7,8 @@ import java.io.FilenameFilter;
 import java.util.*;
 
 import lphy.core.LPhyParser;
-import lphy.parser.REPL;
 import org.junit.Test;
 
-import lphy.parser.SimulatorListenerImpl;
 import junit.framework.TestCase;
 
 public class ParserTest extends TestCase {
