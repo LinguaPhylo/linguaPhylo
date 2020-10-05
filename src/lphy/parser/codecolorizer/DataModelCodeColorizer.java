@@ -1,9 +1,10 @@
-package lphy.parser;
+package lphy.parser.codecolorizer;
 
 
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import lphy.parser.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -100,6 +101,14 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
             return children;
         }
 
+
+        public Object visitMapFunction(DataModelParser.MapFunctionContext ctx) {
+            TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
+            element.add((TextElement)visit(ctx.getChild(1)));
+            element.add(new TextElement("}", textPane.getStyle("punctuationStyle")));
+            return element;
+        }
+
         @Override
         public Object visitConstant(DataModelParser.ConstantContext ctx) {
 
@@ -147,13 +156,20 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         public Object visitExpression(DataModelParser.ExpressionContext ctx) {
 
             if (ctx.getChildCount() == 1) {
-                String key = ctx.getChild(0).getText();
+
+                ParseTree childContext = ctx.getChild(0);
+
+                // if this is a map just return the map Value
+                if (childContext.getText().startsWith("{")) {
+                    return visit(childContext);
+                }
+
+                String key = childContext.getText();
                 if (parser.hasValue(key, context)) {
                     Value value = parser.getValue(key, context);
-                    return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle);
+                    return new TextElement(key, value instanceof RandomVariable ? textPane.getStyle("randomVarStyle") : textPane.getStyle("valueStyle") );
                 }
             }
-
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
                 if (ParserUtils.bivarOperators.contains(s)) {
@@ -346,34 +362,4 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         return visitor.visit(parseTree);
     }
 
-    private class TextElement {
-        List<String> text = new ArrayList<>();
-        List<Style> style = new ArrayList<>();
-
-        public TextElement() {
-        }
-
-        public TextElement(String text, Style style) {
-            add(text, style);
-        }
-
-        void add(String text, Style style) {
-            this.text.add(text);
-            this.style.add(style);
-        }
-
-        void add(TextElement e) {
-            for (int i = 0; i < e.text.size(); i++) {
-                add(e.text.get(i), e.style.get(i));
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (String t : text) {
-                builder.append(t);
-            }
-            return builder.toString();
-        }
-    }
 }

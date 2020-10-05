@@ -1,10 +1,11 @@
-package lphy.core.functions;
+package lphy.parser.functions;
 
 import lphy.graphicalModel.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class MapFunction extends DeterministicFunction<java.util.Map<String,Object>> {
+public class MapFunction extends DeterministicFunction<Map<String,Object>> {
 
     public MapFunction(ArgumentValue... argumentValues) {
 
@@ -14,12 +15,12 @@ public class MapFunction extends DeterministicFunction<java.util.Map<String,Obje
     }
 
     @GeneratorInfo(name="map",description = "A map defined by the argumentName=value pairs of its arguments.")
-    public Value<java.util.Map<String, Object>> apply() {
+    public Value<Map<String, Object>> apply() {
 
         HashMap<String, Object> map = new HashMap<>();
-        java.util.Map<String, Value> valueMap = getParams();
+        Map<String, Value> valueMap = getParams();
 
-        for (java.util.Map.Entry<String, Value> entry : valueMap.entrySet()) {
+        for (Map.Entry<String, Value> entry : valueMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().value());
         }
         return new Value<>(null, map, this);
@@ -28,17 +29,17 @@ public class MapFunction extends DeterministicFunction<java.util.Map<String,Obje
     public String codeString() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("map(");
-        java.util.Map<String, Value> valueMap = getParams();
+        builder.append("{");
+        Map<String, Value> valueMap = getParams();
         int count = 0;
-        for (java.util.Map.Entry<String, Value> entry : valueMap.entrySet()) {
+        for (Map.Entry<String, Value> entry : valueMap.entrySet()) {
             if (count > 0) builder.append(", ");
             builder.append(entry.getKey());
             builder.append("=");
             builder.append(entry.getValue().codeString());
             count += 1;
         }
-        builder.append(")");
+        builder.append("}");
         return builder.toString();
     }
 }

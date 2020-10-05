@@ -25,7 +25,7 @@ public class ParserUtils {
 
     static Map<String, Set<Class<?>>> genDistDictionary;
     static Map<String, Set<Class<?>>> functionDictionary;
-    static Set<String> bivarOperators;
+    public static Set<String> bivarOperators;
     static Set<String> univarfunctions;
 
 

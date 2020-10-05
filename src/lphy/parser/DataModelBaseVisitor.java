@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -130,6 +130,13 @@ public class DataModelBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitMapFunction(DataModelParser.MapFunctionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

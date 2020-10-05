@@ -1,4 +1,4 @@
-package lphy.parser;
+package lphy.parser.codecolorizer;
 
 import javax.swing.*;
 import javax.swing.text.Style;

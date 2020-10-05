@@ -1,7 +1,7 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
-import lphy.parser.DataModelCodeColorizer;
+import lphy.parser.codecolorizer.DataModelCodeColorizer;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;

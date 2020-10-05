@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/Simulator.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -116,6 +116,13 @@ public class SimulatorBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitUnnamed_expression_list(SimulatorParser.Unnamed_expression_listContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitMapFunction(SimulatorParser.MapFunctionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

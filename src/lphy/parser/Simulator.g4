@@ -62,6 +62,9 @@ unnamed_expression_list
     : expression (',' expression)*
     ;
 
+mapFunction: '{' expression_list '}'
+;
+
 methodCall
     : NAME '(' expression_list? ')'
     | NAME '(' unnamed_expression_list? ')'
@@ -96,6 +99,7 @@ expression
     | expression bop='&&' expression
     | expression bop='||' expression
     | expression bop=':' expression
+    | mapFunction
 //    | expression bop='?' expression ':' expression
 //    | <assoc=right> expression
 //      bop=('=' | '+=' | '-=' | '*=' | '/=' | '&=' | '|=' | '^=' | '>>=' | '>>>=' | '<<=' | '%=')

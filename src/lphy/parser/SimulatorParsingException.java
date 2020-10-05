@@ -13,7 +13,7 @@ public class SimulatorParsingException extends RuntimeException {
      * @param characterNum Character offset of error.
      * @param lineNum      Line offset of error.
      */
-    SimulatorParsingException(String message, Integer characterNum, Integer lineNum) {
+    public SimulatorParsingException(String message, Integer characterNum, Integer lineNum) {
         this.message = message;
         this.characterNum = characterNum;
         this.lineNum = lineNum;

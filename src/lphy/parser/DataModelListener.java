@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -48,12 +48,12 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitRelations(DataModelParser.RelationsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#relation_list()}.
+	 * Enter a parse tree produced by {@link DataModelParser#relation_list}.
 	 * @param ctx the parse tree
 	 */
 	void enterRelation_list(DataModelParser.Relation_listContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#relation_list()}.
+	 * Exit a parse tree produced by {@link DataModelParser#relation_list}.
 	 * @param ctx the parse tree
 	 */
 	void exitRelation_list(DataModelParser.Relation_listContext ctx);
@@ -128,12 +128,12 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitVar(DataModelParser.VarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#range_list()}.
+	 * Enter a parse tree produced by {@link DataModelParser#range_list}.
 	 * @param ctx the parse tree
 	 */
 	void enterRange_list(DataModelParser.Range_listContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#range_list()}.
+	 * Exit a parse tree produced by {@link DataModelParser#range_list}.
 	 * @param ctx the parse tree
 	 */
 	void exitRange_list(DataModelParser.Range_listContext ctx);
@@ -178,6 +178,16 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DataModelParser#mapFunction}.
+	 * @param ctx the parse tree
+	 */
+	void enterMapFunction(DataModelParser.MapFunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DataModelParser#mapFunction}.
+	 * @param ctx the parse tree
+	 */
+	void exitMapFunction(DataModelParser.MapFunctionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DataModelParser#methodCall}.
 	 * @param ctx the parse tree
 	 */
@@ -208,12 +218,12 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitNamed_expression(DataModelParser.Named_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#expression()}.
+	 * Enter a parse tree produced by {@link DataModelParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void enterExpression(DataModelParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#expression()}.
+	 * Exit a parse tree produced by {@link DataModelParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(DataModelParser.ExpressionContext ctx);

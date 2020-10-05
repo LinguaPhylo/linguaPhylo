@@ -9,6 +9,7 @@ import lphy.parser.SimulatorParser.Expression_listContext;
 import lphy.parser.SimulatorParser.Named_expressionContext;
 import lphy.parser.SimulatorParser.Unnamed_expression_listContext;
 import lphy.parser.SimulatorParser.VarContext;
+import lphy.parser.functions.MapFunction;
 import lphy.parser.functions.RangeList;
 import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
@@ -157,7 +158,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
                 if (o instanceof RangedVar) {
-
                     return handleRangeVar(id, value, ((RangedVar) o).range, f);
                 } else {
                     value.setFunction(f);
@@ -377,9 +377,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
 
-            // Deals with single token expressions -- probably an id referring to previously defined constant or variable
+            System.out.println("visitExpression: " + ctx.getText() + " has " + ctx.getChildCount() + " child node(s).");
+
+            // Deals with single token expressions -- either an id or a map expression
             if (ctx.getChildCount() == 1) {
-                String key = ctx.getChild(0).getText();
+                ParseTree childContext = ctx.getChild(0);
+
+                // if this is a map just return the map Value
+                if (childContext.getText().startsWith("{")) {
+                    Object obj = visit(childContext);
+
+                    if (obj instanceof Value) {
+                        LoggerUtils.log.info("Eureka: " + obj);
+                    }
+                    return obj;
+                }
+
+                String key = childContext.getText();
                 if (containsKey(key)) {
                     return get(key);
                 }
@@ -627,7 +641,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
         /**
-         *
          * @param ctx
          * @return A generative distribution object if a match can be found.
          */
@@ -646,11 +659,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 case 0:
                     LoggerUtils.log.severe("Found no generative distribution matching arguments for " + name);
                     return null;
-                case 1: default:
-                    if (matches.size() > 1) LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
+                case 1:
+                default:
+                    if (matches.size() > 1)
+                        LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
                     generator = matches.get(0);
                     // must be done so that Values all know their outputs
-                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                    for (Map.Entry<String, Value> entry : arguments.entrySet()) {
                         generator.setInput(entry.getKey(), entry.getValue());
                     }
                     return generator;
@@ -744,20 +759,26 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         /**
          * @param ctx
+         * @return A map function of the name=value pairs contained in this map expression
+         */
+        public Object visitMapFunction(SimulatorParser.MapFunctionContext ctx) {
+            // handle special map function!
+            ParseTree ctx1 = ctx.getChild(1);
+            LoggerUtils.log.info("parsing a map expression: " + ctx1.getText());
+
+            ArgumentValue[] argumentObject = (ArgumentValue[]) visit(ctx1);
+            Generator generator = new MapFunction(argumentObject);
+            return generator;
+        }
+
+        /**
+         * @param ctx
          * @return a Value or an Expression.
          */
         public Object visitMethodCall(SimulatorParser.MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
-
-            // handle special map function!
-            // TODO need to regularize this so that it is part of the function register!
-            if (functionName.equals("map")) {
-                ArgumentValue[] argumentObject = (ArgumentValue[])visit(ctx2);
-                Generator generator = new MapFunction(argumentObject);
-                return generator.generate();
-            }
 
             Value[] f1 = null;
             Object argumentObject = null;
@@ -901,11 +922,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 case 0:
                     LoggerUtils.log.severe("Found no function for " + functionName + " matching arguments " + arguments);
                     return null;
-                case 1: default:
-                    if (matches.size() > 1) LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
+                case 1:
+                default:
+                    if (matches.size() > 1)
+                        LoggerUtils.log.severe("Found " + matches.size() + " matches for " + functionName + ". Picking first one!");
                     generator = matches.get(0);
                     // must be done so that Values all know their outputs
-                    for (Map.Entry<String,Value> entry : arguments.entrySet()) {
+                    for (Map.Entry<String, Value> entry : arguments.entrySet()) {
                         generator.setInput(entry.getKey(), entry.getValue());
                     }
                     return generator.generate();

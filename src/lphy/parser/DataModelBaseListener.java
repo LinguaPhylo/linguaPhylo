@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
 package lphy.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -215,6 +215,18 @@ public class DataModelBaseListener implements DataModelListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMapFunction(DataModelParser.MapFunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMapFunction(DataModelParser.MapFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

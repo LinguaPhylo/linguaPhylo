@@ -3,7 +3,7 @@ package lphy.app;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Generator;
-import lphy.parser.CodeColorizer;
+import lphy.parser.codecolorizer.CodeColorizer;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;

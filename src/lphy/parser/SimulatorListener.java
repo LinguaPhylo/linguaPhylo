@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/lphy/src/lphy/parser/Simulator.g4 by ANTLR 4.8
+// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -157,6 +157,16 @@ public interface SimulatorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnnamed_expression_list(SimulatorParser.Unnamed_expression_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimulatorParser#mapFunction}.
+	 * @param ctx the parse tree
+	 */
+	void enterMapFunction(SimulatorParser.MapFunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimulatorParser#mapFunction}.
+	 * @param ctx the parse tree
+	 */
+	void exitMapFunction(SimulatorParser.MapFunctionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimulatorParser#methodCall}.
 	 * @param ctx the parse tree
