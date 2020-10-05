@@ -17,6 +17,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author: Fabio K. Mendes
  */
@@ -66,7 +68,7 @@ public class PhyloMultivariateBrownianTest {
     @Before
     public void setUp() {
         // tree
-        TimeTree tree = initializeTree("(sp1:100.0,(sp2:5.0,(sp3:0.01,sp4:0.01)2:4.9)1:95.0)0:0.0;");
+        TimeTree tree = initializeTree("(sp1:200.0,(sp2:50.0,(sp3:0.01,sp4:0.01)2:49.99)1:150.0)0:0.0;");
         Value<TimeTree> trValue = new Value<TimeTree>("tree", tree);
 
         // rate matrix
@@ -103,6 +105,7 @@ public class PhyloMultivariateBrownianTest {
             }
         }
     }
+
     /*
      * This test carries out a batch of size 'nTries' simulations,
      * in turn of size 'nSamples'. So we have a total of (nTries * nSamples)
@@ -145,52 +148,38 @@ public class PhyloMultivariateBrownianTest {
      * than those in species 3 and 2, which in turn should be more similar
      * than those of species 3 and 1; also, trait values in species 3 and 4
      * should be more similar than those in species 3 and 1.
-     *
      */
     @Test
-    public void mvnMultipleTraitValuesPhyloSignalTest() {
+    public void mvnMultipleTraitValuesContrastsTest() {
 
-        double[][][] diffsSp3Sp4 = new double[nTraits][nTries][nSamples];
-        double[][][] diffsSp3Sp2 = new double[nTraits][nTries][nSamples];
-        double[][][] diffsSp3Sp1 = new double[nTraits][nTries][nSamples];
-
-        double[][] meanDiffsSp3Sp4 = new double[nTraits][nTries];
-        double[][] meanDiffsSp3Sp2 = new double[nTraits][nTries];
-        double[][] meanDiffsSp3Sp1 = new double[nTraits][nTries];
+        // contrasts
+        double[][] diffsSp3Sp4 = new double[nTraits][nTries * nSamples];
+        double[][] diffsSp3Sp2 = new double[nTraits][nTries * nSamples];
+        double[][] diffsSp3Sp1 = new double[nTraits][nTries * nSamples];
+        double[][] diffsSp4Sp1 = new double[nTraits][nTries * nSamples];
 
         for (int j=0; j<nTraits; j++) {
+            int l=0;
+
             for (int k=0; k<nTries; k++) {
                 for (int i=0; i<nSamples; i++) {
-                    diffsSp3Sp4[j][k][i] = sp3States[k][j][i] - sp4States[k][j][i];
-                    diffsSp3Sp2[j][k][i] = sp3States[k][j][i] - sp2States[k][j][i];
-                    diffsSp3Sp1[j][k][i] = sp3States[k][j][i] - sp1States[k][j][i];
+                    diffsSp3Sp4[j][l] = Math.abs(sp3States[k][j][i] - sp4States[k][j][i]);
+                    diffsSp3Sp2[j][l] = Math.abs(sp3States[k][j][i] - sp2States[k][j][i]);
+                    diffsSp3Sp1[j][l] = Math.abs(sp3States[k][j][i] - sp1States[k][j][i]);
+                    diffsSp4Sp1[j][l] = Math.abs(sp4States[k][j][i] - sp1States[k][j][i]);
+                    l++;
                 }
-
-                meanDiffsSp3Sp4[j][k] = Math.abs(StatUtils.mean(diffsSp3Sp4[j][k])); // abs mean difference among i samples within k-th try, for j-th trait
-                meanDiffsSp3Sp2[j][k] = Math.abs(StatUtils.mean(diffsSp3Sp2[j][k]));
-                meanDiffsSp3Sp1[j][k] = Math.abs(StatUtils.mean(diffsSp3Sp1[j][k]));
             }
         }
 
-        // trait 1
-        Assert.assertTrue(
-                Math.abs(StatUtils.mean(meanDiffsSp3Sp4[0])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[0])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp4[0])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp2[0])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp2[0])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[0]))
-        );
+        /*
+        System.out.println(StatUtils.mean(diffsSp3Sp1[0]));
+        System.out.println(StatUtils.mean(diffsSp4Sp1[0]));
+        System.out.println(StatUtils.mean(diffsSp3Sp2[0]));
+        System.out.println(StatUtils.mean(diffsSp3Sp4[0]));
+         */
 
-        // trait 2
-        Assert.assertTrue(
-                Math.abs(StatUtils.mean(meanDiffsSp3Sp4[1])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[1])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp4[1])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp2[1])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp2[1])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[1]))
-        );
-
-        // trait 3
-        Assert.assertTrue(
-                Math.abs(StatUtils.mean(meanDiffsSp3Sp4[2])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[2])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp4[2])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp2[2])) &&
-                        Math.abs(StatUtils.mean(meanDiffsSp3Sp2[2])) < Math.abs(StatUtils.mean(meanDiffsSp3Sp1[2]))
-        );
+        Assert.assertTrue(StatUtils.mean(diffsSp3Sp1[0]) > StatUtils.mean(diffsSp3Sp2[0]) && StatUtils.mean(diffsSp3Sp2[0]) > StatUtils.mean(diffsSp3Sp4[0]));
+        Assert.assertEquals(StatUtils.mean(diffsSp3Sp1[0]), StatUtils.mean(diffsSp4Sp1[0]), 0.001);
     }
 }
