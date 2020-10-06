@@ -87,6 +87,8 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         fillRevMap();
 
         this.sequenceType = source.getSequenceType();
+        if (sequenceType == null)
+            this.numStates = source.numStates;
         if (source.taxonMap != null)
             this.taxonMap = new LinkedHashMap<>(source.taxonMap);
     }
@@ -158,6 +160,14 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         return sequenceType;
     }
 
+    @Override
+    public int getNumOfStates() {
+        if (sequenceType != null) {
+            sequenceType.getCanonicalStateCount();
+        }
+        return numStates;
+    }
+
     public String getDataTypeDescription() {
         if (sequenceType == null) { // TODO BINARY
             if (numStates == 2) return "binary";
@@ -185,15 +195,16 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     /**
      * @return  state, if 0 <= state < numStates (no ambiguous),
-     *          otherwise return numStates which is the last index in colours always for ambiguous state.
+     *          otherwise return numStates which is the last index
+     *          in colours always for ambiguous state.
      */
-    public int getColorByState(int state) {
+    public int getColourIndex(int state) {
         //TODO state criteria not hard code
         if (numStates == 2 && state > 1) // TODO BINARY data type
             return 2;
-        if (DataType.isSame(SequenceType.NUCLEOTIDE, getSequenceType()) && state > 3)
+        if (DataType.isType(this, SequenceType.NUCLEOTIDE) && state > 3)
             return 4;
-        else if (DataType.isSame(SequenceType.AMINO_ACID, getSequenceType()) && state > 19) // no ambiguous
+        else if (DataType.isType(this, SequenceType.AMINO_ACID) && state > 19) // no ambiguous
             //TODO why jebl make AMINO_ACID 22 ?
             return 20; // the last extra is always for ambiguous
         return state;

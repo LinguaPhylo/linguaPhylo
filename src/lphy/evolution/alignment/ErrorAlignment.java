@@ -9,8 +9,8 @@ public class ErrorAlignment extends SimpleAlignment {
 
     SimpleAlignment parent;
 
-    public ErrorAlignment(int taxa, int length, Map<String, Integer> idMap, SimpleAlignment parent) {
-        super(idMap, length, parent.getSequenceType());
+    public ErrorAlignment(int length, SimpleAlignment parent) {
+        super(length, parent); // copy source
 
         this.parent = parent;
     }

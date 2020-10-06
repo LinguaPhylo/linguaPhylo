@@ -3,6 +3,7 @@ package lphy.evolution.sequences;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
+import lphy.evolution.alignment.Alignment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +18,12 @@ public abstract class DataType implements SequenceType { // TODO SequenceType im
 
     public static boolean isSame(SequenceType type1, SequenceType type2) {
         return type1.getName().equals(type2.getName());
+    }
+
+    public static boolean isType(Alignment alignment, SequenceType sequenceType) {
+        if (alignment.getSequenceType() == null)
+            return alignment.getNumOfStates() == sequenceType.getCanonicalStateCount();
+        return isSame(alignment.getSequenceType(), sequenceType);
     }
 
     //*** these should be inherited to reduce duplicated code ***//
