@@ -1,6 +1,9 @@
 package lphy.graphicalModel;
 
 
+import lphy.graphicalModel.types.StringArrayValue;
+import lphy.graphicalModel.types.StringValue;
+
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
@@ -40,7 +43,24 @@ public abstract class Func implements Generator, Viewable {
     }
 
     public void setParam(String paramName, Value value) {
-        paramMap.put(paramName, value);
+        Value newValue = parseStringToArray(value);
+        paramMap.put(paramName, newValue);
+    }
+
+    // allow "[3-629\3, 4-629\3, 5-629\3]", ["3-629\3", "4-629\3", "5-629\3"], "3-629\3"
+    // parse Value<String> containing "[]" into Value<StringArrayValue>
+    protected Value parseStringToArray(Value value) {
+        if ( ! (value instanceof StringValue) )
+            return value; // directly return other types including StringArrayValue
+        String str = value.value().toString();
+        // parse str
+        if (str.contains("[")) { // "[3-629\3, 4-629\3, 5-629\3]"
+            str = str.replaceAll("\\s+", "");
+            str = str.replaceAll("\"|\'|\\[|\\]", "");
+            String[] strArr = str.split(",");
+            return new StringArrayValue(value.getId(), strArr, value.function);
+        }
+        return value; // charset="3-629\3"
     }
 
     public String getRichDescription() {
