@@ -33,9 +33,17 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
      */
     SequenceType getSequenceType();
 
+    int getNumOfStates();
+
     default Class getComponentType() {
         return Integer.class;
     }
+
+    /**
+     * @param state  the given state of sequences
+     * @return   A colour index for that state
+     */
+    int getColourIndex(int state);
 
     /**
      * @return   The colours for states of sequences.

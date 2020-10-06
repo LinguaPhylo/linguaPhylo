@@ -149,11 +149,7 @@ public class AlignmentComponent extends JComponent {
                 int state = alignment.getState(i, j);
                 //TODO col index not hard code
                 // other datatype?
-                int col = state;
-                if (DataType.isSame(SequenceType.NUCLEOTIDE, alignment.getSequenceType()) && state > 3)
-                    col = 4;
-                else if (DataType.isSame(SequenceType.AMINO_ACID, alignment.getSequenceType()) && state > 19)
-                    col = 20;
+                int col = alignment.getColourIndex(state);
                 Color c = colors[col];
 
                 if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {

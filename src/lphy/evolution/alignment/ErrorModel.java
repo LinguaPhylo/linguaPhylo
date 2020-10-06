@@ -60,7 +60,7 @@ public class ErrorModel implements GenerativeDistribution<SimpleAlignment> {
     public RandomVariable<SimpleAlignment> sample() {
 
         SimpleAlignment original = alignment.value();
-        SimpleAlignment newAlignment = new ErrorAlignment(original.ntaxa(), original.nchar(), original.idMap, original);
+        SimpleAlignment newAlignment = new ErrorAlignment(original.nchar(), original);
 
         double a = alpha.value();
         double b = beta.value();
