@@ -204,7 +204,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //			return c;<?>
         }
 
-        private Value handleRangeVar(String id, Value value, List<Integer> range, DeterministicFunction f) {
+        private Value handleRangeVar(String id, Value value, RangeList rangeList, DeterministicFunction f) {
+
+            List<Integer> range = Arrays.asList(rangeList.apply().value());
 
             // get max index
             int max = max(range);
@@ -327,9 +329,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         class RangedVar {
             String id;
-            List<Integer> range;
+            RangeList range;
 
-            RangedVar(String id, List<Integer> range) {
+            RangedVar(String id, RangeList range) {
                 this.id = id;
                 this.range = range;
             }
@@ -342,9 +344,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (ctx.getChildCount() > 1) {
                 // variable of the form NAME '[' range ']'
                 Object o = visit(ctx.getChild(2));
-                if (o instanceof List) {
-                    List<Integer> range = (List<Integer>) o;
-                    return new RangedVar(id, range);
+                if (o instanceof RangeList) {
+                    return new RangedVar(id, (RangeList)o);
                 } else {
                     throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " +
                             o == null ? "null" : o.getClass().getName());
