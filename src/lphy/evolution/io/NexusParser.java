@@ -86,8 +86,7 @@ public class NexusParser {
 
         try {
             importer.importNexus();
-//            resetReader();
-//            importer.importCharsets();
+//            List<Sequence>  sequenceList = importer.importSequences();
         } catch (IOException | ImportException e) {
             e.printStackTrace();
         }
@@ -200,8 +199,8 @@ public class NexusParser {
 
             }
 
-
-
+            parser.getImporter().importNexus();
+//            System.out.println(sequenceList);
 
         } catch (Exception e) {
             e.printStackTrace();

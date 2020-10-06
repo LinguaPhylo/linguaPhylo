@@ -37,10 +37,11 @@ public class Nexus extends DeterministicFunction {
     // TODO try overload ?
     public Nexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
                  @ParameterInfo(name = "part", description = "the name of selected partition in Nexus, " +
-                         "if none then return the full alignment.", optional=true) Value<String> part,
-                 // charset=["1-629\3", "2-629\3", "3-629\3"] or charset="1-629\3"
-                 @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, " +
-                         "but cannot use with argument 'part' together.", optional=true) Value<?> charsets,
+                         "if none then return the full alignment.", optional=true) Value part,
+                 @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
+                         "charset=[\"1:100\", \"101-200\", \"201-300\"] or " +
+                         "charset=[\"3:629\\3\", \"4-629\\3\", \"5-629\\3\"] or charset=\"1-629\\3\"" +
+                         "But it cannot be used with argument 'part' together.", optional=true) Value charsets,
                  @ParameterInfo(name = "ageDirection", description = "age direction which is either forward (dates) or backward (ages).",
                          optional=true) Value<String> ageDirection,
                  @ParameterInfo(name = "ageRegex", description = "Java regular expression to extract dates.",
@@ -95,7 +96,7 @@ public class Nexus extends DeterministicFunction {
         String dateRegxStr = regx == null ? null : regx.value();
 
         List<List<CharSetBlock>> charsetsList = new ArrayList<>();
-        Value<?> charset = getParams().get(charsetParamName);
+        Value charset = getParams().get(charsetParamName);
         if (charset != null)
             charsetsList = parseCharsets(parser, charset);
 
@@ -147,7 +148,7 @@ public class Nexus extends DeterministicFunction {
         return new Value(a, this);
     }
 
-    private List<List<CharSetBlock>> parseCharsets(final NexusParser parser, Object value) {
+    private List<List<CharSetBlock>> parseCharsets(final NexusParser parser, Value value) {
         List<List<CharSetBlock>> charsetsList = new ArrayList<>();
 
         if (value instanceof StringArrayValue) {
