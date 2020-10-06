@@ -9,8 +9,11 @@ import lphy.graphicalModel.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.Map;
 
+import static lphy.core.distributions.DistributionConstants.*;
+
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -18,24 +21,18 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class SerialCoalescent extends TaxaConditionedTreeGenerator {
 
-    private final String thetaParamName;
     private Value<Number> theta;
 
-    public SerialCoalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Number> theta,
-                             @ParameterInfo(name = "n", description = "number of taxa.", optional = true) Value<Integer> n,
-                             @ParameterInfo(name = "taxa", description = "Taxa object, (e.g. Taxa or TimeTree or Object[])", optional = true) Value<Taxa> taxa,
-                             @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
+    public SerialCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population size, possibly scaled to mutations or calendar units.") Value<Number> theta,
+                            @ParameterInfo(name = nParamName, description = "number of taxa.", optional = true) Value<Integer> n,
+                            @ParameterInfo(name = taxaParamName, description = "Taxa object, (e.g. Taxa or TimeTree or Object[])", optional = true) Value<Taxa> taxa,
+                            @ParameterInfo(name = agesParamName, description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
 
         super(n, taxa, ages);
 
         this.theta = theta;
         this.ages = ages;
         this.random = Utils.getRandom();
-
-        thetaParamName = getParamName(0);
-        nParamName = getParamName(1);
-        taxaParamName = getParamName(2);
-        agesParamName = getParamName(3);
 
         super.checkTaxaParameters(true);
         checkDimensions();
@@ -73,8 +70,7 @@ public class SerialCoalescent extends TaxaConditionedTreeGenerator {
             }
         }
 
-        leavesToBeAdded.sort(
-                (o1, o2) -> Double.compare(o2.getAge(), o1.getAge())); // REVERSE ORDER - youngest age at end of list
+        leavesToBeAdded.sort((o1, o2) -> Double.compare(o2.getAge(), o1.getAge())); // REVERSE ORDER - youngest age at end of list
 
         double popSize = doubleValue(theta);
         while ((activeNodes.size() + leavesToBeAdded.size()) > 1) {
@@ -121,8 +117,8 @@ public class SerialCoalescent extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
         map.put(thetaParamName, theta);
         return map;
     }

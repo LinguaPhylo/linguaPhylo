@@ -7,15 +7,13 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
+
 /**
  * A Birth-death tree generative distribution
  */
 public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> {
 
-    final static String birthRateParamName = "lambda";
-    final static String deathRateParamName = "mu";
-    final static String rhoParamName = "rho";
-    final static String rootAgeParamName = "rootAge";
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rho;
@@ -23,8 +21,8 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
 
     RandomGenerator random;
 
-    public BirthDeathSamplingTree(@ParameterInfo(name = birthRateParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
-                                  @ParameterInfo(name = deathRateParamName, description = "per-lineage death rate.") Value<Number> deathRate,
+    public BirthDeathSamplingTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
+                                  @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                                   @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
                                   @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree.") Value<Number> rootAge) {
 
@@ -36,7 +34,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
     }
 
 
-    @GeneratorInfo(name="BirthDeathSampling", description="The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name = "BirthDeathSampling", description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
@@ -55,22 +53,33 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(birthRateParamName, birthRate);
-        map.put(deathRateParamName, deathRate);
-        map.put(rhoParamName, rho);
-        map.put(rootAgeParamName, rootAge);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(lambdaParamName, birthRate);
+            put(muParamName, deathRate);
+            put(rhoParamName, rho);
+            put(rootAgeParamName, rootAge);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(birthRateParamName)) birthRate = value;
-        else if (paramName.equals(deathRateParamName)) deathRate = value;
-        else if (paramName.equals(rhoParamName)) rho = value;
-        else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case lambdaParamName:
+                birthRate = value;
+                break;
+            case muParamName:
+                deathRate = value;
+                break;
+            case rhoParamName:
+                rho = value;
+                break;
+            case rootAgeParamName:
+                rootAge = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public String toString() {

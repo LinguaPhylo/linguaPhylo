@@ -1,5 +1,6 @@
 package lphy.evolution.tree;
 
+import lphy.evolution.EvolutionConstants;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.graphicalModel.*;
@@ -7,14 +8,14 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.*;
 /**
  * Centralized shared code for dealing with taxa-conditioned tree generative distributions.
  */
 public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribution<TimeTree> {
 
-    protected String nParamName;
-    protected String taxaParamName;
-    protected String agesParamName;
+    public static final String taxaParamName = EvolutionConstants.taxaParamName;
+    public static final String agesParamName = "ages";
 
     /**
      * A value holding the number of taxa.
@@ -134,7 +135,7 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
         return nodeList.remove(random.nextInt(nodeList.size()));
     }
 
-    public SortedMap<String, Value> getParams() {
+    public Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         if (n != null) map.put(nParamName, n);
         if (taxaValue != null) map.put(taxaParamName, taxaValue);
@@ -144,10 +145,19 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(nParamName)) n = value;
-        else if (paramName.equals(taxaParamName)) taxaValue = value;
-        else if (paramName.equals(agesParamName)) ages = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case nParamName:
+                n = value;
+                break;
+            case taxaParamName:
+                taxaValue = value;
+                break;
+            case agesParamName:
+                ages = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
         constructTaxa();
     }
 

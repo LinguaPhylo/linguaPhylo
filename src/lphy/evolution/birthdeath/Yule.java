@@ -8,6 +8,9 @@ import lphy.graphicalModel.*;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.evolution.birthdeath.BirthDeathConstants.lambdaParamName;
+import static lphy.evolution.birthdeath.BirthDeathConstants.rootAgeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -15,28 +18,21 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class Yule extends TaxaConditionedTreeGenerator {
 
-    private final String birthRateParamName;
-    private final String rootAgeParamName;
     private Value<Number> birthRate;
     private Value<Number> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
-    public Yule(@ParameterInfo(name = "birthRate", description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
-                @ParameterInfo(name = "n", description = "the number of taxa.", optional=true) Value<Integer> n,
-                @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
-                @ParameterInfo(name = "rootAge", description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {
+    public Yule(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
+                @ParameterInfo(name = nParamName, description = "the number of taxa.", optional=true) Value<Integer> n,
+                @ParameterInfo(name = taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
+                @ParameterInfo(name = rootAgeParamName, description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {
 
         super(n, taxa, null);
 
         this.birthRate = birthRate;
         this.rootAge = rootAge;
         this.random = Utils.getRandom();
-
-        birthRateParamName = getParamName(0);
-        nParamName = getParamName(1);
-        taxaParamName = getParamName(2);
-        rootAgeParamName = getParamName(3);
 
         checkTaxaParameters(true);
 
@@ -104,9 +100,9 @@ public class Yule extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
-        map.put(birthRateParamName, birthRate);
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
+        map.put(lambdaParamName, birthRate);
         if (rootAge != null) map.put(rootAgeParamName, rootAge);
         return map;
     }
@@ -117,7 +113,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(birthRateParamName)) birthRate = value;
+        if (paramName.equals(lambdaParamName)) birthRate = value;
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
         else super.setParam(paramName, value);
     }

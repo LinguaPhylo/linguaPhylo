@@ -15,7 +15,7 @@ In this project we aim to develop a model specification language to concisely an
 ```
 model {
   λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-  ψ ~ Yule(birthRate=λ, n=16);
+  ψ ~ Yule(lambda=λ, n=16);
   D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
 }
 ```

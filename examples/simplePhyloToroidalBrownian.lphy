@@ -1,5 +1,5 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=λ, n=100);
+ψ ~ Yule(lambda=λ, n=100);
 σ2 = dihedralAngleDiffusionMatrix(phiVariance=1.0, psiVariance=1.0, covariance=0.25, length=10);
 y0 = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
 y ~ PhyloToroidalBrownian(diffusionMatrix=σ2, y=y0, tree=ψ);

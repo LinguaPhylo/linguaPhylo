@@ -8,6 +8,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.evolution.birthdeath.BirthDeathConstants.rhoParamName;
+import static lphy.evolution.EvolutionConstants.treeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -15,26 +17,21 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
-    final String treeParamName;
-    final String rhoParamName;
     private Value<TimeTree> tree;
     private Value<Number> rho;
 
     RandomGenerator random;
 
-    public RhoSampleTree(@ParameterInfo(name = "tree", description = "the full tree to sample") Value<TimeTree> tree,
-                         @ParameterInfo(name = "rho", description = "the probability that each tip at time zero is sampled") Value<Number> rho) {
+    public RhoSampleTree(@ParameterInfo(name = treeParamName, description = "the full tree to sample") Value<TimeTree> tree,
+                         @ParameterInfo(name = rhoParamName, description = "the probability that each tip at time zero is sampled") Value<Number> rho) {
 
         this.tree = tree;
         this.rho = rho;
         this.random = Utils.getRandom();
-
-        treeParamName = getParamName(0);
-        rhoParamName = getParamName(1);
     }
 
 
-    @GeneratorInfo(name="RhoSampleTree", description="A tree sampled from a larger tree by selecting tips at time zero with probability rho.<br>" +
+    @GeneratorInfo(name = "RhoSampleTree", description = "A tree sampled from a larger tree by selecting tips at time zero with probability rho.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
@@ -52,7 +49,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
         }
         System.out.println("Sample tree has " + sampleTips.size() + " tips.");
 
-        for (TimeTreeNode tip : sampleTips ) {
+        for (TimeTreeNode tip : sampleTips) {
             markNodeAndDirectAncestors(tip);
         }
 
@@ -119,11 +116,11 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(treeParamName, tree);
-        map.put(rhoParamName, rho);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(treeParamName, tree);
+            put(rhoParamName, rho);
+        }};
     }
 
     @Override

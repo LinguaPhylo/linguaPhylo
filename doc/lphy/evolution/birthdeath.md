@@ -12,21 +12,21 @@ In its simplest form the Yule model has a stopping criterion based on the final 
 The following code will generate a random Yule tree with 16 leaves:
 
 ```
-ψ ~ Yule(birthRate=1.0, n=16);
+ψ ~ Yule(lambda=1.0, n=16);
 ```
 
 It is also possible to give explicit taxa labels to the generative distribution:
 
 ```
 taxa = 1:16;
-ψ ~ Yule(birthRate=1.0, taxa=taxa);
+ψ ~ Yule(lambda=1.0, taxa=taxa);
 ```
 
 or
 
 ```
 taxa = ["A", "B", "C", "D"];
-ψ ~ Yule(birthRate=1.0, taxa=taxa);
+ψ ~ Yule(lambda=1.0, taxa=taxa);
 ```
 
 ### Calibrated Yule model
@@ -34,14 +34,14 @@ taxa = ["A", "B", "C", "D"];
 It is also possible the generate a Yule tree with a given rootAge:
 
 ```
-ψ ~ Yule(birthRate=1.0, n=16, rootAge=10);
+ψ ~ Yule(lambda=1.0, n=16, rootAge=10);
 ```
 
 This is useful if you want to produce a calibrated analysis where there is a separate prior on the root age of the tree:
 
 ```
 rootAge ~ LogNormal(meanlog=2.0, sdlog=1.0);
-ψ ~ Yule(birthRate=1.0, n=16, rootAge=rootAge);
+ψ ~ Yule(lambda=1.0, n=16, rootAge=rootAge);
 ```
 
 ## Birth-death model

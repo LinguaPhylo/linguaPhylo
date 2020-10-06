@@ -90,7 +90,7 @@ multispecies coalescent model has one distribution define a species tree, and a 
 based on the species tree:
 
 ```
-S ~ Yule(birthRate=5, n=4);
+S ~ Yule(lambda=5, n=4);
 g ~ MultispeciesCoalescent(theta=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], n=[2, 2, 2, 2], S=S);
 ```
 

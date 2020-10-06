@@ -223,7 +223,7 @@ Here is an example:
       \begin{lphylisting}
         model {
           lambda $\sim$ LogNormal(meanlog=3.0, sdlog=1.0);
-          tree $\sim$ Yule(birthRate=lambda, *\color{grayargs}{n}*=16);
+          tree $\sim$ Yule(lambda=lambda, *\color{grayargs}{n}*=16);
           D $\sim$ PhyloCTMC(L=200, Q=jukesCantor(),
           *\color{grayargs}{tree}*=tree);
         }
@@ -238,7 +238,7 @@ Here is an example:
   % \begin{minted}{Stan}
   % model {
   % lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
-  % tree ~ Yule(birthRate=lambda, n=16);
+  % tree ~ Yule(lambda=lambda, n=16);
   % D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=tree);
   % }
   % \end{minted}
@@ -271,7 +271,7 @@ data {
 }
 model {
   lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
-  tree ~ Yule(birthRate=lambda, taxa=taxa);
+  tree ~ Yule(lambda=lambda, taxa=taxa);
   D ~ PhyloCTMC(L=L, Q=jukesCantor(), tree=tree);
 }
 \end{minted}
@@ -410,7 +410,7 @@ species tree, and a second distribution define a gene tree based on
 the species tree:
 
 \begin{minted}{Stan}
-S ~ Yule(birthRate=5, n=4);
+S ~ Yule(lambda=5, n=4);
 theta = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
 g ~ MultispeciesCoalescent(theta=theta, n=[2, 2, 2, 2], S=S);
 \end{minted}
@@ -435,21 +435,21 @@ In its simplest form the Yule model has a stopping criterion based on the final 
 The following code will generate a random Yule tree with 16 leaves:
 
 \begin{minted}{Stan}
-tree ~ Yule(birthRate=1.0, n=16);
+tree ~ Yule(lambda=1.0, n=16);
 \end{minted}
 
 It is also possible to give explicit taxa labels to the generative distribution:
 
 \begin{minted}{Stan}
 taxa = 1:16;
-tree ~ Yule(birthRate=1.0, taxa=taxa);
+tree ~ Yule(lambda=1.0, taxa=taxa);
 \end{minted}
 
 or
 
 \begin{minted}{Stan}
 taxa = ["A", "B", "C", "D"];
-tree ~ Yule(birthRate=1.0, taxa=taxa);
+tree ~ Yule(lambda=1.0, taxa=taxa);
 \end{minted}
 
 \subsubsection{Calibrated Yule model}
@@ -457,14 +457,14 @@ tree ~ Yule(birthRate=1.0, taxa=taxa);
 It is also possible the generate a Yule tree with a given rootAge:
 
 \begin{minted}{Stan}
-tree ~ Yule(birthRate=1.0, n=16, rootAge=10);
+tree ~ Yule(lambda=1.0, n=16, rootAge=10);
 \end{minted}
 
 This is useful if you want to produce a calibrated analysis where there is a separate prior on the root age of the tree:
 
 \begin{minted}{Stan}
 rootAge ~ LogNormal(meanlog=2.0, sdlog=1.0);
-tree ~ Yule(birthRate=1.0, n=16, rootAge=rootAge);
+tree ~ Yule(lambda=1.0, n=16, rootAge=rootAge);
 \end{minted}
 
 \subsubsection{Birth-death model}

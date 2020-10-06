@@ -1,13 +1,14 @@
 package lphy.evolution.coalescent;
 
-import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.random.RandomGenerator;
+
+import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 
 import java.util.*;
 
@@ -16,20 +17,15 @@ import java.util.*;
  */
 public class Coalescent extends TaxaConditionedTreeGenerator {
 
-    private final String thetaParamName;
     private Value<Double> theta;
 
-    public Coalescent(@ParameterInfo(name = "theta", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
-                      @ParameterInfo(name = "n", description = "the number of taxa. Provide this or taxa.", optional=true) Value<Integer> n,
-                      @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree). Provide this or n.", optional=true) Value taxa) {
+    public Coalescent(@ParameterInfo(name = thetaParamName, description = "effective population size, possibly scaled to mutations or calendar units.") Value<Double> theta,
+                      @ParameterInfo(name = nParamName, description = "the number of taxa. Provide this or taxa.", optional=true) Value<Integer> n,
+                      @ParameterInfo(name = taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree). Provide this or n.", optional=true) Value taxa) {
 
         super(n, taxa, null);
 
         this.theta = theta;
-
-        thetaParamName = getParamName(0);
-        nParamName = getParamName(1);
-        taxaParamName = getParamName(2);
 
         this.random = Utils.getRandom();
         checkTaxaParameters(true);
@@ -91,8 +87,8 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
         map.put(thetaParamName, theta);
         return map;
     }

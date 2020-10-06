@@ -8,6 +8,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -15,9 +16,6 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
-    final String birthRateParamName;
-    final String deathRateParamName;
-    final String rootAgeParamName;
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rootAge;
@@ -26,24 +24,20 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
-    public FullBirthDeathTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
-                              @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
-                              @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge) {
+    public FullBirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
+                              @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
+                              @ParameterInfo(name = rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rootAge = rootAge;
         this.random = Utils.getRandom();
 
-        birthRateParamName = getParamName(0);
-        deathRateParamName = getParamName(1);
-        rootAgeParamName = getParamName(2);
-
         activeNodes = new ArrayList<>();
     }
 
 
-    @GeneratorInfo(name="FullBirthDeath", description="A birth-death tree with both extant and extinct species.<br>" +
+    @GeneratorInfo(name = "FullBirthDeath", description = "A birth-death tree with both extant and extinct species.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
@@ -132,18 +126,18 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(birthRateParamName, birthRate);
-        map.put(deathRateParamName, deathRate);
-        map.put(rootAgeParamName, rootAge);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(lambdaParamName, birthRate);
+            put(muParamName, deathRate);
+            put(rootAgeParamName, rootAge);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(birthRateParamName)) birthRate = value;
-        else if (paramName.equals(deathRateParamName)) deathRate = value;
+        if (paramName.equals(lambdaParamName)) birthRate = value;
+        else if (paramName.equals(muParamName)) deathRate = value;
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }

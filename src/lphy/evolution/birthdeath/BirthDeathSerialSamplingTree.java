@@ -9,8 +9,11 @@ import lphy.graphicalModel.*;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -19,11 +22,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 @Citation(value="Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688", DOI="10.1093/sysbio/syt030", firstAuthorSurname = "Stadler", year=2013)
 public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
-    final String birthRateParamName;
-    final String deathRateParamName;
-    final String rhoParamName;
-    final String psiParamName;
-    final String rootAgeParamName;
+    public static final String psiParamName = "psi";
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;
@@ -34,20 +33,14 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     private double c2;
     private double gt;
 
-    private double lambda;
-    private double mu;
-    private double rho;
-    private double psi;
-    private double tmrca;
-
-    public BirthDeathSerialSamplingTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
-                                        @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
-                                        @ParameterInfo(name = "rho", description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
-                                        @ParameterInfo(name = "psi", description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
-                                        @ParameterInfo(name = "n", description = "the number of taxa. optional.", optional = true) Value<Integer> n,
-                                        @ParameterInfo(name = "taxa", description = "Taxa object", optional = true) Value<Taxa> taxa,
-                                        @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages,
-                                        @ParameterInfo(name = "rootAge", description = "the age of the root.") Value<Number> rootAge) {
+    public BirthDeathSerialSamplingTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
+                                        @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
+                                        @ParameterInfo(name = rhoParamName, description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
+                                        @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
+                                        @ParameterInfo(name = nParamName, description = "the number of taxa. optional.", optional = true) Value<Integer> n,
+                                        @ParameterInfo(name = taxaParamName, description = "Taxa object", optional = true) Value<Taxa> taxa,
+                                        @ParameterInfo(name = agesParamName, description = "an array of leaf node ages.", optional = true) Value<Double[]> ages,
+                                        @ParameterInfo(name = rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
 
         super(n, taxa, ages);
 
@@ -59,15 +52,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         this.ages = ages;
         this.random = Utils.getRandom();
 
-        birthRateParamName = getParamName(0);
-        deathRateParamName = getParamName(1);
-        rhoParamName = getParamName(2);
-        psiParamName = getParamName(3);
-        nParamName = getParamName(4);
-        taxaParamName = getParamName(5);
-        agesParamName = getParamName(6);
-        rootAgeParamName = getParamName(7);
-
         checkTaxaParameters(false);
     }
 
@@ -75,11 +59,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
             "Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).")
     public RandomVariable<TimeTree> sample() {
 
-        lambda = doubleValue(birthRate);
-        mu = doubleValue(deathRate);
-        rho = doubleValue(rhoVal);
-        psi = doubleValue(psiVal);
-        tmrca = doubleValue(rootAge);
+        double lambda = doubleValue(birthRate);
+        double mu = doubleValue(deathRate);
+        double rho = doubleValue(rhoVal);
+        double psi = doubleValue(psiVal);
+        double tmrca = doubleValue(rootAge);
 
         // calculate the constants in the simulating functions
         c1 = Math.sqrt(Math.pow(lambda - mu - psi, 2.0) + 4.0 * lambda * psi);
@@ -90,7 +74,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         tree.getRoot().setAge(tmrca);
         drawDivTimes(tree);
 
-        //repositionNodeWhenInvalid(tree);
         constructTree(tree);
 
         return new RandomVariable<>("\u03C8", tree, this);
@@ -258,10 +241,10 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
-        map.put(birthRateParamName, birthRate);
-        map.put(deathRateParamName, deathRate);
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
+        map.put(lambdaParamName, birthRate);
+        map.put(muParamName, deathRate);
         map.put(rhoParamName, rhoVal);
         map.put(psiParamName, psiVal);
         map.put(rootAgeParamName, rootAge);
@@ -270,12 +253,26 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(birthRateParamName)) birthRate = value;
-        else if (paramName.equals(deathRateParamName)) deathRate = value;
-        else if (paramName.equals(rhoParamName)) rhoVal = value;
-        else if (paramName.equals(psiParamName)) psiVal = value;
-        else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else super.setParam(paramName, value);
+        switch (paramName) {
+            case lambdaParamName:
+                birthRate = value;
+                break;
+            case muParamName:
+                deathRate = value;
+                break;
+            case rhoParamName:
+                rhoVal = value;
+                break;
+            case psiParamName:
+                psiVal = value;
+                break;
+            case rootAgeParamName:
+                rootAge = value;
+                break;
+            default:
+                super.setParam(paramName, value);
+                break;
+        }
     }
 
     public Value<Number> getBirthRate() {

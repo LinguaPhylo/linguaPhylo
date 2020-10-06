@@ -8,13 +8,11 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.SortedMap;
+import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -22,18 +20,15 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
-    final String birthRateParamName;
-    final String deathRateParamName;
-    final String rootAgeParamName;
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rootAge;
 
-    public BirthDeathTree(@ParameterInfo(name = "lambda", description = "per-lineage birth rate.") Value<Number> birthRate,
-                          @ParameterInfo(name = "mu", description = "per-lineage death rate.") Value<Number> deathRate,
-                          @ParameterInfo(name = "n", description = "the number of taxa. optional.", optional = true) Value<Integer> n,
-                          @ParameterInfo(name = "taxa", description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.", optional = true) Value taxa,
-                          @ParameterInfo(name = "rootAge", description = "the age of the root.") Value<Number> rootAge) {
+    public BirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
+                          @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
+                          @ParameterInfo(name = nParamName, description = "the number of taxa. optional.", optional = true) Value<Integer> n,
+                          @ParameterInfo(name = taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.", optional = true) Value taxa,
+                          @ParameterInfo(name = rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
 
         super(n, taxa, null);
 
@@ -41,12 +36,6 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
         this.deathRate = deathRate;
         this.rootAge = rootAge;
         this.random = Utils.getRandom();
-
-        birthRateParamName = getParamName(0);
-        deathRateParamName = getParamName(1);
-        nParamName = getParamName(2);
-        taxaParamName = getParamName(3);
-        rootAgeParamName = getParamName(4);
 
         checkTaxaParameters(true);
     }
@@ -99,19 +88,29 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
-        map.put(birthRateParamName, birthRate);
-        map.put(deathRateParamName, deathRate);
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
+        map.put(lambdaParamName, birthRate);
+        map.put(muParamName, deathRate);
         map.put(rootAgeParamName, rootAge);
         return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(birthRateParamName)) birthRate = value;
-        else if (paramName.equals(deathRateParamName)) deathRate = value;
-        else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else super.setParam(paramName, value);
+        switch (paramName) {
+            case lambdaParamName:
+                birthRate = value;
+                break;
+            case muParamName:
+                deathRate = value;
+                break;
+            case rootAgeParamName:
+                rootAge = value;
+                break;
+            default:
+                super.setParam(paramName, value);
+                break;
+        }
     }
 }

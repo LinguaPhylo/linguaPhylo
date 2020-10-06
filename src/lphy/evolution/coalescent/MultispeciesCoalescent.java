@@ -10,15 +10,16 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
+import static lphy.evolution.tree.TaxaConditionedTreeGenerator.taxaParamName;
+
 /**
  * A Kingman coalescent tree generative distribution conditional on a species tree with a specified population size on each species branch.
  */
 public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> {
 
-    private final String thetaParamName;
-    private final String nParamName;
-    private final String taxaParamName;
-    private final String SParamName;
+    public static final String SParamName = "S";
     private Value<Double[]> theta;
     private Value<Integer[]> n;
     private Value<Taxa> taxa;
@@ -28,20 +29,15 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
     public final static String separator = "_";
 
-    public MultispeciesCoalescent(@ParameterInfo(name = "theta", description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
-                                  @ParameterInfo(name = "n", description = "the number of sampled taxa in the gene tree for each extant species.", optional=true) Value<Integer[]> n,
-                                  @ParameterInfo(name = "taxa", description = "the taxa for the gene tree, with species to define the mapping.", optional=true) Value<Taxa> taxa,
-                                  @ParameterInfo(name = "S", description = "the species tree. ") Value<TimeTree> S) {
+    public MultispeciesCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
+                                  @ParameterInfo(name = nParamName, description = "the number of sampled taxa in the gene tree for each extant species.", optional=true) Value<Integer[]> n,
+                                  @ParameterInfo(name = taxaParamName, description = "the taxa for the gene tree, with species to define the mapping.", optional=true) Value<Taxa> taxa,
+                                  @ParameterInfo(name = SParamName, description = "the species tree. ") Value<TimeTree> S) {
         this.theta = theta;
         this.n = n;
         this.taxa = taxa;
         this.S = S;
         this.random = Utils.getRandom();
-
-        thetaParamName = getParamName(0);
-        nParamName = getParamName(1);
-        taxaParamName = getParamName(2);
-        SParamName = getParamName(3);
     }
 
     @GeneratorInfo(name = "MultispeciesCoalescent", description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree.")
@@ -89,11 +85,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
             Taxon[] taxonArray = taxa.value().getTaxonArray();
 
             for (Taxon taxon : taxonArray) {
-                List<TimeTreeNode> taxaInSp = activeNodes.get(taxon.getSpecies());
-                if (taxaInSp == null) {
-                    taxaInSp = new ArrayList<>();
-                    activeNodes.put(taxon.getSpecies(), taxaInSp);
-                }
+                List<TimeTreeNode> taxaInSp = activeNodes.computeIfAbsent(taxon.getSpecies(), k -> new ArrayList<>());
                 taxaInSp.add(new TimeTreeNode(taxon, geneTree));
             }
         }
@@ -153,11 +145,22 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(thetaParamName)) theta = value;
-        else if (paramName.equals(nParamName)) n = value;
-        else if (paramName.equals(taxaParamName)) taxa = value;
-        else if (paramName.equals(SParamName)) S = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case thetaParamName:
+                theta = value;
+                break;
+            case nParamName:
+                n = value;
+                break;
+            case taxaParamName:
+                taxa = value;
+                break;
+            case SParamName:
+                S = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public String toString() {

@@ -10,10 +10,11 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.*;
+
 public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
-    private final String thetaParamName;
-    private final String nParamName;
+    public static final String MParamName = "M";
     private Value<Double[][]> theta;
     private Value<Integer[]> n;
 
@@ -36,15 +37,12 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     public static final String populationLabel = "deme";
 
 
-    public StructuredCoalescent(@ParameterInfo(name = "M", description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
+    public StructuredCoalescent(@ParameterInfo(name = MParamName, description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
             "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
-                                @ParameterInfo(name = "n", description = "the number of taxa in each population.") Value<Integer[]> n) {
+                                @ParameterInfo(name = nParamName, description = "the number of taxa in each population.") Value<Integer[]> n) {
         this.theta = theta;
         this.n = n;
         this.random = Utils.getRandom();
-
-        thetaParamName = getParamName(0);
-        nParamName = getParamName(1);
     }
 
     @GeneratorInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
@@ -224,16 +222,16 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(thetaParamName, theta);
-        map.put(nParamName, n);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(MParamName, theta);
+            put(nParamName, n);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(thetaParamName)) theta = value;
+        if (paramName.equals(MParamName)) theta = value;
         else if (paramName.equals(nParamName)) n = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
@@ -254,8 +252,8 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
         long reps = 1000;
 
-        double[] popSize1 = new double[]{1,1,1,1,1};
-        double[] popSize2 = new double[]{1,2,4,8,16};
+        double[] popSize1 = new double[]{1, 1, 1, 1, 1};
+        double[] popSize2 = new double[]{1, 2, 4, 8, 16};
 
         System.out.println("pop0.leaf, pop1.leaf, pop0.mig, pop1.mig, pop0.coal, pop1.coal");
 
@@ -272,7 +270,7 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
                     RandomVariable<TimeTree> tree = coalescent.sample();
 
-                    count += (Integer)tree.value().getRoot().getMetaData(populationLabel) == 0 ? 1: 0;
+                    count += (Integer) tree.value().getRoot().getMetaData(populationLabel) == 0 ? 1 : 0;
                 }
                 System.out.println(popSize1[i] + "\t" + popSize2[i] + "\t" + m + "\t" + ((double) count / (double) reps));
             }
@@ -282,5 +280,5 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     public String toString() {
         return getName();
     }
-    
+
 }

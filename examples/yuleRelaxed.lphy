@@ -1,5 +1,5 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=λ, n=16);
+ψ ~ Yule(lambda=λ, n=16);
 ucln_mean ~ Exp(mean=0.5);
 ucln_sigma ~ Exp(mean=0.33333);
 branch_rates ~ LogNormal(meanlog=ucln_mean, sdlog=ucln_sigma, n=nodecount(tree=ψ));

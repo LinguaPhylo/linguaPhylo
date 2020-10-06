@@ -5,6 +5,7 @@ import lphy.graphicalModel.*;
 
 import java.util.*;
 
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -12,31 +13,26 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
 
-    private final String diversificationParamName;
-    private final String turnoverParamName;
-
     private Value<Number> diversificationRate;
     private Value<Number> turnover;
     private Value<Number> rootAge;
 
     FullBirthDeathTree wrapped;
 
-    public BirthDeathTreeDT(@ParameterInfo(name = "diversification", description = "diversification rate.") Value<Number> diversification,
-                            @ParameterInfo(name = "turnover", description = "turnover.") Value<Number> turnover,
-                            @ParameterInfo(name = "rootAge", description = "the number of taxa.") Value<Number> rootAge
-                          ) {
+    public BirthDeathTreeDT(@ParameterInfo(name = diversificationParamName, description = "diversification rate.") Value<Number> diversification,
+                            @ParameterInfo(name = turnoverParamName, description = "turnover.") Value<Number> turnover,
+                            @ParameterInfo(name = rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge
+    ) {
 
         this.turnover = turnover;
         this.diversificationRate = diversification;
         this.rootAge = rootAge;
 
-        diversificationParamName = getParamName(0);
-        turnoverParamName = getParamName(1);
         setup();
     }
 
 
-    @GeneratorInfo(name="BirthDeath", description="The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name = "BirthDeath", description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
@@ -56,8 +52,8 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
 
         wrapped =
                 new FullBirthDeathTree(
-                        new Value<>("birthRate", birth_rate),
-                        new Value<>("deathRate", death_rate),
+                        new Value<>(lambdaParamName, birth_rate),
+                        new Value<>(muParamName, death_rate),
                         rootAge);
     }
 
@@ -68,20 +64,29 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(diversificationParamName, diversificationRate);
-        map.put(turnoverParamName, turnover);
-        map.put(wrapped.rootAgeParamName, rootAge);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(diversificationParamName, diversificationRate);
+            put(turnoverParamName, turnover);
+            put(rootAgeParamName, rootAge);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(diversificationParamName)) diversificationRate = value;
-        else if (paramName.equals(turnoverParamName)) turnover = value;
-        else if (paramName.equals(wrapped.rootAgeParamName)) rootAge = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case diversificationParamName:
+                diversificationRate = value;
+                break;
+            case turnoverParamName:
+                turnover = value;
+                break;
+            case rootAgeParamName:
+                rootAge = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public String toString() {

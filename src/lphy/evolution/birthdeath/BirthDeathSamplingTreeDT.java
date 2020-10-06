@@ -3,18 +3,16 @@ package lphy.evolution.birthdeath;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * A Birth-death-sampling tree generative distribution
  */
 public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree> {
-
-    private static final String diversificationParamName = "diversification";
-    private static final String turnoverParamName = "turnover";
 
     private Value<Number> diversificationRate;
     private Value<Number> turnover;
@@ -25,9 +23,8 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
 
     public BirthDeathSamplingTreeDT(@ParameterInfo(name = diversificationParamName, description = "diversification rate.") Value<Number> diversification,
                                     @ParameterInfo(name = turnoverParamName, description = "turnover.") Value<Number> turnover,
-                                    @ParameterInfo(name = BirthDeathSamplingTree.rhoParamName, description = "the sampling proportion.") Value<Number> rho,
-                                    @ParameterInfo(name = BirthDeathSamplingTree.rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge
-    ) {
+                                    @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
+                                    @ParameterInfo(name = rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge) {
 
         this.turnover = turnover;
         this.diversificationRate = diversification;
@@ -66,22 +63,33 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(diversificationParamName, diversificationRate);
-        map.put(turnoverParamName, turnover);
-        map.put(BirthDeathSamplingTree.rhoParamName, rho);
-        map.put(BirthDeathSamplingTree.rootAgeParamName, rootAge);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(diversificationParamName, diversificationRate);
+            put(turnoverParamName, turnover);
+            put(rhoParamName, rho);
+            put(rootAgeParamName, rootAge);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(diversificationParamName)) diversificationRate = value;
-        else if (paramName.equals(turnoverParamName)) turnover = value;
-        else if (paramName.equals(BirthDeathSamplingTree.rhoParamName)) rho = value;
-        else if (paramName.equals(BirthDeathSamplingTree.rootAgeParamName)) rootAge = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case diversificationParamName:
+                diversificationRate = value;
+                break;
+            case turnoverParamName:
+                turnover = value;
+                break;
+            case rhoParamName:
+                rho = value;
+                break;
+            case rootAgeParamName:
+                rootAge = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public Value<Number> getDiversificationRate() {

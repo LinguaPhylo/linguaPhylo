@@ -1,5 +1,5 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(birthRate=λ, n=16);
+ψ ~ Yule(lambda=λ, n=16);
 rawRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, n=31);
 indicators ~ Bernoulli(p=0.05, n=30);
 branchRates = localBranchRates(tree=ψ, indicators=indicators, rates=rawRates);

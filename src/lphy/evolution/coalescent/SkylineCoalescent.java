@@ -9,6 +9,9 @@ import lphy.graphicalModel.*;
 
 import java.util.*;
 
+import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
+
 /**
  * A skyline coalescent tree generative distribution.
  * Time-stamped leaves and piecewise constant population function with change points on coalescent events that
@@ -21,34 +24,27 @@ import java.util.*;
         year = 2005, firstAuthorSurname = "Drummond", DOI="10.1093/molbev/msi103")
 public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 
-    private final String thetaParamName;
-    private final String groupSizesParamName;
+    public static final String groupSizesParamName = "groupSizes";
     private Value<Double[]> theta;
     private Value<Integer[]> groupSizes;
 
-    public SkylineCoalescent(@ParameterInfo(name = "theta", description = "effective population size, one value for" +
+    public SkylineCoalescent(@ParameterInfo(name =  thetaParamName, description = "effective population size, one value for" +
             " each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or" +
             " calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal" +
             " to the number of population size parameters.") Value<Double[]> theta,
-                             @ParameterInfo(name = "groupSizes", description = "A tuple of group sizes. The sum of" +
+                             @ParameterInfo(name = groupSizesParamName, description = "A tuple of group sizes. The sum of" +
                                      " this tuple determines the number of coalescent events in the tree and thus the" +
                                      " number of taxa. By default all group sizes are 1 which is equivalent to the" +
                                      " classic skyline coalescent.", optional=true) Value<Integer[]> groupSizes,
-                             @ParameterInfo(name = "n", description = "number of taxa.", optional = true) Value<Integer> n,
-                             @ParameterInfo(name = "taxa", description = "Taxa object, (e.g. Taxa or Object[])", optional = true) Value<Taxa> taxa,
-                             @ParameterInfo(name = "ages", description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
+                             @ParameterInfo(name = nParamName, description = "number of taxa.", optional = true) Value<Integer> n,
+                             @ParameterInfo(name = taxaParamName, description = "Taxa object, (e.g. Taxa or Object[])", optional = true) Value<Taxa> taxa,
+                             @ParameterInfo(name = agesParamName, description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
 
         super(n, taxa, ages);
 
         this.theta = theta;
         this.groupSizes = groupSizes;
         this.random = Utils.getRandom();
-
-        thetaParamName = getParamName(0);
-        groupSizesParamName = getParamName(1);
-        nParamName = getParamName(2);
-        taxaParamName = getParamName(3);
-        agesParamName = getParamName(4);
 
         int c = (ages == null ? 0 : 1) + (taxa == null ? 0 : 1) + (n == null ? 0 : 1);
 
@@ -179,8 +175,8 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = super.getParams();
+    public Map<String, Value> getParams() {
+        Map<String, Value> map = super.getParams();
         map.put(thetaParamName, theta);
         if (groupSizes != null) map.put(groupSizesParamName, groupSizes);
         if (n != null) map.put(nParamName, n);
@@ -190,10 +186,20 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(thetaParamName)) theta = value;
-        else if (paramName.equals(groupSizesParamName)) groupSizes = value;
-        else if (paramName.equals(agesParamName)) ages = value;
-        else super.setParam(paramName, value);
+        switch (paramName) {
+            case thetaParamName:
+                theta = value;
+                break;
+            case groupSizesParamName:
+                groupSizes = value;
+                break;
+            case agesParamName:
+                ages = value;
+                break;
+            default:
+                super.setParam(paramName, value);
+                break;
+        }
     }
 
     public Value<Double[]> getTheta() {
