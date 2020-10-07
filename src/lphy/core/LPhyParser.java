@@ -34,8 +34,10 @@ public interface LPhyParser {
      */
     default Value getValue(String id, Context context) {
         switch (context) {
-            case data: return getDataDictionary().get(id);
-            case model: default:
+            case data:
+                return getDataDictionary().get(id);
+            case model:
+            default:
                 Map<String, Value<?>> data = getDataDictionary();
                 Map<String, Value<?>> model = getModelDictionary();
                 if (model.containsKey(id)) return model.get(id);
@@ -102,11 +104,17 @@ public interface LPhyParser {
      * @param sourceFile the lphy source file
      */
     default void source(File sourceFile) throws IOException {
-
         FileReader reader = new FileReader(sourceFile);
         BufferedReader bufferedReader = new BufferedReader(reader);
+        source(bufferedReader);
+        reader.close();
+    }
 
-        StringBuilder builder= new StringBuilder();
+    /**
+     * @param bufferedReader the lphy source
+     */
+    default void source(BufferedReader bufferedReader) throws IOException {
+        StringBuilder builder = new StringBuilder();
 
         String line = bufferedReader.readLine();
         while (line != null) {
@@ -115,9 +123,9 @@ public interface LPhyParser {
             line = bufferedReader.readLine();
         }
         bufferedReader.close();
-        reader.close();
         parse(builder.toString());
     }
+
 
     class Utils {
 
@@ -134,9 +142,9 @@ public interface LPhyParser {
          */
         public static List<RandomVariable<?>> getAllVariablesFromSinks(LPhyParser parser) {
             List<RandomVariable<?>> variables = new ArrayList<>();
-            for (Value<?> value: getAllValuesFromSinks(parser)) {
+            for (Value<?> value : getAllValuesFromSinks(parser)) {
                 if (value instanceof RandomVariable<?>) {
-                    variables.add((RandomVariable<?>)value);
+                    variables.add((RandomVariable<?>) value);
                 }
             }
             return variables;
@@ -159,6 +167,7 @@ public interface LPhyParser {
 
         /**
          * Parses the arguments of a command. A command can't be in the data context.
+         *
          * @param argumentString
          * @param parser
          * @return

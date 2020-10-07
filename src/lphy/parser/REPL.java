@@ -1,12 +1,12 @@
 package lphy.parser;
 
 
-import java.io.*;
-import java.util.*;
-
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Value;
+
+import java.io.*;
+import java.util.*;
 
 /** A simple Read-Eval-Print-Loop for the graphicalModelSimulator language **/ 
 public class REPL implements LPhyParser {
@@ -74,6 +74,7 @@ public class REPL implements LPhyParser {
 				return;
 			} else if (!cmd.startsWith("?")) {
 				try {
+					// either 1 cmd each line, or all cmds in 1 line
 					SimulatorListenerImpl parser = new SimulatorListenerImpl(this, context);
 					if (!cmd.endsWith(";")) {
 						cmd = cmd + ";";
@@ -117,6 +118,39 @@ public class REPL implements LPhyParser {
 		lines.clear();
 	}
 
+	//*** to identify data{} and model{} ***//
+
+	/** TODO multiple CMDs in 1 line
+	 * parse string line by line.
+	 * @param reader   assume 1 cmd each line
+	 * @see lphy.app.GraphicalModelPanel#source(BufferedReader)
+	 * @throws IOException
+	 */
+	@Override
+	public void source(BufferedReader reader) throws IOException {
+		String line = reader.readLine();
+		LPhyParser.Context context = LPhyParser.Context.model;
+		while (line != null) {
+			if (line.trim().startsWith("data")) {
+				context = LPhyParser.Context.data;
+			} else if (line.trim().startsWith("model")) {
+				context = LPhyParser.Context.model;
+			} else if (line.trim().startsWith("}")) {
+				// do nothing as this line is just closing a data or model block.
+			} else {
+				switch (context) {
+					case data:
+						parse(line, LPhyParser.Context.data);
+						break;
+					case model:
+						parse(line, LPhyParser.Context.model);
+						break;
+				}
+			}
+			line = reader.readLine();
+		}
+		reader.close();
+	}
 
 	public static void main(String[] args) {
 		System.out.println("A  simple Read-Eval-Print-Loop for the lphy language ");

@@ -169,6 +169,39 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
+    /**
+     * This is duplicated to {@link lphy.parser.REPL#source(BufferedReader)},
+     * but has extra code using {@link lphy.parser.codecolorizer.CodeColorizer}
+     * and panel function.
+     * @param reader
+     * @throws IOException
+     */
+    public void source(BufferedReader reader) throws IOException {
+        String line = reader.readLine();
+        LPhyParser.Context context = LPhyParser.Context.model;
+        while (line != null) {
+            if (line.trim().startsWith("data")) {
+                context = LPhyParser.Context.data;
+            } else if (line.trim().startsWith("model")) {
+                context = LPhyParser.Context.model;
+            } else if (line.trim().startsWith("}")) {
+                // do nothing as this line is just closing a data or model block.
+            } else {
+                switch (context) {
+                    case data:
+                        dataInterpreter.interpretInput(line, LPhyParser.Context.data);
+                        break;
+                    case model:
+                        modelInterpreter.interpretInput(line, LPhyParser.Context.model);
+                        break;
+                }
+            }
+            line = reader.readLine();
+        }
+        repaint();
+        reader.close();
+    }
+
     private int getReps() {
         int reps = 1;
         try {

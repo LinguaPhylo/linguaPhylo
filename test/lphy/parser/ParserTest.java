@@ -1,19 +1,27 @@
 package lphy.parser;
 
+import junit.framework.TestCase;
+import lphy.core.LPhyParser;
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
-import java.util.*;
-
-import lphy.core.LPhyParser;
-import org.junit.Test;
-
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParserTest extends TestCase {
-	
-	@Test
+
+    LPhyParser lPhyParser;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        lPhyParser = new REPL();
+    }
+
+    @Test
 	public void testAssingment() {
 		parse("a=3;");
 		parse("a=2;b=a;");
@@ -23,7 +31,7 @@ public class ParserTest extends TestCase {
 	}
 	
 	private Object parse(String cmd) {
-		SimulatorListenerImpl parser = new SimulatorListenerImpl(new REPL(), LPhyParser.Context.model);
+		SimulatorListenerImpl parser = new SimulatorListenerImpl(lPhyParser, LPhyParser.Context.model);
 		if (!cmd.endsWith(";")) {
 			cmd = cmd + ";";
 		}
@@ -54,21 +62,23 @@ public class ParserTest extends TestCase {
                 System.out.println("Processing " + fileName);
                 try {
 	                BufferedReader fin = new BufferedReader(new FileReader(dir + "/" + fileName));
-	                StringBuffer buf = new StringBuffer();
-	                String str = null;
-	                while (fin.ready()) {
-	                    str = fin.readLine();
-	                    buf.append(str);
-	                    buf.append('\n');
-	                }
-	                fin.close();
-	                parse(buf.toString());
+                    lPhyParser.source(fin);
+
+//	                StringBuffer buf = new StringBuffer();
+//	                String str = null;
+//	                while (fin.ready()) {
+//	                    str = fin.readLine();
+//	                    buf.append(str);
+//	                    buf.append('\n');
+//	                }
+//	                fin.close();
+//	                parse(buf.toString());
                 } catch (Exception e) {
                     System.out.println("ExampleParsing::Failed for " + fileName
                             + ": " + e.getMessage());
                     failedFiles.add(fileName);
                 }
-                System.out.println("Done " + fileName);
+                System.out.println("Done " + fileName + "\n");
             }
             if (failedFiles.size() > 0) {
                 System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles.toString());

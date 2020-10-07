@@ -123,7 +123,7 @@ public class LinguaPhyloStudio {
                             panel.variableLog.clear();
                             panel.dataInterpreter.clear();
                             panel.modelInterpreter.clear();
-                            source(reader);
+                            panel.source(reader);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -203,32 +203,6 @@ public class LinguaPhyloStudio {
 
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
         saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.variableLog.getText()));
-    }
-
-    private void source(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        LPhyParser.Context context = LPhyParser.Context.model;
-        while (line != null) {
-            if (line.trim().startsWith("data")) {
-                context = LPhyParser.Context.data;
-            } else if (line.trim().startsWith("model")) {
-                context = LPhyParser.Context.model;
-            } else if (line.trim().startsWith("}")) {
-                // do nothing as this line is just closing a data or model block.
-            } else {
-                switch (context) {
-                    case data:
-                        panel.dataInterpreter.interpretInput(line, LPhyParser.Context.data);
-                        break;
-                    case model:
-                        panel.modelInterpreter.interpretInput(line, LPhyParser.Context.model);
-                        break;
-                }
-            }
-            line = reader.readLine();
-        }
-        panel.repaint();
-        reader.close();
     }
 
     private GraphicalLPhyParser createParser() {
