@@ -4,5 +4,5 @@ model {
   λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
   sp ~ Yule(lambda=λ, taxa=species(taxa));
   g ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa);
-  D ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g);
-}|
+  alignment ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g);
+}
