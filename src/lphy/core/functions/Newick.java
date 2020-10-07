@@ -1,5 +1,6 @@
 package lphy.core.functions;
 
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.functions.newickParser.NewickASTVisitor;
@@ -69,7 +70,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
 
         TimeTreeNode root = visitor.visit(parseTree);
 
-        TimeTree tree = new TimeTree();
+        TimeTree tree = new TimeTree(Taxa.createTaxa(root));
         tree.setRoot(root);
 
         LoggerUtils.log.info("Parsed tree: " + tree);

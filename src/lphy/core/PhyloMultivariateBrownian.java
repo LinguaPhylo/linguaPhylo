@@ -52,12 +52,12 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
         fillValuesTraversingTree(tree.value().getRoot(), y0, tipValues, diffusionMatrix.value(), idMap);
 
         // put tipValues inside contData
-        Double[][] contData = new Double[tree.value().ntaxa()][y0.value().length];
+        Double[][] contData = new Double[tree.value().n()][y0.value().length];
         for (Map.Entry<String, Double[]> entry: tipValues.entrySet()) {
-            contData[tree.value().indexOfTaxon(entry.getKey())] = entry.getValue();
+            contData[tree.value().getTaxa().indexOfTaxon(entry.getKey())] = entry.getValue();
         }
 
-        return new RandomVariable<>("x", new ContinuousCharacterData(tree.value(), contData), this);
+        return new RandomVariable<>("x", new ContinuousCharacterData(tree.value().getTaxa(), contData), this);
     }
 
     /*

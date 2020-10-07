@@ -43,13 +43,11 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
     @GeneratorInfo(name = "MultispeciesCoalescent", description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree.")
     public RandomVariable<TimeTree> sample() {
 
-        TimeTree geneTree = new TimeTree();
+        TimeTree geneTree = new TimeTree(taxa.value());
 
         Map<String,List<TimeTreeNode>> activeNodes = new TreeMap<>();
 
         createActiveNodes(activeNodes, geneTree);
-
-
 
         List<TimeTreeNode> root = doSpeciesTreeBranch(S.value().getRoot(), activeNodes, theta.value());
 
@@ -85,6 +83,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
             Taxon[] taxonArray = taxa.value().getTaxonArray();
 
             for (Taxon taxon : taxonArray) {
+                System.out.println("Taxon " + taxon);
                 List<TimeTreeNode> taxaInSp = activeNodes.computeIfAbsent(taxon.getSpecies(), k -> new ArrayList<>());
                 taxaInSp.add(new TimeTreeNode(taxon, geneTree));
             }

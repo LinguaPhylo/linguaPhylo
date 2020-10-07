@@ -243,4 +243,16 @@ public class TimeTreeNode {
         }
         right.setParent(this);
     }
+
+    /**
+     * @return the total number of leaves under this node, including this node.
+     */
+    public int countLeaves() {
+        if (isLeaf()) return 1;
+        int leafCount = 0;
+        for (TimeTreeNode child : getChildren()) {
+            leafCount += child.countLeaves();
+        }
+        return leafCount;
+    }
 }

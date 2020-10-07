@@ -1,5 +1,6 @@
 package lphy.evolution.coalescent;
 
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -9,7 +10,10 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import static java.lang.Integer.sum;
 import static lphy.core.distributions.DistributionConstants.*;
 
 public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
@@ -36,7 +40,7 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
     public static final String populationLabel = "deme";
 
-
+    // TODO need to allow StructuredCoalescent to be generated from Taxa + deme Metadata
     public StructuredCoalescent(@ParameterInfo(name = MParamName, description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
             "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
                                 @ParameterInfo(name = nParamName, description = "the number of taxa in each population.") Value<Integer[]> n) {
@@ -48,7 +52,11 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     @GeneratorInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
-        TimeTree tree = new TimeTree();
+
+        int[] sum = {0};
+        Stream.of(n.value()).forEach(i -> sum[0] += i);
+
+        TimeTree tree = new TimeTree(Taxa.createTaxa(sum[0]));
 
         int count = 0;
         List<List<TimeTreeNode>> nodes = new ArrayList<>();

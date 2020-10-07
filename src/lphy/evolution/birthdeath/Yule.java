@@ -42,7 +42,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
     @GeneratorInfo(name = "Yule", description = "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.")
     public RandomVariable<TimeTree> sample() {
 
-        TimeTree tree = new TimeTree();
+        TimeTree tree = new TimeTree(getTaxa());
         activeNodes.clear();
 
         createLeafNodes(tree, activeNodes);

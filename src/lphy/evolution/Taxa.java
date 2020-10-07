@@ -1,8 +1,11 @@
 package lphy.evolution;
 
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.MultiDimensional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.
@@ -15,6 +18,73 @@ public interface Taxa extends MultiDimensional {
     int ntaxa();
 
     /**
+     * The default for this method is very inefficient and should be overridden by implementers!
+     *
+     * @return the i'th taxon.
+     */
+    default Taxon getTaxon(int i) {
+        return new Taxon(i + "", 0.0);
+    }
+
+    /**
+     * @return all Taxon objects in an array
+     */
+    default Taxon[] getTaxonArray() {
+        // defensive copy.
+        Taxon[] taxa = new Taxon[ntaxa()];
+        for (int i = 0; i < taxa.length; i++) {
+            taxa[i] = getTaxon(i);
+        }
+        return taxa;
+    }
+
+    /**
+     * @return the names of the taxa.
+     */
+    default String[] getTaxaNames() {
+
+        String[] taxaNames = new String[ntaxa()];
+        Taxon[] taxa = getTaxonArray();
+        for (int i = 0; i < ntaxa(); i++) {
+            taxaNames[i] = taxa[i].getName();
+        }
+        return taxaNames;
+    }
+
+    /**
+     * @return the species of each taxon.
+     */
+    default String[] getSpecies() {
+        Taxon[] taxa = getTaxonArray();
+        String[] species = new String[ntaxa()];
+        for (int i = 0; i < ntaxa(); i++) {
+            species[i] = taxa[i].getSpecies();
+        }
+        return species;
+    }
+
+    /**
+     * @return the ages of the taxa in the same order as the taxa.
+     */
+    default Double[] getAges() {
+        Taxon[] taxa = getTaxonArray();
+        Double[] ages = new Double[ntaxa()];
+        for (int i = 0; i < ntaxa(); i++) {
+            ages[i] = taxa[i].getAge();
+        }
+        return ages;
+    }
+
+    default double getAge(String taxonName) {
+        Taxon[] taxa = getTaxonArray();
+
+        int index = indexOfTaxon(taxonName);
+        if (index >= 0) return taxa[index].getAge();
+        throw new IllegalArgumentException("Taxon named " + taxonName + " not found");
+    }
+
+
+    /**
      * @param taxon
      * @return the index of this taxon name, or -1 if this taxon name is not in this taxa object.
      */
@@ -24,59 +94,6 @@ public interface Taxa extends MultiDimensional {
             if (names[i].equals(taxon)) return i;
         }
         return -1;
-    }
-
-    /**
-     * @return the names of the taxa.
-     */
-    default String[] getTaxaNames() {
-        String[] taxa = new String[ntaxa()];
-        for (int i = 0; i < ntaxa(); i++) {
-            taxa[i] = "" + i;
-        }
-        return taxa;
-    }
-
-    /**
-     * @return the species of each taxon.
-     */
-    default String[] getSpecies() {
-        return getTaxaNames();
-    }
-
-    default double getAge(String taxon) {
-        String[] taxa = getTaxaNames();
-
-        for (int i =0; i < taxa.length; i++) {
-            if (taxa[i].equals(taxon)) return getAges()[i];
-        }
-        throw new IllegalArgumentException("Taxon named " + taxon + " not found");
-    }
-
-    /**
-     * @return the ages of the taxa in the same order as the taxa.
-     */
-    default Double[] getAges() {
-        Double[] ages = new Double[ntaxa()];
-        Arrays.fill(ages, 0.0);
-        return ages;
-    }
-
-    /**
-     * @return an array of taxon objects.
-     */
-    default Taxon[] getTaxonArray() {
-
-        String[] names = getTaxaNames();
-        String[] species = getSpecies();
-        Double[] ages = getAges();
-
-        Taxon[] taxa = new Taxon[names.length];
-
-        for (int i = 0; i < taxa.length; i++) {
-            taxa[i] = new Taxon(names[i], species[i], ages[i]);
-        }
-        return taxa;
     }
 
     /**
@@ -95,60 +112,18 @@ public interface Taxa extends MultiDimensional {
     }
 
     static Taxa createTaxa(int n) {
-        Double[] ages = new Double[n];
-        Arrays.fill(ages, 0.0);
 
-        return new Taxa() {
-            @Override
-            public int ntaxa() {
-                return n;
-            }
+        Taxon[] taxa = new Taxon[n];
+        for (int i = 0; i < taxa.length; i++) {
+            taxa[i] = new Taxon(i + "", 0.0);
+        }
 
-            @Override
-            public Double[] getAges() {
-                return ages;
-            }
-        };
+        return new Taxa.Simple(taxa);
     }
 
     static Taxa createTaxa(Taxon[] taxa) {
 
-        String[] names = new String[taxa.length];
-        String[] species = new String[taxa.length];
-        Double[] ages = new Double[taxa.length];
-
-        for (int i = 0; i < taxa.length; i++) {
-            names[i] = taxa[i].getName();
-            species[i] = taxa[i].getSpecies();
-            ages[i] = taxa[i].getAge();
-        }
-
-        return new Taxa() {
-            @Override
-            public int ntaxa() {
-                return taxa.length;
-            }
-
-            @Override
-            public Double[] getAges() {
-                return ages;
-            }
-
-            @Override
-            public String[] getTaxaNames() {
-                return names;
-            }
-
-            @Override
-            public String[] getSpecies() {
-                return species;
-            }
-
-            @Override
-            public Taxon[] getTaxonArray() {
-                return taxa;
-            }
-        };
+        return new Taxa.Simple(taxa);
     }
 
     /**
@@ -157,54 +132,58 @@ public interface Taxa extends MultiDimensional {
      */
     static Taxa createTaxa(Double[] ages) {
 
-        String[] names = new String[ages.length];
-        for (int i = 0; i < ages.length; i++) {
-            names[i] = i + "";
+        Taxon[] taxa = new Taxon[ages.length];
+        for (int i = 0; i < taxa.length; i++) {
+            taxa[i] = new Taxon(i + "", ages[i]);
         }
 
-        return new Taxa() {
-            @Override
-            public int ntaxa() {
-                return ages.length;
-            }
-
-            @Override
-            public Double[] getAges() {
-                return ages;
-            }
-
-            @Override
-            public String[] getTaxaNames() {
-                return names;
-            }
-        };
+        return new Taxa.Simple(taxa);
     }
 
-    static Taxa createTaxa(Object[] taxa) {
+    static Taxa createTaxa(Object[] objects) {
 
-        String[] names = new String[taxa.length];
-        Double[] ages = new Double[taxa.length];
-
+        Taxon[] taxa = new Taxon[objects.length];
         for (int i = 0; i < taxa.length; i++) {
-            names[i] = taxa[i].toString();
+            taxa[i] = new Taxon(objects[i].toString(), 0.0);
         }
-        Arrays.fill(ages, 0.0);
 
-        return new Taxa() {
-            @Override
-            public int ntaxa() {
-                return taxa.length;
-            }
+        return new Taxa.Simple(taxa);
+    }
 
-            @Override
-            public Double[] getAges() {
-                return ages;
-            }
+    static Taxa createTaxa(TimeTreeNode root) {
 
-            @Override
-            public String[] getTaxaNames() {
-                return names;
+        Taxon[] taxa = new Taxon[root.countLeaves()];
+        collectTaxon(root, taxa);
+
+        return new Taxa.Simple(taxa);
+    }
+
+    static void collectTaxon(TimeTreeNode node, Taxon[] taxa) {
+        if (node.isLeaf()) {
+            taxa[node.getIndex()] = new Taxon(node.getId(), node.getAge());
+        } else {
+            for (TimeTreeNode child : node.getChildren()) {
+                collectTaxon(child, taxa);
             }
-        };
+        }
+    }
+
+    class Simple implements Taxa {
+
+        Taxon[] taxa;
+
+        public Simple(Taxon[] taxa) {
+            this.taxa = taxa;
+        }
+
+        @Override
+        public int ntaxa() {
+            return taxa.length;
+        }
+
+        @Override
+        public Taxon getTaxon(int i) {
+            return taxa[i];
+        }
     }
 }

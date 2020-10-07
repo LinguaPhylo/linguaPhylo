@@ -44,7 +44,7 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
             "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {
 
-        TimeTree tree = new TimeTree();
+        TimeTree tree = new TimeTree(getTaxa());
         List<TimeTreeNode> activeNodes = createLeafTaxa(tree);
 
         double lambda = doubleValue(birthRate);

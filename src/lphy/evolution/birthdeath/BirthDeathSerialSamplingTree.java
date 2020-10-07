@@ -80,7 +80,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     }
 
     private TimeTree randomTreeTopology() {
-        TimeTree tree = new TimeTree();
+        TimeTree tree = new TimeTree(getTaxa());
         List<TimeTreeNode> activeNodes = createLeafTaxa(tree);
 
         while (activeNodes.size() > 1) {
@@ -111,7 +111,7 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     private void drawDivTimes(TimeTree tree) {
         // index of leaf nodes
         int k;
-        int[] index = new int[tree.ntaxa() - 1];
+        int[] index = new int[tree.n() - 1];
         traverseTree(tree.getRoot(), 0, index);
 
         // iterate internal nodes except the root
@@ -119,11 +119,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
             if (j != tree.getRoot().getIndex()) {
                 // step1: get z^* in Equation (4) in Stadler and Yang 2013
                 // find tip on the left
-                for (k = tree.getNodeByIndex(j).getChild(1).getIndex(); k >= tree.ntaxa(); k = tree.getNodeByIndex(k).getChild(0).getIndex())
+                for (k = tree.getNodeByIndex(j).getChild(1).getIndex(); k >= tree.n(); k = tree.getNodeByIndex(k).getChild(0).getIndex())
                     ;
                 double z0 = tree.getNodeByIndex(k).getAge();
                 // find tip on the right
-                for (k = tree.getNodeByIndex(j).getChild(0).getIndex(); k >= tree.ntaxa(); k = tree.getNodeByIndex(k).getChild(1).getIndex())
+                for (k = tree.getNodeByIndex(j).getChild(0).getIndex(); k >= tree.n(); k = tree.getNodeByIndex(k).getChild(1).getIndex())
                     ;
                 double z1 = tree.getNodeByIndex(k).getAge();
                 double zstar = Math.max(z0, z1);

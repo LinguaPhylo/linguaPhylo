@@ -1,7 +1,9 @@
 package lphy.evolution.tree;
 
 import lphy.app.treecomponent.TimeTreeComponent;
+import lphy.evolution.HasTaxa;
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.MultiDimensional;
 import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
 
@@ -11,27 +13,31 @@ import java.util.*;
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree implements Taxa, HasComponentView<TimeTree> {
+public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<TimeTree> {
 
     TimeTreeNode rootNode;
 
     private List<TimeTreeNode> nodes;
 
-    String[] taxaNames = null;
+    Taxa taxa = null;
 
     // number of leaves
     int n = 0;
 
-    public TimeTree() {
+    public TimeTree(Taxa taxa) {
+        this.taxa = taxa;
     }
 
+    public TimeTree() { }
+
     public TimeTree(TimeTree treeToCopy) {
+        taxa = treeToCopy.taxa;
         setRoot(treeToCopy.getRoot().deepCopy(this));
     }
 
-    public void setRoot(TimeTreeNode timeTreeNode, boolean reindexLeaves) {
+    public void setRoot(TimeTreeNode root, boolean reindexLeaves) {
 
-        rootNode = timeTreeNode;
+        rootNode = root;
         rootNode.setParent(null);
         rootNode.tree = this;
         nodes = new ArrayList<>();
@@ -40,10 +46,14 @@ public class TimeTree implements Taxa, HasComponentView<TimeTree> {
         indexNodes(rootNode, new int[]{n});
         // root node now last in list, first n nodes are leaves
         nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
+
+        if (taxa == null) {
+            taxa = Taxa.createTaxa(root);
+        }
     }
 
-    public void setRoot(TimeTreeNode timeTreeNode) {
-        setRoot(timeTreeNode, false);
+    public void setRoot(TimeTreeNode root) {
+        setRoot(root, false);
     }
 
     private void indexNodes(TimeTreeNode node, int[] nextInternalIndex) {
@@ -184,15 +194,11 @@ public class TimeTree implements Taxa, HasComponentView<TimeTree> {
     }
 
     public String[] getTaxaNames() {
-        if (taxaNames == null) {
-            taxaNames = new String[n()];
-            for (TimeTreeNode node : getNodes()) {
-                if (node.isLeaf()) {
-                    taxaNames[node.getLeafIndex()] = node.getId();
-                }
-            }
-        }
-        return taxaNames;
+        return taxa.getTaxaNames();
+    }
+
+    public String[] getSpecies() {
+        return taxa.getSpecies();
     }
 
     public TimeTreeNode getNodeByIndex(int index) {
@@ -201,7 +207,7 @@ public class TimeTree implements Taxa, HasComponentView<TimeTree> {
         return node;
     }
 
-    public boolean isUlrametric() {
+    public boolean isUltrametric() {
         for (TimeTreeNode node : getNodes()) {
             if (node.isLeaf() && node.getAge() != 0.0) {
                 return false;
@@ -219,28 +225,12 @@ public class TimeTree implements Taxa, HasComponentView<TimeTree> {
     }
 
     @Override
-    public int ntaxa() {
+    public int getDimension() {
         return n();
     }
 
     @Override
-    public Double[] getAges() {
-        Double[] ages = new Double[taxaNames.length];
-        for (TimeTreeNode node : getNodes()) {
-
-            if (node.isLeaf()) {
-                if (node.getId().equals(taxaNames[node.getIndex()])) {
-                    throw new RuntimeException("Assertion failed!");
-                }
-                ages[node.getIndex()] = node.getAge();
-            }
-        }
-        return ages;
+    public Taxa getTaxa() {
+        return taxa;
     }
-
-    @Override
-    public int getDimension() {
-        return ntaxa();
-    }
-
 }

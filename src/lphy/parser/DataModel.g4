@@ -5,7 +5,7 @@ grammar DataModel;
 input: datablock? modelblock?
 ;
 
-datablock: DATA relations
+datablock: DATA determ_relations
 ;
 
 modelblock: MODEL relations
@@ -14,8 +14,18 @@ modelblock: MODEL relations
 relations:'{' relation_list? '}'
 ;
 
+determ_relations:'{' determ_relation_list? '}'
+;
+
 relation_list:	relation 
 | relation_list relation 
+;
+
+determ_relation_list:	determ_relation_line
+| determ_relation_list determ_relation_line
+;
+
+determ_relation_line: determ_relation ';'
 ;
 
 relation: stoch_relation ';'
