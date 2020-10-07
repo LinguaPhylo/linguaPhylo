@@ -11,12 +11,13 @@ import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
-//import lphy.evolution.Taxa;
-//import lphy.evolution.alignment.ContinuousCharacterData;
-//import lphy.evolution.sequences.Continuous;
-//import lphy.evolution.sequences.DataType;
+import lphy.evolution.Taxa;
+import lphy.evolution.alignment.ContinuousCharacterData;
+import lphy.evolution.sequences.Continuous;
+import lphy.evolution.sequences.DataType;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
+import lphy.utils.LoggerUtils;
 
 import java.awt.*;
 import java.io.EOFException;
@@ -47,7 +48,7 @@ public class ExtNexusImporter extends NexusImporter {
     protected Map<String, String> dateMap; // Taxon name <=> date string
     protected ChronoUnit chronoUnit = null;
 
-//    protected ContinuousCharacterData continuousCharacterData;
+    protected ContinuousCharacterData continuousCharacterData;
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
@@ -136,8 +137,9 @@ public class ExtNexusImporter extends NexusImporter {
 
                     // A data block doesn't need a taxon block before it
                     // but if one exists then it will use it.
-                    readDataBlock(taxonList); // add alignments insider
-//                    alignments.add(new BasicAlignment(sequences));
+                    // this reads continuous data into lphy ContinuousCharacterData, not alignments
+                    // the rest data type will add alignments
+                    readDataBlock(taxonList);
 
                 } else if (block == ExtNexusImporter.ExtNexusBlock.ASSUMPTIONS) {
 
@@ -156,11 +158,12 @@ public class ExtNexusImporter extends NexusImporter {
             }
         }
 
-        if (alignments.size() == 0)
+        if (DataType.isSame(sequenceType, Continuous.getInstance())) {
+            if (continuousCharacterData == null)
+                throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
+        } else if (alignments.size() == 0)
             throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
 
-//        return nexusContent;
-//        return importer.importAlignments();
     }
 
     //****** getters ******//
@@ -558,15 +561,15 @@ public class ExtNexusImporter extends NexusImporter {
 
         readDataBlockHeader("MATRIX", NexusBlock.DATA);
 
-//        if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
+        if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
 
-//            Double[][] continuousCharacterData = readContinuousCharacterData();
-//            System.out.println(continuousCharacterData);
+            LoggerUtils.log.info("Loading continuous character data ... ");
+            continuousCharacterData = readContinuousCharacterData();
 
-//        } else {
+        } else {
             List<Sequence> sequences = readSequenceData(taxonList);
             alignments.add(new BasicAlignment(sequences));
-//        }
+        }
 
         findEndBlock();
     }
@@ -719,18 +722,13 @@ public class ExtNexusImporter extends NexusImporter {
         return sequences;
     }
 
-/*
+
     // rows are taxa, cols are traits.
-    // Double[][] taxa should have same order of List<Taxon> taxonList.
+    // Double[][] taxa should have same order of Taxon[].
     private ContinuousCharacterData readContinuousCharacterData() throws ImportException, IOException {
-        List<Taxon> taxonList = new ArrayList<>();
-        Taxa taxa = new Taxa() {
-            @Override
-            public int ntaxa() {
-                return 0;
-            }
-        };
+        assert taxonCount > 0 && siteCount > 0;
         Double[][] continuousData = new Double[taxonCount][siteCount];
+        lphy.evolution.Taxon[] taxa = new lphy.evolution.Taxon[taxonCount];
 
         if (isInterleaved) {
 
@@ -739,74 +737,44 @@ public class ExtNexusImporter extends NexusImporter {
         } else {
 
             for (int i = 0; i < taxonCount; i++) {
+                // 1st col is taxon name
                 String token = helper.readToken();
+                taxa[i] = new lphy.evolution.Taxon(token);
 
-                Taxon taxon = Taxon.getTaxon(token);
-                taxonList.add(taxon);
+                // from 2nd col is traits, must be double
+                for (int j = 0; j < siteCount; j++) {
+                    token = helper.readToken();
 
-                token = helper.readToken();
-//                try {
-//                    while (ch != '\n' && ch != '\r') {
-//                        if (hasComments && skipComments) {
-//                            if (ch == lineComment) {
-//                                skipComments(ch);
-//                                break;
-//                            }
-//                            if (ch == startComment) {
-//                                skipComments(ch);
-//                                ch = read();
-//                            }
-//                        }
-//                        line.append(ch);
-//                        ch = read();
-//                    }
-//
-//                    // accommodate DOS line endings..
-//                    if (ch == '\r') {
-//                        if (next() == '\n') read();
-//                    }
-//                    lastDelimiter = ch;
-//
-//                } catch (EOFException e) {
-//                    // We catch an EOF and return the line we have so far
-////            encounteredEndOfFile();
-//                }
+                    try {
+                        continuousData[i][j] = Double.parseDouble(token);
+                    } catch (NumberFormatException ex) {
+                        // not enough columns
+                        if (j < siteCount - 1)
+                            throw new ImportException.ShortSequenceException(taxa[i].getName()
+                                    + " has " + j + " traits, expecting " + siteCount);
+                        else
+                            throw new ImportException.BadFormatException("Double value is expected " +
+                                    "for continuous data at taxon " + i + " trait " + j);
+                    }
 
+                } // end j loop
 
+                // not enough
+                if (helper.getLastDelimiter() == ';' && i < taxonCount - 1)
+                    throw new ImportException.TooFewTaxaException(Integer.toString(i+1));
+            } // end i loop
 
-
-
-                StringBuilder buffer = new StringBuilder();
-
-//                if (seqString.length() != siteCount) {
-//                    throw new ImportException.ShortSequenceException(taxon.getName()
-//                            + " has length " + seqString.length() + ", expecting " + siteCount);
-//                }
-
-                if (i == 0) {
-
-                }
-
-                if (helper.getLastDelimiter() == ';' && i < taxonCount - 1) {
-                    throw new ImportException.TooFewTaxaException();
-                }
-
-
-            }
-
-            if (helper.getLastDelimiter() != ';') {
-                throw new ImportException.BadFormatException("Expecting ';' after sequences data");
-            }
-
-            assert taxonList.size() == taxonCount && siteCount > 0;
+        }
+        String token = helper.readToken(";");
+        if (helper.getLastDelimiter() != ';') {
+            throw new ImportException.BadFormatException("Expecting ';' after continuous data\n" +
+                    helper.getLastDelimiter());
         }
 
-        return new ContinuousCharacterData(taxa, continuousData);
+        return new ContinuousCharacterData(new Taxa.Simple(taxa), continuousData);
     }
-*/
 
 
-//TODO new datatypes    readDataBlockHeader
 
     private void readDataBlockHeader(String tokenToLookFor, NexusBlock block) throws ImportException, IOException {
 
@@ -814,7 +782,7 @@ public class ExtNexusImporter extends NexusImporter {
         String token;
 
         do {
-            token = helper.readToken();
+            token = helper.readToken(); //TODO read comments after MATRIX, but readToken() skips comments
 
             if (token.equalsIgnoreCase("TITLE")) {
                 if (foundTitle) {
@@ -910,7 +878,7 @@ public class ExtNexusImporter extends NexusImporter {
                         if (helper.getLastDelimiter() != '=') {
                             throw new ImportException.BadFormatException("Expecting '=' after DATATYPE subcommand in FORMAT command");
                         }
-
+//TODO new datatypes here
                         String token3 = helper.readToken(";");
                         // replace getSequenceType if there is new data type
                         sequenceType = getSequenceType(token3);

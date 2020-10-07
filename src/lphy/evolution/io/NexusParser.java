@@ -197,10 +197,15 @@ public class NexusParser {
 //            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
                 System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
 
-            }
+            } else if (fileName.equals("haemulidae_trophic_traits.nex")) {
 
-            parser.getImporter().importNexus();
-//            System.out.println(sequenceList);
+                parser.getImporter().importNexus();
+                System.out.println(parser.getImporter().continuousCharacterData.toJSON());
+
+
+            } else { // for testing or dev
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

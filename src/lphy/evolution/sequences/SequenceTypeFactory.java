@@ -27,8 +27,8 @@ public class SequenceTypeFactory {
 //            case "binary":
 //                return BINARY;
 //            case "standard":
-//            case "continuous": // TODO need to check
-//                return STANDARD; // TODO ? nrOfState = symbols.length()
+            case "continuous":
+                return Continuous.getInstance();
             default:
                 throw new UnsupportedOperationException(dataTypeName);
         }
