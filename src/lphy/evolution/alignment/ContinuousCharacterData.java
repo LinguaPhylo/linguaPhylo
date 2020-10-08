@@ -36,6 +36,7 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
         return continuousCharacterData[0].length;
     }
 
+    @Override
     public String toJSON() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");

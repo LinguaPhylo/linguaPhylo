@@ -1,11 +1,11 @@
 package lphy.evolution.alignment;
 
+import lphy.evolution.HasTaxa;
 import lphy.evolution.NChar;
-import lphy.evolution.Taxa;
 
 import java.lang.reflect.Array;
 
-public interface TaxaCharacterMatrix<T> extends NChar {
+public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa {
 
     /**
      * @param taxon
@@ -19,10 +19,6 @@ public interface TaxaCharacterMatrix<T> extends NChar {
      */
     Class getComponentType();
 
-    /**
-     * @return a taxa object describing the taxa that this character matrix is measured from.
-     */
-    Taxa getTaxa();
 
     /**
      * @param taxon the taxon to get a sequence of
@@ -35,4 +31,9 @@ public interface TaxaCharacterMatrix<T> extends NChar {
         }
         return sequence;
     }
+
+    /**
+     * @return  a JSON for pretty printing
+     */
+    String toJSON();
 }
