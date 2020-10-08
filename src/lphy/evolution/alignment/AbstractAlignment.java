@@ -107,9 +107,6 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         }
     }
 
-
-    public abstract String toJSON();
-
     public abstract boolean hasParts();
 
 
