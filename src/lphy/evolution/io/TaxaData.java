@@ -15,18 +15,15 @@ import java.util.regex.Pattern;
 
 /**
  * Create Taxon map from dates. No time unit.
- * TODO what about species?
  * @author Walter Xie
  */
-public class TaxaData {
+public class TaxaData { // TODO Make it extends Taxa.Simple
 
 //    protected final Pattern regx;
     protected final AgeDirection ageDirection;
     // use map to guarantee mapping correct
+    @Deprecated
     protected Map<String, Taxon> taxonMap;
-
-    //TODO speciesMap
-
 
     public enum AgeDirection {
         forward,  // virus

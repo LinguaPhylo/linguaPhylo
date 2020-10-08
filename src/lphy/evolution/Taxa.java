@@ -3,11 +3,10 @@ package lphy.evolution;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.MultiDimensional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 /**
+ * TODO change to Class, and mv MultiDimensional to TaxaCharacterMatrix
  * An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.
  */
 public interface Taxa extends MultiDimensional {
@@ -166,6 +165,21 @@ public interface Taxa extends MultiDimensional {
                 collectTaxon(child, taxa);
             }
         }
+    }
+
+    /**
+     * Legacy code of using Map<String, Integer> idMap
+     * @param idMap    Map<String, Integer>
+     * @return   Taxa
+     */
+    static Taxon[] createTaxa(Map<String, Integer> idMap) {
+
+        Taxon[] taxa = new Taxon[idMap.size()];
+        for (Map.Entry<String, Integer> entry : idMap.entrySet()) {
+            taxa[entry.getValue()] = new Taxon(entry.getKey());
+        }
+
+        return taxa;
     }
 
     class Simple implements Taxa {

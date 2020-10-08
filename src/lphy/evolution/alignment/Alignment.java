@@ -64,4 +64,5 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
     String getTaxonName(int taxonIndex);
 
 
+    boolean hasAges();
 }

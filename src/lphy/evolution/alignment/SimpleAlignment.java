@@ -26,8 +26,8 @@ public class SimpleAlignment extends AbstractAlignment {
         alignment = new int[ntaxa()][nchar];
     }
 
-    public SimpleAlignment(Taxon[] taxa, int nchar, SequenceType sequenceType) {
-        super(taxa, nchar, sequenceType);
+    public SimpleAlignment(Taxon[] taxonArray, int nchar, SequenceType sequenceType) {
+        super(taxonArray, nchar, sequenceType);
         this.alignment = new int[ntaxa()][nchar];
     }
 
@@ -53,7 +53,7 @@ public class SimpleAlignment extends AbstractAlignment {
     }
 
     public void setState(String taxon, int position, int state) {
-        setState(idMap.get(taxon), position, state);
+        setState(indexOfTaxon(taxon), position, state);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SimpleAlignment extends AbstractAlignment {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
         for (int i = 0; i < ntaxa(); i++) {
-            builder.append("  ").append(reverseMap.get(i));
+            builder.append("  ").append(getTaxonName(i));
             builder.append(" = ").append(Arrays.toString(alignment[i]));
 //            if (i < n()-1)
             builder.append(",");
@@ -78,8 +78,8 @@ public class SimpleAlignment extends AbstractAlignment {
         }
         builder.append("  nchar = ").append(nchar);
         builder.append(", ntax = ").append(super.ntaxa());
-        if (taxonMap != null)
-            builder.append(",\n").append("  ageMap = ").append(taxonMap.toString());
+        if (hasAges())
+            builder.append(",\n").append("  ages = ").append(Arrays.toString(getAges()));
         builder.append("\n").append("}");
         return builder.toString();
     }

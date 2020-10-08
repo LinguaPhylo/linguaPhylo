@@ -4,6 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.app.AlignmentComponent;
 import lphy.app.HasComponentView;
+import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.Value;
@@ -22,14 +23,16 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     // may not have sequences
     protected int nchar;
 
-    Map<String, Integer> idMap;
-    Map<Integer, String> reverseMap;
+    protected Taxon[] taxonArray;
+
+//    Map<String, Integer> idMap;
+//    Map<Integer, String> reverseMap;
 
     @Deprecated int numStates;
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
     // same index as Map<Integer, String> reverseMap
-    Map<Integer, Taxon> taxonMap; // TODO duplicate to reverseMap ?
+//    Map<Integer, Taxon> taxonMap; // TODO duplicate to reverseMap ?
 
     /**
      * Init alignment with taxa and number of site.
@@ -38,8 +41,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      */
     public AbstractAlignment(Map<String, Integer> idMap, int nchar) {
         this.nchar = nchar;
-        this.idMap = idMap;
-        fillRevMap();
+        this.taxonArray = Taxa.createTaxa(idMap);
     }
 
     @Deprecated
@@ -58,24 +60,15 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     /**
      * {@link Taxon} stores name, age, sepices.
-     * @param taxa    the array index will use as the key in {@link #taxonMap}.
+     * @param taxonArray    {@link Taxa.Simple}.
      * @param nchar   the number of sites.
      * @param sequenceType  {@link SequenceType}
      */
-    public AbstractAlignment(Taxon[] taxa, int nchar, SequenceType sequenceType) {
+    public AbstractAlignment(Taxon[] taxonArray, int nchar, SequenceType sequenceType) {
+        this.taxonArray = taxonArray; // Arrays.copyOf ?
         this.nchar = nchar;
         this.sequenceType = sequenceType;
         this.numStates = sequenceType.getCanonicalStateCount();
-
-        taxonMap = new TreeMap<>();
-        for (int i = 0; i < taxa.length; i++)
-            taxonMap.put(i, taxa[i]);
-
-        // fill idMap
-        idMap = new TreeMap<>();
-        for (int i = 0; i < taxa.length; i++)
-            idMap.put(taxa[i].getName(), i);
-        fillRevMap();
     }
 
     /**
@@ -83,14 +76,11 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      */
     public AbstractAlignment(int nchar, final AbstractAlignment source) {
         this.nchar = nchar;
-        this.idMap = new TreeMap<>(Objects.requireNonNull(source).idMap);
-        fillRevMap();
+        this.taxonArray = Arrays.copyOf(source.getTaxonArray(), source.ntaxa());
 
         this.sequenceType = source.getSequenceType();
         if (sequenceType == null)
             this.numStates = source.numStates;
-        if (source.taxonMap != null)
-            this.taxonMap = new LinkedHashMap<>(source.taxonMap);
     }
 
     /**
@@ -98,13 +88,6 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      */
     public AbstractAlignment(final AbstractAlignment source) {
         this(Objects.requireNonNull(source).nchar(), source);
-    }
-
-    protected void fillRevMap() {
-        reverseMap = new TreeMap<>();
-        for (String key : idMap.keySet()) {
-            reverseMap.put(idMap.get(key), key);
-        }
     }
 
     public abstract boolean hasParts();
@@ -120,7 +103,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     @Override
     public int ntaxa() {
-        return idMap.size();
+        return taxonArray.length;
+    }
+
+    @Override
+    public Taxon getTaxon(int taxonIndex) {
+        return taxonArray[taxonIndex];
     }
 
     /**
@@ -129,22 +117,23 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      * @return     the name of this taxon
      */
     public String getTaxonName(int taxonIndex) {
-        return reverseMap.get(taxonIndex);
+        return getTaxon(taxonIndex).getName();
     }
 
     @Override
     public String[] getTaxaNames() {
-        String[] taxa = new String[ntaxa()];
-        for (int i = 0; i < ntaxa(); i++) {
-            taxa[i] = getTaxonName(i);
-        }
-        return taxa;
+        return Arrays.stream(taxonArray).map(Taxon::getName).toArray(String[]::new);
     }
 
     @Override
-    public int indexOfTaxon(String taxon) {
-        return idMap.get(taxon);
+    public Taxon[] getTaxonArray() {
+        return taxonArray;
     }
+
+//    @Override
+//    public int indexOfTaxon(String taxon) {
+//        return getTaxaNames();
+//    }
 
     public String toString() {
         return ntaxa() + " by " + nchar;
@@ -210,35 +199,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     /**
      * This shares the same index with {@link #getTaxaNames()}
      */
-    @Override
-    public Double[] getAges() {
-        Double[] ages = new Double[ntaxa()];
-
-        if (taxonMap == null) {
-            Arrays.fill(ages, 0.0);
-            return ages;
-        }
-
-        for (int i = 0; i < ntaxa(); i++) {
-            Taxon taxon = getTaxon(i);
-            if (taxon != null) ages[i] = taxon.getAge();
-        }
-        return ages;
-    }
-
-    public Taxon getTaxon(int taxonIndex) {
-        return taxonMap.get(taxonIndex);
-    }
 
     @Override
-    public Taxon[] getTaxonArray() {
-        if (taxonMap == null) return Alignment.super.getTaxonArray();
-        return taxonMap.values().toArray(Taxon[]::new);
-    }
-
-    @Override
-    public String[] getSpecies() {
-        return Alignment.super.getSpecies();
+    public boolean hasAges() {
+        for (Taxon taxon : getTaxonArray())
+            if (taxon.getAge() > 0) return true;
+        return false;
     }
 
     @Override
