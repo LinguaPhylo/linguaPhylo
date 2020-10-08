@@ -5,28 +5,24 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class ArgI extends DeterministicFunction<Integer> {
 
-    private final String nameParamName;
-    private final String defaultParamName;
+    private static final String nameParamName = "name";
+    private static final String defaultParamName = "default";
     private Value<String> name;
     private Value<Integer> defaultValue;
 
     private static java.util.Map<String, Integer> integerArguments = new TreeMap<>();
 
 
-    public ArgI(@ParameterInfo(name = "name", description = "the name of the integer argument.") Value<String> name,
-                @ParameterInfo(name = "default", description = "the default value.", optional = true) Value<Integer> defaultValue) {
+    public ArgI(@ParameterInfo(name = nameParamName, description = "the name of the integer argument.") Value<String> name,
+                @ParameterInfo(name = defaultParamName, description = "the default value.", optional = true) Value<Integer> defaultValue) {
 
         this.name = name;
         if (name == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.defaultValue = defaultValue;
-
-        nameParamName = getParamName(0);
-        defaultParamName = getParamName(1);
     }
 
     @GeneratorInfo(name = "argi", description = "The arg function for reading an integer.")
@@ -41,10 +37,10 @@ public class ArgI extends DeterministicFunction<Integer> {
     }
 
     public java.util.Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(nameParamName, name);
-        map.put(defaultParamName, defaultValue);
-        return map;
+        return new TreeMap<>() {{
+            put(nameParamName, name);
+            put(defaultParamName, defaultValue);
+        }};
     }
 
     public void setParam(String paramName, Value value) {

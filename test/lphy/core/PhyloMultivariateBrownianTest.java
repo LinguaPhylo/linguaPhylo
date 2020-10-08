@@ -4,6 +4,7 @@ import lphy.core.functions.newickParser.NewickASTVisitor;
 import lphy.core.functions.newickParser.NewickLexer;
 import lphy.core.functions.newickParser.NewickParser;
 import lphy.evolution.alignment.ContinuousCharacterData;
+import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
@@ -16,8 +17,6 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 /**
  * @author: Fabio K. Mendes

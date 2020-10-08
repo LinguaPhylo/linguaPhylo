@@ -10,16 +10,15 @@ import lphy.graphicalModel.types.IntegerValue;
 
 public class NCharFunction extends DeterministicFunction {
 
-    final String paramName;
+    private static final String sitesParamName = "sites";
 
-    public NCharFunction(@ParameterInfo(name = "sites", description = "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.") Value sites) {
-        paramName = getParamName(0);
-        setParam(paramName, sites);
+    public NCharFunction(@ParameterInfo(name = sitesParamName, description = "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.") Value sites) {
+        setParam(sitesParamName, sites);
     }
 
     @GeneratorInfo(name="nchar",description = "The number of sites in the given alignment(s).")
     public Value apply() {
-        Value sites = getParams().get(paramName);
+        Value sites = getParams().get(sitesParamName);
         Object value = sites.value();
 
         if (value instanceof NChar) {

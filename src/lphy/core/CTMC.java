@@ -7,7 +7,6 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.Map;
 import java.util.Random;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class CTMC implements GenerativeDistribution<Integer> {
@@ -17,23 +16,19 @@ public class CTMC implements GenerativeDistribution<Integer> {
     Value<double[][]> Q;
     Random random;
 
-    String XParamName;
-    String tParamName;
-    String QParamName;
+    public static final String XParamName = "X";
+    public static final String tParamName = "t";
+    public static final String QParamName = "Q";
 
 
-    public CTMC(@ParameterInfo(name = "X", description = "the starting state.") Value<Integer> X,
-            @ParameterInfo(name = "t", description = "the time.") Value<Double> t,
-                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<double[][]> Q,
-                     Random random) {
+    public CTMC(@ParameterInfo(name = XParamName, description = "the starting state.") Value<Integer> X,
+                @ParameterInfo(name = tParamName, description = "the time.") Value<Double> t,
+                @ParameterInfo(name = QParamName, description = "the instantaneous rate matrix.") Value<double[][]> Q,
+                Random random) {
         this.X = X;
         this.t = t;
         this.Q = Q;
         this.random = random;
-
-        XParamName = getParamName(0);
-        tParamName = getParamName(1);
-        QParamName = getParamName(2);
     }
 
 
@@ -51,19 +46,28 @@ public class CTMC implements GenerativeDistribution<Integer> {
     }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(tParamName, t);
-        map.put(QParamName, Q);
-        map.put(XParamName, X);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(tParamName, t);
+            put(QParamName, Q);
+            put(XParamName, X);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(tParamName)) t = value;
-        else if (paramName.equals(QParamName)) Q = value;
-        else if (paramName.equals(XParamName)) X = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case tParamName:
+                t = value;
+                break;
+            case QParamName:
+                Q = value;
+                break;
+            case XParamName:
+                X = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 }

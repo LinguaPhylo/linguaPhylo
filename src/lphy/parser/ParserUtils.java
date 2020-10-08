@@ -1,8 +1,8 @@
 package lphy.parser;
 
-import lphy.core.PhyloBrownian;
-import lphy.core.PhyloMultivariateBrownian;
-import lphy.core.PhyloOU;
+import lphy.evolution.continuous.PhyloBrownian;
+import lphy.evolution.continuous.PhyloMultivariateBrownian;
+import lphy.evolution.continuous.PhyloOU;
 import lphy.core.distributions.*;
 import lphy.core.distributions.Exp;
 import lphy.core.functions.*;
@@ -51,7 +51,7 @@ public class ParserUtils {
         }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
-                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, LewisMK.class,
                 LocalBranchRates.class,
                 CreateTaxa.class,
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,

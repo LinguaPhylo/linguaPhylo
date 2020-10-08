@@ -1,5 +1,6 @@
-package lphy.core;
+package lphy.evolution.continuous;
 
+import lphy.core.StringDoubleArrayMap;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -24,22 +25,18 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
     Value<Double[]> y0;
     RandomGenerator random;
 
-    String treeParamName;
-    String diffusionRateParamName;
-    String y0ParamName;
+    public static final String treeParamName = "tree";
+    public static final String diffusionMatrixParamName = "diffusionMatrix";
+    public static final String y0ParamName = "y0";
 
-    public PhyloMultivariateBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                                     @ParameterInfo(name = "diffusionMatrix", description = "the multivariate diffusion rates.") Value<Double[][]> diffusionRate,
-                                     @ParameterInfo(name = "y0", description = "the value of multivariate traits at the root.") Value<Double[]> y0) {
+    public PhyloMultivariateBrownian(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
+                                     @ParameterInfo(name = diffusionMatrixParamName, description = "the multivariate diffusion rates.") Value<Double[][]> diffusionRate,
+                                     @ParameterInfo(name = y0ParamName, description = "the value of multivariate traits at the root.") Value<Double[]> y0) {
 
         this.tree = tree;
         this.diffusionMatrix = diffusionRate;
         this.y0 = y0;
         this.random = Utils.getRandom();
-
-        treeParamName = getParamName(0);
-        diffusionRateParamName = getParamName(1);
-        y0ParamName = getParamName(2);
     }
 
     public RandomVariable<ContinuousCharacterData> sample() {
@@ -53,7 +50,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
         // put tipValues inside contData
         Double[][] contData = new Double[tree.value().n()][y0.value().length];
-        for (Map.Entry<String, Double[]> entry: tipValues.entrySet()) {
+        for (Map.Entry<String, Double[]> entry : tipValues.entrySet()) {
             contData[tree.value().getTaxa().indexOfTaxon(entry.getKey())] = entry.getValue();
         }
 
@@ -73,8 +70,9 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
             if (i == null) {
                 int nextValue = 0; // if looking at first leaf, it's mapped to value 0
 
-                for (Integer j: idMap.values()) {
-                    if (j >= nextValue) nextValue = j + 1; // if looking at second or later species, we add +1 to integer that will be its value
+                for (Integer j : idMap.values()) {
+                    if (j >= nextValue)
+                        nextValue = j + 1; // if looking at second or later species, we add +1 to integer that will be its value
                 }
 
                 idMap.put(node.getId(), nextValue);
@@ -83,7 +81,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
         // recur
         else {
-            for (TimeTreeNode child: node.getChildren()) {
+            for (TimeTreeNode child : node.getChildren()) {
                 fillIdMap(child, idMap);
             }
         }
@@ -101,7 +99,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
         // recur
         else {
-            for (TimeTreeNode child: node.getChildren()) {
+            for (TimeTreeNode child : node.getChildren()) {
                 double branchLength = node.getAge() - child.getAge();
                 Double[] newIntNodeState = getSampleFromNewMVN(nodeState.value(), diffusionMatrix, branchLength); // MVN sampling here
                 DoubleArrayValue newIntNodeStateValue = new DoubleArrayValue(null, newIntNodeState);
@@ -158,20 +156,29 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
     // getParams is in the Generator interface
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(treeParamName, tree);
-        map.put(diffusionRateParamName, diffusionMatrix);
-        map.put(y0ParamName, y0);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(treeParamName, tree);
+            put(diffusionMatrixParamName, diffusionMatrix);
+            put(y0ParamName, y0);
+        }};
     }
 
     // setParam is in the Generator interface
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(treeParamName)) tree = value;
-        else if (paramName.equals(diffusionRateParamName)) diffusionMatrix = value;
-        else if (paramName.equals(y0ParamName)) y0 = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case treeParamName:
+                tree = value;
+                break;
+            case diffusionMatrixParamName:
+                diffusionMatrix = value;
+                break;
+            case y0ParamName:
+                y0 = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 }

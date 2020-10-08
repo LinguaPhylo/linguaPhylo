@@ -1,4 +1,4 @@
-package lphy.core;
+package lphy.evolution.continuous;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -20,41 +20,47 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
     Value<Double> y0;
     RandomGenerator random;
 
-    String treeParamName;
-    String diffusionRateParamName;
-    String y0RateParamName;
+    public static final String treeParamName = "tree";
+    public static final String diffRateParamName = "diffRate";
+    public static final String y0ParamName = "y0";
 
-    public PhyloBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                         @ParameterInfo(name = "diffRate", description = "the diffusion rate.") Value<Double> diffusionRate,
-                         @ParameterInfo(name = "y0", description = "the value of continuous trait at the root.") Value<Double> y0) {
+    public PhyloBrownian(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
+                         @ParameterInfo(name = diffRateParamName, description = "the diffusion rate.") Value<Double> diffusionRate,
+                         @ParameterInfo(name = y0ParamName, description = "the value of continuous trait at the root.") Value<Double> y0) {
         this.tree = tree;
         this.diffusionRate = diffusionRate;
         this.y0 = y0;
         this.random = Utils.getRandom();
-
-        treeParamName = getParamName(0);
-        diffusionRateParamName = getParamName(1);
-        y0RateParamName = getParamName(2);
     }
 
     // constructor for subclasses that don't wish to call the above one, for example because arguments are reordered.
-    PhyloBrownian() {}
+    PhyloBrownian() {
+    }
 
     @Override
-    public SortedMap<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        map.put(treeParamName, tree);
-        map.put(diffusionRateParamName, diffusionRate);
-        map.put(y0RateParamName, y0);
-        return map;
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(treeParamName, tree);
+            put(diffRateParamName, diffusionRate);
+            put(y0ParamName, y0);
+        }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(treeParamName)) tree = value;
-        else if (paramName.equals(diffusionRateParamName)) diffusionRate = value;
-        else if (paramName.equals(y0RateParamName)) y0 = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        switch (paramName) {
+            case treeParamName:
+                tree = value;
+                break;
+            case diffRateParamName:
+                diffusionRate = value;
+                break;
+            case y0ParamName:
+                y0 = value;
+                break;
+            default:
+                throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
     }
 
     public RandomVariable<Map<String, Double>> sample() {
@@ -102,7 +108,7 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
     }
 
     protected double sampleNewState(double initialState, double time, int nodeIndex) {
-        NormalDistribution distribution = new NormalDistribution(initialState, Math.sqrt(time*diffusionRate.value()));
+        NormalDistribution distribution = new NormalDistribution(initialState, Math.sqrt(time * diffusionRate.value()));
         return handleBoundaries(distribution.sample());
     }
 

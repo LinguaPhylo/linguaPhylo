@@ -1,4 +1,4 @@
-package lphy.core;
+package lphy.evolution.continuous;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.ParameterInfo;
@@ -17,16 +17,16 @@ public class PhyloOU extends PhyloBrownian {
     protected Value<Double> alpha;
     protected Value<Double[]> branchThetas;
 
-    String thetaParamName;
-    String branchThetaParamName;
-    String alphaParamName;
+    public static final String thetaParamName = "theta";
+    public static final String branchThetasParamName = "branchThetas";
+    public static final String alphaParamName = "alpha";
 
-    public PhyloOU(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                   @ParameterInfo(name = "diffRate", description = "the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.") Value<Double> variance,
-                   @ParameterInfo(name = "theta", description = "the 'optimal' value that the long-term process is centered around.", optional=true) Value<Double> theta,
-                   @ParameterInfo(name = "alpha", description = "the drift term that determines the rate of drift towards the optimal value.") Value<Double> alpha,
-                   @ParameterInfo(name = "y0", description = "the value of continuous trait at the root.") Value<Double> y0,
-                   @ParameterInfo(name = "branchThetas", description = "the 'optimal' value for each branch in the tree.", optional = true) Value<Double[]> branchThetas
+    public PhyloOU(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
+                   @ParameterInfo(name = diffRateParamName, description = "the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.") Value<Double> variance,
+                   @ParameterInfo(name = thetaParamName, description = "the 'optimal' value that the long-term process is centered around.", optional=true) Value<Double> theta,
+                   @ParameterInfo(name = alphaParamName, description = "the drift term that determines the rate of drift towards the optimal value.") Value<Double> alpha,
+                   @ParameterInfo(name = y0ParamName, description = "the value of continuous trait at the root.") Value<Double> y0,
+                   @ParameterInfo(name = branchThetasParamName, description = "the 'optimal' value for each branch in the tree.", optional = true) Value<Double[]> branchThetas
                    ) {
 
         super(tree, variance, y0);
@@ -34,33 +34,28 @@ public class PhyloOU extends PhyloBrownian {
         this.theta = theta;
         this.branchThetas = branchThetas;
         this.alpha = alpha;
-
-        thetaParamName = getParamName(2);
-        alphaParamName = getParamName(3);
-        y0RateParamName = getParamName(4);
-        branchThetaParamName = getParamName(5);
     }
 
     @Override
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, tree);
-        map.put(diffusionRateParamName, diffusionRate);
+        map.put(diffRateParamName, diffusionRate);
         if (theta != null) map.put(thetaParamName, theta);
         map.put(alphaParamName, alpha);
-        map.put(y0RateParamName, y0);
-        if (branchThetas != null) map.put(branchThetaParamName, branchThetas);
+        map.put(y0ParamName, y0);
+        if (branchThetas != null) map.put(branchThetasParamName, branchThetas);
         return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(treeParamName)) tree = value;
-        else if (paramName.equals(diffusionRateParamName)) diffusionRate = value;
+        else if (paramName.equals(diffRateParamName)) diffusionRate = value;
         else if (paramName.equals(thetaParamName)) theta = value;
-        else if (paramName.equals(branchThetaParamName)) branchThetas = value;
+        else if (paramName.equals(branchThetasParamName)) branchThetas = value;
         else if (paramName.equals(alphaParamName)) alpha = value;
-        else if (paramName.equals(y0RateParamName)) y0 = value;
+        else if (paramName.equals(y0ParamName)) y0 = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 

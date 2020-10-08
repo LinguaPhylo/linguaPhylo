@@ -1,7 +1,7 @@
 package lphy.toroidalDiffusion;
 
 import lphy.evolution.tree.TimeTree;
-import lphy.core.PhyloOU;
+import lphy.evolution.continuous.PhyloOU;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 

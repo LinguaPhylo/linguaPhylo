@@ -17,16 +17,15 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class Newick extends DeterministicFunction<TimeTree> {
 
-    final String paramName;
+    public static final String treeParamName = "tree";
 
-    public Newick(@ParameterInfo(name = "tree", description = "the tree in Newick format.") Value<String> x) {
-        paramName = getParamName(0);
-        setParam(paramName, x);
+    public Newick(@ParameterInfo(name = treeParamName, description = "the tree in Newick format.") Value<String> x) {
+        setParam(treeParamName, x);
     }
 
     @GeneratorInfo(name="newick",description = "A function that parses a tree from a newick formatted string.")
     public Value<TimeTree> apply() {
-        Value<String> newickValue = (Value<String>)getParams().get(paramName);
+        Value<String> newickValue = (Value<String>)getParams().get(treeParamName);
 
         TimeTree tree = parseNewick(newickValue.value());
 
