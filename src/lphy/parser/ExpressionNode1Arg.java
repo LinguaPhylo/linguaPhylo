@@ -41,7 +41,9 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
 
 	@Override
 	public Value<T> apply() {
-		return elementWise.apply(inputValues[0], func);
+		Value value = elementWise.apply(inputValues[0], func);
+		value.setFunction(this);
+		return value;
 	}
 
 	// unary operators

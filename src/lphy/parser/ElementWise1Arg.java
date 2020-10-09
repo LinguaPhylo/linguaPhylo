@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.ValueUtils;
 import lphy.graphicalModel.types.*;
 
 /** applies an operator elementwise to a single Value **/
@@ -46,9 +47,8 @@ public interface ElementWise1Arg<R> {
 	
 	static ElementWise1Arg<IntegerValue> elementWiseI() {
 		return (a,o) -> {
-			Integer va = (Integer) a.value();
-			Integer r = (Integer) o.apply(va);
-			return new IntegerValue("", r);
+			Integer va = a.value();
+			return new Value(null, o.apply(va));
 		};
 	}
 

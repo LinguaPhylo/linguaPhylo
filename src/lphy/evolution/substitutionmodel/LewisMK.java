@@ -43,4 +43,8 @@ public class LewisMK extends RateMatrix {
         }
         return Q;
     }
+
+    public Value<Integer> getNumStates() {
+        return getParams().get(numStatesParamName);
+    }
 }

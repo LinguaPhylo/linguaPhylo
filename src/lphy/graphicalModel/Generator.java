@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +124,8 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     default void setParam(String paramName, Value<?> value) {
         try {
             Method method = getClass().getMethod("set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1), value.value().getClass());
-            method.invoke(value.value());
+
+            method.invoke(this, value);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

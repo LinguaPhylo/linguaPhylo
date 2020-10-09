@@ -345,7 +345,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 // variable of the form NAME '[' range ']'
                 Object o = visit(ctx.getChild(2));
                 if (o instanceof RangeList) {
-                    return new RangedVar(id, (RangeList)o);
+                    return new RangedVar(id, (RangeList) o);
                 } else {
                     throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " +
                             o == null ? "null" : o.getClass().getName());
@@ -497,10 +497,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
                     // get unnamed expression list
                     Value[] var = (Value[]) visit(ctx.getChild(1));
-                    Value firstNonNull = firstNonNull(var);
+                    Class<?> type = ValueUtils.getType(var);
 
                     // if all values null assume double array
-                    if (firstNonNull == null || firstNonNull.value() instanceof Double) {
+                    if (type == Double.class) {
                         if (allConstants(var)) {
                             Double[] value = new Double[var.length];
                             for (int i = 0; i < value.length; i++) {
@@ -511,19 +511,19 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             DoubleArray doubleArray = new DoubleArray(var);
                             return doubleArray.apply();
                         }
-                    } else if (firstNonNull.value() instanceof Double[]) {
+                    } else if (type == Double[].class) {
                         Double[][] value = new Double[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (Double[]) var[i].value();
                         }
                         return new DoubleArray2DValue(null, value);
-                    } else if (firstNonNull.value() instanceof Integer[]) {
+                    } else if (type == Integer[].class) {
                         Integer[][] value = new Integer[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (Integer[]) var[i].value();
                         }
                         return new IntegerArray2DValue(null, value);
-                    } else if (firstNonNull.value() instanceof Integer) {
+                    } else if (type == Integer.class) {
                         if (allConstants(var)) {
                             Integer[] value = new Integer[var.length];
                             for (int i = 0; i < value.length; i++) {
@@ -534,14 +534,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             IntegerArray intArray = new IntegerArray(var);
                             return intArray.apply();
                         }
-                    } else if (firstNonNull.value() instanceof Boolean[]) {
+                    } else if (type == Boolean[].class) {
                         Boolean[][] value = new Boolean[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (Boolean[]) var[i].value();
                         }
                         BooleanArray2DValue v = new BooleanArray2DValue(null, value);
                         return v;
-                    } else if (firstNonNull.value() instanceof Boolean) {
+                    } else if (type == Boolean.class) {
                         if (allConstants(var)) {
                             Boolean[] value = new Boolean[var.length];
                             for (int i = 0; i < value.length; i++) {
@@ -553,14 +553,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             BooleanArray booleanArray = new BooleanArray(var);
                             return booleanArray.apply();
                         }
-                    } else if (firstNonNull.value() instanceof String[]) {
+                    } else if (type == String[].class) {
                         String[][] value = new String[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (String[]) var[i].value();
                         }
                         StringArray2DValue v = new StringArray2DValue(null, value);
                         return v;
-                    } else if (firstNonNull.value() instanceof String) {
+                    } else if (type == String.class) {
                         if (allConstants(var)) {
                             String[] value = new String[var.length];
                             for (int i = 0; i < value.length; i++) {
@@ -572,26 +572,30 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                             StringArray stringArray = new StringArray(var);
                             return stringArray.apply();
                         }
+                    } else if (type == Number.class) {
+                        if (allConstants(var)) {
+                            Number[] value = new Number[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (Number) var[i].value();
+                            }
+                            NumberArrayValue v = new NumberArrayValue(null, value);
+                            return v;
+                        } else {
+                            NumberArray numberArray = new NumberArray(var);
+                            return numberArray.apply();
+                        }
                     } else {
-                        throw new RuntimeException("Don't know how to handle 3D matrices");
+                        // handle generic value array construction
+                        ArrayFunction arrayFunction = new ArrayFunction(var);
+                        return arrayFunction.apply();
                     }
                 }
             }
 
+
             LoggerUtils.log.fine("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
 
             return super.visitExpression(ctx);
-        }
-
-        /**
-         * @param var
-         * @return the first non null value in the value array.
-         */
-        private Value firstNonNull(Value[] var) {
-            for (Value value : var) {
-                if (value != null) return value;
-            }
-            return null;
         }
 
         class ValueOrFunction {
