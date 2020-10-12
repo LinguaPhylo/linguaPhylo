@@ -54,6 +54,10 @@ public class CharSetAlignment extends AbstractAlignment {
         return a;
     }
 
+    public SimpleAlignment getPartAlignmentNoValidation(String partName) {
+        return partsMap.get(partName);
+    }
+
     public SimpleAlignment[] getPartAlignments(String[] partNames) {
         List<SimpleAlignment> alignments = new ArrayList<>();
         for (String name : partNames) {

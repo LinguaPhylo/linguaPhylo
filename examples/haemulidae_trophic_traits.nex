@@ -3,7 +3,7 @@
 BEGIN DATA;
 	DIMENSIONS NTAX=49 NCHAR=9;
 	FORMAT DATATYPE=CONTINUOUS MISSING=? GAP=-;
-MATRIX						   [body size           adductor mass      		ascending process   raker length        eye width           buccal length       buccal width        head height         head length    ]
+MATRIX
 Haemulon_carbonarium 			4.7999142627806 	-0.401324268108645 		2.7408400239252 	1.04731899428056 	2.64971462408925 	3.43881424523346 	2.43361335540045 	2.64617479738412 	3.68260984110034
 Haemulon_macrostomum 			5.27469043591688 	0.123854518810828 		3.43398720448515 	1.48160454092422 	2.84490938381941 	3.96461545554732 	2.95854948242628 	3.18221184049661 	4.22785512129627
 Haemulon_flavolineatum 			4.93447393313069 	-0.390394327167648 		2.84490938381941 	0.741937344729377 	2.70136121295141 	3.52636052461616 	2.86789890204411 	2.65324196460721 	3.80220813942094
@@ -55,16 +55,3 @@ Pomadasys_macracanthus 			5.36129216570943 	0.210423925613953 		2.98921105656373
 Pomadasys_panamensis 			5.23819574320666 	0.0494733350394243 		2.59749101053515 	1.86717610851281 	2.76190687389292 	3.79323946943818 	2.91235066461494 	2.79910893204918 	4.0854719837185
 ;
 END;
-
-[
-	1: body size -> log transformation
-	2: adductor mass -> cube root then log transform
-	3: ascending process -> log transformation
-	4: raker length -> log transformation
-	5: eye width -> log transformation
-	6: buccal length -> log transformation
-	7: buccal width -> log transformation
-	8: head height -> log transformation
-	9: head length -> log transformation
-]
-

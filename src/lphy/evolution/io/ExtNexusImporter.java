@@ -320,7 +320,7 @@ public class ExtNexusImporter extends NexusImporter {
      * @param charset  such as "2-457\3 660-896\3".
      * @return
      */
-    public List<CharSetBlock> getCharSetBlocks(String charset) {
+    public static List<CharSetBlock> getCharSetBlocks(String charset) {
         String[] blocks = charset.split("\\s+");
         List<CharSetBlock> charSetBlocks = new ArrayList<>();
         for (String oneBlock : blocks) {
@@ -340,7 +340,7 @@ public class ExtNexusImporter extends NexusImporter {
      * @return only 1 {@link CharSetBlock} parsed from string
      * @throws IllegalArgumentException
      */
-    public CharSetBlock parseCharSet(String charSet1Block) throws IllegalArgumentException {
+    public static CharSetBlock parseCharSet(String charSet1Block) throws IllegalArgumentException {
         // "4-629\3"
         String[] parts = Objects.requireNonNull(charSet1Block).split("-");
 

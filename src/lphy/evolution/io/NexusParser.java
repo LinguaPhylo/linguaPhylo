@@ -81,8 +81,8 @@ public class NexusParser {
      *                     if not null, then ignore TIPCALIBRATION block.
      * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
      */
-    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset, String ageDirectionStr,
-                                                                       String dateRegxStr) {
+    public lphy.evolution.alignment.AbstractAlignment getLPhyAlignment(boolean ignoreCharset,
+                                                                       String ageDirectionStr, String dateRegxStr) {
 
         try {
             importer.importNexus();
@@ -141,8 +141,9 @@ public class NexusParser {
         }
 
         //*** charset ***//
-        final Map<String, List<CharSetBlock>> charsetMap = importer.getCharsetMap();
-
+        final Map<String, List<CharSetBlock>> charsetMap = getCharsetMap();
+        if (ignoreCharset && charsetMap.size() > 0)
+            System.out.println("Ignore charsets in the nexus file, charsetMap = " + charsetMap);
         if (!ignoreCharset && charsetMap.size() > 0) { // charset is optional
 //            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
 //            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
@@ -151,6 +152,10 @@ public class NexusParser {
             return new CharSetAlignment(charsetMap, lphyAlg);
         }
         return lphyAlg; // sing partition
+    }
+
+    public Map<String, List<CharSetBlock>> getCharsetMap() {
+        return importer.getCharsetMap();
     }
 
     /**
@@ -170,6 +175,7 @@ public class NexusParser {
         return taxaData.getTaxa();
     }
 
+    @Deprecated
     public ExtNexusImporter getImporter() {
         return importer;
     }

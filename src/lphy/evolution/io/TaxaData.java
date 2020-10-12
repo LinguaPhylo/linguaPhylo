@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * Create Taxon map from dates. No time unit.
  * @author Walter Xie
  */
-public class TaxaData { // TODO Make it extends Taxa.Simple
+public class TaxaData { // TODO Make it extends Taxa.Simple, or merge to NexusOptions?
 
 //    protected final Pattern regx;
     protected final AgeDirection ageDirection;

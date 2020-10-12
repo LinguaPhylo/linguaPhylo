@@ -57,7 +57,7 @@ public class ParserUtils {
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                Nexus.class, Partition.class,
+                Nexus.class, Partition.class, ReadTaxa.class,
                 Species.class
         };
 
