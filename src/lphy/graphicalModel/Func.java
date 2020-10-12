@@ -1,8 +1,6 @@
 package lphy.graphicalModel;
 
 
-import lphy.graphicalModel.types.StringValue;
-
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
@@ -42,20 +40,7 @@ public abstract class Func implements Generator, Viewable {
     }
 
     public void setParam(String paramName, Value value) {
-        validateStringArray(value);
         paramMap.put(paramName, value);
-    }
-
-    // "[3-629\3, 4-629\3, 5-629\3]" is invalid
-    protected void validateStringArray(Value value) {
-        if ( value instanceof StringValue ) {
-            String str = value.value().toString();
-            if (str.contains("[")) {
-                throw new IllegalArgumentException("Invalid string array is detected, " +
-                        "the valid format is charset=[\"3-629\\3\", \"4-629\\3\", \"5-629\\3\"], " +
-                        "but find : \n" + str);
-            }
-        }
     }
 
     public String getRichDescription() {
