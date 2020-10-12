@@ -34,15 +34,15 @@ public class Nexus extends DeterministicFunction {
     private final String taxaParamName;
     private final String ignoreCharsetParamName;
 
-    private final String CHARSET_REGX = "^([0-9]+)\\-([0-9]+)(\\\\[0-9]+)*$";
+    // 1 458-659 3-629\3
+    private final String CHARSET_REGX = "^([0-9]+)$|^([0-9]+)\\-([0-9]+)(\\\\[0-9]+)*$";
 
     private NexusOptions nexusOptions;
 
     public Nexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
                  @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
-                         "charset=[\"1:100\", \"101-200\", \"201-300\"] or " +
-                         "charset=[\"3:629\\3\", \"4-629\\3\", \"5-629\\3\"] or charset=\"1-629\\3\"" +
-                         "If it doesn't match charset's definition, then check if the string matches " +
+                         "charset=[\"1\", \"458-659\"] or charset=[\"3-629\\3\", \"4-629\\3\", \"5-629\\3\"] " +
+                         "or charset=\"1-629\\3\". If it doesn't match charset's definition, then check if the string matches " +
                          "a defined charset (name) in the nexus file. Otherwise it is an error.", optional=true)
                          Value charsets,
                  @ParameterInfo(name = "options", description = "the map containing optional arguments and their values for reuse.",
