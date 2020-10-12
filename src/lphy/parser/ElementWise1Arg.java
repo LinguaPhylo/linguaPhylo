@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.ValueUtils;
 import lphy.graphicalModel.types.*;
 
 /** applies an operator elementwise to a single Value **/

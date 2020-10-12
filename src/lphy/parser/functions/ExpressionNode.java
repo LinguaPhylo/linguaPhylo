@@ -1,4 +1,4 @@
-package lphy.parser;
+package lphy.parser.functions;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

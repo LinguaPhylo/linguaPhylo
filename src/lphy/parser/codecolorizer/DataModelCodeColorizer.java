@@ -299,6 +299,29 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             return e;
         }
+
+        public Object visitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) {
+
+            String objectName = ctx.children.get(0).getText();
+            String methodName = ctx.children.get(2).getText();
+
+            TextElement e = getIDElement(objectName);
+
+            e.add(new TextElement(".", punctuationStyle));
+            e.add(new TextElement(methodName, functionStyle));
+
+            e.add("(", punctuationStyle);
+
+            ParseTree ctx2 = ctx.getChild(4);
+            if (ctx2.getText().equals(")")) {
+                // no arguments
+            } else {
+                e.add((TextElement)visit(ctx2));
+            }
+            e.add(")", punctuationStyle);
+
+            return e;
+        }
     }
 
     public Object parse(String CASentence) {
@@ -362,4 +385,11 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         return visitor.visit(parseTree);
     }
 
+    private TextElement getIDElement(String key) {
+        if (parser.hasValue(key, context)) {
+            Value value = parser.getValue(key, context);
+            return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle);
+        }
+        return new TextElement(key, literalStyle);
+    }
 }

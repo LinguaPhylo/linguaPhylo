@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.8
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.7.2
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -112,6 +112,12 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodCall(SimulatorParser.MethodCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SimulatorParser#objectMethodCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectMethodCall(SimulatorParser.ObjectMethodCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimulatorParser#distribution}.
 	 * @param ctx the parse tree

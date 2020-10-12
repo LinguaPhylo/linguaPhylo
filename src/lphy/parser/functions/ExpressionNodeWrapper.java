@@ -1,15 +1,12 @@
-package lphy.parser;
+package lphy.parser.functions;
 
-import lphy.core.functions.Log;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
-import lphy.utils.LoggerUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class ExpressionNodeWrapper extends DeterministicFunction {
 

@@ -70,6 +70,9 @@ methodCall
     | NAME '(' unnamed_expression_list? ')'
     ;
 
+objectMethodCall: NAME DOT NAME '(' unnamed_expression_list? ')'
+;
+
 distribution
 	: NAME '(' expression_list ')'
 	;
@@ -84,6 +87,7 @@ expression
     | '[' unnamed_expression_list ']'
     | expression '[' range_list ']'
     | methodCall
+    | objectMethodCall
     | expression postfix=('++' | '--')
     | prefix=('+'|'-'|'++'|'--') expression
 //    | prefix=('~'|'!') expression
@@ -173,7 +177,7 @@ STRING_LITERAL:     '"' .*? '"';
 //RBRACK:             ']';
 //SEMI:               ';';
 //COMMA:              ',';
-//DOT:                '.';// TODO: implement
+DOT:                '.';// TODO: implement
 
 // Operators
 

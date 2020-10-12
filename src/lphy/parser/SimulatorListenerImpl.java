@@ -9,8 +9,7 @@ import lphy.parser.SimulatorParser.Expression_listContext;
 import lphy.parser.SimulatorParser.Named_expressionContext;
 import lphy.parser.SimulatorParser.Unnamed_expression_listContext;
 import lphy.parser.SimulatorParser.VarContext;
-import lphy.parser.functions.MapFunction;
-import lphy.parser.functions.RangeList;
+import lphy.parser.functions.*;
 import lphy.utils.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -337,7 +336,10 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
         }
 
-        @Override
+        /**
+         * @param ctx the VarContext
+         * @return the id of a variable, or a RangeVar object containing an id and RangeList
+         */
         public Object visitVar(VarContext ctx) {
 
             String id = ctx.getChild(0).getText();
@@ -482,8 +484,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //					case ">>>": transform = new ExpressionNode(ctx.getText(), ExpressionNode.zeroFillRightShift(), f1,f2); break;
                         case ":":
                             return new Range(f1, f2);
-                        case "[":
-
                     }
                     return expression;
                 }
@@ -774,6 +774,45 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             ArgumentValue[] argumentObject = (ArgumentValue[]) visit(ctx1);
             Generator generator = new MapFunction(argumentObject);
             return generator;
+        }
+
+        /**
+         * @param ctx
+         * @return a Value or an Expression.
+         */
+        public Object visitObjectMethodCall(SimulatorParser.ObjectMethodCallContext ctx) {
+
+            String id = ctx.children.get(0).getText();
+            String methodName = ctx.children.get(2).getText();
+            Value value = get(id);
+            if (value == null)
+                throw new SimulatorParsingException("Value " + id + " not found for method call " + methodName);
+
+            ParseTree ctx2 = ctx.getChild(4);
+
+            Value[] f1 = new Value[]{};
+            Object argumentObject = null;
+            ArgumentValue[] argumentValues = null;
+            if (ctx2.getText().equals(")")) {
+                f1 = new Value[]{};
+            } else {
+                argumentObject = visit(ctx2);
+                if (argumentObject instanceof Value[]) {
+                    f1 = (Value[]) argumentObject;
+                } else if (argumentObject instanceof ArgumentValue[]) {
+                    argumentValues = (ArgumentValue[]) argumentObject;
+                    f1 = new Value[argumentValues.length];
+                    for (int i = 0; i < argumentValues.length; i++) {
+                        f1[i] = argumentValues[i].getValue();
+                    }
+                }
+            }
+
+            try {
+                return new MethodCall(methodName, value, f1);
+            } catch (NoSuchMethodException e) {
+                throw new SimulatorParsingException(e.getMessage());
+            }
         }
 
         /**

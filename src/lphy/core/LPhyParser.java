@@ -3,8 +3,8 @@ package lphy.core;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
-import lphy.parser.ExpressionNode;
-import lphy.parser.ExpressionNodeWrapper;
+import lphy.parser.functions.ExpressionNode;
+import lphy.parser.functions.ExpressionNodeWrapper;
 
 import java.io.BufferedReader;
 import java.io.File;

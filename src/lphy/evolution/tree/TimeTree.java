@@ -3,6 +3,7 @@ package lphy.evolution.tree;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.HasTaxa;
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
 import lphy.graphicalModel.Value;
 import lphy.app.HasComponentView;
@@ -167,17 +168,6 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         }
     }
 
-    public Double treeLength() {
-
-        double TL = 0.0;
-        for (TimeTreeNode node : getNodes()) {
-            if (!node.isRoot()) {
-                TL += node.getParent().age - node.age;
-            }
-        }
-        return TL;
-    }
-
     private double getBranchLength(TimeTreeNode node, boolean includeSingleChildNodes) {
         TimeTreeNode parent = node.getParent();
         if (!includeSingleChildNodes) {
@@ -232,5 +222,30 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
     @Override
     public Taxa getTaxa() {
         return taxa;
+    }
+
+    // methods permitted pass-through to LPhy
+
+    @MethodInfo(description="the total length of the tree")
+    public Double treeLength() {
+
+        double TL = 0.0;
+        for (TimeTreeNode node : getNodes()) {
+            if (!node.isRoot()) {
+                TL += node.getParent().age - node.age;
+            }
+        }
+        return TL;
+    }
+
+    @MethodInfo(description="the age of the root of the tree.")
+    public Double rootAge() {
+
+        return getRoot().age;
+    }
+
+    @MethodInfo(description="the taxa of the tree.")
+    public Taxa taxa() {
+        return getTaxa();
     }
 }

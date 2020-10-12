@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.7.2
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -48,6 +48,16 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitRelations(DataModelParser.RelationsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DataModelParser#determ_relations}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeterm_relations(DataModelParser.Determ_relationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DataModelParser#determ_relations}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeterm_relations(DataModelParser.Determ_relationsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DataModelParser#relation_list}.
 	 * @param ctx the parse tree
 	 */
@@ -57,6 +67,26 @@ public interface DataModelListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelation_list(DataModelParser.Relation_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DataModelParser#determ_relation_line}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeterm_relation_line(DataModelParser.Determ_relation_lineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DataModelParser#determ_relation_line}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeterm_relation_line(DataModelParser.Determ_relation_lineContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DataModelParser#relation}.
 	 * @param ctx the parse tree
@@ -197,6 +227,16 @@ public interface DataModelListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodCall(DataModelParser.MethodCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DataModelParser#objectMethodCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DataModelParser#objectMethodCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DataModelParser#distribution}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.7.2
 package lphy.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -64,6 +64,18 @@ public class DataModelBaseListener implements DataModelListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDeterm_relations(DataModelParser.Determ_relationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeterm_relations(DataModelParser.Determ_relationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterRelation_list(DataModelParser.Relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -71,6 +83,30 @@ public class DataModelBaseListener implements DataModelListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelation_list(DataModelParser.Relation_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeterm_relation_line(DataModelParser.Determ_relation_lineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeterm_relation_line(DataModelParser.Determ_relation_lineContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -239,6 +275,18 @@ public class DataModelBaseListener implements DataModelListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodCall(DataModelParser.MethodCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -24,10 +24,12 @@ public class CodeColorizer extends SimulatorBaseListener {
     LPhyParser.Context context;
 
     Style punctuationStyle;
+    Style randomStyle;
     Style constantStyle;
     Style genDistStyle;
     Style argumentNameStyle;
     Style functionStyle;
+    Style valueStyle;
 
     public CodeColorizer(LPhyParser parser, LPhyParser.Context context, JTextPane pane) {
 
@@ -41,6 +43,8 @@ public class CodeColorizer extends SimulatorBaseListener {
         genDistStyle = pane.getStyle("genDistStyle");
         argumentNameStyle = pane.getStyle("argumentNameStyle");
         functionStyle = pane.getStyle("functionStyle");
+        randomStyle = pane.getStyle("randomVarStyle");
+        valueStyle = pane.getStyle("valueStyle");
     }
 
     public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
@@ -115,16 +119,11 @@ public class CodeColorizer extends SimulatorBaseListener {
 
                 ParseTree childContext = ctx.getChild(0);
 
-                // if this is a map just return the map Value
-                if (childContext.getText().startsWith("{")) {
+                // if this is a map or a method call defer to subordinate node parser
+                if (childContext.getText().startsWith("{") || childContext.getText().contains(".")) {
                     return visit(childContext);
                 }
-
-                String key = childContext.getText();
-                if (parser.hasValue(key, context)) {
-                    Value value = parser.getValue(key, context);
-                    return new TextElement(key, value instanceof RandomVariable ? textPane.getStyle("randomVarStyle") : textPane.getStyle("valueStyle") );
-                }
+                return getIDElement(childContext.getText());
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
@@ -252,6 +251,30 @@ public class CodeColorizer extends SimulatorBaseListener {
 
             return e;
         }
+
+        @Override
+        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+
+            String objectName = ctx.children.get(0).getText();
+            String methodName = ctx.children.get(2).getText();
+
+            TextElement e = getIDElement(objectName);
+
+            e.add(new TextElement(".", punctuationStyle));
+            e.add(new TextElement(methodName, functionStyle));
+
+            e.add("(", punctuationStyle);
+
+            ParseTree ctx2 = ctx.getChild(4);
+            if (ctx2.getText().equals(")")) {
+                // no arguments
+            } else {
+                e.add((TextElement)visit(ctx2));
+            }
+            e.add(")", punctuationStyle);
+
+            return e;
+        }
     }
 
     public Object parse(String CASentence) {
@@ -313,5 +336,13 @@ public class CodeColorizer extends SimulatorBaseListener {
         SimulatorASTVisitor visitor = new SimulatorASTVisitor();
 
         return visitor.visit(parseTree);
+    }
+
+    private TextElement getIDElement(String key) {
+        if (parser.hasValue(key, context)) {
+            Value value = parser.getValue(key, context);
+            return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);
+        } 
+        return new TextElement(key, constantStyle);
     }
 }

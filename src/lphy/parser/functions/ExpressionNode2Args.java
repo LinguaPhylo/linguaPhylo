@@ -1,10 +1,11 @@
-package lphy.parser;
+package lphy.parser.functions;
 
 import java.util.*;
 import java.util.function.*;
 
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
+import lphy.parser.ElementWise2Args;
 import lphy.utils.LoggerUtils;
 
 /**
@@ -66,67 +67,67 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
     }
 
     // binary operators
-    static BinaryOperator<Number> plus() {
+    public static BinaryOperator<Number> plus() {
         return (a, b) -> a.doubleValue() + b.doubleValue();
     }
 
-    static BinaryOperator<Number> minus() {
+    public static BinaryOperator<Number> minus() {
         return (a, b) -> a.doubleValue() - b.doubleValue();
     }
 
-    static BinaryOperator<Number> times() {
+    public static BinaryOperator<Number> times() {
         return (a, b) -> a.doubleValue() * b.doubleValue();
     }
 
-    static BinaryOperator<Number> divide() {
+    public static BinaryOperator<Number> divide() {
         return (a, b) -> a.doubleValue() / b.doubleValue();
     }
 
-    static BinaryOperator<Number> and() {
+    public static BinaryOperator<Number> and() {
         return (a, b) -> a.doubleValue() != 0.0 && b.doubleValue() != 0.0 ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> or() {
+    public static BinaryOperator<Number> or() {
         return (a, b) -> a.doubleValue() != 0.0 || b.doubleValue() != 0.0 ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Integer> bitwiseand() {
+    public static BinaryOperator<Integer> bitwiseand() {
         return (a, b) -> (int) a.doubleValue() & (int) b.doubleValue();
     }
 
-    static BinaryOperator<Integer> bitwiseor() {
+    public static BinaryOperator<Integer> bitwiseor() {
         return (a, b) -> (int) a.doubleValue() | (int) b.doubleValue();
     }
 
-    static BinaryOperator<Number> le() {
+    public static BinaryOperator<Number> le() {
         return (a, b) -> a.doubleValue() <= b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> less() {
+    public static BinaryOperator<Number> less() {
         return (a, b) -> a.doubleValue() < b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> ge() {
+    public static BinaryOperator<Number> ge() {
         return (a, b) -> a.doubleValue() >= b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> greater() {
+    public static BinaryOperator<Number> greater() {
         return (a, b) -> a.doubleValue() > b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> equals() {
+    public static BinaryOperator<Number> equals() {
         return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> ne() {
+    public static BinaryOperator<Number> ne() {
         return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
     }
 
-    static BinaryOperator<Number> pow() {
+    public static BinaryOperator<Number> pow() {
         return (a, b) -> Math.pow(a.doubleValue(), b.doubleValue());
     }
 
-    static BinaryOperator<Number> mod() {
+    public static BinaryOperator<Number> mod() {
         return (a, b) -> a.doubleValue() % b.doubleValue();
     }
 }
