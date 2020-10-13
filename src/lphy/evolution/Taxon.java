@@ -1,8 +1,8 @@
 package lphy.evolution;
 
-public class Taxon {
+public class Taxon { // implements Attributable
 
-    private String name;
+    private final String name;
     private String species;
     private double age;
 
@@ -21,6 +21,14 @@ public class Taxon {
     public Taxon(String name, String species, double age) {
         this.name = name;
         this.species = species;
+        this.age = age;
+    }
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    public void setAge(double age) {
         this.age = age;
     }
 
