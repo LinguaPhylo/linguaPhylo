@@ -1,12 +1,11 @@
 package lphy.core.functions;
 
-import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.io.ExtNexusImporter;
+import lphy.evolution.io.NexusData;
+import lphy.evolution.io.NexusImporter;
 import lphy.evolution.io.NexusOptions;
-import lphy.evolution.io.NexusParser;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -27,18 +26,20 @@ import java.util.regex.Pattern;
  * This involves partitions.
  * @see ReadTaxa
  */
-public class ReadNexus extends DeterministicFunction {
+public class ReadNexus extends DeterministicFunction<NexusData> {
 
     private final String fileParamName;
     private final String charsetParamName;
     private final String optionsParamName;
-    private final String taxaParamName;
+//    private final String taxaParamName;
     private final String ignoreCharsetParamName;
 
     // 1 458-659 3-629\3
     private final String CHARSET_REGX = "^([0-9]+)$|^([0-9]+)\\-([0-9]+)(\\\\[0-9]+)*$";
 
     private NexusOptions nexusOptions;
+
+
 
     public ReadNexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
                      @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
@@ -48,11 +49,11 @@ public class ReadNexus extends DeterministicFunction {
                          Value charsets,
                      @ParameterInfo(name = "options", description = "the map containing optional arguments and their values for reuse.",
                          optional=true) Value<Map<String, String>> options,
-                     @ParameterInfo(name = "taxa", description = "the taxa object, which cannot be used with 'options' together.",
-                         optional=true) Value<Taxa> taxa,
                      @ParameterInfo(name = "parentAlignmnet", description = "Default to false. If true, " +
                          "then ignore the charsets in the nexus file, and return the full alignment.",
                          optional=true) Value<Boolean> parentAlignmnet ) {
+//                     @ParameterInfo(name = "taxa", description = "the taxa object, which cannot be used with 'options' together.",
+//                         optional=true) Value<Taxa> taxa ) {
 
 
         if (fileName == null) throw new IllegalArgumentException("The file name can't be null!");
@@ -60,19 +61,19 @@ public class ReadNexus extends DeterministicFunction {
         fileParamName = getParamName(0);
         charsetParamName = getParamName(1);
         optionsParamName = getParamName(2);
-        taxaParamName = getParamName(3);
-        ignoreCharsetParamName = getParamName(4);
+        ignoreCharsetParamName = getParamName(3);
+//        taxaParamName = getParamName(4);
 
         setParam(fileParamName, fileName);
 
         if (charsets != null) setParam(charsetParamName, charsets);
 
-        if (taxa != null && options != null)
-            throw new IllegalArgumentException("Argument 'taxa' and 'options' cannot use together");
+//        if (taxa != null && options != null)
+//            throw new IllegalArgumentException("Argument 'taxa' and 'options' cannot use together");
         if (options != null) setParam(optionsParamName, options);
-        if (taxa != null) setParam(taxaParamName, taxa);
+//        if (taxa != null) setParam(taxaParamName, taxa);
 
-        if (parentAlignmnet != null) setParam(ignoreCharsetParamName, taxa);
+        if (parentAlignmnet != null) setParam(ignoreCharsetParamName, parentAlignmnet);
     }
 
     public void setParam(String paramName, Value value) {
@@ -97,7 +98,7 @@ public class ReadNexus extends DeterministicFunction {
 
         Value<String> fileName = getParams().get(fileParamName);
 
-        Value<Taxa> taxaVal = getParams().get(taxaParamName);
+//        Value<Taxa> taxaVal = getParams().get(taxaParamName);
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
 
         Value charset = getParams().get(charsetParamName);
@@ -107,16 +108,17 @@ public class ReadNexus extends DeterministicFunction {
 
         nexusOptions = NexusOptions.getInstance();
         Alignment cachedAlignment = null;
-        if (taxaVal != null) {
-            Taxa taxa = taxaVal.value(); // TODO same to nexusOptions.getAlignment(fileName.value())
-            // Alignment is cached here
-            if (taxa instanceof Alignment)
-                cachedAlignment = (Alignment) taxa;
-            else {
-                // in case taxa is not from readTaxa()
-                cachedAlignment = nexusOptions.getAlignment(fileName.value(), ignoreCharset);
-            }
-        } else if (optionsVal != null) {
+//        if (taxaVal != null) {
+//            Taxa taxa = taxaVal.value();
+//            // Alignment is cached here
+//            if (taxa instanceof Alignment)
+//                cachedAlignment = (Alignment) taxa;
+//            else {
+//                // in case taxa is not from readTaxa()
+//                cachedAlignment = nexusOptions.getAlignment(fileName.value(), ignoreCharset);
+//            }
+//        } else
+        if (optionsVal != null) {
             Map<String, String> options = optionsVal.value();
             cachedAlignment = nexusOptions.getAlignment(fileName.value(), options, ignoreCharset);
         } else {
@@ -147,6 +149,11 @@ public class ReadNexus extends DeterministicFunction {
 
             return new Value(partAlignment, this);
         }
+
+//        NexusData data =
+
+//        return new Value<NexusData>(data, this);
+
 
 
 
@@ -210,7 +217,7 @@ public class ReadNexus extends DeterministicFunction {
             cachedAlignment = nexusOptions.getAlignment(fileName, true);
             SimpleAlignment parent = (SimpleAlignment) cachedAlignment;
 
-            List<CharSetBlock> charSetBlocks = ExtNexusImporter.getCharSetBlocks(str);
+            List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(str);
             partAlignment = CharSetAlignment.getPartition(charSetBlocks, parent);
 
         } else if (cachedAlignment instanceof CharSetAlignment) {
@@ -224,18 +231,18 @@ public class ReadNexus extends DeterministicFunction {
     }
 
 
-    private List<List<CharSetBlock>> parseCharsets(final NexusParser parser, Value value) {
+    private List<List<CharSetBlock>> parseCharsets(Value value) {
         List<List<CharSetBlock>> charsetsList = new ArrayList<>();
 
         if (value instanceof StringArrayValue) {
             String[] strs = ((StringArrayValue) value).value();
             for (int i = 0; i < strs.length; i++) {
-                List<CharSetBlock> charSetBlocks = ExtNexusImporter.getCharSetBlocks(strs[i]);
+                List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(strs[i]);
                 charsetsList.add(charSetBlocks);
             }
 
         } else { // String
-            List<CharSetBlock> charSetBlocks = ExtNexusImporter.getCharSetBlocks(value.toString());
+            List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(value.toString());
             charsetsList.add(charSetBlocks);
         }
 

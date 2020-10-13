@@ -1,18 +1,19 @@
 package lphy.evolution.io;
 
 
-import jebl.evolution.alignments.Alignment;
-import jebl.evolution.alignments.BasicAlignment;
 import jebl.evolution.io.ImportException;
 import jebl.evolution.io.ImportHelper;
-import jebl.evolution.io.NexusImporter;
 import jebl.evolution.sequences.BasicSequence;
 import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
 import lphy.evolution.Taxa;
+import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.ContinuousCharacterData;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sequences.Continuous;
 import lphy.evolution.sequences.DataType;
 import lphy.evolution.sequences.SequenceTypeFactory;
@@ -23,6 +24,9 @@ import java.awt.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.*;
@@ -30,110 +34,134 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Extension of {@link NexusImporter}, adding
- * 1) multiple partitions, 2) dates.
- * <p>
- * The light version of {@link #importAlignments()} is replaced by
- * {@link #importNexus()} which stores <code>List<Alignment></code>,
- * <code>Map<String, List<CharSetBlock>></code>, and other parsed data.
- * To retrieve the result, the getters have to be used, for example
- * {@link #getAlignments()}, {@link #getCharsetMap()}.
+ * Modified from {@link jebl.evolution.io.NexusImporter}.
+ * Try to use Lphy objects as many as possible.
  *
  * @author Walter Xie
  */
-public class ExtNexusImporter extends NexusImporter {
+public class NexusImporter {
 
-    protected List<Alignment> alignments;
-    protected Map<String, List<CharSetBlock>> charsetMap;
-    protected Map<String, String> dateMap; // Taxon name <=> date string
-    protected ChronoUnit chronoUnit = null;
-
-    protected ContinuousCharacterData continuousCharacterData;
-
+    protected final ImportHelper helper;
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    public ExtNexusImporter(Reader reader) {
-        super(reader);
+    protected NexusData nexusData;
+
+    protected NexusBlock nextBlock = null;
+    protected String nextBlockName = null;
+
+    protected int taxonCount = 0, siteCount = 0;
+    protected SequenceType sequenceType = null;
+    protected String gapCharacters = "-";
+    protected String matchCharacters = ".";
+    protected String missingCharacters = "?";
+    protected boolean isInterleaved = false;
+
+    //TODO
+    protected ContinuousCharacterData continuousCharacterData;
+
+//    public ExtNexusImporter(Reader reader) {
+//        super(reader);
+//    }
+
+    public NexusImporter(String fileName) {
+
+        Reader reader = getReader(fileName);
+
+        // store raw data
+        nexusData = new NexusData(fileName);
+
+        helper = new ImportHelper(reader);
+        helper.setExpectedInputLength(0);
+        // ! defines a comment to be written out to a log file
+        // & defines a meta comment
+        helper.setCommentDelimiters('[', ']', '\0', '!', '&');
+
     }
 
-    /**
-     * TODO make it extendable
-     * interface NexusBlockImp{ public NexusBlock findNextBlock(); }
-     * enum NexusBlock implements NexusBlockImp{ TAXA, ..., DATA; }
-     * // or T extends Enum<? extends NexusBlockImp>
-     * class NexusImporterDefault<T implements NexusBlockImp> {
-     * protected T enumNexusBlock;
-     * protected NexusImporterDefault(T block){
-     * this.block = block;
-     * } }
-     * class NexusImporter extends NexusImporterDefault<NexusBlock>{
-     * public NexusImporter(NexusBlock block){
-     * super(block);
-     * } }
-     * protected not private ...
-     */
-    public enum ExtNexusBlock {
-        UNKNOWN,
-        TAXA,
-        CHARACTERS,
-        DATA,
-        ASSUMPTIONS, // new
-        CALIBRATION, // new
-        UNALIGNED,
-        DISTANCES,
-        TREES
-    }
-
-
-    //****** NexusBlock ******//
-
-    public ExtNexusBlock findNextBlockExt() throws IOException {
-        findToken("BEGIN", true);
-        nextBlockName = helper.readToken(";").toUpperCase();
-        return findBlockName(nextBlockName);
-    }
-
-    protected ExtNexusBlock findBlockName(String blockName) {
+//    protected final int READ_AHEAD_LIMIT = 50000;
+    protected Reader getReader(String fileName) {
+        Reader reader = null;
         try {
-            nextBlock = ExtNexusBlock.valueOf(blockName);
-        } catch (IllegalArgumentException e) {
-            // handle unknown blocks. java 1.5 throws an exception in valueOf
-            nextBlock = null;
-        }
+            if (!(fileName.endsWith("nex") || fileName.endsWith("nexus") ||
+                    fileName.endsWith("nxs")))
+                throw new IOException("Nexus file name's suffix is invalid ! " + fileName);
 
-        if (nextBlock == null) {
-            nextBlock = ExtNexusBlock.UNKNOWN;
-        }
+            final Path nexFile = Paths.get(fileName);
 
-        return nextBlock;
+            if (!nexFile.toFile().exists() || nexFile.toFile().isDirectory())
+                throw new IOException("Cannot find Nexus file ! " + nexFile);
+
+            reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
+//            reader.mark(READ_AHEAD_LIMIT); // to reset reader back to READ_AHEAD_LIMIT
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return reader;
     }
 
+    //****** main ******//
+    public static void main(final String[] args) {
+        try {
+            String fileName = args[0];
+            System.out.println("Loading " + fileName);
+            final NexusImporter importer = new NexusImporter(fileName);
 
-    public void importNexus() throws IOException, ImportException {
+//            List<Alignment> alignmentList = parser.importAlignments();
+//                alignmentList.forEach(System.out::println);
+
+            if (fileName.equals("Dengue4.nex")) {
+                SimpleAlignment lphyAlg =
+                        (SimpleAlignment) importer.getLPhyAlignment(true, "forward", null);
+
+                System.out.println(lphyAlg.toJSON());
+
+            } else if (fileName.equals("primate.nex")) {
+                lphy.evolution.alignment.CharSetAlignment lphyAlg =
+                        (CharSetAlignment) importer.getLPhyAlignment(false, null, null);
+                System.out.println(lphyAlg.toJSON());
+//            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
+                System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
+
+            } else if (fileName.equals("haemulidae_trophic_traits.nex")) {
+
+                importer.importNexus();
+                System.out.println(importer.continuousCharacterData.toJSON());
+
+
+            } else { // for testing or dev
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    } // main
+
+    //****** import ******//
+
+    public NexusData importNexus() throws IOException, ImportException {
         boolean done = false;
 
         List<Taxon> taxonList = null;
-        alignments = new ArrayList<>();
 
         while (!done) {
             try {
 
-                ExtNexusImporter.ExtNexusBlock block = findNextBlockExt();
+                NexusBlock block = findNextBlock();
 
-                if (block == ExtNexusImporter.ExtNexusBlock.TAXA) {
-                    //TODO new datatype
-                    taxonList = readTaxaBlock(); // TODO ? parseTaxaBlock()
+                if (block == NexusBlock.TAXA) {
 
-                } else if (block == ExtNexusImporter.ExtNexusBlock.CHARACTERS) {
+                    taxonList = readTaxaBlock();
 
-                    if (taxonList == null) {
-                        throw new NexusImporter.MissingBlockException("TAXA block is missing");
-                    }
+                } else if (block == NexusBlock.CHARACTERS) {
 
-                    List<Sequence> sequences = readCharactersBlock(taxonList); //TODO ? parseCharactersBlock(taxonList)
-                    alignments.add(new BasicAlignment(sequences));
+                    if (taxonList == null)
+                        throw new jebl.evolution.io.NexusImporter.MissingBlockException("TAXA block is missing");
 
-                } else if (block == ExtNexusImporter.ExtNexusBlock.DATA) {
+                    List<Sequence> sequences = readCharactersBlock(taxonList);
+                    setSimpleAlignment(sequences);
+
+                } else if (block == NexusBlock.DATA) {
 
                     // A data block doesn't need a taxon block before it
                     // but if one exists then it will use it.
@@ -141,11 +169,11 @@ public class ExtNexusImporter extends NexusImporter {
                     // the rest data type will add alignments
                     readDataBlock(taxonList);
 
-                } else if (block == ExtNexusImporter.ExtNexusBlock.ASSUMPTIONS) {
+                } else if (block == NexusBlock.ASSUMPTIONS) {
 
                     readAssumptionsBlock(); // only CHARSET
 
-                } else if (block == ExtNexusImporter.ExtNexusBlock.CALIBRATION) {
+                } else if (block == NexusBlock.CALIBRATION) {
 
                     readCalibrationBlock(); // only TIPCALIBRATION
 
@@ -160,31 +188,105 @@ public class ExtNexusImporter extends NexusImporter {
 
         if (DataType.isSame(sequenceType, Continuous.getInstance())) {
             if (continuousCharacterData == null)
-                throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
-        } else if (alignments.size() == 0)
-            throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
+                throw new jebl.evolution.io.NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
+        } else if (nexusData.getData() == null)
+            throw new jebl.evolution.io.NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
 
+        return nexusData;
     }
 
-    //****** getters ******//
+    // use jebl State to convert char into int
+    // create lphy SimpleAlignment from jebl Sequence
+    private void setSimpleAlignment(List<Sequence> sequences) {
+        if (sequenceType == null)
+            throw new IllegalArgumentException("Fail to find data type before parsing sequences !");
+        if (siteCount < 1)
+            throw new IllegalArgumentException("NCHAR < 1 ! " + siteCount);
 
-    public List<Alignment> getAlignments() {
-        if (alignments == null) alignments = new ArrayList<>();
-        return alignments;
+        final int seqSize = sequences.size();
+        lphy.evolution.Taxon[] taxons = new lphy.evolution.Taxon[seqSize];
+        // init Taxon[]
+        for (int t = 0; t < seqSize; t++) {
+            Sequence sequence = sequences.get(t);
+            Taxon jeblTaxon = sequence.getTaxon();
+            if (jeblTaxon == null)
+                throw new IllegalArgumentException("Cannot find taxon in sequence ! " + t);
+            // TODO getAttributeMap()
+            taxons[t] = new lphy.evolution.Taxon(jeblTaxon.getName());
+        }
+
+        Alignment alignment = new SimpleAlignment(taxons, siteCount, sequenceType);
+        // fill in sequences for single partition
+        for (int t = 0; t < seqSize; t++) {
+            Sequence sequence = sequences.get(t);
+            for (int s = 0; s < sequence.getLength(); s++) {
+                //*** convert char into int ***//
+                State state = sequence.getState(s);
+                int stateNum = state.getIndex();
+                // the taxon index in List should be same to Taxon[] taxonArray in Alignment
+                alignment.setState(t, s, stateNum);
+            }
+        }
+
+        nexusData.setData(alignment);
     }
 
 
-    public Map<String, List<CharSetBlock>> getCharsetMap() {
-        if (charsetMap == null) charsetMap = new TreeMap<>();
-        return charsetMap;
+    /**
+     * Parse Nexus to LPHY {@link SimpleAlignment}
+     *
+     * @param ignoreCharset If true, ignore charset in Nexus,
+     *                      only return single {@link SimpleAlignment}.
+     *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
+     * @param ageDirectionStr  either forward or backward,
+     *                         if null and nex has TIPCALIBRATION block, then assume forward.
+     * @param dateRegxStr  Java regular expression to extract dates from taxa names.
+     *                     if null, check TIPCALIBRATION block,
+     *                     if not null, then ignore TIPCALIBRATION block.
+     * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
+     */
+    public lphy.evolution.alignment.Alignment getLPhyAlignment(boolean ignoreCharset,
+                                                               String ageDirectionStr, String dateRegxStr) {
+        NexusData nexusData = null;
+        try {
+            nexusData = importNexus();
+        } catch (IOException | ImportException e) {
+            e.printStackTrace();
+        }
+        if (nexusData == null)
+            throw new IllegalArgumentException("Fail to parse file ! ");
+
+        lphy.evolution.alignment.SimpleAlignment lphyAlg = nexusData.getSimpleAlignment();
+        System.out.println("Create " + lphyAlg.getSequenceType() + " alignment, ntax = " +
+                lphyAlg.ntaxa() + ", nchar = " + lphyAlg.nchar());
+
+        //*** ages ***//
+
+        if (dateRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
+            // extract dates from names
+            nexusData.setAgeMapFromTaxa(lphyAlg, dateRegxStr);
+        }
+        if (nexusData.hasAges()) {
+            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
+            nexusData.assignAges(lphyAlg, ageDirectionStr);  // forward backward
+        }
+
+        //*** charset ***//
+        if (nexusData.hasCharsets()) {
+            final Map<String, List<CharSetBlock>> charsetMap = nexusData.getCharsetMap();
+//            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
+//            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
+//            System.out.println(charSetAlignment);
+            if (ignoreCharset)
+                System.out.println("Ignore charsets in the nexus file, charsetMap = " + charsetMap);
+            else
+                return new CharSetAlignment(charsetMap, lphyAlg); // this imports all charsets
+        }
+        return lphyAlg; // sing partition
     }
 
-    public Map<String, String> getDateMap() {
-//        if (dateMap == null) dateMap = new LinkedHashMap<>();
-        return dateMap; // if null, no TIPCALIBRATION
-    }
 
-//****** Data Type ******//
+    //****** Data Type ******//
 
     /**
      * Extract data type after "DATATYPE" keyword, and convert into {@link SequenceType}.
@@ -205,10 +307,6 @@ public class ExtNexusImporter extends NexusImporter {
 
     //****** CALIBRATION Block : TIPCALIBRATION ******//
 
-    protected boolean isNotEnd(String token) {
-        return !token.equalsIgnoreCase("END") && !token.equalsIgnoreCase("ENDBLOCK");
-    }
-
     protected void readCalibrationBlock() throws ImportException, IOException {
 
         String token;
@@ -221,6 +319,7 @@ public class ExtNexusImporter extends NexusImporter {
                     if (scale.toLowerCase().endsWith("s"))
                         scale = scale.substring(0, scale.length() - 1);
 
+                    ChronoUnit chronoUnit;
                     switch (scale) {
                         case "year":
                             chronoUnit = ChronoUnit.YEARS;
@@ -232,15 +331,17 @@ public class ExtNexusImporter extends NexusImporter {
                         default:
                             throw new UnsupportedOperationException("Unsupported scale = " + scale);
                     }
+
+                    nexusData.setChronoUnit(chronoUnit);
                 }
 
             } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
 
-                if (chronoUnit == null) // TODO is it necessary?
+                if (nexusData.getChronoUnit() == null) // TODO is it necessary?
                     throw new ImportException("Cannot find SCALE unit, e.g. year");
 
                 // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
-                dateMap = new LinkedHashMap<>();
+                Map<String, String> ageMap = new LinkedHashMap<>();
                 do {
                     String date = null;
                     String taxonNm = null;
@@ -258,18 +359,21 @@ public class ExtNexusImporter extends NexusImporter {
                         lastDelimiter = helper.getLastDelimiter();
                         if (date != null && taxonNm != null) {
                             // put inside loop for same date, 1984:D4Mexico84 D4Philip84 D4Thai84,
-                            dateMap.put(taxonNm, date);
+                            ageMap.put(taxonNm, date);
                         } else if (lastDelimiter == ',' || lastDelimiter == ';') throw new ImportException();
 
                     } while (lastDelimiter != ',' && lastDelimiter != ';');
                     // next date mapping
                 } while (helper.getLastDelimiter() != ';');
 
-                if (dateMap.size() < 1)
+                if (ageMap.size() < 1)
                     throw new ImportException("Cannot parse TIPCALIBRATION !");
-                if (dateMap.size() != taxonCount)
-                    System.err.println("Warning: " + dateMap.size() +
+                if (ageMap.size() != taxonCount)
+                    System.err.println("Warning: " + ageMap.size() +
                             " tips have dates, but taxon count = " + taxonCount);
+
+                // store into NexusData
+                nexusData.setAgeStringMap(ageMap);
 
             } // end if else
 
@@ -289,7 +393,7 @@ public class ExtNexusImporter extends NexusImporter {
      */
     protected void readAssumptionsBlock() throws ImportException, IOException {
 
-        charsetMap = new TreeMap<>();
+        Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
         String token;
         do {
             token = helper.readToken(";");
@@ -311,6 +415,9 @@ public class ExtNexusImporter extends NexusImporter {
             }
         } while (isNotEnd(token));
         //validation ?
+
+        // store into NexusData
+        nexusData.setCharsetMap(charsetMap);
     }
 
     //****** CharSet Utils ******//
@@ -379,163 +486,6 @@ public class ExtNexusImporter extends NexusImporter {
     }
 
 
-    //****** Can be removed if pull request is accepted ******//
-
-    private void findToken(String query, boolean ignoreCase) throws IOException {
-        String token;
-        boolean found = false;
-
-        do {
-            token = helper.readToken();
-
-            if ((ignoreCase && token.equalsIgnoreCase(query)) || token.equals(query)) {
-                found = true;
-            }
-        } while (!found);
-    }
-
-    static void parseAndClearMetaComments(Attributable item, ImportHelper importHelper) throws ImportException.BadFormatException {
-        for (String meta : importHelper.getMetaComments()) {
-            // A meta-comment which should be in the form:
-            // \[&label[=value][,label[=value]>[,/..]]\]
-            parseMetaCommentPairs(meta, item);
-
-        }
-        importHelper.clearLastMetaComment();
-    }
-
-    static void parseMetaCommentPairs(String meta, Attributable item) throws ImportException.BadFormatException {
-        // This regex should match key=value pairs, separated by commas
-        // This can match the following types of meta comment pairs:
-        // value=number, value="string", value={item1, item2, item3}
-        // (label must be quoted if it contains spaces (i.e. "my label"=label)
-
-//        Pattern pattern = Pattern.compile("(\"[^\"]*\"+|[^,=\\s]+)\\s*(=\\s*(\\{[^=}]*\\}|\"[^\"]*\"+|[^,]+))?");
-        Pattern pattern = Pattern.compile("(\"[^\"]*\"+|[^,=\\s]+)\\s*(=\\s*(\\{(\\{[^\\}]+\\},?)+\\}|\\{[^\\}]+\\}|\"[^\"]*\"+|[^,]+))?");
-        Matcher matcher = pattern.matcher(meta);
-
-        while (matcher.find()) {
-            String label = matcher.group(1);
-            if (label.charAt(0) == '\"') {
-                label = label.substring(1, label.length() - 1);
-            }
-            if (label == null || label.trim().length() == 0) {
-                throw new ImportException.BadFormatException("Badly formatted attribute: '" + matcher.group() + "'");
-            }
-            final String value = matcher.group(2);
-            if (value != null && value.trim().length() > 0) {
-                // there is a specified value so try to parse it
-                item.setAttribute(label, parseValue(value.substring(1)));
-            } else {
-                item.setAttribute(label, Boolean.TRUE);
-            }
-        }
-    }
-
-    static Object parseValue(String value) {
-
-        value = value.trim();
-
-        if (value.startsWith("{")) {
-            value = value.substring(1, value.length() - 1);
-
-            String[] elements;
-
-            if (value.startsWith("{")) {
-                // the value is a list of a list so recursively parse the elements
-                // and return an array
-
-                // need to match },{ but leave the brackets in place
-                value = value.replaceAll("\\},\\{", "}@,@{");
-                elements = value.split("@,@");
-
-            } else {
-                // the value is a list so recursively parse the elements
-                // and return an array
-                elements = value.split(",");
-            }
-            Object[] values = new Object[elements.length];
-            for (int i = 0; i < elements.length; i++) {
-                values[i] = parseValue(elements[i]);
-            }
-            return values;
-        }
-
-        if (value.startsWith("#")) {
-            // I am not sure whether this is a good idea but
-            // I am going to assume that a # denotes an RGB colour
-            String colourValue = value.substring(1);
-            if (colourValue.startsWith("-")) {
-                // old style decimal numbers
-                try {
-                    return Color.decode(colourValue);
-                } catch (NumberFormatException nfe1) {
-                    // not a colour
-                }
-            } else {
-                return Color.decode("0x" + colourValue);
-            }
-        }
-
-        // A string qouted by the nexus exporter and such
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            return value.subSequence(1, value.length() - 1);
-        }
-
-        if (value.equalsIgnoreCase("TRUE") || value.equalsIgnoreCase("FALSE")) {
-            return Boolean.valueOf(value);
-        }
-
-        // Attempt to format the value as an integer
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException nfe1) {
-            // not an integer
-        }
-
-        // Attempt to format the value as a double
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException nfe2) {
-            // not a double
-        }
-
-        // return the trimmed string
-        return value;
-    }
-
-
-    private List<Taxon> readTaxaBlock() throws ImportException, IOException {
-        taxonCount = 0;
-
-        readDataBlockHeader("TAXLABELS", NexusBlock.TAXA);
-
-        if (taxonCount == 0) {
-            throw new ImportException.MissingFieldException("NTAXA");
-        }
-
-        List<Taxon> taxa = new ArrayList<Taxon>();
-
-        do {
-            String name = helper.readToken(";");
-            if (name.equals("")) {
-                throw new ImportException.UnknownTaxonException("Expected nonempty taxon name, got empty string");
-            }
-            Taxon taxon = Taxon.getTaxon(name);
-            taxa.add(taxon);
-
-            parseAndClearMetaComments(taxon, helper);
-        } while (helper.getLastDelimiter() != ';');
-
-        if (taxa.size() != taxonCount) {
-            throw new ImportException.BadFormatException("Number of taxa doesn't match NTAXA field");
-        }
-
-        findEndBlock();
-
-        return taxa;
-    }
-
     private List<Sequence> readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         siteCount = 0;
@@ -568,7 +518,7 @@ public class ExtNexusImporter extends NexusImporter {
 
         } else {
             List<Sequence> sequences = readSequenceData(taxonList);
-            alignments.add(new BasicAlignment(sequences));
+            setSimpleAlignment(sequences);
         }
 
         findEndBlock();
@@ -901,14 +851,237 @@ public class ExtNexusImporter extends NexusImporter {
         }
     }
 
-    // they are private in NexusImporter
-    protected ExtNexusBlock nextBlock = null;
-    protected String nextBlockName = null;
 
-    protected int taxonCount = 0, siteCount = 0;
-    protected SequenceType sequenceType = null;
-    protected String gapCharacters = "-";
-    protected String matchCharacters = ".";
-    protected String missingCharacters = "?";
-    protected boolean isInterleaved = false;
+    //****** NexusBlock ******//
+
+    /**
+     * TODO make it extendable
+     * interface NexusBlockImp{ public NexusBlock findNextBlock(); }
+     * enum NexusBlock implements NexusBlockImp{ TAXA, ..., DATA; }
+     * // or T extends Enum<? extends NexusBlockImp>
+     * class NexusImporterDefault<T implements NexusBlockImp> {
+     * protected T enumNexusBlock;
+     * protected NexusImporterDefault(T block){
+     * this.block = block;
+     * } }
+     * class NexusImporter extends NexusImporterDefault<NexusBlock>{
+     * public NexusImporter(NexusBlock block){
+     * super(block);
+     * } }
+     * protected not private ...
+     */
+    public enum NexusBlock {
+        UNKNOWN,
+        TAXA,
+        CHARACTERS,
+        DATA,
+        ASSUMPTIONS, // new
+        CALIBRATION, // new
+        UNALIGNED,
+        DISTANCES,
+        TREES
+    }
+
+    public NexusBlock findNextBlock() throws IOException {
+        findToken("BEGIN", true);
+        nextBlockName = helper.readToken(";").toUpperCase();
+        return findBlockName(nextBlockName);
+    }
+
+    protected NexusBlock findBlockName(String blockName) {
+        try {
+            nextBlock = NexusBlock.valueOf(blockName);
+        } catch (IllegalArgumentException e) {
+            // handle unknown blocks. java 1.5 throws an exception in valueOf
+            nextBlock = null;
+        }
+
+        if (nextBlock == null) {
+            nextBlock = NexusBlock.UNKNOWN;
+        }
+
+        return nextBlock;
+    }
+
+    /**
+     * Read ahead to the end of the current block.
+     */
+    public void findEndBlock() throws IOException
+    {
+        try {
+            String token;
+
+            do {
+                token = helper.readToken(";");
+            } while ( !token.equalsIgnoreCase("END") && !token.equalsIgnoreCase("ENDBLOCK") );
+        } catch (EOFException e) {
+            // Doesn't matter if the End is missing
+        }
+
+        nextBlock = NexusBlock.UNKNOWN;
+    }
+
+
+    protected boolean isNotEnd(String token) {
+        return !token.equalsIgnoreCase("END") && !token.equalsIgnoreCase("ENDBLOCK");
+    }
+
+    //****** parser ******//
+
+    private void findToken(String query, boolean ignoreCase) throws IOException {
+        String token;
+        boolean found = false;
+
+        do {
+            token = helper.readToken();
+
+            if ((ignoreCase && token.equalsIgnoreCase(query)) || token.equals(query)) {
+                found = true;
+            }
+        } while (!found);
+    }
+
+    static void parseAndClearMetaComments(Attributable item, ImportHelper importHelper) throws ImportException.BadFormatException {
+        for (String meta : importHelper.getMetaComments()) {
+            // A meta-comment which should be in the form:
+            // \[&label[=value][,label[=value]>[,/..]]\]
+            parseMetaCommentPairs(meta, item);
+
+        }
+        importHelper.clearLastMetaComment();
+    }
+
+    static void parseMetaCommentPairs(String meta, Attributable item) throws ImportException.BadFormatException {
+        // This regex should match key=value pairs, separated by commas
+        // This can match the following types of meta comment pairs:
+        // value=number, value="string", value={item1, item2, item3}
+        // (label must be quoted if it contains spaces (i.e. "my label"=label)
+
+//        Pattern pattern = Pattern.compile("(\"[^\"]*\"+|[^,=\\s]+)\\s*(=\\s*(\\{[^=}]*\\}|\"[^\"]*\"+|[^,]+))?");
+        Pattern pattern = Pattern.compile("(\"[^\"]*\"+|[^,=\\s]+)\\s*(=\\s*(\\{(\\{[^\\}]+\\},?)+\\}|\\{[^\\}]+\\}|\"[^\"]*\"+|[^,]+))?");
+        Matcher matcher = pattern.matcher(meta);
+
+        while (matcher.find()) {
+            String label = matcher.group(1);
+            if (label.charAt(0) == '\"') {
+                label = label.substring(1, label.length() - 1);
+            }
+            if (label == null || label.trim().length() == 0) {
+                throw new ImportException.BadFormatException("Badly formatted attribute: '" + matcher.group() + "'");
+            }
+            final String value = matcher.group(2);
+            if (value != null && value.trim().length() > 0) {
+                // there is a specified value so try to parse it
+                item.setAttribute(label, parseValue(value.substring(1)));
+            } else {
+                item.setAttribute(label, Boolean.TRUE);
+            }
+        }
+    }
+
+    static Object parseValue(String value) {
+
+        value = value.trim();
+
+        if (value.startsWith("{")) {
+            value = value.substring(1, value.length() - 1);
+
+            String[] elements;
+
+            if (value.startsWith("{")) {
+                // the value is a list of a list so recursively parse the elements
+                // and return an array
+
+                // need to match },{ but leave the brackets in place
+                value = value.replaceAll("\\},\\{", "}@,@{");
+                elements = value.split("@,@");
+
+            } else {
+                // the value is a list so recursively parse the elements
+                // and return an array
+                elements = value.split(",");
+            }
+            Object[] values = new Object[elements.length];
+            for (int i = 0; i < elements.length; i++) {
+                values[i] = parseValue(elements[i]);
+            }
+            return values;
+        }
+
+        if (value.startsWith("#")) {
+            // I am not sure whether this is a good idea but
+            // I am going to assume that a # denotes an RGB colour
+            String colourValue = value.substring(1);
+            if (colourValue.startsWith("-")) {
+                // old style decimal numbers
+                try {
+                    return Color.decode(colourValue);
+                } catch (NumberFormatException nfe1) {
+                    // not a colour
+                }
+            } else {
+                return Color.decode("0x" + colourValue);
+            }
+        }
+
+        // A string qouted by the nexus exporter and such
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            return value.subSequence(1, value.length() - 1);
+        }
+
+        if (value.equalsIgnoreCase("TRUE") || value.equalsIgnoreCase("FALSE")) {
+            return Boolean.valueOf(value);
+        }
+
+        // Attempt to format the value as an integer
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException nfe1) {
+            // not an integer
+        }
+
+        // Attempt to format the value as a double
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException nfe2) {
+            // not a double
+        }
+
+        // return the trimmed string
+        return value;
+    }
+
+
+    private List<Taxon> readTaxaBlock() throws ImportException, IOException {
+        taxonCount = 0;
+
+        readDataBlockHeader("TAXLABELS", NexusBlock.TAXA);
+
+        if (taxonCount == 0) {
+            throw new ImportException.MissingFieldException("NTAXA");
+        }
+
+        List<Taxon> taxa = new ArrayList<>();
+
+        do {
+            String name = helper.readToken(";");
+            if (name.equals("")) {
+                throw new ImportException.UnknownTaxonException("Expected nonempty taxon name, got empty string");
+            }
+            Taxon taxon = Taxon.getTaxon(name);
+            taxa.add(taxon);
+
+            parseAndClearMetaComments(taxon, helper);
+        } while (helper.getLastDelimiter() != ';');
+
+        if (taxa.size() != taxonCount) {
+            throw new ImportException.BadFormatException("Number of taxa doesn't match NTAXA field");
+        }
+
+        findEndBlock();
+
+        return taxa;
+    }
+
+
 }

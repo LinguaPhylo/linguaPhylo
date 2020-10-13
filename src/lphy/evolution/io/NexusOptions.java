@@ -4,8 +4,6 @@ import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,7 +20,11 @@ public class NexusOptions {
     public static final String OPT_DESC = "the map containing optional arguments and their values for reuse, " +
             "                          such as " + AGE_DIRECTION + " and " + AGE_REGEX + ".";
 
-    // cache the data from one Nexus file
+    // cache raw data from one Nexus file
+    protected static NexusData nexusData = null;
+
+
+
     protected Alignment cachedAlignment = null;
     protected String currentFileName = "";
     protected Map<String, String> options;
@@ -75,15 +77,14 @@ public class NexusOptions {
             throw new IllegalArgumentException("The file name can't be null!");
         currentFileName = fileName;
 
-        final Path nexFile = Paths.get(currentFileName);
         // validate postfix
-        NexusParser parser = new NexusParser(nexFile);
+        NexusImporter importer = new NexusImporter(currentFileName);
 
         String ageDirectionStr = getAgeDirectionStr();
         String ageRegxStr = getAgeRegxStr();
 
         // either {@link SimpleAlignment} or {@link CharSetAlignment}
-        return parser.getLPhyAlignment(ignoreCharset, ageDirectionStr, ageRegxStr);
+        return importer.getLPhyAlignment(ignoreCharset, ageDirectionStr, ageRegxStr);
     }
 
     protected boolean hasOptions(Map<String, String> options) {
