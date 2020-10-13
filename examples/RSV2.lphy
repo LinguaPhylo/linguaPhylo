@@ -1,5 +1,6 @@
 data {
-  codon = nexus(file="examples/RSV2.nex", charset=["3-629\3", "4-629\3", "5-629\3"], ageDirection="forward", ageRegex="s(\d+)$");
+  options = {ageDirection="forward", ageRegex="s(\d+)$"};
+  codon = readNexus(file="examples/RSV2.nex", charset=["3-629\3", "4-629\3", "5-629\3"], options = options);
   L = nchar(codon);
 }
 model {

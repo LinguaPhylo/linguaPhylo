@@ -2,6 +2,7 @@ package lphy.core.functions;
 
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
+import lphy.evolution.io.NexusOptions;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -10,7 +11,7 @@ import lphy.graphicalModel.Value;
 import java.util.Map;
 
 /**
- * @see Nexus
+ * @see ReadNexus
  * @author Walter Xie
  */
 public class ReadTaxa extends DeterministicFunction<Taxa> {

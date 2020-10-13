@@ -1,9 +1,10 @@
 data {
-  coding = nexus(file="examples/primate.nex", part="coding");
-  noncoding = nexus(file="examples/primate.nex", part="noncoding");
+  file="examples/primate.nex";
+  taxa = readTaxa(file= file);
+  coding = readNexus(file = file, charset="coding");
+  noncoding = readNexus(file = file, charset="noncoding");
   L1 = nchar(coding);
   L2 = nchar(noncoding);
-  taxa = taxa(coding);
 }
 model {
   Θ ~ LogNormal(meanlog=3, sdlog=1);

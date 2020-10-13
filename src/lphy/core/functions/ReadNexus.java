@@ -5,6 +5,7 @@ import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.ExtNexusImporter;
+import lphy.evolution.io.NexusOptions;
 import lphy.evolution.io.NexusParser;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.DeterministicFunction;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
  * This involves partitions.
  * @see ReadTaxa
  */
-public class Nexus extends DeterministicFunction {
+public class ReadNexus extends DeterministicFunction {
 
     private final String fileParamName;
     private final String charsetParamName;
@@ -39,17 +40,17 @@ public class Nexus extends DeterministicFunction {
 
     private NexusOptions nexusOptions;
 
-    public Nexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
-                 @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
+    public ReadNexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
+                     @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
                          "charset=[\"1\", \"458-659\"] or charset=[\"3-629\\3\", \"4-629\\3\", \"5-629\\3\"] " +
                          "or charset=\"1-629\\3\". If it doesn't match charset's definition, then check if the string matches " +
                          "a defined charset (name) in the nexus file. Otherwise it is an error.", optional=true)
                          Value charsets,
-                 @ParameterInfo(name = "options", description = "the map containing optional arguments and their values for reuse.",
+                     @ParameterInfo(name = "options", description = "the map containing optional arguments and their values for reuse.",
                          optional=true) Value<Map<String, String>> options,
-                 @ParameterInfo(name = "taxa", description = "the taxa object, which cannot be used with 'options' together.",
+                     @ParameterInfo(name = "taxa", description = "the taxa object, which cannot be used with 'options' together.",
                          optional=true) Value<Taxa> taxa,
-                 @ParameterInfo(name = "parentAlignmnet", description = "Default to false. If true, " +
+                     @ParameterInfo(name = "parentAlignmnet", description = "Default to false. If true, " +
                          "then ignore the charsets in the nexus file, and return the full alignment.",
                          optional=true) Value<Boolean> parentAlignmnet ) {
 
@@ -91,7 +92,7 @@ public class Nexus extends DeterministicFunction {
         }
     }
 
-    @GeneratorInfo(name="nexus",description = "A function that parses an alignment from a Nexus file.")
+    @GeneratorInfo(name="readNexus",description = "A function that parses an alignment from a Nexus file.")
     public Value apply() {
 
         Value<String> fileName = getParams().get(fileParamName);

@@ -1,9 +1,8 @@
-package lphy.core.functions;
+package lphy.evolution.io;
 
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.io.NexusParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
