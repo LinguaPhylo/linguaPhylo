@@ -11,9 +11,10 @@ import lphy.graphicalModel.Value;
 import java.util.Map;
 
 /**
- * @see ReadNexus
+ * use {@link ReadNexus}
  * @author Walter Xie
  */
+@Deprecated
 public class ReadTaxa extends DeterministicFunction<Taxa> {
 
     private final String fileParamName;

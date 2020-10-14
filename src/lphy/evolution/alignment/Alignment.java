@@ -13,6 +13,14 @@ import java.awt.*;
 public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
     /**
+     * Set int states.
+     * @param taxon      the index of taxon in the 1st dimension.
+     * @param position   the site position in the 2nd dimension.
+     * @param state      the state in integer
+     */
+    void setState(int taxon, int position, int state);
+
+    /**
      * @param taxon      the name of the taxon.
      * @param position   the site position.
      * @return  the integer state at the given coordinate of this alignment.
