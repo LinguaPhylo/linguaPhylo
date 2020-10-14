@@ -1,8 +1,8 @@
 data {
-  file="examples/primate.nex";
-  taxa = readTaxa(file= file);
-  coding = readNexus(file = file, charset="coding");
-  noncoding = readNexus(file = file, charset="noncoding");
+  D = readNexus(file="examples/primate.nex");
+  taxa = D.taxa();
+  coding = D.charset("coding");
+  noncoding = D.charset("noncoding");
   L1 = nchar(coding);
   L2 = nchar(noncoding);
 }

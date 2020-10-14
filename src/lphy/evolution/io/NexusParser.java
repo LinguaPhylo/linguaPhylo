@@ -3,6 +3,7 @@ package lphy.evolution.io;
 
 import jebl.evolution.io.ImportException;
 import jebl.evolution.io.ImportHelper;
+import jebl.evolution.io.NexusImporter;
 import jebl.evolution.sequences.BasicSequence;
 import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
@@ -39,7 +40,7 @@ import java.util.regex.Pattern;
  *
  * @author Walter Xie
  */
-public class NexusImporter {
+public class NexusParser {
 
     protected final ImportHelper helper;
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
@@ -56,14 +57,14 @@ public class NexusImporter {
     protected String missingCharacters = "?";
     protected boolean isInterleaved = false;
 
-    //TODO
+    //TODO mv to another class like NexusData
     protected ContinuousCharacterData continuousCharacterData;
 
 //    public ExtNexusImporter(Reader reader) {
 //        super(reader);
 //    }
 
-    public NexusImporter(String fileName) {
+    public NexusParser(String fileName) {
 
         Reader reader = getReader(fileName);
 
@@ -104,7 +105,7 @@ public class NexusImporter {
         try {
             String fileName = args[0];
             System.out.println("Loading " + fileName);
-            final NexusImporter importer = new NexusImporter(fileName);
+            final NexusParser importer = new NexusParser(fileName);
 
 //            List<Alignment> alignmentList = parser.importAlignments();
 //                alignmentList.forEach(System.out::println);
@@ -156,7 +157,7 @@ public class NexusImporter {
                 } else if (block == NexusBlock.CHARACTERS) {
 
                     if (taxonList == null)
-                        throw new jebl.evolution.io.NexusImporter.MissingBlockException("TAXA block is missing");
+                        throw new NexusImporter.MissingBlockException("TAXA block is missing");
 
                     List<Sequence> sequences = readCharactersBlock(taxonList);
                     setSimpleAlignment(sequences);
@@ -188,9 +189,9 @@ public class NexusImporter {
 
         if (DataType.isSame(sequenceType, Continuous.getInstance())) {
             if (continuousCharacterData == null)
-                throw new jebl.evolution.io.NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
-        } else if (nexusData.getData() == null)
-            throw new jebl.evolution.io.NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
+                throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
+        } else if (nexusData.getAlignment() == null)
+            throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
 
         return nexusData;
     }
@@ -228,7 +229,7 @@ public class NexusImporter {
             }
         }
 
-        nexusData.setData(alignment);
+        nexusData.setAlignment(alignment);
     }
 
 
@@ -254,7 +255,7 @@ public class NexusImporter {
             e.printStackTrace();
         }
         if (nexusData == null)
-            throw new IllegalArgumentException("Fail to parse file ! ");
+            throw new RuntimeException("Fail to parse file ! ");
 
         lphy.evolution.alignment.SimpleAlignment lphyAlg = nexusData.getSimpleAlignment();
         System.out.println("Create " + lphyAlg.getSequenceType() + " alignment, ntax = " +
@@ -264,11 +265,11 @@ public class NexusImporter {
 
         if (dateRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
             // extract dates from names
-            nexusData.setAgeMapFromTaxa(lphyAlg, dateRegxStr);
+            nexusData.setAgeMapFromTaxa(dateRegxStr);
         }
         if (nexusData.hasAges()) {
             // ageStringMap is filled in from either TIPCALIBRATION or taxon names
-            nexusData.assignAges(lphyAlg, ageDirectionStr);  // forward backward
+            nexusData.assignAges(ageDirectionStr);  // forward backward
         }
 
         //*** charset ***//
@@ -404,10 +405,10 @@ public class NexusImporter {
                 do {
                     String oneBlock = helper.readToken(";");
                     try {
-                        CharSetBlock charSetBlock = parseCharSet(oneBlock);
+                        CharSetBlock charSetBlock = CharSetBlock.Utils.parseCharSet(oneBlock);
                         charSetBlocks.add(charSetBlock);
                     } catch (IllegalArgumentException e) {
-                        throw new ImportException("Charset " + charset + e.getMessage());
+                        throw new ImportException("Charset " + charset + " : " + e.getMessage());
                     }
                 } while (helper.getLastDelimiter() != ';');
 
@@ -418,71 +419,6 @@ public class NexusImporter {
 
         // store into NexusData
         nexusData.setCharsetMap(charsetMap);
-    }
-
-    //****** CharSet Utils ******//
-
-    /**
-     * @see #parseCharSet(String)
-     * @param charset  such as "2-457\3 660-896\3".
-     * @return
-     */
-    public static List<CharSetBlock> getCharSetBlocks(String charset) {
-        String[] blocks = charset.split("\\s+");
-        List<CharSetBlock> charSetBlocks = new ArrayList<>();
-        for (String oneBlock : blocks) {
-            CharSetBlock charSetBlock = parseCharSet(oneBlock);
-            charSetBlocks.add(charSetBlock);
-        }
-        return charSetBlocks;
-    }
-
-    /**
-     * @param charSet1Block The string must only contain one block.
-     *                      The blocks could be an array, <code>charset="[3-629\3, 4-629\3, 5-629\3]"</code>.
-     *                      The blocks could also be separated by spaces, for example,
-     *                      "2-457\3 660-896\3" is considered as 2 charset blocks.
-     *                      Use <code>split("\\s+")</code> to spilt charset blocks
-     *                      before call this method.
-     * @return only 1 {@link CharSetBlock} parsed from string
-     * @throws IllegalArgumentException
-     */
-    public static CharSetBlock parseCharSet(String charSet1Block) throws IllegalArgumentException {
-        // "4-629\3"
-        String[] parts = Objects.requireNonNull(charSet1Block).split("-");
-
-        int from, to, every = 1;
-        try {
-            if (parts.length == 2) {
-                // from site
-                from = Integer.parseInt(parts[0].trim());
-
-                // codons : 629\3
-                if (parts[1].contains("/")) // to avoid typo
-                    throw new IllegalArgumentException("Invalid delimiter for codon positions ! " + parts[1]);
-                String[] toParts = parts[1].split("\\\\");
-                // to site
-                if (toParts[0].trim().equals("."))
-                    to = -1; // if (to <= 0) toSite = nchar;
-                else
-                    to = Integer.parseInt(toParts[0].trim());
-                // codon position
-                if (toParts.length > 1)
-                    every = Integer.parseInt(toParts[1].trim());
-                else
-                    every = 1;
-
-            } else if (parts.length == 1) {
-                // only 1 site
-                from = Integer.parseInt(parts[0].trim());
-                to = from;
-            } else
-                throw new NumberFormatException();
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException("block " + charSet1Block + " cannot be parsed");
-        }
-
-        return new CharSetBlock(from, to, every);
     }
 
 
@@ -864,8 +800,8 @@ public class NexusImporter {
      * protected NexusImporterDefault(T block){
      * this.block = block;
      * } }
-     * class NexusImporter extends NexusImporterDefault<NexusBlock>{
-     * public NexusImporter(NexusBlock block){
+     * class NexusParser extends NexusImporterDefault<NexusBlock>{
+     * public NexusParser(NexusBlock block){
      * super(block);
      * } }
      * protected not private ...

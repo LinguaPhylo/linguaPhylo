@@ -1,15 +1,21 @@
 data {
   options = {ageDirection="forward", ageRegex="s(\d+)$"};
-  codon = readNexus(file="examples/RSV2.nex", charset=["3-629\3", "4-629\3", "5-629\3"], options = options);
-  L = nchar(codon);
+  D = readNexus(file="examples/RSV2.nex", options=options);
+  taxa = D.taxa();
+  codon0 = D.charset("3-629\3");
+  L0 = nchar(codon0);
+  codon1 = D.charset("4-629\3");
+  L1 = nchar(codon1);
+  codon2 = D.charset("5-629\3");
+  L2 = nchar(codon2);
 }
 model {
+  π ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
+  Q = f81(freq=π);
   mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
   Θ ~ LogNormal(meanlog=3, sdlog=1);
-  ψ ~ Coalescent(theta=Θ, taxa=taxa(codon));
-  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  Q=f81(freq=π);
-  codon1 ~ PhyloCTMC(tree=ψ, L=L[0], Q=Q, mu=mu);
-  codon2 ~ PhyloCTMC(tree=ψ, L=L[1], Q=Q, mu=mu);
-  codon3 ~ PhyloCTMC(tree=ψ, L=L[2], Q=Q, mu=mu);
+  ψ ~ Coalescent(taxa=taxa, theta=Θ);
+  codon0 ~ PhyloCTMC(L=L0, Q=Q, mu=mu, tree=ψ);
+  codon1 ~ PhyloCTMC(L=L1, Q=Q, mu=mu, tree=ψ);
+  codon2 ~ PhyloCTMC(L=L2, Q=Q, mu=mu, tree=ψ);
 }

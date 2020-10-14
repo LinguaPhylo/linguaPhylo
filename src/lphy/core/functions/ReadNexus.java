@@ -1,11 +1,11 @@
 package lphy.core.functions;
 
-import lphy.evolution.alignment.Alignment;
+import jebl.evolution.io.ImportException;
 import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.NexusData;
-import lphy.evolution.io.NexusImporter;
 import lphy.evolution.io.NexusOptions;
+import lphy.evolution.io.NexusParser;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
@@ -14,11 +14,10 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.StringArrayValue;
 import lphy.graphicalModel.types.StringValue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * data = nexus(file="primate.nex");
@@ -33,13 +32,6 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
     private final String optionsParamName;
 //    private final String taxaParamName;
     private final String ignoreCharsetParamName;
-
-    // 1 458-659 3-629\3
-    private final String CHARSET_REGX = "^([0-9]+)$|^([0-9]+)\\-([0-9]+)(\\\\[0-9]+)*$";
-
-    private NexusOptions nexusOptions;
-
-
 
     public ReadNexus(@ParameterInfo(name = "file", description = "the name of Nexus file.") Value<String> fileName,
                      @ParameterInfo(name = "charset", description = "the charset(s) defined by Nexus syntax, such as " +
@@ -93,21 +85,59 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
         }
     }
 
-    @GeneratorInfo(name="readNexus",description = "A function that parses an alignment from a Nexus file.")
-    public Value apply() {
 
-        Value<String> fileName = getParams().get(fileParamName);
+    @GeneratorInfo(name="readNexus",description = "A function that parses an alignment from a Nexus file.")
+    public Value<NexusData> apply() {
+
+        String fileName = ((StringValue) getParams().get(fileParamName)).value();
 
 //        Value<Taxa> taxaVal = getParams().get(taxaParamName);
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
+        String ageDirectionStr = NexusOptions.getAgeDirectionStr(optionsVal);
+        String ageRegxStr = NexusOptions.getAgeRegxStr(optionsVal);
 
-        Value charset = getParams().get(charsetParamName);
+//        Value charset = getParams().get(charsetParamName);
         Value<Boolean> parentAlignmnet = getParams().get(ignoreCharsetParamName);
         // Default (null) to false
         boolean ignoreCharset = parentAlignmnet != null && parentAlignmnet.value();
 
-        nexusOptions = NexusOptions.getInstance();
-        Alignment cachedAlignment = null;
+        //*** parsing ***//
+        NexusParser nexusParser = new NexusParser(fileName);
+        NexusData nexusData = null;
+        try {
+            nexusData = nexusParser.importNexus();
+        } catch (IOException | ImportException e) {
+            e.printStackTrace();
+        }
+        if (nexusData == null)
+            throw new RuntimeException("Fail to parse file ! ");
+
+        //*** ages ***//
+
+        if (ageRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
+            // extract dates from names
+            nexusData.setAgeMapFromTaxa(ageRegxStr);
+        }
+        if (nexusData.hasAges()) {
+            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
+            nexusData.assignAges(ageDirectionStr);  // forward backward
+        }
+
+        //*** charset ***//
+        if (nexusData.hasCharsets()) {
+            final Map<String, List<CharSetBlock>> charsetMap = nexusData.getCharsetMap();
+            if (ignoreCharset)
+                System.out.println("Ignore charsets in the nexus file, charsetMap = " + charsetMap);
+            else {
+                SimpleAlignment parent = nexusData.getSimpleAlignment();
+                nexusData.setAlignment(new CharSetAlignment(charsetMap, parent)); // this imports all charsets
+            }
+        }
+
+        return new Value<>(nexusData, this);
+
+//        Alignment cachedAlignment = nexusData.getAlignment();
+
 //        if (taxaVal != null) {
 //            Taxa taxa = taxaVal.value();
 //            // Alignment is cached here
@@ -118,41 +148,39 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
 //                cachedAlignment = nexusOptions.getAlignment(fileName.value(), ignoreCharset);
 //            }
 //        } else
-        if (optionsVal != null) {
-            Map<String, String> options = optionsVal.value();
-            cachedAlignment = nexusOptions.getAlignment(fileName.value(), options, ignoreCharset);
-        } else {
-            // no taxa or options
-            cachedAlignment = nexusOptions.getAlignment(fileName.value(), ignoreCharset);
-        }
 
-        // if Nexus file has no charsets
-        if (charset == null) return new Value(cachedAlignment, this);
 
-        //*** charsets or part names ***//
-
-        // if Nexus file has charsets
-        if (charset instanceof StringArrayValue) {
-            String[] strs = ((StringArrayValue) charset).value();
-            Alignment[] alignments = new Alignment[strs.length];
-
-            for (int i = 0; i < strs.length; i++) {
-                alignments[i] = getPartAlignment(Objects.requireNonNull(fileName).value(), cachedAlignment, strs[i]);
-            }
-
-            return new Value(alignments, this);
-
-        } else {
-            String str = ((StringValue) charset).value();
-
-            Alignment partAlignment = getPartAlignment(Objects.requireNonNull(fileName).value(), cachedAlignment, str);
-
-            return new Value(partAlignment, this);
-        }
-
-//        NexusData data =
-
-//        return new Value<NexusData>(data, this);
+//        if (optionsVal != null) {
+//            Map<String, String> options = optionsVal.value();
+//            cachedAlignment = nexusOptions.getAlignment(fileName.value(), options, ignoreCharset);
+//        } else {
+//            // no taxa or options
+//            cachedAlignment = nexusOptions.getAlignment(fileName.value(), ignoreCharset);
+//        }
+//
+//        // if Nexus file has no charsets
+//        if (charset == null) return new Value(cachedAlignment, this);
+//
+//        //*** charsets or part names ***//
+//
+//        // if Nexus file has charsets
+//        if (charset instanceof StringArrayValue) {
+//            String[] strs = ((StringArrayValue) charset).value();
+//            Alignment[] alignments = new Alignment[strs.length];
+//
+//            for (int i = 0; i < strs.length; i++) {
+//                alignments[i] = getPartAlignment(Objects.requireNonNull(fileName).value(), cachedAlignment, strs[i]);
+//            }
+//
+//            return new Value(alignments, this);
+//
+//        } else {
+//            String str = ((StringValue) charset).value();
+//
+//            Alignment partAlignment = getPartAlignment(Objects.requireNonNull(fileName).value(), cachedAlignment, str);
+//
+//            return new Value(partAlignment, this);
+//        }
 
 
 
@@ -209,26 +237,31 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
 //        return new Value(a, this);
     }
 
-    protected Alignment getPartAlignment(String fileName, Alignment cachedAlignment, String str) {
 
-        Alignment partAlignment = null;
-        if (Pattern.matches(CHARSET_REGX, str)) {
-           // give charset, ignore charsets in file
-            cachedAlignment = nexusOptions.getAlignment(fileName, true);
-            SimpleAlignment parent = (SimpleAlignment) cachedAlignment;
 
-            List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(str);
-            partAlignment = CharSetAlignment.getPartition(charSetBlocks, parent);
 
-        } else if (cachedAlignment instanceof CharSetAlignment) {
-            // str is name, check if it is in file
-            partAlignment = ((CharSetAlignment) cachedAlignment).getPartAlignmentNoValidation(str);
 
-        }
-        if (partAlignment == null)
-            throw new IllegalArgumentException("The string is neither charset or name in in the nexus file ! " + str);
-        return partAlignment;
-    }
+
+//    protected Alignment getPartAlignment(String fileName, Alignment cachedAlignment, String str) {
+//
+//        Alignment partAlignment = null;
+//        if (CharSetBlock.Utils.isValid(str)) {
+//           // give charset, ignore charsets in file
+//            cachedAlignment = nexusData.getAlignment();
+//            SimpleAlignment parent = (SimpleAlignment) cachedAlignment;
+//
+//            List<CharSetBlock> charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(str);
+//            partAlignment = CharSetAlignment.getPartition(charSetBlocks, parent);
+//
+//        } else if (cachedAlignment instanceof CharSetAlignment) {
+//            // str is name, check if it is in file
+//            partAlignment = ((CharSetAlignment) cachedAlignment).getPartAlignmentNoValidation(str);
+//
+//        }
+//        if (partAlignment == null)
+//            throw new IllegalArgumentException("The string is neither charset or name in in the nexus file ! " + str);
+//        return partAlignment;
+//    }
 
 
     private List<List<CharSetBlock>> parseCharsets(Value value) {
@@ -237,12 +270,12 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
         if (value instanceof StringArrayValue) {
             String[] strs = ((StringArrayValue) value).value();
             for (int i = 0; i < strs.length; i++) {
-                List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(strs[i]);
+                List<CharSetBlock> charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(strs[i]);
                 charsetsList.add(charSetBlocks);
             }
 
         } else { // String
-            List<CharSetBlock> charSetBlocks = NexusImporter.getCharSetBlocks(value.toString());
+            List<CharSetBlock> charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(value.toString());
             charsetsList.add(charSetBlocks);
         }
 

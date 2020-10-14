@@ -3,9 +3,10 @@ package lphy.evolution.io;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.alignment.TaxaCharacterMatrix;
 import lphy.evolution.traits.CharSetBlock;
+import lphy.graphicalModel.MethodInfo;
 import lphy.utils.LoggerUtils;
 
 import java.time.LocalDate;
@@ -24,12 +25,14 @@ import java.util.regex.Pattern;
  *
  * @author Walter Xie
  */
-public class NexusData<T> {
+public class NexusData { // implements TaxaCharacterMatrix<T>
 
     protected final String fileName; // for caching data
 
-    // for alignment before partitioning by charsets, and continuous data
-    protected TaxaCharacterMatrix<T> data;
+    // for alignment before partitioning by charsets
+    protected Alignment alignment;
+    // TODO separate class for continuous data ?
+//    protected TaxaCharacterMatrix data;
 
     protected Map<String, List<CharSetBlock>> charsetMap;
 
@@ -41,11 +44,9 @@ public class NexusData<T> {
     // SCALE, TODO fix to year at the moment
     protected ChronoUnit chronoUnit = ChronoUnit.YEARS;
 
-
-    // nexus file needs to re-load again if data is changed.
-    public NexusData(String fileName) {
-        this.fileName = fileName;
-    }
+    // default to forward
+    protected AgeDirection ageDirection = AgeDirection.forward;
+    protected String ageRegxStr;
 
     //*** ages ***//
 
@@ -56,23 +57,44 @@ public class NexusData<T> {
         ages      // backward
     }
 
-    private AgeDirection getAgeDirection(String ageDirectionStr){
-        if (ageDirectionStr == null) { // default to forward
-            ageDirectionStr = AgeDirection.forward.toString();
-            LoggerUtils.log.severe("Tip calibration type is not defined, set to " + ageDirectionStr + " as default.");
-        }
-        return AgeDirection.valueOf(ageDirectionStr.toLowerCase());
-    }
-
 
     /**
-     * Alternative method to set {@link #ageStringMap},
+     * @param fileName  for caching data
+     */
+    public NexusData(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public NexusData(String fileName, String ageDirectionStr, String ageRegxStr) {
+        this(fileName);
+        if (ageDirectionStr != null)
+            this.ageDirection = getAgeDirection(ageDirectionStr);
+        if (ageRegxStr != null)
+            this.ageRegxStr = ageRegxStr;
+    }
+
+    /**
+     * Basic config to determine if to read the file again.
+     * @param fileName
+     * @param ageDirectionStr
+     * @param ageRegxStr
+     * @return   if false, then require to read the file.
+     */
+    public boolean hasSameOptions(String fileName, String ageDirectionStr, String ageRegxStr) {
+        return this.fileName.equalsIgnoreCase(fileName) ||
+                this.ageDirection.toString().equalsIgnoreCase(ageDirectionStr) ||
+                (this.ageRegxStr != null && this.ageRegxStr.equalsIgnoreCase(ageRegxStr) ) ;
+    }
+
+    /**
+     * Alternative method to set {@link #ageStringMap} from stored {@link Alignment},
      * call {@link #assignAges} after this to store the ages inside taxa.
-     * @param taxa        could be {@link Alignment} as well
      * @param ageRegxStr  regx to pull out ages from name strings
      * @see #setAgeStringMap(Map)
      */
-    public void setAgeMapFromTaxa(Taxa taxa, final String ageRegxStr) {
+    public void setAgeMapFromTaxa(final String ageRegxStr) {
+        this.ageRegxStr = ageRegxStr;
+
         if (this.ageStringMap != null)
             LoggerUtils.log.warning("Overwriting age map which may have been defined in TIPCALIBRATION in the nexus file !");
         this.ageStringMap = new LinkedHashMap<>();
@@ -80,7 +102,7 @@ public class NexusData<T> {
         // guess dates
         final Pattern regx = Pattern.compile(ageRegxStr);
 
-        for (String taxonName : taxa.getTaxaNames()) {
+        for (String taxonName : getAlignment().getTaxaNames()) {
             String ageStr = getAttrFirstMatch(taxonName, regx);
             ageStringMap.put(taxonName, ageStr);
         }
@@ -96,13 +118,12 @@ public class NexusData<T> {
     /**
      * Parse string ages from {@link #ageStringMap},
      * and assign to {@link Taxa} of {@link Alignment}.
-     * @param taxa             could be {@link Alignment} as well
      * @param ageDirectionStr  {@link AgeDirection}
      */
-    public void assignAges(Taxa taxa, final String ageDirectionStr) {
+    public void assignAges(final String ageDirectionStr) {
 
         final Map<String, String> dateMap = getAgeStringMap();
-        final AgeDirection ageDirection = getAgeDirection(ageDirectionStr);
+        this.ageDirection = getAgeDirection(ageDirectionStr);
 
         //*** string processing ***//
 
@@ -129,24 +150,24 @@ public class NexusData<T> {
         // same order as String[] datesStr
         String[] taxaNames = dateMap.keySet().toArray(String[]::new);
 
-        if (dateMap.size() != taxa.ntaxa())
+        if (dateMap.size() != getAlignment().ntaxa())
             throw new IllegalArgumentException("Invalid ages/dates map : size " + dateMap.size() +
-                    " !=  taxa " + taxa.ntaxa());
+                    " !=  taxa " + getAlignment().ntaxa());
 
         for (int i = 0; i < taxaNames.length; i++) {
             String taxonName = taxaNames[i];
             // make sure use the correct taxon
-            int indexOfTaxon = taxa.indexOfTaxon(taxonName);
+            int indexOfTaxon = getAlignment().indexOfTaxon(taxonName);
             if (indexOfTaxon < 0)
                 throw new RuntimeException("Cannot locate taxon name " + taxonName +
-                        " from ages/dates map in alignment taxa " + Arrays.toString(taxa.getTaxaNames()));
+                        " from ages/dates map in getAlignment() taxa " + Arrays.toString(getAlignment().getTaxaNames()));
 
             if (AgeDirection.forward.equals(ageDirection) || AgeDirection.dates.equals(ageDirection)) {
                 // like virus
-                taxa.getTaxon(indexOfTaxon).setAge(maxAge - vals[i]);
+                getAlignment().getTaxon(indexOfTaxon).setAge(maxAge - vals[i]);
             } else if (AgeDirection.backward.equals(ageDirection)|| AgeDirection.ages.equals(ageDirection)) {
                 // like fossils
-                taxa.getTaxon(indexOfTaxon).setAge(vals[i] - minAge);
+                getAlignment().getTaxon(indexOfTaxon).setAge(vals[i] - minAge);
             } else {
                 throw new IllegalArgumentException("Not recognised age direction to convert dates or ages : " + ageDirection);
             }
@@ -165,12 +186,21 @@ public class NexusData<T> {
                 vals[i] = Double.parseDouble(datesStr[i]);
             } catch (NumberFormatException e) {
                 // the val is Date not Number
-                System.err.println("Warning: the value (" + datesStr[i] +
+                LoggerUtils.log.warning("Warning: the value (" + datesStr[i] +
                         ") is not numeric, so guess it is a date by uuuu-MM-dd format");
                 return null;
             }
         }
         return vals;
+    }
+
+    // default to forward
+    private AgeDirection getAgeDirection(String ageDirectionStr){
+        if (ageDirectionStr == null) {
+            ageDirectionStr = AgeDirection.forward.toString();
+            LoggerUtils.log.severe("Tip calibration type is not defined, set to " + ageDirectionStr + " as default.");
+        }
+        return AgeDirection.valueOf(ageDirectionStr.toLowerCase());
     }
 
     // convert uuuu-MM-dd to the unit of years in decimal
@@ -193,14 +223,54 @@ public class NexusData<T> {
         return vals;
     }
 
+    //*** lphy methods ***//
+
+    @MethodInfo(description="return a partition alignment. " +
+            "If the string doesn't match charset's syntax, then check if the string matches " +
+            "a defined name in the nexus file. Otherwise it is an error. " +
+            "The string is referred to one partition at a call, but can be multiple blocks, " +
+            "such as d.charset(\"2-457\\3 660-896\\3\")." )
+    public Alignment charset(String str) {
+        //*** charsets or part names ***//
+        if (CharSetBlock.Utils.isValid(str)) {
+            // is charset
+            List<CharSetBlock> charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(str);
+            return CharSetAlignment.getPartition(charSetBlocks, getSimpleAlignment());
+
+        } else if (getAlignment() instanceof CharSetAlignment) {
+            // is the partition name in the nexus file
+            // IllegalArgumentException if str not exist
+            return getCharSetAlignment().getPartAlignment(str);
+        }
+        throw new IllegalArgumentException("Not recognised string " + str + " assign to charset !");
+    }
+
+    @MethodInfo(description="the taxa of alignment")
+    public Taxa taxa() {
+        return getAlignment().getTaxa();
+    }
+
+    @MethodInfo(description="the nchar of alignment")
+    public int L() {
+        return getAlignment().nchar();
+    }
+
     //*** getter setter ***//
 
     public SimpleAlignment getSimpleAlignment() {
-        if (! (Objects.requireNonNull(data) instanceof SimpleAlignment) )
+        if (! (getAlignment() instanceof SimpleAlignment) )
             throw new IllegalArgumentException("Data imported from the nexus file " +
-                    "is not an alignment ! " + data.getClass());
-        return (SimpleAlignment) data;
+                    "is not a simple alignment ! " + getAlignment().getClass());
+        return (SimpleAlignment) getAlignment();
     }
+
+    public CharSetAlignment getCharSetAlignment() {
+        if (! (getAlignment() instanceof CharSetAlignment) )
+            throw new IllegalArgumentException("Data imported from the nexus file " +
+                    "is not an charset alignment ! " + getAlignment().getClass());
+        return (CharSetAlignment) getAlignment();
+    }
+
 
     public boolean hasAges() {
         return ! (ageStringMap == null || ageStringMap.size() == 0);
@@ -225,13 +295,23 @@ public class NexusData<T> {
         this.chronoUnit = chronoUnit;
     }
 
-    public TaxaCharacterMatrix<T> getData() {
-        return data;
+    public Alignment getAlignment() {
+        if (alignment == null)
+            throw new IllegalArgumentException("Alignment is not available !");
+        return alignment;
     }
 
-    public void setData(TaxaCharacterMatrix<T> data) {
-        this.data = data;
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
     }
+
+//    public TaxaCharacterMatrix getData() {
+//        return data;
+//    }
+//
+//    public void setData(TaxaCharacterMatrix data) {
+//        this.data = data;
+//    }
 
     public boolean hasCharsets() {
         return ! (charsetMap == null || charsetMap.size() == 0);
@@ -250,4 +330,11 @@ public class NexusData<T> {
         this.charsetMap = charsetMap;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String toString() {
+        return "file = " + getFileName(); //TODO better desc
+    }
 }

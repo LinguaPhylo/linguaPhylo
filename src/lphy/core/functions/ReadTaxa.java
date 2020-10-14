@@ -3,10 +3,12 @@ package lphy.core.functions;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.io.NexusOptions;
+import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.types.StringValue;
 
 import java.util.Map;
 
@@ -36,13 +38,15 @@ public class ReadTaxa extends DeterministicFunction<Taxa> {
 
     @GeneratorInfo(name="readTaxa",description = "A function that parses an taxa from a Nexus file.")
     public Value<Taxa> apply() {
-        Value<String> fileName = getParams().get(fileParamName);
+        String fileName = ((StringValue) getParams().get(fileParamName)).value();
+
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
-        Map<String, String> options = optionsVal == null ? null : optionsVal.value();
+        String ageDirectionStr = NexusOptions.getAgeDirectionStr(optionsVal);
+        String ageRegxStr = NexusOptions.getAgeRegxStr(optionsVal);
 
-        NexusOptions nexusOptions = NexusOptions.getInstance();
-        Alignment a = nexusOptions.getAlignment(fileName.value(), options, false);
+        NexusParser nexusParser = new NexusParser(fileName);
+        Alignment a = nexusParser.getLPhyAlignment(false, ageDirectionStr, ageRegxStr);
 
-        return new Value<Taxa>(a, this);
+        return new Value<>(a, this);
     }
 }
