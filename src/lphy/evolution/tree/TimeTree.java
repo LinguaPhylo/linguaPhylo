@@ -244,6 +244,11 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         return getRoot().age;
     }
 
+    @MethodInfo(description="the total number of nodes in the tree (both leaf nodes and internal nodes).")
+    public Integer nodeCount() {
+        return getNodeCount();
+    }
+
     @MethodInfo(description="the taxa of the tree.")
     public Taxa taxa() {
         return getTaxa();

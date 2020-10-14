@@ -22,7 +22,6 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 @Citation(value="Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688", DOI="10.1093/sysbio/syt030", firstAuthorSurname = "Stadler", year=2013)
 public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
-    public static final String psiParamName = "psi";
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;

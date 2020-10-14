@@ -1,0 +1,14 @@
+lambda ~ Uniform(lower=1.0, upper=1.5);
+mu ~ Uniform(lower=0.5, upper=1.0);
+psi = 1.0;
+
+taxa = taxa(names=1:20);
+fullTree ~ SimBDReverse(lambda=lambda, mu=mu, taxa=taxa, rho=1.0);
+fullFossilTree ~ SimFossilsPoisson(tree=fullTree, psi=psi);
+fossilTree = pruneTree(tree=fullFossilTree);
+
+nodeCount = fullTree.nodeCount();
+TL = fullTree.treeLength();
+
+fftNodeCount = fullFossilTree.nodeCount();
+fossilTreeNodeCount = fossilTree.nodeCount();

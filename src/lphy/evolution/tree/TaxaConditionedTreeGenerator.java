@@ -135,6 +135,10 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
         return nodeList.remove(random.nextInt(nodeList.size()));
     }
 
+    protected TimeTreeNode drawRandomNodeWithReplacement(List<TimeTreeNode> nodeList) {
+        return nodeList.get(random.nextInt(nodeList.size()));
+    }
+
     public Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         if (n != null) map.put(nParamName, n);

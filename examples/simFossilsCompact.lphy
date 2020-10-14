@@ -1,0 +1,14 @@
+lambda ~ Uniform(lower=1.0, upper=1.5);
+mu ~ Uniform(lower=0.5, upper=1.0);
+psi = 1.0;
+
+taxa = taxa(names=1:20);
+fossilTree ~ FossilBirthDeathTree(lambda=lambda, mu=mu, taxa=taxa, psi=psi, rho=1.0);
+
+fossilTreeNodeCount = fossilTree.nodeCount();
+rootAge = fossilTree.rootAge();
+
+extantTree = extantTree(fossilTree);
+etAge = extantTree.rootAge();
+etNodeCount = extantTree.nodeCount();
+

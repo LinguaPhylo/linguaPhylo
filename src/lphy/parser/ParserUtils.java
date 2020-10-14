@@ -12,6 +12,8 @@ import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.*;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
+import lphy.evolution.tree.ExtantTree;
+import lphy.evolution.tree.PruneTree;
 import lphy.graphicalModel.*;
 import lphy.toroidalDiffusion.*;
 import lphy.utils.LoggerUtils;
@@ -41,7 +43,10 @@ public class ParserUtils {
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
                 Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
                 MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class, SerialCoalescent.class,
-                SkylineCoalescent.class, StructuredCoalescent.class};
+                SimBDReverse.class, SimFossilsPoisson.class,
+                SkylineCoalescent.class, StructuredCoalescent.class,
+                FossilBirthDeathTree.class,
+                Uniform.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);
@@ -58,7 +63,7 @@ public class ParserUtils {
                 MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
                 ReadNexus.class, Partition.class, ReadTaxa.class,
-                Species.class
+                Species.class, ExtantTree.class, PruneTree.class
         };
 
         for (Class<?> functionClass : functionClasses) {
@@ -99,9 +104,16 @@ public class ParserUtils {
 
     public static List<Generator> getMatchingGenerativeDistributions(String name, Map<String, Value> arguments) {
         List<Generator> matches = new ArrayList<>();
-        for (Class functionClass : getGenerativeDistributionClasses(name)) {
-            System.out.println("Found potential matching class: " + functionClass);
-            matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
+
+        Set<Class<?>> generators = getGenerativeDistributionClasses(name);
+
+        if (generators != null) {
+            for (Class functionClass : getGenerativeDistributionClasses(name)) {
+                System.out.println("Found potential matching class: " + functionClass);
+                matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
+            }
+        } else {
+            LoggerUtils.log.severe("No generator with name " + name + " available.");
         }
         return matches;
     }

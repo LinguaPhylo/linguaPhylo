@@ -27,14 +27,16 @@ public class TimeTreeNode {
         age = 0.0;
     }
 
+    public TimeTreeNode(double age) {
+        this.age = age;
+    }
+
     public TimeTreeNode(double age, TimeTreeNode[] children) {
         this.age = age;
         this.children = new ArrayList<>();
-        for (int i = 0; i < children.length; i++) {
-            this.children.add(children[i]);
-        }
-        for (int i = 0; i < children.length; i++) {
-            children[i].parent = this;
+        Collections.addAll(this.children, children);
+        for (TimeTreeNode child : children) {
+            child.parent = this;
         }
     }
 
@@ -57,6 +59,13 @@ public class TimeTreeNode {
 
     public boolean isRoot() {
         return parent == null;
+    }
+
+    /**
+     * @return true if this node has no parent, and has one child.
+     */
+    public boolean isOrigin() {
+        return parent == null && getChildCount() == 1;
     }
 
     public final boolean isLeaf() {
@@ -254,5 +263,12 @@ public class TimeTreeNode {
             leafCount += child.countLeaves();
         }
         return leafCount;
+    }
+
+    public double getBranchDuration() {
+        if (!isRoot()) {
+            return getParent().age - age;
+        }
+        return 0.0;
     }
 }

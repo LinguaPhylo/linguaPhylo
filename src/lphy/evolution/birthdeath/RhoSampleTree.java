@@ -10,6 +10,7 @@ import java.util.*;
 
 import static lphy.evolution.birthdeath.BirthDeathConstants.rhoParamName;
 import static lphy.evolution.EvolutionConstants.treeParamName;
+import static lphy.evolution.tree.TimeTreeUtils.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -65,54 +66,6 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
         sampleTree.setRoot(newRoot, true);
 
         return new RandomVariable<>("\u03C8", sampleTree, this);
-    }
-
-    private TimeTreeNode getFirstNonSingleChildNode(TimeTreeNode node) {
-        if (node.getChildCount() != 1) return node;
-        return getFirstNonSingleChildNode(node.getChildren().get(0));
-    }
-
-    private void removeSingleChildNodes(TimeTreeNode node) {
-        if (node.getChildCount() == 1) {
-            TimeTreeNode grandChild = node.getChildren().get(0);
-            TimeTreeNode parent = node.getParent();
-            parent.removeChild(node);
-            node.removeChild(grandChild);
-            parent.addChild(grandChild);
-            removeSingleChildNodes(grandChild);
-        } else {
-            List<TimeTreeNode> copy = new ArrayList<>();
-            copy.addAll(node.getChildren());
-            for (TimeTreeNode child : copy) {
-                removeSingleChildNodes(child);
-            }
-        }
-    }
-
-    private void removeUnmarkedNodes(TimeTreeNode node) {
-        if (!isMarked(node)) {
-            if (node.isRoot()) throw new RuntimeException("Root should always be marked! Something is very wrong!");
-            node.getParent().removeChild(node);
-        } else if (!node.isLeaf()) {
-            List<TimeTreeNode> copy = new ArrayList<>();
-            copy.addAll(node.getChildren());
-            for (TimeTreeNode child : copy) {
-                removeUnmarkedNodes(child);
-            }
-        }
-
-    }
-
-    private boolean isMarked(TimeTreeNode node) {
-        Object mark = node.getMetaData("mark");
-        return mark != null;
-    }
-
-    private void markNodeAndDirectAncestors(TimeTreeNode node) {
-        if (node != null) {
-            node.setMetaData("mark", true);
-            markNodeAndDirectAncestors(node.getParent());
-        }
     }
 
     @Override

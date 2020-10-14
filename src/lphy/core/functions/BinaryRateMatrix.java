@@ -11,11 +11,10 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
  */
 public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
 
-    String paramName;
+    public static final String lambdaParamName = "lambda";
 
-    public BinaryRateMatrix(@ParameterInfo(name = "lambda", description = "the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.") Value<Double> kappa) {
-        paramName = getParamName(0);
-        setParam(paramName, kappa);
+    public BinaryRateMatrix(@ParameterInfo(name = lambdaParamName, description = "the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.") Value<Double> lambda) {
+        setParam(lambdaParamName, lambda);
     }
 
 
@@ -25,7 +24,7 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
                     "      ⎣ λ -λ⎦\n" +
                     "</pre>")
     public Value<Double[][]> apply() {
-        Value<Double> lambda = getParams().get(paramName);
+        Value<Double> lambda = getParams().get(lambdaParamName);
         return new DoubleArray2DValue(binaryCTMC(lambda.value()), this);
     }
 

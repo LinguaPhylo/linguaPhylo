@@ -26,7 +26,7 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     public FullBirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                               @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
-                              @ParameterInfo(name = rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge) {
+                              @ParameterInfo(name = rootAgeParamName, description = "the age of the tree.") Value<Number> rootAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
