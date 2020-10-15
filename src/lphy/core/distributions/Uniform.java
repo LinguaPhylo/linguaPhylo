@@ -63,4 +63,12 @@ public class Uniform implements GenerativeDistribution<Double> {
     public String toString() {
         return getName();
     }
+
+    public Value<Double> getLower() {
+        return lower;
+    }
+
+    public Value<Double> getUpper() {
+        return upper;
+    }
 }

@@ -3,6 +3,8 @@ package lphy.evolution;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.MultiDimensional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +37,18 @@ public interface Taxa extends MultiDimensional {
         }
         return taxa;
     }
+
+    /**
+     * @return all Taxon objects in an array
+     */
+    default Taxon[] extantTaxa() {
+        List<Taxon> taxonList = new ArrayList<>();
+        for (Taxon taxon : getTaxonArray()) {
+            if (taxon.isExtant()) taxonList.add(taxon);
+        }
+        return taxonList.toArray(new Taxon[0]);
+    }
+
 
     /**
      * @return the names of the taxa.

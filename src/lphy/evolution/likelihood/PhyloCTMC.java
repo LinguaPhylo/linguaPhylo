@@ -60,7 +60,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
                      @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L ) {
+                     @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L) {
 
         this.tree = tree;
         this.Q = Q;
@@ -157,7 +157,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         }
     }
 
-    @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. " +
+    @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<SimpleAlignment> sample() {
         setup();
@@ -220,7 +220,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
-        if (node.isLeaf()) {
+        if (node.isLeaf() || (node.isSingleChildNonOrigin() || node.getId() != null)) {
             Integer i = idMap.get(node.getId());
             if (i == null) {
                 int nextValue = 0;
@@ -232,32 +232,31 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
             } else {
                 node.setLeafIndex(i);
             }
-        } else {
-            for (TimeTreeNode child : node.getChildren()) {
-                fillIdMap(child, idMap);
-            }
         }
+        for (TimeTreeNode child : node.getChildren()) {
+            fillIdMap(child, idMap);
+        }
+
     }
 
     private void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
         // TODO validate state here ?
-        if (node.isLeaf()) {
+        if (node.isLeaf() || (node.isSingleChildNonOrigin() || node.getId() != null)) {
             alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
-        } else {
-            List<TimeTreeNode> children = node.getChildren();
-            for (int i = 0; i < children.size(); i++) {
-                TimeTreeNode child = children.get(i);
-                double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
+        }
+        List<TimeTreeNode> children = node.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            TimeTreeNode child = children.get(i);
+            double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
 
-                if (branchRates != null) {
-                    branchLength *= branchRates.value()[child.getIndex()];
-                }
-
-                getTransitionProbabilities(branchLength, transProb);
-                int state = drawState(transProb[nodeState]);
-
-                traverseTree(child, state, alignment, pos, transProb, clockRate, siteRate);
+            if (branchRates != null) {
+                branchLength *= branchRates.value()[child.getIndex()].doubleValue();
             }
+
+            getTransitionProbabilities(branchLength, transProb);
+            int state = drawState(transProb[nodeState]);
+
+            traverseTree(child, state, alignment, pos, transProb, clockRate, siteRate);
         }
     }
 

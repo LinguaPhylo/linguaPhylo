@@ -30,6 +30,8 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
+    static final boolean generateSampledAncestorsAsLeafNodes = true;
+
     public SimFossilsPoisson(@ParameterInfo(name = treeParamName, description = "Tree to add simulated fossils to.") Value<TimeTree> tree,
                              @ParameterInfo(name = psiParamName, description = "The fossilization rate per unit time per lineage.") Value<Number> psi) {
 
@@ -84,8 +86,18 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
 
         for (int i = times.length - 1; i >= 0; i--) {
             Taxon fossilTaxon = new Taxon("f_"+nextFossilNumber+"", times[i]);
-            TimeTreeNode fossilNode = new TimeTreeNode(fossilTaxon,tree);
+
             parent.removeChild(child);
+
+            TimeTreeNode fossilNode;
+            if (generateSampledAncestorsAsLeafNodes) {
+                TimeTreeNode fossilLeafNode = new TimeTreeNode(fossilTaxon,tree);
+                fossilNode = new TimeTreeNode(fossilTaxon.getAge());
+                fossilNode.addChild(fossilLeafNode);
+            } else {
+                fossilNode = new TimeTreeNode(fossilTaxon,tree);
+            }
+
             parent.addChild(fossilNode);
             fossilNode.addChild(child);
             parent = fossilNode;
