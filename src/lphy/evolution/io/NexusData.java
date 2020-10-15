@@ -18,7 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * either Alignment or ContinuousCharacterData.
+ * The data object to contain the lphy objects parsed from the nexus file.
+ * It extends either Alignment or ContinuousCharacterData.
+ * @see NexusParser
  * @author Walter Xie
  */
 public interface NexusData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensional {
@@ -143,6 +145,28 @@ public interface NexusData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensi
         return blocks;
     }
 
+    //*** getter / setter ***//
+
     void setCharsetMap(Map<String, List<CharSetBlock>> charsetMap);
+
+    Map<String, List<CharSetBlock>> getCharsetMap();
+
+    // TODO no Taxa.hasAges()
+    boolean hasAges();
+
+    AgeDirection getAgeDirection(); // no setter, given in assignAges() and setAgesFromTaxaName()
+
+    /**
+     * @param sb  there should be an alignment description in the begin.
+     * @return    a summary of loading nexus file.
+     */
+    default String toString(StringBuilder sb) {
+        if (getCharsetMap() != null)
+            sb.append(", ").append( getCharsetMap().size() ).append(" charset(s)");
+        if (hasAges())
+            sb.append(", age direction is ").append( getAgeDirection() );
+        return sb.toString();
+    }
+
 
 }

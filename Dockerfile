@@ -37,9 +37,9 @@ RUN cd /root && git clone --branch v3.0.1 --depth=1 https://github.com/beagle-de
 RUN cd /root/beagle-lib && ./autogen.sh && ./configure --prefix=/usr/local && make install
 RUN ldconfig
 
-# Ant build fails if the repo dir isn't named graphicalModelSimulation
-RUN mkdir /root/graphicalModelSimulation
-WORKDIR /root/graphicalModelSimulation
+# Ant build fails if the repo dir isn't named linguaPhylo
+RUN mkdir /root/linguaPhylo
+WORKDIR /root/linguaPhylo
 
 ADD . ./
 

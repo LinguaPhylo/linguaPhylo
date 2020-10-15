@@ -51,7 +51,7 @@ public class CharactersBlock extends NexusBlock {
         
         // Assumes BEAST sequence data types map directly
         // onto nexus data types.  No doubt a bad idea in general...
-        lines.add("format datatype=" + alignment.getDataTypeDescription());
+        lines.add("format datatype=" + alignment.getSequenceTypeStr());
         
         StringBuilder matrix = new StringBuilder("matrix ");
         for (int i=0; i<alignment.ntaxa(); i++) {
