@@ -12,7 +12,6 @@ import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
-import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sequences.Continuous;
@@ -107,21 +106,19 @@ public class NexusParser {
             System.out.println("Loading " + fileName);
             final NexusParser importer = new NexusParser(fileName);
 
-//            List<Alignment> alignmentList = parser.importAlignments();
-//                alignmentList.forEach(System.out::println);
-
+            NexusData nexusData;
             if (fileName.equals("Dengue4.nex")) {
-                SimpleAlignment lphyAlg =
-                        (SimpleAlignment) importer.getLPhyAlignment(true, "forward", null);
+                nexusData = importer.importNexus("forward", null);
 
-                System.out.println(lphyAlg.toJSON());
+                System.out.println(nexusData.getAlignment().toJSON());
 
             } else if (fileName.equals("primate.nex")) {
-                lphy.evolution.alignment.CharSetAlignment lphyAlg =
-                        (CharSetAlignment) importer.getLPhyAlignment(false, null, null);
-                System.out.println(lphyAlg.toJSON());
-//            lphy.evolution.alignment.Alignment[] twoAlg = lphyAlg.getPartAlignments(new String[]{"noncoding", "coding"});
-                System.out.println(lphyAlg.toJSON(new String[]{"noncoding", "coding"}));
+                nexusData = importer.importNexus(null, null);
+
+                Alignment coding = nexusData.charset("coding");
+                System.out.println("coding : " + coding.toJSON());
+                Alignment noncoding = nexusData.charset("noncoding");
+                System.out.println("noncoding : " + noncoding.toJSON());
 
             } else if (fileName.equals("haemulidae_trophic_traits.nex")) {
 
@@ -137,6 +134,46 @@ public class NexusParser {
             e.printStackTrace();
         }
     } // main
+
+
+    /**
+     * The full pipeline to parse the nexus file.
+     * The charset will be handled separately.
+     *
+     * @param ageDirectionStr  either forward or backward,
+     *                         if null and nex has TIPCALIBRATION block, then assume forward.
+     * @param dateRegxStr  Java regular expression to extract dates from taxa names.
+     *                     if null, check TIPCALIBRATION block,
+     *                     if not null, then ignore TIPCALIBRATION block.
+     * @return LPHY {@link NexusData}.
+     * @see #importNexus()
+     */
+    public NexusData importNexus(String ageDirectionStr, String dateRegxStr) {
+        NexusData nexusData = null;
+        try {
+            nexusData = importNexus();
+        } catch (IOException | ImportException e) {
+            e.printStackTrace();
+        }
+        if (nexusData == null)
+            throw new RuntimeException("Fail to parse file ! ");
+
+        //*** ages ***//
+
+        if (dateRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
+            // extract dates from names
+            nexusData.setAgeMapFromTaxa(dateRegxStr);
+        }
+        if (nexusData.hasAges()) {
+            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
+            nexusData.assignAges(ageDirectionStr);  // forward backward
+        }
+
+        // charset is handled in SimpleAlignment.Utils.getCharSetAlignment
+
+        return nexusData; // sing partition
+    }
+
 
     //****** import ******//
 
@@ -188,7 +225,7 @@ public class NexusParser {
         }
 
         if (DataType.isSame(sequenceType, Continuous.getInstance())) {
-            if (continuousCharacterData == null)
+            if (continuousCharacterData == null) // TODO
                 throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
         } else if (nexusData.getAlignment() == null)
             throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
@@ -216,7 +253,7 @@ public class NexusParser {
             taxons[t] = new lphy.evolution.Taxon(jeblTaxon.getName());
         }
 
-        Alignment alignment = new SimpleAlignment(taxons, siteCount, sequenceType);
+        Alignment alignment = new SimpleAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
         // fill in sequences for single partition
         for (int t = 0; t < seqSize; t++) {
             Sequence sequence = sequences.get(t);
@@ -231,61 +268,6 @@ public class NexusParser {
 
         nexusData.setAlignment(alignment);
     }
-
-
-    /**
-     * Parse Nexus to LPHY {@link SimpleAlignment}
-     *
-     * @param ignoreCharset If true, ignore charset in Nexus,
-     *                      only return single {@link SimpleAlignment}.
-     *                      If false, return {@link CharSetAlignment} when Nexus has charsets.
-     * @param ageDirectionStr  either forward or backward,
-     *                         if null and nex has TIPCALIBRATION block, then assume forward.
-     * @param dateRegxStr  Java regular expression to extract dates from taxa names.
-     *                     if null, check TIPCALIBRATION block,
-     *                     if not null, then ignore TIPCALIBRATION block.
-     * @return LPHY {@link SimpleAlignment} or {@link CharSetAlignment}.
-     */
-    public lphy.evolution.alignment.Alignment getLPhyAlignment(boolean ignoreCharset,
-                                                               String ageDirectionStr, String dateRegxStr) {
-        NexusData nexusData = null;
-        try {
-            nexusData = importNexus();
-        } catch (IOException | ImportException e) {
-            e.printStackTrace();
-        }
-        if (nexusData == null)
-            throw new RuntimeException("Fail to parse file ! ");
-
-        lphy.evolution.alignment.SimpleAlignment lphyAlg = nexusData.getSimpleAlignment();
-        System.out.println("Create " + lphyAlg.getSequenceType() + " alignment, ntax = " +
-                lphyAlg.ntaxa() + ", nchar = " + lphyAlg.nchar());
-
-        //*** ages ***//
-
-        if (dateRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
-            // extract dates from names
-            nexusData.setAgeMapFromTaxa(dateRegxStr);
-        }
-        if (nexusData.hasAges()) {
-            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
-            nexusData.assignAges(ageDirectionStr);  // forward backward
-        }
-
-        //*** charset ***//
-        if (nexusData.hasCharsets()) {
-            final Map<String, List<CharSetBlock>> charsetMap = nexusData.getCharsetMap();
-//            System.out.println( Arrays.toString(charsetMap.entrySet().toArray()) );
-//            CharSetAlignment charSetAlignment = new CharSetAlignment(charsetMap, partNames, lphyAlg);
-//            System.out.println(charSetAlignment);
-            if (ignoreCharset)
-                System.out.println("Ignore charsets in the nexus file, charsetMap = " + charsetMap);
-            else
-                return new CharSetAlignment(charsetMap, lphyAlg); // this imports all charsets
-        }
-        return lphyAlg; // sing partition
-    }
-
 
     //****** Data Type ******//
 
@@ -417,7 +399,7 @@ public class NexusParser {
         } while (isNotEnd(token));
         //validation ?
 
-        // store into NexusData
+        // store into NexusData, and then handle in SimpleAlignment.Utils.getCharSetAlignment
         nexusData.setCharsetMap(charsetMap);
     }
 

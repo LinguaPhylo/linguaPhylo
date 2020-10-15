@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-/**
+/**TODO TaxaData implements Taxa ?
  * The abstract class defines everything related to Taxa, Data type, but except of sequences.
  * @author Alexei Drummond
  * @author Walter Xie
@@ -24,16 +24,11 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     // may not have sequences
     protected int nchar;
 
-    protected Taxon[] taxonArray;
-
-//    Map<String, Integer> idMap;
-//    Map<Integer, String> reverseMap;
+    protected Taxa taxa;
 
     @Deprecated int numStates;
     SequenceType sequenceType; // encapsulate stateCount, ambiguousState, and getChar() ...
 
-    // same index as Map<Integer, String> reverseMap
-//    Map<Integer, Taxon> taxonMap; // TODO duplicate to reverseMap ?
 
     /**
      * Init alignment with taxa and number of site.
@@ -42,7 +37,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      */
     public AbstractAlignment(Map<String, Integer> idMap, int nchar) {
         this.nchar = nchar;
-        this.taxonArray = Taxa.createTaxa(idMap);
+        this.taxa = Taxa.createTaxa(idMap);
     }
 
     @Deprecated
@@ -61,12 +56,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     /**
      * {@link Taxon} stores name, age, sepices.
-     * @param taxonArray    {@link Taxa.Simple}.
+     * @param taxa    {@link Taxa.Simple}.
      * @param nchar   the number of sites.
      * @param sequenceType  {@link SequenceType}
      */
-    public AbstractAlignment(Taxon[] taxonArray, int nchar, SequenceType sequenceType) {
-        this.taxonArray = taxonArray; // Arrays.copyOf ?
+    public AbstractAlignment(Taxa taxa, int nchar, SequenceType sequenceType) {
+        this.taxa = taxa; // Arrays.copyOf ?
         this.nchar = nchar;
         this.sequenceType = sequenceType;
         this.numStates = sequenceType.getCanonicalStateCount();
@@ -77,7 +72,8 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
      */
     public AbstractAlignment(int nchar, final AbstractAlignment source) {
         this.nchar = nchar;
-        this.taxonArray = Arrays.copyOf(source.getTaxonArray(), source.ntaxa());
+        // deep copy
+        this.taxa = Taxa.createTaxa(Arrays.copyOf(source.getTaxa().getTaxonArray(), source.ntaxa()));
 
         this.sequenceType = source.getSequenceType();
         if (sequenceType == null)
@@ -104,12 +100,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     @Override
     public int ntaxa() {
-        return taxonArray.length;
+        return taxa.ntaxa();
     }
 
     @Override
     public Taxon getTaxon(int taxonIndex) {
-        return taxonArray[taxonIndex];
+        return taxa.getTaxon(taxonIndex);
     }
 
     /**
@@ -123,12 +119,12 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
     @Override
     public String[] getTaxaNames() {
-        return Arrays.stream(taxonArray).map(Taxon::getName).toArray(String[]::new);
+        return taxa.getTaxaNames();
     }
 
     @Override
     public Taxon[] getTaxonArray() {
-        return taxonArray;
+        return taxa.getTaxonArray();
     }
 
 //    @Override

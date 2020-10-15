@@ -50,11 +50,12 @@ public class CharSetBlock {
 
         /**
          * @see #parseCharSet(String)
-         * @param charset  such as "2-457\3 660-896\3", or "4-457\3 662-.\3", or "1 458-659".
+         * @param expression  charset expression, such as "2-457\3 660-896\3",
+         *                    or "4-457\3 662-.\3", or "1 458-659".
          * @return
          */
-        public static List<CharSetBlock> getCharSetBlocks(String charset) {
-            String[] blocks = charset.split("\\s+");
+        public static List<CharSetBlock> getCharSetBlocks(String expression) {
+            String[] blocks = expression.split("\\s+");
             List<CharSetBlock> charSetBlocks = new ArrayList<>();
             for (String oneBlock : blocks) {
                 CharSetBlock charSetBlock = parseCharSet(oneBlock);
@@ -67,7 +68,7 @@ public class CharSetBlock {
          * @param charSet1Block The string must only contain one block.
          *                      The blocks could be an array, <code>charset="[3-629\3, 4-629\3, 5-629\3]"</code>.
          *                      The blocks could also be separated by spaces, for example,
-         *                      "2-457\3 660-896\3" is considered as 2 charset blocks.
+         *                      "2-457\3 660-896\3" is considered as 2 blocks.
          *                      Use <code>split("\\s+")</code> to spilt charset blocks
          *                      before call this method.
          * @return only 1 {@link CharSetBlock} parsed from string
