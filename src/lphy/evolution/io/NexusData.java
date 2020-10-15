@@ -1,14 +1,16 @@
 package lphy.evolution.io;
 
+import lphy.app.HasComponentView;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
-import lphy.evolution.alignment.CharSetAlignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.Value;
 import lphy.utils.LoggerUtils;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -21,11 +23,18 @@ import java.util.regex.Pattern;
  * Raw data from the nexus file, saved as LPhy objects.
  * Not only taxa and sequences, but also ages and other attributes
  * which are inside {@link Taxon}.
- * For example, <code>getData().getTaxa().getAges()</code>
+ * For example, <code>getData().getTaxa().getAges()</code>.
+ *
+ * It can be either {@link SimpleAlignment} in the most cases,
+ * or {@link lphy.evolution.alignment.ContinuousCharacterData}.
+ * They are the data directly converted from MATRIX,
+ * where partitioning will be handled in the runtime.
+ * If there is charset defined in the nexus, they will store
+ * in {@link #charsetMap}, the same is age/date in {@link #ageStringMap}.
  *
  * @author Walter Xie
  */
-public class NexusData { // implements TaxaCharacterMatrix<T>
+public class NexusData implements HasComponentView<String> {//implements TaxaCharacterMatrix {
 
     protected final String fileName; // for caching data
 
@@ -34,11 +43,13 @@ public class NexusData { // implements TaxaCharacterMatrix<T>
     // TODO separate class for continuous data ?
 //    protected TaxaCharacterMatrix data;
 
+    // if null, then no charset in the nexus file
     protected Map<String, List<CharSetBlock>> charsetMap;
 
     // store strings for processing later, if tip calibration,
     // but dates will be parsed and go to Taxon eventually.
-    protected Map<String, String> ageStringMap; // Taxon name <=> age/date string
+    // Taxon name <=> age/date string
+    protected Map<String, String> ageStringMap;
     protected double minAge;
     protected double maxAge;
     // SCALE, TODO fix to year at the moment
@@ -231,31 +242,48 @@ public class NexusData { // implements TaxaCharacterMatrix<T>
             "The string is referred to one partition at a call, but can be multiple blocks, " +
             "such as d.charset(\"2-457\\3 660-896\\3\")." )
     public Alignment charset(String str) {
+        List<CharSetBlock> charSetBlocks = new ArrayList<>();
         //*** charsets or part names ***//
         if (CharSetBlock.Utils.isValid(str)) {
             // is charset
-            List<CharSetBlock> charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(str);
-            return CharSetAlignment.getPartition(charSetBlocks, getSimpleAlignment());
-
-        } else if (getAlignment() instanceof CharSetAlignment) {
-            // is the partition name in the nexus file
+            charSetBlocks = CharSetBlock.Utils.getCharSetBlocks(str);
+        } else if (hasCharsets()) {
+            // There is the partition name in the nexus file
             // IllegalArgumentException if str not exist
-            return getCharSetAlignment().getPartAlignment(str);
+            charSetBlocks = getCharSet(str);
         }
-        throw new IllegalArgumentException("Not recognised string " + str + " assign to charset !");
+        if (charSetBlocks.size() < 1)
+            throw new IllegalArgumentException("Not recognised string " + str + " assign to charset !");
+        return SimpleAlignment.Utils.getCharSetAlignment(charSetBlocks, getSimpleAlignment());
     }
 
-    @MethodInfo(description="the taxa of alignment")
+    @MethodInfo(description="the taxa of alignment.")
     public Taxa taxa() {
         return getAlignment().getTaxa();
     }
 
-    @MethodInfo(description="the nchar of alignment")
+    @MethodInfo(description="the nchar of alignment.")
     public int L() {
         return getAlignment().nchar();
     }
 
+    // TODO may change in future
+    @MethodInfo(description="get the alignment imported from the nexus file.")
+    public Alignment getAlignment() {
+        if (alignment == null)
+            throw new IllegalArgumentException("Alignment is not available !");
+        return alignment;
+    }
+
     //*** getter setter ***//
+
+//    public TaxaCharacterMatrix getData() {
+//        return data;
+//    }
+//
+//    public void setData(TaxaCharacterMatrix data) {
+//        this.data = data;
+//    }
 
     public SimpleAlignment getSimpleAlignment() {
         if (! (getAlignment() instanceof SimpleAlignment) )
@@ -264,14 +292,16 @@ public class NexusData { // implements TaxaCharacterMatrix<T>
         return (SimpleAlignment) getAlignment();
     }
 
-    public CharSetAlignment getCharSetAlignment() {
-        if (! (getAlignment() instanceof CharSetAlignment) )
-            throw new IllegalArgumentException("Data imported from the nexus file " +
-                    "is not an charset alignment ! " + getAlignment().getClass());
-        return (CharSetAlignment) getAlignment();
-    }
+//    public CharSetAlignment getCharSetAlignment() {
+//        if (! (getAlignment() instanceof CharSetAlignment) )
+//            throw new IllegalArgumentException("Data imported from the nexus file " +
+//                    "is not an charset alignment ! " + getAlignment().getClass());
+//        return (CharSetAlignment) getAlignment();
+//    }
 
-
+    /**
+     * @return  true, if the nexus file defines "TIPCALIBRATION".
+     */
     public boolean hasAges() {
         return ! (ageStringMap == null || ageStringMap.size() == 0);
     }
@@ -295,24 +325,13 @@ public class NexusData { // implements TaxaCharacterMatrix<T>
         this.chronoUnit = chronoUnit;
     }
 
-    public Alignment getAlignment() {
-        if (alignment == null)
-            throw new IllegalArgumentException("Alignment is not available !");
-        return alignment;
-    }
-
     public void setAlignment(Alignment alignment) {
         this.alignment = alignment;
     }
 
-//    public TaxaCharacterMatrix getData() {
-//        return data;
-//    }
-//
-//    public void setData(TaxaCharacterMatrix data) {
-//        this.data = data;
-//    }
-
+    /**
+     * @return  true, if the nexus file defines "charset".
+     */
     public boolean hasCharsets() {
         return ! (charsetMap == null || charsetMap.size() == 0);
     }
@@ -330,11 +349,34 @@ public class NexusData { // implements TaxaCharacterMatrix<T>
         this.charsetMap = charsetMap;
     }
 
+    public List<CharSetBlock> getCharSet(String partName) {
+        List<CharSetBlock> blocks = charsetMap.get(partName);
+        if (blocks == null)
+            throw new IllegalArgumentException("Charset name " + partName + " not exist !");
+        return blocks;
+    }
+
     public String getFileName() {
         return fileName;
     }
 
-    public String toString() {
-        return "file = " + getFileName(); //TODO better desc
+    @Override
+    public JComponent getComponent(Value<String> value) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("file = ").append( getFileName() );
+        if (charsetMap != null) {
+            sb.append("\n").append( charsetMap.toString() );
+        }
+        if (ageStringMap != null) {
+            sb.append("\nageDirection = ").append( ageDirection );
+            // wrap map string by comma
+            sb.append("\nages = ").append( ageStringMap.toString().replaceAll(",", ",\n") );
+        }
+
+        JTextArea textArea = new JTextArea(sb.toString());
+        textArea.setEditable(false);
+
+        return textArea;
     }
+
 }

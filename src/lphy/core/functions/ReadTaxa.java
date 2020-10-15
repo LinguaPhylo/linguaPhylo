@@ -1,7 +1,7 @@
 package lphy.core.functions;
 
 import lphy.evolution.Taxa;
-import lphy.evolution.alignment.Alignment;
+import lphy.evolution.io.NexusData;
 import lphy.evolution.io.NexusOptions;
 import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
@@ -45,8 +45,8 @@ public class ReadTaxa extends DeterministicFunction<Taxa> {
         String ageRegxStr = NexusOptions.getAgeRegxStr(optionsVal);
 
         NexusParser nexusParser = new NexusParser(fileName);
-        Alignment a = nexusParser.getLPhyAlignment(false, ageDirectionStr, ageRegxStr);
+        NexusData nexusData = nexusParser.importNexus(ageDirectionStr, ageRegxStr);
 
-        return new Value<>(a, this);
+        return new Value<>(nexusData.taxa(), this);
     }
 }
