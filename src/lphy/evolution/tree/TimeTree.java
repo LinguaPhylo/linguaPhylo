@@ -249,6 +249,16 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         return getNodeCount();
     }
 
+    @MethodInfo(description="the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child).")
+    public Integer directAncestorCount() {
+        int count = 0;
+        for (TimeTreeNode node: getNodes()) {
+            if (node.getChildCount() == 1 && !node.isRoot()) count += 1;
+        }
+        return count;
+    }
+
+
     @MethodInfo(description="the taxa of the tree.")
     public Taxa taxa() {
         return getTaxa();

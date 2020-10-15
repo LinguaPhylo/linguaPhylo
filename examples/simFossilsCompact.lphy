@@ -6,6 +6,7 @@ taxa = taxa(names=1:20);
 fossilTree ~ FossilBirthDeathTree(lambda=lambda, mu=mu, taxa=taxa, psi=psi, rho=1.0);
 
 fossilTreeNodeCount = fossilTree.nodeCount();
+daCount = fossilTree.directAncestorCount();
 rootAge = fossilTree.rootAge();
 
 extantTree = extantTree(fossilTree);

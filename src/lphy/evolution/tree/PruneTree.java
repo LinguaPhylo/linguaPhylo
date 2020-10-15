@@ -35,7 +35,9 @@ public class PruneTree extends DeterministicFunction<TimeTree> {
             }
         }
 
-        TimeTreeUtils.removeUnmarkedNodes(prunedTree.getRoot());
+        TimeTreeUtils.removeUnmarkedNodes(prunedTree);
+
+        TimeTreeUtils.removeSingleChildNodes(prunedTree, true);
 
         prunedTree.setRoot(prunedTree.getRoot(),true);
 

@@ -54,14 +54,14 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
             markNodeAndDirectAncestors(tip);
         }
 
-        removeUnmarkedNodes(sampleTree.getRoot());
+        removeUnmarkedNodes(sampleTree);
 
-        TimeTreeNode newRoot = getFirstNonSingleChildNode(sampleTree.getRoot());
+        TimeTreeNode newRoot = getFirstNonSingleChildNode(sampleTree);
         if (!newRoot.isRoot()) {
             newRoot.getParent().removeChild(newRoot);
         }
 
-        removeSingleChildNodes(newRoot);
+        removeSingleChildNodes(newRoot, true);
 
         sampleTree.setRoot(newRoot, true);
 

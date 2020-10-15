@@ -5,6 +5,7 @@ import lphy.app.graphicalmodelcomponent.Layering;
 import lphy.core.LPhyParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.*;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -243,7 +244,10 @@ public class GraphicalModelPanel extends JPanel {
             if (sinks.size() > 0) showValue(sinks.iterator().next());
         }
         long end = System.currentTimeMillis();
-        System.out.println("sample(" + reps + ") took " + (end - start) + " ms.");
+        LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
+
+        variableSummary.repaint();
+        rightPane.repaint();
     }
 
     public JComponent getViewer(Object object) {

@@ -5,6 +5,7 @@ import lphy.graphicalModel.*;
 
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +25,8 @@ public class VariableSummary extends JTable implements RandomValueLogger {
     double[] stdev;
     double[] stderr;
 
+    AbstractTableModel tableModel;
+
     public VariableSummary(boolean logStatistics, boolean logVariables) {
 
         this.logStatistics = logStatistics;
@@ -31,7 +34,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
         setLoggableMap(VarFileLogger.loggableMap);
 
-        setModel(new TableModel() {
+        tableModel = new AbstractTableModel() {
             @Override
             public int getRowCount() {
                 return ((variableNames != null) ? variableNames.size() : 0);
@@ -103,22 +106,9 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                 }
                 return "";
             }
+        };
 
-            @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-            }
-
-            @Override
-            public void addTableModelListener(TableModelListener l) {
-
-            }
-
-            @Override
-            public void removeTableModelListener(TableModelListener l) {
-
-            }
-        });
+        setModel(tableModel);
     }
 
     public void setLoggableMap(Map<Class, Loggable> loggableMap) {
@@ -188,5 +178,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
             // stderr = stdev / sqrt(N)
             stderr[i] = stdev[i] / Math.sqrt(values[i].size());
         }
+
+        tableModel.fireTableDataChanged();
     }
 }
