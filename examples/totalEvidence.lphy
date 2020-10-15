@@ -1,17 +1,21 @@
-lambda ~ Uniform(lower=1.0, upper=1.5);
-mu ~ Uniform(lower=0.5, upper=1.0);
-psi = 1.0;
-S ~ FossilBirthDeathTree(mu=mu, lambda=lambda, psi=psi, rho=1.0, taxa=taxa(names=1:20));
-spTaxa = extantTaxa(S.taxa());
-morph_mu ~ LogNormal(meanlog=-3.0, sdlog=0.1);
-clock_rate ~ LogNormal(meanlog=-3, sdlog=0.1);
-morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=2), mu=morph_mu, L=100);
-alpha = 2.0;
-beta ~ LogNormal(meanlog=-1.0, sdlog=1.25);
-pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=S.nodeCount());
+data {
+  spTaxa = taxa(names=1:20);
+}
+model {
+  lambda ~ Uniform(lower=1.0, upper=1.5);
+  mu ~ Uniform(lower=0.5, upper=1.0);
+  psi = 1.0;
+  S ~ FossilBirthDeathTree(mu=mu, lambda=lambda, psi=psi, rho=1.0, taxa=spTaxa);
+  morph_mu ~ LogNormal(meanlog=-3.0, sdlog=0.1);
+  clock_rate ~ LogNormal(meanlog=-3, sdlog=0.1);
+  morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=2), mu=morph_mu, L=100);
+  alpha = 2.0;
+  beta ~ LogNormal(meanlog=-1.0, sdlog=1.25);
+  pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=S.nodeCount());
 
-g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=spTaxa);
-g_rate ~ LogNormal(meanlog=0.0, sdlog=1.0); // note this is the mean of log values.
-pi ~ Dirichlet(conc=[2,2,2,2]);
-kappa ~ LogNormal(meanlog=1.0, sdlog=1.25);
-mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, rate=g_rate), mu=clock_rate, tree=g, L=500);
+  g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=spTaxa);
+  g_rate ~ LogNormal(meanlog=0.0, sdlog=1.0); // note this is the mean of log values.
+  pi ~ Dirichlet(conc=[2,2,2,2]);
+  kappa ~ LogNormal(meanlog=1.0, sdlog=1.25);
+  mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, rate=g_rate), mu=clock_rate, tree=g, L=500);
+}

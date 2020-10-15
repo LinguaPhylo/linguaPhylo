@@ -65,7 +65,6 @@ public class CodeColorizer extends SimulatorBaseListener {
 
         @Override
         public Object visitConstant(ConstantContext ctx) {
-
             return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
         }
 
@@ -118,12 +117,14 @@ public class CodeColorizer extends SimulatorBaseListener {
             if (ctx.getChildCount() == 1) {
 
                 ParseTree childContext = ctx.getChild(0);
-
-                // if this is a map or a method call defer to subordinate node parser
-                if (childContext.getText().startsWith("{") || childContext.getText().contains(".")) {
-                    return visit(childContext);
+                String key = childContext.getText();
+                if (parser.hasValue(key, context)) {
+                    Value value = parser.getValue(key, context);
+                    return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);
                 }
-                return getIDElement(childContext.getText());
+
+                // else let subordinate method handle it.
+                return visit(childContext);
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();

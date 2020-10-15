@@ -1,4 +1,4 @@
-// Generated from /Users/alexeidrummond/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -35,11 +35,29 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelations(DataModelParser.RelationsContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DataModelParser#determ_relations}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeterm_relations(DataModelParser.Determ_relationsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DataModelParser#relation_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRelation_list(DataModelParser.Relation_listContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_line}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeterm_relation_line(DataModelParser.Determ_relation_lineContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DataModelParser#relation}.
 	 * @param ctx the parse tree
@@ -124,6 +142,12 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodCall(DataModelParser.MethodCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataModelParser#objectMethodCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DataModelParser#distribution}.
 	 * @param ctx the parse tree

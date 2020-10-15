@@ -1,4 +1,4 @@
-// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.7.2
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class DataModelParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -137,6 +137,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitInput(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitInput(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InputContext input() throws RecognitionException {
@@ -196,6 +201,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDatablock(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDatablock(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DatablockContext datablock() throws RecognitionException {
@@ -238,6 +248,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitModelblock(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitModelblock(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ModelblockContext modelblock() throws RecognitionException {
@@ -278,6 +293,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitRelations(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitRelations(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -330,6 +350,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDeterm_relations(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDeterm_relations(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -385,6 +410,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitRelation_list(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitRelation_list(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -462,6 +492,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDeterm_relation_list(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDeterm_relation_list(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Determ_relation_listContext determ_relation_list() throws RecognitionException {
@@ -535,6 +570,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDeterm_relation_line(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDeterm_relation_line(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Determ_relation_lineContext determ_relation_line() throws RecognitionException {
@@ -581,6 +621,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitRelation(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitRelation(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -650,6 +695,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitFor_loop(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitFor_loop(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final For_loopContext for_loop() throws RecognitionException {
@@ -691,6 +741,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitCounter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitCounter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -738,6 +793,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitAssignment(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitAssignment(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -793,6 +853,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDeterm_relation(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDeterm_relation(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Determ_relationContext determ_relation() throws RecognitionException {
@@ -840,6 +905,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitStoch_relation(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitStoch_relation(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Stoch_relationContext stoch_relation() throws RecognitionException {
@@ -883,6 +953,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitVar(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitVar(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -944,6 +1019,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitRange_list(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitRange_list(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1020,6 +1100,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitRange_element(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitRange_element(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Range_elementContext range_element() throws RecognitionException {
@@ -1072,6 +1157,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitConstant(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitConstant(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1134,6 +1224,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitExpression_list(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitExpression_list(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Expression_listContext expression_list() throws RecognitionException {
@@ -1193,6 +1288,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitUnnamed_expression_list(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitUnnamed_expression_list(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Unnamed_expression_listContext unnamed_expression_list() throws RecognitionException {
@@ -1249,6 +1349,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitMapFunction(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitMapFunction(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final MapFunctionContext mapFunction() throws RecognitionException {
@@ -1295,6 +1400,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitMethodCall(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitMethodCall(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1382,6 +1492,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitObjectMethodCall(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitObjectMethodCall(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ObjectMethodCallContext objectMethodCall() throws RecognitionException {
@@ -1441,6 +1556,11 @@ public class DataModelParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitDistribution(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitDistribution(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DistributionContext distribution() throws RecognitionException {
@@ -1486,6 +1606,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitNamed_expression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitNamed_expression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1554,6 +1679,11 @@ public class DataModelParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof DataModelListener ) ((DataModelListener)listener).exitExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof DataModelVisitor ) return ((DataModelVisitor<? extends T>)visitor).visitExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
