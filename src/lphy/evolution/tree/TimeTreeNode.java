@@ -48,6 +48,7 @@ public class TimeTreeNode {
 
     TimeTreeNode deepCopy(TimeTree tree) {
         TimeTreeNode copy = new TimeTreeNode(id, tree);
+        copy.id = id;
         copy.index = index;
         copy.age = age;
         copy.leafIndex = leafIndex;
@@ -66,6 +67,10 @@ public class TimeTreeNode {
      */
     public boolean isOrigin() {
         return parent == null && getChildCount() == 1;
+    }
+
+    public boolean isSingleChildNonOrigin() {
+        return parent != null && getChildCount() == 1;
     }
 
     public final boolean isLeaf() {

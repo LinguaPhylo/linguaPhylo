@@ -53,7 +53,8 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
 
     private void simulateFossils(TimeTree tree, double psi) {
 
-        int nextNodeNumber = tree.getNodeCount();
+        int nextFossilNumber = 0;
+
 
         for (TimeTreeNode node : tree.getNodes()) {
 
@@ -62,33 +63,33 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
                 double max = node.getParent().getAge();
                 double expectedFossils = (max - min) * psi;
 
-                PoissonDistribution poissonDistribution = new PoissonDistribution(expectedFossils);
+                PoissonDistribution poissonDistribution = new PoissonDistribution(random,expectedFossils,1e-8, 100);
                 int fossils = poissonDistribution.sample();
                 if (fossils > 0) {
                     double[] fossilTimes = new double[fossils];
                     for (int i = 0; i < fossils; i++) {
                         fossilTimes[i] = random.nextDouble() * (max - min) + min;
                     }
-                    addFossils(fossilTimes, node.getParent(), node, nextNodeNumber, tree);
+                    addFossils(fossilTimes, node.getParent(), node, nextFossilNumber, tree);
                 }
-                nextNodeNumber += fossils;
+                nextFossilNumber += fossils;
             }
         }
 
         tree.setRoot(tree.getRoot(), true);
     }
 
-    private void addFossils(double[] times, TimeTreeNode parent, TimeTreeNode child, int nextNodeNumber, TimeTree tree) {
+    private void addFossils(double[] times, TimeTreeNode parent, TimeTreeNode child, int nextFossilNumber, TimeTree tree) {
         Arrays.sort(times);
 
         for (int i = times.length - 1; i >= 0; i--) {
-            Taxon fossilTaxon = new Taxon(nextNodeNumber+"", times[i]);
+            Taxon fossilTaxon = new Taxon("f_"+nextFossilNumber+"", times[i]);
             TimeTreeNode fossilNode = new TimeTreeNode(fossilTaxon,tree);
             parent.removeChild(child);
             parent.addChild(fossilNode);
             fossilNode.addChild(child);
             parent = fossilNode;
-            nextNodeNumber += 1;
+            nextFossilNumber += 1;
         }
     }
     

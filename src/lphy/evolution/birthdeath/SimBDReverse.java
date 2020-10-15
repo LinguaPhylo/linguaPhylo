@@ -5,7 +5,9 @@ import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
+import lphy.evolution.tree.TimeTreeUtils;
 import lphy.graphicalModel.*;
+import lphy.math.MathUtils;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -64,12 +66,14 @@ public class SimBDReverse extends TaxaConditionedTreeGenerator {
             activeNodes.add(new TimeTreeNode(0.0));
         }
 
+        TimeTreeNode rootNode = null;
         TimeTreeNode originNode = null;
 
         double time = 0.0;
 
         while (activeNodes.size() > 0) {
-            double timestep = new ExponentialDistribution(1.0/(activeNodes.size()*(lambda+mu))).sample();
+
+            double timestep = MathUtils.nextExponential(activeNodes.size()*(lambda+mu), random);
 
             time += timestep;
 
@@ -86,7 +90,7 @@ public class SimBDReverse extends TaxaConditionedTreeGenerator {
                     activeNodes.add(parent);
 
                 } else { // last speciation event back in time, so this is the origin
-                    TimeTreeNode rootNode = activeNodes.remove(0);
+                    rootNode = activeNodes.remove(0);
                     originNode = new TimeTreeNode(time, new TimeTreeNode[] {rootNode});
 
                     if (activeNodes.size() != 0) throw new AssertionError();
@@ -95,8 +99,9 @@ public class SimBDReverse extends TaxaConditionedTreeGenerator {
                 activeNodes.add(new TimeTreeNode(time));
             }
         }
-        tree.setRoot(originNode, true);
 
+        tree.setRoot(originNode, true);
+        
         return new RandomVariable<>(null, tree, this);
     }
 

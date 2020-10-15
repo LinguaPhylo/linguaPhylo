@@ -94,19 +94,13 @@ public class Sampler {
         return newlySampledParams;
     }
 
+    /**
+     * Be careful, this is called frequently.
+     * @param value the value to add to the model dictionary.
+     */
     private void addValueToModelDictionary(Value value) {
-
-        LoggerUtils.log.fine("addValueToDictionary(" + value + ")");
-
         if (!value.isAnonymous()) {
             String id = value.getId();
-            Value oldValue = parser.getModelDictionary().get(id);
-            // Can't change the name as this will mess with updating of expression nodes!
-//            if (oldValue != null) {
-//                oldValue.setId(id + ".old");
-//            }
-            LoggerUtils.log.fine("  parser.getDictionary().put(" + id + ":" + value + ")");
-
             parser.getModelDictionary().put(id, value);
         }
     }

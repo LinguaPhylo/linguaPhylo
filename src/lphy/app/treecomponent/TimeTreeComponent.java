@@ -277,15 +277,18 @@ public class TimeTreeComponent extends JComponent {
         return -1;
     }
 
-    final void drawLeafLabel(TimeTreeNode node, Graphics2D g) {
+    final void drawNodeLabel(TimeTreeNode node, Graphics2D g) {
 
-        Point2D nodePoint = getTransformedNodePoint2D(node);
+        if (node.getId() != null) {
 
-        if (colorTraitName != null) {
-            int colorIndex = getIntegerTrait(node, colorTraitName);
-            if (colorIndex >= 0) g.setColor(traitColorTable.getColor(colorIndex));
+            Point2D nodePoint = getTransformedNodePoint2D(node);
+
+            if (colorTraitName != null) {
+                int colorIndex = getIntegerTrait(node, colorTraitName);
+                if (colorIndex >= 0) g.setColor(traitColorTable.getColor(colorIndex));
+            }
+            treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(), g);
         }
-        treeDrawing.drawString(node.getId(), nodePoint.getX(), nodePoint.getY(), g);
     }
 
     /**
@@ -308,11 +311,11 @@ public class TimeTreeComponent extends JComponent {
             positionInternalNodes(node);
         }
 
-        if (node.isLeaf()) {
-            if (treeDrawing.showLeafLabels()) {
-                drawLeafLabel(node, g);
-            }
-        } else {
+        if (treeDrawing.showLeafLabels()) {
+            drawNodeLabel(node, g);
+        }
+
+        if (!node.isLeaf()) {
 
             for (TimeTreeNode childNode : node.getChildren()) {
                 draw(treeDrawing, childNode, g);
@@ -326,6 +329,13 @@ public class TimeTreeComponent extends JComponent {
 
         // finally draw all the node decorations
         if (node.isRoot()) {
+            // decorate single child nodes
+            for (TimeTreeNode aNode : tree.getNodes()) {
+                if (aNode.getChildCount() == 1 && !aNode.isRoot()) {
+                    drawNode(getTransformedPoint2D(getCanonicalNodePoint2D(aNode)), g, NodeDecorator.BLACK_DOT);
+                }
+            }
+
             if (leafDecorator != null) {
                 for (TimeTreeNode aNode : tree.getNodes()) {
                     if (leafDecorator != null && aNode.isLeaf()) {

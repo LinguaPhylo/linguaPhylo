@@ -34,20 +34,19 @@ public class ExtantTree extends DeterministicFunction<TimeTree> {
                 }
             }
         }
-        LoggerUtils.log.info("Extant tree has " + sampleTips.size() + " tips.");
 
         for (TimeTreeNode tip : sampleTips) {
             markNodeAndDirectAncestors(tip);
         }
 
-        removeUnmarkedNodes(extantTree.getRoot());
+        removeUnmarkedNodes(extantTree);
 
-        TimeTreeNode newRoot = getFirstNonSingleChildNode(extantTree.getRoot());
+        TimeTreeNode newRoot = getFirstNonSingleChildNode(extantTree);
         if (!newRoot.isRoot()) {
             newRoot.getParent().removeChild(newRoot);
         }
 
-        removeSingleChildNodes(newRoot);
+        removeSingleChildNodes(newRoot, false);
 
         extantTree.setRoot(newRoot, true);
 

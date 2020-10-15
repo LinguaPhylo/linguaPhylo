@@ -63,7 +63,7 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
                 if (isLogged(randomValue)) {
                     Loggable loggable = loggableMap.get(randomValue.value().getClass());
                     if (loggable != null) {
-                        for (String logValue : loggable.getLogValues(randomValue)) {
+                        for (Object logValue : loggable.getLogValues(randomValue)) {
                             builder.append("\t");
                             builder.append(logValue);
                         }
