@@ -605,7 +605,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             public ValueOrFunction(Object obj) {
                 this.obj = obj;
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
-                    LoggerUtils.log.severe("Expected value or function but got " + obj + " of class " + obj.getClass().getName());
+                    LoggerUtils.log.severe("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""));
                     throw new RuntimeException();
                 }
             }

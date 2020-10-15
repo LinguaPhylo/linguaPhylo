@@ -9,9 +9,9 @@ import static lphy.core.distributions.DistributionConstants.*;
  */
 public class Dirichlet implements GenerativeDistribution<Double[]> {
 
-    private Value<Double[]> concentration;
+    private Value<Number[]> concentration;
 
-    public Dirichlet(@ParameterInfo(name=concParamName, description="the concentration parameters of a Dirichlet distribution.", type=Double[].class) Value<Double[]> concentration) {
+    public Dirichlet(@ParameterInfo(name=concParamName, description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration) {
         this.concentration = concentration;
     }
 
@@ -21,7 +21,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         Double[] dirichlet = new Double[concentration.value().length];
         double sum = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
-            double val = Utils.randomGamma(concentration.value()[i], 1.0);
+            double val = Utils.randomGamma(concentration.value()[i].doubleValue(), 1.0);
             dirichlet[i] = val;
             sum += val;
         }
@@ -42,7 +42,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         return Collections.singletonMap(concParamName, concentration);
     }
 
-    public Value<Double[]> getConcentration() {
+    public Value<Number[]> getConcentration() {
         return concentration;
     }
 

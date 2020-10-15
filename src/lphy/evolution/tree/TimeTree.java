@@ -21,15 +21,18 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
     private List<TimeTreeNode> nodes;
 
     Taxa taxa = null;
+    boolean constructedWithTaxa = false;
 
     // number of leaves
     int n = 0;
 
     public TimeTree(Taxa taxa) {
         this.taxa = taxa;
+        constructedWithTaxa = true;
     }
 
-    public TimeTree() { }
+    public TimeTree() {
+    }
 
     public TimeTree(TimeTree treeToCopy) {
         taxa = treeToCopy.taxa;
@@ -48,9 +51,7 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         // root node now last in list, first n nodes are leaves
         nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
 
-        if (taxa == null) {
-            taxa = Taxa.createTaxa(root);
-        }
+        if (!constructedWithTaxa) taxa = Taxa.createTaxa(root);
     }
 
     public void setRoot(TimeTreeNode root) {
@@ -80,7 +81,6 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         }
         return count;
     }
-
 
     public List<TimeTreeNode> getNodes() {
         return nodes;
@@ -226,7 +226,7 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
 
     // methods permitted pass-through to LPhy
 
-    @MethodInfo(description="the total length of the tree")
+    @MethodInfo(description = "the total length of the tree")
     public Double treeLength() {
 
         double TL = 0.0;
@@ -238,28 +238,28 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         return TL;
     }
 
-    @MethodInfo(description="the age of the root of the tree.")
+    @MethodInfo(description = "the age of the root of the tree.")
     public Double rootAge() {
 
         return getRoot().age;
     }
 
-    @MethodInfo(description="the total number of nodes in the tree (both leaf nodes and internal nodes).")
+    @MethodInfo(description = "the total number of nodes in the tree (both leaf nodes and internal nodes).")
     public Integer nodeCount() {
         return getNodeCount();
     }
 
-    @MethodInfo(description="the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child).")
+    @MethodInfo(description = "the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child).")
     public Integer directAncestorCount() {
         int count = 0;
-        for (TimeTreeNode node: getNodes()) {
+        for (TimeTreeNode node : getNodes()) {
             if (node.getChildCount() == 1 && !node.isRoot()) count += 1;
         }
         return count;
     }
 
 
-    @MethodInfo(description="the taxa of the tree.")
+    @MethodInfo(description = "the taxa of the tree.")
     public Taxa taxa() {
         return getTaxa();
     }
