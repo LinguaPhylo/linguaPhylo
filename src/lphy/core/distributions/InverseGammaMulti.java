@@ -14,20 +14,20 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class InverseGammaMulti implements GenerativeDistribution<Double[]> {
 
-    private Value<Number> shape;
-    private Value<Number> scale;
+    private Value<Number> alpha;
+    private Value<Number> beta;
     private Value<Integer> n;
 
     GammaDistribution gammaDistribution;
 
-    public InverseGammaMulti(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
-                             @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale,
+    public InverseGammaMulti(@ParameterInfo(name = alphaParamName, description = "the shape of the distribution.") Value<Number> alpha,
+                             @ParameterInfo(name = betaParamName, description = "the scale of the distribution.") Value<Number> beta,
                              @ParameterInfo(name = nParamName, description = "the dimension of the return.") Value<Integer> n) {
 
-        this.shape = shape;
-        if (shape == null) throw new IllegalArgumentException("The " + shapeParamName + " value can't be null!");
-        this.scale = scale;
-        if (scale == null) throw new IllegalArgumentException("The " + scaleParamName + " value can't be null!");
+        this.alpha = alpha;
+        if (alpha == null) throw new IllegalArgumentException("The " + alphaParamName + " value can't be null!");
+        this.beta = beta;
+        if (beta == null) throw new IllegalArgumentException("The " + betaParamName + " value can't be null!");
         this.n = n;
 
         constructGammaDistribution();
@@ -49,8 +49,8 @@ public class InverseGammaMulti implements GenerativeDistribution<Double[]> {
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(shapeParamName, shape);
-            put(scaleParamName, scale);
+            put(alphaParamName, alpha);
+            put(betaParamName, beta);
             put(nParamName, n);
         }};
     }
@@ -58,11 +58,11 @@ public class InverseGammaMulti implements GenerativeDistribution<Double[]> {
     @Override
     public void setParam(String paramName, Value value) {
         switch (paramName) {
-            case shapeParamName:
-                shape = value;
+            case alphaParamName:
+                alpha = value;
                 break;
-            case scaleParamName:
-                scale = value;
+            case betaParamName:
+                beta = value;
                 break;
             case nParamName:
                 n = value;
@@ -76,24 +76,24 @@ public class InverseGammaMulti implements GenerativeDistribution<Double[]> {
 
     private void constructGammaDistribution() {
         // in case the shape is type integer
-        double a = doubleValue(shape);
+        double a = doubleValue(alpha);
 
         // in case the scale is type integer
-        double b = doubleValue(scale);
+        double b = doubleValue(beta);
 
-        gammaDistribution = new GammaDistribution(a, b);
+        gammaDistribution = new GammaDistribution(a, 1.0/b);
     }
 
     public String toString() {
         return getName();
     }
 
-    public Value<Number> getScale() {
-        return scale;
+    public Value<Number> getBeta() {
+        return beta;
     }
 
-    public Value<Number> getShape() {
-        return shape;
+    public Value<Number> getAlpha() {
+        return alpha;
     }
 
     private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};

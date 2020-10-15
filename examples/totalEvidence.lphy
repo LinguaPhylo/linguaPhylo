@@ -4,15 +4,14 @@ psi = 1.0;
 full_species_tree ~ FossilBirthDeathTree(mu=mu, lambda=lambda, psi=psi, rho=1.0, taxa=taxa(names=1:20));
 molecular_species_tree = extantTree(full_species_tree);
 global_morph_rate ~ LogNormal(meanlog=-3.0, sdlog=0.1);
-global_mol_rate ~ LogNormal(meanlog=-2.5, sdlog=0.1);
-morph_data ~ PhyloCTMC(tree=full_species_tree, Q=lewisMK(numStates=2), mu=global_morph_rate, L=100)
+global_mol_rate ~ LogNormal(meanlog=-3, sdlog=0.1);
+morph_data ~ PhyloCTMC(tree=full_species_tree, Q=lewisMK(numStates=2), mu=global_morph_rate, L=100);
 alpha = 2.0;
-beta ~ LogNormal(meanlog=-5.0, sdlog=1.25);
-pop_sizes ~ InverseGamma(shape=alpha, scale=beta, n=molecular_species_tree.nodeCount());
+beta ~ LogNormal(meanlog=-1.0, sdlog=1.25);
+pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=molecular_species_tree.nodeCount());
 
-gene_tree ~ MultispeciesCoalescent(S=molecular_species_tree, theta=pop_sizes)
+gene_tree ~ MultispeciesCoalescent(S=molecular_species_tree, theta=pop_sizes);
 gene_tree_mol_rate ~ LogNormal(meanlog=0.0, sdlog=1.0); // note this is the mean of log values.
 pi ~ Dirichlet(conc=[2,2,2,2]);
 kappa ~ LogNormal(meanlog=1.0, sdlog=1.25);
-mu = gene_tree_mol_rate*global_mol_rate;
-mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi), mu=mu, tree=gene_tree, L=500)
+mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, rate=gene_tree_mol_rate), mu=global_mol_rate, tree=gene_tree, L=500);

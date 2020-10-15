@@ -8,6 +8,10 @@ import lphy.graphicalModel.DeterministicFunction;
 public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
 
     void normalize(Double[] freqs, Double[][] Q) {
+        normalize(freqs, Q, 1.0);
+    }
+
+    void normalize(Double[] freqs, Double[][] Q, double rate) {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < Q.length; i++) {
@@ -16,7 +20,7 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
 
         for (int i = 0; i < Q.length; i++) {
             for (int j = 0; j < Q.length; j++) {
-                Q[i][j] = Q[i][j] / subst;
+                Q[i][j] = rate * (Q[i][j] / subst);
             }
         }
     }

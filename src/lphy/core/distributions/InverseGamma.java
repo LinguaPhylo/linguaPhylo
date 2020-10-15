@@ -6,8 +6,7 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.scaleParamName;
-import static lphy.core.distributions.DistributionConstants.shapeParamName;
+import static lphy.core.distributions.DistributionConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -15,18 +14,18 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 public class InverseGamma implements GenerativeDistribution1D<Double> {
 
-    private Value<Number> shape;
-    private Value<Number> scale;
+    private Value<Number> alpha;
+    private Value<Number> beta;
 
     GammaDistribution gammaDistribution;
 
-    public InverseGamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
-                        @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale) {
+    public InverseGamma(@ParameterInfo(name = alphaParamName, description = "the alpha parameter of inverse gamma.") Value<Number> alpha,
+                        @ParameterInfo(name = betaParamName, description = "the beta parameter of inverse gamma.") Value<Number> beta) {
 
-        this.shape = shape;
-        if (shape == null) throw new IllegalArgumentException("The " + shapeParamName + " value can't be null!");
-        this.scale = scale;
-        if (scale == null) throw new IllegalArgumentException("The " + scaleParamName + " value can't be null!");
+        this.alpha = alpha;
+        if (alpha == null) throw new IllegalArgumentException("The " + alphaParamName + " value can't be null!");
+        this.beta = beta;
+        if (beta == null) throw new IllegalArgumentException("The " + betaParamName + " value can't be null!");
 
         constructGammaDistribution();
     }
@@ -45,17 +44,17 @@ public class InverseGamma implements GenerativeDistribution1D<Double> {
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(shapeParamName, shape);
-            put(scaleParamName, scale);
+            put(alphaParamName, alpha);
+            put(betaParamName, beta);
         }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
-        if (shapeParamName.equals(paramName)) {
-            shape = value;
-        } else if (scaleParamName.equals(paramName)) {
-            scale = value;
+        if (alphaParamName.equals(paramName)) {
+            alpha = value;
+        } else if (betaParamName.equals(paramName)) {
+            beta = value;
         } else {
             throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
@@ -64,22 +63,22 @@ public class InverseGamma implements GenerativeDistribution1D<Double> {
     }
 
     private void constructGammaDistribution() {
-        double a = doubleValue(shape);
-        double b = doubleValue(scale);
+        double a = doubleValue(alpha);
+        double b = doubleValue(beta);
 
-        gammaDistribution = new GammaDistribution(a, b);
+        gammaDistribution = new GammaDistribution(a, 1.0/b);
     }
 
     public String toString() {
         return getName();
     }
 
-    public Value<Number> getScale() {
-        return scale;
+    public Value<Number> getBeta() {
+        return beta;
     }
 
-    public Value<Number> getShape() {
-        return shape;
+    public Value<Number> getAlpha() {
+        return alpha;
     }
 
     private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};

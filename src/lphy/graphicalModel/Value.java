@@ -1,6 +1,7 @@
 package lphy.graphicalModel;
 
 import lphy.app.*;
+import lphy.graphicalModel.types.DoubleValue;
 
 import javax.swing.*;
 import java.util.*;
@@ -203,4 +204,7 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
     public void setFunction(DeterministicFunction f) {
         this.function = f;
     }
+
+
+    public static final Value<Double> Double_1 = new DoubleValue(null, 1.0, null);
 }
