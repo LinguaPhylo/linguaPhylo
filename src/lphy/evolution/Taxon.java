@@ -24,6 +24,10 @@ public class Taxon { // implements Attributable
         this.age = age;
     }
 
+    public final boolean isExtant() {
+        return age == 0.0;
+    }
+
     public void setSpecies(String species) {
         this.species = species;
     }

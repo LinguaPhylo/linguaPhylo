@@ -10,6 +10,7 @@ import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.*;
+import lphy.evolution.functions.ExtantTaxa;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
 import lphy.evolution.tree.ExtantTree;
@@ -64,7 +65,8 @@ public class ParserUtils {
                 MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
                 ReadNexus.class,
-                Species.class, ExtantTree.class, PruneTree.class
+                Species.class, ExtantTree.class, PruneTree.class,
+                ExtantTaxa.class
         };
 
         for (Class<?> functionClass : functionClasses) {

@@ -40,7 +40,9 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "MultispeciesCoalescent", description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree.")
+    @GeneratorInfo(name = "MultispeciesCoalescent",
+            description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree." +
+                    "The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatitives.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree geneTree = new TimeTree(getTaxa());
@@ -58,6 +60,9 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         return new RandomVariable<>("geneTree", geneTree, this);
     }
 
+    /**
+     * @return the taxa for the gene tree. This will either be that taxa object provided as a parameter, or if that is not available then the species tree taxa.
+     */
     private Taxa getTaxa() {
         if (taxa != null) return taxa.value();
         return S.value().getTaxa();
@@ -105,6 +110,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
             }
         } else {
             activeNodes = allLeafActiveNodes.get(spNode.getId());
+            if (activeNodes == null) activeNodes = new ArrayList<>();
         }
 
         double time = spNode.getAge();
