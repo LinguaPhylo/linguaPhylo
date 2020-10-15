@@ -1,6 +1,7 @@
 package lphy.core.functions;
 
 import jebl.evolution.io.ImportException;
+import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.io.NexusData;
 import lphy.evolution.io.NexusOptions;
 import lphy.evolution.io.NexusParser;
@@ -18,7 +19,7 @@ import java.util.Map;
  * D.charset("coding");
  * This does not involve partitioning.
  * @see NexusData
- * @see lphy.evolution.alignment.SimpleAlignment.Utils
+ * @see AlignmentUtils
  */
 public class ReadNexus extends DeterministicFunction<NexusData> {
 
@@ -78,39 +79,16 @@ public class ReadNexus extends DeterministicFunction<NexusData> {
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(fileName);
-        //TODO merge the following pipeline into NexusParser
         NexusData nexusData = null;
-        try {
-            nexusData = nexusParser.importNexus();
-        } catch (IOException | ImportException e) {
-            e.printStackTrace();
+            try {
+                nexusData = nexusParser.importNexus(ageDirectionStr);
+            } catch (IOException | ImportException e) {
+                e.printStackTrace();
+            }
+        if (ageRegxStr != null) {
+            nexusData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
         }
-        if (nexusData == null)
-            throw new RuntimeException("Fail to parse file ! ");
-
-        //*** ages ***//
-
-        if (ageRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
-            // extract dates from names
-            nexusData.setAgeMapFromTaxa(ageRegxStr);
-        }
-        if (nexusData.hasAges()) {
-            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
-            nexusData.assignAges(ageDirectionStr);  // forward backward
-        }
-
-        //*** charset ***//
-//        if (nexusData.hasCharsets()) {
-//            final Map<String, List<CharSetBlock>> charsetMap = nexusData.getCharsetMap();
-//            if (ignoreCharset)
-//                System.out.println("Ignore charsets in the nexus file, charsetMap = " + charsetMap);
-//            else {
-//                SimpleAlignment parent = nexusData.getSimpleAlignment();
-//                nexusData.setAlignment(new CharSetAlignment(charsetMap, parent)); // this imports all charsets
-//            }
-//        }
-
-        return new Value<>(getName(), nexusData, this);
+        return new Value<>(null, nexusData, this);
 
     }
 

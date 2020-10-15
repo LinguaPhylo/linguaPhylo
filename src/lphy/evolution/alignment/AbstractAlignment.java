@@ -19,7 +19,7 @@ import java.util.*;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Alignment, HasComponentView<AbstractAlignment> {
+public abstract class AbstractAlignment implements Alignment, HasComponentView<Alignment> {
 
     // may not have sequences
     protected int nchar;
@@ -163,7 +163,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
     //****** view ******
 
     @Override
-    public JComponent getComponent(Value<AbstractAlignment> value) {
+    public JComponent getComponent(Value<Alignment> value) {
         return new AlignmentComponent(value);
     }
 

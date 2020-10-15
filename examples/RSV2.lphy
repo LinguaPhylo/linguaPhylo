@@ -1,7 +1,7 @@
 data {
   options = {ageDirection="forward", ageRegex="s(\d+)$"};
   D = readNexus(file="examples/RSV2.nex", options=options);
-  taxa = D.taxa();
+  taxa = taxa(D);
   codon0 = D.charset("3-629\3");
   codon1 = D.charset("4-629\3");
   codon2 = D.charset("5-629\3");

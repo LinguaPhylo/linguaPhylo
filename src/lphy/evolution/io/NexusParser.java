@@ -13,7 +13,6 @@ import jebl.util.Attributable;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ContinuousCharacterData;
-import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sequences.Continuous;
 import lphy.evolution.sequences.DataType;
 import lphy.evolution.sequences.SequenceTypeFactory;
@@ -44,8 +43,6 @@ public class NexusParser {
     protected final ImportHelper helper;
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    protected NexusData nexusData;
-
     protected NexusBlock nextBlock = null;
     protected String nextBlockName = null;
 
@@ -56,7 +53,7 @@ public class NexusParser {
     protected String missingCharacters = "?";
     protected boolean isInterleaved = false;
 
-    //TODO mv to another class like NexusData
+    //TODO mv to another class like AbstractNexusData
     protected ContinuousCharacterData continuousCharacterData;
 
 //    public ExtNexusImporter(Reader reader) {
@@ -66,9 +63,6 @@ public class NexusParser {
     public NexusParser(String fileName) {
 
         Reader reader = getReader(fileName);
-
-        // store raw data
-        nexusData = new NexusData(fileName);
 
         helper = new ImportHelper(reader);
         helper.setExpectedInputLength(0);
@@ -106,23 +100,23 @@ public class NexusParser {
             System.out.println("Loading " + fileName);
             final NexusParser importer = new NexusParser(fileName);
 
-            NexusData nexusData;
+            NexusAlignment nexusAlignment;
             if (fileName.equals("Dengue4.nex")) {
-                nexusData = importer.importNexus("forward", null);
+                nexusAlignment = importer.importNexusAlignment("forward");
 
-                System.out.println(nexusData.getAlignment().toJSON());
+                System.out.println(nexusAlignment.toJSON());
 
             } else if (fileName.equals("primate.nex")) {
-                nexusData = importer.importNexus(null, null);
+                nexusAlignment = importer.importNexusAlignment(null);
 
-                Alignment coding = nexusData.charset("coding");
+                Alignment coding = nexusAlignment.charset("coding");
                 System.out.println("coding : " + coding.toJSON());
-                Alignment noncoding = nexusData.charset("noncoding");
+                Alignment noncoding = nexusAlignment.charset("noncoding");
                 System.out.println("noncoding : " + noncoding.toJSON());
 
             } else if (fileName.equals("haemulidae_trophic_traits.nex")) {
 
-                importer.importNexus();
+                importer.importNexus(null);
                 System.out.println(importer.continuousCharacterData.toJSON());
 
 
@@ -136,50 +130,32 @@ public class NexusParser {
     } // main
 
 
+    //****** import ******//
+
+    /**
+     * cast to {@link Alignment}.
+     * @see #importNexus(String)
+     */
+    public NexusAlignment importNexusAlignment(String ageDirectionStr) throws IOException, ImportException {
+        NexusData nexusData = importNexus(ageDirectionStr);
+        if (nexusData instanceof NexusAlignment)
+            return (NexusAlignment) nexusData;
+        throw new RuntimeException("The nexus does not contain alignment, it may have the continuous data matrix !");
+    }
+
     /**
      * The full pipeline to parse the nexus file.
      * The charset will be handled separately.
      *
      * @param ageDirectionStr  either forward or backward,
      *                         if null and nex has TIPCALIBRATION block, then assume forward.
-     * @param dateRegxStr  Java regular expression to extract dates from taxa names.
-     *                     if null, check TIPCALIBRATION block,
-     *                     if not null, then ignore TIPCALIBRATION block.
      * @return LPHY {@link NexusData}.
-     * @see #importNexus()
      */
-    public NexusData importNexus(String ageDirectionStr, String dateRegxStr) {
-        NexusData nexusData = null;
-        try {
-            nexusData = importNexus();
-        } catch (IOException | ImportException e) {
-            e.printStackTrace();
-        }
-        if (nexusData == null)
-            throw new RuntimeException("Fail to parse file ! ");
-
-        //*** ages ***//
-
-        if (dateRegxStr != null) { // ages from taxon names, so ignore TIPCALIBRATION in Nexus
-            // extract dates from names
-            nexusData.setAgeMapFromTaxa(dateRegxStr);
-        }
-        if (nexusData.hasAges()) {
-            // ageStringMap is filled in from either TIPCALIBRATION or taxon names
-            nexusData.assignAges(ageDirectionStr);  // forward backward
-        }
-
-        // charset is handled in SimpleAlignment.Utils.getCharSetAlignment
-
-        return nexusData; // sing partition
-    }
-
-
-    //****** import ******//
-
-    public NexusData importNexus() throws IOException, ImportException {
+    public NexusData importNexus(String ageDirectionStr) throws IOException, ImportException {
         boolean done = false;
 
+        // create NexusData either from readCharactersBlock or readDataBlock
+        NexusData nexusData = null;
         List<Taxon> taxonList = null;
 
         while (!done) {
@@ -196,8 +172,7 @@ public class NexusParser {
                     if (taxonList == null)
                         throw new NexusImporter.MissingBlockException("TAXA block is missing");
 
-                    List<Sequence> sequences = readCharactersBlock(taxonList);
-                    setSimpleAlignment(sequences);
+                    nexusData = readCharactersBlock(taxonList);
 
                 } else if (block == NexusBlock.DATA) {
 
@@ -205,15 +180,15 @@ public class NexusParser {
                     // but if one exists then it will use it.
                     // this reads continuous data into lphy ContinuousCharacterData, not alignments
                     // the rest data type will add alignments
-                    readDataBlock(taxonList);
+                    nexusData = readDataBlock(taxonList);
 
                 } else if (block == NexusBlock.ASSUMPTIONS) {
 
-                    readAssumptionsBlock(); // only CHARSET
+                    readAssumptionsBlock(nexusData); // only CHARSET
 
                 } else if (block == NexusBlock.CALIBRATION) {
 
-                    readCalibrationBlock(); // only TIPCALIBRATION
+                    readCalibrationBlock(nexusData, ageDirectionStr); // only TIPCALIBRATION
 
                 } else {
                     //TODO new block
@@ -227,15 +202,17 @@ public class NexusParser {
         if (DataType.isSame(sequenceType, Continuous.getInstance())) {
             if (continuousCharacterData == null) // TODO
                 throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
-        } else if (nexusData.getAlignment() == null)
+        } else if (nexusData == null)
             throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
 
         return nexusData;
     }
 
+
     // use jebl State to convert char into int
-    // create lphy SimpleAlignment from jebl Sequence
-    private void setSimpleAlignment(List<Sequence> sequences) {
+    // create lphy NexusAlignment from jebl Sequence
+    // convert jebl Taxon into lphy Taxon
+    private NexusData createNexusAlignment(List<Sequence> sequences) {
         if (sequenceType == null)
             throw new IllegalArgumentException("Fail to find data type before parsing sequences !");
         if (siteCount < 1)
@@ -253,7 +230,7 @@ public class NexusParser {
             taxons[t] = new lphy.evolution.Taxon(jeblTaxon.getName());
         }
 
-        Alignment alignment = new SimpleAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+        NexusAlignment nexusData = new NexusAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
         // fill in sequences for single partition
         for (int t = 0; t < seqSize; t++) {
             Sequence sequence = sequences.get(t);
@@ -262,11 +239,11 @@ public class NexusParser {
                 State state = sequence.getState(s);
                 int stateNum = state.getIndex();
                 // the taxon index in List should be same to Taxon[] taxonArray in Alignment
-                alignment.setState(t, s, stateNum);
+                nexusData.setState(t, s, stateNum);
             }
         }
 
-        nexusData.setAlignment(alignment);
+        return nexusData;
     }
 
     //****** Data Type ******//
@@ -290,7 +267,7 @@ public class NexusParser {
 
     //****** CALIBRATION Block : TIPCALIBRATION ******//
 
-    protected void readCalibrationBlock() throws ImportException, IOException {
+    protected void readCalibrationBlock(NexusData nexusData, String ageDirectionStr) throws ImportException, IOException {
 
         String token;
         do {
@@ -355,8 +332,8 @@ public class NexusParser {
                     System.err.println("Warning: " + ageMap.size() +
                             " tips have dates, but taxon count = " + taxonCount);
 
-                // store into NexusData
-                nexusData.setAgeStringMap(ageMap);
+                // store into AbstractNexusData
+                nexusData.assignAges(ageMap, ageDirectionStr);
 
             } // end if else
 
@@ -374,7 +351,7 @@ public class NexusParser {
      * charset noncoding = 1 458-659 897-898;
      * end;
      */
-    protected void readAssumptionsBlock() throws ImportException, IOException {
+    protected void readAssumptionsBlock(NexusData nexusData) throws ImportException, IOException {
 
         Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
         String token;
@@ -399,12 +376,12 @@ public class NexusParser {
         } while (isNotEnd(token));
         //validation ?
 
-        // store into NexusData, and then handle in SimpleAlignment.Utils.getCharSetAlignment
+        // store into AbstractNexusData, and then handle in SimpleAlignment.Utils.getCharSetAlignment
         nexusData.setCharsetMap(charsetMap);
     }
 
 
-    private List<Sequence> readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    private NexusData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         siteCount = 0;
         sequenceType = null;
@@ -412,16 +389,17 @@ public class NexusParser {
         readDataBlockHeader("MATRIX", NexusBlock.CHARACTERS);
 
         List<Sequence> sequences = readSequenceData(taxonList);
+        NexusData nexusData = createNexusAlignment(sequences);
 
         findEndBlock();
 
-        return sequences;
+        return nexusData;
     }
 
     /**
      * Reads a 'DATA' block.
      */
-    private void readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    private NexusData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         taxonCount = 0;
         siteCount = 0;
@@ -429,17 +407,20 @@ public class NexusParser {
 
         readDataBlockHeader("MATRIX", NexusBlock.DATA);
 
+        NexusData nexusData = null;
         if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
 
             LoggerUtils.log.info("Loading continuous character data ... ");
             continuousCharacterData = readContinuousCharacterData();
-
+//            nexusData = createNexusData(continuousCharacterData);
         } else {
             List<Sequence> sequences = readSequenceData(taxonList);
-            setSimpleAlignment(sequences);
+            nexusData = createNexusAlignment(sequences);
         }
 
         findEndBlock();
+
+        return nexusData;
     }
 
     private List<Sequence> readSequenceData(List<Taxon> taxonList) throws ImportException, IOException {
@@ -767,6 +748,7 @@ public class NexusParser {
         if (block != NexusBlock.TAXA && sequenceType == null) {
             throw new ImportException.MissingFieldException("DATATYPE. Only Nucleotide or Protein sequences are supported.");
         }
+
     }
 
 
