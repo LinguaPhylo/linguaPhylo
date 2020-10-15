@@ -23,8 +23,8 @@ public class VarFileLogger implements RandomValueLogger {
                 return new String[]{value.getId()};
             }
 
-            public String[] getLogValues(Value<Integer> value) {
-                return new String[]{value.value().toString()};
+            public Integer[] getLogValues(Value<Integer> value) {
+                return new Integer[]{value.value()};
             }
         });
 
@@ -34,8 +34,8 @@ public class VarFileLogger implements RandomValueLogger {
                 return new String[]{value.getId()};
             }
 
-            public String[] getLogValues(Value<Double> value) {
-                return new String[]{value.value().toString()};
+            public Double[] getLogValues(Value<Double> value) {
+                return new Double[]{value.value()};
             }
         });
 
@@ -49,12 +49,8 @@ public class VarFileLogger implements RandomValueLogger {
                 return names;
             }
 
-            public String[] getLogValues(Value<Double[]> value) {
-                String[] vals = new String[value.value().length];
-                for (int i = 0; i < vals.length; i++) {
-                    vals[i] = value.value()[i].toString();
-                }
-                return vals;
+            public Double[] getLogValues(Value<Double[]> value) {
+                return value.value();
             }
         });
     }
@@ -100,7 +96,7 @@ public class VarFileLogger implements RandomValueLogger {
             if (isLogged(randomValue)) {
                 Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
                 if (loggable != null) {
-                    for (String logValue : loggable.getLogValues(randomValue)) {
+                    for (Object logValue : loggable.getLogValues(randomValue)) {
                         builder.append("\t");
                         builder.append(logValue);
                     }

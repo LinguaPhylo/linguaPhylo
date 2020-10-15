@@ -139,9 +139,11 @@ public class VariableSummary extends JTable implements RandomValueLogger {
             if (isLogged(randomValue)) {
                 Loggable loggable = loggableMap.get(randomValue.value().getClass());
                 if (loggable != null) {
-                    for (String logValue : loggable.getLogValues(randomValue)) {
-                        values[i].add(Double.parseDouble(logValue));
-                        i += 1;
+                    for (Object logValue : loggable.getLogValues(randomValue)) {
+                        if (logValue instanceof Number) {
+                            values[i].add(((Number) logValue).doubleValue());
+                            i += 1;
+                        }
                     }
                 }
             }
