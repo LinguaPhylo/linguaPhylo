@@ -167,16 +167,36 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
         this.charsetMap = charsetMap;
     }
 
+    @Override
+    public Map<String, List<CharSetBlock>> getCharsetMap() {
+        return charsetMap;
+    }
 
+    @Override
+    public AgeDirection getAgeDirection() {
+        return ageDirection;
+    }
+
+    public boolean hasAges() {
+        return super.hasAges();
+    }
+
+    //*** summary ***//
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        return toString(sb);
+    }
 
     @Override
     public JComponent getComponent(Value<Alignment> value) {
         StringBuilder sb = new StringBuilder(super.toString());
-        if (charsetMap != null) {
-            sb.append("\n").append( charsetMap.toString() );
+        if (getCharsetMap() != null) {
+            sb.append("\n").append( getCharsetMap().toString() );
         }
         if (hasAges()) {
-            sb.append("\nageDirection = ").append( ageDirection );
+            sb.append("\nageDirection = ").append( getAgeDirection() );
             // wrap map string by comma
             sb.append("\nages = ").append( Arrays.toString( getAges() ) );
         }

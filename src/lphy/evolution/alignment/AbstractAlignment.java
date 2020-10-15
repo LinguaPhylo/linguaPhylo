@@ -12,7 +12,9 @@ import lphy.graphicalModel.Value;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 
 /**TODO TaxaData implements Taxa ?
  * The abstract class defines everything related to Taxa, Data type, but except of sequences.
@@ -133,7 +135,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 //    }
 
     public String toString() {
-        return ntaxa() + " by " + nchar;
+        return sequenceType.getName() + " alignment " + ntaxa() + " by " + nchar;
     }
 
     //****** Data type ******
@@ -151,10 +153,11 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
         return numStates;
     }
 
-    public String getDataTypeDescription() {
+    public String getSequenceTypeStr() {
         if (sequenceType == null) { // TODO BINARY
             if (numStates == 2) return "binary";
-            else throw new IllegalArgumentException("Please use SequenceType !");
+            else return "unknown";
+//                throw new IllegalArgumentException("Please define SequenceType, not numStates !");
         }
         return sequenceType.getName();
     }

@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Modified from {@link jebl.evolution.io.NexusImporter}.
+ * Merged from {@link jebl.evolution.io.NexusImporter}.
  * Try to use Lphy objects as many as possible.
  *
  * @author Walter Xie
@@ -56,10 +56,10 @@ public class NexusParser {
     //TODO mv to another class like AbstractNexusData
     protected ContinuousCharacterData continuousCharacterData;
 
-//    public ExtNexusImporter(Reader reader) {
-//        super(reader);
-//    }
-
+    /**
+     * @param fileName the nexus file name,
+     *                 which must end with "nex", "nexus", or "nxs"
+     */
     public NexusParser(String fileName) {
 
         Reader reader = getReader(fileName);
@@ -76,8 +76,7 @@ public class NexusParser {
     protected Reader getReader(String fileName) {
         Reader reader = null;
         try {
-            if (!(fileName.endsWith("nex") || fileName.endsWith("nexus") ||
-                    fileName.endsWith("nxs")))
+            if (!(fileName.endsWith("nex") || fileName.endsWith("nexus") || fileName.endsWith("nxs")))
                 throw new IOException("Nexus file name's suffix is invalid ! " + fileName);
 
             final Path nexFile = Paths.get(fileName);
@@ -94,6 +93,7 @@ public class NexusParser {
     }
 
     //****** main ******//
+
     public static void main(final String[] args) {
         try {
             String fileName = args[0];
@@ -146,9 +146,9 @@ public class NexusParser {
     /**
      * The full pipeline to parse the nexus file.
      * The charset will be handled separately.
-     *
-     * @param ageDirectionStr  either forward or backward,
-     *                         if null and nex has TIPCALIBRATION block, then assume forward.
+     * @param ageDirectionStr  either forward or backward.
+     *                         It can be null, if null but the nexus file
+     *                         has TIPCALIBRATION block, then assume forward.
      * @return LPHY {@link NexusData}.
      */
     public NexusData importNexus(String ageDirectionStr) throws IOException, ImportException {
@@ -204,10 +204,52 @@ public class NexusParser {
                 throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
         } else if (nexusData == null)
             throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
+        else if (nexusData instanceof NexusAlignment) // TODO
+            LoggerUtils.log.info("Load " + nexusData.toString());
 
         return nexusData;
     }
 
+    //****** 'DATA' or 'CHARACTERS' block, 'MATRIX' will have data ******//
+
+    protected NexusData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
+
+        siteCount = 0;
+        sequenceType = null;
+
+        readDataBlockHeader("MATRIX", NexusBlock.CHARACTERS);
+
+        List<Sequence> sequences = readSequenceData(taxonList);
+        NexusData nexusData = createNexusAlignment(sequences);
+
+        findEndBlock();
+
+        return nexusData;
+    }
+
+    protected NexusData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
+
+        taxonCount = 0;
+        siteCount = 0;
+        sequenceType = null;
+
+        readDataBlockHeader("MATRIX", NexusBlock.DATA);
+
+        NexusData nexusData = null;
+        if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
+
+            LoggerUtils.log.info("Loading continuous character data ... ");
+            continuousCharacterData = readContinuousCharacterData();
+//TODO            nexusData = createNexusData(continuousCharacterData);
+        } else {
+            List<Sequence> sequences = readSequenceData(taxonList);
+            nexusData = createNexusAlignment(sequences);
+        }
+
+        findEndBlock();
+
+        return nexusData;
+    }
 
     // use jebl State to convert char into int
     // create lphy NexusAlignment from jebl Sequence
@@ -246,191 +288,148 @@ public class NexusParser {
         return nexusData;
     }
 
-    //****** Data Type ******//
+    // Extract data type from 'DATATYPE' block, and convert into {@link SequenceType}.
+    private void readDataBlockHeader(String tokenToLookFor, NexusBlock block) throws ImportException, IOException {
 
-    /**
-     * Extract data type after "DATATYPE" keyword, and convert into {@link SequenceType}.
-     * Override this method if there is new data type.
-     *
-     * @param token the token returned from {@link ImportHelper#readToken(String)}.
-     * @return the corresponding {@link SequenceType}.
-     * @throws ImportException.UnparsableDataException
-     */
-    protected SequenceType getSequenceType(String token) throws ImportException.UnparsableDataException {
-        try {
-            // new data type?
-            return sequenceTypeFactory.getNexusDataType(token);
-        } catch (UnsupportedOperationException e) {
-            throw new ImportException.UnparsableDataException(e.getMessage());
-        }
-    }
-
-    //****** CALIBRATION Block : TIPCALIBRATION ******//
-
-    protected void readCalibrationBlock(NexusData nexusData, String ageDirectionStr) throws ImportException, IOException {
-
+        boolean foundDimensions = false, foundTitle = false, foundFormat = false;
         String token;
+
         do {
-            token = helper.readToken(";");
-            if (token.equalsIgnoreCase("OPTIONS")) {
-                String token2 = helper.readToken("=");
-                if (token2.equalsIgnoreCase("SCALE")) {
-                    String scale = helper.readToken(";");
-                    if (scale.toLowerCase().endsWith("s"))
-                        scale = scale.substring(0, scale.length() - 1);
+            token = helper.readToken(); //TODO read comments after MATRIX, but readToken() skips comments
 
-                    ChronoUnit chronoUnit;
-                    switch (scale) {
-                        case "year":
-                            chronoUnit = ChronoUnit.YEARS;
-                            break;
-//                        case "month":
-//                            chronoUnit = ChronoUnit.MONTHS; break;
-//                        case "day":
-//                            chronoUnit = ChronoUnit.DAYS; break;
-                        default:
-                            throw new UnsupportedOperationException("Unsupported scale = " + scale);
-                    }
-
-                    nexusData.setChronoUnit(chronoUnit);
+            if (token.equalsIgnoreCase("TITLE")) {
+                if (foundTitle) {
+                    throw new ImportException.DuplicateFieldException("TITLE");
                 }
 
-            } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
+                foundTitle = true;
+            } else if (token.equalsIgnoreCase("DIMENSIONS")) {
 
-                if (nexusData.getChronoUnit() == null) // TODO is it necessary?
-                    throw new ImportException("Cannot find SCALE unit, e.g. year");
+                if (foundDimensions) {
+                    throw new ImportException.DuplicateFieldException("DIMENSIONS");
+                }
 
-                // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
-                Map<String, String> ageMap = new LinkedHashMap<>();
+                boolean nchar = (block == NexusBlock.TAXA);
+                boolean ntax = (block == NexusBlock.CHARACTERS);
+
                 do {
-                    String date = null;
-                    String taxonNm = null;
-                    int lastDelimiter;
-                    do {
-                        String token2 = helper.readToken(":=,;");
+                    String token2 = helper.readToken("=;");
 
-                        if (helper.getLastDelimiter() != '=') { // ignore date's labels, e.g. 94 =
-                            if (helper.getLastDelimiter() == ':')
-                                date = token2;
-                            else
-                                taxonNm = token2;
+                    if (helper.getLastDelimiter() != '=') {
+                        throw new ImportException.BadFormatException("Unknown subcommand, '" + token2 + "', or missing '=' in DIMENSIONS command");
+                    }
+
+                    if (token2.equalsIgnoreCase("NTAX")) {
+
+                        if (block == NexusBlock.CHARACTERS) {
+                            throw new ImportException.BadFormatException("NTAX subcommand in CHARACTERS block");
                         }
 
-                        lastDelimiter = helper.getLastDelimiter();
-                        if (date != null && taxonNm != null) {
-                            // put inside loop for same date, 1984:D4Mexico84 D4Philip84 D4Thai84,
-                            ageMap.put(taxonNm, date);
-                        } else if (lastDelimiter == ',' || lastDelimiter == ';') throw new ImportException();
+                        taxonCount = helper.readInteger(";");
+                        ntax = true;
 
-                    } while (lastDelimiter != ',' && lastDelimiter != ';');
-                    // next date mapping
-                } while (helper.getLastDelimiter() != ';');
+                    } else if (token2.equalsIgnoreCase("NCHAR")) {
 
-                if (ageMap.size() < 1)
-                    throw new ImportException("Cannot parse TIPCALIBRATION !");
-                if (ageMap.size() != taxonCount)
-                    System.err.println("Warning: " + ageMap.size() +
-                            " tips have dates, but taxon count = " + taxonCount);
+                        if (block == NexusBlock.TAXA) {
+                            throw new ImportException.BadFormatException("NCHAR subcommand in TAXA block");
+                        }
 
-                // store into AbstractNexusData
-                nexusData.assignAges(ageMap, ageDirectionStr);
+                        siteCount = helper.readInteger(";");
+                        nchar = true;
 
-            } // end if else
-
-        } while (isNotEnd(token));
-
-        //validation ?
-    }
-
-
-    //****** ASSUMPTIONS Block : charset ******//
-
-    /**
-     * begin assumptions;
-     * charset coding = 2-457 660-896;
-     * charset noncoding = 1 458-659 897-898;
-     * end;
-     */
-    protected void readAssumptionsBlock(NexusData nexusData) throws ImportException, IOException {
-
-        Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
-        String token;
-        do {
-            token = helper.readToken(";");
-
-            if (token.equalsIgnoreCase("CHARSET")) {
-                String charset = helper.readToken("=");
-                List<CharSetBlock> charSetBlocks = new ArrayList<>();
-                do {
-                    String oneBlock = helper.readToken(";");
-                    try {
-                        CharSetBlock charSetBlock = CharSetBlock.Utils.parseCharSet(oneBlock);
-                        charSetBlocks.add(charSetBlock);
-                    } catch (IllegalArgumentException e) {
-                        throw new ImportException("Charset " + charset + " : " + e.getMessage());
+                    } else {
+                        throw new ImportException.BadFormatException("Unknown subcommand, '" + token2 + "', in DIMENSIONS command");
                     }
+
                 } while (helper.getLastDelimiter() != ';');
 
-                charsetMap.put(charset, charSetBlocks);
+                if (!ntax) {
+                    throw new ImportException.BadFormatException("NTAX subcommand missing from DIMENSIONS command");
+                }
+                if (!nchar) {
+                    throw new ImportException.BadFormatException("NCHAR subcommand missing from DIMENSIONS command");
+                }
+                foundDimensions = true;
+
+            } else if (token.equalsIgnoreCase("FORMAT")) {
+
+                if (foundFormat) {
+                    throw new ImportException.DuplicateFieldException("FORMAT");
+                }
+
+                sequenceType = null;
+
+                do {
+                    String token2 = helper.readToken("=;");
+
+                    if (token2.equalsIgnoreCase("GAP")) {
+
+                        if (helper.getLastDelimiter() != '=') {
+                            throw new ImportException.BadFormatException("Expecting '=' after GAP subcommand in FORMAT command");
+                        }
+
+                        gapCharacters = helper.readToken(";");
+
+                    } else if (token2.equalsIgnoreCase("MISSING")) {
+
+                        if (helper.getLastDelimiter() != '=') {
+                            throw new ImportException.BadFormatException("Expecting '=' after MISSING subcommand in FORMAT command");
+                        }
+
+                        missingCharacters = helper.readToken(";");
+
+                    } else if (token2.equalsIgnoreCase("MATCHCHAR")) {
+
+                        if (helper.getLastDelimiter() != '=') {
+                            throw new ImportException.BadFormatException("Expecting '=' after MATCHCHAR subcommand in FORMAT command");
+                        }
+
+                        matchCharacters = helper.readToken(";");
+
+                    } else if (token2.equalsIgnoreCase("DATATYPE")) {
+
+                        if (helper.getLastDelimiter() != '=') {
+                            throw new ImportException.BadFormatException("Expecting '=' after DATATYPE subcommand in FORMAT command");
+                        }
+
+                        String token3 = helper.readToken(";");
+
+                        try {
+                            // add new data type to this method
+                            sequenceType = sequenceTypeFactory.getNexusDataType(token3);
+                        } catch (UnsupportedOperationException e) {
+                            throw new ImportException.UnparsableDataException(e.getMessage());
+                        }
+
+                    } else if (token2.equalsIgnoreCase("INTERLEAVE")) {
+                        isInterleaved = true;
+                    }
+
+                } while (helper.getLastDelimiter() != ';');
+
+                foundFormat = true;
             }
-        } while (isNotEnd(token));
-        //validation ?
+        } while (!token.equalsIgnoreCase(tokenToLookFor));
 
-        // store into AbstractNexusData, and then handle in SimpleAlignment.Utils.getCharSetAlignment
-        nexusData.setCharsetMap(charsetMap);
-    }
-
-
-    private NexusData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
-
-        siteCount = 0;
-        sequenceType = null;
-
-        readDataBlockHeader("MATRIX", NexusBlock.CHARACTERS);
-
-        List<Sequence> sequences = readSequenceData(taxonList);
-        NexusData nexusData = createNexusAlignment(sequences);
-
-        findEndBlock();
-
-        return nexusData;
-    }
-
-    /**
-     * Reads a 'DATA' block.
-     */
-    private NexusData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
-
-        taxonCount = 0;
-        siteCount = 0;
-        sequenceType = null;
-
-        readDataBlockHeader("MATRIX", NexusBlock.DATA);
-
-        NexusData nexusData = null;
-        if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
-
-            LoggerUtils.log.info("Loading continuous character data ... ");
-            continuousCharacterData = readContinuousCharacterData();
-//            nexusData = createNexusData(continuousCharacterData);
-        } else {
-            List<Sequence> sequences = readSequenceData(taxonList);
-            nexusData = createNexusAlignment(sequences);
+        if (!foundDimensions) {
+            throw new ImportException.MissingFieldException("DIMENSIONS");
+        }
+        if (block != NexusBlock.TAXA && sequenceType == null) {
+            throw new ImportException.MissingFieldException("DATATYPE. Only Nucleotide or Protein sequences are supported.");
         }
 
-        findEndBlock();
-
-        return nexusData;
     }
 
-    private List<Sequence> readSequenceData(List<Taxon> taxonList) throws ImportException, IOException {
+    //****** Sequences ******//
+
+    protected List<Sequence> readSequenceData(List<Taxon> taxonList) throws ImportException, IOException {
         boolean sequencherStyle = false;
         String firstSequence = null;
-        List<Sequence> sequences = new ArrayList<Sequence>();
+        List<Sequence> sequences = new ArrayList<>();
 
         if (isInterleaved) {
-            List<StringBuilder> sequencesData = new ArrayList<StringBuilder>(taxonCount);
-            List<Taxon> taxons = new ArrayList<Taxon>();
+            List<StringBuilder> sequencesData = new ArrayList<>(taxonCount);
+            List<Taxon> taxons = new ArrayList<>();
             List<Taxon> taxList = (taxonList != null) ? taxonList : taxons;
 
             int[] charsRead = new int[taxonCount];
@@ -571,9 +570,125 @@ public class NexusParser {
         return sequences;
     }
 
+    //****** CALIBRATION Block : TIPCALIBRATION ******//
+
+    protected void readCalibrationBlock(NexusData nexusData, String ageDirectionStr) throws ImportException, IOException {
+
+        String token;
+        do {
+            token = helper.readToken(";");
+            if (token.equalsIgnoreCase("OPTIONS")) {
+                String token2 = helper.readToken("=");
+                if (token2.equalsIgnoreCase("SCALE")) {
+                    String scale = helper.readToken(";");
+                    if (scale.toLowerCase().endsWith("s"))
+                        scale = scale.substring(0, scale.length() - 1);
+
+                    ChronoUnit chronoUnit;
+                    switch (scale) {
+                        case "year":
+                            chronoUnit = ChronoUnit.YEARS;
+                            break;
+//                        case "month":
+//                            chronoUnit = ChronoUnit.MONTHS; break;
+//                        case "day":
+//                            chronoUnit = ChronoUnit.DAYS; break;
+                        default:
+                            throw new UnsupportedOperationException("Unsupported scale = " + scale);
+                    }
+
+                    nexusData.setChronoUnit(chronoUnit);
+                }
+
+            } else if (token.equalsIgnoreCase("TIPCALIBRATION")) {
+
+                if (nexusData.getChronoUnit() == null) // TODO is it necessary?
+                    throw new ImportException("Cannot find SCALE unit, e.g. year");
+
+                // 94 = 1994:D4ElSal94, // 86 = 1986:D4PRico86,
+                Map<String, String> ageMap = new LinkedHashMap<>();
+                do {
+                    String date = null;
+                    String taxonNm = null;
+                    int lastDelimiter;
+                    do {
+                        String token2 = helper.readToken(":=,;");
+
+                        if (helper.getLastDelimiter() != '=') { // ignore date's labels, e.g. 94 =
+                            if (helper.getLastDelimiter() == ':')
+                                date = token2;
+                            else
+                                taxonNm = token2;
+                        }
+
+                        lastDelimiter = helper.getLastDelimiter();
+                        if (date != null && taxonNm != null) {
+                            // put inside loop for same date, 1984:D4Mexico84 D4Philip84 D4Thai84,
+                            ageMap.put(taxonNm, date);
+                        } else if (lastDelimiter == ',' || lastDelimiter == ';') throw new ImportException();
+
+                    } while (lastDelimiter != ',' && lastDelimiter != ';');
+                    // next date mapping
+                } while (helper.getLastDelimiter() != ';');
+
+                if (ageMap.size() < 1)
+                    throw new ImportException("Cannot parse TIPCALIBRATION !");
+                if (ageMap.size() != taxonCount)
+                    System.err.println("Warning: " + ageMap.size() +
+                            " tips have dates, but taxon count = " + taxonCount);
+
+                // store into AbstractNexusData
+                nexusData.assignAges(ageMap, ageDirectionStr);
+
+            } // end if else
+
+        } while (isNotEnd(token));
+
+        //validation ?
+    }
+
+    //****** ASSUMPTIONS Block : charset ******//
+
+    /**
+     * begin assumptions;
+     * charset coding = 2-457 660-896;
+     * charset noncoding = 1 458-659 897-898;
+     * end;
+     */
+    protected void readAssumptionsBlock(NexusData nexusData) throws ImportException, IOException {
+
+        Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
+        String token;
+        do {
+            token = helper.readToken(";");
+
+            if (token.equalsIgnoreCase("CHARSET")) {
+                String charset = helper.readToken("=");
+                List<CharSetBlock> charSetBlocks = new ArrayList<>();
+                do {
+                    String oneBlock = helper.readToken(";");
+                    try {
+                        CharSetBlock charSetBlock = CharSetBlock.Utils.parseCharSet(oneBlock);
+                        charSetBlocks.add(charSetBlock);
+                    } catch (IllegalArgumentException e) {
+                        throw new ImportException("Charset " + charset + " : " + e.getMessage());
+                    }
+                } while (helper.getLastDelimiter() != ';');
+
+                charsetMap.put(charset, charSetBlocks);
+            }
+        } while (isNotEnd(token));
+        //validation ?
+
+        // store into AbstractNexusData, and then handle in SimpleAlignment.Utils.getCharSetAlignment
+        nexusData.setCharsetMap(charsetMap);
+    }
+
+    //******TODO ContinuousCharacterData ******//
 
     // rows are taxa, cols are traits.
     // Double[][] taxa should have same order of Taxon[].
+    // TODO return NexusData
     private ContinuousCharacterData readContinuousCharacterData() throws ImportException, IOException {
         assert taxonCount > 0 && siteCount > 0;
         Double[][] continuousData = new Double[taxonCount][siteCount];
@@ -623,133 +738,6 @@ public class NexusParser {
         return new ContinuousCharacterData(new Taxa.Simple(taxa), continuousData);
     }
 
-
-
-    private void readDataBlockHeader(String tokenToLookFor, NexusBlock block) throws ImportException, IOException {
-
-        boolean foundDimensions = false, foundTitle = false, foundFormat = false;
-        String token;
-
-        do {
-            token = helper.readToken(); //TODO read comments after MATRIX, but readToken() skips comments
-
-            if (token.equalsIgnoreCase("TITLE")) {
-                if (foundTitle) {
-                    throw new ImportException.DuplicateFieldException("TITLE");
-                }
-
-                foundTitle = true;
-            } else if (token.equalsIgnoreCase("DIMENSIONS")) {
-
-                if (foundDimensions) {
-                    throw new ImportException.DuplicateFieldException("DIMENSIONS");
-                }
-
-                boolean nchar = (block == NexusBlock.TAXA);
-                boolean ntax = (block == NexusBlock.CHARACTERS);
-
-                do {
-                    String token2 = helper.readToken("=;");
-
-                    if (helper.getLastDelimiter() != '=') {
-                        throw new ImportException.BadFormatException("Unknown subcommand, '" + token2 + "', or missing '=' in DIMENSIONS command");
-                    }
-
-                    if (token2.equalsIgnoreCase("NTAX")) {
-
-                        if (block == NexusBlock.CHARACTERS) {
-                            throw new ImportException.BadFormatException("NTAX subcommand in CHARACTERS block");
-                        }
-
-                        taxonCount = helper.readInteger(";");
-                        ntax = true;
-
-                    } else if (token2.equalsIgnoreCase("NCHAR")) {
-
-                        if (block == NexusBlock.TAXA) {
-                            throw new ImportException.BadFormatException("NCHAR subcommand in TAXA block");
-                        }
-
-                        siteCount = helper.readInteger(";");
-                        nchar = true;
-
-                    } else {
-                        throw new ImportException.BadFormatException("Unknown subcommand, '" + token2 + "', in DIMENSIONS command");
-                    }
-
-                } while (helper.getLastDelimiter() != ';');
-
-                if (!ntax) {
-                    throw new ImportException.BadFormatException("NTAX subcommand missing from DIMENSIONS command");
-                }
-                if (!nchar) {
-                    throw new ImportException.BadFormatException("NCHAR subcommand missing from DIMENSIONS command");
-                }
-                foundDimensions = true;
-
-            } else if (token.equalsIgnoreCase("FORMAT")) {
-
-                if (foundFormat) {
-                    throw new ImportException.DuplicateFieldException("FORMAT");
-                }
-
-                sequenceType = null;
-
-                do {
-                    String token2 = helper.readToken("=;");
-
-                    if (token2.equalsIgnoreCase("GAP")) {
-
-                        if (helper.getLastDelimiter() != '=') {
-                            throw new ImportException.BadFormatException("Expecting '=' after GAP subcommand in FORMAT command");
-                        }
-
-                        gapCharacters = helper.readToken(";");
-
-                    } else if (token2.equalsIgnoreCase("MISSING")) {
-
-                        if (helper.getLastDelimiter() != '=') {
-                            throw new ImportException.BadFormatException("Expecting '=' after MISSING subcommand in FORMAT command");
-                        }
-
-                        missingCharacters = helper.readToken(";");
-
-                    } else if (token2.equalsIgnoreCase("MATCHCHAR")) {
-
-                        if (helper.getLastDelimiter() != '=') {
-                            throw new ImportException.BadFormatException("Expecting '=' after MATCHCHAR subcommand in FORMAT command");
-                        }
-
-                        matchCharacters = helper.readToken(";");
-
-                    } else if (token2.equalsIgnoreCase("DATATYPE")) {
-
-                        if (helper.getLastDelimiter() != '=') {
-                            throw new ImportException.BadFormatException("Expecting '=' after DATATYPE subcommand in FORMAT command");
-                        }
-//TODO new datatypes here
-                        String token3 = helper.readToken(";");
-                        // replace getSequenceType if there is new data type
-                        sequenceType = getSequenceType(token3);
-
-                    } else if (token2.equalsIgnoreCase("INTERLEAVE")) {
-                        isInterleaved = true;
-                    }
-
-                } while (helper.getLastDelimiter() != ';');
-
-                foundFormat = true;
-            }
-        } while (!token.equalsIgnoreCase(tokenToLookFor));
-
-        if (!foundDimensions) {
-            throw new ImportException.MissingFieldException("DIMENSIONS");
-        }
-        if (block != NexusBlock.TAXA && sequenceType == null) {
-            throw new ImportException.MissingFieldException("DATATYPE. Only Nucleotide or Protein sequences are supported.");
-        }
-
-    }
 
 
     //****** NexusBlock ******//
