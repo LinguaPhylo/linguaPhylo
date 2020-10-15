@@ -785,8 +785,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             String id = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();
             Value value = get(id);
-            if (value == null)
+            if (value == null) {
                 throw new SimulatorParsingException("Value " + id + " not found for method call " + methodName);
+            }
 
             ParseTree ctx2 = ctx.getChild(4);
 
@@ -811,6 +812,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             try {
                 return new MethodCall(methodName, value, f1);
             } catch (NoSuchMethodException e) {
+                LoggerUtils.log.severe("Method call " + methodName + " failed on object " + value.getId());
                 throw new SimulatorParsingException(e.getMessage());
             }
         }

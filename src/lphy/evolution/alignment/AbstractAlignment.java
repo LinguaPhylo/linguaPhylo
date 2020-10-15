@@ -7,6 +7,7 @@ import lphy.app.HasComponentView;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
+import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
@@ -94,7 +95,7 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
 
     //****** Sites ******
-    @Override
+    @MethodInfo(description="The number of characters/sites in this alignment.")
     public int nchar() {
         return nchar;
     }
