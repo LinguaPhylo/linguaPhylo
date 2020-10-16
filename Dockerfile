@@ -11,4 +11,8 @@ FROM openjdk:11
 # Install Apache Ant
 RUN apt-get update && apt-get install -y ant
 
+# Ant build fails if the repo dir isn't named linguaPhylo
+RUN mkdir /root/linguaPhylo
+WORKDIR /root/linguaPhylo
+
 RUN ant travis
