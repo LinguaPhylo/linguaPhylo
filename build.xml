@@ -1,4 +1,4 @@
-<project default="build" basedir="." name="lphy" >
+<project default="build" basedir=".." name="lphy" >
 
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
     <!-- <property name="test" location="test"/>-->
@@ -10,34 +10,44 @@
 
     <!--*******************************************************************-->
 
-    <!-- Names of temporary build/test directories -->
-    <property name="build" location="build"/>
-    <property name="build-test" location="build-test"/>
-    <property name="test-reports" location="test-reports"/>
-    <property name="dist" location="dist"/>
+    <!-- Ant build fails if the repo dir isn't named linguaPhylo -->
+    <property name="repoName" value="linguaPhylo"/>
+    <!-- source code dir separated from test   -->
+    <property name="src" location="${repoName}/src" />
+    <!-- source code dir of test   -->
+    <property name="lib" location="${repoName}/lib" />
+    <property name="test" location="${repoName}/test" />
+    <!-- Names of temporary build/test directories, which are deleted before build -->
+    <property name="build" location="${repoName}/build" />
+    <property name="dist" location="${repoName}/dist" />
+    <property name="build-test" location="${repoName}/build-test"/>
+    <property name="test-reports" location="${repoName}/test-reports"/>
 
-    <property name="lphyName" value="lphy"/>
-    <property name="projName" value="LinguaPhylo"/>
+    <property name="projName" value="LPhy"/>
     <property name="projVersion" value="0.0.1"/>
+
+    <!--*******************************************************************-->
 
     <!-- Prepare for compilation -->
     <target name="init">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}" />
+        <echo message="Working dir is ${repoName}." />
+
         <mkdir dir="${build}"/>
         <mkdir dir="${dist}"/>
     </target>
 
     <!-- Compile -->
     <target name="compile" depends="init">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="src" destdir="${build}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
-                <fileset dir="lib" includes="*.jar"/>
+                <fileset dir="${lib}" includes="*.jar"/>
             </classpath>
         </javac>
-        <echo message="Successfully compiled ${lphyName}." />
+        <echo message="Successfully compiled ${projName}." />
     </target>
 
     <!-- Release -->
@@ -45,17 +55,17 @@
 
     <target name="dist-lphy" depends="compile">
         <mkdir dir="${pack}"/>
-        <!-- examples in ${packageName}.zip, not ${lphyName}.src.jar -->
-        <jar jarfile="${pack}/${lphyName}.src.jar">
-            <fileset dir="src"/>
+        <!-- examples in ${packageName}.zip, not ${projName}.src.jar -->
+        <jar jarfile="${pack}/${projName}.src.jar">
+            <fileset dir="${src}"/>
         </jar>
 
-        <jar jarfile="${pack}/${lphyName}.v${projVersion}.jar">
-            <fileset dir="${build}" includes="${lphyName}/**"/>
+        <jar jarfile="${pack}/${projName}.v${projVersion}.jar">
+            <fileset dir="${build}" includes="${projName}/**"/>
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
             </manifest>
-            <zipgroupfileset dir="lib" includes="*.jar"/>
+            <zipgroupfileset dir="${lib}" includes="*.jar"/>
         </jar>
     </target>
 
@@ -90,6 +100,10 @@
 
     <!-- Prepare for unit test compilation -->
     <target name="init-test">
+        <echo message="Java version: ${java.version}"/>
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <echo message="Working dir is ${repoName}." />
+
         <mkdir dir="${build-test}"/>
         <mkdir dir="${test-reports}"/>
     </target>
@@ -97,15 +111,15 @@
 
     <!-- Compile unit tests -->
     <target name="compile-test" depends="init-test,compile">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="test" destdir="${build-test}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
                 <pathelement path="${build}"/>
-                <fileset dir="lib" includes="*.jar"/>
+                <fileset dir="${lib}" includes="*.jar"/>
             </classpath>
         </javac>
-        <echo message="Successfully compiled ${lphyName} tests." />
+        <echo message="Successfully compiled ${projName} tests." />
     </target>
 
 
@@ -116,17 +130,17 @@
                 <pathelement path="${classpath}"/>
                 <pathelement path="${build}"/>
                 <pathelement path="${build-test}"/>
-                <fileset dir="lib" includes="*.jar"/>
+                <fileset dir="${lib}" includes="*.jar"/>
             </classpath>
             <batchtest fork="yes" todir="${test-reports}">
-                <fileset dir="test">
+                <fileset dir="${test}">
                     <include name="**/*Test.java"/>
                 </fileset>
                 <formatter type="plain"/>
             </batchtest>
         </junit>
 
-        <fail if="testFailed" status="1" message="Unit test of ${lphyName} failed."/>
+        <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
     </target>
 
     <!-- Revert to pristine state. -->
