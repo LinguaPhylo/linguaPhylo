@@ -105,6 +105,10 @@ public class TimeTreeNode {
         return metaData.get(key);
     }
 
+    public void removeMetaData(String key) {
+        metaData.remove(key);
+    }
+
     public SortedMap<String, Object> getMetaData() {
         return metaData;
     }

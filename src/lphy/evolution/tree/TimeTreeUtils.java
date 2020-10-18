@@ -80,4 +80,15 @@ public class TimeTreeUtils {
             markNodeAndDirectAncestors(node.getParent());
         }
     }
+
+    public static void removeMarks(TimeTree tree) {
+        removeMarks(tree.getRoot());
+    }
+
+    public static void removeMarks(TimeTreeNode node) {
+        node.removeMetaData(markLabel);
+        for (TimeTreeNode child : node.getChildren()) {
+            removeMarks(child);
+        }
+    }
 }

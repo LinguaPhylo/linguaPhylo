@@ -41,6 +41,8 @@ public class PruneTree extends DeterministicFunction<TimeTree> {
 
         prunedTree.setRoot(prunedTree.getRoot(),true);
 
+        TimeTreeUtils.removeMarks(prunedTree);
+
         return new Value<>(null, prunedTree, this);
     }
 }
