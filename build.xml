@@ -1,4 +1,4 @@
-<project default="build" basedir=".." name="lphy" >
+<project default="build" basedir="." name="lphy" >
 
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
     <!-- <property name="test" location="test"/>-->
@@ -13,15 +13,15 @@
     <!-- Ant build fails if the repo dir isn't named linguaPhylo -->
     <property name="repoName" value="linguaPhylo"/>
     <!-- source code dir separated from test   -->
-    <property name="src" location="${repoName}/src" />
+    <property name="src" location="../${repoName}/src" />
     <!-- source code dir of test   -->
-    <property name="lib" location="${repoName}/lib" />
-    <property name="test" location="${repoName}/test" />
+    <property name="lib" location="../${repoName}/lib" />
+    <property name="test" location="../${repoName}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="build" location="${repoName}/build" />
-    <property name="dist" location="${repoName}/dist" />
-    <property name="build-test" location="${repoName}/build-test"/>
-    <property name="test-reports" location="${repoName}/test-reports"/>
+    <property name="build" location="../${repoName}/build" />
+    <property name="dist" location="../${repoName}/dist" />
+    <property name="build-test" location="../${repoName}/build-test"/>
+    <property name="test-reports" location="../${repoName}/test-reports"/>
 
     <property name="projName" value="LPhy"/>
     <property name="projVersion" value="0.0.1"/>
