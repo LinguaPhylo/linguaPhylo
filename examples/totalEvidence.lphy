@@ -1,5 +1,6 @@
 data {
   spTaxa = taxa(names=1:20);
+  gTaxa = taxa(names=["s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20"], species=1:20);
 }
 model {
   lambda ~ Uniform(lower=1.0, upper=1.5);
@@ -13,7 +14,7 @@ model {
   beta ~ LogNormal(meanlog=-1.0, sdlog=1.25);
   pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=S.nodeCount());
 
-  g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=spTaxa);
+  g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=gTaxa);
   g_rate ~ LogNormal(meanlog=0.0, sdlog=1.0); // note this is the mean of log values.
   pi ~ Dirichlet(conc=[2,2,2,2]);
   kappa ~ LogNormal(meanlog=1.0, sdlog=1.25);
