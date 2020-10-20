@@ -1,5 +1,6 @@
 package lphy.parser.functions;
 
+import lphy.core.functions.Range;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
@@ -38,6 +39,18 @@ public class RangeList extends DeterministicFunction<Integer[]> {
             }
         }
         return new IntegerArrayValue(null, indices.toArray(new Integer[0]), this);
+    }
+
+    public boolean isRange() {
+        return (rangeElements.size() == 1 && rangeElements.get(0) instanceof Range);
+    }
+
+    public boolean isSingle() {
+        return (rangeElements.size() == 1 && rangeElements.get(0).value() instanceof Integer);
+    }
+
+    public GraphicalModelNode getRangeElement(int i) {
+        return rangeElements.get(i);
     }
 
     public String codeString() {

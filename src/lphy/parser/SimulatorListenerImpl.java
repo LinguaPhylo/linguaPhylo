@@ -361,7 +361,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         /**
          * @param ctx
-         * @return an ElementAt or ElementsAt function
+         * @return a Slice or ElementsAt function
          */
         private Object visitIndexRange(SimulatorParser.ExpressionContext ctx) {
 
@@ -372,6 +372,19 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
 
             RangeList rangeList = (RangeList) visit(ctx.getChild(2));
+
+            if (array.value() instanceof Double[]) {
+                if (rangeList.isRange()) {
+                    Range range = (Range) rangeList.getRangeElement(0);
+                    return new SliceDoubleArray(range.start(), range.end(), array);
+                }
+
+                if (rangeList.isSingle()) {
+                    Value<Integer> i = (Value<Integer>) rangeList.getRangeElement(0);
+                    return new SliceDoubleArray(i, i, array);
+                }
+            }
+
             Value<Integer[]> indices = rangeList.apply();
 
             return new ElementsAt(indices, array);

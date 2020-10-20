@@ -66,7 +66,8 @@ public class ParserUtils {
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
                 ReadNexus.class,
                 Species.class, ExtantTree.class, PruneTree.class,
-                ExtantTaxa.class
+                ExtantTaxa.class,
+                SliceDoubleArray.class
         };
 
         for (Class<?> functionClass : functionClasses) {

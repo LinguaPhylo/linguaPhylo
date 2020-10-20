@@ -6,14 +6,12 @@ import lphy.graphicalModel.Value;
 
 public class Range extends DeterministicFunction<Integer[]> {
 
-    String startParamName;
-    String endParamName;
+    public static final String startParamName = "start";
+    public static final String endParamName = "end";
 
-    public Range(@ParameterInfo(name="start", description ="start of the range (inclusive)") Value<Integer> start,
-                 @ParameterInfo(name="end", description ="end of the range (inclusive)") Value<Integer> end) {
+    public Range(@ParameterInfo(name=startParamName, description ="start of the range (inclusive)") Value<Integer> start,
+                 @ParameterInfo(name=endParamName, description ="end of the range (inclusive)") Value<Integer> end) {
 
-        startParamName = getParamName(0);
-        endParamName = getParamName(1);
         setParam(endParamName, end);
         setParam(startParamName, start);
     }
