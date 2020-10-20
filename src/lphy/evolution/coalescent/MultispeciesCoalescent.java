@@ -17,11 +17,13 @@ import static lphy.evolution.tree.TaxaConditionedTreeGenerator.taxaParamName;
 /**
  * A Kingman coalescent tree generative distribution conditional on a species tree with a specified population size on each species branch.
  */
-public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> {
+public class MultispeciesCoalescent implements GenerativeDistribution {
 
     public static final String SParamName = "S";
+    public static final String numLociParamName = "numLoci";
     private Value<Double[]> theta;
     private Value<Integer[]> n;
+    private Value<Integer> numLoci;
     private Value<Taxa> taxa;
     private Value<TimeTree> S;
 
@@ -29,28 +31,48 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
     public final static String separator = "_";
 
+    Taxa geneTreeTaxa = null;
+
     public MultispeciesCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
                                   @ParameterInfo(name = nParamName, description = "the number of sampled taxa in the gene tree for each extant species.", optional = true) Value<Integer[]> n,
                                   @ParameterInfo(name = taxaParamName, description = "the taxa for the gene tree, with species to define the mapping.", optional = true) Value<Taxa> taxa,
+                                  @ParameterInfo(name = numLociParamName, description = "the number of loci the simulate. Default is 1", optional = true) Value<Integer> numLoci,
                                   @ParameterInfo(name = SParamName, description = "the species tree. ") Value<TimeTree> S) {
         this.theta = theta;
         this.n = n;
+        this.numLoci = numLoci;
         this.taxa = taxa;
         this.S = S;
         this.random = Utils.getRandom();
     }
 
     @GeneratorInfo(name = "MultispeciesCoalescent",
-            description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree." +
-                    "The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatitives.")
-    public RandomVariable<TimeTree> sample() {
+            description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree. " +
+                    "The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatives. " +
+                    "The (optional) numLoci parameter can be used to produce more than one gene tree from this distribution.")
+    public RandomVariable sample() {
 
-        TimeTree geneTree;
-        if (taxa != null) {
-            geneTree = new TimeTree(taxa.value());
-        } else {
-            geneTree = new TimeTree();
+        int locusCount = getLocusCount();
+
+        geneTreeTaxa = createGeneTreeTaxa();
+
+        if (locusCount == 1) return new RandomVariable<>(null, simulateGeneTree(), this);
+
+        TimeTree[] geneTrees = new TimeTree[locusCount];
+        for (int i = 0; i < geneTrees.length; i++) {
+            geneTrees[i] = simulateGeneTree();
         }
+        return new RandomVariable(null, geneTrees, this);
+    }
+
+    private int getLocusCount() {
+        if (numLoci == null) return 1;
+        return numLoci.value();
+    }
+
+
+    private TimeTree simulateGeneTree() {
+        TimeTree geneTree = new TimeTree(geneTreeTaxa);
 
         Map<String, List<TimeTreeNode>> activeNodes = new TreeMap<>();
 
@@ -62,54 +84,43 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
 
         geneTree.setRoot(root.get(0));
 
-        return new RandomVariable<>("geneTree", geneTree, this);
+        return geneTree;
     }
 
-    private void createActiveNodes(Map<String, List<TimeTreeNode>> activeNodes, TimeTree geneTree) {
+    public Taxa getGeneTreeTaxa() {
+        return geneTreeTaxa;
+    }
+
+    public Taxa createGeneTreeTaxa() {
+
+        List<Taxon> taxonList = new ArrayList<>();
+        Taxon[] taxonArray = new Taxon[0];
 
         if (n != null) {
             int i = 0;
             for (int sp = 0; sp < n.value().length; sp++) {
-                List<TimeTreeNode> taxaInSp = new ArrayList<>();
-                activeNodes.put(sp + "", taxaInSp);
                 for (int k = 0; k < n.value()[sp]; k++) {
-                    TimeTreeNode node = new TimeTreeNode(sp + separator + k, geneTree);
-
-                    // set age to the age of the species.
-                    node.setAge(S.value().getNodeByIndex(sp).getAge());
-
-                    // set node index to i
-                    node.setLeafIndex(i);
-
-                    taxaInSp.add(node);
-                    i += 1;
+                    taxonList.add(new Taxon(sp + "_" + k, sp+"", S.value().getNodeByIndex(sp).getAge()));
                 }
             }
-            System.out.println("gene tree has " + i + " nodes");
+            taxonArray = taxonList.toArray(taxonArray);
         } else if (taxa != null) {
-            Taxon[] taxonArray = taxa.value().getTaxonArray();
-
-            for (Taxon taxon : taxonArray) {
-                List<TimeTreeNode> taxaInSp = activeNodes.computeIfAbsent(taxon.getSpecies(), k -> new ArrayList<>());
-                taxaInSp.add(new TimeTreeNode(taxon, geneTree));
-            }
+            taxonArray = taxa.value().getTaxonArray();
         } else {
             Taxa speciesTreeTaxa = S.value().getTaxa();
             int i = 0;
             for (Taxon speciesTaxon : speciesTreeTaxa.getTaxonArray()) {
-                List<TimeTreeNode> taxaInSp = new ArrayList<>();
-                activeNodes.put(speciesTaxon.getName(), taxaInSp);
-                TimeTreeNode node = new TimeTreeNode(speciesTaxon.getName() + separator + 0, geneTree);
-
-                // set age to the age of the species.
-                node.setAge(speciesTaxon.getAge());
-
-                // set node index to i
-                node.setLeafIndex(i);
-
-                taxaInSp.add(node);
-                i += 1;
+                taxonList.add(new Taxon(speciesTaxon.getName() + "_0", speciesTaxon.getName(), speciesTaxon.getAge()));
             }
+        }
+
+        return new Taxa.Simple(taxonArray);
+    }
+
+    private void createActiveNodes(Map<String, List<TimeTreeNode>> activeNodes, TimeTree geneTree) {
+        for (Taxon taxon : geneTreeTaxa.getTaxonArray()) {
+            List<TimeTreeNode> taxaInSp = activeNodes.computeIfAbsent(taxon.getSpecies(), k -> new ArrayList<>());
+            taxaInSp.add(new TimeTreeNode(taxon, geneTree));
         }
     }
 
@@ -149,8 +160,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         return activeNodes;
     }
 
-    @Override
-    public double logDensity(TimeTree timeTree) {
+    public double logDensity(Object timeTreeObject) {
 
         // TODO
         return 0.0;
@@ -162,6 +172,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
         map.put(thetaParamName, theta);
         if (n != null) map.put(nParamName, n);
         if (taxa != null) map.put(taxaParamName, taxa);
+        if (numLoci != null) map.put(numLociParamName, numLoci);
         map.put(SParamName, S);
         return map;
     }
@@ -180,6 +191,9 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
                 break;
             case SParamName:
                 S = value;
+                break;
+            case numLociParamName:
+                numLoci = value;
                 break;
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
@@ -201,5 +215,4 @@ public class MultispeciesCoalescent implements GenerativeDistribution<TimeTree> 
     public Value<Integer[]> getN() {
         return n;
     }
-
 }

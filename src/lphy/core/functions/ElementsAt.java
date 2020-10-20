@@ -7,20 +7,18 @@ import java.lang.reflect.Array;
 
 public class ElementsAt<T> extends DeterministicFunction {
 
-    String indexParamName;
-    String arrayParamName;
+    public static final String indexParamName = "index";
+    public static final String arrayParamName = "array";
 
-    public ElementsAt(@ParameterInfo(name="index", description ="index list") Value<Integer[]> i,
-                      @ParameterInfo(name="array", description ="array to retrieve element of") Value<T[]> array) {
+    public ElementsAt(@ParameterInfo(name=indexParamName, description ="index list") Value<Integer[]> i,
+                      @ParameterInfo(name=arrayParamName, description ="array to retrieve element of") Value<T[]> array) {
 
-        indexParamName = getParamName(0);
-        arrayParamName = getParamName(1);
         setParam(indexParamName, i);
         setParam(arrayParamName, array);
     }
 
     @Override
-    @GeneratorInfo(name = "elementsAt", description = "A function to extract some element from an array by index.")
+    @GeneratorInfo(name = "elementsAt", description = "A function to extract element(s) from an array by index.")
     public Value apply() {
 
         Value<T[]> array = array();
