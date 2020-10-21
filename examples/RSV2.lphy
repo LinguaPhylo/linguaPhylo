@@ -7,12 +7,18 @@ data {
   codon2 = D.charset("5-629\3");
 }
 model {
-  π ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
-  Q = f81(freq=π);
-  mu ~ LogNormal(meanlog=-4.5, sdlog=0.5);
   Θ ~ LogNormal(meanlog=3, sdlog=1);
   ψ ~ Coalescent(taxa=taxa, theta=Θ);
-  codon0 ~ PhyloCTMC(L=codon0.nchar(), Q=Q, mu=mu, tree=ψ);
-  codon1 ~ PhyloCTMC(L=codon1.nchar(), Q=Q, mu=mu, tree=ψ);
-  codon2 ~ PhyloCTMC(L=codon2.nchar(), Q=Q, mu=mu, tree=ψ);
+  pi0 ~ Dirichlet(conc=[2,2,2,2]);
+  kappa0 ~ LogNormal(meanlog=1.0, sdlog=0.5);
+  mu0 ~ LogNormal(meanlog=-4.5, sdlog=0.5);
+  codon0 ~ PhyloCTMC(L=codon0.nchar(), Q=hky(kappa=kappa0, freq=pi0), mu=mu0, tree=ψ);
+  pi1 ~ Dirichlet(conc=[2,2,2,2]);
+  kappa1 ~ LogNormal(meanlog=1.0, sdlog=0.5);
+  mu1 ~ LogNormal(meanlog=-4.5, sdlog=0.5);
+  codon1 ~ PhyloCTMC(L=codon1.nchar(), Q=hky(kappa=kappa1, freq=pi1), mu=mu1, tree=ψ);
+  pi2 ~ Dirichlet(conc=[2,2,2,2]);
+  kappa2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
+  mu2 ~ LogNormal(meanlog=-4.5, sdlog=0.5);
+  codon2 ~ PhyloCTMC(L=codon2.nchar(), Q=hky(kappa=kappa2, freq=pi2), mu=mu2, tree=ψ);
 }
