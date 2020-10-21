@@ -1,7 +1,7 @@
 data {
   D = readNexus(file="examples/Dengue4.nex");
-  L = D.nchar();
-  taxa = D.taxa();
+  L = nchar(D);
+  taxa = taxa(D);
 }
 model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
