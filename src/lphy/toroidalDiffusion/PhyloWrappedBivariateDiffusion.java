@@ -42,7 +42,7 @@ public class PhyloWrappedBivariateDiffusion implements GenerativeDistribution<Ma
                                           @ParameterInfo(name = "mu", description = "the mean of the stationary distribution.") Value<Double[]> mu,
                                           @ParameterInfo(name = "sigma", description = "the two variance terms.") Value<Double[]> sigma,
                                           @ParameterInfo(name = "alpha", description = "the three drift terms.") Value<Double[]> alpha,
-                                          @ParameterInfo(name = "y", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
+                                          @ParameterInfo(name = "y0", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
         this.tree = tree;
         this.mu = mu;
         this.sigma = sigma;

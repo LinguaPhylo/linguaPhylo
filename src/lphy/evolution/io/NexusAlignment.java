@@ -207,5 +207,13 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
         return textArea;
     }
 
+    @MethodInfo(description = "the taxa of the alignment.")
+    public Taxa taxa() {
+        return getTaxa();
+    }
 
+    @MethodInfo(description = "the number of characters/sites in the alignment.")
+    public int nchar() {
+        return super.nchar();
+    }
 }

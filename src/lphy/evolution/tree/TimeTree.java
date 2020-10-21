@@ -258,7 +258,6 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
         return count;
     }
 
-
     @MethodInfo(description = "the taxa of the tree.")
     public Taxa taxa() {
         return getTaxa();

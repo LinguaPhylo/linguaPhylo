@@ -3,7 +3,7 @@
 ucln_mean ~ Exp(mean=0.5);
 ucln_sigma ~ Exp(mean=0.33333);
 branch_rates ~ LogNormal(meanlog=ucln_mean, sdlog=ucln_sigma, n=nodecount(tree=ψ));
-sf ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0]);
+sf ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
 er ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
 Q = gtr(freq=sf, rates=er); // construct the GTR instantaneous rate matrix
 D ~ PhyloCTMC(tree=ψ, Q=Q, branchRates=branch_rates, L=1000);

@@ -1,6 +1,6 @@
 data {
   D = readNexus(file="examples/Dengue4.nex");
-  L = D.L();
+  L = D.nchar();
   taxa = D.taxa();
 }
 model {

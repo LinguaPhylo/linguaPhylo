@@ -132,9 +132,11 @@ public class ValueUtils {
     public static Class<?> getType(Value[] var) {
 
         if (allNull(var)) return Double.class;
+        // Double and Integer must be ahead of number
         if (allAssignableFrom(var, Double.class)) return Double.class;
-        if (allAssignableFrom(var, Number.class)) return Number.class;
         if (allAssignableFrom(var, Integer.class)) return Integer.class;
+
+        if (allAssignableFrom(var, Number.class)) return Number.class;
         if (allAssignableFrom(var, Boolean.class)) return Boolean.class;
         if (allAssignableFrom(var, String.class)) return String.class;
         if (allAssignableFrom(var, Double[].class)) return Double[].class;

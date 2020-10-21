@@ -17,7 +17,7 @@ public class PhyloToroidalBrownian extends PhyloMultivariateBrownian {
 
     public PhyloToroidalBrownian(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
                                  @ParameterInfo(name = "diffusionMatrix", description = "the multivariate diffusion rates.") Value<Double[][]> diffusionRate,
-                                 @ParameterInfo(name = "y", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
+                                 @ParameterInfo(name = "y0", description = "the value of multivariate traits at the root.") Value<Double[]> y) {
         super (tree, diffusionRate, y);
     }
 
