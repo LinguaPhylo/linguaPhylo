@@ -73,4 +73,7 @@ public class Slice<T> extends DeterministicFunction {
         return arrayString + "[" + startString  + ":" + endString + "]";
     }
 
+    public int size() {
+        return end().value() - start().value() + 1;
+    }
 }

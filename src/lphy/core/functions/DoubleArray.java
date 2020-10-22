@@ -37,6 +37,10 @@ public class DoubleArray extends DeterministicFunction<Double[]> {
         x[i] = value;
     }
 
+    public Value<Double>[] getValues() {
+        return x;
+    }
+
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
