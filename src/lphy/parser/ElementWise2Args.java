@@ -13,8 +13,8 @@ public interface ElementWise2Args<R,S> {
 	
 	static ElementWise2Args<Value<Double>, Value<Double>> elementWiseDD() {
 		return (a,b,o) -> {
-			Double va = (Double) a.value();
-			Double vb = (Double) b.value();
+			Double va = a.value();
+			Double vb = b.value();
 			Double r = (Double) o.apply(va, vb);
 			return new DoubleValue("", r);
 		};
@@ -47,57 +47,57 @@ public interface ElementWise2Args<R,S> {
 		};
 	}
 	
-	static ElementWise2Args<Value<Integer>, Value<Integer[]>> elementWiseDDA() {
+	static ElementWise2Args<Value<Double>, Value<Double[]>> elementWiseDDA() {
 		return (a,b,o) -> {
-			Integer va = a.value();
-			Integer[] vb = b.value();
-			Integer[] r = new Integer[vb.length];
+			Double va = a.value();
+			Double[] vb = b.value();
+			Double[] r = new Double[vb.length];
 			for (int i = 0; i < vb.length; i++) {
-				r[i] = (Integer) o.apply(va, vb[i]);
+				r[i] = (Double) o.apply(va, vb[i]);
 			}
-			return new IntegerArrayValue("", r);
+			return new DoubleArrayValue("", r);
 		};
 	}
 
-	static ElementWise2Args<Value<Integer[]>, Value<Integer>> elementWiseDAD() {
+	static ElementWise2Args<Value<Double[]>, Value<Double>> elementWiseDAD() {
 		return (a,b,o) -> {
-			Integer[] va = a.value();
-			Integer vb = b.value();
-			Integer[] r = new Integer[va.length];
+			Double[] va = a.value();
+			Double vb = b.value();
+			Double[] r = new Double[va.length];
 			for (int i = 0; i < va.length; i++) {
-				r[i] = (Integer) o.apply(va[i], vb);
+				r[i] = (Double) o.apply(va[i], vb);
 			}
-			return new IntegerArrayValue("", r);
+			return new DoubleArrayValue("", r);
 		};
 	}
 	
-	static ElementWise2Args<Value<Integer>, Value<Integer[][]>> elementWiseDD2() {
+	static ElementWise2Args<Value<Double>, Value<Double[][]>> elementWiseDD2() {
 		return (a,b,o) -> {
-			Integer va = a.value();
-			Integer[][] vb = b.value();
-			Integer[][] r = new Integer[vb.length][vb[0].length];
+			Double va = a.value();
+			Double[][] vb = b.value();
+			Double[][] r = new Double[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
 				for (int j = 0; j < vb.length; j++) {
 
-					r[i][j] = (Integer) o.apply(va, vb[i][j]);
+					r[i][j] = (Double) o.apply(va, vb[i][j]);
 				}
 			}
-			return new IntegerArray2DValue("", r);
+			return new DoubleArray2DValue("", r);
 		};
 	}	
 	
-	static ElementWise2Args<Value<Integer[][]>, Value<Integer>> elementWiseD2D() {
+	static ElementWise2Args<Value<Double[][]>, Value<Double>> elementWiseD2D() {
 		return (a,b,o) -> {
-			Integer[][] va = a.value();
-			Integer vb = b.value();
-			Integer[][] r = new Integer[va.length][va[0].length];
+			Double[][] va = a.value();
+			Double vb = b.value();
+			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
 				for (int j = 0; j < va.length; j++) {
 
-					r[i][j] = (Integer) o.apply(va[i][j], vb);
+					r[i][j] = (Double) o.apply(va[i][j], vb);
 				}
 			}
-			return new IntegerArray2DValue("", r);
+			return new DoubleArray2DValue("", r);
 		};
 	}	
 	

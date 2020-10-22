@@ -1,0 +1,4 @@
+weights = [100.0,100.0,100.0,1000.0];
+rates ~ Dirichlet(conc=[100.0,100.0,100.0,1000.0]);
+sum = sum(rates * weights);
+normalized = sum / sum(weights);
