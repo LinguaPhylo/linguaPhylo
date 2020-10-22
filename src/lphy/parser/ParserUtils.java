@@ -44,7 +44,9 @@ public class ParserUtils {
                 PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
                 Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
-                MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class, SerialCoalescent.class,
+                MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class,
+                WeightedDirichlet.class,
+                SerialCoalescent.class,
                 SimBDReverse.class, SimFossilsPoisson.class,
                 SkylineCoalescent.class, StructuredCoalescent.class,
                 FossilBirthDeathTree.class,
@@ -67,7 +69,7 @@ public class ParserUtils {
                 ReadNexus.class,
                 Species.class, ExtantTree.class, PruneTree.class,
                 ExtantTaxa.class,
-                SliceDoubleArray.class
+                SliceDoubleArray.class, Sum.class
         };
 
         for (Class<?> functionClass : functionClasses) {
