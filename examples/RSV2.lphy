@@ -21,3 +21,4 @@ model {
   kappa2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
   mu2 ~ LogNormal(meanlog=-5.0, sdlog=1.25);
   codon2 ~ PhyloCTMC(L=codon2.nchar(), Q=hky(kappa=kappa2, freq=pi2), mu=mu2, tree=ψ);}
+}
