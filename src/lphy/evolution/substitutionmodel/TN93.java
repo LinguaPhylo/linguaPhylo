@@ -12,16 +12,16 @@ import java.util.Map;
  */
 public class TN93 extends RateMatrix {
 
-    String kappa1ParamName;
-    String kappa2ParamName;
-    String freqParamName;
+    public static final String kappa1ParamName = "kappa1";
+    public static final String kappa2ParamName = "kappa2";
+    public static final String freqParamName = "freq";
 
-    public TN93(@ParameterInfo(name = "kappa1", description = "the rate of A<->G transition in the TN93 process.") Value<Double> kappa1,
-                @ParameterInfo(name = "kappa2", description = "the rate of C<->T transition in the TN93 process.") Value<Double> kappa2,
-                @ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq) {
-        kappa1ParamName = getParamName(0);
-        kappa2ParamName = getParamName(1);
-        freqParamName = getParamName(2);
+    public TN93(@ParameterInfo(name = kappa1ParamName, description = "the rate of A<->G transition in the TN93 process.") Value<Double> kappa1,
+                @ParameterInfo(name = kappa2ParamName, description = "the rate of C<->T transition in the TN93 process.") Value<Double> kappa2,
+                @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+                @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default 1.0") Value<Number> meanRate) {
+
+        super(meanRate);
         setParam(kappa1ParamName, kappa1);
         setParam(kappa2ParamName, kappa2);
         setParam(freqParamName, freq);

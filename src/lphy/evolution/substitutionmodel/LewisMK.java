@@ -13,18 +13,18 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 public class LewisMK extends RateMatrix {
 
     public static final String numStatesParamName = "numStates";
-    public static final String rateParamName = "rate";
 
     public LewisMK(@ParameterInfo(name = numStatesParamName, description = "the number of states") Value<Integer> numStates,
-                   @ParameterInfo(name = rateParamName, description = "the rate of the LewisMK process. Default value is 1.0.", optional=true) Value<Number> rate) {
+                   @ParameterInfo(name = meanRateParamName, description = "the mean rate of the LewisMK process. Default value is 1.0.", optional=true) Value<Number> rate) {
+
+        super(rate);
         setParam(numStatesParamName, numStates);
-        if (rate != null) setParam(rateParamName, rate);
     }
 
     @GeneratorInfo(name = "lewisMK", description = "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.")
     public Value<Double[][]> apply() {
         Value<Integer> numStates = getParams().get(numStatesParamName);
-        Value<Number> rateValue = getParams().get(rateParamName);
+        Value<Number> rateValue = getParams().get(meanRateParamName);
         double rate = (rateValue != null) ? doubleValue(rateValue) : 1.0;
         return new DoubleArray2DValue( jc(rate, numStates.value()), this);
     }

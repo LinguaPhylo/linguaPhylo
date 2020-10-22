@@ -10,11 +10,13 @@ import java.util.Map;
  */
 public class K80 extends RateMatrix {
 
-    String paramName;
+    public static final String kappaParamName = "kappa";
 
-    public K80(@ParameterInfo(name = "kappa", description = "the kappa of the K80 process.") Value<Double> kappa) {
-        paramName = getParamName(0);
-        setParam(paramName, kappa);
+    public K80(@ParameterInfo(name = kappaParamName, description = "the kappa of the K80 process.") Value<Double> kappa,
+               @ParameterInfo(name = meanRateParamName, description = "the mean rate of the K80 process. default 1.0", optional = true) Value<Number> meanRate) {
+
+        super(meanRate);
+        setParam(kappaParamName, kappa);
     }
 
 
@@ -46,13 +48,13 @@ public class K80 extends RateMatrix {
             Q[i][i] = -totalRates[i];
         }
 
-        normalize(new Double[] {0.25, 0.25, 0.25, 0.25}, Q);
+        normalize(new Double[] {0.25, 0.25, 0.25, 0.25}, Q, totalRateDefault1());
 
         return Q;
     }
 
     public Value<Double> getKappa() {
-        return getParams().get(paramName);
+        return getParams().get(kappaParamName);
     }
 
 }

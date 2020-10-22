@@ -12,13 +12,14 @@ import java.util.Map;
  */
 public class F81 extends RateMatrix {
 
-    String freqParamName;
+    public static final String freqParamName = "freq";
 
-    public F81(@ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq) {
-        freqParamName = getParamName(0);
+    public F81(@ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = freqParamName, description = "the mean rate of the process. default = 1.0", optional = true) Value<Number> meanRate) {
+
+        super(meanRate);
         setParam(freqParamName, freq);
     }
-
 
     @GeneratorInfo(name = "f81", description = "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.")
     public Value<Double[][]> apply() {

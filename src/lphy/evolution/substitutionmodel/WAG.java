@@ -14,10 +14,12 @@ import java.util.stream.Stream;
  */
 public class WAG extends RateMatrix {
 
-    String freqParamName;
+    public static final String freqParamName = "freq";
 
-    public WAG(@ParameterInfo(name = "freq", description = "the base frequencies.", optional=true) Value<Double[]> freq) {
-        freqParamName = getParamName(0);
+    public WAG(@ParameterInfo(name = freqParamName, description = "the base frequencies.", optional=true) Value<Double[]> freq,
+               @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default 1.0", optional=true) Value<Number> meanRate) {
+
+        super(meanRate);
 
         if (freq != null) {
             if (freq.value().length != 20)
@@ -53,7 +55,7 @@ public class WAG extends RateMatrix {
         double[][] Q = wag.getRelativeRates();
 
         // normalise rate matrix to one expected substitution per unit time
-        return normalize(f, Q);
+        return normalize(f, Q, totalRateDefault1());
     }
 
     // can be null

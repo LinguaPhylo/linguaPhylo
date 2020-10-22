@@ -17,12 +17,13 @@ public class HKY extends RateMatrix {
     public static final String rateParamName =  "rate";
 
 
-    public HKY(@ParameterInfo(name = "kappa", description = "the kappa of the HKY process.") Value<Number> kappa,
-               @ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq,
-               @ParameterInfo(name = "rate", description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
+    public HKY(@ParameterInfo(name = kappaParamName, description = "the kappa of the HKY process.") Value<Number> kappa,
+               @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = meanRateParamName, description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
+
+        super(rate);
         setParam(kappaParamName, kappa);
         setParam(freqParamName, freq);
-        if (rate != null) setParam(rateParamName, rate);
     }
 
 
@@ -32,9 +33,8 @@ public class HKY extends RateMatrix {
         Map<String, Value> params = getParams();
         double kappa = doubleValue((Value<Number>)params.get(kappaParamName));
         Double[] freq = ((Value<Double[]>)params.get(freqParamName)).value();
-        Value<Number> rate = params.getOrDefault(rateParamName, Value.Double_1);
 
-        return new DoubleArray2DValue(hky(kappa, freq, doubleValue(rate)), this);
+        return new DoubleArray2DValue(hky(kappa, freq), this);
     }
 
     public Value<Double> getKappa() {
@@ -45,7 +45,7 @@ public class HKY extends RateMatrix {
         return getParams().get(freqParamName);
     }
 
-    private Double[][] hky(double kappa, Double[] freqs, double rate) {
+    private Double[][] hky(double kappa, Double[] freqs) {
 
         int numStates = 4;
         
@@ -68,7 +68,7 @@ public class HKY extends RateMatrix {
         }
 
         // normalise rate matrix to rate
-        normalize(freqs, Q, rate);
+        normalize(freqs, Q);
 
         return Q;
     }

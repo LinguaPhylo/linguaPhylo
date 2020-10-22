@@ -8,16 +8,18 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
  */
 public class GTR extends RateMatrix {
 
-    String rateParamName;
-    String freqParamName;
+    public static final String ratesParamName = "rates";
+    public static final String freqParamName = "freq";
 
-    public GTR(@ParameterInfo(name = "rates", description = "the relative rates of the GTR process.") Value<Double[]> rates, @ParameterInfo(name = "freq", description = "the base frequencies.") Value<Double[]> freq) {
-        rateParamName = getParamName(0);
-        freqParamName = getParamName(1);
+    public GTR(@ParameterInfo(name = ratesParamName, description = "the relative rates of the GTR process.") Value<Double[]> rates,
+               @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = meanRateParamName, description = "the base frequencies.") Value<Number> meanRate) {
+
+        super(meanRate);
 
         if (rates.value().length != 6) throw new IllegalArgumentException("Rates must have 6 dimensions.");
 
-        setParam(rateParamName, rates);
+        setParam(ratesParamName, rates);
         setParam(freqParamName, freq);
     }
 
@@ -57,17 +59,16 @@ public class GTR extends RateMatrix {
             Q[i][i] = -totalRate;
         }
         // normalise rate matrix to one expected substitution per unit time
-        normalize(freqs, Q);
+        normalize(freqs, Q, totalRateDefault1());
 
         return Q;
     }
 
     public Value<Double[]> getRates() {
-        return getParams().get(rateParamName);
+        return getParams().get(ratesParamName);
     }
 
     public GraphicalModelNode<?> getFreq() {
         return getParams().get(freqParamName);
     }
-
 }
