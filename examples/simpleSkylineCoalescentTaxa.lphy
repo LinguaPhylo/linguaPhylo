@@ -1,4 +1,4 @@
-Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=16);
-t = 1:100;
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=3);
+t = 1:10;
 ψ ~ SkylineCoalescent(taxa=t, theta=Θ);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
