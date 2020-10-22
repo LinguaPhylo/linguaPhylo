@@ -16,10 +16,10 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
     public static final String weightsParamName = "weights";
 
     private Value<Number[]> concentration;
-    private Value<Number[]> weights;
+    private Value<Integer[]> weights;
 
     public WeightedDirichlet(@ParameterInfo(name = concParamName, description = "the concentration parameters of the scaled Dirichlet distribution.") Value<Number[]> concentration,
-                             @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.") Value<Number[]> weights) {
+                             @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.") Value<Integer[]> weights) {
         this.concentration = concentration;
         this.weights = weights;
     }
@@ -30,12 +30,17 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
         Number[] weight = weights.value();
         Number[] conc = concentration.value();
 
+        double weightsum = 0.0;
+        for (int i = 0; i < weight.length; i++) {
+            weightsum += weight[i].doubleValue();
+        }
+
         Double[] z = new Double[concentration.value().length];
         double sum = 0.0;
         for (int i = 0; i < z.length; i++) {
             double val = Utils.randomGamma(conc[i].doubleValue(), 1.0);
             z[i] = val;
-            sum += val * weight[i].doubleValue();
+            sum += val * (weight[i].doubleValue() / weightsum);
         }
 
         for (int i = 0; i < z.length; i++) {
@@ -62,7 +67,7 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
         return concentration;
     }
 
-    public Value<Number[]> getWeights() {
+    public Value<Integer[]> getWeights() {
         return weights;
     }
 
