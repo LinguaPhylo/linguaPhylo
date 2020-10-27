@@ -228,6 +228,10 @@ public class GraphicalModelInterpreter extends JPanel {
 //            }
 //        }
 
+        if (!(input.trim().endsWith(";"))) {
+            input += ";";
+        }
+
         parser.parse(input, context);
 
 
