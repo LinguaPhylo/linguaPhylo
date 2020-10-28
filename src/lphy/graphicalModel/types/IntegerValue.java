@@ -1,11 +1,12 @@
 package lphy.graphicalModel.types;
 
 import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.RangeElement;
 import lphy.graphicalModel.swing.IntegerValueEditor;
 
 import javax.swing.*;
 
-public class IntegerValue extends NumberValue<Integer> {
+public class IntegerValue extends NumberValue<Integer> implements RangeElement {
 
     public IntegerValue(String id, Integer value) {
         super(id, value);
@@ -30,5 +31,10 @@ public class IntegerValue extends NumberValue<Integer> {
             return new IntegerValueEditor(this);
         }
         return super.getViewer();
+    }
+
+    @Override
+    public Integer[] range() {
+        return new Integer[value()];
     }
 }

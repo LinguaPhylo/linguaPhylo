@@ -180,14 +180,23 @@ public class GraphicalModelPanel extends JPanel {
     public void source(BufferedReader reader) throws IOException {
         String line = reader.readLine();
         LPhyParser.Context context = LPhyParser.Context.model;
+        boolean skip;
         while (line != null) {
+            skip = false;
             if (line.trim().startsWith("data")) {
                 context = LPhyParser.Context.data;
+                skip = true;
             } else if (line.trim().startsWith("model")) {
                 context = LPhyParser.Context.model;
+                skip = true;
+            } else if (line.trim().startsWith("for")) {
+                line = consumeForLoop(line, reader);
             } else if (line.trim().startsWith("}")) {
-                // do nothing as this line is just closing a data or model block.
-            } else {
+                // this line is just closing a data or model block.
+                skip = true;
+            }
+
+            if (!skip) {
                 switch (context) {
                     case data:
                         dataInterpreter.interpretInput(line, LPhyParser.Context.data);
@@ -201,6 +210,17 @@ public class GraphicalModelPanel extends JPanel {
         }
         repaint();
         reader.close();
+    }
+
+    private String consumeForLoop(String firstLine, BufferedReader reader) throws IOException {
+        StringBuilder builder = new StringBuilder(firstLine);
+        String line = reader.readLine();
+        while (!line.trim().startsWith("}")) {
+            builder.append(line);
+            line = reader.readLine();
+        }
+        builder.append(line);
+        return builder.toString();
     }
 
     private int getReps() {

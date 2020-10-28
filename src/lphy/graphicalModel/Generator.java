@@ -173,6 +173,39 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return entry.getValue().getId();
     }
 
+    static boolean matchingParameterTypes(Constructor generatorConstructor,  Map<String, Value> params) {
+        List<ParameterInfo> parameterInfos = getParameterInfo(generatorConstructor);
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            Value value = params.get(parameterInfo.name());
+            if (value != null) {
+                Class parameterType = parameterInfo.type();
+                Class valueType = value.value().getClass();
+
+                if (!parameterType.isAssignableFrom(valueType)) return false;
+            } else {
+                if (!parameterInfo.optional()) return false;
+            }
+        }
+        return true;
+    }
+
+    static boolean matchingParameterTypes(List<ParameterInfo> parameterInfos,  Object[] initArgs) {
+        for (int i = 0; i < parameterInfos.size(); i++) {
+            ParameterInfo parameterInfo = parameterInfos.get(i);
+            Value value = (Value)initArgs[i];
+
+            if (value != null) {
+                Class parameterType = parameterInfo.type();
+                Class valueType = value.value().getClass();
+
+                if (!parameterType.isAssignableFrom(valueType)) return false;
+            } else {
+                if (!parameterInfo.optional()) return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @return true if any of the parameters are random variables,
      * or are themselves that result of a function with random parameters as arguments.

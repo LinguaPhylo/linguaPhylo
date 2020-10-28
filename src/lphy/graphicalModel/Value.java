@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class Value<T> implements GraphicalModelNode<T>, Viewable {
 
-    private T value;
+    T value;
     String id;
     List<ValueListener> listeners = new ArrayList<>();
     List<GraphicalModelNode> outputs = new ArrayList<>();

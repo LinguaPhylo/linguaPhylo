@@ -41,8 +41,9 @@ stoch_relation:	var TILDE distribution
 //interval: 'I' '(' expression ','  expression ')' ;
 
 
-var: NAME 
-| NAME '[' range_list ']';
+var: NAME '[' range_list ']'
+| NAME
+;
 
 range_list: range_element
 | range_list ',' range_element

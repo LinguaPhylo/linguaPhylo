@@ -18,13 +18,15 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 /**
  * Created by adru001 on 2/02/20.
  */
 public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
     Value<TimeTree> tree;
-    Value<Double> clockRate;
+    Value<Number> clockRate;
     Value<Double[]> freq;
     Value<Double[][]> Q;
     Value<Double[]> siteRates;
@@ -54,13 +56,13 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.") Value<TimeTree> tree,
-                     @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional = true) Value<Double> mu,
-                     @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
-                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
-                     @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> siteRates,
-                     @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = "L", description = "length of the alignment", optional = true) Value<Integer> L) {
+    public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.", type=TimeTree.class) Value<TimeTree> tree,
+                     @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
+                     @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", type=Double[].class, optional = true) Value<Double[]> rootFreq,
+                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.", type=Double[][].class) Value<Double[][]> Q,
+                     @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", type=Double[].class,  optional = true) Value<Double[]> siteRates,
+                     @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", type=Double[].class, optional = true) Value<Double[]> branchRates,
+                     @ParameterInfo(name = "L", description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L) {
 
         this.tree = tree;
         this.Q = Q;
@@ -172,7 +174,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
             a = new SimpleAlignment(idMap, length, dataType);
 
 
-        double mu = (this.clockRate == null) ? 1.0 : this.clockRate.value();
+        double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
         for (int i = 0; i < length; i++) {
             int rootState = Categorical.sample(rootFreqs.value(), random);
@@ -191,7 +193,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         return branchRates;
     }
 
-    public Value<Double> getClockRate() {
+    public Value<Number> getClockRate() {
         return clockRate;
     }
 

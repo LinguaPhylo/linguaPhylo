@@ -19,6 +19,7 @@ import lphy.graphicalModel.*;
 import lphy.toroidalDiffusion.*;
 import lphy.utils.LoggerUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -39,6 +40,7 @@ public class ParserUtils {
         Class<?>[] genClasses = {
                 RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
+                DirichletMulti.class,
                 InverseGammaMulti.class,
                 Normal.class, NormalMulti.class, LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
                 PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
@@ -60,7 +62,9 @@ public class ParserUtils {
         }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
-                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, LewisMK.class,
+                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                Length.class,
+                LewisMK.class,
                 LocalBranchRates.class,
                 CreateTaxa.class,
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
@@ -115,7 +119,6 @@ public class ParserUtils {
 
         if (generators != null) {
             for (Class functionClass : getGenerativeDistributionClasses(name)) {
-                System.out.println("Found potential matching class: " + functionClass);
                 matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
             }
         } else {
@@ -131,9 +134,6 @@ public class ParserUtils {
         for (Constructor constructor : generatorClass.getConstructors()) {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
             List<Object> initargs = new ArrayList<>();
-//            if (arguments.size() == 1 && pInfo.size() == 1 && arguments.keySet().iterator().next().equals(pInfo.get(0).name())) {
-//                matches.add(constructGenerator(name, constructor, new Object[] {arguments.values().iterator().next()}));
-//            }
 
             if (match(arguments, pInfo)) {
                 for (int i = 0; i < pInfo.size(); i++) {
@@ -146,7 +146,8 @@ public class ParserUtils {
                         initargs.add(null);
                     }
                 }
-                matches.add(constructGenerator(name, constructor, initargs.toArray()));
+
+                matches.add(constructGenerator(name, constructor, pInfo, initargs.toArray()));
             }
         }
         return matches;
@@ -187,12 +188,12 @@ public class ParserUtils {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
 
             if (values.length == pInfo.size() && (values.length == 1 || values.length == 2)) {
-                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, values);
+                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, pInfo, values);
                 if (f != null) {
                     matches.add(f);
                 }
             } else if (values.length == 0 && pInfo.size() == 1 && pInfo.get(0).optional()) {
-                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, new Object[] {null});
+                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, pInfo, new Object[] {null});
                 if (f != null) {
                     matches.add(f);
                 }
@@ -201,9 +202,15 @@ public class ParserUtils {
         return matches;
     }
 
-    private static Generator constructGenerator(String name, Constructor constructor, Object[] initargs) {
+    private static Generator constructGenerator(String name, Constructor constructor, List<ParameterInfo> pInfo, Object[] initargs) {
         try {
-            return (Generator) constructor.newInstance(initargs);
+            if (Generator.matchingParameterTypes(pInfo, initargs)) {
+                return (Generator) constructor.newInstance(initargs);
+            } else if (vectorMatch(pInfo, initargs) > 0) {
+                // do vector match
+                return vectorGenerator(constructor, pInfo, initargs);
+            } else throw new RuntimeException("ERROR! No match, including vector match!");
+
         } catch (InstantiationException e) {
             e.printStackTrace();
             LoggerUtils.log.severe("Parsing generator " + name + " failed.");
@@ -211,10 +218,66 @@ public class ParserUtils {
             e.printStackTrace();
             LoggerUtils.log.severe("Parsing generator " + name + " failed.");
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
             LoggerUtils.log.severe("Parsing generator " + name + " failed.");
         }
         return null;
+    }
+
+    public static int vectorMatch(List<ParameterInfo> pInfo, Object[] initargs) {
+        int vectorMatches = 0;
+        for (int i = 0; i < pInfo.size(); i++) {
+            ParameterInfo parameterInfo = pInfo.get(i);
+            Value argValue = (Value)initargs[i];
+
+            if (argValue == null) {
+                if (!parameterInfo.optional()) return 0;
+            } else {
+                if (parameterInfo.type().isAssignableFrom(argValue.value().getClass())) {
+                    // direct type match
+                } else if (argValue.value().getClass().isArray() && parameterInfo.type().isAssignableFrom(argValue.value().getClass().getComponentType())) {
+                    // vector match
+                    vectorMatches += 1;
+                }
+            }
+        }
+        return vectorMatches;
+    }
+
+    public static Generator vectorGenerator(Constructor constructor, List<ParameterInfo> pInfo, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        Object[] firstElementArgs = new Object[vectorArgs.length];
+        Map<String, Value> fullargs = new TreeMap<>();
+
+
+        for (int i = 0; i < pInfo.size(); i++) {
+            ParameterInfo parameterInfo = pInfo.get(i);
+            Value argValue = (Value)vectorArgs[i];
+
+            if (argValue == null) {
+                if (!parameterInfo.optional()) throw new IllegalArgumentException("Required parameter " + parameterInfo.name() + " not including in vector arguments");
+            } else {
+
+                Class argValueClass = argValue.value().getClass();
+                fullargs.put(parameterInfo.name(), argValue);
+
+                if (parameterInfo.type().isAssignableFrom(argValueClass)) {
+                    // direct type match
+                    firstElementArgs[i] = vectorArgs[i];
+                } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
+                    // vector match
+                    firstElementArgs[i] = new Value(null, Array.get(argValue.value(), 0), null);
+                }
+            }
+        }
+
+        Generator baseGenerator = (Generator) constructor.newInstance(firstElementArgs);
+
+        if (baseGenerator instanceof GenerativeDistribution) {
+            return new VectorizedDistribution((GenerativeDistribution)baseGenerator, fullargs);
+        } else if (baseGenerator instanceof DeterministicFunction) {
+            return new VectorizedFunction((DeterministicFunction)baseGenerator, fullargs);
+        } else throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
+
     }
 
     static Set<Class<?>> getGenerativeDistributionClasses(String name) {
@@ -223,5 +286,9 @@ public class ParserUtils {
 
     static Set<Class<?>> getFunctionClasses(String name) {
         return functionDictionary.get(name);
+    }
+
+    public static List<Generator> getMatchingVectorizedGenerator(String name, Map<String, Value> arguments) {
+        return null;
     }
 }

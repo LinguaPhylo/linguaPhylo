@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.*;
 import java.util.logging.Level;
@@ -94,14 +95,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
         /**
          * @param ctx
-         * @return either and IntegerValue or a Range function.
+         * @return RangeElement
          */
-        public Object visitRange_element(SimulatorParser.Range_elementContext ctx) {
+        public RangeElement visitRange_element(SimulatorParser.Range_elementContext ctx) {
 
             Object o = visitChildren(ctx);
 
-            if (o instanceof IntegerValue || o instanceof IntegerArrayValue || o instanceof Range) {
-                return o;
+            if (o instanceof RangeElement) {
+                return (RangeElement)o;
             }
 
             LoggerUtils.log.severe("Expected Integer value, or Range, in range element, but found: " + o);
@@ -157,7 +158,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
                 if (o instanceof RangedVar) {
-                    return handleRangeVar(id, value, ((RangedVar) o).range, f);
+                    return handleRangeVar((RangedVar)o, value, f);
                 } else {
                     value.setFunction(f);
                     value.setId(id);
@@ -170,7 +171,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 value.setId(id);
 
                 if (o instanceof RangedVar) {
-                    return handleRangeVar(id, value, ((RangedVar) o).range, null);
+                    return handleRangeVar((RangedVar)o, value, null);
                 } else {
                     put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
@@ -181,29 +182,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             }
             return null;
-//			if (id.indexOf('[') >= 0) {
-//				id = ctx.getChild(0).getChild(0).getText();
-//				JFunction range = (JFunction) visit(ctx.getChild(0).getChild(2));
-//				Variable c = null;
-//				if (doc.pluginmap.containsKey(id)) {
-//					c = (Variable) doc.pluginmap.get(id);
-//					c.setValue(range, f);
-//				} else {
-//					throw new IllegalArgumentException("Variable " + id + " should have been declared before using [] notation");
-//					//c = new Variable(id, f, dimensions);
-//					//c.setValue(range, f);
-//				}
-//				return c;
-//			}
-//
-//			Variable c = new Variable(f);
-//			c.setID(id);
-//			doc.registerPlugin(c);
-//			System.out.println(c);			
-//			return c;<?>
         }
 
-        private Value handleRangeVar(String id, Value value, RangeList rangeList, DeterministicFunction f) {
+        private Value handleRangeVar(RangedVar var, Value value, DeterministicFunction function) {
+
+            String id = var.id;
+            RangeList rangeList = var.range;
 
             List<Integer> range = Arrays.asList(rangeList.apply().value());
 
@@ -259,15 +243,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     }
                     Value v = null;
                     if (destinationArray instanceof Double[]) {
-                        v = new DoubleArrayValue(id, (Double[]) destinationArray, f);
+                        v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
                     } else if (destinationArray instanceof Integer[]) {
-                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, f);
+                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
                     } else if (destinationArray instanceof Boolean[]) {
-                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, f);
+                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
                     } else if (destinationArray instanceof String[]) {
-                        v = new StringArrayValue(id, (String[]) destinationArray, f);
+                        v = new StringArrayValue(id, (String[]) destinationArray, function);
                     } else {
-                        v = new Value(id, destinationArray, f);
+                        v = new Value(id, destinationArray, function);
                     }
                     put(id, v);
                     LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
@@ -283,15 +267,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     }
                     Value v = null;
                     if (destinationArray instanceof Double[]) {
-                        v = new DoubleArrayValue(id, (Double[]) destinationArray, f);
+                        v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
                     } else if (destinationArray instanceof Integer[]) {
-                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, f);
+                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
                     } else if (destinationArray instanceof Boolean[]) {
-                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, f);
+                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
                     } else if (destinationArray instanceof String[]) {
-                        v = new StringArrayValue(id, (String[]) destinationArray, f);
+                        v = new StringArrayValue(id, (String[]) destinationArray, function);
                     } else {
-                        v = new Value(id, destinationArray, f);
+                        v = new Value(id, destinationArray, function);
                     }
                     put(id, v);
                     LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
@@ -311,11 +295,26 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             }
 
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
-            String id = ctx.getChild(0).getText();
 
-            RandomVariable var = genDist.sample(id);
-            put(var.getId(), var);
-            return var;
+            Object var = visit(ctx.getChild(0));
+            RandomVariable variable = genDist.sample(var.toString());
+
+            if (var instanceof String) {
+                put(variable.getId(), variable);
+                return variable;
+            } else if (var instanceof RangedVar) {
+                RangedVar rv = (RangedVar)var;
+
+                throw new RuntimeException("Ranged variables are not currently handled!");
+//                // if already exists
+//                if (get(rv.id) != null) {
+//                    addElementToVariable(rv.id, rv.range, variable);
+//                } else {
+//                    RandomVariable parentVariable = new RandomVariable(rv.id, )
+//                }
+            } else {
+                throw new RuntimeException("Expected an id or ranged variable but got " + var);
+            }
         }
 
         @Override
@@ -341,6 +340,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
          * @return the id of a variable, or a RangeVar object containing an id and RangeList
          */
         public Object visitVar(VarContext ctx) {
+            
+            LoggerUtils.log.info("  visitVar: " + ctx.getText());
 
             String id = ctx.getChild(0).getText();
             if (ctx.getChildCount() > 1) {
@@ -354,7 +355,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 }
             }
 
-            LoggerUtils.log.log(Level.FINE, "  visitVar: " + id);
 
             return id;
         }
@@ -365,7 +365,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
          */
         private Object visitIndexRange(SimulatorParser.ExpressionContext ctx) {
 
-            Value array = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
+            Object child = visit(ctx.getChild(0));
+
+            Value array = new ValueOrFunction(child).getValue();
 
             if (!array.value().getClass().isArray()) {
                 LoggerUtils.log.severe("Expected value " + array + " to be an array.");
@@ -667,8 +669,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             String name = ctx.getChild(0).getText();
             ArgumentValue[] f = (ArgumentValue[]) visit(ctx.getChild(2));
             Map<String, Value> arguments = new HashMap<>();
+
+
+
             for (ArgumentValue v : f) {
-                arguments.put(v.getName(), v.getValue());
+                if (v != null) {
+                    arguments.put(v.getName(), v.getValue());
+                } else {
+                    throw new RuntimeException("Unexpected null argument!");
+                }
             }
 
             Generator generator;
@@ -716,31 +725,36 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
 
-//		@Override // for_loop: counter relations
-//		public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
-//			ParseTree counter = ctx.getChild(0);
-//			// counter: FOR '(' NAME IN range_element ')'
-//			String name = counter.getChild(2).getText();
-//			Object range = visit(counter.getChild(4));
-//
-//			if (range instanceof Integer[]) {
-//                System.out.println("for " + name + " in " + Arrays.toString((Integer[])range));
-//            }
-//
-//            ParseTree relations = ctx.getChild(1);
-//
-//			ParseTree relationList = relations.getChild(1);
-//
-//			for (int i = 0; i < relationList.getChildCount(); i++) {
-//
-//                System.out.println("relations " + i + " = " + visit(relationList.getChild(i)));
-//            }
-//
-//            Object o = visit(relations);
-//
-//
-//            return new Object();
-//		}
+		@Override // for_loop: counter relations
+		public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
+			ParseTree counter = ctx.getChild(0);
+			// counter: FOR '(' NAME IN range_element ')'
+			String name = counter.getChild(2).getText();
+
+			// either an IntegerValue, an IntegerArrayValue or a Range function
+			GraphicalModelNode range = (GraphicalModelNode)visit(counter.getChild(4));
+			Object rangeValue = range.value();
+
+
+            Integer[] intRange;
+			if (rangeValue instanceof Integer[]) {
+                intRange = (Integer[])rangeValue;
+            } else if (rangeValue instanceof Integer) {
+			    intRange = new Integer[] {(Integer)rangeValue};
+            } else throw new RuntimeException("Unexpected type of range element in for loop: " + rangeValue);
+
+
+            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[])rangeValue);
+			for (Integer i : intRange) {
+
+                put(name, new IntegerValue(name, i, null));
+                ParseTree relations = ctx.getChild(1);
+                visit(relations);
+            }
+            return new Object() {
+			    public String toString() { return forLoopName; }
+            };
+		}
 
         /**
          * @param ctx

@@ -3,23 +3,23 @@ package lphy.core.functions;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 
+import static lphy.graphicalModel.ValueUtils.doubleValue;
+
 public class Exp extends DeterministicFunction<Double> {
 
-    String paramName;
+    public static final String argParamName = "arg";
 
-    public Exp(@ParameterInfo(name = "0", description = "the argument.") Value<Double> x) {
-        paramName = getParamName(0);
-        setParam(paramName, x);
+    public Exp(@ParameterInfo(name = argParamName, description = "the argument.") Value<Number> x) {
+        setParam(argParamName, x);
+    }
+
+    public Value<Double> apply(Value<Number> v) {
+        setParam(argParamName, v);
+        return new DoubleValue(null, Math.exp(doubleValue(v)), this);
     }
 
     @GeneratorInfo(name="exp",description = "The exponential function: e^x")
-    public Value<Double> apply(Value<Double> v) {
-        setParam("0", v);
-        return new DoubleValue(Math.exp(v.value()), this);
-    }
-
-    @Override
     public Value<Double> apply() {
-        return apply((Value<Double>)getParams().get(paramName));
+        return apply((Value<Number>)getParams().get(argParamName));
     }
 }

@@ -1,7 +1,8 @@
 data {
   spTaxa = taxa(names=1:20);
   gTaxa = taxa(names=["1_1","2_1","3_1","4_1","5_1","6_1","7_1","8_1","9_1","10_1","11_1","12_1","13_1","14_1","15_1","16_1","17_1","18_1","19_1","20_1"], species=1:20);
-  L = [500,500,500];
+  numLoci = 8;
+  L = rep(element=500, times=numLoci);
 }
 model {
   lambda ~ Uniform(lower=1.0, upper=1.5);
@@ -15,16 +16,9 @@ model {
   beta ~ LogNormal(meanlog=-1.0, sdlog=1.25);
   pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=S.nodeCount());
 
-  g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=gTaxa, numLoci=3);
-  kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, n=3);
-  g_rate ~ WeightedDirichlet(conc=[1.0,1.0,1.0], weights=L);
-
-  pi1 ~ Dirichlet(conc=[2,2,2,2]);
-  mol_data1 ~ PhyloCTMC(Q=hky(kappa=kappa[0], freq=pi1, meanRate=g_rate[0]), mu=clock_rate, tree=g[0], L=L[0]);
-
-  pi2 ~ Dirichlet(conc=[2,2,2,2]);
-  mol_data2 ~ PhyloCTMC(Q=hky(kappa=kappa[1], freq=pi2, meanRate=g_rate[1]), mu=clock_rate, tree=g[1], L=L[1]);
-
-  pi3 ~ Dirichlet(conc=[2,2,2,2]);
-  mol_data3 ~ PhyloCTMC(Q=hky(kappa=kappa[2], freq=pi3, meanRate=g_rate[2]), mu=clock_rate, tree=g[2], L=L[2]);
+  g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, taxa=gTaxa, numLoci=numLoci);
+  g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);
+  kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, n=numLoci);
+  pi ~ Dirichlet(conc=[2,2,2,2], n=numLoci);
+  mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, meanRate=g_rate), mu=clock_rate, tree=g, L=L);
 }

@@ -33,11 +33,11 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
 
     Taxa geneTreeTaxa = null;
 
-    public MultispeciesCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population sizes, one for each species (both extant and ancestral).") Value<Double[]> theta,
-                                  @ParameterInfo(name = nParamName, description = "the number of sampled taxa in the gene tree for each extant species.", optional = true) Value<Integer[]> n,
-                                  @ParameterInfo(name = taxaParamName, description = "the taxa for the gene tree, with species to define the mapping.", optional = true) Value<Taxa> taxa,
-                                  @ParameterInfo(name = numLociParamName, description = "the number of loci the simulate. Default is 1", optional = true) Value<Integer> numLoci,
-                                  @ParameterInfo(name = SParamName, description = "the species tree. ") Value<TimeTree> S) {
+    public MultispeciesCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population sizes, one for each species (both extant and ancestral).", type=Double[].class) Value<Double[]> theta,
+                                  @ParameterInfo(name = nParamName, description = "the number of sampled taxa in the gene tree for each extant species.", type=Integer[].class, optional = true) Value<Integer[]> n,
+                                  @ParameterInfo(name = taxaParamName, description = "the taxa for the gene tree, with species to define the mapping.", type=Taxa.class, optional = true) Value<Taxa> taxa,
+                                  @ParameterInfo(name = numLociParamName, description = "the number of loci the simulate. Default is 1", type=Integer.class, optional = true) Value<Integer> numLoci,
+                                  @ParameterInfo(name = SParamName, description = "the species tree. ", type=TimeTree.class) Value<TimeTree> S) {
         this.theta = theta;
         this.n = n;
         this.numLoci = numLoci;

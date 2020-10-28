@@ -2,9 +2,10 @@ package lphy.core.functions;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RangeElement;
 import lphy.graphicalModel.Value;
 
-public class Range extends DeterministicFunction<Integer[]> {
+public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 
     public static final String startParamName = "start";
     public static final String endParamName = "end";
@@ -34,6 +35,11 @@ public class Range extends DeterministicFunction<Integer[]> {
 
     public Value<Integer> end() {
         return (Value<Integer>) paramMap.get(endParamName);
+    }
+
+    @Override
+    public Integer[] range() {
+        return value();
     }
 
     public String codeString() {
