@@ -4,79 +4,68 @@ import lphy.graphicalModel.*;
 import lphy.parser.ParserUtils;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
+import static lphy.graphicalModel.VectorUtils.*;
 
-    // the generative distribution to be vectorized
-    GenerativeDistribution<T> baseDistribution;
+public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
     // the parameters (vectors)
     Map<String, Value> params;
 
     // the base types of the parameters in the base distribution
+    // the keys are the argument names
     Map<String, Class> baseTypes = new TreeMap<>();
-    
-    public VectorizedDistribution(GenerativeDistribution<T> baseDistribution, Map<String, Value> params) {
-        this.baseDistribution = baseDistribution;
 
-        this.params = params;
+    List<GenerativeDistribution<T>> baseDistributions;
 
-        baseDistribution.getParams().forEach((key, value) -> {
+    public VectorizedDistribution(Constructor baseDistributionConstructor, List<ParameterInfo> pInfo, Object[] vectorArgs) {
+
+        params = Generator.convertArgumentsToParameterMap(pInfo, vectorArgs);
+
+        try {
+            int size = getVectorSize(pInfo, vectorArgs);
+            baseDistributions = new ArrayList<>(size);
+            for (int component = 0; component < size; component++) {
+                baseDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        baseDistributions.get(0).getParams().forEach((key, value) -> {
             if (value != null) baseTypes.put(key, value.getType());
         });
+    }
+
+    /**
+     * This method is not thread safe!
+     * @param component
+     * @return
+     */
+    public GenerativeDistribution<T> getBaseDistribution(int component) {
+        return baseDistributions.get(component);
     }
 
     @Override
     public RandomVariable<T[]> sample() {
 
-        int size = 1;
-        for (Map.Entry<String, Value> entry : params.entrySet()) {
-            String name = entry.getKey();
-            Value v = entry.getValue();
-            if (isArrayOfType(v, baseTypes.get(name))) {
-                int vectorSize = Array.getLength(v.value());
-                if (size == 1) {
-                    size = vectorSize;
-                } else if (size != vectorSize) {
-                    throw new RuntimeException("Vector sizes do not match!");
-                }
-                Object input = Array.get(v.value(), 0);
-                baseDistribution.setParam(name, new Value(null, input));
-            } else {
-                baseDistribution.setParam(name, v);
-            }
-        }
-        Value<T> first = baseDistribution.sample();
+        int vectorSize = getVectorSize(params, baseTypes);
+        Value<T> first = getBaseDistribution(0).sample();
 
-        T[] result = (T[]) Array.newInstance(first.value().getClass(), size);
+        T[] result = (T[]) Array.newInstance(first.value().getClass(), vectorSize);
         result[0] = first.value();
-        for (int i = 1; i < result.length; i++) {
-            for (Map.Entry<String, Value> entry : params.entrySet()) {
-                String name = entry.getKey();
-                Value v = entry.getValue();
-                if (isArrayOfType(v, baseTypes.get(name))) {
-                    Object input = Array.get(v.value(), i);
-                    baseDistribution.setParam(name, new Value(null, input));
-                }
-            }
-            result[i] = baseDistribution.sample().value();
+
+        for (int i =1; i < vectorSize; i++) {
+            result[i] = getBaseDistribution(i).sample().value();
         }
         return new RandomVariable<>(null, result, this);
-    }
-
-    /**
-     * @param maybeArray
-     * @param ofType
-     * @return
-     */
-    static boolean isArrayOfType(Value maybeArray, Class ofType) {
-
-        if (maybeArray.value().getClass().isArray()) {
-            Class componentClass = maybeArray.value().getClass().getComponentType();
-            return componentClass.isAssignableFrom(ofType);
-        }
-        return false;
     }
 
     @Override
@@ -86,12 +75,26 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
     @Override
     public void setParam(String paramName, Value value) {
+
         params.put(paramName, value);
+
+        if (!isVectorizedParameter(paramName, value, baseTypes)) {
+            for (int i = 0; i < baseDistributions.size(); i++) {
+                // not setInput because the base distributions are hidden from the graphical model
+                baseDistributions.get(i).setParam(paramName, value);
+            }
+        } else {
+            for (int i = 0; i < baseDistributions.size(); i++) {
+                Object input = Array.get(value.value(), i);
+                // not setInput because the base distributions are hidden from the graphical model
+                baseDistributions.get(i).setParam(paramName, new Value(value.getId() + "." + i, input));
+            }
+        }
     }
 
     @Override
     public String getName() {
-        return baseDistribution.getName();
+        return baseDistributions.get(0).getName();
     }
 
     public static void main(String[] args) {
@@ -106,10 +109,9 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         params.put("beta", new Value<>("beta", 2.0));
         Object[] initArgs = {params.get("alpha"),params.get("beta")};
 
+        Constructor constructor = beta.getClass().getConstructors()[0];
 
-        System.out.println(" vector match = " + ParserUtils.vectorMatch(Generator.getParameterInfo(beta.getClass(), 0),initArgs));
-
-        VectorizedDistribution<Double> v = new VectorizedDistribution<>(beta, params);
+        VectorizedDistribution<Double> v = new VectorizedDistribution<>(constructor, Generator.getParameterInfo(constructor), initArgs);
 
         RandomVariable<Double[]> rbeta = v.sample();
 

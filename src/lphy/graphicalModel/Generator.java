@@ -8,6 +8,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -140,12 +141,34 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         value.addOutput(this);
     }
 
+    default void setInputs(Map<String, Value<?>> params) {
+        params.forEach(this::setInput);
+    }
+
     default String getParamName(Value value) {
         Map<String, Value> params = getParams();
         for (String key : params.keySet()) {
             if (params.get(key) == value) return key;
         }
         return null;
+    }
+
+    /**
+     * @return true if any of the parameters are random variables,
+     * or are themselves that result of a function with random parameters as arguments.
+     */
+    default boolean hasRandomParameters() {
+        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+
+            Value<?> v = entry.getValue();
+
+            if (v == null) {
+                throw new RuntimeException("Unexpected null value for param " + entry.getKey() + " in generator " + getName());
+            }
+
+            if (v.isRandom()) return true;
+        }
+        return false;
     }
 
     String codeString();
@@ -168,27 +191,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return prefix + value.getId();
     }
 
-    static String getArgumentValue(Map.Entry<String, Value> entry) {
-        if (entry.getValue().isAnonymous()) return entry.getValue().codeString();
-        return entry.getValue().getId();
-    }
-
-    static boolean matchingParameterTypes(Constructor generatorConstructor,  Map<String, Value> params) {
-        List<ParameterInfo> parameterInfos = getParameterInfo(generatorConstructor);
-        for (ParameterInfo parameterInfo : parameterInfos) {
-            Value value = params.get(parameterInfo.name());
-            if (value != null) {
-                Class parameterType = parameterInfo.type();
-                Class valueType = value.value().getClass();
-
-                if (!parameterType.isAssignableFrom(valueType)) return false;
-            } else {
-                if (!parameterInfo.optional()) return false;
-            }
-        }
-        return true;
-    }
-
     static boolean matchingParameterTypes(List<ParameterInfo> parameterInfos,  Object[] initArgs) {
         for (int i = 0; i < parameterInfos.size(); i++) {
             ParameterInfo parameterInfo = parameterInfos.get(i);
@@ -206,21 +208,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return true;
     }
 
-    /**
-     * @return true if any of the parameters are random variables,
-     * or are themselves that result of a function with random parameters as arguments.
-     */
-    default boolean hasRandomParameters() {
-        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+    static Map<String, Value> convertArgumentsToParameterMap(List<ParameterInfo> parameterInfos,  Object[] initArgs) {
+        Map<String, Value> params = new TreeMap<>();
+        for (int i = 0; i < parameterInfos.size(); i++) {
+            ParameterInfo parameterInfo = parameterInfos.get(i);
+            Value value = (Value)initArgs[i];
 
-            Value<?> v = entry.getValue();
-
-            if (v == null) {
-                throw new RuntimeException("Unexpected null value for param " + entry.getKey() + " in generator " + getName());
-            }
-
-            if (v.isRandom()) return true;
+            if (value != null) params.put(parameterInfo.name(), value);
         }
-        return false;
+        return params;
     }
 }

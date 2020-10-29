@@ -2,10 +2,9 @@ package lphy.graphicalModel.types;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.RangeElement;
-import lphy.graphicalModel.Value;
 
 import java.util.Arrays;
-public class IntegerArrayValue extends Value<Integer[]> implements RangeElement {
+public class IntegerArrayValue extends VectorValue<Integer> implements RangeElement {
 
     public IntegerArrayValue(String id, Integer[] value) {
         super(id, value);

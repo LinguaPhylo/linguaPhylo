@@ -245,37 +245,10 @@ public class ParserUtils {
 
     public static Generator vectorGenerator(Constructor constructor, List<ParameterInfo> pInfo, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        Object[] firstElementArgs = new Object[vectorArgs.length];
-        Map<String, Value> fullargs = new TreeMap<>();
-
-
-        for (int i = 0; i < pInfo.size(); i++) {
-            ParameterInfo parameterInfo = pInfo.get(i);
-            Value argValue = (Value)vectorArgs[i];
-
-            if (argValue == null) {
-                if (!parameterInfo.optional()) throw new IllegalArgumentException("Required parameter " + parameterInfo.name() + " not including in vector arguments");
-            } else {
-
-                Class argValueClass = argValue.value().getClass();
-                fullargs.put(parameterInfo.name(), argValue);
-
-                if (parameterInfo.type().isAssignableFrom(argValueClass)) {
-                    // direct type match
-                    firstElementArgs[i] = vectorArgs[i];
-                } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
-                    // vector match
-                    firstElementArgs[i] = new Value(null, Array.get(argValue.value(), 0), null);
-                }
-            }
-        }
-
-        Generator baseGenerator = (Generator) constructor.newInstance(firstElementArgs);
-
-        if (baseGenerator instanceof GenerativeDistribution) {
-            return new VectorizedDistribution((GenerativeDistribution)baseGenerator, fullargs);
-        } else if (baseGenerator instanceof DeterministicFunction) {
-            return new VectorizedFunction((DeterministicFunction)baseGenerator, fullargs);
+        if (GenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass())) {
+            return new VectorizedDistribution(constructor, pInfo, vectorArgs);
+        } else if (DeterministicFunction.class.isAssignableFrom(constructor.getDeclaringClass())) {
+            return new VectorizedFunction(constructor, pInfo, vectorArgs);
         } else throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
 
     }
@@ -286,9 +259,5 @@ public class ParserUtils {
 
     static Set<Class<?>> getFunctionClasses(String name) {
         return functionDictionary.get(name);
-    }
-
-    public static List<Generator> getMatchingVectorizedGenerator(String name, Map<String, Value> arguments) {
-        return null;
     }
 }

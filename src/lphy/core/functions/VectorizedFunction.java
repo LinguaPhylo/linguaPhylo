@@ -1,83 +1,74 @@
 package lphy.core.functions;
 
+import lphy.core.distributions.VectorizedDistribution;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.VectorValue;
 import lphy.parser.ParserUtils;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.Map;
-import java.util.TreeMap;
+
+import static lphy.graphicalModel.VectorUtils.*;
 
 public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
-
-    // the generative distribution to be vectorized
-    DeterministicFunction<T> baseDistribution;
 
     // the parameters (vectors)
     Map<String, Value> params;
 
     // the base types of the parameters in the base distribution
+    // the keys are the argument names
     Map<String, Class> baseTypes = new TreeMap<>();
 
-    public VectorizedFunction(DeterministicFunction<T> baseDistribution, Map<String, Value> params) {
-        this.baseDistribution = baseDistribution;
+    List<DeterministicFunction<T>> componentFunctions;
 
-        this.params = params;
+    public VectorizedFunction(Constructor baseDistributionConstructor, List<ParameterInfo> pInfo, Object[] vectorArgs) {
 
-        baseDistribution.getParams().forEach((key, value) -> baseTypes.put(key, value.getType()));
+        params = Generator.convertArgumentsToParameterMap(pInfo, vectorArgs);
+
+        try {
+            int size = getVectorSize(pInfo, vectorArgs);
+            componentFunctions = new ArrayList<>(size);
+            for (int component = 0; component < size; component++) {
+                componentFunctions.add((DeterministicFunction<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        componentFunctions.get(0).getParams().forEach((key, value) -> {
+            if (value != null) baseTypes.put(key, value.getType());
+        });
+    }
+
+    /**
+     * This method is not thread safe!
+     * @param component
+     * @return
+     */
+    public DeterministicFunction<T> getComponentFunction(int component) {
+        return componentFunctions.get(component);
     }
 
     @Override
     public Value<T[]> apply() {
 
-        int size = 1;
-        for (Map.Entry<String, Value> entry : params.entrySet()) {
-            String name = entry.getKey();
-            Value v = entry.getValue();
-            if (isArrayOfType(v, baseTypes.get(name))) {
-                int vectorSize = Array.getLength(v.value());
-                if (size == 1) {
-                    size = vectorSize;
-                } else if (size != vectorSize) {
-                    throw new RuntimeException("Vector sizes do not match!");
-                }
-                Object input = Array.get(v.value(), 0);
-                baseDistribution.setParam(name, new Value(null, input));
-            } else {
-                baseDistribution.setParam(name, v);
-            }
-        }
-        Value<T> first = baseDistribution.apply();
+        int vectorSize = getVectorSize(params, baseTypes);
+        Value<T> first = getComponentFunction(0).apply();
 
-        T[] result = (T[]) Array.newInstance(first.value().getClass(), size);
+        T[] result = (T[]) Array.newInstance(first.value().getClass(), vectorSize);
         result[0] = first.value();
-        for (int i = 1; i < result.length; i++) {
-            for (Map.Entry<String, Value> entry : params.entrySet()) {
-                String name = entry.getKey();
-                Value v = entry.getValue();
-                if (isArrayOfType(v, baseTypes.get(name))) {
-                    Object input = Array.get(v.value(), i);
-                    baseDistribution.setParam(name, new Value(null, input));
-                }
-            }
-            result[i] = baseDistribution.apply().value();
-        }
-        return new Value<>(null, result, this);
-    }
 
-    /**
-     * @param maybeArray
-     * @param ofType
-     * @return
-     */
-    static boolean isArrayOfType(Value maybeArray, Class ofType) {
-
-        if (maybeArray.value().getClass().isArray()) {
-            Class componentClass = maybeArray.value().getClass().getComponentType();
-            return componentClass.isAssignableFrom(ofType);
+        for (int i =1; i < vectorSize; i++) {
+            result[i] = getComponentFunction(i).apply().value();
         }
-        return false;
+        return new VectorValue<>(null, result, this);
     }
 
     @Override
@@ -87,12 +78,26 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
     @Override
     public void setParam(String paramName, Value value) {
+
         params.put(paramName, value);
+
+        if (!isVectorizedParameter(paramName, value, baseTypes)) {
+            for (DeterministicFunction<T> componentFunction : componentFunctions) {
+                // not setInput because the base distributions are hidden from the graphical model
+                componentFunction.setParam(paramName, value);
+            }
+        } else {
+            for (int i = 0; i < componentFunctions.size(); i++) {
+                Object input = Array.get(value.value(), i);
+                // not setInput because the base distributions are hidden from the graphical model
+                componentFunctions.get(i).setParam(paramName, new Value(value.getId() + "." + i, input));
+            }
+        }
     }
 
     @Override
     public String getName() {
-        return baseDistribution.getName();
+        return componentFunctions.get(0).getName();
     }
 
     public static void main(String[] args) {
@@ -107,8 +112,9 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
         System.out.println(" vector match = " + ParserUtils.vectorMatch(Generator.getParameterInfo(exp.getClass(), 0), initArgs));
 
-        VectorizedFunction<Double> v = new VectorizedFunction<>(exp, params);
+        Constructor constructor = exp.getClass().getConstructors()[0];
 
+        VectorizedFunction<Double> v = new VectorizedFunction<>(constructor, Generator.getParameterInfo(constructor), initArgs);
         Value<Double[]> repValue = v.apply();
 
         Double[] rv = repValue.value();

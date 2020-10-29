@@ -5,7 +5,7 @@ import lphy.graphicalModel.Value;
 
 import java.util.Arrays;
 
-public class BooleanArrayValue extends Value<Boolean[]> {
+public class BooleanArrayValue extends VectorValue<Boolean> {
 
     public BooleanArrayValue(String id, Boolean[] value) {
         super(id, value);
@@ -14,9 +14,4 @@ public class BooleanArrayValue extends Value<Boolean[]> {
     public BooleanArrayValue(String id, Boolean[] value, DeterministicFunction function) {
         super(id, value, function);
     }
-
-    public String toString() {
-        return (isAnonymous() ? "" : (getId() + " = ")) + Arrays.toString(value());
-    }
-
 }

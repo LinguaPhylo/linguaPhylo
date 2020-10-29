@@ -5,7 +5,7 @@ import lphy.graphicalModel.Value;
 
 import static lphy.graphicalModel.ValueUtils.quotedString;
 
-public class StringArrayValue extends Value<String[]> {
+public class StringArrayValue extends VectorValue<String> {
 
     public StringArrayValue(String id, String[] value) {
         super(id, value);

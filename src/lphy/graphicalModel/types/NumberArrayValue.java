@@ -5,7 +5,7 @@ import lphy.graphicalModel.Value;
 
 import java.util.Arrays;
 
-public class NumberArrayValue extends Value<Number[]> {
+public class NumberArrayValue extends VectorValue<Number> {
 
     public NumberArrayValue(String id, Number[] value) {
         super(id, value);
@@ -13,9 +13,5 @@ public class NumberArrayValue extends Value<Number[]> {
 
     public NumberArrayValue(String id, Number[] value, DeterministicFunction function) {
         super(id, value, function);
-    }
-
-    public String toString() {
-        return (isAnonymous() ? "" : (getId() + " = ")) + Arrays.toString(value());
     }
 }
