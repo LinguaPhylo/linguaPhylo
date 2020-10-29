@@ -3,8 +3,8 @@ data {
   D = readNexus(file="examples/RSV2.nex", options=options);
   taxa = taxa(D);
   codon0 = D.charset("3-629\3");
-  codon1 = D.charset("4-629\3");
-  codon2 = D.charset("5-629\3");
+  codon1 = D.charset("1-629\3");
+  codon2 = D.charset("2-629\3");
   weights = [codon0.nchar(), codon1.nchar(), codon2.nchar()]
 }
 model {
