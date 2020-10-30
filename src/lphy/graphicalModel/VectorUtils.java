@@ -91,7 +91,7 @@ public class VectorUtils {
                     args[i] = vectorArgs[i];
                 } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
                     // vector match
-                    args[i] = new Value(null, Array.get(argValue.value(), component), null);
+                    args[i] = new Value(argValue.isAnonymous()?null : argValue.getId() + "." + i, Array.get(argValue.value(), i));
                 }
             }
         }

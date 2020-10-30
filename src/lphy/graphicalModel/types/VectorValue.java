@@ -1,9 +1,12 @@
 package lphy.graphicalModel.types;
 
+import lphy.app.HasComponentView;
+import lphy.app.VectorComponent;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.Vector;
 
+import javax.swing.*;
 import java.util.Arrays;
 
 public class VectorValue<T> extends Value<T[]> implements Vector<T> {
@@ -27,11 +30,18 @@ public class VectorValue<T> extends Value<T[]> implements Vector<T> {
 
     @Override
     public T getComponent(int i) {
-        return value()[0];
+        return value()[i];
     }
 
     @Override
     public int size() {
         return value().length;
+    }
+
+    @Override
+    public JComponent getViewer() {
+        if (getComponent(0) instanceof HasComponentView) {
+            return new VectorComponent(this);
+        } else return super.getViewer();
     }
 }

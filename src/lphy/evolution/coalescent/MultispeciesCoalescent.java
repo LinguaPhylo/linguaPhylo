@@ -62,7 +62,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         for (int i = 0; i < geneTrees.length; i++) {
             geneTrees[i] = simulateGeneTree();
         }
-        return new RandomVariable(null, geneTrees, this);
+        return new VectorizedRandomVariable(null, geneTrees, this);
     }
 
     private int getLocusCount() {

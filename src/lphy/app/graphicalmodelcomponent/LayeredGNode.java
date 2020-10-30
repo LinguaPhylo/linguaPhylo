@@ -126,7 +126,7 @@ public class LayeredGNode extends LayeredNode.Default {
 
         if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyParser.Context.model) != value) {
             backgroundColor = backgroundColor.darker();
-            borderColor = borderColor.darker();
+            borderColor = Color.red;
         }
 
         String str = getButtonString(value);

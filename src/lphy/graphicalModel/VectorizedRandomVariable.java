@@ -1,17 +1,14 @@
 package lphy.graphicalModel;
 
-import lphy.core.distributions.VectorizedDistribution;
+import lphy.app.HasComponentView;
+import lphy.app.VectorComponent;
 
-import java.util.Arrays;
+import javax.swing.*;
 
 public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements Vector<T> {
-
-    public VectorizedRandomVariable(String id, T[] value, VectorizedDistribution generativeDistribution) {
+    
+    public VectorizedRandomVariable(String id, T[] value, GenerativeDistribution generativeDistribution) {
         super(id, value, generativeDistribution);
-    }
-
-    public GenerativeDistribution getComponentDistribution(int i) {
-        return ((VectorizedDistribution)getGenerativeDistribution()).getBaseDistribution(i);
     }
 
     @Override
@@ -21,11 +18,18 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
 
     @Override
     public T getComponent(int i) {
-        return value()[0];
+        return value()[i];
     }
 
     @Override
     public int size() {
         return value().length;
+    }
+
+    @Override
+    public JComponent getViewer() {
+        if (getComponent(0) instanceof HasComponentView) {
+            return new VectorComponent(this);
+        } else return super.getViewer();
     }
 }

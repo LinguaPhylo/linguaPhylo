@@ -1,7 +1,6 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.parser.ParserUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -65,7 +64,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         for (int i =1; i < vectorSize; i++) {
             result[i] = getBaseDistribution(i).sample().value();
         }
-        return new RandomVariable<>(null, result, this);
+        return new VectorizedRandomVariable<>(null, result, this);
     }
 
     @Override
