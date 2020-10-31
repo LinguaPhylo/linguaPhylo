@@ -1,6 +1,7 @@
 package lphy.graphicalModel.swing;
 
 import lphy.graphicalModel.Value;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -8,17 +9,8 @@ import javax.swing.event.DocumentListener;
 
 public class DoubleValueEditor extends JTextField {
 
-    private Value<Double> value;
 
     public DoubleValueEditor(Value<Double> value)  {
-
-        this.value = value;
-        //JLabel label = new JLabel("<html><font color=\"#808080\" >" + value.getId() + ":</font></html>");
-
-        //BoxLayout boxLayout = new BoxLayout(this,BoxLayout.LINE_AXIS);
-        //add(label);
-
-        //setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(1,0,0,0, Color.lightGray), "<html><font color=\"#808080\" >" + value.getId() + "</font></html>"));
 
         setText(value.value().toString());
         setColumns(12);
@@ -42,13 +34,11 @@ public class DoubleValueEditor extends JTextField {
 
             void setValue(String text) {
                 try {
-                    Double d = Double.parseDouble(getText());
+                    Double d = Double.parseDouble(text);
                     value.setValue(d);
-                    //message.setText("");
                 } catch (java.lang.NumberFormatException ne) {
-                    //message.setText("'" + textField.getText() + "' is not a double.");
+                    LoggerUtils.log.warning("Couldn't set value" + (value.isAnonymous() ? "" : (" " + value.getId())) + " to " + text);
                 }
-
             }
         });
 

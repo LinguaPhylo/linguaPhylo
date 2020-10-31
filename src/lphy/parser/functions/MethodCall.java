@@ -33,7 +33,7 @@ public class MethodCall extends DeterministicFunction {
         c = value.value().getClass();
         method = c.getMethod(methodName, paramTypes);
 
-        methodInfo =  method.getAnnotation(MethodInfo.class);
+        methodInfo = method.getAnnotation(MethodInfo.class);
 
         if (methodInfo == null) {
             throw new IllegalArgumentException("This method is not permitted pass through! Must have MethodInfo annotation to allow pass through.");
@@ -43,6 +43,14 @@ public class MethodCall extends DeterministicFunction {
         for (int i = 0; i < arguments.length; i++) {
             setInput("arg" + i, arguments[i]);
         }
+    }
+
+    @Override
+    public String getRichDescription(int index) {
+        String html = "<html><h3>" + c.getSimpleName() + getName() + " method call</h3> <ul>";
+        html += "<li>" + methodInfo.description();
+        html += "</ul></html>";
+        return html;
     }
 
     public String getName() {

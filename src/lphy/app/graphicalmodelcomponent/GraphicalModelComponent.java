@@ -3,7 +3,10 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
+import lphy.core.distributions.VectorizedDistribution;
+import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.Vector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -173,13 +176,25 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 } else if (node.value() instanceof Generator) {
                     Generator gen = (Generator) node.value();
 
+                    // is this a vectorized Generator?
+                    boolean vectorized = (gen instanceof VectorizedDistribution || gen instanceof VectorizedFunction);
+
                     String str = gen.getName();
+                    if (vectorized) {
+                        Value value = (Value)((LayeredGNode)node.getSuccessors().get(0)).value();
+                        str += "[";
+
+                        if (value instanceof Vector) str += ((Vector)value).size();
+                        str += "]";
+                    }
 
                     LayeredNode properSuccessor = properNode.getSuccessors().get(0);
 
                     Point2D q = properSuccessor.getPosition();
 
+                    if (vectorized) g2d.setFont(getFont().deriveFont(Font.BOLD));
                     g2d.drawString(str, (float) (node.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (node.getY() + FACTOR_SIZE - STROKE_SIZE));
+                    if (vectorized) g2d.setFont(getFont().deriveFont(Font.PLAIN));
 
                     x1 = node.getX();
                     y1 = node.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);

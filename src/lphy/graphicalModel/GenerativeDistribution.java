@@ -53,60 +53,6 @@ public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
         return hashCode() + "";
     }
 
-    default String getRichDescription(int index) {
-
-        List<ParameterInfo> pInfo = getParameterInfo( index);
-
-        Map<String, Value> paramValues = getParams();
-
-        StringBuilder html = new StringBuilder("<html><h3>");
-        html.append(getName());
-        html.append(" distribution</h3>");
-        GeneratorInfo info = getInfo();
-        if (info != null) {
-            html.append("<p>").append(getInfo().description()).append("</p>");
-        }
-        html.append("<p>parameters: <ul>");
-        for (ParameterInfo pi : pInfo) {
-            html.append("<li>").append(pi.name()).append(" (").append(paramValues.get(pi.name())).append("); <font color=\"#808080\">").append(pi.description()).append("</font></li>");
-        }
-        html.append("</ul>");
-
-
-        Citation citation = getCitation();
-        if (citation != null) {
-            html.append("<h3>Reference</h3>");
-            html.append(citation.value());
-            if (citation.DOI().length()  > 0) {
-                String url = citation.DOI();
-                if (!url.startsWith("http")) {
-                    url = "http://doi.org/" + url;
-                }
-                html.append("<br><a href=\"" + url + "\">" + url + "</a><br>");
-            }
-        }
-
-        html.append("</p></html>");
-        return html.toString();
-    }
-
-    default GeneratorInfo getInfo() {
-
-        Class<?> classElement = getClass();
-
-        Method[] methods = classElement.getMethods();
-
-        for (Method method : methods) {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof GeneratorInfo) {
-                    return (GeneratorInfo) annotation;
-                }
-            }
-        }
-
-        return null;
-    }
-
     default JComponent getViewer() {
         return new JLabel(getRichDescription(0));
     }

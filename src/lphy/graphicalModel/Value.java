@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Value<T> implements GraphicalModelNode<T>, Viewable {
+public class Value<T> implements GraphicalModelNode<T> {
 
     T value;
     String id;
@@ -83,41 +83,6 @@ public class Value<T> implements GraphicalModelNode<T>, Viewable {
         this.value = value;
         for (ValueListener listener : listeners) {
             listener.valueSet();
-        }
-    }
-
-    public JComponent getViewer() {
-        if (value instanceof HasComponentView) {
-            JComponent component = ((HasComponentView<T>) value).getComponent(this);
-            return component;
-        }
-
-        if (value() instanceof Double[]) {
-            return new DoubleArrayLabel((Value<Double[]>) this);
-        }
-
-        if (value() instanceof Integer[]) {
-            return new IntegerArrayLabel((Value<Integer[]>) this);
-        }
-
-        if (value() instanceof Boolean[]) {
-            return new BooleanArrayLabel((Value<Boolean[]>) this);
-        }
-
-        if (value() instanceof String[]) {
-            return new StringArrayLabel((Value<String[]>) this);
-        }
-
-        if (value.toString().length() < 130) {
-            return new JLabel(value.toString());
-        } else {
-            String valueString = value.toString();
-            valueString = valueString.replace(", ", ",\n");
-
-            JTextArea textArea = new JTextArea(valueString);
-            textArea.setEditable(false);
-
-            return textArea;
         }
     }
 

@@ -44,12 +44,4 @@ public class DoubleValue extends NumberValue<Double> {
 
         super(null, value, function);
     }
-
-    @Override
-    public JComponent getViewer() {
-        if (getGenerator() == null) {
-            return new DoubleValueEditor(this);
-        }
-        return super.getViewer();
-    }
 }

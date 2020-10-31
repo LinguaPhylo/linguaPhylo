@@ -92,6 +92,11 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     }
 
     @Override
+    public String getRichDescription(int index) {
+        return baseDistributions.get(0).getRichDescription(0);
+    }
+
+    @Override
     public String getName() {
         return baseDistributions.get(0).getName();
     }

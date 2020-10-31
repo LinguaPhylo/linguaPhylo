@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +47,17 @@ public class StatePanel extends JPanel {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);
                 labels.add(label);
-                editors.add(value.getViewer());
+
+                JComponent jComponent = ViewerRegister.getJComponentForValue(value);
+
+                if (jComponent == null) {
+                    LoggerUtils.log.severe("Found now viewer for " + value);
+                    JLabel jLabel = new JLabel(value.value().toString());
+                    jLabel.setForeground(Color.red);
+                    editors.add(jLabel);
+                } else {
+                    editors.add(jComponent);
+                }
             }
         }
         GroupLayout.ParallelGroup horizParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);

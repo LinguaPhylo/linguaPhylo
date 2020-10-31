@@ -290,7 +290,14 @@ public class GraphicalModelPanel extends JPanel {
     private void showObject(String label, Object obj) {
         displayedElement = obj;
 
-        JComponent viewer = getViewer(obj);
+        JComponent viewer = null;
+        if (obj instanceof Value) {
+            viewer = ViewerRegister.getJComponentForValue(obj);
+        } else if (obj instanceof Generator) {
+            viewer = new JLabel(((Generator)obj).getRichDescription(0));
+        } else {
+            LoggerUtils.log.severe("Trying to show an object that is neither Value nor Generator.");
+        }
 
         if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof DoubleArray2DEditor) {
             JPanel viewerPanel = new JPanel();

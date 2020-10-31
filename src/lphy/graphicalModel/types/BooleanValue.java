@@ -26,11 +26,4 @@ public class BooleanValue extends Value<Boolean> {
         super(null, value, function);
     }
 
-    @Override
-    public JComponent getViewer() {
-        if (getGenerator() == null) {
-            return new BooleanValueEditor(this);
-        }
-        return super.getViewer();
-    }
 }

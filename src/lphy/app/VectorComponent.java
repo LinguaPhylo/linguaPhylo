@@ -1,8 +1,6 @@
 package lphy.app;
 
-import lphy.graphicalModel.Value;
 import lphy.graphicalModel.Vector;
-import lphy.graphicalModel.types.VectorValue;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +19,13 @@ public class VectorComponent extends JComponent {
 
         for (int i = 0; i < size; i++) {
             Object component = vectorValue.getComponent(i);
-            if (component instanceof HasComponentView) {
-                add(((HasComponentView) component).getComponent(new Value(i+"", component)));
+            JComponent jComponent = ViewerRegister.getJComponentForValue(component);
+            if (jComponent != null) {
+                add(jComponent);
+            } else {
+                JLabel jLabel = new JLabel(component.toString());
+                jLabel.setForeground(Color.red);
+                add(jLabel);
             }
         }
     }

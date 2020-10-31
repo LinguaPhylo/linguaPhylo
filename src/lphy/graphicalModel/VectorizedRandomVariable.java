@@ -25,11 +25,4 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
     public int size() {
         return value().length;
     }
-
-    @Override
-    public JComponent getViewer() {
-        if (getComponent(0) instanceof HasComponentView) {
-            return new VectorComponent(this);
-        } else return super.getViewer();
-    }
 }
