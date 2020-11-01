@@ -1,14 +1,10 @@
 package lphy.core;
 
-import lphy.app.HasComponentView;
-import lphy.graphicalModel.Value;
-
-import javax.swing.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class StringDoubleArrayMap extends TreeMap<String, Double[]> implements HasComponentView<Map<String, Double[]>> {
+public class StringDoubleArrayMap extends TreeMap<String, Double[]>  {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -23,14 +19,14 @@ public class StringDoubleArrayMap extends TreeMap<String, Double[]> implements H
         builder.append("}\n");
         return builder.toString();
     }
-
-    @Override
-    public JComponent getComponent(Value<Map<String, Double[]>> value) {
-        String valueString = value.toString();
-
-        JTextArea textArea = new JTextArea(valueString);
-        textArea.setEditable(false);
-
-        return textArea;
-    }
+//
+//    @Override
+//    public JComponent getComponent(Value<Map<String, Double[]>> value) {
+//        String valueString = value.toString();
+//
+//        JTextArea textArea = new JTextArea(valueString);
+//        textArea.setEditable(false);
+//
+//        return textArea;
+//    }
 }

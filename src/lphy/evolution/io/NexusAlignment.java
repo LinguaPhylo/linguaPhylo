@@ -1,17 +1,14 @@
 package lphy.evolution.io;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.app.HasComponentView;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
-import lphy.graphicalModel.Value;
 import lphy.utils.LoggerUtils;
 
-import javax.swing.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -19,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * @author Walter Xie
  */
-public class NexusAlignment extends SimpleAlignment implements NexusData<Integer>, HasComponentView<Alignment> {
+public class NexusAlignment extends SimpleAlignment implements NexusData<Integer> {
 
     // if null, then no charset in the nexus file
     protected Map<String, List<CharSetBlock>> charsetMap;
@@ -189,23 +186,23 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
         return toString(sb);
     }
 
-    @Override
-    public JComponent getComponent(Value<Alignment> value) {
-        StringBuilder sb = new StringBuilder(super.toString());
-        if (getCharsetMap() != null) {
-            sb.append("\n").append( getCharsetMap().toString() );
-        }
-        if (hasAges()) {
-            sb.append("\nageDirection = ").append( getAgeDirection() );
-            // wrap map string by comma
-            sb.append("\nages = ").append( Arrays.toString( getAges() ) );
-        }
-
-        JTextArea textArea = new JTextArea(sb.toString());
-        textArea.setEditable(false);
-
-        return textArea;
-    }
+//    @Override
+//    public JComponent getComponent(Value<Alignment> value) {
+//        StringBuilder sb = new StringBuilder(super.toString());
+//        if (getCharsetMap() != null) {
+//            sb.append("\n").append( getCharsetMap().toString() );
+//        }
+//        if (hasAges()) {
+//            sb.append("\nageDirection = ").append( getAgeDirection() );
+//            // wrap map string by comma
+//            sb.append("\nages = ").append( Arrays.toString( getAges() ) );
+//        }
+//
+//        JTextArea textArea = new JTextArea(sb.toString());
+//        textArea.setEditable(false);
+//
+//        return textArea;
+//    }
 
     @MethodInfo(description = "the taxa of the alignment.")
     public Taxa taxa() {

@@ -1,20 +1,16 @@
 package lphy.evolution.tree;
 
-import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.HasTaxa;
 import lphy.evolution.Taxa;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
-import lphy.graphicalModel.Value;
-import lphy.app.HasComponentView;
 
-import javax.swing.*;
 import java.util.*;
 
 /**
  * Created by adru001 on 17/12/19.
  */
-public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<TimeTree> {
+public class TimeTree implements HasTaxa, MultiDimensional {
 
     TimeTreeNode rootNode;
 
@@ -114,12 +110,6 @@ public class TimeTree implements HasTaxa, MultiDimensional, HasComponentView<Tim
 
     public int n() {
         return n;
-    }
-
-    @Override
-    public JComponent getComponent(Value<TimeTree> timeTreeValue) {
-        TimeTreeComponent component = new TimeTreeComponent(timeTreeValue.value());
-        return component;
     }
 
     public String toString() {

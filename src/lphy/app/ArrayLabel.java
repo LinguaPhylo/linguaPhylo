@@ -1,26 +1,31 @@
 package lphy.app;
 
+import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
 
-public class IntegerArrayLabel extends JLabel {
+public class ArrayLabel<T> extends JLabel {
 
-    public IntegerArrayLabel(Value<Integer[]> values) {
+    public ArrayLabel(Value<T[]> values) {
 
         StringBuilder builder = new StringBuilder();
         builder.append("<html>[");
-        builder.append(values.value()[0]);
+        builder.append(valueToString(values.value()[0]));
         for (int i = 1; i < values.value().length; i++) {
-            if (i % 8 == 0) {
+            if (builder.length()-builder.lastIndexOf("<br>") > 80) {
                 builder.append(",<br>");
             } else {
                 builder.append(", ");
             }
-            builder.append(values.value()[i]);
+            builder.append(valueToString(values.value()[i]));
         }
         builder.append("]</html>");
         String str = builder.toString();
         setText(str);
+    }
+
+    public String valueToString(T rawValue) {
+        return rawValue.toString();
     }
 }

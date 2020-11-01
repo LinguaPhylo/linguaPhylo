@@ -1,10 +1,5 @@
 package lphy.graphicalModel;
 
-import lphy.app.HasComponentView;
-import lphy.app.VectorComponent;
-
-import javax.swing.*;
-
 public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements Vector<T> {
     
     public VectorizedRandomVariable(String id, T[] value, GenerativeDistribution generativeDistribution) {

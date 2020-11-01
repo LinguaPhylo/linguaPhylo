@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by adru001 on 17/12/19.
  */
-public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
+public interface GenerativeDistribution<T> extends Generator<T> {
 
     RandomVariable<T> sample();
 
@@ -51,10 +51,6 @@ public interface GenerativeDistribution<T> extends Generator<T>, Viewable {
 
     default String getUniqueId() {
         return hashCode() + "";
-    }
-
-    default JComponent getViewer() {
-        return new JLabel(getRichDescription(0));
     }
 
     default String codeString() {

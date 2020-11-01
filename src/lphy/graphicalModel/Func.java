@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class Func implements Generator, Viewable {
+public abstract class Func implements Generator {
 
     private String name = null;
     private String description = null;
@@ -41,18 +41,6 @@ public abstract class Func implements Generator, Viewable {
 
     public void setParam(String paramName, Value value) {
         paramMap.put(paramName, value);
-    }
-
-    public String getRichDescription() {
-
-        String html = "<html><h3>" + getName() + " function</h3> <ul>";
-        html += "<li>" + getDescription();
-        html += "</ul></html>";
-        return html;
-    }
-
-    public JComponent getViewer() {
-        return new JLabel(getRichDescription());
     }
 
     public String codeString() {

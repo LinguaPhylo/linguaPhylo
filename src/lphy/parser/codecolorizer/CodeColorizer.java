@@ -164,7 +164,6 @@ public class CodeColorizer extends SimulatorBaseListener {
 
             Object exp = super.visitExpression(ctx);
             if (exp instanceof TextElement) {
-                System.out.println("exp was a text element: " + exp.toString());
                 return exp;
             }
 

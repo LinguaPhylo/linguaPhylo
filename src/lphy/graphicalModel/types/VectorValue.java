@@ -1,12 +1,9 @@
 package lphy.graphicalModel.types;
 
-import lphy.app.HasComponentView;
-import lphy.app.VectorComponent;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.Vector;
 
-import javax.swing.*;
 import java.util.Arrays;
 
 public class VectorValue<T> extends Value<T[]> implements Vector<T> {

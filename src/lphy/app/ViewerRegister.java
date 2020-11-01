@@ -17,11 +17,11 @@ import java.awt.*;
  */
 public class ViewerRegister {
 
-    private static Viewer genericViewer = new Viewer() {
+    private static Viewer primitiveArrayViewer = new Viewer() {
         public boolean match(Object object) {
             if (object instanceof Value) {
                 Object value = ((Value) object).value();
-                return (value instanceof Double[] || value instanceof Integer[] || value instanceof Boolean[] || value instanceof String[]);
+                return (value instanceof Double[] || value instanceof Number[] || value instanceof Integer[] || value instanceof Boolean[] || value instanceof String[]);
             }
             return false;
         }
@@ -34,29 +34,19 @@ public class ViewerRegister {
                 return new DoubleArrayLabel((Value<Double[]>) object);
             }
 
-            if (value instanceof Integer[]) {
-                return new IntegerArrayLabel((Value<Integer[]>) object);
-            }
-
-            if (value instanceof Boolean[]) {
-                return new BooleanArrayLabel((Value<Boolean[]>) object);
+            if (value instanceof Number[]) {
+                return new NumberArrayLabel((Value<Number[]>) object);
             }
 
             if (value instanceof String[]) {
                 return new StringArrayLabel((Value<String[]>) object);
             }
 
-            if (value.toString().length() < 130) {
-                return new JLabel(value.toString());
-            } else {
-                String valueString = value.toString();
-                valueString = valueString.replace(", ", ",\n");
-
-                JTextArea textArea = new JTextArea(valueString);
-                textArea.setEditable(false);
-
-                return textArea;
+            if (value instanceof Integer[] || value instanceof Boolean[]) {
+                return new ArrayLabel((Value) object);
             }
+
+            throw new IllegalArgumentException("Unexpected argument: " + object);
         }
     };
 
@@ -76,12 +66,12 @@ public class ViewerRegister {
             if (value.getGenerator() == null) {
                 return new DoubleValueEditor(value);
             } else {
-                return new JLabel(value.value() + "");
+                return new JLabel(value.value().toString());
             }
         }
     };
 
-    private static Viewer doubleArrayViewer = new Viewer() {
+    private static Viewer doubleArray2DViewer = new Viewer() {
 
         public boolean match(Object object) {
 
@@ -113,13 +103,18 @@ public class ViewerRegister {
 
             if (object instanceof Value) {
                 Value value = (Value) object;
-                return value.value() instanceof Integer && value.getGenerator() == null;
+                return value.value() instanceof Integer;
 
             } else return false;
         }
 
-        public JComponent getViewer(Object value) {
-            return new IntegerValueEditor((Value) value);
+        public JComponent getViewer(Object object) {
+            Value value = (Value) object;
+            if (value.getGenerator() == null) {
+                return new IntegerValueEditor(value);
+            } else {
+                return new JLabel(value.value().toString());
+            }
         }
     };
 
@@ -176,11 +171,11 @@ public class ViewerRegister {
             doubleValueViewer,
             integerValueViewer,
             booleanValueViewer,
-            doubleArrayViewer,
+            doubleArray2DViewer,
             alignmentValueViewer,
             timeTreeValueViewer,
-            new VectorValueViewer(),
-            genericViewer
+            primitiveArrayViewer,
+            new VectorValueViewer()
     };
 
     private static Viewer getViewerForValue(Object object) {

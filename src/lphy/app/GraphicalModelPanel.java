@@ -270,15 +270,6 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.repaint();
     }
 
-    public JComponent getViewer(Object object) {
-
-        if (object instanceof Viewable) {
-            return ((Viewable) object).getViewer();
-        }
-
-        return new JLabel(object.toString());
-    }
-
     void showValue(Value value) {
         if (value != null) showObject(value.getLabel(), value);
     }

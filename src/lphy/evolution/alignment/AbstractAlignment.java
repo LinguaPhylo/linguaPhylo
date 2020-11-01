@@ -2,13 +2,10 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
-import lphy.app.AlignmentComponent;
-import lphy.app.HasComponentView;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.MethodInfo;
-import lphy.graphicalModel.Value;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +18,7 @@ import java.util.Objects;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public abstract class AbstractAlignment implements Alignment, HasComponentView<Alignment> {
+public abstract class AbstractAlignment implements Alignment {
 
     // may not have sequences
     protected int nchar;
@@ -164,11 +161,6 @@ public abstract class AbstractAlignment implements Alignment, HasComponentView<A
 
 
     //****** view ******
-
-    @Override
-    public JComponent getComponent(Value<Alignment> value) {
-        return new AlignmentComponent(value);
-    }
 
     public Color[] getColors() {
 //        if ( DataType.isSame(DataType.BINARY, sequenceType) )
