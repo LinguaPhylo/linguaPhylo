@@ -5,8 +5,6 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
-import java.util.Map;
-
 /**
  * Created by adru001 on 2/02/20.
  */
@@ -19,7 +17,7 @@ public class TN93 extends RateMatrix {
     public TN93(@ParameterInfo(name = kappa1ParamName, description = "the rate of A<->G transition in the TN93 process.") Value<Double> kappa1,
                 @ParameterInfo(name = kappa2ParamName, description = "the rate of C<->T transition in the TN93 process.") Value<Double> kappa2,
                 @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
-                @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default 1.0") Value<Number> meanRate) {
+                @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default 1.0", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
         setParam(kappa1ParamName, kappa1);

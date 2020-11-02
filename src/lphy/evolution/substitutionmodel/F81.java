@@ -5,8 +5,6 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
-import java.util.Map;
-
 /**
  * Created by adru001 on 2/02/20.
  */
@@ -15,7 +13,7 @@ public class F81 extends RateMatrix {
     public static final String freqParamName = "freq";
 
     public F81(@ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
-               @ParameterInfo(name = freqParamName, description = "the mean rate of the process. default = 1.0", optional = true) Value<Number> meanRate) {
+               @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default = 1.0", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
         setParam(freqParamName, freq);

@@ -1,6 +1,9 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.GraphicalModelNode;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -13,7 +16,7 @@ public class GTR extends RateMatrix {
 
     public GTR(@ParameterInfo(name = ratesParamName, description = "the relative rates of the GTR process.") Value<Double[]> rates,
                @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
-               @ParameterInfo(name = meanRateParamName, description = "the base frequencies.") Value<Number> meanRate) {
+               @ParameterInfo(name = meanRateParamName, description = "the base frequencies.", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
 
