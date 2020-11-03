@@ -7,9 +7,12 @@ import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 
 /**
@@ -157,7 +160,8 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 
         tree.setRoot(activeNodes.get(0));
         if (thetaIndex != theta.length) {
-            throw new AssertionError("Programmer error in indexing the theta array during simulation!");
+            throw new AssertionError("Programmer error in indexing " + thetaIndex +
+                    " the theta array " + theta.length + " during simulation!");
         }
         if (groupSizes != null && (countWithinGroup != 0 || groupIndex != groupSizes.value().length)) {
             throw new AssertionError("Programmer error in indexing the groupSizes array during simulation." + countWithinGroup + " " + groupIndex + Arrays.toString(groupSizes.value()));
