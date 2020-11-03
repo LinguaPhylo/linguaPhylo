@@ -11,7 +11,7 @@ model {
 
   initialMean ~ LogNormal(meanlog=-3.0, sdlog=1.0);
   Θ ~ ExpMarkovChain(initialMean=initialMean, n=w);
-  ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa);
+  ψ ~ SkylineCoalescent(taxa=taxa, theta=Θ);
 
   D ~ PhyloCTMC(L=L, Q=Q, tree=ψ, mu=0.00079);
 }

@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ParserTest extends TestCase {
 
@@ -58,12 +60,13 @@ public class ParserTest extends TestCase {
             });
 
             List<String> failedFiles = new ArrayList<String>();
-            for (String fileName : exampleFiles) {
+//            String fileName = "hcv_coal_classic.lphy";
+            for (String fileName : Objects.requireNonNull(exampleFiles) ) {
                 System.out.println("Processing " + fileName);
                 try {
 	                BufferedReader fin = new BufferedReader(new FileReader(dir + "/" + fileName));
                     lPhyParser.source(fin);
-
+                    lPhyParser.clear();
 //	                StringBuffer buf = new StringBuffer();
 //	                String str = null;
 //	                while (fin.ready()) {
@@ -84,12 +87,12 @@ public class ParserTest extends TestCase {
                 System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles.toString());
             } else {
                 System.out.println("SUCCESS!!!");
+                System.out.println(exampleFiles.length + " file tested : \n" + Arrays.toString(exampleFiles));
             }
             assertTrue(failedFiles.toString(), failedFiles.size() == 0);
         } catch (Exception e) {
             System.out.println("exception thrown ");
             System.out.println(e.getMessage());
-            ;
         }
     } // test_ThatXmlExamplesRun
     
