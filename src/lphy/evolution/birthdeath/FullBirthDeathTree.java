@@ -51,15 +51,14 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
         while (!success) {
             activeNodes.clear();
 
-            root = new TimeTreeNode(0 + "", tree);
+            root = new TimeTreeNode((String)null, tree);
             root.setAge(doubleValue(rootAge));
 
             activeNodes.add(root);
 
             double time = root.getAge();
 
-            int[] nextNum = {1};
-            doBirth(activeNodes, time, nextNum, tree);
+            doBirth(activeNodes, time, tree);
 
             while (time > 0.0 && activeNodes.size() > 0) {
                 int k = activeNodes.size();
@@ -75,36 +74,32 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
                 double U = random.nextDouble();
                 if (U < lambda / (lambda + mu)) {
-                    doBirth(activeNodes, time, nextNum, tree);
+                    doBirth(activeNodes, time, tree);
                 } else {
                     doDeath(activeNodes, time);
                 }
             }
 
+            int number = 0;
             for (TimeTreeNode node : activeNodes) {
                 node.setAge(0.0);
+                node.setId(number+"");
+                number += 1;
             }
-
-            System.out.println("activeLineages.size= " + activeNodes.size());
 
             success = activeNodes.size() > 0;
         }
 
-        tree.setRoot(root);
-        System.out.println("tree.n()=" + tree.n());
-        System.out.println("tree.singleChildNodeCount()=" + tree.getSingleChildNodeCount());
-        System.out.println("tree.getNodeCount()=" + tree.getNodeCount());
+        tree.setRoot(root, true);
 
-        return new RandomVariable<>("\u03C8", tree, this);
+        return new RandomVariable<>(null, tree, this);
     }
 
-    private void doBirth(List<TimeTreeNode> activeNodes, double age, int[] nextnum, TimeTree tree) {
+    private void doBirth(List<TimeTreeNode> activeNodes, double age, TimeTree tree) {
         TimeTreeNode parent = activeNodes.remove(random.nextInt(activeNodes.size()));
         parent.setAge(age);
-        TimeTreeNode child1 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
-        TimeTreeNode child2 = new TimeTreeNode("" + nextnum[0], tree);
-        nextnum[0] += 1;
+        TimeTreeNode child1 = new TimeTreeNode((String)null, tree);
+        TimeTreeNode child2 = new TimeTreeNode((String)null, tree);
         child1.setAge(age);
         child2.setAge(age);
         parent.addChild(child1);

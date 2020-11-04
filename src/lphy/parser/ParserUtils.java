@@ -49,7 +49,7 @@ public class ParserUtils {
                 MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class,
                 WeightedDirichlet.class,
                 SerialCoalescent.class,
-                SimBDReverse.class, SimFossilsPoisson.class,
+                SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
                 SkylineCoalescent.class, StructuredCoalescent.class,
                 FossilBirthDeathTree.class,
                 Uniform.class};

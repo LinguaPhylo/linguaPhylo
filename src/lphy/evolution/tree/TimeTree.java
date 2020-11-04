@@ -239,6 +239,24 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getNodeCount();
     }
 
+    @MethodInfo(description = "the total number of extant leaves in the tree (leaf nodes with age 0.0).")
+    public Integer extantCount() {
+        int count = 0;
+        for (TimeTreeNode node : getNodes()) {
+            if (node.age == 0.0 && node.isLeaf()) count += 1;
+        }
+        return count;
+    }
+
+    @MethodInfo(description = "the total number of leaf nodes in the tree (leaf nodes with any age).")
+    public Integer leafCount() {
+        int count = 0;
+        for (TimeTreeNode node : getNodes()) {
+            if (node.isLeaf()) count += 1;
+        }
+        return count;
+    }
+
     @MethodInfo(description = "the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child).")
     public Integer directAncestorCount() {
         int count = 0;
