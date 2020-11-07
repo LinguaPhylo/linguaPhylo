@@ -19,6 +19,7 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rootAge;
+    private Value<Number> originAge;
 
     private List<TimeTreeNode> activeNodes;
 
@@ -26,19 +27,24 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     public FullBirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                               @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
-                              @ParameterInfo(name = rootAgeParamName, description = "the age of the tree.") Value<Number> rootAge) {
+                              @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree (only one of rootAge and originAge may be specified).", optional=true) Value<Number> rootAge,
+                              @ParameterInfo(name = originAgeParamName, description = "the age of the origin of the tree  (only one of rootAge and originAge may be specified).", optional=true) Value<Number> originAge) {
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rootAge = rootAge;
+        this.originAge = originAge;
         this.random = Utils.getRandom();
+
+        if (rootAge != null && originAge != null) throw new IllegalArgumentException("Only one of rootAge and originAge may be specified!");
+        if (rootAge == null && originAge == null) throw new IllegalArgumentException("One of rootAge and originAge must be specified!");
 
         activeNodes = new ArrayList<>();
     }
 
 
     @GeneratorInfo(name = "FullBirthDeath", description = "A birth-death tree with both extant and extinct species.<br>" +
-            "Conditioned on root age.")
+            "Conditioned on age of root or origin.")
     public RandomVariable<TimeTree> sample() {
 
         boolean success = false;
@@ -52,13 +58,17 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
             activeNodes.clear();
 
             root = new TimeTreeNode((String)null, tree);
-            root.setAge(doubleValue(rootAge));
+            if (rootAge != null) {
+                root.setAge(doubleValue(rootAge));
+            } else {
+                root.setAge(doubleValue(originAge));
+            }
 
             activeNodes.add(root);
 
             double time = root.getAge();
 
-            doBirth(activeNodes, time, tree);
+            if (rootAge != null) doBirth(activeNodes, time, tree);
 
             while (time > 0.0 && activeNodes.size() > 0) {
                 int k = activeNodes.size();
@@ -125,7 +135,8 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
         return new TreeMap<>() {{
             put(lambdaParamName, birthRate);
             put(muParamName, deathRate);
-            put(rootAgeParamName, rootAge);
+            if (rootAge != null) put(rootAgeParamName, rootAge);
+            if (originAge != null) put(originAgeParamName, originAge);
         }};
     }
 
@@ -134,6 +145,7 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
         if (paramName.equals(lambdaParamName)) birthRate = value;
         else if (paramName.equals(muParamName)) deathRate = value;
         else if (paramName.equals(rootAgeParamName)) rootAge = value;
+        else if (paramName.equals(originAgeParamName)) originAge = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 

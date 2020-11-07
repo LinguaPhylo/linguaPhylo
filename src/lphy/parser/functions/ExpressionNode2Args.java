@@ -20,20 +20,28 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
         this.func = func;
         params = new LinkedHashMap<>();
 
-        for (GraphicalModelNode value : values) {
-            Set<String> ids = new HashSet<>();
-            if (value instanceof ExpressionNode) {
+        for (GraphicalModelNode node : values) {
+            if (node instanceof ExpressionNode) {
                 throw new RuntimeException();
-//				for (Object o : ((ExpressionNode) value).getInputs()) {
+//				for (Object o : ((ExpressionNode) node).getInputs()) {
 //					Value value2 = (Value) o;
 //					params.put(value2.getId(), value2);
 //					ids.add(value2.getId());
 //				}
-            } else if (value instanceof Value) {
-                String id = ((Value) value).getId();
-                params.put(id, (Value) value);
-                ids.add(id);
-                ((Value) value).addOutput(this);
+            } else if (node instanceof Value) {
+                Value value = (Value)node;
+
+                String key = null;
+                if (!value.isAnonymous()) {
+                    key = value.getId();
+                } else if (value.isRandom()) {
+                    key = value.codeString();
+                }
+
+                if (key != null) {
+                    params.put(key, value);
+                }
+                value.addOutput(this);
             }
         }
         inputValues = values;
@@ -53,6 +61,9 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
             if (!v.isAnonymous() && v.getId().equals(paramName)) {
                 inputValues[i] = value;
                 LoggerUtils.log.fine("Setting input value " + i + " to " + value);
+            } else if (v.isAnonymous() && v.isRandom() && v.codeString().equals(paramName)) {
+                inputValues[i] = value;
+                LoggerUtils.log.fine("Setting input value " + i + " to " + value + " based on code string.");
             }
         }
     }

@@ -1,5 +1,6 @@
-λ = 10.0;
-tmrca = 0.1;
-ψ ~ FullBirthDeath(lambda=λ, mu=5, rootAge=tmrca);
+origin = 4;
+ψ ~ FullBirthDeath(lambda=1.0, mu=0.5, originAge=origin);
 TL = ψ.treeLength();
 rootAge = ψ.rootAge();
+extantTips = ψ.extantCount();
+fossilTips = ψ.leafCount() - extantTips;

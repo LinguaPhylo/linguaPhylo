@@ -9,4 +9,5 @@ public class BirthDeathConstants {
     public static final String diversificationParamName = "diversification";
     public static final String turnoverParamName = "turnover";
     public static final String rootAgeParamName = "rootAge";
+    public static final String originAgeParamName = "originAge";
 }

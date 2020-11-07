@@ -54,7 +54,7 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
                 new FullBirthDeathTree(
                         new Value<>(lambdaParamName, birth_rate),
                         new Value<>(muParamName, death_rate),
-                        rootAge);
+                        rootAge, null);
     }
 
     @Override

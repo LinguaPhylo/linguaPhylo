@@ -38,7 +38,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 
-        FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, rootAge);
+        FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, rootAge, null);
         RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
         RhoSampleTree rhoSampleTree = new RhoSampleTree(fullTree, rho);

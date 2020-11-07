@@ -22,7 +22,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
     private Value<Number> deathRate;
     private Value<Number> psiVal;
     private Value<Number> rhoVal;
-    private Value<Number> rootAge;
+    private Value<Number> originAge;
 
     RandomGenerator random;
 
@@ -30,14 +30,14 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
                      @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                      @ParameterInfo(name = rhoParamName, description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
                      @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
-                     @ParameterInfo(name = rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
+                     @ParameterInfo(name = originAgeParamName, description = "the age of the origin.") Value<Number> originAge) {
 
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rhoVal = rhoVal;
         this.psiVal = psiVal;
-        this.rootAge = rootAge;
+        this.originAge = originAge;
 
         random = Utils.getRandom();
     }
@@ -50,7 +50,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         TimeTree sampleTree = null;
 
         while (nonNullLeafCount < 2) {
-            FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, rootAge);
+            FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, null, originAge);
             RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
             SimFossilsPoisson simFossilsPoisson = new SimFossilsPoisson(fullTree, psiVal);
@@ -94,7 +94,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             put(muParamName, deathRate);
             put(rhoParamName, rhoVal);
             put(psiParamName, psiVal);
-            put(rootAgeParamName, rootAge);
+            put(originAgeParamName, originAge);
         }};
     }
 
@@ -113,8 +113,8 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             case psiParamName:
                 psiVal = value;
                 break;
-            case rootAgeParamName:
-                rootAge = value;
+            case originAgeParamName:
+                originAge = value;
                 break;
             default:
                 throw new RuntimeException("Unexpected parameter " + paramName);

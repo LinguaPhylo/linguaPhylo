@@ -1,11 +1,9 @@
 package lphy.app;
 
-import jebl.evolution.sequences.SequenceType;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ErrorAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
-import lphy.evolution.sequences.DataType;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;

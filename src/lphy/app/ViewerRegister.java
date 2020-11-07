@@ -1,6 +1,7 @@
 package lphy.app;
 
 import lphy.app.treecomponent.TimeTreeComponent;
+import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.Value;
@@ -151,6 +152,22 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer taxaValueViewer = new Viewer() {
+
+        @Override
+        public boolean match(Object value) {
+            return value instanceof Taxa || (value instanceof Value && ((Value) value).value() instanceof Taxa);
+        }
+
+        @Override
+        public JComponent getViewer(Object value) {
+            if (value instanceof Taxa) {
+                return new TaxaComponent((Taxa)value);
+            }
+            return new TaxaComponent(((Value<Taxa>) value).value());
+        }
+    };
+
     private static Viewer timeTreeValueViewer = new Viewer() {
 
         @Override
@@ -174,6 +191,7 @@ public class ViewerRegister {
             doubleArray2DViewer,
             alignmentValueViewer,
             timeTreeValueViewer,
+            taxaValueViewer,
             primitiveArrayViewer,
             new VectorValueViewer()
     };
