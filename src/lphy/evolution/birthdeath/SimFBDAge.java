@@ -7,6 +7,8 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,14 +23,14 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;
-    private Value<Number> rhoVal;
+    private Value<Double> rhoVal;
     private Value<Number> rootAge;
 
     RandomGenerator random;
 
     public SimFBDAge(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                      @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
-                     @ParameterInfo(name = rhoParamName, description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
+                     @ParameterInfo(name = rhoParamName, description = "fraction of extant taxa sampled.") Value<Double> rhoVal,
                      @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
                      @ParameterInfo(name = rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
 
@@ -49,7 +51,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         int nonNullLeafCount = 0;
         TimeTree sampleTree = null;
 
-        while (nonNullLeafCount < 2) {
+        while (nonNullLeafCount < 1) {
             FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, rootAge);
             RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
@@ -58,23 +60,25 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             Value<TimeTree> fullTreeWithFossils = simFossilsPoisson.sample();
 
             sampleTree = new TimeTree(fullTreeWithFossils.value());
-            double p = doubleValue(rhoVal);
+
+            List<TimeTreeNode> leafNodes = new ArrayList<>();
 
             for (TimeTreeNode node : sampleTree.getNodes()) {
                 if (node.isLeaf() && node.getAge() == 0.0) {
+                   leafNodes.add(node);
+                }
+            }
 
-                    // in later prune tree step null id tips will be pruned.
-                    if (random.nextDouble() > p) {
-                        node.setId(null);
-                    }
-                }
+            int toNull = (int)Math.round(leafNodes.size()*rhoVal.value());
+            List<TimeTreeNode> nullList = new ArrayList<>();
+            for (int i =0; i < toNull; i++) {
+                nullList.add(leafNodes.remove(random.nextInt(leafNodes.size())));
             }
-            nonNullLeafCount = 0;
-            for (TimeTreeNode node : sampleTree.getNodes()) {
-                if (node.isLeaf() && node.getId() != null) {
-                    nonNullLeafCount += 1;
-                }
+            for (TimeTreeNode node : nullList) {
+                node.setId(null);
             }
+
+            nonNullLeafCount = leafNodes.size();
         }
         PruneTree pruneTree = new PruneTree(new Value<>(null, sampleTree));
 
@@ -129,7 +133,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         return deathRate;
     }
 
-    public Value<Number> getRho() {
+    public Value<Double> getRho() {
         return rhoVal;
     }
 
