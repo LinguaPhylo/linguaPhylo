@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
-import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * A Birth-death tree generative distribution
@@ -23,21 +22,21 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;
-    private Value<Double> rhoVal;
+    private Value<Double> fracVal;
     private Value<Number> originAge;
 
     RandomGenerator random;
 
     public SimFBDAge(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                      @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
-                     @ParameterInfo(name = rhoParamName, description = "fraction of extant taxa sampled.") Value<Double> rhoVal,
+                     @ParameterInfo(name = fracParamName, description = "fraction of extant taxa sampled.") Value<Double> fracVal,
                      @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
                      @ParameterInfo(name = originAgeParamName, description = "the age of the origin.") Value<Number> originAge) {
 
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
-        this.rhoVal = rhoVal;
+        this.fracVal = fracVal;
         this.psiVal = psiVal;
         this.originAge = originAge;
 
@@ -45,7 +44,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
     }
 
     @GeneratorInfo(name = "SimFBDAge", description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
-            "Conditioned on root age.")
+            "Conditioned on origin age.")
     public RandomVariable<TimeTree> sample() {
 
         int nonNullLeafCount = 0;
@@ -69,7 +68,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
                 }
             }
 
-            int toNull = (int)Math.round(leafNodes.size()*rhoVal.value());
+            int toNull = (int)Math.round(leafNodes.size()* fracVal.value());
             List<TimeTreeNode> nullList = new ArrayList<>();
             for (int i =0; i < toNull; i++) {
                 nullList.add(leafNodes.remove(random.nextInt(leafNodes.size())));
@@ -96,7 +95,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         return new TreeMap<>() {{
             put(lambdaParamName, birthRate);
             put(muParamName, deathRate);
-            put(rhoParamName, rhoVal);
+            put(fracParamName, fracVal);
             put(psiParamName, psiVal);
             put(originAgeParamName, originAge);
         }};
@@ -111,8 +110,8 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             case muParamName:
                 deathRate = value;
                 break;
-            case rhoParamName:
-                rhoVal = value;
+            case fracParamName:
+                fracVal = value;
                 break;
             case psiParamName:
                 psiVal = value;
@@ -134,7 +133,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
     }
 
     public Value<Double> getRho() {
-        return rhoVal;
+        return fracVal;
     }
 
     public Value<Number> getPsi() {

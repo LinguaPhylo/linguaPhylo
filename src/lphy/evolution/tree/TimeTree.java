@@ -252,16 +252,16 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     public Integer leafCount() {
         int count = 0;
         for (TimeTreeNode node : getNodes()) {
-            if (node.isLeaf() && node.getParent().age != node.age) count += 1;
+            if (node.isLeaf() && !node.isDirectAncestor()) count += 1;
         }
         return count;
     }
 
-    @MethodInfo(description = "the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child).")
+    @MethodInfo(description = "the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child, or have one child that is a zero-branch-length leaf).")
     public Integer directAncestorCount() {
         int count = 0;
         for (TimeTreeNode node : getNodes()) {
-            if (node.getChildCount() == 1 && !node.isRoot()) count += 1;
+            if (node.isDirectAncestor()) count += 1;
         }
         return count;
     }

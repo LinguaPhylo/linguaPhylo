@@ -17,6 +17,8 @@ public class TimeTreeNode {
     double age = 0.0;
     String id = null;
 
+    private static final double zeroBranchLengthTolerance = 1e-15;
+
     SortedMap<String, Object> metaData = new TreeMap<>();
 
     TimeTree tree;
@@ -71,6 +73,13 @@ public class TimeTreeNode {
 
     public boolean isSingleChildNonOrigin() {
         return parent != null && getChildCount() == 1;
+    }
+
+    /**
+      * @return true if this node is a direct ancestor either because it has a single child (and not the origin) or because it is a leaf child attached to it's parent by a zero branch length
+     */
+    public boolean isDirectAncestor() {
+        return (isSingleChildNonOrigin()) || (isLeaf() && (getParent().age - age) <= zeroBranchLengthTolerance);
     }
 
     public final boolean isLeaf() {

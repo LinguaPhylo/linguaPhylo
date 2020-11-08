@@ -1,5 +1,6 @@
-tree ~ SimFBDAge(lambda=1, mu=0.5, rho=0.5, psi=0.5, originAge=4);
+tree ~ SimFBDAge(lambda=1, mu=0.5, frac=0.5, psi=0.5, originAge=4);
 nodeCount = tree.nodeCount();
 extantCount = tree.extantCount();
 leafCount = tree.leafCount();
+daCount = tree.directAncestorCount();
 TL = tree.treeLength();
