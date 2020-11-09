@@ -25,6 +25,8 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
+    private static final int MAX_ATTEMPTS = 1000;
+
     public FullBirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                               @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                               @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree (only one of rootAge and originAge may be specified).", optional=true) Value<Number> rootAge,
@@ -54,7 +56,9 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
         double lambda = doubleValue(birthRate);
         double mu = doubleValue(deathRate);
 
-        while (!success) {
+        int attempts = 0;
+
+        while (!success && attempts < MAX_ATTEMPTS) {
             activeNodes.clear();
 
             root = new TimeTreeNode((String)null, tree);
@@ -98,6 +102,11 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
             }
 
             success = activeNodes.size() > 0;
+            attempts += 1;
+        }
+
+        if (!success) {
+            throw new RuntimeException("Failed to simulated FullBirthDeathTree after " + MAX_ATTEMPTS + " attempts.");
         }
 
         tree.setRoot(root, true);

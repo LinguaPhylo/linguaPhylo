@@ -44,6 +44,16 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         this.taxa = taxa;
         this.S = S;
         this.random = Utils.getRandom();
+
+        if (n == null && taxa == null)
+            throw new IllegalArgumentException("One of " + nParamName + " and " + taxaParamName + " must be specified!");
+
+
+        if (n != null) {
+            List<TimeTreeNode> extant = S.value().getExtantNodes();
+            if (extant.size() != n.value().length)
+                throw new IllegalArgumentException("Length of n must be equal to the number of extant taxa in species tree provided");
+        }
     }
 
     @GeneratorInfo(name = "MultispeciesCoalescent",
@@ -80,7 +90,9 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
 
         List<TimeTreeNode> root = doSpeciesTreeBranch(S.value().getRoot(), activeNodes, theta.value());
 
-        if (root.size() != 1) throw new RuntimeException();
+        if (root.size() != 1) {
+            throw new RuntimeException("Returned multiple gene roots from " + S.value().getRoot());
+        }
 
         geneTree.setRoot(root.get(0));
 
@@ -97,10 +109,18 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         Taxon[] taxonArray = new Taxon[0];
 
         if (n != null) {
+
+            List<TimeTreeNode> extant = S.value().getExtantNodes();
+            if (numericIds(extant)) {
+                extant.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getId())));
+            } else {
+                extant.sort(Comparator.comparing(TimeTreeNode::getId));
+            }
+
             int i = 0;
-            for (int sp = 0; sp < n.value().length; sp++) {
-                for (int k = 0; k < n.value()[sp]; k++) {
-                    taxonList.add(new Taxon(sp + "_" + k, sp+"", S.value().getNodeByIndex(sp).getAge()));
+            for (TimeTreeNode node : extant) {
+                for (int k = 0; k < n.value()[i]; k++) {
+                    taxonList.add(new Taxon(node.getId() + "_" + k, node.getId()+"", node.getAge()));
                 }
             }
             taxonArray = taxonList.toArray(taxonArray);
@@ -115,6 +135,17 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         }
 
         return new Taxa.Simple(taxonArray);
+    }
+
+    private boolean numericIds(List<TimeTreeNode> nodes) {
+        for (TimeTreeNode node : nodes) {
+            try {
+                int id = Integer.parseInt(node.getId());
+            } catch (NumberFormatException nfe) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createActiveNodes(Map<String, List<TimeTreeNode>> activeNodes, TimeTree geneTree) {

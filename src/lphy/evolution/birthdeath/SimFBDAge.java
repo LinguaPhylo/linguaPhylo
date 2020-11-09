@@ -27,6 +27,8 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
 
     RandomGenerator random;
 
+    private static final int MAX_ATTEMPTS = 1000;
+
     public SimFBDAge(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                      @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                      @ParameterInfo(name = fracParamName, description = "fraction of extant taxa sampled.") Value<Double> fracVal,
@@ -50,7 +52,9 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         int nonNullLeafCount = 0;
         TimeTree sampleTree = null;
 
-        while (nonNullLeafCount < 1) {
+        int attempts = 0;
+
+        while (nonNullLeafCount < 1 && attempts < MAX_ATTEMPTS) {
             FullBirthDeathTree birthDeathTree = new FullBirthDeathTree(birthRate, deathRate, null, originAge);
             RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
@@ -68,7 +72,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
                 }
             }
 
-            int toNull = (int)Math.round(leafNodes.size()* fracVal.value());
+            int toNull = (int)Math.round(leafNodes.size()* (1.0-fracVal.value()));
             List<TimeTreeNode> nullList = new ArrayList<>();
             for (int i =0; i < toNull; i++) {
                 nullList.add(leafNodes.remove(random.nextInt(leafNodes.size())));
@@ -78,7 +82,11 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             }
 
             nonNullLeafCount = leafNodes.size();
+            attempts += 1;
         }
+
+        if (attempts == MAX_ATTEMPTS) throw new RuntimeException("Failed to simulate SimFBDAge after " + MAX_ATTEMPTS + " attempts.");
+
         PruneTree pruneTree = new PruneTree(new Value<>(null, sampleTree));
 
         TimeTree tree = pruneTree.apply().value();

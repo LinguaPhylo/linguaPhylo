@@ -289,4 +289,8 @@ public class TimeTreeNode {
         }
         return 0.0;
     }
+
+    public boolean isExtant() {
+        return isLeaf() && age == 0.0;
+    }
 }

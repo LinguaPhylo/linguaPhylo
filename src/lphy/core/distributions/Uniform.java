@@ -8,19 +8,20 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class Uniform implements GenerativeDistribution<Double> {
 
-    private Value<Double> lower;
-    private Value<Double> upper;
+    private Value<Number> lower;
+    private Value<Number> upper;
 
     private RandomGenerator random;
 
-    public Uniform(@ParameterInfo(name = lowerParamName, description = "the lower bound of the uniform distribution.") Value<Double> lower,
-                   @ParameterInfo(name = upperParamName, description = "the upper bound of the uniform distribution.") Value<Double> upper) {
+    public Uniform(@ParameterInfo(name = lowerParamName, description = "the lower bound of the uniform distribution.") Value<Number> lower,
+                   @ParameterInfo(name = upperParamName, description = "the upper bound of the uniform distribution.") Value<Number> upper) {
 
         this.lower = lower;
         this.upper = upper;
@@ -30,8 +31,8 @@ public class Uniform implements GenerativeDistribution<Double> {
     @GeneratorInfo(name = "Uniform", description = "The uniform probability distribution.")
     public RandomVariable<Double> sample() {
 
-        double l = lower.value();
-        double u = upper.value();
+        double l = doubleValue(lower);
+        double u = doubleValue(upper);
 
         double x = random.nextDouble() * (u - l) + l;
 
@@ -39,11 +40,11 @@ public class Uniform implements GenerativeDistribution<Double> {
     }
 
     public double logDensity(Double x) {
-        return Math.log(1.0) - Math.log(upper.value() - lower.value());
+        return Math.log(1.0) - Math.log(doubleValue(upper) - doubleValue(lower));
     }
 
     public double density(Double x) {
-        return 1.0 / upper.value() - lower.value();
+        return 1.0 / doubleValue(upper) - doubleValue(lower);
     }
 
     public Map<String, Value> getParams() {
@@ -64,11 +65,11 @@ public class Uniform implements GenerativeDistribution<Double> {
         return getName();
     }
 
-    public Value<Double> getLower() {
+    public Value<Number> getLower() {
         return lower;
     }
 
-    public Value<Double> getUpper() {
+    public Value<Number> getUpper() {
         return upper;
     }
 }
