@@ -10,8 +10,8 @@ model {
   rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
   Q = gtr(freq=π, rates=rates);
 
-  initialMean ~ LogNormal(meanlog=-3.0, sdlog=1.0);
-  Θ ~ ExpMarkovChain(initialMean=initialMean, n=numGroups);
+  firstValue ~ LogNormal(meanlog=9.0, sdlog=2.0);
+  Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
   groupSizes ~ RandomComposition(n=w, k=numGroups);
   ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
 
