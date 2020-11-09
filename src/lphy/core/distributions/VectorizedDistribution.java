@@ -52,6 +52,10 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         return baseDistributions.get(component);
     }
 
+    public List<GenerativeDistribution<T>> getBaseDistributions() {
+        return baseDistributions;
+    }
+
     @Override
     public RandomVariable<T[]> sample() {
 

@@ -91,7 +91,14 @@ public class VectorUtils {
                     args[i] = vectorArgs[i];
                 } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
                     // vector match
-                    args[i] = new Value(argValue.isAnonymous()?null : argValue.getId() + "." + i, Array.get(argValue.value(), i));
+
+                    Object array = argValue.value();
+                    int length = Array.getLength(array);
+                    if (Array.getLength(array) <= component) {
+                        throw new RuntimeException("Array " + array + " is length " + length + " but attempting to access element " + component);
+                    }
+
+                    args[i] = new Value(argValue.isAnonymous()?null : argValue.getId() + "." + component, Array.get(array, component));
                 }
             }
         }

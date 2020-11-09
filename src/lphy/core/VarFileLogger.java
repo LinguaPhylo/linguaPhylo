@@ -28,6 +28,17 @@ public class VarFileLogger implements RandomValueLogger {
             }
         });
 
+        loggableMap.put(Boolean.class, new Loggable<Boolean>() {
+            @Override
+            public String[] getLogTitles(Value<Boolean> value) {
+                return new String[]{value.getId()};
+            }
+
+            public Boolean[] getLogValues(Value<Boolean> value) {
+                return new Boolean[]{value.value()};
+            }
+        });
+
         loggableMap.put(Double.class, new Loggable<Double>() {
             @Override
             public String[] getLogTitles(Value<Double> value) {

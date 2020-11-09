@@ -215,6 +215,10 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return taxa;
     }
 
+    public List<TimeTreeNode> getExtantNodes() {
+        return getNodes().stream().filter(TimeTreeNode::isExtant).collect(Collectors.toList());
+    }
+
     // methods permitted pass-through to LPhy
 
     @MethodInfo(description = "the total length of the tree")
@@ -272,7 +276,9 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getTaxa();
     }
 
-    public List<TimeTreeNode> getExtantNodes() {
-        return getNodes().stream().filter(TimeTreeNode::isExtant).collect(Collectors.toList());
+    @MethodInfo(description = "returns true if this tree has an origin node (defined as a root node with a single child.")
+    public boolean hasOrigin() {
+        return getRoot().isOrigin();
     }
+
 }

@@ -1,15 +1,15 @@
 data {
-   numLoci = 8;
+   numLoci = 4;
    L = rep(element=500, times=numLoci);
  }
  model {
    lambda ~ Uniform(lower=1.0, upper=1.5);
-   mu ~ Uniform(lower=0.5, upper=1.0);
+   mu = 0.4;
    origin ~ Uniform(lower=2, upper=2.5);
    psi = 1.0;
    S ~ SimFBDAge(mu=mu, lambda=lambda, psi=psi, frac=1.0, originAge=origin);
    morph_mu ~ LogNormal(meanlog=-3.0, sdlog=0.1);
-   clock_rate ~ LogNormal(meanlog=-3, sdlog=0.1);
+   clock_rate ~ LogNormal(meanlog=-3.5, sdlog=0.6);
    morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=2), mu=morph_mu, L=100);
    alpha = 2.0;
    beta = 0.5;
@@ -22,4 +22,4 @@ data {
    kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, n=numLoci);
    pi ~ Dirichlet(conc=[2,2,2,2], n=numLoci);
    mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, meanRate=g_rate), mu=clock_rate, tree=g, L=L);
- }
+ }                                                                                                                                     

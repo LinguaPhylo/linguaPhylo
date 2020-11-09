@@ -4,3 +4,4 @@ extantCount = tree.extantCount();
 leafCount = tree.leafCount();
 daCount = tree.directAncestorCount();
 TL = tree.treeLength();
+hasOrigin = tree.hasOrigin();

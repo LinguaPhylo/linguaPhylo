@@ -143,6 +143,9 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                         if (logValue instanceof Number) {
                             values[i].add(((Number) logValue).doubleValue());
                             i += 1;
+                        } else if (logValue instanceof Boolean) {
+                            values[i].add(((Boolean) logValue ? 1.0 : 0.0));
+                            i += 1;
                         }
                     }
                 }
@@ -152,7 +155,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
     public boolean isLogged(Value randomValue) {
         boolean random = ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
-        boolean number = ValueUtils.isNumberOrNumberArray(randomValue);
+        boolean number = ValueUtils.isNumberOrNumberArray(randomValue) || randomValue.value() instanceof Boolean;
 
         return random && number;
     }

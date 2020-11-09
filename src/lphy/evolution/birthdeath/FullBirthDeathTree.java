@@ -68,11 +68,20 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
                 root.setAge(doubleValue(originAge));
             }
 
-            activeNodes.add(root);
 
             double time = root.getAge();
 
-            if (rootAge != null) doBirth(activeNodes, time, tree);
+            if (rootAge != null) {
+                activeNodes.add(root);
+                doBirth(activeNodes, time, tree);
+            } else {
+                TimeTreeNode origin = root;
+                root = new TimeTreeNode((String)null, tree);
+                root.setAge(origin.getAge());
+                origin.addChild(root);
+                activeNodes.add(root);
+                root = root.getParent();
+            }
 
             while (time > 0.0 && activeNodes.size() > 0) {
                 int k = activeNodes.size();
@@ -84,7 +93,6 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
                 time -= x;
 
                 if (time < 0) break;
-
 
                 double U = random.nextDouble();
                 if (U < lambda / (lambda + mu)) {

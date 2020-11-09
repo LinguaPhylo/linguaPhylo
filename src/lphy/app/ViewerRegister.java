@@ -125,13 +125,19 @@ public class ViewerRegister {
 
             if (object instanceof Value) {
                 Value value = (Value) object;
-                return value.value() instanceof Boolean && value.getGenerator() == null;
+                return value.value() instanceof Boolean;
 
             } else return false;
         }
 
-        public JComponent getViewer(Object value) {
-            return new BooleanValueEditor((Value) value);
+        public JComponent getViewer(Object object) {
+            Value value = (Value) object;
+
+            if (value.getGenerator() == null) {
+                return new BooleanValueEditor(value);
+            } else {
+                return new JLabel(value.value().toString());
+            }
         }
     };
 
