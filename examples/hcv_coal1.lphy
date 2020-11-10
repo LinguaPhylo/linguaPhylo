@@ -1,0 +1,24 @@
+data {
+  D = readNexus(file="examples/hcv.nexus");
+  taxa = taxa(D);
+  L = nchar(D);
+  numGroups = 4;
+  w = ntaxa(taxa)-1;
+}
+model {
+  π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]);
+  rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
+  Q = gtr(freq=π, rates=rates);
+
+  initialMean ~ LogNormal(meanlog=9.4, sdlog=2.0);
+  Θ ~ ExpMarkovChain(initialMean=initialMean, n=numGroups);
+  groupSizes ~ RandomComposition(n=w, k=numGroups);
+  ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
+
+  D ~ PhyloCTMC(L=L, Q=Q, tree=ψ, mu=0.00079);
+}
+// > qexp(p=c(0.025,0.5,0.975), rate = 1/12000)
+//   [1]   303.8137  8317.7662 44266.5534
+// > qlnorm(p=c(0.025,0.5,0.975), meanlog=9.4, sdlog=2)
+//   [1]    239.864  12088.381 609215.881
+
