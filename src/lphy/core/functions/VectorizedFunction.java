@@ -1,8 +1,7 @@
 package lphy.core.functions;
 
-import lphy.core.distributions.VectorizedDistribution;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.types.VectorValue;
+import lphy.graphicalModel.types.CompoundVectorValue;
 import lphy.parser.ParserUtils;
 
 import java.lang.reflect.Array;
@@ -60,15 +59,12 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     public Value<T[]> apply() {
 
         int vectorSize = getVectorSize(params, baseTypes);
-        Value<T> first = getComponentFunction(0).apply();
+        List<Value> componentValues = new ArrayList<>();
 
-        T[] result = (T[]) Array.newInstance(first.value().getClass(), vectorSize);
-        result[0] = first.value();
-
-        for (int i =1; i < vectorSize; i++) {
-            result[i] = getComponentFunction(i).apply().value();
+        for (int i = 0; i < vectorSize; i++) {
+            componentValues.add(getComponentFunction(i).apply());
         }
-        return new VectorValue<>(null, result, this);
+        return new CompoundVectorValue<>(null, componentValues, this);
     }
 
     @Override
@@ -88,9 +84,11 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
             }
         } else {
             for (int i = 0; i < componentFunctions.size(); i++) {
-                Object input = Array.get(value.value(), i);
-                // not setInput because the base distributions are hidden from the graphical model
-                componentFunctions.get(i).setParam(paramName, new Value(value.getId() + "." + i, input));
+                if (value instanceof CompoundVector) {
+                    componentFunctions.get(i).setParam(paramName, ((CompoundVector) value).getComponentValue(i));
+                } else  {
+                    componentFunctions.get(i).setParam(paramName, new SliceValue(i,value));
+                }
             }
         }
     }

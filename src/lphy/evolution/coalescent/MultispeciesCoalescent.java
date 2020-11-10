@@ -1,5 +1,6 @@
 package lphy.evolution.coalescent;
 
+import lphy.core.functions.ARange;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.tree.TimeTree;
@@ -68,11 +69,11 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
 
         if (locusCount == 1) return new RandomVariable<>(null, simulateGeneTree(), this);
 
-        TimeTree[] geneTrees = new TimeTree[locusCount];
-        for (int i = 0; i < geneTrees.length; i++) {
-            geneTrees[i] = simulateGeneTree();
+        List<RandomVariable> randomVariables = new ArrayList<>();
+        for (int i = 0; i < locusCount; i++) {
+            randomVariables.add(new RandomVariable(null, simulateGeneTree(), this));
         }
-        return new VectorizedRandomVariable(null, geneTrees, this);
+        return new VectorizedRandomVariable(null, randomVariables, this);
     }
 
     private int getLocusCount() {

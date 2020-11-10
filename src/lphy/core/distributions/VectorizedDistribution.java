@@ -18,7 +18,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     // the keys are the argument names
     Map<String, Class> baseTypes = new TreeMap<>();
 
-    List<GenerativeDistribution<T>> baseDistributions;
+    List<GenerativeDistribution<T>> componentDistributions;
 
     public VectorizedDistribution(Constructor baseDistributionConstructor, List<ParameterInfo> pInfo, Object[] vectorArgs) {
 
@@ -26,9 +26,9 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
         try {
             int size = getVectorSize(pInfo, vectorArgs);
-            baseDistributions = new ArrayList<>(size);
+            componentDistributions = new ArrayList<>(size);
             for (int component = 0; component < size; component++) {
-                baseDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
+                componentDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -38,7 +38,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             e.printStackTrace();
         }
 
-        baseDistributions.get(0).getParams().forEach((key, value) -> {
+        componentDistributions.get(0).getParams().forEach((key, value) -> {
             if (value != null) baseTypes.put(key, value.getType());
         });
     }
@@ -49,26 +49,23 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
      * @return
      */
     public GenerativeDistribution<T> getBaseDistribution(int component) {
-        return baseDistributions.get(component);
+        return componentDistributions.get(component);
     }
 
-    public List<GenerativeDistribution<T>> getBaseDistributions() {
-        return baseDistributions;
+    public List<GenerativeDistribution<T>> getComponentDistributions() {
+        return componentDistributions;
     }
 
     @Override
     public RandomVariable<T[]> sample() {
 
         int vectorSize = getVectorSize(params, baseTypes);
-        Value<T> first = getBaseDistribution(0).sample();
+        List<RandomVariable> componentVariables = new ArrayList<>();
 
-        T[] result = (T[]) Array.newInstance(first.value().getClass(), vectorSize);
-        result[0] = first.value();
-
-        for (int i =1; i < vectorSize; i++) {
-            result[i] = getBaseDistribution(i).sample().value();
+        for (int i = 0; i < vectorSize; i++) {
+            componentVariables.add(getBaseDistribution(i).sample());
         }
-        return new VectorizedRandomVariable<>(null, result, this);
+        return new VectorizedRandomVariable<>(null, componentVariables, this);
     }
 
     @Override
@@ -82,27 +79,29 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         params.put(paramName, value);
 
         if (!isVectorizedParameter(paramName, value, baseTypes)) {
-            for (int i = 0; i < baseDistributions.size(); i++) {
+            for (GenerativeDistribution<T> baseDistribution : componentDistributions) {
                 // not setInput because the base distributions are hidden from the graphical model
-                baseDistributions.get(i).setParam(paramName, value);
+                baseDistribution.setParam(paramName, value);
             }
         } else {
-            for (int i = 0; i < baseDistributions.size(); i++) {
-                Object input = Array.get(value.value(), i);
-                // not setInput because the base distributions are hidden from the graphical model
-                baseDistributions.get(i).setParam(paramName, new Value(value.getId() + "." + i, input));
+            for (int i = 0; i < componentDistributions.size(); i++) {
+                if (value instanceof CompoundVector) {
+                    componentDistributions.get(i).setParam(paramName, ((CompoundVector) value).getComponentValue(i));
+                } else  {
+                    componentDistributions.get(i).setParam(paramName, new SliceValue(i,value));
+                }
             }
         }
     }
 
     @Override
     public String getRichDescription(int index) {
-        return baseDistributions.get(0).getRichDescription(0);
+        return componentDistributions.get(0).getRichDescription(0);
     }
 
     @Override
     public String getName() {
-        return baseDistributions.get(0).getName();
+        return componentDistributions.get(0).getName();
     }
 
     public static void main(String[] args) {

@@ -26,7 +26,7 @@ public interface GenerativeDistribution<T> extends Generator<T> {
 
     default RandomVariable<T> sample(String id) {
         RandomVariable<T> v = sample();
-        v.id = id;
+        v.setId(id);
         return v;
     }
 

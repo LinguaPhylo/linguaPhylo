@@ -3,9 +3,7 @@ package lphy.core.distributions;
 import lphy.core.functions.IntegerArray;
 import lphy.graphicalModel.*;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static lphy.core.distributions.DistributionConstants.*;
 import static lphy.core.distributions.DistributionConstants.sdParamName;
@@ -27,22 +25,25 @@ public class DirichletMulti implements GenerativeDistribution<Double[][]> {
     @GeneratorInfo(name="Dirichlet", description="The dirichlet probability distribution.")
     public RandomVariable<Double[][]> sample() {
 
-        Double[][] dirichlet = new Double[n.value()][concentration.value().length];
+        List<RandomVariable> dirichletVariables = new ArrayList<>();
 
-        for (int rep = 0; rep < dirichlet.length; rep++) {
+        for (int rep = 0; rep < n.value(); rep++) {
+            Double[] dirichlet = new Double[concentration.value().length];
+
             double sum = 0.0;
 
-            for (int i = 0; i < dirichlet[rep].length; i++) {
+            for (int i = 0; i < dirichlet.length; i++) {
                 double val = Utils.randomGamma(concentration.value()[i].doubleValue(), 1.0);
-                dirichlet[rep][i] = val;
+                dirichlet[i] = val;
                 sum += val;
             }
-            for (int i = 0; i < dirichlet[rep].length; i++) {
-                dirichlet[rep][i] /= sum;
+            for (int i = 0; i < dirichlet.length; i++) {
+                dirichlet[i] /= sum;
             }
+            dirichletVariables.add(new RandomVariable(null, dirichlet, this));
         }
 
-        return new RandomVariable<>(null, dirichlet, this);
+        return new VectorizedRandomVariable<>(null, dirichletVariables, this);
     }
 
     public double density(Double[][] d) {

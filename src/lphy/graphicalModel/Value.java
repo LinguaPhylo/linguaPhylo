@@ -12,7 +12,7 @@ import java.util.*;
 public class Value<T> implements GraphicalModelNode<T> {
 
     T value;
-    String id;
+    private String id;
     List<ValueListener> listeners = new ArrayList<>();
     List<GraphicalModelNode> outputs = new ArrayList<>();
 

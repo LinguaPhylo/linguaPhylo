@@ -25,7 +25,7 @@ public class RandomVariable<T> extends Value<T> {
 
     public String codeString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(id);
+        builder.append(getId());
         builder.append(" ~ ");
         builder.append(g.codeString());
         return builder.toString();

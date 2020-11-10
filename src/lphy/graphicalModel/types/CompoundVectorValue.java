@@ -3,32 +3,36 @@ package lphy.graphicalModel.types;
 import lphy.graphicalModel.CompoundVector;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.Vector;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CompoundVectorValue<T> extends Value<T[]> implements CompoundVector<T> {
 
-    Value<T>[] internalValues;
+    List<Value<T>> componentValues = new ArrayList<>();
 
-    public CompoundVectorValue(String id, Value<T>[] value) {
-
-        super(id, (T[])unwrapValues(value));
-        internalValues = value;
+    public CompoundVectorValue(String id, List<Value> values, DeterministicFunction function) {
+        super(id, (T[])unwrapValues(values), function);
+        for (Value value : values) {
+            componentValues.add(value);
+        }
     }
 
-    private static Object[] unwrapValues(Value[] value) {
-        Object[] result = (Object[])Array.newInstance(value[0].value().getClass(), value.length);
+    private static Object[] unwrapValues(List<Value> values) {
+        Object[] result = (Object[]) Array.newInstance(values.get(0).value().getClass(), values.size());
         for (int i = 0; i < result.length; i++) {
-            result[i] = value[i].value();
+            result[i] = values.get(i).value();
         }
         return result;
     }
 
-    public CompoundVectorValue(String id, Value<T>[] value, DeterministicFunction function) {
-        super(id, (T[])unwrapValues(value), function);
-        internalValues = value;
+    public void setId(String id) {
+        super.setId(id);
+        for (int i = 0; i < componentValues.size(); i++) {
+            componentValues.get(i).setId(id + "." + i);
+        }
     }
 
     public String toString() {
@@ -41,7 +45,7 @@ public class CompoundVectorValue<T> extends Value<T[]> implements CompoundVector
     }
 
     public Value<T> getComponentValue(int i) {
-        return internalValues[i];
+        return componentValues.get(i);
     }
 
     @Override

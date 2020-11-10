@@ -14,7 +14,7 @@ public class IndexedRandomVariable<T> extends RandomVariable<T[]> {
 
     public IndexedRandomVariable(String id, RandomVariable<T> part, RangeElement rangeElement) {
         super(id, null, null);
-        this.id = id;
+        setId(id);
 
         List<Integer> range = Arrays.asList(rangeElement.range());
         int max = max(range);
@@ -40,7 +40,7 @@ public class IndexedRandomVariable<T> extends RandomVariable<T[]> {
 
     public String codeString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(id);
+        builder.append(getId());
         builder.append(" ~ ");
         builder.append(g.codeString());
         return builder.toString();
