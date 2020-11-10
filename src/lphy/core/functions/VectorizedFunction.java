@@ -121,4 +121,8 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
         System.out.println(Arrays.toString(rv));
     }
+
+    public List<DeterministicFunction<T>> getComponentFunctions() {
+        return componentFunctions;
+    }
 }

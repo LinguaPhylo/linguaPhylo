@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements Vector<T> {
+public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements CompoundVector<T> {
     
     public VectorizedRandomVariable(String id, T[] value, GenerativeDistribution generativeDistribution) {
         super(id, value, generativeDistribution);
@@ -19,5 +19,11 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
     @Override
     public int size() {
         return value().length;
+    }
+
+    @Override
+    public Value<T> getComponentValue(int i) {
+        // TODO
+        return null;
     }
 }

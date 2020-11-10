@@ -98,6 +98,7 @@ public class VectorUtils {
                         throw new RuntimeException("Array " + array + " is length " + length + " but attempting to access element " + component);
                     }
 
+                    // TODO don't create a new value here if the value was a CompoundVectorValue
                     args[i] = new Value(argValue.isAnonymous()?null : argValue.getId() + "." + component, Array.get(array, component));
                 }
             }
