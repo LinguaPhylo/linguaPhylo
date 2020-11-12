@@ -670,8 +670,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             ArgumentValue[] f = (ArgumentValue[]) visit(ctx.getChild(2));
             Map<String, Value> arguments = new HashMap<>();
 
-
-
             for (ArgumentValue v : f) {
                 if (v != null) {
                     arguments.put(v.getName(), v.getValue());

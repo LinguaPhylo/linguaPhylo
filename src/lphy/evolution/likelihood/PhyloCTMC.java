@@ -34,13 +34,13 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     Value<Integer> L;
     RandomGenerator random;
 
-    public final String treeParamName;
-    public final String muParamName;
-    public final String rootFreqParamName;
-    public final String QParamName;
-    public final String siteRatesParamName;
-    public final String branchRatesParamName;
-    public final String LParamName;
+    public static final String treeParamName = "tree";
+    public static final String muParamName = "mu";
+    public static final String rootFreqParamName = "freq";
+    public static final String QParamName = "Q";
+    public static final String siteRatesParamName = "siteRates";
+    public static final String branchRatesParamName = "branchRates";
+    public static final String LParamName = "L";
 
     int numStates;
 
@@ -56,13 +56,13 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    public PhyloCTMC(@ParameterInfo(name = "tree", description = "the time tree.", type=TimeTree.class) Value<TimeTree> tree,
-                     @ParameterInfo(name = "mu", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
-                     @ParameterInfo(name = "freq", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", type=Double[].class, optional = true) Value<Double[]> rootFreq,
-                     @ParameterInfo(name = "Q", description = "the instantaneous rate matrix.", type=Double[][].class) Value<Double[][]> Q,
-                     @ParameterInfo(name = "siteRates", description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", type=Double[].class,  optional = true) Value<Double[]> siteRates,
-                     @ParameterInfo(name = "branchRates", description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", type=Double[].class, optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = "L", description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L) {
+    public PhyloCTMC(@ParameterInfo(name = treeParamName, description = "the time tree.", type=TimeTree.class) Value<TimeTree> tree,
+                     @ParameterInfo(name = muParamName, description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
+                     @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", type=Double[].class, optional = true) Value<Double[]> rootFreq,
+                     @ParameterInfo(name = QParamName, description = "the instantaneous rate matrix.", type=Double[][].class) Value<Double[][]> Q,
+                     @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", type=Double[].class,  optional = true) Value<Double[]> siteRates,
+                     @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", type=Double[].class, optional = true) Value<Double[]> branchRates,
+                     @ParameterInfo(name = LParamName, description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L) {
 
         this.tree = tree;
         this.Q = Q;
@@ -75,14 +75,6 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         numStates = Q.value().length;
         this.random = Utils.getRandom();
         iexp = new double[numStates][numStates];
-
-        treeParamName = getParamName(0);
-        muParamName = getParamName(1);
-        rootFreqParamName = getParamName(2);
-        QParamName = getParamName(3);
-        siteRatesParamName = getParamName(4);
-        branchRatesParamName = getParamName(5);
-        LParamName = getParamName(6);
 
         checkCompatibilities();
     }

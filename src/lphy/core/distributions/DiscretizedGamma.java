@@ -35,7 +35,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
         constructGammaDistribution();
     }
 
-    @GeneratorInfo(name = "G", description = "The discretized gamma probability distribution with mean = 1.")
+    @GeneratorInfo(name = "DiscretizeGamma", description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double[]> sample() {
         constructGammaDistribution();
 
@@ -82,6 +82,19 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
         constructGammaDistribution();
     }
 
+    public Value<Number> getShape() {
+        return shape;
+    }
+
+    public Value<Integer> getNcat() {
+        return ncat;
+    }
+
+    public String toString() {
+        return getName();
+    }
+
+
     private void constructGammaDistribution() {
         double sh = doubleValue(shape);
 
@@ -95,8 +108,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double[]> {
         }
     }
 
-    public String toString() {
-        return getName();
-    }
+
+
 
 }
