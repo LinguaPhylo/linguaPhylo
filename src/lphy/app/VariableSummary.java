@@ -4,26 +4,17 @@ import lphy.core.VarFileLogger;
 import lphy.graphicalModel.*;
 
 import javax.swing.*;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VariableSummary extends JTable implements RandomValueLogger {
-
-    Map<Class, Loggable> loggableMap;
 
     boolean logVariables;
     boolean logStatistics;
 
-    List<String> variableNames;
-    List<Double>[] values;
-    double[] means;
-    double[] stdev;
-    double[] stderr;
+    List<ValueRow> valueRows = new ArrayList<>();
+
+    RandomNumberLogger randomNumberLogger;
 
     AbstractTableModel tableModel;
 
@@ -31,13 +22,12 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
         this.logStatistics = logStatistics;
         this.logVariables = logVariables;
-
-        setLoggableMap(VarFileLogger.loggableMap);
+        randomNumberLogger = new RandomNumberLogger(logVariables, logStatistics);
 
         tableModel = new AbstractTableModel() {
             @Override
             public int getRowCount() {
-                return ((variableNames != null) ? variableNames.size() : 0);
+                return ((valueRows != null) ? valueRows.size() : 0);
             }
 
             @Override
@@ -80,26 +70,32 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
+
+                ValueRow valueRow = null;
+                if (valueRows != null) {
+                    valueRow = valueRows.get(rowIndex);
+                }
+
                 switch (columnIndex) {
                     case 0:
-                        if (variableNames != null) {
-                            return variableNames.get(rowIndex);
+                        if (valueRow != null) {
+                            return valueRow.title;
                         } else return "";
                     case 1:
-                        if (means != null) {
-                            return means[rowIndex];
+                        if (valueRow != null) {
+                            return valueRow.summary.mean[valueRow.row];
                         } else {
                             return Double.NaN;
                         }
                     case 2:
-                        if (stdev != null) {
-                            return stdev[rowIndex];
+                        if (valueRow != null) {
+                            return valueRow.summary.stdev[valueRow.row];
                         } else {
                             return Double.NaN;
                         }
                     case 3:
-                        if (stderr != null) {
-                            return stderr[rowIndex];
+                        if (valueRow != null) {
+                            return valueRow.summary.stderr[valueRow.row];
                         } else {
                             return Double.NaN;
                         }
@@ -111,77 +107,30 @@ public class VariableSummary extends JTable implements RandomValueLogger {
         setModel(tableModel);
     }
 
-    public void setLoggableMap(Map<Class, Loggable> loggableMap) {
-        this.loggableMap = loggableMap;
-    }
-
     public void log(int rep, List<Value<?>> randomValues) {
 
-        if (rep == 0) {
-            // start with titles
-            variableNames = new ArrayList<>();
-            for (Value randomValue : randomValues) {
-                if (isLogged(randomValue)) {
-                    Loggable loggable = loggableMap.get(randomValue.value().getClass());
-                    if (loggable != null) {
-                        Collections.addAll(variableNames, loggable.getLogTitles(randomValue));
-                    }
-                }
-            }
-            values = new List[variableNames.size()];
-            for (int i = 0; i < variableNames.size(); i++) {
-                values[i] = new ArrayList<>();
-            }
-        }
-        int i = 0;
-        for (Value randomValue : randomValues) {
-
-            if (isLogged(randomValue)) {
-                Loggable loggable = loggableMap.get(randomValue.value().getClass());
-                if (loggable != null) {
-                    for (Object logValue : loggable.getLogValues(randomValue)) {
-                        if (logValue instanceof Number) {
-                            values[i].add(((Number) logValue).doubleValue());
-                            i += 1;
-                        } else if (logValue instanceof Boolean) {
-                            values[i].add(((Boolean) logValue ? 1.0 : 0.0));
-                            i += 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public boolean isLogged(Value randomValue) {
-        boolean random = ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
-        boolean number = ValueUtils.isNumberOrNumberArray(randomValue) || randomValue.value() instanceof Boolean;
-
-        return random && number;
+        randomNumberLogger.log(rep, randomValues);
     }
 
     @Override
     public void close() {
-        means = new double[variableNames.size()];
-        stdev = new double[variableNames.size()];
-        stderr = new double[variableNames.size()];
 
-        for (int i = 0; i < variableNames.size(); i++) {
-            for (int j = 0; j < values[i].size(); j++) {
-                means[i] += values[i].get(j);
+        for (Value value : randomNumberLogger.firstValues) {
+            if (randomNumberLogger.isLogged(value)) {
+                String id = value.getId();
+                if (id == null) {
+                    throw new RuntimeException("Not expecting null id in variable summary!");
+                }
+                Summary summary = new Summary(randomNumberLogger.variableValues.get(id));
+                if (summary.isLengthSummary) {
+                    valueRows.add(new ValueRow("length(" + id + ")", summary, 0));
+                } else {
+                    String[] titles = randomNumberLogger.loggableMap.get(value.value().getClass()).getLogTitles(value);
+                    for (int i = 0; i < summary.getRowCount(); i++) {
+                        valueRows.add(new ValueRow(titles[i], summary, i));
+                    }
+                }
             }
-            means[i] /= values[i].size();
-            for (int j = 0; j < values[i].size(); j++) {
-                double deviation = means[i] - values[i].get(j);
-                stdev[i] += deviation * deviation;
-            }
-            // variance
-            stdev[i] /= values[i].size();
-            // stdev
-            stdev[i] = Math.sqrt(stdev[i]);
-
-            // stderr = stdev / sqrt(N)
-            stderr[i] = stdev[i] / Math.sqrt(values[i].size());
         }
 
         tableModel.fireTableDataChanged();

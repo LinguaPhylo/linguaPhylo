@@ -10,5 +10,4 @@ public interface RandomValueLogger {
      * Called once all replicates have been logged.
      */
     void close();
-
 }

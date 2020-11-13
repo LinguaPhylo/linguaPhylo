@@ -123,7 +123,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
 
     private void toNewick(TimeTreeNode node, StringBuilder builder, boolean includeSingleChildNodes) {
         if (!includeSingleChildNodes && node.getChildCount() == 1) {
-            System.out.println("Skip single child node " + node.getId());
+            //System.out.println("Skip single child node " + node.getId());
             toNewick(node.getChildren().get(0), builder, includeSingleChildNodes);
         } else {
             if (node.isLeaf()) {

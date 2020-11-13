@@ -64,6 +64,21 @@ public class VarFileLogger implements RandomValueLogger {
                 return value.value();
             }
         });
+
+        loggableMap.put(Integer[].class, new Loggable<Integer[]>() {
+            @Override
+            public String[] getLogTitles(Value<Integer[]> value) {
+                String[] names = new String[value.value().length];
+                for (int i = 0; i < names.length; i++) {
+                    names[i] = value.getId() + "." + i;
+                }
+                return names;
+            }
+
+            public Integer[] getLogValues(Value<Integer[]> value) {
+                return value.value();
+            }
+        });
     }
 
     String name;

@@ -20,6 +20,6 @@ data {
    g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, numLoci=numLoci, n=n);
    g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);
    kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, n=numLoci);
-   pi ~ Dirichlet(conc=[2,2,2,2], n=numLoci);
+   pi ~ Dirichlet(conc=[5,5,5,5], n=numLoci);
    mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, meanRate=g_rate), mu=clock_rate, tree=g, L=L);
  }                                                                                                                                     

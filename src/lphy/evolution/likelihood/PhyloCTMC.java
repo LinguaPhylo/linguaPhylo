@@ -203,7 +203,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         for (int i = 0; i < freqs.length; i++) {
             freqs[i] = transProb[0][i];
             for (int j = 1; j < freqs.length; j++) {
-                if (Math.abs(transProb[0][i] - transProb[j][i]) > 1e-6) {
+                if (Math.abs(transProb[0][i] - transProb[j][i]) > 1e-5) {
                     System.out.println("WARNING: branch length used to get equilibrium distribution was not long enough!");
                 }
 
