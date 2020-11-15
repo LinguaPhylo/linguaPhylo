@@ -32,6 +32,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     double ARROWHEAD_WIDTH = 4;
     double ARROWHEAD_DEPTH = 10;
 
+    private static float FACTOR_LABEL_FONT_SIZE = 11.0f;
+
     float STROKE_SIZE = 1.0f;
 
     List<GraphicalModelListener> listeners = new ArrayList<>();
@@ -116,8 +118,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public void paintComponent(Graphics g) {
 
-        double delta = g.getFontMetrics().getAscent() / 2.0;
-
         if (sizeChanged) {
             layeredGraph.applyLayering(layering);
             properLayeredGraph = new ProperLayeredGraph(layeredGraph, layering);
@@ -154,57 +154,82 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 }
             } else {
 
-                y1 += VAR_HEIGHT / 2;
-
                 NodeWrapper nodeWrapper = (NodeWrapper) properNode;
                 LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
 
                 if (node.value() instanceof Value) {
-
-                    for (LayeredNode successor : properNode.getSuccessors()) {
-
-                        double x2 = successor.getX();
-                        double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
-                        drawLine(g2d, x1, y1, x2, y2);
-                        if (showArgumentLabels) {
-                            String label = ((Generator) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName((Value) node.value());
-                            g.setColor(Color.gray);
-                            g.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
-                            g.setColor(Color.black);
-                        }
-                    }
+                    paintValueNode((Value)node.value(), properNode, g2d);
                 } else if (node.value() instanceof Generator) {
-                    Generator gen = (Generator) node.value();
-
-                    // is this a vectorized Generator?
-                    boolean vectorized = (gen instanceof VectorizedDistribution || gen instanceof VectorizedFunction);
-
-                    String str = gen.getName();
-                    if (vectorized) {
-                        Value value = (Value)((LayeredGNode)node.getSuccessors().get(0)).value();
-                        str += "[";
-
-                        if (value instanceof Vector) str += ((Vector)value).size();
-                        str += "]";
-                    }
-
-                    LayeredNode properSuccessor = properNode.getSuccessors().get(0);
-
-                    Point2D q = properSuccessor.getPosition();
-
-                    if (vectorized) g2d.setFont(getFont().deriveFont(Font.BOLD));
-                    g2d.drawString(str, (float) (node.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (node.getY() + FACTOR_SIZE - STROKE_SIZE));
-                    if (vectorized) g2d.setFont(getFont().deriveFont(Font.PLAIN));
-
-                    x1 = node.getX();
-                    y1 = node.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
-                    double x2 = q.getX();
-                    double y2 = q.getY() - VAR_HEIGHT / 2;
-                    
-                    drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
+                    paintGeneratorNode((Generator)node.value(), node, properNode, g2d);
                 }
             }
         }
+    }
+
+    /**
+     * @param value the value to paint the node of
+     * @param properNode the proper node representing this generator
+     * @param g2d the Graphics2D context to paint to
+     */
+    private void paintValueNode(Value value, LayeredNode properNode, Graphics2D g2d) {
+
+        double x1 = properNode.getX();
+        double y1 = properNode.getY() + VAR_HEIGHT / 2;
+        
+        double delta = g2d.getFontMetrics().getAscent() / 2.0;
+
+        for (LayeredNode successor : properNode.getSuccessors()) {
+
+            double x2 = successor.getX();
+            double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
+            drawLine(g2d, x1, y1, x2, y2);
+            if (showArgumentLabels) {
+                String label = ((Generator) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName(value);
+                g2d.setColor(Color.gray);
+                g2d.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g2d.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
+                g2d.setColor(Color.black);
+            }
+        }
+    }
+
+    /**
+     * @param generator the generator to paint the node of
+     * @param node the LayerdNode representing this Generator
+     * @param properNode the proper node representing this generator
+     * @param g2d the Graphics2D context to paint to
+     */
+    private void paintGeneratorNode(Generator generator, LayeredNode node, LayeredNode properNode, Graphics2D g2d) {
+
+        // is this a vectorized Generator?
+        boolean vectorized = (generator instanceof VectorizedDistribution || generator instanceof VectorizedFunction);
+
+        String str = generator.getName();
+        if (vectorized) {
+            Value value = (Value)((LayeredGNode)node.getSuccessors().get(0)).value();
+            str += "[";
+            if (value instanceof Vector) str += ((Vector)value).size();
+            str += "]";
+        }
+
+        LayeredNode properSuccessor = properNode.getSuccessors().get(0);
+
+        Point2D q = properSuccessor.getPosition();
+
+        Font font = g2d.getFont();
+        Font newFont = vectorized ? font.deriveFont(Font.BOLD,FACTOR_LABEL_FONT_SIZE) : font.deriveFont(FACTOR_LABEL_FONT_SIZE);
+        g2d.setFont(newFont);
+
+        double delta = g2d.getFontMetrics().getAscent() / 2.0;
+
+        g2d.drawString(str, (float) (node.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (node.getY() + delta));
+        if (vectorized) g2d.setFont(font);
+
+        double x1 = node.getX();
+        double y1 = node.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
+        double x2 = q.getX();
+        double y2 = q.getY() - VAR_HEIGHT / 2;
+
+        drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
     }
 
     public String toTikz() {

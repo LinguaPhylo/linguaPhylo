@@ -23,7 +23,7 @@ public class LayeredGNode extends LayeredNode.Default {
     static double VAR_HEIGHT = 50;
 
     static double FACTOR_SIZE = 7;
-    static double FACTOR_LABEL_GAP = 7;
+    static double FACTOR_LABEL_GAP = 5;
 
     static DecimalFormat format = new DecimalFormat();
 

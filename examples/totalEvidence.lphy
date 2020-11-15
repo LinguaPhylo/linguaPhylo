@@ -4,20 +4,13 @@ data {
  }
  model {
    lambda ~ Uniform(lower=1.0, upper=1.5);
-   mu = 0.4;
    origin ~ Uniform(lower=2, upper=2.5);
-   psi = 1.0;
-   S ~ SimFBDAge(mu=mu, lambda=lambda, psi=psi, frac=1.0, originAge=origin);
+   S ~ SimFBDAge(lambda=lambda, mu=0.4, psi=1.0, frac=1.0, originAge=origin);
    morph_mu ~ LogNormal(meanlog=-3.0, sdlog=0.1);
    clock_rate ~ LogNormal(meanlog=-3.5, sdlog=0.6);
    morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=2), mu=morph_mu, L=100);
-   alpha = 2.0;
-   beta = 0.5;
-   pop_sizes ~ InverseGamma(alpha=alpha, beta=beta, n=S.nodeCount());
-
-   n = rep(element=1, times=S.extantCount());
-
-   g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, numLoci=numLoci, n=n);
+   pop_sizes ~ InverseGamma(alpha=2.0, beta=0.5, n=S.nodeCount());
+   g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, numLoci=numLoci);
    g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);
    kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, n=numLoci);
    pi ~ Dirichlet(conc=[5,5,5,5], n=numLoci);

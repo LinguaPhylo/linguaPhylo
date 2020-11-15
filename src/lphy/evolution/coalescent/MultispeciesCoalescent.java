@@ -46,10 +46,6 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         this.S = S;
         this.random = Utils.getRandom();
 
-        if (n == null && taxa == null)
-            throw new IllegalArgumentException("One of " + nParamName + " and " + taxaParamName + " must be specified!");
-
-
         if (n != null) {
             List<TimeTreeNode> extant = S.value().getExtantNodes();
             if (extant.size() != n.value().length)
@@ -80,7 +76,6 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         if (numLoci == null) return 1;
         return numLoci.value();
     }
-
 
     private TimeTree simulateGeneTree() {
         TimeTree geneTree = new TimeTree(geneTreeTaxa);
@@ -129,10 +124,12 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
             taxonArray = taxa.value().getTaxonArray();
         } else {
             Taxa speciesTreeTaxa = S.value().getTaxa();
-            int i = 0;
             for (Taxon speciesTaxon : speciesTreeTaxa.getTaxonArray()) {
-                taxonList.add(new Taxon(speciesTaxon.getName() + "_0", speciesTaxon.getName(), speciesTaxon.getAge()));
+                if (speciesTaxon.isExtant()) {
+                    taxonList.add(new Taxon(speciesTaxon.getName() + "_0", speciesTaxon.getName(), speciesTaxon.getAge()));
+                }
             }
+            taxonArray = taxonList.toArray(taxonArray);
         }
 
         return new Taxa.Simple(taxonArray);
