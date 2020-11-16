@@ -63,6 +63,7 @@ public class ParserUtils {
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                GeneralTimeReversible.class,
                 Length.class,
                 LewisMK.class,
                 LocalBranchRates.class,
@@ -73,6 +74,7 @@ public class ParserUtils {
                 ReadNexus.class,
                 Species.class, ExtantTree.class, PruneTree.class,
                 ExtantTaxa.class,
+                Select.class,
                 SliceDoubleArray.class, Sum.class
         };
 
