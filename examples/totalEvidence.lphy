@@ -8,7 +8,7 @@ data {
    S ~ SimFBDAge(lambda=lambda, mu=0.4, psi=1.0, frac=1.0, originAge=origin);
    morph_mu ~ LogNormal(meanlog=-1.25, sdlog=0.1);
    clock_rate ~ LogNormal(meanlog=-3.5, sdlog=0.6);
-   morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=4), mu=morph_mu, L=100);
+   morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=4), mu=morph_mu, L=100, dataType="standard");
    pop_sizes ~ InverseGamma(alpha=2.0, beta=0.5, n=S.nodeCount());
    g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, numLoci=numLoci);
    g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);

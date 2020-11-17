@@ -34,6 +34,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> branchRates;
     Value<Integer> L;
     Value<String[]> stateNames;
+    Value<String> dataType;
     RandomGenerator random;
 
     public static final String treeParamName = "tree";
@@ -44,6 +45,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public static final String branchRatesParamName = "branchRates";
     public static final String LParamName = "L";
     public static final String stateNamesParamName = "stateNames";
+    public static final String dataTypeParamName = "dataType";
 
     int numStates;
 
@@ -66,7 +68,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", type=Double[].class,  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", type=Double[].class, optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = LParamName, description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L,
-                     @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", type=String[].class, optional = true) Value<String[]> stateNames) {
+                     @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", type=String[].class, optional = true) Value<String[]> stateNames,
+                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", type=String.class, optional = true) Value<String> dataType) {
 
         this.tree = tree;
         this.Q = Q;
@@ -84,6 +87,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (stateNames != null && stateNames.value().length != numStates)
             throw new IllegalArgumentException(stateNamesParamName + " not match " + QParamName + " dimension!");
 
+        this.dataType = dataType;
         checkCompatibilities();
     }
 
@@ -109,6 +113,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
         if (stateNames != null) map.put(stateNamesParamName, stateNames);
+        if (dataType != null) map.put(dataTypeParamName, dataType);
         return map;
     }
 
@@ -122,6 +127,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
         else if (paramName.equals(stateNamesParamName)) stateNames = value;
+        else if (paramName.equals(dataTypeParamName)) dataType = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -168,12 +174,27 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         int length = checkCompatibilities();
 
-        SequenceType dataType = sequenceTypeFactory.getSequenceType(transProb.length);
-        SimpleAlignment a;
-        if (dataType == null || stateNames != null) // if datatype is not available, e.g. binary
-            a = new SimpleAlignment(idMap, length, transProb.length);
-        else
-            a = new SimpleAlignment(idMap, length, dataType);
+        final int numStates = transProb.length;
+
+        SequenceType sequenceType = null;
+        if (dataType != null)
+            sequenceType = sequenceTypeFactory.getDataType(dataType.value(), numStates);
+        if (sequenceType == null)
+            sequenceType = sequenceTypeFactory.getSequenceType(numStates);
+
+        if (sequenceType == null)
+            throw new UnsupportedOperationException("Cannot recognize sequence type, numStates = " + numStates);
+//        SimpleAlignment a;
+//        if (sequenceType == null || stateNames != null)
+//            a = new SimpleAlignment(idMap, length, transProb.length);
+//        else
+
+        // validate num of states
+        if (sequenceType.getCanonicalStateCount() != numStates)
+            throw new UnsupportedOperationException("Sequence type " + sequenceType + " canonical state count = " +
+                    sequenceType.getCanonicalStateCount() + "  !=  transProb.length = " + numStates);
+
+        SimpleAlignment a = new SimpleAlignment(idMap, length, sequenceType);
 
 
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);

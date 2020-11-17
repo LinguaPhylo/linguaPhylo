@@ -2,9 +2,12 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
+import lphy.evolution.sequences.Binary;
+import lphy.evolution.sequences.Standard;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Alexei Drummond
@@ -14,13 +17,10 @@ public class SimpleAlignment extends AbstractAlignment {
 
     int[][] alignment;
 
-    // for simulators, and datatype not available
-    @Deprecated
-    public SimpleAlignment(Map<String, Integer> idMap, int nchar, int numStates) {
-        super(idMap, nchar, numStates);
-        alignment = new int[ntaxa()][nchar];
-    }
-
+    /**
+     * for simulated alignment
+     * @see AbstractAlignment
+     */
     public SimpleAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
         super(idMap, nchar, sequenceType);
         alignment = new int[ntaxa()][nchar];
@@ -43,12 +43,12 @@ public class SimpleAlignment extends AbstractAlignment {
      * @param state      the state in integer
      */
     public void setState(int taxon, int position, int state) {
-        // numStates = sequenceType.getCanonicalStateCount() < getStateCount()
-        if ( state < 0 || ( (sequenceType == null &&  state > numStates) ||
-                (sequenceType != null && state > sequenceType.getStateCount()-1) ) )
-            throw new IllegalArgumentException("Tried to set a state outside of the range [0, " +
-                    (sequenceType == null ? numStates : sequenceType.getStateCount()-1) + "] ! state = " + state);
-
+        if (sequenceType == null)
+            throw new IllegalArgumentException("Please define SequenceType, not numStates !");
+        // TODO how to distinguish imported alignment and simulated
+        if ( state < 0 ||  state > getStateCount() )
+            throw new IllegalArgumentException("Illegal to set a " + sequenceType.getName() +
+                    " state outside of the range [0, " + (sequenceType.getStateCount()-1) + "] ! state = " + state);
         alignment[taxon][position] = state;
     }
 
@@ -87,17 +87,19 @@ public class SimpleAlignment extends AbstractAlignment {
     public String getSequence(int taxonIndex) {
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
-            if (sequenceType == null) // TODO BINARY
+            if (Objects.requireNonNull(sequenceType).getName().equals(Binary.NAME))
                 builder.append(getBinaryChar(alignment[taxonIndex][j]));
+            else if (sequenceType.getName().equals(Standard.NAME))
+                builder.append(alignment[taxonIndex][j]);
             else
                 builder.append(sequenceType.getState(alignment[taxonIndex][j]));
         }
         return builder.toString();
     }
 
-    // TODO BINARY
     private char getBinaryChar(int state) {
-        if (numStates != 2) throw new IllegalArgumentException("Please use SequenceType !");
+        if (getCanonicalStateCount() != 2)
+            throw new IllegalArgumentException("Binary only have 2 states ! state = " + state);
         return (char)('0' + state);
     }
 

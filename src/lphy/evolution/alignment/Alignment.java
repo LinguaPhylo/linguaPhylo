@@ -4,6 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * An alignment of discrete character states, returned as Integers.
@@ -41,7 +42,12 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
      */
     SequenceType getSequenceType();
 
-    int getNumOfStates();
+    /**
+     * @return num of states no ambiguous
+     */
+    default int getCanonicalStateCount() {
+        return Objects.requireNonNull(getSequenceType()).getCanonicalStateCount();
+    }
 
     default Class getComponentType() {
         return Integer.class;

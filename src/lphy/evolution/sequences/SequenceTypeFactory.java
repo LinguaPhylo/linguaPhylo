@@ -14,8 +14,14 @@ public class SequenceTypeFactory {
     /**
      * @param dataTypeName  keywords in Nexus or data type descriptions
      */
-    public SequenceType getNexusDataType(String dataTypeName) {
-        // change to no space, all lower case
+    public SequenceType getDataType(String dataTypeName, int numStates) {
+        if ( dataTypeName.trim().equalsIgnoreCase(Standard.NAME) )
+            return new Standard(numStates);
+
+        return getDataType(dataTypeName);
+    }
+
+    public SequenceType getDataType(String dataTypeName) {
         switch (dataTypeName.trim().toLowerCase()) {
             case "rna":
             case "dna":
@@ -24,11 +30,9 @@ public class SequenceTypeFactory {
             case "aminoacid":
             case "protein":
                 return SequenceType.AMINO_ACID;
-//            case "binary":
-//                return BINARY;
-//            case "standard":
-//                return Standard;
-            case "continuous":
+            case Binary.NAME:
+                return Binary.getInstance();
+            case Continuous.NAME:
                 return Continuous.getInstance();
             default:
                 throw new UnsupportedOperationException(dataTypeName);
@@ -36,12 +40,13 @@ public class SequenceTypeFactory {
     }
 
     /**
+     * for simulations, so no ambiguous.
      * @param numStates  Not counting ambiguous characters
      * @return  {@link SequenceType}, or null if not implemented
      */
     public SequenceType getSequenceType(int numStates) {
         switch (numStates) {
-//            case 2: return BINARY;
+            case 2: return Binary.getInstance();
             case 4: return SequenceType.NUCLEOTIDE;
             case 20: return SequenceType.AMINO_ACID;
             // TODO BINARY STANDARD, Codon;
