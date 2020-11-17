@@ -18,6 +18,12 @@ import java.util.*;
  */
 public interface Generator<T> extends GraphicalModelNode<T> {
 
+    static Class<?> getReturnType(Class<?> genClass) {
+        GeneratorInfo generatorInfo = getGeneratorInfo(genClass);
+        if (generatorInfo != null) return generatorInfo.returnType();
+        return Object.class;
+    }
+
     String getName();
 
     /**

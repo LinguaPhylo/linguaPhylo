@@ -20,12 +20,9 @@ public interface LightweightGenerator<T> {
     boolean isRandomGenerator();
 
     default void setArgumentValue(Argument argument, Object val) {
-        String name = argument.name;
         try {
-            Method method = getClass().getMethod(argument.setMethodName(), val.getClass());
+            Method method = getSetMethod(argument);
             method.invoke(this, val);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -33,6 +30,10 @@ public interface LightweightGenerator<T> {
         }
     }
 
+    /**
+     * @param argument the argument to get the set method of
+     * @return the method that allows the setting of the given argument
+     */
     default Method getSetMethod(Argument argument) {
         try {
             return getClass().getMethod(argument.setMethodName(), argument.type);
@@ -85,6 +86,15 @@ public interface LightweightGenerator<T> {
 
     default List<Argument> getArguments() {
         return getArguments(getClass(), 0);
+    }
+
+    static Class<?> getReturnType(Class<LightweightGenerator> c) {
+        try {
+            return c.getMethod("generateLight").getReturnType();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     static List<Argument> getArguments(Class c, int constructorIndex) {

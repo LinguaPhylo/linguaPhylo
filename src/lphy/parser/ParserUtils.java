@@ -22,11 +22,11 @@ import lphy.graphicalModel.*;
 import lphy.toroidalDiffusion.*;
 import lphy.utils.LoggerUtils;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ParserUtils {
 
@@ -35,6 +35,7 @@ public class ParserUtils {
     public static Set<String> bivarOperators;
     static Set<String> univarfunctions;
 
+    public static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
 
     static {
         genDistDictionary = new TreeMap<>();
@@ -66,6 +67,12 @@ public class ParserUtils {
 
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
+
+            types.add(Generator.getReturnType(genClass));
+
+            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(genClass)) {
+                types.add(parameterInfo.type());
+            }
         }
 
         for (Class<?> genClass : lightWeightGenClasses) {
@@ -73,6 +80,12 @@ public class ParserUtils {
 
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
+
+            types.add(LightweightGenerator.getReturnType((Class<LightweightGenerator>)genClass));
+
+            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(genClass)) {
+                types.add(parameterInfo.type());
+            }
         }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
@@ -98,9 +111,17 @@ public class ParserUtils {
 
             Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
             funcSet.add(functionClass);
+
+            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(functionClass)) {
+                types.add(parameterInfo.type());
+            }
         }
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
+
+        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
+
+        System.out.println(typeNames);
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
