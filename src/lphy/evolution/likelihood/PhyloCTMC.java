@@ -3,6 +3,7 @@ package lphy.evolution.likelihood;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.tree.TimeTree;
@@ -23,7 +24,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
+public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     Value<TimeTree> tree;
     Value<Number> clockRate;
@@ -161,8 +162,8 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     }
 
     @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
-            "(The sampling distribution that the phylogenetic likelihood is derived from.)")
-    public RandomVariable<SimpleAlignment> sample() {
+            "(The sampling distribution that the phylogenetic likelihood is derived from.)", returnType = Alignment.class)
+    public RandomVariable<Alignment> sample() {
         setup();
 
         int length = checkCompatibilities();

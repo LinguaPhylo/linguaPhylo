@@ -18,7 +18,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 
 ### Return type
 
-- Object
+- Alignment
 
 
 

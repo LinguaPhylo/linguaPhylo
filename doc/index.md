@@ -94,5 +94,6 @@ Types
 - [Number](types/Number.md)
 - [Object](types/Object.md)
 - [Taxa](types/Taxa.md)
+- [Alignment](types/Alignment.md)
 - [TimeTree](types/TimeTree.md)
 
