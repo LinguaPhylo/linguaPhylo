@@ -1,0 +1,17 @@
+extantTree function
+===================
+extantTree(Object **tree**)
+---------------------------
+
+A tree pruned from a larger tree by retaining only the tips at time zero.
+
+### Parameters
+
+- Object **tree** - the full tree to extract extant tree from.
+
+### Return type
+
+- Object
+
+
+
