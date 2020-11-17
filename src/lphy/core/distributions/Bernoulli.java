@@ -17,12 +17,12 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
 
     private RandomGenerator random;
 
-    public Bernoulli(@ParameterInfo(name=pParamName, description="the probability of success.") Value<Number> p) {
+    public Bernoulli(@ParameterInfo(name=pParamName, description="the probability of success.", type=Number.class) Value<Number> p) {
         this.p = p;
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
+    @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.", returnType = Boolean.class)
     public RandomVariable<Boolean> sample() {
 
         boolean success = (random.nextDouble() < doubleValue(p));

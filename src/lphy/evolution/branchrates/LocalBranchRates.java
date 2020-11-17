@@ -8,18 +8,15 @@ import java.util.Map;
 
 public class LocalBranchRates extends DeterministicFunction<Double[]> {
 
-    final String treeParamName;
-    final String indicatorsParamName;
-    final String ratesParamName;
+    public static final String treeParamName = "tree";
+    public static final String indicatorsParamName = "indicators";
+    public static final String ratesParamName = "rates";
 
-    public LocalBranchRates(@ParameterInfo(name = "tree", description = "the tree in Newick format.") Value<TimeTree> tree,
-                            @ParameterInfo(name = "indicators", description = "a boolean indicator for each node except the root. " +
-                                    "True if there is a new rate on the branch above this node, false if the rate is inherited from the parent node.") Value<Boolean[]> indicators,
-                            @ParameterInfo(name = "rates", description = "A rate for each node in the tree (except root). " +
-                                    "Only those with a corresponding indicator are used.") Value<TimeTree> rates) {
-        treeParamName = getParamName(0);
-        indicatorsParamName = getParamName(1);
-        ratesParamName = getParamName(2);
+    public LocalBranchRates(@ParameterInfo(name = treeParamName, description = "the tree.", type=TimeTree.class) Value<TimeTree> tree,
+                            @ParameterInfo(name = indicatorsParamName, description = "a boolean indicator for each node except the root. " +
+                                    "True if there is a new rate on the branch above this node, false if the rate is inherited from the parent node.", type=Boolean[].class) Value<Boolean[]> indicators,
+                            @ParameterInfo(name = ratesParamName, description = "A rate for each node in the tree (except root). " +
+                                    "Only those with a corresponding indicator are used.", type=Double[].class) Value<Double[]> rates) {
         setParam(treeParamName, tree);
         setParam(indicatorsParamName, indicators);
         setParam(ratesParamName, rates);
@@ -27,7 +24,7 @@ public class LocalBranchRates extends DeterministicFunction<Double[]> {
 
     @GeneratorInfo(name = "localBranchRates", description = "A function that returns branch rates for the given tree, " +
             "indicator mask and raw rates. Each branch takes on the rate of its node index if the indicator is true, " +
-            "or inherits the rate of its parent branch otherwise.")
+            "or inherits the rate of its parent branch otherwise.", returnType = Double[].class)
     public Value<Double[]> apply() {
 
         Map<String, Value> params = getParams();

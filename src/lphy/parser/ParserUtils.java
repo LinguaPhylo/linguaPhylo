@@ -262,4 +262,26 @@ public class ParserUtils {
     static Set<Class<?>> getFunctionClasses(String name) {
         return functionDictionary.get(name);
     }
+
+    public static List<Class<GenerativeDistribution>> getGenerativeDistributions() {
+        List<Class<GenerativeDistribution>> genDists = new ArrayList<>();
+
+        for (Set<Class<?>> classes : genDistDictionary.values()) {
+            for (Class<?> c : classes) {
+                genDists.add((Class<GenerativeDistribution>)c);
+            }
+        }
+        return genDists;
+    }
+
+    public static List<Class<DeterministicFunction>> getDeterministicFunctions() {
+        List<Class<DeterministicFunction>> functions = new ArrayList<>();
+
+        for (Set<Class<?>> classes : functionDictionary.values()) {
+            for (Class<?> c : classes) {
+                functions.add((Class<DeterministicFunction>)c);
+            }
+        }
+        return functions;
+    }
 }

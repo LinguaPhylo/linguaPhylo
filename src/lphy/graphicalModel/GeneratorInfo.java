@@ -13,4 +13,5 @@ import java.lang.annotation.Target;
 public @interface GeneratorInfo {
     String name();
     String description();
+    Class returnType() default Object.class;
 }

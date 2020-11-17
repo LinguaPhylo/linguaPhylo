@@ -1,13 +1,16 @@
 package lphy.graphicalModel;
 
+import net.steppschuh.markdowngenerator.link.Link;
+import net.steppschuh.markdowngenerator.list.UnorderedList;
+import net.steppschuh.markdowngenerator.text.Text;
+import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
+import net.steppschuh.markdowngenerator.text.heading.Heading;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -40,7 +43,15 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
     default Citation getCitation() {
-        Annotation[] annotations = getClass().getAnnotations();
+        return getCitation(getClass());
+    }
+
+    default Class<?> getType(String name) {
+        return getParams().get(name).getType();
+    }
+
+    static Citation getCitation(Class<? extends Generator> c) {
+        Annotation[] annotations = c.getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof Citation) {
                 return (Citation) annotation;
@@ -49,9 +60,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return null;
     }
 
-    default Class<?> getType(String name) {
-        return getParams().get(name).getType();
-    }
 
     static List<ParameterInfo> getParameterInfo(Constructor constructor) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
@@ -71,7 +79,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     default String getRichDescription(int index) {
 
-        List<ParameterInfo> pInfo = getParameterInfo( index);
+        List<ParameterInfo> pInfo = getParameterInfo(index);
 
         Map<String, Value> paramValues = getParams();
 
@@ -97,7 +105,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
-            if (citation.DOI().length()  > 0) {
+            if (citation.DOI().length() > 0) {
                 String url = citation.DOI();
                 if (!url.startsWith("http")) {
                     url = "http://doi.org/" + url;
@@ -108,6 +116,61 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
         html.append("</p></html>");
         return html.toString();
+    }
+
+    static String getGeneratorMarkdown(Class<? extends Generator> generatorClass) {
+
+        GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
+
+        List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
+
+        StringBuilder md = new StringBuilder();
+
+        StringBuilder signature = new StringBuilder();
+
+        signature.append(Generator.getGeneratorName(generatorClass)).append("(");
+
+        int count = 0;
+        for (ParameterInfo pi : pInfo) {
+            if (count > 0) signature.append(", ");
+            signature.append(new Text(pi.type().getSimpleName())).append(" ").append(new BoldText(pi.name()));
+            count += 1;
+        }
+        signature.append(")");
+
+        md.append(new Heading(signature.toString(),2)).append("\n\n");
+
+        if (generatorInfo != null) md.append(generatorInfo.description()).append("\n\n");
+
+        if (pInfo.size() > 0) {
+            md.append(new Heading("Parameters", 3)).append("\n\n");
+            List<Object> paramText = new ArrayList<>();
+
+            for (ParameterInfo pi : pInfo) {
+                paramText.add(new Text(pi.type().getSimpleName() + " " + new BoldText(pi.name()) + " - " + pi.description()));
+            }
+            md.append(new UnorderedList<>(paramText));
+        }
+        md.append("\n\n");
+
+        md.append(new Heading("Return type", 3)).append("\n\n");
+
+        List<String> returnType = Collections.singletonList(generatorInfo != null ? generatorInfo.returnType().getSimpleName() : "Object");
+        md.append(new UnorderedList<>(returnType)).append("\n\n");
+
+        Citation citation = getCitation(generatorClass);
+        if (citation != null) {
+            md.append(new Heading("Reference", 3)).append("\n\n");
+            md.append(citation.value());
+            if (citation.DOI().length() > 0) {
+                String url = citation.DOI();
+                if (!url.startsWith("http")) {
+                    url = "http://doi.org/" + url;
+                }
+                md.append(new Link(url, url));
+            }
+        }
+        return md.toString();
     }
 
     default GeneratorInfo getInfo() {
@@ -156,6 +219,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo ginfo = getGeneratorInfo(c);
         if (ginfo != null) return ginfo.name();
         return c.getSimpleName();
+    }
+
+    static String getGeneratorDescription(Class<?> c) {
+        GeneratorInfo ginfo = getGeneratorInfo(c);
+        if (ginfo != null) return ginfo.description();
+        return "";
     }
 
     static GeneratorInfo getGeneratorInfo(Class<?> c) {
