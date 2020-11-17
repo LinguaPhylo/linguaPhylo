@@ -27,6 +27,7 @@ public class SequenceTypeFactory {
 //            case "binary":
 //                return BINARY;
 //            case "standard":
+//                return Standard;
             case "continuous":
                 return Continuous.getInstance();
             default:
@@ -38,7 +39,7 @@ public class SequenceTypeFactory {
      * @param numStates  Not counting ambiguous characters
      * @return  {@link SequenceType}, or null if not implemented
      */
-    public SequenceType guessSequenceType(int numStates) {
+    public SequenceType getSequenceType(int numStates) {
         switch (numStates) {
 //            case 2: return BINARY;
             case 4: return SequenceType.NUCLEOTIDE;

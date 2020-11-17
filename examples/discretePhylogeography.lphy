@@ -13,6 +13,6 @@ model {
   D ~ PhyloCTMC(L=200, Q=Q, tree=ψ);
 
   trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators)); // construct the GTR instantaneous rate matrix
-  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, tree=ψ);
+  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, tree=ψ, stateNames=["a","b","c"]);
 
 }

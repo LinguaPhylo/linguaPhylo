@@ -7,7 +7,6 @@ import lphy.evolution.Taxon;
 import lphy.evolution.sequences.DataType;
 import lphy.graphicalModel.MethodInfo;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
@@ -151,9 +150,9 @@ public abstract class AbstractAlignment implements Alignment {
     }
 
     public String getSequenceTypeStr() {
-        if (sequenceType == null) { // TODO BINARY
+        if (sequenceType == null) { // TODO
             if (numStates == 2) return "binary";
-            else return "unknown";
+            else return "standard";
 //                throw new IllegalArgumentException("Please define SequenceType, not numStates !");
         }
         return sequenceType.getName();
@@ -164,11 +163,18 @@ public abstract class AbstractAlignment implements Alignment {
 
     public Color[] getColors() {
 //        if ( DataType.isSame(DataType.BINARY, sequenceType) )
-        if (numStates == 2) // TODO BINARY
+        if (numStates == 2) // TODO
             return AlignmentColour.BINARY_COLORS;
+        else if ( DataType.isSame(DataType.NUCLEOTIDE, sequenceType) )
+            return AlignmentColour.DNA_COLORS;
         else if ( DataType.isSame(DataType.AMINO_ACID, sequenceType) )
             return AlignmentColour.PROTEIN_COLORS;
-        else return AlignmentColour.DNA_COLORS;
+        else if ( numStates <=  4 ) // for traits
+            return AlignmentColour.DNA_COLORS;
+        else if ( numStates <=  20 ) // TODO
+            return AlignmentColour.PROTEIN_COLORS;
+        else throw new IllegalArgumentException("Cannot choose colours given data type " +
+                    sequenceType + " and numStates " + numStates + " !");
     }
 
     /**
