@@ -32,6 +32,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     Value<Double[]> siteRates;
     Value<Double[]> branchRates;
     Value<Integer> L;
+    Value<String[]> stateNames;
     RandomGenerator random;
 
     public static final String treeParamName = "tree";
@@ -41,6 +42,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
     public static final String siteRatesParamName = "siteRates";
     public static final String branchRatesParamName = "branchRates";
     public static final String LParamName = "L";
+    public static final String stateNamesParamName = "stateNames";
 
     int numStates;
 
@@ -62,7 +64,8 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
                      @ParameterInfo(name = QParamName, description = "the instantaneous rate matrix.", type=Double[][].class) Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.", type=Double[].class,  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", type=Double[].class, optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = LParamName, description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L) {
+                     @ParameterInfo(name = LParamName, description = "length of the alignment", type=Integer.class, optional = true) Value<Integer> L,
+                     @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", type=String[].class, optional = true) Value<String[]> stateNames) {
 
         this.tree = tree;
         this.Q = Q;
@@ -75,6 +78,10 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         numStates = Q.value().length;
         this.random = Utils.getRandom();
         iexp = new double[numStates][numStates];
+
+        this.stateNames = stateNames;
+        if (stateNames != null && stateNames.value().length != numStates)
+            throw new IllegalArgumentException(stateNamesParamName + " not match " + QParamName + " dimension!");
 
         checkCompatibilities();
     }
@@ -100,6 +107,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         if (siteRates != null) map.put(siteRatesParamName, siteRates);
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
+        if (stateNames != null) map.put(stateNamesParamName, stateNames);
         return map;
     }
 
@@ -112,6 +120,7 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
         else if (paramName.equals(siteRatesParamName)) siteRates = value;
         else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
+        else if (paramName.equals(stateNamesParamName)) stateNames = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -158,9 +167,9 @@ public class PhyloCTMC implements GenerativeDistribution<SimpleAlignment> {
 
         int length = checkCompatibilities();
 
-        SequenceType dataType = sequenceTypeFactory.guessSequenceType(transProb.length);
+        SequenceType dataType = sequenceTypeFactory.getSequenceType(transProb.length);
         SimpleAlignment a;
-        if (dataType == null) // if datatype is not available, e.g. binary
+        if (dataType == null || stateNames != null) // if datatype is not available, e.g. binary
             a = new SimpleAlignment(idMap, length, transProb.length);
         else
             a = new SimpleAlignment(idMap, length, dataType);
