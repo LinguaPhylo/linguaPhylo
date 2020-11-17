@@ -15,6 +15,14 @@ public class GenerativeDistributionAdapter<T> extends GeneratorAdapter<T> implem
         return sample(null);
     }
 
+    public RandomVariable<T> sample(String id) {
+        return new RandomVariable<>(id, ((LightweightGenerativeDistribution<T>)baseDistribution).sample(), this);
+    }
+
+    public Value<T> generate() {
+        return sample();
+    }
+
     public static void main(String[] args) {
 
         Beta beta = new Beta(1.0, 2.0);

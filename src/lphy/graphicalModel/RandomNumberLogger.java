@@ -32,6 +32,8 @@ public class RandomNumberLogger implements RandomValueLogger {
 
     public void log(int rep, List<Value<?>> randomValues) {
         if (rep == 0) {
+            firstValues.clear();
+            variableValues.clear();
             firstValues.addAll(randomValues);
         }
 

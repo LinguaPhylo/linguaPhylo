@@ -14,7 +14,6 @@ public abstract class GeneratorAdapter<T> implements Generator<T> {
 
     Map<String, Value> params;
 
-
     public GeneratorAdapter(LightweightGenerator<T> baseDistribution, Map<String, Value> params) {
         this.baseDistribution = baseDistribution;
 
@@ -52,6 +51,6 @@ public abstract class GeneratorAdapter<T> implements Generator<T> {
 
     @Override
     public T value() {
-        return null;
+        return baseDistribution.generateLight();
     }
 }

@@ -2,9 +2,7 @@ package lphy.core.lightweight;
 
 import lphy.core.lightweight.distributions.*;
 import lphy.core.lightweight.distributions.Exp;
-import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +42,7 @@ public class VectorizedGenerativeDistribution<T> extends VectorizedGenerator<T> 
                                 e -> lwg.getArgumentByName(e.getKey()),
                                 e -> e,
                                 (u, v) -> {
-                                    throw new RuntimeException("should not hapen: " + u + " --- map: " + v);
+                                    throw new RuntimeException("should not happen: " + u + " --- map: " + v);
                                 },
                                 TreeMap::new
                         ));

@@ -109,6 +109,8 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
     public void log(int rep, List<Value<?>> randomValues) {
 
+        if (rep == 0) valueRows.clear();
+
         randomNumberLogger.log(rep, randomValues);
     }
 

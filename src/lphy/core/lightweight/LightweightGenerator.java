@@ -47,7 +47,17 @@ public interface LightweightGenerator<T> {
             Method method = getClass().getMethod(Argument.setMethodName(name), val.getClass());
             method.invoke(this, val);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+
+            Method[] methods = getClass().getMethods();
+            for (Method method : methods) {
+                if (method.getName().equals(name)) {
+                    try {
+                        method.invoke(this,val);
+                        break;
+                    } catch (InvocationTargetException | IllegalAccessException ignored) {
+                    }
+                }
+            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

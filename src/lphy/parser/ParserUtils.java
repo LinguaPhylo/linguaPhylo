@@ -1,5 +1,8 @@
 package lphy.parser;
 
+import lphy.core.lightweight.GenerativeDistributionAdapter;
+import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LightweightGenerator;
 import lphy.evolution.continuous.PhyloBrownian;
 import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.continuous.PhyloOU;
@@ -37,6 +40,10 @@ public class ParserUtils {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
+        Class<?>[] lightWeightGenClasses = {
+                lphy.core.lightweight.distributions.Beta.class
+        };
+
         Class<?>[] genClasses = {
                 RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
@@ -45,7 +52,7 @@ public class ParserUtils {
                 Normal.class, NormalMulti.class, LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
                 PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
-                Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class, Beta.class,
+                Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class,
                 MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class,
                 WeightedDirichlet.class,
                 SerialCoalescent.class,
@@ -55,6 +62,13 @@ public class ParserUtils {
                 Uniform.class};
 
         for (Class<?> genClass : genClasses) {
+            String name = Generator.getGeneratorName(genClass);
+
+            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+            genDistSet.add(genClass);
+        }
+
+        for (Class<?> genClass : lightWeightGenClasses) {
             String name = Generator.getGeneratorName(genClass);
 
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
@@ -138,10 +152,13 @@ public class ParserUtils {
             List<Object> initargs = new ArrayList<>();
 
             if (match(arguments, pInfo)) {
+
+                boolean lightweight = LightweightGenerativeDistribution.class.isAssignableFrom(generatorClass);
+
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = arguments.get(pInfo.get(i).name());
                     if (arg != null) {
-                        initargs.add(arg);
+                        initargs.add(lightweight ? arg.value() : arg);
                     } else if (!pInfo.get(i).optional()) {
                         throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
                     } else {
@@ -149,7 +166,7 @@ public class ParserUtils {
                     }
                 }
 
-                matches.add(constructGenerator(name, constructor, pInfo, initargs.toArray()));
+                matches.add(constructGenerator(name, constructor, pInfo, initargs.toArray(),arguments,lightweight));
             }
         }
         return matches;
@@ -190,12 +207,12 @@ public class ParserUtils {
             List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
 
             if (values.length == pInfo.size() && (values.length == 1 || values.length == 2)) {
-                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, pInfo, values);
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, pInfo, values, null, false);
                 if (f != null) {
                     matches.add(f);
                 }
             } else if (values.length == 0 && pInfo.size() == 1 && pInfo.get(0).optional()) {
-                DeterministicFunction f = (DeterministicFunction)constructGenerator(name, constructor, pInfo, new Object[] {null});
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, pInfo, new Object[]{null}, null, false);
                 if (f != null) {
                     matches.add(f);
                 }
@@ -204,9 +221,16 @@ public class ParserUtils {
         return matches;
     }
 
-    private static Generator constructGenerator(String name, Constructor constructor, List<ParameterInfo> pInfo, Object[] initargs) {
+    private static Generator constructGenerator(String name, Constructor constructor, List<ParameterInfo> pInfo, Object[] initargs, Map<String, Value> params, boolean lightweight) {
         try {
-            if (Generator.matchingParameterTypes(pInfo, initargs)) {
+            if (Generator.matchingParameterTypes(pInfo, initargs, lightweight)) {
+                if (lightweight) {
+                    boolean generativeDistribution = LightweightGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
+                    if (generativeDistribution) {
+                        return new GenerativeDistributionAdapter((LightweightGenerativeDistribution)constructor.newInstance(initargs), params);
+                    } else throw new RuntimeException("Only lightweight generative distributions are currently supported!");
+                }
+
                 return (Generator) constructor.newInstance(initargs);
             } else if (vectorMatch(pInfo, initargs) > 0) {
                 // do vector match
@@ -229,7 +253,7 @@ public class ParserUtils {
         int vectorMatches = 0;
         for (int i = 0; i < pInfo.size(); i++) {
             ParameterInfo parameterInfo = pInfo.get(i);
-            Value argValue = (Value)initargs[i];
+            Value argValue = (Value) initargs[i];
 
             if (argValue == null) {
                 if (!parameterInfo.optional()) return 0;
@@ -251,11 +275,12 @@ public class ParserUtils {
             return new VectorizedDistribution(constructor, pInfo, vectorArgs);
         } else if (DeterministicFunction.class.isAssignableFrom(constructor.getDeclaringClass())) {
             return new VectorizedFunction(constructor, pInfo, vectorArgs);
-        } else throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
+        } else
+            throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
 
     }
 
-    static Set<Class<?>> getGenerativeDistributionClasses(String name) {
+    private static Set<Class<?>> getGenerativeDistributionClasses(String name) {
         return genDistDictionary.get(name);
     }
 
@@ -268,7 +293,7 @@ public class ParserUtils {
 
         for (Set<Class<?>> classes : genDistDictionary.values()) {
             for (Class<?> c : classes) {
-                genDists.add((Class<GenerativeDistribution>)c);
+                genDists.add((Class<GenerativeDistribution>) c);
             }
         }
         return genDists;
@@ -279,7 +304,7 @@ public class ParserUtils {
 
         for (Set<Class<?>> classes : functionDictionary.values()) {
             for (Class<?> c : classes) {
-                functions.add((Class<DeterministicFunction>)c);
+                functions.add((Class<DeterministicFunction>) c);
             }
         }
         return functions;

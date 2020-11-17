@@ -9,28 +9,28 @@ import org.apache.commons.math3.distribution.BetaDistribution;
  */
 public class Beta implements LightweightGenerativeDistribution<Double> {
 
-    private Double alpha;
-    private Double beta;
+    private Number alpha;
+    private Number beta;
     BetaDistribution betaDistribution;
 
-    public Beta(@ParameterInfo(name="alpha", description="the first shape parameter.") Double alpha,
-                @ParameterInfo(name="beta", description="the second shape parameter.") Double beta) {
+    public Beta(@ParameterInfo(name="alpha", description="the first shape parameter.") Number alpha,
+                @ParameterInfo(name="beta", description="the second shape parameter.") Number beta) {
         this.alpha = alpha;
         this.beta = beta;
         setup();
     }
 
-    void setup() { betaDistribution = new BetaDistribution(alpha, beta); }
+    void setup() { betaDistribution = new BetaDistribution(alpha.doubleValue(), beta.doubleValue()); }
 
-    public Double getAlpha() {
+    public Number getAlpha() {
         return alpha;
     }
-    public Double getBeta() {
+    public Number getBeta() {
         return beta;
     }
 
-    public void setAlpha(Double alpha) { this.alpha = alpha; setup(); }
-    public void setBeta(Double beta) { this.beta = beta; setup(); }
+    public void setAlpha(Number alpha) { this.alpha = alpha; setup(); }
+    public void setBeta(Number beta) { this.beta = beta; setup(); }
 
     @GeneratorInfo(name="Beta", description="The beta probability distribution.")
     public Double sample() { return betaDistribution.sample(); }

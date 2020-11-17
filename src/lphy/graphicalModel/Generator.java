@@ -25,6 +25,77 @@ public interface Generator<T> extends GraphicalModelNode<T> {
      */
     Value<T> generate();
 
+    String codeString();
+
+
+    @Override
+    default List<GraphicalModelNode> getInputs() {
+        return new ArrayList<>(getParams().values());
+    }
+
+    Map<String, Value> getParams();
+
+    default void setParam(String paramName, Value<?> value) {
+
+        String methodName = "set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1);
+
+        try {
+            Method method = getClass().getMethod(methodName, value.value().getClass());
+
+            method.invoke(this, value.value());
+        } catch (NoSuchMethodException e) {
+
+            Method[] methods = getClass().getMethods();
+            for (Method method : methods) {
+                if (method.getName().equals(methodName)) {
+                    try {
+                        method.invoke(this, value.value());
+                        break;
+                    } catch (InvocationTargetException | IllegalAccessException ignored) {
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    default void setInput(String paramName, Value<?> value) {
+        setParam(paramName, value);
+        value.addOutput(this);
+    }
+
+    default void setInputs(Map<String, Value<?>> params) {
+        params.forEach(this::setInput);
+    }
+
+    default String getParamName(Value value) {
+        Map<String, Value> params = getParams();
+        for (String key : params.keySet()) {
+            if (params.get(key) == value) return key;
+        }
+        return null;
+    }
+
+    /**
+     * @return true if any of the parameters are random variables,
+     * or are themselves that result of a function with random parameters as arguments.
+     */
+    default boolean hasRandomParameters() {
+        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+
+            Value<?> v = entry.getValue();
+
+            if (v == null) {
+                throw new RuntimeException("Unexpected null value for param " + entry.getKey() + " in generator " + getName());
+            }
+
+            if (v.isRandom()) return true;
+        }
+        return false;
+    }
     default String getParamName(int paramIndex, int constructorIndex) {
         return getParameterInfo(constructorIndex).get(paramIndex).name();
     }
@@ -32,10 +103,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     @Deprecated
     default String getParamName(int paramIndex) {
         return getParamName(paramIndex, 0);
-    }
-
-    static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
-        return getParameterInfo(c.getConstructors()[constructorIndex]);
     }
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
@@ -50,31 +117,20 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getParams().get(name).getType();
     }
 
-    static Citation getCitation(Class<? extends Generator> c) {
-        Annotation[] annotations = c.getAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Citation) {
-                return (Citation) annotation;
-            }
-        }
-        return null;
-    }
+    default GeneratorInfo getInfo() {
 
+        Class<?> classElement = getClass();
 
-    static List<ParameterInfo> getParameterInfo(Constructor constructor) {
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+        Method[] methods = classElement.getMethods();
 
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation[] annotations1 = annotations[i];
-            for (Annotation annotation : annotations1) {
-                if (annotation instanceof ParameterInfo) {
-                    pInfo.add((ParameterInfo) annotation);
+        for (Method method : methods) {
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation instanceof GeneratorInfo) {
+                    return (GeneratorInfo) annotation;
                 }
             }
         }
-
-        return pInfo;
+        return null;
     }
 
     default String getRichDescription(int index) {
@@ -118,6 +174,37 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return html.toString();
     }
 
+    static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
+        return getParameterInfo(c.getConstructors()[constructorIndex]);
+    }
+
+    static Citation getCitation(Class<? extends Generator> c) {
+        Annotation[] annotations = c.getAnnotations();
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Citation) {
+                return (Citation) annotation;
+            }
+        }
+        return null;
+    }
+
+
+    static List<ParameterInfo> getParameterInfo(Constructor constructor) {
+        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (int i = 0; i < annotations.length; i++) {
+            Annotation[] annotations1 = annotations[i];
+            for (Annotation annotation : annotations1) {
+                if (annotation instanceof ParameterInfo) {
+                    pInfo.add((ParameterInfo) annotation);
+                }
+            }
+        }
+
+        return pInfo;
+    }
+
     static String getGeneratorMarkdown(Class<? extends Generator> generatorClass) {
 
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
@@ -138,7 +225,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         }
         signature.append(")");
 
-        md.append(new Heading(signature.toString(),2)).append("\n\n");
+        md.append(new Heading(signature.toString(), 2)).append("\n\n");
 
         if (generatorInfo != null) md.append(generatorInfo.description()).append("\n\n");
 
@@ -171,22 +258,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             }
         }
         return md.toString();
-    }
-
-    default GeneratorInfo getInfo() {
-
-        Class<?> classElement = getClass();
-
-        Method[] methods = classElement.getMethods();
-
-        for (Method method : methods) {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof GeneratorInfo) {
-                    return (GeneratorInfo) annotation;
-                }
-            }
-        }
-        return null;
     }
 
     static List<ParameterInfo> getAllParameterInfo(Class c) {
@@ -240,64 +311,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return null;
     }
 
-    @Override
-    default List<GraphicalModelNode> getInputs() {
-        return new ArrayList<>(getParams().values());
-    }
-
-    Map<String, Value> getParams();
-
-    default void setParam(String paramName, Value<?> value) {
-        try {
-            Method method = getClass().getMethod("set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1), value.value().getClass());
-
-            method.invoke(this, value);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    default void setInput(String paramName, Value<?> value) {
-        setParam(paramName, value);
-        value.addOutput(this);
-    }
-
-    default void setInputs(Map<String, Value<?>> params) {
-        params.forEach(this::setInput);
-    }
-
-    default String getParamName(Value value) {
-        Map<String, Value> params = getParams();
-        for (String key : params.keySet()) {
-            if (params.get(key) == value) return key;
-        }
-        return null;
-    }
-
-    /**
-     * @return true if any of the parameters are random variables,
-     * or are themselves that result of a function with random parameters as arguments.
-     */
-    default boolean hasRandomParameters() {
-        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
-
-            Value<?> v = entry.getValue();
-
-            if (v == null) {
-                throw new RuntimeException("Unexpected null value for param " + entry.getKey() + " in generator " + getName());
-            }
-
-            if (v.isRandom()) return true;
-        }
-        return false;
-    }
-
-    String codeString();
-
     static String getArgumentCodeString(Map.Entry<String, Value> entry) {
         return getArgumentCodeString(entry.getKey(), entry.getValue());
     }
@@ -316,14 +329,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return prefix + value.getId();
     }
 
-    static boolean matchingParameterTypes(List<ParameterInfo> parameterInfos, Object[] initArgs) {
+    static boolean matchingParameterTypes(List<ParameterInfo> parameterInfos, Object[] initArgs, boolean lightweight) {
         for (int i = 0; i < parameterInfos.size(); i++) {
             ParameterInfo parameterInfo = parameterInfos.get(i);
-            Value value = (Value) initArgs[i];
+            Object argument = initArgs[i];
 
-            if (value != null) {
+            if (argument != null) {
                 Class parameterType = parameterInfo.type();
-                Class valueType = value.value().getClass();
+                Class valueType = lightweight ? argument.getClass() : ((Value) argument).value().getClass();
 
                 if (!parameterType.isAssignableFrom(valueType)) return false;
             } else {
