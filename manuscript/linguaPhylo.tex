@@ -191,6 +191,9 @@ short) and LPhyBEAST.
 
 \subsection{Why do we need a new language?}
 
+
+\subsubsection{Enhance communication and hide unnecessary details}
+
 A concise universal formal language to describe only the data and model would enable easy yet precise communication about modelling and inference intentions, without the need to understand all the implementation details of a particular software package. This is akin to the concept of encapsulation in object-oriented programming. We want to avoid exposing users to unnecessary complexity of implementation details. 
 Current input files for popular Bayesian inference software are replete with unnecessary implementation details.
 For example the BEAST2 input file format exposes the user to a wide array of details beyond the statistical model and data:
@@ -202,6 +205,10 @@ For example the BEAST2 input file format exposes the user to a wide array of det
 \item Operator schedules, weights {\it et cetera}
 \item Details of the output loggers
 \end{itemize}
+
+\subsubsection{Enable a richer modelling universe that is more expressive}
+
+By focusing on a modular high-level language acting on a small number of fundamental data types, this new modelling language naturally lends itself to greater expressivity.
 
 LinguaPhylo is a model specification language to concisely and
 precisely define probabilistic phylogenetic models.
@@ -288,6 +295,58 @@ So by assigning the alignment in file
 ``primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has 
 been observed, and we will infer all the other random variables 
 (tree and lambda in this example) in the model from that observed sequence alignment.
+
+\subsection{Language features}
+
+LinguaPhylo has two main components: Values (which can be either constant or random variables, and either objects or primitives) and Generators (which can be either generative distributions, deterministic functions or method calls).
+
+\subsection{Values}
+
+\subsection{Primitive constants}
+
+The simplest type of value in LinguaPhylo is a primitive constant such in the following example. The first line defines a constant named `a' with a value of `2.0'. There is no explicit statement of the type, which is simply inferred to be a Double because the literal string `2.0' has a fractional component. The second constant `b' here is a constant of type Integer because it has no decimal point or fractional component. The third constant is of primitive type Boolean, inferred by the keyword `true'. the last constant is of type String because of the double quotes surrounding the literal value.
+
+{\singlespacing
+\begin{minted}{Stan}
+  a = 2.0;
+  b = 2;
+  c = true;
+  d = "lphy";
+\end{minted}
+}
+
+\subsection{Arrays}
+
+The notion of primitives can be extended to arrays and to declare a constant array you can enclose comma-delimited literals in square brackets as shown below. For sequences of consecutive integers a more compact notation can be employed using the `:' to define a range. In the example below a and b represent the same constant array containing the consecutive integers from 1 to 10 inclusive.
+
+\begin{minted}{Stan}
+  a = [1,2,3,4,5,6,7,8,9,10];
+  b = 1:10;
+\end{minted}
+
+\subsection{Generative distributions}
+
+A generative distribution generates a named random variable which has a value that is either an object or a primitive. Some generative distributions have parameters which have argument labels
+
+{\singlespacing
+\begin{minted}{Stan}
+  lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
+\end{minted}
+}
+
+\subsection{Deterministic functions}
+
+A deterministic function generates either an object or a primitive value that is a deterministic function of its arguments. If the function has a single argument then no argument label is needed, otherwise arguments are labelled in the same way as for generative distributions. In the code below the function named hky takes two parameters with argument labels `kappa' and `freq' and deterministically produces an instantaneous rate matrix using those values.
+
+{\singlespacing
+\begin{minted}{Stan}
+  Q = hky(kappa=2.0, freq=[0.2, 0.25, 0.4, 0.15]);
+\end{minted}
+}
+
+\subsection{Vectorization}
+
+LinguaPhylo has built-in vectorization so that any distribution or function can be called with a vectorized form of its arguments to produce multiple values from the generator
 
 \section{Tree generative distributions}
 
