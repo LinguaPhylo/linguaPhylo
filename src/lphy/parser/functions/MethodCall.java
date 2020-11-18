@@ -11,18 +11,39 @@ import java.util.*;
 
 import static org.apache.commons.lang3.BooleanUtils.or;
 
+/**
+ * This class handles all method calls, including "vectorization by calling object" and "vectorization by arguments".
+ */
 public class MethodCall extends DeterministicFunction {
 
     public static final String objectParamName = "object";
+    public static final String argParamName = "arg";
 
+    // the object that the  method is being called on
     Value<?> value;
+
+    // the method name of the method being called
     final String methodName;
+
+    // the method info for the method
     MethodInfo methodInfo;
+
+    // the arguments of the method call
     Value<?>[] arguments;
+
+    // the types of the passed arguments
     Class<?>[] paramTypes;
-    Class c;
-    Method method;
+
+    // the class of the object that the method is being called on
+    Class<?> c;
+
+    // the method being called.
+    Method method = null;
+
+    // true if the arguments are a vector match for this method
     boolean vectorizedArguments = false;
+
+    // true if the method is called on the components of a VectorValue
     boolean vectorizedObject = false;
 
     public MethodCall(String methodName, Value<?> value, Value<?>[] arguments) throws NoSuchMethodException {
@@ -43,22 +64,27 @@ public class MethodCall extends DeterministicFunction {
             method = c.getMethod(methodName, paramTypes);
         } catch (NoSuchMethodException nsme) {
 
-            // check for vectorized object match
-            vectorizedObject = value instanceof Vector;
+            if (value instanceof Vector) {
+                // check for vectorized object match
 
-            if (vectorizedObject) {
-
-                Class componentClass = ((Vector)value).getComponentType();
+                Class<?> componentClass = ((Vector<?>)value).getComponentType();
 
                 // check for exact match within vectorized object
                 try {
                     method = componentClass.getMethod(methodName, paramTypes);
+                    vectorizedObject = true;
                 } catch (NoSuchMethodException nsme2) {
                     // check for doubly vectorized
                     method = getVectorMatch(methodName, componentClass, paramTypes);
-                    if (method != null) vectorizedArguments = true;
+                    if (method != null) {
+                        vectorizedObject = true;
+                        vectorizedArguments = true;
+                    }
                 }
-            } else {
+            }
+
+            // if unsuccessful so far
+            if (method == null) {
                 // check for vectorized argument match
                 method = getVectorMatch(methodName, value, arguments);
                 if (method != null) vectorizedArguments = true;
@@ -70,12 +96,13 @@ public class MethodCall extends DeterministicFunction {
         methodInfo = method.getAnnotation(MethodInfo.class);
 
         if (methodInfo == null) {
-            throw new IllegalArgumentException("This method is not permitted pass through! Must have MethodInfo annotation to allow pass through.");
+            throw new IllegalArgumentException("This method is not permitted to be passed through! " +
+                    "Methods must have MethodInfo annotation to allow pass through to LPhy.");
         }
 
         setInput(objectParamName, value);
         for (int i = 0; i < arguments.length; i++) {
-            setInput("arg" + i, arguments[i]);
+            setInput(argParamName + i, arguments[i]);
         }
     }
 
@@ -129,6 +156,11 @@ public class MethodCall extends DeterministicFunction {
         return null;
     }
 
+    /**
+     * @param method the method to check
+     * @param paramTypes the param types to check for a vector match
+     * @return a boolean array of length equal to paramTypes array, with true of each vector match, false otherwise.
+     */
     private static boolean[] isVectorMatch(Method method, Class<?>[] paramTypes) {
         Class<?>[] methodParamTypes = method.getParameterTypes();
 
@@ -142,8 +174,13 @@ public class MethodCall extends DeterministicFunction {
         throw new IllegalArgumentException("paramTypes array must be same length as method param types array!");
     }
 
+    /**
+     * @param methodParamType the class of a method argument
+     * @param paramType the class of a potential vector match
+     * @return true if paramType is a vector match for methodParamType (i.e. paramType is an array and has components of a class assignable to methodParamType.
+     */
     private static boolean isVectorMatch(Class<?> methodParamType, Class<?> paramType) {
-        return methodParamType.isAssignableFrom(paramType) || (paramType.isArray() && methodParamType.isAssignableFrom(paramType.getComponentType()));
+        return (paramType.isArray() && methodParamType.isAssignableFrom(paramType.getComponentType()));
     }
 
     @Override
@@ -166,7 +203,7 @@ public class MethodCall extends DeterministicFunction {
         return new TreeMap<>() {{
             put(objectParamName, value);
             for (int i = 0; i < arguments.length; i++) {
-                put("arg" + i, arguments[i]);
+                put(argParamName + i, arguments[i]);
             }
         }};
     }
@@ -174,8 +211,8 @@ public class MethodCall extends DeterministicFunction {
     public void setParam(String paramName, Value param) {
         if (paramName.equals(objectParamName)) {
             value = param;
-        } else if (paramName.startsWith("arg")) {
-            int index = Integer.parseInt(paramName.substring(3));
+        } else if (paramName.startsWith(argParamName)) {
+            int index = Integer.parseInt(paramName.substring(argParamName.length()));
             arguments[index] = param;
         } else throw new IllegalArgumentException("Param name " + paramName + " not recognised!");
     }
@@ -259,7 +296,6 @@ public class MethodCall extends DeterministicFunction {
     }
 
     public String codeString() {
-        Map<String, Value> map = getParams();
 
         StringBuilder builder = new StringBuilder();
         builder.append(value.getId() + getName());

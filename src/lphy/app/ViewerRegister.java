@@ -8,6 +8,8 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.swing.BooleanValueEditor;
 import lphy.graphicalModel.swing.DoubleValueEditor;
 import lphy.graphicalModel.swing.IntegerValueEditor;
+import lphy.graphicalModel.swing.StringValueEditor;
+import lphy.graphicalModel.types.MapValue;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -119,6 +121,27 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer stringValueViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof String;
+
+            } else return false;
+        }
+
+        public JComponent getViewer(Object object) {
+            Value<String> value = (Value<String>) object;
+            if (value.getGenerator() == null) {
+                return new StringValueEditor(value);
+            } else {
+                return new JLabel(value.value());
+            }
+        }
+    };
+
     private static Viewer booleanValueViewer = new Viewer() {
 
         public boolean match(Object object) {
@@ -174,6 +197,19 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer mapValueViewer = new Viewer() {
+
+        @Override
+        public boolean match(Object value) {
+            return value instanceof MapValue;
+        }
+
+        @Override
+        public JComponent getViewer(Object value) {
+            return new MapComponent((MapValue) value);
+        }
+    };
+
     private static Viewer timeTreeValueViewer = new Viewer() {
 
         @Override
@@ -193,8 +229,10 @@ public class ViewerRegister {
     public static Viewer[] viewers = {
             doubleValueViewer,
             integerValueViewer,
+            stringValueViewer,
             booleanValueViewer,
             doubleArray2DViewer,
+            mapValueViewer,
             alignmentValueViewer,
             timeTreeValueViewer,
             taxaValueViewer,
@@ -206,7 +244,7 @@ public class ViewerRegister {
         for (Viewer viewer : viewers) {
             if (viewer.match(object)) return viewer;
         }
-        LoggerUtils.log.severe("Found now viewer for " + object);
+        LoggerUtils.log.severe("Found no viewer for " + object);
         return null;
     }
 
@@ -214,7 +252,7 @@ public class ViewerRegister {
         for (Viewer viewer : viewers) {
             if (viewer.match(object)) return viewer.getViewer(object);
         }
-        LoggerUtils.log.severe("Found now viewer for " + object);
+        LoggerUtils.log.severe("Found no viewer for " + object);
         String label;
         if (object instanceof Value) {
             label = ((Value) object).getLabel();

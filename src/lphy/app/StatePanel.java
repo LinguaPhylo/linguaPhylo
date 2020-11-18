@@ -51,7 +51,7 @@ public class StatePanel extends JPanel {
                 JComponent jComponent = ViewerRegister.getJComponentForValue(value);
 
                 if (jComponent == null) {
-                    LoggerUtils.log.severe("Found now viewer for " + value);
+                    LoggerUtils.log.severe("Found no viewer for " + value);
                     JLabel jLabel = new JLabel(value.value().toString());
                     jLabel.setForeground(Color.red);
                     editors.add(jLabel);
