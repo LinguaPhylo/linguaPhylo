@@ -4,7 +4,6 @@ import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.CompoundVectorValue;
 import lphy.parser.ParserUtils;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

@@ -11,5 +11,5 @@ public interface NChar {
      * @return the number of sites this object has.
      */
     @MethodInfo(description="The number of characters.")
-    int nchar();
+    Integer nchar();
 }

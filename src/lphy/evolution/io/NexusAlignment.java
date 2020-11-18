@@ -210,7 +210,7 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
     }
 
     @MethodInfo(description = "the number of characters/sites in the alignment.")
-    public int nchar() {
+    public Integer nchar() {
         return super.nchar();
     }
 }

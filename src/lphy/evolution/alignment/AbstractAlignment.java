@@ -90,7 +90,7 @@ public abstract class AbstractAlignment implements Alignment {
 
     //****** Sites ******
     @MethodInfo(description="The number of characters/sites in this alignment.")
-    public int nchar() {
+    public Integer nchar() {
         return nchar;
     }
 

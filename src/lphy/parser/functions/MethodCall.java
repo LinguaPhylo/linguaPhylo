@@ -1,11 +1,15 @@
 package lphy.parser.functions;
 
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.Vector;
+import lphy.graphicalModel.types.VectorValue;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static org.apache.commons.lang3.BooleanUtils.or;
 
 public class MethodCall extends DeterministicFunction {
 
@@ -18,6 +22,8 @@ public class MethodCall extends DeterministicFunction {
     Class<?>[] paramTypes;
     Class c;
     Method method;
+    boolean vectorizedArguments = false;
+    boolean vectorizedObject = false;
 
     public MethodCall(String methodName, Value<?> value, Value<?>[] arguments) throws NoSuchMethodException {
         this.value = value;
@@ -31,7 +37,35 @@ public class MethodCall extends DeterministicFunction {
         }
 
         c = value.value().getClass();
-        method = c.getMethod(methodName, paramTypes);
+
+        try {
+            // check for exact match
+            method = c.getMethod(methodName, paramTypes);
+        } catch (NoSuchMethodException nsme) {
+
+            // check for vectorized object match
+            vectorizedObject = value instanceof Vector;
+
+            if (vectorizedObject) {
+
+                Class componentClass = ((Vector)value).getComponentType();
+
+                // check for exact match within vectorized object
+                try {
+                    method = componentClass.getMethod(methodName, paramTypes);
+                } catch (NoSuchMethodException nsme2) {
+                    // check for doubly vectorized
+                    method = getVectorMatch(methodName, componentClass, paramTypes);
+                    if (method != null) vectorizedArguments = true;
+                }
+            } else {
+                // check for vectorized argument match
+                method = getVectorMatch(methodName, value, arguments);
+                if (method != null) vectorizedArguments = true;
+            }
+
+            if (method == null) throw nsme;
+        }
 
         methodInfo = method.getAnnotation(MethodInfo.class);
 
@@ -43,6 +77,73 @@ public class MethodCall extends DeterministicFunction {
         for (int i = 0; i < arguments.length; i++) {
             setInput("arg" + i, arguments[i]);
         }
+    }
+
+    /**
+     * @param methodName the method name
+     * @param c the class of object on which the method is sought
+     * @param paramTypes the param types that are vectorized version of actual parameter types
+     * @return the first matching method, or null if none.
+     */
+    public Method getVectorMatch(String methodName, Class c, Class[] paramTypes) {
+        // check for vectorized arguments match
+        for (Method method : c.getMethods()) {
+            if (method.getName().equals(methodName)) {
+                if (or(isVectorMatch(method, paramTypes))) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param methodName the method that is a vector match for the given arguments, or null if no match found.
+     * @param value the value for which a method call is attempted.
+     * @param arguments the arguments of the method call.
+     * @return
+     */
+    public Method getVectorMatch(String methodName, Value<?> value, Value<?>[] arguments) {
+        Class<?>[] paramTypes = new Class[arguments.length];
+
+        for (int i = 0; i < paramTypes.length; i++) {
+            paramTypes[i] = arguments[i].value().getClass();
+        }
+
+        Class c = value.value().getClass();
+
+        try {
+            // check for exact match
+            Method method = c.getMethod(methodName, paramTypes);
+        } catch (NoSuchMethodException nsme) {
+            // check for vectorized match
+            for (Method method : c.getMethods()) {
+                if (method.getName().equals(methodName)) {
+                    if (or(isVectorMatch(method, paramTypes))) {
+                        return method;
+                    }
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
+    private static boolean[] isVectorMatch(Method method, Class<?>[] paramTypes) {
+        Class<?>[] methodParamTypes = method.getParameterTypes();
+
+        if (methodParamTypes.length == paramTypes.length) {
+            boolean[] vectorMatch = new boolean[paramTypes.length];
+            for (int i = 0; i < methodParamTypes.length; i++) {
+                vectorMatch[i] = isVectorMatch(methodParamTypes[i],paramTypes[i]);
+            }
+            return vectorMatch;
+        }
+        throw new IllegalArgumentException("paramTypes array must be same length as method param types array!");
+    }
+
+    private static boolean isVectorMatch(Class<?> methodParamType, Class<?> paramType) {
+        return methodParamType.isAssignableFrom(paramType) || (paramType.isArray() && methodParamType.isAssignableFrom(paramType.getComponentType()));
     }
 
     @Override
@@ -81,12 +182,30 @@ public class MethodCall extends DeterministicFunction {
 
     public Value<?> apply() {
 
+        if (vectorizedArguments && vectorizedObject) throw new UnsupportedOperationException("Doubly vectorized method calls not supported!");
+
         Object[] args = new Object[arguments.length];
         for (int i = 0; i < paramTypes.length; i++) {
             args[i] = arguments[i].value();
         }
 
         try {
+
+            if (vectorizedObject) {
+                int size = ((Vector)value).size();
+
+                Object result = Array.newInstance(method.getReturnType(), size);
+                for (int i = 0; i < size; i++) {
+                    Array.set(result, i, method.invoke(((Vector)value).getComponent(i), args));
+                }
+                return new VectorValue(null, result, ((Vector)value).getComponentType(), this);
+            }
+
+
+            if (vectorizedArguments) {
+                return vectorApply(args);
+            }
+
             Object obj = method.invoke(value.value(), args);
 
             // unwrap
@@ -98,6 +217,45 @@ public class MethodCall extends DeterministicFunction {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Value<?> vectorApply(Object[] args) throws IllegalAccessException, InvocationTargetException {
+        int vectorSize = getVectorSize(args);
+
+        boolean[] isVector = isVectorMatch(method, Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new));
+
+        Object[] returnValues = new Object[vectorSize];
+
+        Object[] callArgs = new Object[args.length];
+
+        for (int i = 0; i < vectorSize; i++) {
+            for (int j = 0; j < args.length; j++) {
+                if (isVector[j]) {
+                    // TODO implement recycle rule
+                    callArgs[j] = Array.get(args[j],i);
+                } else {
+                    callArgs[j] = args[j];
+                }
+            }
+            returnValues[i] =  method.invoke(value.value(), callArgs);
+        }
+
+        return new VectorValue(null,returnValues, this);
+    }
+
+    private int getVectorSize(Object[] args) {
+        int size = 1;
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (int i = 0; i < args.length; i++) {
+            if (!parameterTypes[i].isAssignableFrom(args[i].getClass())) {
+                if (args[i].getClass().isArray() && parameterTypes[i].isAssignableFrom(args[i].getClass().getComponentType())) {
+                    // vector match
+                    int vecSize = Array.getLength(args[i]);
+                    if (vecSize > size) size = vecSize;
+                } else throw new RuntimeException("Argument mismatch!");
+            }  // else do nothing, direct match
+        }
+        return size;
     }
 
     public String codeString() {

@@ -2,10 +2,8 @@ data {
   options = {ageDirection="forward", ageRegex="s(\d+)$"};
   D = readNexus(file="examples/RSV2.nex", options=options);
   taxa = taxa(D);
-  codon0 = D.charset("3-629\3");
-  codon1 = D.charset("1-629\3");
-  codon2 = D.charset("2-629\3");
-  weights = [codon0.nchar(), codon1.nchar(), codon2.nchar()]
+  codon = D.charset(["3-629\3","1-629\3", "2-629\3"]);
+  weights = codon.nchar();
 }
 model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
@@ -15,10 +13,6 @@ model {
   mu ~ WeightedDirichlet(conc=[1.0,1.0,1.0], weights=weights);
   clockRate ~ LogNormal(meanlog=-5.0, sdlog=1.25);
 
-  pi0 ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  codon0 ~ PhyloCTMC(L=codon0.nchar(), Q=hky(kappa=kappa[0], freq=pi0, meanRate=mu[0]), mu=clockRate, tree=ψ);
-  pi1 ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  codon1 ~ PhyloCTMC(L=codon1.nchar(), Q=hky(kappa=kappa[1], freq=pi1, meanRate=mu[1]), mu=clockRate, tree=ψ);
-  pi2 ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  codon2 ~ PhyloCTMC(L=codon2.nchar(), Q=hky(kappa=kappa[2], freq=pi2, meanRate=mu[2]), mu=clockRate, tree=ψ);}
+  pi ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], n=length(codon));
+  codon ~ PhyloCTMC(L=weights, Q=hky(kappa=kappa, freq=pi, meanRate=mu), mu=clockRate, tree=ψ);
 }

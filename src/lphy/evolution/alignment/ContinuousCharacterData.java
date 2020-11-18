@@ -32,7 +32,7 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
     }
 
     @Override
-    public int nchar() {
+    public Integer nchar() {
         return continuousCharacterData[0].length;
     }
 

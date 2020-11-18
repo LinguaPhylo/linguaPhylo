@@ -256,7 +256,9 @@ public class ParserUtils {
             } else if (vectorMatch(pInfo, initargs) > 0) {
                 // do vector match
                 return vectorGenerator(constructor, pInfo, initargs);
-            } else throw new RuntimeException("ERROR! No match, including vector match!");
+            } else {
+                throw new RuntimeException("ERROR! No match, including vector match!");
+            }
 
         } catch (InstantiationException e) {
             e.printStackTrace();

@@ -3,6 +3,8 @@ package lphy.graphicalModel.types;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
 
+import java.util.Arrays;
+
 import static lphy.graphicalModel.ValueUtils.quotedString;
 
 public class StringArrayValue extends VectorValue<String> {
@@ -30,5 +32,9 @@ public class StringArrayValue extends VectorValue<String> {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    public String toString() {
+        return (isAnonymous() ? "" : (getId() + " = ")) + valueToString();
     }
 }
