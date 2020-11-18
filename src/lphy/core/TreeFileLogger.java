@@ -1,7 +1,6 @@
 package lphy.core;
 
 import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 import lphy.nexus.NexusWriter;
@@ -53,6 +52,13 @@ public class TreeFileLogger implements RandomValueLogger {
         for (Value v : variables) {
             if (v.value() instanceof TimeTree) {
                 trees.add((Value<TimeTree>)v);
+            } else if (v.value() instanceof TimeTree[]) {
+                // VectorizedRandomVariable
+                TimeTree[] value = (TimeTree[]) v.value();
+                for (int i = 0; i < value.length; i++) {
+                    TimeTree t = value[i];
+                    trees.add(new Value<>(v.getId()+"."+i, t));
+                }
             }
         }
         trees.sort(Comparator.comparing(Value::getId));
