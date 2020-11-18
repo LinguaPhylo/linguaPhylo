@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @see NexusParser
  * @author Walter Xie
  */
-public interface NexusData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensional {
+public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensional {
 
     //*** age direction ***//
 
@@ -65,6 +65,9 @@ public interface NexusData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensi
      *         which can be alternatively obtained from the nexus file.
      */
     void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr);
+
+
+    void setlocsFromTaxaName(final String locRegxStr);
 
     /**
      * @param taxonName

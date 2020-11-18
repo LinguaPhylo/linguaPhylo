@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * @author Walter Xie
  */
-public class NexusAlignment extends SimpleAlignment implements NexusData<Integer> {
+public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integer> {
 
     // if null, then no charset in the nexus file
     protected Map<String, List<CharSetBlock>> charsetMap;
@@ -31,8 +31,9 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
     protected AgeDirection ageDirection = AgeDirection.forward;
     protected String ageRegxStr;
 
+    protected String locRegxStr;
 
-    public NexusAlignment(Taxa taxa, int nchar, SequenceType sequenceType) {
+    public MetaDataAlignment(Taxa taxa, int nchar, SequenceType sequenceType) {
         super(taxa, nchar, sequenceType);
     }
 
@@ -117,12 +118,23 @@ public class NexusAlignment extends SimpleAlignment implements NexusData<Integer
         final Pattern regx = Pattern.compile(ageRegxStr);
 
         for (String taxonName : getTaxaNames()) {
+            // TODO take nth element given separator
             String ageStr = getAttrFirstMatch(taxonName, regx);
             ageStringMap.put(taxonName, ageStr);
         }
 
         assignAges(ageStringMap, ageDirectionStr);
     }
+
+    @Override
+    public void setlocsFromTaxaName(String locRegxStr) {
+        this.locRegxStr = locRegxStr;
+
+
+
+
+    }
+
 
     //*** ChronoUnit ***//
 

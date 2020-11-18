@@ -100,7 +100,7 @@ public class NexusParser {
             System.out.println("Loading " + fileName);
             final NexusParser importer = new NexusParser(fileName);
 
-            NexusAlignment nexusAlignment;
+            MetaDataAlignment nexusAlignment;
             if (fileName.equals("Dengue4.nex")) {
                 nexusAlignment = importer.importNexusAlignment("forward");
 
@@ -136,10 +136,10 @@ public class NexusParser {
      * cast to {@link Alignment}.
      * @see #importNexus(String)
      */
-    public NexusAlignment importNexusAlignment(String ageDirectionStr) throws IOException, ImportException {
-        NexusData nexusData = importNexus(ageDirectionStr);
-        if (nexusData instanceof NexusAlignment)
-            return (NexusAlignment) nexusData;
+    public MetaDataAlignment importNexusAlignment(String ageDirectionStr) throws IOException, ImportException {
+        MetaData nexusData = importNexus(ageDirectionStr);
+        if (nexusData instanceof MetaDataAlignment)
+            return (MetaDataAlignment) nexusData;
         throw new RuntimeException("The nexus does not contain alignment, it may have the continuous data matrix !");
     }
 
@@ -149,13 +149,13 @@ public class NexusParser {
      * @param ageDirectionStr  either forward or backward.
      *                         It can be null, if null but the nexus file
      *                         has TIPCALIBRATION block, then assume forward.
-     * @return LPHY {@link NexusData}.
+     * @return LPHY {@link MetaData}.
      */
-    public NexusData importNexus(String ageDirectionStr) throws IOException, ImportException {
+    public MetaData importNexus(String ageDirectionStr) throws IOException, ImportException {
         boolean done = false;
 
-        // create NexusData either from readCharactersBlock or readDataBlock
-        NexusData nexusData = null;
+        // create MetaData either from readCharactersBlock or readDataBlock
+        MetaData nexusData = null;
         List<Taxon> taxonList = null;
 
         while (!done) {
@@ -204,7 +204,7 @@ public class NexusParser {
                 throw new NexusImporter.MissingBlockException("Fail to load continuous data in MATRIX");
         } else if (nexusData == null)
             throw new NexusImporter.MissingBlockException("DATA or CHARACTERS block is missing");
-        else if (nexusData instanceof NexusAlignment) // TODO
+        else if (nexusData instanceof MetaDataAlignment) // TODO
             LoggerUtils.log.info("Load " + nexusData.toString());
 
         return nexusData;
@@ -212,7 +212,7 @@ public class NexusParser {
 
     //****** 'DATA' or 'CHARACTERS' block, 'MATRIX' will have data ******//
 
-    protected NexusData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    protected MetaData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         siteCount = 0;
         sequenceType = null;
@@ -220,14 +220,14 @@ public class NexusParser {
         readDataBlockHeader("MATRIX", NexusBlock.CHARACTERS);
 
         List<Sequence> sequences = readSequenceData(taxonList);
-        NexusData nexusData = createNexusAlignment(sequences);
+        MetaData nexusData = createNexusAlignment(sequences);
 
         findEndBlock();
 
         return nexusData;
     }
 
-    protected NexusData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    protected MetaData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         taxonCount = 0;
         siteCount = 0;
@@ -235,7 +235,7 @@ public class NexusParser {
 
         readDataBlockHeader("MATRIX", NexusBlock.DATA);
 
-        NexusData nexusData = null;
+        MetaData nexusData = null;
         if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
 
             LoggerUtils.log.info("Loading continuous character data ... ");
@@ -252,9 +252,9 @@ public class NexusParser {
     }
 
     // use jebl State to convert char into int
-    // create lphy NexusAlignment from jebl Sequence
+    // create lphy MetaDataAlignment from jebl Sequence
     // convert jebl Taxon into lphy Taxon
-    private NexusData createNexusAlignment(List<Sequence> sequences) {
+    private MetaData createNexusAlignment(List<Sequence> sequences) {
         if (sequenceType == null)
             throw new IllegalArgumentException("Fail to find data type before parsing sequences !");
         if (siteCount < 1)
@@ -272,7 +272,7 @@ public class NexusParser {
             taxons[t] = new lphy.evolution.Taxon(jeblTaxon.getName());
         }
 
-        NexusAlignment nexusData = new NexusAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+        MetaDataAlignment nexusData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
         // fill in sequences for single partition
         for (int t = 0; t < seqSize; t++) {
             Sequence sequence = sequences.get(t);
@@ -572,7 +572,7 @@ public class NexusParser {
 
     //****** CALIBRATION Block : TIPCALIBRATION ******//
 
-    protected void readCalibrationBlock(NexusData nexusData, String ageDirectionStr) throws ImportException, IOException {
+    protected void readCalibrationBlock(MetaData nexusData, String ageDirectionStr) throws ImportException, IOException {
 
         String token;
         do {
@@ -655,7 +655,7 @@ public class NexusParser {
      * charset noncoding = 1 458-659 897-898;
      * end;
      */
-    protected void readAssumptionsBlock(NexusData nexusData) throws ImportException, IOException {
+    protected void readAssumptionsBlock(MetaData nexusData) throws ImportException, IOException {
 
         Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
         String token;
@@ -688,7 +688,7 @@ public class NexusParser {
 
     // rows are taxa, cols are traits.
     // Double[][] taxa should have same order of Taxon[].
-    // TODO return NexusData
+    // TODO return MetaData
     private ContinuousCharacterData readContinuousCharacterData() throws ImportException, IOException {
         assert taxonCount > 0 && siteCount > 0;
         Double[][] continuousData = new Double[taxonCount][siteCount];
