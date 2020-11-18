@@ -1,8 +1,8 @@
 package lphy.parser.functions;
 
-import lphy.graphicalModel.*;
 import lphy.graphicalModel.Vector;
-import lphy.graphicalModel.types.VectorValue;
+import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.CompoundVectorValue;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -194,11 +194,11 @@ public class MethodCall extends DeterministicFunction {
             if (vectorizedObject) {
                 int size = ((Vector)value).size();
 
-                Object result = Array.newInstance(method.getReturnType(), size);
+                List<Value> resultValues = new ArrayList<>();
                 for (int i = 0; i < size; i++) {
-                    Array.set(result, i, method.invoke(((Vector)value).getComponent(i), args));
+                    resultValues.add(ValueUtils.createValue(method.invoke(((Vector)value).getComponent(i), args), this));
                 }
-                return new VectorValue(null, result, ((Vector)value).getComponentType(), this);
+                return new CompoundVectorValue(null, resultValues, this);
             }
 
 
@@ -224,7 +224,7 @@ public class MethodCall extends DeterministicFunction {
 
         boolean[] isVector = isVectorMatch(method, Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new));
 
-        Object[] returnValues = new Object[vectorSize];
+        List<Value> returnValues = new ArrayList<>();
 
         Object[] callArgs = new Object[args.length];
 
@@ -237,10 +237,10 @@ public class MethodCall extends DeterministicFunction {
                     callArgs[j] = args[j];
                 }
             }
-            returnValues[i] =  method.invoke(value.value(), callArgs);
+            returnValues.add(ValueUtils.createValue(method.invoke(value.value(), callArgs), this));
         }
 
-        return new VectorValue(null,returnValues, this);
+        return new CompoundVectorValue<>(null,returnValues, this);
     }
 
     private int getVectorSize(Object[] args) {
