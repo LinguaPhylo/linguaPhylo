@@ -1,13 +1,16 @@
 package lphy.core;
 
 import lphy.graphicalModel.Loggable;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomValueLogger;
+import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by adru001 on 10/03/20.
@@ -149,6 +152,9 @@ public class VarFileLogger implements RandomValueLogger {
     }
 
     public boolean isLogged(Value randomValue) {
-        return ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
+        return ((randomValue instanceof RandomVariable && logVariables) ||
+                // random value but no anonymous
+                (!(randomValue instanceof RandomVariable) && randomValue.isRandom() &&
+                        logStatistics && !randomValue.isAnonymous()));
     }
 }
