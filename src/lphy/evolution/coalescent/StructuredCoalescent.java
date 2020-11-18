@@ -1,6 +1,7 @@
 package lphy.evolution.coalescent;
 
 import lphy.evolution.Taxa;
+import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -10,17 +11,18 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.lang.Integer.sum;
 import static lphy.core.distributions.DistributionConstants.*;
 
-public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
+public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
     public static final String MParamName = "M";
+    public static final String kParamName = "k";
+    public static final String demesParamName = "demes";
     private Value<Double[][]> theta;
-    private Value<Integer[]> n;
+    private Value<Integer[]> k;
+    private Value<Object[]> demes;
 
     RandomGenerator random;
 
@@ -43,32 +45,76 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
     // TODO need to allow StructuredCoalescent to be generated from Taxa + deme Metadata
     public StructuredCoalescent(@ParameterInfo(name = MParamName, description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
             "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
-                                @ParameterInfo(name = nParamName, description = "the number of taxa in each population.") Value<Integer[]> n) {
+                                @ParameterInfo(name = kParamName, description = "the number of taxa in each population. provide either this or a " + demesParamName + " argument.", type = Integer[].class, optional = true) Value<Integer[]> k,
+                                @ParameterInfo(name = taxaParamName, description = "the taxa.", type = Taxa.class, optional = true) Value<Taxa> taxa,
+                                @ParameterInfo(name = demesParamName, description = "the deme array, which runs parallel to the taxonArray in the taxa object.", type = Object[].class, optional = true) Value<Object[]> demes) {
+
+        super(null, taxa, null);
+
         this.theta = theta;
-        this.n = n;
+        this.k = k;
+        this.demes = demes;
+
+        if (taxa == null && k == null)
+            throw new IllegalArgumentException("One of " + taxaParamName + " and " + kParamName + " must be specified!");
+
+        int count = ((k != null) ? 1 : 0) + ((demes != null) ? 1 : 0);
+        if (count != 1)
+            throw new IllegalArgumentException("Exactly one of " + demesParamName + " and " + kParamName + " must be specified!");
+
         this.random = Utils.getRandom();
+    }
+
+    public int n() {
+        if (k != null) {
+            int[] sum = {0};
+            Stream.of(k.value()).forEach(i -> sum[0] += i);
+            return sum[0];
+        } else return super.n();
     }
 
     @GeneratorInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
 
-        int[] sum = {0};
-        Stream.of(n.value()).forEach(i -> sum[0] += i);
+        Taxa taxa = getTaxa();
+        TimeTree tree = new TimeTree(taxa);
 
-        TimeTree tree = new TimeTree(Taxa.createTaxa(sum[0]));
-
-        int count = 0;
         List<List<TimeTreeNode>> nodes = new ArrayList<>();
-        for (int i = 0; i < n.value().length; i++) {
-            nodes.add(new ArrayList<>());
-            for (int j = 0; j < n.value()[i]; j++) {
-                TimeTreeNode node = new TimeTreeNode(count + "", tree);
-                node.setIndex(count);
-                node.setMetaData(populationLabel, i);
-                node.setAge(0);
-                nodes.get(i).add(node);
-                count += 1;
+        if (k != null) {
+            int count = 0;
+            for (int i = 0; i < k.value().length; i++) {
+                nodes.add(new ArrayList<>());
+                for (int j = 0; j < k.value()[i]; j++) {
+                    TimeTreeNode node = new TimeTreeNode(count + "", tree);
+                    node.setIndex(count);
+                    node.setMetaData(populationLabel, i);
+                    node.setAge(0);
+                    nodes.get(i).add(node);
+                    count += 1;
+                }
+            }
+        } else {
+            List<String> demeNames = new ArrayList<>();
+            for (int i = 0; i < demes.value().length; i++) {
+
+                String deme = demes.value()[i].toString();
+                int demeIndex = demeNames.indexOf(deme);
+
+                if (demeIndex < 0) {
+                    demeNames.add(deme);
+                    demeIndex = demeNames.size() - 1;
+                }
+
+                TimeTreeNode node = new TimeTreeNode(taxa.getTaxon(i), tree);
+                node.setIndex(i);
+                node.setMetaData(populationLabel, demeIndex);
+
+                if (nodes.size() <= demeIndex) {
+                    nodes.add(new ArrayList<>());
+                }
+                
+                nodes.get(demeIndex).add(node);
             }
         }
 
@@ -102,7 +148,7 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
                 TimeTreeNode node1 = selectRandomNode(nodes.get(event.pop));
                 TimeTreeNode node2 = selectRandomNode(nodes.get(event.pop));
 
-                TimeTreeNode parent = new TimeTreeNode(nodeNumber + "", tree);
+                TimeTreeNode parent = new TimeTreeNode((String)null, tree);
                 parent.setIndex(nodeNumber);
                 parent.setAge(event.time);
                 parent.setMetaData(populationLabel, event.pop);
@@ -121,7 +167,7 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
                 TimeTreeNode migrant = selectRandomNode(nodes.get(event.pop));
 
-                TimeTreeNode migrantsParent = new TimeTreeNode(nodeNumber + "", tree);
+                TimeTreeNode migrantsParent = new TimeTreeNode((String)null, tree);
                 migrantsParent.setIndex(nodeNumber);
                 migrantsParent.setAge(event.time);
                 migrantsParent.setMetaData(populationLabel, event.toPop);
@@ -231,17 +277,19 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(MParamName, theta);
-            put(nParamName, n);
-        }};
+        Map<String, Value> params = super.getParams();
+        params.put(MParamName, theta);
+        if (k != null) params.put(kParamName, k);
+        if (demes != null) params.put(demesParamName, demes);
+        return params;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(MParamName)) theta = value;
-        else if (paramName.equals(nParamName)) n = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        else if (paramName.equals(kParamName)) k = value;
+        else if (paramName.equals(demesParamName)) demes = value;
+        else super.setParam(paramName, value);
     }
 
     public Value<Double[][]> getM() {
@@ -272,9 +320,9 @@ public class StructuredCoalescent implements GenerativeDistribution<TimeTree> {
                 for (int j = 0; j < reps; j++) {
 
                     DoubleArray2DValue theta = new DoubleArray2DValue("theta", new Double[][]{{popSize1[i], m}, {m, popSize2[i]}});
-                    Value<Integer[]> n = new Value<>("n", new Integer[]{2, 2});
+                    Value<Integer[]> k = new Value<>("k", new Integer[]{2, 2});
 
-                    StructuredCoalescent coalescent = new StructuredCoalescent(theta, n);
+                    StructuredCoalescent coalescent = new StructuredCoalescent(theta, k, null, null);
 
                     RandomVariable<TimeTree> tree = coalescent.sample();
 

@@ -245,7 +245,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
-        if (node.isLeaf() || (node.isSingleChildNonOrigin() || node.getId() != null)) {
+        if (node.isLeaf() || node.getId() != null) {
             Integer i = idMap.get(node.getId());
             if (i == null) {
                 int nextValue = 0;
@@ -266,7 +266,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     private void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
         // TODO validate state here ?
-        if (node.isLeaf() || (node.isSingleChildNonOrigin() || node.getId() != null)) {
+        if (node.isLeaf() || (node.isSingleChildNonOrigin() && node.getId() != null)) {
             alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
         }
         List<TimeTreeNode> children = node.getChildren();

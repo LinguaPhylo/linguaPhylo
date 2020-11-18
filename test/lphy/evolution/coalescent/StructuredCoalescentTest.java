@@ -64,14 +64,14 @@ public class StructuredCoalescentTest extends TestCase {
 
         Double[][] theta = {{1.0,0.1},{0.1, 1.0}};
 
-        Integer[] n = {2,2};
+        Integer[] k = {2,2};
 
         double[][] rates = new double[2][2];
 
         int[][] events = new int[2][2];
 
         StructuredCoalescent coalescent = new StructuredCoalescent(new Value<>("theta", theta),
-                new Value<>("n", n));
+                new Value<>("k", k), null, null);
 
         double totalRate = coalescent.populateRateMatrix(nodes, theta, rates);
 

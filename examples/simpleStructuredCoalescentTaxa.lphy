@@ -1,8 +1,11 @@
+taxa = taxa(names=1:10);
+demes = [0,0,0,0,0,1,1,1,1,1];
+
 // two population sizes
 Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=2);
 // m01 and m10 migration rates backwards in time
 m ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
 M = migrationMatrix(theta=Θ, m=m);
-ψ ~ StructuredCoalescent(M=M, k=[15,15]);
+ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
 C = countMigrations(tree=ψ);
 D ~ PhyloCTMC(L=400, Q=jukesCantor(), tree=ψ);

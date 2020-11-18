@@ -3,6 +3,6 @@
 Θ1 ~ LogNormal(meanlog=-3.0, sdlog=1.0);
 m01 ~ LogNormal(meanlog=0.0, sdlog=1.0);
 m10 ~ LogNormal(meanlog=0.0, sdlog=1.0);
-ψ ~ StructuredCoalescent(M=[[Θ0, m01],[m10, Θ1]], n=[8,8]);
+ψ ~ StructuredCoalescent(M=[[Θ0, m01],[m10, Θ1]], k=[8,8]);
 C = countMigrations(tree=ψ);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);

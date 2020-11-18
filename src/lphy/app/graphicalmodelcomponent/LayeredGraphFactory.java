@@ -41,6 +41,10 @@ public class LayeredGraphFactory {
         LayeredGNode node = allNodes.get(value);
         boolean newNode = (node == null);
 
+        if (value == null) {
+            throw new RuntimeException("Value is null!");
+        }
+
         if (newNode && (value.isRandom() || showAllNodes)) {
             node = new LayeredGNode(value, parser);
         }
