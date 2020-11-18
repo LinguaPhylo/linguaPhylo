@@ -23,7 +23,8 @@ public abstract class DataType implements SequenceType { // TODO SequenceType im
 
     public static boolean isType(Alignment alignment, SequenceType sequenceType) {
         if (alignment.getSequenceType() == null)
-            return alignment.getNumOfStates() == sequenceType.getCanonicalStateCount();
+            throw new IllegalArgumentException("Please define SequenceType !");
+//            return alignment.getNumOfStates() == sequenceType.getCanonicalStateCount();
         return isSame(alignment.getSequenceType(), sequenceType);
     }
 

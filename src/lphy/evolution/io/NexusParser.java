@@ -396,7 +396,7 @@ public class NexusParser {
 
                         try {
                             // add new data type to this method
-                            sequenceType = sequenceTypeFactory.getNexusDataType(token3);
+                            sequenceType = sequenceTypeFactory.getDataType(token3);
                         } catch (UnsupportedOperationException e) {
                             throw new ImportException.UnparsableDataException(e.getMessage());
                         }
