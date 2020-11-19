@@ -1,18 +1,21 @@
 package lphy.parser;
 
+import lphy.core.distributions.Exp;
+import lphy.core.distributions.*;
+import lphy.core.functions.*;
 import lphy.core.lightweight.GenerativeDistributionAdapter;
 import lphy.core.lightweight.LightweightGenerativeDistribution;
 import lphy.core.lightweight.LightweightGenerator;
-import lphy.evolution.continuous.PhyloBrownian;
-import lphy.evolution.continuous.PhyloMultivariateBrownian;
-import lphy.evolution.continuous.PhyloOU;
-import lphy.core.distributions.*;
-import lphy.core.distributions.Exp;
-import lphy.core.functions.*;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
-import lphy.evolution.coalescent.*;
+import lphy.evolution.coalescent.MultispeciesCoalescent;
+import lphy.evolution.coalescent.SerialCoalescent;
+import lphy.evolution.coalescent.SkylineCoalescent;
+import lphy.evolution.coalescent.StructuredCoalescent;
+import lphy.evolution.continuous.PhyloBrownian;
+import lphy.evolution.continuous.PhyloMultivariateBrownian;
+import lphy.evolution.continuous.PhyloOU;
 import lphy.evolution.functions.ExtantTaxa;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.substitutionmodel.*;
@@ -24,8 +27,8 @@ import lphy.utils.LoggerUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParserUtils {
@@ -98,7 +101,7 @@ public class ParserUtils {
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                ReadNexus.class,
+                ReadNexus.class, ReadFasta.class,
                 Species.class, ExtantTree.class, PruneTree.class,
                 ExtantTaxa.class,
                 Select.class,

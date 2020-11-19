@@ -1,0 +1,27 @@
+data {
+  options = {ageDirection="forward", ageRegex="_(.*?)_(.*?)", locRegex="_(.*?)_"};
+  D = readFasta(file="examples/h3n2.fna", options=options);
+  taxa = taxa(D);
+  L = nchar(D);
+  demes = [0,0,0,0,0,1,1,1,1,1];
+}
+model {
+  κ ~ LogNormal(meanlog=1.0, sdlog=0.5);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+
+  shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);
+
+  // 0.005 substitutions * site-1 * year-1 is closer to the truth
+  clockRate ~ LogNormal(meanlog=-5.3, sdlog=0.25);
+
+  // two population sizes
+  Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=2);
+  // m01 and m10 migration rates backwards in time
+  m ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
+  M = migrationMatrix(theta=Θ, m=m);
+  ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
+  C = countMigrations(tree=ψ);
+
+  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=clockRate, tree=ψ);
+}
