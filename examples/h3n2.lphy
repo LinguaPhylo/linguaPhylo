@@ -1,5 +1,5 @@
 data {
-  options = {ageDirection="forward", ageRegex="_(.*?)_(.*?)", locRegex="_(.*?)_"};
+  options = {ageDirection="forward", ageRegex="_(\d*\.\d+|\d+\.\d*)$"};
   D = readFasta(file="examples/h3n2.fna", options=options);
   taxa = taxa(D);
   L = nchar(D);

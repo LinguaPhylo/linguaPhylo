@@ -102,7 +102,9 @@ public class ReadFasta extends DeterministicFunction<MetaData> {
             }
         }
 
-        //TODO date
+        // dates
+        if (ageRegxStr != null)
+            faData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
 
         return new Value<>(null, faData, this);
 
