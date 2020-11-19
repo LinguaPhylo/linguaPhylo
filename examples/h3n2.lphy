@@ -3,7 +3,7 @@ data {
   D = readFasta(file="examples/h3n2_2deme.fna", options=options);
   taxa = taxa(D);
   L = nchar(D);
-  demes = [0,0,0,0,0,1,1,1,1,1];
+  demes = split(str=D.getTaxaNames(), regex="_", i=1);
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=0.5);

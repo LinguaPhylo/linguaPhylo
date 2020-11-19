@@ -110,6 +110,7 @@ public abstract class AbstractAlignment implements Alignment {
     }
 
     @Override
+    @MethodInfo(description="The names of the taxa.")
     public String[] getTaxaNames() {
         return taxa.getTaxaNames();
     }
