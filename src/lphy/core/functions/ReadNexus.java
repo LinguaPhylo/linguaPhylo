@@ -1,7 +1,6 @@
 package lphy.core.functions;
 
 import jebl.evolution.io.ImportException;
-import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.io.MetaData;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.evolution.io.NexusParser;
@@ -19,7 +18,6 @@ import java.util.Map;
  * D.charset("coding");
  * This does not involve partitioning.
  * @see MetaData
- * @see AlignmentUtils
  */
 public class ReadNexus extends DeterministicFunction<MetaData> {
 
