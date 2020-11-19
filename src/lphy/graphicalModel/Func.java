@@ -1,7 +1,5 @@
 package lphy.graphicalModel;
 
-
-import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.List;
@@ -15,10 +13,7 @@ public abstract class Func implements Generator {
 
     public String getName() {
         if (name == null) {
-            GeneratorInfo fInfo = Generator.getGeneratorInfo(getClass());
-            if (fInfo != null) {
-                name = fInfo.name();
-            } else name = getClass().getSimpleName();
+            return(getName(getClass()));
         }
         return name;
     }
@@ -44,16 +39,28 @@ public abstract class Func implements Generator {
     }
 
     public String codeString() {
-        Map<String, Value> map = getParams();
+        return codeString(this,getParams());
+    }
+
+    public static String getName(Class<? extends Func> funcClass) {
+        GeneratorInfo fInfo = Generator.getGeneratorInfo(funcClass);
+        if (fInfo != null) {
+            return fInfo.name();
+        } else return funcClass.getSimpleName();
+    }
+
+    public static String codeString(Func function, Map<String, Value> params) {
+        Map<String, Value> map = params;
+        Class<?> funcClass = function.getClass();
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getName());
+        builder.append(function.getName());
         builder.append("(");
 
-        Constructor[] constructors = getClass().getConstructors();
+        Constructor[] constructors = funcClass.getConstructors();
 
         if (constructors.length == 1) {
-            List<ParameterInfo> parameterInfoList = getParameterInfo(0);
+            List<ParameterInfo> parameterInfoList = Generator.getParameterInfo(funcClass,0);
             if (parameterInfoList.size() > 0) {
                 int paramCount = 0;
 

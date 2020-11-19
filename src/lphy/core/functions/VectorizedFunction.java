@@ -97,6 +97,10 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         return componentFunctions.get(0).getName();
     }
 
+    public String codeString() {
+       return Func.codeString(componentFunctions.get(0), getParams());
+    }
+
     public static void main(String[] args) {
 
         Value<Number> arg = new Value<>("arg", 1);

@@ -1,0 +1,2 @@
+str = ["A_4", "B_3", "C_2", "D_1", "E_0"];
+nums = parseInt(split(str=str, regex="_", i=1));

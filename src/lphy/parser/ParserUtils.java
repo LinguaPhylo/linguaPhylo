@@ -104,8 +104,9 @@ public class ParserUtils {
                 ReadNexus.class, ReadFasta.class,
                 Species.class, ExtantTree.class, PruneTree.class,
                 ExtantTaxa.class,
+                ParseInt.class,
                 Select.class,
-                SliceDoubleArray.class, Sum.class
+                Split.class, SliceDoubleArray.class, Sum.class
         };
 
         for (Class<?> functionClass : functionClasses) {
