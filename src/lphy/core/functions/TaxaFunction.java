@@ -62,6 +62,8 @@ public class TaxaFunction extends DeterministicFunction<Taxa> {
                 return rawTaxa.getTaxonArray();
             }
 
+            public Taxon getTaxon(int i) { return rawTaxa.getTaxon(i); };
+
             @Override
             public String toString() {
                 StringBuilder builder = new StringBuilder();

@@ -1,7 +1,7 @@
 data {
   options = {ageDirection="forward", ageRegex="_(\d*\.\d+|\d+\.\d*)$"};
   D = readFasta(file="examples/h3n2_2deme.fna", options=options);
-  taxa = taxa(D);
+  taxa = D.taxa();
   L = nchar(D);
   demes = split(str=D.getTaxaNames(), regex="_", i=1);
 }
@@ -12,16 +12,16 @@ model {
   shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
   siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);
 
-  // 0.005 substitutions * site-1 * year-1 is closer to the truth
-  clockRate ~ LogNormal(meanlog=-5.3, sdlog=0.25);
+  // 0.005 substitutions * site^{-1} * year^{-1} is closer to the truth
+  clockRate ~ LogNormal(meanlog=-5.3, sdlog=1.0);
 
   // two population sizes
-  Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=2);
+  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
   // m01 and m10 migration rates backwards in time
-  m ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
+  m ~ LogNormal(meanlog=-1.0, sdlog=1.0, n=2);
   M = migrationMatrix(theta=Θ, m=m);
-  ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
-  C = countMigrations(tree=ψ);
+  tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
+  rootAge = tree.rootAge();
 
-  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=clockRate, tree=ψ);
+  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=clockRate, tree=tree);
 }

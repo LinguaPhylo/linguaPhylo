@@ -80,17 +80,21 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         Taxa taxa = getTaxa();
         TimeTree tree = new TimeTree(taxa);
 
-        List<List<TimeTreeNode>> nodes = new ArrayList<>();
+        List<TimeTreeNode> leavesToBeAdded = new ArrayList<>();
+        List<List<TimeTreeNode>> activeNodes = new ArrayList<>();
+
+        double time = 0.0;
+
         if (k != null) {
             int count = 0;
             for (int i = 0; i < k.value().length; i++) {
-                nodes.add(new ArrayList<>());
+                activeNodes.add(new ArrayList<>());
                 for (int j = 0; j < k.value()[i]; j++) {
                     TimeTreeNode node = new TimeTreeNode(count + "", tree);
                     node.setIndex(count);
                     node.setMetaData(populationLabel, i);
                     node.setAge(0);
-                    nodes.get(i).add(node);
+                    activeNodes.get(i).add(node);
                     count += 1;
                 }
             }
@@ -110,80 +114,102 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                 node.setIndex(i);
                 node.setMetaData(populationLabel, demeIndex);
 
-                if (nodes.size() <= demeIndex) {
-                    nodes.add(new ArrayList<>());
+                if (activeNodes.size() <= demeIndex) {
+                    activeNodes.add(new ArrayList<>());
                 }
-                
-                nodes.get(demeIndex).add(node);
+
+                if (node.getAge() <= time) {
+                    activeNodes.get(demeIndex).add(node);
+                } else {
+                    leavesToBeAdded.add(node);
+                }
             }
         }
 
-        TimeTreeNode root = simulateStructuredCoalescentForest(tree, nodes, theta.value(), Double.POSITIVE_INFINITY).get(0);
+        leavesToBeAdded.sort((o1, o2) -> Double.compare(o2.getAge(), o1.getAge())); // REVERSE ORDER - youngest age at end of list
+
+
+        TimeTreeNode root = simulateStructuredCoalescentForest(tree, activeNodes, leavesToBeAdded, theta.value(), Double.POSITIVE_INFINITY).get(0);
 
         tree.setRoot(root);
 
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
-    private List<TimeTreeNode> simulateStructuredCoalescentForest(TimeTree tree, List<List<TimeTreeNode>> nodes, Double[][] popSizesMigrationRates, double stopTime) {
+    private List<TimeTreeNode> simulateStructuredCoalescentForest(TimeTree tree, List<List<TimeTreeNode>> activeNodes, List<TimeTreeNode> leavesToBeAdded, Double[][] popSizesMigrationRates, double stopTime) {
 
         //diagonals are coalescent rates, off-diagonals are migration rates
-        double[][] rates = new double[nodes.size()][nodes.size()];
-        double totalRate = populateRateMatrix(nodes, popSizesMigrationRates, rates);
+        double[][] rates = new double[activeNodes.size()][activeNodes.size()];
+        double totalRate = populateRateMatrix(activeNodes, popSizesMigrationRates, rates);
 
         double time = 0.0;
 
-        int nodeNumber = getTotalNodeCount(nodes);
+        int nodeNumber = getTotalNodeCount(activeNodes);
 
-        while (time < stopTime && getTotalNodeCount(nodes) > 1) {
+        while (time < stopTime && (getTotalNodeCount(activeNodes)+leavesToBeAdded.size()) > 1) {
+            int k = getTotalNodeCount(activeNodes);
 
-            SCEvent event = selectRandomEvent(rates, totalRate, time);
-            //System.out.println("Recieved an event of type " + event.type);
-
-            if (event.type == EventType.coalescent) {
-
-                //System.out.println("doing a coalescent event in population " + event.pop + " which has " + nodes.get(event.pop).size() + " nodes.");
-
-                // coalescent
-                TimeTreeNode node1 = selectRandomNode(nodes.get(event.pop));
-                TimeTreeNode node2 = selectRandomNode(nodes.get(event.pop));
-
-                TimeTreeNode parent = new TimeTreeNode((String)null, tree);
-                parent.setIndex(nodeNumber);
-                parent.setAge(event.time);
-                parent.setMetaData(populationLabel, event.pop);
-                parent.addChild(node1);
-                parent.addChild(node2);
-
-                time = event.time;
-
-                nodes.get(event.pop).add(parent);
-
+            if (k == 1) {
+                time = leavesToBeAdded.get(leavesToBeAdded.size() - 1).getAge();
             } else {
-                // migration
+                SCEvent event = selectRandomEvent(rates, totalRate, time);
 
-                if (event.pop == event.toPop)
-                    throw new RuntimeException("migration must be between distinct populations");
+                // if event passes the next node to be added then update the time and try again
+                if (leavesToBeAdded.size() > 0 && event.time > leavesToBeAdded.get(leavesToBeAdded.size() - 1).getAge()) {
+                    time = leavesToBeAdded.get(leavesToBeAdded.size() - 1).getAge();
+                } else {
 
-                TimeTreeNode migrant = selectRandomNode(nodes.get(event.pop));
+                    if (event.type == EventType.coalescent) {
 
-                TimeTreeNode migrantsParent = new TimeTreeNode((String)null, tree);
-                migrantsParent.setIndex(nodeNumber);
-                migrantsParent.setAge(event.time);
-                migrantsParent.setMetaData(populationLabel, event.toPop);
+                        //System.out.println("doing a coalescent event in population " + event.pop + " which has " + nodes.get(event.pop).size() + " nodes.");
 
-                migrantsParent.addChild(migrant);
+                        // coalescent
+                        TimeTreeNode node1 = selectRandomNode(activeNodes.get(event.pop));
+                        TimeTreeNode node2 = selectRandomNode(activeNodes.get(event.pop));
 
-                time = event.time;
+                        TimeTreeNode parent = new TimeTreeNode((String) null, tree);
+                        parent.setIndex(nodeNumber);
+                        parent.setAge(event.time);
+                        parent.setMetaData(populationLabel, event.pop);
+                        parent.addChild(node1);
+                        parent.addChild(node2);
 
-                nodes.get(event.toPop).add(migrantsParent);
+                        time = event.time;
+
+                        activeNodes.get(event.pop).add(parent);
+
+                    } else {
+                        // migration
+
+                        if (event.pop == event.toPop)
+                            throw new RuntimeException("migration must be between distinct populations");
+
+                        TimeTreeNode migrant = selectRandomNode(activeNodes.get(event.pop));
+
+                        TimeTreeNode migrantsParent = new TimeTreeNode((String) null, tree);
+                        migrantsParent.setIndex(nodeNumber);
+                        migrantsParent.setAge(event.time);
+                        migrantsParent.setMetaData(populationLabel, event.toPop);
+
+                        migrantsParent.addChild(migrant);
+
+                        time = event.time;
+
+                        activeNodes.get(event.toPop).add(migrantsParent);
+                    }
+                    nodeNumber += 1;
+                }
             }
-            totalRate = populateRateMatrix(nodes, popSizesMigrationRates, rates);
-            nodeNumber += 1;
+
+            while (leavesToBeAdded.size() > 0 && leavesToBeAdded.get(leavesToBeAdded.size() - 1).getAge() == time) {
+                TimeTreeNode youngest = leavesToBeAdded.remove(leavesToBeAdded.size() - 1);
+                activeNodes.get((Integer)youngest.getMetaData(populationLabel)).add(youngest);
+            }
+            totalRate = populateRateMatrix(activeNodes, popSizesMigrationRates, rates);
         }
 
         List<TimeTreeNode> rootNodes = new ArrayList<>();
-        for (List<TimeTreeNode> nodeList : nodes) {
+        for (List<TimeTreeNode> nodeList : activeNodes) {
             rootNodes.addAll(nodeList);
         }
 
