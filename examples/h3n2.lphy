@@ -1,6 +1,6 @@
 data {
-  options = {ageDirection="forward", ageRegex="_(.*?)_(.*?)", locRegex="_(.*?)_"};
-  D = readFasta(file="examples/h3n2.fna", options=options);
+  options = {ageDirection="forward", ageRegex="_(\d*\.\d+|\d+\.\d*)$"};
+  D = readFasta(file="examples/h3n2_2deme.fna", options=options);
   taxa = taxa(D);
   L = nchar(D);
   demes = [0,0,0,0,0,1,1,1,1,1];
