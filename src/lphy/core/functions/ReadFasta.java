@@ -4,6 +4,7 @@ import jebl.evolution.io.FastaImporter;
 import jebl.evolution.io.ImportException;
 import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.AlignmentUtils;
@@ -80,12 +81,26 @@ public class ReadFasta extends DeterministicFunction<MetaData> {
 
         Taxon[] taxons = new Taxon[sequenceList.size()];
         int siteCount = Objects.requireNonNull(sequenceList.get(0)).getLength();
+        // create taxa
         for (int i = 0; i < sequenceList.size(); i++) {
             Sequence s = sequenceList.get(i);
             jebl.evolution.taxa.Taxon t = s.getTaxon();
             taxons[i] =new Taxon(t.getName());
         }
-        MetaData faData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+
+        MetaDataAlignment faData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+
+        // fill in sequences
+        for (int i = 0; i < sequenceList.size(); i++) {
+            Sequence sequence = sequenceList.get(i);
+            for (int s = 0; s < sequence.getLength(); s++) {
+                //*** convert char into int ***//
+                State state = sequence.getState(s);
+                int stateNum = state.getIndex();
+                // the taxon index in List should be same to Taxon[] taxonArray in Alignment
+                faData.setState(i, s, stateNum);
+            }
+        }
 
         //TODO date
 
