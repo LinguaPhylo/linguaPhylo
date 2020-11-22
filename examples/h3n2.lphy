@@ -1,7 +1,7 @@
 data {
   options = {ageDirection="forward", ageRegex="_(\d*\.\d+|\d+\.\d*)$"};
   D = readFasta(file="examples/h3n2_2deme.fna", options=options);
-  taxa = D.taxa();
+  taxa = D.getTaxa();
   L = nchar(D);
   demes = split(str=D.getTaxaNames(), regex="_", i=1);
 }

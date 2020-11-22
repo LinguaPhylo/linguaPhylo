@@ -120,6 +120,11 @@ public abstract class AbstractAlignment implements Alignment {
         return taxa.getTaxonArray();
     }
 
+    @MethodInfo(description = "the taxa of the alignment.")
+    public Taxa getTaxa() {
+        return taxa;
+    }
+
 //    @Override
 //    public int indexOfTaxon(String taxon) {
 //        return getTaxaNames();

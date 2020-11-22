@@ -216,11 +216,6 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
 //        return textArea;
 //    }
 
-    @MethodInfo(description = "the taxa of the alignment.")
-    public Taxa taxa() {
-        return getTaxa();
-    }
-
     @MethodInfo(description = "the number of characters/sites in the alignment.")
     public Integer nchar() {
         return super.nchar();
