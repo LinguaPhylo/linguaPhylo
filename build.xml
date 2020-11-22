@@ -24,7 +24,6 @@
     <property name="test-reports" location="../${repoName}/test-reports"/>
 
     <property name="projName" value="LPhy"/>
-    <property name="projVersion" value="0.0.1"/>
 
     <!--*******************************************************************-->
 
@@ -53,15 +52,24 @@
     <!-- Release -->
     <property name="pack" value="${dist}/package"/>
 
+    <xmlproperty file="pom.xml" collapseAttributes="true"/>
+
+    <property name="projVersion" value="${project.version}"/>
+    <property name="fullName" value="${projName}.v${projVersion}"/>
+
     <target name="dist-lphy" depends="compile">
+        <echo>name=${project.groupId}, version=${project.version}</echo>
+<!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
+        <echo>fullName=${fullName}</echo>
+
         <mkdir dir="${pack}"/>
         <!-- examples in ${packageName}.zip, not ${projName}.src.jar -->
         <jar jarfile="${pack}/${projName}.src.jar">
             <fileset dir="${src}"/>
         </jar>
 
-        <jar jarfile="${pack}/${projName}.v${projVersion}.jar">
-            <fileset dir="${build}" includes="${projName}/**"/>
+        <jar jarfile="${pack}/${fullName}.jar">
+            <fileset dir="${build}"/>
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
             </manifest>
@@ -70,7 +78,7 @@
     </target>
 
     <target name="dist" depends="build,dist-lphy">
-        <property name="packageName" value="${projName}.v${projVersion}"/>
+        <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
 
         <copy file="README.md" tofile="${pack}/README"/>
