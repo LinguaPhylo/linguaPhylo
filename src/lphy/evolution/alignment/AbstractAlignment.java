@@ -82,10 +82,22 @@ public abstract class AbstractAlignment implements Alignment {
     public abstract boolean hasParts();
 
 
-    //****** Sites ******
+    //****** MethodInfo ******
+
     @MethodInfo(description="The number of characters/sites in this alignment.")
     public Integer nchar() {
         return nchar;
+    }
+
+    @Override
+    @MethodInfo(description="The names of the taxa.")
+    public String[] getTaxaNames() {
+        return taxa.getTaxaNames();
+    }
+
+    @MethodInfo(description = "the taxa of the alignment.")
+    public Taxa taxa() {
+        return getTaxa();
     }
 
     //****** Taxa ******
@@ -109,18 +121,12 @@ public abstract class AbstractAlignment implements Alignment {
         return getTaxon(taxonIndex).getName();
     }
 
-    @Override
-    @MethodInfo(description="The names of the taxa.")
-    public String[] getTaxaNames() {
-        return taxa.getTaxaNames();
-    }
 
     @Override
     public Taxon[] getTaxonArray() {
         return taxa.getTaxonArray();
     }
 
-    @MethodInfo(description = "the taxa of the alignment.")
     public Taxa getTaxa() {
         return taxa;
     }

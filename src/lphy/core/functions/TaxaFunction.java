@@ -9,6 +9,7 @@ import lphy.graphicalModel.Value;
 
 import java.util.Arrays;
 
+@Deprecated
 public class TaxaFunction extends DeterministicFunction<Taxa> {
 
     final String paramName;
@@ -18,6 +19,7 @@ public class TaxaFunction extends DeterministicFunction<Taxa> {
         setParam(paramName, x);
     }
 
+    @Deprecated
     @GeneratorInfo(name="taxa",description = "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).")
     public Value<Taxa> apply() {
         Value v = getParams().get(paramName);

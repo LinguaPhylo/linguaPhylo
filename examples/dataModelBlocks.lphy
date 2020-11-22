@@ -1,7 +1,7 @@
 data {
   D = readNexus(file="examples/primate.nex");
   L = nchar(D);
-  taxa = D.getTaxa();
+  taxa = D.taxa();
 }
 model {
   theta ~ LogNormal(meanlog=3, sdlog=1);
