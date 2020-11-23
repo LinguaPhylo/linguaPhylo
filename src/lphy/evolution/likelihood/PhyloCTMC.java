@@ -265,17 +265,16 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     private void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
-        // TODO validate state here ?
+
         if (node.isLeaf() || (node.isSingleChildNonOrigin() && node.getId() != null)) {
             alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
         }
         List<TimeTreeNode> children = node.getChildren();
-        for (int i = 0; i < children.size(); i++) {
-            TimeTreeNode child = children.get(i);
+        for (TimeTreeNode child : children) {
             double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
 
             if (branchRates != null) {
-                branchLength *= branchRates.value()[child.getIndex()].doubleValue();
+                branchLength *= branchRates.value()[child.getIndex()];
             }
 
             getTransitionProbabilities(branchLength, transProb);
