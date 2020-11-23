@@ -1,5 +1,7 @@
 package lphy.doc;
 
+import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LightweightGenerator;
 import lphy.graphicalModel.*;
 import lphy.parser.ParserUtils;
 import net.steppschuh.markdowngenerator.link.Link;
@@ -124,7 +126,7 @@ public class GenerateDocs {
         return builder.toString();
     }
 
-    private static String generateType(Class<?> type) throws IOException {
+    private static String generateType(Class<?> type) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(new Heading(type.getSimpleName(),1)).append("\n");
@@ -149,14 +151,19 @@ public class GenerateDocs {
         return builder.toString();
     }
 
-    private static void generateGenerativeDistributions(FileWriter writer, String name, List<Class<GenerativeDistribution>> classes) throws IOException {
+    private static void generateGenerativeDistributions(FileWriter writer, String name, List<Class<?>> classes) throws IOException {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append(new Heading(name + " distribution",1)).append("\n");
 
-        for (Class<GenerativeDistribution> c : classes) {
-            builder.append(Generator.getGeneratorMarkdown(c)).append("\n\n");
+        for (Class<?> c : classes) {
+
+            if (LightweightGenerator.class.isAssignableFrom(c)) {
+                builder.append(LightweightGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LightweightGenerator>)c)).append("\n\n");
+            } else {
+                builder.append(Generator.getGeneratorMarkdown((Class<Generator>)c)).append("\n\n");
+            }
         }
 
         writer.write(builder.toString());

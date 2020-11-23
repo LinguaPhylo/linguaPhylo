@@ -184,7 +184,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getParameterInfo(c.getConstructors()[constructorIndex]);
     }
 
-    static Citation getCitation(Class<? extends Generator> c) {
+    static Citation getCitation(Class<?> c) {
         Annotation[] annotations = c.getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof Citation) {

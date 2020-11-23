@@ -1,18 +1,18 @@
 Beta distribution
 =================
-Beta(Object **alpha**, Object **beta**)
+Beta(Number **alpha**, Number **beta**)
 ---------------------------------------
 
 The beta probability distribution.
 
 ### Parameters
 
-- Object **alpha** - the first shape parameter.
-- Object **beta** - the second shape parameter.
+- Number **alpha** - the first shape parameter.
+- Number **beta** - the second shape parameter.
 
 ### Return type
 
-- Object
+- Double
 
 
 

@@ -1,17 +1,20 @@
 package lphy.core.lightweight;
 
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Utils;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
+import net.steppschuh.markdowngenerator.link.Link;
+import net.steppschuh.markdowngenerator.list.UnorderedList;
+import net.steppschuh.markdowngenerator.text.Text;
+import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
+import net.steppschuh.markdowngenerator.text.heading.Heading;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static lphy.graphicalModel.Generator.getGeneratorInfo;
+import static lphy.graphicalModel.Generator.getParameterInfo;
 
 public interface LightweightGenerator<T> {
 
@@ -88,6 +91,15 @@ public interface LightweightGenerator<T> {
         return getArguments(getClass(), 0);
     }
 
+
+    default Argument getArgumentByName(String name) {
+        List<Argument> arguments = getArguments();
+        for (Argument arg : arguments) {
+            if (arg.name.equals(name)) return arg;
+        }
+        return null;
+    }
+
     static Class<?> getReturnType(Class<LightweightGenerator> c) {
         try {
             return c.getMethod("generateLight").getReturnType();
@@ -119,13 +131,5 @@ public interface LightweightGenerator<T> {
             }
         }
         return arguments;
-    }
-
-    default Argument getArgumentByName(String name) {
-        List<Argument> arguments = getArguments();
-        for (Argument arg : arguments) {
-            if (arg.name.equals(name)) return arg;
-        }
-        return null;
     }
 }
