@@ -66,9 +66,6 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
      */
     void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr);
 
-
-    void setlocsFromTaxaName(final String locRegxStr);
-
     /**
      * @param taxonName
      * @param regx

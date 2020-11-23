@@ -126,16 +126,6 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         assignAges(ageStringMap, ageDirectionStr);
     }
 
-    @Override
-    public void setlocsFromTaxaName(String locRegxStr) {
-        this.locRegxStr = locRegxStr;
-
-
-
-
-    }
-
-
     //*** ChronoUnit ***//
 
     public ChronoUnit getChronoUnit() {
