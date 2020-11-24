@@ -231,28 +231,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         Type[] generics = constructor.getGenericParameterTypes();
         Class[] types = new Class[generics.length];
         for (int i = 0; i < generics.length; i++) {
-            String name = generics[i].getTypeName();
-
-            if (name.indexOf('<') >= 0) {
-
-                String type = name.substring(name.indexOf('<') + 1, name.lastIndexOf('>'));
-
-                if (type.endsWith("[]")) {
-                    type = "L" + type;
-
-                    while (type.endsWith("[]")) {
-                        type = "[" + type.substring(0, type.lastIndexOf('['));
-                    }
-                    type = type + ";";
-                }
-
-                try {
-                    types[i] = Class.forName(type);
-                } catch (ClassNotFoundException e) {
-                    // TODO need to understand these cases better!
-                    types[i] = Object.class;
-                }
-            } else types[i] = Object.class;
+            types[i] = lphy.reflection.Utils.getClass(generics[i]);
         }
         return types;
     }
