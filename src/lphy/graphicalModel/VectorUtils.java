@@ -31,21 +31,21 @@ public class VectorUtils {
         return size;
     }
 
-    public static int getVectorSize(List<ParameterInfo> parameterInfos, Object[] args) {
+    public static int getVectorSize(List<Argument> argumentInfos, Object[] args) {
 
         int size = -1;
-        for (int i = 0; i < parameterInfos.size(); i++) {
-            ParameterInfo parameterInfo = parameterInfos.get(i);
+        for (int i = 0; i < argumentInfos.size(); i++) {
+            Argument argumentInfo = argumentInfos.get(i);
             Value argValue = (Value) args[i];
             if (argValue == null) {
-                if (!parameterInfo.optional())
-                    throw new IllegalArgumentException("Required parameter " + parameterInfo.name() + " not including in vector arguments");
+                if (!argumentInfo.optional)
+                    throw new IllegalArgumentException("Required parameter " + argumentInfo.name + " not including in vector arguments");
             } else {
                 Class argValueClass = argValue.value().getClass();
 
-                if (parameterInfo.type().isAssignableFrom(argValueClass)) {
+                if (argumentInfo.type.isAssignableFrom(argValueClass)) {
                     // direct type match
-                } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
+                } else if (argValueClass.isArray() && argumentInfo.type.isAssignableFrom(argValueClass.getComponentType())) {
                     // vector match
                     int length = Array.getLength(argValue.value());
                     if (size == -1) {
@@ -60,36 +60,36 @@ public class VectorUtils {
         return size;
     }
 
-    public static List<Generator> getComponentGenerators(Constructor constructor, List<ParameterInfo> parameterInfos, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static List<Generator> getComponentGenerators(Constructor constructor, List<Argument> argumentInfos, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        int size = getVectorSize(parameterInfos, vectorArgs);
+        int size = getVectorSize(argumentInfos, vectorArgs);
         List<Generator> generators = new ArrayList<>(size);
         for (int component = 0; component < size; component++) {
-            generators.add(getComponentGenerator(constructor, parameterInfos, vectorArgs, component));
+            generators.add(getComponentGenerator(constructor, argumentInfos, vectorArgs, component));
         }
         return generators;
     }
 
-    public static Generator getComponentGenerator(Constructor constructor, List<ParameterInfo> parameterInfos, Object[] vectorArgs, int component) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static Generator getComponentGenerator(Constructor constructor, List<Argument> argumentInfos, Object[] vectorArgs, int component) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        Object[] args = new Object[parameterInfos.size()];
-        for (int i = 0; i < parameterInfos.size(); i++) {
-            ParameterInfo parameterInfo = parameterInfos.get(i);
+        Object[] args = new Object[argumentInfos.size()];
+        for (int i = 0; i < argumentInfos.size(); i++) {
+            Argument argumentInfo = argumentInfos.get(i);
             Value argValue = (Value) vectorArgs[i];
 
             if (argValue == null) {
-                if (!parameterInfo.optional()) {
-                    throw new IllegalArgumentException("Required parameter " + parameterInfo.name() + " not including in vector arguments");
+                if (!argumentInfo.optional) {
+                    throw new IllegalArgumentException("Required parameter " + argumentInfo.name + " not including in vector arguments");
                 }
             } else {
 
                 Class argValueClass = argValue.value().getClass();
                 //fullargs.put(parameterInfo.name(), argValue);
 
-                if (parameterInfo.type().isAssignableFrom(argValueClass)) {
+                if (argumentInfo.type.isAssignableFrom(argValueClass)) {
                     // direct type match
                     args[i] = vectorArgs[i];
-                } else if (argValueClass.isArray() && parameterInfo.type().isAssignableFrom(argValueClass.getComponentType())) {
+                } else if (argValueClass.isArray() && argumentInfo.type.isAssignableFrom(argValueClass.getComponentType())) {
                     // vector match
 
                     Object array = argValue.value();

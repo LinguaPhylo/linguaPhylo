@@ -1,18 +1,18 @@
-package lphy.core.lightweight;
-
-import lphy.graphicalModel.ParameterInfo;
+package lphy.graphicalModel;
 
 public class Argument implements Comparable<Argument> {
 
     public final int index;
     public final String name;
     public final String description;
+    public final boolean optional;
     public final Class type;
 
     public Argument(int index, ParameterInfo parameterInfo, Class type) {
         this.index = index;
         this.name = parameterInfo.name();
         this.description = parameterInfo.description();
+        this.optional = parameterInfo.optional();
         this.type = type;
     }
 
@@ -25,7 +25,7 @@ public class Argument implements Comparable<Argument> {
         return setMethodName(name);
     }
 
-    static String setMethodName(String name) {
+    public static String setMethodName(String name) {
         return "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
@@ -34,6 +34,6 @@ public class Argument implements Comparable<Argument> {
     }
 
     public String toString() {
-        return "argument " + name + " index=" + index + " type=" + type + " description=" + description;
+        return "argument " + name + " index=" + index + " type=" + type + " description=" + description + " optional=" + optional;
     }
 }

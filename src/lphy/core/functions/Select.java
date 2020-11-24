@@ -9,8 +9,8 @@ public class Select extends DeterministicFunction<Number> {
     public static final String valueParamName = "x";
     public static final String indicatorParamName = "indicator";
 
-    public Select(@ParameterInfo(name = valueParamName, description = "the value.", type=Number.class) Value<Number> x,
-                  @ParameterInfo(name = indicatorParamName, description = "indicator for whether the number should be selected, or replace with zero", type=Boolean.class) Value<Boolean> indicator) {
+    public Select(@ParameterInfo(name = valueParamName, description = "the value.") Value<Number> x,
+                  @ParameterInfo(name = indicatorParamName, description = "indicator for whether the number should be selected, or replace with zero") Value<Boolean> indicator) {
 
         setParam(valueParamName, x);
         setParam(indicatorParamName, indicator);

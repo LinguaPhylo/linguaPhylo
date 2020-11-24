@@ -12,11 +12,11 @@ public class LocalBranchRates extends DeterministicFunction<Double[]> {
     public static final String indicatorsParamName = "indicators";
     public static final String ratesParamName = "rates";
 
-    public LocalBranchRates(@ParameterInfo(name = treeParamName, description = "the tree.", type=TimeTree.class) Value<TimeTree> tree,
+    public LocalBranchRates(@ParameterInfo(name = treeParamName, description = "the tree.") Value<TimeTree> tree,
                             @ParameterInfo(name = indicatorsParamName, description = "a boolean indicator for each node except the root. " +
-                                    "True if there is a new rate on the branch above this node, false if the rate is inherited from the parent node.", type=Boolean[].class) Value<Boolean[]> indicators,
+                                    "True if there is a new rate on the branch above this node, false if the rate is inherited from the parent node.") Value<Boolean[]> indicators,
                             @ParameterInfo(name = ratesParamName, description = "A rate for each node in the tree (except root). " +
-                                    "Only those with a corresponding indicator are used.", type=Double[].class) Value<Double[]> rates) {
+                                    "Only those with a corresponding indicator are used.") Value<Double[]> rates) {
         setParam(treeParamName, tree);
         setParam(indicatorsParamName, indicators);
         setParam(ratesParamName, rates);

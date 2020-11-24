@@ -45,9 +45,9 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     // TODO need to allow StructuredCoalescent to be generated from Taxa + deme Metadata
     public StructuredCoalescent(@ParameterInfo(name = MParamName, description = "The population process rate matrix which contains the effective population sizes and migration rates. " +
             "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
-                                @ParameterInfo(name = kParamName, description = "the number of taxa in each population. provide either this or a " + demesParamName + " argument.", type = Integer[].class, optional = true) Value<Integer[]> k,
-                                @ParameterInfo(name = taxaParamName, description = "the taxa.", type = Taxa.class, optional = true) Value<Taxa> taxa,
-                                @ParameterInfo(name = demesParamName, description = "the deme array, which runs parallel to the taxonArray in the taxa object.", type = Object[].class, optional = true) Value<Object[]> demes) {
+                                @ParameterInfo(name = kParamName, description = "the number of taxa in each population. provide either this or a " + demesParamName + " argument.", optional = true) Value<Integer[]> k,
+                                @ParameterInfo(name = taxaParamName, description = "the taxa.", optional = true) Value<Taxa> taxa,
+                                @ParameterInfo(name = demesParamName, description = "the deme array, which runs parallel to the taxonArray in the taxa object.", optional = true) Value<Object[]> demes) {
 
         super(null, taxa, null);
 

@@ -64,7 +64,7 @@ public abstract class AbstractAlignment implements Alignment {
     /**
      * Copy constructor, where nchar input allows partition to create from the parent Alignment
      */
-    public AbstractAlignment(int nchar, final AbstractAlignment source) {
+    public AbstractAlignment(int nchar, final Alignment source) {
         this.nchar = nchar;
         // deep copy
         this.taxa = Taxa.createTaxa(Arrays.copyOf(source.getTaxa().getTaxonArray(), source.ntaxa()));
@@ -72,9 +72,6 @@ public abstract class AbstractAlignment implements Alignment {
         this.sequenceType = source.getSequenceType();
     }
 
-    /**
-     * @see #AbstractAlignment(int, AbstractAlignment)
-     */
     public AbstractAlignment(final AbstractAlignment source) {
         this(Objects.requireNonNull(source).nchar(), source);
     }

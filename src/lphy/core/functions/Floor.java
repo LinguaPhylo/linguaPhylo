@@ -5,10 +5,9 @@ import lphy.graphicalModel.types.IntegerValue;
 
 public class Floor extends DeterministicFunction<Integer> {
 
-    final String paramName;
+    public static final String paramName = "0";
 
-    public Floor(@ParameterInfo(name = "0", description = "the argument.") Value<Double> x) {
-        paramName = getParamName(0);
+    public Floor(@ParameterInfo(name = paramName, description = "the argument.") Value<Double> x) {
         setParam(paramName, x);
     }
 

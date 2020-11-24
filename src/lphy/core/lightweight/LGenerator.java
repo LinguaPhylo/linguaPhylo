@@ -1,5 +1,6 @@
 package lphy.core.lightweight;
 
+import lphy.graphicalModel.Argument;
 import lphy.graphicalModel.*;
 
 import java.lang.annotation.Annotation;

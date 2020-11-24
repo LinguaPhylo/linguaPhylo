@@ -17,8 +17,8 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
     private RandomGenerator random;
 
-    public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.", type = Double.class) Value<Double> p,
-                          @ParameterInfo(name = nParamName, description = "the number of bernoulli trials.", type = Integer.class) Value<Integer> n) {
+    public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.") Value<Double> p,
+                          @ParameterInfo(name = nParamName, description = "the number of bernoulli trials.") Value<Integer> n) {
         this.p = p;
         this.n = n;
         this.random = Utils.getRandom();

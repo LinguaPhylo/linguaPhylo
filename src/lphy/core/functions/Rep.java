@@ -12,8 +12,8 @@ public class Rep<U> extends DeterministicFunction<U[]> {
     private Value<U> x;
     private Value<Integer> times;
 
-    public Rep(@ParameterInfo(name = "element", description = "the element to replicate.", type=Object.class) Value<U> x,
-               @ParameterInfo(name = "times", description = "the standard deviation of the distribution.", type=Integer.class) Value<Integer> times) {
+    public Rep(@ParameterInfo(name = "element", description = "the element to replicate.") Value<U> x,
+               @ParameterInfo(name = "times", description = "the standard deviation of the distribution.") Value<Integer> times) {
 
         this.x = x;
         if (x == null) throw new IllegalArgumentException("The mean value can't be null!");

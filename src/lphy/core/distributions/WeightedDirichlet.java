@@ -18,8 +18,8 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
     private Value<Number[]> concentration;
     private Value<Integer[]> weights;
 
-    public WeightedDirichlet(@ParameterInfo(name = concParamName, description = "the concentration parameters of the scaled Dirichlet distribution.", type=Number[].class) Value<Number[]> concentration,
-                             @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.", type=Integer[].class) Value<Integer[]> weights) {
+    public WeightedDirichlet(@ParameterInfo(name = concParamName, description = "the concentration parameters of the scaled Dirichlet distribution.") Value<Number[]> concentration,
+                             @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.") Value<Integer[]> weights) {
         this.concentration = concentration;
         this.weights = weights;
     }

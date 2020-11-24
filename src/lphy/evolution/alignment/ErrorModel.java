@@ -10,11 +10,11 @@ import java.util.TreeMap;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class ErrorModel implements GenerativeDistribution<SimpleAlignment> {
+public class ErrorModel implements GenerativeDistribution<Alignment> {
 
     Value<Double> alpha;
     Value<Double> beta;
-    Value<SimpleAlignment> alignment;
+    Value<Alignment> alignment;
 
     String alphaParamName;
     String betaParamName;
@@ -24,7 +24,7 @@ public class ErrorModel implements GenerativeDistribution<SimpleAlignment> {
 
     public ErrorModel(@ParameterInfo(name = "alpha", description = "the false positive probability.") Value<Double> alpha,
                       @ParameterInfo(name = "beta", description = "the false negative probability.") Value<Double> beta,
-                      @ParameterInfo(name = "alignment", description = "the alignment without errors.") Value<SimpleAlignment> alignment) {
+                      @ParameterInfo(name = "alignment", description = "the alignment without errors.") Value<Alignment> alignment) {
 
         this.alpha = alpha;
         this.beta = beta;
@@ -57,9 +57,9 @@ public class ErrorModel implements GenerativeDistribution<SimpleAlignment> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    public RandomVariable<SimpleAlignment> sample() {
+    public RandomVariable<Alignment> sample() {
 
-        SimpleAlignment original = alignment.value();
+        Alignment original = alignment.value();
         SimpleAlignment newAlignment = new ErrorAlignment(original.nchar(), original);
 
         double a = alpha.value();

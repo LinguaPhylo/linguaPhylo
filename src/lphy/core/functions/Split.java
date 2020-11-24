@@ -9,9 +9,9 @@ public class Split extends DeterministicFunction<String> {
     public static final String regexParamName = "regex";
     public static final String indexParamName = "i";
 
-    public Split(@ParameterInfo(name = stringParamName, description = "the string value to extract a substring matching the given pattern.", type=String.class) Value<String> str,
-                 @ParameterInfo(name = regexParamName, description = "a regular expression", type=String.class) Value<String> regex,
-                 @ParameterInfo(name = indexParamName, description = "the index of the substring to return", type=Integer.class) Value<Integer> i) {
+    public Split(@ParameterInfo(name = stringParamName, description = "the string value to extract a substring matching the given pattern.") Value<String> str,
+                 @ParameterInfo(name = regexParamName, description = "a regular expression") Value<String> regex,
+                 @ParameterInfo(name = indexParamName, description = "the index of the substring to return") Value<Integer> i) {
 
         setParam(stringParamName, str);
         setParam(regexParamName, regex);

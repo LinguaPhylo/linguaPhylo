@@ -73,9 +73,7 @@ public class ParserUtils {
 
             types.add(Generator.getReturnType(genClass));
 
-            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(genClass)) {
-                types.add(parameterInfo.type());
-            }
+            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
         }
 
         for (Class<?> genClass : lightWeightGenClasses) {
@@ -85,10 +83,6 @@ public class ParserUtils {
             genDistSet.add(genClass);
 
             types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
-
-            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(genClass)) {
-                types.add(parameterInfo.type());
-            }
         }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
@@ -116,9 +110,7 @@ public class ParserUtils {
             Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
             funcSet.add(functionClass);
 
-            for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(functionClass)) {
-                types.add(parameterInfo.type());
-            }
+            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) functionClass, 0));
         }
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
@@ -173,25 +165,25 @@ public class ParserUtils {
         List<Generator> matches = new ArrayList<>();
 
         for (Constructor constructor : generatorClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
+            List<Argument> argumentInfo = Generator.getArguments(constructor);
             List<Object> initargs = new ArrayList<>();
 
-            if (match(arguments, pInfo)) {
+            if (match(arguments, argumentInfo)) {
 
                 boolean lightweight = LGenerativeDistribution.class.isAssignableFrom(generatorClass);
 
-                for (int i = 0; i < pInfo.size(); i++) {
-                    Value arg = arguments.get(pInfo.get(i).name());
+                for (int i = 0; i < argumentInfo.size(); i++) {
+                    Value arg = arguments.get(argumentInfo.get(i).name);
                     if (arg != null) {
                         initargs.add(lightweight ? arg.value() : arg);
-                    } else if (!pInfo.get(i).optional()) {
-                        throw new RuntimeException("Required argument " + pInfo.get(i).name() + " not found!");
+                    } else if (!argumentInfo.get(i).optional) {
+                        throw new RuntimeException("Required argument " + argumentInfo.get(i).name + " not found!");
                     } else {
                         initargs.add(null);
                     }
                 }
 
-                matches.add(constructGenerator(name, constructor, pInfo, initargs.toArray(),arguments,lightweight));
+                matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,lightweight));
             }
         }
         return matches;
@@ -201,19 +193,19 @@ public class ParserUtils {
     /**
      * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
      *
-     * @param arguments
-     * @param pInfo
+     * @param arguments the arguments that are attempting to be passed.
+     * @param argumentInfo the arguments of the constructor
      * @return
      */
-    private static boolean match(Map<String, Value> arguments, List<ParameterInfo> pInfo) {
+    private static boolean match(Map<String, Value> arguments, List<Argument> argumentInfo) {
 
         Set<String> requiredArguments = new TreeSet<>();
         Set<String> optionalArguments = new TreeSet<>();
-        for (ParameterInfo pinfo : pInfo) {
-            if (pinfo.optional()) {
-                optionalArguments.add(pinfo.name());
+        for (Argument argumentInf : argumentInfo) {
+            if (argumentInf.optional) {
+                optionalArguments.add(argumentInf.name);
             } else {
-                requiredArguments.add(pinfo.name());
+                requiredArguments.add(argumentInf.name);
             }
         }
 
@@ -229,15 +221,15 @@ public class ParserUtils {
 
         List<DeterministicFunction> matches = new ArrayList<>();
         for (Constructor constructor : generatorClass.getConstructors()) {
-            List<ParameterInfo> pInfo = Generator.getParameterInfo(constructor);
+            List<Argument> arguments = Generator.getArguments(constructor);
 
-            if (values.length == pInfo.size() && (values.length == 1 || values.length == 2)) {
-                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, pInfo, values, null, false);
+            if (values.length == arguments.size() && (values.length == 1 || values.length == 2)) {
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, values, null, false);
                 if (f != null) {
                     matches.add(f);
                 }
-            } else if (values.length == 0 && pInfo.size() == 1 && pInfo.get(0).optional()) {
-                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, pInfo, new Object[]{null}, null, false);
+            } else if (values.length == 0 && arguments.size() == 1 && arguments.get(0).optional) {
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, new Object[]{null}, null, false);
                 if (f != null) {
                     matches.add(f);
                 }
@@ -246,9 +238,9 @@ public class ParserUtils {
         return matches;
     }
 
-    private static Generator constructGenerator(String name, Constructor constructor, List<ParameterInfo> pInfo, Object[] initargs, Map<String, Value> params, boolean lightweight) {
+    private static Generator constructGenerator(String name, Constructor constructor, List<Argument> arguments, Object[] initargs, Map<String, Value> params, boolean lightweight) {
         try {
-            if (Generator.matchingParameterTypes(pInfo, initargs, lightweight)) {
+            if (Generator.matchingParameterTypes(arguments, initargs, lightweight)) {
                 if (lightweight) {
                     boolean generativeDistribution = LGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
                     if (generativeDistribution) {
@@ -257,9 +249,9 @@ public class ParserUtils {
                 }
 
                 return (Generator) constructor.newInstance(initargs);
-            } else if (vectorMatch(pInfo, initargs) > 0) {
+            } else if (vectorMatch(arguments, initargs) > 0) {
                 // do vector match
-                return vectorGenerator(constructor, pInfo, initargs);
+                return vectorGenerator(constructor, arguments, initargs);
             } else {
                 throw new RuntimeException("ERROR! No match, including vector match!");
             }
@@ -276,18 +268,18 @@ public class ParserUtils {
         return null;
     }
 
-    public static int vectorMatch(List<ParameterInfo> pInfo, Object[] initargs) {
+    public static int vectorMatch(List<Argument> arguments, Object[] initargs) {
         int vectorMatches = 0;
-        for (int i = 0; i < pInfo.size(); i++) {
-            ParameterInfo parameterInfo = pInfo.get(i);
+        for (int i = 0; i < arguments.size(); i++) {
+            Argument argument = arguments.get(i);
             Value argValue = (Value) initargs[i];
 
             if (argValue == null) {
-                if (!parameterInfo.optional()) return 0;
+                if (!argument.optional) return 0;
             } else {
-                if (parameterInfo.type().isAssignableFrom(argValue.value().getClass())) {
+                if (argument.type.isAssignableFrom(argValue.value().getClass())) {
                     // direct type match
-                } else if (argValue.value().getClass().isArray() && parameterInfo.type().isAssignableFrom(argValue.value().getClass().getComponentType())) {
+                } else if (argValue.value().getClass().isArray() && argument.type.isAssignableFrom(argValue.value().getClass().getComponentType())) {
                     // vector match
                     vectorMatches += 1;
                 }
@@ -296,12 +288,12 @@ public class ParserUtils {
         return vectorMatches;
     }
 
-    public static Generator vectorGenerator(Constructor constructor, List<ParameterInfo> pInfo, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static Generator vectorGenerator(Constructor constructor, List<Argument> arguments, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
         if (GenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass())) {
-            return new VectorizedDistribution(constructor, pInfo, vectorArgs);
+            return new VectorizedDistribution(constructor, arguments, vectorArgs);
         } else if (DeterministicFunction.class.isAssignableFrom(constructor.getDeclaringClass())) {
-            return new VectorizedFunction(constructor, pInfo, vectorArgs);
+            return new VectorizedFunction(constructor, arguments, vectorArgs);
         } else
             throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
 

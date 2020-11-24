@@ -16,9 +16,9 @@ public class GeneralTimeReversible extends RateMatrix {
     int numStates;
     int ratesDim;
 
-    public GeneralTimeReversible(@ParameterInfo(name = ratesParamName, description = "the relative rates of the GTR process.", type=Double[].class) Value<Double[]> rates,
-                                 @ParameterInfo(name = freqParamName, description = "the base frequencies.", type=Double[].class) Value<Double[]> freq,
-                                 @ParameterInfo(name = meanRateParamName, description = "the base frequencies.", type=Number.class, optional = true) Value<Number> meanRate) {
+    public GeneralTimeReversible(@ParameterInfo(name = ratesParamName, description = "the relative rates of the GTR process.") Value<Double[]> rates,
+                                 @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+                                 @ParameterInfo(name = meanRateParamName, description = "the base frequencies.", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
 

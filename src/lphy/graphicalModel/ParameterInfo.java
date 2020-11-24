@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 public @interface ParameterInfo {
     String name();
     String description();
-    Class type() default Object.class;
+//    Class type() default Object.class;
     boolean optional() default false;
 }

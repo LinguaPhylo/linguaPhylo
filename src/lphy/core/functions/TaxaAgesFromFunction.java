@@ -8,10 +8,9 @@ import lphy.graphicalModel.Value;
 
 public class TaxaAgesFromFunction extends DeterministicFunction<Taxa> {
 
-    final String paramName;
+    public static final String paramName = "0";
 
-    public TaxaAgesFromFunction(@ParameterInfo(name = "0", description = "the data containing taxa and ages of the taxa") Value<Taxa> taxaAgesValue) {
-        paramName = getParamName(0);
+    public TaxaAgesFromFunction(@ParameterInfo(name = paramName, description = "the data containing taxa and ages of the taxa") Value<Taxa> taxaAgesValue) {
         setParam(paramName, taxaAgesValue);
     }
 

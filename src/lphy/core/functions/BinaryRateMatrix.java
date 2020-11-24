@@ -15,7 +15,7 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
 
     public static final String lambdaParamName = "lambda";
 
-    public BinaryRateMatrix(@ParameterInfo(name = lambdaParamName, description = "the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.", type=Number.class) Value<Number> lambda) {
+    public BinaryRateMatrix(@ParameterInfo(name = lambdaParamName, description = "the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.") Value<Number> lambda) {
         setParam(lambdaParamName, lambda);
     }
 

@@ -31,7 +31,7 @@ public class SimpleAlignment extends AbstractAlignment {
         this.alignment = new int[ntaxa()][nchar];
     }
 
-    public SimpleAlignment(int nchar, AbstractAlignment source) {
+    public SimpleAlignment(int nchar, Alignment source) {
         super(nchar, source);
         alignment = new int[ntaxa()][nchar];
     }

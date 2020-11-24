@@ -271,7 +271,12 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     void showValue(Value value) {
-        if (value != null) showObject(value.getLabel(), value);
+        if (value != null) {
+            String type = value.value().getClass().getSimpleName();
+            String label = value.getLabel();
+
+            showObject(type + " " + label, value);
+        }
     }
 
     private void showParameterized(Generator g) {

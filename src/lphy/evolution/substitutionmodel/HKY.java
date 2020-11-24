@@ -16,9 +16,9 @@ public class HKY extends RateMatrix {
     public static final String freqParamName =  "freq";
 
 
-    public HKY(@ParameterInfo(name = kappaParamName, description = "the kappa of the HKY process.", type=Number.class) Value<Number> kappa,
-               @ParameterInfo(name = freqParamName, description = "the base frequencies.", type=Double[].class) Value<Double[]> freq,
-               @ParameterInfo(name = meanRateParamName, description = "the total rate of substitution per unit time. Default 1.0.", type=Number.class, optional = true) Value<Number> rate) {
+    public HKY(@ParameterInfo(name = kappaParamName, description = "the kappa of the HKY process.") Value<Number> kappa,
+               @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = meanRateParamName, description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
 
         super(rate);
 
@@ -71,5 +71,12 @@ public class HKY extends RateMatrix {
         normalize(freqs, Q);
 
         return Q;
+    }
+
+    public static void main(String... args) throws ClassNotFoundException {
+
+        System.out.println(Double[].class.getName());
+
+        System.out.println(Class.forName("[Ljava.lang.Double;"));
     }
 }

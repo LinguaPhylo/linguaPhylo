@@ -18,8 +18,8 @@ public class Cauchy implements GenerativeDistribution<Double> {
 
     CauchyDistribution cauchyDistribution;
 
-    public Cauchy(@ParameterInfo(name = meanParamName, description = "the mean of the Cauchy distribution.", type = Double.class) Value<Double> mean,
-                  @ParameterInfo(name = scaleParamName, description = "the scale of the Cauchy distribution.", type = Double.class) Value<Double> scale) {
+    public Cauchy(@ParameterInfo(name = meanParamName, description = "the mean of the Cauchy distribution.") Value<Double> mean,
+                  @ParameterInfo(name = scaleParamName, description = "the scale of the Cauchy distribution.") Value<Double> scale) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");

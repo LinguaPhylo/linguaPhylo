@@ -25,7 +25,7 @@ public class FossilBirthDeathTree extends TaxaConditionedTreeGenerator {
                                 @ParameterInfo(name = rhoParamName, description = "proportion of extant taxa sampled.") Value<Number> rhoVal,
                                 @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
                                 @ParameterInfo(name = nParamName, description = "the number of taxa. optional.", optional = true) Value<Integer> n,
-                                @ParameterInfo(name = taxaParamName, description = "Taxa object", type=Taxa.class, optional = true) Value<Taxa> taxa) {
+                                @ParameterInfo(name = taxaParamName, description = "Taxa object", optional = true) Value<Taxa> taxa) {
 
         super(n, taxa, null);
 

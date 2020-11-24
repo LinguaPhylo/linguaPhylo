@@ -7,15 +7,15 @@ import java.util.Map;
  */
 public class ErrorAlignment extends SimpleAlignment {
 
-    SimpleAlignment parent;
+    Alignment parent;
 
-    public ErrorAlignment(int length, SimpleAlignment parent) {
+    public ErrorAlignment(int length, Alignment parent) {
         super(length, parent); // copy source
 
         this.parent = parent;
     }
 
     public boolean isError(int i, int j) {
-        return alignment[i][j] != parent.alignment[i][j];
+        return alignment[i][j] != parent.getState(i,j);
     }
 }

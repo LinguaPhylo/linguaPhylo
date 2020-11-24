@@ -1,6 +1,7 @@
 package lphy.evolution;
 
 import lphy.evolution.tree.TimeTreeNode;
+import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
 
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public interface Taxa extends MultiDimensional {
     /**
      * @return the ages of the taxa in the same order as the taxa.
      */
+    @MethodInfo(description = "gets the ages of these taxa as an array of doubles.")
     default Double[] getAges() {
         Taxon[] taxa = getTaxonArray();
         Double[] ages = new Double[ntaxa()];

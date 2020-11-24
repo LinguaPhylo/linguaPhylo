@@ -24,7 +24,7 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
     public BirthDeathSamplingTreeDT(@ParameterInfo(name = diversificationParamName, description = "diversification rate.") Value<Number> diversification,
                                     @ParameterInfo(name = turnoverParamName, description = "turnover.") Value<Number> turnover,
                                     @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
-                                    @ParameterInfo(name = rootAgeParamName, description = "the number of taxa.") Value<Number> rootAge) {
+                                    @ParameterInfo(name = rootAgeParamName, description = "the age of the root node.") Value<Number> rootAge) {
 
         this.turnover = turnover;
         this.diversificationRate = diversification;

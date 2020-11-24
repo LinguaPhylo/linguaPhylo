@@ -10,6 +10,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -211,11 +212,74 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return pInfo;
     }
 
+
+    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
+        return getParameterTypes(c.getConstructors()[constructorIndex]);
+    }
+
+    /**
+     * @param constructor
+     * @return an array of the generic types of arguments of the given constructor.
+     */
+    static Class[] getParameterTypes(Constructor constructor) {
+        Type[] generics = constructor.getGenericParameterTypes();
+        Class[] types = new Class[generics.length];
+        for (int i = 0; i < generics.length; i++) {
+            String name = generics[i].getTypeName();
+
+            if (name.indexOf('<') >= 0) {
+
+                String type = name.substring(name.indexOf('<') + 1, name.lastIndexOf('>'));
+
+                if (type.endsWith("[]")) {
+                    type = "L" + type;
+
+                    while (type.endsWith("[]")) {
+                        type = "[" + type.substring(0, type.lastIndexOf('['));
+                    }
+                    type = type + ";";
+                }
+
+                try {
+                    types[i] = Class.forName(type);
+                } catch (ClassNotFoundException e) {
+                    // TODO need to understand these cases better!
+                    types[i] = Object.class;
+                }
+            } else types[i] = Object.class;
+        }
+        return types;
+    }
+
+    static List<Argument> getArguments(Class<?> c, int constructorIndex) {
+        return getArguments(c.getConstructors()[constructorIndex]);
+    }
+
+    static List<Argument> getArguments(Constructor constructor) {
+
+        List<Argument> arguments = new ArrayList<>();
+
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        Class<?>[] parameterTypes = getParameterTypes(constructor);
+
+        // top for loop
+        for (int i = 0; i < annotations.length; i++) {
+            Annotation[] annotations1 = annotations[i];
+            for (Annotation annotation : annotations1) {
+                if (annotation instanceof ParameterInfo) {
+                    arguments.add(new Argument(i, (ParameterInfo) annotation, parameterTypes[i]));
+                }
+            }
+        }
+        return arguments;
+    }
+
     static String getGeneratorMarkdown(Class<? extends Generator> generatorClass) {
 
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
 
         List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
+        Class[] types = getParameterTypes(generatorClass,0);
 
         StringBuilder md = new StringBuilder();
 
@@ -224,9 +288,10 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         signature.append(Generator.getGeneratorName(generatorClass)).append("(");
 
         int count = 0;
-        for (ParameterInfo pi : pInfo) {
+        for (int i = 0; i < pInfo.size(); i++) {
+            ParameterInfo pi = pInfo.get(i);
             if (count > 0) signature.append(", ");
-            signature.append(new Text(pi.type().getSimpleName())).append(" ").append(new BoldText(pi.name()));
+            signature.append(new Text(types[i].getSimpleName())).append(" ").append(new BoldText(pi.name()));
             count += 1;
         }
         signature.append(")");
@@ -239,8 +304,9 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             md.append(new Heading("Parameters", 3)).append("\n\n");
             List<Object> paramText = new ArrayList<>();
 
-            for (ParameterInfo pi : pInfo) {
-                paramText.add(new Text(pi.type().getSimpleName() + " " + new BoldText(pi.name()) + " - " + pi.description()));
+            for (int i = 0; i < pInfo.size(); i++) {
+                ParameterInfo pi = pInfo.get(i);
+                paramText.add(new Text(types[i].getSimpleName() + " " + new BoldText(pi.name()) + " - " + pi.description()));
             }
             md.append(new UnorderedList<>(paramText));
         }
@@ -335,30 +401,32 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return prefix + value.getId();
     }
 
-    static boolean matchingParameterTypes(List<ParameterInfo> parameterInfos, Object[] initArgs, boolean lightweight) {
-        for (int i = 0; i < parameterInfos.size(); i++) {
-            ParameterInfo parameterInfo = parameterInfos.get(i);
-            Object argument = initArgs[i];
+    static boolean matchingParameterTypes(List<Argument> arguments, Object[] initArgs, boolean lightweight) {
 
-            if (argument != null) {
-                Class parameterType = parameterInfo.type();
-                Class valueType = lightweight ? argument.getClass() : ((Value) argument).value().getClass();
+
+        for (int i = 0; i < arguments.size(); i++) {
+            Argument argumentInfo = arguments.get(i);
+            Object arg = initArgs[i];
+
+            if (arg != null) {
+                Class parameterType = argumentInfo.type;
+                Class valueType = lightweight ? arg.getClass() : ((Value) arg).value().getClass();
 
                 if (!parameterType.isAssignableFrom(valueType)) return false;
             } else {
-                if (!parameterInfo.optional()) return false;
+                if (!argumentInfo.optional) return false;
             }
         }
         return true;
     }
 
-    static Map<String, Value> convertArgumentsToParameterMap(List<ParameterInfo> parameterInfos, Object[] initArgs) {
+    static Map<String, Value> convertArgumentsToParameterMap(List<Argument> argumentInfos, Object[] initArgs) {
         Map<String, Value> params = new TreeMap<>();
-        for (int i = 0; i < parameterInfos.size(); i++) {
-            ParameterInfo parameterInfo = parameterInfos.get(i);
+        for (int i = 0; i < argumentInfos.size(); i++) {
+            Argument argumentInfo = argumentInfos.get(i);
             Value value = (Value) initArgs[i];
 
-            if (value != null) params.put(parameterInfo.name(), value);
+            if (value != null) params.put(argumentInfo.name, value);
         }
         return params;
     }

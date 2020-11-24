@@ -4,6 +4,10 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+
 /**
  * Created by adru001 on 2/02/20.
  */
@@ -59,5 +63,26 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
 
     public Value<Double> getMeanRate() {
         return getParams().get(meanRateParamName);
+    }
+
+    public static void main(String... args) throws ClassNotFoundException {
+
+        Constructor constructor = RateMatrix.class.getConstructors()[0];
+
+        System.out.println("Generic parameter types");
+        Type[] generics = constructor.getGenericParameterTypes();
+        for (int i = 0; i < generics.length; i++) {
+            String name = generics[i].getTypeName();
+
+            System.out.println("name=" + name);
+            System.out.println("class=" + Class.forName(name.substring(name.indexOf('<')+1, name.indexOf('>'))));
+        }
+
+        System.out.println("Type variables");
+        TypeVariable[] typeVariables = constructor.getTypeParameters();
+        for (int i = 0; i < typeVariables.length; i++) {
+            System.out.println("name=" + typeVariables[i].getName());
+        }
+
     }
 }

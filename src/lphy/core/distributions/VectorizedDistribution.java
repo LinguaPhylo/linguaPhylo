@@ -20,15 +20,15 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
     List<GenerativeDistribution<T>> componentDistributions;
 
-    public VectorizedDistribution(Constructor baseDistributionConstructor, List<ParameterInfo> pInfo, Object[] vectorArgs) {
+    public VectorizedDistribution(Constructor baseDistributionConstructor, List<Argument> arguments, Object[] vectorArgs) {
 
-        params = Generator.convertArgumentsToParameterMap(pInfo, vectorArgs);
+        params = Generator.convertArgumentsToParameterMap(arguments, vectorArgs);
 
         try {
-            int size = getVectorSize(pInfo, vectorArgs);
+            int size = getVectorSize(arguments, vectorArgs);
             componentDistributions = new ArrayList<>(size);
             for (int component = 0; component < size; component++) {
-                componentDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
+                componentDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, arguments, vectorArgs, component));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -118,7 +118,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
         Constructor constructor = beta.getClass().getConstructors()[0];
 
-        VectorizedDistribution<Double> v = new VectorizedDistribution<>(constructor, Generator.getParameterInfo(constructor), initArgs);
+        VectorizedDistribution<Double> v = new VectorizedDistribution<>(constructor, Generator.getArguments(constructor), initArgs);
 
         RandomVariable<Double[]> rbeta = v.sample();
 

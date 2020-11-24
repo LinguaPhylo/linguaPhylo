@@ -22,15 +22,15 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
     List<DeterministicFunction<T>> componentFunctions;
 
-    public VectorizedFunction(Constructor baseDistributionConstructor, List<ParameterInfo> pInfo, Object[] vectorArgs) {
+    public VectorizedFunction(Constructor baseDistributionConstructor, List<Argument> argInfo, Object[] vectorArgs) {
 
-        params = Generator.convertArgumentsToParameterMap(pInfo, vectorArgs);
+        params = Generator.convertArgumentsToParameterMap(argInfo, vectorArgs);
 
         try {
-            int size = getVectorSize(pInfo, vectorArgs);
+            int size = getVectorSize(argInfo, vectorArgs);
             componentFunctions = new ArrayList<>(size);
             for (int component = 0; component < size; component++) {
-                componentFunctions.add((DeterministicFunction<T>)getComponentGenerator(baseDistributionConstructor, pInfo, vectorArgs, component));
+                componentFunctions.add((DeterministicFunction<T>)getComponentGenerator(baseDistributionConstructor, argInfo, vectorArgs, component));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -111,11 +111,11 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         params.put("arg", new Value<>("arg", new Number[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
         Object[] initArgs = {params.get("arg")};
 
-        System.out.println(" vector match = " + ParserUtils.vectorMatch(Generator.getParameterInfo(exp.getClass(), 0), initArgs));
+        System.out.println(" vector match = " + ParserUtils.vectorMatch(Generator.getArguments(exp.getClass(), 0), initArgs));
 
         Constructor constructor = exp.getClass().getConstructors()[0];
 
-        VectorizedFunction<Double> v = new VectorizedFunction<>(constructor, Generator.getParameterInfo(constructor), initArgs);
+        VectorizedFunction<Double> v = new VectorizedFunction<>(constructor, Generator.getArguments(constructor), initArgs);
         Value<Double[]> repValue = v.apply();
 
         Double[] rv = repValue.value();

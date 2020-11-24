@@ -1,6 +1,6 @@
 package lphy.app;
 
-import lphy.core.lightweight.Argument;
+import lphy.graphicalModel.Argument;
 import lphy.core.lightweight.LGenerator;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GeneratorInfo;

@@ -93,7 +93,7 @@ public class MethodCall extends DeterministicFunction {
             if (method == null) throw nsme;
         }
 
-        methodInfo = method.getAnnotation(MethodInfo.class);
+        methodInfo = getMethodInfo(method);
 
         if (methodInfo == null) {
             throw new IllegalArgumentException("This method is not permitted to be passed through! " +
@@ -104,6 +104,16 @@ public class MethodCall extends DeterministicFunction {
         for (int i = 0; i < arguments.length; i++) {
             setInput(argParamName + i, arguments[i]);
         }
+    }
+
+    private MethodInfo getMethodInfo(Method method) {
+
+        MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
+
+        if (methodInfo != null) return methodInfo;
+
+        // TODO should we check super classes here?
+        return null;
     }
 
     /**

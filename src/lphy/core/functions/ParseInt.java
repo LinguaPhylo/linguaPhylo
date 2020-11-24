@@ -10,7 +10,7 @@ public class ParseInt extends DeterministicFunction<Integer> {
 
     public static final String stringParamName = "str";
 
-    public ParseInt(@ParameterInfo(name = stringParamName, description = "the string value to parse into an integer.", type=String.class) Value<String> str) {
+    public ParseInt(@ParameterInfo(name = stringParamName, description = "the string value to parse into an integer.") Value<String> str) {
 
         setParam(stringParamName, str);
     }

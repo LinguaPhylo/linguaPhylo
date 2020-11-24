@@ -15,7 +15,7 @@ public class Categorical implements GenerativeDistribution<Integer> {
     Value<Double[]> probs;
     RandomGenerator random;
 
-    public Categorical(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.", type=Double.class) Value<Double[]> probs) {
+    public Categorical(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs) {
 
         this.probs = probs;
         this.random = Utils.getRandom();

@@ -1,5 +1,6 @@
 package lphy.core.lightweight;
 
+import lphy.graphicalModel.Argument;
 import lphy.core.lightweight.distributions.*;
 import lphy.core.lightweight.distributions.Exp;
 import lphy.graphicalModel.Generator;

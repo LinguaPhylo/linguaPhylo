@@ -18,10 +18,7 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
     Function func;
     ElementWise1Arg elementWise;
 
-    public ExpressionNode1Arg(
-            @ParameterInfo(name = "expression", description = "string description of the complete expression") String expression,
-            @ParameterInfo(name = "fun", description = "top level function in the expression") Function func,
-            @ParameterInfo(name = "inputs", description = "values used as inputs for the expression") GraphicalModelNode... values) {
+    public ExpressionNode1Arg(String expression, Function func, GraphicalModelNode... values) {
         this.expression = expression;
         this.func = func;
         params = new LinkedHashMap<>();
