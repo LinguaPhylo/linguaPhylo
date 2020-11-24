@@ -15,9 +15,9 @@ model {
   // 0.005 substitutions * site^{-1} * year^{-1} is closer to the truth
   clockRate ~ LogNormal(meanlog=-5.298, sdlog=0.25);
 
-  // two population sizes
+  // 3 population sizes
   Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=3);
-  // m01 and m10 migration rates backwards in time
+  // 6 migration rates backwards in time
   m ~ LogNormal(meanlog=-1.0, sdlog=1.5, n=6);
   M = migrationMatrix(theta=Θ, m=m);
   tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
