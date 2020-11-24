@@ -11,7 +11,7 @@ the length of the argument
 
 ### Return type
 
-- Object
+- Integer
 
 
 

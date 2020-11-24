@@ -1,6 +1,6 @@
 PhyloCTMC distribution
 ======================
-PhyloCTMC(TimeTree **tree**, Object **mu**, Double[] **freq**, Double[][] **Q**, Double[] **siteRates**, Double[] **branchRates**, Integer **L**, String[] **stateNames**, String **dataType**)
+PhyloCTMC(TimeTree **tree**, Number **mu**, Double[] **freq**, Double[][] **Q**, Double[] **siteRates**, Double[] **branchRates**, Integer **L**, String[] **stateNames**, String **dataType**)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)
@@ -8,7 +8,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 ### Parameters
 
 - TimeTree **tree** - the time tree.
-- Object **mu** - the clock rate. Default value is 1.0.
+- Number **mu** - the clock rate. Default value is 1.0.
 - Double[] **freq** - the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
 - Double[][] **Q** - the instantaneous rate matrix.
 - Double[] **siteRates** - a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.

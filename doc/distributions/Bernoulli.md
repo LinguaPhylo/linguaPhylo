@@ -27,7 +27,7 @@ The Bernoulli process for n iid trials. The success (true) probability is p. Pro
 
 ### Return type
 
-- Object
+- Boolean[]
 
 
 

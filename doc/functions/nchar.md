@@ -1,17 +1,17 @@
 nchar function
 ==============
-nchar(Object **sites**)
------------------------
+nchar(NChar **sites**)
+----------------------
 
-The number of sites in the given alignment(s).
+The number of sites in the given alignment.
 
 ### Parameters
 
-- Object **sites** - a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.
+- NChar **sites** - a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.
 
 ### Return type
 
-- Object
+- Integer
 
 
 

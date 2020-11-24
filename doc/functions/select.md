@@ -12,7 +12,7 @@ A function to select a value if the indicator is true, or return 0 otherwise.
 
 ### Return type
 
-- Object
+- Number
 
 
 

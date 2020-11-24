@@ -11,7 +11,7 @@ A function to parse the given string to an integer.
 
 ### Return type
 
-- Object
+- Integer
 
 
 

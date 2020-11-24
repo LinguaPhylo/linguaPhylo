@@ -1,35 +1,35 @@
 Normal distribution
 ===================
-Normal(Object **mean**, Object **sd**)
+Normal(Double **mean**, Double **sd**)
 --------------------------------------
 
 The normal probability distribution.
 
 ### Parameters
 
-- Object **mean** - the mean of the distribution.
-- Object **sd** - the standard deviation of the distribution.
+- Double **mean** - the mean of the distribution.
+- Double **sd** - the standard deviation of the distribution.
 
 ### Return type
 
-- Object
+- Double
 
 
 
-Normal(Object **mean**, Object **sd**, Object **n**)
-----------------------------------------------------
+Normal(Double **mean**, Double **sd**, Integer **n**)
+-----------------------------------------------------
 
 The normal probability distribution.
 
 ### Parameters
 
-- Object **mean** - the mean of the distribution.
-- Object **sd** - the standard deviation of the distribution.
-- Object **n** - the dimension of the return.
+- Double **mean** - the mean of the distribution.
+- Double **sd** - the standard deviation of the distribution.
+- Integer **n** - the dimension of the return.
 
 ### Return type
 
-- Object
+- Double[]
 
 
 

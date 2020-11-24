@@ -1,18 +1,18 @@
 Uniform distribution
 ====================
-Uniform(Object **lower**, Object **upper**)
+Uniform(Number **lower**, Number **upper**)
 -------------------------------------------
 
 The uniform probability distribution.
 
 ### Parameters
 
-- Object **lower** - the lower bound of the uniform distribution.
-- Object **upper** - the upper bound of the uniform distribution.
+- Number **lower** - the lower bound of the uniform distribution.
+- Number **upper** - the upper bound of the uniform distribution.
 
 ### Return type
 
-- Object
+- Double
 
 
 

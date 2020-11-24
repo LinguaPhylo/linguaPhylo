@@ -12,7 +12,7 @@ The scaled dirichlet probability distribution.
 
 ### Return type
 
-- Object
+- Double[]
 
 
 

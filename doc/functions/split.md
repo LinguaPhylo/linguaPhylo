@@ -13,7 +13,7 @@ A function to split a given string at the regular expressions and return the i't
 
 ### Return type
 
-- Object
+- String
 
 
 

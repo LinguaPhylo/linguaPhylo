@@ -13,7 +13,7 @@ The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optio
 
 ### Return type
 
-- Object
+- Double[][]
 
 
 

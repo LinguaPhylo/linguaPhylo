@@ -1,17 +1,19 @@
 ErrorModel distribution
 =======================
-ErrorModel(Object **alpha**, Object **beta**, Object **alignment**)
--------------------------------------------------------------------
+ErrorModel(Double **alpha**, Double **beta**, Alignment **alignment**)
+----------------------------------------------------------------------
+
+The error model distribution on an alignment.
 
 ### Parameters
 
-- Object **alpha** - the false positive probability.
-- Object **beta** - the false negative probability.
-- Object **alignment** - the alignment without errors.
+- Double **alpha** - the false positive probability.
+- Double **beta** - the false negative probability.
+- Alignment **alignment** - the alignment without errors.
 
 ### Return type
 
-- Object
+- Alignment
 
 
 

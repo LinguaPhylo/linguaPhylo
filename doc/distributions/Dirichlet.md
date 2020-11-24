@@ -11,7 +11,7 @@ The dirichlet probability distribution.
 
 ### Return type
 
-- Object
+- Double[]
 
 
 
@@ -27,7 +27,7 @@ The dirichlet probability distribution.
 
 ### Return type
 
-- Object
+- Double[][]
 
 
 

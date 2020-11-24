@@ -1,19 +1,19 @@
 gtr function
 ============
-gtr(Object **rates**, Object **freq**, Object **meanRate**)
------------------------------------------------------------
+gtr(Double[] **rates**, Double[] **freq**, Number **meanRate**)
+---------------------------------------------------------------
 
 The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.
 
 ### Parameters
 
-- Object **rates** - the relative rates of the GTR process.
-- Object **freq** - the base frequencies.
-- Object **meanRate** - the base frequencies.
+- Double[] **rates** - the relative rates of the GTR process.
+- Double[] **freq** - the base frequencies.
+- Number **meanRate** - the base frequencies.
 
 ### Return type
 
-- Object
+- Double[][]
 
 
 

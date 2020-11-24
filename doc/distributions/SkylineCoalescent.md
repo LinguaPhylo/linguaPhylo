@@ -1,21 +1,21 @@
 SkylineCoalescent distribution
 ==============================
-SkylineCoalescent(Object **theta**, Object **groupSizes**, Object **n**, Object **taxa**, Object **ages**)
-----------------------------------------------------------------------------------------------------------
+SkylineCoalescent(Double[] **theta**, Integer[] **groupSizes**, Integer **n**, Taxa **taxa**, Double[] **ages**)
+----------------------------------------------------------------------------------------------------------------
 
 The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)
 
 ### Parameters
 
-- Object **theta** - effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal to the number of population size parameters.
-- Object **groupSizes** - A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent.
-- Object **n** - number of taxa.
-- Object **taxa** - Taxa object, (e.g. Taxa or Object[])
-- Object **ages** - an array of leaf node ages.
+- Double[] **theta** - effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal to the number of population size parameters.
+- Integer[] **groupSizes** - A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent.
+- Integer **n** - number of taxa.
+- Taxa **taxa** - Taxa object, (e.g. Taxa or Object[])
+- Double[] **ages** - an array of leaf node ages.
 
 ### Return type
 
-- Object
+- TimeTree
 
 ### Reference
 

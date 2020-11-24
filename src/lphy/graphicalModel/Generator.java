@@ -20,8 +20,14 @@ import java.util.*;
 public interface Generator<T> extends GraphicalModelNode<T> {
 
     static Class<?> getReturnType(Class<?> genClass) {
-        GeneratorInfo generatorInfo = getGeneratorInfo(genClass);
-        if (generatorInfo != null) return generatorInfo.returnType();
+        Method[] methods = genClass.getMethods();
+
+        for (Method method: methods) {
+            GeneratorInfo generatorInfo = method.getAnnotation(GeneratorInfo.class);
+            if (generatorInfo != null) {
+                return lphy.reflection.Utils.getGenericReturnType(method);
+            }
+        }
         return Object.class;
     }
 
@@ -314,7 +320,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
         md.append(new Heading("Return type", 3)).append("\n\n");
 
-        List<String> returnType = Collections.singletonList(generatorInfo != null ? generatorInfo.returnType().getSimpleName() : "Object");
+        List<String> returnType = Collections.singletonList(getReturnType(generatorClass).getSimpleName());
         md.append(new UnorderedList<>(returnType)).append("\n\n");
 
         Citation citation = getCitation(generatorClass);

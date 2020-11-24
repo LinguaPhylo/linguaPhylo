@@ -1,21 +1,21 @@
 SimFBDAge distribution
 ======================
-SimFBDAge(Object **lambda**, Object **mu**, Object **frac**, Object **psi**, Object **originAge**)
+SimFBDAge(Number **lambda**, Number **mu**, Double **frac**, Number **psi**, Number **originAge**)
 --------------------------------------------------------------------------------------------------
 
 A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on origin age.
 
 ### Parameters
 
-- Object **lambda** - per-lineage birth rate.
-- Object **mu** - per-lineage death rate.
-- Object **frac** - fraction of extant taxa sampled.
-- Object **psi** - per-lineage sampling-through-time rate.
-- Object **originAge** - the age of the origin.
+- Number **lambda** - per-lineage birth rate.
+- Number **mu** - per-lineage death rate.
+- Double **frac** - fraction of extant taxa sampled.
+- Number **psi** - per-lineage sampling-through-time rate.
+- Number **originAge** - the age of the origin.
 
 ### Return type
 
-- Object
+- TimeTree
 
 
 

@@ -97,7 +97,9 @@ Types
 - [Number](types/Number.md)
 - [Object](types/Object.md)
 - [String](types/String.md)
+- [NChar](types/NChar.md)
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
+- [ContinuousCharacterData](types/ContinuousCharacterData.md)
 - [TimeTree](types/TimeTree.md)
 

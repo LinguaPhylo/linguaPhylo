@@ -35,4 +35,5 @@ public class RandomVariable<T> extends Value<T> {
     public List<GraphicalModelNode> getInputs() {
         return Collections.singletonList(g);
     }
+
 }

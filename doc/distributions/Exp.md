@@ -1,33 +1,33 @@
 Exp distribution
 ================
-Exp(Object **mean**)
+Exp(Double **mean**)
 --------------------
 
 The exponential probability distribution.
 
 ### Parameters
 
-- Object **mean** - the mean of an exponential distribution.
+- Double **mean** - the mean of an exponential distribution.
 
 ### Return type
 
-- Object
+- Double
 
 
 
-Exp(Object **mean**, Object **n**)
-----------------------------------
+Exp(Double **mean**, Integer **n**)
+-----------------------------------
 
 The exponential probability distribution.
 
 ### Parameters
 
-- Object **mean** - the mean of an exponential distribution.
-- Object **n** - the number of iid exponential draws.
+- Double **mean** - the mean of an exponential distribution.
+- Integer **n** - the number of iid exponential draws.
 
 ### Return type
 
-- Object
+- Double[]
 
 
 

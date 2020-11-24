@@ -1,12 +1,12 @@
 Range function
 ==============
-Range(Object **start**, Object **end**)
----------------------------------------
+Range(Integer **start**, Integer **end**)
+-----------------------------------------
 
 ### Parameters
 
-- Object **start** - start of the range (inclusive)
-- Object **end** - end of the range (inclusive)
+- Integer **start** - start of the range (inclusive)
+- Integer **end** - end of the range (inclusive)
 
 ### Return type
 

@@ -57,6 +57,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
+    @GeneratorInfo(name = "ErrorModel", description = "The error model distribution on an alignment.")
     public RandomVariable<Alignment> sample() {
 
         Alignment original = alignment.value();

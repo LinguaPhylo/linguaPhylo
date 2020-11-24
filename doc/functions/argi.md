@@ -1,18 +1,18 @@
 argi function
 =============
-argi(Object **name**, Object **default**)
------------------------------------------
+argi(String **name**, Integer **default**)
+------------------------------------------
 
 The arg function for reading an integer.
 
 ### Parameters
 
-- Object **name** - the name of the integer argument.
-- Object **default** - the default value.
+- String **name** - the name of the integer argument.
+- Integer **default** - the default value.
 
 ### Return type
 
-- Object
+- Integer
 
 
 

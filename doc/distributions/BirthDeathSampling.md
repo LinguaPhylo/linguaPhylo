@@ -1,38 +1,38 @@
 BirthDeathSampling distribution
 ===============================
-BirthDeathSampling(Object **lambda**, Object **mu**, Object **rho**, Object **rootAge**)
+BirthDeathSampling(Number **lambda**, Number **mu**, Number **rho**, Number **rootAge**)
 ----------------------------------------------------------------------------------------
 
 The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.
 
 ### Parameters
 
-- Object **lambda** - per-lineage birth rate.
-- Object **mu** - per-lineage death rate.
-- Object **rho** - the sampling proportion.
-- Object **rootAge** - the age of the root of the tree.
+- Number **lambda** - per-lineage birth rate.
+- Number **mu** - per-lineage death rate.
+- Number **rho** - the sampling proportion.
+- Number **rootAge** - the age of the root of the tree.
 
 ### Return type
 
-- Object
+- TimeTree
 
 
 
-BirthDeathSampling(Object **diversification**, Object **turnover**, Object **rho**, Object **rootAge**)
+BirthDeathSampling(Number **diversification**, Number **turnover**, Number **rho**, Number **rootAge**)
 -------------------------------------------------------------------------------------------------------
 
 The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.
 
 ### Parameters
 
-- Object **diversification** - diversification rate.
-- Object **turnover** - turnover.
-- Object **rho** - the sampling proportion.
-- Object **rootAge** - the number of taxa.
+- Number **diversification** - diversification rate.
+- Number **turnover** - turnover.
+- Number **rho** - the sampling proportion.
+- Number **rootAge** - the age of the root node.
 
 ### Return type
 
-- Object
+- TimeTree
 
 
 

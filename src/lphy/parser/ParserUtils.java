@@ -71,7 +71,7 @@ public class ParserUtils {
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
 
-            types.add(Generator.getReturnType(genClass));
+            types.add(GenerativeDistribution.getReturnType((Class<GenerativeDistribution>)genClass));
 
             Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
         }

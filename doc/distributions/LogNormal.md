@@ -1,35 +1,35 @@
 LogNormal distribution
 ======================
-LogNormal(Object **meanlog**, Object **sdlog**)
+LogNormal(Number **meanlog**, Number **sdlog**)
 -----------------------------------------------
 
 The log-normal probability distribution.
 
 ### Parameters
 
-- Object **meanlog** - the mean of the distribution on the log scale.
-- Object **sdlog** - the standard deviation of the distribution on the log scale.
+- Number **meanlog** - the mean of the distribution on the log scale.
+- Number **sdlog** - the standard deviation of the distribution on the log scale.
 
 ### Return type
 
-- Object
+- Double
 
 
 
-LogNormal(Object **meanlog**, Object **sdlog**, Object **n**)
--------------------------------------------------------------
+LogNormal(Double **meanlog**, Double **sdlog**, Integer **n**)
+--------------------------------------------------------------
 
 The log-normal probability distribution.
 
 ### Parameters
 
-- Object **meanlog** - the mean of the distribution on the log scale.
-- Object **sdlog** - the standard deviation of the distribution on the log scale.
-- Object **n** - the dimension of the return.
+- Double **meanlog** - the mean of the distribution on the log scale.
+- Double **sdlog** - the standard deviation of the distribution on the log scale.
+- Integer **n** - the dimension of the return.
 
 ### Return type
 
-- Object
+- Double[]
 
 
 

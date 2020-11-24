@@ -1,17 +1,17 @@
 extantTaxa function
 ===================
-extantTaxa(Object **taxa**)
----------------------------
+extantTaxa(Taxa **taxa**)
+-------------------------
 
 Returns the extant taxa from the given taxa object.
 
 ### Parameters
 
-- Object **taxa** - the taxa-dimensioned value.
+- Taxa **taxa** - the taxa-dimensioned value.
 
 ### Return type
 
-- Object
+- Taxa
 
 
 

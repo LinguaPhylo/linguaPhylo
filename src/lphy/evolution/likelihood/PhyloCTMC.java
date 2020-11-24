@@ -168,7 +168,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
-            "(The sampling distribution that the phylogenetic likelihood is derived from.)", returnType = Alignment.class)
+            "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
         setup();
 

@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import lphy.reflection.Utils;
+
 import javax.swing.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -79,4 +81,13 @@ public interface GenerativeDistribution<T> extends Generator<T> {
         throw new UnsupportedOperationException();
     }
 
+    static Class<?> getReturnType(Class<? extends GenerativeDistribution> genClass) {
+        try {
+            Method method = genClass.getMethod("sample");
+            Class returnType = Utils.getGenericReturnType(method);
+            return returnType;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("GenerativeDistribution has no sample method?!");
+        }
+    }
 }

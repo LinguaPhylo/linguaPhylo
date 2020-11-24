@@ -1,17 +1,17 @@
 exp function
 ============
-exp(Object **arg**)
+exp(Number **arg**)
 -------------------
 
 The exponential function: e^x
 
 ### Parameters
 
-- Object **arg** - the argument.
+- Number **arg** - the argument.
 
 ### Return type
 
-- Object
+- Double
 
 
 

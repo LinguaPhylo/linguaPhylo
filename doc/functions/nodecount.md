@@ -1,17 +1,17 @@
 nodecount function
 ==================
-nodecount(Object **tree**)
---------------------------
+nodecount(TimeTree **tree**)
+----------------------------
 
 The number of nodes in the tree
 
 ### Parameters
 
-- Object **tree** - the tree.
+- TimeTree **tree** - the tree.
 
 ### Return type
 
-- Object
+- Integer
 
 
 

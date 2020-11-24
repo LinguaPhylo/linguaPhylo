@@ -23,7 +23,7 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
     @GeneratorInfo(name = "binaryRateMatrix",
             description = "The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:\n\n" +
                     "    Q = ⎡-1  1⎤\n" + // initial four spaces define a code block in markdown
-                    "        ⎣ λ -λ⎦", returnType = Double[][].class)
+                    "        ⎣ λ -λ⎦")
     public Value<Double[][]> apply() {
         Value<Number> lambda = getParams().get(lambdaParamName);
         return new DoubleArray2DValue(binaryCTMC(doubleValue(lambda)), this);

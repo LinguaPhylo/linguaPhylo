@@ -28,8 +28,7 @@ public class GeneralTimeReversible extends RateMatrix {
     }
 
     @GeneratorInfo(name = "generalTimeReversible",
-            description = "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.",
-            returnType = Double[][].class)
+            description = "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getRates();
         Value<Double[]> freq = getFreq();

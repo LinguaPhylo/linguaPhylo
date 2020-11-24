@@ -1,15 +1,15 @@
 PhyloWrappedBivariateDiffusion distribution
 ===========================================
-PhyloWrappedBivariateDiffusion(Object **tree**, Object **mu**, Object **sigma**, Object **alpha**, Object **y0**)
------------------------------------------------------------------------------------------------------------------
+PhyloWrappedBivariateDiffusion(TimeTree **tree**, Double[] **mu**, Double[] **sigma**, Double[] **alpha**, Double[] **y0**)
+---------------------------------------------------------------------------------------------------------------------------
 
 ### Parameters
 
-- Object **tree** - the time tree.
-- Object **mu** - the mean of the stationary distribution.
-- Object **sigma** - the two variance terms.
-- Object **alpha** - the three drift terms.
-- Object **y0** - the value of multivariate traits at the root.
+- TimeTree **tree** - the time tree.
+- Double[] **mu** - the mean of the stationary distribution.
+- Double[] **sigma** - the two variance terms.
+- Double[] **alpha** - the three drift terms.
+- Double[] **y0** - the value of multivariate traits at the root.
 
 ### Return type
 

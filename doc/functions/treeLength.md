@@ -1,17 +1,17 @@
 treeLength function
 ===================
-treeLength(Object **tree**)
----------------------------
+treeLength(TimeTree **tree**)
+-----------------------------
 
 The sum of all the branch lengths in the tree.
 
 ### Parameters
 
-- Object **tree** - the tree.
+- TimeTree **tree** - the tree.
 
 ### Return type
 
-- Object
+- Double
 
 
 
