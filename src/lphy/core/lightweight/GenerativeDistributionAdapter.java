@@ -7,7 +7,7 @@ import java.util.*;
 
 public class GenerativeDistributionAdapter<T> extends GeneratorAdapter<T> implements GenerativeDistribution<T> {
 
-    public GenerativeDistributionAdapter(LightweightGenerativeDistribution<T> baseDistribution, Map<String, Value> params) {
+    public GenerativeDistributionAdapter(LGenerativeDistribution<T> baseDistribution, Map<String, Value> params) {
         super(baseDistribution, params);
     }
 
@@ -16,7 +16,7 @@ public class GenerativeDistributionAdapter<T> extends GeneratorAdapter<T> implem
     }
 
     public RandomVariable<T> sample(String id) {
-        return new RandomVariable<>(id, ((LightweightGenerativeDistribution<T>)baseDistribution).sample(), this);
+        return new RandomVariable<>(id, ((LGenerativeDistribution<T>)baseDistribution).sample(), this);
     }
 
     public Value<T> generate() {

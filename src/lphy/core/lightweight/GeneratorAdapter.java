@@ -1,20 +1,17 @@
 package lphy.core.lightweight;
 
 import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class GeneratorAdapter<T> implements Generator<T> {
 
-    LightweightGenerator<T> baseDistribution;
+    LGenerator<T> baseDistribution;
 
     Map<String, Value> params;
 
-    public GeneratorAdapter(LightweightGenerator<T> baseDistribution, Map<String, Value> params) {
+    public GeneratorAdapter(LGenerator<T> baseDistribution, Map<String, Value> params) {
         this.baseDistribution = baseDistribution;
 
         this.params = params;
@@ -36,7 +33,7 @@ public abstract class GeneratorAdapter<T> implements Generator<T> {
     }
 
     public Value<T> generate() {
-        return new Value<T>(null, baseDistribution.generateLight());
+        return new Value<T>(null, baseDistribution.generateRaw());
     }
 
     @Override
@@ -51,6 +48,6 @@ public abstract class GeneratorAdapter<T> implements Generator<T> {
 
     @Override
     public T value() {
-        return baseDistribution.generateLight();
+        return baseDistribution.generateRaw();
     }
 }

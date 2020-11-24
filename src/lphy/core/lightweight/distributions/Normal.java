@@ -1,7 +1,7 @@
 package lphy.core.lightweight.distributions;
 
 import lphy.core.distributions.Utils;
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -9,7 +9,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 /**
  * Normal distribution
  */
-public class Normal implements LightweightGenerativeDistribution<Double> {
+public class Normal implements LGenerativeDistribution<Double> {
 
     private Double mean;
     private Double sd;

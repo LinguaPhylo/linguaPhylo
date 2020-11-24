@@ -1,13 +1,13 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 
 /**
  * Multivariate Normal distribution
  */
-public class MVN implements LightweightGenerativeDistribution<Double[]> {
+public class MVN implements LGenerativeDistribution<Double[]> {
 
     private Double[] mean;
     private Double[][] covariances;

@@ -1,13 +1,13 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 /**
  * Gamma distribution
  */
-public class Gamma implements LightweightGenerativeDistribution<Double> {
+public class Gamma implements LGenerativeDistribution<Double> {
 
     private Double shape;
     private Double scale;

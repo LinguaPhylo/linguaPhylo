@@ -1,13 +1,13 @@
 package lphy.core.lightweight.distributions;
 
 import lphy.core.distributions.Utils;
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Dirichlet implements LightweightGenerativeDistribution<Double[]> {
+public class Dirichlet implements LGenerativeDistribution<Double[]> {
 
     private Double[] concentration;
 

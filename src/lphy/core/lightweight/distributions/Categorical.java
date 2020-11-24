@@ -1,13 +1,11 @@
 package lphy.core.lightweight.distributions;
 
 import lphy.core.distributions.Utils;
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.Map;
-
-public class Categorical implements LightweightGenerativeDistribution<Integer> {
+public class Categorical implements LGenerativeDistribution<Integer> {
 
     Double[] probs;
     RandomGenerator random;
