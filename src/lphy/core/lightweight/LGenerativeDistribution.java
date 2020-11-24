@@ -15,14 +15,14 @@ import java.util.List;
 
 import static lphy.graphicalModel.Generator.getGeneratorInfo;
 
-public interface LightweightGenerativeDistribution<T> extends LightweightGenerator<T> {
+public interface LGenerativeDistribution<T> extends LGenerator<T> {
 
     @Override
     default boolean isRandomGenerator() {
         return true;
     }
 
-    default T sample() { return generateLight(); }
+    default T sample() { return generateRaw(); }
 
     default double density(T value) {
         return Math.exp(logDensity(value));
@@ -32,13 +32,13 @@ public interface LightweightGenerativeDistribution<T> extends LightweightGenerat
         return Math.log(density(value));
     }
 
-    default T generateLight() { return sample(); }
+    default T generateRaw() { return sample(); }
 
-    static String getLightweightGeneratorMarkdown(Class<? extends LightweightGenerator> generatorClass) {
+    static String getLightweightGeneratorMarkdown(Class<? extends LGenerator> generatorClass) {
 
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
 
-        List<Argument> arguments = LightweightGenerator.getArguments(generatorClass,0);
+        List<Argument> arguments = LGenerator.getArguments(generatorClass,0);
 
         StringBuilder md = new StringBuilder();
 

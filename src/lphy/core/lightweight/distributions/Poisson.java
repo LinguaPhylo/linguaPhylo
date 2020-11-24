@@ -1,13 +1,13 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Poisson implements LightweightGenerativeDistribution<Integer> {
+public class Poisson implements LGenerativeDistribution<Integer> {
 
     private Double lambda;
 

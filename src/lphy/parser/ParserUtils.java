@@ -4,8 +4,8 @@ import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
 import lphy.core.lightweight.GenerativeDistributionAdapter;
-import lphy.core.lightweight.LightweightGenerativeDistribution;
-import lphy.core.lightweight.LightweightGenerator;
+import lphy.core.lightweight.LGenerativeDistribution;
+import lphy.core.lightweight.LGenerator;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
@@ -84,7 +84,7 @@ public class ParserUtils {
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
 
-            types.add(LightweightGenerator.getReturnType((Class<LightweightGenerator>)genClass));
+            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 
             for (ParameterInfo parameterInfo : Generator.getAllParameterInfo(genClass)) {
                 types.add(parameterInfo.type());
@@ -178,7 +178,7 @@ public class ParserUtils {
 
             if (match(arguments, pInfo)) {
 
-                boolean lightweight = LightweightGenerativeDistribution.class.isAssignableFrom(generatorClass);
+                boolean lightweight = LGenerativeDistribution.class.isAssignableFrom(generatorClass);
 
                 for (int i = 0; i < pInfo.size(); i++) {
                     Value arg = arguments.get(pInfo.get(i).name());
@@ -250,9 +250,9 @@ public class ParserUtils {
         try {
             if (Generator.matchingParameterTypes(pInfo, initargs, lightweight)) {
                 if (lightweight) {
-                    boolean generativeDistribution = LightweightGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
+                    boolean generativeDistribution = LGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
                     if (generativeDistribution) {
-                        return new GenerativeDistributionAdapter((LightweightGenerativeDistribution)constructor.newInstance(initargs), params);
+                        return new GenerativeDistributionAdapter((LGenerativeDistribution)constructor.newInstance(initargs), params);
                     } else throw new RuntimeException("Only lightweight generative distributions are currently supported!");
                 }
 

@@ -1,7 +1,7 @@
 package lphy.doc;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
-import lphy.core.lightweight.LightweightGenerator;
+import lphy.core.lightweight.LGenerativeDistribution;
+import lphy.core.lightweight.LGenerator;
 import lphy.graphicalModel.*;
 import lphy.parser.ParserUtils;
 import net.steppschuh.markdowngenerator.link.Link;
@@ -159,8 +159,8 @@ public class GenerateDocs {
 
         for (Class<?> c : classes) {
 
-            if (LightweightGenerator.class.isAssignableFrom(c)) {
-                builder.append(LightweightGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LightweightGenerator>)c)).append("\n\n");
+            if (LGenerator.class.isAssignableFrom(c)) {
+                builder.append(LGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LGenerator>)c)).append("\n\n");
             } else {
                 builder.append(Generator.getGeneratorMarkdown((Class<Generator>)c)).append("\n\n");
             }

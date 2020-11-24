@@ -1,11 +1,6 @@
 package lphy.core.lightweight;
 
 import lphy.graphicalModel.*;
-import net.steppschuh.markdowngenerator.link.Link;
-import net.steppschuh.markdowngenerator.list.UnorderedList;
-import net.steppschuh.markdowngenerator.text.Text;
-import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
-import net.steppschuh.markdowngenerator.text.heading.Heading;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -13,13 +8,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static lphy.graphicalModel.Generator.getGeneratorInfo;
-import static lphy.graphicalModel.Generator.getParameterInfo;
+/**
+ * A lightweight generator interface that involves only raw values for input and output and a beans style pattern for
+ * setting and getting.
+ * @param <T> the return type of the generator.
+ */
+public interface LGenerator<T> {
 
-public interface LightweightGenerator<T> {
+    /**
+     * @return an object generated from this generator.
+     */
+    T generateRaw();
 
-    T generateLight();
-
+    /**
+     * @return true if this generator produces objects that are a deterministic function of the arguments
+     */
     boolean isRandomGenerator();
 
     default void setArgumentValue(Argument argument, Object val) {
@@ -100,9 +103,9 @@ public interface LightweightGenerator<T> {
         return null;
     }
 
-    static Class<?> getReturnType(Class<LightweightGenerator> c) {
+    static Class<?> getReturnType(Class<LGenerator> c) {
         try {
-            return c.getMethod("generateLight").getReturnType();
+            return c.getMethod("generateRaw").getReturnType();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }

@@ -1,10 +1,10 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
-public class Binomial implements LightweightGenerativeDistribution<Integer> {
+public class Binomial implements LGenerativeDistribution<Integer> {
 
     private Double p;
     private Integer n;

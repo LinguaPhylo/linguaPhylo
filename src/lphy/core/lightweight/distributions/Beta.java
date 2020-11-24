@@ -1,13 +1,13 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Beta implements LightweightGenerativeDistribution<Double> {
+public class Beta implements LGenerativeDistribution<Double> {
 
     private Number alpha;
     private Number beta;

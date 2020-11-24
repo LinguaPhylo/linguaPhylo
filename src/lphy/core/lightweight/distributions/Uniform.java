@@ -1,14 +1,14 @@
 package lphy.core.lightweight.distributions;
 
 import lphy.core.distributions.Utils;
-import lphy.core.lightweight.LightweightGenerativeDistribution;
+import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
  * Created by adru001 on 18/12/19.
  */
-public class Uniform implements LightweightGenerativeDistribution<Double> {
+public class Uniform implements LGenerativeDistribution<Double> {
 
     private Double lower;
     private Double upper;

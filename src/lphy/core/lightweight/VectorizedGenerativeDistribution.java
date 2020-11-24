@@ -7,7 +7,7 @@ import lphy.graphicalModel.Generator;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class VectorizedGenerativeDistribution<T> extends VectorizedGenerator<T> implements LightweightGenerativeDistribution<T[]> {
+public class VectorizedGenerativeDistribution<T> extends VectorizedGenerator<T> implements LGenerativeDistribution<T[]> {
 
     // PARSER STATE
     static Map<String, Set<Class<?>>> genDistDictionary;
@@ -26,13 +26,13 @@ public class VectorizedGenerativeDistribution<T> extends VectorizedGenerator<T> 
         }
     }
 
-    public VectorizedGenerativeDistribution(LightweightGenerativeDistribution<T> baseDistribution, SortedMap<Argument, Object> argumentValues) {
+    public VectorizedGenerativeDistribution(LGenerativeDistribution<T> baseDistribution, SortedMap<Argument, Object> argumentValues) {
         super(baseDistribution, argumentValues);
     }
 
     public static VectorizedGenerativeDistribution createVectorizedGenerativeDistribution(String name, Map<String, Object> params) {
 
-        LightweightGenerativeDistribution lwg = (LightweightGenerativeDistribution)genDistDictionary.get(name);
+        LGenerativeDistribution lwg = (LGenerativeDistribution)genDistDictionary.get(name);
 
         if (lwg == null) throw new RuntimeException("Couldn't find generative distribution named: " + name);
 
@@ -60,7 +60,7 @@ public class VectorizedGenerativeDistribution<T> extends VectorizedGenerator<T> 
 
         VectorizedGenerativeDistribution<Double> v = new VectorizedGenerativeDistribution<>(beta, arguments);
 
-        Double[] rbeta = v.generateLight();
+        Double[] rbeta = v.generateRaw();
 
         System.out.println(Arrays.toString(rbeta));
 

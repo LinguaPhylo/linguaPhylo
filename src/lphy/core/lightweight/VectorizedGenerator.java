@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]> {
+public abstract class VectorizedGenerator<T> implements LGenerator<T[]> {
 
-    Class<? extends LightweightGenerator> baseGeneratorClass;
-    LightweightGenerator<T> baseGenerator;
+    Class<? extends LGenerator> baseGeneratorClass;
+    LGenerator<T> baseGenerator;
 
     private SortedMap<Argument, Object> argumentValues;
     private SortedMap<String, Argument> argumentsByName = new TreeMap<>();
@@ -18,9 +18,9 @@ public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]
 
     int dim;
 
-    public VectorizedGenerator(Class<? extends LightweightGenerator> baseGeneratorClass, SortedMap<Argument, Object> argumentValues) {
+    public VectorizedGenerator(Class<? extends LGenerator> baseGeneratorClass, SortedMap<Argument, Object> argumentValues) {
         this.baseGeneratorClass = baseGeneratorClass;
-        for (Argument arg : LightweightGenerator.getArguments(baseGeneratorClass, 0)) {
+        for (Argument arg : LGenerator.getArguments(baseGeneratorClass, 0)) {
             argumentsByName.put(arg.name, arg);
         }
         if (argumentValues == null) {
@@ -29,7 +29,7 @@ public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]
         setup();
     }
 
-    public VectorizedGenerator(LightweightGenerator<T> baseGenerator, SortedMap<Argument, Object> argumentValues) {
+    public VectorizedGenerator(LGenerator<T> baseGenerator, SortedMap<Argument, Object> argumentValues) {
         baseGeneratorClass = baseGenerator.getClass();
         this.baseGenerator = baseGenerator;
         this.argumentValues = argumentValues;
@@ -48,7 +48,7 @@ public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]
 
         // create first instance of lightweight generator if necessary
         if (baseGenerator == null) {
-            List<Argument> args = LightweightGenerator.getArguments(baseGeneratorClass, 0);
+            List<Argument> args = LGenerator.getArguments(baseGeneratorClass, 0);
             Object[] initArgs = new Object[args.size()];
             for (int i = 0; i < initArgs.length; i++) {
                 Argument arg = args.get(i);
@@ -89,9 +89,9 @@ public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]
         return baseGenerator.isRandomGenerator();
     }
 
-    public T[] generateLight() {
+    public T[] generateRaw() {
 
-        T first = baseGenerator.generateLight();
+        T first = baseGenerator.generateRaw();
 
         T[] result = (T[]) Array.newInstance(first.getClass(), dim);
         result[0] = first;
@@ -105,7 +105,7 @@ public abstract class VectorizedGenerator<T> implements LightweightGenerator<T[]
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
-                result[i] = baseGenerator.generateLight();
+                result[i] = baseGenerator.generateRaw();
             }
         }
         return result;
