@@ -11,7 +11,7 @@ PhyloCircularBrownian(TimeTree **tree**, Double **diffRate**, Double **y0**)
 
 ### Return type
 
-- Object
+- ContinuousCharacterData
 
 
 

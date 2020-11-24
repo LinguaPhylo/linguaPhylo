@@ -11,7 +11,7 @@ PhyloToroidalBrownian(TimeTree **tree**, Double[][] **diffusionMatrix**, Double[
 
 ### Return type
 
-- Object
+- ContinuousCharacterData
 
 
 

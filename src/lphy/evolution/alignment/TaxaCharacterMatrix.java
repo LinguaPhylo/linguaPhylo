@@ -2,10 +2,11 @@ package lphy.evolution.alignment;
 
 import lphy.evolution.HasTaxa;
 import lphy.evolution.NChar;
+import lphy.graphicalModel.MultiDimensional;
 
 import java.lang.reflect.Array;
 
-public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa {
+public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa, MultiDimensional {
 
     /**
      * @param taxon

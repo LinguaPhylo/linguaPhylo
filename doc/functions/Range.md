@@ -10,7 +10,7 @@ Range(Integer **start**, Integer **end**)
 
 ### Return type
 
-- Object
+- Integer[]
 
 
 

@@ -21,6 +21,10 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
         return continuousCharacterData[taxa.indexOfTaxon(taxonName)][column];
     }
 
+    public Double getState(int taxonIndex, int column) {
+        return continuousCharacterData[taxonIndex][column];
+    }
+
     @Override
     public Class getComponentType() {
         return Double.class;
@@ -50,5 +54,10 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
         builder.append("  ntax = ").append(taxa.ntaxa());
         builder.append("\n").append("}");
         return builder.toString();
+    }
+
+    @Override
+    public int getDimension() {
+        return nchar()*taxa.getDimension();
     }
 }

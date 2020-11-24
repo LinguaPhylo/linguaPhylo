@@ -13,7 +13,7 @@ PhyloCircularOU(TimeTree **tree**, Double **variance**, Double **theta**, Double
 
 ### Return type
 
-- Object
+- ContinuousCharacterData
 
 
 

@@ -14,7 +14,7 @@ PhyloOU(TimeTree **tree**, Double **diffRate**, Double **theta**, Double **alpha
 
 ### Return type
 
-- Object
+- ContinuousCharacterData
 
 
 

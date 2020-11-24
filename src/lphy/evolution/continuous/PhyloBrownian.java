@@ -1,5 +1,7 @@
 package lphy.evolution.continuous;
 
+import lphy.evolution.Taxa;
+import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.core.distributions.Utils;
@@ -13,7 +15,7 @@ import java.util.*;
 /**
  * Created by adru001 on 2/02/20.
  */
-public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>> {
+public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacterData> {
 
     Value<TimeTree> tree;
     protected Value<Double> diffusionRate;
@@ -63,7 +65,7 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
         }
     }
 
-    public RandomVariable<Map<String, Double>> sample() {
+    public RandomVariable<ContinuousCharacterData> sample() {
 
         SortedMap<String, Integer> idMap = new TreeMap<>();
         fillIdMap(tree.value().getRoot(), idMap);
@@ -72,7 +74,16 @@ public class PhyloBrownian implements GenerativeDistribution<Map<String, Double>
 
         traverseTree(tree.value().getRoot(), y0, tipValues, diffusionRate.value(), idMap);
 
-        return new RandomVariable<>("x", tipValues, this);
+        Taxa taxa = Taxa.createTaxa(tipValues.keySet().toArray());
+        Double[][] values = new Double[taxa.ntaxa()][1];
+        String[] names = taxa.getTaxaNames();
+        for (int i = 0; i < names.length; i++) {
+            values[i][0] = tipValues.get(names[i]);
+        }
+
+        ContinuousCharacterData continuousCharacterData = new ContinuousCharacterData(taxa, values);
+
+        return new RandomVariable<>(null, continuousCharacterData, this);
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {

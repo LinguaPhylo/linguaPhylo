@@ -19,18 +19,6 @@ import java.util.*;
  */
 public interface Generator<T> extends GraphicalModelNode<T> {
 
-    static Class<?> getReturnType(Class<?> genClass) {
-        Method[] methods = genClass.getMethods();
-
-        for (Method method: methods) {
-            GeneratorInfo generatorInfo = method.getAnnotation(GeneratorInfo.class);
-            if (generatorInfo != null) {
-                return lphy.reflection.Utils.getGenericReturnType(method);
-            }
-        }
-        return Object.class;
-    }
-
     String getName();
 
     /**
@@ -109,6 +97,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         }
         return false;
     }
+
     default String getParamName(int paramIndex, int constructorIndex) {
         return getParameterInfo(constructorIndex).get(paramIndex).name();
     }
@@ -264,7 +253,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
 
         List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
-        Class[] types = getParameterTypes(generatorClass,0);
+        Class[] types = getParameterTypes(generatorClass, 0);
 
         StringBuilder md = new StringBuilder();
 
@@ -414,5 +403,34 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             if (value != null) params.put(argumentInfo.name, value);
         }
         return params;
+    }
+
+    static Class<?> getReturnType(Class<?> genClass) {
+        Method[] methods = genClass.getMethods();
+
+        for (Method method : methods) {
+            GeneratorInfo generatorInfo = method.getAnnotation(GeneratorInfo.class);
+            if (generatorInfo != null) {
+                return lphy.reflection.Utils.getGenericReturnType(method);
+            }
+        }
+        if (GenerativeDistribution.class.isAssignableFrom(genClass)) {
+            try {
+                Method method = genClass.getMethod("sample");
+                return lphy.reflection.Utils.getGenericReturnType(method);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        } else if (DeterministicFunction.class.isAssignableFrom(genClass)) {
+            {
+                try {
+                    Method method = genClass.getMethod("apply");
+                    return lphy.reflection.Utils.getGenericReturnType(method);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return Object.class;
     }
 }

@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.swing.BooleanValueEditor;
@@ -197,6 +198,22 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer continuousCharacterDataViewer = new Viewer() {
+
+        @Override
+        public boolean match(Object value) {
+            return value instanceof ContinuousCharacterData || (value instanceof Value && ((Value) value).value() instanceof ContinuousCharacterData);
+        }
+
+        @Override
+        public JComponent getViewer(Object value) {
+            if (value instanceof Taxa) {
+                return new ContinuousCharacterDataComponent((ContinuousCharacterData)value);
+            }
+            return new ContinuousCharacterDataComponent(((Value<ContinuousCharacterData>) value).value());
+        }
+    };
+
     private static Viewer mapValueViewer = new Viewer() {
 
         @Override
@@ -236,6 +253,7 @@ public class ViewerRegister {
             alignmentValueViewer,
             timeTreeValueViewer,
             taxaValueViewer,
+            continuousCharacterDataViewer,
             primitiveArrayViewer,
             new VectorValueViewer()
     };
