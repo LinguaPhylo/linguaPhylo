@@ -8,9 +8,15 @@ import lphy.evolution.tree.TimeTreeNode;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import static lphy.app.Utils.MAX_FONT_SIZE;
@@ -50,6 +56,8 @@ public class TimeTreeComponent extends JComponent {
     private ColorTable traitColorTable = new ColorTable(Arrays.asList(traitColors));
 
     private boolean showNodeIndices = preferences.getBoolean("showNodeIndices", false);
+
+    private List<Object> metaData = new ArrayList<>();
 
     public TimeTreeComponent() {
     }
@@ -258,11 +266,31 @@ public class TimeTreeComponent extends JComponent {
         g.draw(transformed);
     }
 
+    private void getMetaData(String traitName, TimeTreeNode node, List<Object> metaData) {
+        if (node.isLeaf()) {
+            metaData.add(node.getMetaData(traitName));
+        } else {
+            for (TimeTreeNode childNode : node.getChildren())
+                getMetaData(traitName, childNode, metaData);
+
+            metaData.add(node.getMetaData(traitName));
+        }
+    }
+
     private int getIntegerTrait(TimeTreeNode childNode, String traitName) {
         Object trait = childNode.getMetaData(traitName);
         if (trait instanceof Integer) return (Integer) trait;
-        if (trait instanceof Double) return (int) Math.round((Double) trait);
-        if (trait instanceof String) return (int) Math.round(Double.parseDouble((String) trait));
+        if (trait instanceof String) {
+            if (metaData.size() < 1)
+                throw new IllegalArgumentException("metaData List cannot be empty !");
+            if (! metaData.contains(trait))
+                throw new IllegalArgumentException("Cannot find trait " + trait + " in metaData " + metaData + " !");
+            return metaData.indexOf(trait);
+        } else if (trait instanceof Double) {
+            //TODO better to fail on Double than to round it, so that if that case comes up we can actually treat it properly.
+            throw new UnsupportedOperationException("Double is not supported in trait name");
+            // (int) Math.round((Double) trait);
+        }
 
         if (trait instanceof int[]) {
             Location location = new Location((int[]) trait);
@@ -309,6 +337,12 @@ public class TimeTreeComponent extends JComponent {
         if (node.isRoot()) {
             setTipValues(node);
             positionInternalNodes(node);
+
+            //TODO only available for StructuredCoalescent demes now
+            if (node.getMetaData(StructuredCoalescent.populationLabel) != null) {
+                metaData.clear();
+                getMetaData(StructuredCoalescent.populationLabel, node, metaData);
+            }
         }
 
         if (treeDrawing.showLeafLabels()) {

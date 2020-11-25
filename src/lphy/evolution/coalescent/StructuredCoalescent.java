@@ -1,19 +1,20 @@
 package lphy.evolution.coalescent;
 
+import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.core.distributions.Utils;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RandomVariable;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;
 import java.util.stream.Stream;
-
-import static lphy.core.distributions.DistributionConstants.*;
 
 public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
@@ -112,6 +113,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
                 TimeTreeNode node = new TimeTreeNode(taxa.getTaxon(i), tree);
                 node.setIndex(i);
+                // demeIndex is required in simulateStructuredCoalescentForest
                 node.setMetaData(populationLabel, demeIndex);
 
                 if (activeNodes.size() <= demeIndex) {
@@ -133,7 +135,48 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
         tree.setRoot(root);
 
+        // this makes compatible tree with BEAST related software
+        processMetadataNames(tree);
+
         return new RandomVariable<>("\u03C8", tree, this);
+    }
+
+    // TreeAnnotator cannot parse int for metadata names
+    // if demes are using index as names, then convert to the original names
+    // otherwise replace to populationLabel + "." + i
+    private void processMetadataNames(TimeTree tree) {
+
+        if (demes != null) { // replace names by unique demes
+            // https://stackoverflow.com/questions/20095221/list-to-set-without-affecting-the-order-of-the-elements
+            Set<Object> demesSet = new LinkedHashSet<>(Arrays.asList(demes.value()));
+            // convert it to List and get by index from List
+            List<Object> uniqueDemes = new ArrayList<>(demesSet);
+
+            for (TimeTreeNode node : tree.getNodes()) {
+                Object mdName = node.getMetaData(populationLabel);
+                // MetaData must be Integer
+                if (! (mdName instanceof Integer) )
+                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+
+                // MetaData is also index of demes in the unique list
+                Integer index = (Integer) mdName;
+                mdName = uniqueDemes.get(index);
+                // replace to demes[i]
+                node.setMetaData(populationLabel, mdName);
+            }
+
+        } else {
+            for (TimeTreeNode node : tree.getNodes()) {
+                Object mdName = node.getMetaData(populationLabel);
+                // MetaData must be Integer
+                if (! (mdName instanceof Integer) )
+                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+                String properName = populationLabel + "." + mdName;
+                // replace to demes[i]
+                node.setMetaData(populationLabel, properName);
+            }
+        }
+
     }
 
     private List<TimeTreeNode> simulateStructuredCoalescentForest(TimeTree tree, List<List<TimeTreeNode>> activeNodes, List<TimeTreeNode> leavesToBeAdded, Double[][] popSizesMigrationRates, double stopTime) {
