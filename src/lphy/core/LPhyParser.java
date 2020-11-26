@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public interface LPhyParser {
 
@@ -43,6 +44,18 @@ public interface LPhyParser {
                 if (model.containsKey(id)) return model.get(id);
                 return data.get(id);
         }
+    }
+
+    /**
+     * @param type the type of value
+     * @return a list of all the declared values assignable to the given type.
+     */
+    default List<Value<?>> getNamedValuesByType(Class<?> type) {
+        List<Value<?>> valuesByType = getDataDictionary().values().stream().filter(v -> (type.isAssignableFrom(v.value().getClass()) && !v.isAnonymous())).collect(Collectors.toList());
+
+        valuesByType.addAll(getModelDictionary().values().stream().filter(v -> (type.isAssignableFrom(v.value().getClass()) && !v.isAnonymous())).collect(Collectors.toList()));
+
+        return valuesByType;
     }
 
     default boolean hasValue(String id, Context context) {

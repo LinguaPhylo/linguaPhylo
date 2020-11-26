@@ -18,7 +18,7 @@ public class NewRandomVariablePanel extends JPanel {
     JTextField name;
 
     JComboBox<String> generativeDistributionCombo;
-    List<Class<? extends LGenerator>> distributionClasses;
+    List<Class<? extends Generator>> distributionClasses;
 
     GraphicalLPhyParser parser;
 
@@ -26,7 +26,11 @@ public class NewRandomVariablePanel extends JPanel {
     List<JComponent> editors = new ArrayList<>();
     GroupLayout layout = new GroupLayout(this);
 
-    public NewRandomVariablePanel(GraphicalLPhyParser parser, List<Class<? extends LGenerator>> distributionClasses) {
+    GeneratorPanel generatorPanel = null;
+
+    public NewRandomVariablePanel(GraphicalLPhyParser parser, List<Class<? extends Generator>> distributionClasses) {
+
+        GeneratorPanel panel = new GeneratorPanel(parser);
 
         name = new JTextField(10);
 
@@ -34,7 +38,7 @@ public class NewRandomVariablePanel extends JPanel {
 
         String[] names = new String[distributionClasses.size()];
         for (int i = 0; i < distributionClasses.size(); i++) {
-            Class<? extends LGenerator> c = distributionClasses.get(i);
+            Class<? extends Generator> c = distributionClasses.get(i);
 
             GeneratorInfo generatorInfo = Generator.getGeneratorInfo(c);
 
@@ -56,12 +60,7 @@ public class NewRandomVariablePanel extends JPanel {
 
         generateComponents();
 
-        generativeDistributionCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                generateComponents();
-            }
-        });
+        generativeDistributionCombo.addActionListener(e -> generateComponents());
     }
 
     void generateComponents() {
