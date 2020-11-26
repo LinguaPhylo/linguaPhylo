@@ -1,7 +1,7 @@
 data {
   codingL = 200;
   noncodingL = 300;
-  taxa = 1:10;
+  taxa = taxa(names=1:10);
 }
 model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
