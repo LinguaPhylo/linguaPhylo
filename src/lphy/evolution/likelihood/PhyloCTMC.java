@@ -177,6 +177,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         final int numStates = transProb.length;
 
         SequenceType sequenceType = null;
+        // TODO stateNames != null, how to pass states into Standard
+        // dataType="standard", use numStates to create Standard
         if (dataType != null)
             sequenceType = sequenceTypeFactory.getDataType(dataType.value(), numStates);
         if (sequenceType == null)
@@ -184,10 +186,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         if (sequenceType == null)
             throw new UnsupportedOperationException("Cannot recognize sequence type, numStates = " + numStates);
-//        SimpleAlignment a;
-//        if (sequenceType == null || stateNames != null)
-//            a = new SimpleAlignment(idMap, length, transProb.length);
-//        else
 
         // validate num of states
         if (sequenceType.getCanonicalStateCount() != numStates)
