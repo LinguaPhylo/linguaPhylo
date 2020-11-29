@@ -24,6 +24,8 @@ public class ArgumentInput extends JPanel {
 
         valueComboBox = new JComboBox<>(eligibleValues);
 
+        add(valueComboBox);
+
     }
 
     public Value getValue() {

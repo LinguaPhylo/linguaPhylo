@@ -5,6 +5,7 @@ import lphy.app.graphicalmodelcomponent.Layering;
 import lphy.core.LPhyParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.*;
+import lphy.parser.ParserUtils;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -163,6 +164,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
+        rightPane.addTab("New Random Variable", new NewRandomVariablePanel(parser, ParserUtils.getGenerativeDistributions()));
         horizSplitPane.setRightComponent(rightPane);
 
         if (parser.getModelSinks().size() > 0) {
