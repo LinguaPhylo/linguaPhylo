@@ -1,8 +1,10 @@
 package lphy.evolution.coalescent;
 
 import junit.framework.TestCase;
+import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
+import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class StructuredCoalescentTest extends TestCase {
         int[][] events = new int[2][2];
 
         StructuredCoalescent coalescent = new StructuredCoalescent(new Value<>("theta", theta),
-                new Value<>("k", k), null, null);
+                new Value<>("k", k), null, null, null);
 
         double totalRate = coalescent.populateRateMatrix(nodes, theta, rates);
 
@@ -80,4 +82,58 @@ public class StructuredCoalescentTest extends TestCase {
             events[event.pop][event.toPop] += 1;
         }
     }
+
+    public void testSortDemes() {
+
+        Double[][] theta = {{10.0, 0.1},{0.1, 10.0}};
+
+        Taxa taxa = Taxa.createTaxa(4);
+        System.out.println(Arrays.toString(taxa.getTaxaNames()));
+        String[] demes = new String[]{"b","b","a","a"};
+
+        StructuredCoalescent coalescent = new StructuredCoalescent(new Value<>("theta", theta),
+                null, new Value<>("taxa", taxa),
+                new Value<>("demes", demes),
+                new Value<>("sort", false));
+
+        List<String> uniqDemes = coalescent.getUniqueDemes();
+        assertEquals(new ArrayList<>(Arrays. asList("b","a")), uniqDemes);
+
+        RandomVariable<TimeTree> timeTreeRV = coalescent.sample();
+
+        assertNotNull(timeTreeRV);
+        System.out.println(timeTreeRV.value());
+
+        // assert metadata
+        List<TimeTreeNode> tips = timeTreeRV.value().getExtantNodes();
+        for (TimeTreeNode tip : tips) {
+            String t = tip.getId();
+            int i = Integer.parseInt(t);
+            assertEquals(("Taxon " + t + " : "), demes[i], tip.getMetaData(coalescent.getPopulationLabel()));
+        }
+
+        coalescent = new StructuredCoalescent(new Value<>("theta", theta),
+                null, new Value<>("taxa", taxa),
+                new Value<>("demes", demes),
+                new Value<>("sort", true));
+
+        uniqDemes = coalescent.getUniqueDemes();
+        assertEquals(new ArrayList<>(Arrays. asList("a","b")), uniqDemes);
+
+        timeTreeRV = coalescent.sample();
+
+        assertNotNull(timeTreeRV);
+        System.out.println(timeTreeRV.value());
+
+        // assert metadata
+        tips = timeTreeRV.value().getExtantNodes();
+        for (TimeTreeNode tip : tips) {
+            String t = tip.getId();
+            int i = Integer.parseInt(t);
+            assertEquals(("Taxon " + t + " : "), demes[i], tip.getMetaData(coalescent.getPopulationLabel()));
+        }
+    }
+
 }
+
+

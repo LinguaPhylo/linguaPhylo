@@ -18,9 +18,9 @@ model {
   // 3 population sizes
   Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=3);
   // 6 migration rates backwards in time
-  m ~ LogNormal(meanlog=-1.0, sdlog=1.5, n=6);
-  M = migrationMatrix(theta=Θ, m=m);
-  tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes);
+  b_m ~ LogNormal(meanlog=-1.0, sdlog=1.5, n=6);
+  M = migrationMatrix(theta=Θ, m=b_m);
+  tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
   rootAge = tree.rootAge();
 
   D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=clockRate, tree=tree);

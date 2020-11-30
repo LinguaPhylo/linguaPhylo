@@ -21,11 +21,15 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     public static final String MParamName = "M";
     public static final String kParamName = "k";
     public static final String demesParamName = "demes";
+    public static final String sortParamName = "sort";
     private Value<Double[][]> theta;
     private Value<Integer[]> k;
     private Value<Object[]> demes;
+    private Value<Boolean> sort;
 
     RandomGenerator random;
+
+    private Map<Integer, String> reverseDemeToIndex;
 
     public static int countMigrations(TimeTree timeTree) {
         int migrationCount = 0;
@@ -48,13 +52,18 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             "Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.") Value<Double[][]> theta,
                                 @ParameterInfo(name = kParamName, description = "the number of taxa in each population. provide either this or a " + demesParamName + " argument.", optional = true) Value<Integer[]> k,
                                 @ParameterInfo(name = taxaParamName, description = "the taxa.", optional = true) Value<Taxa> taxa,
-                                @ParameterInfo(name = demesParamName, description = "the deme array, which runs parallel to the taxonArray in the taxa object.", optional = true) Value<Object[]> demes) {
+                                @ParameterInfo(name = demesParamName, description = "the deme array, which runs parallel to the taxonArray in the taxa object.", optional = true) Value<Object[]> demes,
+                                @ParameterInfo(name = sortParamName, description = "whether to sort the deme array, " +
+                                        "before mapping them to the indices of the effective population sizes and migration rates. " +
+                                        "If not, as default, the pop size indices are determined by the natural order of the deme array, " +
+                                        "if true, then the indices are the order of sorted deme array.", optional = true) Value<Boolean> sort) {
 
         super(null, taxa, null);
 
         this.theta = theta;
         this.k = k;
         this.demes = demes;
+        this.sort = sort;
 
         if (taxa == null && k == null)
             throw new IllegalArgumentException("One of " + taxaParamName + " and " + kParamName + " must be specified!");
@@ -87,6 +96,8 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         double time = 0.0;
 
         if (k != null) {
+            if (isSort()) throw new UnsupportedOperationException();
+            // TODO demes are i, so after sort, they will be 0, 1, 10 ,...
             int count = 0;
             for (int i = 0; i < k.value().length; i++) {
                 activeNodes.add(new ArrayList<>());
@@ -100,25 +111,30 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                 }
             }
         } else {
-            List<String> demeNames = new ArrayList<>();
+            List<String> uniqueDemes = getUniqueDemes();
+
+            if (uniqueDemes.size() != theta.value().length)
+                throw new RuntimeException("The number of unique demes " + uniqueDemes.size() +
+                        " does not match the dimension of theta " + theta.value().length + " !");
+
+            for (int i = 0; i < uniqueDemes.size(); i++)
+                activeNodes.add(new ArrayList<>());
+
             for (int i = 0; i < demes.value().length; i++) {
 
                 String deme = demes.value()[i].toString();
-                int demeIndex = demeNames.indexOf(deme);
-
-                if (demeIndex < 0) {
-                    demeNames.add(deme);
-                    demeIndex = demeNames.size() - 1;
-                }
+                int demeIndex = uniqueDemes.indexOf(deme);
+                if (demeIndex < 0)
+                    throw new IllegalArgumentException();
 
                 TimeTreeNode node = new TimeTreeNode(taxa.getTaxon(i), tree);
                 node.setIndex(i);
                 // demeIndex is required in simulateStructuredCoalescentForest
                 node.setMetaData(populationLabel, demeIndex);
 
-                if (activeNodes.size() <= demeIndex) {
-                    activeNodes.add(new ArrayList<>());
-                }
+//                if (activeNodes.size() <= demeIndex) {
+//                    activeNodes.add(new ArrayList<>());
+//                } // this is not working if sorted
 
                 if (node.getAge() <= time) {
                     activeNodes.get(demeIndex).add(node);
@@ -130,12 +146,12 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
         leavesToBeAdded.sort((o1, o2) -> Double.compare(o2.getAge(), o1.getAge())); // REVERSE ORDER - youngest age at end of list
 
-
+        // this requires Integer as MetaData of populationLabel, which is used as index of activeNodes
         TimeTreeNode root = simulateStructuredCoalescentForest(tree, activeNodes, leavesToBeAdded, theta.value(), Double.POSITIVE_INFINITY).get(0);
 
         tree.setRoot(root);
 
-        // this makes compatible tree with BEAST related software
+        // this makes compatible tree (metadata) with BEAST related software
         processMetadataNames(tree);
 
         return new RandomVariable<>("\u03C8", tree, this);
@@ -146,26 +162,8 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     // otherwise replace to populationLabel + "." + i
     private void processMetadataNames(TimeTree tree) {
 
-        if (demes != null) { // replace names by unique demes
-            // https://stackoverflow.com/questions/20095221/list-to-set-without-affecting-the-order-of-the-elements
-            Set<Object> demesSet = new LinkedHashSet<>(Arrays.asList(demes.value()));
-            // convert it to List and get by index from List
-            List<Object> uniqueDemes = new ArrayList<>(demesSet);
+        if (k != null) {
 
-            for (TimeTreeNode node : tree.getNodes()) {
-                Object mdName = node.getMetaData(populationLabel);
-                // MetaData must be Integer
-                if (! (mdName instanceof Integer) )
-                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
-
-                // MetaData is also index of demes in the unique list
-                Integer index = (Integer) mdName;
-                mdName = uniqueDemes.get(index);
-                // replace to demes[i]
-                node.setMetaData(populationLabel, mdName);
-            }
-
-        } else {
             for (TimeTreeNode node : tree.getNodes()) {
                 Object mdName = node.getMetaData(populationLabel);
                 // MetaData must be Integer
@@ -175,6 +173,23 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                 // replace to demes[i]
                 node.setMetaData(populationLabel, properName);
             }
+
+        } else {
+            // replace names by unique demes
+            // convert demes.values to List and get by index from List
+            List<String> uniqueDemes = getUniqueDemes();
+
+            for (TimeTreeNode node : tree.getNodes()) {
+                Object mdName = node.getMetaData(populationLabel);
+                // MetaData must be Integer
+                if (! (mdName instanceof Integer) )
+                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+                // MetaData is also index of demes in the unique list
+                String properName = uniqueDemes.get((Integer) mdName);
+                // replace to demes[i]
+                node.setMetaData(populationLabel, properName);
+            }
+
         }
 
     }
@@ -350,6 +365,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         params.put(MParamName, theta);
         if (k != null) params.put(kParamName, k);
         if (demes != null) params.put(demesParamName, demes);
+        if (sort != null) params.put(sortParamName, sort);
         return params;
     }
 
@@ -358,6 +374,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         if (paramName.equals(MParamName)) theta = value;
         else if (paramName.equals(kParamName)) k = value;
         else if (paramName.equals(demesParamName)) demes = value;
+        else if (paramName.equals(sortParamName)) sort = value;
         else super.setParam(paramName, value);
     }
 
@@ -368,6 +385,38 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     public String getPopulationLabel() {
         return populationLabel;
     }
+
+    public boolean isSort() {
+        return sort != null && sort.value();
+    }
+
+    /**
+     * @return  the unique demes. If sort is true, then the demes are sorted.
+     */
+    public List<String> getUniqueDemes() {
+        if (demes != null) {
+            List<String> uniqueDemes = new ArrayList<>();
+            Set<Object> demesSet = new LinkedHashSet<>(Arrays.asList(demes.value()));
+            // convert it to List and get by index from List
+            for (Object d : demesSet)
+                uniqueDemes.add(String.valueOf(d));
+
+            if (isSort())
+                Collections.sort(uniqueDemes);
+
+            return uniqueDemes;
+
+        } else { // k
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
+    public String toString() {
+        return getName();
+    }
+
 
     public static void main(String[] args) {
 
@@ -391,19 +440,18 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                     DoubleArray2DValue theta = new DoubleArray2DValue("theta", new Double[][]{{popSize1[i], m}, {m, popSize2[i]}});
                     Value<Integer[]> k = new Value<>("k", new Integer[]{2, 2});
 
-                    StructuredCoalescent coalescent = new StructuredCoalescent(theta, k, null, null);
+                    StructuredCoalescent coalescent = new StructuredCoalescent(theta, k, null, null, null);
 
                     RandomVariable<TimeTree> tree = coalescent.sample();
 
-                    count += (Integer) tree.value().getRoot().getMetaData(populationLabel) == 0 ? 1 : 0;
+                    Object meta = tree.value().getRoot().getMetaData(populationLabel);
+                    String meta2 = String.valueOf(meta).substring(String.valueOf(meta).lastIndexOf(".") + 1);
+                    Integer intLabel = Integer.parseInt(meta2);
+                    count += intLabel  == 0 ? 1 : 0;
                 }
                 System.out.println(popSize1[i] + "\t" + popSize2[i] + "\t" + m + "\t" + ((double) count / (double) reps));
             }
         }
-    }
-
-    public String toString() {
-        return getName();
     }
 
 }
