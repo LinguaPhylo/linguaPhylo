@@ -61,13 +61,9 @@ public class NewRandomVariablePanel extends JPanel {
         for (int i = 0; i < distributionClasses.size(); i++) {
             Class<? extends Generator> c = distributionClasses.get(i);
 
-            GeneratorInfo generatorInfo = Generator.getGeneratorInfo(c);
+            int paramCount = c.getConstructors()[0].getParameterCount();
 
-            if (generatorInfo != null) {
-                names[i] = generatorInfo.name();
-            } else {
-                names[i] = c.getSimpleName();
-            }
+            names[i] = generatorName(c) + " (" +  paramCount + " params)";
         }
         generativeDistributionCombo = new JComboBox<>(names);
 
@@ -97,9 +93,22 @@ public class NewRandomVariablePanel extends JPanel {
         codeStringLabel.setText(getCodeString());
     }
 
+    private String generatorName(Class c) {
+        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(c);
+
+        if (generatorInfo != null) {
+           return generatorInfo.name();
+        } else {
+            return c.getSimpleName();
+        }
+    }
+
     String getCodeString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(name.getText()).append(" ~ ").append(generativeDistributionCombo.getSelectedItem()).append("(");
+
+        Class genClass = distributionClasses.get(generativeDistributionCombo.getSelectedIndex());
+
+        builder.append(name.getText()).append(" ~ ").append(generatorName(genClass)).append("(");
         int i = 0;
         for (ArgumentInput input : generatorPanel.argumentInputs) {
 
@@ -107,7 +116,13 @@ public class NewRandomVariablePanel extends JPanel {
 
             if (value != null) {
                 if (i > 0) builder.append(", ");
-                builder.append(input.argument.name).append("=").append(value.getCanonicalId());
+
+                builder.append(input.argument.name).append("=");
+                if (value.isAnonymous()) {
+                    builder.append(value.codeString());
+                } else {
+                    builder.append(value.getCanonicalId());
+                }
                 i += 1;
             }
         }

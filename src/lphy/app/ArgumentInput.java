@@ -1,5 +1,6 @@
 package lphy.app;
 
+import lphy.app.components.DoubleComboBoxEditor;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Argument;
 import lphy.graphicalModel.Value;
@@ -24,12 +25,16 @@ public class ArgumentInput extends JPanel {
 
         valueComboBox = new JComboBox<>(eligibleValues);
 
+        if (argument.type == Double.class) {
+            valueComboBox.setEditable(true);
+            valueComboBox.setEditor(new DoubleComboBoxEditor());
+        }
         add(valueComboBox);
 
     }
 
     public Value getValue() {
-        return (Value)valueComboBox.getSelectedItem();
+        return (Value) valueComboBox.getSelectedItem();
     }
 
 }
