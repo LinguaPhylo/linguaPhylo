@@ -6,7 +6,7 @@
 # To run the tests, use
 #   docker run testing
 
-FROM openjdk:11
+FROM openjdk:15
 
 # Install Apache Ant
 RUN apt-get update && apt-get install -y ant
