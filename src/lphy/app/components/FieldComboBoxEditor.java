@@ -28,11 +28,35 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
     public FieldComboBoxEditor(LPhyParser parser, Class type) {
         this.parser = parser;
         this.type = type;
+        editor.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handleEdit();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handleEdit();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                handleEdit();
+            }
+        });
     }
 
     @Override
     public Component getEditorComponent() {
         return editor;
+    }
+
+    private void handleEdit() {
+        Value value = parser.getValue(editor.getText(), LPhyParser.Context.model);
+        isEdited = value == null;
+        if (!isEdited) {
+            currentValue = value;
+        }
     }
 
     @Override
@@ -45,30 +69,10 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
                 Value value = parser.getValue(str, LPhyParser.Context.model);
                 if (type.isAssignableFrom(value.value().getClass())) {
                     currentValue = value;
-                    isEdited = false;
                     editor.setText(value.getId());
-                    editor.getDocument().addDocumentListener(new DocumentListener() {
-                        @Override
-                        public void insertUpdate(DocumentEvent e) {
-                            isEdited = true;
-                        }
-
-                        @Override
-                        public void removeUpdate(DocumentEvent e) {
-                            isEdited = true;
-
-                        }
-
-                        @Override
-                        public void changedUpdate(DocumentEvent e) {
-                            isEdited = true;
-                        }
-                    });
                 } else {
                     throw new RuntimeException("Should be value of type " + type);
                 }
-            } else {
-                isEdited = true;
             }
         } else if (anObject != null) throw new RuntimeException("Should be a string, but is a " + anObject.getClass());
     }

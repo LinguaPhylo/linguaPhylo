@@ -10,7 +10,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class NewRandomVariablePanel extends JPanel {
 
@@ -19,14 +22,14 @@ public class NewRandomVariablePanel extends JPanel {
 
     JLabel sim = new JLabel("~");
 
-    JComboBox<String> generativeDistributionCombo;
-    List<Class<GenerativeDistribution>> distributionClasses;
+    JComboBox<String> distributionNameComboBox;
+    JComboBox<String> parameterizationComboBox;
+
+    Map<String,List<Class<GenerativeDistribution>>> distributionClasses = new TreeMap<>();
 
     GraphicalModelInterpreter interpreter;
 
     GeneratorPanel generatorPanel;
-
-    LPhyCodeLabel codeStringLabel;
 
     JButton button = new JButton("Add to Model");
 
@@ -45,9 +48,8 @@ public class NewRandomVariablePanel extends JPanel {
         };
         name.setText(randomVarName(interpreter.parser));
         name.setOpaque(false);
+        name.setFont(GraphicalModelInterpreter.interpreterFont);
         name.setForeground(Color.green.darker());
-
-        codeStringLabel = new LPhyCodeLabel(interpreter.parser, "");
 
         ((GraphicalLPhyParser)interpreter.parser).addGraphicalModelChangeListener(() -> generateComponents());
 
@@ -69,45 +71,45 @@ public class NewRandomVariablePanel extends JPanel {
             }
         });
 
-        this.distributionClasses = distributionClasses;
-
-        String[] names = new String[distributionClasses.size()];
+        Vector<String> names = new Vector<>();
         for (int i = 0; i < distributionClasses.size(); i++) {
-            Class<? extends Generator> c = distributionClasses.get(i);
+            Class<GenerativeDistribution> c = distributionClasses.get(i);
 
-            int paramCount = c.getConstructors()[0].getParameterCount();
+            String name = generatorName(c);
 
-            names[i] = generatorName(c) + " (" +  paramCount + " params)";
+            if (!names.contains(name)) {
+                names.add(name);
+            }
+
+            List<Class<GenerativeDistribution>> list = this.distributionClasses.computeIfAbsent(name, k -> new ArrayList<>());
+            list.add(c);
         }
+        names.sort(Comparator.naturalOrder());
 
         BoundsPopupMenuListener boundsPopupMenuListener = new BoundsPopupMenuListener(true, false);
-        generativeDistributionCombo = new JComboBox<>(names);
-        generativeDistributionCombo.addPopupMenuListener(boundsPopupMenuListener);
-        generativeDistributionCombo.setPrototypeDisplayValue((String)generativeDistributionCombo.getSelectedItem());
-        generativeDistributionCombo.setFont(generativeDistributionCombo.getFont().deriveFont(Font.BOLD));
-        generativeDistributionCombo.setForeground(Color.blue);
+        distributionNameComboBox = new JComboBox<>(names);
+        distributionNameComboBox.addPopupMenuListener(boundsPopupMenuListener);
+        distributionNameComboBox.setPrototypeDisplayValue((String) distributionNameComboBox.getSelectedItem());
+        distributionNameComboBox.setFont(GraphicalModelInterpreter.interpreterFont.deriveFont(Font.BOLD));
+        distributionNameComboBox.setForeground(Color.blue);
 
-        generativeDistributionCombo.addActionListener(e -> {
-            codeStringLabel.setText(getCodeString());
-            generativeDistributionCombo.setPrototypeDisplayValue((String)generativeDistributionCombo.getSelectedItem());
+        distributionNameComboBox.addActionListener(e -> {
+            distributionNameComboBox.setPrototypeDisplayValue((String) distributionNameComboBox.getSelectedItem());
             generateComponents();
         });
 
         generatorPanel = new GeneratorPanel(interpreter.parser);
-
 
         button.addActionListener(e -> {
             interpreter.interpretInput(getCodeString(), LPhyParser.Context.model);
             name.setText(randomVarName(interpreter.parser));
         });
 
-        generatorPanel.addGeneratorPanelListener(() -> codeStringLabel.setCodeColorizedText(getCodeString()));
-
         button.setEnabled(true);
 
         add(name);
         add(sim);
-        add(generativeDistributionCombo);
+        add(distributionNameComboBox);
 
         generateComponents();
     }
@@ -124,7 +126,6 @@ public class NewRandomVariablePanel extends JPanel {
 
     private void nameUpdated() {
         button.setEnabled(name.getText().trim().length()>0);
-        codeStringLabel.setText(getCodeString());
     }
 
     private String generatorName(Class c) {
@@ -137,10 +138,20 @@ public class NewRandomVariablePanel extends JPanel {
         }
     }
 
+    public Class<GenerativeDistribution> getSelectedClass() {
+        List<Class<GenerativeDistribution>> list = distributionClasses.get(distributionNameComboBox.getSelectedItem());
+        if (list.size() == 1) return list.get(0);
+        return list.get(parameterizationComboBox.getSelectedIndex());
+    }
+
+    public List<Class<GenerativeDistribution>> getSelectedClasses() {
+        return distributionClasses.get(distributionNameComboBox.getSelectedItem());
+    }
+
     String getCodeString() {
         StringBuilder builder = new StringBuilder();
 
-        Class genClass = distributionClasses.get(generativeDistributionCombo.getSelectedIndex());
+        Class genClass = getSelectedClass();
 
         builder.append(name.getText()).append(" ~ ").append(generatorName(genClass)).append("(");
         int i = 0;
@@ -167,14 +178,30 @@ public class NewRandomVariablePanel extends JPanel {
     void generateComponents() {
 
         removeAll();
-        generatorPanel.setGeneratorClass(distributionClasses.get(generativeDistributionCombo.getSelectedIndex()));
 
         add(name);
+
         add(sim);
-        add(generativeDistributionCombo);
+        add(distributionNameComboBox);
+
+        List<Class<GenerativeDistribution>> classes = getSelectedClasses();
+        if (classes.size() > 1) {
+            Vector<String> parameterizations = IntStream.range(0, classes.size()).mapToObj(i -> "#" + (i + 1)).collect(Collectors.toCollection(Vector::new));
+            parameterizationComboBox = new JComboBox<>(parameterizations);
+            parameterizationComboBox.setFont(GraphicalModelInterpreter.smallInterpreterFont);
+            add(parameterizationComboBox);
+            parameterizationComboBox.addActionListener(e -> {
+                generatorPanel.setGeneratorClass(getSelectedClass());
+                revalidate();
+            });
+        }
+
         add(new JLabel("("));
+
+        generatorPanel.setGeneratorClass(getSelectedClass());
+
         add(generatorPanel);
-        add(new JLabel(")"));
+        add(new JLabel(");"));
 
         add(button);
     }

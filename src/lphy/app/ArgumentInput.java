@@ -31,6 +31,7 @@ public class ArgumentInput extends JPanel {
         valueComboBox = new JComboBox<>(eligibleValues);
         valueComboBox.addPopupMenuListener(boundsPopupMenuListener);
         valueComboBox.setPrototypeDisplayValue((String)valueComboBox.getSelectedItem());
+        valueComboBox.setFont(GraphicalModelInterpreter.interpreterFont);
 
         valueComboBox.addActionListener(e -> valueComboBox.setPrototypeDisplayValue((String)valueComboBox.getSelectedItem()));
 

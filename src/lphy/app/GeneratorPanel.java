@@ -11,8 +11,7 @@ import java.util.List;
 
 public class GeneratorPanel extends JPanel {
 
-    List<GeneratorPanelListener> listeners = new ArrayList<>();
-
+    List<ArgumentButton> argButtons = new ArrayList<>();
     List<ArgumentInput> argumentInputs = new ArrayList<>();
 
     LPhyParser parser;
@@ -20,10 +19,17 @@ public class GeneratorPanel extends JPanel {
     Class<? extends Generator> generatorClass = null;
 
     public GeneratorPanel(LPhyParser parser) {
+        this(parser, null);
+    }
+
+    public GeneratorPanel(LPhyParser parser, Class<? extends Generator> generatorClass) {
         this.parser = parser;
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setHgap(0);
         setLayout(flowLayout);
+
+        this.generatorClass = generatorClass;
+        if (generatorClass != null) generateComponents();
     }
 
     public void setGeneratorClass(Class<? extends Generator> generatorClass) {
@@ -38,28 +44,47 @@ public class GeneratorPanel extends JPanel {
 
         int arg = 0;
         for (Argument argument : Generator.getArguments(generatorClass, 0)) {
-            JLabel label = new JLabel((arg > 0 ? ", " : "") + argument.name + "=");
-            System.out.println(label.getBorder());
-            label.setForeground(Color.gray);
-            add(label);
+            if (arg > 0) {
+                JLabel label = new JLabel(", ");
+                label.setForeground(Color.gray);
+                add(label);
+            }
 
             ArgumentInput argumentInput = new ArgumentInput(argument, parser);
+            ArgumentButton argumentButton = new ArgumentButton(argumentInput);
+
+            add(argumentButton);
             add(argumentInput);
             argumentInputs.add(argumentInput);
-            argumentInput.valueComboBox.addItemListener(e -> fireGeneratePanelListeners());
             arg += 1;
         }
-
-        fireGeneratePanelListeners();
     }
 
-    public void addGeneratorPanelListener(GeneratorPanelListener listener) {
-        listeners.add(listener);
-    }
 
-    private void fireGeneratePanelListeners() {
-        for (GeneratorPanelListener listener : listeners) {
-            listener.generatorPanelChanged();
+    class ArgumentButton extends JToggleButton {
+
+        ArgumentInput input = null;
+
+        public ArgumentButton(ArgumentInput input) {
+            this.input = input;
+            setForeground(Color.gray);
+            setSelected(!input.argument.optional);
+            input.setVisible(!input.argument.optional);
+            setEnabled(input.argument.optional);
+            setFont(GraphicalModelInterpreter.smallInterpreterFont);
+
+            updateText();
+
+            this.addItemListener(e -> {
+                input.setVisible(isSelected());
+                updateText();
+            });
+        }
+
+        private void updateText() {
+            setText(isSelected() ? (input.argument.name + "=") : ("(" + input.argument.name + ")"));
+            setBorder(null);
         }
     }
+
 }
