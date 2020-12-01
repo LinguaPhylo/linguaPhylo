@@ -5,8 +5,8 @@
     <!-- <property name="lphy" location="lphy"/>-->
 
     <!-- Java 11 -->
-    <property name="sourceVersion" value="11"/>
-    <property name="targetVersion" value="11"/>
+    <property name="sourceVersion" value="12"/>
+    <property name="targetVersion" value="12"/>
 
     <!--*******************************************************************-->
 
