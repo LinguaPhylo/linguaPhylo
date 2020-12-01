@@ -29,6 +29,10 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
     RandomGenerator random;
 
+    // convert demes String/Integer into String for sorting if required,
+    // use demeIndex which is the key of reverseDemeToIndex.
+    // the index of List is the key of reverseDemeToIndex.
+    private List<String> uniqueDemes;
     private Map<Integer, String> reverseDemeToIndex;
 
     public static int countMigrations(TimeTree timeTree) {
@@ -95,9 +99,8 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
         double time = 0.0;
 
-        if (k != null) {
-            if (isSort()) throw new UnsupportedOperationException();
-            // TODO demes are i, so after sort, they will be 0, 1, 10 ,...
+        if (k != null && !isSort()) {
+
             int count = 0;
             for (int i = 0; i < k.value().length; i++) {
                 activeNodes.add(new ArrayList<>());
@@ -110,7 +113,11 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                     count += 1;
                 }
             }
+
         } else {
+            initDemes();
+
+            // this includes k != null && isSort()
             List<String> uniqueDemes = getUniqueDemes();
 
             if (uniqueDemes.size() != theta.value().length)
@@ -120,9 +127,15 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             for (int i = 0; i < uniqueDemes.size(); i++)
                 activeNodes.add(new ArrayList<>());
 
-            for (int i = 0; i < demes.value().length; i++) {
+            Object[] demesVal = demes != null ? demes.value() : k.value();
 
-                String deme = demes.value()[i].toString();
+            // if demes are Integer[], then after sort, they will be 0, 1, 10 ,...
+            for (int i = 0; i < demesVal.length; i++) {
+
+//                String deme = demesVal[i].toString();
+                // covert to String
+                String deme = String.valueOf(demesVal[i]);
+
                 int demeIndex = uniqueDemes.indexOf(deme);
                 if (demeIndex < 0)
                     throw new IllegalArgumentException();
@@ -152,24 +165,55 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         tree.setRoot(root);
 
         // this makes compatible tree (metadata) with BEAST related software
-        processMetadataNames(tree);
+        // TODO always create demes first, and this code can be replaced to use reverseDemeToIndex
+        sanitiseIntegerNames(tree);
 
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
+    private void initDemes() {
+        uniqueDemes = new ArrayList<>();
+        reverseDemeToIndex = new HashMap<>();
+
+        Object[] demesVal = k != null ? k.value() : demes.value();
+
+        Set<Object> demesSet = new LinkedHashSet<>(Arrays.asList(demesVal));
+        // convert it to List and get by index from List
+        for (Object d : demesSet)
+            uniqueDemes.add(String.valueOf(d));
+
+        if (isSort())
+            Collections.sort(uniqueDemes);
+
+        // fill in reverseDemeToIndex
+        for (int i = 0; i < demes.value().length; i++) {
+
+            // covert to String
+            String deme = String.valueOf(demes.value()[i]);
+
+            int demeIndex = uniqueDemes.indexOf(deme);
+            if (demeIndex < 0)
+                throw new IllegalArgumentException();
+
+            reverseDemeToIndex.put(demeIndex, deme);
+        }
+
+    }
+
+
     // TreeAnnotator cannot parse int for metadata names
     // if demes are using index as names, then convert to the original names
     // otherwise replace to populationLabel + "." + i
-    private void processMetadataNames(TimeTree tree) {
+    private void sanitiseIntegerNames(TimeTree tree) {
 
         if (k != null) {
 
             for (TimeTreeNode node : tree.getNodes()) {
-                Object mdName = node.getMetaData(populationLabel);
+                Object demeIndex = node.getMetaData(populationLabel);
                 // MetaData must be Integer
-                if (! (mdName instanceof Integer) )
+                if (! (demeIndex instanceof Integer) )
                     throw new IllegalArgumentException("Metadata name should be Integer before this process !");
-                String properName = populationLabel + "." + mdName;
+                String properName = populationLabel + "." + demeIndex;
                 // replace to demes[i]
                 node.setMetaData(populationLabel, properName);
             }
@@ -180,12 +224,19 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             List<String> uniqueDemes = getUniqueDemes();
 
             for (TimeTreeNode node : tree.getNodes()) {
-                Object mdName = node.getMetaData(populationLabel);
+                Object demeIndex = node.getMetaData(populationLabel);
                 // MetaData must be Integer
-                if (! (mdName instanceof Integer) )
+                if (! (demeIndex instanceof Integer) )
                     throw new IllegalArgumentException("Metadata name should be Integer before this process !");
                 // MetaData is also index of demes in the unique list
-                String properName = uniqueDemes.get((Integer) mdName);
+                String properName = uniqueDemes.get((Integer) demeIndex);
+
+                // if it is still Integer
+                try {
+                    Integer.parseInt(properName);
+                    properName = populationLabel + "." + properName;
+                } catch (NumberFormatException ex) { }
+
                 // replace to demes[i]
                 node.setMetaData(populationLabel, properName);
             }
@@ -394,22 +445,9 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
      * @return  the unique demes. If sort is true, then the demes are sorted.
      */
     public List<String> getUniqueDemes() {
-        if (demes != null) {
-            List<String> uniqueDemes = new ArrayList<>();
-            Set<Object> demesSet = new LinkedHashSet<>(Arrays.asList(demes.value()));
-            // convert it to List and get by index from List
-            for (Object d : demesSet)
-                uniqueDemes.add(String.valueOf(d));
-
-            if (isSort())
-                Collections.sort(uniqueDemes);
-
-            return uniqueDemes;
-
-        } else { // k
-            // TODO
-            throw new UnsupportedOperationException();
-        }
+        if (uniqueDemes == null)
+            throw new IllegalArgumentException();
+        return uniqueDemes;
     }
 
 
