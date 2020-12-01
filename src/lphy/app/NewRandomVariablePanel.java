@@ -35,6 +35,8 @@ public class NewRandomVariablePanel extends JPanel {
 
     public NewRandomVariablePanel(GraphicalModelInterpreter interpreter, List<Class<GenerativeDistribution>> distributionClasses) {
 
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+
         this.interpreter = interpreter;
 
         sim.setFont(sim.getFont().deriveFont(Font.BOLD));

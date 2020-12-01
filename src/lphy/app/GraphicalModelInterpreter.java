@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Generator;
+import lphy.parser.ParserUtils;
 import lphy.parser.codecolorizer.CodeColorizer;
 import lphy.utils.LoggerUtils;
 
@@ -26,6 +27,7 @@ public class GraphicalModelInterpreter extends JPanel {
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
+    NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
     LPhyParser.Context context;
 
@@ -55,6 +57,8 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.setFont(interpreterFont);
         interpreterField.setBorder(textBorder);
         interpreterField.setFocusTraversalKeysEnabled(false);
+
+        newRandomVariablePanel = new NewRandomVariablePanel(this, ParserUtils.getGenerativeDistributions());
 
         List<String> keywords = parser.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.greekLetterCodes));
@@ -129,12 +133,25 @@ public class GraphicalModelInterpreter extends JPanel {
         BoxLayout boxLayout2 = new BoxLayout(activeLine, BoxLayout.LINE_AXIS);
         activeLine.setLayout(boxLayout2);
 
-        JLabel label = new JLabel("  >");
-        label.setFont(interpreterFont);
-        label.setBorder(new CompoundBorder(new MatteBorder(0, 0, 0, 2, Color.gray), new EmptyBorder(BORDER_SIZE, tln.getBorderGap(), BORDER_SIZE, tln.getBorderGap() + 2)));
+        JToggleButton button = new JToggleButton("  >");
+        button.setFont(interpreterFont);
+        button.setBorder(new CompoundBorder(new MatteBorder(0, 0, 0, 2, Color.gray), new EmptyBorder(BORDER_SIZE, tln.getBorderGap(), BORDER_SIZE, tln.getBorderGap() + 2)));
 
-        activeLine.add(label);
+        activeLine.add(button);
+
+        button.addActionListener(e -> {
+            if (button.isSelected()) {
+                activeLine.remove(interpreterField);
+                activeLine.add(newRandomVariablePanel);
+            } else {
+                activeLine.remove(newRandomVariablePanel);
+                activeLine.add(interpreterField);
+            }
+            revalidate();
+        });
+
         activeLine.add(interpreterField);
+        //activeLine.add(newRandomVariablePanel);
         
         activeLine.setPreferredSize(new Dimension(2000,interpreterField.getPreferredSize().height));
         activeLine.setMaximumSize(new Dimension(2000,interpreterField.getPreferredSize().height));

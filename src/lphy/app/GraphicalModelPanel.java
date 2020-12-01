@@ -108,7 +108,6 @@ public class GraphicalModelPanel extends JPanel {
         GraphicalModelListener listener = new GraphicalModelListener() {
             @Override
             public void valueSelected(Value value) {
-
                 showValue(value);
             }
 
@@ -310,7 +309,7 @@ public class GraphicalModelPanel extends JPanel {
                         BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
 
-        //rightPane.setSelectedComponent(currentSelectionContainer);
+        rightPane.setSelectedComponent(currentSelectionContainer);
 
         repaint();
     }
