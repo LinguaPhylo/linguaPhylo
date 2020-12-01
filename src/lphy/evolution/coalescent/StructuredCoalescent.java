@@ -99,7 +99,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
         double time = 0.0;
 
-        if (k != null && !isSort()) {
+        if (k != null && !isSort()) { // the demes are indices from 0 to k.value().length-1
 
             int count = 0;
             for (int i = 0; i < k.value().length; i++) {
@@ -171,6 +171,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         return new RandomVariable<>("\u03C8", tree, this);
     }
 
+    // if either k or demes not null, then convert their value to String, and then sort if isSort()==true
     private void initDemes() {
         uniqueDemes = new ArrayList<>();
         reverseDemeToIndex = new HashMap<>();
@@ -209,12 +210,9 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         if (k != null) {
 
             for (TimeTreeNode node : tree.getNodes()) {
-                Object demeIndex = node.getMetaData(populationLabel);
-                // MetaData must be Integer
-                if (! (demeIndex instanceof Integer) )
-                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+                Integer demeIndex = getDemeIndex(node);
                 String properName = populationLabel + "." + demeIndex;
-                // replace to demes[i]
+                // replace to deme.i
                 node.setMetaData(populationLabel, properName);
             }
 
@@ -224,14 +222,11 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             List<String> uniqueDemes = getUniqueDemes();
 
             for (TimeTreeNode node : tree.getNodes()) {
-                Object demeIndex = node.getMetaData(populationLabel);
-                // MetaData must be Integer
-                if (! (demeIndex instanceof Integer) )
-                    throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+                Integer demeIndex = getDemeIndex(node);
                 // MetaData is also index of demes in the unique list
-                String properName = uniqueDemes.get((Integer) demeIndex);
+                String properName = uniqueDemes.get(demeIndex);
 
-                // if it is still Integer
+                // if name is still Integer
                 try {
                     Integer.parseInt(properName);
                     properName = populationLabel + "." + properName;
@@ -240,9 +235,15 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                 // replace to demes[i]
                 node.setMetaData(populationLabel, properName);
             }
-
         }
+    }
 
+    private Integer getDemeIndex(TimeTreeNode node) {
+        Object demeIndex = node.getMetaData(populationLabel);
+        // MetaData must be Integer
+        if (! (demeIndex instanceof Integer) )
+            throw new IllegalArgumentException("Metadata name should be Integer before this process !");
+        return (Integer) demeIndex;
     }
 
     private List<TimeTreeNode> simulateStructuredCoalescentForest(TimeTree tree, List<List<TimeTreeNode>> activeNodes, List<TimeTreeNode> leavesToBeAdded, Double[][] popSizesMigrationRates, double stopTime) {
@@ -445,7 +446,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
      * @return  the unique demes. If sort is true, then the demes are sorted.
      */
     public List<String> getUniqueDemes() {
-        if (uniqueDemes == null)
+        if (uniqueDemes == null) // initDemes() has to be called before this
             throw new IllegalArgumentException();
         return uniqueDemes;
     }
