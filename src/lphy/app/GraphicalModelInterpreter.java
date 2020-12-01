@@ -212,22 +212,6 @@ public class GraphicalModelInterpreter extends JPanel {
 
     public void interpretInput(String input, LPhyParser.Context context) {
 
-//        // split on ; that are not in string
-//        String[] lines = input.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-//
-//        for (String line : lines) {
-//            line = line.trim();
-//
-//            if (!line.equals("")) {
-//
-//                if (line.charAt(line.length() - 1) != ';') {
-//                    line = line + ";";
-//                }
-//                textPane.addLine(line);
-//                parser.parse(line);
-//            }
-//        }
-
         parser.parse(input, context);
 
 
@@ -235,7 +219,7 @@ public class GraphicalModelInterpreter extends JPanel {
             CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
             codeColorizer.parse(input);
         } catch (Exception e) {
-            textPane.setText(input);
+            //textPane.setText(input);
             LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
         }
     }

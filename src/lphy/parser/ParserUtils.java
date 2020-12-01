@@ -3,9 +3,9 @@ package lphy.parser;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
-import lphy.core.lightweight.GenerativeDistributionAdapter;
-import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.core.lightweight.LGenerator;
+//import lphy.core.lightweight.GenerativeDistributionAdapter;
+//import lphy.core.lightweight.LGenerativeDistribution;
+//import lphy.core.lightweight.LGenerator;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
@@ -44,9 +44,9 @@ public class ParserUtils {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 
-        Class<?>[] lightWeightGenClasses = {
-                lphy.core.lightweight.distributions.Beta.class
-        };
+//        Class<?>[] lightWeightGenClasses = {
+//                lphy.core.lightweight.distributions.Beta.class
+//        };
 
         Class<?>[] genClasses = {
                 RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
@@ -63,6 +63,7 @@ public class ParserUtils {
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
                 SkylineCoalescent.class, StructuredCoalescent.class,
                 FossilBirthDeathTree.class,
+                Beta.class,
                 Uniform.class};
 
         for (Class<?> genClass : genClasses) {
@@ -76,14 +77,14 @@ public class ParserUtils {
             Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
         }
 
-        for (Class<?> genClass : lightWeightGenClasses) {
-            String name = Generator.getGeneratorName(genClass);
-
-            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            genDistSet.add(genClass);
-
-            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
-        }
+//        for (Class<?> genClass : lightWeightGenClasses) {
+//            String name = Generator.getGeneratorName(genClass);
+//
+//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            genDistSet.add(genClass);
+//
+//            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
+//        }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
@@ -170,12 +171,13 @@ public class ParserUtils {
 
             if (match(arguments, argumentInfo)) {
 
-                boolean lightweight = LGenerativeDistribution.class.isAssignableFrom(generatorClass);
+                //boolean lightweight = LGenerativeDistribution.class.isAssignableFrom(generatorClass);
 
                 for (int i = 0; i < argumentInfo.size(); i++) {
                     Value arg = arguments.get(argumentInfo.get(i).name);
                     if (arg != null) {
-                        initargs.add(lightweight ? arg.value() : arg);
+                        //initargs.add(lightweight ? arg.value() : arg);
+                        initargs.add(arg);
                     } else if (!argumentInfo.get(i).optional) {
                         throw new RuntimeException("Required argument " + argumentInfo.get(i).name + " not found!");
                     } else {
@@ -183,7 +185,8 @@ public class ParserUtils {
                     }
                 }
 
-                matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,lightweight));
+                //matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,lightweight));
+                matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,false));
             }
         }
         return matches;
@@ -241,12 +244,12 @@ public class ParserUtils {
     private static Generator constructGenerator(String name, Constructor constructor, List<Argument> arguments, Object[] initargs, Map<String, Value> params, boolean lightweight) {
         try {
             if (Generator.matchingParameterTypes(arguments, initargs, lightweight)) {
-                if (lightweight) {
-                    boolean generativeDistribution = LGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
-                    if (generativeDistribution) {
-                        return new GenerativeDistributionAdapter((LGenerativeDistribution)constructor.newInstance(initargs), params);
-                    } else throw new RuntimeException("Only lightweight generative distributions are currently supported!");
-                }
+//                if (lightweight) {
+//                    boolean generativeDistribution = LGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
+//                    if (generativeDistribution) {
+//                        return new GenerativeDistributionAdapter((LGenerativeDistribution)constructor.newInstance(initargs), params);
+//                    } else throw new RuntimeException("Only lightweight generative distributions are currently supported!");
+//                }
 
                 return (Generator) constructor.newInstance(initargs);
             } else if (vectorMatch(arguments, initargs) > 0) {

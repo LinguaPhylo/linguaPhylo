@@ -4,12 +4,12 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.Value;
+import lphy.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.List;
 
 public class NewRandomVariablePanel extends JPanel {
@@ -17,26 +17,40 @@ public class NewRandomVariablePanel extends JPanel {
     // the name of the new random variable
     JTextField name;
 
+    JLabel sim = new JLabel("~");
+
     JComboBox<String> generativeDistributionCombo;
     List<Class<GenerativeDistribution>> distributionClasses;
 
-    GraphicalLPhyParser parser;
+    GraphicalModelInterpreter interpreter;
 
-    List<JComponent> labels = new ArrayList<>();
-    List<JComponent> editors = new ArrayList<>();
-    GroupLayout layout = new GroupLayout(this);
+    GeneratorPanel generatorPanel;
 
-    GeneratorPanel generatorPanel = null;
-
-    JLabel codeStringLabel = new JLabel();
+    LPhyCodeLabel codeStringLabel;
 
     JButton button = new JButton("Add to Model");
 
-    public NewRandomVariablePanel(GraphicalLPhyParser parser, List<Class<GenerativeDistribution>> distributionClasses) {
+    public NewRandomVariablePanel(GraphicalModelInterpreter interpreter, List<Class<GenerativeDistribution>> distributionClasses) {
 
-        GeneratorPanel panel = new GeneratorPanel(parser);
+        this.interpreter = interpreter;
 
-        name = new JTextField(10);
+        sim.setFont(sim.getFont().deriveFont(Font.BOLD));
+
+        name = new JTextField(randomVarName(interpreter.parser)) {
+
+            @Override
+            public boolean isValidateRoot() {
+                return false;
+            }
+        };
+        name.setText(randomVarName(interpreter.parser));
+        name.setOpaque(false);
+        name.setForeground(Color.green.darker());
+
+        codeStringLabel = new LPhyCodeLabel(interpreter.parser, "");
+
+        ((GraphicalLPhyParser)interpreter.parser).addGraphicalModelChangeListener(() -> generateComponents());
+
 
         name.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -65,27 +79,47 @@ public class NewRandomVariablePanel extends JPanel {
 
             names[i] = generatorName(c) + " (" +  paramCount + " params)";
         }
+
+        BoundsPopupMenuListener boundsPopupMenuListener = new BoundsPopupMenuListener(true, false);
         generativeDistributionCombo = new JComboBox<>(names);
+        generativeDistributionCombo.addPopupMenuListener(boundsPopupMenuListener);
+        generativeDistributionCombo.setPrototypeDisplayValue((String)generativeDistributionCombo.getSelectedItem());
+        generativeDistributionCombo.setFont(generativeDistributionCombo.getFont().deriveFont(Font.BOLD));
+        generativeDistributionCombo.setForeground(Color.blue);
 
-        labels.add(new JLabel("Variable Name"));
-        editors.add(name);
+        generativeDistributionCombo.addActionListener(e -> {
+            codeStringLabel.setText(getCodeString());
+            generativeDistributionCombo.setPrototypeDisplayValue((String)generativeDistributionCombo.getSelectedItem());
+            generateComponents();
+        });
 
-        labels.add(new JLabel("Distribution"));
-        editors.add(generativeDistributionCombo);
+        generatorPanel = new GeneratorPanel(interpreter.parser);
 
-        generatorPanel = new GeneratorPanel(parser);
 
-        setLayout(layout);
+        button.addActionListener(e -> {
+            interpreter.interpretInput(getCodeString(), LPhyParser.Context.model);
+            name.setText(randomVarName(interpreter.parser));
+        });
+
+        generatorPanel.addGeneratorPanelListener(() -> codeStringLabel.setCodeColorizedText(getCodeString()));
+
+        button.setEnabled(true);
+
+        add(name);
+        add(sim);
+        add(generativeDistributionCombo);
 
         generateComponents();
+    }
 
-        generativeDistributionCombo.addActionListener(e -> generateComponents());
-
-        button.addActionListener(e -> parser.parse(getCodeString(), LPhyParser.Context.model));
-
-        generatorPanel.addGeneratorPanelListener(() -> codeStringLabel.setText(getCodeString()));
-
-        button.setEnabled(false);
+    private static String randomVarName(LPhyParser parser) {
+        String randomVarName = "randomVar";
+        int i = 0;
+        while (parser.hasValue(randomVarName, LPhyParser.Context.model)) {
+            randomVarName = "randomVar" + i;
+            i += 1;
+        }
+        return randomVarName;
     }
 
     private void nameUpdated() {
@@ -112,64 +146,36 @@ public class NewRandomVariablePanel extends JPanel {
         int i = 0;
         for (ArgumentInput input : generatorPanel.argumentInputs) {
 
-            Value value = (Value)input.valueComboBox.getSelectedItem();
+            String value = (String)input.valueComboBox.getSelectedItem();
 
             if (value != null) {
                 if (i > 0) builder.append(", ");
 
                 builder.append(input.argument.name).append("=");
-                if (value.isAnonymous()) {
-                    builder.append(value.codeString());
+                if (interpreter.parser.hasValue(value, LPhyParser.Context.model)) {
+                    builder.append(value);
                 } else {
-                    builder.append(value.getCanonicalId());
+                    builder.append(value);
                 }
                 i += 1;
             }
         }
-        builder.append(")");
+        builder.append(");");
         return builder.toString();
     }
 
     void generateComponents() {
 
-        labels.clear();
-        editors.clear();
         removeAll();
-
-        labels.add(new JLabel("Variable Name"));
-        editors.add(name);
-
-        labels.add(new JLabel("Distribution"));
-        editors.add(generativeDistributionCombo);
-
         generatorPanel.setGeneratorClass(distributionClasses.get(generativeDistributionCombo.getSelectedIndex()));
 
-        labels.add(new JLabel("Parameters"));
-        editors.add(generatorPanel);
+        add(name);
+        add(sim);
+        add(generativeDistributionCombo);
+        add(new JLabel("("));
+        add(generatorPanel);
+        add(new JLabel(")"));
 
-
-
-        labels.add(button);
-        editors.add(codeStringLabel);
-
-        GroupLayout.ParallelGroup horizParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-        GroupLayout.ParallelGroup horizParallelGroup2 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        GroupLayout.SequentialGroup vertSequentialGroup = layout.createSequentialGroup();
-        for (int i = 0; i < labels.size(); i++) {
-            horizParallelGroup.addComponent(labels.get(i));
-            horizParallelGroup2.addComponent(editors.get(i));
-            GroupLayout.ParallelGroup vertParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.BASELINE);
-            vertParallelGroup.addComponent(labels.get(i));
-            vertParallelGroup.addComponent(editors.get(i));
-            vertSequentialGroup.addGroup(vertParallelGroup);
-            vertSequentialGroup.addGap(2);
-        }
-
-        GroupLayout.SequentialGroup horizSequentialGroup = layout.createSequentialGroup();
-        horizSequentialGroup.addGroup(horizParallelGroup).addGap(5).addGroup(horizParallelGroup2);
-
-        layout.setHorizontalGroup(horizSequentialGroup);
-
-        layout.setVerticalGroup(vertSequentialGroup);
+        add(button);
     }
 }

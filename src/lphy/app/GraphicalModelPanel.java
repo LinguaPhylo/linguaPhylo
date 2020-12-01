@@ -164,7 +164,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
-        rightPane.addTab("New Random Variable", new NewRandomVariablePanel(parser, ParserUtils.getGenerativeDistributions()));
+        rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
         horizSplitPane.setRightComponent(rightPane);
 
         if (parser.getModelSinks().size() > 0) {
