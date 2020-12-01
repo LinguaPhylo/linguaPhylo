@@ -67,11 +67,14 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
             String str = (String) anObject;
             if (parser.hasValue(str, LPhyParser.Context.model)) {
                 Value value = parser.getValue(str, LPhyParser.Context.model);
-                if (type.isAssignableFrom(value.value().getClass())) {
+
+                Class c = value.value().getClass();
+
+                if (type.isAssignableFrom(c) || type.arrayType().isAssignableFrom(c)) {
                     currentValue = value;
                     editor.setText(value.getId());
                 } else {
-                    throw new RuntimeException("Should be value of type " + type);
+                    throw new RuntimeException("Should be value of type " + type + " but found type " + value.value().getClass());
                 }
             }
         } else if (anObject != null) throw new RuntimeException("Should be a string, but is a " + anObject.getClass());

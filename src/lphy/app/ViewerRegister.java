@@ -26,28 +26,37 @@ public class ViewerRegister {
             if (object instanceof Value) {
                 Object value = ((Value) object).value();
                 return (value instanceof Double[] || value instanceof Number[] || value instanceof Integer[] || value instanceof Boolean[] || value instanceof String[]);
-            }
-            return false;
+            } else return (object instanceof Double[] || object instanceof Number[] || object instanceof Integer[] || object instanceof Boolean[] || object instanceof String[]);
         }
 
         public JComponent getViewer(Object object) {
 
-            Object value = ((Value) object).value();
+            Object array;
 
-            if (value instanceof Double[]) {
-                return new DoubleArrayLabel((Value<Double[]>) object);
+            if (object instanceof Value) {
+                array = ((Value)object).value();
+            } else {
+                array = object;
             }
 
-            if (value instanceof Number[]) {
-                return new NumberArrayLabel((Value<Number[]>) object);
+            if (array instanceof Double[]) {
+                return new DoubleArrayLabel((Double[]) array);
             }
 
-            if (value instanceof String[]) {
-                return new StringArrayLabel((Value<String[]>) object);
+            if (array instanceof Number[]) {
+                return new NumberArrayLabel((Number[]) array);
             }
 
-            if (value instanceof Integer[] || value instanceof Boolean[]) {
-                return new ArrayLabel((Value) object);
+            if (array instanceof String[]) {
+                return new StringArrayLabel((String[]) array);
+            }
+
+            if (array instanceof Integer[]) {
+                return new ArrayLabel((Integer[])array);
+            }
+
+            if (array instanceof Boolean[]) {
+                return new ArrayLabel((Boolean[])array);
             }
 
             throw new IllegalArgumentException("Unexpected argument: " + object);

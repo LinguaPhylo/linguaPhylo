@@ -14,6 +14,10 @@ public class StringArrayLabel extends ArrayLabel<String> {
         super(values);
     }
 
+    public StringArrayLabel(String[] values) {
+        super(values);
+    }
+
     @Override
     public String valueToString(String rawValue) {
         return quotedString(rawValue);

@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 public class GraphicalModelInterpreter extends JPanel {
 
+    boolean includeNewRandomVariablePanel = false;
+
     LPhyParser parser;
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
@@ -46,6 +48,8 @@ public class GraphicalModelInterpreter extends JPanel {
         this.parser = parser;
         this.context = context;
 
+        includeNewRandomVariablePanel = (context != LPhyParser.Context.data);
+
         textPane = new GraphicalModelTextPane(parser);
         textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
@@ -58,7 +62,7 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.setBorder(textBorder);
         interpreterField.setFocusTraversalKeysEnabled(false);
 
-        newRandomVariablePanel = new NewRandomVariablePanel(this, ParserUtils.getGenerativeDistributions());
+        if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, ParserUtils.getGenerativeDistributions());
 
         List<String> keywords = parser.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.greekLetterCodes));
@@ -139,16 +143,18 @@ public class GraphicalModelInterpreter extends JPanel {
 
         activeLine.add(button);
 
-        button.addActionListener(e -> {
-            if (button.isSelected()) {
-                activeLine.remove(interpreterField);
-                activeLine.add(newRandomVariablePanel);
-            } else {
-                activeLine.remove(newRandomVariablePanel);
-                activeLine.add(interpreterField);
-            }
-            revalidate();
-        });
+        if (includeNewRandomVariablePanel) {
+            button.addActionListener(e -> {
+                if (button.isSelected()) {
+                    activeLine.remove(interpreterField);
+                    activeLine.add(newRandomVariablePanel);
+                } else {
+                    activeLine.remove(newRandomVariablePanel);
+                    activeLine.add(interpreterField);
+                }
+                revalidate();
+            });
+        }
 
         activeLine.add(interpreterField);
         //activeLine.add(newRandomVariablePanel);
