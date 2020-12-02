@@ -163,7 +163,7 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
-        rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
+        //rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
         horizSplitPane.setRightComponent(rightPane);
 
         if (parser.getModelSinks().size() > 0) {
@@ -175,6 +175,7 @@ public class GraphicalModelPanel extends JPanel {
      * This is duplicated to {@link lphy.parser.REPL#source(BufferedReader)},
      * but has extra code using {@link lphy.parser.codecolorizer.CodeColorizer}
      * and panel function.
+     *
      * @param reader
      * @throws IOException
      */
@@ -258,11 +259,11 @@ public class GraphicalModelPanel extends JPanel {
         if (id != null) {
             Value<?> selectedValue = parser.getValue(id, LPhyParser.Context.model);
             if (selectedValue != null) {
-                showValue(selectedValue);
+                showValue(selectedValue, false);
             }
         } else {
             Set<Value<?>> sinks = parser.getModelSinks();
-            if (sinks.size() > 0) showValue(sinks.iterator().next());
+            if (sinks.size() > 0) showValue(sinks.iterator().next(), false);
         }
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
@@ -272,26 +273,30 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     void showValue(Value value) {
+        showValue(value, true);
+    }
+
+    void showValue(Value value, boolean moveToTab) {
         if (value != null) {
             String type = value.value().getClass().getSimpleName();
             String label = value.getLabel();
 
-            showObject(type + " " + label, value);
+            showObject(type + " " + label, value, moveToTab);
         }
     }
 
     private void showParameterized(Generator g) {
-        showObject(g.codeString(), g);
+        showObject(g.codeString(), g, true);
     }
 
-    private void showObject(String label, Object obj) {
+    private void showObject(String label, Object obj, boolean moveToTab) {
         displayedElement = obj;
 
         JComponent viewer = null;
         if (obj instanceof Value) {
             viewer = ViewerRegister.getJComponentForValue(obj);
         } else if (obj instanceof Generator) {
-            viewer = new JLabel(((Generator)obj).getRichDescription(0));
+            viewer = new JLabel(((Generator) obj).getRichDescription(0));
         } else {
             LoggerUtils.log.severe("Trying to show an object that is neither Value nor Generator.");
         }
@@ -309,7 +314,7 @@ public class GraphicalModelPanel extends JPanel {
                         BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
 
-        rightPane.setSelectedComponent(currentSelectionContainer);
+        if (moveToTab) rightPane.setSelectedComponent(currentSelectionContainer);
 
         repaint();
     }

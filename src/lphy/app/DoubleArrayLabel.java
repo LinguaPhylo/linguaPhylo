@@ -9,6 +9,10 @@ public class DoubleArrayLabel extends ArrayLabel<Double> {
         super(values);
     }
 
+    public DoubleArrayLabel(Double[] values) {
+        super(values);
+    }
+
     @Override
     public String valueToString(Double rawValue) {
         return Utils.FORMAT.format(rawValue);
