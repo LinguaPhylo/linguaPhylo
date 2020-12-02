@@ -77,6 +77,8 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             throw new IllegalArgumentException("Exactly one of " + demesParamName + " and " + kParamName + " must be specified!");
 
         this.random = Utils.getRandom();
+
+        initDemes();
     }
 
     public int n() {
@@ -115,8 +117,6 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             }
 
         } else {
-            initDemes();
-
             // this includes k != null && isSort()
             List<String> uniqueDemes = getUniqueDemes();
 
