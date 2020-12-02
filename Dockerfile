@@ -6,10 +6,17 @@
 # To run the tests, use
 #   docker run testing
 
-FROM openjdk:15-jdk-ubuntu
+FROM openjdk:15.0.1-jdk-slim-buster
 
-# Install Apache Ant
-RUN apt-get update && apt-get install -y ant
+# Install Ant https://hub.docker.com/r/webratio/ant/dockerfile
+ENV ANT_VERSION 1.10.9
+RUN cd && \
+    wget -q http://www.us.apache.org/dist//ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
+    tar -xzf apache-ant-${ANT_VERSION}-bin.tar.gz && \
+    mv apache-ant-${ANT_VERSION} /opt/ant && \
+    rm apache-ant-${ANT_VERSION}-bin.tar.gz
+ENV ANT_HOME /opt/ant
+ENV PATH ${PATH}:/opt/ant/bin
 
 ENV USER root
 
