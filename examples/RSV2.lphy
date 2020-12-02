@@ -4,15 +4,18 @@ data {
   taxa = taxa(D);
   codon = D.charset(["3-629\3","1-629\3", "2-629\3"]);
   weights = codon.nchar();
+  n=length(codon); // 3 partitions
 }
 model {
-  Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
-  ψ ~ Coalescent(taxa=taxa, theta=Θ);
-  kappa ~ LogNormal(meanlog=1.0, sdlog=0.5, n=3);
+  kappa ~ LogNormal(meanlog=1.0, sdlog=0.5, n=n);
+  pi ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], n=n);
+  // relative substitution rates
+  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
 
-  mu ~ WeightedDirichlet(conc=[1.0,1.0,1.0], weights=weights);
   clockRate ~ LogNormal(meanlog=-5.0, sdlog=1.25);
 
-  pi ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], n=length(codon));
+  Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
+  ψ ~ Coalescent(taxa=taxa, theta=Θ);
+
   codon ~ PhyloCTMC(L=weights, Q=hky(kappa=kappa, freq=pi, meanRate=mu), mu=clockRate, tree=ψ);
 }
