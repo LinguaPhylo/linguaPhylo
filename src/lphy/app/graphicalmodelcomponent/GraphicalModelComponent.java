@@ -3,12 +3,8 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
-import lphy.app.GraphicalModelPanel;
 import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
-import lphy.core.distributions.VectorizedDistribution;
-import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.Vector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +26,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public static Preferences preferences = Preferences.userNodeForPackage(GraphicalModelComponent.class);
 
     GraphicalLPhyParser parser;
-
-    double ARROWHEAD_WIDTH = 4;
-    double ARROWHEAD_DEPTH = 10;
-
-    private static float FACTOR_LABEL_FONT_SIZE = 11.0f;
 
     float STROKE_SIZE = 1.0f;
 
@@ -159,83 +150,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                     drawLine(g2d, x1, y1, x2, y2);
                 }
             } else {
-
-                NodeWrapper nodeWrapper = (NodeWrapper) properNode;
-                LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
-
-                if (node.value() instanceof Value) {
-                    paintValueNode((Value)node.value(), properNode, g2d);
-                } else if (node.value() instanceof Generator) {
-                    paintGeneratorNode((Generator)node.value(), node, properNode, g2d);
-                }
+                NodePaintUtils.paintNodeEdges(properNode,g2d,showArgumentLabels, false);
             }
         }
-    }
-
-    /**
-     * @param value the value to paint the node of
-     * @param properNode the proper node representing this generator
-     * @param g2d the Graphics2D context to paint to
-     */
-    private void paintValueNode(Value value, LayeredNode properNode, Graphics2D g2d) {
-
-        double x1 = properNode.getX();
-        double y1 = properNode.getY() + VAR_HEIGHT / 2;
-        
-        double delta = g2d.getFontMetrics().getAscent() / 2.0;
-
-        for (LayeredNode successor : properNode.getSuccessors()) {
-
-            double x2 = successor.getX();
-            double y2 = successor.getY() - (successor.isDummy() ? 0.0 : FACTOR_SIZE);
-            drawLine(g2d, x1, y1, x2, y2);
-            if (showArgumentLabels) {
-                String label = ((Generator) (getUnwrappedNonDummySuccessor(successor)).value()).getParamName(value);
-                g2d.setColor(Color.gray);
-                g2d.drawString(label, (int) Math.round((x1 + x2) / 2.0 - g2d.getFontMetrics().stringWidth(label) / 2.0), (int) Math.round((y1 + y2) / 2.0 + delta));
-                g2d.setColor(Color.black);
-            }
-        }
-    }
-
-    /**
-     * @param generator the generator to paint the node of
-     * @param node the LayerdNode representing this Generator
-     * @param properNode the proper node representing this generator
-     * @param g2d the Graphics2D context to paint to
-     */
-    private void paintGeneratorNode(Generator generator, LayeredNode node, LayeredNode properNode, Graphics2D g2d) {
-
-        // is this a vectorized Generator?
-        boolean vectorized = (generator instanceof VectorizedDistribution || generator instanceof VectorizedFunction);
-
-        String str = generator.getName();
-        if (vectorized) {
-            Value value = (Value)((LayeredGNode)node.getSuccessors().get(0)).value();
-            str += "[";
-            if (value instanceof Vector) str += ((Vector)value).size();
-            str += "]";
-        }
-
-        LayeredNode properSuccessor = properNode.getSuccessors().get(0);
-
-        Point2D q = properSuccessor.getPosition();
-
-        Font font = g2d.getFont();
-        Font newFont = vectorized ? font.deriveFont(Font.BOLD,FACTOR_LABEL_FONT_SIZE) : font.deriveFont(FACTOR_LABEL_FONT_SIZE);
-        g2d.setFont(newFont);
-
-        double delta = g2d.getFontMetrics().getAscent() / 2.0;
-
-        g2d.drawString(str, (float) (node.getX() + FACTOR_SIZE + FACTOR_LABEL_GAP), (float) (node.getY() + delta));
-        if (vectorized) g2d.setFont(font);
-
-        double x1 = node.getX();
-        double y1 = node.getY() + (properSuccessor.isDummy() ? 0.0 : FACTOR_SIZE);
-        double x2 = q.getX();
-        double y2 = q.getY() - VAR_HEIGHT / 2;
-
-        drawArrowLine(g2d, x1, y1, x2, y2, ARROWHEAD_DEPTH, ARROWHEAD_WIDTH);
     }
 
     public String toTikz() {
@@ -360,11 +277,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         return factorString + factorEdgeString;
     }
 
-    private LayeredGNode getUnwrappedNonDummySuccessor(LayeredNode successor) {
-        if (successor.isDummy()) return getUnwrappedNonDummySuccessor(successor.getSuccessors().get(0));
-        return (LayeredGNode) ((NodeWrapper) successor).wrappedNode();
-    }
-
     private boolean isWrappedParameterized(LayeredNode v) {
         return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
                 ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Generator;
@@ -380,43 +292,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g.draw(line);
     }
 
-    /**
-     * Draw an arrow line between two points.
-     *
-     * @param g the graphics component.
-     * @param d the width of the arrow.
-     * @param h the height of the arrow.
-     */
-    private void drawArrowLine(Graphics2D g, double x1, double y1, double x2, double y2, double d, double h) {
-
-        if (!Double.isNaN(x1) && !Double.isNaN(x2)) {
-
-            double dx = x2 - x1, dy = y2 - y1;
-            double D = Math.sqrt(dx * dx + dy * dy);
-            double xm = D - d, xn = xm, ym = h, yn = -h, x;
-            double sin = dy / D, cos = dx / D;
-
-            x = xm * cos - ym * sin + x1;
-            ym = xm * sin + ym * cos + y1;
-            xm = x;
-
-            x = xn * cos - yn * sin + x1;
-            yn = xn * sin + yn * cos + y1;
-            xn = x;
-
-            Line2D.Double line = new Line2D.Double(x1, y1, x2, y2);
-
-            GeneralPath p = new GeneralPath();
-            p.moveTo(x2, y2);
-            p.lineTo(xm, ym);
-            p.lineTo(xn, yn);
-            p.closePath();
-
-
-            g.draw(line);
-            g.fill(p);
-        }
-    }
 
     @Override
     public void modelChanged() {

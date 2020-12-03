@@ -1,24 +1,13 @@
 package lphy.app.graphicalmodelcomponent.interactive;
 
 import lphy.app.GraphicalLPhyParser;
-import lphy.app.GraphicalModelChangeListener;
-import lphy.app.GraphicalModelListener;
-import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphy.app.graphicalmodelcomponent.LayeredGraph;
-import lphy.app.graphicalmodelcomponent.LayeredNode;
-import lphy.app.graphicalmodelcomponent.ProperLayeredGraph;
-import lphy.core.LPhyParser;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.Value;
+import lphy.app.graphicalmodelcomponent.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 import java.util.prefs.Preferences;
 
 /**
@@ -92,33 +81,15 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     public void paintComponent(Graphics g) {
 
-
         lattice.paint((Graphics2D)g);
 
-        for (LayeredNode node : component.getLayeredGraph().getNodes()) {
-            paintSuccessorEdges(node, (Graphics2D) g);
+        for (LayeredNode node : component.properLayeredGraph.getNodes()) {
+            NodePaintUtils.paintNodeEdges(node,(Graphics2D)g, false, true);
         }
 
-
-        for (LayeredNode node : component.getLayeredGraph().getNodes()) {
-            paintNode(node, (Graphics2D) g);
+        for (LayeredNode node : component.properLayeredGraph.getNodes()) {
+            NodePaintUtils.paintNode(node,(Graphics2D)g);
         }
     }
 
-    private void paintNode(LayeredNode node, Graphics2D g2d) {
-
-        Rectangle2D rectangle2D = new Rectangle2D.Double(node.getX() - nodeSize / 2, node.getY() - nodeSize / 2, nodeSize, nodeSize);
-
-        g2d.draw(rectangle2D);
-
-
-    }
-
-    private void paintSuccessorEdges(LayeredNode node, Graphics2D g2d) {
-
-        for (LayeredNode successor : node.getSuccessors()) {
-            Line2D line2D = new Line2D.Double(node.getPosition(), successor.getPosition());
-            g2d.draw(line2D);
-        }
-    }
 }

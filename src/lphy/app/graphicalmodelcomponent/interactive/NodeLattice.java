@@ -57,7 +57,7 @@ public class NodeLattice {
 
                 Ellipse2D ellipse2D = new Ellipse2D.Double(point2D.getX()-2.0, point2D.getY()-2.0, 4,4);
                 g2d.fill(ellipse2D);
-                g2d.drawString(latticePoint.toString(), (int)point2D.getX()+10, (int)point2D.getY());
+                //g2d.drawString(latticePoint.toString(), (int)point2D.getX()+10, (int)point2D.getY());
             }
         }
         g2d.setColor(Color.black);

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-class NodeWrapper implements LayeredNode {
+public class NodeWrapper implements LayeredNode {
     private int index; // index within layer
     private int layer;
     double dx = 0.0;
