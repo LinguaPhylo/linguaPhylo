@@ -239,10 +239,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz() {
 
-        double xIndexScale = 2.0;
-        double yIndexScale = 1.0;
-
-        return toTikz((properLayeredGraph.getMaxIndex()+1)*xIndexScale/getWidth(), properLayeredGraph.getLayerCount()*yIndexScale/getHeight());
+        return toTikz(1.0, 1.0);
     }
 
     private String toTikz(double xScale, double yScale) {
@@ -308,7 +305,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             style = "detstyle";
         }
 
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.x*xScale + ", -" + gNode.y*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.column*xScale + ", -" + gNode.layer*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
     }
 
     private String getLabel(LayeredGNode gNode) {
