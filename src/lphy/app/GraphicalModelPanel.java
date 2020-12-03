@@ -2,10 +2,10 @@ package lphy.app;
 
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.Layering;
+import lphy.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.*;
-import lphy.parser.ParserUtils;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -26,10 +26,13 @@ import java.util.Set;
 public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
-    JLabel dummyLabel = new JLabel("");
     GraphicalModelInterpreter modelInterpreter;
     GraphicalModelInterpreter dataInterpreter;
+
+    JTabbedPane leftPane;
+
     JTabbedPane rightPane;
+
     VariableLog variableLog = new VariableLog(true, true);
     VariableSummary variableSummary = new VariableSummary(true, true);
     TreeLog treeLog = new TreeLog();
@@ -94,16 +97,6 @@ public class GraphicalModelPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel, dummyLabel);
-        horizSplitPane.setResizeWeight(0.5);
-
-        JTabbedPane interpreterPane = new JTabbedPane();
-        interpreterPane.add("data", dataInterpreter);
-        interpreterPane.add("model", modelInterpreter);
-
-        verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreterPane);
-        verticalSplitPane.setResizeWeight(0.75);
-        add(verticalSplitPane, BorderLayout.CENTER);
 
         GraphicalModelListener listener = new GraphicalModelListener() {
             @Override
@@ -164,7 +157,21 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));
         //rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
-        horizSplitPane.setRightComponent(rightPane);
+
+        leftPane = new JTabbedPane();
+        leftPane.addTab("Auto", panel);
+        leftPane.addTab("Interactive", new InteractiveGraphicalModelComponent(parser, component));
+
+        horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
+        horizSplitPane.setResizeWeight(0.5);
+
+        JTabbedPane interpreterPane = new JTabbedPane();
+        interpreterPane.add("data", dataInterpreter);
+        interpreterPane.add("model", modelInterpreter);
+
+        verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreterPane);
+        verticalSplitPane.setResizeWeight(0.75);
+        add(verticalSplitPane, BorderLayout.CENTER);
 
         if (parser.getModelSinks().size() > 0) {
             showValue(parser.getModelSinks().iterator().next());

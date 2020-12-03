@@ -3,6 +3,7 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
+import lphy.app.GraphicalModelPanel;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
@@ -52,7 +53,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     Ordering ordering = new Ordering();
     Positioning positioning = new Positioning();
     int BORDER = 20;
-    Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER,
+    public Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER,
             (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);
 
     public GraphicalModelComponent(GraphicalLPhyParser parser) {
@@ -69,6 +70,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         setup();
         parser.addGraphicalModelChangeListener(this::setup);
+    }
+
+    public LayeredGraph getLayeredGraph() {
+        return layeredGraph;
     }
 
     private void setup() {
