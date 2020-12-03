@@ -21,7 +21,23 @@ public class SequenceTypeFactory {
         return getDataType(dataTypeName);
     }
 
+    public SequenceType getDataType(String dataTypeName, String[] stateNames) {
+        if ( dataTypeName.trim().equalsIgnoreCase(Standard.NAME) )
+            return new Standard(stateNames);
+
+        return getDataType(dataTypeName);
+    }
+
+    /**
+     * Not include Standard data type
+     * @param dataTypeName
+     * @return
+     */
     public SequenceType getDataType(String dataTypeName) {
+        if (dataTypeName.trim().equalsIgnoreCase(Standard.NAME))
+            throw new IllegalArgumentException("Standard data type has to be created " +
+                    "given either numStates or stateNames !");
+
         switch (dataTypeName.trim().toLowerCase()) {
             case "rna":
             case "dna":

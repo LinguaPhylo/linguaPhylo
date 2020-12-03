@@ -1,6 +1,7 @@
 package lphy.evolution.io;
 
 import lphy.evolution.Taxa;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.TaxaCharacterMatrix;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
@@ -155,6 +156,9 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
     boolean hasAges();
 
     AgeDirection getAgeDirection(); // no setter, given in assignAges() and setAgesFromTaxaName()
+
+    //*** trait ***//
+    Alignment getTraitAlignment(String sepRegex, int i);
 
     /**
      * @param sb  there should be an alignment description in the begin.

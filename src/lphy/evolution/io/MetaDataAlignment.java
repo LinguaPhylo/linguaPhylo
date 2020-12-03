@@ -5,6 +5,7 @@ import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.sequences.Standard;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
 import lphy.utils.LoggerUtils;
@@ -160,6 +161,39 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         return AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
     }
 
+    @MethodInfo(description="return a trait alignment. " +
+            "The regular expression is the separator to split the taxa names, " +
+            "and i (>=0) is the index to extract the trait value." )
+    public Alignment trait(String sepRegex, int i) {
+        return getTraitAlignment(sepRegex, i);
+    }
+
+
+    @Override
+    public Alignment getTraitAlignment(String sepRegex, int i) {
+        String[] taxaNames = this.getTaxaNames();
+        String[] traitVal = new String[taxaNames.length];
+
+        for (int t = 0; t < taxaNames.length; t++) {
+            String[] parts = taxaNames[t].split(sepRegex);
+            if (parts.length > i)
+                traitVal[t] = parts[i];
+            else
+                throw new IllegalArgumentException("Cannot find " + i +
+                        "th element after splitting name " + taxaNames[t] + " by regular expression " + sepRegex);
+        }
+        // no sorting demes
+        Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));
+        List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
+        SequenceType standard = new Standard(uniqTraitVal.size());
+        SimpleAlignment traitAl = new SimpleAlignment(this.getTaxa(), 1, standard);
+        // fill in trait values, traitVal and taxaNames have to maintain the same order
+        for (int t = 0; t < traitVal.length; t++) {
+            int demeIndex = uniqueDemes.indexOf(traitVal[t]);
+            traitAl.setState(t, 0, demeIndex);
+        }
+        return traitAl;
+    }
 
     @Override
     public void setCharsetMap(Map<String, List<CharSetBlock>> charsetMap) {
