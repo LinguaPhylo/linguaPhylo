@@ -2,6 +2,7 @@ package lphy.app.graphicalmodelcomponent.interactive;
 
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.graphicalmodelcomponent.*;
+import lphy.core.LPhyParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,8 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     public static Preferences preferences = Preferences.userNodeForPackage(InteractiveGraphicalModelComponent.class);
 
+
+    LPhyParser parser;
     NodeLattice lattice;
 
     int nodeSize = 20;
@@ -27,6 +30,7 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     public InteractiveGraphicalModelComponent(GraphicalLPhyParser parser, GraphicalModelComponent component) {
 
+        this.parser = parser;
         this.component = component;
         lattice = new NodeLattice(component.positioning, this, component.insets);
 
@@ -84,11 +88,11 @@ public class InteractiveGraphicalModelComponent extends JComponent {
         lattice.paint((Graphics2D)g);
 
         for (LayeredNode node : component.properLayeredGraph.getNodes()) {
-            NodePaintUtils.paintNodeEdges(node,(Graphics2D)g, false, true);
+            NodePaintUtils.paintNodeEdges(node,(Graphics2D)g, false, GraphicalModelComponent.getUseStraightEdges());
         }
 
         for (LayeredNode node : component.properLayeredGraph.getNodes()) {
-            NodePaintUtils.paintNode(node,(Graphics2D)g, this);
+            NodePaintUtils.paintNode(node,(Graphics2D)g, this, parser);
         }
     }
 

@@ -159,7 +159,7 @@ public class GraphicalModelPanel extends JPanel {
         //rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
 
         leftPane = new JTabbedPane();
-        leftPane.addTab("Auto", panel);
+        leftPane.addTab("AutoLayout", panel);
         leftPane.addTab("Interactive", new InteractiveGraphicalModelComponent(parser, component));
 
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);

@@ -1,6 +1,5 @@
 package lphy.app.graphicalmodelcomponent;
 
-import lphy.evolution.alignment.SimpleAlignment;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
 import lphy.utils.LoggerUtils;
@@ -8,7 +7,6 @@ import lphy.utils.LoggerUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.Map;
 import java.util.prefs.Preferences;
 
 public class LayeredGNode extends LayeredNode.Default {
@@ -70,19 +68,8 @@ public class LayeredGNode extends LayeredNode.Default {
 
 
     private void createValueButton(Value value) {
-        Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
-        Color borderColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
-
-        if (ValueUtils.isFixedValue(value)) {
-            backgroundColor = Color.white;
-            borderColor = Color.black;
-        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
-            backgroundColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-            borderColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
-        } else if (parser.isClampedVariable(value)) {
-            backgroundColor = new Color(0.2f, 0.2f, 1.0f, 0.5f);
-            borderColor = new Color(0.15f, 0.15f, 0.75f, 1.0f);
-        }
+        Color backgroundColor = NodePaintUtils.getFillColor(value, parser);
+        Color borderColor = NodePaintUtils.getDrawColor(value, parser);
 
         if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyParser.Context.model) != value) {
             backgroundColor = backgroundColor.darker();

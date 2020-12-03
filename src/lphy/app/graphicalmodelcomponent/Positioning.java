@@ -76,7 +76,8 @@ public class Positioning {
     }
 
     public Point2D getPoint2D(LatticePoint latticePoint) {
-        return new Point2D.Double((latticePoint.x+0.5) * dx + insets.left, (latticePoint.y+0.5) * dy + insets.top);
+
+        return new Point2D.Double((latticePoint.x-minLatticeX+0.5) * dx + insets.left, (latticePoint.y-minLatticeY+0.5) * dy + insets.top);
     }
 
     public LatticePoint getNearestPosition(double px, double py) {

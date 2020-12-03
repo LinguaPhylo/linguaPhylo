@@ -1,5 +1,6 @@
 package lphy.app.graphicalmodelcomponent;
 
+import lphy.core.LPhyParser;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
@@ -21,21 +22,21 @@ public class NodePaintUtils {
     private static CellRendererPane crp = new CellRendererPane();
 
 
-    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component) {
+    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component, LPhyParser parser) {
         NodeWrapper nodeWrapper = (NodeWrapper) properNode;
 
         if (!nodeWrapper.isDummy()) {
             LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
 
             if (node.value() instanceof Value) {
-                paintValueNode((Value) node.value(), node, g2d, component);
+                paintValueNode((Value) node.value(), node, g2d, component, parser);
             } else if (node.value() instanceof Generator) {
                 paintGeneratorNode((Generator) node.value(), node, properNode, g2d);
             }
         }
     }
 
-    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component) {
+    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component, LPhyParser parser) {
 
         Shape shape = null;
         if (value instanceof RandomVariable) {
@@ -44,9 +45,12 @@ public class NodePaintUtils {
             shape = nodeDiamond(gNode);
         } else shape = nodeSquare(gNode);
 
-        g2d.setColor(Color.white);
+        Color fillColor = NodePaintUtils.getFillColor(value, parser);
+        Color borderColor = NodePaintUtils.getDrawColor(value, parser);
+
+        g2d.setColor(fillColor);
         g2d.fill(shape);
-        g2d.setColor(Color.black);
+        g2d.setColor(borderColor);
         g2d.draw(shape);
 
         String s = getNodeString(gNode, value, false);
@@ -294,5 +298,33 @@ public class NodePaintUtils {
         }
 
         return "<html><center><p>" + displayName + "</p>" + valueString + "</center></html>";
+    }
+
+    public static Color getFillColor(Value value, LPhyParser parser) {
+        Color fillColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+
+        if (ValueUtils.isFixedValue(value)) {
+            fillColor = Color.white;
+        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
+            fillColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+        } else if (parser.isClampedVariable(value)) {
+            fillColor = new Color(0.2f, 0.2f, 1.0f, 0.5f);
+        }
+
+        return fillColor;
+    }
+
+    public static Color getDrawColor(Value value, LPhyParser parser) {
+        Color drawColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
+
+        if (ValueUtils.isFixedValue(value)) {
+            drawColor = Color.black;
+        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
+            drawColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
+        } else if (parser.isClampedVariable(value)) {
+            drawColor = new Color(0.15f, 0.15f, 0.75f, 1.0f);
+        }
+
+        return drawColor;
     }
 }
