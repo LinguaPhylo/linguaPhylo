@@ -1,0 +1,27 @@
+data {
+  options = {ageDirection="forward", ageRegex="_(\d+)$"};
+  D = readNexus(file="examples/H5N1.nex", options=options);
+  taxa = D.taxa();
+  L = nchar(D);
+  trait_D = D.trait("\_", 2);
+}
+model {
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+
+  shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);
+
+  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=0.004, tree=ψ);
+
+  trait_π ~ Dirichlet(conc=rep(element=3.0, times=5));
+  // symmetric, dimension = n * (n-1) / 2
+  trait_rates ~ Dirichlet(conc=rep(element=1.0, times=10));
+  trait_indicators ~ Bernoulli(p=0.5, n=10);
+
+  // construct the GTR instantaneous rate matrix
+  trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
+  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, tree=ψ, dataType="standard");
+}

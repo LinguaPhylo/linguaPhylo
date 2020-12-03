@@ -11,13 +11,18 @@ import java.util.List;
  */
 public class Standard extends DataType {
 
-    private int numStates;
+    final private int numStates;
 
 //    public Standard(){    }
 
-    //TODO
     public Standard(int numStates){
         this.numStates = numStates;
+    }
+
+    //TODO convert String to State
+    public Standard(String[] stateNames){
+        this.numStates = stateNames.length;
+
     }
 
     //*** implementations ***//

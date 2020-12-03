@@ -37,6 +37,7 @@ public class GeneralTimeReversible extends RateMatrix {
         return new DoubleArray2DValue(generalTimeReversible(rates.value(), freq.value()), this);
     }
 
+    // symmetric rate matrix: rates and indicators dimension = n(n-1)/2
     private void update(Value<Double[]> rates, Value<Double[]> freq) {
         numStates = freq.value().length;
         ratesDim = numStates * (numStates - 1) / 2;
