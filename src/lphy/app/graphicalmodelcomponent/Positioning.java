@@ -1,6 +1,6 @@
 package lphy.app.graphicalmodelcomponent;
 
-import lphy.app.graphicalmodelcomponent.interactive.Position;
+import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -8,72 +8,97 @@ import java.awt.geom.Point2D;
 public class Positioning {
 
     private double dx, dy;
-    private int minColumn, maxColumn;
-    private int layerCount;
+    private int minLatticeX, maxLatticeX;
+    private int minLatticeY, maxLatticeY;
     private Insets insets;
     private Dimension dimension;
 
     ProperLayeredGraph properLayeredGraph;
 
     public void position(ProperLayeredGraph layeredGraph, Dimension dimension, Insets insets) {
-        minColumn = layeredGraph.getMinColumn();
-        maxColumn = layeredGraph.getMaxColumn();
+
+        getMinMaxLatticeXY(layeredGraph);
         this.dimension = dimension;
-        this.layerCount = layeredGraph.layers.size();
         properLayeredGraph = layeredGraph;
 
-        dx = (dimension.getWidth() - insets.left - insets.right) / ((maxColumn-minColumn)+1);
+        dx = (dimension.getWidth() - insets.left - insets.right) / ((maxLatticeX - minLatticeX)+1);
 
-        dy = (dimension.getHeight() - insets.top - insets.bottom) / layerCount;
+        dy = (dimension.getHeight() - insets.top - insets.bottom) / ((maxLatticeY - minLatticeY)+1);
 
         this.insets = insets;
 
         for (LayeredNode node : layeredGraph.getNodes()) {
-            Point2D point2D = getPosition(node);
+            Point2D point2D = getPoint2D(node);
             node.setPosition(point2D.getX(), point2D.getY());
         }
     }
 
-    public int getMaxColumn() {
-        return maxColumn;
+    public int getMinLatticeX() {
+        return minLatticeX;
     }
 
-    public int getMinColumn() {
-        return minColumn;
+    public int getMinLatticeY() {
+        return minLatticeY;
     }
 
-    public Point2D getPosition(LayeredNode node) {
-        return getPosition(node.getColumn(), node.getLayer());
+    public int getMaxLatticeX() {
+        return maxLatticeX;
     }
 
-    public Point2D getPosition(int col, int layer) {
-        return new Point2D.Double((col+0.5) * dx + insets.left, (layer+0.5) * dy + insets.top);
+    public int getMaxLatticeY() {
+        return maxLatticeY;
     }
 
-    public Position getNearestPosition(double px, double py) {
+    public void getMinMaxLatticeXY(LayeredGraph layeredGraph) {
+        maxLatticeX = Integer.MIN_VALUE;
+        minLatticeX = Integer.MAX_VALUE;
+        maxLatticeY = Integer.MIN_VALUE;
+        minLatticeY = Integer.MAX_VALUE;
+
+        for (LayeredNode node : layeredGraph.getNodes()) {
+            LatticePoint latticePoint = (LatticePoint)node.getMetaData(LatticePoint.KEY);
+            if (latticePoint != null) {
+                if (latticePoint.x > maxLatticeX) maxLatticeX = latticePoint.x;
+                if (latticePoint.x < minLatticeX) minLatticeX = latticePoint.x;
+                if (latticePoint.y > maxLatticeY) maxLatticeY = latticePoint.y;
+                if (latticePoint.y < minLatticeY) minLatticeY = latticePoint.y;
+            }
+        }
+    }
+
+    public Point2D getPoint2D(LayeredNode node) {
+
+        LatticePoint latticePoint = (LatticePoint)node.getMetaData(LatticePoint.KEY);
+
+        if (latticePoint != null) return getPoint2D(latticePoint);
+
+        else return getPoint2D(new LatticePoint((int)node.getX(), node.getLayer()));
+    }
+
+    public Point2D getPoint2D(LatticePoint latticePoint) {
+        return new Point2D.Double((latticePoint.x+0.5) * dx + insets.left, (latticePoint.y+0.5) * dy + insets.top);
+    }
+
+    public LatticePoint getNearestPosition(double px, double py) {
         int col = (int) Math.round((px - insets.left) / dx - 0.5);
-        if (col < minColumn) col = minColumn;
-        if (col > maxColumn) col = maxColumn;
+        if (col < minLatticeX) col = minLatticeX;
+        if (col > maxLatticeX) col = maxLatticeX;
 
-        int y = (layerCount - 1) - (int) Math.round(((dimension.getHeight() - insets.bottom) - py) / dy - 0.5);
-        if (y < 0) y = 0;
-        if (y >= layerCount) y = layerCount - 1;
+        int y = (maxLatticeY-minLatticeY) - (int) Math.round(((dimension.getHeight() - insets.bottom) - py) / dy - 0.5);
+        if (y < minLatticeY) y = minLatticeY;
+        if (y >= maxLatticeY) y = maxLatticeY;
 
-        return new Position(col, y);
+        return new LatticePoint(col, y);
     }
 
-    public LayeredNode getNode(Position position) {
+    public LayeredNode getNode(LatticePoint position) {
         for (LayeredNode node : properLayeredGraph.getNodes()) {
-            if (node.getColumn() == position.x && node.getLayer() == position.y) return node;
+            if (position.equals(node.getMetaData(LatticePoint.KEY))) return node;
         }
         return null;
     }
 
-    public Position getNearestPosition(Point point) {
+    public LatticePoint getNearestPosition(Point point) {
         return getNearestPosition(point.x, point.y);
-    }
-
-    public int getMaxLayer() {
-        return layerCount-1;
     }
 }

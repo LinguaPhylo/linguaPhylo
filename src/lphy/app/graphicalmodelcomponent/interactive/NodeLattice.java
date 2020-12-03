@@ -31,11 +31,10 @@ public class NodeLattice {
     }
 
     public void setToNearest(LayeredNode node) {
-        Position position = positioning.getNearestPosition(node.getX(), node.getY());
-        node.setColumn(position.x);
-        node.setLayer(position.y);
+        LatticePoint position = positioning.getNearestPosition(node.getX(), node.getY());
+        node.setMetaData(LatticePoint.KEY, position);
 
-        Point2D point2D = positioning.getPosition(node);
+        Point2D point2D = positioning.getPoint2D(node);
 
         node.setPosition(point2D.getX(), point2D.getY());
     }
@@ -50,13 +49,15 @@ public class NodeLattice {
     public void paint(Graphics2D g2d) {
         g2d.setColor(Color.lightGray);
 
-        for (int i = positioning.getMinColumn(); i <= positioning.getMaxColumn(); i++) {
-            for (int j = 0; j <= positioning.getMaxLayer(); j++) {
-                Point2D point2D = positioning.getPosition(i,j);
+        for (int i = positioning.getMinLatticeX(); i <= positioning.getMaxLatticeX(); i++) {
+            for (int j = positioning.getMinLatticeY(); j <= positioning.getMaxLatticeY(); j++) {
+
+                LatticePoint latticePoint = new LatticePoint(i,j);
+                Point2D point2D = positioning.getPoint2D(latticePoint);
 
                 Ellipse2D ellipse2D = new Ellipse2D.Double(point2D.getX()-2.0, point2D.getY()-2.0, 4,4);
                 g2d.fill(ellipse2D);
-                g2d.drawString("(" + i + ", " + j + ")", (int)point2D.getX()+10, (int)point2D.getY());
+                g2d.drawString(latticePoint.toString(), (int)point2D.getX()+10, (int)point2D.getY());
             }
         }
         g2d.setColor(Color.black);

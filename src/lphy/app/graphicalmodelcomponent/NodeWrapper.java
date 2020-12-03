@@ -3,10 +3,11 @@ package lphy.app.graphicalmodelcomponent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 class NodeWrapper implements LayeredNode {
     private int index; // index within layer
-    private int column;
     private int layer;
     double dx = 0.0;
     private double x;
@@ -15,6 +16,7 @@ class NodeWrapper implements LayeredNode {
     private final List<LayeredNode> pred = new LinkedList<>();
     private final List<LayeredNode> succ = new LinkedList<>();
     boolean padding = false;
+    Map<String, Object> metaData = new TreeMap<>();
 
     NodeWrapper(LayeredNode n, int layer) {
         node = n;
@@ -70,22 +72,27 @@ class NodeWrapper implements LayeredNode {
     }
 
     @Override
-    public int getColumn() {
-        if (node != null) return node.getColumn();
-        return column;
+    public Object getMetaData(String key) {
+        if (node != null) return node.getMetaData(key);
+        return metaData.get(key);
+    }
+
+    @Override
+    public void setMetaData(String name, Object value) {
+        if (node != null) {
+            node.setMetaData(name, value);
+        } else {
+            metaData.put(name, value);
+        }
     }
 
     @Override
     public void setLayer(int layer) {
-        if (node != null) node.setLayer(layer);
-        this.layer = layer;
+        if (node != null) {
+            node.setLayer(layer);
+        } else this.layer = layer;
     }
 
-    @Override
-    public void setColumn(int col) {
-        if (node != null) node.setColumn(col);
-        column = col;
-    }
 
     @Override
     public double getX() {

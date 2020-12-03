@@ -1,8 +1,7 @@
 package lphy.app.graphicalmodelcomponent;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public interface LayeredNode {
 
@@ -34,18 +33,25 @@ public interface LayeredNode {
     /**
      * @return the column that this node is in
      */
-    int getColumn();
+    //int getColumn();
+
+    /**
+     * @param key the key of the metadata to retrieve
+     * @return the metadata object
+     */
+    Object getMetaData(String key);
+
+    /**
+     * @param name the key of the metadata to set
+     * @param value the value of the metadata to set
+     */
+    void setMetaData(String name, Object value);
 
     /**
      * @param layer the new layer of this node
      */
     void setLayer(int layer);
-
-
-    /**
-     * @param col the column that this node is in
-     */
-    void setColumn(int col);
+    
 
     default void setPosition(double x, double y) {
         setX(x);
@@ -84,7 +90,8 @@ public interface LayeredNode {
         private List<LayeredNode> predecessors = new ArrayList<>();
         int layer;
         int index;
-        int column;
+
+        Map<String, Object> metadata = new TreeMap<>();
 
         public Default(int layer, int index) {
             this.layer = layer;
@@ -114,18 +121,18 @@ public interface LayeredNode {
         }
 
         @Override
-        public int getColumn() {
-            return column;
+        public Object getMetaData(String key) {
+            return metadata.get(key);
+        }
+
+        @Override
+        public void setMetaData(String name, Object value) {
+            metadata.put(name, value);
         }
 
         @Override
         public void setLayer(int layer) {
             this.layer = layer;
-        }
-
-        @Override
-        public void setColumn(int col) {
-            column = col;
         }
 
         @Override

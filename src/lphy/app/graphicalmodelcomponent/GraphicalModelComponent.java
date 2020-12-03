@@ -4,6 +4,7 @@ import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
 import lphy.app.GraphicalModelPanel;
+import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
@@ -305,7 +306,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             style = "detstyle";
         }
 
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + gNode.column*xScale + ", -" + gNode.layer*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
+        LatticePoint latticePoint = (LatticePoint)gNode.getMetaData(LatticePoint.KEY);
+
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
     }
 
     private String getLabel(LayeredGNode gNode) {

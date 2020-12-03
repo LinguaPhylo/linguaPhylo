@@ -1,5 +1,6 @@
 package lphy.app.graphicalmodelcomponent;
 
+import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -256,11 +257,16 @@ public class BrandesKopfHorizontalCoordinateAssignment {
                     (maxXRightDown - rd.finalX(v))
             ) / 2;
 
-            v.setColumn(newCol);
+            v.setMetaData(LatticePoint.KEY, new LatticePoint(newCol, v.getLayer()*2));
         }
 
         // return layers to original order
         reverseLayers();
+
+        for (LayeredNode v : g.getNodes()) {
+            LatticePoint latticePoint = (LatticePoint)v.getMetaData(LatticePoint.KEY);
+            latticePoint.y = v.getLayer()*2;
+        }
     }
 
     private void reverseLayers() {
