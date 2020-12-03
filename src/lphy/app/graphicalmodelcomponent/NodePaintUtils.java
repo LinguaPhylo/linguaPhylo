@@ -2,10 +2,9 @@ package lphy.app.graphicalmodelcomponent;
 
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.Vector;
+import lphy.graphicalModel.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 
@@ -18,30 +17,68 @@ public class NodePaintUtils {
     private static double ARROWHEAD_DEPTH = 10;
 
 
-    public static void paintNode(LayeredNode properNode, Graphics2D g2d) {
+    private static JLabel renderer = new JLabel("", JLabel.CENTER);
+    private static CellRendererPane crp = new CellRendererPane();
+
+
+    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component) {
         NodeWrapper nodeWrapper = (NodeWrapper) properNode;
 
         if (!nodeWrapper.isDummy()) {
             LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
 
             if (node.value() instanceof Value) {
-                paintValueNode((Value) node.value(), properNode, g2d);
+                paintValueNode((Value) node.value(), node, g2d, component);
             } else if (node.value() instanceof Generator) {
                 paintGeneratorNode((Generator) node.value(), node, properNode, g2d);
             }
         }
     }
 
-    private static void paintValueNode(Value value, LayeredNode properNode, Graphics2D g2d) {
-        Ellipse2D ellipse2D = new Ellipse2D.Double(properNode.getX() - VAR_HEIGHT/2.0, properNode.getY() - VAR_HEIGHT/2.0, VAR_HEIGHT, VAR_HEIGHT);
+    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component) {
+
+        Shape shape = null;
+        if (value instanceof RandomVariable) {
+            shape = nodeCircle(gNode);
+        } else if (value.getGenerator() != null) {
+            shape = nodeDiamond(gNode);
+        } else shape = nodeSquare(gNode);
+
         g2d.setColor(Color.white);
-        g2d.fill(ellipse2D);
+        g2d.fill(shape);
         g2d.setColor(Color.black);
-        g2d.draw(ellipse2D);
+        g2d.draw(shape);
+
+        String s = getNodeString(gNode, value, false);
+        renderer.setText(s);
+        crp.paintComponent(g2d, renderer, component,
+                (int) (gNode.getX() - VAR_HEIGHT / 2.0), (int) (gNode.getY() - VAR_HEIGHT / 2.0), (int) VAR_HEIGHT, (int) VAR_HEIGHT);
+    }
+
+    private static Shape nodeCircle(LayeredNode node) {
+        return new Ellipse2D.Double(node.getX() - VAR_HEIGHT / 2.0, node.getY() - VAR_HEIGHT / 2.0, VAR_HEIGHT, VAR_HEIGHT);
+    }
+
+    private static Shape nodeSquare(LayeredNode node) {
+        return new Rectangle2D.Double(node.getX() - VAR_HEIGHT / 2.0, node.getY() - VAR_HEIGHT / 2.0, VAR_HEIGHT, VAR_HEIGHT);
+    }
+
+    private static Shape nodeDiamond(LayeredNode node) {
+        GeneralPath path = new GeneralPath();
+
+        double radius = VAR_HEIGHT / 2.0;
+
+        path.moveTo(node.getX()-radius, node.getY());
+        path.lineTo(node.getX(), node.getY() - radius);
+        path.lineTo(node.getX() + radius, node.getY());
+        path.lineTo(node.getX(), node.getY() + radius);
+        path.closePath();
+
+        return path;
     }
 
     private static void paintGeneratorNode(Generator generator, LayeredGNode node, LayeredNode properNode, Graphics2D g2d) {
-        Rectangle2D rectangle2D = new Rectangle2D.Double(node.x - FACTOR_SIZE, node.y - FACTOR_SIZE, FACTOR_SIZE*2.0, FACTOR_SIZE*2.0);
+        Rectangle2D rectangle2D = new Rectangle2D.Double(node.x - FACTOR_SIZE, node.y - FACTOR_SIZE, FACTOR_SIZE * 2.0, FACTOR_SIZE * 2.0);
         g2d.setColor(Color.white);
         g2d.fill(rectangle2D);
         g2d.setColor(Color.black);
@@ -85,9 +122,9 @@ public class NodePaintUtils {
     }
 
     /**
-     * @param value the value to paint the node of
+     * @param value      the value to paint the node of
      * @param properNode the proper node representing this generator
-     * @param g2d the Graphics2D context to paint to
+     * @param g2d        the Graphics2D context to paint to
      */
     private static void paintValueNodeEdges(Value value, LayeredNode properNode, Graphics2D g2d, boolean showArgumentLabels, boolean straightLines) {
 
@@ -108,8 +145,8 @@ public class NodePaintUtils {
             if (showArgumentLabels) {
                 Generator generator = null;
                 if (straightLines) {
-                    generator = (Generator)successor;
-                } else generator = (Generator)getUnwrappedNonDummySuccessor(successor);
+                    generator = (Generator) successor;
+                } else generator = (Generator) getUnwrappedNonDummySuccessor(successor);
 
 
                 String label = generator.getParamName(value);
@@ -121,10 +158,10 @@ public class NodePaintUtils {
     }
 
     /**
-     * @param generator the generator to paint the node of
-     * @param node the LayerdNode representing this Generator
+     * @param generator  the generator to paint the node of
+     * @param node       the LayerdNode representing this Generator
      * @param properNode the proper node representing this generator
-     * @param g2d the Graphics2D context to paint to
+     * @param g2d        the Graphics2D context to paint to
      */
     private static void paintGeneratorNodeEdges(Generator generator, LayeredNode node, LayeredNode properNode, Graphics2D g2d) {
 
@@ -133,9 +170,9 @@ public class NodePaintUtils {
 
         String str = generator.getName();
         if (vectorized) {
-            Value value = (Value)((LayeredGNode)node.getSuccessors().get(0)).value();
+            Value value = (Value) ((LayeredGNode) node.getSuccessors().get(0)).value();
             str += "[";
-            if (value instanceof Vector) str += ((Vector)value).size();
+            if (value instanceof Vector) str += ((Vector) value).size();
             str += "]";
         }
 
@@ -144,7 +181,7 @@ public class NodePaintUtils {
         Point2D q = properSuccessor.getPosition();
 
         Font font = g2d.getFont();
-        Font newFont = vectorized ? font.deriveFont(Font.BOLD,FACTOR_LABEL_FONT_SIZE) : font.deriveFont(FACTOR_LABEL_FONT_SIZE);
+        Font newFont = vectorized ? font.deriveFont(Font.BOLD, FACTOR_LABEL_FONT_SIZE) : font.deriveFont(FACTOR_LABEL_FONT_SIZE);
         g2d.setFont(newFont);
 
         double delta = g2d.getFontMetrics().getAscent() / 2.0;
@@ -208,14 +245,54 @@ public class NodePaintUtils {
         return (LayeredGNode) ((NodeWrapper) successor).wrappedNode();
     }
 
-        private static boolean isWrappedParameterized(LayeredNode v) {
-            return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
-                    ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Generator;
+    private static boolean isWrappedParameterized(LayeredNode v) {
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
+                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Generator;
+    }
+
+    private static boolean isWrappedValue(LayeredNode v) {
+        return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
+                ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Value;
+    }
+
+    public static String getNodeString(LayeredGNode node, Value v, boolean showValue) {
+
+        Object value = v.value();
+
+        String name = v.getId();
+        if (node.getSuccessors().size() == 1 && v.isAnonymous()) {
+            name = "[" + ((Generator) ((LayeredGNode) node.getSuccessors().get(0)).value()).getParamName(v) + "]";
+        }
+        if (name == null) name = "null";
+
+        String displayName = name;
+
+        if (displayName.length() > 7) {
+            displayName = "<small>" + displayName + "</small>";
         }
 
-        private static boolean isWrappedValue(LayeredNode v) {
-            return !v.isDummy() && v instanceof NodeWrapper && ((NodeWrapper) v).wrappedNode() instanceof LayeredGNode &&
-                    ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Value;
+        if (ValueUtils.isMultiDimensional(value)) {
+            return "<html><center><p><b>" + displayName + "</b></p></center></html>";
         }
 
+        String valueString = "";
+        if (showValue) {
+            if (v.value() instanceof Double) {
+                valueString = format.format(v.value());
+            } else {
+                valueString = v.value().toString();
+                if (v.value() instanceof String) {
+                    if (valueString.length() > 8) {
+                        valueString = valueString.length() + " chars";
+                        if (valueString.length() > 10) {
+                            valueString = "string";
+                        }
+                    }
+                }
+            }
+            valueString = "<p><font color=\"#808080\" ><small>" + valueString + "</small></font></p>";
+        }
+
+        return "<html><center><p>" + displayName + "</p>" + valueString + "</center></html>";
+    }
 }

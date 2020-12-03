@@ -1,8 +1,11 @@
 package lphy.graphicalModel;
 
+import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.types.*;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class ValueUtils {
 
@@ -26,6 +29,10 @@ public class ValueUtils {
     public static boolean isNumber(Value value) {
         Object val = value.value();
         return val instanceof Number;
+    }
+
+    public static boolean isMultiDimensional(Object v) {
+        return (v instanceof MultiDimensional || v instanceof Map || v.getClass().isArray());
     }
 
     /**

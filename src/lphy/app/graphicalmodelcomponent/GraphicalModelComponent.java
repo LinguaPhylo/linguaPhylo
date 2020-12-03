@@ -37,7 +37,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     private static final String SHOW_CONSTANT_NODES = "showConstantNodes";
     private static final String SHOW_ARGUMENT_LABELS = "showArgumentLabels";
+    private static final String USE_STRAIGHT_EDGES = "useStraightEdges";
     private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
+    private static boolean useStraightEdges = preferences.getBoolean(USE_STRAIGHT_EDGES, false);
 
     LayeredGraph layeredGraph = null;
     public ProperLayeredGraph properLayeredGraph = null;
@@ -62,6 +64,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         setup();
         parser.addGraphicalModelChangeListener(this::setup);
+    }
+
+    public static boolean getUseStraightEdges() {
+        return useStraightEdges;
     }
 
     public LayeredGraph getLayeredGraph() {
@@ -134,24 +140,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         for (LayeredNode properNode : properLayeredGraph.getNodes()) {
 
-            double x1 = properNode.getX();
-            double y1 = properNode.getY();
-
-            if (properNode.isDummy()) {
-
-                for (LayeredNode successor : properNode.getSuccessors()) {
-                    double x2 = successor.getX();
-                    double y2 = successor.getY();
-                    if (isWrappedParameterized(successor)) {
-                        y2 -= FACTOR_SIZE;
-                    } else if (isWrappedValue(successor)) {
-                        y2 -= VAR_HEIGHT / 2;
-                    }
-                    drawLine(g2d, x1, y1, x2, y2);
-                }
-            } else {
-                NodePaintUtils.paintNodeEdges(properNode,g2d,showArgumentLabels, false);
-            }
+            NodePaintUtils.paintNodeEdges(properNode,g2d,showArgumentLabels, useStraightEdges);
         }
     }
 
@@ -323,5 +312,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         preferences.putBoolean(SHOW_ARGUMENT_LABELS, show);
         showArgumentLabels = show;
         repaint();
+    }
+
+    public void setUseStraightEdges(boolean useStraightEdges) {
+        this.useStraightEdges = useStraightEdges;
     }
 }

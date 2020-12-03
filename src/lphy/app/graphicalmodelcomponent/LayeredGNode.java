@@ -51,7 +51,7 @@ public class LayeredGNode extends LayeredNode.Default {
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
             name = "[" + ((Generator) output.value).getParamName(((Value) value)) + "]";
-            button.setText(getButtonString((Value) value));
+            button.setText(NodePaintUtils.getNodeString(this, (Value) value, showValue));
         }
     }
 
@@ -68,46 +68,6 @@ public class LayeredGNode extends LayeredNode.Default {
         return button != null;
     }
 
-    private String getButtonString(Value v) {
-
-        Object value = v.value();
-
-        if (name == null) name = "null";
-
-        String displayName = name;
-
-        if (displayName.length() > 7) {
-            displayName = "<small>" + displayName + "</small>";
-        }
-
-        if (multiDimensional(value)) {
-            return "<html><center><p><b>" + displayName + "</b></p></center></html>";
-        }
-
-        String valueString = "";
-        if (showValue) {
-            if (v.value() instanceof Double) {
-                valueString = format.format(v.value());
-            } else {
-                valueString = v.value().toString();
-                if (v.value() instanceof String) {
-                    if (valueString.length() > 8) {
-                        valueString = valueString.length() + " chars";
-                        if (valueString.length() > 10) {
-                            valueString = "string";
-                        }
-                    }
-                }
-            }
-            valueString = "<p><font color=\"#808080\" ><small>" + valueString + "</small></font></p>";
-        }
-
-        return "<html><center><p>" + displayName + "</p>" + valueString + "</center></html>";
-    }
-
-    private boolean multiDimensional(Object v) {
-        return (v instanceof MultiDimensional || v instanceof Map || v instanceof SimpleAlignment || v.getClass().isArray());
-    }
 
     private void createValueButton(Value value) {
         Color backgroundColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
@@ -129,7 +89,7 @@ public class LayeredGNode extends LayeredNode.Default {
             borderColor = Color.red;
         }
 
-        String str = getButtonString(value);
+        String str = NodePaintUtils.getNodeString(this, value, showValue);
 
         boolean inData = inData(value);
 
@@ -153,7 +113,7 @@ public class LayeredGNode extends LayeredNode.Default {
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        value.addValueListener(() -> button.setText(getButtonString((Value) this.value)));
+        value.addValueListener(() -> button.setText(NodePaintUtils.getNodeString(this,(Value)this.value, showValue)));
     }
 
     private boolean inData(Value value) {

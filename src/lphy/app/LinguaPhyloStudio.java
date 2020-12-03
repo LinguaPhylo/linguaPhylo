@@ -147,6 +147,12 @@ public class LinguaPhyloStudio {
         showSampledValues.setState(LayeredGNode.getShowValueInNode());
         viewMenu.add(showSampledValues);
 
+        JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setState(GraphicalModelComponent.getUseStraightEdges());
+        viewMenu.add(useStraightEdges);
+
+
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
         showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
         showTreeInAlignmentView.setState(true);
@@ -188,6 +194,10 @@ public class LinguaPhyloStudio {
         saveAsMenuItem.addActionListener(e -> saveToFile(LPhyParser.Utils.getCanonicalScript(parser)));
         showArgumentLabels.addActionListener(
                 e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
+
+        useStraightEdges.addActionListener(
+                e -> panel.component.setUseStraightEdges(useStraightEdges.getState()));
+
 
         showSampledValues.addActionListener(
                 e -> panel.component.setShowValueInNode(showSampledValues.getState()));

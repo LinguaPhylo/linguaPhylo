@@ -88,7 +88,7 @@ public class InteractiveGraphicalModelComponent extends JComponent {
         }
 
         for (LayeredNode node : component.properLayeredGraph.getNodes()) {
-            NodePaintUtils.paintNode(node,(Graphics2D)g);
+            NodePaintUtils.paintNode(node,(Graphics2D)g, this);
         }
     }
 
