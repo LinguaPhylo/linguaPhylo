@@ -57,7 +57,8 @@ public class TimeTreeComponent extends JComponent {
 
     private boolean showNodeIndices = preferences.getBoolean("showNodeIndices", false);
 
-    private List<Object> metaData = new ArrayList<>();
+    // for indexing String traits
+    private List<Object> uniqueMetaData = new ArrayList<>();
 
     public TimeTreeComponent() {
     }
@@ -266,14 +267,17 @@ public class TimeTreeComponent extends JComponent {
         g.draw(transformed);
     }
 
-    private void getMetaData(String traitName, TimeTreeNode node, List<Object> metaData) {
+    private void getUniqueMetaData(String traitName, TimeTreeNode node, List<Object> uniqueMetaData) {
+        Object md = node.getMetaData(traitName);
         if (node.isLeaf()) {
-            metaData.add(node.getMetaData(traitName));
+            if (! uniqueMetaData.contains(md))
+                uniqueMetaData.add(md);
         } else {
             for (TimeTreeNode childNode : node.getChildren())
-                getMetaData(traitName, childNode, metaData);
+                getUniqueMetaData(traitName, childNode, uniqueMetaData);
 
-            metaData.add(node.getMetaData(traitName));
+            if (! uniqueMetaData.contains(md))
+                uniqueMetaData.add(md);
         }
     }
 
@@ -281,11 +285,11 @@ public class TimeTreeComponent extends JComponent {
         Object trait = childNode.getMetaData(traitName);
         if (trait instanceof Integer) return (Integer) trait;
         if (trait instanceof String) {
-            if (metaData.size() < 1)
+            if (uniqueMetaData.size() < 1)
                 throw new IllegalArgumentException("metaData List cannot be empty !");
-            if (! metaData.contains(trait))
-                throw new IllegalArgumentException("Cannot find trait " + trait + " in metaData " + metaData + " !");
-            return metaData.indexOf(trait);
+            if (! uniqueMetaData.contains(trait))
+                throw new IllegalArgumentException("Cannot find trait " + trait + " in metaData " + uniqueMetaData + " !");
+            return uniqueMetaData.indexOf(trait);
         } else if (trait instanceof Double) {
             //TODO better to fail on Double than to round it, so that if that case comes up we can actually treat it properly.
             throw new UnsupportedOperationException("Double is not supported in trait name");
@@ -340,8 +344,8 @@ public class TimeTreeComponent extends JComponent {
 
             //TODO only available for StructuredCoalescent demes now
             if (node.getMetaData(StructuredCoalescent.populationLabel) != null) {
-                metaData.clear();
-                getMetaData(StructuredCoalescent.populationLabel, node, metaData);
+                uniqueMetaData.clear();
+                getUniqueMetaData(StructuredCoalescent.populationLabel, node, uniqueMetaData);
             }
         }
 
