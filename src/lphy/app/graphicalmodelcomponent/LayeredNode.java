@@ -32,9 +32,20 @@ public interface LayeredNode {
     int getLayer();
 
     /**
+     * @return the column that this node is in
+     */
+    int getColumn();
+
+    /**
      * @param layer the new layer of this node
      */
     void setLayer(int layer);
+
+
+    /**
+     * @param col the column that this node is in
+     */
+    void setColumn(int col);
 
     default void setPosition(double x, double y) {
         setX(x);
@@ -42,26 +53,6 @@ public interface LayeredNode {
     }
 
     boolean isDummy();
-
-    default double getXBarycenter(boolean predecessors, boolean successors) {
-        double centre = 0.0;
-        int count = 0;
-        if (predecessors) {
-            for (LayeredNode pred : getPredecessors()) {
-                centre += pred.getX();
-            }
-            count += getPredecessors().size();
-        }
-        if (successors) {
-            for (LayeredNode pred : getSuccessors()) {
-                centre += pred.getX();
-            }
-            count += getSuccessors().size();
-        }
-        if (count == 0) return getX();
-
-        return centre / (double)count;
-    }
 
     default Point2D getPosition() {
         return new Point2D.Double(getX(), getY());
@@ -93,6 +84,7 @@ public interface LayeredNode {
         private List<LayeredNode> predecessors = new ArrayList<>();
         int layer;
         int index;
+        int column;
 
         public Default(int layer, int index) {
             this.layer = layer;
@@ -122,8 +114,18 @@ public interface LayeredNode {
         }
 
         @Override
+        public int getColumn() {
+            return column;
+        }
+
+        @Override
         public void setLayer(int layer) {
             this.layer = layer;
+        }
+
+        @Override
+        public void setColumn(int col) {
+            column = col;
         }
 
         @Override

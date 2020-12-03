@@ -6,6 +6,7 @@ import java.util.List;
 
 class NodeWrapper implements LayeredNode {
     private int index; // index within layer
+    private int column;
     private int layer;
     double dx = 0.0;
     private double x;
@@ -52,15 +53,6 @@ class NodeWrapper implements LayeredNode {
         return node;
     }
 
-    public double getXBaryCenter(List<LayeredNode> list) {
-        if (list.isEmpty())
-            return (this.x);
-        double barycenter = 0.0;
-        for (LayeredNode node : list)
-            barycenter += node.getX();
-        return barycenter / (double)list.size();
-    }
-
     @Override
     public List<LayeredNode> getSuccessors() {
         return succ;
@@ -78,9 +70,21 @@ class NodeWrapper implements LayeredNode {
     }
 
     @Override
+    public int getColumn() {
+        if (node != null) return node.getColumn();
+        return column;
+    }
+
+    @Override
     public void setLayer(int layer) {
         if (node != null) node.setLayer(layer);
         this.layer = layer;
+    }
+
+    @Override
+    public void setColumn(int col) {
+        if (node != null) node.setColumn(col);
+        column = col;
     }
 
     @Override

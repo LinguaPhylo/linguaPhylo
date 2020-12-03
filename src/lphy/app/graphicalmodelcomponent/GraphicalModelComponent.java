@@ -48,10 +48,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
 
     LayeredGraph layeredGraph = null;
-    ProperLayeredGraph properLayeredGraph = null;
+    public ProperLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathFromSinks();
     Ordering ordering = new Ordering();
-    Positioning positioning = new Positioning();
+    public Positioning positioning = new Positioning();
     int BORDER = 20;
     public Insets insets = new Insets((int) VAR_HEIGHT / 2 + BORDER,
             (int) VAR_WIDTH / 2 + BORDER, (int) VAR_HEIGHT / 2 + BORDER, (int) VAR_WIDTH / 2 + BORDER);

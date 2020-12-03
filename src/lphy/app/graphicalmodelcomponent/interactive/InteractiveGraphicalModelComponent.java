@@ -6,6 +6,7 @@ import lphy.app.GraphicalModelListener;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.LayeredGraph;
 import lphy.app.graphicalmodelcomponent.LayeredNode;
+import lphy.app.graphicalmodelcomponent.ProperLayeredGraph;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
@@ -27,12 +28,7 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     public static Preferences preferences = Preferences.userNodeForPackage(InteractiveGraphicalModelComponent.class);
 
-    LayeredGraph layeredGraph;
-
     NodeLattice lattice;
-
-    int BORDER = 20;
-    Insets insets = new Insets(BORDER, BORDER, BORDER, BORDER);
 
     int nodeSize = 20;
 
@@ -43,7 +39,8 @@ public class InteractiveGraphicalModelComponent extends JComponent {
     public InteractiveGraphicalModelComponent(GraphicalLPhyParser parser, GraphicalModelComponent component) {
 
         this.component = component;
-        insets = component.insets;
+        lattice = new NodeLattice(component.positioning, this, component.insets);
+
 
         this.addMouseListener(new MouseListener() {
             @Override
@@ -52,13 +49,13 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                selectedNode = lattice.getNode(lattice.getNearestPosition(e.getPoint()));
+                selectedNode = component.positioning.getNode(component.positioning.getNearestPosition(e.getPoint()));
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (selectedNode != null) {
-                    lattice.reposition(selectedNode);
+                    lattice.setToNearest(selectedNode);
                 }
                 selectedNode = null;
                 repaint();
@@ -93,28 +90,17 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     }
 
-    public void setLayeredGraph(LayeredGraph layeredGraph) {
-        this.layeredGraph = layeredGraph;
-        lattice = new NodeLattice((layeredGraph.getMaxIndex()+1)*4, layeredGraph.getLayerCount()*4, this, insets);
-
-        layeredGraph.getNodes().stream().forEach(n -> lattice.addNode(n));
-
-    }
-
     public void paintComponent(Graphics g) {
 
-        if (layeredGraph == null) {
-            setLayeredGraph(component.getLayeredGraph());
-        }
 
         lattice.paint((Graphics2D)g);
 
-        for (LayeredNode node : layeredGraph.getNodes()) {
+        for (LayeredNode node : component.getLayeredGraph().getNodes()) {
             paintSuccessorEdges(node, (Graphics2D) g);
         }
 
 
-        for (LayeredNode node : layeredGraph.getNodes()) {
+        for (LayeredNode node : component.getLayeredGraph().getNodes()) {
             paintNode(node, (Graphics2D) g);
         }
     }

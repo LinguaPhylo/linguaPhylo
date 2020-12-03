@@ -62,6 +62,22 @@ public class LayeredGraph {
         return maxX;
     }
 
+    public int getMaxColumn() {
+        int maxColumn = 0;
+        for (LayeredNode v : getNodes()) {
+            if (v.getColumn() > maxColumn) maxColumn = v.getColumn();
+        }
+        return maxColumn;
+    }
+
+    public int getMinColumn() {
+        int minColumn = 0;
+        for (LayeredNode v : getNodes()) {
+            if (v.getColumn() < minColumn) minColumn = v.getColumn();
+        }
+        return minColumn;
+    }
+
     private void addNodeToLayers(LayeredNode node) {
         while (layers.size() <= node.getLayer()) {
             layers.add(new ArrayList<>());

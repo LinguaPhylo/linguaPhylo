@@ -250,20 +250,13 @@ public class BrandesKopfHorizontalCoordinateAssignment {
 
 
         for (LayeredNode v : g.getNodes()) {
-            double newX = (lu.finalX(v) +
+            int newCol = (lu.finalX(v) +
                     ld.finalX(v) +
                     (maxXRightUp - ru.finalX(v)) +
                     (maxXRightDown - rd.finalX(v))
-            ) / 4.0;
+            ) / 2;
 
-            if (!Double.isNaN(newX)) {
-                v.setX(newX);
-
-            } else {
-                LoggerUtils.log.severe("  x pos is NaN!");
-                LoggerUtils.log.severe("  maxXRightUp = " + maxXRightUp);
-            }
-
+            v.setColumn(newCol);
         }
 
         // return layers to original order

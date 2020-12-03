@@ -32,14 +32,14 @@ public class LayeredGNode extends LayeredNode.Default {
     private static boolean showValue = getShowValueInNode();
 
     public LayeredGNode(Object value, LPhyParser parser) {
-        super(0,0);
+        super(0, 0);
 
         this.value = value;
         this.parser = parser;
 
         if (value instanceof Value) {
-            name = ((Value)value).getId();
-            createValueButton((Value)value);
+            name = ((Value) value).getId();
+            createValueButton((Value) value);
 
         } else if (value instanceof Generator) {
             createParameterizedButton();
@@ -50,8 +50,8 @@ public class LayeredGNode extends LayeredNode.Default {
         getSuccessors().add(output);
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
-            name = "[" + ((Generator)output.value).getParamName(((Value) value)) + "]";
-            button.setText(getButtonString((Value)value));
+            name = "[" + ((Generator) output.value).getParamName(((Value) value)) + "]";
+            button.setText(getButtonString((Value) value));
         }
     }
 
@@ -137,13 +137,13 @@ public class LayeredGNode extends LayeredNode.Default {
             if (value instanceof RandomVariable) {
                 button = new CircleButton(str, backgroundColor, borderColor);
             } else if (value.getGenerator() != null) {
-                if (inData){
+                if (inData) {
                     button = new DataDiamondButton(str);
                 } else {
                     button = new DiamondButton(str, backgroundColor, borderColor);
                 }
             } else {
-                if (inData){
+                if (inData) {
                     button = new DataButton(str);
                 } else {
                     button = new SquareButton(str, backgroundColor, borderColor);
@@ -153,26 +153,14 @@ public class LayeredGNode extends LayeredNode.Default {
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        value.addValueListener(() -> button.setText(getButtonString((Value)this.value)));
+        value.addValueListener(() -> button.setText(getButtonString((Value) this.value)));
     }
 
     private boolean inData(Value value) {
         if (!value.isAnonymous()) {
             return parser.hasValue(value.getId(), LPhyParser.Context.data);
         }
-//        else {
-//            boolean success = false;
-//            for (Object output : value.getOutputs()) {
-//                if (output instanceof Value && inData((Value)output)) {
-//                    return true;
-//                } else if (output instanceof Generator) {
-//                    for (Object output2 : ((GraphicalModelNode)output).) {
-//
-//                    }
-//            }
-//            return success;
-//        }
-            return false;
+        return false;
     }
 
     private void createParameterizedButton() {
@@ -190,33 +178,6 @@ public class LayeredGNode extends LayeredNode.Default {
             if (node.getLayer() >= maxLayer) maxLayer = node.getLayer();
         }
         layer = maxLayer + 1;
-    }
-
-//    public int siblingCount(LayeredGNode parent) {
-//        if (parent.getPredecessors().contains(this)) {
-//            return parent.getPredecessors().size() - 1;
-//        } else {
-//            return -1;
-//        }
-//    }
-
-    public double getRelativeIndex(LayeredGNode parent) {
-        double index = parent.getPredecessors().indexOf(this);
-
-        return index - ((parent.getPredecessors().size()-1.0) / 2.0);
-    }
-
-//    public double getPreferredX(double preferredSpacing) {
-//        double x = 0;
-//
-//        for (LayeredNode parent : getSuccessors()) {
-//            x += getPreferredX((LayeredGNode)parent, preferredSpacing);
-//        }
-//        return x / getSuccessors().size();
-//    }
-
-    public double getPreferredX(LayeredGNode parent, double preferredSpacing) {
-        return getRelativeIndex(parent) * preferredSpacing + parent.getX();
     }
 
     public JButton getButton() {
@@ -238,7 +199,7 @@ public class LayeredGNode extends LayeredNode.Default {
     public void setLocation(double x, double y) {
         this.x = x;
         this.y = y;
-        if (hasButton()) button.setLocation((int) (x - button.getWidth()/2), (int) (y - button.getHeight()/2));
+        if (hasButton()) button.setLocation((int) (x - button.getWidth() / 2), (int) (y - button.getHeight() / 2));
     }
 
     public String toString() {
