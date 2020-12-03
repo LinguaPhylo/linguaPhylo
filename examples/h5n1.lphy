@@ -21,7 +21,9 @@ model {
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=10));
   trait_indicators ~ Bernoulli(p=0.5, n=10);
 
+  traitClockRate ~ Gamma(shape=0.001, scale=1000.0);
+
   // construct the GTR instantaneous rate matrix
   trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
-  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, tree=ψ, dataType="standard");
+  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, mu=traitClockRate, tree=ψ, dataType="standard");
 }
