@@ -187,10 +187,10 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             Collections.sort(uniqueDemes);
 
         // fill in reverseDemeToIndex
-        for (int i = 0; i < demes.value().length; i++) {
+        for (int i = 0; i < demesVal.length; i++) {
 
             // covert to String
-            String deme = String.valueOf(demes.value()[i]);
+            String deme = String.valueOf(demesVal[i]);
 
             int demeIndex = uniqueDemes.indexOf(deme);
             if (demeIndex < 0)
