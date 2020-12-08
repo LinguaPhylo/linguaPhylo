@@ -12,20 +12,10 @@ public class SequenceTypeFactory {
 //    public static final SequenceType BINARY = Binary.getInstance();
 
     /**
-     * @param dataTypeName  keywords in Nexus or data type descriptions
+     * @param numStates  the number of states for Standard Data Type
      */
-    public SequenceType getDataType(String dataTypeName, int numStates) {
-        if ( dataTypeName.trim().equalsIgnoreCase(Standard.NAME) )
-            return new Standard(numStates);
-
-        return getDataType(dataTypeName);
-    }
-
-    public SequenceType getDataType(String dataTypeName, String[] stateNames) {
-        if ( dataTypeName.trim().equalsIgnoreCase(Standard.NAME) )
-            return new Standard(stateNames);
-
-        return getDataType(dataTypeName);
+    public SequenceType getStandardDataType(int numStates) {
+        return new Standard(numStates);
     }
 
     /**
@@ -34,7 +24,7 @@ public class SequenceTypeFactory {
      * @return
      */
     public SequenceType getDataType(String dataTypeName) {
-        if (dataTypeName.trim().equalsIgnoreCase(Standard.NAME))
+        if (Standard.NAME.equalsIgnoreCase(dataTypeName.trim()))
             throw new IllegalArgumentException("Standard data type has to be created " +
                     "given either numStates or stateNames !");
 

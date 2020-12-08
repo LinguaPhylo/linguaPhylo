@@ -5,10 +5,12 @@ import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.sequences.DataType;
 import lphy.evolution.sequences.SequenceTypeFactory;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.utils.LoggerUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
@@ -44,7 +46,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public static final String siteRatesParamName = "siteRates";
     public static final String branchRatesParamName = "branchRates";
     public static final String LParamName = "L";
-    public static final String stateNamesParamName = "stateNames";
+//    public static final String stateNamesParamName = "stateNames";
     public static final String dataTypeParamName = "dataType";
 
     int numStates;
@@ -68,7 +70,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = LParamName, description = "length of the alignment", optional = true) Value<Integer> L,
-                     @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", optional = true) Value<String[]> stateNames,
+//It seems not required   @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", optional = true) Value<String[]> stateNames,
                      @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<String> dataType) {
 
         this.tree = tree;
@@ -83,9 +85,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.random = Utils.getRandom();
         iexp = new double[numStates][numStates];
 
-        this.stateNames = stateNames;
-        if (stateNames != null && stateNames.value().length != numStates)
-            throw new IllegalArgumentException(stateNamesParamName + " not match " + QParamName + " dimension!");
+//        this.stateNames = stateNames;
+//        if (stateNames != null && stateNames.value().length != numStates)
+//            throw new IllegalArgumentException(stateNamesParamName + " not match " + QParamName + " dimension!");
 
         this.dataType = dataType;
         checkCompatibilities();
@@ -112,7 +114,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (siteRates != null) map.put(siteRatesParamName, siteRates);
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
-        if (stateNames != null) map.put(stateNamesParamName, stateNames);
+//        if (stateNames != null) map.put(stateNamesParamName, stateNames);
         if (dataType != null) map.put(dataTypeParamName, dataType);
         return map;
     }
@@ -126,7 +128,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         else if (paramName.equals(siteRatesParamName)) siteRates = value;
         else if (paramName.equals(branchRatesParamName)) branchRates = value;
         else if (paramName.equals(LParamName)) L = value;
-        else if (paramName.equals(stateNamesParamName)) stateNames = value;
+//        else if (paramName.equals(stateNamesParamName)) stateNames = value;
         else if (paramName.equals(dataTypeParamName)) dataType = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
@@ -179,13 +181,19 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         SequenceType sequenceType = null;
         // TODO stateNames != null, how to pass states into Standard
         // dataType="standard", use numStates to create Standard
-        if (dataType != null)
-            sequenceType = sequenceTypeFactory.getDataType(dataType.value(), numStates);
-        if (sequenceType == null)
-            sequenceType = sequenceTypeFactory.getSequenceType(numStates);
+        if (dataType != null) {
+            if (isStandardDataType())
+                sequenceType = sequenceTypeFactory.getStandardDataType(numStates);
+            else
+                sequenceType = sequenceTypeFactory.getDataType(dataType.value());
+        }
 
+        if (sequenceType == null) {
+            sequenceType = sequenceTypeFactory.getSequenceType(numStates);
+            LoggerUtils.log.warning("Data type is unknown, get it from the number of states : " + numStates);
+        }
         if (sequenceType == null)
-            throw new UnsupportedOperationException("Cannot recognize sequence type, numStates = " + numStates);
+            throw new UnsupportedOperationException("Cannot define sequence type, numStates = " + numStates);
 
         // validate num of states
         if (sequenceType.getCanonicalStateCount() != numStates)
@@ -193,7 +201,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                     sequenceType.getCanonicalStateCount() + "  !=  transProb.length = " + numStates);
 
         SimpleAlignment a = new SimpleAlignment(idMap, length, sequenceType);
-
 
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
@@ -224,6 +231,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     public Value<TimeTree> getTree() {
         return tree;
+    }
+
+    public boolean isStandardDataType() {
+        return DataType.isStandard(dataType.value());
     }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {

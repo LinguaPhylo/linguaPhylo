@@ -28,6 +28,14 @@ public abstract class DataType implements SequenceType { // TODO SequenceType im
         return isSame(alignment.getSequenceType(), sequenceType);
     }
 
+    /**
+     * @param type Ignore case
+     * @return
+     */
+    public static boolean isStandard(String type) {
+        return type != null && type.equalsIgnoreCase(Standard.NAME);
+    }
+
     //*** these should be inherited to reduce duplicated code ***//
 
     protected static final int STATES_BY_CODE_SIZE = 128;
