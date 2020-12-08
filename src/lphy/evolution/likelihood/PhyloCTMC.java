@@ -234,7 +234,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     public boolean isStandardDataType() {
-        return DataType.isStandard(dataType.value());
+        return dataType != null && DataType.isStandard(dataType.value());
     }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
