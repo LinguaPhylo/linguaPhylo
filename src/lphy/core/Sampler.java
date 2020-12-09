@@ -24,7 +24,7 @@ public class Sampler {
 
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
-            Set<Value<?>> sinks = parser.getModelSinks();
+            List<Value<?>> sinks = parser.getModelSinks();
             for (RandomVariable<?> var : LPhyParser.Utils.getAllVariablesFromSinks(parser)) {
                 parser.getModelDictionary().remove(var.getId());
             }

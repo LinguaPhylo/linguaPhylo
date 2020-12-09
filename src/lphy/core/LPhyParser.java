@@ -78,11 +78,20 @@ public interface LPhyParser {
 
     Collection<Command> getCommands();
 
-    default Set<Value<?>> getModelSinks() {
-        SortedSet<Value<?>> nonArguments = new TreeSet<>(Comparator.comparing(Value::getId));
+    /**
+     * @return all sinks of the graphical model, including in the data block.
+     */
+    default List<Value<?>> getModelSinks() {
+        List<Value<?>> nonArguments = new ArrayList<>();
+        getDataDictionary().values().forEach((val) -> {
+            if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
+        });
         getModelDictionary().values().forEach((val) -> {
             if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);
         });
+
+        nonArguments.sort(Comparator.comparing(Value::getId));
+
         return nonArguments;
     }
 

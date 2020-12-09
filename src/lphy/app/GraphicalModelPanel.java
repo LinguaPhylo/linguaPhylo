@@ -269,8 +269,8 @@ public class GraphicalModelPanel extends JPanel {
                 showValue(selectedValue, false);
             }
         } else {
-            Set<Value<?>> sinks = parser.getModelSinks();
-            if (sinks.size() > 0) showValue(sinks.iterator().next(), false);
+            List<Value<?>> sinks = parser.getModelSinks();
+            if (sinks.size() > 0) showValue(sinks.get(0), false);
         }
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
