@@ -62,10 +62,6 @@ public class SimpleAlignment extends AbstractAlignment {
     }
 
     @Override
-    public boolean hasParts() {
-        return false;
-    }
-
     public String toJSON() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
@@ -78,7 +74,7 @@ public class SimpleAlignment extends AbstractAlignment {
         }
         builder.append("  nchar = ").append(nchar);
         builder.append(", ntax = ").append(super.ntaxa());
-        if (hasAges())
+        if (isUltrametric())
             builder.append(",\n").append("  ages = ").append(Arrays.toString(getAges()));
         builder.append("\n").append("}");
         return builder.toString();

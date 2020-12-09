@@ -152,9 +152,6 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
 
     Map<String, List<CharSetBlock>> getCharsetMap();
 
-    // TODO no Taxa.hasAges()
-    boolean hasAges();
-
     AgeDirection getAgeDirection(); // no setter, given in assignAges() and setAgesFromTaxaName()
 
     //*** trait ***//
@@ -170,7 +167,7 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
     default String toString(StringBuilder sb) {
         if (getCharsetMap() != null)
             sb.append(", ").append( getCharsetMap().size() ).append(" charset(s)");
-        if (hasAges())
+        if (isUltrametric())
             sb.append(", age direction is ").append( getAgeDirection() );
         return sb.toString();
     }

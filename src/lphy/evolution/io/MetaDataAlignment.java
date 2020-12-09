@@ -110,7 +110,7 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
     public void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
         this.ageRegxStr = ageRegxStr;
 
-        if (hasAges())
+        if (isUltrametric())
             LoggerUtils.log.warning("Overwriting ages in taxa, which may have been defined by " +
                     "TIPCALIBRATION in the nexus file !");
 
@@ -204,10 +204,6 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
     @Override
     public AgeDirection getAgeDirection() {
         return ageDirection;
-    }
-
-    public boolean hasAges() {
-        return super.hasAges();
     }
 
     //*** summary ***//

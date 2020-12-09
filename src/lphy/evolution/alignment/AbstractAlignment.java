@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
-/**TODO TaxaData implements Taxa ?
+/**
  * The abstract class defines everything related to Taxa, Data type, but except of sequences.
  * @author Alexei Drummond
  * @author Walter Xie
@@ -178,15 +178,6 @@ public abstract class AbstractAlignment implements Alignment {
         return state;
     }
 
-    /**
-     * This shares the same index with {@link #getTaxaNames()}
-     */
-    @Override
-    public boolean hasAges() {
-        for (Taxon taxon : getTaxonArray())
-            if (taxon.getAge() > 0) return true;
-        return false;
-    }
 
     @Override
     public int getDimension() {
