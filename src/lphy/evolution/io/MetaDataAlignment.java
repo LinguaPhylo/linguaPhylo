@@ -161,16 +161,11 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         return AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
     }
 
+    @Override
     @MethodInfo(description="return a trait alignment. " +
             "The regular expression is the separator to split the taxa names, " +
             "and i (>=0) is the index to extract the trait value." )
-    public Alignment trait(String sepRegex, int i) {
-        return getTraitAlignment(sepRegex, i);
-    }
-
-
-    @Override
-    public Alignment getTraitAlignment(String sepRegex, int i) {
+    public Alignment trait(String sepRegex, Integer i) {
         String[] taxaNames = this.getTaxaNames();
         String[] traitVal = new String[taxaNames.length];
 

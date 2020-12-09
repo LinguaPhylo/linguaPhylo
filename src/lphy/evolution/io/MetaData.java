@@ -158,7 +158,10 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
     AgeDirection getAgeDirection(); // no setter, given in assignAges() and setAgesFromTaxaName()
 
     //*** trait ***//
-    Alignment getTraitAlignment(String sepRegex, int i);
+    @MethodInfo(description="return a trait alignment. " +
+            "The regular expression is the separator to split the taxa names, " +
+            "and i (>=0) is the index to extract the trait value." )
+    Alignment trait(String sepRegex, Integer i);
 
     /**
      * @param sb  there should be an alignment description in the begin.

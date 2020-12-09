@@ -1,9 +1,9 @@
 data {
   options = {ageDirection="forward", ageRegex="_(\d+)$"};
   D = readNexus(file="examples/H5N1.nex", options=options);
+  trait_D = D.trait("_", 2);
   taxa = D.taxa();
   L = nchar(D);
-  trait_D = D.trait("\_", 2);
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
