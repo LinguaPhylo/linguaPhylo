@@ -76,7 +76,7 @@ public abstract class AbstractAlignment implements Alignment {
         this(Objects.requireNonNull(source).nchar(), source);
     }
 
-    public abstract boolean hasParts();
+//    public abstract boolean hasParts();
 
 
     //****** MethodInfo ******
@@ -144,22 +144,6 @@ public abstract class AbstractAlignment implements Alignment {
         return Objects.requireNonNull(sequenceType);
     }
 
-    /**
-     * @return number of states including ambiguous states
-     */
-    public int getStateCount() {
-        if (sequenceType == null)
-            throw new IllegalArgumentException("Please define SequenceType !");
-        return sequenceType.getStateCount();
-    }
-
-    public String getSequenceTypeStr() {
-        if (sequenceType == null)
-                throw new IllegalArgumentException("Please define SequenceType, not numStates !");
-        return sequenceType.getName();
-    }
-
-
     //****** view ******
 
     public Color[] getColors() {
@@ -197,7 +181,6 @@ public abstract class AbstractAlignment implements Alignment {
     /**
      * This shares the same index with {@link #getTaxaNames()}
      */
-
     @Override
     public boolean hasAges() {
         for (Taxon taxon : getTaxonArray())

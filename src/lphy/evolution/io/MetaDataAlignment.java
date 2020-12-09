@@ -162,8 +162,8 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
     }
 
     @Override
-    @MethodInfo(description="return a trait alignment. " +
-            "The regular expression is the separator to split the taxa names, " +
+    @MethodInfo(description="return a trait alignment.<br>" +
+            "The regular expression is the separator to split the taxa names,<br>" +
             "and i (>=0) is the index to extract the trait value." )
     public Alignment trait(String sepRegex, Integer i) {
         String[] taxaNames = this.getTaxaNames();
@@ -180,6 +180,7 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         // no sorting demes
         Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));
         List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
+        // TODO by state names?
         SequenceType standard = new Standard(uniqTraitVal.size());
         SimpleAlignment traitAl = new SimpleAlignment(this.getTaxa(), 1, standard);
         // fill in trait values, traitVal and taxaNames have to maintain the same order

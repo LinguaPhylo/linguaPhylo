@@ -13,6 +13,8 @@ import java.util.Objects;
  */
 public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
+    //****** states ******//
+
     /**
      * Set int states.
      * @param taxon      the index of taxon in the 1st dimension.
@@ -37,10 +39,20 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
      */
     int getState(int taxon, int position);
 
+
+    //****** data type ******//
+
     /**
      * @return get data types.
      */
     SequenceType getSequenceType();
+
+    /**
+     * @return name of data type
+     */
+    default String getSequenceTypeStr() {
+        return Objects.requireNonNull(getSequenceType()).getName();
+    }
 
     /**
      * @return num of states no ambiguous
@@ -48,6 +60,31 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
     default int getCanonicalStateCount() {
         return Objects.requireNonNull(getSequenceType()).getCanonicalStateCount();
     }
+
+    /**
+     * @return number of states including ambiguous states
+     */
+    default int getStateCount() {
+        return Objects.requireNonNull(getSequenceType()).getStateCount();
+    }
+
+
+    //****** Taxa ******//
+
+    default Taxa getTaxa() {
+        return this;
+    }
+
+    /**
+     * @param taxonIndex  the index of a taxon
+     * @return            the name of this taxon
+     */
+    String getTaxonName(int taxonIndex);
+
+    boolean hasAges();
+
+
+    //****** Others ******//
 
     default Class getComponentType() {
         return Integer.class;
@@ -64,19 +101,4 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
      */
     Color[] getColors();
 
-
-    //****** Taxa ******//
-
-    default Taxa getTaxa() {
-        return this;
-    }
-
-    /**
-     * @param taxonIndex  the index of a taxon
-     * @return            the name of this taxon
-     */
-    String getTaxonName(int taxonIndex);
-
-
-    boolean hasAges();
 }
