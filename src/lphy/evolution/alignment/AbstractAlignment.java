@@ -29,23 +29,14 @@ public abstract class AbstractAlignment implements Alignment {
 
 
     /**
-     * Init alignment with taxa and number of site.
-     * @param idMap
-     * @param nchar
-     */
-    public AbstractAlignment(Map<String, Integer> idMap, int nchar) {
-        this.nchar = nchar;
-        this.taxa = Taxa.createTaxa(idMap);
-    }
-
-    /**
      * for simulated alignment
      * @param idMap
      * @param nchar
      * @param sequenceType
      */
     public AbstractAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
-        this(idMap, nchar);
+        this.taxa = Taxa.createTaxa(idMap);
+        this.nchar = nchar;
         this.sequenceType = sequenceType;
     }
 
