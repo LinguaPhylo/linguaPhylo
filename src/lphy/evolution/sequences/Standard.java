@@ -5,24 +5,43 @@ import jebl.evolution.sequences.State;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Walter Xie
  */
 public class Standard extends DataType {
 
-    final private int numStates;
-
-//    public Standard(){    }
+//    final private int numStates;
+    private final List<String> stateNames;
 
     public Standard(int numStates){
-        this.numStates = numStates;
+        stateNames = createStateNames(numStates);
     }
 
-    //TODO convert String to State
-    public Standard(String[] stateNames){
-        this.numStates = stateNames.length;
+    //Cannot use jebl State outside of jebl
+    public Standard(List<String> stateNames){
+        this.stateNames = new ArrayList<>(Objects.requireNonNull(stateNames));
+    }
 
+    private List<String> createStateNames(int numStates) {
+        assert numStates > 1;
+        return IntStream.range(0, numStates).mapToObj(String::valueOf).collect(Collectors.toList());
+    }
+
+
+    public List<String> getStateNames() {
+        return Objects.requireNonNull(stateNames);
+    }
+
+    public String getStateName(int index) {
+        return Objects.requireNonNull(stateNames).get(index);
+    }
+
+    public int getStateNameIndex(String name) {
+        return Objects.requireNonNull(stateNames).indexOf(name);
     }
 
     //*** implementations ***//
@@ -31,22 +50,22 @@ public class Standard extends DataType {
 
     @Override
     public int getStateCount() {
-        return numStates;
+        return stateNames.size(); // TODO ambiguous?
     }
 
     @Override
     public List<State> getStates() {
-        return new ArrayList<>();
+        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
     }
 
     @Override
     public int getCanonicalStateCount() {
-        return numStates;
+        return stateNames.size();
     }
 
     @Override
     public List<? extends State> getCanonicalStates() {
-        return null;
+        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
     }
 
     @Override
@@ -56,17 +75,17 @@ public class Standard extends DataType {
 
     @Override
     public State getState(int index) {
-        return null;
+        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
     }
 
     @Override
     public State getUnknownState() {
-        return null;
+        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
     }
 
     @Override
     public State getGapState() {
-        return null;
+        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
     }
 
     @Override

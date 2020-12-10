@@ -80,14 +80,19 @@ public class SimpleAlignment extends AbstractAlignment {
         return builder.toString();
     }
 
+    /**
+     * @param taxonIndex
+     * @return  The string of sequence of taxon at taxonIndex
+     */
     public String getSequence(int taxonIndex) {
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
             if (Objects.requireNonNull(sequenceType).getName().equals(Binary.NAME))
                 builder.append(getBinaryChar(alignment[taxonIndex][j]));
-            else if (sequenceType.getName().equals(Standard.NAME))
-                builder.append(alignment[taxonIndex][j]);
-            else
+            else if (sequenceType.getName().equals(Standard.NAME)) {
+                Standard standard = (Standard) sequenceType;
+                builder.append(standard.getStateName(alignment[taxonIndex][j]));
+            } else
                 builder.append(sequenceType.getState(alignment[taxonIndex][j]));
         }
         return builder.toString();

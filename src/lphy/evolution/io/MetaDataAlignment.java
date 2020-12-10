@@ -180,12 +180,12 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         // no sorting demes
         Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));
         List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
-        // TODO by state names?
-        SequenceType standard = new Standard(uniqTraitVal.size());
+        // state names are sorted unique demes
+        Standard standard = new Standard(uniqueDemes);
         SimpleAlignment traitAl = new SimpleAlignment(this.getTaxa(), 1, standard);
         // fill in trait values, traitVal and taxaNames have to maintain the same order
         for (int t = 0; t < traitVal.length; t++) {
-            int demeIndex = uniqueDemes.indexOf(traitVal[t]);
+            int demeIndex = standard.getStateNameIndex(traitVal[t]);
             traitAl.setState(t, 0, demeIndex);
         }
         return traitAl;
