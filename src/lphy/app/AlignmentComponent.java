@@ -23,6 +23,8 @@ public class AlignmentComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
+    static Font taxaMinFont = new Font("monospaced", Font.PLAIN, MIN_FONT_SIZE);
+
     Color[] colors;
     Value<? extends Alignment> alignmentValue;
     Alignment alignment;
@@ -59,14 +61,28 @@ public class AlignmentComponent extends JComponent {
         });
 
         int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int desktopHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
         int maximumWidth = Math.min(desktopWidth,MAX_FONT_SIZE*alignment.nchar());
-        int maximumHeight = MAX_FONT_SIZE*alignment.ntaxa();
+        int maximumHeight = Math.min(desktopHeight, MAX_FONT_SIZE*alignment.ntaxa());
         int minimumHeight = MIN_FONT_SIZE*alignment.ntaxa();
 
+        int minimumWidth = getMaxStringWidth(alignment.getTaxa().getTaxaNames(), getFontMetrics(taxaMinFont)) + Math.max(alignment.nchar(), MIN_FONT_SIZE);
+        System.out.println("minimum width = " + minimumWidth);
+
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
-        setMinimumSize(new Dimension(100, minimumHeight));
+        setMinimumSize(new Dimension(minimumWidth, minimumHeight));
     }
+
+    private int getMaxStringWidth(String[] strings, FontMetrics fontMetrics) {
+        int maxStringWidth = 0;
+        for (String str : strings) {
+            int stringWidth = fontMetrics.stringWidth(str);
+            if (stringWidth > maxStringWidth) maxStringWidth = stringWidth;
+        }
+        return maxStringWidth;
+    }
+
     // for CharSetAlignment
     public AlignmentComponent() { }
 
@@ -91,7 +107,7 @@ public class AlignmentComponent extends JComponent {
 
         double h = height / (double) alignment.ntaxa();
 
-        Font f = g.getFont();
+        Font f = taxaMinFont;
         if (h<9) {
             g.setFont(f.deriveFont(8.0f));
         } else if (h < 10) {
