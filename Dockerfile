@@ -30,4 +30,4 @@ WORKDIR /root/linguaPhylo
 
 ADD . ./
 
-CMD ant travis
+CMD ant github-actions
