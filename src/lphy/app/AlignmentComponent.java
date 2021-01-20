@@ -33,6 +33,8 @@ public class AlignmentComponent extends JComponent {
 
     int spacer = 5;
 
+    int maxTaxaWidth = 0;
+
     static boolean showErrorsIfAvailable = true;
 
     public AlignmentComponent(Value<? extends Alignment> av) {
@@ -60,6 +62,12 @@ public class AlignmentComponent extends JComponent {
             }
         });
 
+        computeMinMaxSize();
+
+        preferences.addPreferenceChangeListener(evt -> computeMinMaxSize());
+    }
+
+    private void computeMinMaxSize() {
         int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         int desktopHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
@@ -67,11 +75,16 @@ public class AlignmentComponent extends JComponent {
         int maximumHeight = Math.min(desktopHeight, MAX_FONT_SIZE*alignment.ntaxa());
         int minimumHeight = MIN_FONT_SIZE*alignment.ntaxa();
 
-        int minimumWidth = getMaxStringWidth(alignment.getTaxa().getTaxaNames(), getFontMetrics(taxaMinFont)) + Math.max(alignment.nchar(), MIN_FONT_SIZE);
-        System.out.println("minimum width = " + minimumWidth);
+        maxTaxaWidth = getMaxStringWidth(alignment.getTaxa().getTaxaNames(), getFontMetrics(taxaMinFont));
+        if (maxTaxaWidth < 50) maxTaxaWidth = 50;
+
+        int minimumWidth = maxTaxaWidth + Math.max(alignment.nchar(), MIN_FONT_SIZE);
+
+        if (isShowingTree()) minimumWidth += maxTaxaWidth;
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+        repaint();
     }
 
     private int getMaxStringWidth(String[] strings, FontMetrics fontMetrics) {
@@ -129,10 +142,10 @@ public class AlignmentComponent extends JComponent {
 
             TimeTreeComponent treeComponent = new TimeTreeComponent(timeTree.value());
             treeComponent.setBorder(BorderFactory.createEmptyBorder(1,1,1,0));
-            treeComponent.setSize(width/2, treeHeight);
+            treeComponent.setSize(maxTaxaWidth*2, treeHeight);
             treeComponent.paintComponent(g);
-            width /= 2;
-            xdelta = width;
+            width -= 2.0*maxTaxaWidth;
+            xdelta = 2*maxTaxaWidth;
             g.translate(0, -ytrans);
         }
 
