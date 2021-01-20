@@ -1,6 +1,6 @@
 # LinguaPhylo: Communicating and reproducing probabilistic models for phylogenetic analysis
 
-[![Build Status](https://api.travis-ci.org/LinguaPhylo/linguaPhylo.svg?branch=master)](https://travis-ci.org/LinguaPhylo/linguaPhylo)
+[![Build Status](https://github.com/LinguaPhylo/linguaPhylo/workflows/Lphy%20tests/badge.svg)](https://github.com/LinguaPhylo/linguaPhylo/actions?query=workflow%3A%22Lphy+tests%22)
 
 A new paradigm for scientific computing and data science has begun to emerged in the last decade. A recent example is the publication of the first "computationally reproducible article" using eLife's Reproducible Document Stack which blends features of a traditional manuscript with live code, data and interactive figures.
 

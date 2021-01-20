@@ -159,8 +159,8 @@
         <delete dir="${test-reports}"/>
     </target>
 
-    <target name="travis" depends="clean, compile, test">
-        <fail if="testFailed" message="One or more graphicalModelSimulation tests failed."/>
+    <target name="github-actions" depends="clean, compile, test">
+        <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>
 
 </project>
