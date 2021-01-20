@@ -187,38 +187,13 @@ public class GraphicalModelPanel extends JPanel {
      * @throws IOException
      */
     public void source(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        LPhyParser.Context context = LPhyParser.Context.model;
-        boolean skip;
-        while (line != null) {
-            skip = false;
-            if (line.trim().startsWith("data")) {
-                context = LPhyParser.Context.data;
-                skip = true;
-            } else if (line.trim().startsWith("model")) {
-                context = LPhyParser.Context.model;
-                skip = true;
-            } else if (line.trim().startsWith("for")) {
-                line = consumeForLoop(line, reader);
-            } else if (line.trim().startsWith("}")) {
-                // this line is just closing a data or model block.
-                skip = true;
-            }
 
-            if (!skip) {
-                switch (context) {
-                    case data:
-                        dataInterpreter.interpretInput(line, LPhyParser.Context.data);
-                        break;
-                    case model:
-                        modelInterpreter.interpretInput(line, LPhyParser.Context.model);
-                        break;
-                }
-            }
-            line = reader.readLine();
-        }
+        Script script = Script.loadLPhyScript(reader);
+
+        dataInterpreter.interpretInput(script.dataLines, LPhyParser.Context.data);
+        modelInterpreter.interpretInput(script.modelLines, LPhyParser.Context.model);
+
         repaint();
-        reader.close();
     }
 
     private String consumeForLoop(String firstLine, BufferedReader reader) throws IOException {
