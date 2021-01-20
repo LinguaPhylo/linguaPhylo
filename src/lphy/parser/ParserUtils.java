@@ -101,7 +101,7 @@ public class ParserUtils {
                 ExtantTaxa.class,
                 ParseInt.class,
                 Select.class,
-                Split.class, SliceDoubleArray.class, Sum.class
+                Split.class, SliceDoubleArray.class, Sum.class, SumBoolean.class
         };
 
         for (Class<?> functionClass : functionClasses) {

@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.MethodInfo;
 
 import java.awt.*;
 import java.util.Objects;
@@ -64,6 +65,7 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
     /**
      * @return number of states including ambiguous states
      */
+    @MethodInfo(description = "the number of possible states in the alignment.")
     default int getStateCount() {
         return Objects.requireNonNull(getSequenceType()).getStateCount();
     }

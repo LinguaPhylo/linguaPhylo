@@ -32,7 +32,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
             @Override
             public int getColumnCount() {
-                return 4;
+                return 6;
             }
 
             @Override
@@ -46,6 +46,10 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                         return "Std. dev.";
                     case 3:
                         return "Std. err.";
+                    case 4:
+                        return "Min";
+                    case 5:
+                        return "Max";
                 }
                 return "";
             }
@@ -58,6 +62,8 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                     case 1:
                     case 2:
                     case 3:
+                    case 4:
+                    case 5:
                         return Double.class;
                 }
                 return Object.class;
@@ -96,6 +102,18 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                     case 3:
                         if (valueRow != null) {
                             return valueRow.summary.stderr[valueRow.row];
+                        } else {
+                            return Double.NaN;
+                        }
+                    case 4:
+                        if (valueRow != null) {
+                            return valueRow.summary.min[valueRow.row];
+                        } else {
+                            return Double.NaN;
+                        }
+                    case 5:
+                        if (valueRow != null) {
+                            return valueRow.summary.max[valueRow.row];
                         } else {
                             return Double.NaN;
                         }

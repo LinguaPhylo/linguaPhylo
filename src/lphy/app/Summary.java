@@ -9,6 +9,8 @@ public class Summary {
     public double[] mean;
     public double[] stdev;
     public double[] stderr;
+    public double[] min;
+    public double[] max;
 
     public final boolean isLengthSummary;
 
@@ -21,10 +23,19 @@ public class Summary {
             mean = new double[length];
             stdev = new double[length];
             stderr = new double[length];
+            min = new double[length];
+            max = new double[length];
+
+            for (int i = 0; i < length; i++) {
+                min[i] = Double.POSITIVE_INFINITY;
+                max[i] = Double.NEGATIVE_INFINITY;
+            }
 
             for (Double[] val : values) {
                 for (int i = 0; i < length; i++) {
                     mean[i] += val[i];
+                    if (val[i] < min[i]) min[i] = val[i];
+                    if (val[i] > max[i]) max[i] = val[i];
                 }
             }
             for (int i = 0; i < length; i++) {
@@ -66,7 +77,7 @@ public class Summary {
     }
 
     public Double[] getRowSummary(int row) {
-        return new Double[] {mean[row], stdev[row], stderr[row]};
+        return new Double[]{mean[row], stdev[row], stderr[row]};
     }
 
     public static boolean allSameLength(List<Double[]> values) {
