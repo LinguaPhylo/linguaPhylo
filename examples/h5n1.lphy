@@ -9,7 +9,7 @@ data {
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
-  π ~ Dirichlet(conc=rep(element=2.0, times=S));
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 
   shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
   siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);

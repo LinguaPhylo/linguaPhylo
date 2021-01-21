@@ -7,7 +7,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.core.distributions.DistributionConstants.pParamName;
 
 /**
  * A Bernoulli process of n trials.
@@ -116,5 +117,9 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
     public Value<Double> getP() {
         return getParams().get(pParamName);
+    }
+
+    public Value<Integer> getMinHammingWeight() {
+        return getParams().get(minHammingWeightParamName);
     }
 }
