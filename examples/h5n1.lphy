@@ -4,6 +4,7 @@ data {
   trait_D = D.trait("_", 2);
   taxa = D.taxa();
   L = nchar(D);
+  S = trait_D.stateCount();
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);

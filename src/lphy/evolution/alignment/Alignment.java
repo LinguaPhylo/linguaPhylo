@@ -14,6 +14,18 @@ import java.util.Objects;
  */
 public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
+    //****** MethodInfo ******//
+
+    @MethodInfo(description = "the taxa of the alignment.")
+    default Taxa taxa() {
+        return getTaxa();
+    }
+
+    @MethodInfo(description = "the number of possible states in the alignment.")
+    default int stateCount() {
+        return getStateCount();
+    }
+
     //****** states ******//
 
     /**
@@ -65,7 +77,6 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
     /**
      * @return number of states including ambiguous states
      */
-    @MethodInfo(description = "the number of possible states in the alignment.")
     default int getStateCount() {
         return Objects.requireNonNull(getSequenceType()).getStateCount();
     }

@@ -3,7 +3,7 @@ data {
   D = readNexus(file="examples/h3n2.nexus", options=options);
   taxa = D.taxa();
   L = nchar(D);
-  demes = split(str=D.getTaxaNames(), regex="\|", i=3);
+  demes = split(str=D.taxaNames(), regex="\|", i=3);
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);

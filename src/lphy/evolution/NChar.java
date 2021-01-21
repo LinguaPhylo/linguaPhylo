@@ -10,6 +10,6 @@ public interface NChar {
     /**
      * @return the number of sites this object has.
      */
-    @MethodInfo(description="The number of characters.")
+    @MethodInfo(description="The number of characters/sites.")
     Integer nchar();
 }
