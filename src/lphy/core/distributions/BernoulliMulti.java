@@ -1,7 +1,9 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.IntegerValue;
 import lphy.utils.LoggerUtils;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -16,20 +18,20 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
 public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     private Value<Double> p;
     private Value<Integer> n;
-    private Value<Integer> minHammingWeight;
+    private Value<Integer> minSuccesses;
 
     private RandomGenerator random;
 
-    public final String minHammingWeightParamName = "minHammingWeight";
+    public final String minSuccessesParamName = "minSuccesses";
 
     private static final int MAX_TRIES = 1000;
 
     public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.") Value<Double> p,
                           @ParameterInfo(name = nParamName, description = "the number of bernoulli trials.") Value<Integer> n,
-                          @ParameterInfo(name = minHammingWeightParamName, description = "Optional condition: the minimum number of ones in the boolean array.", optional = true) Value<Integer> minHammingWeight) {
+                          @ParameterInfo(name = minSuccessesParamName, description = "Optional condition: the minimum number of ones in the boolean array.", optional = true) Value<Integer> minSuccesses) {
         this.p = p;
         this.n = n;
-        this.minHammingWeight = minHammingWeight;
+        this.minSuccesses = minSuccesses;
         this.random = Utils.getRandom();
     }
 
@@ -37,16 +39,33 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     public RandomVariable<Boolean[]> sample() {
 
         Boolean[] b = bernoulli(p.value(), n.value());
-        if (minHammingWeight != null) {
-            int tries = 0;
-            while (hammingWeight(b) < minHammingWeight.value() && tries < MAX_TRIES) {
-                b = bernoulli(p.value(), n.value());
-                tries += 1;
+        if (minSuccesses != null) {
+
+            BinomialDistribution binomialDistribution = new BinomialDistribution(n.value(), p.value());
+
+            double[] p = new double[n.value()-minSuccesses.value()];
+
+            double probSum = 0.0;
+            int k = minSuccesses.value();
+            for (int i = 0; i < p.length; i++) {
+                p[i] = binomialDistribution.probability(i+k);
+                probSum += p[i];
             }
-            if (tries == MAX_TRIES) {
-                RandomBooleanArray booleanArray = new RandomBooleanArray(n, minHammingWeight);
-                b = booleanArray.sample().value();
-                LoggerUtils.log.severe("Bernoulli failed to generate minimum hamming weight after " + MAX_TRIES + " so returned RandomBooleanArray with minimum hamming weight.");
+            if (probSum > 0.0) {
+                double U = random.nextDouble() * probSum;
+                probSum = 0.0;
+                int index = 0;
+                for (int i = 0; i < p.length; i++) {
+                    probSum += p[i];
+                    if (probSum > U) {
+                        index = i;
+                        break;
+                    }
+                }
+                RandomBooleanArray randomBooleanArray = new RandomBooleanArray(n, new IntegerValue(index+k, null));
+                b = randomBooleanArray.sample().value();
+            } else {
+                throw new RuntimeException(minSuccessesParamName + " is too high and there is no probability above it due to numerical precision.");
             }
         }
 
@@ -86,7 +105,7 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
         return new TreeMap<>() {{
             put(pParamName, p);
             put(nParamName, n);
-            if (minHammingWeight != null) put(minHammingWeightParamName, minHammingWeight);
+            if (minSuccesses != null) put(minSuccessesParamName, minSuccesses);
         }};
     }
 
@@ -99,11 +118,11 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
             case nParamName:
                 n = value;
                 break;
-            case minHammingWeightParamName:
-                minHammingWeight = value;
+            case minSuccessesParamName:
+                minSuccesses = value;
                 break;
             default:
-                throw new RuntimeException("Expected " + pParamName + " or " + nParamName + " or " + minHammingWeightParamName);
+                throw new RuntimeException("Expected " + pParamName + " or " + nParamName + " or " + minSuccessesParamName);
         }
     }
 
@@ -119,7 +138,7 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
         return getParams().get(pParamName);
     }
 
-    public Value<Integer> getMinHammingWeight() {
-        return getParams().get(minHammingWeightParamName);
+    public Value<Integer> getMinSuccesses() {
+        return getParams().get(minSuccessesParamName);
     }
 }
