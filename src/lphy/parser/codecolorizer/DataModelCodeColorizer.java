@@ -205,6 +205,13 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
                     e.add("]", punctuationStyle);
 
                     return e;
+                } else if (s.equals("(")) {
+
+                    TextElement e = new TextElement("(", punctuationStyle);
+                    e.add((TextElement) visit(ctx.getChild(1)));
+                    e.add(")", punctuationStyle);
+
+                    return e;
                 }
             }
 

@@ -159,6 +159,13 @@ public class CodeColorizer extends SimulatorBaseListener {
                     e.add("]", punctuationStyle);
 
                     return e;
+                } else if (s.equals("(")) {
+
+                    TextElement e = new TextElement("(", punctuationStyle);
+                    e.add((TextElement) visit(ctx.getChild(1)));
+                    e.add(")", punctuationStyle);
+
+                    return e;
                 }
             }
 
@@ -186,7 +193,10 @@ public class CodeColorizer extends SimulatorBaseListener {
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             TextElement element = new TextElement(name + "=", argumentNameStyle);
-            element.add((TextElement) visit(ctx.getChild(2)));
+
+            Object child = visit(ctx.getChild(2));
+
+            element.add((TextElement) child);
 
             return element;
         }
