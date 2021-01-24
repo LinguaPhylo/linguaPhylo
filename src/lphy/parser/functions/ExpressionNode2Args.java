@@ -34,7 +34,8 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
                 String key = null;
                 if (!value.isAnonymous()) {
                     key = value.getId();
-                } else if (value.isRandom()) {
+                } else if (value.isRandom() || value.getGenerator() != null) {
+                    // the or above is required to ensure that constant named parameter dependencies are displayed in graphical model
                     key = value.codeString();
                 }
 
@@ -61,7 +62,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
             if (!v.isAnonymous() && v.getId().equals(paramName)) {
                 inputValues[i] = value;
                 LoggerUtils.log.fine("Setting input value " + i + " to " + value);
-            } else if (v.isAnonymous() && v.isRandom() && v.codeString().equals(paramName)) {
+            } else if (v.isAnonymous() && v.codeString().equals(paramName)) {
                 inputValues[i] = value;
                 LoggerUtils.log.fine("Setting input value " + i + " to " + value + " based on code string.");
             }

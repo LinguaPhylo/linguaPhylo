@@ -79,7 +79,6 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
     public Map<String, Value> getParams() {
         return paramMap;
-
     }
 
     @Override
