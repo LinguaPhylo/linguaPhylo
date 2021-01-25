@@ -1,0 +1,41 @@
+data {
+  options = {ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"};
+  D = readNexus(file="examples/covid785time.nex", options=options);
+  codon = D.charset(["codon1","codon2", "codon3", "noncoding"]);
+  weights = codon.nchar();
+  numGroups = 20;
+  taxa = D.taxa();
+  w = ntaxa(taxa)-1;
+  trait_D = D.trait("\|", 2);
+  S = trait_D.stateCount();
+  dim = S*(S-1)/2;
+}
+model {
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
+  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+
+  firstValue ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
+  groupSizes ~ RandomComposition(n=w, k=numGroups);
+  ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
+
+  // relative substitution rates
+  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=length(codon)), weights=weights);
+  
+  // "7.87e-05" "9.12e-04" "1.06e-02"
+  clockRate ~ LogNormal(meanlog=-7.0, sdlog=1.25);
+  
+  D ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=clockRate, tree=ψ);
+
+  trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
+  // symmetric, rates dimension = n * (n-1) / 2
+  trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
+  trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
+  sum_indicators = hammingWeight(trait_indicators);
+
+  traitClockRate ~ LogNormal(meanlog=0.0, sdlog=2.0);
+
+  // construct the GTR instantaneous rate matrix
+  trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
+  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, mu=traitClockRate, tree=ψ, dataType="standard");
+}
