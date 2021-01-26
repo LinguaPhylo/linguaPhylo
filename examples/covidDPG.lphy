@@ -1,10 +1,10 @@
 data {
   options = {ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"};
   D = readNexus(file="examples/covid785time.nex", options=options);
-  codon = D.charset(["codon1","codon2", "codon3", "noncoding"]);
-  weights = codon.nchar();
+  parts = D.charset(["codon1","codon2", "codon3", "noncoding"]);
+  weights = parts.nchar();
   numGroups = 20;
-  taxa = D.taxa();
+  taxa = taxa(D);
   w = ntaxa(taxa)-1;
   trait_D = D.trait("\|", 2);
   S = trait_D.stateCount();
@@ -20,12 +20,12 @@ model {
   ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
 
   // relative substitution rates
-  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=length(codon)), weights=weights);
+  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=length(parts)), weights=weights);
   
   // "7.87e-05" "9.12e-04" "1.06e-02"
   clockRate ~ LogNormal(meanlog=-7.0, sdlog=1.25);
   
-  D ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=clockRate, tree=ψ);
+  parts ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=clockRate, tree=ψ);
 
   trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
   // symmetric, rates dimension = n * (n-1) / 2
