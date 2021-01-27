@@ -325,6 +325,66 @@ public interface LPhyParser {
             return false;
         }
 
+        public static String getNarrative(LPhyParser parser) {
+
+            Map<String, Integer> nameCounts = new HashMap<>();
+
+            List<Value> dataVisited = new ArrayList<>();
+            List<Value> modelVisited = new ArrayList<>();
+
+            StringBuilder builder = new StringBuilder();
+            for (Value value : parser.getModelSinks()) {
+
+                Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+                    @Override
+                    public void visitValue(Value value) {
+
+                        if (parser.isDataValue(value)) {
+                            if (!dataVisited.contains(value)) {
+                                dataVisited.add(value);
+
+                                String name = NarrativeUtils.getName(value);
+                                nameCounts.merge(name, 1, Integer::sum);
+                            }
+                        } else {
+                            if (!modelVisited.contains(value)) {
+                                modelVisited.add(value);
+                                String name = NarrativeUtils.getName(value);
+                                if (!parser.isClamped(value.getId())) {
+                                    nameCounts.merge(name, 1, Integer::sum);
+                                }
+                            }
+                        }
+                    }
+
+                    public void visitGenerator(Generator generator) {
+                    }
+                }, false);
+            }
+
+            if (dataVisited.size() > 0) {
+                builder.append("# Data\n\n");
+                for (Value dataValue : dataVisited) {
+                    String narrative = dataValue.getNarrative(nameCounts.get(NarrativeUtils.getName(dataValue)) == 1);
+                    builder.append(narrative);
+                    if (narrative.length() > 0) builder.append("\n");
+                }
+                builder.append("\n\n");
+            }
+            if (modelVisited.size() > 0) {
+                builder.append("# Model\n\n");
+
+                for (Value modelValue : modelVisited) {
+                    String narrative = modelValue.getNarrative(nameCounts.get(NarrativeUtils.getName(modelValue)) == 1);
+                    builder.append(narrative);
+                    if (narrative.length() > 0) builder.append("\n");
+                }
+                builder.append("\n");
+            }
+
+            return builder.toString();
+        }
+
 
         public static String getCanonicalScript(LPhyParser parser) {
             Set<Value> visited = new HashSet<>();

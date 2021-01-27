@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface GeneratorInfo {
     String name();
+    String narrativeName() default "";
+    String verbClause() default "is assumed to come from";
     String description();
     //Class returnType() default Object.class;
 }

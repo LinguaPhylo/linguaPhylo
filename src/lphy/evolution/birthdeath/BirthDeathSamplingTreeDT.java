@@ -21,10 +21,10 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
 
     BirthDeathSamplingTree wrapped;
 
-    public BirthDeathSamplingTreeDT(@ParameterInfo(name = diversificationParamName, description = "diversification rate.") Value<Number> diversification,
+    public BirthDeathSamplingTreeDT(@ParameterInfo(name = diversificationParamName, narrativeName = "diversification rate", description = "diversification rate.") Value<Number> diversification,
                                     @ParameterInfo(name = turnoverParamName, description = "turnover.") Value<Number> turnover,
-                                    @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
-                                    @ParameterInfo(name = rootAgeParamName, description = "the age of the root node.") Value<Number> rootAge) {
+                                    @ParameterInfo(name = rhoParamName, narrativeName="sampling proportion", description = "the sampling proportion.") Value<Number> rho,
+                                    @ParameterInfo(name = rootAgeParamName, narrativeName="root age", description = "the age of the root node.") Value<Number> rootAge) {
 
         this.turnover = turnover;
         this.diversificationRate = diversification;
@@ -33,7 +33,10 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
         setup();
     }
 
-    @GeneratorInfo(name = "BirthDeathSampling", description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name = "BirthDeathSampling",
+            verbClause = "is assumed to have evolved according to",
+            narrativeName = "birth-death-sampling tree process",
+            description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 

@@ -63,13 +63,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    public PhyloCTMC(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
-                     @ParameterInfo(name = muParamName, description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
+    public PhyloCTMC(@ParameterInfo(name = treeParamName, narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
+                     @ParameterInfo(name = muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
                      @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
-                     @ParameterInfo(name = QParamName, description = "the instantaneous rate matrix.") Value<Double[][]> Q,
+                     @ParameterInfo(name = QParamName, narrativeName="instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = LParamName, description = "length of the alignment", optional = true) Value<Integer> L,
+                     @ParameterInfo(name = LParamName, narrativeName="alignment length", description = "length of the alignment", optional = true) Value<Integer> L,
 //It seems not required   @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", optional = true) Value<String[]> stateNames,
                      @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<String> dataType) {
 
@@ -169,7 +169,10 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         }
     }
 
-    @GeneratorInfo(name = "PhyloCTMC", description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
+    @GeneratorInfo(name = "PhyloCTMC",
+            verbClause = "is assumed to have evolved under",
+            narrativeName = "phylogenetic continuous time Markov process",
+            description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
         setup();

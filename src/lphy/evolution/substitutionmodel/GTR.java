@@ -14,9 +14,9 @@ public class GTR extends RateMatrix {
     public static final String ratesParamName = "rates";
     public static final String freqParamName = "freq";
 
-    public GTR(@ParameterInfo(name = ratesParamName, description = "the relative rates of the GTR process.") Value<Double[]> rates,
-               @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
-               @ParameterInfo(name = meanRateParamName, description = "the base frequencies.", optional = true) Value<Number> meanRate) {
+    public GTR(@ParameterInfo(name = ratesParamName, narrativeName = "relative rates", description = "the relative rates of the GTR process.") Value<Double[]> rates,
+               @ParameterInfo(name = freqParamName, narrativeName = "base frequencies", description = "the base frequencies.") Value<Double[]> freq,
+               @ParameterInfo(name = meanRateParamName, narrativeName = "substitution rate", description = "the rate of substitution.", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
 
@@ -26,7 +26,10 @@ public class GTR extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-    @GeneratorInfo(name = "gtr", description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
+    @GeneratorInfo(name = "gtr",
+            verbClause = "is assumed to be",
+            narrativeName = "general time-reversible rate matrix",
+            description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getRates();
         Value<Double[]> freq = getParams().get(freqParamName);

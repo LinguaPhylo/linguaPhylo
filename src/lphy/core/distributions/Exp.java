@@ -16,7 +16,8 @@ public class Exp implements GenerativeDistribution<Double> {
 
     private RandomGenerator random;
 
-    public Exp(@ParameterInfo(name=meanParamName, description="the mean of an exponential distribution.") Value<Double> mean) {
+    public Exp(@ParameterInfo(name=meanParamName,
+            description="the mean of an exponential distribution.") Value<Double> mean) {
         this.mean = mean;
         //this.rate = rate;
 
@@ -25,7 +26,10 @@ public class Exp implements GenerativeDistribution<Double> {
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name="Exp", description="The exponential probability distribution.")
+    @GeneratorInfo(name="Exp",
+            verbClause = "has",
+            narrativeName = "exponential distribution prior",
+            description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 
         double x = - Math.log(random.nextDouble()) * getMean();

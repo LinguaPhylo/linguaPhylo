@@ -15,7 +15,10 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         this.concentration = concentration;
     }
 
-    @GeneratorInfo(name="Dirichlet", description="The dirichlet probability distribution.")
+    @GeneratorInfo(name="Dirichlet",
+            verbClause = "have",
+            narrativeName = "Dirichlet distribution prior",
+            description="The dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
 
         Double[] dirichlet = new Double[concentration.value().length];

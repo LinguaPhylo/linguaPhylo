@@ -23,7 +23,7 @@ public class Beta implements GenerativeDistribution1D<Double> {
         this.beta = beta;
     }
 
-    @GeneratorInfo(name = "Beta", description = "The beta probability distribution.")
+    @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior", description = "The beta probability distribution.")
     public RandomVariable<Double> sample() {
 
         BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));

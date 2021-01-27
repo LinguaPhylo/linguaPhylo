@@ -29,6 +29,7 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelInterpreter modelInterpreter;
     GraphicalModelInterpreter dataInterpreter;
     CanonicalModelPanel canonicalModelPanel;
+    NarrativePanel narrativePanel;
 
     JTabbedPane leftPane;
 
@@ -150,12 +151,14 @@ public class GraphicalModelPanel extends JPanel {
         variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         canonicalModelPanel = new CanonicalModelPanel(parser);
+        narrativePanel = new NarrativePanel(parser);
 
         rightPane = new JTabbedPane();
         rightPane.addTab("Current", currentSelectionContainer);
         rightPane.addTab("Constants", valueScrollPane);
         rightPane.addTab("Variables", variablesScrollPane);
         rightPane.addTab("Model", canonicalModelPanel);
+        rightPane.addTab("Narrative", narrativePanel);
         rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
         rightPane.addTab("Variable Log", new JScrollPane(variableLog));
         rightPane.addTab("Tree Log", new JScrollPane(treeLog));

@@ -67,6 +67,16 @@ public class Value<T> implements GraphicalModelNode<T> {
         return builder.toString();
     }
 
+    public String getNarrative(boolean unique) {
+        StringBuilder builder = new StringBuilder();
+        if (getGenerator() != null) {
+            return getGenerator().getInferenceNarrative(this, unique);
+        } else {
+            if (!isAnonymous()) return toString();
+            return "";
+        }
+    }
+
     public String toString() {
         if (isAnonymous()) return valueToString();
         return id + " = " + valueToString();

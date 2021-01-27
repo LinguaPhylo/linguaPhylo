@@ -36,6 +36,47 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     Map<String, Value> getParams();
 
+    default String getInferenceNarrative(Value value, boolean unique) {
+
+        String narrativeName = getNarrativeName();
+
+        String verbClause = getGeneratorInfo(this.getClass()).verbClause();
+        StringBuilder builder = new StringBuilder();
+        builder.append(NarrativeUtils.getValueClause(value, unique));
+        builder.append(" ");
+        builder.append(verbClause);
+        builder.append(" ");
+        builder.append(NarrativeUtils.getIndefiniteArticle(narrativeName, true));
+        builder.append(" ");
+        builder.append(narrativeName);
+
+        Map<String, Value> params = getParams();
+        if (params.size() > 0) builder.append(", with ");
+
+        List<ParameterInfo> parameterInfos = getParameterInfo(0);
+        int count = 0;
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            Value v = params.get(parameterInfo.name());
+            if (v != null) {
+                if (count > 0) {
+                  if (count == params.size()-1) {
+                      builder.append(" and ");
+                  } else {
+                      builder.append(", ");
+                  }
+                }
+                builder.append(NarrativeUtils.getValueClause(v, false, true));
+                count += 1;
+            }
+        }
+        builder.append(".");
+        return builder.toString();
+    }
+
+    default String getTypeName() {
+        return getReturnType(this.getClass()).getSimpleName();
+    }
+
     default void setParam(String paramName, Value<?> value) {
 
         String methodName = "set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1);
@@ -115,7 +156,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getCitation(getClass());
     }
 
-    default Class<?> getType(String name) {
+    default Class<?> getParamType(String name) {
         return getParams().get(name).getType();
     }
 
@@ -432,5 +473,31 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             }
         }
         return Object.class;
+    }
+
+    /**
+     * @param value
+     * @return the narrative name for the given value, being a parameter of this generator.
+     */
+    default String getNarrativeName(Value value) {
+        String name = getParamName(value);
+        List<ParameterInfo> parameterInfos = getParameterInfo(0);
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            if (parameterInfo.name().equals(name)) {
+                if (parameterInfo.narrativeName().length()>0) {
+                    return parameterInfo.narrativeName();
+                }
+            }
+        }
+        return name;
+    }
+
+    /**
+     * @return the narrative name of this generator.
+     */
+    default String getNarrativeName() {
+        GeneratorInfo generatorInfo = getGeneratorInfo(this.getClass());
+        if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
+        return generatorInfo.name();
     }
 }

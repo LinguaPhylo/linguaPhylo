@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface ParameterInfo {
     String name();
+    String narrativeName() default "";
     String description();
     boolean optional() default false;
 }
