@@ -117,6 +117,13 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
         return vals;
     }
 
+    //*** trait ***//
+    @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
+            "extracted from taxa names in this alignment.<br>" +
+            "The regular expression is the separator to split the taxa names,<br>" +
+            "and i (>=0) is the index to extract the trait value." )
+    Alignment extractTrait(String sepRegex, Integer i);
+
     //*** charsets ***//
 
     @MethodInfo(description="return a partition. " +
@@ -153,12 +160,6 @@ public interface MetaData<T> extends Taxa, TaxaCharacterMatrix<T>, MultiDimensio
     Map<String, List<CharSetBlock>> getCharsetMap();
 
     AgeDirection getAgeDirection(); // no setter, given in assignAges() and setAgesFromTaxaName()
-
-    //*** trait ***//
-    @MethodInfo(description="return a trait alignment. " +
-            "The regular expression is the separator to split the taxa names, " +
-            "and i (>=0) is the index to extract the trait value." )
-    Alignment trait(String sepRegex, Integer i);
 
     /**
      * @param sb  there should be an alignment description in the begin.

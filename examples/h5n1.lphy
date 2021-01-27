@@ -1,7 +1,7 @@
 data {
   options = {ageDirection="forward", ageRegex="_(\d+)$"};
   D = readNexus(file="examples/H5N1.nex", options=options);
-  trait_D = D.trait("_", 2);
+  trait_D = D.extractTrait("_", 2);
   taxa = D.taxa();
   L = nchar(D);
   S = trait_D.stateCount();

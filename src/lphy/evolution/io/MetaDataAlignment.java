@@ -162,20 +162,22 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
     }
 
     @Override
-    @MethodInfo(description="return a trait alignment.<br>" +
-            "The regular expression is the separator to split the taxa names,<br>" +
-            "and i (>=0) is the index to extract the trait value." )
-    public Alignment trait(String sepRegex, Integer i) {
+    @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
+            "extracted from taxa names in this alignment.<br>" +
+            "The <i>sepStr</i> is the substring to split the taxa names,<br>" +
+            "where Java regular expression escape characters will be given no special meaning.<br>" +
+            "The <i>i</i> (>=0) is the index to extract the trait value." )
+    public Alignment extractTrait(String sepStr, Integer i) {
         String[] taxaNames = this.getTaxaNames();
         String[] traitVal = new String[taxaNames.length];
 
         for (int t = 0; t < taxaNames.length; t++) {
-            String[] parts = taxaNames[t].split(sepRegex);
+            String[] parts = taxaNames[t].split(Pattern.quote(sepStr));
             if (parts.length > i)
                 traitVal[t] = parts[i];
             else
                 throw new IllegalArgumentException("Cannot find " + i +
-                        "th element after splitting name " + taxaNames[t] + " by regular expression " + sepRegex);
+                        "th element after splitting name " + taxaNames[t] + " by substring " + sepStr);
         }
         // no sorting demes
         Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));

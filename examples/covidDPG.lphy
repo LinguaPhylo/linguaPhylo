@@ -1,12 +1,17 @@
 data {
+  fileName = "examples/covid100.nex";
+  // extract dates
   options = {ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"};
-  D = readNexus(file="examples/covid785time.nex", options=options);
+  D = readNexus(file=fileName, options=options);
+  // 4 partitions
   parts = D.charset(["codon1","codon2", "codon3", "noncoding"]);
   weights = parts.nchar();
+  // Bayesian Skyline
   numGroups = 20;
   taxa = taxa(D);
   w = ntaxa(taxa)-1;
-  trait_D = D.trait("\|", 2);
+  // extract traits from the 3rd element
+  trait_D = D.extractTrait("|", 2);
   S = trait_D.stateCount();
   dim = S*(S-1)/2;
 }
@@ -31,7 +36,6 @@ model {
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
   trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
-  sum_indicators = hammingWeight(trait_indicators);
 
   traitClockRate ~ LogNormal(meanlog=0.0, sdlog=2.0);
 
