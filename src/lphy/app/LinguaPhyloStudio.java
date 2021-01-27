@@ -11,6 +11,11 @@ import lphy.parser.REPL;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -85,6 +90,12 @@ public class LinguaPhyloStudio {
 
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
+
+        //JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
+        //Menu.add(saveModelToHTML);
+
+        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
+        fileMenu.add(saveModelToRTF);
 
         fileMenu.addSeparator();
 
@@ -213,6 +224,103 @@ public class LinguaPhyloStudio {
 
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
         saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.variableLog.getText()));
+
+        //saveModelToHTML.addActionListener(e -> exportModelToHTML());
+        saveModelToRTF.addActionListener(e -> exportToRtf());
+    }
+
+    private void exportToRtf() {
+        JTextPane textPane = panel.canonicalModelPanel.pane;
+
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Document doc = textPane.getDocument();
+        RTFEditorKit kit = new RTFEditorKit();
+        try {
+            kit.write(baos, doc, doc.getStartPosition().getOffset(), doc.getLength());
+            baos.close();
+
+
+            String rtfContent = baos.toString();
+            {
+                // replace "Monospaced" by a well-known monospace font
+                rtfContent = rtfContent.replaceAll("monospaced", "Courier New");
+                final StringBuffer rtfContentBuffer = new StringBuffer(rtfContent);
+                final int endProlog = rtfContentBuffer.indexOf("\n\n");
+                // set a good Line Space and no Space Before or Space After each paragraph
+                rtfContentBuffer.insert(endProlog, "\n\\sl240");
+                rtfContentBuffer.insert(endProlog, "\n\\sb0\\sa0");
+                rtfContent = rtfContentBuffer.toString();
+            }
+
+            System.out.println(rtfContent);
+
+            if (rtfContent.length() > 0) {
+
+                JFileChooser chooser = new JFileChooser();
+                chooser.setMultiSelectionEnabled(false);
+
+                int option = chooser.showSaveDialog(frame);
+
+                if (option == JFileChooser.APPROVE_OPTION) {
+
+                    BufferedOutputStream out;
+
+                    try {
+                        FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
+
+                        writer.write(rtfContent);
+                        writer.close();
+
+                    } catch (FileNotFoundException e) {
+
+                    } catch (IOException e) {
+
+                    } 
+                }
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void exportModelToHTML() {
+
+        JTextPane pane = panel.canonicalModelPanel.pane;
+
+        if (pane.getDocument().getLength() > 0) {
+
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(false);
+
+            int option = chooser.showSaveDialog(frame);
+
+            if (option == JFileChooser.APPROVE_OPTION) {
+
+                StyledDocument doc = (StyledDocument) pane.getDocument();
+
+                HTMLEditorKit kit = new HTMLEditorKit();
+
+                BufferedOutputStream out;
+
+                try {
+                    out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile().getAbsoluteFile()));
+
+                    kit.write(out, doc, doc.getStartPosition().getOffset(), doc.getLength());
+
+                } catch (FileNotFoundException e) {
+
+                } catch (IOException e) {
+
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private GraphicalLPhyParser createParser() {
@@ -326,7 +434,7 @@ public class LinguaPhyloStudio {
         JFileChooser jfc = new JFileChooser();
 
         File chooserFile = new File(System.getProperty("user.dir"));
-        
+
         jfc.setCurrentDirectory(chooserFile);
         jfc.setMultiSelectionEnabled(false);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);

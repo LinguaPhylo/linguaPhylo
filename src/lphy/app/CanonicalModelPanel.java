@@ -6,6 +6,7 @@ import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 
 public class CanonicalModelPanel extends JComponent {
@@ -19,6 +20,7 @@ public class CanonicalModelPanel extends JComponent {
         pane.setFont(new Font("monospaced", Font.PLAIN, 12));
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
+        pane.setEditorKit(new RTFEditorKit());
 
         JPanel noWrapPanel = new JPanel(new BorderLayout());
         noWrapPanel.add(pane);
