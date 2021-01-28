@@ -322,4 +322,10 @@ public class MethodCall extends DeterministicFunction {
         builder.append(")");
         return builder.toString();
     }
+
+    public String getNarrativeName() {
+        String narrativeName = methodInfo.narrativeName();
+        if (narrativeName.length() > 0) return narrativeName;
+        return getName();
+    }
 }

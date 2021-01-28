@@ -36,7 +36,7 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
     public void setId(String id) {
         super.setId(id);
         for (int i = 0; i < componentVariables.size(); i++) {
-            componentVariables.get(i).setId(id + "." + i);
+            componentVariables.get(i).setId(id + VectorUtils.INDEX_SEPARATOR + i);
         }
     }
 

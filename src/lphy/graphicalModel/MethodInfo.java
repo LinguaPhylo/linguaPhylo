@@ -12,4 +12,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface MethodInfo {
     String description();
+    String narrativeName() default "";
 }

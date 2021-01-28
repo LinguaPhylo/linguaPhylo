@@ -3,6 +3,7 @@ package lphy.graphicalModel.types;
 import lphy.graphicalModel.CompoundVector;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.VectorUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class CompoundVectorValue<T> extends Value<T[]> implements CompoundVector
     public void setId(String id) {
         super.setId(id);
         for (int i = 0; i < componentValues.size(); i++) {
-            componentValues.get(i).setId(id + "." + i);
+            componentValues.get(i).setId(id + VectorUtils.INDEX_SEPARATOR + i);
         }
     }
 

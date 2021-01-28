@@ -48,14 +48,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         int count = 0;
         for (ParameterInfo parameterInfo : parameterInfos) {
             Value v = params.get(parameterInfo.name());
-            if (v != null && !v.isAnonymous()) {
+            if (v != null && v.isRandom()) {
 
                 if (count == 0) {
                     builder.append(" | ");
                 } else {
                     builder.append(", ");
                 }
-                builder.append(v.getId());
+                builder.append(v.isAnonymous() ? parameterInfo.name() : v.getId());
                 count += 1;
             }
         }
@@ -68,7 +68,9 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
         String narrativeName = getNarrativeName();
 
-        String verbClause = getGeneratorInfo(this.getClass()).verbClause();
+        GeneratorInfo info = getGeneratorInfo(this.getClass());
+
+        String verbClause = info != null ? info.verbClause() : "comes from";
         StringBuilder builder = new StringBuilder();
         builder.append(NarrativeUtils.getValueClause(value, unique));
         builder.append(" ");
@@ -525,7 +527,10 @@ public interface Generator<T> extends GraphicalModelNode<T> {
      */
     default String getNarrativeName() {
         GeneratorInfo generatorInfo = getGeneratorInfo(this.getClass());
-        if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
-        return generatorInfo.name();
+        if (generatorInfo != null) {
+            if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
+            return generatorInfo.name();
+        }
+        return getName();
     }
 }

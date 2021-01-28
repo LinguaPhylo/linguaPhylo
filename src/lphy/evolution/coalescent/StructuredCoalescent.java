@@ -5,10 +5,7 @@ import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
@@ -211,7 +208,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
             for (TimeTreeNode node : tree.getNodes()) {
                 Integer demeIndex = getDemeIndex(node);
-                String properName = populationLabel + "." + demeIndex;
+                String properName = populationLabel + VectorUtils.INDEX_SEPARATOR + demeIndex;
                 // replace to deme.i
                 node.setMetaData(populationLabel, properName);
             }
@@ -229,7 +226,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                 // if name is still Integer
                 try {
                     Integer.parseInt(properName);
-                    properName = populationLabel + "." + properName;
+                    properName = populationLabel + VectorUtils.INDEX_SEPARATOR + properName;
                 } catch (NumberFormatException ex) { }
 
                 // replace to demes[i]
@@ -484,7 +481,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
                     RandomVariable<TimeTree> tree = coalescent.sample();
 
                     Object meta = tree.value().getRoot().getMetaData(populationLabel);
-                    String meta2 = String.valueOf(meta).substring(String.valueOf(meta).lastIndexOf(".") + 1);
+                    String meta2 = String.valueOf(meta).substring(String.valueOf(meta).lastIndexOf(VectorUtils.INDEX_SEPARATOR) + 1);
                     Integer intLabel = Integer.parseInt(meta2);
                     count += intLabel  == 0 ? 1 : 0;
                 }

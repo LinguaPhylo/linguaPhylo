@@ -116,7 +116,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
             int i = 0;
             for (TimeTreeNode node : extant) {
                 for (int k = 0; k < n.value()[i]; k++) {
-                    taxonList.add(new Taxon(node.getId() + "_" + k, node.getId()+"", node.getAge()));
+                    taxonList.add(new Taxon(node.getId() + separator + k, node.getId()+"", node.getAge()));
                 }
             }
             taxonArray = taxonList.toArray(taxonArray);

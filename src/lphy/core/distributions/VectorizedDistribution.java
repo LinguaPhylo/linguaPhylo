@@ -43,6 +43,42 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         });
     }
 
+    public String getInferenceStatement(Value value) {
+
+        if (value instanceof VectorizedRandomVariable) {
+            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < componentDistributions.size(); i++) {
+                Generator generator = componentDistributions.get(i);
+                Value v = vrv.getComponentValue(i);
+
+                builder.append(generator.getInferenceStatement(v));
+            }
+            return builder.toString();
+        }
+        throw new RuntimeException("Expected VectorizedRandomVariable!");
+    }
+
+    public String getInferenceNarrative(Value value, boolean unique) {
+
+        if (value instanceof VectorizedRandomVariable) {
+            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < componentDistributions.size(); i++) {
+
+                Generator generator = componentDistributions.get(i);
+                Value v = vrv.getComponentValue(i);
+
+                if (i > 0) builder.append(" ");
+                builder.append(generator.getInferenceNarrative(v, unique));
+            }
+            return builder.toString();
+        }
+        throw new RuntimeException("Expected VectorizedRandomVariable!");
+    }
+
     /**
      * This method is not thread safe!
      * @param component
@@ -86,7 +122,13 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         } else {
             for (int i = 0; i < componentDistributions.size(); i++) {
                 if (value instanceof CompoundVector) {
-                    componentDistributions.get(i).setParam(paramName, ((CompoundVector) value).getComponentValue(i));
+
+                    Value componentValue = ((CompoundVector) value).getComponentValue(i);
+
+                    if (componentValue.isAnonymous()) componentValue.setId(paramName + INDEX_SEPARATOR + i);
+
+                    componentDistributions.get(i).setParam(paramName, componentValue);
+
                 } else  {
                     componentDistributions.get(i).setParam(paramName, new SliceValue(i,value));
                 }

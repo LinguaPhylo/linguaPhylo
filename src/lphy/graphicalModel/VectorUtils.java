@@ -10,7 +10,9 @@ import java.util.TreeMap;
 
 public class VectorUtils {
 
-    public static boolean isVectorizedParameter(String argumentName,  Value value, Map<String, Class> baseTypes) {
+    public static final String INDEX_SEPARATOR = "_";
+
+    public static boolean isVectorizedParameter(String argumentName, Value value, Map<String, Class> baseTypes) {
         return (isArrayOfType(value, baseTypes.get(argumentName)));
     }
 
@@ -102,7 +104,7 @@ public class VectorUtils {
                         args[i] = ((CompoundVector)argValue).getComponentValue(component);
                     } else {
                         // TODO should this be SliceValue?
-                        args[i] = new Value(argValue.isAnonymous() ? null : argValue.getId() + "." + component, Array.get(array, component));
+                        args[i] = new Value(argValue.isAnonymous() ? null : argValue.getId() + VectorUtils.INDEX_SEPARATOR + component, Array.get(array, component));
                     }
                 }
             }
@@ -131,7 +133,7 @@ public class VectorUtils {
                     throw new RuntimeException("Vector sizes do not match!");
                 }
                 Object input = Array.get(v.value(), component);
-                componentParams.put(name, new Value(v.getId() + "." + component, input));
+                componentParams.put(name, new Value(v.getId() + VectorUtils.INDEX_SEPARATOR + component, input));
             } else {
                 componentParams.put(name, v);
             }

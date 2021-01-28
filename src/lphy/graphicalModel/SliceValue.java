@@ -9,7 +9,7 @@ public class SliceValue<T> extends Value<T> {
     int index;
 
     public SliceValue(int index, Value<T[]> slicedValue) {
-        super(slicedValue.getId() + "." + index, slicedValue.value()[index]);
+        super(slicedValue.getId() + VectorUtils.INDEX_SEPARATOR + index, slicedValue.value()[index]);
         this.slicedValue = slicedValue;
         this.index = index;
     }

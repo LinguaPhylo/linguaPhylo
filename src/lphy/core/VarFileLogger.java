@@ -1,9 +1,6 @@
 package lphy.core;
 
-import lphy.graphicalModel.Loggable;
-import lphy.graphicalModel.RandomValueLogger;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,7 +55,7 @@ public class VarFileLogger implements RandomValueLogger {
             public String[] getLogTitles(Value<Double[]> value) {
                 String[] names = new String[value.value().length];
                 for (int i = 0; i < names.length; i++) {
-                    names[i] = value.getId() + "." + i;
+                    names[i] = value.getId() + VectorUtils.INDEX_SEPARATOR + i;
                 }
                 return names;
             }
@@ -73,7 +70,7 @@ public class VarFileLogger implements RandomValueLogger {
             public String[] getLogTitles(Value<Integer[]> value) {
                 String[] names = new String[value.value().length];
                 for (int i = 0; i < names.length; i++) {
-                    names[i] = value.getId() + "." + i;
+                    names[i] = value.getId() + VectorUtils.INDEX_SEPARATOR + i;
                 }
                 return names;
             }
