@@ -69,7 +69,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = QParamName, narrativeName="instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = LParamName, narrativeName="alignment length", description = "length of the alignment", optional = true) Value<Integer> L,
+                     @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment", optional = true) Value<Integer> L,
 //It seems not required   @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", optional = true) Value<String[]> stateNames,
                      @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<String> dataType) {
 

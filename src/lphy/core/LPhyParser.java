@@ -385,6 +385,67 @@ public interface LPhyParser {
             return builder.toString();
         }
 
+        public static String getInferenceStatement(LPhyParser parser) {
+
+            List<Value> modelVisited = new ArrayList<>();
+            List<Value> dataValues = new ArrayList<>();
+
+            StringBuilder builder = new StringBuilder();
+            for (Value value : parser.getModelSinks()) {
+
+                Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+                    @Override
+                    public void visitValue(Value value) {
+
+                        if (!parser.isDataValue(value)) {
+                            if (!modelVisited.contains(value)) {
+                                modelVisited.add(value);
+                                if (parser.isClamped(value.getId())) {
+                                    dataValues.add(value);
+                                }
+                            }
+                        }
+                    }
+
+                    public void visitGenerator(Generator generator) {
+                    }
+                }, false);
+            }
+
+            if (modelVisited.size() > 0) {
+                builder.append("# Posterior\n\n");
+
+                builder.append("P(");
+                int count = 0;
+                for (Value modelValue : modelVisited) {
+                    if (!dataValues.contains(modelValue) && modelValue instanceof RandomVariable) {
+                        if (count > 0) builder.append(", ");
+                        builder.append(modelValue.getId());
+                        count += 1;
+                    }
+                }
+                builder.append(" | ");
+                count = 0;
+                for (Value dataValue : dataValues) {
+                        if (count > 0) builder.append(", ");
+                        builder.append(dataValue.getId());
+                        count += 1;
+                }
+                builder.append(") ∝ ");
+
+                for (Value modelValue : modelVisited) {
+                    if (modelValue instanceof RandomVariable) {
+                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue);
+                        builder.append(statement);
+                        builder.append(" ");
+                    }
+                }
+                builder.append("\n");
+            }
+
+            return builder.toString();
+        }
+
 
         public static String getCanonicalScript(LPhyParser parser) {
             Set<Value> visited = new HashSet<>();

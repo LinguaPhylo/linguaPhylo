@@ -36,6 +36,34 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     Map<String, Value> getParams();
 
+    default String getInferenceStatement(Value value) {
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("P(");
+        builder.append(value.getId());
+        Map<String, Value> params = getParams();
+
+        List<ParameterInfo> parameterInfos = getParameterInfo(0);
+        int count = 0;
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            Value v = params.get(parameterInfo.name());
+            if (v != null && !v.isAnonymous()) {
+
+                if (count == 0) {
+                    builder.append(" | ");
+                } else {
+                    builder.append(", ");
+                }
+                builder.append(v.getId());
+                count += 1;
+            }
+        }
+        builder.append(")");
+
+        return builder.toString();
+    }
+
     default String getInferenceNarrative(Value value, boolean unique) {
 
         String narrativeName = getNarrativeName();
@@ -59,11 +87,11 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             Value v = params.get(parameterInfo.name());
             if (v != null) {
                 if (count > 0) {
-                  if (count == params.size()-1) {
-                      builder.append(" and ");
-                  } else {
-                      builder.append(", ");
-                  }
+                    if (count == params.size() - 1) {
+                        builder.append(" and ");
+                    } else {
+                        builder.append(", ");
+                    }
                 }
                 builder.append(NarrativeUtils.getValueClause(v, false, true));
                 count += 1;
@@ -484,7 +512,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         List<ParameterInfo> parameterInfos = getParameterInfo(0);
         for (ParameterInfo parameterInfo : parameterInfos) {
             if (parameterInfo.name().equals(name)) {
-                if (parameterInfo.narrativeName().length()>0) {
+                if (parameterInfo.narrativeName().length() > 0) {
                     return parameterInfo.narrativeName();
                 }
             }
