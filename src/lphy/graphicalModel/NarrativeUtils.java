@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import lphy.parser.functions.MethodCall;
+
 public class NarrativeUtils {
 
     public static String getArticle(Value value, boolean unique) {
@@ -14,13 +16,22 @@ public class NarrativeUtils {
     }
 
     public static String getTypeName(Value value) {
-        if (value.getGenerator() != null) return value.getGenerator().getTypeName().toLowerCase();
+        if (value.getGenerator() != null ) return value.getGenerator().getTypeName().toLowerCase();
         return value.getType().getSimpleName().toLowerCase();
     }
+
 
     public static String getName(Value value) {
         if (value.getOutputs().size() == 1) {
             Generator generator = (Generator)value.getOutputs().get(0);
+
+            if (MethodCall.isMethodCall(generator)) {
+                MethodCall methodCall = (MethodCall)generator;
+                if (methodCall.getParams().get("object").equals(value)) {
+                    return getTypeName(value);
+                }
+            }
+
             return generator.getNarrativeName(value);
         } else return getTypeName(value);
     }

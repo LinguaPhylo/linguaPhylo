@@ -5,6 +5,7 @@ import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.functions.ExpressionNode;
 import lphy.parser.functions.ExpressionNodeWrapper;
+import lphy.utils.LoggerUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -344,15 +345,15 @@ public interface LPhyParser {
                                 dataVisited.add(value);
 
                                 String name = NarrativeUtils.getName(value);
-                                nameCounts.merge(name, 1, Integer::sum);
+                                if (!parser.isClamped(value.getId())) {
+                                    nameCounts.merge(name, 1, Integer::sum);
+                                }
                             }
                         } else {
                             if (!modelVisited.contains(value)) {
                                 modelVisited.add(value);
                                 String name = NarrativeUtils.getName(value);
-                                if (!parser.isClamped(value.getId())) {
-                                    nameCounts.merge(name, 1, Integer::sum);
-                                }
+                                nameCounts.merge(name, 1, Integer::sum);
                             }
                         }
                     }
@@ -365,9 +366,18 @@ public interface LPhyParser {
             if (dataVisited.size() > 0) {
                 builder.append("# Data\n\n");
                 for (Value dataValue : dataVisited) {
-                    String narrative = dataValue.getNarrative(nameCounts.get(NarrativeUtils.getName(dataValue)) == 1);
-                    builder.append(narrative);
-                    if (narrative.length() > 0) builder.append("\n");
+
+                    String name = NarrativeUtils.getName(dataValue);
+                    Integer count = nameCounts.get(name);
+                    if (count != null) {
+
+                        String narrative = dataValue.getNarrative(count == 1);
+                        builder.append(narrative);
+                        if (narrative.length() > 0) builder.append("\n");
+                    } else {
+                        LoggerUtils.log.severe("No name count found for " + dataValue + " with name " + name);
+                    }
+
                 }
                 builder.append("\n\n");
             }
@@ -375,9 +385,17 @@ public interface LPhyParser {
                 builder.append("# Model\n\n");
 
                 for (Value modelValue : modelVisited) {
-                    String narrative = modelValue.getNarrative(nameCounts.get(NarrativeUtils.getName(modelValue)) == 1);
-                    builder.append(narrative);
-                    if (narrative.length() > 0) builder.append("\n");
+
+                    String name = NarrativeUtils.getName(modelValue);
+                    Integer count = nameCounts.get(name);
+
+                    if (count != null) {
+                        String narrative = modelValue.getNarrative(count == 1);
+                        builder.append(narrative);
+                        if (narrative.length() > 0) builder.append("\n");
+                    } else {
+                        LoggerUtils.log.severe("No name count found for " + modelValue + " with name " + name);
+                    }
                 }
                 builder.append("\n");
             }
@@ -427,9 +445,9 @@ public interface LPhyParser {
                 builder.append(" | ");
                 count = 0;
                 for (Value dataValue : dataValues) {
-                        if (count > 0) builder.append(", ");
-                        builder.append(dataValue.getId());
-                        count += 1;
+                    if (count > 0) builder.append(", ");
+                    builder.append(dataValue.getId());
+                    count += 1;
                 }
                 builder.append(") ∝ ");
 

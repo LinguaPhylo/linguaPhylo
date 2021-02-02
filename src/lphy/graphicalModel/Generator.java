@@ -529,7 +529,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo generatorInfo = getGeneratorInfo(this.getClass());
         if (generatorInfo != null) {
             if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
-            return generatorInfo.name();
         }
         return getName();
     }

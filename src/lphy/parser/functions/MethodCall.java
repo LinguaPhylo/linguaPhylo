@@ -1,5 +1,6 @@
 package lphy.parser.functions;
 
+import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.Vector;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.CompoundVectorValue;
@@ -105,6 +106,27 @@ public class MethodCall extends DeterministicFunction {
             setInput(argParamName + i, arguments[i]);
         }
     }
+
+    public static boolean isMethodCall(Object o) {
+        return o instanceof MethodCall || (o instanceof VectorizedFunction && ((VectorizedFunction)o).getComponentFunction(0) instanceof MethodCall);
+    }
+
+//    /**
+//     * @param value
+//     * @return the narrative name for the given value, being a parameter of this generator.
+//     */
+//    public String getNarrativeName(Value value) {
+//        String name = getParamName(value);
+//        List<ParameterInfo> parameterInfos = getParameterInfo(0);
+//        for (ParameterInfo parameterInfo : parameterInfos) {
+//            if (parameterInfo.name().equals(name)) {
+//                if (parameterInfo.narrativeName().length() > 0) {
+//                    return parameterInfo.narrativeName();
+//                }
+//            }
+//        }
+//        return name;
+//    }
 
     private MethodInfo getMethodInfo(Method method) {
 
@@ -327,5 +349,9 @@ public class MethodCall extends DeterministicFunction {
         String narrativeName = methodInfo.narrativeName();
         if (narrativeName.length() > 0) return narrativeName;
         return getName();
+    }
+
+    public String getTypeName() {
+        return method.getReturnType().getSimpleName();
     }
 }

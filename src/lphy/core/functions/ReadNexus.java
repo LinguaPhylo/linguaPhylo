@@ -40,7 +40,10 @@ public class ReadNexus extends DeterministicFunction<MetaData> {
     }
 
 
-    @GeneratorInfo(name="readNexus",description = "A function that parses an alignment from a Nexus file.")
+    @GeneratorInfo(name="readNexus",
+            verbClause = "is read from",
+            narrativeName = "nexus file",
+            description = "A function that parses an alignment from a Nexus file.")
     public Value<MetaData> apply() {
 
         String fileName = ((StringValue) getParams().get(fileParamName)).value();

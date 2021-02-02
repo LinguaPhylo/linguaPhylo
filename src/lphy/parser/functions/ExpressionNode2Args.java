@@ -3,6 +3,7 @@ package lphy.parser.functions;
 import java.util.*;
 import java.util.function.*;
 
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 import lphy.parser.ElementWise2Args;
@@ -50,6 +51,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
         elementWise = ElementWise2Args.elementFactory(values);
     }
 
+    @GeneratorInfo(name="expression", verbClause = "is calculated by", description = "expression")
     public Map<String, Value> getParams() {
         return params;
     }
@@ -70,7 +72,6 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
     }
 
 
-    @Override
     public Value<T> apply() {
 
         Value value = elementWise.apply(inputValues[0], inputValues[1], func);
