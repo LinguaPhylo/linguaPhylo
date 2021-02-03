@@ -18,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.text.ParseException;
 import java.util.Map;
 import java.util.*;
 import java.util.logging.Level;
@@ -864,6 +863,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     argumentValues = (ArgumentValue[]) argumentObject;
                     f1 = new Value[argumentValues.length];
                     for (int i = 0; i < argumentValues.length; i++) {
+                        if (argumentValues[i] == null)
+                            throw new IllegalStateException("Argument " + (i+1) + " from " + functionName + " is null ! ");
                         f1[i] = argumentValues[i].getValue();
                     }
                 }

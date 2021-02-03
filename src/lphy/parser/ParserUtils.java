@@ -3,9 +3,6 @@ package lphy.parser;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
-//import lphy.core.lightweight.GenerativeDistributionAdapter;
-//import lphy.core.lightweight.LGenerativeDistribution;
-//import lphy.core.lightweight.LGenerator;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
@@ -98,7 +95,7 @@ public class ParserUtils {
                 Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
                 MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
                 TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                ReadNexus.class, ReadFasta.class,
+                ReadNexus.class, ReadFasta.class, ExtractTrait.class,
                 Species.class, ExtantTree.class, PruneTree.class,
                 ExtantTaxa.class,
                 ParseInt.class,

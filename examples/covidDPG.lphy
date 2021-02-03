@@ -6,10 +6,10 @@ data {
   weights = parts.nchar();
   // Bayesian Skyline
   numGroups = 20;
-  taxa = taxa(D);
+  taxa = D.taxa();
   w = ntaxa(taxa)-1;
   // extract traits from the 3rd element
-  trait_D = D.extractTrait("|", 2);
+  trait_D = extractTrait(taxa=taxa, sep="|", i=2);
   S = trait_D.stateCount();
   dim = S*(S-1)/2;
 }

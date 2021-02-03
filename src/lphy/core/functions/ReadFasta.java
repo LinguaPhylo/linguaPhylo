@@ -33,19 +33,15 @@ import java.util.Objects;
  */
 public class ReadFasta extends DeterministicFunction<Alignment> {
 
-    private final String fileParamName;
-    private final String optionsParamName;
+    private final String fileParamName = "file";
+    private final String optionsParamName = "options";
 
-    public ReadFasta(@ParameterInfo(name = "file", description = "the name of fasta file.") Value<String> fileName,
-                     @ParameterInfo(name = "options", description = "the map containing optional arguments and their values for reuse.",
+    public ReadFasta(@ParameterInfo(name = fileParamName, description = "the name of fasta file.") Value<String> fileName,
+                     @ParameterInfo(name = optionsParamName, description = "the map containing optional arguments and their values for reuse.",
                              optional=true) Value<Map<String, String>> options ) {
 
 
         if (fileName == null) throw new IllegalArgumentException("The file name can't be null!");
-
-        fileParamName = getParamName(0);
-        optionsParamName = getParamName(1);
-
         setParam(fileParamName, fileName);
 
         if (options != null) setParam(optionsParamName, options);

@@ -2,10 +2,10 @@ package lphy.evolution.io;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
+import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.sequences.Standard;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
 import lphy.utils.LoggerUtils;
@@ -19,6 +19,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * The meta data parsed from a nexus file and stored in {@link Taxon},
+ * and the charsets.
+ * @see NexusParser
  * @author Walter Xie
  */
 public class MetaDataAlignment extends SimpleAlignment {
@@ -174,36 +177,36 @@ public class MetaDataAlignment extends SimpleAlignment {
         return AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
     }
 
-    @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
-            "extracted from taxa names in this alignment.<br>" +
-            "The <i>sepStr</i> is the substring to split the taxa names,<br>" +
-            "where Java regular expression escape characters will be given no special meaning.<br>" +
-            "The <i>i</i> (>=0) is the index to extract the trait value." )
-    public Alignment extractTrait(String sepStr, Integer i) {
-        String[] taxaNames = this.getTaxaNames();
-        String[] traitVal = new String[taxaNames.length];
-
-        for (int t = 0; t < taxaNames.length; t++) {
-            String[] parts = taxaNames[t].split(Pattern.quote(sepStr));
-            if (parts.length > i)
-                traitVal[t] = parts[i];
-            else
-                throw new IllegalArgumentException("Cannot find " + i +
-                        "th element after splitting name " + taxaNames[t] + " by substring " + sepStr);
-        }
-        // no sorting demes
-        Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));
-        List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
-        // state names are sorted unique demes
-        Standard standard = new Standard(uniqueDemes);
-        SimpleAlignment traitAl = new SimpleAlignment(this.getTaxa(), 1, standard);
-        // fill in trait values, traitVal and taxaNames have to maintain the same order
-        for (int t = 0; t < traitVal.length; t++) {
-            int demeIndex = standard.getStateNameIndex(traitVal[t]);
-            traitAl.setState(t, 0, demeIndex);
-        }
-        return traitAl;
-    }
+//    @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
+//            "extracted from taxa names in this alignment.<br>" +
+//            "The <i>sepStr</i> is the substring to split the taxa names,<br>" +
+//            "where Java regular expression escape characters will be given no special meaning.<br>" +
+//            "The <i>i</i> (>=0) is the index to extract the trait value." )
+//    public Alignment extractTrait(String sepStr, Integer i) {
+//        String[] taxaNames = this.getTaxaNames();
+//        String[] traitVal = new String[taxaNames.length];
+//
+//        for (int t = 0; t < taxaNames.length; t++) {
+//            String[] parts = taxaNames[t].split(Pattern.quote(sepStr));
+//            if (parts.length > i)
+//                traitVal[t] = parts[i];
+//            else
+//                throw new IllegalArgumentException("Cannot find " + i +
+//                        "th element after splitting name " + taxaNames[t] + " by substring " + sepStr);
+//        }
+//        // no sorting demes
+//        Set<String> uniqTraitVal = new LinkedHashSet<>(Arrays.asList(traitVal));
+//        List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
+//        // state names are sorted unique demes
+//        Standard standard = new Standard(uniqueDemes);
+//        SimpleAlignment traitAl = new SimpleAlignment(this.getTaxa(), 1, standard);
+//        // fill in trait values, traitVal and taxaNames have to maintain the same order
+//        for (int t = 0; t < traitVal.length; t++) {
+//            int demeIndex = standard.getStateNameIndex(traitVal[t]);
+//            traitAl.setState(t, 0, demeIndex);
+//        }
+//        return traitAl;
+//    }
 
     public void setCharsetMap(Map<String, List<CharSetBlock>> charsetMap) {
         this.charsetMap = charsetMap;
