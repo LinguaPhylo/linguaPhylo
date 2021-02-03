@@ -53,6 +53,7 @@ Functions
 - [exp](functions/exp.md)
 - [extantTaxa](functions/extantTaxa.md)
 - [extantTree](functions/extantTree.md)
+- [extractTrait](functions/extractTrait.md)
 - [f81](functions/f81.md)
 - [gtr](functions/gtr.md)
 - [generalTimeReversible](functions/generalTimeReversible.md)
