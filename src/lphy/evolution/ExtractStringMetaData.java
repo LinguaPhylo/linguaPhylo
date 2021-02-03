@@ -34,6 +34,10 @@ public class ExtractStringMetaData implements TaxaData<String> {
         return label;
     }
 
+    /**
+     * @param taxa
+     * @return      The list of meta data (traits) extracted from {@link Taxa} names.
+     */
     @Override
     public List<String> getData(Taxa taxa) {
         List<String> list = new ArrayList<>();
@@ -52,6 +56,12 @@ public class ExtractStringMetaData implements TaxaData<String> {
         return list;
     }
 
+    /**
+     * @param taxa
+     * @return      An {@link Alignment} of meta data (traits) extracted from {@link Taxa} names.
+     *              The taxa of {@link Alignment} will be same as given {@link Taxa}.
+     *              The sequences will be 1-site meta data.
+     */
     @Override
     public Alignment extractTraitAlignment(Taxa taxa) {
         List<String> traitList = getData(taxa);
