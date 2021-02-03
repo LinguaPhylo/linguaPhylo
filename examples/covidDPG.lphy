@@ -14,8 +14,8 @@ data {
   dim = S*(S-1)/2;
 }
 model {
-  κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
-  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25, n=length(parts));
+  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0], n=length(parts));
 
   firstValue ~ LogNormal(meanlog=0.0, sdlog=2.0);
   Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
