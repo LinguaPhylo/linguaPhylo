@@ -101,6 +101,5 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
-- [MetaData](types/MetaData.md)
 - [TimeTree](types/TimeTree.md)
 
