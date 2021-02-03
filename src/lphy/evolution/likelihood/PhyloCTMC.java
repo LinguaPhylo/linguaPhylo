@@ -49,7 +49,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 //    public static final String stateNamesParamName = "stateNames";
     public static final String dataTypeParamName = "dataType";
 
-    int numStates;
+    final int numStates;
 
     // these are all initialized in setup method.
     private EigenDecomposition decomposition;
@@ -179,7 +179,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         int length = checkCompatibilities();
 
-        final int numStates = transProb.length;
+//        final int numStates = transProb.length;
 
         SequenceType sequenceType = null;
         // TODO stateNames != null, how to pass states into Standard
@@ -193,7 +193,8 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
         if (sequenceType == null) {
             sequenceType = sequenceTypeFactory.getSequenceType(numStates);
-            LoggerUtils.log.warning("Data type is unknown, get it from the number of states : " + numStates);
+            LoggerUtils.log.warning("Data type is unknown ! Assign data type (" + sequenceType +
+                    ") to the sequences on the basis of " + numStates + " states !");
         }
         if (sequenceType == null)
             throw new UnsupportedOperationException("Cannot define sequence type, numStates = " + numStates);
