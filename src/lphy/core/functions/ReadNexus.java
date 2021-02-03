@@ -1,7 +1,8 @@
 package lphy.core.functions;
 
 import jebl.evolution.io.ImportException;
-import lphy.evolution.io.MetaData;
+import lphy.evolution.alignment.Alignment;
+import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.evolution.io.NexusParser;
 import lphy.graphicalModel.DeterministicFunction;
@@ -17,9 +18,9 @@ import java.util.Map;
  * D = readNexus(file="primate.nex");
  * D.charset("coding");
  * This does not involve partitioning.
- * @see MetaData
+ * @see MetaDataAlignment
  */
-public class ReadNexus extends DeterministicFunction<MetaData> {
+public class ReadNexus extends DeterministicFunction<Alignment> {
 
     private final String fileParamName;
     private final String optionsParamName;
@@ -44,7 +45,7 @@ public class ReadNexus extends DeterministicFunction<MetaData> {
             verbClause = "is read from",
             narrativeName = "nexus file",
             description = "A function that parses an alignment from a Nexus file.")
-    public Value<MetaData> apply() {
+    public Value<Alignment> apply() {
 
         String fileName = ((StringValue) getParams().get(fileParamName)).value();
 
@@ -54,7 +55,7 @@ public class ReadNexus extends DeterministicFunction<MetaData> {
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(fileName);
-        MetaData nexusData = null;
+        MetaDataAlignment nexusData = null;
             try {
                 nexusData = nexusParser.importNexus(ageDirectionStr);
             } catch (IOException | ImportException e) {

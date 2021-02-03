@@ -10,14 +10,18 @@ import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
 import lphy.utils.LoggerUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author Walter Xie
  */
-public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integer> {
+public class MetaDataAlignment extends SimpleAlignment {
 
     // if null, then no charset in the nexus file
     protected Map<String, List<CharSetBlock>> charsetMap;
@@ -33,6 +37,16 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
     protected String ageRegxStr;
 
     protected String locRegxStr;
+
+    //*** age direction ***//
+
+    public enum AgeDirection {
+        forward,  // virus
+        backward, // fossils
+        dates,    // forward
+        ages      // backward
+    }
+
 
     public MetaDataAlignment(Taxa taxa, int nchar, SequenceType sequenceType) {
         super(taxa, nchar, sequenceType);
@@ -139,7 +153,6 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
 
     //*** charsets ***//
 
-    @Override
     @MethodInfo(description="return a partition alignment. " +
             "If the string doesn't match charset's syntax, then check if the string matches " +
             "a defined name in the nexus file. Otherwise it is an error. " +
@@ -161,7 +174,6 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         return AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
     }
 
-    @Override
     @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
             "extracted from taxa names in this alignment.<br>" +
             "The <i>sepStr</i> is the substring to split the taxa names,<br>" +
@@ -193,27 +205,31 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
         return traitAl;
     }
 
-    @Override
     public void setCharsetMap(Map<String, List<CharSetBlock>> charsetMap) {
         this.charsetMap = charsetMap;
     }
 
-    @Override
     public Map<String, List<CharSetBlock>> getCharsetMap() {
         return charsetMap;
     }
 
-    @Override
     public AgeDirection getAgeDirection() {
         return ageDirection;
     }
 
     //*** summary ***//
 
+    /**
+     * @return a summary of loading nexus file.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        return toString(sb);
+        if (getCharsetMap() != null)
+            sb.append(", ").append( getCharsetMap().size() ).append(" charset(s)");
+        if (isUltrametric())
+            sb.append(", age direction is ").append( getAgeDirection() );
+        return sb.toString();
     }
 
 //    @Override
@@ -234,8 +250,87 @@ public class MetaDataAlignment extends SimpleAlignment implements MetaData<Integ
 //        return textArea;
 //    }
 
-    @MethodInfo(description = "the number of characters/sites in the alignment.")
-    public Integer nchar() {
-        return super.nchar();
+    //******  private  ******//
+
+    // default to forward
+    private AgeDirection getAgeDirection(String ageDirectionStr){
+        if (ageDirectionStr == null) {
+            ageDirectionStr = AgeDirection.forward.toString();
+            LoggerUtils.log.severe("Tip calibration type is not defined, set to " + ageDirectionStr + " as default.");
+        }
+        return AgeDirection.valueOf(ageDirectionStr.toLowerCase());
     }
+
+    /**
+     * @param taxonName
+     * @param regx
+     * @return  extracted attribute from a taxon name using regx
+     */
+    private String getAttrFirstMatch(final String taxonName, final Pattern regx) {
+        Matcher matcher = regx.matcher(taxonName);
+        if (matcher.find())
+            return matcher.group(1);
+        throw new IllegalArgumentException("Cannot extract attributes from " + taxonName + " using " + regx);
+    }
+
+    // return null, if cannot parseDouble,
+    // which assumes the string is a date in uuuu-MM-dd format
+    private double[] parseDateString(final String[] datesStr) {
+        double[] vals = new double[Objects.requireNonNull(datesStr).length];
+        // parse the age value
+        for (int i = 0; i < datesStr.length; i++) {
+            try {
+                vals[i] = Double.parseDouble(datesStr[i]);
+            } catch (NumberFormatException e) {
+                // the val is Date not Number
+                LoggerUtils.log.warning("Warning: the value (" + datesStr[i] +
+                        ") is not numeric, so guess it is a date by uuuu-MM-dd format");
+                return null;
+            }
+        }
+        return vals;
+    }
+
+    // convert uuuu-MM-dd to the unit of years in decimal
+    private double[] convertDateToAge(final String[] datesStr, ChronoUnit unit) {
+        final String formatter = "uuuu-MM-dd";
+        DateTimeFormatter f = DateTimeFormatter.ofPattern(formatter);
+        if (!unit.equals(ChronoUnit.YEARS))
+            throw new UnsupportedOperationException("Only support year as unit for parsing a date '" + formatter + "' !");
+
+        double[] vals = new double[Objects.requireNonNull(datesStr).length];
+        for (int i = 0; i < datesStr.length; i++) {
+            try {
+                LocalDate date = LocalDate.parse(datesStr[i], f);
+                // decimal year, e.g. 1999.55
+                vals[i] = date.getYear() + (date.getDayOfYear() - 1.0) / (date.isLeapYear() ? 366.0 : 365.0);
+            } catch (DateTimeParseException e) {
+                throw new RuntimeException("Cannot parse the date string by " + formatter + " ! " + datesStr[i]);
+            }
+        }
+        return vals;
+    }
+
+
+    /**
+     * @param charsetMap  obtained from NexusImporter
+     * @return  true, if the nexus file defines "charset".
+     */
+    private boolean hasCharsets(Map<String, List<CharSetBlock>> charsetMap) {
+        return ! (charsetMap == null || charsetMap.size() == 0);
+    }
+
+    /**
+     * @param partName     the charset name defined in the nexus file.
+     * @param charsetMap   obtained from NexusImporter
+     * @return    the List<CharSetBlock> matching to the charset name defined in the nexus file.
+     */
+    private List<CharSetBlock> getCharSet(String partName, Map<String, List<CharSetBlock>> charsetMap) {
+        List<CharSetBlock> blocks = Objects.requireNonNull(charsetMap).get(partName);
+        if (blocks == null)
+            throw new IllegalArgumentException("Charset name " + partName + " not exist !");
+        return blocks;
+    }
+
+
 }

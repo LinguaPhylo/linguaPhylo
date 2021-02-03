@@ -102,12 +102,12 @@ public class NexusParser {
 
             MetaDataAlignment nexusAlignment;
             if (fileName.equals("Dengue4.nex")) {
-                nexusAlignment = importer.importNexusAlignment("forward");
+                nexusAlignment = importer.importNexus("forward");
 
                 System.out.println(nexusAlignment.toJSON());
 
             } else if (fileName.equals("primate.nex")) {
-                nexusAlignment = importer.importNexusAlignment(null);
+                nexusAlignment = importer.importNexus(null);
 
                 Alignment coding = nexusAlignment.charset("coding");
                 System.out.println("coding : " + coding.toJSON());
@@ -133,29 +133,18 @@ public class NexusParser {
     //****** import ******//
 
     /**
-     * cast to {@link Alignment}.
-     * @see #importNexus(String)
-     */
-    public MetaDataAlignment importNexusAlignment(String ageDirectionStr) throws IOException, ImportException {
-        MetaData nexusData = importNexus(ageDirectionStr);
-        if (nexusData instanceof MetaDataAlignment)
-            return (MetaDataAlignment) nexusData;
-        throw new RuntimeException("The nexus does not contain alignment, it may have the continuous data matrix !");
-    }
-
-    /**
      * The full pipeline to parse the nexus file.
      * The charset will be handled separately.
      * @param ageDirectionStr  either forward or backward.
      *                         It can be null, if null but the nexus file
      *                         has TIPCALIBRATION block, then assume forward.
-     * @return LPHY {@link MetaData}.
+     * @return LPHY {@link MetaDataAlignment}.
      */
-    public MetaData importNexus(String ageDirectionStr) throws IOException, ImportException {
+    public MetaDataAlignment importNexus(String ageDirectionStr) throws IOException, ImportException {
         boolean done = false;
 
-        // create MetaData either from readCharactersBlock or readDataBlock
-        MetaData nexusData = null;
+        // create MetaDataAlignment either from readCharactersBlock or readDataBlock
+        MetaDataAlignment nexusData = null;
         List<Taxon> taxonList = null;
 
         while (!done) {
@@ -212,7 +201,7 @@ public class NexusParser {
 
     //****** 'DATA' or 'CHARACTERS' block, 'MATRIX' will have data ******//
 
-    protected MetaData readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    protected MetaDataAlignment readCharactersBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         siteCount = 0;
         sequenceType = null;
@@ -220,14 +209,14 @@ public class NexusParser {
         readDataBlockHeader("MATRIX", NexusBlock.CHARACTERS);
 
         List<Sequence> sequences = readSequenceData(taxonList);
-        MetaData nexusData = createNexusAlignment(sequences);
+        MetaDataAlignment nexusData = createNexusAlignment(sequences);
 
         findEndBlock();
 
         return nexusData;
     }
 
-    protected MetaData readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
+    protected MetaDataAlignment readDataBlock(List<Taxon> taxonList) throws ImportException, IOException {
 
         taxonCount = 0;
         siteCount = 0;
@@ -235,7 +224,7 @@ public class NexusParser {
 
         readDataBlockHeader("MATRIX", NexusBlock.DATA);
 
-        MetaData nexusData = null;
+        MetaDataAlignment nexusData = null;
         if ( DataType.isSame(sequenceType, Continuous.getInstance()) ) {
 
             LoggerUtils.log.info("Loading continuous character data ... ");
@@ -254,7 +243,7 @@ public class NexusParser {
     // use jebl State to convert char into int
     // create lphy MetaDataAlignment from jebl Sequence
     // convert jebl Taxon into lphy Taxon
-    private MetaData createNexusAlignment(List<Sequence> sequences) {
+    private MetaDataAlignment createNexusAlignment(List<Sequence> sequences) {
         if (sequenceType == null)
             throw new IllegalArgumentException("Fail to find data type before parsing sequences !");
         if (siteCount < 1)
@@ -572,7 +561,7 @@ public class NexusParser {
 
     //****** CALIBRATION Block : TIPCALIBRATION ******//
 
-    protected void readCalibrationBlock(MetaData nexusData, String ageDirectionStr) throws ImportException, IOException {
+    protected void readCalibrationBlock(MetaDataAlignment nexusData, String ageDirectionStr) throws ImportException, IOException {
 
         String token;
         do {
@@ -655,7 +644,7 @@ public class NexusParser {
      * charset noncoding = 1 458-659 897-898;
      * end;
      */
-    protected void readAssumptionsBlock(MetaData nexusData) throws ImportException, IOException {
+    protected void readAssumptionsBlock(MetaDataAlignment nexusData) throws ImportException, IOException {
 
         Map<String, List<CharSetBlock>> charsetMap = new TreeMap<>();
         String token;
@@ -688,7 +677,7 @@ public class NexusParser {
 
     // rows are taxa, cols are traits.
     // Double[][] taxa should have same order of Taxon[].
-    // TODO return MetaData
+    // TODO return MetaDataAlignment
     private ContinuousCharacterData readContinuousCharacterData() throws ImportException, IOException {
         assert taxonCount > 0 && siteCount > 0;
         Double[][] continuousData = new Double[taxonCount][siteCount];

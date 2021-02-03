@@ -7,7 +7,7 @@ import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
-import lphy.evolution.io.MetaData;
+import lphy.evolution.alignment.Alignment;
 import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.evolution.sequences.SequenceTypeFactory;
@@ -29,9 +29,9 @@ import java.util.Objects;
 
 /**
  * D = readFasta(file="h3n2_2deme.fna");
- * @see MetaData
+ * @see MetaDataAlignment
  */
-public class ReadFasta extends DeterministicFunction<MetaData> {
+public class ReadFasta extends DeterministicFunction<Alignment> {
 
     private final String fileParamName;
     private final String optionsParamName;
@@ -53,7 +53,7 @@ public class ReadFasta extends DeterministicFunction<MetaData> {
 
 
     @GeneratorInfo(name="readFasta",description = "A function that parses an alignment from a Nexus file.")
-    public Value<MetaData> apply() {
+    public Value<Alignment> apply() {
 
         String fileName = ((StringValue) getParams().get(fileParamName)).value();
 
