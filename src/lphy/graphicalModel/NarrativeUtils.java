@@ -22,16 +22,8 @@ public class NarrativeUtils {
 
 
     public static String getName(Value value) {
-        if (value.getOutputs().size() == 1) {
+        if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof GenerativeDistribution) ) {
             Generator generator = (Generator)value.getOutputs().get(0);
-
-            if (MethodCall.isMethodCall(generator)) {
-                MethodCall methodCall = (MethodCall)generator;
-                if (methodCall.getParams().get("object").equals(value)) {
-                    return getTypeName(value);
-                }
-            }
-
             return generator.getNarrativeName(value);
         } else return getTypeName(value);
     }

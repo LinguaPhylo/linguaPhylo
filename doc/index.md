@@ -79,6 +79,7 @@ Functions
 - [species](functions/species.md)
 - [split](functions/split.md)
 - [sum](functions/sum.md)
+- [hammingWeight](functions/hammingWeight.md)
 - [treeLength](functions/treeLength.md)
 - [wag](functions/wag.md)
 
@@ -89,7 +90,6 @@ Types
 - [Integer[]](types/Integer[].md)
 - [Number[]](types/Number[].md)
 - [Object[]](types/Object[].md)
-- [String[]](types/String[].md)
 - [Double[][]](types/Double[][].md)
 - [Boolean](types/Boolean.md)
 - [Double](types/Double.md)
@@ -101,5 +101,6 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
+- [MetaData](types/MetaData.md)
 - [TimeTree](types/TimeTree.md)
 

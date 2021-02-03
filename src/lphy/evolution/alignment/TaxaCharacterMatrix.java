@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import lphy.evolution.HasTaxa;
 import lphy.evolution.NChar;
+import lphy.evolution.TaxaData;
 import lphy.graphicalModel.MultiDimensional;
 
 import java.lang.reflect.Array;

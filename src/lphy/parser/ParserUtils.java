@@ -75,6 +75,8 @@ public class ParserUtils {
             types.add(GenerativeDistribution.getReturnType((Class<GenerativeDistribution>)genClass));
 
             Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
+
+            Collections.addAll(types, Generator.getReturnType(genClass));
         }
 
 //        for (Class<?> genClass : lightWeightGenClasses) {
@@ -112,6 +114,8 @@ public class ParserUtils {
             funcSet.add(functionClass);
 
             Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) functionClass, 0));
+
+            Collections.addAll(types, Generator.getReturnType(functionClass));
         }
         System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
         System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
