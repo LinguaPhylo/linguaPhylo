@@ -35,7 +35,8 @@ model {
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
   trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
 
-  traitClockRate ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  //traitClockRate ~ Gamma(shape=0.001, scale=1000.0);
+  traitClockRate ~ LogNormal(meanlog=2.0, sdlog=2.0);
 
   // construct the GTR instantaneous rate matrix
   trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
