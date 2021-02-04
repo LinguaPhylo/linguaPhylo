@@ -10,6 +10,6 @@ public interface NChar {
     /**
      * @return the number of sites this object has.
      */
-    @MethodInfo(description="The number of characters/sites.")
+    @MethodInfo(description="The number of characters/sites.", narrativeName = "number of characters")
     Integer nchar();
 }

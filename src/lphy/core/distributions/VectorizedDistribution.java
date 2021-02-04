@@ -136,6 +136,11 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         }
     }
 
+    public String getTypeName() {
+        if (componentDistributions.size() > 1) return "vector of " + NarrativeUtils.pluralize(componentDistributions.get(0).getTypeName());
+        return Generator.getReturnType(this.getClass()).getSimpleName();
+    }
+
     @Override
     public String getRichDescription(int index) {
         return componentDistributions.get(0).getRichDescription(0);

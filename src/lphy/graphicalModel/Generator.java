@@ -95,7 +95,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                         builder.append(", ");
                     }
                 }
-                builder.append(NarrativeUtils.getValueClause(v, false, true));
+                builder.append(NarrativeUtils.getValueClause(v, false, true, false));
                 count += 1;
             }
         }

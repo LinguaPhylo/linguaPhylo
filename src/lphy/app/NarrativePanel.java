@@ -6,6 +6,7 @@ import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 
@@ -19,9 +20,9 @@ public class NarrativePanel extends JComponent {
 
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
+        pane.setEditorKit(new HTMLEditorKit());
 
         scrollPane = new JScrollPane(pane);
-
 
         setText();
 
@@ -41,9 +42,13 @@ public class NarrativePanel extends JComponent {
             e.printStackTrace();
         }
 
-        String text = LPhyParser.Utils.getNarrative(parser);
+        String text = "<html>";
 
-        text = text + "\n" + LPhyParser.Utils.getInferenceStatement(parser);
+        text += LPhyParser.Utils.getNarrative(parser);
+
+        text += "\n" + LPhyParser.Utils.getInferenceStatement(parser);
+
+        text += "</html>";
 
         pane.setText(text);
     }

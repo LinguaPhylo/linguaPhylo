@@ -20,7 +20,7 @@ public class MethodCall extends DeterministicFunction {
     public static final String objectParamName = "object";
     public static final String argParamName = "arg";
 
-    // the object that the  method is being called on
+    // the object that the method is being called on
     Value<?> value;
 
     // the method name of the method being called
@@ -327,6 +327,27 @@ public class MethodCall extends DeterministicFunction {
         return size;
     }
 
+    public String getInferenceNarrative(Value value, boolean unique) {
+
+        String narrativeName = getNarrativeName();
+        if (vectorizedArguments && !narrativeName.endsWith("s")) {
+            narrativeName = narrativeName + "s";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(NarrativeUtils.getValueClause(value, unique));
+        builder.append(vectorizedArguments ? " are " : " is ");
+        builder.append(NarrativeUtils.getDefiniteArticle(narrativeName, true));
+        builder.append(" ");
+        builder.append(narrativeName);
+        builder.append(" of ");
+        builder.append(NarrativeUtils.getValueClause(this.value, vectorizedObject, true, vectorizedObject));
+
+        builder.append(".");
+        return builder.toString();
+    }
+
+
     public String codeString() {
 
         StringBuilder builder = new StringBuilder();
@@ -352,6 +373,7 @@ public class MethodCall extends DeterministicFunction {
     }
 
     public String getTypeName() {
+        if (vectorizedArguments || vectorizedObject) return "vector of " + NarrativeUtils.pluralize(method.getReturnType().getSimpleName());
         return method.getReturnType().getSimpleName();
     }
 }

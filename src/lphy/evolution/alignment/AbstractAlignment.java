@@ -72,7 +72,7 @@ public abstract class AbstractAlignment implements Alignment {
 
     //****** MethodInfo ******
 
-    @MethodInfo(description="The number of characters/sites in this alignment.")
+    @MethodInfo(description="The number of characters/sites.", narrativeName = "number of characters")
     public Integer nchar() {
         return nchar;
     }
@@ -83,7 +83,7 @@ public abstract class AbstractAlignment implements Alignment {
         return taxa.getTaxaNames();
     }
 
-    @MethodInfo(description = "the taxa of the alignment.")
+    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa")
     public Taxa taxa() {
         return getTaxa();
     }

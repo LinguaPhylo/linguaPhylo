@@ -92,6 +92,12 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         }
     }
 
+    public String getTypeName() {
+        if (componentFunctions.size() > 1) return "vector of " + NarrativeUtils.pluralize(componentFunctions.get(0).getTypeName());
+        return Generator.getReturnType(this.getClass()).getSimpleName();
+    }
+
+
     @Override
     public String getName() {
         return componentFunctions.get(0).getName();

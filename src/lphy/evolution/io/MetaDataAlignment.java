@@ -160,7 +160,7 @@ public class MetaDataAlignment extends SimpleAlignment {
             "If the string doesn't match charset's syntax, then check if the string matches " +
             "a defined name in the nexus file. Otherwise it is an error. " +
             "The string is referred to one partition at a call, but can be multiple blocks, " +
-            "such as d.charset(\"2-457\\3 660-896\\3\")." )
+            "such as d.charset(\"2-457\\3 660-896\\3\").", narrativeName = "character set")
     public Alignment charset(String str) {
         List<CharSetBlock> charSetBlocks = new ArrayList<>();
         //*** charsets or part names ***//

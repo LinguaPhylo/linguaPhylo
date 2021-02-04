@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-import lphy.parser.functions.MethodCall;
+import lphy.app.NarrativePanel;
 
 public class NarrativeUtils {
 
@@ -11,7 +11,7 @@ public class NarrativeUtils {
     public static String getArticle(Value value, boolean unique, boolean lowercase) {
 
         String article = lowercase ? "the" : "The";
-        if (!unique) article = getIndefiniteArticle(getName(value), lowercase);
+        if (!unique && value.isAnonymous()) article = getIndefiniteArticle(getName(value), lowercase);
         return article;
     }
 
@@ -22,29 +22,38 @@ public class NarrativeUtils {
 
 
     public static String getName(Value value) {
+
+        String name = null;
+
         if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof GenerativeDistribution) ) {
             Generator generator = (Generator)value.getOutputs().get(0);
-            return generator.getNarrativeName(value);
-        } else return getTypeName(value);
+            name = generator.getNarrativeName(value);
+        } else name = getTypeName(value);
+        return name;
     }
 
 
     public static String getValueClause(Value value, boolean unique) {
-        return getValueClause(value, unique, false);
+        return getValueClause(value, unique, false, false);
     }
 
-    public static String getValueClause(Value value, boolean unique, boolean lowercase) {
+    public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural) {
         StringBuilder builder = new StringBuilder();
 
         String name = getName(value);
-        if (unique || !name.endsWith("s")) {
+
+        if (plural) {
+            name = pluralize(name);
+        }
+
+        if (unique || !name.endsWith("s") || plural) {
             name = getArticle(value, unique, lowercase) + " " + name;
         }
         String firstLetter = name.substring(0,1);
         name = (lowercase ? firstLetter.toLowerCase() : firstLetter.toUpperCase()) + name.substring(1);
 
         builder.append(name);
-        builder.append((value.isAnonymous() ? "" : " (" + value.getId() + ")"));
+        builder.append((value.isAnonymous() ? "" : ", <i>" + value.getId() + "</i>"));
         if (value.getGenerator() == null) {
             builder.append(" of ");
             builder.append(ValueUtils.valueToString(value));
@@ -57,5 +66,16 @@ public class NarrativeUtils {
         if ("aeiou".indexOf(noun.charAt(0)) >= 0) article = "An";
         if (lowercase) article = article.toLowerCase();
         return article;
+    }
+
+    public static String getDefiniteArticle(String noun, boolean lowercase) {
+        String article = "The";
+        if (lowercase) article = article.toLowerCase();
+        return article;
+    }
+
+    public static String pluralize(String noun) {
+        if (!noun.endsWith("s")) return noun + "s";
+        return noun;
     }
 }

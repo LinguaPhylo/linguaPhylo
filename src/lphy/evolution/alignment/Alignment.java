@@ -16,12 +16,12 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
     //****** MethodInfo ******//
 
-    @MethodInfo(description = "the taxa of the alignment.")
+    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa")
     default Taxa taxa() {
         return getTaxa();
     }
 
-    @MethodInfo(description = "the number of possible states in the alignment.")
+    @MethodInfo(description = "the number of possible states in the alignment.", narrativeName = "number of states")
     default int stateCount() {
         return getStateCount();
     }

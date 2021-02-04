@@ -364,7 +364,7 @@ public interface LPhyParser {
             }
 
             if (dataVisited.size() > 0) {
-                builder.append("# Data\n\n");
+                builder.append("<h2>Data</h2>\n\n");
                 for (Value dataValue : dataVisited) {
 
                     String name = NarrativeUtils.getName(dataValue);
@@ -382,7 +382,7 @@ public interface LPhyParser {
                 builder.append("\n\n");
             }
             if (modelVisited.size() > 0) {
-                builder.append("# Model\n\n");
+                builder.append("<h2>Model</h2>\n\n");
 
                 for (Value modelValue : modelVisited) {
 
@@ -431,7 +431,7 @@ public interface LPhyParser {
             }
 
             if (modelVisited.size() > 0) {
-                builder.append("# Posterior\n\n");
+                builder.append("<h2>Posterior</h2>\n\n");
 
                 builder.append("P(");
                 int count = 0;
