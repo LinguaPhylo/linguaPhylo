@@ -1,14 +1,15 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
-import lphy.parser.codecolorizer.DataModelCodeColorizer;
-import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class NarrativePanel extends JComponent {
     GraphicalLPhyParser parser;
@@ -20,7 +21,25 @@ public class NarrativePanel extends JComponent {
 
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
-        pane.setEditorKit(new HTMLEditorKit());
+
+        HTMLEditorKit editorKit = new HTMLEditorKit();
+
+        pane.setEditorKit(editorKit);
+
+        pane.addHyperlinkListener(e -> {
+            if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                if(Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    } catch (URISyntaxException uriSyntaxException) {
+                        uriSyntaxException.printStackTrace();
+                    }
+                }
+            }
+        });
+
 
         scrollPane = new JScrollPane(pane);
 
@@ -28,7 +47,6 @@ public class NarrativePanel extends JComponent {
 
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
-        add(new JLabel("Narrative."));
         add(scrollPane);
 
         parser.addGraphicalModelChangeListener(this::setText);
@@ -47,6 +65,8 @@ public class NarrativePanel extends JComponent {
         text += LPhyParser.Utils.getNarrative(parser);
 
         text += "\n" + LPhyParser.Utils.getInferenceStatement(parser);
+
+        text += "\n" + LPhyParser.Utils.getReferences(parser);
 
         text += "</html>";
 

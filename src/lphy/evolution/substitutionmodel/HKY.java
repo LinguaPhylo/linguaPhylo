@@ -10,6 +10,11 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 2/02/20.
  */
+@Citation(
+        value="Hasegawa, M., Kishino, H. & Yano, T. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174 (1985)",
+        year = 1985,
+        authors = {"Hasegawa", "Kishino", "Yano"},
+        DOI="https://doi.org/10.1007/BF02101694")
 public class HKY extends RateMatrix {
 
     public static final String kappaParamName = "kappa";
@@ -27,7 +32,10 @@ public class HKY extends RateMatrix {
     }
 
 
-    @GeneratorInfo(name = "hky", description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.")
+    @GeneratorInfo(name = "hky",
+            verbClause = "is",
+            narrativeName = "HKY model",
+            description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.")
     public Value<Double[][]> apply() {
 
         Map<String, Value> params = getParams();

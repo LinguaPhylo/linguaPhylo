@@ -15,6 +15,12 @@ import java.util.*;
 /**
  * Created by adru001 on 2/02/20.
  */
+@Citation(
+        value = "Felsenstein J. (1973). Maximum-likelihood estimation of evolutionary trees from continuous characters. American journal of human genetics, 25(5), 471–492.",
+        authors = {"Felsenstein"},
+        year = 1973,
+        DOI = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/"
+)
 public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacterData> {
 
     Value<TimeTree> tree;
@@ -27,8 +33,8 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
     public static final String y0ParamName = "y0";
 
     public PhyloBrownian(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
-                         @ParameterInfo(name = diffRateParamName, description = "the diffusion rate.") Value<Double> diffusionRate,
-                         @ParameterInfo(name = y0ParamName, description = "the value of continuous trait at the root.") Value<Double> y0) {
+                         @ParameterInfo(name = diffRateParamName, narrativeName = "evolutionary rate", description = "the diffusion rate.") Value<Double> diffusionRate,
+                         @ParameterInfo(name = y0ParamName, narrativeName = "root value", description = "the value of continuous trait at the root.") Value<Double> y0) {
         this.tree = tree;
         this.diffusionRate = diffusionRate;
         this.y0 = y0;
@@ -65,6 +71,11 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
         }
     }
 
+    @GeneratorInfo(name = "PhyloBrownian",
+            verbClause = "is assumed to have evolved under",
+            narrativeName = "phylogenetic Brownian motion process",
+            description = "The phylogenetic Brownian motion distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id." +
+                    "(The sampling distribution that the phylogenetic continuous trait likelihood is derived from.)")
     public RandomVariable<ContinuousCharacterData> sample() {
 
         SortedMap<String, Integer> idMap = new TreeMap<>();
@@ -84,6 +95,10 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
         ContinuousCharacterData continuousCharacterData = new ContinuousCharacterData(taxa, values);
 
         return new RandomVariable<>(null, continuousCharacterData, this);
+    }
+
+    public String getTypeName() {
+        return "Continuous Character Data";
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {

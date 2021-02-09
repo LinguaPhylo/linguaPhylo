@@ -14,7 +14,10 @@ public class JukesCantor extends RateMatrix {
         super(rate);
     }
 
-    @GeneratorInfo(name = "jukesCantor", description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
+    @GeneratorInfo(name = "jukesCantor",
+            verbClause = "is",
+            narrativeName = "Jukes-Cantor model",
+            description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
     public Value<Double[][]> apply() {
         Value<Number> rateValue = getParams().get(meanRateParamName);
         double rate = (rateValue != null) ? doubleValue(rateValue) : 1.0;

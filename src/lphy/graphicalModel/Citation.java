@@ -29,7 +29,7 @@ public @interface Citation {
 
     int year() default 0;
 
-    String firstAuthorSurname() default "";
+    String[] authors() default {};
 
     /**
      * The Citations annotation is required to retrieve classes annotated with

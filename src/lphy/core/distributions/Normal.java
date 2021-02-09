@@ -22,7 +22,7 @@ public class Normal implements GenerativeDistribution1D<Double> {
     NormalDistribution normalDistribution;
 
     public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Double> mean,
-                  @ParameterInfo(name = "sd", description = "the standard deviation of the distribution.") Value<Double> sd) {
+                  @ParameterInfo(name = "sd", narrativeName = "standard deviation", description = "the standard deviation of the distribution.") Value<Double> sd) {
 
         this.mean = mean;
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
@@ -31,7 +31,10 @@ public class Normal implements GenerativeDistribution1D<Double> {
         random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "Normal", description = "The normal probability distribution.")
+    @GeneratorInfo(name = "Normal",
+            verbClause = "has",
+            narrativeName = "normal prior",
+            description = "The normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         // in case the mean is type integer

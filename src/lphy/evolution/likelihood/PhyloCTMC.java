@@ -35,7 +35,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> siteRates;
     Value<Double[]> branchRates;
     Value<Integer> L;
-    Value<String[]> stateNames;
     Value<String> dataType;
     RandomGenerator random;
 

@@ -69,6 +69,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         String narrativeName = getNarrativeName();
 
         GeneratorInfo info = getGeneratorInfo(this.getClass());
+        String citationString = NarrativeUtils.getCitationHyperlink(this);
 
         String verbClause = info != null ? info.verbClause() : "comes from";
         StringBuilder builder = new StringBuilder();
@@ -79,6 +80,10 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         builder.append(NarrativeUtils.getIndefiniteArticle(narrativeName, true));
         builder.append(" ");
         builder.append(narrativeName);
+        if (citationString != null) {
+            builder.append(" ");
+            builder.append(citationString);
+        }
 
         Map<String, Value> params = getParams();
         if (params.size() > 0) builder.append(", with ");
@@ -235,10 +240,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
             if (citation.DOI().length() > 0) {
-                String url = citation.DOI();
-                if (!url.startsWith("http")) {
-                    url = "http://doi.org/" + url;
-                }
+                String url = NarrativeUtils.sanitizeDOI(citation.DOI());
                 html.append("<br><a href=\"" + url + "\">" + url + "</a><br>");
             }
         }

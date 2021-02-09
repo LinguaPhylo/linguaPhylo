@@ -1,5 +1,6 @@
 package lphy.core;
 
+import lphy.app.GraphicalLPhyParser;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
@@ -403,6 +404,46 @@ public interface LPhyParser {
             return builder.toString();
         }
 
+        public static String getReferences(GraphicalLPhyParser parser) {
+
+            List<Citation> refs = new ArrayList<>();
+            for (Value value : parser.getModelSinks()) {
+
+                Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+                    @Override
+                    public void visitValue(Value value) {
+                    }
+
+                    public void visitGenerator(Generator generator) {
+                        Citation citation = generator.getCitation();
+                        if (citation != null && !refs.contains(citation)) {
+                            refs.add(citation);
+                        }
+                    }
+                }, false);
+            }
+
+            StringBuilder builder = new StringBuilder();
+            if (refs.size() > 0) {
+                builder.append("<h2>References</h2>\n");
+
+                builder.append("<ul>");
+                for (Citation citation : refs) {
+                    builder.append("<li>");
+                    builder.append(citation.value());
+                    if (citation.DOI().length() > 0) {
+                        String url = NarrativeUtils.sanitizeDOI(citation.DOI());
+                        builder.append(" <a href=\"" + url + "\">" + url + "</a>");
+                    }
+                    builder.append("</li>\n");
+                }
+                builder.append("</ul>\n");
+            }
+
+            return builder.toString();
+        }
+
+
         public static String getInferenceStatement(LPhyParser parser) {
 
             List<Value> modelVisited = new ArrayList<>();
@@ -418,7 +459,7 @@ public interface LPhyParser {
                         if (!parser.isDataValue(value)) {
                             if (!modelVisited.contains(value)) {
                                 modelVisited.add(value);
-                                if (parser.isClamped(value.getId())) {
+                                if (parser.isClamped(value.getId()) || value.getOutputs().size() == 0) {
                                     dataValues.add(value);
                                 }
                             }
@@ -442,7 +483,7 @@ public interface LPhyParser {
                         count += 1;
                     }
                 }
-                builder.append(" | ");
+                if (dataValues.size() > 0) builder.append(" | ");
                 count = 0;
                 for (Value dataValue : dataValues) {
                     if (count > 0) builder.append(", ");
@@ -537,6 +578,7 @@ public interface LPhyParser {
                 getAllValues(childNode, values);
             }
         }
+
     }
 
     /**

@@ -5,6 +5,8 @@ import lphy.evolution.alignment.ContinuousCharacterData;
 
 import javax.swing.*;
 
+import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
+
 public class ContinuousCharacterDataComponent extends JLabel {
 
     public ContinuousCharacterDataComponent(ContinuousCharacterData data) {
@@ -13,7 +15,7 @@ public class ContinuousCharacterDataComponent extends JLabel {
         builder.append("<html><table border=\"0\"><tr><th>Taxa</th>");
 
         for (int j =0; j < data.nchar(); j++) {
-            builder.append("<th>trait."+ j + "</th>");
+            builder.append("<th>trait" + INDEX_SEPARATOR + j + "</th>");
         }
 
         Taxon[] taxonArray = data.getTaxa().getTaxonArray();

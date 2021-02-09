@@ -1,6 +1,9 @@
 package lphy.graphicalModel;
 
-import lphy.app.NarrativePanel;
+import lphy.evolution.continuous.PhyloBrownian;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NarrativeUtils {
 
@@ -15,15 +18,61 @@ public class NarrativeUtils {
         return article;
     }
 
+    public static String getCitationHyperlink(Generator generator) {
+        Citation citation = generator.getCitation();
+        if (citation == null) return null;
+        StringBuilder builder = new StringBuilder();
+        builder.append("<a href=\"");
+        builder.append(sanitizeDOI(citation.DOI()));
+        builder.append("\">(");
+        int count = 0;
+        String[] authors = citation.authors();
+        for (int i = 0; i < authors.length; i++) {
+            if (i > 0) {
+                if (i == authors.length-1) {
+                    builder.append(" and ");
+                } else {
+                    builder.append(", ");
+                }
+            }
+            builder.append(authors[i]);
+        }
+        builder.append("; ");
+        builder.append(citation.year());
+        builder.append(")</a>");
+        return builder.toString();
+    }
+
+    public static String sanitizeDOI(String doi) {
+        if (doi.startsWith("http")) return doi;
+        if (doi.startsWith("doi.org")) return "https://" + doi;
+        if ("01923456789".indexOf(doi.charAt(0)) >= 0) return "https://doi.org/" + doi;
+        return doi;
+    }
+
     public static String getTypeName(Value value) {
         if (value.getGenerator() != null ) return value.getGenerator().getTypeName().toLowerCase();
-        return value.getType().getSimpleName().toLowerCase();
+
+        String s = value.getType().getSimpleName();
+        String[] r = s.split("(?<=.)(?=\\p{Lu})");
+
+        if (r.length > 1) {
+            StringBuilder b = new StringBuilder();
+            int count = 0;
+            for (String part : r) {
+                if (count > 0) b.append(" ");
+                b.append(part.toLowerCase());
+                count += 1;
+            }
+            return b.toString();
+        } else return s.toLowerCase();
+
     }
 
 
     public static String getName(Value value) {
 
-        String name = null;
+        String name;
 
         if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof GenerativeDistribution) ) {
             Generator generator = (Generator)value.getOutputs().get(0);
@@ -61,9 +110,11 @@ public class NarrativeUtils {
         return builder.toString();
     }
 
+    static List<String> anNouns = new ArrayList<>(List.of("n", "m"));
+
     public static String getIndefiniteArticle(String noun, boolean lowercase) {
         String article = "A";
-        if ("aeiou".indexOf(noun.charAt(0)) >= 0) article = "An";
+        if ("aeiou".indexOf(noun.charAt(0)) >= 0 || anNouns.contains(noun)) article = "An";
         if (lowercase) article = article.toLowerCase();
         return article;
     }

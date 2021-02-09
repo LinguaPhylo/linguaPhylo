@@ -18,12 +18,18 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * A Kingman coalescent tree generative distribution for serially sampled data
+ * TODO add Rodrigo and Felsenstein citation
  */
+@Citation(
+        value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
+        year = 1982,
+        authors = {"Kingman"},
+        DOI="https://doi.org/10.1016/0304-4149(82)90011-4")
 public class SerialCoalescent extends TaxaConditionedTreeGenerator {
 
     private Value<Number> theta;
 
-    public SerialCoalescent(@ParameterInfo(name = thetaParamName, description = "effective population size, possibly scaled to mutations or calendar units.") Value<Number> theta,
+    public SerialCoalescent(@ParameterInfo(name = thetaParamName, narrativeName = "coalescent parameter", description = "effective population size, possibly scaled to mutations or calendar units.") Value<Number> theta,
                             @ParameterInfo(name = nParamName, description = "number of taxa.", optional = true) Value<Integer> n,
                             @ParameterInfo(name = taxaParamName, description = "Taxa object, (e.g. Taxa or TimeTree or Object[])", optional = true) Value<Taxa> taxa,
                             @ParameterInfo(name = agesParamName, description = "an array of leaf node ages.", optional = true) Value<Double[]> ages) {
@@ -51,7 +57,9 @@ public class SerialCoalescent extends TaxaConditionedTreeGenerator {
         }
     }
 
-    @GeneratorInfo(name = "Coalescent", description = "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)")
+    @GeneratorInfo(name = "Coalescent",
+            narrativeName = "Kingman's coalescent tree prior",
+            description = "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();

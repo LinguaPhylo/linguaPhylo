@@ -15,6 +15,11 @@ import java.util.*;
 /**
  * A Kingman coalescent tree generative distribution
  */
+@Citation(
+        value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
+        year = 1982,
+        authors = {"Kingman"},
+        DOI="https://doi.org/10.1016/0304-4149(82)90011-4")
 public class Coalescent extends TaxaConditionedTreeGenerator {
 
     private Value<Double> theta;
@@ -31,7 +36,9 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
         checkTaxaParameters(true);
     }
 
-    @GeneratorInfo(name="Coalescent", description="The Kingman coalescent distribution over tip-labelled time trees.")
+    @GeneratorInfo(name="Coalescent",
+            narrativeName = "Kingman's coalescent tree prior",
+            description="The Kingman coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree();
