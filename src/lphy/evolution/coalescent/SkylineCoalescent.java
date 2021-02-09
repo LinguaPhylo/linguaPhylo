@@ -31,11 +31,11 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
     private Value<Double[]> theta;
     private Value<Integer[]> groupSizes;
 
-    public SkylineCoalescent(@ParameterInfo(name =  thetaParamName, description = "effective population size, one value for" +
+    public SkylineCoalescent(@ParameterInfo(name =  thetaParamName, narrativeName = "population sizes", description = "effective population size, one value for" +
             " each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or" +
             " calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal" +
             " to the number of population size parameters.") Value<Double[]> theta,
-                             @ParameterInfo(name = groupSizesParamName, description = "A tuple of group sizes. The sum of" +
+                             @ParameterInfo(name = groupSizesParamName, narrativeName = "group sizes", description = "A tuple of group sizes. The sum of" +
                                      " this tuple determines the number of coalescent events in the tree and thus the" +
                                      " number of taxa. By default all group sizes are 1 which is equivalent to the" +
                                      " classic skyline coalescent.", optional=true) Value<Integer[]> groupSizes,
@@ -88,7 +88,10 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
         } else return theta.value().length + 1;
     }
 
-    @GeneratorInfo(name = "SkylineCoalescent", description = "The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)")
+    @GeneratorInfo(name = "SkylineCoalescent",
+            verbClause = "has",
+            narrativeName = "skyline coalescent prior",
+            description = "The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree(getTaxa());

@@ -1,5 +1,6 @@
 package lphy.graphicalModel;
 
+import lphy.parser.functions.ExpressionNode;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -77,7 +78,13 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         builder.append(" ");
         builder.append(verbClause);
         builder.append(" ");
-        builder.append(NarrativeUtils.getIndefiniteArticle(narrativeName, true));
+        if (!(this instanceof ExpressionNode)) {
+            if (this instanceof DeterministicFunction) {
+                builder.append(NarrativeUtils.getDefiniteArticle(narrativeName, true));
+            } else {
+                builder.append(NarrativeUtils.getIndefiniteArticle(narrativeName, true));
+            }
+        }
         builder.append(" ");
         builder.append(narrativeName);
         if (citationString != null) {
@@ -86,19 +93,24 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         }
 
         Map<String, Value> params = getParams();
-        if (params.size() > 0) builder.append(", with ");
-
+        String currentVerb = "";
         List<ParameterInfo> parameterInfos = getParameterInfo(0);
         int count = 0;
         for (ParameterInfo parameterInfo : parameterInfos) {
             Value v = params.get(parameterInfo.name());
             if (v != null) {
+                if (count == 0) builder.append(" ");
                 if (count > 0) {
                     if (count == params.size() - 1) {
                         builder.append(" and ");
                     } else {
                         builder.append(", ");
                     }
+                }
+                if (!parameterInfo.verb().equals(currentVerb)) {
+                    currentVerb = parameterInfo.verb();
+                    builder.append(currentVerb);
+                    builder.append(" ");
                 }
                 builder.append(NarrativeUtils.getValueClause(v, false, true, false));
                 count += 1;

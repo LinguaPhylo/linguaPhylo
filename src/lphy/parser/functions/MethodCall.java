@@ -330,8 +330,8 @@ public class MethodCall extends DeterministicFunction {
     public String getInferenceNarrative(Value value, boolean unique) {
 
         String narrativeName = getNarrativeName();
-        if (vectorizedArguments && !narrativeName.endsWith("s")) {
-            narrativeName = narrativeName + "s";
+        if (vectorizedArguments) {
+            NarrativeUtils.pluralize(narrativeName);
         }
 
         StringBuilder builder = new StringBuilder();

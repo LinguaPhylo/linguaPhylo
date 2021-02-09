@@ -14,13 +14,18 @@ public class TaxaFunction extends DeterministicFunction<Taxa> {
 
     final String paramName;
 
-    public TaxaFunction(@ParameterInfo(name = "taxa", description = "the taxa value (i.e. alignment or tree).") Value x) {
+    public TaxaFunction(@ParameterInfo(name = "taxa", narrativeName="taxon list", verb="of", description = "the taxa value (i.e. alignment or tree).") Value x) {
         paramName = getParamName(0);
         setParam(paramName, x);
     }
 
+
+
     @Deprecated
-    @GeneratorInfo(name="taxa",description = "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).")
+    @GeneratorInfo(name="taxa",
+            verbClause = "is",
+            narrativeName = "taxon list",
+            description = "The taxa of the given taxa-dimensioned object (e.g. alignment, tree et cetera).")
     public Value<Taxa> apply() {
         Value v = getParams().get(paramName);
         Object value = v.value();

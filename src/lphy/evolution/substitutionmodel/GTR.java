@@ -1,14 +1,17 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.GraphicalModelNode;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
  * Created by adru001 on 2/02/20.
  */
+@Citation(
+        value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",
+        authors = {"Rodriguez", "Oliver", "Marín", "Medina"},
+        year=1990,
+        DOI="https://doi.org/10.1016/S0022-5193(05)80104-3"
+)
 public class GTR extends RateMatrix {
 
     public static final String ratesParamName = "rates";
@@ -27,7 +30,7 @@ public class GTR extends RateMatrix {
     }
 
     @GeneratorInfo(name = "gtr",
-            verbClause = "is assumed to be",
+            verbClause = "is",
             narrativeName = "general time-reversible rate matrix",
             description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {

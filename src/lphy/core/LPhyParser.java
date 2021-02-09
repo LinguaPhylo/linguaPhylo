@@ -32,6 +32,9 @@ public interface LPhyParser {
      */
     Map<String, Value<?>> getModelDictionary();
 
+    Set<Value> getDataValues();
+    Set<Value> getModelValues();
+
     /**
      * @return the value with the given id in the given context, or null if the value id doesn't exist in given context.
      */
@@ -341,12 +344,12 @@ public interface LPhyParser {
                     @Override
                     public void visitValue(Value value) {
 
-                        if (parser.isDataValue(value)) {
+                        if (parser.inDataBlock(value)) {
                             if (!dataVisited.contains(value)) {
                                 dataVisited.add(value);
 
                                 String name = NarrativeUtils.getName(value);
-                                if (!parser.isClamped(value.getId())) {
+                                if (!value.isAnonymous() && !parser.isClamped(value.getId())) {
                                     nameCounts.merge(name, 1, Integer::sum);
                                 }
                             }
@@ -371,7 +374,6 @@ public interface LPhyParser {
                     String name = NarrativeUtils.getName(dataValue);
                     Integer count = nameCounts.get(name);
                     if (count != null) {
-
                         String narrative = dataValue.getNarrative(count == 1);
                         builder.append(narrative);
                         if (narrative.length() > 0) builder.append("\n");
@@ -456,7 +458,7 @@ public interface LPhyParser {
                     @Override
                     public void visitValue(Value value) {
 
-                        if (!parser.isDataValue(value)) {
+                        if (!parser.isNamedDataValue(value)) {
                             if (!modelVisited.contains(value)) {
                                 modelVisited.add(value);
                                 if (parser.isClamped(value.getId()) || value.getOutputs().size() == 0) {
@@ -524,7 +526,7 @@ public interface LPhyParser {
                             if (!value.isAnonymous()) {
                                 String str = value.codeString();
                                 if (!str.endsWith(";")) str += ";";
-                                if (parser.isDataValue(value)) {
+                                if (parser.isNamedDataValue(value)) {
                                     dataLines.add(str);
                                 } else {
                                     modelLines.add(str);
@@ -585,7 +587,11 @@ public interface LPhyParser {
      * @param value
      * @return true if this is a named value in the data block.
      */
-    default boolean isDataValue(Value value) {
+    default boolean isNamedDataValue(Value value) {
         return (!value.isAnonymous() && !(value instanceof RandomVariable) && hasValue(value.getId(), Context.data));
+    }
+
+    default boolean inDataBlock(Value value) {
+        return getDataValues().contains(value);
     }
 }

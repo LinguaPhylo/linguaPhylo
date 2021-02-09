@@ -132,4 +132,23 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     public List<DeterministicFunction<T>> getComponentFunctions() {
         return componentFunctions;
     }
+
+    public String getInferenceNarrative(Value value, boolean unique) {
+
+        if (value instanceof VectorizedRandomVariable) {
+            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < componentFunctions.size(); i++) {
+
+                Generator generator = componentFunctions.get(i);
+                Value v = vrv.getComponentValue(i);
+
+                if (i > 0) builder.append(" ");
+                builder.append(generator.getInferenceNarrative(v, unique));
+            }
+            return builder.toString();
+        }
+        throw new RuntimeException("Expected VectorizedRandomVariable!");
+    }
 }

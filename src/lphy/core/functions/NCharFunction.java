@@ -12,11 +12,11 @@ public class NCharFunction extends DeterministicFunction<Integer> {
 
     private static final String sitesParamName = "sites";
 
-    public NCharFunction(@ParameterInfo(name = sitesParamName, description = "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.") Value<NChar> sites) {
+    public NCharFunction(@ParameterInfo(name = sitesParamName, verb = "of", description = "a site-dimensioned object (e.g. alignment) or an array of site-dimensioned objects.") Value<NChar> sites) {
         setParam(sitesParamName, sites);
     }
 
-    @GeneratorInfo(name = "nchar", description = "The number of sites in the given alignment.")
+    @GeneratorInfo(name = "nchar", verbClause = "is", narrativeName = "number of characters", description = "The number of sites in the given alignment.")
     public Value<Integer> apply() {
         Value<NChar> sites = getParams().get(sitesParamName);
         NChar value = sites.value();

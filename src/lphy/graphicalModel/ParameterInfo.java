@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 public @interface ParameterInfo {
     String name();
     String narrativeName() default "";
+    String verb() default "with";
     String description();
     boolean optional() default false;
 }

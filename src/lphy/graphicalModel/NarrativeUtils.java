@@ -14,7 +14,8 @@ public class NarrativeUtils {
 
     public static String getArticle(Value value, boolean unique, boolean lowercase) {
 
-        String article = lowercase ? "the" : "The";
+        //String article = lowercase ? "the" : "The";
+        String article = lowercase ? "" : "The";
         if (!unique && value.isAnonymous()) article = getIndefiniteArticle(getName(value), lowercase);
         return article;
     }
@@ -28,15 +29,20 @@ public class NarrativeUtils {
         builder.append("\">(");
         int count = 0;
         String[] authors = citation.authors();
-        for (int i = 0; i < authors.length; i++) {
-            if (i > 0) {
-                if (i == authors.length-1) {
-                    builder.append(" and ");
-                } else {
-                    builder.append(", ");
+        if (authors.length > 2) {
+            builder.append(authors[0]);
+            builder.append(" <i>et al</i>");
+        } else {
+            for (int i = 0; i < authors.length; i++) {
+                if (i > 0) {
+                    if (i == authors.length - 1) {
+                        builder.append(" and ");
+                    } else {
+                        builder.append(", ");
+                    }
                 }
+                builder.append(authors[i]);
             }
-            builder.append(authors[i]);
         }
         builder.append("; ");
         builder.append(citation.year());
@@ -142,8 +148,11 @@ public class NarrativeUtils {
         return article;
     }
 
+
+    static List<String> pluralNouns = new ArrayList<>(List.of("taxa"));
+
     public static String pluralize(String noun) {
-        if (!noun.endsWith("s")) return noun + "s";
+        if (!noun.endsWith("s") && !pluralNouns.contains(noun)) return noun + "s";
         return noun;
     }
 }

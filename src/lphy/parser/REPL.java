@@ -14,6 +14,9 @@ public class REPL implements LPhyParser {
 	SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
 	SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();
 
+	Set<Value> modelValues = new HashSet<>();
+	Set<Value> dataValues = new HashSet<>();
+
 	SortedMap<String, Command> commands = new TreeMap<>();
 
 	private List<String> lines = new ArrayList<>();
@@ -42,6 +45,10 @@ public class REPL implements LPhyParser {
 	public Map<String, Value<?>> getModelDictionary() {
 		return modelDictionary;
 	}
+
+	public Set<Value> getModelValues() { return modelValues; };
+
+	public Set<Value> getDataValues() { return dataValues; };
 
 	@Override
 	public void addCommand(Command command) {
@@ -116,6 +123,8 @@ public class REPL implements LPhyParser {
 		dataDictionary.clear();
 		modelDictionary.clear();
 		lines.clear();
+		dataValues.clear();
+		modelValues.clear();
 	}
 
 	//*** to identify data{} and model{} ***//

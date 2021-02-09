@@ -48,10 +48,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         switch (context) {
             case data:
                 parser.getDataDictionary().put(id, val);
+                parser.getDataValues().add(val);
                 break;
             case model:
             default:
                 parser.getModelDictionary().put(id, val);
+                parser.getModelValues().add(val);
         }
     }
 
@@ -622,6 +624,11 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     LoggerUtils.log.severe("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""));
                     throw new RuntimeException();
                 }
+                if (context == LPhyParser.Context.data) {
+                    parser.getDataValues().add(getValue());
+                } else {
+                    parser.getModelValues().add(getValue());
+                }
             }
 
             Value getValue() {
@@ -647,13 +654,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();
                 value.setFunction(((DeterministicFunction) obj));
-                ArgumentValue v = new ArgumentValue(name, value);
+                ArgumentValue v = new ArgumentValue(name, value, parser, context);
                 return v;
             }
 
             if (obj instanceof Value) {
                 Value value = (Value) obj;
-                ArgumentValue v = new ArgumentValue(name, value);
+                ArgumentValue v = new ArgumentValue(name, value, parser, context);
                 return v;
             }
             return obj;

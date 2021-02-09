@@ -67,7 +67,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
-    public PhyloCTMC(@ParameterInfo(name = treeParamName, narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
+    public PhyloCTMC(@ParameterInfo(name = treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
                      @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = QParamName, narrativeName="instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,

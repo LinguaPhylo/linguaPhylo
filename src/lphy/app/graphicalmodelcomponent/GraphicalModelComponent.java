@@ -220,7 +220,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private String getLabel(LayeredGNode gNode) {
         Value value = (Value)gNode.value();
         String label = gNode.name;
-        if (parser.isClamped(value.getId()) && parser.isDataValue(value)) {
+        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
             label = "'" + label + "'";
         }
 
@@ -232,7 +232,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     private String getUniqueId(Value value) {
         String uniqueId = value.getUniqueId();
-        if (parser.isClamped(value.getId()) && parser.isDataValue(value)) {
+        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
             uniqueId = "'" + uniqueId + "'";
         }
         return uniqueId;

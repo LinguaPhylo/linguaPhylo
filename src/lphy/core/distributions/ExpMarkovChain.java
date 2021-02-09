@@ -22,9 +22,9 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
 
     private RandomGenerator random;
 
-    public ExpMarkovChain(@ParameterInfo(name = initialMeanParamName, description = "This is the mean of the exponential from which the first value of the chain is drawn.", optional = true) Value<Double> initialMean,
+    public ExpMarkovChain(@ParameterInfo(name = initialMeanParamName, narrativeName = "initial mean", description = "This is the mean of the exponential from which the first value of the chain is drawn.", optional = true) Value<Double> initialMean,
                           @ParameterInfo(name = firstValueParamName, description = "This is the value of the 1st element of the chain (X[0]).", optional = true) Value<Double> firstValue,
-                          @ParameterInfo(name = nParamName, description = "the dimension of the return. Use either X[0] ~ Exp(mean=initialMean); or X[0] ~ LogNormal(meanlog, sdlog); Then X[i+1] ~ Exp(mean=X[i])") Value<Integer> n) {
+                          @ParameterInfo(name = nParamName, narrativeName = "number of steps", description = "the dimension of the return. Use either X[0] ~ Exp(mean=initialMean); or X[0] ~ LogNormal(meanlog, sdlog); Then X[i+1] ~ Exp(mean=X[i])") Value<Integer> n) {
 
         if ( (initialMean == null && firstValue == null) || (initialMean != null && firstValue != null) ) {
             throw new IllegalArgumentException("Require either " + initialMeanParamName + " or " + firstValueParamName);
@@ -39,7 +39,10 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
 
     }
 
-    @GeneratorInfo(name = "ExpMarkovChain", description = "A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(meanlog, sdlog); X[i+1] ~ Exp(mean=X[i])")
+    @GeneratorInfo(name = "ExpMarkovChain",
+            verbClause = "have",
+            narrativeName = "smoothing prior in which each element has an exponential prior with a mean of the previous element in the chain",
+            description = "A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(meanlog, sdlog); X[i+1] ~ Exp(mean=X[i])")
     public RandomVariable<Double[]> sample() {
 
         Double[] result = new Double[n.value()];

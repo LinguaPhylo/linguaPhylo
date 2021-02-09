@@ -30,6 +30,17 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
+    public Set<Value> getDataValues() {
+        return wrappedParser.getDataValues();
+    }
+
+    @Override
+    public Set<Value> getModelValues() {
+        return wrappedParser.getModelValues();
+    }
+
+
+    @Override
     public Value<?> getValue(String id, Context context) {
         return wrappedParser.getValue(id, context);
     }
