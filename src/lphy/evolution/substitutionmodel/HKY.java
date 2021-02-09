@@ -21,8 +21,8 @@ public class HKY extends RateMatrix {
     public static final String freqParamName =  "freq";
 
 
-    public HKY(@ParameterInfo(name = kappaParamName, description = "the kappa of the HKY process.") Value<Number> kappa,
-               @ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
+    public HKY(@ParameterInfo(name = kappaParamName, narrativeName = "transition bias parameter", description = "the kappa of the HKY process.") Value<Number> kappa,
+               @ParameterInfo(name = freqParamName, narrativeName="base frequencies", description = "the base frequencies.") Value<Double[]> freq,
                @ParameterInfo(name = meanRateParamName, description = "the total rate of substitution per unit time. Default 1.0.", optional = true) Value<Number> rate) {
 
         super(rate);

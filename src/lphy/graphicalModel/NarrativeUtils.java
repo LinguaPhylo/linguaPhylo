@@ -4,6 +4,7 @@ import lphy.evolution.continuous.PhyloBrownian;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class NarrativeUtils {
 
@@ -50,10 +51,26 @@ public class NarrativeUtils {
         return doi;
     }
 
+    static final Map<String, String> TYPE_MAP = Map.of(
+            "Double[]", "Vector",
+            "Double[][]", "Matrix",
+            "Integer[]", "Vector",
+            "Integer[][]", "Vector",
+            "TimeTree", "Time Tree"
+    );
+
+    private static String sanitizeTypeName(String typeName) {
+        String sanitizedTypeName = TYPE_MAP.get(typeName);
+        if (sanitizedTypeName != null) return sanitizedTypeName.toLowerCase();
+        return typeName.toLowerCase();
+
+    }
+
     public static String getTypeName(Value value) {
-        if (value.getGenerator() != null ) return value.getGenerator().getTypeName().toLowerCase();
+        if (value.getGenerator() != null ) return sanitizeTypeName(value.getGenerator().getTypeName());
 
         String s = value.getType().getSimpleName();
+
         String[] r = s.split("(?<=.)(?=\\p{Lu})");
 
         if (r.length > 1) {
@@ -65,7 +82,7 @@ public class NarrativeUtils {
                 count += 1;
             }
             return b.toString();
-        } else return s.toLowerCase();
+        } else return sanitizeTypeName(s);
 
     }
 
@@ -74,7 +91,7 @@ public class NarrativeUtils {
 
         String name;
 
-        if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof GenerativeDistribution) ) {
+        if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator) ) {
             Generator generator = (Generator)value.getOutputs().get(0);
             name = generator.getNarrativeName(value);
         } else name = getTypeName(value);
@@ -110,11 +127,11 @@ public class NarrativeUtils {
         return builder.toString();
     }
 
-    static List<String> anNouns = new ArrayList<>(List.of("n", "m"));
+    static List<String> anNouns = new ArrayList<>(List.of("n", "m", "HKY"));
 
     public static String getIndefiniteArticle(String noun, boolean lowercase) {
         String article = "A";
-        if ("aeiou".indexOf(noun.charAt(0)) >= 0 || anNouns.contains(noun)) article = "An";
+        if ("aeiou".indexOf(noun.charAt(0)) >= 0 || anNouns.contains(noun.split(" ")[0])) article = "An";
         if (lowercase) article = article.toLowerCase();
         return article;
     }

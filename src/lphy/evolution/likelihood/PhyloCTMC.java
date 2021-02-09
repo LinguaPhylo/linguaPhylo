@@ -26,6 +26,11 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 2/02/20.
  */
+@Citation(
+        value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",
+        year = 1981,
+        authors = {"Felsenstein"},
+        DOI="https://doi.org/10.1007/BF01734359")
 public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
     Value<TimeTree> tree;
