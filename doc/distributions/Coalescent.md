@@ -16,5 +16,7 @@ The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 199
 
 - TimeTree
 
+### Reference
 
+Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)[https://doi.org/10.1016/0304-4149(82)90011-4](https://doi.org/10.1016/0304-4149(82)90011-4)
 
