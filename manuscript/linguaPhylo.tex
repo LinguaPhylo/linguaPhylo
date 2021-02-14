@@ -22,6 +22,10 @@
 \usepackage[small,labelfont=bf,up,up]{caption} % custom captions under/above floats in tables or figures
 \usepackage[hidelinks]{hyperref} % hyperlinks in the PDF
 
+\usepackage{alltt}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
 \usepackage[shortlabels]{enumitem} % customized lists (shortlabels
                                 % necessary to have i., ii., etc., in enumerate)
 \setlist[itemize]{noitemsep} % make itemize lists more compact
@@ -36,6 +40,10 @@
 \fancyfoot{} % blank out the default footer
 \fancyhead[C]{Authors et al. $\bullet$ August 2018 $\bullet$ bio{\color{red}R}$\chi$ve} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+\let\oldtexttt\texttt% Store \texttt
+\renewcommand{\texttt}[2][black]{\textcolor{#1}{\ttfamily #2}}% \texttt[<color>]{<stuff>}
+
 
 \bibliographystyle{apalike}
 
@@ -123,7 +131,14 @@
 \date{\today} % Leave empty to omit a date
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
-  \noindent \blindtext
+  Phylogenetic models have become increasingly complex and the data sets addressed larger and more rich. 
+  Yet there is no standard language to accurately specify the details of a phylogenetic model for the purposes of reproducibility or reuse.
+  We present a new language to specify the details of a phylogenetic model that is both human and machine readable.
+  We also report on the development of a graphical software package that can be used to construct and simulate data from
+  models in this new language, as well as create natural language narratives that can form the basis of a description of the model for the method section of a manuscript. 
+  Finally we report on a command-line program that can be used to generate XML for the BEAST2 software package based
+  on a model specified in this new language. 
+  These tools together should aid in the goal of reproducibility and reuse of probabilistic phylogenetic models.
 \end{abstract}
 \centering [Probabilistic models, Bayesian models, reproducibility]
 }
@@ -194,7 +209,7 @@ short) and LPhyBEAST.
 
 \subsubsection{Enhance communication and hide unnecessary details}
 
-A concise universal formal language to describe only the data and model would enable easy yet precise communication about modelling and inference intentions, without the need to understand all the implementation details of a particular software package. This is akin to the concept of encapsulation in object-oriented programming. We want to avoid exposing users to unnecessary complexity of implementation details. 
+A concise formal language to describe only the data and model would enable easy yet precise communication about modelling and inference intentions, without the need to understand all the implementation details of a particular software package. This is akin to the concept of encapsulation in object-oriented programming. We want to avoid exposing users to unnecessary complexity of implementation details. 
 Current input files for popular Bayesian inference software are replete with unnecessary implementation details.
 For example the BEAST2 input file format exposes the user to a wide array of details beyond the statistical model and data:
 \begin{itemize}
@@ -213,7 +228,7 @@ By focusing on a modular high-level language acting on a small number of fundame
 LinguaPhylo is a model specification language to concisely and
 precisely define probabilistic phylogenetic models.
 The aim is to work
-towards a {\it lingua franca} for probabilistic models of phylogenetic
+towards a common language for probabilistic models of phylogenetic
 evolution.
 This language should be readable by both humans and
 computers.
@@ -227,14 +242,13 @@ Here is an example:
   \hspace{-1cm}
   \begin{minipage}[b]{0.7\textwidth}
     {\singlespacing
-      \begin{lphylisting}
-        model {
-          lambda $\sim$ LogNormal(meanlog=3.0, sdlog=1.0);
-          tree $\sim$ Yule(lambda=lambda, *\color{grayargs}{n}*=16);
-          D $\sim$ PhyloCTMC(L=200, Q=jukesCantor(),
-          *\color{grayargs}{tree}*=tree);
-        }
-      \end{lphylisting}
+      \begin{alltt}
+        model \{
+          \textcolor{green}{lambda} ~ \textcolor{blue}{LogNormal}(\textcolor{grayargs}{meanlog}=3.0, \textcolor{grayargs}{sdlog}=1.0);
+          \textcolor{green}{tree} ~ \textcolor{blue}{Yule}(\textcolor{grayargs}{lambda}=\textcolor{green}{lambda}, \textcolor{grayargs}{n}=16);
+          \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{grayargs}{L}=200, \textcolor{grayargs}{Q}=jukesCantor(), \textcolor{grayargs}{tree}=\textcolor{green}{tree});
+        \}
+      \end{alltt}
     }
   \end{minipage}
   \begin{minipage}[b]{0.3\textwidth}
@@ -680,7 +694,7 @@ specification, and some data and produces a BEAST 2 XML input file.
 It is therefore an alternative way to succinctly express and
 communicate BEAST analyses. 
 
-\bibliographystyle{unsrt}
+%\bibliographystyle{unsrt}
 \bibliography{linguaPhylo}
 
 
