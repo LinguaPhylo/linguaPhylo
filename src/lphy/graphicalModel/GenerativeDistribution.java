@@ -73,6 +73,11 @@ public interface GenerativeDistribution<T> extends Generator<T> {
         return builder.toString();
     }
 
+    @Override
+    default char generatorCodeChar() {
+        return '~';
+    }
+
     /**
      * Implementation of GraphicalModelNode value method. Unsupported for Generative Distributions.
      * @throws UnsupportedOperationException

@@ -29,6 +29,10 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     String codeString();
 
+    /**
+     * @return the character symbol, for function '=' and for generative distribution '~'
+     */
+    char generatorCodeChar();
 
     @Override
     default List<GraphicalModelNode> getInputs() {

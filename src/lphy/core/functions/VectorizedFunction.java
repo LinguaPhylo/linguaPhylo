@@ -135,8 +135,8 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
     public String getInferenceNarrative(Value value, boolean unique) {
 
-        if (value instanceof VectorizedRandomVariable) {
-            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+        if (value instanceof CompoundVectorValue) {
+            CompoundVectorValue vrv = (CompoundVectorValue)value;
 
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < componentFunctions.size(); i++) {

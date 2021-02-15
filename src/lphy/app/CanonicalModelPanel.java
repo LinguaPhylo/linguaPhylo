@@ -1,11 +1,17 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.code.CanonicalCodeBuilder;
+import lphy.graphicalModel.code.CodeBuilder;
+import lphy.parser.codecolorizer.ColorizerStyles;
 import lphy.parser.codecolorizer.DataModelCodeColorizer;
+import lphy.parser.codecolorizer.DataModelToLaTeX;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.StyledDocument;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 
@@ -30,7 +36,6 @@ public class CanonicalModelPanel extends JComponent {
 
         BoxLayout boxLayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(boxLayout);
-        add(new JLabel("Canonical model description."));
         add(scrollPane);
 
         parser.addGraphicalModelChangeListener(this::setText);
@@ -44,17 +49,32 @@ public class CanonicalModelPanel extends JComponent {
             e.printStackTrace();
         }
 
-        String text = LPhyParser.Utils.getCanonicalScript(parser);
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+
+        String text = codeBuilder.getCode(parser);
 
         System.out.println(text);
 
         if (text.length() > 0) {
             try {
-                DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane);
+                pane.setEditorKit(new RTFEditorKit());
+                DataModelToLaTeX codeColorizer = new DataModelToLaTeX(parser, pane);
                 codeColorizer.parse(text);
+
+                String latex = codeColorizer.getLatex();
+                System.out.println("Latex:" + latex);
+                pane.setText(latex);
+
+                StyledDocument doc = pane.getStyledDocument();
+
+                pane.getDocument().remove(0, pane.getDocument().getLength());
+
+                doc.insertString(0, latex, pane.getStyle(ColorizerStyles.keyword));
+
+
             }  catch (Exception e) {
                 pane.setText(text);
-                LoggerUtils.log.severe("DataModelCodeColorizer failed with exception: " + e.getMessage());
+                LoggerUtils.log.severe("DataModelToLaTeX failed with exception: " + e.getMessage());
             }
         }
     }

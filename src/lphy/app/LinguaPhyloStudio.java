@@ -7,6 +7,8 @@ import lphy.core.commands.Remove;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.code.CanonicalCodeBuilder;
+import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
 
 import javax.swing.*;
@@ -203,7 +205,9 @@ public class LinguaPhyloStudio {
             }
         });
 
-        saveAsMenuItem.addActionListener(e -> saveToFile(LPhyParser.Utils.getCanonicalScript(parser)));
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+
+        saveAsMenuItem.addActionListener(e -> saveToFile(codeBuilder.getCode(parser)));
         showArgumentLabels.addActionListener(
                 e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
 

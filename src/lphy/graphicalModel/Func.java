@@ -42,6 +42,11 @@ public abstract class Func implements Generator {
         return codeString(this,getParams());
     }
 
+    @Override
+    public char generatorCodeChar() {
+        return '=';
+    }
+
     public static String getName(Class<? extends Func> funcClass) {
         GeneratorInfo fInfo = Generator.getGeneratorInfo(funcClass);
         if (fInfo != null) {

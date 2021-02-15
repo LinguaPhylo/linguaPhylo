@@ -18,9 +18,13 @@
 \usepackage[margin=1in]{geometry} % margins
 \usepackage[breakable]{tcolorbox} % text box
 \usepackage[sc]{mathpazo} % Palatino font
-\usepackage[T1]{fontenc} % use 8-bit encoding that has 256 glyphs
+%\usepackage[T1]{fontenc} % use 8-bit encoding that has 256 glyphs
 \usepackage[small,labelfont=bf,up,up]{caption} % custom captions under/above floats in tables or figures
 \usepackage[hidelinks]{hyperref} % hyperlinks in the PDF
+
+\usepackage{tikz}
+\usepackage{bm}
+\usetikzlibrary{bayesnet}
 
 \usepackage{alltt}
 \usepackage{lmodern}
@@ -242,17 +246,31 @@ Here is an example:
   \hspace{-1cm}
   \begin{minipage}[b]{0.7\textwidth}
     {\singlespacing
-      \begin{alltt}
-        model \{
-          \textcolor{green}{lambda} ~ \textcolor{blue}{LogNormal}(\textcolor{grayargs}{meanlog}=3.0, \textcolor{grayargs}{sdlog}=1.0);
-          \textcolor{green}{tree} ~ \textcolor{blue}{Yule}(\textcolor{grayargs}{lambda}=\textcolor{green}{lambda}, \textcolor{grayargs}{n}=16);
-          \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{grayargs}{L}=200, \textcolor{grayargs}{Q}=jukesCantor(), \textcolor{grayargs}{tree}=\textcolor{green}{tree});
-        \}
-      \end{alltt}
-    }
+\begin{alltt}
+    model \{
+      \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
+      \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+    \}
+\end{alltt}
+}
   \end{minipage}
   \begin{minipage}[b]{0.3\textwidth}
-    \includegraphics[height=3cm]{figs/dummy.pdf}
+   \begin{tikzpicture}[scale=0.5,
+dstyle/.style={draw=blue!50,fill=blue!20},
+vstyle/.style={draw=green,fill=green!20},
+detstyle/.style={draw=red!50,fill=red!20}
+]
+\node[latent, vstyle] at (0.0, -2.0) (lambda) {$\lambda$};
+\node[latent, vstyle] at (0.0, -6.0) (psi) {$\psi$};
+\node[latent, vstyle] at (0.0, -10.0) (D) {D};
+\factor[above=of lambda] {LogNormallambda} {left:LogNormal} {} {} ; %
+\factoredge {} {LogNormallambda} {lambda}; %
+\factor[above=of psi] {Yulepsi} {left:Yule} {} {} ; %
+\factoredge {lambda} {Yulepsi} {psi}; %
+\factor[above=of D] {PhyloCTMCD} {left:PhyloCTMC} {} {} ; %
+\factoredge {psi} {PhyloCTMCD} {D}; %
+\end{tikzpicture}
   \end{minipage}
 
   % {\singlespacing

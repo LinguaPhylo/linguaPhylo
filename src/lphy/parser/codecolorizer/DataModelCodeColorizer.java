@@ -13,8 +13,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DataModelCodeColorizer extends DataModelBaseListener {
 
@@ -43,23 +41,33 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
     LPhyParser.Context context = LPhyParser.Context.model;
 
-    final String indent = "  ";
 
-    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane) {
+    // the indent within a block
+    String blockIndent = "  ";
+
+    // the portion of the indent that is top level (i.e. how much the data and model lines are indented
+    String topLevelIndent = "";
+
+    String indent = blockIndent;
+
+    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane, String topLevelIndent) {
 
         this.parser = parser;
         textPane = pane;
+        this.topLevelIndent = topLevelIndent;
+
+        indent = topLevelIndent + blockIndent;
 
         ColorizerStyles.addStyles(pane);
 
-        keywordStyle = textPane.getStyle("keywordStyle");
-        functionStyle = textPane.getStyle("functionStyle");
-        genDistStyle = textPane.getStyle("genDistStyle");
-        randomVarStyle = textPane.getStyle("randomVarStyle");
-        valueStyle = textPane.getStyle("valueStyle");
-        argumentNameStyle = textPane.getStyle("argumentNameStyle");
-        literalStyle = textPane.getStyle("constantStyle");
-        punctuationStyle = textPane.getStyle("punctuationStyle");
+        keywordStyle = textPane.getStyle(ColorizerStyles.keyword);
+        functionStyle = textPane.getStyle(ColorizerStyles.function);
+        genDistStyle = textPane.getStyle(ColorizerStyles.distribution);
+        randomVarStyle = textPane.getStyle(ColorizerStyles.randomVariable);
+        valueStyle = textPane.getStyle(ColorizerStyles.value);
+        argumentNameStyle = textPane.getStyle(ColorizerStyles.argumentName);
+        literalStyle = textPane.getStyle(ColorizerStyles.constant);
+        punctuationStyle = textPane.getStyle(ColorizerStyles.punctuation);
     }
 
     public class DataModelASTVisitor extends DataModelBaseVisitor<Object> {
@@ -67,7 +75,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         public DataModelASTVisitor() {
         }
 
-        private void addTextElement(TextElement element) {
+        void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
 
             for (int i = 0; i < element.text.size(); i++) {
@@ -84,9 +92,17 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             context = LPhyParser.Context.data;
 
-            addTextElement(new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle));
+            TextElement element = new TextElement(topLevelIndent, punctuationStyle);
+
+            element.add(ctx.getChild(0).getText() + " {\n", keywordStyle);
+
+            addTextElement(element);
             Object children = visitChildren(ctx);
-            addTextElement(new TextElement("}\n", keywordStyle));
+
+            element = new TextElement(topLevelIndent, punctuationStyle);
+            element.add("}\n", keywordStyle);
+
+            addTextElement(element);
             return children;
         }
 
@@ -95,9 +111,17 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             context = LPhyParser.Context.model;
 
-            addTextElement(new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle));
+            TextElement element = new TextElement(topLevelIndent, punctuationStyle);
+
+            element.add(ctx.getChild(0).getText() + " {\n", keywordStyle);
+
+            addTextElement(element);
             Object children = visitChildren(ctx);
-            addTextElement(new TextElement("}\n", keywordStyle));
+
+            element = new TextElement(topLevelIndent, punctuationStyle);
+            element.add("}\n", keywordStyle);
+
+            addTextElement(element);
             return children;
         }
 
@@ -118,7 +142,9 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         @Override
         public Object visitDeterm_relation(DataModelParser.Determ_relationContext ctx) {
 
-            TextElement element = new TextElement(indent + ctx.getChild(0).getText(), valueStyle);
+            TextElement element = new TextElement(indent, punctuationStyle);
+
+            element.add(ctx.getChild(0).getText(), valueStyle);
 
             element.add(" = ", punctuationStyle);
 
@@ -134,7 +160,9 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
         @Override
         public Object visitStoch_relation(DataModelParser.Stoch_relationContext ctx) {
 
-            TextElement var = new TextElement(indent + ctx.getChild(0).getText(), randomVarStyle);
+            TextElement var = new TextElement(indent, punctuationStyle);
+
+            var.add(ctx.getChild(0).getText(), randomVarStyle);
 
             var.add(" " + ctx.getChild(1).getText() + " ", punctuationStyle);
 

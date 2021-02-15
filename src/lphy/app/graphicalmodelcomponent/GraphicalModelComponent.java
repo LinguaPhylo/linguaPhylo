@@ -3,6 +3,7 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
+import lphy.app.Symbols;
 import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 import lphy.graphicalModel.*;
 
@@ -219,7 +220,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     private String getLabel(LayeredGNode gNode) {
         Value value = (Value)gNode.value();
-        String label = gNode.name;
+        String label = Symbols.getCanonical(gNode.name, "$\\", "$");
         if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
             label = "'" + label + "'";
         }
@@ -231,7 +232,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     private String getUniqueId(Value value) {
-        String uniqueId = value.getUniqueId();
+        String uniqueId = value.getCanonicalId();
+        if (uniqueId == null) uniqueId = value.getUniqueId();
         if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
             uniqueId = "'" + uniqueId + "'";
         }
@@ -247,7 +249,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
 
-        String factorName = generator.getName() + value.getUniqueId();
+        String factorName = generator.getName() + getUniqueId(value);
 
         StringBuilder predecessors = new StringBuilder();
 

@@ -33,12 +33,16 @@ public class Symbols {
             .collect(Collectors.toMap(i -> greekLetterNames[i], i -> greekLetters[i]));
 
     public static String getCanonical(String name) {
-        for (int i = 0; i < greekLetters.length; i++) {
-            if (name.contains(greekLetters[i])) {
-                int index = name.indexOf(greekLetters[i]);
-                String newname = name.substring(0, index) + symbolToNameMap.get(greekLetters[i]);
-                if (index < name.length()-1) {
-                   newname += name.substring(index+1);
+       return getCanonical(name, "", "");
+    }
+
+    public static String getCanonical(String name, String prefix, String suffix) {
+        for (String greekLetter : greekLetters) {
+            if (name.contains(greekLetter)) {
+                int index = name.indexOf(greekLetter);
+                String newname = name.substring(0, index) + prefix + symbolToNameMap.get(greekLetter) + suffix;
+                if (index < name.length() - 1) {
+                    newname += name.substring(index + 1);
                 }
                 name = newname;
             }

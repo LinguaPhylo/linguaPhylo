@@ -58,9 +58,15 @@ public class Value<T> implements GraphicalModelNode<T> {
 
     public String codeString() {
         StringBuilder builder = new StringBuilder();
-        if (function != null) {
-            if (!isAnonymous()) builder.append(id + " = ");
-            builder.append(function.codeString());
+        Generator generator = getGenerator();
+        if (generator != null) {
+            if (!isAnonymous()) {
+                builder.append(id);
+                builder.append(" ");
+                builder.append(generator.generatorCodeChar());
+                builder.append(" ");
+            }
+            builder.append(generator.codeString());
         } else {
             builder.append(toString());
         }

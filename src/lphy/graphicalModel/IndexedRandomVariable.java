@@ -38,14 +38,6 @@ public class IndexedRandomVariable<T> extends RandomVariable<T[]> {
 //        return g;
 //    }
 
-    public String codeString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getId());
-        builder.append(" ~ ");
-        builder.append(g.codeString());
-        return builder.toString();
-    }
-
     @Override
     public List<GraphicalModelNode> getInputs() {
         TreeSet set = new TreeSet();

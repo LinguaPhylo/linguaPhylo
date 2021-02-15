@@ -23,14 +23,6 @@ public class RandomVariable<T> extends Value<T> {
         return g;
     }
 
-    public String codeString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getId());
-        builder.append(" ~ ");
-        builder.append(g.codeString());
-        return builder.toString();
-    }
-
     @Override
     public List<GraphicalModelNode> getInputs() {
         return Collections.singletonList(g);
