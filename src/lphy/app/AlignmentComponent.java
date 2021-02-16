@@ -23,7 +23,7 @@ public class AlignmentComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
-    static Font taxaMinFont = new Font("monospaced", Font.PLAIN, MIN_FONT_SIZE);
+    static Font taxaMinFont = new Font(Font.MONOSPACED, Font.PLAIN, MIN_FONT_SIZE);
 
     Color[] colors;
     Value<? extends Alignment> alignmentValue;

@@ -252,7 +252,7 @@ public class LinguaPhyloStudio {
             String rtfContent = baos.toString();
             {
                 // replace "Monospaced" by a well-known monospace font
-                rtfContent = rtfContent.replaceAll("monospaced", "Courier New");
+                rtfContent = rtfContent.replaceAll(Font.MONOSPACED, "Courier New");
                 final StringBuffer rtfContentBuffer = new StringBuffer(rtfContent);
                 final int endProlog = rtfContentBuffer.indexOf("\n\n");
                 // set a good Line Space and no Space Before or Space After each paragraph
@@ -338,18 +338,36 @@ public class LinguaPhyloStudio {
 
                 HTMLEditorKit kit = new HTMLEditorKit();
 
-                BufferedOutputStream out;
-
+                // replace "Monospaced" by CSS monospace font
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try {
-                    out = new BufferedOutputStream(new FileOutputStream(chooser.getSelectedFile().getAbsoluteFile()));
+                    kit.write(baos, doc, doc.getStartPosition().getOffset(), doc.getLength());
+                    baos.close();
 
-                    kit.write(out, doc, doc.getStartPosition().getOffset(), doc.getLength());
+                    String html = baos.toString();
+                    { // for some browsers to reduce the font size of monospace fonts
+                        html = html.replaceAll(Font.MONOSPACED, "monospace,monospace");
+                        // <p> expends line spaces, use <div>
+                        html = html.replaceAll("<p", "<div");
+                        html = html.replaceAll("</p>", "</div>");
+                    }
 
-                } catch (FileNotFoundException e) {
+                    if (html.length() > 0) {
+                        try {
+                            FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
+                            writer.write(html);
+                            writer.close();
 
-                } catch (IOException e) {
+                        } catch (FileNotFoundException e) {
 
-                } catch (BadLocationException e) {
+                        } catch (IOException e) {
+
+                        }
+                    } else {
+                        throw new IOException("Fail to create HTML !");
+                    }
+
+                } catch (IOException | BadLocationException e) {
                     e.printStackTrace();
                 }
             }

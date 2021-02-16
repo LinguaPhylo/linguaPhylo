@@ -35,8 +35,8 @@ public class GraphicalModelInterpreter extends JPanel {
 
     private static final String COMMIT_ACTION = "commit";
 
-    static Font interpreterFont = new Font("monospaced", Font.PLAIN, 12);
-    static Font smallInterpreterFont = new Font("monospaced", Font.PLAIN, 10);
+    static Font interpreterFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+    static Font smallInterpreterFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
     int BORDER_SIZE = 10;
 

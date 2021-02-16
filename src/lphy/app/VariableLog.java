@@ -16,7 +16,7 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
 
     RandomNumberLogger randomNumberLogger;
 
-    Font loggerFont = new Font("monospaced", Font.PLAIN, 10);
+    Font loggerFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
     public VariableLog(boolean logStatistics, boolean logVariables) {
 
