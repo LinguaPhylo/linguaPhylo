@@ -240,38 +240,67 @@ Here is an example:
 
 \begin{tcolorbox}[breakable, width=\textwidth, colback=gray!10, boxrule=0pt,
   title=Box 1: A simple molecular phylogenetic model, fonttitle=\bfseries]
-  \small 
-  Text here.
-
-  \hspace{-1cm}
-  \begin{minipage}[b]{0.7\textwidth}
+  \begin{minipage}[t]{0.60\textwidth}
+  (a) Modeling language
+\\
     {\singlespacing
 \begin{alltt}
-    model \{
-      \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
-      \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-    \}
+model \{
+  \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
+  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+\}
 \end{alltt}
 }
-  \end{minipage}
-  \begin{minipage}[b]{0.3\textwidth}
-   \begin{tikzpicture}[scale=0.5,
+(c) Posterior
+  
+$$P(\psi, \lambda | D) \propto P(D | \psi) P(\psi | \lambda) P(\lambda) $$
+
+  \end{minipage}%
+\begin{minipage}[t]{0.40\textwidth}
+(b) Graphical model
+\\\\
+\centering
+\begin{tikzpicture}[scale=0.52,
 dstyle/.style={draw=blue!50,fill=blue!20},
 vstyle/.style={draw=green,fill=green!20},
+cstyle/.style={font=\small},
 detstyle/.style={draw=red!50,fill=red!20}
 ]
-\node[latent, vstyle] at (0.0, -2.0) (lambda) {$\lambda$};
-\node[latent, vstyle] at (0.0, -6.0) (psi) {$\psi$};
-\node[latent, vstyle] at (0.0, -10.0) (D) {D};
+\node[const, cstyle] at (1.0, -0.0) (602717583) {meanlog = 3.0};
+\node[const, cstyle] at (5.0, -0.0) (897996787) {sdlog = 1.0};
+\node[latent, vstyle] at (2.0, -4.0) (lambda) {$\lambda$};
+\node[const, cstyle] at (6.0, -4.0) (2011155364) {n = 16};
+\node[latent, vstyle] at (2.0, -8.0) (psi) {$\psi$};
+\node[const, cstyle] at (6.0, -8.0) (1992433642) {L = 200};
+\node[det, detstyle] at (10.0, -8.0) (258223775) {[Q]};
+\node[latent, vstyle] at (6.0, -12.0) (D) {D};
 \factor[above=of lambda] {LogNormallambda} {left:LogNormal} {} {} ; %
-\factoredge {} {LogNormallambda} {lambda}; %
+\factoredge {602717583, 897996787} {LogNormallambda} {lambda}; %
 \factor[above=of psi] {Yulepsi} {left:Yule} {} {} ; %
-\factoredge {lambda} {Yulepsi} {psi}; %
+\factoredge {lambda, 2011155364} {Yulepsi} {psi}; %
+\factor[above=of 258223775] {jukesCantor258223775} {left:jukesCantor} {} {} ; %
+\factoredge {} {jukesCantor258223775} {258223775}; %
 \factor[above=of D] {PhyloCTMCD} {left:PhyloCTMC} {} {} ; %
-\factoredge {psi} {PhyloCTMCD} {D}; %
+\factoredge {1992433642, 258223775, psi} {PhyloCTMCD} {D}; %
 \end{tikzpicture}
+%   \begin{tikzpicture}[scale=0.5,
+%dstyle/.style={draw=blue!50,fill=blue!20},
+%vstyle/.style={draw=green,fill=green!20},
+%detstyle/.style={draw=red!50,fill=red!20}
+%]
+%\node[latent, vstyle] at (0.0, -2.0) (lambda) {$\lambda$};
+%\node[latent, vstyle] at (0.0, -6.0) (psi) {$\psi$};
+%\node[latent, vstyle] at (0.0, -10.0) (D) {D};
+%\factor[above=of lambda] {LogNormallambda} {left:LogNormal} {} {} ; %
+%\factoredge {} {LogNormallambda} {lambda}; %
+%\factor[above=of psi] {Yulepsi} {left:Yule} {} {} ; %
+%\factoredge {lambda} {Yulepsi} {psi}; %
+%\factor[above=of D] {PhyloCTMCD} {left:PhyloCTMC} {} {} ; %
+%\factoredge {psi} {PhyloCTMCD} {D}; %
+%\end{tikzpicture}
   \end{minipage}
+  
 
   % {\singlespacing
   % \begin{minted}{Stan}

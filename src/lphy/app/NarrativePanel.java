@@ -64,7 +64,7 @@ public class NarrativePanel extends JComponent {
 
         text += LPhyParser.Utils.getNarrative(parser);
 
-        text += "\n" + LPhyParser.Utils.getInferenceStatement(parser);
+        text += "\n" + LPhyParser.Utils.getInferenceStatement(parser, true);
 
         text += "\n" + LPhyParser.Utils.getReferences(parser);
 

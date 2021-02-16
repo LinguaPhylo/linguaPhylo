@@ -6,13 +6,13 @@ import java.util.stream.IntStream;
 
 public class Symbols {
 
-    static String[] greekLetterNames = {
+    static String[] symbolNames = {
             "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa",
             "lambda", "mu", "nu", "xi", "omicron", "pi", "rho", "sigma", "tau", "upsilon",
             "phi", "chi", "psi", "omega", "Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi",
-            "Sigma", "Omega"};
+            "Sigma", "Omega", "propto"};
 
-    static String[] greekLetterCodes = prepend("\\", greekLetterNames);
+    static String[] symbolCodes = prepend("\\", symbolNames);
 
     private static String[] prepend(String pre, String[] array) {
         String[] prepended = new String[array.length];
@@ -22,22 +22,22 @@ public class Symbols {
         return prepended;
     }
 
-    static String[] greekLetters = {
+    static String[] unicodeSymbols = {
             "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ",
-            "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω"};
+            "χ", "ψ", "ω", "Γ", "Δ", "Θ", "Λ", "Ξ", "Π", "Σ", "Ω", "∝"};
 
-    static Map<String,String> symbolToNameMap = IntStream.range(0, greekLetters.length).boxed()
-    .collect(Collectors.toMap(i -> greekLetters[i], i -> greekLetterNames[i]));
+    static Map<String,String> symbolToNameMap = IntStream.range(0, unicodeSymbols.length).boxed()
+    .collect(Collectors.toMap(i -> unicodeSymbols[i], i -> symbolNames[i]));
 
-    static Map<String,String> nameToSymbolMap = IntStream.range(0, greekLetters.length).boxed()
-            .collect(Collectors.toMap(i -> greekLetterNames[i], i -> greekLetters[i]));
+    static Map<String,String> nameToSymbolMap = IntStream.range(0, unicodeSymbols.length).boxed()
+            .collect(Collectors.toMap(i -> symbolNames[i], i -> unicodeSymbols[i]));
 
     public static String getCanonical(String name) {
        return getCanonical(name, "", "");
     }
 
     public static String getCanonical(String name, String prefix, String suffix) {
-        for (String greekLetter : greekLetters) {
+        for (String greekLetter : unicodeSymbols) {
             if (name.contains(greekLetter)) {
                 int index = name.indexOf(greekLetter);
                 String newname = name.substring(0, index) + prefix + symbolToNameMap.get(greekLetter) + suffix;

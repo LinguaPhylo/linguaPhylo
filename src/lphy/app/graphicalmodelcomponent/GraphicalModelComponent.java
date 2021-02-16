@@ -188,6 +188,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 "\\begin{tikzpicture}[\n" +
                 "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
                 "vstyle/.style={draw=green,fill=green!20},\n" +
+                "cstyle/.style={font=\\small}\n" +
                 "detstyle/.style={draw=red!50,fill=red!20}\n" +
                 "]\n";
 
@@ -200,7 +201,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private String valueToTikz(LayeredGNode gNode, Value value, double xScale, double yScale) {
 
         String type = "const";
-        String style = null;
+        String style = "cstyle";
 
         if (parser.isClampedVariable(value)) {
             type = "obs";

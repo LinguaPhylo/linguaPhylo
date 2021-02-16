@@ -1,6 +1,7 @@
 package lphy.core;
 
 import lphy.app.GraphicalLPhyParser;
+import lphy.app.Symbols;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
@@ -446,7 +447,7 @@ public interface LPhyParser {
         }
 
 
-        public static String getInferenceStatement(LPhyParser parser) {
+        public static String getInferenceStatement(LPhyParser parser, boolean latex) {
 
             List<Value> modelVisited = new ArrayList<>();
             List<Value> dataValues = new ArrayList<>();
@@ -476,12 +477,19 @@ public interface LPhyParser {
             if (modelVisited.size() > 0) {
                 builder.append("<h2>Posterior</h2>\n\n");
 
+                if (latex) {
+                    builder.append("$$");
+                }
+
                 builder.append("P(");
                 int count = 0;
                 for (Value modelValue : modelVisited) {
                     if (!dataValues.contains(modelValue) && modelValue instanceof RandomVariable) {
                         if (count > 0) builder.append(", ");
-                        builder.append(modelValue.getId());
+
+                        String name = latex ? Symbols.getCanonical(modelValue.getId(), "\\", "") : modelValue.getId();
+
+                        builder.append(name);
                         count += 1;
                     }
                 }
@@ -489,18 +497,31 @@ public interface LPhyParser {
                 count = 0;
                 for (Value dataValue : dataValues) {
                     if (count > 0) builder.append(", ");
-                    builder.append(dataValue.getId());
+
+                    String name = latex ? Symbols.getCanonical(dataValue.getId(), "\\", "") : dataValue.getId();
+
+                    builder.append(name);
                     count += 1;
                 }
-                builder.append(") ∝ ");
+                builder.append(")");
+                if (!latex) {
+                    builder.append(" ∝ ");
+                } else {
+                    builder.append(" \\propto ");
+                }
 
                 for (Value modelValue : modelVisited) {
                     if (modelValue instanceof RandomVariable) {
-                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue);
+                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue, latex);
                         builder.append(statement);
                         builder.append(" ");
                     }
                 }
+
+                if (latex) {
+                    builder.append("$$");
+                }
+
                 builder.append("\n");
             }
 

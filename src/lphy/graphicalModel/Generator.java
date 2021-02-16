@@ -1,5 +1,6 @@
 package lphy.graphicalModel;
 
+import lphy.app.Symbols;
 import lphy.parser.functions.ExpressionNode;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -41,12 +42,16 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     Map<String, Value> getParams();
 
-    default String getInferenceStatement(Value value) {
+    default String getInferenceStatement(Value value, boolean latex) {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append("P(");
-        builder.append(value.getId());
+
+        String name = latex ? Symbols.getCanonical(value.getId(), "\\", "") : value.getId();
+
+
+        builder.append(name);
         Map<String, Value> params = getParams();
 
         List<ParameterInfo> parameterInfos = getParameterInfo(0);
@@ -60,7 +65,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                 } else {
                     builder.append(", ");
                 }
-                builder.append(v.isAnonymous() ? parameterInfo.name() : v.getId());
+
+                if (v.isAnonymous()) {
+                    builder.append(parameterInfo.name());
+                } else {
+
+                    name = latex ? Symbols.getCanonical(v.getId(), "\\", "") : v.getId();
+                    builder.append(name);
+                }
                 count += 1;
             }
         }

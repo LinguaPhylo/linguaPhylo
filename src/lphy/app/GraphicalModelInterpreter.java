@@ -65,7 +65,7 @@ public class GraphicalModelInterpreter extends JPanel {
         if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, ParserUtils.getGenerativeDistributions());
 
         List<String> keywords = parser.getKeywords();
-        keywords.addAll(Arrays.asList(Symbols.greekLetterCodes));
+        keywords.addAll(Arrays.asList(Symbols.symbolCodes));
 
         List<String> commandStrings =
                 parser.getCommands().stream().map(Command::getName).collect(Collectors.toList());
@@ -112,8 +112,8 @@ public class GraphicalModelInterpreter extends JPanel {
         });
 
 
-        for (int i = 0; i < Symbols.greekLetterCodes.length; i++) {
-            canonicalWords.put(Symbols.greekLetterCodes[i], Symbols.greekLetters[i]);
+        for (int i = 0; i < Symbols.symbolCodes.length; i++) {
+            canonicalWords.put(Symbols.symbolCodes[i], Symbols.unicodeSymbols[i]);
         }
 
         interpreterField.addKeyListener(new KeyAdapter() {

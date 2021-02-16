@@ -43,7 +43,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         });
     }
 
-    public String getInferenceStatement(Value value) {
+    public String getInferenceStatement(Value value, boolean latex) {
 
         if (value instanceof VectorizedRandomVariable) {
             VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
@@ -53,7 +53,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
                 Generator generator = componentDistributions.get(i);
                 Value v = vrv.getComponentValue(i);
 
-                builder.append(generator.getInferenceStatement(v));
+                builder.append(generator.getInferenceStatement(v, latex));
             }
             return builder.toString();
         }
