@@ -13,18 +13,13 @@ import lphy.parser.REPL;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 
 public class LinguaPhyloStudio {
 
@@ -93,8 +88,8 @@ public class LinguaPhyloStudio {
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
 
-        //JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
-        //Menu.add(saveModelToHTML);
+        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
+        fileMenu.add(saveModelToHTML);
 
         JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
         fileMenu.add(saveModelToRTF);
@@ -230,7 +225,7 @@ public class LinguaPhyloStudio {
         saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
         saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.variableLog.getText()));
 
-        //saveModelToHTML.addActionListener(e -> exportModelToHTML());
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
         saveModelToRTF.addActionListener(e -> exportToRtf());
     }
 
@@ -312,6 +307,31 @@ public class LinguaPhyloStudio {
             if (option == JFileChooser.APPROVE_OPTION) {
 
                 StyledDocument doc = (StyledDocument) pane.getDocument();
+
+                // replace whitespace to "&nbsp;" after "\n"
+                final String sp = "&nbsp;&nbsp;";
+                boolean newLine = false;
+                // doc.getParagraphElement not working with AttributeSet properly
+                for(int i=0; i < doc.getLength(); i++) {
+                    String s = null;
+                    try {
+                        s = doc.getText(i, 1);
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (newLine && Objects.requireNonNull(s).equals(" ")) {
+                        Element element = doc.getCharacterElement(i);
+                        AttributeSet attribute = element.getAttributes();
+                        try {
+                            doc.remove(i, 1);
+                            doc.insertString(i, sp, attribute);
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    newLine = Objects.requireNonNull(s).equals("\n");
+                }
 
                 HTMLEditorKit kit = new HTMLEditorKit();
 
