@@ -17,6 +17,7 @@ import java.util.*;
  */
 @Citation(
         value = "Felsenstein J. (1973). Maximum-likelihood estimation of evolutionary trees from continuous characters. American journal of human genetics, 25(5), 471–492.",
+        title = "Maximum-likelihood estimation of evolutionary trees from continuous characters",
         authors = {"Felsenstein"},
         year = 1973,
         DOI = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/"

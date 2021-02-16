@@ -1,46 +1,26 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
-import lphy.core.narrative.HTMLNarrative;
+import lphy.core.narrative.LaTeXNarrative;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class NarrativePanel extends JComponent {
+public class LaTexPanel extends JComponent {
     GraphicalLPhyParser parser;
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
 
-    public NarrativePanel(GraphicalLPhyParser parser) {
+    public LaTexPanel(GraphicalLPhyParser parser) {
         this.parser = parser;
 
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
-
-        HTMLEditorKit editorKit = new HTMLEditorKit();
-
-        pane.setEditorKit(editorKit);
-
-        pane.addHyperlinkListener(e -> {
-            if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                if(Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    } catch (URISyntaxException uriSyntaxException) {
-                        uriSyntaxException.printStackTrace();
-                    }
-                }
-            }
-        });
-
 
         scrollPane = new JScrollPane(pane);
 
@@ -61,9 +41,9 @@ public class NarrativePanel extends JComponent {
             e.printStackTrace();
         }
 
-        HTMLNarrative narrative = new HTMLNarrative();
+        LaTeXNarrative narrative = new LaTeXNarrative();
 
-        String text = "<html>\n";
+        String text = "\\begin{document}\n\n";
 
         text += LPhyParser.Utils.getNarrative(parser, narrative);
 
@@ -71,7 +51,7 @@ public class NarrativePanel extends JComponent {
 
         text += "\n" + narrative.referenceSection();
 
-        text += "</html>";
+        text += "\\end{document}";
 
         pane.setText(text);
     }

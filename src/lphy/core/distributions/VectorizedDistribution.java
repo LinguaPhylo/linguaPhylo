@@ -1,5 +1,6 @@
 package lphy.core.distributions;
 
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 
 import java.lang.reflect.Array;
@@ -43,7 +44,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         });
     }
 
-    public String getInferenceStatement(Value value, boolean latex) {
+    public String getInferenceStatement(Value value, Narrative narrative) {
 
         if (value instanceof VectorizedRandomVariable) {
             VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
@@ -53,14 +54,14 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
                 Generator generator = componentDistributions.get(i);
                 Value v = vrv.getComponentValue(i);
 
-                builder.append(generator.getInferenceStatement(v, latex));
+                builder.append(generator.getInferenceStatement(v, narrative));
             }
             return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
     }
 
-    public String getInferenceNarrative(Value value, boolean unique) {
+    public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         if (value instanceof VectorizedRandomVariable) {
             VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
@@ -72,7 +73,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
                 Value v = vrv.getComponentValue(i);
 
                 if (i > 0) builder.append(" ");
-                builder.append(generator.getInferenceNarrative(v, unique));
+                builder.append(generator.getInferenceNarrative(v, unique, narrative));
             }
             return builder.toString();
         }

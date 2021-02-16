@@ -18,6 +18,7 @@ public class ViewerPane extends JTabbedPane {
 
     CanonicalModelPanel canonicalModelPanel;
     NarrativePanel narrativePanel;
+    LaTexPanel latexPanel;
 
     JScrollPane variableSummaryScrollPane;
     JScrollPane variableLogScrollPane;
@@ -42,6 +43,7 @@ public class ViewerPane extends JTabbedPane {
         Variables("Variables"),
         Model("Model"),
         Narrative("Narrative"),
+        Latex("Latex"),
         Variable_Summary("Variable Summary"),
         Variable_Log("Variable Log"),
         Tree_Log ("Tree Log");
@@ -71,6 +73,7 @@ public class ViewerPane extends JTabbedPane {
 
         canonicalModelPanel = new CanonicalModelPanel(parser);
         narrativePanel = new NarrativePanel(parser);
+        latexPanel = new LaTexPanel(parser);
 
         variableSummaryScrollPane = new JScrollPane(variableSummary);
         variableLogScrollPane = new JScrollPane(variableLog);
@@ -81,6 +84,7 @@ public class ViewerPane extends JTabbedPane {
         viewerComponent[Viewer.Variables.ordinal()] = variablesScrollPane;
         viewerComponent[Viewer.Model.ordinal()] = canonicalModelPanel;
         viewerComponent[Viewer.Narrative.ordinal()] = narrativePanel;
+        viewerComponent[Viewer.Latex.ordinal()] = latexPanel;
         viewerComponent[Viewer.Variable_Summary.ordinal()] = variableSummaryScrollPane;
         viewerComponent[Viewer.Variable_Log.ordinal()] = variableLogScrollPane;
         viewerComponent[Viewer.Tree_Log.ordinal()] = treeLogScrollPane;

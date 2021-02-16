@@ -24,6 +24,7 @@ import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 @Citation(value="Drummond, A. J., Rambaut, A., Shapiro, B, & Pybus, O. G. (2005).\n" +
         "Bayesian coalescent inference of past population dynamics from molecular sequences.\n" +
         "Molecular biology and evolution, 22(5), 1185-1192.",
+        title="Bayesian coalescent inference of past population dynamics from molecular sequences",
         year = 2005, authors = {"Drummond", "Rambaut", "Shapiro", "Pybus"}, DOI="10.1093/molbev/msi103")
 public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 

@@ -1,6 +1,7 @@
 package lphy.graphicalModel;
 
 import lphy.app.Symbols;
+import lphy.core.narrative.Narrative;
 import lphy.parser.functions.ExpressionNode;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -42,14 +43,13 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     Map<String, Value> getParams();
 
-    default String getInferenceStatement(Value value, boolean latex) {
+    default String getInferenceStatement(Value value, Narrative narrative) {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append("P(");
 
-        String name = latex ? Symbols.getCanonical(value.getId(), "\\", "") : value.getId();
-
+        String name = narrative.getId(value, false);
 
         builder.append(name);
         Map<String, Value> params = getParams();
@@ -70,7 +70,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                     builder.append(parameterInfo.name());
                 } else {
 
-                    name = latex ? Symbols.getCanonical(v.getId(), "\\", "") : v.getId();
+                    name = narrative.getId(v, false);
                     builder.append(name);
                 }
                 count += 1;
@@ -81,16 +81,16 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return builder.toString();
     }
 
-    default String getInferenceNarrative(Value value, boolean unique) {
+    default String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         String narrativeName = getNarrativeName();
 
         GeneratorInfo info = getGeneratorInfo(this.getClass());
-        String citationString = NarrativeUtils.getCitationHyperlink(this);
+        String citationString = narrative.cite(getCitation());
 
         String verbClause = info != null ? info.verbClause() : "comes from";
         StringBuilder builder = new StringBuilder();
-        builder.append(NarrativeUtils.getValueClause(value, unique));
+        builder.append(NarrativeUtils.getValueClause(value, unique, narrative));
         builder.append(" ");
         builder.append(verbClause);
         builder.append(" ");
@@ -103,7 +103,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         }
         builder.append(" ");
         builder.append(narrativeName);
-        if (citationString != null) {
+        if (citationString != null && citationString != "") {
             builder.append(" ");
             builder.append(citationString);
         }
@@ -128,7 +128,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                     builder.append(currentVerb);
                     builder.append(" ");
                 }
-                builder.append(NarrativeUtils.getValueClause(v, false, true, false));
+                builder.append(NarrativeUtils.getValueClause(v, false, true, false, narrative));
                 count += 1;
             }
         }

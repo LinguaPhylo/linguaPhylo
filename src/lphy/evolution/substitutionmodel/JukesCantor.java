@@ -9,6 +9,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * Created by adru001 on 2/02/20.
  */
 @Citation(value="Jukes, T. H., & Cantor, C. R. (1969). Evolution of protein molecules. Mammalian protein metabolism, 3, 21-132.",
+        title = "Evolution of protein molecules",
         year=1969,
         authors={"Jukes", "Cantor"},
         DOI="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7")

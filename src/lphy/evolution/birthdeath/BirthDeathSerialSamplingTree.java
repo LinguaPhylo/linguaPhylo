@@ -19,7 +19,10 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * A Birth-death tree generative distribution
  */
-@Citation(value="Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688", DOI="10.1093/sysbio/syt030", authors = {"Stadler", "Yang"}, year=2013)
+@Citation(value="Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688",
+        title = "Dating Phylogenies with Sequentially Sampled Tips",
+        DOI="10.1093/sysbio/syt030",
+        authors = {"Stadler", "Yang"}, year=2013)
 public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;

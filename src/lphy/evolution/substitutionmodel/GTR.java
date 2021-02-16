@@ -8,6 +8,7 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
  */
 @Citation(
         value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",
+        title = "The general stochastic model of nucleotide substitution",
         authors = {"Rodriguez", "Oliver", "Marín", "Medina"},
         year=1990,
         DOI="https://doi.org/10.1016/S0022-5193(05)80104-3"

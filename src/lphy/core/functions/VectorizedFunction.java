@@ -1,5 +1,6 @@
 package lphy.core.functions;
 
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.CompoundVectorValue;
 import lphy.parser.ParserUtils;
@@ -133,7 +134,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         return componentFunctions;
     }
 
-    public String getInferenceNarrative(Value value, boolean unique) {
+    public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         if (value instanceof CompoundVectorValue) {
             CompoundVectorValue vrv = (CompoundVectorValue)value;
@@ -145,7 +146,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
                 Value v = vrv.getComponentValue(i);
 
                 if (i > 0) builder.append(" ");
-                builder.append(generator.getInferenceNarrative(v, unique));
+                builder.append(generator.getInferenceNarrative(v, unique, narrative));
             }
             return builder.toString();
         }

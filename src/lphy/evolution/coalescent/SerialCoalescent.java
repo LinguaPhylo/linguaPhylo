@@ -22,6 +22,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 @Citation(
         value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
+        title = "The Coalescent",
         year = 1982,
         authors = {"Kingman"},
         DOI="https://doi.org/10.1016/0304-4149(82)90011-4")

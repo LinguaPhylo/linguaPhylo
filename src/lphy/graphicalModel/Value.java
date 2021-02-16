@@ -1,6 +1,7 @@
 package lphy.graphicalModel;
 
 import lphy.app.*;
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.types.DoubleValue;
 
 import javax.swing.*;
@@ -73,10 +74,10 @@ public class Value<T> implements GraphicalModelNode<T> {
         return builder.toString();
     }
 
-    public String getNarrative(boolean unique) {
+    public String getNarrative(boolean unique, Narrative narrative) {
         StringBuilder builder = new StringBuilder();
         if (getGenerator() != null) {
-            return getGenerator().getInferenceNarrative(this, unique);
+            return getGenerator().getInferenceNarrative(this, unique, narrative);
         } else {
             if (!isAnonymous()) return toString();
             return "";
@@ -89,8 +90,6 @@ public class Value<T> implements GraphicalModelNode<T> {
     }
 
     public String valueToString() {
-//        System.out.println("value=" + value);
-//        System.out.println("  ValueUtils.valueToString = " + ValueUtils.valueToString(value));
 
         return ValueUtils.valueToString(value);
     }

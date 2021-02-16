@@ -28,6 +28,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 @Citation(
         value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",
+        title = "Evolutionary trees from DNA sequences: a maximum likelihood approach",
         year = 1981,
         authors = {"Felsenstein"},
         DOI="https://doi.org/10.1007/BF01734359")

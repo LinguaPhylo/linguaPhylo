@@ -18,6 +18,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 @Citation(value="Yule, G. U. (1925). II.— A mathematical theory of evolution, based on the conclusions of Dr. JC Willis, FRS. Philosophical transactions of the Royal Society of London. Series B, containing papers of a biological character, 213(402-410), 21-87.",
         year=1925,
+        title="II. — A mathematical theory of evolution, based on the conclusions of Dr. JC Willis, FRS",
         authors={"Yule"},
         DOI="https://doi.org/10.1098/rstb.1925.0002")
 public class Yule extends TaxaConditionedTreeGenerator {

@@ -25,11 +25,13 @@ public @interface Citation {
      */
     String value();
 
-    String DOI() default "";
-
-    int year() default 0;
-
     String[] authors() default {};
+
+    String title();
+
+    int year();
+
+    String DOI() default "";
 
     /**
      * The Citations annotation is required to retrieve classes annotated with

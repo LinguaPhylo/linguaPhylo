@@ -12,6 +12,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  */
 @Citation(
         value="Hasegawa, M., Kishino, H. & Yano, T. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174 (1985)",
+        title = "Dating of the human-ape splitting by a molecular clock of mitochondrial DNA",
         year = 1985,
         authors = {"Hasegawa", "Kishino", "Yano"},
         DOI="https://doi.org/10.1007/BF02101694")

@@ -1,6 +1,7 @@
 package lphy.parser.functions;
 
 import lphy.core.functions.VectorizedFunction;
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.Vector;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.CompoundVectorValue;
@@ -327,7 +328,7 @@ public class MethodCall extends DeterministicFunction {
         return size;
     }
 
-    public String getInferenceNarrative(Value value, boolean unique) {
+    public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         String narrativeName = getNarrativeName();
         if (vectorizedArguments) {
@@ -335,13 +336,13 @@ public class MethodCall extends DeterministicFunction {
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.append(NarrativeUtils.getValueClause(value, unique));
+        builder.append(NarrativeUtils.getValueClause(value, unique, narrative));
         builder.append(vectorizedArguments ? " are " : " is ");
         builder.append(NarrativeUtils.getDefiniteArticle(narrativeName, true));
         builder.append(" ");
         builder.append(narrativeName);
         builder.append(" of ");
-        builder.append(NarrativeUtils.getValueClause(this.value, vectorizedObject, true, vectorizedObject));
+        builder.append(NarrativeUtils.getValueClause(this.value, vectorizedObject, true, vectorizedObject, narrative));
 
         builder.append(".");
         return builder.toString();

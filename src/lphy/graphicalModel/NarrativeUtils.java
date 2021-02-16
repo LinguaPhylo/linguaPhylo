@@ -1,5 +1,6 @@
 package lphy.graphicalModel;
 
+import lphy.core.narrative.Narrative;
 import lphy.evolution.continuous.PhyloBrownian;
 
 import java.util.ArrayList;
@@ -18,36 +19,6 @@ public class NarrativeUtils {
         String article = lowercase ? "" : "The";
         if (!unique && value.isAnonymous()) article = getIndefiniteArticle(getName(value), lowercase);
         return article;
-    }
-
-    public static String getCitationHyperlink(Generator generator) {
-        Citation citation = generator.getCitation();
-        if (citation == null) return null;
-        StringBuilder builder = new StringBuilder();
-        builder.append("<a href=\"");
-        builder.append(sanitizeDOI(citation.DOI()));
-        builder.append("\">(");
-        int count = 0;
-        String[] authors = citation.authors();
-        if (authors.length > 2) {
-            builder.append(authors[0]);
-            builder.append(" <i>et al</i>");
-        } else {
-            for (int i = 0; i < authors.length; i++) {
-                if (i > 0) {
-                    if (i == authors.length - 1) {
-                        builder.append(" and ");
-                    } else {
-                        builder.append(", ");
-                    }
-                }
-                builder.append(authors[i]);
-            }
-        }
-        builder.append("; ");
-        builder.append(citation.year());
-        builder.append(")</a>");
-        return builder.toString();
     }
 
     public static String sanitizeDOI(String doi) {
@@ -105,11 +76,11 @@ public class NarrativeUtils {
     }
 
 
-    public static String getValueClause(Value value, boolean unique) {
-        return getValueClause(value, unique, false, false);
+    public static String getValueClause(Value value, boolean unique, Narrative narrative) {
+        return getValueClause(value, unique, false, false, narrative);
     }
 
-    public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural) {
+    public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural, Narrative narrative) {
         StringBuilder builder = new StringBuilder();
 
         String name = getName(value);
@@ -125,7 +96,7 @@ public class NarrativeUtils {
         name = (lowercase ? firstLetter.toLowerCase() : firstLetter.toUpperCase()) + name.substring(1);
 
         builder.append(name);
-        builder.append((value.isAnonymous() ? "" : ", <i>" + value.getId() + "</i>"));
+        builder.append((value.isAnonymous() ? "" : ", " + narrative.getId(value, true)));
         if (value.getGenerator() == null) {
             builder.append(" of ");
             builder.append(ValueUtils.valueToString(value));

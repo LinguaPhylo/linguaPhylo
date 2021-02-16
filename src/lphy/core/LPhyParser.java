@@ -2,6 +2,7 @@ package lphy.core;
 
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.Symbols;
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
@@ -34,6 +35,7 @@ public interface LPhyParser {
     Map<String, Value<?>> getModelDictionary();
 
     Set<Value> getDataValues();
+
     Set<Value> getModelValues();
 
     /**
@@ -331,7 +333,7 @@ public interface LPhyParser {
             return false;
         }
 
-        public static String getNarrative(LPhyParser parser) {
+        public static String getNarrative(LPhyParser parser, Narrative narrative) {
 
             Map<String, Integer> nameCounts = new HashMap<>();
 
@@ -369,15 +371,15 @@ public interface LPhyParser {
             }
 
             if (dataVisited.size() > 0) {
-                builder.append("<h2>Data</h2>\n\n");
+                builder.append(narrative.section("Data"));
                 for (Value dataValue : dataVisited) {
 
                     String name = NarrativeUtils.getName(dataValue);
                     Integer count = nameCounts.get(name);
                     if (count != null) {
-                        String narrative = dataValue.getNarrative(count == 1);
-                        builder.append(narrative);
-                        if (narrative.length() > 0) builder.append("\n");
+                        String valueNarrative = dataValue.getNarrative(count == 1, narrative);
+                        builder.append(valueNarrative);
+                        if (valueNarrative.length() > 0) builder.append("\n");
                     } else {
                         LoggerUtils.log.severe("No name count found for " + dataValue + " with name " + name);
                     }
@@ -386,7 +388,7 @@ public interface LPhyParser {
                 builder.append("\n\n");
             }
             if (modelVisited.size() > 0) {
-                builder.append("<h2>Model</h2>\n\n");
+                builder.append(narrative.section("Model"));
 
                 for (Value modelValue : modelVisited) {
 
@@ -394,9 +396,9 @@ public interface LPhyParser {
                     Integer count = nameCounts.get(name);
 
                     if (count != null) {
-                        String narrative = modelValue.getNarrative(count == 1);
-                        builder.append(narrative);
-                        if (narrative.length() > 0) builder.append("\n");
+                        String valueNarrative = modelValue.getNarrative(count == 1, narrative);
+                        builder.append(valueNarrative);
+                        if (valueNarrative.length() > 0) builder.append("\n");
                     } else {
                         LoggerUtils.log.severe("No name count found for " + modelValue + " with name " + name);
                     }
@@ -407,7 +409,7 @@ public interface LPhyParser {
             return builder.toString();
         }
 
-        public static String getReferences(GraphicalLPhyParser parser) {
+        public static String getReferences(GraphicalLPhyParser parser, Narrative narrative) {
 
             List<Citation> refs = new ArrayList<>();
             for (Value value : parser.getModelSinks()) {
@@ -426,28 +428,11 @@ public interface LPhyParser {
                 }, false);
             }
 
-            StringBuilder builder = new StringBuilder();
-            if (refs.size() > 0) {
-                builder.append("<h2>References</h2>\n");
-
-                builder.append("<ul>");
-                for (Citation citation : refs) {
-                    builder.append("<li>");
-                    builder.append(citation.value());
-                    if (citation.DOI().length() > 0) {
-                        String url = NarrativeUtils.sanitizeDOI(citation.DOI());
-                        builder.append(" <a href=\"" + url + "\">" + url + "</a>");
-                    }
-                    builder.append("</li>\n");
-                }
-                builder.append("</ul>\n");
-            }
-
-            return builder.toString();
+            return narrative.referenceSection();
         }
 
 
-        public static String getInferenceStatement(LPhyParser parser, boolean latex) {
+        public static String getInferenceStatement(LPhyParser parser, Narrative narrative) {
 
             List<Value> modelVisited = new ArrayList<>();
             List<Value> dataValues = new ArrayList<>();
@@ -475,22 +460,18 @@ public interface LPhyParser {
             }
 
             if (modelVisited.size() > 0) {
-                builder.append("<h2>Posterior</h2>\n\n");
+                builder.append(narrative.section("Posterior"));
 
                 builder.append("The posterior distribution is:\n\n");
 
-                if (latex) {
-                    builder.append("$$");
-                }
+                builder.append(narrative.startMathMode(false));
 
                 builder.append("P(");
                 int count = 0;
                 for (Value modelValue : modelVisited) {
                     if (!dataValues.contains(modelValue) && modelValue instanceof RandomVariable) {
                         if (count > 0) builder.append(", ");
-
-                        String name = latex ? Symbols.getCanonical(modelValue.getId(), "\\", "") : modelValue.getId();
-
+                        String name = narrative.getId(modelValue, false);
                         builder.append(name);
                         count += 1;
                     }
@@ -499,38 +480,32 @@ public interface LPhyParser {
                 count = 0;
                 for (Value dataValue : dataValues) {
 
-                    String name = latex ? Symbols.getCanonical(dataValue.getId(), "\\", "") : dataValue.getId();
+                    String name = narrative.getId(dataValue, false);
                     if (count > 0 && name != null) builder.append(", ");
 
                     if (name != null) builder.append(name);
                     count += 1;
                 }
-                builder.append(")");
-                if (!latex) {
-                    builder.append(" ∝ ");
-                } else {
-                    builder.append(" \\propto ");
-                }
+                builder.append(") ");
+                builder.append(narrative.symbol("∝"));
+                builder.append(" ");
+
 
                 for (Value modelValue : modelVisited) {
                     if (modelValue instanceof RandomVariable) {
-                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue, latex);
+                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue, narrative);
                         builder.append(statement);
                         builder.append(" ");
                     }
                 }
 
-                if (latex) {
-                    builder.append("$$");
-                }
+                builder.append(narrative.endMathMode());
 
                 builder.append("\n");
             }
 
             return builder.toString();
         }
-
-
 
 
         public static List<Value<?>> getAllValuesFromSinks(LPhyParser parser) {
