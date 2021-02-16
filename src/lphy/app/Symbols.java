@@ -37,10 +37,11 @@ public class Symbols {
     }
 
     public static String getCanonical(String name, String prefix, String suffix) {
-        for (String greekLetter : unicodeSymbols) {
-            if (name.contains(greekLetter)) {
-                int index = name.indexOf(greekLetter);
-                String newname = name.substring(0, index) + prefix + symbolToNameMap.get(greekLetter) + suffix;
+        if (name == null) return null;
+        for (String unicodeSymbol : unicodeSymbols) {
+            if (name.contains(unicodeSymbol)) {
+                int index = name.indexOf(unicodeSymbol);
+                String newname = name.substring(0, index) + prefix + symbolToNameMap.get(unicodeSymbol) + suffix;
                 if (index < name.length() - 1) {
                     newname += name.substring(index + 1);
                 }

@@ -498,11 +498,11 @@ public interface LPhyParser {
                 if (dataValues.size() > 0) builder.append(" | ");
                 count = 0;
                 for (Value dataValue : dataValues) {
-                    if (count > 0) builder.append(", ");
 
                     String name = latex ? Symbols.getCanonical(dataValue.getId(), "\\", "") : dataValue.getId();
+                    if (count > 0 && name != null) builder.append(", ");
 
-                    builder.append(name);
+                    if (name != null) builder.append(name);
                     count += 1;
                 }
                 builder.append(")");
