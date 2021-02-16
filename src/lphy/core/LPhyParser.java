@@ -477,6 +477,8 @@ public interface LPhyParser {
             if (modelVisited.size() > 0) {
                 builder.append("<h2>Posterior</h2>\n\n");
 
+                builder.append("The posterior distribution is:\n\n");
+
                 if (latex) {
                     builder.append("$$");
                 }

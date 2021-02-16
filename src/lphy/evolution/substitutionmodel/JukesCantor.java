@@ -8,6 +8,10 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 2/02/20.
  */
+@Citation(value="Jukes, T. H., & Cantor, C. R. (1969). Evolution of protein molecules. Mammalian protein metabolism, 3, 21-132.",
+        year=1969,
+        authors={"Jukes", "Cantor"},
+        DOI="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7")
 public class JukesCantor extends RateMatrix {
 
     public JukesCantor(@ParameterInfo(name = meanRateParamName, description = "the rate of the Jukes-Cantor process. Default value is 1.0.", optional = true) Value<Number> rate) {
