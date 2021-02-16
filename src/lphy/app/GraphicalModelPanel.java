@@ -28,16 +28,11 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelComponent component;
     GraphicalModelInterpreter modelInterpreter;
     GraphicalModelInterpreter dataInterpreter;
-    CanonicalModelPanel canonicalModelPanel;
-    NarrativePanel narrativePanel;
 
     JTabbedPane leftPane;
 
-    JTabbedPane rightPane;
-
-    VariableLog variableLog = new VariableLog(true, true);
-    VariableSummary variableSummary = new VariableSummary(true, true);
-    TreeLog treeLog = new TreeLog();
+    ViewerPane rightPane;
+    boolean showNarrative = true;
 
     GraphicalLPhyParser parser;
 
@@ -51,8 +46,6 @@ public class GraphicalModelPanel extends JPanel {
     JSplitPane verticalSplitPane;
 
     Object displayedElement;
-
-    JScrollPane currentSelectionContainer = new JScrollPane();
 
     GraphicalModelPanel(GraphicalLPhyParser parser) {
 
@@ -142,26 +135,7 @@ public class GraphicalModelPanel extends JPanel {
 //            }
 //        });
 
-        currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        JScrollPane valueScrollPane = new JScrollPane(new StatePanel(parser, true, false));
-        valueScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        JScrollPane variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true));
-        variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        canonicalModelPanel = new CanonicalModelPanel(parser);
-        narrativePanel = new NarrativePanel(parser);
-
-        rightPane = new JTabbedPane();
-        rightPane.addTab("Current", currentSelectionContainer);
-        rightPane.addTab("Constants", valueScrollPane);
-        rightPane.addTab("Variables", variablesScrollPane);
-        rightPane.addTab("Model", canonicalModelPanel);
-        rightPane.addTab("Narrative", narrativePanel);
-        rightPane.addTab("Variable Summary", new JScrollPane(variableSummary));
-        rightPane.addTab("Variable Log", new JScrollPane(variableLog));
-        rightPane.addTab("Tree Log", new JScrollPane(treeLog));
+        rightPane = new ViewerPane(parser);
         //rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
 
         leftPane = new JTabbedPane();
@@ -237,9 +211,9 @@ public class GraphicalModelPanel extends JPanel {
             id = ((Value) displayedElement).getId();
         }
 
-        loggers.add(variableLog);
-        loggers.add(treeLog);
-        loggers.add(variableSummary);
+        loggers.add(rightPane.variableLog);
+        loggers.add(rightPane.treeLog);
+        loggers.add(rightPane.variableSummary);
 
         Sampler sampler = new Sampler(parser);
         sampler.sample(reps, loggers);
@@ -256,7 +230,7 @@ public class GraphicalModelPanel extends JPanel {
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
 
-        variableSummary.repaint();
+        rightPane.variableSummary.repaint();
         rightPane.repaint();
     }
 
@@ -296,13 +270,13 @@ public class GraphicalModelPanel extends JPanel {
             viewerPanel.add(viewer);
             viewer = viewerPanel;
         }
-        currentSelectionContainer.setViewportView(viewer);
-        currentSelectionContainer.setBorder(
+        rightPane.currentSelectionContainer.setViewportView(viewer);
+        rightPane.currentSelectionContainer.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createMatteBorder(0, 0, 0, 0, viewer.getBackground()),
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
 
-        if (moveToTab) rightPane.setSelectedComponent(currentSelectionContainer);
+        if (moveToTab) rightPane.setSelectedComponent(rightPane.currentSelectionContainer);
 
         repaint();
     }
@@ -333,5 +307,11 @@ public class GraphicalModelPanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clear() {
+        rightPane.clear();
+        dataInterpreter.clear();
+        modelInterpreter.clear();
     }
 }

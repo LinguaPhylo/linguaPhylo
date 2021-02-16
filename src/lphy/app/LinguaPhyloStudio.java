@@ -127,13 +127,11 @@ public class LinguaPhyloStudio {
                         try {
                             reader = new BufferedReader(new FileReader(exampleFile));
                             parser.clear();
-                            panel.treeLog.clear();
-                            panel.variableLog.clear();
-                            panel.dataInterpreter.clear();
-                            panel.modelInterpreter.clear();
+                            panel.clear();
                             panel.source(reader);
                             setFileName(name);
                         } catch (IOException e1) {
+                            setFileName(null);
                             e1.printStackTrace();
                         }
                     });
@@ -141,37 +139,8 @@ public class LinguaPhyloStudio {
             }
         }
 
-        //Build the second menu.
-        JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic(KeyEvent.VK_V);
-        menuBar.add(viewMenu);
-
-        JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
-        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
-        showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
-        viewMenu.add(showArgumentLabels);
-
-        JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
-        showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
-        showSampledValues.setState(LayeredGNode.getShowValueInNode());
-        viewMenu.add(showSampledValues);
-
-        JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
-        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
-        showArgumentLabels.setState(GraphicalModelComponent.getUseStraightEdges());
-        viewMenu.add(useStraightEdges);
-
-
-        JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
-        showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
-        showTreeInAlignmentView.setState(true);
-        viewMenu.add(showTreeInAlignmentView);
-
-        JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
-        showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MASK));
-        showErrorsInErrorAlignmentView.setState(true);
-        viewMenu.add(showErrorsInErrorAlignmentView);
-
+        buildViewMenu(menuBar);
+        menuBar.add(panel.rightPane.getMenu());
 
         frame = new JFrame(APP_NAME + " version " + VERSION);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -203,6 +172,46 @@ public class LinguaPhyloStudio {
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
         saveAsMenuItem.addActionListener(e -> saveToFile(codeBuilder.getCode(parser)));
+
+        saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.rightPane.treeLog.getText()));
+        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.rightPane.variableLog.getText()));
+
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
+        saveModelToRTF.addActionListener(e -> exportToRtf());
+    }
+
+    private void buildViewMenu(JMenuBar menuBar) {
+        //Build the second menu.
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+        menuBar.add(viewMenu);
+
+        JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
+        viewMenu.add(showArgumentLabels);
+
+        JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
+        showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
+        showSampledValues.setState(LayeredGNode.getShowValueInNode());
+        viewMenu.add(showSampledValues);
+
+        JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setState(GraphicalModelComponent.getUseStraightEdges());
+        viewMenu.add(useStraightEdges);
+
+
+        JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
+        showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
+        showTreeInAlignmentView.setState(true);
+        viewMenu.add(showTreeInAlignmentView);
+
+        JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
+        showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MASK));
+        showErrorsInErrorAlignmentView.setState(true);
+        viewMenu.add(showErrorsInErrorAlignmentView);
+
         showArgumentLabels.addActionListener(
                 e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
 
@@ -222,11 +231,6 @@ public class LinguaPhyloStudio {
             panel.repaint();
         });
 
-        saveTreeLogAsMenuItem.addActionListener(e -> saveToFile(panel.treeLog.getText()));
-        saveLogAsMenuItem.addActionListener(e -> saveToFile(panel.variableLog.getText()));
-
-        saveModelToHTML.addActionListener(e -> exportModelToHTML());
-        saveModelToRTF.addActionListener(e -> exportToRtf());
     }
 
     private void setFileName(String name) {
@@ -235,8 +239,7 @@ public class LinguaPhyloStudio {
     }
 
     private void exportToRtf() {
-        JTextPane textPane = panel.canonicalModelPanel.pane;
-
+        JTextPane textPane = panel.rightPane.canonicalModelPanel.pane;
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document doc = textPane.getDocument();
@@ -295,7 +298,7 @@ public class LinguaPhyloStudio {
 
     private void exportModelToHTML() {
 
-        JTextPane pane = panel.canonicalModelPanel.pane;
+        JTextPane pane = panel.rightPane.canonicalModelPanel.pane;
 
         if (pane.getDocument().getLength() > 0) {
 
