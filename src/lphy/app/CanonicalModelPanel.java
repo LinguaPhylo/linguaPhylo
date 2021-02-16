@@ -23,7 +23,7 @@ public class CanonicalModelPanel extends JComponent {
     public CanonicalModelPanel(GraphicalLPhyParser parser) {
         this.parser = parser;
 
-        pane.setFont(new Font("monospaced", Font.PLAIN, 12));
+        pane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
         pane.setEditorKit(new RTFEditorKit());
