@@ -1,6 +1,5 @@
 package lphy.parser.codecolorizer;
 
-import lphy.app.Symbols;
 import lphy.core.LPhyParser;
 import lphy.parser.DataModelLexer;
 import lphy.parser.DataModelParser;
@@ -10,23 +9,24 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
 import javax.swing.text.Style;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataModelToLaTeX extends DataModelCodeColorizer {
+public class DataModelToHTML extends DataModelCodeColorizer {
 
     // CURRENT MODEL STATE
 
-    static String randomVarColor = "green";
-    static String constantColor = "magenta";
-    static String keywordColor = "black";
-    static String argumentNameColor = "gray";
-    static String functionColor = "magenta!80!black";
-    static String distributionColor = "blue";
+    static Color randomVarColor = Color.green;
+    static Color constantColor = Color.magenta;
+    static Color keywordColor = Color.black;
+    static Color argumentNameColor = Color.gray;
+    static Color functionColor = Color.magenta.darker();
+    static Color distributionColor = Color.blue;
 
     List<String> elements = new ArrayList<>();
 
-    public DataModelToLaTeX(LPhyParser parser, JTextPane pane) {
+    public DataModelToHTML(LPhyParser parser, JTextPane pane) {
         super(parser, pane);
     }
 
@@ -42,63 +42,56 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
             for (int i = 0; i < element.text.size(); i++) {
                 String text = element.text.get(i);
                 Style style = element.style.get(i);
+                Color c = Color.black;
 
                 switch (style.getName()) {
                     case ColorizerStyles.function:
-                        builder.append("\\textcolor{");
-                        builder.append(functionColor);
-                        builder.append("}{");
+                        c = functionColor;
                         break;
                     case ColorizerStyles.distribution:
-                        builder.append("\\textcolor{");
-                        builder.append(distributionColor);
-                        builder.append("}{");
+                        c = distributionColor;
                         break;
                     case ColorizerStyles.argumentName:
-                        builder.append("\\textcolor{");
-                        builder.append(argumentNameColor);
-                        builder.append("}{");
+                        c = argumentNameColor;
                         break;
                     case ColorizerStyles.constant:
-                        builder.append("\\textcolor{");
-                        builder.append(constantColor);
-                        builder.append("}{");
+                        c = constantColor;
                         break;
                     case ColorizerStyles.randomVariable:
-                        builder.append("\\textcolor{");
-                        builder.append(randomVarColor);
-                        builder.append("}{");
+                        c = randomVarColor;
                 }
 
-                if (text.endsWith("{\n")) text = text.substring(0, text.length()-2) + "\\{\n";
-                if (text.endsWith("}\n")) text = text.substring(0, text.length()-2) + "\\}\n";
-
-                text = Symbols.getCanonical(text, "\\(\\", "\\)");
-
-                builder.append(text);
-                switch (style.getName()) {
-                    case ColorizerStyles.function:
-                    case ColorizerStyles.distribution:
-                    case ColorizerStyles.argumentName:
-                    case ColorizerStyles.constant:
-                    case ColorizerStyles.randomVariable:
-                        builder.append("}");
+                if (text.startsWith(indent)) {
+                    builder.append(span("&nbsp;".repeat(indent.length()), Color.black));
+                    text = text.substring(indent.length());
                 }
-
-
+                builder.append(span(text, c));
+                if (text.endsWith("\n")) builder.append("<br>\n");
             }
             elements.add(builder.toString());
         }
     }
 
-    public String getLatex() {
-        StringBuilder latex = new StringBuilder();
-        latex.append("\\begin{alltt}\n");
+    private String span(String text, Color color) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<span style=\"color: ");
+        builder.append(hexCode(color));
+        builder.append("; font-size: 12pt; font-family: monospace,monospace\">");
+        builder.append(text);
+        builder.append("</span>");
+        return builder.toString();
+    }
+
+    private String hexCode(Color color) {
+        return String.format("#%06x", color.getRGB() & 0x00FFFFFF);
+    }
+
+    public String getHTML() {
+        StringBuilder html = new StringBuilder();
         for (String element : elements) {
-            latex.append(element);
+            html.append(element);
         }
-        latex.append("\\end{alltt}\n");
-        return latex.toString();
+        return html.toString();
     }
 
     public Object parse(String CASentence) {

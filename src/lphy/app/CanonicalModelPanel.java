@@ -49,7 +49,6 @@ public class CanonicalModelPanel extends JComponent {
         }
 
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-
         String text = codeBuilder.getCode(parser);
 
         System.out.println(text);
@@ -57,7 +56,7 @@ public class CanonicalModelPanel extends JComponent {
         if (text.length() > 0) {
             try {
                 pane.setEditorKit(new RTFEditorKit());
-                DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane,"");
+                DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane);
                 codeColorizer.parse(text);
 
             }  catch (Exception e) {

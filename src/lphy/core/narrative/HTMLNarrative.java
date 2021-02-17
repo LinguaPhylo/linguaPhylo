@@ -1,8 +1,13 @@
 package lphy.core.narrative;
 
+import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.code.CanonicalCodeBuilder;
+import lphy.graphicalModel.code.CodeBuilder;
+import lphy.parser.codecolorizer.DataModelToHTML;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +58,20 @@ public class HTMLNarrative implements Narrative {
         if (mathModeInline) {
             return "</i>";
         } else return "</p>";
+    }
+
+    @Override
+    public String codeBlock(LPhyParser parser) {
+
+        JTextPane dummyPane = new JTextPane();
+
+        DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane);
+
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        String text = codeBuilder.getCode(parser);
+        dataModelToHTML.parse(text);
+
+        return dataModelToHTML.getHTML();
     }
 
     public String cite(Citation citation) {

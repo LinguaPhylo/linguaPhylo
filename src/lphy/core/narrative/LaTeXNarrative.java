@@ -1,9 +1,14 @@
 package lphy.core.narrative;
 
 import lphy.app.Symbols;
+import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.code.CanonicalCodeBuilder;
+import lphy.graphicalModel.code.CodeBuilder;
+import lphy.parser.codecolorizer.DataModelToLaTeX;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +104,19 @@ public class LaTeXNarrative implements Narrative {
         mathMode = false;
         if (mathModeInline) return "$";
         return "$$";
+    }
+
+    @Override
+    public String codeBlock(LPhyParser parser) {
+
+        JTextPane dummyPane = new JTextPane();
+
+        DataModelToLaTeX dataModelToLaTeX = new DataModelToLaTeX(parser, dummyPane);
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        String text = codeBuilder.getCode(parser);
+        dataModelToLaTeX.parse(text);
+
+        return dataModelToLaTeX.getLatex();
     }
 
 

@@ -43,20 +43,12 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
 
     // the indent within a block
-    String blockIndent = "  ";
+    String indent = "  ";
 
-    // the portion of the indent that is top level (i.e. how much the data and model lines are indented
-    String topLevelIndent = "";
-
-    String indent = blockIndent;
-
-    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane, String topLevelIndent) {
+    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane) {
 
         this.parser = parser;
         textPane = pane;
-        this.topLevelIndent = topLevelIndent;
-
-        indent = topLevelIndent + blockIndent;
 
         ColorizerStyles.addStyles(pane);
 
@@ -92,15 +84,12 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             context = LPhyParser.Context.data;
 
-            TextElement element = new TextElement(topLevelIndent, punctuationStyle);
-
-            element.add(ctx.getChild(0).getText() + " {\n", keywordStyle);
+            TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 
             addTextElement(element);
             Object children = visitChildren(ctx);
 
-            element = new TextElement(topLevelIndent, punctuationStyle);
-            element.add("}\n", keywordStyle);
+            element = new TextElement("}\n", keywordStyle);
 
             addTextElement(element);
             return children;
@@ -111,15 +100,12 @@ public class DataModelCodeColorizer extends DataModelBaseListener {
 
             context = LPhyParser.Context.model;
 
-            TextElement element = new TextElement(topLevelIndent, punctuationStyle);
-
-            element.add(ctx.getChild(0).getText() + " {\n", keywordStyle);
+            TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 
             addTextElement(element);
             Object children = visitChildren(ctx);
 
-            element = new TextElement(topLevelIndent, punctuationStyle);
-            element.add("}\n", keywordStyle);
+            element = new TextElement("}\n", keywordStyle);
 
             addTextElement(element);
             return children;
