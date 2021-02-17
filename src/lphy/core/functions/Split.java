@@ -11,7 +11,7 @@ public class Split extends DeterministicFunction<String> {
 
     public Split(@ParameterInfo(name = stringParamName, description = "the string value to extract a substring matching the given pattern.") Value<String> str,
                  @ParameterInfo(name = regexParamName, description = "a regular expression") Value<String> regex,
-                 @ParameterInfo(name = indexParamName, description = "the index of the substring to return") Value<Integer> i) {
+                 @ParameterInfo(name = indexParamName, description = "the index (>=0) of the substring to return") Value<Integer> i) {
 
         setParam(stringParamName, str);
         setParam(regexParamName, regex);
@@ -19,7 +19,8 @@ public class Split extends DeterministicFunction<String> {
     }
 
     @Override
-    @GeneratorInfo(name = "split", description = "A function to split a given string at the regular expressions and return the i'th substring of the resulting list.")
+    @GeneratorInfo(name = "split", description = "A function to split a given string at the regular expressions " +
+            "and return the i'th (starting from 0) substring of the resulting list.")
     public Value<String> apply() {
 
         String str = getString().value();

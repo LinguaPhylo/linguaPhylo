@@ -3,7 +3,11 @@ data {
   D = readNexus(file="examples/h3n2.nexus", options=options);
   taxa = D.taxa();
   L = nchar(D);
+  // take 4th element, where i>=0
   demes = split(str=D.taxaNames(), regex="\|", i=3);
+  // 3 locations
+  S = 3;
+  dim = S*(S-1);
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
@@ -16,9 +20,9 @@ model {
   clockRate ~ LogNormal(meanlog=-5.298, sdlog=0.25);
 
   // 3 population sizes
-  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=3);
+  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=S);
   // 6 migration rates backwards in time
-  b_m ~ Exp(mean=1.0, n=6);
+  b_m ~ Exp(mean=1.0, n=dim);
   M = migrationMatrix(theta=Θ, m=b_m);
   tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
   rootAge = tree.rootAge();

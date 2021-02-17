@@ -12,13 +12,133 @@ This repository contains two related projects: LinguaPhylo (LPhy for short) and 
 
 In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is a full example:
 
-```
-model {
-  λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-  ψ ~ Yule(lambda=λ, n=16);
-  D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
-}
-```
+[//]: # (generate this html from LPhy Studio)
+<p>
+    <div class=default>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        model {
+      </span>
+    </div>
+    <div class=default>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        &nbsp;&nbsp; 
+      </span>
+      <span style="color: #00c400; font-size: 12pt; font-family: monospace,monospace">
+        λ
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+         ~ 
+      </span>
+      <span style="color: #0000ff; font-size: 12pt; font-family: monospace,monospace">
+        <b>LogNormal</b>
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        (
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        meanlog=
+      </span>
+      <span style="color: #ff00ff; font-size: 12pt; font-family: monospace,monospace">
+        3.0
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        , 
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        sdlog=
+      </span>
+      <span style="color: #ff00ff; font-size: 12pt; font-family: monospace,monospace">
+        1.0
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        );
+      </span>
+    </div>
+    <div class=default>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        &nbsp;&nbsp; 
+      </span>
+      <span style="color: #00c400; font-size: 12pt; font-family: monospace,monospace">
+        ψ
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+         ~ 
+      </span>
+      <span style="color: #0000ff; font-size: 12pt; font-family: monospace,monospace">
+        <b>Yule</b>
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        (
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        lambda=
+      </span>
+      <span style="color: #00c400; font-size: 12pt; font-family: monospace,monospace">
+        λ
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        , 
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        n=
+      </span>
+      <span style="color: #ff00ff; font-size: 12pt; font-family: monospace,monospace">
+        16
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        );
+      </span>
+    </div>
+    <div class=default>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        &nbsp;&nbsp; 
+      </span>
+      <span style="color: #00c400; font-size: 12pt; font-family: monospace,monospace">
+        D
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+         ~ 
+      </span>
+      <span style="color: #0000ff; font-size: 12pt; font-family: monospace,monospace">
+        <b>PhyloCTMC</b>
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        (
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        L=
+      </span>
+      <span style="color: #ff00ff; font-size: 12pt; font-family: monospace,monospace">
+        200
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        , 
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        Q=
+      </span>
+      <span style="color: #c400c4; font-size: 12pt; font-family: monospace,monospace">
+        jukesCantor
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        (), 
+      </span>
+      <span style="color: #808080; font-size: 12pt; font-family: monospace,monospace">
+        tree=
+      </span>
+      <span style="color: #00c400; font-size: 12pt; font-family: monospace,monospace">
+        ψ
+      </span>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        );
+      </span>
+    </div>
+    <div class=default>
+      <span style="color: #000000; font-size: 12pt; font-family: monospace,monospace">
+        }
+      </span>
+    </div>
+</p>
 
 Each of the lines in this  model block expresses how a random variable (to the left of the tilde) is generated from a generative distribution.
 
