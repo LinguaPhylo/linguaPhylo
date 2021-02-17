@@ -1,5 +1,7 @@
 package lphy.graphicalModel;
 
+import lphy.core.narrative.Narrative;
+
 /**
  * Created by adru001 on 18/12/19.
  */

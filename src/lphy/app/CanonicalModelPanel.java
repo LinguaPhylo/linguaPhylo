@@ -1,6 +1,5 @@
 package lphy.app;
 
-import lphy.core.LPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.codecolorizer.ColorizerStyles;
@@ -58,23 +57,12 @@ public class CanonicalModelPanel extends JComponent {
         if (text.length() > 0) {
             try {
                 pane.setEditorKit(new RTFEditorKit());
-                DataModelToLaTeX codeColorizer = new DataModelToLaTeX(parser, pane);
+                DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, pane,"");
                 codeColorizer.parse(text);
-
-                String latex = codeColorizer.getLatex();
-                System.out.println("Latex:" + latex);
-                pane.setText(latex);
-
-                StyledDocument doc = pane.getStyledDocument();
-
-                pane.getDocument().remove(0, pane.getDocument().getLength());
-
-                doc.insertString(0, latex, pane.getStyle(ColorizerStyles.keyword));
-
 
             }  catch (Exception e) {
                 pane.setText(text);
-                LoggerUtils.log.severe("DataModelToLaTeX failed with exception: " + e.getMessage());
+                LoggerUtils.log.severe("CanonicalModelPanel failed with exception: " + e.getMessage());
             }
         }
     }

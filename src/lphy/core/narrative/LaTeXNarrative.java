@@ -16,6 +16,14 @@ public class LaTeXNarrative implements Narrative {
     boolean mathMode = false;
     boolean mathModeInline = false;
 
+    public String beginDocument() {
+        return "\\documentclass{article}\n\n" + "\\begin{document}\n";
+    }
+
+    public String endDocument() {
+        return "\\end{document}\n";
+    }
+
     /**
      * @param header the heading of the section
      * @return a string representing the start of a new section
@@ -51,17 +59,23 @@ public class LaTeXNarrative implements Narrative {
 
         boolean useCanonical = !id.equals(canonicalId);
 
+        boolean containsUnderscore = id.indexOf('_') >= 0;
+
         if (useCanonical) {
             if (inlineMath) {
                 return "$\\" + canonicalId + "$";
             } else if (mathMode) {
                 return "\\" + canonicalId;
             } else return canonicalId;
+        } else if (containsUnderscore) {
+            if (mathMode) {
+                return id;
+            } else return "$" + id + "$";
         } else {
             if (inlineMath) {
                 return "{\\it " + id + "}";
             } else if (mathMode) {
-                return "\\text{" + id + "}";
+                return "\\textrm{" + id + "}";
             } else return id;
         }
     }
@@ -82,6 +96,7 @@ public class LaTeXNarrative implements Narrative {
 
     @Override
     public String endMathMode() {
+        mathMode = false;
         if (mathModeInline) return "$";
         return "$$";
     }
@@ -116,19 +131,26 @@ public class LaTeXNarrative implements Narrative {
     public String referenceSection() {
         StringBuilder builder = new StringBuilder();
         if (references.size() > 0) {
-            builder.append("<h2>References</h2>\n");
+            // \begin{thebibliography}{9}
+            //
+            //\bibitem{lamport94}
+            //  Leslie Lamport,
+            //  \textit{\LaTeX: a document preparation system},
+            //  Addison Wesley, Massachusetts,
+            //  2nd edition,
+            //  1994.
+            //
+            //\end{thebibliography}
 
-            builder.append("<ul>");
-            for (Citation citation : references) {
-                builder.append("<li>");
-                builder.append(citation.value());
-                if (citation.DOI().length() > 0) {
-                    String url = sanitizeDOI(citation.DOI());
-                    builder.append(" <a href=\"" + url + "\">" + url + "</a>");
-                }
-                builder.append("</li>\n");
+            builder.append("\\begin{thebibliography}{9}\n\n");
+            for (int i = 0; i < references.size(); i++) {
+                builder.append("\\bibitem{");
+                builder.append(keys.get(i));
+                builder.append("}\n");
+                builder.append(references.get(i).value());
+                builder.append("\n\n");
             }
-            builder.append("</ul>\n");
+            builder.append("\\end{thebibliography}\n");
         }
         return builder.toString();
     }

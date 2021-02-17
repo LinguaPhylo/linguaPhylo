@@ -1,8 +1,12 @@
 package lphy.app;
 
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphy.core.narrative.HTMLNarrative;
+import lphy.core.narrative.LaTeXNarrative;
 
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.prefs.Preferences;
@@ -18,7 +22,7 @@ public class ViewerPane extends JTabbedPane {
 
     CanonicalModelPanel canonicalModelPanel;
     NarrativePanel narrativePanel;
-    LaTexPanel latexPanel;
+    NarrativePanel latexPanel;
 
     JScrollPane variableSummaryScrollPane;
     JScrollPane variableLogScrollPane;
@@ -72,8 +76,8 @@ public class ViewerPane extends JTabbedPane {
         variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         canonicalModelPanel = new CanonicalModelPanel(parser);
-        narrativePanel = new NarrativePanel(parser);
-        latexPanel = new LaTexPanel(parser);
+        narrativePanel = new NarrativePanel(parser, new HTMLNarrative(), new HTMLEditorKit());
+        latexPanel = new NarrativePanel(parser, new LaTeXNarrative());
 
         variableSummaryScrollPane = new JScrollPane(variableSummary);
         variableLogScrollPane = new JScrollPane(variableLog);

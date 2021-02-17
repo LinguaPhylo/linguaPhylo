@@ -97,9 +97,9 @@ public class NarrativeUtils {
 
         builder.append(name);
         builder.append((value.isAnonymous() ? "" : ", " + narrative.getId(value, true)));
-        if (value.getGenerator() == null) {
+        if (value.getGenerator() == null && !value.isRandom()) {
             builder.append(" of ");
-            builder.append(ValueUtils.valueToString(value));
+            builder.append(ValueUtils.valueToString(value.value));
         }
         return builder.toString();
     }

@@ -75,7 +75,6 @@ public class Value<T> implements GraphicalModelNode<T> {
     }
 
     public String getNarrative(boolean unique, Narrative narrative) {
-        StringBuilder builder = new StringBuilder();
         if (getGenerator() != null) {
             return getGenerator().getInferenceNarrative(this, unique, narrative);
         } else {

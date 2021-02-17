@@ -8,6 +8,11 @@ import static lphy.graphicalModel.NarrativeUtils.*;
 
 public interface Narrative {
 
+    String beginDocument();
+
+    String endDocument();
+
+
     /**
      * @param header the heading of the section
      * @return a string representing the start of a new section

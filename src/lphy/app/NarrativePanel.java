@@ -2,11 +2,13 @@ package lphy.app;
 
 import lphy.core.LPhyParser;
 import lphy.core.narrative.HTMLNarrative;
+import lphy.core.narrative.Narrative;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.EditorKit;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.io.IOException;
@@ -16,16 +18,21 @@ public class NarrativePanel extends JComponent {
     GraphicalLPhyParser parser;
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
+    Narrative narrative;
 
-    public NarrativePanel(GraphicalLPhyParser parser) {
+    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative) {
+     this(parser, narrative, null);
+    }
+
+
+    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, EditorKit editorKit) {
         this.parser = parser;
+        this.narrative = narrative;
 
         pane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pane.setEditable(false);
 
-        HTMLEditorKit editorKit = new HTMLEditorKit();
-
-        pane.setEditorKit(editorKit);
+        if (editorKit != null) pane.setEditorKit(editorKit);
 
         pane.addHyperlinkListener(e -> {
             if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -61,17 +68,15 @@ public class NarrativePanel extends JComponent {
             e.printStackTrace();
         }
 
-        HTMLNarrative narrative = new HTMLNarrative();
-
-        String text = "<html>\n";
+        String text = narrative.beginDocument();
 
         text += LPhyParser.Utils.getNarrative(parser, narrative);
 
-        text += "\n" + LPhyParser.Utils.getInferenceStatement(parser, narrative);
+        text += LPhyParser.Utils.getInferenceStatement(parser, narrative);
 
-        text += "\n" + narrative.referenceSection();
+        text += narrative.referenceSection();
 
-        text += "</html>";
+        text += narrative.endDocument();
 
         pane.setText(text);
     }

@@ -13,6 +13,16 @@ public class HTMLNarrative implements Narrative {
     List<Citation> references = new ArrayList<>();
     boolean mathModeInline = false;
 
+    @Override
+    public String beginDocument() {
+        return "<html>\n\n<body>";
+    }
+
+    @Override
+    public String endDocument() {
+        return "</body>\n</html>";
+    }
+
     /**
      * @param header the heading of the section
      * @return a string representing the start of a new section
