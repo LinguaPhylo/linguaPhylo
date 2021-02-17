@@ -50,3 +50,7 @@ LPhyBEAST is a command-line program that takes an LPhy model specification, and 
 It therefore enables LPHY as an alternative way to succinctly express and communicate BEAST2 analyses.
 
 The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https://github.com/LinguaPhylo/LPhyBeast)
+
+## Homepage and tutorials
+
+[https://linguaphylo.github.io/](https://linguaphylo.github.io/)
