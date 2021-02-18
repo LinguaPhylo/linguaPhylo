@@ -16,6 +16,13 @@ public class SliceValue<T> extends Value<T> {
         this.index = index;
     }
 
+    /**
+     * @return true if this value is sliced from a random value
+     */
+    public boolean isRandom() {
+        return slicedValue.isRandom();
+    }
+
     public Value<T[]> getSlicedValue() {
         return slicedValue;
     }

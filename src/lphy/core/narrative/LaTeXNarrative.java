@@ -22,6 +22,8 @@ public class LaTeXNarrative implements Narrative {
     boolean mathModeInline = false;
 
     public String beginDocument() {
+        keys.clear();
+        references.clear();
         StringBuilder builder = new StringBuilder();
         builder.append("\\documentclass{article}\n\n");
         builder.append("\\usepackage{color}\n");
@@ -33,6 +35,8 @@ public class LaTeXNarrative implements Narrative {
     }
 
     public String endDocument() {
+        keys.clear();
+        references.clear();
         return "\\end{document}\n";
     }
 

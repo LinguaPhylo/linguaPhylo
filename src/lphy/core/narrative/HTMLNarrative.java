@@ -20,11 +20,13 @@ public class HTMLNarrative implements Narrative {
 
     @Override
     public String beginDocument() {
+        references.clear();
         return "<html>\n\n<body>";
     }
 
     @Override
     public String endDocument() {
+        references.clear();
         return "</body>\n</html>";
     }
 

@@ -2,10 +2,21 @@ package lphy.core.narrative;
 
 public class LaTeXUtils {
 
-    public static String sanitizeText(String text) {
-        text = text.replace("&", "\\&");
-        text = text.replace("–", "--");
+    static String[] specials = {
+            "&",
+            "–", // endash
+            "í"};
 
+    static String[] replacements = {
+            "\\&",
+            "--",
+            "\\'{i}"
+    };
+
+    public static String sanitizeText(String text) {
+        for (int i = 0; i < specials.length; i++) {
+            text = text.replace(specials[i], replacements[i]);
+        }
         return text;
     }
 }
