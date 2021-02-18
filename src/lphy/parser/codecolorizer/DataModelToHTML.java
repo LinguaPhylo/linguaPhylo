@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataModelToHTML extends DataModelCodeColorizer {
-
     // CURRENT MODEL STATE
 
     static Color randomVarColor = Color.green;
@@ -26,8 +25,12 @@ public class DataModelToHTML extends DataModelCodeColorizer {
 
     List<String> elements = new ArrayList<>();
 
-    public DataModelToHTML(LPhyParser parser, JTextPane pane) {
+    private final String fontSize;
+
+    // allow to set font size to html <span style ...
+    public DataModelToHTML(LPhyParser parser, JTextPane pane, String fontSize) {
         super(parser, pane);
+        this.fontSize = fontSize;
     }
 
     public class DataModelASTVisitor extends DataModelCodeColorizer.DataModelASTVisitor {
@@ -76,7 +79,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
         StringBuilder builder = new StringBuilder();
         builder.append("<span style=\"color: ");
         builder.append(hexCode(color));
-        builder.append("; font-size: 12pt; font-family: monospace,monospace\">");
+        builder.append("; font-size: " + fontSize + "; font-family: monospace,monospace\">");
         builder.append(text);
         builder.append("</span>");
         return builder.toString();

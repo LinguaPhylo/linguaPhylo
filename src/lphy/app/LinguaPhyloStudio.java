@@ -312,7 +312,7 @@ public class LinguaPhyloStudio {
             if (option == JFileChooser.APPROVE_OPTION) {
 
                 HTMLNarrative htmlNarrative = new HTMLNarrative();
-                String html = htmlNarrative.codeBlock(parser);
+                String html = htmlNarrative.codeBlock(parser, "11pt");
 
 //                if (html.length() > 0) {
                 try {

@@ -18,6 +18,8 @@ public class HTMLNarrative implements Narrative {
     List<Citation> references = new ArrayList<>();
     boolean mathModeInline = false;
 
+    private final String FONT_SIZE = "12pt";
+
     @Override
     public String beginDocument() {
         references.clear();
@@ -62,18 +64,22 @@ public class HTMLNarrative implements Narrative {
         } else return "</p>";
     }
 
-    @Override
-    public String codeBlock(LPhyParser parser) {
+
+    public String codeBlock(LPhyParser parser, String fontSize) {
 
         JTextPane dummyPane = new JTextPane();
 
-        DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane);
+        DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane, fontSize);
 
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parser);
         dataModelToHTML.parse(text);
 
         return dataModelToHTML.getHTML();
+    }
+    @Override
+    public String codeBlock(LPhyParser parser) {
+        return codeBlock(parser, FONT_SIZE);
     }
 
     public String cite(Citation citation) {
