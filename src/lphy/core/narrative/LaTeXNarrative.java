@@ -49,24 +49,42 @@ public class LaTeXNarrative implements Narrative {
     }
 
 
-    //static String[] specials = {"&", "%", "$", "#", "_", "{", "}"};
+    static String specials = "&%$#_{}";
 
+    /**
+     * @param text raw text with not intended latex code
+     * @return sanitized text
+     */
     public String text(String text) {
+        //if (text.startsWith("\"") && text.endsWith("\"")) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (char ch : text.toCharArray()) {
+            if (specials.indexOf(ch)>=0) {
+                builder.append('\\');
+                builder.append(ch);
+            } else if (ch == '\\') {
+                builder.append("\\textbackslash{}");
+            } else if (ch == '~') {
+                builder.append("\\textasciitilde{}");
+            } else if (ch == '^') {
+                builder.append("\\textasciicircum{}");
+            } else builder.append(ch);
+
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @param text lphy code fragment
+     * @return sanitized for this particular narrative type
+     */
+    public String code(String text) {
         if (text.startsWith("\"") && text.endsWith("\"")) {
-//            // sanitize specials
-//            for (String s : specials) {
-//                text = text.replace(s, "\\" + s);
-//            }
 
             // sanitize backslash
             text = text.replace("\\", "\\textbackslash{}");
-
-//            // sanitize backslash
-//            text = text.replace("~", "\\textasciitilde{}");
-//
-//            // sanitize backslash
-//            text = text.replace("^", "\\textasciicircum{}");
-
         }
         return text;
     }

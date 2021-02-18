@@ -25,7 +25,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
     private final String fileParamName = "file";
     private final String optionsParamName = "options";
 
-    public ReadNexus(@ParameterInfo(name = fileParamName, description = "the name of Nexus file.") Value<String> fileName,
+    public ReadNexus(@ParameterInfo(name = fileParamName, narrativeName = "file name", description = "the name of Nexus file.") Value<String> fileName,
                      @ParameterInfo(name = optionsParamName, description = "the map containing optional arguments and their values for reuse.",
                          optional=true) Value<Map<String, String>> options ) {
 
@@ -39,7 +39,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
 
     @GeneratorInfo(name="readNexus",
             verbClause = "is read from",
-            narrativeName = "nexus file",
+            narrativeName = "Nexus file",
             description = "A function that parses an alignment from a Nexus file.")
     public Value<Alignment> apply() {
 

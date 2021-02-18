@@ -1,5 +1,6 @@
 package lphy.parser.functions;
 
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.MapValue;
 
@@ -26,6 +27,35 @@ public class MapFunction extends DeterministicFunction<Map<String,Object>> {
         }
         return new MapValue(null, map, this);
     }
+
+    public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(NarrativeUtils.getValueClause(value, unique, narrative));
+
+        Map<String, Value> valueMap = getParams();
+
+        builder.append(" are ");
+        int count = 0;
+        for (Map.Entry<String, Value> entry : valueMap.entrySet()) {
+            if (count > 0) {
+                if (count == valueMap.size()-1) {
+                    builder.append(" and ");
+                } else builder.append(", ");
+            }
+            builder.append(entry.getKey());
+            builder.append("=");
+            if (entry.getValue().isAnonymous()) {
+                builder.append(narrative.text(entry.getValue().codeString()));
+            } else {
+                builder.append(entry.getValue().getId());
+            }
+            count += 1;
+        }
+        builder.append(".");
+        return builder.toString();
+    }
+
 
     public String codeString() {
         StringBuilder builder = new StringBuilder();

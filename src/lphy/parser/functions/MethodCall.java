@@ -224,6 +224,8 @@ public class MethodCall extends DeterministicFunction {
         return html;
     }
 
+
+
     public String getName() {
         return "." + methodName;
     }
@@ -331,17 +333,34 @@ public class MethodCall extends DeterministicFunction {
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         String narrativeName = getNarrativeName();
-        if (vectorizedArguments) {
-            NarrativeUtils.pluralize(narrativeName);
+        if (vectorizedArguments || vectorizedObject) {
+            narrativeName = NarrativeUtils.pluralize(narrativeName);
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append(NarrativeUtils.getValueClause(value, unique, narrative));
-        builder.append(vectorizedArguments ? " are " : " is ");
+        builder.append(vectorizedArguments || vectorizedObject ? " are " : " is ");
         builder.append(NarrativeUtils.getDefiniteArticle(narrativeName, true));
         builder.append(" ");
         builder.append(narrativeName);
-        builder.append(" of ");
+
+        if (arguments.length > 0) {
+            builder.append(" ");
+            int count = 0;
+            for (Value arg : arguments) {
+                if (count > 0) {
+                    if (count == arguments.length-1) {
+                        builder.append(" and ");
+                    } else {
+                        builder.append(", ");
+                    }
+                }
+                builder.append(narrative.text(arg.toString()));
+                count += 1;
+            }
+        }
+
+        builder.append(" of " + (vectorizedObject ? " each element in " : ""));
         builder.append(NarrativeUtils.getValueClause(this.value, vectorizedObject, true, vectorizedObject, narrative));
 
         builder.append(".");
@@ -376,5 +395,19 @@ public class MethodCall extends DeterministicFunction {
     public String getTypeName() {
         if (vectorizedArguments || vectorizedObject) return "vector of " + NarrativeUtils.pluralize(method.getReturnType().getSimpleName());
         return method.getReturnType().getSimpleName();
+    }
+
+    /**
+     * @param value
+     * @return the narrative name for the given value, being a parameter of this generator.
+     */
+    public String getNarrativeName(Value value) {
+        String paramName = getParamName(value);
+        if (paramName.startsWith(argParamName)) {
+            int argumentIndex = Integer.parseInt(paramName.substring(argParamName.length()));
+            return "argument " + argumentIndex;
+        }
+        if (paramName.equals(objectParamName)) return NarrativeUtils.getTypeName(value);
+        throw new RuntimeException("Expected either " + argParamName + "[0-9] or " + objectParamName + ", but got " + paramName);
     }
 }

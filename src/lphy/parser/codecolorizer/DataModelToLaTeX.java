@@ -78,7 +78,7 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
                 text = Symbols.getCanonical(text, "\\(\\", "\\)");
 
-                builder.append(narrative.text(text));
+                builder.append(narrative.code(text));
                 switch (style.getName()) {
                     case ColorizerStyles.function:
                     case ColorizerStyles.distribution:

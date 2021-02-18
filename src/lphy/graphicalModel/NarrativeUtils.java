@@ -29,6 +29,7 @@ public class NarrativeUtils {
     }
 
     static final Map<String, String> TYPE_MAP = Map.of(
+            "Alignment[]", "Alignments",
             "Double[]", "Vector",
             "Double[][]", "Matrix",
             "Integer[]", "Vector",
@@ -45,7 +46,10 @@ public class NarrativeUtils {
 
     public static String getTypeName(Value value) {
         if (value.getGenerator() != null ) return sanitizeTypeName(value.getGenerator().getTypeName());
+        return getSimpleTypeName(value);
+    }
 
+    public static String getSimpleTypeName(Value value) {
         String s = value.getType().getSimpleName();
 
         String[] r = s.split("(?<=.)(?=\\p{Lu})");
@@ -60,9 +64,7 @@ public class NarrativeUtils {
             }
             return b.toString();
         } else return sanitizeTypeName(s);
-
     }
-
 
     public static boolean hasSingleGeneratorOutput(Value value) {
         return value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator);
