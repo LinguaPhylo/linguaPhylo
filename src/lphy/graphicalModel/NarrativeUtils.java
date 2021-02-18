@@ -95,15 +95,28 @@ public class NarrativeUtils {
         if (plural) {
             name = pluralize(name);
         }
+        String narrativeId = null;
+        if (!value.isAnonymous()) {
+            narrativeId = narrative.getId(value, true);
+        }
+
+        boolean match = !value.isAnonymous() && name.equals(value.getId());
 
         if (unique || !name.endsWith("s") || plural) {
-            name = getArticle(value, unique, lowercase) + " " + name;
+            String article = getArticle(value, unique,lowercase);
+            if (match) {
+                narrativeId = article + " " + narrativeId;
+            } else name = article + " " + name;
         }
         String firstLetter = name.substring(0,1);
         name = (lowercase ? firstLetter.toLowerCase() : firstLetter.toUpperCase()) + name.substring(1);
 
-        builder.append(name);
-        builder.append((value.isAnonymous() ? "" : ", " + narrative.getId(value, true)));
+        if (match) {
+            builder.append(narrativeId);
+        } else {
+            builder.append(name);
+            builder.append((value.isAnonymous() ? "" : ", " + narrativeId));
+        }
         if (value.getGenerator() == null && !value.isRandom()) {
             builder.append(" of ");
             builder.append(ValueUtils.valueToString(value.value));
