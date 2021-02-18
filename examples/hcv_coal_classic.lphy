@@ -1,6 +1,6 @@
 data {
   D = readNexus(file="examples/hcv.nexus");
-  taxa = taxa(D);
+  taxa = D.taxa();
   L = nchar(D);
   w = ntaxa(taxa)-1;
 }
