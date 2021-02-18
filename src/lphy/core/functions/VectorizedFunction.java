@@ -85,9 +85,9 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         } else {
             for (int i = 0; i < componentFunctions.size(); i++) {
                 if (value instanceof CompoundVector) {
-                    componentFunctions.get(i).setParam(paramName, ((CompoundVector) value).getComponentValue(i));
+                    componentFunctions.get(i).setInput(paramName, ((CompoundVector) value).getComponentValue(i));
                 } else  {
-                    componentFunctions.get(i).setParam(paramName, new SliceValue(i,value));
+                    componentFunctions.get(i).setInput(paramName, new SliceValue(i,value));
                 }
             }
         }

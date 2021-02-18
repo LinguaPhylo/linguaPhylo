@@ -32,7 +32,7 @@ public class NarrativeUtils {
             "Double[]", "Vector",
             "Double[][]", "Matrix",
             "Integer[]", "Vector",
-            "Integer[][]", "Vector",
+            "Integer[][]", "Matrix",
             "TimeTree", "Time Tree"
     );
 
@@ -64,11 +64,16 @@ public class NarrativeUtils {
     }
 
 
+    public static boolean hasSingleGeneratorOutput(Value value) {
+        return value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator);
+    }
+
+
     public static String getName(Value value) {
 
         String name;
 
-        if (value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator) ) {
+        if (hasSingleGeneratorOutput(value)) {
             Generator generator = (Generator)value.getOutputs().get(0);
             name = generator.getNarrativeName(value);
         } else name = getTypeName(value);

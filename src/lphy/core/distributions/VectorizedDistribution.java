@@ -128,10 +128,12 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
                     if (componentValue.isAnonymous()) componentValue.setId(paramName + INDEX_SEPARATOR + i);
 
-                    componentDistributions.get(i).setParam(paramName, componentValue);
+                    componentDistributions.get(i).setInput(paramName, componentValue);
+
 
                 } else  {
-                    componentDistributions.get(i).setParam(paramName, new SliceValue(i,value));
+                    SliceValue sv =  new SliceValue(i,value);
+                    componentDistributions.get(i).setInput(paramName,sv);
                 }
             }
         }

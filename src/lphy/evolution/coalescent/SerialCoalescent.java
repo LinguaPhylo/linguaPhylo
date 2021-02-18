@@ -21,7 +21,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * TODO add Rodrigo and Felsenstein citation
  */
 @Citation(
-        value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
+        value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235–248 (1982)",
         title = "The Coalescent",
         year = 1982,
         authors = {"Kingman"},
