@@ -334,7 +334,7 @@ To construct an analysis of a data set with this model we add a data block:
 \begin{minted}{Stan}
 data {
   D = nexus(file="examples/primate.nex");
-  L = nchar(D);
+  L = D.nchar();
   taxa = D.taxa();
 }
 model {

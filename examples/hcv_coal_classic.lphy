@@ -1,7 +1,7 @@
 data {
   D = readNexus(file="examples/hcv.nexus");
   taxa = D.taxa();
-  L = nchar(D);
+  L = D.nchar();
   w = ntaxa(taxa)-1;
 }
 model {

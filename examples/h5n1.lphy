@@ -1,7 +1,7 @@
 data {
   options = {ageDirection="forward", ageRegex="_(\d+)$"};
   D = readNexus(file="examples/H5N1.nex", options=options);
-  L = nchar(D);
+  L = D.nchar();
   taxa = D.taxa();
   // extract traits from the 3rd element
   trait_D = extractTrait(taxa=taxa, sep="_", i=2);

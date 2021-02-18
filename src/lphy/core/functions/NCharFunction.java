@@ -7,7 +7,7 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerArrayValue;
 import lphy.graphicalModel.types.IntegerValue;
-
+@Deprecated
 public class NCharFunction extends DeterministicFunction<Integer> {
 
     private static final String sitesParamName = "sites";
@@ -16,6 +16,7 @@ public class NCharFunction extends DeterministicFunction<Integer> {
         setParam(sitesParamName, sites);
     }
 
+    @Deprecated
     @GeneratorInfo(name = "nchar", verbClause = "is", narrativeName = "number of characters", description = "The number of sites in the given alignment.")
     public Value<Integer> apply() {
         Value<NChar> sites = getParams().get(sitesParamName);

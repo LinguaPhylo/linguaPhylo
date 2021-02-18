@@ -2,7 +2,7 @@ data {
   options = {ageDirection="forward", ageRegex=".*\|.*\|(\d*\.\d+|\d+\.\d*)\|.*$"};
   D = readNexus(file="examples/h3n2.nexus", options=options);
   taxa = D.taxa();
-  L = nchar(D);
+  L = D.nchar();
   // take 4th element, where i>=0
   demes = split(str=D.taxaNames(), regex="\|", i=3);
   // 3 locations

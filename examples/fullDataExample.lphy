@@ -1,6 +1,6 @@
 data {
   D = readNexus(file="examples/primate.nex");
-  L = nchar(D);
+  L = D.nchar();
   taxa = D.taxa();
 }
 model {
