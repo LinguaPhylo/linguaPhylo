@@ -12,6 +12,7 @@ import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
 import lphy.parser.codecolorizer.DataModelToHTML;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -120,22 +121,12 @@ public class LinguaPhyloStudio {
             Arrays.sort(files, Comparator.comparing(File::getName));
             for (int i = 0; i < files.length; i++) {
                 String name = files[i].getName();
-                if (files[i].getName().endsWith(".lphy")) {
+                if (name.endsWith(".lphy")) {
                     final File exampleFile = files[i];
                     JMenuItem exampleItem = new JMenuItem(name.substring(0, name.length() - 5));
                     exampleMenu.add(exampleItem);
                     exampleItem.addActionListener(e -> {
-                        BufferedReader reader;
-                        try {
-                            reader = new BufferedReader(new FileReader(exampleFile));
-                            parser.clear();
-                            panel.clear();
-                            panel.source(reader);
-                            setFileName(name);
-                        } catch (IOException e1) {
-                            setFileName(null);
-                            e1.printStackTrace();
-                        }
+                        readFile(exampleFile);
                     });
                 }
             }
@@ -180,6 +171,21 @@ public class LinguaPhyloStudio {
 
         saveModelToHTML.addActionListener(e -> exportModelToHTML());
         saveModelToRTF.addActionListener(e -> exportToRtf());
+    }
+
+    public void readFile(File exampleFile) {
+        String name = exampleFile.getName();
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(exampleFile));
+            parser.clear();
+            panel.clear();
+            panel.source(reader);
+            setFileName(name);
+        } catch (IOException e1) {
+            setFileName(null);
+            e1.printStackTrace();
+        }
     }
 
     private void buildViewMenu(JMenuBar menuBar) {
@@ -388,5 +394,21 @@ public class LinguaPhyloStudio {
     public static void main(String[] args) {
 
         LinguaPhyloStudio app = new LinguaPhyloStudio();
+
+        if (args.length > 0) {
+            // always the last arg
+            String lphyFileName = args[args.length-1];
+            // examples/simpleYule.lphy
+            if (!lphyFileName.endsWith(".lphy"))
+                LoggerUtils.log.severe("Invalid LPhy file name " + lphyFileName + " !");
+            File file = new File(lphyFileName);
+
+            if (file.exists()) {
+                app.readFile(file);
+            } else
+                LoggerUtils.log.severe("Cannot find LPhy file " + lphyFileName + " !");
+//                throw new FileNotFoundException("Cannot find LPhy file !");
+        }
+
     }
 }
