@@ -335,7 +335,7 @@ To construct an analysis of a data set with this model we add a data block:
 data {
   D = nexus(file="examples/primate.nex");
   L = nchar(D);
-  taxa = taxa(D);
+  taxa = D.taxa();
 }
 model {
   lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);

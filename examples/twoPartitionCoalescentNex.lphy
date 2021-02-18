@@ -1,11 +1,12 @@
 data {
   D = readNexus(file="examples/primate.nex");
+  taxa = D.taxa();
   coding = D.charset("coding");
   noncoding = D.charset("noncoding");
 }
 model {
   Θ ~ LogNormal(meanlog=3, sdlog=1);
-  ψ ~ Coalescent(theta=Θ, taxa=taxa(D));
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
   coding ~ PhyloCTMC(tree=ψ, L=nchar(coding), Q=f81(freq=π));
   noncoding ~ PhyloCTMC(tree=ψ, L=nchar(noncoding), Q=f81(freq=π));
