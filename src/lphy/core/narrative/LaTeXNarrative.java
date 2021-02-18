@@ -22,7 +22,14 @@ public class LaTeXNarrative implements Narrative {
     boolean mathModeInline = false;
 
     public String beginDocument() {
-        return "\\documentclass{article}\n\n" + "\\begin{document}\n";
+        StringBuilder builder = new StringBuilder();
+        builder.append("\\documentclass{article}\n\n");
+        builder.append("\\usepackage{color}\n");
+        builder.append("\\usepackage{xcolor}\n");
+        builder.append("\\usepackage{alltt}\n\n");
+        builder.append("\\begin{document}\n");
+
+        return  builder.toString();
     }
 
     public String endDocument() {
@@ -37,7 +44,26 @@ public class LaTeXNarrative implements Narrative {
         return "\\section{" + header + "}\n\n";
     }
 
+
+    //static String[] specials = {"&", "%", "$", "#", "_", "{", "}"};
+
     public String text(String text) {
+        if (text.startsWith("\"") && text.endsWith("\"")) {
+//            // sanitize specials
+//            for (String s : specials) {
+//                text = text.replace(s, "\\" + s);
+//            }
+
+            // sanitize backslash
+            text = text.replace("\\", "\\textbackslash{}");
+
+//            // sanitize backslash
+//            text = text.replace("~", "\\textasciitilde{}");
+//
+//            // sanitize backslash
+//            text = text.replace("^", "\\textasciicircum{}");
+
+        }
         return text;
     }
 
@@ -165,7 +191,10 @@ public class LaTeXNarrative implements Narrative {
                 builder.append("\\bibitem{");
                 builder.append(keys.get(i));
                 builder.append("}\n");
-                builder.append(references.get(i).value());
+
+                String ref = LaTeXUtils.sanitizeText(references.get(i).value());
+
+                builder.append(ref);
                 builder.append("\n\n");
             }
             builder.append("\\end{thebibliography}\n");

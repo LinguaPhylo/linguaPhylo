@@ -2,6 +2,7 @@ package lphy.parser.codecolorizer;
 
 import lphy.app.Symbols;
 import lphy.core.LPhyParser;
+import lphy.core.narrative.LaTeXNarrative;
 import lphy.parser.DataModelLexer;
 import lphy.parser.DataModelParser;
 import lphy.parser.SimulatorParsingException;
@@ -25,6 +26,8 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
     static String distributionColor = "blue";
 
     List<String> elements = new ArrayList<>();
+
+    LaTeXNarrative narrative = new LaTeXNarrative();
 
     public DataModelToLaTeX(LPhyParser parser, JTextPane pane) {
         super(parser, pane);
@@ -70,12 +73,12 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
                         builder.append("}{");
                 }
 
-                if (text.endsWith("{\n")) text = text.substring(0, text.length()-2) + "\\{\n";
-                if (text.endsWith("}\n")) text = text.substring(0, text.length()-2) + "\\}\n";
+                text = text.replace("{", "\\{");
+                text = text.replace("}", "\\}");
 
                 text = Symbols.getCanonical(text, "\\(\\", "\\)");
 
-                builder.append(text);
+                builder.append(narrative.text(text));
                 switch (style.getName()) {
                     case ColorizerStyles.function:
                     case ColorizerStyles.distribution:
