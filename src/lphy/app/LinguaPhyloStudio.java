@@ -4,12 +4,14 @@ import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.LayeredGNode;
 import lphy.core.LPhyParser;
 import lphy.core.commands.Remove;
+import lphy.core.narrative.HTMLNarrative;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
+import lphy.parser.codecolorizer.DataModelToHTML;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -309,67 +311,21 @@ public class LinguaPhyloStudio {
 
             if (option == JFileChooser.APPROVE_OPTION) {
 
-                StyledDocument doc = (StyledDocument) pane.getDocument();
+                HTMLNarrative htmlNarrative = new HTMLNarrative();
+                String html = htmlNarrative.codeBlock(parser);
 
-                // replace whitespace to "&nbsp;" after "\n"
-                final String sp = "&nbsp;&nbsp;";
-                boolean newLine = false;
-                // doc.getParagraphElement not working with AttributeSet properly
-                for(int i=0; i < doc.getLength(); i++) {
-                    String s = null;
-                    try {
-                        s = doc.getText(i, 1);
-                    } catch (BadLocationException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (newLine && Objects.requireNonNull(s).equals(" ")) {
-                        Element element = doc.getCharacterElement(i);
-                        AttributeSet attribute = element.getAttributes();
-                        try {
-                            doc.remove(i, 1);
-                            doc.insertString(i, sp, attribute);
-                        } catch (BadLocationException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    newLine = Objects.requireNonNull(s).equals("\n");
-                }
-
-                HTMLEditorKit kit = new HTMLEditorKit();
-
-                // replace "Monospaced" by CSS monospace font
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                if (html.length() > 0) {
                 try {
-                    kit.write(baos, doc, doc.getStartPosition().getOffset(), doc.getLength());
-                    baos.close();
+                    FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
+                    writer.write(html);
+                    writer.close();
 
-                    String html = baos.toString();
-                    { // for some browsers to reduce the font size of monospace fonts
-                        html = html.replaceAll(Font.MONOSPACED, "monospace,monospace");
-                        // <p> expends line spaces, use <div>
-                        html = html.replaceAll("<p", "<div");
-                        html = html.replaceAll("</p>", "</div>");
-                    }
+                } catch (FileNotFoundException e) {
 
-                    if (html.length() > 0) {
-                        try {
-                            FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
-                            writer.write(html);
-                            writer.close();
+                } catch (IOException e) {
 
-                        } catch (FileNotFoundException e) {
-
-                        } catch (IOException e) {
-
-                        }
-                    } else {
-                        throw new IOException("Fail to create HTML !");
-                    }
-
-                } catch (IOException | BadLocationException e) {
-                    e.printStackTrace();
                 }
+//                }
             }
         }
     }
