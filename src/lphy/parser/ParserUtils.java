@@ -88,7 +88,7 @@ public class ParserUtils {
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
                 GeneralTimeReversible.class,
-                Length.class,
+                Length.class, Unique.class,
                 LewisMK.class,
                 LocalBranchRates.class,
                 CreateTaxa.class,

@@ -6,7 +6,7 @@ data {
   // take 4th element, where i>=0
   demes = split(str=D.taxaNames(), regex="\|", i=3);
   // 3 locations
-  S = 3;
+  S = length(unique(demes));
   dim = S*(S-1);
 }
 model {
