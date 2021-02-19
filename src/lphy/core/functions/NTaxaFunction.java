@@ -7,6 +7,7 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
 
+@Deprecated
 public class NTaxaFunction extends DeterministicFunction<Integer> {
 
     private static final String taxaParamName = "taxa";
@@ -15,6 +16,7 @@ public class NTaxaFunction extends DeterministicFunction<Integer> {
         setParam(taxaParamName, x);
     }
 
+    @Deprecated
     @GeneratorInfo(name="ntaxa",description = "The number of taxa in the given taxa-dimensioned value (e.g. alignment, tree et cetera).")
     public Value<Integer> apply() {
         Value<Taxa> v = (Value<Taxa>)getParams().get(taxaParamName);

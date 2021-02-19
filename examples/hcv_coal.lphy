@@ -3,7 +3,7 @@ data {
   taxa = D.taxa();
   L = D.nchar();
   numGroups = 4;
-  w = ntaxa(taxa)-1;
+  w = taxa.length()-1;
 }
 model {
   // GTR

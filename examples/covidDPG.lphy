@@ -7,7 +7,7 @@ data {
   // Bayesian Skyline
   numGroups = 20;
   taxa = D.taxa();
-  w = ntaxa(taxa)-1;
+  w = taxa.length()-1;
   // extract traits from the 3rd element
   trait_D = extractTrait(taxa=taxa, sep="|", i=2);
   S = trait_D.stateCount();
@@ -35,7 +35,6 @@ model {
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
   //trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
-
   numTraits ~ Poisson(lambda=2, min=S, max=dim);
   trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
 

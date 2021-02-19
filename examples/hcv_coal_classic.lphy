@@ -2,7 +2,7 @@ data {
   D = readNexus(file="examples/hcv.nexus");
   taxa = D.taxa();
   L = D.nchar();
-  w = ntaxa(taxa)-1;
+  w = taxa.length()-1;
 }
 model {
   π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]);
