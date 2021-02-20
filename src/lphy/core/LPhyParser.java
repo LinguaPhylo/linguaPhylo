@@ -333,7 +333,7 @@ public interface LPhyParser {
             return false;
         }
 
-        public static String getNarrative(LPhyParser parser, Narrative narrative) {
+        public static String getNarrative(LPhyParser parser, Narrative narrative, boolean data, boolean model) {
 
             Map<String, Integer> nameCounts = new HashMap<>();
 
@@ -370,7 +370,7 @@ public interface LPhyParser {
                 }, false);
             }
 
-            if (dataVisited.size() > 0) {
+            if (dataVisited.size() > 0 && data) {
                 builder.append(narrative.section("Data"));
                 for (Value dataValue : dataVisited) {
 
@@ -387,7 +387,7 @@ public interface LPhyParser {
                 }
                 builder.append("\n\n");
             }
-            if (modelVisited.size() > 0) {
+            if (modelVisited.size() > 0 && model) {
                 builder.append(narrative.section("Model"));
 
                 for (Value modelValue : modelVisited) {

@@ -167,6 +167,11 @@ public class LaTeXNarrative implements Narrative {
         return dataModelToLaTeX.getLatex();
     }
 
+    @Override
+    public String graphicalModelBlock(LPhyParser parser) {
+        return "";
+    }
+
 
     private String getKey(Citation citation) {
         return keys.get(references.indexOf(citation));

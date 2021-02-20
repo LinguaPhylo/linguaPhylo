@@ -82,6 +82,11 @@ public class HTMLNarrative implements Narrative {
         return codeBlock(parser, FONT_SIZE);
     }
 
+    @Override
+    public String graphicalModelBlock(LPhyParser parser) {
+        return "";
+    }
+
     public String cite(Citation citation) {
 
         if (citation != null && !references.contains(citation)) references.add(citation);

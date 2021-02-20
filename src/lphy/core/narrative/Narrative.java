@@ -9,10 +9,17 @@ import static lphy.graphicalModel.NarrativeUtils.*;
 
 public interface Narrative {
 
+    /**
+     * This initiates the document, including clearing references and any other initialisation of internal state that is necessary.
+     * @return the initial document lines.
+     */
     String beginDocument();
 
+    /**
+     * This ends document constructions, including any other finalization of internal state that is necessary.
+     * @return the closing lines of the document.
+     */
     String endDocument();
-
 
     /**
      * @param header the heading of the section
@@ -39,4 +46,6 @@ public interface Narrative {
     String endMathMode();
 
     String codeBlock(LPhyParser parser);
+
+    String graphicalModelBlock(LPhyParser parser);
 }
