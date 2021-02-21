@@ -1,7 +1,11 @@
 package lphy.app;
 
+import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.core.narrative.Narrative;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.Value;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -13,9 +17,10 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
@@ -26,6 +31,7 @@ public class NarrativePanel extends JComponent {
     JScrollPane scrollPane;
     Narrative narrative;
     JPanel narrativeInnerPanel;
+    GraphicalModelComponent graphicalModelComponent;
 
     JList<String> include = createJListWithDragAndDrop();
 
@@ -52,14 +58,15 @@ public class NarrativePanel extends JComponent {
 
 
 
-    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative) {
-        this(parser, narrative, null);
+    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, GraphicalModelComponent component) {
+        this(parser, narrative,  component,null);
     }
 
 
-    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, EditorKit editorKit) {
+    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, GraphicalModelComponent component, EditorKit editorKit) {
         this.parser = parser;
         this.narrative = narrative;
+        this.graphicalModelComponent = component;
 
         setLayout(new BorderLayout());
 
@@ -118,6 +125,29 @@ public class NarrativePanel extends JComponent {
         add(scrollPane, BorderLayout.CENTER);
 
         parser.addGraphicalModelChangeListener(this::setText);
+
+        component.addGraphicalModelListener(new GraphicalModelListener() {
+            @Override
+            public void valueSelected(Value value) {
+
+            }
+
+            @Override
+            public void generativeDistributionSelected(GenerativeDistribution g) {
+
+            }
+
+            @Override
+            public void functionSelected(DeterministicFunction f) {
+
+            }
+
+            @Override
+            public void layout() {
+                setText();
+            }
+        });
+
     }
 
 
@@ -334,7 +364,7 @@ public class NarrativePanel extends JComponent {
                     break;
                 case GraphicalModel:
                     text += narrative.section("Graphical Model");
-                    text += narrative.graphicalModelBlock(parser);
+                    text += narrative.graphicalModelBlock(graphicalModelComponent);
                     break;
             }
         }

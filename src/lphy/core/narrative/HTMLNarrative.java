@@ -1,5 +1,6 @@
 package lphy.core.narrative;
 
+import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
@@ -83,7 +84,7 @@ public class HTMLNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(LPhyParser parser) {
+    public String graphicalModelBlock(GraphicalModelComponent component) {
         return "";
     }
 

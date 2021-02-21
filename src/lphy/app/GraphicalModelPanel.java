@@ -110,6 +110,11 @@ public class GraphicalModelPanel extends JPanel {
                 showParameterized(f);
             }
 
+            @Override
+            public void layout() {
+
+            }
+
         };
 
         component.addGraphicalModelListener(listener);
@@ -135,7 +140,7 @@ public class GraphicalModelPanel extends JPanel {
 //            }
 //        });
 
-        rightPane = new ViewerPane(parser);
+        rightPane = new ViewerPane(parser, component);
         //rightPane.addTab("New Random Variable", new NewRandomVariablePanel(modelInterpreter, ParserUtils.getGenerativeDistributions()));
 
         leftPane = new JTabbedPane();

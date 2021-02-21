@@ -1,6 +1,7 @@
 package lphy.core.narrative;
 
 import lphy.app.Symbols;
+import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
@@ -28,7 +29,12 @@ public class LaTeXNarrative implements Narrative {
         builder.append("\\documentclass{article}\n\n");
         builder.append("\\usepackage{color}\n");
         builder.append("\\usepackage{xcolor}\n");
-        builder.append("\\usepackage{alltt}\n\n");
+        builder.append("\\usepackage{alltt}\n");
+        builder.append("\\usepackage{tikz}\n");
+        builder.append("\\usepackage{bm}\n\n");
+
+        builder.append("\\usetikzlibrary{bayesnet}\n\n");
+
         builder.append("\\begin{document}\n");
 
         return  builder.toString();
@@ -168,8 +174,9 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(LPhyParser parser) {
-        return "";
+    public String graphicalModelBlock(GraphicalModelComponent component) {
+
+        return component.toTikz(0.7, 0.7, true);
     }
 
 

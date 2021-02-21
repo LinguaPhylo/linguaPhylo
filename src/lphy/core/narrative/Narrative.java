@@ -1,5 +1,6 @@
 package lphy.core.narrative;
 
+import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
@@ -47,5 +48,5 @@ public interface Narrative {
 
     String codeBlock(LPhyParser parser);
 
-    String graphicalModelBlock(LPhyParser parser);
+    String graphicalModelBlock(GraphicalModelComponent component);
 }

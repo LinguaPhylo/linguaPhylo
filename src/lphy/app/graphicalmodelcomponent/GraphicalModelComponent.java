@@ -129,6 +129,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             new BrandesKopfHorizontalCoordinateAssignment(properLayeredGraph);
             positioning.position(properLayeredGraph, getSize(), insets);
             sizeChanged = false;
+            for (GraphicalModelListener listener : listeners) {
+                listener.layout();
+            }
         }
 
         Graphics2D g2d = (Graphics2D) g;
@@ -147,10 +150,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz() {
 
-        return toTikz(1.0, 1.0);
+        return toTikz(1.0, 1.0, false);
     }
 
-    private String toTikz(double xScale, double yScale) {
+    public String toTikz(boolean inline) {
+
+        return toTikz(1.0, 1.0, inline);
+    }
+
+
+    public String toTikz(double xScale, double yScale, boolean inline) {
 
         StringBuilder nodes = new StringBuilder();
         StringBuilder factors = new StringBuilder();
@@ -178,24 +187,33 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             }
         }
 
-        String preamble = "\\documentclass[border=3mm]{standalone} % For LaTeX2e\n" +
+        String beginDocument = "\\documentclass[border=3mm]{standalone} % For LaTeX2e\n" +
                 "\\usepackage{tikz}\n" +
                 "\\usepackage{bm}\n" +
                 "\\usetikzlibrary{bayesnet}\n" +
                 "\n" +
-                "\\begin{document}\n" +
-                "\n" +
+                "\\begin{document}\n\n";
+
+        String preamble =
                 "\\begin{tikzpicture}[\n" +
                 "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
                 "vstyle/.style={draw=green,fill=green!20},\n" +
-                "cstyle/.style={font=\\small}\n" +
+                "cstyle/.style={font=\\small},\n" +
                 "detstyle/.style={draw=red!50,fill=red!20}\n" +
                 "]\n";
 
-        String postamble = "\\end{tikzpicture}\n" +
-                " \\end{document}";
+        String postamble = "\\end{tikzpicture}\n";
 
-        return preamble + nodes.toString() + factors.toString() + postamble;
+        String endDocument = " \\end{document}";
+
+        StringBuilder builder = new StringBuilder();
+        if (!inline) builder.append(beginDocument);
+        builder.append(preamble);
+        builder.append(nodes.toString());
+        builder.append(factors.toString());
+        builder.append(postamble);
+        if (!inline) builder.append(endDocument);
+        return builder.toString();
     }
 
     private String valueToTikz(LayeredGNode gNode, Value value, double xScale, double yScale) {

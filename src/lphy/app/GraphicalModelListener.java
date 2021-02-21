@@ -11,4 +11,9 @@ public interface GraphicalModelListener {
     void generativeDistributionSelected(GenerativeDistribution g);
 
     void functionSelected(DeterministicFunction f);
+
+    /**
+     * This is called each time the model is layed out for painting.
+     */
+    void layout();
 }
