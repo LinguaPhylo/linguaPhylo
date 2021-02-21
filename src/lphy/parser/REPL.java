@@ -17,6 +17,8 @@ public class REPL implements LPhyParser {
 	Set<Value> modelValues = new HashSet<>();
 	Set<Value> dataValues = new HashSet<>();
 
+	String name = null;
+
 	SortedMap<String, Command> commands = new TreeMap<>();
 
 	private List<String> lines = new ArrayList<>();
@@ -34,6 +36,14 @@ public class REPL implements LPhyParser {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+    public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

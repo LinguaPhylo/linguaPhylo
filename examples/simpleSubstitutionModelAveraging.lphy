@@ -1,0 +1,10 @@
+model{
+  shape ~ Exp(mean=1.0);
+  rates ~ Dirichlet(conc=[1,1,1,1,1,1]);
+  pi ~ Dirichlet(conc=[1,1,1,1]);
+  modelString ~ RandomSubstitutionModel();
+  useSiteRates ~ Bernoulli(p=0.5);
+  siteRates ~ G(shape=shape, reps=1000);
+  Q = bModel(rates=rates, model=modelString, freq=pi);
+  D ~ PhyloCTMC(tree=tree, Q=Q, siteRates=siteRates, useSiteRates=useSiteRates);
+}

@@ -22,9 +22,17 @@ public class LaTeXNarrative implements Narrative {
     boolean mathMode = false;
     boolean mathModeInline = false;
 
-    public String beginDocument() {
+    boolean boxStyle = true;
+    boolean twoColumn = true;
+    boolean smallCodeText = true;
+    static int sectionsPerMiniPage = 3;
+
+    int sectionCount = 0;
+
+    public String beginDocument(String title) {
         keys.clear();
         references.clear();
+        sectionCount = 0;
         StringBuilder builder = new StringBuilder();
         builder.append("\\documentclass{article}\n\n");
         builder.append("\\usepackage{color}\n");
@@ -32,10 +40,25 @@ public class LaTeXNarrative implements Narrative {
         builder.append("\\usepackage{alltt}\n");
         builder.append("\\usepackage{tikz}\n");
         builder.append("\\usepackage{bm}\n\n");
+        if (boxStyle) {
+            builder.append("\\usepackage[breakable]{tcolorbox} % for text box\n");
+            builder.append("\\usepackage{graphicx} % for minipage\n");
+            builder.append("\\usepackage[margin=2cm]{geometry} % margins\n");
+        }
 
         builder.append("\\usetikzlibrary{bayesnet}\n\n");
 
         builder.append("\\begin{document}\n");
+
+        if (boxStyle) {
+            builder.append("\\begin{tcolorbox}[breakable, width=\\textwidth, colback=gray!10, boxrule=0pt,\n" +
+                    "  title=" + title + ", fonttitle=\\bfseries]\n\n");
+        }
+
+        if (twoColumn) {
+            builder.append("\\begin{minipage}[t]{0.50\\textwidth}\n");
+        }
+
 
         return  builder.toString();
     }
@@ -43,7 +66,20 @@ public class LaTeXNarrative implements Narrative {
     public String endDocument() {
         keys.clear();
         references.clear();
-        return "\\end{document}\n";
+
+        StringBuilder builder = new StringBuilder();
+
+        if (twoColumn) {
+            builder.append("\\end{minipage}\n");
+        }
+
+        if (boxStyle){
+            builder.append("\\end{tcolorbox}\n\n");
+        }
+
+        builder.append("\\end{document}\n");
+
+        return builder.toString();
     }
 
     /**
@@ -51,7 +87,20 @@ public class LaTeXNarrative implements Narrative {
      * @return a string representing the start of a new section
      */
     public String section(String header) {
-        return "\\section{" + header + "}\n\n";
+
+        if (twoColumn) {
+            StringBuilder builder = new StringBuilder();
+            if (sectionCount >= sectionsPerMiniPage) {
+                sectionCount = 0;
+                builder.append("\\end{minipage}\n");
+                builder.append("\\begin{minipage}[t]{0.50\\textwidth}\n");
+            }
+            builder.append("\\section*{" + header + "}\n\n");
+            sectionCount += 1;
+            return builder.toString();
+        } else {
+            return "\\section*{" + header + "}\n\n";
+        }
     }
 
 
@@ -160,8 +209,7 @@ public class LaTeXNarrative implements Narrative {
         return "$$";
     }
 
-    @Override
-    public String codeBlock(LPhyParser parser) {
+    public String codeBlock(LPhyParser parser, int fontSize) {
 
         JTextPane dummyPane = new JTextPane();
 
@@ -170,13 +218,25 @@ public class LaTeXNarrative implements Narrative {
         String text = codeBuilder.getCode(parser);
         dataModelToLaTeX.parse(text);
 
-        return dataModelToLaTeX.getLatex();
+        StringBuilder builder = new StringBuilder();
+        if (fontSize != 12) {
+            builder.append(LaTeXUtils.getFontSize(fontSize));
+            builder.append("\n");
+        }
+        builder.append(dataModelToLaTeX.getLatex());
+
+        return builder.toString();
     }
 
     @Override
     public String graphicalModelBlock(GraphicalModelComponent component) {
 
-        return component.toTikz(0.7, 0.7, true);
+        StringBuilder builder = new StringBuilder();
+        builder.append("\\begin{center}\n");
+        builder.append(component.toTikz(0.6, 0.6, true));
+        builder.append("\\end{center}\n");
+
+        return builder.toString();
     }
 
 

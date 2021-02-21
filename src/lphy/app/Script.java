@@ -56,6 +56,7 @@ public class Script {
             line = reader.readLine();
         }
         reader.close();
+
         return new Script(dataLines.toString(), modelLines.toString());
     }
 }

@@ -14,7 +14,7 @@ public interface Narrative {
      * This initiates the document, including clearing references and any other initialisation of internal state that is necessary.
      * @return the initial document lines.
      */
-    String beginDocument();
+    String beginDocument(String title);
 
     /**
      * This ends document constructions, including any other finalization of internal state that is necessary.
@@ -46,7 +46,7 @@ public interface Narrative {
 
     String endMathMode();
 
-    String codeBlock(LPhyParser parser);
+    String codeBlock(LPhyParser parser, int fontSize);
 
     String graphicalModelBlock(GraphicalModelComponent component);
 }

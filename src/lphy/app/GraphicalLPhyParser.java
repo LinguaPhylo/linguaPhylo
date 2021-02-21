@@ -14,6 +14,7 @@ public class GraphicalLPhyParser implements LPhyParser {
 
     LPhyParser wrappedParser;
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
+    String name = null;
 
     public GraphicalLPhyParser(LPhyParser parser) {
         wrappedParser = parser;
@@ -58,6 +59,14 @@ public class GraphicalLPhyParser implements LPhyParser {
     public void parse(String code, Context context) {
         wrappedParser.parse(code, context);
         notifyListeners();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

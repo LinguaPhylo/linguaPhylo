@@ -24,6 +24,9 @@ public interface LPhyParser {
         model
     }
 
+    // the name of the code being parsed.
+    String getName();
+
     /**
      * @return the data dictionary of parsed values with id's, keyed by id
      */

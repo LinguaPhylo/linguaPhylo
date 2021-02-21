@@ -328,7 +328,7 @@ public class NarrativePanel extends JComponent {
             e.printStackTrace();
         }
 
-        String text = narrative.beginDocument();
+        String text = narrative.beginDocument(parser.getName());
 
         for (int i = 0; i < include.getModel().getSize(); i++) {
             String item = include.getModel().getElementAt(i);
@@ -354,7 +354,7 @@ public class NarrativePanel extends JComponent {
                     break;
                 case Code:
                     text += narrative.section("Code");
-                    text += narrative.codeBlock(parser);
+                    text += narrative.codeBlock(parser, 11);
                     break;
                 case Posterior:
                     text += LPhyParser.Utils.getInferenceStatement(parser, narrative);

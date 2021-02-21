@@ -22,9 +22,16 @@ public class HTMLNarrative implements Narrative {
     private final String FONT_SIZE = "12pt";
 
     @Override
-    public String beginDocument() {
+    public String beginDocument(String title) {
         references.clear();
-        return "<html>\n\n<body>";
+        StringBuilder builder = new StringBuilder("<html>\n\n<body>");
+
+        if (title != "" && title != null) {
+            builder.append("<h1>");
+            builder.append(title);
+            builder.append("</h1>");
+        }
+        return builder.toString();
     }
 
     @Override
@@ -66,21 +73,17 @@ public class HTMLNarrative implements Narrative {
     }
 
 
-    public String codeBlock(LPhyParser parser, String fontSize) {
+    public String codeBlock(LPhyParser parser, int fontSize) {
 
         JTextPane dummyPane = new JTextPane();
 
-        DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane, fontSize);
+        DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane, fontSize + "pt");
 
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parser);
         dataModelToHTML.parse(text);
 
         return dataModelToHTML.getHTML();
-    }
-    @Override
-    public String codeBlock(LPhyParser parser) {
-        return codeBlock(parser, FONT_SIZE);
     }
 
     @Override

@@ -181,6 +181,7 @@ public class LinguaPhyloStudio {
             parser.clear();
             panel.clear();
             panel.source(reader);
+            parser.setName(name);
             setFileName(name);
         } catch (IOException e1) {
             setFileName(null);
@@ -318,7 +319,7 @@ public class LinguaPhyloStudio {
             if (option == JFileChooser.APPROVE_OPTION) {
 
                 HTMLNarrative htmlNarrative = new HTMLNarrative();
-                String html = htmlNarrative.codeBlock(parser, "11pt");
+                String html = htmlNarrative.codeBlock(parser, 11);
 
 //                if (html.length() > 0) {
                 try {
