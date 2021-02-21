@@ -22,8 +22,8 @@ public class LaTeXNarrative implements Narrative {
     boolean mathMode = false;
     boolean mathModeInline = false;
 
-    boolean boxStyle = true;
-    boolean twoColumn = true;
+    boolean boxStyle = false;
+    boolean twoColumn = false;
     boolean smallCodeText = true;
     static int sectionsPerMiniPage = 3;
 
