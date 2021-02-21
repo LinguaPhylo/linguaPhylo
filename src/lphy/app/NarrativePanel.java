@@ -31,6 +31,26 @@ public class NarrativePanel extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(NarrativePanel.class);
 
+    enum Section {
+        Code("Code"),
+        Data("Data"),
+        Model("Model"),
+        Posterior("Posterior"),
+        GraphicalModel("Graphical Model"),
+        References ("References");
+
+        public String name;
+
+        Section(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+
 
     public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative) {
         this(parser, narrative, null);
@@ -228,16 +248,13 @@ public class NarrativePanel extends JComponent {
 
     private static ListModel<String> createExcludeListModel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String str : Arrays.asList("Graphical Model")) {
-            listModel.addElement(str);
-        }
         return listModel;
     }
 
     private static DefaultListModel<String> createIncludeListModel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String str : Arrays.asList("Code", "Data", "Model", "Posterior", "References")) {
-            listModel.addElement(str);
+        for (Section section :Section.values()) {
+            listModel.addElement(section.name);
         }
         return listModel;
     }
@@ -286,24 +303,36 @@ public class NarrativePanel extends JComponent {
         for (int i = 0; i < include.getModel().getSize(); i++) {
             String item = include.getModel().getElementAt(i);
 
-            switch (item) {
-                case "Data":
+            Section section = Section.Model;
+            try {
+                section  = Section.valueOf(item);
+            } catch (IllegalArgumentException e) {
+                for (Section s : Section.values()) {
+                    if (s.name.equals(item)) {
+                        section = s;
+                        break;
+                    }
+                }
+            }
+
+            switch (section) {
+                case Data:
                     text += LPhyParser.Utils.getNarrative(parser, narrative, true, false);
                     break;
-                case "Model":
+                case Model:
                     text += LPhyParser.Utils.getNarrative(parser, narrative, false, true);
                     break;
-                case "Code":
+                case Code:
                     text += narrative.section("Code");
                     text += narrative.codeBlock(parser);
                     break;
-                case "Posterior":
+                case Posterior:
                     text += LPhyParser.Utils.getInferenceStatement(parser, narrative);
                     break;
-                case "References":
+                case References:
                     text += narrative.referenceSection();
                     break;
-                case "Graphical Model":
+                case GraphicalModel:
                     text += narrative.section("Graphical Model");
                     text += narrative.graphicalModelBlock(parser);
                     break;
