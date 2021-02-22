@@ -286,7 +286,7 @@ public class LaTeXNarrative implements Narrative {
 
     @Override
     public String subscript(String index) {
-        return "_{" + index + "}";
+        return "_" + index;
     }
 
 

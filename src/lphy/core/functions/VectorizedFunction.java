@@ -31,7 +31,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
             int size = getVectorSize(argInfo, vectorArgs);
             componentFunctions = new ArrayList<>(size);
             for (int component = 0; component < size; component++) {
-                componentFunctions.add((DeterministicFunction<T>)getComponentGenerator(baseDistributionConstructor, argInfo, vectorArgs, component));
+                componentFunctions.add((DeterministicFunction<T>) getComponentGenerator(baseDistributionConstructor, argInfo, vectorArgs, component));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -48,6 +48,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
     /**
      * This method is not thread safe!
+     *
      * @param component
      * @return
      */
@@ -86,15 +87,16 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
             for (int i = 0; i < componentFunctions.size(); i++) {
                 if (value instanceof CompoundVector) {
                     componentFunctions.get(i).setInput(paramName, ((CompoundVector) value).getComponentValue(i));
-                } else  {
-                    componentFunctions.get(i).setInput(paramName, new SliceValue(i,value));
+                } else {
+                    componentFunctions.get(i).setInput(paramName, new SliceValue(i, value));
                 }
             }
         }
     }
 
     public String getTypeName() {
-        if (componentFunctions.size() > 1) return "vector of " + NarrativeUtils.pluralize(componentFunctions.get(0).getTypeName());
+        if (componentFunctions.size() > 1)
+            return "vector of " + NarrativeUtils.pluralize(componentFunctions.get(0).getTypeName());
         return Generator.getReturnType(this.getClass()).getSimpleName();
     }
 
@@ -105,7 +107,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     }
 
     public String codeString() {
-       return Func.codeString(componentFunctions.get(0), getParams());
+        return Func.codeString(componentFunctions.get(0), getParams());
     }
 
     public static void main(String[] args) {
@@ -137,19 +139,19 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         if (value instanceof CompoundVectorValue) {
-            CompoundVectorValue vrv = (CompoundVectorValue)value;
+            CompoundVectorValue vrv = (CompoundVectorValue) value;
 
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < componentFunctions.size(); i++) {
 
-                Generator generator = componentFunctions.get(i);
-                Value v = vrv.getComponentValue(i);
+            Generator generator = componentFunctions.get(0);
+            Value v = vrv.getComponentValue(0);
 
-                if (i > 0) builder.append(" ");
-                builder.append(generator.getInferenceNarrative(v, unique, narrative));
-            }
+            String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
+            inferenceNarrative = inferenceNarrative.replace(narrative.subscript("0"), narrative.subscript("i"));
+
+            builder.append(inferenceNarrative);
             return builder.toString();
         }
-        throw new RuntimeException("Expected VectorizedRandomVariable!");
+        throw new RuntimeException("Expected CompoundVectorValue!");
     }
 }

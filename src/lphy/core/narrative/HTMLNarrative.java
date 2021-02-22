@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import static lphy.graphicalModel.NarrativeUtils.sanitizeDOI;
+import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class HTMLNarrative implements Narrative {
 
@@ -58,8 +59,25 @@ public class HTMLNarrative implements Narrative {
     }
 
     public String getId(Value value, boolean inlineMath) {
-        if (inlineMath) return "<i>" + value.getId() + "</i>";
-        return value.getId();
+
+        String id = value.getId();
+
+
+
+        if (inlineMath)  {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<i>");
+            if (id.indexOf(INDEX_SEPARATOR)>0) {
+                String[] split = id.split("\\"+INDEX_SEPARATOR);
+                if (split.length == 2) {
+                    id = split[0] + subscript(split[1]);
+                }
+            }
+            builder.append(id);
+            builder.append("</i>");
+            return builder.toString();
+        }
+        return id;
     }
 
     @Override

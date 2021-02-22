@@ -59,7 +59,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
-            componentStatement = componentStatement.replaceAll("\\"+INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll("\\" + INDEX_SEPARATOR + "0", narrative.subscript("i"));
 
             builder.append(componentStatement);
 
@@ -85,14 +85,16 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
 
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < componentDistributions.size(); i++) {
 
-                Generator generator = componentDistributions.get(i);
-                Value v = vrv.getComponentValue(i);
+            Generator generator = componentDistributions.get(0);
+            Value v = vrv.getComponentValue(0);
 
-                if (i > 0) builder.append(" ");
-                builder.append(generator.getInferenceNarrative(v, unique, narrative));
-            }
+
+            String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
+            inferenceNarrative = inferenceNarrative.replace( narrative.subscript("0"), narrative.subscript("i"));
+
+            builder.append(inferenceNarrative);
+
             return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
