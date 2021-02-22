@@ -5,6 +5,8 @@ import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.ValueUtils;
+import lphy.graphicalModel.Vector;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.codecolorizer.DataModelToLaTeX;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.*;
+
+import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class LaTeXNarrative implements Narrative {
 
@@ -100,7 +104,7 @@ public class LaTeXNarrative implements Narrative {
         }
 
 
-        return  builder.toString();
+        return builder.toString();
     }
 
     public String endDocument() {
@@ -113,7 +117,7 @@ public class LaTeXNarrative implements Narrative {
             builder.append("\\end{minipage}\n");
         }
 
-        if (boxStyle){
+        if (boxStyle) {
             builder.append("\\end{tcolorbox}\n\n");
         }
 
@@ -156,7 +160,7 @@ public class LaTeXNarrative implements Narrative {
         StringBuilder builder = new StringBuilder();
 
         for (char ch : text.toCharArray()) {
-            if (specials.indexOf(ch)>=0) {
+            if (specials.indexOf(ch) >= 0) {
                 builder.append('\\');
                 builder.append(ch);
             } else if (ch == '\\') {
@@ -198,6 +202,10 @@ public class LaTeXNarrative implements Narrative {
         return null;
     }
 
+    private boolean isMath(boolean inlineMath) {
+        return mathMode || inlineMath;
+    }
+
     public String getId(Value value, boolean inlineMath) {
 
         String id = value.getId();
@@ -206,26 +214,61 @@ public class LaTeXNarrative implements Narrative {
         if (value.isAnonymous()) return null;
 
         boolean useCanonical = !id.equals(canonicalId);
+        if (useCanonical) id = canonicalId;
 
-        boolean containsUnderscore = id.indexOf('_') >= 0;
+        boolean isVector = value instanceof Vector || ValueUtils.isMultiDimensional(value.value());
+
+        String indexStr = "";
+
+        boolean containsIndexSeparator = id.contains(INDEX_SEPARATOR);
+        if (containsIndexSeparator) {
+            String[] split = id.split("\\" + INDEX_SEPARATOR);
+            id = split[0];
+            indexStr = split[1];
+        }
+
+        boolean isText = id.length() > 1 && !useCanonical;
+
+        StringBuilder builder = new StringBuilder();
+
+        if (inlineMath) builder.append("$");
+
+        if (isVector) {
+           if (isMath(inlineMath)) {
+               if (isText) {
+                   builder.append("\\textbf{");
+               } else builder.append("\\bm{");
+            } else {
+                builder.append("{\\bf ");
+            }
+        }
 
         if (useCanonical) {
-            if (inlineMath) {
-                return "$\\" + canonicalId + "$";
-            } else if (mathMode) {
-                return "\\" + canonicalId;
-            } else return canonicalId;
-        } else if (containsUnderscore) {
-            if (mathMode) {
-                return id;
-            } else return "$" + id + "$";
+            if (isMath(inlineMath)) builder.append("\\");
         } else {
-            if (inlineMath) {
-                return "{\\it " + id + "}";
-            } else if (mathMode) {
-                return "\\textrm{" + id + "}";
-            } else return id;
+            if (!isVector && isMath(inlineMath)) {
+                builder.append("\\textrm{");
+            }
         }
+
+        builder.append(id);
+
+        if ((!useCanonical && !isVector && isMath(inlineMath)) || (isVector && isText)) {
+            builder.append("}");
+        }
+
+        if (!indexStr.equals("")) {
+            builder.append("_");
+            builder.append(indexStr);
+        }
+
+        if (isVector && !isText) {
+            builder.append("}");
+        }
+
+        if (inlineMath) builder.append("$");
+
+        return builder.toString();
     }
 
     public String symbol(String symbol) {
@@ -281,7 +324,7 @@ public class LaTeXNarrative implements Narrative {
 
     @Override
     public String sum(String index, int start, int end) {
-        return "\\sum_{" + start + "}^{" + end + "}";
+        return "\\sum_{" + index + "=" + start + "}^{" + end + "}";
     }
 
     @Override

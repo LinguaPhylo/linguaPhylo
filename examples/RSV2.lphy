@@ -3,19 +3,19 @@ data {
   D = readNexus(file="examples/RSV2.nex", options=options);
   taxa = D.taxa();
   codon = D.charset(["3-629\3","1-629\3", "2-629\3"]);
-  weights = codon.nchar();
+  L = codon.nchar();
   n=length(codon); // 3 partitions
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=0.5, n=n);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], n=n);
   // relative substitution rates
-  r ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
+  r ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=L);
 
   μ ~ LogNormal(meanlog=-5.0, sdlog=1.25);
 
   Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
   ψ ~ Coalescent(taxa=taxa, theta=Θ);
 
-  codon ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=r), mu=μ, tree=ψ);
+  codon ~ PhyloCTMC(L=L, Q=hky(kappa=κ, freq=π, meanRate=r), mu=μ, tree=ψ);
 }
