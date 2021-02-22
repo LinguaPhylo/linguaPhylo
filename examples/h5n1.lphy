@@ -22,8 +22,7 @@ model {
   trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
-  trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=S);
-  sum_indicators = hammingWeight(trait_indicators);
+  trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
 
   traitClockRate ~ LogNormal(meanlog=0, sdlog=0.75);
 
