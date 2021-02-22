@@ -9,37 +9,38 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.LogNormal.*;
 import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Created by adru001 on 18/12/19.
  */
 public class LogNormalMulti implements GenerativeDistribution<Double[]> {
 
-    private Value<Double> M;
-    private Value<Double> S;
+    private Value<Number> M;
+    private Value<Number> S;
     private Value<Integer> n;
 
     LogNormalDistribution logNormalDistribution;
 
-    public LogNormalMulti(@ParameterInfo(name = meanLogParamName, description = "the mean of the distribution on the log scale.") Value<Double> M,
-                          @ParameterInfo(name = sdLogParamName, description = "the standard deviation of the distribution on the log scale.") Value<Double> S,
-                          @ParameterInfo(name = nParamName, description = "the dimension of the return.") Value<Integer> n) {
+    public LogNormalMulti(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
+                          @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
+                          @ParameterInfo(name = nParamName, narrativeName = "dimension", description = "the dimension of the return.") Value<Integer> n) {
 
         this.M = M;
         this.S = S;
         this.n = n;
     }
 
-    @GeneratorInfo(name = "LogNormal", description = "The log-normal probability distribution.")
+    @GeneratorInfo(name = "LogNormal", narrativeName = "i.i.d. log-normal prior", description = "The log-normal probability distribution.")
     public RandomVariable<Double[]> sample() {
 
-        logNormalDistribution = new LogNormalDistribution(M.value(), S.value());
+        logNormalDistribution = new LogNormalDistribution(doubleValue(M), doubleValue(S));
         Double[] result = new Double[n.value()];
         for (int i = 0; i < result.length; i++) {
             result[i] = logNormalDistribution.sample();
         }
 
-        return new RandomVariable<>("x", result, this);
+        return new RandomVariable<>(null, result, this);
     }
 
     public double logDensity(Double[] x) {
@@ -80,11 +81,11 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
         return getName();
     }
 
-    public Value<Double> getMeanLog() {
+    public Value<Number> getMeanLog() {
         return M;
     }
 
-    public Value<Double> getSDLog() {
+    public Value<Number> getSDLog() {
         return S;
     }
 }
