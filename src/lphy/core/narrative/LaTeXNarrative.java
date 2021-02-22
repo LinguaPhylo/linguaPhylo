@@ -11,23 +11,63 @@ import lphy.parser.codecolorizer.DataModelToLaTeX;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import static lphy.graphicalModel.NarrativeUtils.sanitizeDOI;
+import java.util.prefs.*;
 
 public class LaTeXNarrative implements Narrative {
+
+    static Preferences preferences = Preferences.userNodeForPackage(LaTeXNarrative.class);
 
     List<Citation> references = new ArrayList<>();
     List<String> keys = new ArrayList<>();
     boolean mathMode = false;
     boolean mathModeInline = false;
 
-    boolean boxStyle = false;
-    boolean twoColumn = false;
-    boolean smallCodeText = true;
-    static int sectionsPerMiniPage = 3;
+    boolean boxStyle;
+    boolean twoColumn;
+    static int sectionsPerMiniPage;
 
     int sectionCount = 0;
+
+    public LaTeXNarrative() {
+
+        try {
+            if (!Arrays.asList(preferences.keys()).contains("boxStyle")) {
+                preferences.putBoolean("boxStyle", false);
+            }
+            if (!Arrays.asList(preferences.keys()).contains("twoColumn")) {
+                preferences.putBoolean("twoColumn", false);
+            }
+            if (!Arrays.asList(preferences.keys()).contains("sectionsPerMiniPage")) {
+                preferences.putInt("sectionsPerMiniPage", 3);
+            }
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+
+        boxStyle = preferences.getBoolean("boxStyle", false);
+        twoColumn = preferences.getBoolean("twoColumn", false);
+        sectionsPerMiniPage = preferences.getInt("sectionsPerMiniPage", 3);
+
+        preferences.addPreferenceChangeListener(evt -> {
+            switch (evt.getKey()) {
+                case "boxStyle":
+                    boxStyle = Boolean.parseBoolean(evt.getNewValue());
+                    break;
+                case "twoColumn":
+                    twoColumn = Boolean.parseBoolean(evt.getNewValue());
+                    break;
+                case "sectionsPerMiniPage":
+                    sectionsPerMiniPage = Integer.parseInt(evt.getNewValue());
+                    break;
+            }
+        });
+    }
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
 
     public String beginDocument(String title) {
         keys.clear();
@@ -237,6 +277,16 @@ public class LaTeXNarrative implements Narrative {
         builder.append("\\end{center}\n");
 
         return builder.toString();
+    }
+
+    @Override
+    public String sum(String index, int start, int end) {
+        return "\\sum_{" + start + "}^{" + end + "}";
+    }
+
+    @Override
+    public String subscript(String index) {
+        return "_{" + index + "}";
     }
 
 

@@ -17,11 +17,14 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 
@@ -32,6 +35,8 @@ public class NarrativePanel extends JComponent {
     Narrative narrative;
     JPanel narrativeInnerPanel;
     GraphicalModelComponent graphicalModelComponent;
+
+    JPopupMenu popupMenu = new JPopupMenu("Preferences");
 
     JList<String> include = createJListWithDragAndDrop();
 
@@ -148,8 +153,39 @@ public class NarrativePanel extends JComponent {
             }
         });
 
+        parser.addGraphicalModelChangeListener(() -> {
+            popupMenu = new JPopupMenu();
+            setupPreferencesMenu(narrative);
+            pane.setComponentPopupMenu(popupMenu);
+        });
+
     }
 
+    private void setupPreferencesMenu(Narrative narrative) {
+        Preferences preferences = narrative.getPreferences();
+
+        try {
+            for (String key : preferences.keys()) {
+                String val = preferences.get(key, "");
+                if (val.equals("true") || val.equals("false")) {
+                    Boolean bool = Boolean.parseBoolean(val);
+                    JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(key, bool);
+                    popupMenu.add(menuItem);
+                    menuItem.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            preferences.putBoolean(key, menuItem.getState());
+                            setText();
+                        }
+                    });
+                }
+
+            }
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     private JList<String> createJListWithDragAndDrop() {

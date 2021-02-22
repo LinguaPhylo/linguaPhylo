@@ -29,7 +29,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             int size = getVectorSize(arguments, vectorArgs);
             componentDistributions = new ArrayList<>(size);
             for (int component = 0; component < size; component++) {
-                componentDistributions.add((GenerativeDistribution<T>)getComponentGenerator(baseDistributionConstructor, arguments, vectorArgs, component));
+                componentDistributions.add((GenerativeDistribution<T>) getComponentGenerator(baseDistributionConstructor, arguments, vectorArgs, component));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -47,16 +47,34 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     public String getInferenceStatement(Value value, Narrative narrative) {
 
         if (value instanceof VectorizedRandomVariable) {
-            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+
+            VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
 
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < componentDistributions.size(); i++) {
-                Generator generator = componentDistributions.get(i);
-                Value v = vrv.getComponentValue(i);
 
-                builder.append(generator.getInferenceStatement(v, narrative));
-            }
+            builder.append(narrative.sum("i", 0, vrv.size() - 1));
+
+            Generator generator = componentDistributions.get(0);
+            Value v = vrv.getComponentValue(0);
+
+            String componentStatement = generator.getInferenceStatement(v, narrative);
+
+            componentStatement = componentStatement.replaceAll("\\"+INDEX_SEPARATOR + "0", narrative.subscript("i"));
+
+            builder.append(componentStatement);
+
             return builder.toString();
+
+//            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+//
+//            StringBuilder builder = new StringBuilder();
+//            for (int i = 0; i < componentDistributions.size(); i++) {
+//                Generator generator = componentDistributions.get(i);
+//                Value v = vrv.getComponentValue(i);
+//
+//                builder.append(generator.getInferenceStatement(v, narrative));
+//            }
+//            return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
     }
@@ -64,7 +82,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 
         if (value instanceof VectorizedRandomVariable) {
-            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
+            VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
 
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < componentDistributions.size(); i++) {
@@ -82,6 +100,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
     /**
      * This method is not thread safe!
+     *
      * @param component
      * @return
      */
@@ -131,16 +150,17 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
                     componentDistributions.get(i).setInput(paramName, componentValue);
 
 
-                } else  {
-                    SliceValue sv =  new SliceValue(i,value);
-                    componentDistributions.get(i).setInput(paramName,sv);
+                } else {
+                    SliceValue sv = new SliceValue(i, value);
+                    componentDistributions.get(i).setInput(paramName, sv);
                 }
             }
         }
     }
 
     public String getTypeName() {
-        if (componentDistributions.size() > 1) return "vector of " + NarrativeUtils.pluralize(componentDistributions.get(0).getTypeName());
+        if (componentDistributions.size() > 1)
+            return "vector of " + NarrativeUtils.pluralize(componentDistributions.get(0).getTypeName());
         return Generator.getReturnType(this.getClass()).getSimpleName();
     }
 
@@ -162,9 +182,9 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
         Beta beta = new Beta(a, b);
 
         Map<String, Value> params = new HashMap<>();
-        params.put("alpha", new Value<>("alpha", new Double[] {200.0, 200.0, 200.0, 3.0, 3.0, 3.0}));
+        params.put("alpha", new Value<>("alpha", new Double[]{200.0, 200.0, 200.0, 3.0, 3.0, 3.0}));
         params.put("beta", new Value<>("beta", 2.0));
-        Object[] initArgs = {params.get("alpha"),params.get("beta")};
+        Object[] initArgs = {params.get("alpha"), params.get("beta")};
 
         Constructor constructor = beta.getClass().getConstructors()[0];
 

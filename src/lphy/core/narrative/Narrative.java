@@ -6,6 +6,8 @@ import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.ValueUtils;
 
+import java.util.prefs.Preferences;
+
 import static lphy.graphicalModel.NarrativeUtils.*;
 
 public interface Narrative {
@@ -21,6 +23,8 @@ public interface Narrative {
      * @return the closing lines of the document.
      */
     String endDocument();
+
+    Preferences getPreferences();
 
     /**
      * @param header the heading of the section
@@ -49,4 +53,8 @@ public interface Narrative {
     String codeBlock(LPhyParser parser, int fontSize);
 
     String graphicalModelBlock(GraphicalModelComponent component);
+
+    String sum(String index, int start, int end);
+
+    String subscript(String index);
 }

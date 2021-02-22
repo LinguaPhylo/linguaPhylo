@@ -11,6 +11,7 @@ import lphy.parser.codecolorizer.DataModelToHTML;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import static lphy.graphicalModel.NarrativeUtils.sanitizeDOI;
 
@@ -19,7 +20,11 @@ public class HTMLNarrative implements Narrative {
     List<Citation> references = new ArrayList<>();
     boolean mathModeInline = false;
 
-    private final String FONT_SIZE = "12pt";
+    static Preferences preferences = Preferences.userNodeForPackage(HTMLNarrative.class);
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
 
     @Override
     public String beginDocument(String title) {
@@ -89,6 +94,18 @@ public class HTMLNarrative implements Narrative {
     @Override
     public String graphicalModelBlock(GraphicalModelComponent component) {
         return "";
+    }
+
+    // JLatexMath might be useful: https://github.com/opencollab/jlatexmath
+    // Maybe JEuclid to: http://jeuclid.sourceforge.net/
+    @Override
+    public String sum(String index, int start, int end) {
+        return "∑ <sub>"+ index + "=" + start + "</sub> <sup>" + end + "</sup>";
+    }
+
+    @Override
+    public String subscript(String index) {
+        return "<sub>" + index + "</sub>";
     }
 
     public String cite(Citation citation) {
