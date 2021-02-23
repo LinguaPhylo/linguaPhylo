@@ -45,7 +45,7 @@ public class NarrativeUtils {
     }
 
     public static String getTypeName(Value value) {
-        if (value.getGenerator() != null ) return sanitizeTypeName(value.getGenerator().getTypeName());
+        if (value.getGenerator() != null) return sanitizeTypeName(value.getGenerator().getTypeName());
         return getSimpleTypeName(value);
     }
 
@@ -76,21 +76,29 @@ public class NarrativeUtils {
         String name;
 
         if (hasSingleGeneratorOutput(value)) {
-            Generator generator = (Generator)value.getOutputs().get(0);
+            Generator generator = (Generator) value.getOutputs().get(0);
             name = generator.getNarrativeName(value);
         } else name = getTypeName(value);
         return name;
     }
-
 
     public static String getValueClause(Value value, boolean unique, Narrative narrative) {
         return getValueClause(value, unique, false, false, narrative);
     }
 
     public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural, Narrative narrative) {
+        return getValueClause(value, unique, lowercase, plural, null, narrative);
+    }
+
+    public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural, Generator generator, Narrative narrative) {
         StringBuilder builder = new StringBuilder();
 
-        String name = getName(value);
+        String name;
+        if (generator != null) {
+            name = generator.getNarrativeName(value);
+        } else {
+            name = getName(value);
+        }
 
         if (plural) {
             name = pluralize(name);
@@ -103,12 +111,12 @@ public class NarrativeUtils {
         boolean match = !value.isAnonymous() && name.equals(value.getId());
 
         if (unique || !name.endsWith("s") || plural) {
-            String article = getArticle(value, unique,lowercase);
+            String article = getArticle(value, unique, lowercase);
             if (match) {
                 narrativeId = article + " " + narrativeId;
             } else name = article + " " + name;
         }
-        String firstLetter = name.substring(0,1);
+        String firstLetter = name.substring(0, 1);
         name = (lowercase ? firstLetter.toLowerCase() : firstLetter.toUpperCase()) + name.substring(1);
 
         if (match) {

@@ -128,7 +128,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                     builder.append(currentVerb);
                     builder.append(" ");
                 }
-                builder.append(NarrativeUtils.getValueClause(v, false, true, false, narrative));
+                builder.append(NarrativeUtils.getValueClause(v, false, true, false, this, narrative));
                 count += 1;
             }
         }
