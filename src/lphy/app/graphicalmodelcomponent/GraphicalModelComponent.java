@@ -5,6 +5,9 @@ import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
 import lphy.app.Symbols;
 import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
+import lphy.core.distributions.VectorizedDistribution;
+import lphy.core.functions.VectorizedFunction;
+import lphy.core.narrative.LaTeXUtils;
 import lphy.graphicalModel.*;
 
 import javax.swing.*;
@@ -150,16 +153,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz() {
 
-        return toTikz(1.0, 1.0, false);
+        return toTikz(1.0, 1.0, false, "");
     }
 
     public String toTikz(boolean inline) {
 
-        return toTikz(1.0, 1.0, inline);
+        return toTikz(1.0, 1.0, inline, "");
     }
 
 
-    public String toTikz(double xScale, double yScale, boolean inline) {
+    public String toTikz(double xScale, double yScale, boolean inline, String options) {
 
         StringBuilder nodes = new StringBuilder();
         StringBuilder factors = new StringBuilder();
@@ -194,8 +197,12 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
                 "\n" +
                 "\\begin{document}\n\n";
 
+        if (options.length() > 0 && !options.endsWith(",")) {
+            options = options + ",";
+        }
+
         String preamble =
-                "\\begin{tikzpicture}[\n" +
+                "\\begin{tikzpicture}[" + options + "\n" +
                 "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
                 "vstyle/.style={draw=green,fill=green!20},\n" +
                 "cstyle/.style={font=\\small},\n" +
@@ -240,6 +247,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private String getLabel(LayeredGNode gNode) {
         Value value = (Value)gNode.value();
         String label = Symbols.getCanonical(gNode.name, "$\\", "$");
+        if (!value.isAnonymous()) {
+            label = LaTeXUtils.getMathId(value, true);
+        }
+
         if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
             label = "'" + label + "'";
         }
@@ -281,7 +292,19 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
             predecessors.append(", ").append(getUniqueId((Value) ((LayeredGNode) pred.get(i)).value()));
         }
 
-        String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:" + generator.getName() + "} {} {} ; %\n";
+        String generatorName = generator.getName();
+
+        if (generator instanceof VectorizedDistribution) {
+            int size = ((VectorizedDistribution)generator).getComponentDistributions().size();
+            generatorName = generatorName + "[" + size + "]";
+        }
+
+        if (generator instanceof VectorizedFunction) {
+            int size = ((VectorizedFunction)generator).getComponentFunctions().size();
+            generatorName = generatorName + "[" + size + "]";
+        }
+
+        String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:\\scriptsize " + generatorName + "} {} {} ; %\n";
         String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + getUniqueId(value) + "}; %";
 
         return factorString + factorEdgeString;

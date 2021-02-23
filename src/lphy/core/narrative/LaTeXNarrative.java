@@ -30,6 +30,7 @@ public class LaTeXNarrative implements Narrative {
 
     boolean boxStyle;
     boolean twoColumn;
+    boolean scaleGraphicalModel = true;
     static int sectionsPerMiniPage;
 
     int sectionCount = 0;
@@ -88,6 +89,22 @@ public class LaTeXNarrative implements Narrative {
             builder.append("\\usepackage[breakable]{tcolorbox} % for text box\n");
             builder.append("\\usepackage{graphicx} % for minipage\n");
             builder.append("\\usepackage[margin=2cm]{geometry} % margins\n");
+        }
+
+        if (scaleGraphicalModel) {
+            builder.append("\\usepackage{environ}\n" +
+                    "\\makeatletter\n" +
+                    "\\newsavebox{\\measure@tikzpicture}\n" +
+                    "\\NewEnviron{scaletikzpicturetowidth}[1]{%\n" +
+                    "  \\def\\tikz@width{#1}%\n" +
+                    "  \\def\\tikzscale{1}\\begin{lrbox}{\\measure@tikzpicture}%\n" +
+                    "  \\BODY\n" +
+                    "  \\end{lrbox}%\n" +
+                    "  \\pgfmathparse{#1/\\wd\\measure@tikzpicture}%\n" +
+                    "  \\edef\\tikzscale{\\pgfmathresult}%\n" +
+                    "  \\BODY\n" +
+                    "}\n" +
+                    "\\makeatother");
         }
 
         builder.append("\\usetikzlibrary{bayesnet}\n\n");
@@ -248,7 +265,20 @@ public class LaTeXNarrative implements Narrative {
 
         StringBuilder builder = new StringBuilder();
         builder.append("\\begin{center}\n");
-        builder.append(component.toTikz(0.6, 0.6, true));
+
+        String options = "";
+        if (scaleGraphicalModel) {
+            builder.append("\\begin{scaletikzpicturetowidth}{\\textwidth}\n");
+            options = "scale=\\tikzscale";
+        }
+
+
+        builder.append(component.toTikz(0.6, 0.6, true, options));
+
+        if (scaleGraphicalModel) {
+            builder.append("\\end{scaletikzpicturetowidth}\n");
+        }
+
         builder.append("\\end{center}\n");
 
         return builder.toString();
