@@ -463,9 +463,6 @@ public interface LPhyParser {
             }
 
             if (modelVisited.size() > 0) {
-                builder.append(narrative.section("Posterior"));
-
-                builder.append("The posterior distribution is:\n\n");
 
                 builder.append(narrative.startMathMode(false));
 

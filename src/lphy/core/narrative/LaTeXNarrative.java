@@ -241,6 +241,11 @@ public class LaTeXNarrative implements Narrative {
         return "$$";
     }
 
+    public String posterior(LPhyParser parser) {
+
+        return LPhyParser.Utils.getInferenceStatement(parser, this);
+    }
+
     public String codeBlock(LPhyParser parser, int fontSize) {
 
         JTextPane dummyPane = new JTextPane();
@@ -354,6 +359,6 @@ public class LaTeXNarrative implements Narrative {
     @Override
     public String getId(Value value, boolean inlineMath) {
 
-        return LaTeXUtils.getMathId(value, inlineMath);
+        return LaTeXUtils.getMathId(value, inlineMath, true);
     }
 }

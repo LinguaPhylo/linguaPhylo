@@ -393,7 +393,8 @@ public class NarrativePanel extends JComponent {
                     text += narrative.codeBlock(parser, 11);
                     break;
                 case Posterior:
-                    text += LPhyParser.Utils.getInferenceStatement(parser, narrative);
+                    text += narrative.section("Posterior");
+                    text += narrative.posterior(parser);
                     break;
                 case References:
                     text += narrative.referenceSection();

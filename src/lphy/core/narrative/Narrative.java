@@ -14,12 +14,14 @@ public interface Narrative {
 
     /**
      * This initiates the document, including clearing references and any other initialisation of internal state that is necessary.
+     *
      * @return the initial document lines.
      */
     String beginDocument(String title);
 
     /**
      * This ends document constructions, including any other finalization of internal state that is necessary.
+     *
      * @return the closing lines of the document.
      */
     String endDocument();
@@ -53,6 +55,8 @@ public interface Narrative {
     String codeBlock(LPhyParser parser, int fontSize);
 
     String graphicalModelBlock(GraphicalModelComponent component);
+
+    String posterior(LPhyParser parser);
 
     String product(String index, int start, int end);
 

@@ -248,7 +248,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         Value value = (Value)gNode.value();
         String label = Symbols.getCanonical(gNode.name, "$\\", "$");
         if (!value.isAnonymous()) {
-            label = LaTeXUtils.getMathId(value, true);
+            label = LaTeXUtils.getMathId(value, true, true);
         }
 
         if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {

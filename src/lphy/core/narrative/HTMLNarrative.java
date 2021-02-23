@@ -8,10 +8,22 @@ import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.codecolorizer.DataModelToHTML;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
+
 
 import static lphy.graphicalModel.NarrativeUtils.sanitizeDOI;
 import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
@@ -112,6 +124,47 @@ public class HTMLNarrative implements Narrative {
     @Override
     public String graphicalModelBlock(GraphicalModelComponent component) {
         return "";
+    }
+
+    public String posterior(LPhyParser parser) {
+
+        String latex = LPhyParser.Utils.getInferenceStatement(parser, new LaTeXNarrative());
+
+        try {
+            Path tempFile = Files.createTempFile("temp-", ".png");
+            generateLatexImage(latex, tempFile.toFile());
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("<img src=\"");
+            builder.append(tempFile.toUri());
+            builder.append("\"></img>");
+
+            return builder.toString();
+
+        } catch (IOException ex) {
+            String html = LPhyParser.Utils.getInferenceStatement(parser, this);
+            return html;
+        }
+    }
+
+    public void generateLatexImage(String formula, File out) throws IOException {
+        TeXIcon ti = generateLatexIcon(formula);
+        BufferedImage bimg = new BufferedImage(ti.getIconWidth(), ti.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+
+        Graphics2D g2d = bimg.createGraphics();
+
+        g2d.setColor(Color.white);
+        g2d.fillRect(0,0,ti.getIconWidth(),ti.getIconHeight());
+        JLabel jl = new JLabel();
+        jl.setForeground(new Color(0, 0, 0));
+        ti.paintIcon(jl, g2d, 0, 0);
+
+        ImageIO.write(bimg, "png", out);
+    }
+
+    public TeXIcon generateLatexIcon(String formula) {
+        TeXFormula tf = new TeXFormula(formula);
+        return tf.createTeXIcon(TeXConstants.STYLE_DISPLAY, 18);
     }
 
     // JLatexMath might be useful: https://github.com/opencollab/jlatexmath

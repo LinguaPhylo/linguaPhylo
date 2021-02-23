@@ -31,7 +31,7 @@ public class LaTeXUtils {
      * @param inline  if true then added $ delimiters, otherwise assume the result will be inserted into an existing math mode environment.
      * @return the id of the given value in an appropriate math mode format for insertion into a LaTeX document, or null if the value is anonymous
      */
-    public static String getMathId(Value value, boolean inline) {
+    public static String getMathId(Value value, boolean inline, boolean useBoldSymbol) {
 
         String id = value.getId();
         String canonicalId = value.getCanonicalId();
@@ -59,7 +59,7 @@ public class LaTeXUtils {
         if (inline) builder.append("$");
 
         if (isVector) {
-            builder.append("\\bm{");
+            builder.append(useBoldSymbol ? "\\boldsymbol{" : "\\bm{" );
             if (isText) {
                 builder.append("\\textbf{");
             }
