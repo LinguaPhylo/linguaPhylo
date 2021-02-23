@@ -1,5 +1,7 @@
 package lphy.core.functions;
 
+import lphy.core.distributions.IID;
+import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.CompoundVectorValue;
@@ -78,7 +80,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
         params.put(paramName, value);
 
-        if (!isVectorizedParameter(paramName, value, baseTypes)) {
+        if (!VectorUtils.isVectorizedParameter(paramName, value, baseTypes)) {
             for (DeterministicFunction<T> componentFunction : componentFunctions) {
                 // not setInput because the base distributions are hidden from the graphical model
                 componentFunction.setParam(paramName, value);
@@ -110,6 +112,30 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         return Func.codeString(componentFunctions.get(0), getParams());
     }
 
+    public Value getReplicatesValue() {
+        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+            Generator paramGenerator = entry.getValue().getGenerator();
+            if (paramGenerator != null && isVectorizedParameter(entry.getKey())) {
+                if (paramGenerator instanceof IID) {
+                    return ((IID) (entry.getValue().getGenerator())).getReplicates();
+                } else if (paramGenerator instanceof VectorizedDistribution) {
+                    Value replicatesValue = ((VectorizedDistribution)paramGenerator).getReplicatesValue();
+                    if (replicatesValue != null) return replicatesValue;
+                } else if (paramGenerator instanceof VectorizedFunction) {
+                    Value replicatesValue = ((VectorizedFunction)paramGenerator).getReplicatesValue();
+                    if (replicatesValue != null) return replicatesValue;
+                } else {
+                    VectorUtils.getReplicatesValue(paramGenerator, componentFunctions.size());
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isVectorizedParameter(String paramName) {
+        return VectorUtils.isVectorizedParameter(paramName, getParams().get(paramName), baseTypes);
+    }
+
     public static void main(String[] args) {
 
         Value<Number> arg = new Value<>("arg", 1);
@@ -135,6 +161,8 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     public List<DeterministicFunction<T>> getComponentFunctions() {
         return componentFunctions;
     }
+
+
 
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
 

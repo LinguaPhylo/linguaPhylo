@@ -480,9 +480,16 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return prefix + value.getId();
     }
 
-    static boolean matchingParameterTypes(List<Argument> arguments, Object[] initArgs, boolean lightweight) {
+    /**
+     * @param arguments the arguments of the Generator
+     * @param initArgs the parallel array of initial arguments that match the arguments of the generator - may contain nulls where no name match
+     * @param params the map of all params, may be more than non-null in initial arguments
+     * @param lightweight
+     * @return
+     */
+    static boolean matchingParameterTypes(List<Argument> arguments, Object[] initArgs, Map<String, Value> params, boolean lightweight) {
 
-
+        int count = 0;
         for (int i = 0; i < arguments.size(); i++) {
             Argument argumentInfo = arguments.get(i);
             Object arg = initArgs[i];
@@ -492,11 +499,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                 Class valueType = lightweight ? arg.getClass() : ((Value) arg).value().getClass();
 
                 if (!parameterType.isAssignableFrom(valueType)) return false;
+                count += 1;
             } else {
                 if (!argumentInfo.optional) return false;
             }
         }
-        return true;
+        return params == null || count == params.size();
     }
 
     static Map<String, Value> convertArgumentsToParameterMap(List<Argument> argumentInfos, Object[] initArgs) {

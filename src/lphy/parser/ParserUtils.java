@@ -153,8 +153,8 @@ public class ParserUtils {
         Set<Class<?>> generators = getGenerativeDistributionClasses(name);
 
         if (generators != null) {
-            for (Class functionClass : getGenerativeDistributionClasses(name)) {
-                matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
+            for (Class genClass : getGenerativeDistributionClasses(name)) {
+                matches.addAll(getGeneratorByArguments(name, arguments, genClass));
             }
         } else {
             LoggerUtils.log.severe("No generator with name " + name + " available.");
@@ -172,12 +172,9 @@ public class ParserUtils {
 
             if (match(arguments, argumentInfo)) {
 
-                //boolean lightweight = LGenerativeDistribution.class.isAssignableFrom(generatorClass);
-
                 for (int i = 0; i < argumentInfo.size(); i++) {
                     Value arg = arguments.get(argumentInfo.get(i).name);
                     if (arg != null) {
-                        //initargs.add(lightweight ? arg.value() : arg);
                         initargs.add(arg);
                     } else if (!argumentInfo.get(i).optional) {
                         throw new RuntimeException("Required argument " + argumentInfo.get(i).name + " not found!");
@@ -186,8 +183,7 @@ public class ParserUtils {
                     }
                 }
 
-                //matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,lightweight));
-                matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(),arguments,false));
+                matches.add(constructGenerator(name, constructor, argumentInfo, initargs.toArray(), arguments,false));
             }
         }
         return matches;
@@ -197,6 +193,8 @@ public class ParserUtils {
     /**
      * A match occurs if the required parameters are in the argument map and the remaining arguments in the map match names of optional arguments.
      *
+     * an iid match occurs if the required parameters are in the argument map and the remaining arguments include "replicates" and are otherwise named matchs for the optional arguments
+     *
      * @param arguments the arguments that are attempting to be passed.
      * @param argumentInfo the arguments of the constructor
      * @return
@@ -205,6 +203,9 @@ public class ParserUtils {
 
         Set<String> requiredArguments = new TreeSet<>();
         Set<String> optionalArguments = new TreeSet<>();
+        Set<String> keys = new TreeSet<>();
+        keys.addAll(arguments.keySet());
+
         for (Argument argumentInf : argumentInfo) {
             if (argumentInf.optional) {
                 optionalArguments.add(argumentInf.name);
@@ -213,12 +214,14 @@ public class ParserUtils {
             }
         }
 
-        if (!arguments.keySet().containsAll(requiredArguments)) {
+        // return false if not all required arguments are present
+        if (!keys.containsAll(requiredArguments)) {
             return false;
         }
-        Set<String> allArguments = optionalArguments;
-        allArguments.addAll(requiredArguments);
-        return allArguments.containsAll(arguments.keySet());
+
+        keys.removeAll(requiredArguments);
+        keys.removeAll(optionalArguments);
+        return keys.size() == 0 || (keys.size() == 1 && keys.contains(IID.replicatesParamName));
     }
 
     private static List<DeterministicFunction> getFunctionByArguments(String name, Value[] values, Class generatorClass) {
@@ -242,17 +245,21 @@ public class ParserUtils {
         return matches;
     }
 
+    /**
+     * @param name the name of the generator
+     * @param constructor the constructor
+     * @param arguments
+     * @param initargs
+     * @param params
+     * @param lightweight
+     * @return
+     */
     private static Generator constructGenerator(String name, Constructor constructor, List<Argument> arguments, Object[] initargs, Map<String, Value> params, boolean lightweight) {
         try {
-            if (Generator.matchingParameterTypes(arguments, initargs, lightweight)) {
-//                if (lightweight) {
-//                    boolean generativeDistribution = LGenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass());
-//                    if (generativeDistribution) {
-//                        return new GenerativeDistributionAdapter((LGenerativeDistribution)constructor.newInstance(initargs), params);
-//                    } else throw new RuntimeException("Only lightweight generative distributions are currently supported!");
-//                }
-
+            if (Generator.matchingParameterTypes(arguments, initargs, params, lightweight)) {
                 return (Generator) constructor.newInstance(initargs);
+            } else if (IID.match(constructor, arguments, initargs, params)) {
+                return new IID(constructor, initargs, params);
             } else if (vectorMatch(arguments, initargs) > 0) {
                 // do vector match
                 return vectorGenerator(constructor, arguments, initargs);

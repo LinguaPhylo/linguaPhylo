@@ -1,12 +1,13 @@
 package lphy.graphicalModel;
 
+import lphy.core.distributions.IID;
+import lphy.core.distributions.VectorizedDistribution;
+import lphy.core.functions.VectorizedFunction;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class VectorUtils {
 
@@ -62,6 +63,28 @@ public class VectorUtils {
         return size;
     }
 
+    /**
+     * @param generator the generator to start with
+     * @param size      the size of the replicates value that we are looking for
+     * @return the first value in the graphical model above this generator associated with a replicates argument that has the correct size, or null if none found
+     */
+    public static Value getReplicatesValue(Generator generator, int size) {
+        for (Map.Entry<String, Value> entry : (Set<Map.Entry<String, Value>>) generator.getParams().entrySet()) {
+            Generator paramGenerator = entry.getValue().getGenerator();
+            if (paramGenerator != null) {
+                if (paramGenerator instanceof IID) {
+                    Value<Integer> replicatesValue = ((IID) (entry.getValue().getGenerator())).getReplicates();
+                    if (replicatesValue.value() == size) return replicatesValue;
+                } else {
+                    Value<Integer> replicatesValue = VectorUtils.getReplicatesValue(paramGenerator, size);
+                    if (replicatesValue != null) return replicatesValue;
+                }
+            }
+        }
+        return null;
+    }
+
+
     public static List<Generator> getComponentGenerators(Constructor constructor, List<Argument> argumentInfos, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
         int size = getVectorSize(argumentInfos, vectorArgs);
@@ -71,6 +94,41 @@ public class VectorUtils {
         }
         return generators;
     }
+
+    /**
+     * @param constructor   the constructor of the generator
+     * @param argumentInfos the argument info provided
+     * @param parentArgs    the arguments provided, including replicates argument
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     */
+    public static Generator getElementGenerator(Constructor constructor, List<Argument> argumentInfos, Object[] parentArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        Object[] args = new Object[argumentInfos.size()];
+        for (int i = 0; i < argumentInfos.size(); i++) {
+            Argument argumentInfo = argumentInfos.get(i);
+            Value argValue = (Value) parentArgs[i];
+
+            if (argValue == null) {
+                if (!argumentInfo.optional) {
+                    throw new IllegalArgumentException("Required parameter " + argumentInfo.name + " not including in arguments");
+                }
+            } else {
+
+                Class argValueClass = argValue.value().getClass();
+
+                if (argumentInfo.type.isAssignableFrom(argValueClass)) {
+                    // direct type match
+                    args[i] = parentArgs[i];
+                }
+            }
+        }
+
+        return (Generator) constructor.newInstance(args);
+    }
+
 
     public static Generator getComponentGenerator(Constructor constructor, List<Argument> argumentInfos, Object[] vectorArgs, int component) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 
@@ -101,7 +159,7 @@ public class VectorUtils {
                     }
 
                     if (argValue instanceof CompoundVector) {
-                        args[i] = ((CompoundVector)argValue).getComponentValue(component);
+                        args[i] = ((CompoundVector) argValue).getComponentValue(component);
                     } else {
                         // TODO should this be SliceValue?
                         args[i] = new Value(argValue.isAnonymous() ? null : argValue.getId() + VectorUtils.INDEX_SEPARATOR + component, Array.get(array, component));
@@ -110,7 +168,7 @@ public class VectorUtils {
             }
         }
 
-        return (Generator)constructor.newInstance(args);
+        return (Generator) constructor.newInstance(args);
     }
 
     /**

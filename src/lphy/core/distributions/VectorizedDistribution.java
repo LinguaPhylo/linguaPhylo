@@ -1,5 +1,6 @@
 package lphy.core.distributions;
 
+import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 
@@ -51,7 +52,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             StringBuilder builder = new StringBuilder();
 
-            builder.append(narrative.product("i", 0, vrv.size() - 1));
+            builder.append(narrative.product("i", "0", getTo(vrv, narrative)));
 
             Generator generator = componentDistributions.get(0);
             Value v = vrv.getComponentValue(0);
@@ -64,18 +65,38 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             return builder.toString();
 
-//            VectorizedRandomVariable vrv = (VectorizedRandomVariable)value;
-//
-//            StringBuilder builder = new StringBuilder();
-//            for (int i = 0; i < componentDistributions.size(); i++) {
-//                Generator generator = componentDistributions.get(i);
-//                Value v = vrv.getComponentValue(i);
-//
-//                builder.append(generator.getInferenceStatement(v, narrative));
-//            }
-//            return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
+    }
+
+    public Value getReplicatesValue() {
+        for (Map.Entry<String, Value> entry : getParams().entrySet()) {
+            Generator paramGenerator = entry.getValue().getGenerator();
+            if (paramGenerator != null && isVectorizedParameter(entry.getKey())) {
+                if (paramGenerator instanceof IID) {
+                    return ((IID) (entry.getValue().getGenerator())).getReplicates();
+                } else if (paramGenerator instanceof VectorizedDistribution) {
+                    Value replicatesValue = ((VectorizedDistribution)paramGenerator).getReplicatesValue();
+                    if (replicatesValue != null) return replicatesValue;
+                } else if (paramGenerator instanceof VectorizedFunction) {
+                    Value replicatesValue = ((VectorizedFunction)paramGenerator).getReplicatesValue();
+                    if (replicatesValue != null) return replicatesValue;
+                } else {
+                    VectorUtils.getReplicatesValue(paramGenerator, componentDistributions.size());
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isVectorizedParameter(String paramName) {
+        return VectorUtils.isVectorizedParameter(paramName, getParams().get(paramName), baseTypes);
+    }
+
+    private String getTo(VectorizedRandomVariable value, Narrative narrative) {
+        Value replicatesValue = getReplicatesValue();
+        if (replicatesValue != null) return narrative.getId(replicatesValue, false) + " - 1";
+        return (value.size() - 1) + "";
     }
 
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
@@ -145,7 +166,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
         params.put(paramName, value);
 
-        if (!isVectorizedParameter(paramName, value, baseTypes)) {
+        if (!VectorUtils.isVectorizedParameter(paramName, value, baseTypes)) {
             for (GenerativeDistribution<T> baseDistribution : componentDistributions) {
                 // not setInput because the base distributions are hidden from the graphical model
                 baseDistribution.setParam(paramName, value);

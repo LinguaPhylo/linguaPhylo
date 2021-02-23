@@ -14,6 +14,8 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 18/12/19.
  */
+
+@Deprecated()
 public class LogNormalMulti implements GenerativeDistribution<Double[]> {
 
     private Value<Number> M;

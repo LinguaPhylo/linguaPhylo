@@ -13,6 +13,7 @@ import static lphy.core.distributions.DistributionConstants.*;
 /**
  * Created by adru001 on 18/12/19.
  */
+@Deprecated()
 public class NormalMulti implements GenerativeDistribution<Double[]> {
 
     private Value<Double> mean;

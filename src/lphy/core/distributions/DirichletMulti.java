@@ -11,6 +11,7 @@ import static lphy.core.distributions.DistributionConstants.sdParamName;
 /**
  * Created by adru001 on 18/12/19.
  */
+@Deprecated()
 public class DirichletMulti implements GenerativeDistribution<Double[][]> {
 
     private Value<Number[]> concentration;

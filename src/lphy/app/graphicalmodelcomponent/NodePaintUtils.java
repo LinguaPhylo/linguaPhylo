@@ -1,6 +1,7 @@
 package lphy.app.graphicalmodelcomponent;
 
 import lphy.core.LPhyParser;
+import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
@@ -170,13 +171,21 @@ public class NodePaintUtils {
     private static void paintGeneratorNodeEdges(Generator generator, LayeredNode node, LayeredNode properNode, Graphics2D g2d) {
 
         // is this a vectorized Generator?
-        boolean vectorized = (generator instanceof VectorizedDistribution || generator instanceof VectorizedFunction);
+        boolean vectorized = (generator instanceof VectorizedDistribution || generator instanceof VectorizedFunction || generator instanceof IID);
 
         String str = generator.getName();
         if (vectorized) {
             Value value = (Value) ((LayeredGNode) node.getSuccessors().get(0)).value();
             str += "[";
-            if (value instanceof Vector) str += ((Vector) value).size();
+
+            if (generator instanceof VectorizedDistribution) {
+                str += ((VectorizedDistribution)generator).getReplicatesValue().getLabel();
+            } else if (generator instanceof VectorizedFunction) {
+                str += ((VectorizedFunction)generator).getReplicatesValue().getLabel();
+            } else if (generator instanceof IID) {
+                str += ((IID)generator).getReplicates().getLabel();
+            }
+
             str += "]";
         }
 

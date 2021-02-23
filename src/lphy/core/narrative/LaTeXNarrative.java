@@ -290,7 +290,7 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String product(String index, int start, int end) {
+    public String product(String index, String start, String end) {
         return "\\prod_{" + index + "=" + start + "}^{" + end + "}";
     }
 

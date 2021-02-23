@@ -15,6 +15,7 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
 /**
  * A Bernoulli process of n trials.
  */
+@Deprecated()
 public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     private Value<Double> p;
     private Value<Integer> n;

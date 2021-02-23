@@ -12,6 +12,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Gamma distribution
  */
+@Deprecated()
 public class InverseGammaMulti implements GenerativeDistribution<Double[]> {
 
     private Value<Number> alpha;

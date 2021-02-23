@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.*;
 
+@Deprecated()
 public class ExpMulti implements GenerativeDistribution<Double[]> {
 
     private Value<Double> mean;

@@ -58,7 +58,7 @@ public interface Narrative {
 
     String posterior(LPhyParser parser);
 
-    String product(String index, int start, int end);
+    String product(String index, String start, String end);
 
     String subscript(String index);
 }

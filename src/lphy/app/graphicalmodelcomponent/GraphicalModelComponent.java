@@ -5,6 +5,7 @@ import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
 import lphy.app.Symbols;
 import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
+import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.LaTeXUtils;
@@ -295,13 +296,18 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         String generatorName = generator.getName();
 
         if (generator instanceof VectorizedDistribution) {
-            int size = ((VectorizedDistribution)generator).getComponentDistributions().size();
-            generatorName = generatorName + "[" + size + "]";
+            Value replicates = ((VectorizedDistribution)generator).getReplicatesValue();
+            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
         }
 
         if (generator instanceof VectorizedFunction) {
-            int size = ((VectorizedFunction)generator).getComponentFunctions().size();
-            generatorName = generatorName + "[" + size + "]";
+            Value replicates = ((VectorizedFunction)generator).getReplicatesValue();
+            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
+        }
+
+        if (generator instanceof IID) {
+            Value replicates = ((IID)generator).getReplicates();
+            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
         }
 
         String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:\\scriptsize " + generatorName + "} {} {} ; %\n";
