@@ -3,12 +3,9 @@ package lphy.core.distributions;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.scaleParamName;
-import static lphy.core.distributions.DistributionConstants.shapeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -103,5 +100,13 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
 
     public Value<Number> getLambda() {
         return lambda;
+    }
+
+    public Value<Integer> getMin() {
+        return min;
+    }
+
+    public Value<Integer> getMax() {
+        return max;
     }
 }

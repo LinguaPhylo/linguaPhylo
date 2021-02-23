@@ -22,7 +22,10 @@ model {
   trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
-  trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
+
+  //trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
+  numTraits ~ Poisson(lambda=2, min=S, max=dim);
+  trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
 
   traitClockRate ~ LogNormal(meanlog=0, sdlog=0.75);
 
