@@ -54,7 +54,7 @@ public interface Narrative {
 
     String graphicalModelBlock(GraphicalModelComponent component);
 
-    String sum(String index, int start, int end);
+    String product(String index, int start, int end);
 
     String subscript(String index);
 }

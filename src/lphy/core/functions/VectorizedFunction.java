@@ -154,4 +154,14 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
         }
         throw new RuntimeException("Expected CompoundVectorValue!");
     }
+
+    /**
+     * @param value
+     * @return the narrative name for the given value, being a parameter of this generator.
+     */
+    public String getNarrativeName(Value value) {
+        String paramName = getParamName(value);
+        Generator generator = componentFunctions.get(0);
+        return generator.getNarrativeName(paramName);
+    }
 }

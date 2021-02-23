@@ -202,74 +202,6 @@ public class LaTeXNarrative implements Narrative {
         return null;
     }
 
-    private boolean isMath(boolean inlineMath) {
-        return mathMode || inlineMath;
-    }
-
-    public String getId(Value value, boolean inlineMath) {
-
-        String id = value.getId();
-        String canonicalId = value.getCanonicalId();
-
-        if (value.isAnonymous()) return null;
-
-        boolean useCanonical = !id.equals(canonicalId);
-        if (useCanonical) id = canonicalId;
-
-        boolean isVector = value instanceof Vector || ValueUtils.isMultiDimensional(value.value());
-
-        String indexStr = "";
-
-        boolean containsIndexSeparator = id.contains(INDEX_SEPARATOR);
-        if (containsIndexSeparator) {
-            String[] split = id.split("\\" + INDEX_SEPARATOR);
-            id = split[0];
-            indexStr = split[1];
-        }
-
-        boolean isText = id.length() > 1 && !useCanonical;
-
-        StringBuilder builder = new StringBuilder();
-
-        if (inlineMath) builder.append("$");
-
-        if (isVector) {
-           if (isMath(inlineMath)) {
-               if (isText) {
-                   builder.append("\\textbf{");
-               } else builder.append("\\bm{");
-            } else {
-                builder.append("{\\bf ");
-            }
-        }
-
-        if (useCanonical) {
-            if (isMath(inlineMath)) builder.append("\\");
-        } else {
-            if (!isVector && isMath(inlineMath)) {
-                builder.append("\\textrm{");
-            }
-        }
-
-        builder.append(id);
-
-        if ((!useCanonical && !isVector && isMath(inlineMath)) || (isVector && isText)) {
-            builder.append("}");
-        }
-
-        if (!indexStr.equals("")) {
-            builder.append("_");
-            builder.append(indexStr);
-        }
-
-        if (isVector && !isText) {
-            builder.append("}");
-        }
-
-        if (inlineMath) builder.append("$");
-
-        return builder.toString();
-    }
 
     public String symbol(String symbol) {
         String canonical = Symbols.getCanonical(symbol);
@@ -323,8 +255,8 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String sum(String index, int start, int end) {
-        return "\\sum_{" + index + "=" + start + "}^{" + end + "}";
+    public String product(String index, int start, int end) {
+        return "\\prod_{" + index + "=" + start + "}^{" + end + "}";
     }
 
     @Override
@@ -387,5 +319,11 @@ public class LaTeXNarrative implements Narrative {
             builder.append("\\end{thebibliography}\n");
         }
         return builder.toString();
+    }
+
+    @Override
+    public String getId(Value value, boolean inlineMath) {
+
+        return LaTeXUtils.getMathId(value, inlineMath);
     }
 }

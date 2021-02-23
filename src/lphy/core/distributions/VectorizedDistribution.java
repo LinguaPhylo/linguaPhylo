@@ -3,7 +3,6 @@ package lphy.core.distributions;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -52,7 +51,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             StringBuilder builder = new StringBuilder();
 
-            builder.append(narrative.sum("i", 0, vrv.size() - 1));
+            builder.append(narrative.product("i", 0, vrv.size() - 1));
 
             Generator generator = componentDistributions.get(0);
             Value v = vrv.getComponentValue(0);
@@ -98,6 +97,16 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
+    }
+
+    /**
+     * @param value
+     * @return the narrative name for the given value, being a parameter of this generator.
+     */
+    public String getNarrativeName(Value value) {
+        String paramName = getParamName(value);
+        Generator generator = componentDistributions.get(0);
+        return generator.getNarrativeName(paramName);
     }
 
     /**

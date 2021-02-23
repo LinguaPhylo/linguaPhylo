@@ -16,13 +16,13 @@ public class DirichletMulti implements GenerativeDistribution<Double[][]> {
     private Value<Number[]> concentration;
     private Value<Integer> n;
 
-    public DirichletMulti(@ParameterInfo(name=concParamName, description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration,
-                          @ParameterInfo(name=nParamName, description = "the number of iid samples from this Dirichlet.") Value<Integer> n) {
+    public DirichletMulti(@ParameterInfo(name=concParamName, narrativeName = "concentration parameter", description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration,
+                          @ParameterInfo(name=nParamName, narrativeName = "number of i.i.d. samples", description = "the number of iid samples from this Dirichlet.") Value<Integer> n) {
         this.concentration = concentration;
         this.n = n;
     }
 
-    @GeneratorInfo(name="Dirichlet", description="The dirichlet probability distribution.")
+    @GeneratorInfo(name="Dirichlet", verbClause = "has", narrativeName = "Dirichlet prior", description="The dirichlet probability distribution.")
     public RandomVariable<Double[][]> sample() {
 
         List<RandomVariable> dirichletVariables = new ArrayList<>();

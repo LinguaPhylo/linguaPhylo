@@ -544,16 +544,23 @@ public interface Generator<T> extends GraphicalModelNode<T> {
      * @return the narrative name for the given value, being a parameter of this generator.
      */
     default String getNarrativeName(Value value) {
-        String name = getParamName(value);
+        return getNarrativeName(getParamName(value));
+    }
+
+    /**
+     * @param paramName the parameter name
+     * @return the narrative name for the given parameter name.
+     */
+    default String getNarrativeName(String paramName) {
         List<ParameterInfo> parameterInfos = getParameterInfo(0);
         for (ParameterInfo parameterInfo : parameterInfos) {
-            if (parameterInfo.name().equals(name)) {
+            if (parameterInfo.name().equals(paramName)) {
                 if (parameterInfo.narrativeName().length() > 0) {
                     return parameterInfo.narrativeName();
                 }
             }
         }
-        return name;
+        return paramName;
     }
 
     /**

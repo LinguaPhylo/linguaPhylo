@@ -117,8 +117,8 @@ public class HTMLNarrative implements Narrative {
     // JLatexMath might be useful: https://github.com/opencollab/jlatexmath
     // Maybe JEuclid to: http://jeuclid.sourceforge.net/
     @Override
-    public String sum(String index, int start, int end) {
-        return "∑ <sub>"+ index + "=" + start + "</sub> <sup>" + end + "</sup>";
+    public String product(String index, int start, int end) {
+        return "∏ <sub>"+ index + "=" + start + "</sub> <sup>" + end + "</sup>";
     }
 
     @Override
