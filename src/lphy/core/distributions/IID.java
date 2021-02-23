@@ -149,7 +149,7 @@ public class IID<T> implements GenerativeDistribution<T[]> {
         if (replicatesValue.isAnonymous()) {
             replicateToString = (size() - 1) + "";
         } else {
-            replicateToString = narrative.getId(replicatesValue, true) + " - 1";
+            replicateToString = narrative.getId(replicatesValue, false) + " - 1";
         }
         return replicateToString;
     }
