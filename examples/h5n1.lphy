@@ -5,8 +5,8 @@ data {
   taxa = D.taxa();
   // extract traits from the 3rd element
   trait_D = extractTrait(taxa=taxa, sep="_", i=2);
-  S = trait_D.stateCount();
-  dim = S*(S-1)/2;
+  K = trait_D.stateCount();
+  dim = K*(K-1)/2;
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
@@ -19,12 +19,12 @@ model {
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=0.004, tree=ψ);
 
-  trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
+  trait_π ~ Dirichlet(conc=rep(element=3.0, times=K));
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
   //trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
-  numTraits ~ Poisson(lambda=2, min=S, max=dim);
+  numTraits ~ Poisson(lambda=2, min=K, max=dim);
   trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
 
   traitClockRate ~ LogNormal(meanlog=0, sdlog=0.75);
