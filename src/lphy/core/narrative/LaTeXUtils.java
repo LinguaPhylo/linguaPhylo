@@ -1,5 +1,6 @@
 package lphy.core.narrative;
 
+import lphy.app.Symbols;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.ValueUtils;
 import lphy.graphicalModel.Vector;
@@ -34,7 +35,7 @@ public class LaTeXUtils {
     public static String getMathId(Value value, boolean inline, boolean useBoldSymbol) {
 
         String id = value.getId();
-        String canonicalId = value.getCanonicalId();
+        String canonicalId = Symbols.getCanonical(id, "\\", "");
 
         if (value.isAnonymous() || id == null) return null;
 
@@ -45,11 +46,10 @@ public class LaTeXUtils {
 
         String indexStr = "";
 
-        boolean containsIndexSeparator = id.contains(INDEX_SEPARATOR);
+        boolean containsIndexSeparator = id.contains(INDEX_SEPARATOR) && ValueUtils.isInteger(id.substring(id.lastIndexOf(INDEX_SEPARATOR)+1));
         if (containsIndexSeparator) {
-            String[] split = id.split(INDEX_SEPARATOR);
-            id = split[0];
-            indexStr = split[1];
+            indexStr = id.substring(id.lastIndexOf(INDEX_SEPARATOR)+1);
+            id = id.substring(0, id.lastIndexOf(INDEX_SEPARATOR));
         }
 
         boolean isText = id.length() > 1 && !useCanonical;
@@ -66,9 +66,6 @@ public class LaTeXUtils {
         } else if (isText) {
             builder.append("\\textrm{");
         }
-
-        // if canonical is being used and in a math environment then escape canonical name to get symbol
-        if (useCanonical) builder.append("\\");
 
         builder.append(id);
 

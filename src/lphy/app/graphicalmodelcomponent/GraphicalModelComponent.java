@@ -297,17 +297,17 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         if (generator instanceof VectorizedDistribution) {
             Value replicates = ((VectorizedDistribution)generator).getReplicatesValue();
-            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
+            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
         }
 
         if (generator instanceof VectorizedFunction) {
             Value replicates = ((VectorizedFunction)generator).getReplicatesValue();
-            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
+            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
         }
 
         if (generator instanceof IID) {
             Value replicates = ((IID)generator).getReplicates();
-            generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
+            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
         }
 
         String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:\\scriptsize " + generatorName + "} {} {} ; %\n";

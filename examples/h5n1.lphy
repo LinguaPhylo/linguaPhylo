@@ -13,7 +13,7 @@ model {
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 
   shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
-  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);
+  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
 
   Θ ~ LogNormal(meanlog=0.0, sdlog=1.0);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);

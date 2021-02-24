@@ -35,8 +35,18 @@ public class ValueUtils {
         return (v instanceof MultiDimensional || v instanceof Map || v.getClass().isArray());
     }
 
+    public static boolean isInteger(String s) {
+        try {
+            int i = Integer.parseInt(s);
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
     /**
      * useful function to get a number value as a double;
+     *
      * @param value
      * @return
      */
@@ -69,12 +79,12 @@ public class ValueUtils {
     }
 
     public static Value createValue(Object value, DeterministicFunction generator) {
-        if (value instanceof Integer) return createValue((Integer)value, generator);
-        if (value instanceof Integer[]) return createValue((Integer[])value, generator);
-        if (value instanceof Double) return createValue((Double)value, generator);
-        if (value instanceof Double[]) return createValue((Double[])value, generator);
-        if (value instanceof Boolean) return createValue((Boolean)value, generator);
-        if (value instanceof Boolean[]) return createValue((Boolean[])value, generator);
+        if (value instanceof Integer) return createValue((Integer) value, generator);
+        if (value instanceof Integer[]) return createValue((Integer[]) value, generator);
+        if (value instanceof Double) return createValue((Double) value, generator);
+        if (value instanceof Double[]) return createValue((Double[]) value, generator);
+        if (value instanceof Boolean) return createValue((Boolean) value, generator);
+        if (value instanceof Boolean[]) return createValue((Boolean[]) value, generator);
         return new Value(null, value, generator);
     }
 
@@ -106,7 +116,7 @@ public class ValueUtils {
                 }
                 /* No else. No other primitive types exist. */
             } else if (String.class.isAssignableFrom(componentType)) {
-                String[] stringArray = (String[])value;
+                String[] stringArray = (String[]) value;
                 StringBuilder builder = new StringBuilder();
                 builder.append("[");
                 if (stringArray.length > 0) {

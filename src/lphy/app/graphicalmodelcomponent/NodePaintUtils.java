@@ -179,11 +179,14 @@ public class NodePaintUtils {
             str += "[";
 
             if (generator instanceof VectorizedDistribution) {
-                str += ((VectorizedDistribution)generator).getReplicatesValue().getLabel();
+                Value<Integer> replicatesValue = ((VectorizedDistribution)generator).getReplicatesValue();
+                if (replicatesValue != null) str += replicatesValue.getLabel();
             } else if (generator instanceof VectorizedFunction) {
-                str += ((VectorizedFunction)generator).getReplicatesValue().getLabel();
+                Value<Integer> replicatesValue = ((VectorizedFunction)generator).getReplicatesValue();
+                if (replicatesValue != null) str += replicatesValue.getLabel();
             } else if (generator instanceof IID) {
-                str += ((IID)generator).getReplicates().getLabel();
+                Value<Integer> replicatesValue = ((IID)generator).getReplicates();
+                if (replicatesValue != null) str += replicatesValue.getLabel();
             }
 
             str += "]";
