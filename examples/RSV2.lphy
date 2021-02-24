@@ -7,8 +7,8 @@ data {
   n=length(codon); // 3 partitions
 }
 model {
-  κ ~ LogNormal(meanlog=1.0, sdlog=0.5, n=n);
-  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], n=n);
+  κ ~ LogNormal(meanlog=1.0, sdlog=0.5, replicates=n);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], replicates=n);
   // relative substitution rates
   r ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=L);
 
