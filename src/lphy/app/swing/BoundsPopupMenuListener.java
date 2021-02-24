@@ -1,4 +1,4 @@
-package lphy.swing;
+package lphy.app.swing;
 
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;

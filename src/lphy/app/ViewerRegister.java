@@ -6,10 +6,10 @@ import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.swing.BooleanValueEditor;
-import lphy.graphicalModel.swing.DoubleValueEditor;
-import lphy.graphicalModel.swing.IntegerValueEditor;
-import lphy.graphicalModel.swing.StringValueEditor;
+import lphy.app.valueeditors.BooleanValueEditor;
+import lphy.app.valueeditors.DoubleValueEditor;
+import lphy.app.valueeditors.IntegerValueEditor;
+import lphy.app.valueeditors.StringValueEditor;
 import lphy.graphicalModel.types.MapValue;
 import lphy.utils.LoggerUtils;
 

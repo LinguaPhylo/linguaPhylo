@@ -4,7 +4,7 @@ import lphy.app.components.FieldComboBoxEditor;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Argument;
 import lphy.graphicalModel.Value;
-import lphy.swing.BoundsPopupMenuListener;
+import lphy.app.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
 import java.util.List;

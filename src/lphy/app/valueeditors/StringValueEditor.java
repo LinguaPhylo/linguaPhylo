@@ -1,4 +1,4 @@
-package lphy.graphicalModel.swing;
+package lphy.app.valueeditors;
 
 import lphy.graphicalModel.Value;
 

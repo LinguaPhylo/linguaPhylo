@@ -2,9 +2,6 @@ package lphy.graphicalModel.types;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.swing.DoubleValueEditor;
-
-import javax.swing.*;
 
 public class DoubleValue extends NumberValue<Double> {
 

@@ -1,22 +1,19 @@
-package lphy.graphicalModel.swing;
+package lphy.app.valueeditors;
 
 import lphy.graphicalModel.Value;
+import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class BooleanValueEditor extends JTextField {
+public class DoubleValueEditor extends JTextField {
 
-    private Value<Boolean> value;
 
-    public BooleanValueEditor(Value<Boolean> value)  {
-
-        this.value = value;
+    public DoubleValueEditor(Value<Double> value)  {
 
         setText(value.value().toString());
         setColumns(12);
-
 
         getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -37,13 +34,11 @@ public class BooleanValueEditor extends JTextField {
 
             void setValue(String text) {
                 try {
-                    Boolean n = Boolean.parseBoolean(getText());
-                    value.setValue(n);
-                    //message.setText("");
-                } catch (NumberFormatException ne) {
-                    //message.setText("'" + textField.getText() + "' is not a double.");
+                    Double d = Double.parseDouble(text);
+                    value.setValue(d);
+                } catch (java.lang.NumberFormatException ne) {
+                    LoggerUtils.log.warning("Couldn't set value" + (value.isAnonymous() ? "" : (" " + value.getId())) + " to " + text);
                 }
-
             }
         });
 

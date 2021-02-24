@@ -4,7 +4,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GeneratorInfo;
-import lphy.swing.BoundsPopupMenuListener;
+import lphy.app.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

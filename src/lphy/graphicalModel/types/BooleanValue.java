@@ -2,10 +2,6 @@ package lphy.graphicalModel.types;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.swing.BooleanValueEditor;
-import lphy.graphicalModel.swing.IntegerValueEditor;
-
-import javax.swing.*;
 
 public class BooleanValue extends Value<Boolean> {
 
