@@ -46,22 +46,23 @@ public class ParserUtils {
 //        };
 
         Class<?>[] genClasses = {
-                RhoSampleTree.class, Bernoulli.class, BernoulliMulti.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
-                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class, ExpMarkovChain.class, BirthDeathTree.class, InverseGamma.class,
-                DirichletMulti.class,
-                InverseGammaMulti.class,
-                Normal.class, NormalMulti.class, LogNormal.class, LogNormalMulti.class, Exp.class, ExpMulti.class,
-                PhyloCTMC.class, PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
-                PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
-                Dirichlet.class, Gamma.class, DiscretizedGamma.class, ErrorModel.class, Yule.class,
-                MultispeciesCoalescent.class, Poisson.class, RandomComposition.class, RandomBooleanArray.class,
-                WeightedDirichlet.class,
-                SerialCoalescent.class,
+                // probability distribution
+                Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
+                Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
+                // tree distribution
+                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
+                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
+                RhoSampleTree.class, FossilBirthDeathTree.class,
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
-                SkylineCoalescent.class, StructuredCoalescent.class,
-                FossilBirthDeathTree.class,
-                Beta.class,
-                Uniform.class};
+                SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
+                // skyline
+                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
+                // others
+                ErrorModel.class, RandomBooleanArray.class,
+                // phylogenetic distribution
+                PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
+                PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
+                PhyloCTMC.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);
@@ -86,21 +87,23 @@ public class ParserUtils {
 //        }
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
-                lphy.core.functions.Exp.class, JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
-                GeneralTimeReversible.class,
-                Length.class, Unique.class,
-                LewisMK.class,
-                LocalBranchRates.class,
-                CreateTaxa.class,
-                Newick.class, NCharFunction.class, NTaxaFunction.class, BinaryRateMatrix.class, NodeCount.class, MigrationMatrix.class,
-                MigrationCount.class, Range.class, TaxaFunction.class, Rep.class,
-                TreeLength.class, DihedralAngleDiffusionMatrix.class,
-                ReadNexus.class, ReadFasta.class, ExtractTrait.class,
-                Species.class, ExtantTree.class, PruneTree.class,
-                ExtantTaxa.class,
+                // Substitution models
+                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                GeneralTimeReversible.class, LewisMK.class,
+                // Taxa
+                CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
+                // Tree
+                LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
+                // Matrix
+                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class, DihedralAngleDiffusionMatrix.class,
+                // IO
+                Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
+                // Math
+                lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
+                // Utils
                 ParseInt.class,
-                Select.class,
-                Split.class, SliceDoubleArray.class, Sum.class, SumBoolean.class
+                Length.class, Unique.class, Range.class, Rep.class,
+                Select.class, Split.class, SliceDoubleArray.class
         };
 
         for (Class<?> functionClass : functionClasses) {
