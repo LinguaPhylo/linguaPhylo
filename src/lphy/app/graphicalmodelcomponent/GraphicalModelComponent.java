@@ -242,7 +242,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         LatticePoint latticePoint = (LatticePoint)gNode.getMetaData(LatticePoint.KEY);
 
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + getUniqueId(value) + ") {" + getLabel(gNode) + "};";
+        String uniqueId = getUniqueId(value);
+        //uniqueId = uniqueId.replace("_", "."); // can't have underscore in these names.
+
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getLabel(gNode) + "};";
     }
 
     private String getLabel(LayeredGNode gNode) {
@@ -281,6 +284,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
 
         String factorName = generator.getName() + getUniqueId(value);
+
+        //factorName = factorName.replace('_', '.');
 
         StringBuilder predecessors = new StringBuilder();
 

@@ -127,7 +127,7 @@ public class NarrativeUtils {
         }
         if (value.getGenerator() == null && !value.isRandom()) {
             builder.append(" of ");
-            builder.append(ValueUtils.valueToString(value.value));
+            builder.append(narrative.text(ValueUtils.valueToString(value.value)));
         }
         return builder.toString();
     }

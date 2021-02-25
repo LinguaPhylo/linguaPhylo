@@ -5,6 +5,8 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.ValueUtils;
 import lphy.graphicalModel.Vector;
 
+import java.util.List;
+
 import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class LaTeXUtils {
@@ -12,12 +14,12 @@ public class LaTeXUtils {
     static String[] specials = {
             "&",
             "–", // endash
-            "í"};
+            "í", "_"};
 
     static String[] replacements = {
             "\\&",
             "--",
-            "\\'{i}"
+            "\\'{i}", "\\_"
     };
 
     public static String sanitizeText(String text) {
@@ -35,24 +37,15 @@ public class LaTeXUtils {
     public static String getMathId(Value value, boolean inline, boolean useBoldSymbol) {
 
         String id = value.getId();
-        String canonicalId = Symbols.getCanonical(id, "\\", "");
-
         if (value.isAnonymous() || id == null) return null;
 
-        boolean useCanonical = !id.equals(canonicalId) && canonicalId != null;
-        if (useCanonical) id = canonicalId;
+        List<Symbols.Block> blocks = Symbols.getCanonicalizedName(id);
 
         boolean isVector = value instanceof Vector || ValueUtils.isMultiDimensional(value.value());
 
         String indexStr = "";
 
-        boolean containsIndexSeparator = id.contains(INDEX_SEPARATOR) && ValueUtils.isInteger(id.substring(id.lastIndexOf(INDEX_SEPARATOR)+1));
-        if (containsIndexSeparator) {
-            indexStr = id.substring(id.lastIndexOf(INDEX_SEPARATOR)+1);
-            id = id.substring(0, id.lastIndexOf(INDEX_SEPARATOR));
-        }
-
-        boolean isText = id.length() > 1 && !useCanonical;
+        Symbols.Block lastBlock = blocks.get(blocks.size()-1);
 
         StringBuilder builder = new StringBuilder();
 
@@ -60,24 +53,44 @@ public class LaTeXUtils {
 
         if (isVector) {
             builder.append(useBoldSymbol ? "\\boldsymbol{" : "\\bm{" );
+        }
+
+        for (int i = 0; i < blocks.size(); i++) {
+            Symbols.Block block = blocks.get(i);
+            String s = block.string;
+            boolean isCanonical = block.isCanonicalized;
+            boolean isText = !isCanonical && s.length() > 1;
+
             if (isText) {
-                builder.append("\\textbf{");
+                builder.append(isVector ? "\\textbf{" : "\\textrm{" );
+
+                // check for index if this is the last block and is ascii text
+                if (block == lastBlock) {
+                    boolean containsIndexSeparator = s.contains(INDEX_SEPARATOR) && ValueUtils.isInteger(s.substring(s.lastIndexOf(INDEX_SEPARATOR)+1));
+                    if (containsIndexSeparator) {
+                        indexStr = s.substring(s.lastIndexOf(INDEX_SEPARATOR)+1);
+                        s = s.substring(0, s.lastIndexOf(INDEX_SEPARATOR));
+                    }
+                }
+
+                s = LaTeXUtils.sanitizeText(s);
+
+            } else if (isCanonical) {
+                builder.append("\\");
             }
-        } else if (isText) {
-            builder.append("\\textrm{");
+
+            builder.append(s);
+
+            if (isText) {
+                builder.append("}");
+            }
+
+            if (indexStr.length() > 0) {
+                builder.append('_');
+                builder.append(indexStr);
+            }
         }
-
-        builder.append(id);
-
-        if (isText) {
-            builder.append("}");
-        }
-
-        if (!indexStr.equals("")) {
-            builder.append("_");
-            builder.append(indexStr);
-        }
-
+        
         if (isVector) {
             builder.append("}");
         }
