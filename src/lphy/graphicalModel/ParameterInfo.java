@@ -13,5 +13,6 @@ public @interface ParameterInfo {
     String narrativeName() default "";
     String verb() default "with";
     String description();
+    boolean suppressNameInNarrative() default false;
     boolean optional() default false;
 }

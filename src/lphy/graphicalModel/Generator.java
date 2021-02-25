@@ -563,6 +563,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         List<ParameterInfo> parameterInfos = getParameterInfo(0);
         for (ParameterInfo parameterInfo : parameterInfos) {
             if (parameterInfo.name().equals(paramName)) {
+                if (parameterInfo.suppressNameInNarrative()) return "";
                 if (parameterInfo.narrativeName().length() > 0) {
                     return parameterInfo.narrativeName();
                 }

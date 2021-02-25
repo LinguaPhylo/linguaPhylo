@@ -78,6 +78,7 @@ public class NarrativeUtils {
         if (hasSingleGeneratorOutput(value)) {
             Generator generator = (Generator) value.getOutputs().get(0);
             name = generator.getNarrativeName(value);
+            if (name == null || name.equals("")) name = getTypeName(value);
         } else name = getTypeName(value);
         return name;
     }
@@ -96,6 +97,7 @@ public class NarrativeUtils {
         String name;
         if (generator != null) {
             name = generator.getNarrativeName(value);
+            if (name == null || name.equals("")) name = getName(value);
         } else {
             name = getName(value);
         }

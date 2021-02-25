@@ -75,6 +75,7 @@ public abstract class Func implements Generator {
                     // DO NOTHING - this is an optional parameter with no value
                 } else {
                     builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+
                     paramCount += 1;
                 }
                 for (int i = 1; i < parameterInfoList.size(); i++) {

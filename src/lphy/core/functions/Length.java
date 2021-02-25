@@ -10,9 +10,10 @@ import java.lang.reflect.Array;
 
 public class Length extends DeterministicFunction<Integer> {
 
-    public static final String argParamName = "arg";
+    // by setting the arg param to an integer it will not be displayed in the code string.
+    public static final String argParamName = "0";
 
-    public Length(@ParameterInfo(name = argParamName, verb="of", description = "the array to return the length of.") Value x) {
+    public Length(@ParameterInfo(name = argParamName, verb="of", suppressNameInNarrative=true, description = "the array to return the length of.") Value x) {
         setParam(argParamName, x);
     }
 
