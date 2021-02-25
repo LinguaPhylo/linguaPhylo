@@ -18,6 +18,6 @@ model {
 
   shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
   // discretized Gamma 4 categories
-  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, reps=L);
+  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
   D ~ PhyloCTMC(siteRates=siteRates, Q=Q, tree=ψ, mu=0.00079);
 }

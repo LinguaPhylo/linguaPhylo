@@ -2,12 +2,14 @@ package lphy.core.lightweight.distributions;
 
 import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 /**
  * Discretized Gamma distribution
  */
+@Deprecated
 public class DiscretizedGamma implements LGenerativeDistribution<Double[]> {
 
     private Double shape;
