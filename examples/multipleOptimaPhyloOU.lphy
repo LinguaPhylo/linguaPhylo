@@ -1,6 +1,6 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
 ψ ~ Yule(lambda=λ, n=16);
 σ2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
-Θ ~ LogNormal(meanlog=1.0, sdlog=0.5, n=30);
+Θ ~ LogNormal(meanlog=1.0, sdlog=0.5, replicates=30);
 y0 ~ Normal(mean=0.0, sd=1.0);
 y ~ PhyloOU(diffRate=σ2, branchThetas=Θ, alpha=10.0, y0=y0, tree=ψ);

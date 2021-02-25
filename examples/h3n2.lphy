@@ -20,9 +20,9 @@ model {
   clockRate ~ LogNormal(meanlog=-5.298, sdlog=0.25);
 
   // 3 population sizes
-  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, n=S);
+  Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, replicates=S);
   // 6 migration rates backwards in time
-  b_m ~ Exp(mean=1.0, n=dim);
+  b_m ~ Exp(mean=1.0, replicates=dim);
   M = migrationMatrix(theta=Θ, m=b_m);
   tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
   rootAge = tree.rootAge();

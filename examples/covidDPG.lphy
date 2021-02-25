@@ -14,8 +14,8 @@ data {
   dim = S*(S-1)/2;
 }
 model {
-  κ ~ LogNormal(meanlog=1.0, sdlog=1.25, n=length(parts));
-  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0], n=length(parts));
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25, replicates=length(parts));
+  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0], replicates=length(parts));
 
   firstValue ~ LogNormal(meanlog=0.0, sdlog=2.0);
   Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
@@ -34,7 +34,7 @@ model {
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  //trait_indicators ~ Bernoulli(p=0.5, n=dim, minSuccesses=dim-2);
+  //trait_indicators ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
   numTraits ~ Poisson(lambda=2, min=S, max=dim);
   trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
 

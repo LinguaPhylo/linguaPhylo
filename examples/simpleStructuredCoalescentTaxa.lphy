@@ -2,9 +2,9 @@ taxa = taxa(names=1:10);
 demes = [0,0,0,0,0,1,1,1,1,1];
 
 // two population sizes
-Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, n=2);
+Θ ~ LogNormal(meanlog=-3.0, sdlog=1.0, replicates=2);
 // m01 and m10 migration rates backwards in time
-m ~ LogNormal(meanlog=0.0, sdlog=1.0, n=2);
+m ~ LogNormal(meanlog=0.0, sdlog=1.0, replicates=2);
 M = migrationMatrix(theta=Θ, m=m);
 ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
 C = countMigrations(tree=ψ);
