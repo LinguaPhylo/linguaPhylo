@@ -375,15 +375,20 @@ public class MethodCall extends DeterministicFunction {
         builder.append("(");
 
         if (arguments.length > 0) {
-            builder.append(arguments[0].codeString());
+            builder.append(argumentString(arguments[0]));
         }
         for (int i = 1; i < arguments.length; i++) {
             builder.append(", ");
-            builder.append(arguments[i].codeString());
+            builder.append(argumentString(arguments[i]));
         }
 
         builder.append(")");
         return builder.toString();
+    }
+
+    private String argumentString(Value value) {
+        if (value.isAnonymous()) return value.codeString();
+        return value.getId();
     }
 
     public String getNarrativeName() {

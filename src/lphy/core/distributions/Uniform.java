@@ -40,11 +40,13 @@ public class Uniform implements GenerativeDistribution<Double> {
     }
 
     public double logDensity(Double x) {
+        if (x < doubleValue(lower) || x > doubleValue(upper)) return Double.NEGATIVE_INFINITY;
         return Math.log(1.0) - Math.log(doubleValue(upper) - doubleValue(lower));
     }
 
     public double density(Double x) {
-        return 1.0 / doubleValue(upper) - doubleValue(lower);
+        if (x < doubleValue(lower) || x > doubleValue(upper)) return 0.0;
+        return 1.0 / (doubleValue(upper) - doubleValue(lower));
     }
 
     public Map<String, Value> getParams() {

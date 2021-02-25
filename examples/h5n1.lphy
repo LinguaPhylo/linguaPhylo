@@ -23,7 +23,7 @@ model {
   // symmetric, rates dimension = n * (n-1) / 2
   trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  trait_indicators ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
+  trait_indicators ~ Bernoulli(p=0.5, minSuccesses=dim-2, replicates=dim);
   //numTraits ~ Poisson(lambda=2, min=K, max=dim);
   //trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
 

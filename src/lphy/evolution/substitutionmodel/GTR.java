@@ -78,7 +78,7 @@ public class GTR extends RateMatrix {
         return getParams().get(ratesParamName);
     }
 
-    public GraphicalModelNode<?> getFreq() {
+    public Value<Double[]> getFreq() {
         return getParams().get(freqParamName);
     }
 }

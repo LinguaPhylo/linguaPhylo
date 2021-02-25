@@ -24,7 +24,7 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
         normalize(freqs, Q, totalRateDefault1());
     }
 
-    void normalize(Double[] freqs, Double[][] Q, double rate) {
+    protected void normalize(Double[] freqs, Double[][] Q, double rate) {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < Q.length; i++) {

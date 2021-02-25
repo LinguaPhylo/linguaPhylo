@@ -245,6 +245,7 @@ public class GraphicalModelInterpreter extends JPanel {
         } catch (Exception e) {
             //textPane.setText(input);
             LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
+            e.printStackTrace(System.err);
         }
     }
 

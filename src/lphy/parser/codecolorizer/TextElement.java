@@ -22,8 +22,12 @@ public class TextElement {
     }
 
     void add(TextElement e) {
-        for (int i = 0; i < e.text.size(); i++) {
-            add(e.text.get(i), e.style.get(i));
+        if (e != null) {
+            for (int i = 0; i < e.text.size(); i++) {
+                add(e.text.get(i), e.style.get(i));
+            }
+        } else {
+            throw new RuntimeException("TextElement should not be null!");
         }
     }
 

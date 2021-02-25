@@ -1,5 +1,7 @@
 package lphy.parser;
 
+import lphy.bmodeltest.BModelSetFunction;
+import lphy.bmodeltest.NucleotideModel;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
@@ -49,6 +51,7 @@ public class ParserUtils {
                 // probability distribution
                 Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
                 Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
+                UniformInteger.class,
                 // tree distribution
                 Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
@@ -90,6 +93,8 @@ public class ParserUtils {
                 // Substitution models
                 JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
                 GeneralTimeReversible.class, LewisMK.class,
+                NucleotideModel.class,
+                BModelSetFunction.class,
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
                 // Tree
