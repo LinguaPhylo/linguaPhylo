@@ -282,7 +282,7 @@ public class BModelSet {
         splitModels[parent].add(child);
     }
 
-    @MethodInfo(narrativeName="number of models in bModelTest model set", description = "the number of models in this model set.")
+    @MethodInfo(narrativeName="number of models", verbClause = "in", description = "the number of models in this model set.")
     public int size() {
         return models.length;
     }

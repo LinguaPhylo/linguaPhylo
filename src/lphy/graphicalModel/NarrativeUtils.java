@@ -10,14 +10,14 @@ import java.util.Map;
 public class NarrativeUtils {
 
     public static String getArticle(Value value, boolean unique) {
-        return getArticle(value, unique, false);
+        return getArticle(value, getName(value), unique, false);
     }
 
-    public static String getArticle(Value value, boolean unique, boolean lowercase) {
+    public static String getArticle(Value value, String name, boolean unique, boolean lowercase) {
 
         //String article = lowercase ? "the" : "The";
         String article = lowercase ? "" : "The";
-        if (!unique && value.isAnonymous()) article = getIndefiniteArticle(getName(value), lowercase);
+        if (!unique && value.isAnonymous()) article = getIndefiniteArticle(name, lowercase);
         return article;
     }
 
@@ -113,7 +113,7 @@ public class NarrativeUtils {
         boolean match = !value.isAnonymous() && name.equals(value.getId());
 
         if (unique || !name.endsWith("s") || plural) {
-            String article = getArticle(value, unique, lowercase);
+            String article = getArticle(value, name, unique, lowercase);
             if (match) {
                 narrativeId = article + " " + narrativeId;
             } else name = article + " " + name;

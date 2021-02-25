@@ -13,40 +13,40 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by adru001 on 18/12/19.
  */
-public class UniformInteger implements GenerativeDistribution<Integer> {
+public class DiscreteUniform implements GenerativeDistribution<Integer> {
 
     private Value<Integer> lower;
     private Value<Integer> upper;
 
     private RandomGenerator random;
 
-    public UniformInteger(@ParameterInfo(name = lowerParamName, description = "the lower bound (inclusive) of the uniform distribution on integers.") Value<Integer> lower,
-                          @ParameterInfo(name = upperParamName, description = "the upper bound (exclusive) of the uniform distribution on integer.") Value<Integer> upper) {
+    public DiscreteUniform(@ParameterInfo(name = lowerParamName, description = "the lower bound (inclusive) of the uniform distribution on integers.") Value<Integer> lower,
+                           @ParameterInfo(name = upperParamName, description = "the upper bound (inclusive) of the uniform distribution on integer.") Value<Integer> upper) {
 
         this.lower = lower;
         this.upper = upper;
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "UniformInteger", description = "The uniform probability distribution over integers.")
+    @GeneratorInfo(name = "DiscreteUniform", description = "The discrete uniform distribution over integers.")
     public RandomVariable<Integer> sample() {
 
         int l = lower.value();
         int u = upper.value();
 
-        int x = random.nextInt(u-l) + l;
+        int x = random.nextInt(u-l+1) + l;
 
         return new RandomVariable<>(null, x, this);
     }
 
     public double logDensity(Integer x) {
-        if (x < lower.value() || x >= upper.value()) return Double.NEGATIVE_INFINITY;
+        if (x < lower.value() || x > upper.value()) return Double.NEGATIVE_INFINITY;
         return Math.log(1.0) - Math.log(upper.value() - lower.value());
     }
 
     public double density(Double x) {
-        if (x < lower.value() || x >= upper.value()) return 0.0;
-        return 1.0 / (upper.value() - lower.value());
+        if (x < lower.value() || x > upper.value()) return 0.0;
+        return 1.0 / (upper.value() - lower.value() + 1);
     }
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{

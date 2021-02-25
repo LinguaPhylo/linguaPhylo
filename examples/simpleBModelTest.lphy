@@ -3,7 +3,6 @@
 π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]);
 rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
 modelSet = bModelSet("transitionTransversionSplit");
-M ~ UniformInteger(lower=0, upper=modelSet.size());
-modelName = modelSet.getModelName(M);
+M ~ DiscreteUniform(lower=0, upper=modelSet.size()-1);
 Q = nucleotideModel(modelSet=modelSet, modelIndicator=M, freq=π, rates=rates);
 D ~ PhyloCTMC(L=200, Q=Q, tree=ψ);
