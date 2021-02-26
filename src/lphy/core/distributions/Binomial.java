@@ -7,8 +7,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
-
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.core.distributions.DistributionConstants.pParamName;
+@Deprecated
 public class Binomial implements GenerativeDistribution<Integer> {
 
     private Value<Double> p;
@@ -19,7 +20,7 @@ public class Binomial implements GenerativeDistribution<Integer> {
     public Binomial(@ParameterInfo(name = pParamName, description = "the probability of a success.") Value<Double> p,
                     @ParameterInfo(name = nParamName, description = "number of trials.") Value<Integer> n) {
         this.p = p;
-        this.n = n;
+        this.n = n; //TODO replaced by IID
         this.random = Utils.getRandom();
     }
 

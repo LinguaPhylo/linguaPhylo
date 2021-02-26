@@ -24,11 +24,11 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
     public final String minSuccessesParamName = "minSuccesses";
 
-    private final String nParamName = IID.replicatesParamName;
+    private final String repParamName = IID.replicatesParamName;
     private static final int MAX_TRIES = 1000;
 
     public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.") Value<Double> p,
-                          @ParameterInfo(name = nParamName, description = "the number of bernoulli trials.") Value<Integer> n,
+                          @ParameterInfo(name = repParamName, description = "the number of bernoulli trials.") Value<Integer> n,
                           @ParameterInfo(name = minSuccessesParamName, description = "Optional condition: the minimum number of ones in the boolean array.", optional = true) Value<Integer> minSuccesses) {
         this.p = p;
         this.n = n;
@@ -105,7 +105,7 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(pParamName, p);
-            put(nParamName, n);
+            put(repParamName, n);
             if (minSuccesses != null) put(minSuccessesParamName, minSuccesses);
         }};
     }
@@ -116,14 +116,14 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
             case pParamName:
                 p = value;
                 break;
-            case nParamName:
+            case repParamName:
                 n = value;
                 break;
             case minSuccessesParamName:
                 minSuccesses = value;
                 break;
             default:
-                throw new RuntimeException("Expected " + pParamName + " or " + nParamName + " or " + minSuccessesParamName);
+                throw new RuntimeException("Expected " + pParamName + " or " + repParamName + " or " + minSuccessesParamName);
         }
     }
 
