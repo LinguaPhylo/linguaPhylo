@@ -2,20 +2,19 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
-import lphy.utils.LoggerUtils;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.core.distributions.DistributionConstants.pParamName;
 
 /**
  * A Bernoulli process of n trials.
+ * Note: because there is a optional condition "minSuccesses",
+ * It cannot be replaced by {@link IID}.
  */
-@Deprecated()
 public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
     private Value<Double> p;
     private Value<Integer> n;
@@ -25,6 +24,7 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
     public final String minSuccessesParamName = "minSuccesses";
 
+    private final String nParamName = IID.replicatesParamName;
     private static final int MAX_TRIES = 1000;
 
     public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.") Value<Double> p,

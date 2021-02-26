@@ -51,7 +51,7 @@ public class ParserUtils {
                 // probability distribution
                 Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
                 Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
-                DiscreteUniform.class,
+                DiscreteUniform.class, BernoulliMulti.class,
                 // tree distribution
                 Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
