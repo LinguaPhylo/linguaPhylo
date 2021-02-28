@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.core.distributions.DistributionConstants.pParamName;
-@Deprecated
+
 public class Binomial implements GenerativeDistribution<Integer> {
 
     private Value<Double> p;
