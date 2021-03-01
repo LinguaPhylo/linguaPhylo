@@ -4,6 +4,7 @@ import lphy.core.LPhyParser;
 
 import java.util.Map;
 
+@Deprecated
 public interface Command {
 
     String getName();

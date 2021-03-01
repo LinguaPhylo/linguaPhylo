@@ -6,6 +6,7 @@ import lphy.graphicalModel.Value;
 
 import java.util.Map;
 
+@Deprecated
 public class Remove implements Command {
 
     LPhyParser parser;

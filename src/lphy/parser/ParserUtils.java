@@ -2,6 +2,7 @@ package lphy.parser;
 
 import lphy.bmodeltest.BModelSetFunction;
 import lphy.bmodeltest.NucleotideModel;
+import lphy.bmodeltest.bSiteModelFunction;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
@@ -17,6 +18,7 @@ import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.continuous.PhyloOU;
 import lphy.evolution.functions.ExtantTaxa;
 import lphy.evolution.likelihood.PhyloCTMC;
+import lphy.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.evolution.substitutionmodel.*;
 import lphy.evolution.tree.ExtantTree;
 import lphy.evolution.tree.PruneTree;
@@ -65,7 +67,7 @@ public class ParserUtils {
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
-                PhyloCTMC.class};
+                PhyloCTMC.class, PhyloCTMCSiteModel.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);
@@ -95,6 +97,7 @@ public class ParserUtils {
                 GeneralTimeReversible.class, LewisMK.class,
                 NucleotideModel.class,
                 BModelSetFunction.class,
+                bSiteModelFunction.class,
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
                 // Tree
