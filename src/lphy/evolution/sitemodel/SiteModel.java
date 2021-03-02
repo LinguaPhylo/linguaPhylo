@@ -1,8 +1,9 @@
 package lphy.evolution.sitemodel;
 
-import lphy.evolution.NChar;
+import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.MultiDimensional;
 
-public class SiteModel {
+public class SiteModel implements MultiDimensional {
 
     // instantaneous rate matrix
     Double[][] Q;
@@ -22,6 +23,7 @@ public class SiteModel {
         this.proportionInvariable = proportionInvariable;
     }
 
+    @MethodInfo(description = "the Q matrix for this site model")
     public Double[][] getQ() {
         return Q;
     }
@@ -30,6 +32,7 @@ public class SiteModel {
         return siteRates != null;
     }
 
+    @MethodInfo(description = "the raw site rates for this site model")
     public Double[] siteRates() {
         return siteRates;
     }
@@ -38,7 +41,13 @@ public class SiteModel {
         return Q.length;
     }
 
-    public double getProportionInvariable() {
+    @MethodInfo(description = "the proportion of invariable sites")
+    public Double getProportionInvariable() {
         return proportionInvariable;
+    }
+
+    @Override
+    public int getDimension() {
+        return 1 + Q.length * Q.length + siteRates.length;
     }
 }

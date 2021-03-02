@@ -3,6 +3,7 @@ package lphy.parser;
 import lphy.bmodeltest.BModelSetFunction;
 import lphy.bmodeltest.NucleotideModel;
 import lphy.bmodeltest.bSiteModelFunction;
+import lphy.bmodeltest.bSiteRates;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
@@ -67,7 +68,7 @@ public class ParserUtils {
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
-                PhyloCTMC.class, PhyloCTMCSiteModel.class};
+                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class};
 
         for (Class<?> genClass : genClasses) {
             String name = Generator.getGeneratorName(genClass);

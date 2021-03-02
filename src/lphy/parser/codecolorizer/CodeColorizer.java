@@ -40,7 +40,7 @@ public class CodeColorizer extends SimulatorBaseListener {
         ColorizerStyles.addStyles(pane);
         punctuationStyle = pane.getStyle("punctuationStyle");
         constantStyle = pane.getStyle("constantStyle");
-        genDistStyle = pane.getStyle("genDistStyle");
+        genDistStyle = pane.getStyle("distributionStyle");
         argumentNameStyle = pane.getStyle("argumentNameStyle");
         functionStyle = pane.getStyle("functionStyle");
         randomStyle = pane.getStyle("randomVarStyle");

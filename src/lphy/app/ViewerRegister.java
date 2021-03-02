@@ -21,6 +21,18 @@ import java.awt.*;
  */
 public class ViewerRegister {
 
+    private static Viewer methodInfoViewer = new Viewer() {
+        @Override
+        public boolean match(Object value) {
+            return (value instanceof Value && MethodInfoPanel.hasZeroParamMethodInfo((Value)value));
+        }
+
+        @Override
+        public JComponent getViewer(Object value) {
+            return new MethodInfoPanel((Value)value);
+        }
+    };
+
     private static Viewer primitiveArrayViewer = new Viewer() {
         public boolean match(Object object) {
             if (object instanceof Value) {
@@ -264,7 +276,8 @@ public class ViewerRegister {
             taxaValueViewer,
             continuousCharacterDataViewer,
             primitiveArrayViewer,
-            new VectorValueViewer()
+            new VectorValueViewer(),
+            methodInfoViewer
     };
 
     private static Viewer getViewerForValue(Object object) {

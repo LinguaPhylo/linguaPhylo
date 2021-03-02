@@ -18,8 +18,8 @@ public class StatePanel extends JPanel {
     List<JComponent> editors = new ArrayList<>();
     GroupLayout layout = new GroupLayout(this);
 
-    boolean includeRandomValues = true;
-    boolean includeFixedValues = true;
+    boolean includeRandomValues;
+    boolean includeFixedValues;
 
     public StatePanel(GraphicalLPhyParser parser, boolean includeFixedValues, boolean includeRandomValues) {
         this.parser = parser;

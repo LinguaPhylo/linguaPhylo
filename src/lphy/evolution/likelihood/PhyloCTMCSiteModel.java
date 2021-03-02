@@ -110,7 +110,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(treeParamName, tree);
         if (clockRate != null) map.put(muParamName, clockRate);
-        if (rootFreqs != null) map.put(rootFreqParamName, rootFreqs);
+        if (freq != null) map.put(rootFreqParamName, freq);
         map.put(siteModelParamName, siteModel);
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
@@ -125,7 +125,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
                 tree = value;
                 break;
             case rootFreqParamName:
-                rootFreqs = value;
+                freq = value;
                 break;
             case muParamName:
                 clockRate = value;
@@ -279,7 +279,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
             }
         }
 
-        return new Value<>("freq", freqs);
+        return new Value<>(null, freqs);
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
