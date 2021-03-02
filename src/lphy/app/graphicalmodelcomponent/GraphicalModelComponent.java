@@ -245,10 +245,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         String uniqueId = getUniqueId(value);
         //uniqueId = uniqueId.replace("_", "."); // can't have underscore in these names.
 
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getLabel(gNode) + "};";
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getTikzLabel(gNode) + "};";
     }
 
-    private String getLabel(LayeredGNode gNode) {
+    private String getTikzLabel(LayeredGNode gNode) {
         Value value = (Value)gNode.value();
         String label = Symbols.getCanonical(gNode.name, "$\\", "$");
         if (!value.isAnonymous()) {

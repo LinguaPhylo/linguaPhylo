@@ -30,6 +30,12 @@ public interface Taxa extends MultiDimensional {
         return ntaxa();
     }
 
+    @MethodInfo(description = "the total number of nodes (left + internal) in a binary tree with these taxa.")
+    default int nodeCount() {
+        return 2*ntaxa()-1;
+    }
+
+
     //******  ******//
 
     /**

@@ -1,8 +1,10 @@
 model {
   taxa = taxa(names=["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"], species=["A", "A", "B", "B", "C", "C", "D", "D"]);
-  Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, replicates=7);
+  species = species(taxa);
+  speciesPopCount = species.nodeCount();
+  Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, replicates=speciesPopCount);
   λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
-  sp ~ Yule(lambda=λ, taxa=species(taxa));
-  g ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa);
+  sp ~ Yule(lambda=λ, taxa=species);
+  g ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa, replicates=2);
   alignment ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g);
 }

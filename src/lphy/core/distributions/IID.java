@@ -74,7 +74,7 @@ public class IID<T> implements GenerativeDistribution<T[]> {
 
             } else
                 // types must match
-                if (!argument.type.isAssignableFrom(argValue.value().getClass())) {
+                if (argValue !=null && !argument.type.isAssignableFrom(argValue.value().getClass())) {
                     return false;
                 }
 

@@ -174,19 +174,26 @@ public class NodePaintUtils {
         boolean vectorized = (generator instanceof VectorizedDistribution || generator instanceof VectorizedFunction || generator instanceof IID);
 
         String str = generator.getName();
+        Integer size = 0;
         if (vectorized) {
-            Value value = (Value) ((LayeredGNode) node.getSuccessors().get(0)).value();
             str += "[";
 
+            Value<Integer> replicatesValue = null;
             if (generator instanceof VectorizedDistribution) {
-                Value<Integer> replicatesValue = ((VectorizedDistribution)generator).getReplicatesValue();
-                if (replicatesValue != null) str += replicatesValue.getLabel();
+                replicatesValue = ((VectorizedDistribution)generator).getReplicatesValue();
+                size = ((VectorizedDistribution)generator).getComponentDistributions().size();
             } else if (generator instanceof VectorizedFunction) {
-                Value<Integer> replicatesValue = ((VectorizedFunction)generator).getReplicatesValue();
-                if (replicatesValue != null) str += replicatesValue.getLabel();
+                replicatesValue = ((VectorizedFunction)generator).getReplicatesValue();
+                size = ((VectorizedFunction)generator).getComponentFunctions().size();
             } else if (generator instanceof IID) {
-                Value<Integer> replicatesValue = ((IID)generator).getReplicates();
-                if (replicatesValue != null) str += replicatesValue.getLabel();
+                replicatesValue = ((IID)generator).getReplicates();
+                size = ((IID)generator).size();
+
+            }
+            if (replicatesValue != null) {
+                str += replicatesValue.isAnonymous() ? replicatesValue.codeString() : replicatesValue.getId();
+            } else {
+                str += size;
             }
 
             str += "]";
