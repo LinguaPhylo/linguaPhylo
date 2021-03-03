@@ -14,21 +14,24 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 public class Poisson implements GenerativeDistribution1D<Integer> {
 
     private static final String lambdaParamName = "lambda";
+    private static final String offsetParamName = "offset";
     private static final String minParamName = "min";
     private static final String maxParamName = "max";
     private Value<Number> lambda;
     private Value<Integer> min;
     private Value<Integer> max;
+    private Value<Integer> offset;
 
     static final int MAX_TRIES = 10000;
 
     public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Number> lambda,
+                   @ParameterInfo(name=offsetParamName, optional = true, description = "optional parameter to add a constant to the returned result. default is 0") Value<Integer> offset,
                    @ParameterInfo(name=minParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be greater than or equal to this mininum") Value<Integer> min,
-                   @ParameterInfo(name=maxParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be less than or equal to this maximum") Value<Integer> max)
-            {
+                   @ParameterInfo(name=maxParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be less than or equal to this maximum") Value<Integer> max) {
         this.lambda = lambda;
         this.min = min;
         this.max = max;
+        this.offset = offset;
     }
 
     @GeneratorInfo(name="Poisson", description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
@@ -36,15 +39,13 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
 
         PoissonDistribution poisson = new PoissonDistribution(doubleValue(lambda));
 
-        int minimum = 0;
-        int maximum = Integer.MAX_VALUE;
-        if (min != null) minimum = min.value();
-        if (max != null) maximum = max.value();
+        int minimum = min();
+        int maximum = max();
 
         int val = -1;
         int count = 0;
         while (val < minimum || val > maximum) {
-            val = poisson.sample();
+            val = poisson.sample() + C();
             count += 1;
             if (count > MAX_TRIES) {
                 throw new RuntimeException("Failed to draw conditional Poisson random variable after " + MAX_TRIES + " attempts.");
@@ -55,9 +56,29 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
         return new RandomVariable<>(null, val, this);
     }
 
+    private int C() {
+        int C = 0;
+        if (offset != null) {
+            C = offset.value();
+        }
+        return C;
+    }
+
+    private int min() {
+        if (min != null) return min.value();
+        return 0;
+    }
+
+    private int max() {
+        if (max != null) return max.value();
+        return Integer.MAX_VALUE;
+    }
+
     public double density(Integer i) {
         PoissonDistribution poisson = new PoissonDistribution(doubleValue(lambda));
-        return poisson.probability(i);
+        if (i < min()) return 0.0;
+        if (i > max()) return 0.0;
+        return poisson.probability(i-C());
     }
 
     @Override
@@ -66,6 +87,7 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             put(lambdaParamName, lambda);
             if (min != null) put(minParamName, min);
             if (max != null) put(maxParamName, max);
+            if (offset != null) put(offsetParamName, offset);
         }};    }
 
     @Override
@@ -80,8 +102,11 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             case maxParamName:
                 max = value;
                 break;
+            case offsetParamName:
+                offset = value;
+                break;
             default:
-                throw new RuntimeException("The valid parameter names are " + lambdaParamName + ", " + minParamName + " and " + maxParamName);
+                throw new RuntimeException("The valid parameter names are " + lambdaParamName + ", " + minParamName + ", " + maxParamName + " and " + offsetParamName);
         }
     }
 
@@ -109,4 +134,9 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
     public Value<Integer> getMax() {
         return max;
     }
+
+    public Value<Integer> getOffset() {
+        return offset;
+    }
+
 }
