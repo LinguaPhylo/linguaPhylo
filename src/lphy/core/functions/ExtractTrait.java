@@ -9,6 +9,7 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
+import lphy.graphicalModel.types.NumberValue;
 import lphy.graphicalModel.types.StringValue;
 
 /**
@@ -45,8 +46,8 @@ public class ExtractTrait extends DeterministicFunction<Alignment> {
     public Value<Alignment> apply() {
 
         Taxa taxa = ((Value<Taxa>) getParams().get(taxaParamName)).value();
-        String sepStr = ((StringValue) getParams().get(sepParamName)).value();
-        Integer index = ((IntegerValue) getParams().get(indexParamName)).value();
+        String sepStr = ((Value<String>) getParams().get(sepParamName)).value();
+        Integer index = ((Value<Integer>) getParams().get(indexParamName)).value();
         Value<String> labelVal = getParams().get(traitNameParamName);
         String label = labelVal==null ? "" : labelVal.getUniqueId();
 

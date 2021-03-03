@@ -43,7 +43,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
             description = "A function that parses an alignment from a Nexus file.")
     public Value<Alignment> apply() {
 
-        String fileName = ((StringValue) getParams().get(fileParamName)).value();
+        String fileName = ((Value<String>) getParams().get(fileParamName)).value();
 
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
         String ageDirectionStr = MetaDataOptions.getAgeDirectionStr(optionsVal);
