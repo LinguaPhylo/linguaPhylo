@@ -24,12 +24,12 @@ public class ViewerRegister {
     private static Viewer methodInfoViewer = new Viewer() {
         @Override
         public boolean match(Object value) {
-            return (value instanceof Value && MethodInfoPanel.hasZeroParamMethodInfo((Value)value));
+            return (value instanceof Value && MethodInfoPanel.hasZeroParamMethodInfo((Value) value));
         }
 
         @Override
         public JComponent getViewer(Object value) {
-            return new MethodInfoPanel((Value)value);
+            return new MethodInfoPanel((Value) value);
         }
     };
 
@@ -38,7 +38,8 @@ public class ViewerRegister {
             if (object instanceof Value) {
                 Object value = ((Value) object).value();
                 return (value instanceof Double[] || value instanceof Number[] || value instanceof Integer[] || value instanceof Boolean[] || value instanceof String[]);
-            } else return (object instanceof Double[] || object instanceof Number[] || object instanceof Integer[] || object instanceof Boolean[] || object instanceof String[]);
+            } else
+                return (object instanceof Double[] || object instanceof Number[] || object instanceof Integer[] || object instanceof Boolean[] || object instanceof String[]);
         }
 
         public JComponent getViewer(Object object) {
@@ -46,7 +47,7 @@ public class ViewerRegister {
             Object array;
 
             if (object instanceof Value) {
-                array = ((Value)object).value();
+                array = ((Value) object).value();
             } else {
                 array = object;
             }
@@ -64,11 +65,11 @@ public class ViewerRegister {
             }
 
             if (array instanceof Integer[]) {
-                return new ArrayLabel((Integer[])array);
+                return new ArrayLabel((Integer[]) array);
             }
 
             if (array instanceof Boolean[]) {
-                return new ArrayLabel((Boolean[])array);
+                return new ArrayLabel((Boolean[]) array);
             }
 
             throw new IllegalArgumentException("Unexpected argument: " + object);
@@ -83,16 +84,19 @@ public class ViewerRegister {
                 Value value = (Value) object;
                 return value.value() instanceof Double;
 
-            } else return false;
+            } else return (object instanceof Double);
         }
 
         public JComponent getViewer(Object object) {
-            Value value = (Value) object;
-            if (value.getGenerator() == null) {
-                return new DoubleValueEditor(value);
-            } else {
-                return new JLabel(value.value().toString());
-            }
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                if (value.getGenerator() == null) {
+                    return new DoubleValueEditor(value);
+                } else {
+                    return new JLabel(value.value().toString());
+                }
+            } else return new JLabel(object.toString());
         }
     };
 
@@ -130,16 +134,18 @@ public class ViewerRegister {
                 Value value = (Value) object;
                 return value.value() instanceof Integer;
 
-            } else return false;
+            } else return object instanceof Integer;
         }
 
         public JComponent getViewer(Object object) {
-            Value value = (Value) object;
-            if (value.getGenerator() == null) {
-                return new IntegerValueEditor(value);
-            } else {
-                return new JLabel(value.value().toString());
-            }
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                if (value.getGenerator() == null) {
+                    return new IntegerValueEditor(value);
+                } else {
+                    return new JLabel(value.value().toString());
+                }
+            } else return new JLabel(object.toString());
         }
     };
 
@@ -151,156 +157,160 @@ public class ViewerRegister {
                 Value value = (Value) object;
                 return value.value() instanceof String;
 
-            } else return false;
+            } else return object instanceof String;
         }
 
         public JComponent getViewer(Object object) {
-            Value<String> value = (Value<String>) object;
-            if (value.getGenerator() == null) {
-                return new StringValueEditor(value);
-            } else {
-                return new JLabel(value.value());
-            }
-        }
-    };
-
-    private static Viewer booleanValueViewer = new Viewer() {
-
-        public boolean match(Object object) {
-
             if (object instanceof Value) {
-                Value value = (Value) object;
-                return value.value() instanceof Boolean;
-
-            } else return false;
-        }
-
-        public JComponent getViewer(Object object) {
-            Value value = (Value) object;
-
-            if (value.getGenerator() == null) {
-                return new BooleanValueEditor(value);
+                Value<String> value = (Value<String>) object;
+                if (value.getGenerator() == null) {
+                    return new StringValueEditor(value);
+                } else {
+                    return new JLabel(value.value());
+                }
             } else {
-                return new JLabel(value.value().toString());
+                return new JLabel("\"" + object.toString()+"\"");
             }
         }
     };
 
+        private static Viewer booleanValueViewer = new Viewer() {
 
-    private static Viewer alignmentValueViewer = new Viewer() {
+            public boolean match(Object object) {
 
-        @Override
-        public boolean match(Object value) {
-            return value instanceof Alignment || (value instanceof Value && ((Value) value).value() instanceof Alignment);
-        }
+                if (object instanceof Value) {
+                    Value value = (Value) object;
+                    return value.value() instanceof Boolean;
 
-        @Override
-        public JComponent getViewer(Object value) {
-            if (value instanceof Alignment) {
-                return new AlignmentComponent(new Value(null, value));
+                } else return false;
             }
-            return new AlignmentComponent((Value<Alignment>) value);
-        }
-    };
 
-    private static Viewer taxaValueViewer = new Viewer() {
+            public JComponent getViewer(Object object) {
+                Value value = (Value) object;
 
-        @Override
-        public boolean match(Object value) {
-            return value instanceof Taxa || (value instanceof Value && ((Value) value).value() instanceof Taxa);
-        }
-
-        @Override
-        public JComponent getViewer(Object value) {
-            if (value instanceof Taxa) {
-                return new TaxaComponent((Taxa)value);
+                if (value.getGenerator() == null) {
+                    return new BooleanValueEditor(value);
+                } else {
+                    return new JLabel(value.value().toString());
+                }
             }
-            return new TaxaComponent(((Value<Taxa>) value).value());
-        }
-    };
+        };
 
-    private static Viewer continuousCharacterDataViewer = new Viewer() {
 
-        @Override
-        public boolean match(Object value) {
-            return value instanceof ContinuousCharacterData || (value instanceof Value && ((Value) value).value() instanceof ContinuousCharacterData);
-        }
+        private static Viewer alignmentValueViewer = new Viewer() {
 
-        @Override
-        public JComponent getViewer(Object value) {
-            if (value instanceof Taxa) {
-                return new ContinuousCharacterDataComponent((ContinuousCharacterData)value);
+            @Override
+            public boolean match(Object value) {
+                return value instanceof Alignment || (value instanceof Value && ((Value) value).value() instanceof Alignment);
             }
-            return new ContinuousCharacterDataComponent(((Value<ContinuousCharacterData>) value).value());
-        }
-    };
 
-    private static Viewer mapValueViewer = new Viewer() {
-
-        @Override
-        public boolean match(Object value) {
-            return value instanceof MapValue;
-        }
-
-        @Override
-        public JComponent getViewer(Object value) {
-            return new MapComponent((MapValue) value);
-        }
-    };
-
-    private static Viewer timeTreeValueViewer = new Viewer() {
-
-        @Override
-        public boolean match(Object object) {
-            return object instanceof TimeTree || (object instanceof Value && ((Value) object).value() instanceof TimeTree);
-        }
-
-        @Override
-        public JComponent getViewer(Object object) {
-            if (object instanceof TimeTree) {
-                return new TimeTreeComponent((TimeTree) object);
+            @Override
+            public JComponent getViewer(Object value) {
+                if (value instanceof Alignment) {
+                    return new AlignmentComponent(new Value(null, value));
+                }
+                return new AlignmentComponent((Value<Alignment>) value);
             }
-            return new TimeTreeComponent(((Value<TimeTree>) object).value());
-        }
-    };
+        };
 
-    public static Viewer[] viewers = {
-            doubleValueViewer,
-            integerValueViewer,
-            stringValueViewer,
-            booleanValueViewer,
-            doubleArray2DViewer,
-            mapValueViewer,
-            alignmentValueViewer,
-            timeTreeValueViewer,
-            taxaValueViewer,
-            continuousCharacterDataViewer,
-            primitiveArrayViewer,
-            new VectorValueViewer(),
-            methodInfoViewer
-    };
+        private static Viewer taxaValueViewer = new Viewer() {
 
-    private static Viewer getViewerForValue(Object object) {
-        for (Viewer viewer : viewers) {
-            if (viewer.match(object)) return viewer;
+            @Override
+            public boolean match(Object value) {
+                return value instanceof Taxa || (value instanceof Value && ((Value) value).value() instanceof Taxa);
+            }
+
+            @Override
+            public JComponent getViewer(Object value) {
+                if (value instanceof Taxa) {
+                    return new TaxaComponent((Taxa) value);
+                }
+                return new TaxaComponent(((Value<Taxa>) value).value());
+            }
+        };
+
+        private static Viewer continuousCharacterDataViewer = new Viewer() {
+
+            @Override
+            public boolean match(Object value) {
+                return value instanceof ContinuousCharacterData || (value instanceof Value && ((Value) value).value() instanceof ContinuousCharacterData);
+            }
+
+            @Override
+            public JComponent getViewer(Object value) {
+                if (value instanceof Taxa) {
+                    return new ContinuousCharacterDataComponent((ContinuousCharacterData) value);
+                }
+                return new ContinuousCharacterDataComponent(((Value<ContinuousCharacterData>) value).value());
+            }
+        };
+
+        private static Viewer mapValueViewer = new Viewer() {
+
+            @Override
+            public boolean match(Object value) {
+                return value instanceof MapValue;
+            }
+
+            @Override
+            public JComponent getViewer(Object value) {
+                return new MapComponent((MapValue) value);
+            }
+        };
+
+        private static Viewer timeTreeValueViewer = new Viewer() {
+
+            @Override
+            public boolean match(Object object) {
+                return object instanceof TimeTree || (object instanceof Value && ((Value) object).value() instanceof TimeTree);
+            }
+
+            @Override
+            public JComponent getViewer(Object object) {
+                if (object instanceof TimeTree) {
+                    return new TimeTreeComponent((TimeTree) object);
+                }
+                return new TimeTreeComponent(((Value<TimeTree>) object).value());
+            }
+        };
+
+        public static Viewer[] viewers = {
+                doubleValueViewer,
+                integerValueViewer,
+                stringValueViewer,
+                booleanValueViewer,
+                doubleArray2DViewer,
+                mapValueViewer,
+                alignmentValueViewer,
+                timeTreeValueViewer,
+                taxaValueViewer,
+                continuousCharacterDataViewer,
+                primitiveArrayViewer,
+                new VectorValueViewer(),
+                methodInfoViewer
+        };
+
+        private static Viewer getViewerForValue(Object object) {
+            for (Viewer viewer : viewers) {
+                if (viewer.match(object)) return viewer;
+            }
+            LoggerUtils.log.severe("Found no viewer for " + object);
+            return null;
         }
-        LoggerUtils.log.severe("Found no viewer for " + object);
-        return null;
+
+        public static JComponent getJComponentForValue(Object object) {
+            for (Viewer viewer : viewers) {
+                if (viewer.match(object)) return viewer.getViewer(object);
+            }
+            LoggerUtils.log.severe("Found no viewer for " + object);
+            String label;
+            if (object instanceof Value) {
+                label = ((Value) object).getLabel();
+            } else {
+                label = object.toString();
+            }
+            JLabel jLabel = new JLabel(label);
+            jLabel.setForeground(Color.red);
+            return jLabel;
+        }
     }
-
-    public static JComponent getJComponentForValue(Object object) {
-        for (Viewer viewer : viewers) {
-            if (viewer.match(object)) return viewer.getViewer(object);
-        }
-        LoggerUtils.log.severe("Found no viewer for " + object);
-        String label;
-        if (object instanceof Value) {
-            label = ((Value) object).getLabel();
-        } else {
-            label = object.toString();
-        }
-        JLabel jLabel = new JLabel(label);
-        jLabel.setForeground(Color.red);
-        return jLabel;
-    }
-}

@@ -283,9 +283,15 @@ public class BModelSet {
     }
 
     @MethodInfo(narrativeName="number of models", verbClause = "in", description = "the number of models in this model set.")
-    public int size() {
+    public Integer size() {
         return models.length;
     }
+
+    @MethodInfo(narrativeName="the name of this model set", verbClause = "in", description = "the number of models in this model set.")
+    public String getName() {
+        return modelSet.name();
+    }
+
 
     @MethodInfo(narrativeName="name of the model", description = "the name of the given model indicator.")
     public String getModelName(Integer modelIndicator) {
