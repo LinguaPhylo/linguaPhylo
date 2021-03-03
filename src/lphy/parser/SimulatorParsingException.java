@@ -1,5 +1,7 @@
 package lphy.parser;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 public class SimulatorParsingException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
@@ -18,6 +20,19 @@ public class SimulatorParsingException extends RuntimeException {
         this.characterNum = characterNum;
         this.lineNum = lineNum;
     }
+
+    /**
+     * Create new parsing exception.
+     *
+     * @param message      Human-readable error message.
+     * @param context  the parser rule context.
+     */
+    public SimulatorParsingException(String message, ParserRuleContext context) {
+        this.message = message;
+        this.lineNum = context.getStart().getLine();
+        this.characterNum = context.getStart().getCharPositionInLine();
+    }
+
 
     /**
      * Create new parsing exception

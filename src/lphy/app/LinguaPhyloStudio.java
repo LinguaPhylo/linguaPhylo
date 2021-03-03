@@ -340,23 +340,6 @@ public class LinguaPhyloStudio {
     private GraphicalLPhyParser createParser() {
 
         GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
-
-        parser.addCommand(new SampleCommand(this));
-        parser.addCommand(new Remove(parser));
-
-        Command quitCommand = new Command() {
-            @Override
-            public String getName() {
-                return "quit";
-            }
-
-            public void execute(Map<String, Value<?>> params) {
-                quit();
-            }
-        };
-
-        parser.addCommand(quitCommand);
-
         return parser;
 
     }

@@ -6,6 +6,7 @@ import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
+import lphy.parser.SimulatorParsingException;
 import lphy.parser.functions.ExpressionNode;
 import lphy.parser.functions.ExpressionNodeWrapper;
 import lphy.utils.LoggerUtils;
@@ -85,10 +86,6 @@ public interface LPhyParser {
         return value instanceof RandomVariable && isClamped(value.getId());
     }
 
-    void addCommand(Command command);
-
-    Collection<Command> getCommands();
-
     /**
      * @return all sinks of the graphical model, including in the data block.
      */
@@ -119,7 +116,7 @@ public interface LPhyParser {
         parse(code, Context.model);
     }
 
-    void parse(String code, Context context);
+    void parse(String code, Context context) throws SimulatorParsingException;
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy

@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Value;
+import lphy.parser.SimulatorParsingException;
 
 import java.util.*;
 
@@ -47,16 +48,7 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
-    public void addCommand(Command command) {
-        wrappedParser.addCommand(command);
-    }
-
-    public Collection<Command> getCommands() {
-        return wrappedParser.getCommands();
-    }
-
-    @Override
-    public void parse(String code, Context context) {
+    public void parse(String code, Context context) throws SimulatorParsingException {
         wrappedParser.parse(code, context);
         notifyListeners();
     }

@@ -4,6 +4,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Generator;
 import lphy.parser.ParserUtils;
+import lphy.parser.SimulatorParsingException;
 import lphy.parser.codecolorizer.CodeColorizer;
 import lphy.utils.LoggerUtils;
 
@@ -67,10 +68,6 @@ public class GraphicalModelInterpreter extends JPanel {
         List<String> keywords = parser.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.symbolCodes));
 
-        List<String> commandStrings =
-                parser.getCommands().stream().map(Command::getName).collect(Collectors.toList());
-        keywords.addAll(commandStrings);
-
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
         for (Map.Entry<String, Set<Class<?>>> entry : parser.getGeneratorClasses().entrySet()) {
@@ -89,15 +86,6 @@ public class GraphicalModelInterpreter extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setMessage(message);
-                }
-            });
-        }
-
-        for (Command command : parser.getCommands()) {
-            autoComplete.getActionMap().put(command.getName(), new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setMessage(command.getSignature());
                 }
             });
         }
@@ -236,16 +224,19 @@ public class GraphicalModelInterpreter extends JPanel {
 
     public void interpretInput(String input, LPhyParser.Context context) {
 
-        parser.parse(input, context);
-
-
         try {
-            CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
-            codeColorizer.parse(input);
-        } catch (Exception e) {
-            //textPane.setText(input);
-            LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
-            e.printStackTrace(System.err);
+            parser.parse(input, context);
+
+
+            try {
+                CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
+                codeColorizer.parse(input);
+            } catch (Exception e) {
+                LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
+                e.printStackTrace(System.err);
+            }
+        } catch (SimulatorParsingException spe) {
+            LoggerUtils.log.severe("Parsing of " + context + " block failed: " + spe.getMessage());
         }
     }
 

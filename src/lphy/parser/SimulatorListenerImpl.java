@@ -297,6 +297,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
 
+
+
             Object var = visit(ctx.getChild(0));
             RandomVariable variable = genDist.sample(var.toString());
 
@@ -688,8 +690,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             List<Generator> matches = ParserUtils.getMatchingGenerativeDistributions(name, arguments);
             switch (matches.size()) {
                 case 0:
-                    LoggerUtils.log.severe("Found no generative distribution matching arguments for " + name);
-                    return null;
+                    SimulatorParsingException spe = new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
+                    LoggerUtils.log.severe(spe.getMessage());
+                    throw spe;
                 case 1:
                 default:
                     if (matches.size() > 1)
@@ -701,30 +704,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     }
                     return generator;
             }
-
-//	        Class genDistClass = genDistDictionary.get(name);
-//	        if (genDistClass == null) {
-//	            throw new RuntimeException("Parsing error: Unrecognised generative distribution: " + name);
-//	        }
-//
-//	        try {
-//	            List<Object> initargs = new ArrayList<>();
-//	            Constructor constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-//	            if (constructor == null) {
-//	            	constructor = getConstructorByArguments(arguments, genDistClass, initargs);
-//	                throw new RuntimeException("Parser error: no constructor found for generative distribution " + name + " with arguments " + arguments);
-//	            }
-//
-//	            GenerativeDistribution dist = (GenerativeDistribution) constructor.newInstance(initargs.toArray());
-//	            for (String parameterName : arguments.keySet()) {
-//	                Value value = arguments.get(parameterName);
-//	                dist.setInput(parameterName, arguments.get(parameterName));
-//	            }
-//	            return dist;
-//	        } catch (InstantiationException | IllegalAccessException | InvocationTargetException  e) {
-//	            e.printStackTrace();
-//	            throw new RuntimeException("Parsing generative distribution " + name + " failed. " + e.getMessage());
-//	        }
 
         }
 
