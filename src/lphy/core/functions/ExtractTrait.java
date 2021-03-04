@@ -24,7 +24,7 @@ public class ExtractTrait extends DeterministicFunction<Alignment> {
     private final String indexParamName = "i";
     private final String traitNameParamName = "name";
 
-    public ExtractTrait(@ParameterInfo(name = taxaParamName, description = "the set of taxa whose names contain the traits.") Value<Taxa> taxa,
+    public ExtractTrait(@ParameterInfo(name = taxaParamName, verb = "from", description = "the set of taxa whose names contain the traits.") Value<Taxa> taxa,
                         @ParameterInfo(name = sepParamName, description = "the substring to split the taxa names, " +
                                 "where Java regular expression escape characters will be given no special meaning.") Value<String> sepStr,
                         @ParameterInfo(name = indexParamName, description = "i (>=0) is the index to extract the trait value.") Value<Integer> index,

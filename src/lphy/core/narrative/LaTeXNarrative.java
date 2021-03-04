@@ -111,9 +111,14 @@ public class LaTeXNarrative implements Narrative {
 
         builder.append("\\begin{document}\n");
 
+
         if (boxStyle) {
             builder.append("\\begin{tcolorbox}[breakable, width=\\textwidth, colback=gray!10, boxrule=0pt,\n" +
                     "  title=" + title + ", fonttitle=\\bfseries]\n\n");
+        } else {
+            builder.append("\\title{");
+            builder.append(title);
+            builder.append("}\n\\maketitle\n\n");
         }
 
         if (twoColumn) {

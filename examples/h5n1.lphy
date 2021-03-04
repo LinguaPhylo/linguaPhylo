@@ -4,33 +4,32 @@ data {
   L = D.nchar();
   taxa = D.taxa();
   // extract traits from the 3rd element
-  trait_D = extractTrait(taxa=taxa, sep="_", i=2);
-  K = trait_D.stateCount();
+  D_trait = extractTrait(taxa=taxa, sep="_", i=2);
+  K = D_trait.stateCount();
   dim = K*(K-1)/2;
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 
-  shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
-  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
+  γ ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  r ~ DiscretizeGamma(shape=γ, ncat=4, replicates=L);
 
   Θ ~ LogNormal(meanlog=0.0, sdlog=1.0);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
-  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=0.004, tree=ψ);
+  D ~ PhyloCTMC(siteRates=r, Q=hky(kappa=κ, freq=π), mu=0.004, tree=ψ);
 
-  trait_π ~ Dirichlet(conc=rep(element=3.0, times=K));
+  π_trait ~ Dirichlet(conc=rep(element=3.0, times=K));
   // symmetric, rates dimension = n * (n-1) / 2
-  trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
+  R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  //trait_indicators ~ Bernoulli(p=0.5, minSuccesses=dim-2, replicates=dim);
-  numTraits ~ Poisson(lambda=2, offset=K, max=dim);
-  trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
+  S ~ Poisson(lambda=2, offset=K, max=dim);
+  I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
   // 0.08629747  1.00000000 11.58782503
-  traitClockRate ~ LogNormal(meanlog=0, sdlog=1.25);
+  μ_trait ~ LogNormal(meanlog=0, sdlog=1.25);
 
   // construct the GTR instantaneous rate matrix
-  trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
-  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, mu=traitClockRate, tree=ψ, dataType="standard");
+  Q_trait = generalTimeReversible(freq=π_trait, rates=select(x=R_trait, indicator=I));
+  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType="standard");
 }

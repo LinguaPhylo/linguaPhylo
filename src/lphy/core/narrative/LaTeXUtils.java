@@ -66,7 +66,7 @@ public class LaTeXUtils {
 
                 // check for index if this is the last block and is ascii text
                 if (block == lastBlock) {
-                    boolean containsIndexSeparator = s.contains(INDEX_SEPARATOR) && ValueUtils.isInteger(s.substring(s.lastIndexOf(INDEX_SEPARATOR)+1));
+                    boolean containsIndexSeparator = s.contains(INDEX_SEPARATOR);
                     if (containsIndexSeparator) {
                         indexStr = s.substring(s.lastIndexOf(INDEX_SEPARATOR)+1);
                         s = s.substring(0, s.lastIndexOf(INDEX_SEPARATOR));
@@ -87,7 +87,9 @@ public class LaTeXUtils {
 
             if (indexStr.length() > 0) {
                 builder.append('_');
+                builder.append("{");
                 builder.append(indexStr);
+                builder.append("}");
             }
         }
         

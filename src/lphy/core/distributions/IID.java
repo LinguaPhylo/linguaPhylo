@@ -164,7 +164,7 @@ public class IID<T> implements GenerativeDistribution<T[]> {
      */
     public String getNarrativeName(Value value) {
         String paramName = getParamName(value);
-        if (paramName.equals(replicatesParamName)) return replicatesParamName;
+        if (paramName.equals(replicatesParamName)) return "number of replicates";
         return baseDistribution.getNarrativeName(paramName);
     }
 
