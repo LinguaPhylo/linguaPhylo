@@ -87,8 +87,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     // ignore commas
                 } else {
                     LoggerUtils.log.severe("Expected Integer value, or Range, in range list, but found: " + o);
-                    throw new IllegalArgumentException("Expected Integer value, or Range, in range list, but don't know how to handle " +
-                            o == null ? "null" : o.getClass().getName());
+                    throw new SimulatorParsingException("Expected Integer value, or Range, in range list, but don't know how to handle " +
+                            o == null ? "null" : o.getClass().getName(), ctx);
                 }
             }
             return new RangeList(nodes.toArray(new GraphicalModelNode[0]));
@@ -103,7 +103,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             Object o = visitChildren(ctx);
 
             if (o instanceof RangeElement) {
-                return (RangeElement)o;
+                return (RangeElement) o;
             }
 
             LoggerUtils.log.severe("Expected Integer value, or Range, in range element, but found: " + o);
@@ -159,7 +159,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
                 if (o instanceof RangedVar) {
-                    return handleRangeVar((RangedVar)o, value, f);
+                    return handleRangeVar((RangedVar) o, value, f);
                 } else {
                     value.setFunction(f);
                     value.setId(id);
@@ -172,7 +172,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 value.setId(id);
 
                 if (o instanceof RangedVar) {
-                    return handleRangeVar((RangedVar)o, value, null);
+                    return handleRangeVar((RangedVar) o, value, null);
                 } else {
                     put(id, value);
                     LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
@@ -298,7 +298,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
 
 
-
             Object var = visit(ctx.getChild(0));
             RandomVariable variable = genDist.sample(var.toString());
 
@@ -306,7 +305,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 put(variable.getId(), variable);
                 return variable;
             } else if (var instanceof RangedVar) {
-                RangedVar rv = (RangedVar)var;
+                RangedVar rv = (RangedVar) var;
 
                 throw new SimulatorParsingException("Ranged variables are not currently handled!", ctx);
 //                // if already exists
@@ -367,7 +366,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             Object child = visit(ctx.getChild(0));
 
-            Value array = new ValueOrFunction(child).getValue();
+            Value array = new ValueOrFunction(child, ctx).getValue();
 
             if (!array.value().getClass().isArray()) {
                 throw new SimulatorParsingException("Expected value " + array + " to be an array.", ctx);
@@ -395,8 +394,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
 
-            System.out.println("visitExpression: " + ctx.getText() + " has " + ctx.getChildCount() + " child node(s).");
-
             // Deals with single token expressions -- either an id or a map expression
             if (ctx.getChildCount() == 1) {
                 ParseTree childContext = ctx.getChild(0);
@@ -405,9 +402,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 if (childContext.getText().startsWith("{")) {
                     Object obj = visit(childContext);
 
-                    if (obj instanceof Value) {
-                        LoggerUtils.log.info("Eureka: " + obj);
-                    }
                     return obj;
                 }
 
@@ -426,9 +420,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
                 if (ParserUtils.bivarOperators.contains(s)) {
 
-                    Value f1 = new ValueOrFunction(visit(ctx.getChild(0))).getValue();
+                    Value f1 = new ValueOrFunction(visit(ctx.getChild(0)), ctx).getValue();
 
-                    Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1))).getValue();
+                    Value f2 = new ValueOrFunction(visit(ctx.getChild(ctx.getChildCount() - 1)), ctx).getValue();
 
                     switch (s) {
                         case "+":
@@ -613,11 +607,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         class ValueOrFunction {
 
             Object obj;
+            ParserRuleContext ctx;
 
-            public ValueOrFunction(Object obj) {
+            public ValueOrFunction(Object obj, ParserRuleContext ctx) {
                 this.obj = obj;
+                this.ctx = ctx;
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
-                    throw new IllegalArgumentException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""));
+                    throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
                 }
                 if (context == LPhyParser.Context.data) {
                     parser.getDataValues().add(getValue());
@@ -634,7 +630,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     val.setFunction(func);
                     return val;
                 }
-                throw new RuntimeException();
+                throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
             }
         }
 
@@ -642,9 +638,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             Object obj = visit(ctx.getChild(2));
-
-            LoggerUtils.log.log(Level.FINE, " Visiting named expression:");
-            LoggerUtils.log.log(Level.FINE, "   name: " + name + " child2: " + obj);
 
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();
@@ -671,11 +664,12 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             ArgumentValue[] f = (ArgumentValue[]) visit(ctx.getChild(2));
             Map<String, Value> arguments = new HashMap<>();
 
-            for (ArgumentValue v : f) {
+            for (int i = 0; i < f.length; i++) {
+                ArgumentValue v = f[i];
                 if (v != null) {
                     arguments.put(v.getName(), v.getValue());
                 } else {
-                    throw new RuntimeException("Unexpected null argument!");
+                    throw new SimulatorParsingException("Argument " + i + " unexpectedly null", ctx);
                 }
             }
 
@@ -686,8 +680,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     throw new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
                 case 1:
                 default:
-                    if (matches.size() > 1)
-                        LoggerUtils.log.severe("Found " + matches.size() + " matches for " + name + ". Picking first one!");
+                    if (matches.size() > 1) {
+                        LoggerUtils.log.warning("Found " + matches.size() + " matches for " + name + ". Picking first one!");
+                    }
                     generator = matches.get(0);
                     // must be done so that Values all know their outputs
                     for (Map.Entry<String, Value> entry : arguments.entrySet()) {
@@ -699,36 +694,38 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         }
 
 
-		@Override // for_loop: counter relations
-		public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
-			ParseTree counter = ctx.getChild(0);
-			// counter: FOR '(' NAME IN range_element ')'
-			String name = counter.getChild(2).getText();
+        @Override // for_loop: counter relations
+        public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
+            ParseTree counter = ctx.getChild(0);
+            // counter: FOR '(' NAME IN range_element ')'
+            String name = counter.getChild(2).getText();
 
-			// either an IntegerValue, an IntegerArrayValue or a Range function
-			GraphicalModelNode range = (GraphicalModelNode)visit(counter.getChild(4));
-			Object rangeValue = range.value();
+            // either an IntegerValue, an IntegerArrayValue or a Range function
+            GraphicalModelNode range = (GraphicalModelNode) visit(counter.getChild(4));
+            Object rangeValue = range.value();
 
 
             Integer[] intRange;
-			if (rangeValue instanceof Integer[]) {
-                intRange = (Integer[])rangeValue;
+            if (rangeValue instanceof Integer[]) {
+                intRange = (Integer[]) rangeValue;
             } else if (rangeValue instanceof Integer) {
-			    intRange = new Integer[] {(Integer)rangeValue};
-            } else throw new RuntimeException("Unexpected type of range element in for loop: " + rangeValue);
+                intRange = new Integer[]{(Integer) rangeValue};
+            } else throw new SimulatorParsingException("Unexpected type of range element in for loop: " + rangeValue, ctx);
 
 
-            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[])rangeValue);
-			for (Integer i : intRange) {
+            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[]) rangeValue);
+            for (Integer i : intRange) {
 
                 put(name, new IntegerValue(name, i, null));
                 ParseTree relations = ctx.getChild(1);
                 visit(relations);
             }
             return new Object() {
-			    public String toString() { return forLoopName; }
+                public String toString() {
+                    return forLoopName;
+                }
             };
-		}
+        }
 
         /**
          * @param ctx
@@ -758,7 +755,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     list.add(value);
                 } else if (obj == null) {
                     list.add(null);
-                } else throw new RuntimeException("Found a non-value, non-function in unnamed expression list: " + obj);
+                } else throw new SimulatorParsingException("Found a non-value, non-function in unnamed expression list: " + obj, ctx);
             }
             return list.toArray(new Value[]{});
         }
@@ -841,7 +838,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                     f1 = new Value[argumentValues.length];
                     for (int i = 0; i < argumentValues.length; i++) {
                         if (argumentValues[i] == null)
-                            throw new IllegalStateException("Argument " + (i+1) + " from " + functionName + " is null ! ");
+                            throw new SimulatorParsingException("Argument " + (i + 1) + " from " + functionName + " is null ! ", ctx);
                         f1[i] = argumentValues[i].getValue();
                     }
                 }
@@ -950,7 +947,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             Set<Class<?>> functionClasses = ParserUtils.getFunctionClasses(functionName);
 
             if (functionClasses == null) {
-                throw new RuntimeException("Found no implementation for function with name " + functionName);
+                throw new SimulatorParsingException("Found no implementation for function with name " + functionName, ctx);
             }
 
             Map<String, Value> arguments = new HashMap<>();
