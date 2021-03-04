@@ -26,6 +26,8 @@ public class ViewerPane extends JTabbedPane {
     JScrollPane variableLogScrollPane;
     JScrollPane treeLogScrollPane;
 
+    ErrorPanel errorPanel;
+
     VariableSummary variableSummary = new VariableSummary(true, true);
     VariableLog variableLog = new VariableLog(true, true);
     TreeLog treeLog = new TreeLog();
@@ -48,7 +50,8 @@ public class ViewerPane extends JTabbedPane {
         Latex("Latex"),
         Variable_Summary("Variable Summary"),
         Variable_Log("Variable Log"),
-        Tree_Log ("Tree Log");
+        Tree_Log ("Tree Log"),
+        Errors ("Errors");
 
         public String name;
 
@@ -81,6 +84,8 @@ public class ViewerPane extends JTabbedPane {
         variableLogScrollPane = new JScrollPane(variableLog);
         treeLogScrollPane = new JScrollPane(treeLog);
 
+        errorPanel = new ErrorPanel();
+
         viewerComponent[Viewer.Current.ordinal()] = currentSelectionContainer;
         viewerComponent[Viewer.Constants.ordinal()] = valueScrollPane;
         viewerComponent[Viewer.Variables.ordinal()] = variablesScrollPane;
@@ -90,6 +95,7 @@ public class ViewerPane extends JTabbedPane {
         viewerComponent[Viewer.Variable_Summary.ordinal()] = variableSummaryScrollPane;
         viewerComponent[Viewer.Variable_Log.ordinal()] = variableLogScrollPane;
         viewerComponent[Viewer.Tree_Log.ordinal()] = treeLogScrollPane;
+        viewerComponent[Viewer.Errors.ordinal()] = errorPanel;
 
         for (Viewer viewer : Viewer.values()) {
             if (getShowViewer(viewer)) {

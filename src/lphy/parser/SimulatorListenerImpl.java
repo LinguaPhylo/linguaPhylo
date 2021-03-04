@@ -690,9 +690,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             List<Generator> matches = ParserUtils.getMatchingGenerativeDistributions(name, arguments);
             switch (matches.size()) {
                 case 0:
-                    SimulatorParsingException spe = new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
-                    LoggerUtils.log.severe(spe.getMessage());
-                    throw spe;
+                    throw new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
                 case 1:
                 default:
                     if (matches.size() > 1)
