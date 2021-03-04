@@ -7,6 +7,7 @@ public class SimulatorParsingException extends RuntimeException {
 
 	String message;
     Integer characterNum, lineNum;
+    ParserRuleContext context;
 
     /**
      * Create new parsing exception.
@@ -29,6 +30,7 @@ public class SimulatorParsingException extends RuntimeException {
      */
     public SimulatorParsingException(String message, ParserRuleContext context) {
         this.message = message;
+        this.context = context;
         this.lineNum = context.getStart().getLine();
         this.characterNum = context.getStart().getCharPositionInLine();
     }
@@ -45,7 +47,20 @@ public class SimulatorParsingException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return message + " line " + lineNum + " character " + characterNum;
+        StringBuilder msg = new StringBuilder(message);
+        msg.append(" line ");
+        msg.append(lineNum);
+        msg.append(" character ");
+        msg.append(characterNum);
+
+        if (context != null) {
+            msg.append("\n -> ");
+            String text = context.getText();
+            msg.append(text);
+            msg.append("\n    ");
+            msg.append("^".repeat(text.length()));
+        }
+        return msg.toString();
     }
 
     /**

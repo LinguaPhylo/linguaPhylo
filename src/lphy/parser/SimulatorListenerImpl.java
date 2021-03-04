@@ -108,8 +108,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             LoggerUtils.log.severe("Expected Integer value, or Range, in range element, but found: " + o);
 
-            throw new IllegalArgumentException("Expected integer value, or range, but don't know how to handle " +
-                    (o == null ? "null" : o.getClass().getName()));
+            throw new SimulatorParsingException("Expected integer value, or range, but don't know how to handle " +
+                    (o == null ? "null" : o.getClass().getName()), ctx);
         }
 
         @Override
@@ -142,7 +142,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         private String stripQuotes(String stringWithQuotes) {
             if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
                 return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
-            } else throw new RuntimeException();
+            } else throw new RuntimeException("Attempted to strip quotes, but the string was not quoted.");
         }
 
         @Override
@@ -292,7 +292,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
         public Value visitStoch_relation(SimulatorParser.Stoch_relationContext ctx) {
 
             if (context == LPhyParser.Context.data) {
-                throw new RuntimeException("Generative distributions are not allowed in the data block!");
+                throw new SimulatorParsingException("Generative distributions are not allowed in the data block!", ctx);
             }
 
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
@@ -308,7 +308,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             } else if (var instanceof RangedVar) {
                 RangedVar rv = (RangedVar)var;
 
-                throw new RuntimeException("Ranged variables are not currently handled!");
+                throw new SimulatorParsingException("Ranged variables are not currently handled!", ctx);
 //                // if already exists
 //                if (get(rv.id) != null) {
 //                    addElementToVariable(rv.id, rv.range, variable);
@@ -316,7 +316,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //                    RandomVariable parentVariable = new RandomVariable(rv.id, )
 //                }
             } else {
-                throw new RuntimeException("Expected an id or ranged variable but got " + var);
+                throw new SimulatorParsingException("Expected an id or ranged variable but got " + var, ctx);
             }
         }
 
@@ -343,8 +343,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
          * @return the id of a variable, or a RangeVar object containing an id and RangeList
          */
         public Object visitVar(VarContext ctx) {
-            
-            LoggerUtils.log.info("  visitVar: " + ctx.getText());
 
             String id = ctx.getChild(0).getText();
             if (ctx.getChildCount() > 1) {
@@ -353,8 +351,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 if (o instanceof RangeList) {
                     return new RangedVar(id, (RangeList) o);
                 } else {
-                    throw new IllegalArgumentException("Expected list of integer values, but don't know how to handle " +
-                            o == null ? "null" : o.getClass().getName());
+                    throw new SimulatorParsingException("Expected variable id, or id and range list", ctx);
                 }
             }
 
@@ -373,7 +370,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             Value array = new ValueOrFunction(child).getValue();
 
             if (!array.value().getClass().isArray()) {
-                LoggerUtils.log.severe("Expected value " + array + " to be an array.");
+                throw new SimulatorParsingException("Expected value " + array + " to be an array.", ctx);
             }
 
             RangeList rangeList = (RangeList) visit(ctx.getChild(2));
@@ -610,9 +607,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 }
             }
 
-
-            LoggerUtils.log.fine("Unhandled expression: " + ctx.getText() + " has " + ctx.getChildCount() + " children.");
-
             return super.visitExpression(ctx);
         }
 
@@ -623,8 +617,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             public ValueOrFunction(Object obj) {
                 this.obj = obj;
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
-                    LoggerUtils.log.severe("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""));
-                    throw new RuntimeException();
+                    throw new IllegalArgumentException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""));
                 }
                 if (context == LPhyParser.Context.data) {
                     parser.getDataValues().add(getValue());
@@ -794,7 +787,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             String methodName = ctx.children.get(2).getText();
             Value value = get(id);
             if (value == null) {
-                throw new SimulatorParsingException("Value " + id + " not found for method call " + methodName);
+                throw new SimulatorParsingException("Value " + id + " not found for method call " + methodName, ctx);
             }
 
             ParseTree ctx2 = ctx.getChild(4);
@@ -821,7 +814,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 return new MethodCall(methodName, value, f1);
             } catch (NoSuchMethodException e) {
                 LoggerUtils.log.severe("Method call " + methodName + " failed on object " + value.getId());
-                throw new SimulatorParsingException(e.getMessage());
+                throw new SimulatorParsingException(e.getMessage(), ctx);
             }
         }
 
