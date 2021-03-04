@@ -1,0 +1,34 @@
+data {
+  // 16 genes
+  files = ["APOBS1.fasta","BRCA1S2.fasta","CHST12.fasta","VANGL2.fasta",
+           "APOBS2.fasta","Ch14.fasta","CMKOR1.fasta","RAG1.fasta",
+           "VWF.fasta","BDNF.fasta","Ch21.fasta","FGFR3.fasta",
+           "BRCA1S1.fasta","Ch24.fasta","GHRex09.fasta","TMEM20.fasta"];
+  paths = concat("examples/data/", files);
+  options = {speciesRegex="^(.*)\_(.*)$"};
+  genes = readFasta(file=paths, options=options);
+
+  n = length(files);
+  weights = genes.nchar();
+
+  // taxa = genes[0].taxa();
+  gene1 = genes[0];
+  taxa = gene1.taxa();
+  spPopCount = taxa.nodeCount();
+}
+model {
+  // unlink subst model and tree, link clock model
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25, replicates=n);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], replicates=n);
+
+  λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  sp ~ Yule(lambda=λ, taxa=taxa);
+  Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, replicates=spPopCount);
+  //TODO not working up to here
+  //ψ ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa, replicates=n);
+
+  // relative substitution rates
+  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
+
+  //genes ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=0.001, tree=ψ);
+}

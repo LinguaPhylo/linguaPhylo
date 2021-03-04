@@ -14,6 +14,8 @@ public final class MetaDataOptions {
     protected static final String AGE_DIRECTION = "ageDirection";
     protected static final String AGE_REGEX = "ageRegex";
 
+    protected static final String SPECIESE_REGEX = "speciesRegex";
+
     public static final String OPT_DESC = "the map containing optional arguments and their values for reuse, " +
             "                          such as " + AGE_DIRECTION + " and " + AGE_REGEX + ".";
 
@@ -29,6 +31,11 @@ public final class MetaDataOptions {
     public static String getAgeRegxStr(Value<Map<String, String>> optionsVal) {
         Map<String, String> options = optionsVal == null ? null : optionsVal.value();
         return options == null ? null : options.get(AGE_REGEX);
+    }
+
+    public static String getSpecieseRegex(Value<Map<String, String>> optionsVal) {
+        Map<String, String> options = optionsVal == null ? null : optionsVal.value();
+        return options == null ? null : options.get( SPECIESE_REGEX );
     }
 
     public static boolean isSame(Map<String, String> options1, Map<String, String> options2) {

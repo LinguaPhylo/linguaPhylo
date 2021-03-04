@@ -1,0 +1,114 @@
+#NEXUS
+
+BEGIN TAXA;
+    DIMENSIONS NTAX=24;
+    TAXLABELS
+        Canis_adustus
+        Canis_anthus
+        Canis_antonii
+        Canis_armbrusteri
+        Canis_arnensis
+        Canis_chihliensis
+        Canis_dirus
+        Canis_edwardii
+        Canis_etruscus
+        Canis_falconeri
+        Canis_ferox
+        Canis_latrans
+        Canis_lepophagus
+        Canis_lupus
+        Canis_mesomelas
+        Canis_mosbachensis
+        Canis_palmidens
+        Canis_simensis
+        Canis_thooides
+        Canis_variabilis
+        Cuon_alpinus
+        Eucyon_davisi
+        Lycaon_pictus
+        Xenocyon_texanus
+;
+END;
+
+BEGIN CHARACTERS;
+    DIMENSIONS NCHAR=50;
+    FORMAT DATATYPE=Standard SYMBOLS="0123" MISSING=? GAP=- INTERLEAVE=YES;
+    CHARSTATELABELS
+        1 'Size of I3' / 'unenlarged relative to I1-2' 'enlarged relative to I1-2' 'greatly enlarged, possibly caniniform',
+        2 'Canine shape' / 'long, slender' 'short, robust',
+        3 'Width of premolars' / 'premolars not widened' 'premolars widened' 'premolars very wide and robust' ', premolars narrowed and slender',
+        4 'Premolar diastemata' / 'closed premolar row' 'premolars separated by diastemata',
+        5 'Anterior cingular premolar cusps' / 'present on p2–4' 'weak to absent on p2–4' 'present only on p4',
+        6 'Premolar crown height' / 'premolars normal crown height' 'anterior premolars low crowned' 'high crowned',
+        7 'Premolar length' / 'short' 'elongate',
+        8 'p3 posterior accessory cuspids' / 'absent' 'present, moderately developed' 'present, enlarged',
+        9 'Height of principal cusp of p3 vs. p2, p4' / 'forms ascending series or at same height' 'lies below p2 and p4',
+        10 'Position of p3 crown base vs. crown base of p4' / 'approximately same level as p4 when ramus is viewed laterally' 'crown base of p3 lies mostly below that of p4',
+        11 'Second posterior accessory cusp of p3' / 'absent' 'present',
+        12 'p4 second posterior accessory cusp' / 'absent' 'present, lies between first posterior accessory cusp and cingulum' 'undifferentiated from posterior cingulum',
+        13 'p4 height relative to m1 paraconid' / 'equals or exceeds m1 paraconid height' 'lower than m1 paranoid',
+        14 'P4 protocone position' / 'extends beyond anterior edge of paracone' 'medial to paracone',
+        15 'P4 protocone size' / 'unenlarged' 'enlarged' 'reduced' 'markedly reduced to small bulge with small root',
+        16 'M1 parastyle' / 'large and salient' 'united with well-developed preparacrista' 'subdued, but remains united with preparacrista' 'preparacrista directed more anteriorly, lingual to parastyle',
+        17 'M1 paracone height' / 'low, subequal to metacone' 'high and larger than metacone',
+        18 'M1 lingual cingulum' / 'surrounds protocone anteriorly' 'posteriorly positioned and not surrounding protocone' 'anteriorly thickened',
+        19 'M1 labial cingulum at paracone' / 'present at paracone' 'absent or subdued lateral to paracone',
+        20 'M1 shape' / 'anteroposteriorly short but transversely wide' 'subquadrate' 'longitudinally elongated',
+        21 'M1 metaconule' / 'weak or absent' 'present' 'large' 'metaconule split into two cusps',
+        22 'M1 hypocone' / 'absent, lingual cingulum undifferentiated' 'hypocone present as swelling of posterior lingual cingulum' 'conical M1 hypocone present' 'conical M1 hypocone surrounded by cingulum',
+        23 'M2 postprotocrista' / 'present' 'incomplete or absent',
+        24 'm1 metaconid' / 'present' 'unreduced, subequal to protoconid' 'present, reduced, almost vestigial' 'absent',
+        25 'm1 anterior edge of paraconid' / 'nearly linear and vertical' 'inclined posteriorly, may be curved',
+        26 'm1 entoconid form' / 'poorly differentiated low crest on lingual border of talonid' 'discrete conical cusp',
+        27 'm1 talonid transverse cristid connecting hypoconid to entoconid' / 'absent' 'present',
+        28 'm1 talonid width' / 'subequal with trigonid' 'wide relative to trigonoid' 'narrow relative to trigonid',
+        29 'm1 hypoconulid shelf' / 'absent' 'present',
+        30 'm2 metaconid height' / 'subequal in height with paraconid' 'shorter than paraconid' 'absent' 'much higher than protoconid',
+        31 'm2 size' / 'unreduced/enlarged: smaller than m1' 'enlarged relative to m1' 'reduced in size relative to m1',
+        32 'm3 trigonid cusps' / 'two' 'single, centrally placed cusp' 'm3 absent',
+        33 'Rostrum length' / 'mesocephalic' 'slightly dolichocephalic' 'extremely dolichocephalic, premolars widely spaced' 'relatively brachycephalic' 'extremely brachycephalic, premolars crowded',
+        34 'Anterior palatine foramina length' / 'short, posterior border lies at or anterior to posterior end of canine alveolus' 'long, posterior border lies posterior to canine alveolus',
+        35 'Nasal process of frontal' / 'long' 'short',
+        36 'Nasal length' / 'long, usually extending posteriorly beyond most posterior position of frontomaxillary suture' 'short, does not extend beyond frontomaxillary suture',
+        37 'Foramen ovale and alisphenoid canal' / 'separate' 'in common pit',
+        38 'Frontal sinus' / 'no frontal sinus, presence of a depression on dorsal surface of postorbital process' 'small frontal sinus that does not invade postorbital process or extend beyond postorbital constriction, depression may be retained' 'sinus invades postorbital process and may extend posteriorly to frontoparietal suture' 'sinus extends posteriorly beyond frontoparietal suture' 'sinus penetrates far back over top of entire braincase',
+        39 'Maxillojugal suture shape' / 'obtuse' 'acute',
+        40 'Lateral expansion of zygomatic arches' / 'unexpanded' 'laterally expanded',
+        41 'Zygomatic arch shape' / 'nearly flat or moderately arched in lateral view' 'strongly dorsoventrally arched',
+        42 'Sagittal crest location' / 'confined to parietal' 'extends on to frontal',
+        43 'Lambdoidal crest constriction' / 'lambdoidal crest not constricted' 'nuchal portion of crest constricted, forming a rectangular plate',
+        44 'Supraoccipital shield form' / 'rectangular or fan-shaped, inion not overhanging condyles' 'triangular in shape, inion often pointed and overhanging condyles',
+        45 'Size of paraoccipital process' / 'short and slender' 'elongate and robust' 'further hypertrophied and keeled posteriorly',
+        46 'Posterior expansion of paraoccipital' / 'no posterior extension' 'posteriorly extended' 'further extended, leading to development of a longitudinal plate',
+        47 'Mastoid process form and size' / 'small, crest-like' 'large, knob-like, inflated' 'prominently inflated beyond squamosal shelf' 'ventrally expanded' 'mastoid process very reduced, further receded under squamosal shelf',
+        48 'Optic foramen and anterior lacerate foramen' / 'separate' 'in common pit',
+        49 'Relative size of fossa for superior ramus of medial pterygoideus muscle' / 'small' 'fossa for superior ramus much larger than inferior',
+        50 'Radial-tibial ratio' / '<80%' '80–90%' '>90%',
+;
+    MATRIX
+        Canis_adustus       1031101?0002010110001001011010011100011000001110??
+        Canis_anthus        10311011110111010000110011101000100102101101111011
+        Canis_antonii       113110111101010100100101111011001001030?100111101?
+        Canis_armbrusteri   11311010111111321000110111101121111013111111221112
+        Canis_arnensis      1031101100010101000011000110100010?1?30?1101??1?1?
+        Canis_chihliensis   103110111101013110101101111010011000030?110111001?
+        Canis_dirus         11311011111111321110010111101121111013111111221112
+        Canis_edwardii      103110111101110110001100111011001000?21?1001111011
+        Canis_etruscus      1031101111010101100011000110110?100013??1101111011
+        Canis_falconeri     113110111101010100100101111011001???????????????1?
+        Canis_ferox         003110110001000100001100010010001000?20?1101111011
+        Canis_latrans       103110111101110110001100111011001001021?1101111012
+        Canis_lepophagus    003110110001000100001100011010001000020?1101111011
+        Canis_lupus         10311011110211021010110011101101110003111111221012
+        Canis_mesomelas     1031101100010101101011010110100110000100000011101?
+        Canis_mosbachensis  103110111101110110001100111011001000?21??101????11
+        Canis_palmidens     10311011110111011000110111101100100103???00111101?
+        Canis_simensis      103110110002010111001111011010002100020110011110??
+        Canis_thooides      003110110001000100001100011010001?????????01????11
+        Canis_variabilis    103110111101110110001100111011001001021?1001111011
+        Cuon_alpinus        11002101010101011112011200020222310002010001121012
+        Eucyon_davisi       00311011000100010000110001001000100001001000111000
+        Lycaon_pictus       11002101010101011112011200020121310002110001121012
+        Xenocyon_texanus    113110110101010111100101111201203000030??1?022101?
+;
+END;
