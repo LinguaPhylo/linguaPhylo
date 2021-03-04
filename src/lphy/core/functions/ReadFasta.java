@@ -56,6 +56,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
         String ageDirectionStr = MetaDataOptions.getAgeDirectionStr(optionsVal);
         String ageRegxStr = MetaDataOptions.getAgeRegxStr(optionsVal);
+        String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
         //*** parsing ***//
         SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
@@ -96,9 +97,12 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             }
         }
 
-        // dates
+        // set age to Taxon
         if (ageRegxStr != null)
             faData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
+        // set species to Taxon
+        if (spRegxStr != null)
+            faData.setSpeciesFromTaxaName(spRegxStr);
 
         return new Value<>(null, faData, this);
 

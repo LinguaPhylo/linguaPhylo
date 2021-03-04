@@ -39,7 +39,7 @@ public class MetaDataAlignment extends SimpleAlignment {
     protected AgeDirection ageDirection = AgeDirection.forward;
     protected String ageRegxStr;
 
-    protected String locRegxStr;
+    protected String spRegxStr;
 
     //*** age direction ***//
 
@@ -142,6 +142,18 @@ public class MetaDataAlignment extends SimpleAlignment {
         }
 
         assignAges(ageStringMap, ageDirectionStr);
+    }
+
+    public void setSpeciesFromTaxaName(String spRegxStr) {
+        this.spRegxStr = spRegxStr;
+        // guess species
+        final Pattern regx = Pattern.compile(spRegxStr);
+
+        for (Taxon taxon : getTaxonArray()) {
+            String taxonName = taxon.getName();
+            String spStr = getAttrFirstMatch(taxonName, regx);
+            taxon.setSpecies(Objects.requireNonNull(spStr));
+        }
     }
 
     //*** ChronoUnit ***//

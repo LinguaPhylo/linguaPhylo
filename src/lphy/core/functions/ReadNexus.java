@@ -48,6 +48,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
         Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
         String ageDirectionStr = MetaDataOptions.getAgeDirectionStr(optionsVal);
         String ageRegxStr = MetaDataOptions.getAgeRegxStr(optionsVal);
+        String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(fileName);
@@ -57,9 +58,13 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
             } catch (IOException | ImportException e) {
                 e.printStackTrace();
             }
-        if (ageRegxStr != null) {
+        // set age to Taxon
+        if (ageRegxStr != null)
             nexusData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
-        }
+        // set species to Taxon
+        if (spRegxStr != null)
+            nexusData.setSpeciesFromTaxaName(spRegxStr);
+
         return new Value<>(null, nexusData, this);
 
     }

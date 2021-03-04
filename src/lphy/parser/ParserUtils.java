@@ -110,7 +110,7 @@ public class ParserUtils {
                 // Math
                 lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
                 // Utils
-                ParseInt.class,
+                ParseInt.class, Concat.class,
                 Length.class, Unique.class, Range.class, Rep.class,
                 Select.class, Split.class, SliceDoubleArray.class
         };
