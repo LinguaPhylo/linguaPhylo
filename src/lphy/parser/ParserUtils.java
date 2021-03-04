@@ -247,8 +247,8 @@ public class ParserUtils {
                 if (f != null) {
                     matches.add(f);
                 }
-            } else if (values.length == 0 && arguments.size() == 1 && arguments.get(0).optional) {
-                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, new Object[]{null}, null, false);
+            } else if (values.length == 0 && arguments.stream().allMatch(x -> x.optional)) {
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, new Object[arguments.size()], null, false);
                 if (f != null) {
                     matches.add(f);
                 }

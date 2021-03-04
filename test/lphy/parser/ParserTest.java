@@ -65,6 +65,7 @@ public class ParserTest extends TestCase {
                 System.out.println("Processing " + fileName);
                 try {
 	                BufferedReader fin = new BufferedReader(new FileReader(dir + "/" + fileName));
+                    lPhyParser = new REPL();
                     lPhyParser.source(fin);
                     lPhyParser.clear();
 //	                StringBuffer buf = new StringBuffer();

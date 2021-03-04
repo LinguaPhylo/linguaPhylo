@@ -1,6 +1,0 @@
-λ ~ LogNormal(meanlog=2.3, sdlog=0.2);
-sp ~ Yule(lambda=λ, n=4);
-n = [1, 1, 1, 1];
-Θ ~ LogNormal(meanlog=-3.0, n=7, sdlog=0.5);
-g ~ MultispeciesCoalescent(S=sp, n=n, theta=Θ, replicates=6);
-D ~ PhyloCTMC(L=200, Q=jukesCantor(), mu=1.0, tree=g);

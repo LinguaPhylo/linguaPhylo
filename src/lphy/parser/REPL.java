@@ -1,6 +1,7 @@
 package lphy.parser;
 
 
+import lphy.app.Script;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Value;
@@ -141,27 +142,10 @@ public class REPL implements LPhyParser {
      */
     @Override
     public void source(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        LPhyParser.Context context = LPhyParser.Context.model;
-        while (line != null) {
-            if (line.trim().startsWith("data")) {
-                context = LPhyParser.Context.data;
-            } else if (line.trim().startsWith("model")) {
-                context = LPhyParser.Context.model;
-            } else if (line.trim().startsWith("}")) {
-                // do nothing as this line is just closing a data or model block.
-            } else {
-                switch (context) {
-                    case data:
-                        parse(line, LPhyParser.Context.data);
-                        break;
-                    case model:
-                        parse(line, LPhyParser.Context.model);
-                        break;
-                }
-            }
-            line = reader.readLine();
-        }
+
+        Script script = Script.loadLPhyScript(reader);
+        parse(script.dataLines, LPhyParser.Context.data);
+        parse(script.modelLines, LPhyParser.Context.model);
         reader.close();
     }
 

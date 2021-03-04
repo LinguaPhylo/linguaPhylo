@@ -1,8 +1,11 @@
 package lphy.toroidalDiffusion;
 
+import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.continuous.PhyloBrownian;
+import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 
 import static lphy.toroidalDiffusion.ToroidalUtils.wrapToMaxAngle;
@@ -25,6 +28,14 @@ public class PhyloCircularBrownian extends PhyloBrownian {
         if (!anglesInRadians) {
             MAX_ANGLE_VALUE = 360.0;
         }
+    }
+
+    @GeneratorInfo(name = "PhyloCircularBrownian",
+            verbClause = "is assumed to have evolved under",
+            narrativeName = "phylogenetic Brownian process with periodic boundary conditions",
+            description = "The phylogenetic Brownian process with periodic boundary conditions. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.")
+    public RandomVariable<ContinuousCharacterData> sample() {
+        return super.sample();
     }
 
     protected double handleBoundaries(double rawAngle) {
