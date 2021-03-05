@@ -23,7 +23,8 @@ model {
   // symmetric, rates dimension = n * (n-1) / 2
   R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  S ~ Poisson(lambda=2, offset=K, max=dim);
+  // offset = K-1
+  S ~ Poisson(lambda=2, offset=K-1, max=dim);
   I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
   // 0.08629747  1.00000000 11.58782503
