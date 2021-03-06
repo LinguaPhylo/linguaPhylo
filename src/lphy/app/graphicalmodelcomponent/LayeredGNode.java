@@ -100,7 +100,7 @@ public class LayeredGNode extends LayeredNode.Default {
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
         // keep button string up to date.
-        value.addValueListener(() -> button.setText(NodePaintUtils.getNodeString(this,(Value)this.value, showValue)));
+        value.addValueListener((oldValue, newValue) -> button.setText(NodePaintUtils.getNodeString(LayeredGNode.this,(Value)newValue, showValue)));
     }
 
     private boolean inData(Value value) {

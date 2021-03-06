@@ -94,9 +94,10 @@ public class Value<T> implements GraphicalModelNode<T> {
     }
 
     public void setValue(T value) {
+        T oldValue = this.value;
         this.value = value;
         for (ValueListener listener : listeners) {
-            listener.valueSet();
+            listener.valueSet(oldValue, value);
         }
     }
 

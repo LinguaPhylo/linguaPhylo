@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-public interface ValueListener {
+public interface ValueListener<T> {
 
-    void valueSet();
+    void valueSet(T oldValue, T newValue);
 }
