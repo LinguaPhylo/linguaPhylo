@@ -14,7 +14,8 @@ data {
   // taxa = genes[0].taxa();
   gene1 = genes[0];
   taxa = gene1.taxa();
-  spPopCount = taxa.nodeCount();
+  species = species(taxa);
+  spPopCount = species.nodeCount();
 }
 model {
   // unlink subst model and tree, link clock model
@@ -22,13 +23,13 @@ model {
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], replicates=n);
 
   λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
-  sp ~ Yule(lambda=λ, taxa=taxa);
+  sp ~ Yule(lambda=λ, taxa=species);
   Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, replicates=spPopCount);
-  //TODO not working up to here
-  //ψ ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa, replicates=n);
+
+  ψ ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa, replicates=n);
 
   // relative substitution rates
   mu ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
 
-  //genes ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=0.001, tree=ψ);
+  genes ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=0.001, tree=ψ);
 }
