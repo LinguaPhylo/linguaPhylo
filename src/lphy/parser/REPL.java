@@ -4,6 +4,7 @@ package lphy.parser;
 import lphy.app.Script;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
+import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
 
 import java.io.*;
@@ -101,7 +102,7 @@ public class REPL implements LPhyParser {
                 lines.add(cmd);
 
                 // wrap the ExpressionNodes before returning from parse
-                LPhyParser.Utils.wrapExpressionNodes(this);
+                GraphicalModel.Utils.wrapExpressionNodes(this);
             } else throw new RuntimeException();
         }
     }

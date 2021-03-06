@@ -25,7 +25,7 @@ public class Sampler {
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
             List<Value<?>> sinks = parser.getModelSinks();
-            for (RandomVariable<?> var : LPhyParser.Utils.getAllVariablesFromSinks(parser)) {
+            for (RandomVariable<?> var : parser.getAllVariablesFromSinks()) {
                 parser.getModelDictionary().remove(var.getId());
             }
 
@@ -33,15 +33,16 @@ public class Sampler {
                 if (value.isRandom()) {
                     Value randomValue;
                     if (value.getGenerator() != null) {
-                        randomValue = sampleAll(value.getGenerator(), sampled);
+                        randomValue = sampleAll(value, value.getGenerator(), sampled);
                     } else throw new RuntimeException();
                     randomValue.setId(value.getId());
+
                     addValueToModelDictionary(randomValue);
                 }
             }
 
             if (loggers != null) {
-                List<Value<?>> values = LPhyParser.Utils.getAllValuesFromSinks(parser);
+                List<Value<?>> values = GraphicalModel.Utils.getAllValuesFromSinks(parser);
                 for (RandomValueLogger logger : loggers) {
                     logger.log(i, values);
                 }
@@ -55,7 +56,7 @@ public class Sampler {
         parser.notifyListeners();
     }
 
-    private Value sampleAll(Generator generator, Set<String> sampled) {
+    private Value sampleAll(Value oldValue, Generator generator, Set<String> sampled) {
 
         for (Map.Entry<String, Value> e : getNewlySampledParams(generator, sampled).entrySet()) {
             generator.setInput(e.getKey(), e.getValue());
@@ -78,7 +79,7 @@ public class Sampler {
             if (val.isRandom()) {
                 if (val.isAnonymous() || !sampled.contains(val.getId())) {
                     // needs to be sampled
-                    Value nv = sampleAll(val.getGenerator(), sampled);
+                    Value nv = sampleAll(val, val.getGenerator(), sampled);
                     nv.setId(val.getId());
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToModelDictionary(nv);

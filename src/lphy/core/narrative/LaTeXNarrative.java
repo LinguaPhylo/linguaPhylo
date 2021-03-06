@@ -3,10 +3,7 @@ package lphy.core.narrative;
 import lphy.app.Symbols;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.ValueUtils;
-import lphy.graphicalModel.Vector;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.codecolorizer.DataModelToLaTeX;
@@ -248,7 +245,7 @@ public class LaTeXNarrative implements Narrative {
 
     public String posterior(LPhyParser parser) {
 
-        return LPhyParser.Utils.getInferenceStatement(parser, this);
+        return GraphicalModel.Utils.getInferenceStatement(parser, this);
     }
 
     public String codeBlock(LPhyParser parser, int fontSize) {

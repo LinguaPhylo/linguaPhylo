@@ -12,7 +12,7 @@ public interface Command {
     void execute(Map<String, Value<?>> params);
 
     default void execute(String commandString, LPhyParser parser) {
-        LPhyParser.Utils.parseCommand(this, commandString, parser);
+        throw new UnsupportedOperationException("This class is deprecated!");
     }
 
     default String getSignature() {

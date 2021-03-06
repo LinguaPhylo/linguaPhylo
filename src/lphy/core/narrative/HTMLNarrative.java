@@ -3,6 +3,7 @@ package lphy.core.narrative;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
+import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
@@ -128,7 +129,7 @@ public class HTMLNarrative implements Narrative {
 
     public String posterior(LPhyParser parser) {
 
-        String latex = LPhyParser.Utils.getInferenceStatement(parser, new LaTeXNarrative());
+        String latex = GraphicalModel.Utils.getInferenceStatement(parser, new LaTeXNarrative());
 
         try {
             Path tempFile = Files.createTempFile("temp-", ".png");
@@ -142,7 +143,7 @@ public class HTMLNarrative implements Narrative {
             return builder.toString();
 
         } catch (IOException ex) {
-            String html = LPhyParser.Utils.getInferenceStatement(parser, this);
+            String html = GraphicalModel.Utils.getInferenceStatement(parser, this);
             return html;
         }
     }

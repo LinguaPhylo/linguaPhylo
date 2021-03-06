@@ -5,6 +5,7 @@ import lphy.core.LPhyParser;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
@@ -383,10 +384,10 @@ public class NarrativePanel extends JComponent {
 
             switch (section) {
                 case Data:
-                    text += LPhyParser.Utils.getNarrative(parser, narrative, true, false);
+                    text += GraphicalModel.Utils.getNarrative(parser, narrative, true, false);
                     break;
                 case Model:
-                    text += LPhyParser.Utils.getNarrative(parser, narrative, false, true);
+                    text += GraphicalModel.Utils.getNarrative(parser, narrative, false, true);
                     break;
                 case Code:
                     text += narrative.section("Code");

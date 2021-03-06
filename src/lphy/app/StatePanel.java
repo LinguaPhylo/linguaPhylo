@@ -1,6 +1,7 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
+import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.utils.LoggerUtils;
@@ -42,7 +43,7 @@ public class StatePanel extends JPanel {
 
         ;
 
-        for (Value value : LPhyParser.Utils.getAllValuesFromSinks(parser)) {
+        for (Value value : GraphicalModel.Utils.getAllValuesFromSinks(parser)) {
             if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);
