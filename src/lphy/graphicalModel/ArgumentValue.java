@@ -4,13 +4,13 @@ import lphy.core.LPhyParser;
 
 public class ArgumentValue {
 
-    public ArgumentValue(String name, Value value, LPhyParser parser, LPhyParser.Context context) {
+    public ArgumentValue(String name, Value value, GraphicalModel model, GraphicalModel.Context context) {
         this.name = name;
         this.value = value;
-        if (context == LPhyParser.Context.data) {
-            parser.getDataValues().add(value);
+        if (context == GraphicalModel.Context.data) {
+            model.getDataValues().add(value);
         } else {
-            parser.getModelValues().add(value);
+            model.getModelValues().add(value);
         }
     }
 
