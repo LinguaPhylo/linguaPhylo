@@ -8,6 +8,7 @@ import lphy.parser.functions.ExpressionNodeWrapper;
 import lphy.utils.LoggerUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public interface GraphicalModel {
 
@@ -15,6 +16,7 @@ public interface GraphicalModel {
         data,
         model
     }
+
     /**
      * @return the data dictionary of values with id's, keyed by id
      */
@@ -269,6 +271,7 @@ public interface GraphicalModel {
             return narrative.referenceSection();
         }
 
+        private static int wrapLength = 80;
 
         public static String getInferenceStatement(GraphicalModel model, Narrative narrative) {
 
@@ -299,7 +302,7 @@ public interface GraphicalModel {
 
             if (modelVisited.size() > 0) {
 
-                builder.append(narrative.startMathMode(false));
+                builder.append(narrative.startMathMode(false, true));
 
                 builder.append("P(");
                 int count = 0;
@@ -324,17 +327,29 @@ public interface GraphicalModel {
                 builder.append(") ");
                 builder.append(narrative.symbol("∝"));
                 builder.append(" ");
+                builder.append(narrative.mathAlign());
 
 
-                for (Value modelValue : modelVisited) {
-                    if (modelValue instanceof RandomVariable) {
-                        String statement = modelValue.getGenerator().getInferenceStatement(modelValue, narrative);
-                        builder.append(statement);
+                int currentLineLength = 0;
+
+                List<RandomVariable> randomVariables = modelVisited.stream().filter(value -> value instanceof RandomVariable).map(value -> (RandomVariable) value).collect(Collectors.toList());
+
+                for (int i = 0; i < randomVariables.size(); i++) {
+                    RandomVariable modelVariable = randomVariables.get(i);
+                    String statement = modelVariable.getGenerator().getInferenceStatement(modelVariable, narrative);
+                    builder.append(statement);
+                    currentLineLength += statement.length();
+
+                    if (currentLineLength > wrapLength && i < modelVisited.size() - 1) {
+                        builder.append(narrative.mathNewLine());
+                        builder.append(narrative.mathAlign());
+                        currentLineLength = 0;
                         builder.append(" ");
                     }
                 }
 
                 builder.append(narrative.endMathMode());
+
 
                 builder.append("\n");
             }

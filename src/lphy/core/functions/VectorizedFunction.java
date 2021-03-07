@@ -175,7 +175,8 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
             Value v = vrv.getComponentValue(0);
 
             String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
-            inferenceNarrative = inferenceNarrative.replace(narrative.subscript("0"), narrative.subscript("i"));
+            inferenceNarrative = inferenceNarrative.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            inferenceNarrative = inferenceNarrative.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
 
             builder.append(inferenceNarrative);
             return builder.toString();

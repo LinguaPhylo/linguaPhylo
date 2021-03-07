@@ -59,7 +59,8 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
-            componentStatement = componentStatement.replaceAll("\\" + INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
 
             builder.append(componentStatement);
 

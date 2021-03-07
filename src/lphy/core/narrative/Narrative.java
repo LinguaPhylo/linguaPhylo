@@ -48,7 +48,11 @@ public interface Narrative {
         return symbol;
     }
 
-    String startMathMode(boolean inline);
+    String startMathMode(boolean inline, boolean allowMultiline);
+
+    String mathAlign();
+    
+    String mathNewLine();
 
     String endMathMode();
 

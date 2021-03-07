@@ -1,5 +1,6 @@
 package lphy.core.distributions;
 
+import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
@@ -97,7 +98,6 @@ public class IID<T> implements GenerativeDistribution<T[]> {
         if (value instanceof VectorizedRandomVariable) {
 
             VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
-
             StringBuilder builder = new StringBuilder();
 
             builder.append(narrative.product("i", "0", getReplicatesTo(narrative)));
@@ -107,7 +107,8 @@ public class IID<T> implements GenerativeDistribution<T[]> {
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
-            componentStatement = componentStatement.replaceAll("\\" + INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
 
             builder.append(componentStatement);
 

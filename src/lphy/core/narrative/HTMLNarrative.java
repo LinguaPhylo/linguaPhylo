@@ -94,11 +94,21 @@ public class HTMLNarrative implements Narrative {
     }
 
     @Override
-    public String startMathMode(boolean inline) {
+    public String startMathMode(boolean inline, boolean allowMultiline) {
         mathModeInline = inline;
         if (inline) {
             return "<i>";
         } else return "<p>";
+    }
+
+    @Override
+    public String mathAlign() {
+        return "";
+    }
+
+    @Override
+    public String mathNewLine() {
+        return "<br>";
     }
 
     @Override
@@ -130,6 +140,10 @@ public class HTMLNarrative implements Narrative {
     public String posterior(LPhyParser parser) {
 
         String latex = GraphicalModel.Utils.getInferenceStatement(parser, new LaTeXNarrative());
+
+        // remove begin equation and end equation if they exist
+        latex = latex.replaceAll("\\\\begin\\{equation.}", "");
+        latex = latex.replaceAll("\\\\end\\{equation.}", "");
 
         try {
             Path tempFile = Files.createTempFile("temp-", ".png");

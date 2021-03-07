@@ -24,6 +24,7 @@ public class LaTeXNarrative implements Narrative {
     List<String> keys = new ArrayList<>();
     boolean mathMode = false;
     boolean mathModeInline = false;
+    boolean isMathMultilineMode = false;
 
     boolean boxStyle;
     boolean twoColumn;
@@ -80,6 +81,7 @@ public class LaTeXNarrative implements Narrative {
         builder.append("\\usepackage{color}\n");
         builder.append("\\usepackage{xcolor}\n");
         builder.append("\\usepackage{alltt}\n");
+        builder.append("\\usepackage{amsmath}\n");
         builder.append("\\usepackage{tikz}\n");
         builder.append("\\usepackage{bm}\n\n");
         if (boxStyle) {
@@ -229,17 +231,34 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String startMathMode(boolean inline) {
+    public String startMathMode(boolean inline, boolean allowMultiline) {
         mathMode = true;
         mathModeInline = inline;
+        isMathMultilineMode = allowMultiline;
         if (inline) return "$";
+        if (allowMultiline) return "\\begin{equation*}\\begin{split}\n";
         return "$$";
+    }
+
+    @Override
+    public String mathAlign() {
+        return "&";
+    }
+
+    @Override
+    public String mathNewLine() {
+        return "\\\\";
     }
 
     @Override
     public String endMathMode() {
         mathMode = false;
         if (mathModeInline) return "$";
+        if (isMathMultilineMode) {
+            isMathMultilineMode = false;
+            return "\\end{split}\\end{equation*}\n";
+        }
+
         return "$$";
     }
 
