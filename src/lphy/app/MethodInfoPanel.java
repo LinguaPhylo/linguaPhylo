@@ -60,10 +60,6 @@ public class MethodInfoPanel extends JPanel {
                 try {
                     Object methodObject = method.invoke(value.value());
 
-                    if (methodObject == null) {
-                        System.err.println("Attempted to invoke method " + method + " and received a null!");
-                    }
-
                     JLabel label = new JLabel(method.getName()+":");
                     label.setForeground(Color.gray);
                     labels.add(label);
@@ -71,9 +67,13 @@ public class MethodInfoPanel extends JPanel {
                     JComponent jComponent = null;
                     if (methodObject != null) jComponent = ViewerRegister.getJComponentForValue(methodObject);
 
-                    if (jComponent == null) {
+                    if (methodObject == null) {
+                        JLabel jLabel = new JLabel("null");
+                        jLabel.setForeground(Color.gray);
+                        editors.add(jLabel);
+                    } else if (jComponent == null) {
                         LoggerUtils.log.severe("Found no viewer for " + methodObject);
-                        JLabel jLabel = new JLabel(methodObject != null ? methodObject.toString() : "null");
+                        JLabel jLabel = new JLabel(methodObject.toString());
                         jLabel.setForeground(Color.red);
                         editors.add(jLabel);
                     } else {
