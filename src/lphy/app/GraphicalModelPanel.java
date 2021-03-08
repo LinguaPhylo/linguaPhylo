@@ -32,7 +32,6 @@ public class GraphicalModelPanel extends JPanel {
     JTabbedPane leftPane;
 
     ViewerPane rightPane;
-    boolean showNarrative = true;
 
     GraphicalLPhyParser parser;
 

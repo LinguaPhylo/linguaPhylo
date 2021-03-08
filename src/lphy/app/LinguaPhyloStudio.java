@@ -24,6 +24,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
+import static lphy.app.Utils.saveToFile;
+
 public class LinguaPhyloStudio {
 
     private static String APP_NAME = "LPhy Studio";
@@ -342,37 +344,6 @@ public class LinguaPhyloStudio {
         GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
         return parser;
 
-    }
-
-    private void quit() {
-        if (frame != null) frame.dispose();
-        System.exit(0);
-    }
-
-    private void saveToFile(String text) {
-        JFileChooser jfc = new JFileChooser();
-
-        File chooserFile = new File(System.getProperty("user.dir"));
-
-        jfc.setCurrentDirectory(chooserFile);
-        jfc.setMultiSelectionEnabled(false);
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-        int returnValue = jfc.showSaveDialog(null);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
-            PrintWriter writer = null;
-            try {
-                writer = new PrintWriter(new FileWriter(selectedFile));
-                writer.write(text);
-                writer.flush();
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            lastDirectory = selectedFile.getParentFile();
-        }
     }
 
     public static void main(String[] args) {
