@@ -19,8 +19,8 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 public class bSiteModelFunction extends DeterministicFunction<SiteModel> {
 
     public static final String useSiteRatesParamName = "useSiteRates";
-    public static final String useProportionInvariableParamName = "useProportionInvariable";
-    public static final String proportionInvariableParamName = "proportionInvariable";
+    public static final String useProportionInvariableParamName = "usePInv";
+    public static final String proportionInvariableParamName = "pInv";
 
     public bSiteModelFunction(
             @ParameterInfo(name = QParamName, narrativeName = "instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
