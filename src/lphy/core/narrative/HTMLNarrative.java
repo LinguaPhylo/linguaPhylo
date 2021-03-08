@@ -31,6 +31,9 @@ import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class HTMLNarrative implements Narrative {
 
+    public static final String TITLE_TAG = "h1";
+    public static final String SECTION_TAG = "h2";
+
     List<Citation> references = new ArrayList<>();
     boolean mathModeInline = false;
 
@@ -46,9 +49,9 @@ public class HTMLNarrative implements Narrative {
         StringBuilder builder = new StringBuilder("<html>\n\n<body>");
 
         if (title != "" && title != null) {
-            builder.append("<h1>");
+            builder.append("<" + TITLE_TAG + ">");
             builder.append(title);
-            builder.append("</h1>");
+            builder.append("</" + TITLE_TAG + ">");
         }
         return builder.toString();
     }
@@ -64,7 +67,7 @@ public class HTMLNarrative implements Narrative {
      * @return a string representing the start of a new section
      */
     public String section(String header) {
-        return "<h2>" + header + "</h2>\n\n";
+        return "<" + SECTION_TAG + ">" + header + "</" + SECTION_TAG + ">\n\n";
     }
 
     public String text(String text) {
@@ -137,14 +140,22 @@ public class HTMLNarrative implements Narrative {
         return "";
     }
 
+    /**
+     * @param latex   Latex contents.
+     * @return  string after removing begin equation and end equation if they exist
+     */
+    public String rmLatexEquation(String latex) {
+        latex = latex.replaceAll("\\\\begin\\{equation.}", "");
+        latex = latex.replaceAll("\\\\end\\{equation.}", "");
+        return latex;
+    }
+
     public String posterior(LPhyParser parser) {
 
         String latex = GraphicalModel.Utils.getInferenceStatement(parser, new LaTeXNarrative());
 
         // remove begin equation and end equation if they exist
-        latex = latex.replaceAll("\\\\begin\\{equation.}", "");
-        latex = latex.replaceAll("\\\\end\\{equation.}", "");
-
+        latex = rmLatexEquation(latex);
         try {
             Path tempFile = Files.createTempFile("temp-", ".png");
             generateLatexImage(latex, tempFile.toFile());
@@ -233,7 +244,7 @@ public class HTMLNarrative implements Narrative {
     public String referenceSection() {
         StringBuilder builder = new StringBuilder();
         if (references.size() > 0) {
-            builder.append("<h2>References</h2>\n");
+            builder.append("<" + SECTION_TAG + ">References</h2>\n");
 
             builder.append("<ul>");
             for (Citation citation : references) {

@@ -3,6 +3,7 @@ package lphy.app;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.core.narrative.Narrative;
+import lphy.core.narrative.Section;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.GraphicalModel;
@@ -42,27 +43,6 @@ public class NarrativePanel extends JComponent {
     JList<String> include = createJListWithDragAndDrop();
 
     static Preferences preferences = Preferences.userNodeForPackage(NarrativePanel.class);
-
-    enum Section {
-        Code("Code"),
-        Data("Data"),
-        Model("Model"),
-        Posterior("Posterior"),
-        GraphicalModel("Graphical Model"),
-        References ("References");
-
-        public String name;
-
-        Section(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-
 
     public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, GraphicalModelComponent component) {
         this(parser, narrative,  component,null);
