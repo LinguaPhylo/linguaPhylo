@@ -23,9 +23,9 @@ model {
   // symmetric, rates dimension = n * (n-1) / 2
   R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  // offset = K-1
-  S ~ Poisson(lambda=2, offset=K-1, max=dim);
-  I ~ RandomBooleanArray(length=dim, hammingWeight=S);
+  I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
+  // S ~ Poisson(lambda=2, offset=K-1, max=dim);
+  // I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
   // 0.08629747  1.00000000 11.58782503
   μ_trait ~ LogNormal(meanlog=0, sdlog=1.25);
