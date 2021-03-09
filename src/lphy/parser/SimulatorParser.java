@@ -1,4 +1,4 @@
-// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.7.2
+// Generated from /Users/adru001/Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.8
 package lphy.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class SimulatorParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -673,19 +673,19 @@ public class SimulatorParser extends Parser {
 				{
 				setState(91);
 				match(NAME);
+				setState(92);
+				match(T__8);
+				setState(93);
+				range_list(0);
+				setState(94);
+				match(T__9);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(92);
+				setState(96);
 				match(NAME);
-				setState(93);
-				match(T__8);
-				setState(94);
-				range_list(0);
-				setState(95);
-				match(T__9);
 				}
 				break;
 			}
@@ -1172,11 +1172,11 @@ public class SimulatorParser extends Parser {
 	}
 
 	public static class ObjectMethodCallContext extends ParserRuleContext {
-		public List<TerminalNode> NAME() { return getTokens(SimulatorParser.NAME); }
-		public TerminalNode NAME(int i) {
-			return getToken(SimulatorParser.NAME, i);
+		public VarContext var() {
+			return getRuleContext(VarContext.class,0);
 		}
 		public TerminalNode DOT() { return getToken(SimulatorParser.DOT, 0); }
+		public TerminalNode NAME() { return getToken(SimulatorParser.NAME, 0); }
 		public Unnamed_expression_listContext unnamed_expression_list() {
 			return getRuleContext(Unnamed_expression_listContext.class,0);
 		}
@@ -1207,7 +1207,7 @@ public class SimulatorParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(153);
-			match(NAME);
+			var();
 			setState(154);
 			match(DOT);
 			setState(155);
@@ -1825,8 +1825,8 @@ public class SimulatorParser extends Parser {
 		"FH\3\2\2\2G>\3\2\2\2GA\3\2\2\2GD\3\2\2\2H\t\3\2\2\2IJ\5\f\7\2JK\5\4\3"+
 		"\2K\13\3\2\2\2LM\7\6\2\2MN\7\7\2\2NO\7$\2\2OP\7\b\2\2PQ\5\30\r\2QR\7\t"+
 		"\2\2R\r\3\2\2\2ST\t\2\2\2T\17\3\2\2\2UV\5\24\13\2VW\5\16\b\2WX\5*\26\2"+
-		"X\21\3\2\2\2YZ\5\24\13\2Z[\7\60\2\2[\\\5&\24\2\\\23\3\2\2\2]d\7$\2\2^"+
-		"_\7$\2\2_`\7\13\2\2`a\5\26\f\2ab\7\f\2\2bd\3\2\2\2c]\3\2\2\2c^\3\2\2\2"+
+		"X\21\3\2\2\2YZ\5\24\13\2Z[\7\60\2\2[\\\5&\24\2\\\23\3\2\2\2]^\7$\2\2^"+
+		"_\7\13\2\2_`\5\26\f\2`a\7\f\2\2ad\3\2\2\2bd\7$\2\2c]\3\2\2\2cb\3\2\2\2"+
 		"d\25\3\2\2\2ef\b\f\1\2fg\5\30\r\2gm\3\2\2\2hi\f\3\2\2ij\7\r\2\2jl\5\30"+
 		"\r\2kh\3\2\2\2lo\3\2\2\2mk\3\2\2\2mn\3\2\2\2n\27\3\2\2\2om\3\2\2\2ps\3"+
 		"\2\2\2qs\5*\26\2rp\3\2\2\2rq\3\2\2\2s\31\3\2\2\2tv\7\16\2\2ut\3\2\2\2"+
@@ -1840,9 +1840,9 @@ public class SimulatorParser extends Parser {
 		"\3\2\2\2\u0091\u0092\3\2\2\2\u0092\u009a\7\t\2\2\u0093\u0094\7$\2\2\u0094"+
 		"\u0096\7\7\2\2\u0095\u0097\5\36\20\2\u0096\u0095\3\2\2\2\u0096\u0097\3"+
 		"\2\2\2\u0097\u0098\3\2\2\2\u0098\u009a\7\t\2\2\u0099\u008d\3\2\2\2\u0099"+
-		"\u0093\3\2\2\2\u009a#\3\2\2\2\u009b\u009c\7$\2\2\u009c\u009d\7/\2\2\u009d"+
-		"\u009e\7$\2\2\u009e\u00a0\7\7\2\2\u009f\u00a1\5\36\20\2\u00a0\u009f\3"+
-		"\2\2\2\u00a0\u00a1\3\2\2\2\u00a1\u00a2\3\2\2\2\u00a2\u00a3\7\t\2\2\u00a3"+
+		"\u0093\3\2\2\2\u009a#\3\2\2\2\u009b\u009c\5\24\13\2\u009c\u009d\7/\2\2"+
+		"\u009d\u009e\7$\2\2\u009e\u00a0\7\7\2\2\u009f\u00a1\5\36\20\2\u00a0\u009f"+
+		"\3\2\2\2\u00a0\u00a1\3\2\2\2\u00a1\u00a2\3\2\2\2\u00a2\u00a3\7\t\2\2\u00a3"+
 		"%\3\2\2\2\u00a4\u00a5\7$\2\2\u00a5\u00a6\7\7\2\2\u00a6\u00a7\5\34\17\2"+
 		"\u00a7\u00a8\7\t\2\2\u00a8\'\3\2\2\2\u00a9\u00aa\7$\2\2\u00aa\u00ab\7"+
 		"\n\2\2\u00ab\u00ac\5*\26\2\u00ac)\3\2\2\2\u00ad\u00ae\b\26\1\2\u00ae\u00be"+

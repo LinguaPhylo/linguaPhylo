@@ -3,6 +3,8 @@ package lphy.graphicalModel;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
+import lphy.graphicalModel.types.CompoundVectorValue;
+import lphy.graphicalModel.types.VectorValue;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -211,5 +213,15 @@ public class VectorUtils {
             return componentClass.isAssignableFrom(ofType);
         }
         return false;
+    }
+
+    public static Object getElement(Value value, int i) {
+        if (value instanceof Vector) {
+            return ((VectorValue)value).getComponent(i);
+        }
+        if (value.value().getClass().isArray()) {
+            return Array.get(value.value(), i);
+        }
+        throw new IllegalArgumentException("Expected a Vector or array!");
     }
 }

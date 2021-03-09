@@ -4,6 +4,7 @@ package lphy.parser;
 import lphy.core.LPhyParser;
 import lphy.core.functions.*;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.Vector;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.Expression_listContext;
 import lphy.parser.SimulatorParser.Named_expressionContext;
@@ -373,6 +374,14 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             RangeList rangeList = (RangeList) visit(ctx.getChild(2));
 
+            return getIndexedValue(array, rangeList);
+        }
+
+        /**
+         * @return a Slice or ElementsAt function
+         */
+        private DeterministicFunction getIndexedValue(Value array, RangeList rangeList) {
+
             if (array.value() instanceof Double[]) {
                 if (rangeList.isRange()) {
                     Range range = (Range) rangeList.getRangeElement(0);
@@ -389,6 +398,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             return new ElementsAt(indices, array);
         }
+
 
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
@@ -779,11 +789,20 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
          */
         public Object visitObjectMethodCall(SimulatorParser.ObjectMethodCallContext ctx) {
 
-            String id = ctx.children.get(0).getText();
+            Object valueObject = visit(ctx.children.get(0));
             String methodName = ctx.children.get(2).getText();
-            Value value = get(id);
+            Value value = null;
+            Object childObject;
+
+            if (valueObject instanceof String) {
+                value = get((String)valueObject);
+            } else if (valueObject instanceof RangedVar) {
+                RangedVar rangedVar = (RangedVar)valueObject;
+                value = getIndexedValue(get(rangedVar.id), rangedVar.range).apply();
+            }
+            
             if (value == null) {
-                throw new SimulatorParsingException("Value " + id + " not found for method call " + methodName, ctx);
+                throw new SimulatorParsingException("Value " + ctx.children.get(0).getText() + " not found for method call " + methodName, ctx);
             }
 
             ParseTree ctx2 = ctx.getChild(4);

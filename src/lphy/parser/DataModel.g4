@@ -85,7 +85,7 @@ methodCall
     | NAME '(' unnamed_expression_list? ')'
     ;
 
-objectMethodCall: NAME DOT NAME '(' unnamed_expression_list? ')'
+objectMethodCall: var DOT NAME '(' unnamed_expression_list? ')'
 ;
 
 distribution

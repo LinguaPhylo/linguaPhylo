@@ -1472,11 +1472,11 @@ public class DataModelParser extends Parser {
 	}
 
 	public static class ObjectMethodCallContext extends ParserRuleContext {
-		public List<TerminalNode> NAME() { return getTokens(DataModelParser.NAME); }
-		public TerminalNode NAME(int i) {
-			return getToken(DataModelParser.NAME, i);
+		public VarContext var() {
+			return getRuleContext(VarContext.class,0);
 		}
 		public TerminalNode DOT() { return getToken(DataModelParser.DOT, 0); }
+		public TerminalNode NAME() { return getToken(DataModelParser.NAME, 0); }
 		public Unnamed_expression_listContext unnamed_expression_list() {
 			return getRuleContext(Unnamed_expression_listContext.class,0);
 		}
@@ -1507,7 +1507,7 @@ public class DataModelParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(192);
-			match(NAME);
+			var();
 			setState(193);
 			match(DOT);
 			setState(194);
@@ -2164,9 +2164,9 @@ public class DataModelParser extends Parser {
 		"\2\2\u00b7\u00b8\3\2\2\2\u00b8\u00b9\3\2\2\2\u00b9\u00c1\7\t\2\2\u00ba"+
 		"\u00bb\7&\2\2\u00bb\u00bd\7\7\2\2\u00bc\u00be\5(\25\2\u00bd\u00bc\3\2"+
 		"\2\2\u00bd\u00be\3\2\2\2\u00be\u00bf\3\2\2\2\u00bf\u00c1\7\t\2\2\u00c0"+
-		"\u00b4\3\2\2\2\u00c0\u00ba\3\2\2\2\u00c1-\3\2\2\2\u00c2\u00c3\7&\2\2\u00c3"+
-		"\u00c4\7\61\2\2\u00c4\u00c5\7&\2\2\u00c5\u00c7\7\7\2\2\u00c6\u00c8\5("+
-		"\25\2\u00c7\u00c6\3\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9"+
+		"\u00b4\3\2\2\2\u00c0\u00ba\3\2\2\2\u00c1-\3\2\2\2\u00c2\u00c3\5\36\20"+
+		"\2\u00c3\u00c4\7\61\2\2\u00c4\u00c5\7&\2\2\u00c5\u00c7\7\7\2\2\u00c6\u00c8"+
+		"\5(\25\2\u00c7\u00c6\3\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9"+
 		"\u00ca\7\t\2\2\u00ca/\3\2\2\2\u00cb\u00cc\7&\2\2\u00cc\u00cd\7\7\2\2\u00cd"+
 		"\u00ce\5&\24\2\u00ce\u00cf\7\t\2\2\u00cf\61\3\2\2\2\u00d0\u00d1\7&\2\2"+
 		"\u00d1\u00d2\7\n\2\2\u00d2\u00d3\5\64\33\2\u00d3\63\3\2\2\2\u00d4\u00d5"+

@@ -1,5 +1,7 @@
 package lphy.parser.functions;
 
+import lphy.core.functions.ElementsAt;
+import lphy.core.functions.Slice;
 import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.Vector;
@@ -354,7 +356,16 @@ public class MethodCall extends DeterministicFunction {
     public String codeString() {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(value.getId() + getName());
+
+        String id = value.getId();
+
+        if (value.isAnonymous()) {
+            if (value.getGenerator() instanceof ElementsAt || value.getGenerator() instanceof Slice) {
+                id = value.getGenerator().codeString();
+            }
+        }
+
+        builder.append(id + getName());
         builder.append("(");
 
         if (arguments.length > 0) {

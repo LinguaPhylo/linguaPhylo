@@ -11,9 +11,7 @@ data {
   n = length(files);
   weights = genes.nchar();
 
-  // taxa = genes[0].taxa();
-  gene1 = genes[0];
-  taxa = gene1.taxa();
+  taxa = genes[0].taxa();
   species = species(taxa);
   spPopCount = species.nodeCount();
 }
