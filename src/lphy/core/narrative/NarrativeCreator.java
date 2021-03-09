@@ -41,6 +41,7 @@ import java.util.prefs.Preferences;
  * Output: narrative.md, references.md
  */
 public class NarrativeCreator {
+    public static final String DETAILS = "details";
     Path wd; // working dir
     GraphicalLPhyParser parser;
     HTMLNarrative htmlNarrative;
@@ -68,13 +69,15 @@ public class NarrativeCreator {
 
     private void createNarrative(GraphicalModelComponent component) {
 
-//        narrative.append(htmlNarrative.beginDocument(parser.getName()));
-
+        // assume Data, Model, Posterior stay together with this order
+        // so wrap them with <detail> ... </detail>, which can click to expand.
         for (Section section : Section.values()) {
 
             switch (section) {
                 case Data -> {
                     String dataSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, true, false);
+                    narrative.append("<" + DETAILS + ">\n");
+                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
                     narrative.append(dataSec);
                 }
                 case Model -> {
@@ -92,6 +95,7 @@ public class NarrativeCreator {
                     pos = htmlNarrative.rmLatexEquation(pos);
                     // replace equation to $$ ... $$
                     narrative.append("$$\n").append(pos).append("\n$$\n\n");
+                    narrative.append("</" + DETAILS + ">\n");
                 }
                 case References -> {
                     String ref = htmlNarrative.referenceSection();
@@ -105,20 +109,7 @@ public class NarrativeCreator {
             }
         }
 
-//        narrative.append(htmlNarrative.endDocument());
-    }
-
-    private LPhyParser readFile(String lphyFileName) throws IOException {
-        if (!lphyFileName.endsWith(".lphy"))
-            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
-        File file = new File(lphyFileName);
-
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        LPhyParser parser = new REPL();
-        parser.source(reader);
-
-        wd = file.toPath().getParent();
-        return parser;
+        validateTags(narrative);
     }
 
     public void writeNarrative() throws IOException {
@@ -143,6 +134,19 @@ public class NarrativeCreator {
     }
 
 
+    private LPhyParser readFile(String lphyFileName) throws IOException {
+        if (!lphyFileName.endsWith(".lphy"))
+            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
+        File file = new File(lphyFileName);
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        LPhyParser parser = new REPL();
+        parser.source(reader);
+
+        wd = file.toPath().getParent();
+        return parser;
+    }
+
     private String section(String header) {
         return "## " + header + "\n\n";
     }
@@ -166,6 +170,13 @@ public class NarrativeCreator {
             return builder.toString();
         }
         return str;
+    }
+
+    private void validateTags(StringBuilder narrative) {
+        int openTag = narrative.indexOf("<" + DETAILS + ">");
+        int closeTag = narrative.indexOf("</" + DETAILS + ">");
+        if (openTag >= closeTag)
+            throw new IllegalStateException("Invalid position of <" + DETAILS + "> !");
     }
 
     private String replaceHTMLSection(String html) {
