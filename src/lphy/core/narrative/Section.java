@@ -5,6 +5,8 @@ package lphy.core.narrative;
  */
 public enum Section {
 
+    // Do not change the order,
+    // otherwise it will break NarrativeCreator
     Code("Code"),
     Data("Data"),
     Model("Model"),

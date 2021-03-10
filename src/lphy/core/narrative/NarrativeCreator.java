@@ -1,37 +1,13 @@
 package lphy.core.narrative;
 
 import lphy.app.GraphicalLPhyParser;
-import lphy.app.GraphicalModelListener;
-import lphy.app.LinguaPhyloStudio;
-import lphy.app.NarrativePanel;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.GraphicalModel;
-import lphy.graphicalModel.Value;
 import lphy.parser.REPL;
-import lphy.utils.LoggerUtils;
 
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.EditorKit;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 /**
  * Create markdown files for Jekyll containing the sections
@@ -41,12 +17,15 @@ import java.util.prefs.Preferences;
  * Output: narrative.md, references.md
  */
 public class NarrativeCreator {
-    public static final String DETAILS = "details";
+    public static final String DIV_BOX_BACKGR_COLOUR =
+            "<div id=\"auto-generated\" style=\"background-color: #DCDCDC; " +
+                    "padding: 10px; border: 1px solid gray; margin: 0; \">";
     Path wd; // working dir
     GraphicalLPhyParser parser;
     HTMLNarrative htmlNarrative;
     LaTeXNarrative latexNarrative;
 
+    StringBuilder code = new StringBuilder();
     StringBuilder narrative = new StringBuilder();
     StringBuilder references = new StringBuilder();
 
@@ -69,25 +48,33 @@ public class NarrativeCreator {
 
     private void createNarrative(GraphicalModelComponent component) {
 
-        // assume Data, Model, Posterior stay together with this order
-        // so wrap them with <detail> ... </detail>, which can click to expand.
+        // assume Data, Model, Posterior stay together with this order,
+        // so wrap them with <detail> ... </detail>, which can click to expand,
+        // and <div id="auto-generated"> for a box with diff background colour.
         for (Section section : Section.values()) {
 
             switch (section) {
+                case Code -> {
+                    code.append(section("Code"));
+                    code.append(htmlNarrative.codeBlock(parser, 11));
+                    code.append("\n");
+                }
+                case GraphicalModel -> {
+                    code.append(section("Graphical Model"));
+                    //TODO narrative.append(latexNarrative.graphicalModelBlock(component));
+                    code.append("\n");
+                }
+                // move Data, Model, Posterior to the bottom of webpage
                 case Data -> {
                     String dataSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, true, false);
-                    narrative.append("<" + DETAILS + ">\n");
-                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
+//                    narrative.append("\n<details>\n");
+//                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
+                    narrative.append("\n" + DIV_BOX_BACKGR_COLOUR + "\n");
                     narrative.append(dataSec);
                 }
                 case Model -> {
                     String modelSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, false, true);
                     narrative.append(modelSec);
-                }
-                case Code -> {
-                    narrative.append(section("Code"));
-                    narrative.append(htmlNarrative.codeBlock(parser, 11));
-                    narrative.append("\n");
                 }
                 case Posterior -> {
                     narrative.append(section("Posterior"));
@@ -95,42 +82,49 @@ public class NarrativeCreator {
                     pos = htmlNarrative.rmLatexEquation(pos);
                     // replace equation to $$ ... $$
                     narrative.append("$$\n").append(pos).append("\n$$\n\n");
-                    narrative.append("</" + DETAILS + ">\n");
+                    narrative.append("\n</div>\n");
+//                    narrative.append("\n</details>\n");
                 }
                 case References -> {
                     String ref = htmlNarrative.referenceSection();
                     references.append(ref);
                 }
-                case GraphicalModel -> {
-                    narrative.append(section("Graphical Model"));
-                    //TODO narrative.append(latexNarrative.graphicalModelBlock(component));
-                    narrative.append("\n");
-                }
             }
         }
 
-        validateTags(narrative);
+        // special requirement
+        // add link
+        code.append("\nFor the details, please read the auto-generated ")
+                .append("[narrative](#auto-generated)")
+                .append(" from LPhyStudio.\n");
     }
 
     public void writeNarrative() throws IOException {
-        File narF = new File(wd.toString(), "narrative.md");
-        PrintWriter writer = new PrintWriter(new FileWriter(narF));
-        writer.println(narrative.toString());
-        writer.flush();
-        writer.close();
-        System.out.println("Write narrative to " + narF.getAbsolutePath());
+        String lphyStr = code.toString();
+        writeToFile(lphyStr, "lphy.md");
 
-        File refFN = new File(wd.toString(), "references.md");
-        writer = new PrintWriter(new FileWriter(refFN));
+        // validate
+        String narStr = narrative.toString();
+        validateTags(narStr, "div");
+//        validateTags(narStr, "details");
+        writeToFile(narStr, "narrative.md");
+
         String ref = references.toString();
         // convert MD, otherwise will have a gap when add new ref in MD
-        ref = refHtmlToMardown(ref);
+        ref = convertHtmlListToMardown(ref);
         // rm all \n, otherwise will have a gap
         ref = trimEndNewLine(ref);
-        writer.print(ref);
+        writeToFile(ref, "references.md");
+
+    }
+
+    private void writeToFile(String str, String fileName) throws IOException {
+        File fi = new File(wd.toString(), fileName);
+        PrintWriter writer = new PrintWriter(new FileWriter(fi));
+        writer.println(str);
         writer.flush();
         writer.close();
-        System.out.println("Write references to " + refFN.getAbsolutePath());
+        System.out.println("Write narrative to " + fi.getAbsolutePath());
     }
 
 
@@ -147,11 +141,13 @@ public class NarrativeCreator {
         return parser;
     }
 
+    // markdown section
     private String section(String header) {
         return "## " + header + "\n\n";
     }
 
-    private String refHtmlToMardown(String ref) {
+    // convert html list into markdown
+    private String convertHtmlListToMardown(String ref) {
         ref = ref.replace("<ul>", "");
         ref = ref.replace("</ul>", "");
         ref = ref.replace("<li>", "* ");
@@ -172,11 +168,12 @@ public class NarrativeCreator {
         return str;
     }
 
-    private void validateTags(StringBuilder narrative) {
-        int openTag = narrative.indexOf("<" + DETAILS + ">");
-        int closeTag = narrative.indexOf("</" + DETAILS + ">");
+    // check if <details> and <div > are in correct position
+    private void validateTags(String narStr, String tagStr) {
+        int openTag = narStr.toLowerCase().indexOf("<" + tagStr.toLowerCase()); // it may have attrs
+        int closeTag = narStr.toLowerCase().indexOf("</" + tagStr.toLowerCase() + ">");
         if (openTag >= closeTag)
-            throw new IllegalStateException("Invalid position of <" + DETAILS + "> !");
+            throw new IllegalStateException("Invalid position of <" + tagStr + "> !");
     }
 
     private String replaceHTMLSection(String html) {
