@@ -51,7 +51,14 @@ public class ElementsAt<T> extends DeterministicFunction {
             arrayString = array().getId();
         }
 
-        String indexString = index().codeString();
+        Value<Integer[]> index = index();
+
+        String indexString = null;
+        if (index.isAnonymous()) {
+            indexString = index.codeString();
+        } else {
+            indexString = index.getId();
+        }
 
         if (!index().isAnonymous()) {
             return super.codeString();

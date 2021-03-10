@@ -81,8 +81,16 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof IntegerValue || o instanceof IntegerArrayValue || o instanceof Range) {
                     nodes.add((GraphicalModelNode) o);
-                } else if (o instanceof RangeList) {
-                    nodes.add((GraphicalModelNode)o);
+                } else if (o instanceof DeterministicFunction) {
+                    DeterministicFunction f = (DeterministicFunction)o;
+                    if (f.value() instanceof Integer || f.value() instanceof Integer[]) {
+                        nodes.add((GraphicalModelNode)o);
+                    } else {
+                        LoggerUtils.log.severe("Expected function returning Integer or Integer[]: " + o);
+                        throw new SimulatorParsingException("Expected function returning Integer or Integer[]:  " +
+                                o == null ? "null" : o.getClass().getName(), ctx);
+
+                    }
                 } else if (o == null) {
                     // ignore commas
                 } else {

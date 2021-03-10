@@ -16,10 +16,17 @@ public class RangeList extends DeterministicFunction<Integer[]> {
     List<GraphicalModelNode> rangeElements = new ArrayList<>();
 
     public RangeList(GraphicalModelNode... rangeElements) {
+        int arg = 0;
         for (GraphicalModelNode node : rangeElements) {
             Object value = node.value();
             if (value instanceof Integer || value instanceof Integer[]) {
                 this.rangeElements.add(node);
+                if (node instanceof Value) {
+                    setInput(arg + "", (Value)node );
+                } else if (node instanceof DeterministicFunction) {
+                    setInput(arg+"", ((DeterministicFunction)node).apply());
+                }
+                arg += 1;
             } else {
                 LoggerUtils.log.severe("Non integer in RangeList: " + value);
             }
@@ -63,7 +70,11 @@ public class RangeList extends DeterministicFunction<Integer[]> {
         for (GraphicalModelNode node : rangeElements) {
             if (count > 0) builder.append(",");
             if (node instanceof Value) {
-                builder.append(((Value)node).codeString());
+                if (((Value<?>) node).isAnonymous()) {
+                    builder.append(((Value)node).codeString());
+                } else {
+                    builder.append(((Value)node).getId());
+                }
             } else if (node instanceof DeterministicFunction) {
                 builder.append(((DeterministicFunction)node).codeString());
             }
