@@ -4,7 +4,6 @@ package lphy.parser;
 import lphy.core.LPhyParser;
 import lphy.core.functions.*;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.Vector;
 import lphy.graphicalModel.types.*;
 import lphy.parser.SimulatorParser.Expression_listContext;
 import lphy.parser.SimulatorParser.Named_expressionContext;
@@ -18,11 +17,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.*;
 
-import static java.util.Collections.max;
+import static lphy.parser.Var.getIndexedValue;
 
 public class SimulatorListenerImpl extends SimulatorBaseListener {
 
@@ -83,6 +81,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof IntegerValue || o instanceof IntegerArrayValue || o instanceof Range) {
                     nodes.add((GraphicalModelNode) o);
+                } else if (o instanceof RangeList) {
+                    nodes.add((GraphicalModelNode)o);
                 } else if (o == null) {
                     // ignore commas
                 } else {
@@ -151,138 +151,23 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             LoggerUtils.log.fine(" visitDeterm_relation");
 
             Object expr = visit(ctx.getChild(2));
-            Object o = visit(ctx.children.get(0));
-            String id = o instanceof String ? (String) o : ((RangedVar) o).id;
+            Var var = (Var)visit(ctx.children.get(0));
+            String id = var.id;
 
-            LoggerUtils.log.fine("   id = " + id);
             if (expr instanceof DeterministicFunction) {
                 DeterministicFunction f = (DeterministicFunction) expr;
                 Value value = f.apply();
-                if (o instanceof RangedVar) {
-                    return handleRangeVar((RangedVar) o, value, f);
-                } else {
-                    value.setFunction(f);
-                    value.setId(id);
-                    put(id, value);
-                    LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
-                }
+                var.assign(value, f, context);
                 return value;
             } else if (expr instanceof Value) {
                 Value value = (Value) expr;
-                value.setId(id);
-
-                if (o instanceof RangedVar) {
-                    return handleRangeVar((RangedVar) o, value, null);
-                } else {
-                    put(id, value);
-                    LoggerUtils.log.fine("   adding value " + value + " to the dictionary");
-                }
+                var.assign(value, null, context);
                 return value;
             } else {
                 LoggerUtils.log.severe("in visitDeterm_relation() expecting a function or a value!");
 
             }
             return null;
-        }
-
-        private Value handleRangeVar(RangedVar var, Value value, DeterministicFunction function) {
-
-            String id = var.id;
-            RangeList rangeList = var.range;
-
-            List<Integer> range = Arrays.asList(rangeList.apply().value());
-
-            // get max index
-            int max = max(range);
-
-            // if value already exists
-            if (parser.hasValue(id, context)) {
-                Value v = parser.getValue(id, context);
-
-                // TODO how to handle double arrays?
-
-                // TODO if the value already exists then it now has two functional parents? Need to add a second parent?
-
-                // Generic array support for all types of single dimension arrays
-                if (v.value().getClass().isArray()) {
-                    int currentLength = Array.getLength(v.value());
-
-                    if (currentLength <= max) {
-                        // need to enlarge array
-                        Object newArray = Array.newInstance(v.value().getClass().getComponentType(), max + 1);
-
-                        for (int i = 0; i < currentLength; i++) {
-                            Array.set(newArray, i, Array.get(v.value(), i));
-                        }
-                        v.setValue(newArray);
-                    }
-
-                    Object source = value.value();
-                    Object destinationArray = v.value();
-
-                    for (int i = 0; i < range.size(); i++) {
-                        int index = range.get(i);
-                        if (source.getClass().isArray()) {
-                            Array.set(destinationArray, index, Array.get(source, i));
-                        } else {
-                            Array.set(destinationArray, index, source);
-                        }
-                    }
-                }
-                return v;
-            } else {
-                // if this is a new value to be constructed
-                // generic support for array creation
-                if (value.value().getClass().isArray()) {
-                    Object sourceArray = value.value();
-
-                    Object destinationArray = Array.newInstance(sourceArray.getClass().getComponentType(), max + 1);
-                    for (int i = 0; i < range.size(); i++) {
-                        int index = range.get(i);
-
-                        Array.set(destinationArray, index, Array.get(sourceArray, i));
-                    }
-                    Value v = null;
-                    if (destinationArray instanceof Double[]) {
-                        v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
-                    } else if (destinationArray instanceof Integer[]) {
-                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
-                    } else if (destinationArray instanceof Boolean[]) {
-                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
-                    } else if (destinationArray instanceof String[]) {
-                        v = new StringArrayValue(id, (String[]) destinationArray, function);
-                    } else {
-                        v = new Value(id, destinationArray, function);
-                    }
-                    put(id, v);
-                    LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
-                    return v;
-                } else {
-                    // handle singleton index
-                    Object sourceValue = value.value();
-
-                    Object destinationArray = Array.newInstance(sourceValue.getClass(), max + 1);
-                    for (int i = 0; i < range.size(); i++) {
-                        int index = range.get(i);
-                        Array.set(destinationArray, index, sourceValue);
-                    }
-                    Value v = null;
-                    if (destinationArray instanceof Double[]) {
-                        v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
-                    } else if (destinationArray instanceof Integer[]) {
-                        v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
-                    } else if (destinationArray instanceof Boolean[]) {
-                        v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
-                    } else if (destinationArray instanceof String[]) {
-                        v = new StringArrayValue(id, (String[]) destinationArray, function);
-                    } else {
-                        v = new Value(id, destinationArray, function);
-                    }
-                    put(id, v);
-                    LoggerUtils.log.fine("   adding value " + v + " to the dictionary");
-                    return v;
-                }
-            }
         }
 
         /**
@@ -298,15 +183,13 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
 
 
-            Object var = visit(ctx.getChild(0));
-            RandomVariable variable = genDist.sample(var.toString());
+            Var var = (Var)visit(ctx.getChild(0));
+            RandomVariable variable = genDist.sample(var.id);
 
-            if (var instanceof String) {
+            if (!var.isRangedVar()) {
                 put(variable.getId(), variable);
                 return variable;
-            } else if (var instanceof RangedVar) {
-                RangedVar rv = (RangedVar) var;
-
+            } else {
                 throw new SimulatorParsingException("Ranged variables are not currently handled!", ctx);
 //                // if already exists
 //                if (get(rv.id) != null) {
@@ -314,9 +197,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 //                } else {
 //                    RandomVariable parentVariable = new RandomVariable(rv.id, )
 //                }
-            } else {
-                throw new SimulatorParsingException("Expected an id or ranged variable but got " + var, ctx);
-            }
+            } 
         }
 
         @Override
@@ -327,35 +208,25 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
             return aggregate;
         }
 
-        class RangedVar {
-            String id;
-            RangeList range;
-
-            RangedVar(String id, RangeList range) {
-                this.id = id;
-                this.range = range;
-            }
-        }
-
         /**
          * @param ctx the VarContext
-         * @return the id of a variable, or a RangeVar object containing an id and RangeList
+         * @return var
          */
-        public Object visitVar(VarContext ctx) {
+        public Var visitVar(VarContext ctx) {
 
             String id = ctx.getChild(0).getText();
             if (ctx.getChildCount() > 1) {
                 // variable of the form NAME '[' range ']'
                 Object o = visit(ctx.getChild(2));
                 if (o instanceof RangeList) {
-                    return new RangedVar(id, (RangeList) o);
+                    return new Var(id, (RangeList) o, parser);
                 } else {
                     throw new SimulatorParsingException("Expected variable id, or id and range list", ctx);
                 }
             }
 
 
-            return id;
+            return new Var(id, parser);
         }
 
         /**
@@ -376,29 +247,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
 
             return getIndexedValue(array, rangeList);
         }
-
-        /**
-         * @return a Slice or ElementsAt function
-         */
-        private DeterministicFunction getIndexedValue(Value array, RangeList rangeList) {
-
-            if (array.value() instanceof Double[]) {
-                if (rangeList.isRange()) {
-                    Range range = (Range) rangeList.getRangeElement(0);
-                    return new SliceDoubleArray(range.start(), range.end(), array);
-                }
-
-                if (rangeList.isSingle()) {
-                    Value<Integer> i = (Value<Integer>) rangeList.getRangeElement(0);
-                    return new SliceDoubleArray(i, i, array);
-                }
-            }
-
-            Value<Integer[]> indices = rangeList.apply();
-
-            return new ElementsAt(indices, array);
-        }
-
 
         @Override
         public Object visitExpression(SimulatorParser.ExpressionContext ctx) {
@@ -789,16 +637,15 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
          */
         public Object visitObjectMethodCall(SimulatorParser.ObjectMethodCallContext ctx) {
 
-            Object valueObject = visit(ctx.children.get(0));
+            Var var = (Var)visit(ctx.children.get(0));
             String methodName = ctx.children.get(2).getText();
             Value value = null;
             Object childObject;
 
-            if (valueObject instanceof String) {
-                value = get((String)valueObject);
-            } else if (valueObject instanceof RangedVar) {
-                RangedVar rangedVar = (RangedVar)valueObject;
-                value = getIndexedValue(get(rangedVar.id), rangedVar.range).apply();
+            if (!var.isRangedVar()) {
+                value = get(var.id);
+            } else {
+                value = getIndexedValue(get(var.id), var.rangeList).apply();
             }
             
             if (value == null) {

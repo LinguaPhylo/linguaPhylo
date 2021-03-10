@@ -53,6 +53,10 @@ public class RangeList extends DeterministicFunction<Integer[]> {
         return rangeElements.get(i);
     }
 
+    public int size() {
+        return rangeElements.size();
+    }
+
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         int count = 0;

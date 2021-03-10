@@ -2,21 +2,21 @@ package lphy.app;
 
 import lphy.core.LPhyParser;
 import lphy.parser.SimulatorParsingException;
-import lphy.parser.codecolorizer.CodeColorizer;
+import lphy.parser.codecolorizer.LineCodeColorizer;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class LPhyCodeLabel extends JTextPane {
 
-    CodeColorizer codeColorizer;
+    LineCodeColorizer codeColorizer;
 
     int preferredHeight = 20;
     static int preferredWidth = 300;
 
     public LPhyCodeLabel(LPhyParser parser, String code) {
 
-        codeColorizer = new CodeColorizer(parser, LPhyParser.Context.model,this);
+        codeColorizer = new LineCodeColorizer(parser, LPhyParser.Context.model,this);
 
         setEditable(false);
         setOpaque(false);

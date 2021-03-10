@@ -5,70 +5,53 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.parser.*;
+import lphy.parser.SimulatorParser.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyledDocument;
-import java.awt.*;
+import javax.swing.text.*;
 
-public class DataModelCodeColorizer extends DataModelBaseListener implements CodeColorizer {
+public class LineCodeColorizer extends SimulatorBaseListener implements CodeColorizer {
 
     // CURRENT MODEL STATE
 
     private JTextPane textPane;
 
-    static Color randomVarColor = new Color(0, 196, 0);
-    static Color constantColor = Color.magenta;
-    static Color keywordColor = Color.black;
-    static Color argumentNameColor = Color.gray;
-    static Color functionColor = new Color(196, 0, 196);
+    LPhyParser parser;
+    LPhyParser.Context context;
 
-    static int argumentNameSize = 10;
-
-    Style randomVarStyle;
-    Style literalStyle;
+    Style punctuationStyle;
+    Style randomStyle;
+    Style constantStyle;
+    Style genDistStyle;
     Style argumentNameStyle;
     Style functionStyle;
-    Style genDistStyle;
-    Style punctuationStyle;
     Style valueStyle;
-    Style keywordStyle;
 
-    LPhyParser parser;
-
-    LPhyParser.Context context = LPhyParser.Context.model;
-
-
-    // the indent within a block
-    String indent = "  ";
-
-    public DataModelCodeColorizer(LPhyParser parser, JTextPane pane) {
+    public LineCodeColorizer(LPhyParser parser, LPhyParser.Context context, JTextPane pane) {
 
         this.parser = parser;
+        this.context = context;
         textPane = pane;
 
         ColorizerStyles.addStyles(pane);
-
-        keywordStyle = textPane.getStyle(ColorizerStyles.keyword);
-        functionStyle = textPane.getStyle(ColorizerStyles.function);
-        genDistStyle = textPane.getStyle(ColorizerStyles.distribution);
-        randomVarStyle = textPane.getStyle(ColorizerStyles.randomVariable);
-        valueStyle = textPane.getStyle(ColorizerStyles.value);
-        argumentNameStyle = textPane.getStyle(ColorizerStyles.argumentName);
-        literalStyle = textPane.getStyle(ColorizerStyles.constant);
-        punctuationStyle = textPane.getStyle(ColorizerStyles.punctuation);
+        punctuationStyle = pane.getStyle("punctuationStyle");
+        constantStyle = pane.getStyle("constantStyle");
+        genDistStyle = pane.getStyle("distributionStyle");
+        argumentNameStyle = pane.getStyle("argumentNameStyle");
+        functionStyle = pane.getStyle("functionStyle");
+        randomStyle = pane.getStyle("randomVarStyle");
+        valueStyle = pane.getStyle("valueStyle");
     }
 
     @Override
-    public Style getStyle(ElementType elementType) {
+    public Style getStyle(CodeColorizer.ElementType elementType) {
         switch (elementType) {
             case value -> {return valueStyle;}
-            case keyword -> {return keywordStyle;}
-            case randomVariable -> {return randomVarStyle;}
-            case literal -> {return literalStyle;}
+            case keyword -> {return punctuationStyle;}
+            case randomVariable -> {return randomStyle;}
+            case literal -> {return constantStyle;}
             case argumentName -> {return argumentNameStyle;}
             case function -> {return functionStyle;}
             case distibution -> {return genDistStyle;}
@@ -77,12 +60,11 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         return punctuationStyle;
     }
 
-    public class DataModelASTVisitor extends DataModelBaseVisitor<Object> {
+    public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
 
-        public DataModelASTVisitor() {
-        }
+        public SimulatorASTVisitor() { }
 
-        void addTextElement(TextElement element) {
+        private void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
 
             for (int i = 0; i < element.text.size(); i++) {
@@ -94,108 +76,26 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
             }
         }
 
-        @Override
-        public Object visitDatablock(DataModelParser.DatablockContext ctx) {
-
-            context = LPhyParser.Context.data;
-
-            TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
-
-            addTextElement(element);
-            Object children = visitChildren(ctx);
-
-            element = new TextElement("}\n", keywordStyle);
-
-            addTextElement(element);
-            return children;
-        }
-
-        @Override
-        public Object visitModelblock(DataModelParser.ModelblockContext ctx) {
-
-            context = LPhyParser.Context.model;
-
-            TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
-
-            addTextElement(element);
-            Object children = visitChildren(ctx);
-
-            element = new TextElement("}\n", keywordStyle);
-
-            addTextElement(element);
-            return children;
-        }
-
-
-        public Object visitMapFunction(DataModelParser.MapFunctionContext ctx) {
-            TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
-            element.add((TextElement)visit(ctx.getChild(1)));
-            element.add(new TextElement("}", textPane.getStyle("punctuationStyle")));
-            return element;
-        }
-
-        @Override
-        public Object visitConstant(DataModelParser.ConstantContext ctx) {
-
-            return new TextElement(ctx.getText(), literalStyle);
-        }
-
-        @Override
-        public Object visitDeterm_relation(DataModelParser.Determ_relationContext ctx) {
-
-            TextElement element = new TextElement(indent, punctuationStyle);
-
-            Var var = (Var)visit(ctx.getChild(0));
-            element.add(var.getTextElement(parser, context));
-
-            element.add(" = ", punctuationStyle);
-
-            TextElement expr = (TextElement) visit(ctx.getChild(2));
-
-            element.add(expr);
-            element.add(";\n", punctuationStyle);
-
-            addTextElement(element);
-            return element;
-        }
-
-        @Override
-        public Object visitStoch_relation(DataModelParser.Stoch_relationContext ctx) {
-
-            TextElement varText = new TextElement(indent, punctuationStyle);
-
-            varText.add(ctx.getChild(0).getText(), randomVarStyle);
-
-            varText.add(" " + ctx.getChild(1).getText() + " ", punctuationStyle);
-
-            addTextElement(varText);
-
-            TextElement distributionElement = (TextElement) visit(ctx.getChild(2));
-
-            addTextElement(distributionElement);
-
-            return ctx.getText();
-        }
 
         /**
          * @param ctx
          * @return a RangeList function.
          */
-        public Object visitRange_list(DataModelParser.Range_listContext ctx) {
+        public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
             for (int i = 1; i < ctx.getChildCount(); i++) {
                 TextElement element = (TextElement)visit(ctx.getChild(i));
-                 if (element != null) {
-                     textElement.add(new TextElement(",", punctuationStyle));
-                     textElement.add(element);
-                 }
+                if (element != null) {
+                    textElement.add(new TextElement(",", punctuationStyle));
+                    textElement.add(element);
+                }
             }
             return textElement;
         }
 
         @Override
-        public Var visitVar(DataModelParser.VarContext ctx) {
+        public Var visitVar(VarContext ctx) {
             String id = ctx.getChild(0).getText();
             TextElement rangeList = null;
             if (ctx.getChildCount() > 1) {
@@ -204,26 +104,67 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
             }
 
-            return new Var(DataModelCodeColorizer.this, id, rangeList);
+            return new Var(LineCodeColorizer.this, id, rangeList);
+        }
+
+
+        @Override
+        public Object visitConstant(ConstantContext ctx) {
+            return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
+        }
+
+        public Object visitMapFunction(MapFunctionContext ctx) {
+            TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
+            element.add((TextElement)visit(ctx.getChild(1)));
+            element.add(new TextElement("}", textPane.getStyle("punctuationStyle")));
+            return element;
         }
 
         @Override
-        public Object visitExpression(DataModelParser.ExpressionContext ctx) {
+        public Object visitDeterm_relation(Determ_relationContext ctx) {
 
+            TextElement element = new TextElement(ctx.getChild(0).getText(), textPane.getStyle("valueStyle"));
+
+            element.add(" = ", textPane.getStyle("punctuationStyle"));
+
+            TextElement expr = (TextElement) visit(ctx.getChild(2));
+
+            element.add(expr);
+            element.add(";\n", textPane.getStyle("punctuationStyle"));
+
+            addTextElement(element);
+            return element;
+        }
+
+        @Override
+        public Object visitStoch_relation(Stoch_relationContext ctx) {
+
+            TextElement var = new TextElement(ctx.getChild(0).getText(), textPane.getStyle("randomVarStyle"));
+
+            var.add(" " + ctx.getChild(1).getText() + " ", textPane.getStyle("punctuationStyle"));
+
+            addTextElement(var);
+
+            TextElement distributionElement = (TextElement) visit(ctx.getChild(2));
+
+            addTextElement(distributionElement);
+
+            return ctx.getText();
+        }
+        
+        @Override
+        public Object visitExpression(ExpressionContext ctx) {
             if (ctx.getChildCount() == 1) {
 
                 ParseTree childContext = ctx.getChild(0);
-
-                // if this is a map just return the map Value
-                if (childContext.getText().startsWith("{")) {
-                    return visit(childContext);
-                }
-
                 String key = childContext.getText();
                 if (parser.hasValue(key, context)) {
                     Value value = parser.getValue(key, context);
-                    return new TextElement(key, value instanceof RandomVariable ? textPane.getStyle("randomVarStyle") : textPane.getStyle("valueStyle") );
+                    return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);
                 }
+
+                // else let subordinate method handle it.
+                return visit(childContext);
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
@@ -243,8 +184,6 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
                     return e;
                 }
-
-
                 s = ctx.getChild(0).getText();
 
                 if (s.equals("!")) {
@@ -277,12 +216,12 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
             if (exp instanceof String) {
                 System.out.println("exp was a String: " + exp);
-                return new TextElement((String) exp, literalStyle);
+                return new TextElement((String) exp, constantStyle);
             }
 
             if (exp == null) {
-                return new TextElement("null", literalStyle);
-                //throw new RuntimeException("exp is null for expression context: " + ctx.getText() + " child count = " + ctx.getChildCount());
+                return new TextElement("null", constantStyle);
+                //throw new RuntimeException("exp is null for expression context: " + ctx.getText());
             }
 
             throw new RuntimeException(exp + " of type " + exp.getClass());
@@ -291,16 +230,19 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitNamed_expression(DataModelParser.Named_expressionContext ctx) {
+        public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             TextElement element = new TextElement(name + "=", argumentNameStyle);
-            element.add((TextElement) visit(ctx.getChild(2)));
+
+            Object child = visit(ctx.getChild(2));
+
+            element.add((TextElement) child);
 
             return element;
         }
 
         @Override
-        public Object visitDistribution(DataModelParser.DistributionContext ctx) {
+        public Object visitDistribution(DistributionContext ctx) {
 
             TextElement name = new TextElement(ctx.getChild(0).getText(), genDistStyle);
 
@@ -314,7 +256,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitExpression_list(DataModelParser.Expression_listContext ctx) {
+        public Object visitExpression_list(Expression_listContext ctx) {
 
             TextElement element = new TextElement();
 
@@ -328,7 +270,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx) {
+        public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
             TextElement element = new TextElement();
 
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
@@ -337,11 +279,10 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
                     element.add(", ", punctuationStyle);
                 }
             }
-            return element;
-        }
+            return element;        }
 
         @Override
-        public Object visitMethodCall(DataModelParser.MethodCallContext ctx) {
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -353,7 +294,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
             if (ctx2.getText().equals(")")) {
                 // no arguments
             } else {
-                e.add((TextElement) visit(ctx2));
+                e.add((TextElement)visit(ctx2));
             }
             e.add(")", punctuationStyle);
 
@@ -361,12 +302,14 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
             return e;
         }
 
-        public Object visitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) {
+        @Override
+        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
 
-            Var var = (Var)visit(ctx.getChild(0));
-            TextElement e = var.getTextElement(parser, context);
+            String objectName = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();
-            
+
+            TextElement e = getIDElement(objectName);
+
             e.add(new TextElement(".", punctuationStyle));
             e.add(new TextElement(methodName, functionStyle));
 
@@ -417,7 +360,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         };
 
         // Get our lexer
-        DataModelLexer lexer = new DataModelLexer(CharStreams.fromString(CASentence));
+        SimulatorLexer lexer = new SimulatorLexer(CharStreams.fromString(CASentence));
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
 
@@ -425,7 +368,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         // Pass the tokens to the parser
-        DataModelParser parser = new DataModelParser(tokens);
+        SimulatorParser parser = new SimulatorParser(tokens);
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
@@ -440,9 +383,16 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
 
         // Traverse parse tree, constructing BEAST tree along the way
-        DataModelASTVisitor visitor = new DataModelASTVisitor();
+        SimulatorASTVisitor visitor = new SimulatorASTVisitor();
 
         return visitor.visit(parseTree);
     }
 
+    private TextElement getIDElement(String key) {
+        if (parser.hasValue(key, context)) {
+            Value value = parser.getValue(key, context);
+            return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);
+        } 
+        return new TextElement(key, constantStyle);
+    }
 }

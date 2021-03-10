@@ -1,11 +1,10 @@
 package lphy.app;
 
 import lphy.core.LPhyParser;
-import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Generator;
 import lphy.parser.ParserUtils;
 import lphy.parser.SimulatorParsingException;
-import lphy.parser.codecolorizer.CodeColorizer;
+import lphy.parser.codecolorizer.LineCodeColorizer;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.stream.Collectors;
 
 public class GraphicalModelInterpreter extends JPanel {
 
@@ -229,7 +227,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
 
             try {
-                CodeColorizer codeColorizer = new CodeColorizer(parser, context, textPane);
+                LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);
                 codeColorizer.parse(input);
             } catch (Exception e) {
                 LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());

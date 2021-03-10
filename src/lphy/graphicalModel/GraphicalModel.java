@@ -120,6 +120,19 @@ public interface GraphicalModel {
         return logPosterior;
     }
 
+    default void put(String id, Value value, Context context) {
+        switch (context) {
+            case data:
+                getDataDictionary().put(id, value);
+                getDataValues().add(value);
+                break;
+            case model:
+            default:
+                getModelDictionary().put(id, value);
+                getModelValues().add(value);
+        }
+    }
+
     class Utils {
 
         /**

@@ -6,6 +6,7 @@ import lphy.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelCom
 import lphy.core.LPhyParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.*;
+import lphy.parser.codecolorizer.LineCodeColorizer;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;
@@ -21,7 +22,6 @@ import java.nio.file.Paths;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class GraphicalModelPanel extends JPanel {
 
@@ -164,7 +164,7 @@ public class GraphicalModelPanel extends JPanel {
 
     /**
      * This is duplicated to {@link lphy.parser.REPL#source(BufferedReader)},
-     * but has extra code using {@link lphy.parser.codecolorizer.CodeColorizer}
+     * but has extra code using {@link LineCodeColorizer}
      * and panel function.
      *
      * @param reader
