@@ -1,6 +1,6 @@
 data {
   options = {ageDirection="forward", ageRegex=".*\|.*\|(\d*\.\d+|\d+\.\d*)\|.*$"};
-  D = readNexus(file="examples/h3n2.nexus", options=options);
+  D = readNexus(file="tutorials/h3n2.nexus", options=options);
   taxa = D.taxa();
   L = D.nchar();
   // take 4th element, where i>=0

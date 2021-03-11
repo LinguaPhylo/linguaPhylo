@@ -118,27 +118,21 @@ public class LinguaPhyloStudio {
         exampleMenu.setMnemonic(KeyEvent.VK_X);
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
+        File dir = new File("examples");
+        listAllFiles(exampleMenu, dir);
 
-        File file = new File("examples");
-        File[] files = file.listFiles();
-        if (files != null) {
-            Arrays.sort(files, Comparator.comparing(File::getName));
-            for (int i = 0; i < files.length; i++) {
-                String name = files[i].getName();
-                if (name.endsWith(".lphy")) {
-                    final File exampleFile = files[i];
-                    JMenuItem exampleItem = new JMenuItem(name.substring(0, name.length() - 5));
-                    exampleMenu.add(exampleItem);
-                    exampleItem.addActionListener(e -> {
-                        readFile(exampleFile);
-                    });
-                }
-            }
-        }
+        //Build the tutorials menu.
+        JMenu tutMenu = new JMenu("Tutorials");
+        tutMenu.setMnemonic(KeyEvent.VK_U);
+//        fileMenu.addSeparator();
+        fileMenu.add(tutMenu);
+        dir = new File("tutorials");
+        listAllFiles(tutMenu, dir);
 
         buildViewMenu(menuBar);
         menuBar.add(panel.rightPane.getMenu());
 
+        // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
@@ -175,6 +169,25 @@ public class LinguaPhyloStudio {
 
         saveModelToHTML.addActionListener(e -> exportModelToHTML());
         saveModelToRTF.addActionListener(e -> exportToRtf());
+    }
+
+    private void listAllFiles(JMenu exampleMenu, File dir) {
+        final String postfix = ".lphy";
+        File[] files = dir.listFiles();
+        if (files != null) {
+            Arrays.sort(files, Comparator.comparing(File::getName));
+            for (int i = 0; i < files.length; i++) {
+                String name = files[i].getName();
+                if (name.endsWith(postfix)) {
+                    final File exampleFile = files[i];
+                    JMenuItem exampleItem = new JMenuItem(name.substring(0, name.length() - 5));
+                    exampleMenu.add(exampleItem);
+                    exampleItem.addActionListener(e -> {
+                        readFile(exampleFile);
+                    });
+                }
+            }
+        }
     }
 
     public void readFile(File exampleFile) {
