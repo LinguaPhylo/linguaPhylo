@@ -14,6 +14,7 @@ import lphy.parser.REPL;
 import lphy.parser.codecolorizer.DataModelToHTML;
 import lphy.utils.LoggerUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.*;
@@ -21,6 +22,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -346,6 +348,31 @@ public class LinguaPhyloStudio {
 
     }
 
+    public File exportToPNG(String filePath) throws IOException {
+        final String imgFormat = "png";
+        if (!filePath.endsWith(imgFormat))
+            throw new IllegalArgumentException("Expect image format " + imgFormat);
+
+        JComponent gm = panel.component;
+
+        BufferedImage img = new BufferedImage(gm.getWidth(), gm.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        Graphics g = img.createGraphics();
+
+        gm.paint(g);
+
+        File imgF = new File(filePath);
+        if (ImageIO.write(img, imgFormat, imgF))
+            return imgF;
+        else
+            throw new IOException("Failed to save graphical model to " + filePath);
+
+    }
+
+    public void quit() {
+        frame.dispose();
+    }
+
+
     public static void main(String[] args) {
 
         LinguaPhyloStudio app = new LinguaPhyloStudio();
@@ -366,4 +393,5 @@ public class LinguaPhyloStudio {
         }
 
     }
+
 }

@@ -1,13 +1,17 @@
 package lphy.core.narrative;
 
 import lphy.app.GraphicalLPhyParser;
+import lphy.app.GraphicalModelPanel;
+import lphy.app.LinguaPhyloStudio;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphy.app.graphicalmodelcomponent.Layering;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.parser.REPL;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Create markdown files for Jekyll containing the sections
@@ -21,7 +25,7 @@ public class NarrativeCreator {
             "<div id=\"auto-generated\" style=\"background-color: #DCDCDC; " +
                     "padding: 10px; border: 1px solid gray; margin: 0; \">";
     Path wd; // working dir
-    GraphicalLPhyParser parser;
+    GraphicalModelComponent component; // include GraphicalLPhyParser
     HTMLNarrative htmlNarrative;
     LaTeXNarrative latexNarrative;
 
@@ -29,28 +33,39 @@ public class NarrativeCreator {
     StringBuilder narrative = new StringBuilder();
     StringBuilder references = new StringBuilder();
 
+//    GraphicalModelPanel panel;
+    LinguaPhyloStudio app;
+
 //    static Preferences preferences = Preferences.userNodeForPackage(NarrativeCreator.class);
 
     public NarrativeCreator(String lphyFileName) throws IOException {
-        LPhyParser simplyParser = readFile(lphyFileName);
-        // A wrapper for any implementation of LPhyParser that will be used in the Studio
-        this.parser = new GraphicalLPhyParser(simplyParser);
-
         htmlNarrative = new HTMLNarrative();
         latexNarrative = new LaTeXNarrative();
 
-        GraphicalModelComponent component = new GraphicalModelComponent(this.parser);
+        LPhyParser simplyParser = readFile(lphyFileName);
+        // A wrapper for any implementation of LPhyParser that will be used in the Studio
+        GraphicalLPhyParser parser = new GraphicalLPhyParser(simplyParser);
+//        component = new GraphicalModelComponent(parser);
+//        component.setShowArgumentLabels(false);
+//        component.setLayering(new Layering.LongestPathFromSinks());
 
-        createNarrative(component);
+        File file = new File(lphyFileName);
+
+        app = new LinguaPhyloStudio();
+        app.readFile(file);
+
+//        panel = new GraphicalModelPanel(parser);
+
+        Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
+        createNarrative(parser, imgFile);
+
+        app.quit();
 
     }
 
-
-    private void createNarrative(GraphicalModelComponent component) {
-
+    private void createNarrative(GraphicalLPhyParser parser, final Path imgFile) {
         // assume Data, Model, Posterior stay together with this order,
-        // so wrap them with <detail> ... </detail>, which can click to expand,
-        // and <div id="auto-generated"> for a box with diff background colour.
+        // so wrap them with <div id="auto-generated"> for a box with diff background colour.
         for (Section section : Section.values()) {
 
             switch (section) {
@@ -61,8 +76,20 @@ public class NarrativeCreator {
                 }
                 case GraphicalModel -> {
                     code.append(section("Graphical Model"));
-                    //TODO narrative.append(latexNarrative.graphicalModelBlock(component));
+                    // create html to load image
+                    code.append("\n<figure class=\"image\">\n");
+                    code.append("  <a href=\"").append(imgFile.getFileName())
+                            .append("\" target=\"_blank\">\n");
+                    code.append("    <img src=\"").append(imgFile.getFileName())
+                            .append("\" alt=\"").append(imgFile.getFileName())
+                            .append("\">\n");
+                    code.append("  </a>\n");
+                    // replace fignum using Liquid in Jekyll MD
+                    code.append("  <figcaption>{{ include.fignum }}: The graphical model</figcaption>\n");
+                    code.append("</figure>\n\n");
                     code.append("\n");
+                    // create image
+                    createGraphicalModelImage(imgFile);
                 }
                 // move Data, Model, Posterior to the bottom of webpage
                 case Data -> {
@@ -97,6 +124,16 @@ public class NarrativeCreator {
         code.append("\nFor the details, please read the auto-generated ")
                 .append("[narrative](#auto-generated)")
                 .append(" from LPhyStudio.\n");
+    }
+
+    private void createGraphicalModelImage(Path imgFile) {
+        try {
+//          File img = component.toPNG(imgFile, 1024, 726);
+            File img = app.exportToPNG(imgFile.toString());
+            System.out.println("Save " + img.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void writeNarrative() throws IOException {
