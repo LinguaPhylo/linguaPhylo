@@ -98,13 +98,15 @@ public class NarrativeCreator {
 //                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
                     narrative.append("\n" + DIV_BOX_BACKGR_COLOUR + "\n");
                     narrative.append(dataSec);
+                    narrative.append("\n");
                 }
                 case Model -> {
                     String modelSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, false, true);
                     narrative.append(modelSec);
+                    narrative.append("\n");
                 }
                 case Posterior -> {
-                    narrative.append(section("Posterior"));
+                    narrative.append(htmlNarrative.section("Posterior"));
                     String pos = GraphicalModel.Utils.getInferenceStatement(parser, latexNarrative);
                     pos = htmlNarrative.rmLatexEquation(pos);
                     // replace equation to $$ ... $$
@@ -158,7 +160,8 @@ public class NarrativeCreator {
     private void writeToFile(String str, String fileName) throws IOException {
         File fi = new File(wd.toString(), fileName);
         PrintWriter writer = new PrintWriter(new FileWriter(fi));
-        writer.println(str);
+        // references do not new line
+        writer.print(str);
         writer.flush();
         writer.close();
         System.out.println("Write narrative to " + fi.getAbsolutePath());
