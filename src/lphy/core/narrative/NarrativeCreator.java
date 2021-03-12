@@ -33,7 +33,7 @@ public class NarrativeCreator {
     StringBuilder narrative = new StringBuilder();
     StringBuilder references = new StringBuilder();
 
-//    GraphicalModelPanel panel;
+    GraphicalModelPanel panel;
     LinguaPhyloStudio app;
 
 //    static Preferences preferences = Preferences.userNodeForPackage(NarrativeCreator.class);
@@ -46,24 +46,31 @@ public class NarrativeCreator {
         // A wrapper for any implementation of LPhyParser that will be used in the Studio
         GraphicalLPhyParser parser = new GraphicalLPhyParser(simplyParser);
 //        component = new GraphicalModelComponent(parser);
-//        component.setShowArgumentLabels(false);
-//        component.setLayering(new Layering.LongestPathFromSinks());
-
-        File file = new File(lphyFileName);
-
-        app = new LinguaPhyloStudio();
-        app.readFile(file);
+//        component.setShowConstantNodes(false);
 
 //        panel = new GraphicalModelPanel(parser);
 
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
-        createNarrative(parser, imgFile);
+        createNarrativeExclImg(parser, imgFile);
 
-        app.quit();
+        createImage(lphyFileName, imgFile);
+        writeNarrative();
 
     }
 
-    private void createNarrative(GraphicalLPhyParser parser, final Path imgFile) {
+    private void createImage(String lphyFileName, Path imgFile) throws IOException {
+        File file = new File(lphyFileName);
+        app = new LinguaPhyloStudio();
+        app.readFile(file);
+
+        app.exportToPNG(imgFile.toString());
+        System.out.println("Save " + imgFile.toAbsolutePath());
+
+        app.quit();
+    }
+
+    // exclude creating image
+    private void createNarrativeExclImg(GraphicalLPhyParser parser, final Path imgFile) {
         // assume Data, Model, Posterior stay together with this order,
         // so wrap them with <div id="auto-generated"> for a box with diff background colour.
         for (Section section : Section.values()) {
@@ -88,8 +95,7 @@ public class NarrativeCreator {
                     code.append("  <figcaption>{{ include.fignum }}: The graphical model</figcaption>\n");
                     code.append("</figure>\n\n");
                     code.append("\n");
-                    // create image
-                    createGraphicalModelImage(imgFile);
+                    // create image later
                 }
                 // move Data, Model, Posterior to the bottom of webpage
                 case Data -> {
@@ -128,17 +134,7 @@ public class NarrativeCreator {
                 .append(" from LPhyStudio.\n");
     }
 
-    private void createGraphicalModelImage(Path imgFile) {
-        try {
-//          File img = component.toPNG(imgFile, 1024, 726);
-            File img = app.exportToPNG(imgFile.toString());
-            System.out.println("Save " + img.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeNarrative() throws IOException {
+    private void writeNarrative() throws IOException {
         String lphyStr = code.toString();
         writeToFile(lphyStr, "lphy.md");
 
@@ -164,7 +160,7 @@ public class NarrativeCreator {
         writer.print(str);
         writer.flush();
         writer.close();
-        System.out.println("Write narrative to " + fi.getAbsolutePath());
+        System.out.println("Write \"" + str.substring(0, 5) + "\" ... to " + fi.getAbsolutePath());
     }
 
 
@@ -231,7 +227,8 @@ public class NarrativeCreator {
         String lphyFileName = args[args.length - 1];
 
         NarrativeCreator narrativeCreator = new NarrativeCreator(lphyFileName);
-        narrativeCreator.writeNarrative();
-     }
+
+        System.exit(0);
+    }
 
 }

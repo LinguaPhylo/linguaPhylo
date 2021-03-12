@@ -366,12 +366,17 @@ public class LinguaPhyloStudio {
         if (!filePath.endsWith(imgFormat))
             throw new IllegalArgumentException("Expect image format " + imgFormat);
 
-        JComponent gm = panel.component;
+        GraphicalModelComponent gm = panel.component;
+        // preference records the previous behaviour
+        boolean prevAction = gm.getShowConstantNodes();
+        gm.setShowConstantNodes(false);
 
         BufferedImage img = new BufferedImage(gm.getWidth(), gm.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
         Graphics g = img.createGraphics();
 
         gm.paint(g);
+        // back to previous
+        if (prevAction) gm.setShowConstantNodes(true);
 
         File imgF = new File(filePath);
         if (ImageIO.write(img, imgFormat, imgF))
