@@ -1,13 +1,13 @@
 length function
 ===============
-length(Object **arg**)
-----------------------
+length(Object **0**)
+--------------------
 
 the length of the argument
 
 ### Parameters
 
-- Object **arg** - the array to return the length of.
+- Object **0** - the array to return the length of.
 
 ### Return type
 

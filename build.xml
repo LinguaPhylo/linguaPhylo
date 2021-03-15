@@ -174,6 +174,17 @@
         <delete dir="${test-reports}"/>
     </target>
 
+    <target name="generate-docs">
+        <echo> Generate Lphy docs ... </echo>
+        <java classname="lphy.doc.GenerateDocs" >
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <pathelement path="${build}"/>
+                <fileset dir="${lib}" includes="*.jar"/>
+            </classpath>
+        </java>
+    </target>
+
     <target name="github-actions" depends="clean, compile, test">
         <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>

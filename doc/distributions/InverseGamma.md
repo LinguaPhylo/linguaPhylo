@@ -16,20 +16,3 @@ The inverse-gamma probability distribution.
 
 
 
-InverseGamma(Number **alpha**, Number **beta**, Integer **n**)
---------------------------------------------------------------
-
-The inverse-gamma probability distribution.
-
-### Parameters
-
-- Number **alpha** - the shape of the distribution.
-- Number **beta** - the scale of the distribution.
-- Integer **n** - the dimension of the return.
-
-### Return type
-
-- Double[]
-
-
-

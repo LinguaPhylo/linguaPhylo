@@ -10,6 +10,7 @@ Generative distributions
 - [BirthDeathSerialSampling](distributions/BirthDeathSerialSampling.md)
 - [BirthDeath](distributions/BirthDeath.md)
 - [Dirichlet](distributions/Dirichlet.md)
+- [DiscreteUniform](distributions/DiscreteUniform.md)
 - [DiscretizeGamma](distributions/DiscretizeGamma.md)
 - [ErrorModel](distributions/ErrorModel.md)
 - [Exp](distributions/Exp.md)
@@ -23,6 +24,8 @@ Generative distributions
 - [Normal](distributions/Normal.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
 - [PhyloCTMC](distributions/PhyloCTMC.md)
+- [PhyloCircularBrownian](distributions/PhyloCircularBrownian.md)
+- [PhyloOU](distributions/PhyloOU.md)
 - [PhyloMultivariateBrownian](distributions/PhyloMultivariateBrownian.md)
 - [PhyloToroidalBrownian](distributions/PhyloToroidalBrownian.md)
 - [PhyloWrappedBivariateDiffusion](distributions/PhyloWrappedBivariateDiffusion.md)
@@ -39,12 +42,15 @@ Generative distributions
 - [Uniform](distributions/Uniform.md)
 - [WeightedDirichlet](distributions/WeightedDirichlet.md)
 - [Yule](distributions/Yule.md)
+- [bSiteRates](distributions/bSiteRates.md)
 
 Functions
 ---------
 - [arange](functions/arange.md)
 - [argi](functions/argi.md)
+- [bModelSet](functions/bModelSet.md)
 - [binaryRateMatrix](functions/binaryRateMatrix.md)
+- [concat](functions/concat.md)
 - [taxa](functions/taxa.md)
 - [dihedralAngleDiffusionMatrix](functions/dihedralAngleDiffusionMatrix.md)
 - [exp](functions/exp.md)
@@ -66,6 +72,7 @@ Functions
 - [ntaxa](functions/ntaxa.md)
 - [newick](functions/newick.md)
 - [nodecount](functions/nodecount.md)
+- [nucleotideModel](functions/nucleotideModel.md)
 - [parseInt](functions/parseInt.md)
 - [pruneTree](functions/pruneTree.md)
 - [Range](functions/Range.md)
@@ -79,7 +86,9 @@ Functions
 - [sum](functions/sum.md)
 - [hammingWeight](functions/hammingWeight.md)
 - [treeLength](functions/treeLength.md)
+- [unique](functions/unique.md)
 - [wag](functions/wag.md)
+- [bSiteModel](functions/bSiteModel.md)
 
 Types
 -----
@@ -95,9 +104,11 @@ Types
 - [Number](types/Number.md)
 - [Object](types/Object.md)
 - [String](types/String.md)
+- [BModelSet](types/BModelSet.md)
 - [NChar](types/NChar.md)
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
+- [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)
 
