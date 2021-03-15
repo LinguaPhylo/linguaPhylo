@@ -46,7 +46,7 @@
     </target>
 
     <!-- Compile -->
-    <target name="compile" depends="clean, init">
+    <target name="compile" depends="clean, init" description="clean, create dirs, and compile.">
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
@@ -85,7 +85,7 @@
         </jar>
     </target>
 
-    <target name="release" depends="compile,dist, generate-docs"
+    <target name="release" depends="compile,dist,generate-docs"
             description="for the release process">
         <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
@@ -141,8 +141,8 @@
     </target>
 
 
-    <!-- Compile unit tests -->
-    <target name="compile-test" depends="init-test,compile">
+    <!-- Require to compile main code before this -->
+    <target name="compile-test" depends="init-test" description="only compile unit tests">
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}"
                includeantruntime="false">
             <classpath>
@@ -155,8 +155,9 @@
     </target>
 
 
-    <!-- Run unit tests -->
-    <target name="test" depends="compile-test">
+    <!-- another pipeline parallel with dist -->
+    <target name="test" depends="compile, compile-test"
+            description="run unit tests including compile main code">
         <junit printsummary="yes" failureproperty="testFailed">
             <classpath>
                 <pathelement path="${classpath}"/>
@@ -175,7 +176,7 @@
         <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
     </target>
 
-    <target name="generate-docs">
+    <target name="generate-docs" description="generate Lphy docs.">
         <echo> Generate Lphy docs ... </echo>
         <java classname="lphy.doc.GenerateDocs" >
             <classpath>
@@ -186,7 +187,8 @@
         </java>
     </target>
 
-    <target name="github-actions" depends="compile, test">
+    <!--  https://docs.github.com/en/actions  -->
+    <target name="github-actions" depends="compile, compile-test, test">
         <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>
 
