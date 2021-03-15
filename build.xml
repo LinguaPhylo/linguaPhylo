@@ -77,7 +77,8 @@
         </jar>
     </target>
 
-    <target name="dist" depends="compile,dist-lphy">
+    <target name="dist" depends="compile,dist-lphy, generate-docs"
+            description="for the release process">
         <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
 

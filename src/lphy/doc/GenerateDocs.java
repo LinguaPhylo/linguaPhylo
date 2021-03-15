@@ -2,7 +2,10 @@ package lphy.doc;
 
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.core.lightweight.LGenerator;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.Generator;
+import lphy.graphicalModel.MethodInfo;
 import lphy.parser.ParserUtils;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -29,18 +32,51 @@ public class GenerateDocs {
 
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
+//        GenerateDocs generateDocs = getInstance();
+//        String version = generateDocs.getProperty("version");
+        final String version = "0.0.2";
 
-        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types);
+        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, version);
 
         FileWriter writer = new FileWriter("index.md");
         writer.write(indexMD);
         writer.close();
     }
 
-    private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions, List<Class<DeterministicFunction>> functions, Set<Class<?>> types) throws IOException {
+//    private static final GenerateDocs instance = new GenerateDocs();
+//    private GenerateDocs() {
+//        try {
+//            getMavenProperties();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static GenerateDocs getInstance(){
+//        return instance;
+//    }
+//
+//    private Properties properties;
+//
+//    public void getMavenProperties() throws IOException {
+//        InputStream is = getClass().getClassLoader().getResourceAsStream("pom.xml");
+//        this.properties = new Properties();
+//        this.properties.load(is);
+//    }
+//
+//    public String getProperty(String propertyName) {
+//        return Objects.requireNonNull(this.properties).getProperty(propertyName);
+//    }
+
+    private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
+                                        List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
+                                        String version) throws IOException {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(new Heading("LPhy Language Reference", 1)).append("\n");
+        String h1 = "LPhy Language Reference";
+        if (version != null || !version.trim().isEmpty())
+            h1 += " (version " + version + ")";
+        builder.append(new Heading(h1, 1)).append("\n");
 
         builder.append(new Text("This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language."));
         builder.append("\n\n");

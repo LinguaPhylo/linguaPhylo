@@ -1,6 +1,12 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- more https://github.com/cko/predefined_maven_properties/blob/master/README.md   -->
+    <properties>
+        <name>${project.name}</name>
+        <version>${project.version}</version>
+    </properties>
+
     <groupId>compevol</groupId>
     <artifactId>lphy</artifactId>
     <version>0.0.2</version>
