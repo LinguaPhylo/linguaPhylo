@@ -57,7 +57,7 @@
     <property name="projVersion" value="${project.version}"/>
     <property name="fullName" value="${projName}.v${projVersion}"/>
 
-    <target name="dist-lphy" depends="compile">
+    <target name="dist" depends="compile">
         <echo>name=${project.groupId}, version=${project.version}</echo>
 <!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
         <echo>fullName=${fullName}</echo>
@@ -77,7 +77,7 @@
         </jar>
     </target>
 
-    <target name="dist" depends="compile,dist-lphy, generate-docs"
+    <target name="release" depends="compile,dist, generate-docs"
             description="for the release process">
         <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
