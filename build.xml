@@ -1,4 +1,4 @@
-<project default="compile" basedir="." name="lphy" >
+<project default="build" basedir="." name="lphy" >
 
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
     <!-- <property name="test" location="test"/>-->
@@ -36,7 +36,7 @@
     </target>
 
     <!-- Prepare for compilation -->
-    <target name="init">
+    <target name="init" depends="clean">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}" />
         <echo message="Working dir is ${repoName}." />
@@ -46,7 +46,7 @@
     </target>
 
     <!-- Compile -->
-    <target name="compile" depends="clean, init" description="clean, create dirs, and compile.">
+    <target name="compile" depends="init" description="clean, create dirs, and compile.">
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
@@ -85,6 +85,18 @@
         </jar>
     </target>
 
+    <target name="generate-docs" description="generate Lphy docs.">
+        <echo> Generate Lphy docs ... </echo>
+        <java classname="lphy.doc.GenerateDocs" >
+            <classpath>
+                <pathelement path="${classpath}"/>
+                <pathelement path="${build}"/>
+                <fileset dir="${lib}" includes="*.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- release -->
     <target name="release" depends="compile,dist,generate-docs"
             description="for the release process">
         <property name="packageName" value="${fullName}"/>
@@ -176,19 +188,10 @@
         <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
     </target>
 
-    <target name="generate-docs" description="generate Lphy docs.">
-        <echo> Generate Lphy docs ... </echo>
-        <java classname="lphy.doc.GenerateDocs" >
-            <classpath>
-                <pathelement path="${classpath}"/>
-                <pathelement path="${build}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
-            </classpath>
-        </java>
-    </target>
+    <target name="build" depends="compile"/>
 
     <!--  https://docs.github.com/en/actions  -->
-    <target name="github-actions" depends="compile, compile-test, test">
+    <target name="github-actions" depends="build, compile-test, test">
         <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>
 
