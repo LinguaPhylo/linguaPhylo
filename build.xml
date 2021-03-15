@@ -1,4 +1,4 @@
-<project default="build" basedir="." name="lphy" >
+<project default="compile" basedir="." name="lphy" >
 
     <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
     <!-- <property name="test" location="test"/>-->
@@ -38,7 +38,7 @@
     </target>
 
     <!-- Compile -->
-    <target name="compile" depends="init">
+    <target name="compile" depends="clean, init">
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
@@ -77,7 +77,7 @@
         </jar>
     </target>
 
-    <target name="dist" depends="build,dist-lphy">
+    <target name="dist" depends="compile,dist-lphy">
         <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
 
@@ -88,10 +88,28 @@
               <fileset dir="${lib}" includes="LICENSE*" />
             </copy>
         -->
-        <mkdir dir="${pack}/examples"/>
-        <copy todir="${pack}/examples">
-            <fileset dir="examples" includes="*.lphy"/>
-            <fileset dir="examples" includes="*.nex"/>
+        <property name="exaDir" value="examples"/>
+        <mkdir dir="${pack}/${exaDir}"/>
+        <copy todir="${pack}/${exaDir}">
+            <fileset dir="${exaDir}" includes="*.lphy">
+                <exclude name="**/*covid*"/>
+            </fileset>
+            <fileset dir="${exaDir}">
+                <include name="**/*.nex"/>
+                <include name="**/*.nexus"/>
+                <include name="**/*.fasta"/>
+                <exclude name="**/*covid*"/>
+            </fileset>
+        </copy>
+        <property name="tutDir" value="tutorials"/>
+        <mkdir dir="${pack}/${tutDir}"/>
+        <copy todir="${pack}/${tutDir}">
+            <fileset dir="${tutDir}" includes="*.lphy"/>
+            <fileset dir="${tutDir}">
+                <include name="**/*.nex"/>
+                <include name="**/*.nexus"/>
+                <include name="**/*.fasta"/>
+            </fileset>
         </copy>
 
         <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>
@@ -102,9 +120,6 @@
         <echo/>
         <echo>** Package ${dist}/${packageName}.zip created successfuly! **</echo>
     </target>
-
-
-    <target name="build" depends="clean, compile"/>
 
     <!-- Prepare for unit test compilation -->
     <target name="init-test">
