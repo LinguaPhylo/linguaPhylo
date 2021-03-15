@@ -27,6 +27,14 @@
 
     <!--*******************************************************************-->
 
+    <!-- Revert to pristine state. -->
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${build-test}"/>
+        <delete dir="${test-reports}"/>
+    </target>
+
     <!-- Prepare for compilation -->
     <target name="init">
         <echo message="Java version: ${java.version}"/>
@@ -167,14 +175,6 @@
         <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
     </target>
 
-    <!-- Revert to pristine state. -->
-    <target name="clean">
-        <delete dir="${build}"/>
-        <delete dir="${dist}"/>
-        <delete dir="${build-test}"/>
-        <delete dir="${test-reports}"/>
-    </target>
-
     <target name="generate-docs">
         <echo> Generate Lphy docs ... </echo>
         <java classname="lphy.doc.GenerateDocs" >
@@ -186,7 +186,7 @@
         </java>
     </target>
 
-    <target name="github-actions" depends="clean, compile, test">
+    <target name="github-actions" depends="compile, test">
         <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>
 
