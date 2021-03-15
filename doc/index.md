@@ -1,5 +1,5 @@
-LPhy Language Reference
-=======================
+LPhy Language Reference (version 0.0.2)
+=======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
 Generative distributions
