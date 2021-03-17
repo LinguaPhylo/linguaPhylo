@@ -13,19 +13,19 @@ model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
 
-  shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
-  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
+  γ ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  r ~ DiscretizeGamma(shape=γ, ncat=4, replicates=L);
 
   // 0.005 substitutions * site^{-1} * year^{-1} is closer to the truth
-  clockRate ~ LogNormal(meanlog=-5.298, sdlog=0.25);
+  μ ~ LogNormal(meanlog=-5.298, sdlog=0.25);
 
   // 3 population sizes
   Θ ~ LogNormal(meanlog=0.0, sdlog=1.0, replicates=S);
   // 6 migration rates backwards in time
-  b_m ~ Exp(mean=1.0, replicates=dim);
-  M = migrationMatrix(theta=Θ, m=b_m);
-  tree ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
-  rootAge = tree.rootAge();
+  m ~ Exp(mean=1.0, replicates=dim);
+  M = migrationMatrix(theta=Θ, m=m);
+  ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
+  //rootAge = tree.rootAge();
 
-  D ~ PhyloCTMC(siteRates=siteRates, Q=hky(kappa=κ, freq=π), mu=clockRate, tree=tree);
+  D ~ PhyloCTMC(siteRates=r, Q=hky(kappa=κ, freq=π), mu=μ, tree=ψ);
 }
