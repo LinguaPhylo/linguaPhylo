@@ -9,7 +9,9 @@ model {
   rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
   Q = gtr(freq=π, rates=rates);
 
+  // the mean of the exponential from which the first value of the chain is drawn
   initialMean ~ LogNormal(meanlog=-3.0, sdlog=1.0);
+  // the changes in Θ coincide with coalescent events n,
   Θ ~ ExpMarkovChain(initialMean=initialMean, n=w);
   ψ ~ SkylineCoalescent(taxa=taxa, theta=Θ);
 
