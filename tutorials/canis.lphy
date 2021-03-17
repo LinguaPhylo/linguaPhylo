@@ -27,7 +27,7 @@ model {
   ψ ~ MultispeciesCoalescent(theta=Θ, S=sp, taxa=taxa, replicates=n);
 
   // relative substitution rates
-  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
+  μ ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=weights);
 
-  genes ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=0.001, tree=ψ);
+  genes ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=μ), mu=0.001, tree=ψ);
 }

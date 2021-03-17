@@ -11,13 +11,13 @@ model {
   rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
   Q = gtr(freq=π, rates=rates);
 
-  firstValue ~ LogNormal(meanlog=9.0, sdlog=2.0);
-  Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
-  groupSizes ~ RandomComposition(n=w, k=numGroups);
-  ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
+  θ1 ~ LogNormal(meanlog=9.0, sdlog=2.0);
+  Θ ~ ExpMarkovChain(firstValue=θ1, n=numGroups);
+  A ~ RandomComposition(n=w, k=numGroups);
+  ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=A);
 
-  shape ~ LogNormal(meanlog=0.0, sdlog=2.0);
+  γ ~ LogNormal(meanlog=0.0, sdlog=2.0);
   // discretized Gamma 4 categories
-  siteRates ~ DiscretizeGamma(shape=shape, ncat=4, replicates=L);
-  D ~ PhyloCTMC(siteRates=siteRates, Q=Q, tree=ψ, mu=0.00079);
+  r ~ DiscretizeGamma(shape=γ, ncat=4, replicates=L);
+  D ~ PhyloCTMC(siteRates=r, Q=Q, tree=ψ, mu=0.00079);
 }
