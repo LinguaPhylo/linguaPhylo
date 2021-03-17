@@ -4,10 +4,10 @@ import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelPanel;
 import lphy.app.LinguaPhyloStudio;
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphy.app.graphicalmodelcomponent.Layering;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.parser.REPL;
+import lphy.utils.LoggerUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -53,8 +53,10 @@ public class NarrativeCreator {
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
         createNarrativeExclImg(parser, imgFile);
 
-        createImage(lphyFileName, imgFile);
+        // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
+//        createImage(lphyFileName, imgFile);
         writeNarrative();
+        LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
 
     }
 
