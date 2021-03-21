@@ -139,7 +139,7 @@
 
         <echo/>
         <echo/>
-        <echo>** Package ${dist}/${packageName}.zip created successfuly! **</echo>
+        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>
     </target>
 
     <!-- Prepare for unit test compilation -->
