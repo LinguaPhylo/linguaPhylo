@@ -1,5 +1,5 @@
 data {
-  D = readNexus(file="examples/primate.nex");
+  D = readNexus(file="tutorials/data/primate.nex");
   L = D.nchar();
   taxa = D.taxa();
 }

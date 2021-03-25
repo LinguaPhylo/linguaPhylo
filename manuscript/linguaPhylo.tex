@@ -333,7 +333,7 @@ To construct an analysis of a data set with this model we add a data block:
 {\singlespacing
 \begin{minted}{Stan}
 data {
-  D = nexus(file="examples/primate.nex");
+  D = nexus(file="tutorials/data/primate.nex");
   L = D.nchar();
   taxa = D.taxa();
 }
