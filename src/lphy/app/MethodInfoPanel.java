@@ -52,6 +52,11 @@ public class MethodInfoPanel extends JPanel {
         Method[] methods = c.getMethods();
         Arrays.sort(methods, Comparator.comparing(Method::getName));
 
+//        JLabel id = new JLabel(value.getUniqueId() + ":");
+//        id.setForeground(Color.gray);
+//        labels.add(id);
+//        editors.add(new JLabel(""));
+
         for (Method method : methods) {
 
             MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);

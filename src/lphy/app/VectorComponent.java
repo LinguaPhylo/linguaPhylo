@@ -16,44 +16,39 @@ public class VectorComponent extends JComponent {
 
     Vector vectorValue;
 
-    public  VectorComponent(Vector vectorValue) {
+    public VectorComponent(Vector vectorValue) {
         this.vectorValue = vectorValue;
 
         int size = vectorValue.size();
 
-        GridLayout gridLayout = new GridLayout((int)Math.ceil(size/2.0),2,5,5);
+        GridLayout gridLayout = new GridLayout((int) Math.ceil(size / 2.0), 2, 5, 5);
         setLayout(gridLayout);
 
-        // such as bSiteModel[3] => SiteModel[3]
-//        if (vectorValue instanceof CompoundVectorValue) {
-//            Generator generator = ((CompoundVectorValue) vectorValue).getGenerator();
-//            if (generator instanceof VectorizedFunction) {
-//                Iterator<? extends DeterministicFunction<?>> it = ((VectorizedFunction<?>) generator).getComponentFunctions().iterator();
-//                while (it.hasNext()) {
-//                    DeterministicFunction fun = it.next();
-//                    JComponent jComponent = ViewerRegister.getJComponentForValue(fun.generate());
-//                    if (jComponent != null) {
-//                        add(jComponent);
-//                    } else {
-//                        JLabel jLabel = new JLabel(fun.toString());
-//                        jLabel.setForeground(Color.red);
-//                        add(jLabel);
-//                    }
-//                }
-//            }
-//        } else {
-            // normal process
-            for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
+            JComponent jComponent;
+            String label = "";
+            if (vectorValue instanceof CompoundVectorValue) {
+                // need to get the Value not component inside Value
+                Value compValue = ((CompoundVectorValue) vectorValue).getComponentValue(i);
+                label = compValue.getLabel();
+                // to get methodInfoViewer
+                // if (MethodInfoPanel.hasZeroParamMethodInfo(compValue)) {
+                jComponent = ViewerRegister.getJComponentForValue(compValue);
+                // }
+            } else {
+                // for not CompoundVectorValue
                 Object component = vectorValue.getComponent(i);
-                JComponent jComponent = ViewerRegister.getJComponentForValue(component);
-                if (jComponent != null) {
-                    add(jComponent);
-                } else {
-                    JLabel jLabel = new JLabel(component.toString());
-                    jLabel.setForeground(Color.red);
-                    add(jLabel);
-                }
+                label = component.toString();
+                jComponent = ViewerRegister.getJComponentForValue(component);
             }
-//        }
+
+            if (jComponent != null) {
+                add(jComponent);
+            } else {
+                JLabel jLabel = new JLabel(label);
+                jLabel.setForeground(Color.red);
+                add(jLabel);
+            }
+        }
     }
 }
