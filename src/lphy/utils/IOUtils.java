@@ -11,18 +11,20 @@ public class IOUtils {
     public static final String USER_DIR = "user.dir";
 
     public static Path getPath(String pathStr){
-
         Path path = Paths.get(pathStr);
+        return getPath(path);
+    }
 
-        if (path.isAbsolute()) {
+    public static Path getPath(Path path){
+        if (path.isAbsolute())
             return path;
-        } else {
+        else {
             String wd = System.getProperty(USER_DIR);
-            return Paths.get(wd, pathStr);
+            return Paths.get(wd, path.toString());
 //            return path.toAbsolutePath();
         }
-
     }
+
 
     public static void setUserDir(String pathStr) {
         System.setProperty(USER_DIR, pathStr);
