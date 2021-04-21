@@ -86,8 +86,9 @@
     </target>
 
     <target name="generate-docs" description="generate Lphy docs.">
-        <echo> Generate Lphy docs ... </echo>
-        <java classname="lphy.doc.GenerateDocs" >
+        <property name="doc" value="doc" />
+        <echo> Generate Lphy docs to ${user.dir}/${doc} ... </echo>
+        <java classname="lphy.doc.GenerateDocs" fork="true" dir="./${doc}" >
             <classpath>
                 <pathelement path="${classpath}"/>
                 <pathelement path="${build}"/>
