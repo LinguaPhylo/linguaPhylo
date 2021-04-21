@@ -82,7 +82,8 @@ public class NexusParser {
             final Path nexFile = Paths.get(fileName);
 
             if (!nexFile.toFile().exists() || nexFile.toFile().isDirectory())
-                throw new IOException("Cannot find Nexus file ! " + nexFile);
+                throw new IOException("Cannot find Nexus file ! " + nexFile +
+                        ", user.dir = " + System.getProperty("user.dir"));
 
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
 //            reader.mark(READ_AHEAD_LIMIT); // to reset reader back to READ_AHEAD_LIMIT

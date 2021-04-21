@@ -1,6 +1,6 @@
 data {
   // extract dates
-  D = readNexus(file="examples/covid100.nex", options={ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"});
+  D = readNexus(file="data/covid100.nex", options={ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"});
   // 4 partitions
   parts = D.charset(["codon1","codon2", "codon3", "noncoding"]);
   weights = parts.nchar();

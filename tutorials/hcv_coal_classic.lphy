@@ -1,5 +1,5 @@
 data {
-  D = readNexus(file="tutorials/data/hcv.nexus");
+  D = readNexus(file="data/hcv.nexus");
   taxa = D.taxa();
   L = D.nchar();
   w = taxa.length()-1;

@@ -1,5 +1,5 @@
 data {
-  D = readNexus(file="tutorials/data/primate.nex");
+  D = readNexus(file="../tutorials/data/primate.nex");
   taxa = D.taxa();
   coding = D.charset("coding");
   noncoding = D.charset("noncoding");

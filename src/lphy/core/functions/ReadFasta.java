@@ -16,6 +16,7 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.StringValue;
+import lphy.utils.IOUtils;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -62,7 +63,9 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
         SequenceType sequenceType = sequenceTypeFactory.getDataType("nucleotide");
 
-        Reader reader = getReader(fileName);
+        Path nexPath = IOUtils.getPath(fileName);
+
+        Reader reader = getReader(nexPath.toString());
 
         List<Sequence> sequenceList = new ArrayList<>();
         try {
@@ -118,7 +121,8 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             final Path nexFile = Paths.get(fileName);
 
             if (!nexFile.toFile().exists() || nexFile.toFile().isDirectory())
-                throw new IOException("Cannot find Fasta file ! " + nexFile);
+                throw new IOException("Cannot find Fasta file ! " + nexFile +
+                        ", user.dir = " + System.getProperty("user.dir"));
 
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
 //            reader.mark(READ_AHEAD_LIMIT); // to reset reader back to READ_AHEAD_LIMIT

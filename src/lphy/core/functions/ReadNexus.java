@@ -10,8 +10,10 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.StringValue;
+import lphy.utils.IOUtils;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 /**
@@ -50,8 +52,10 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
         String ageRegxStr = MetaDataOptions.getAgeRegxStr(optionsVal);
         String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
+        Path nexPath = IOUtils.getPath(fileName);
+
         //*** parsing ***//
-        NexusParser nexusParser = new NexusParser(fileName);
+        NexusParser nexusParser = new NexusParser(nexPath.toString());
         MetaDataAlignment nexusData = null;
             try {
                 nexusData = nexusParser.importNexus(ageDirectionStr);

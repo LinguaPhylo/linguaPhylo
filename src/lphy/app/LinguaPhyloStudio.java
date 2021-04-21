@@ -2,28 +2,24 @@ package lphy.app;
 
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.app.graphicalmodelcomponent.LayeredGNode;
-import lphy.core.LPhyParser;
-import lphy.core.commands.Remove;
 import lphy.core.narrative.HTMLNarrative;
-import lphy.graphicalModel.Command;
 import lphy.graphicalModel.Utils;
-import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
-import lphy.parser.codecolorizer.DataModelToHTML;
+import lphy.utils.IOUtils;
 import lphy.utils.LoggerUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.*;
-import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static lphy.app.Utils.saveToFile;
@@ -190,18 +186,28 @@ public class LinguaPhyloStudio {
         }
     }
 
+    /**
+     * Load Lphy script from a file,
+     * and set the user.dir to the folder containing this file.
+     * @param exampleFile  LPhy script file
+     */
     public void readFile(File exampleFile) {
         String name = exampleFile.getName();
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(exampleFile));
+            // set user.dir to the folder containing example file,
+            // so that the relative path given in readNexus always refers to it
+            IOUtils.setUserDir(exampleFile.getParent());
             parser.clear();
+            parser.setName(name);
             panel.clear();
             panel.source(reader);
-            parser.setName(name);
-            setFileName(name);
+            setTitle(name);
         } catch (IOException e1) {
-            setFileName(null);
+            setTitle(null);
+            // set to where LPhy is launched
+            IOUtils.setUserDir(Paths.get("").toString());
             e1.printStackTrace();
         }
     }
@@ -259,7 +265,7 @@ public class LinguaPhyloStudio {
 
     }
 
-    private void setFileName(String name) {
+    private void setTitle(String name) {
         frame.setTitle(APP_NAME + " version " + VERSION +
                 (name != null ? " - "  + name : ""));
     }
