@@ -10,11 +10,20 @@ public class IOUtils {
 
     public static final String USER_DIR = "user.dir";
 
+    /**
+     * @see #getPath(Path)
+     */
     public static Path getPath(String pathStr){
         Path path = Paths.get(pathStr);
         return getPath(path);
     }
 
+    /**
+     * @param path
+     * @return  for the relative path, it will return a path
+     *          concatenating user.dir before the relative path.
+     *
+     */
     public static Path getPath(Path path){
         if (path.isAbsolute())
             return path;
