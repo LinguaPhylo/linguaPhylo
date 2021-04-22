@@ -72,7 +72,7 @@
 
         <mkdir dir="${pack}"/>
         <!-- examples in ${packageName}.zip, not ${projName}.src.jar -->
-        <jar jarfile="${pack}/${projName}.src.jar">
+        <jar jarfile="${pack}/${fullName}.src.jar">
             <fileset dir="${src}"/>
         </jar>
 
