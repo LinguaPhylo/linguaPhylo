@@ -2,9 +2,6 @@ package lphy.utils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class IOUtils {
 
@@ -36,8 +33,10 @@ public class IOUtils {
 
 
     public static void setUserDir(String pathStr) {
-        System.setProperty(USER_DIR, pathStr);
-        System.out.println("Set "+ USER_DIR +" = " + pathStr);
+        if (pathStr != null) {
+            System.setProperty(USER_DIR, pathStr);
+            System.out.println("Set " + USER_DIR + " = " + pathStr);
+        }
     }
 
 }
