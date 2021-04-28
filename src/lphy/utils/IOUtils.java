@@ -39,4 +39,12 @@ public class IOUtils {
         }
     }
 
+    public static Path getUserDir() {
+        String wd = System.getProperty(USER_DIR);
+        if (wd != null)
+            return Paths.get(wd);
+        return Paths.get("");
+    }
+
+
 }

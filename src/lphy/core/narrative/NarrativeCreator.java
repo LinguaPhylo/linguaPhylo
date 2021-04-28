@@ -7,6 +7,7 @@ import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.parser.REPL;
+import lphy.utils.IOUtils;
 import lphy.utils.LoggerUtils;
 
 import java.io.*;
@@ -175,7 +176,7 @@ public class NarrativeCreator {
         LPhyParser parser = new REPL();
         parser.source(reader);
 
-        wd = file.toPath().getParent();
+        wd = IOUtils.getUserDir();
         return parser;
     }
 
@@ -221,7 +222,7 @@ public class NarrativeCreator {
 
     // input: examples/h5n1.lphy
     public static void main(String[] args) throws IOException {
-        // TODO set wd
+
         if (args.length != 1)
             throw new IllegalArgumentException("Expecting LPhy file name !");
 
