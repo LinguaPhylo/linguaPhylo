@@ -94,7 +94,7 @@ public class ParserUtils {
 
         Class<?>[] functionClasses = {ARange.class, ArgI.class,
                 // Substitution models
-                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, G16.class,
                 GeneralTimeReversible.class, LewisMK.class,
                 NucleotideModel.class,
                 BModelSetFunction.class,

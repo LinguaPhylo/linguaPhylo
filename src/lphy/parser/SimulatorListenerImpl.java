@@ -274,6 +274,9 @@ public class SimulatorListenerImpl extends SimulatorBaseListener {
                 if (containsKey(key)) {
                     return get(key);
                 }
+//                else {
+//                    return new PlaceHolder(key);
+//                }
             }
             ExpressionNode expression = null;
             if (ctx.getChildCount() >= 2) {

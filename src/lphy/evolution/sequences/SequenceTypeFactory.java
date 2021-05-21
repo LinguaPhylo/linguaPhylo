@@ -36,6 +36,8 @@ public class SequenceTypeFactory {
             case "aminoacid":
             case "protein":
                 return SequenceType.AMINO_ACID;
+            case "phasedgenotype":
+                return PhasedGenotype.getInstance();
             case Binary.NAME:
                 return Binary.getInstance();
             case Continuous.NAME:
