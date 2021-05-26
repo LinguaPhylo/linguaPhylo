@@ -16,14 +16,14 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
         year = 2021,
         DOI = "https://doi.org/10.1101/2020.07.31.230292"
 )
-public class G16 extends RateMatrix {
+public class GT16 extends RateMatrix {
 
     public static final String ratesParamName = "rates";
     public static final String freqParamName = "freq";
 
-    public G16(@ParameterInfo(name = ratesParamName, narrativeName = "relative rates", description = "the relative rates of the G16 process. Size 6.") Value<Double[]> rates,
-               @ParameterInfo(name = freqParamName, narrativeName = "base frequencies", description = "the base frequencies of the G16 process. Size 16.") Value<Double[]> freq,
-               @ParameterInfo(name = meanRateParamName, narrativeName = "substitution rate", description = "the rate of substitution.", optional = true) Value<Number> meanRate) {
+    public GT16(@ParameterInfo(name = ratesParamName, narrativeName = "relative rates", description = "the relative rates of the G16 process. Size 6.") Value<Double[]> rates,
+                @ParameterInfo(name = freqParamName, narrativeName = "base frequencies", description = "the base frequencies of the G16 process. Size 16.") Value<Double[]> freq,
+                @ParameterInfo(name = meanRateParamName, narrativeName = "substitution rate", description = "the rate of substitution.", optional = true) Value<Number> meanRate) {
 
         super(meanRate);
 
@@ -33,10 +33,10 @@ public class G16 extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-    @GeneratorInfo(name = "g16",
+    @GeneratorInfo(name = "gt16",
             verbClause = "is",
             narrativeName = "general time-reversible rate matrix on phased genotypes",
-            description = "The GTR instantaneous rate matrix on phased genotypes. Takes relative rates (6) and base frequencies (16) and produces an G16 rate matrix.")
+            description = "The GTR instantaneous rate matrix on phased genotypes. Takes relative rates (6) and base frequencies (16) and produces an GT16 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getRates();
         Value<Double[]> freq = getParams().get(freqParamName);

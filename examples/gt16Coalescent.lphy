@@ -1,6 +1,6 @@
-Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+Θ ~ LogNormal(meanlog=-2.0, sdlog=1.0);
 ψ ~ Coalescent(n=16, theta=Θ);
 π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0,3.0]);
 rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
-Q = g16(freq=π, rates=rates); // construct the G16 instantaneous rate matrix
+Q = gt16(freq=π, rates=rates); // construct the GT16 instantaneous rate matrix
 D ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType="phasedGenotype");
