@@ -1,47 +1,95 @@
 
 package lphy.evolution.sequences;
 
+import jebl.evolution.sequences.StandardState;
 import jebl.evolution.sequences.State;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.*;
 
 /**
  * @author Walter Xie
  */
 public class Standard extends DataType {
 
-//    final private int numStates;
-    private final List<String> stateNames;
+    private final StandardState[] CANONICAL_STATES;
+    private final StandardState[] STATES;
+    private final StandardState UNKNOWN_STATE;
+//    private final StandardState GAP_STATE;
 
-    public Standard(int numStates){
-        stateNames = createStateNames(numStates);
+    private final Map<String, StandardState> statesByCode;
+
+    /**
+     * Create states from integers
+     * @param numCanoStates The number of canonical states excluding unknown and gaps
+     */
+    public Standard(int numCanoStates){
+        assert numCanoStates > 1;
+        List<StandardState> states = new ArrayList<>(numCanoStates);
+        for (int i = 0; i < numCanoStates; i++) {
+            String name = String.valueOf(i);
+            StandardState state = new StandardState(name, i);
+            states.add(state);
+        }
+
+        CANONICAL_STATES = states.toArray(StandardState[]::new);
+
+        int len = CANONICAL_STATES.length;
+        UNKNOWN_STATE = new StandardState("?", len, CANONICAL_STATES);
+//        GAP_STATE = new StandardState("-", len+1, CANONICAL_STATES);
+
+        // no gap
+        STATES = new StandardState[len+1];
+        for(int i = 0; i < len; i++) {
+            STATES[i] = CANONICAL_STATES[i];
+        }
+        STATES[len] = UNKNOWN_STATE;
+//        STATES[len+1] = GAP_STATE;
+
+        statesByCode = new HashMap();
+        for(int i = 0; i < STATES.length; i++) {
+            statesByCode.put(STATES[i].getCode(), STATES[i]);
+        }
     }
 
-    //Cannot use jebl State outside of jebl
+    /**
+     * Create states from given unique names.
+     * @param stateNames The names of canonical states excluding unknown and gaps
+     */
     public Standard(List<String> stateNames){
-        this.stateNames = new ArrayList<>(Objects.requireNonNull(stateNames));
+        assert stateNames.size() > 1;
+        List<StandardState> states = new ArrayList<>(stateNames.size());
+        for (int i = 0; i < stateNames.size(); i++) {
+            String name = stateNames.get(i);
+            StandardState state = new StandardState(name, i);
+            states.add(state);
+        }
+
+        CANONICAL_STATES = states.toArray(StandardState[]::new);
+
+        int len = CANONICAL_STATES.length;
+        UNKNOWN_STATE = new StandardState("?", len, CANONICAL_STATES);
+//        GAP_STATE = new StandardState("-", len+1, CANONICAL_STATES);
+
+        // no gap
+        STATES = new StandardState[len+1];
+        for(int i = 0; i < len; i++) {
+            STATES[i] = CANONICAL_STATES[i];
+        }
+        STATES[len] = UNKNOWN_STATE;
+//        STATES[len+1] = GAP_STATE;
+
+        statesByCode = new HashMap();
+        for(int i = 0; i < STATES.length; i++) {
+            statesByCode.put(STATES[i].getCode(), STATES[i]);
+        }
     }
 
-    private List<String> createStateNames(int numStates) {
-        assert numStates > 1;
-        return IntStream.range(0, numStates).mapToObj(String::valueOf).collect(Collectors.toList());
-    }
-
-
-    public List<String> getStateNames() {
-        return Objects.requireNonNull(stateNames);
-    }
-
-    public String getStateName(int index) {
-        return Objects.requireNonNull(stateNames).get(index);
-    }
-
-    public int getStateNameIndex(String name) {
-        return Objects.requireNonNull(stateNames).indexOf(name);
+    public StandardState getStateFromName(String name) {
+        for (StandardState state : STATES) {
+            if (state.getFullName().equals(name))
+                return state;
+        }
+        return null;
     }
 
     //*** implementations ***//
@@ -50,52 +98,53 @@ public class Standard extends DataType {
 
     @Override
     public int getStateCount() {
-        return stateNames.size(); // TODO ambiguous?
+        return STATES.length;
     }
 
     @Override
     public List<State> getStates() {
-        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
+        return Collections.unmodifiableList(Arrays.asList((State[])STATES));
     }
 
     @Override
     public int getCanonicalStateCount() {
-        return stateNames.size();
+        return CANONICAL_STATES.length;
     }
 
     @Override
     public List<? extends State> getCanonicalStates() {
-        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
+        return Collections.unmodifiableList(Arrays.asList((State[])CANONICAL_STATES));
     }
 
     @Override
     public int getCodeLength() {
-        return 1;
+        throw new UnsupportedOperationException("Standard data type only allow 1 site in the sequence, " +
+                "normally used by traits !");
     }
 
     @Override
     public State getState(int index) {
-        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
+        return STATES[index];
     }
 
     @Override
     public State getUnknownState() {
-        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
+        return UNKNOWN_STATE;
     }
 
     @Override
     public State getGapState() {
-        throw new UnsupportedOperationException("jebl State is package-private, cannot be inherited !");
+        throw new UnsupportedOperationException("");
     }
 
     @Override
     public boolean isUnknown(State state) {
-        return false;
+        return state == UNKNOWN_STATE;
     }
 
     @Override
     public boolean isGap(State state) {
-        return false;
+        throw new UnsupportedOperationException("");
     }
 
     @Override

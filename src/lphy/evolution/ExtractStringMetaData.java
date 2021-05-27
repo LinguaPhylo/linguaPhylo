@@ -1,13 +1,11 @@
 package lphy.evolution;
 
+import jebl.evolution.sequences.State;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sequences.Standard;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ExtractStringMetaData implements TaxaData<String> {
@@ -64,16 +62,24 @@ public class ExtractStringMetaData implements TaxaData<String> {
      */
     @Override
     public Alignment extractTraitAlignment(Taxa taxa) {
+        // list of traits
         List<String> traitList = getData(taxa);
-        // no sorting demes
+        // no sorting unique traits
         Set<String> uniqTraitVal = new LinkedHashSet<>(traitList);
-        List<String> uniqueDemes = new ArrayList<>(uniqTraitVal);
-        // state names are sorted unique demes
-        Standard standard = new Standard(uniqueDemes);
+        List<String> uniqueTraits = new ArrayList<>(uniqTraitVal);
+
+        // create Standard data type, where state code is the index of unique traits
+        Standard standard = new Standard(uniqueTraits);
+
+        // 1 site only
         SimpleAlignment traitAl = new SimpleAlignment(taxa, 1, standard);
-        // fill in trait values, traitVal and taxaNames have to maintain the same order
+        // fill in trait alignment, maintaining the same order
+        State state;
+        int demeIndex;
         for (int t = 0; t < traitList.size(); t++) {
-            int demeIndex = standard.getStateNameIndex(traitList.get(t));
+//            int demeIndex = standard.getStateNameIndex(traitList.get(t));
+            state = standard.getStateFromName(traitList.get(t));
+            demeIndex = Objects.requireNonNull(state).getIndex();
             traitAl.setState(t, 0, demeIndex);
         }
         return traitAl;

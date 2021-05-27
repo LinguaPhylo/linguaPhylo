@@ -1,9 +1,8 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
-import lphy.evolution.sequences.Binary;
-import lphy.evolution.sequences.Standard;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -86,18 +85,21 @@ public class SimpleAlignment extends AbstractAlignment {
      */
     public String getSequence(int taxonIndex) {
         StringBuilder builder = new StringBuilder();
+        State state;
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
-            if (Objects.requireNonNull(sequenceType).getName().equals(Binary.NAME))
-                builder.append(getBinaryChar(alignment[taxonIndex][j]));
-            else if (sequenceType.getName().equals(Standard.NAME)) {
-                Standard standard = (Standard) sequenceType;
-                builder.append(standard.getStateName(alignment[taxonIndex][j]));
-            } else
-                builder.append(sequenceType.getState(alignment[taxonIndex][j]));
+//            if (Objects.requireNonNull(sequenceType).getName().equals(Binary.NAME))
+//                builder.append(getBinaryChar(alignment[taxonIndex][j]));
+//            else if (sequenceType.getName().equals(Standard.NAME)) {
+//                Standard standard = (Standard) sequenceType;
+//                builder.append(standard.getStateName(alignment[taxonIndex][j]));
+//            } else
+            state = sequenceType.getState(alignment[taxonIndex][j]);
+            builder.append(Objects.requireNonNull(state));
         }
         return builder.toString();
     }
 
+    @Deprecated
     private char getBinaryChar(int state) {
         if (getCanonicalStateCount() != 2)
             throw new IllegalArgumentException("Binary only have 2 states ! state = " + state);
