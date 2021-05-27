@@ -1,6 +1,6 @@
 data {
    numLoci = 4;
-   //L = rep(element=500, times=numLoci);
+   L = rep(element=500, times=numLoci);
 }
 model {
    lambda ~ LogNormal(meanlog=1.25, sdlog=0.05);
@@ -9,10 +9,10 @@ model {
    morph_mu ~ LogNormal(meanlog=-1.25, sdlog=0.1);
    clock_rate ~ LogNormal(meanlog=-3.5, sdlog=0.6);
    morph_data ~ PhyloCTMC(tree=S, Q=lewisMK(numStates=4), mu=morph_mu, L=100, dataType=standard(4));
-   //pop_sizes ~ InverseGamma(alpha=2.0, beta=0.5, replicates=S.nodeCount());
-   //g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, replicates=numLoci);
-   //g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);
-   //kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, replicates=numLoci);
-   //pi ~ Dirichlet(conc=[5,5,5,5], replicates=numLoci);
-   //mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, meanRate=g_rate), mu=clock_rate, tree=g, L=L, dataType=nucleotides());
+   pop_sizes ~ InverseGamma(alpha=2.0, beta=0.5, replicates=S.nodeCount());
+   g ~ MultispeciesCoalescent(S=S, theta=pop_sizes, replicates=numLoci);
+   g_rate ~ WeightedDirichlet(conc=rep(element=1.0, times=numLoci), weights=L);
+   kappa ~ LogNormal(meanlog=1.0, sdlog=1.25, replicates=numLoci);
+   pi ~ Dirichlet(conc=[5,5,5,5], replicates=numLoci);
+   mol_data ~ PhyloCTMC(Q=hky(kappa=kappa, freq=pi, meanRate=g_rate), mu=clock_rate, tree=g, L=L, dataType=nucleotides());
 }
