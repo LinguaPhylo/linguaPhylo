@@ -41,7 +41,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> siteRates;
     Value<Double[]> branchRates;
     Value<Integer> L;
-    Value<String> dataType;
+    Value<Object> dataType;
     RandomGenerator random;
 
     public static final String treeParamName = "tree";
@@ -51,7 +51,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public static final String siteRatesParamName = "siteRates";
     public static final String branchRatesParamName = "branchRates";
     public static final String LParamName = "L";
-//    public static final String stateNamesParamName = "stateNames";
     public static final String dataTypeParamName = "dataType";
 
     final int numStates;
@@ -73,8 +72,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment", optional = true) Value<Integer> L,
-//It seems not required   @ParameterInfo(name = stateNamesParamName, description = "state names for discrete traits", optional = true) Value<String[]> stateNames,
-                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<String> dataType) {
+                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<Object> dataType) {
 
         this.tree = tree;
         this.Q = Q;
@@ -117,7 +115,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         if (siteRates != null) map.put(siteRatesParamName, siteRates);
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
-//        if (stateNames != null) map.put(stateNamesParamName, stateNames);
         if (dataType != null) map.put(dataTypeParamName, dataType);
         return map;
     }
@@ -188,10 +185,14 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         // TODO stateNames != null, how to pass states into Standard
         // dataType="standard", use numStates to create Standard
         if (dataType != null) {
-            if (isStandardDataType())
-                sequenceType = SequenceTypeFactory.getStandardDataType(numStates);
-            else
-                sequenceType = SequenceTypeFactory.getDataType(dataType.value());
+            if (dataType.value() instanceof SequenceType) {
+                sequenceType = (SequenceType)dataType.value();
+            } else {
+                if (isStandardDataType())
+                    sequenceType = SequenceTypeFactory.getStandardDataType(numStates);
+                else
+                    sequenceType = SequenceTypeFactory.getDataType((String)dataType.value());
+            }
         }
 
         if (sequenceType == null) {
@@ -241,7 +242,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     public boolean isStandardDataType() {
-        return dataType != null && DataType.isStandard(dataType.value());
+        return dataType != null && DataType.isStandard((String)dataType.value());
     }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {

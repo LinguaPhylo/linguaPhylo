@@ -6,5 +6,5 @@ data {
 model {
   theta ~ LogNormal(meanlog=3, sdlog=1);
   T ~ Coalescent(theta=theta, taxa=taxa);
-  D ~ PhyloCTMC(tree=T, L=L, Q=jukesCantor());
+  D ~ PhyloCTMC(tree=T, L=L, Q=jukesCantor(), dataType=nucleotides());
 }
