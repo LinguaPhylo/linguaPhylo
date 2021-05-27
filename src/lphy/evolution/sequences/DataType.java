@@ -16,6 +16,8 @@ import java.util.List;
  */
 public abstract class DataType implements SequenceType { // TODO SequenceType implements Comparable
 
+    protected static final char[] NUCL_CHAR = new char[]{'A', 'C', 'G', 'T'};
+
     public static boolean isSame(SequenceType type1, SequenceType type2) {
         if (type1 == null || type2 == null) return false;
         return type1.getName().equals(type2.getName());

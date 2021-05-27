@@ -66,8 +66,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     private double[][] iexp;
     private double[] Eval;
 
-    protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
-
     public PhyloCTMC(@ParameterInfo(name = treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
                      @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
@@ -191,13 +189,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         // dataType="standard", use numStates to create Standard
         if (dataType != null) {
             if (isStandardDataType())
-                sequenceType = sequenceTypeFactory.getStandardDataType(numStates);
+                sequenceType = SequenceTypeFactory.getStandardDataType(numStates);
             else
-                sequenceType = sequenceTypeFactory.getDataType(dataType.value());
+                sequenceType = SequenceTypeFactory.getDataType(dataType.value());
         }
 
         if (sequenceType == null) {
-            sequenceType = sequenceTypeFactory.getSequenceType(numStates);
+            sequenceType = SequenceTypeFactory.getDataType(numStates);
             LoggerUtils.log.warning("Data type is unknown ! Assign data type (" + sequenceType +
                     ") to the sequences on the basis of " + numStates + " states !");
         }

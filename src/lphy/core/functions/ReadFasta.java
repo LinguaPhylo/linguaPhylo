@@ -15,7 +15,6 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.StringValue;
 import lphy.utils.IOUtils;
 
 import java.io.IOException;
@@ -60,8 +59,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
         //*** parsing ***//
-        SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
-        SequenceType sequenceType = sequenceTypeFactory.getDataType("nucleotide");
+        SequenceType sequenceType = SequenceTypeFactory.getDataType("nucleotide");
 
         Path nexPath = IOUtils.getPath(fileName);
 

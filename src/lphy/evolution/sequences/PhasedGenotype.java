@@ -13,7 +13,7 @@ import java.util.*;
  */
 public final class PhasedGenotype extends DataType {
 
-    public static final String NAME = "phasedGenotypes";
+    public static final String NAME = "phasedGenotype";
     public static final int CANONICAL_STATE_COUNT = 16;
     public static final int STATE_COUNT = 18;
 
@@ -26,12 +26,11 @@ public final class PhasedGenotype extends DataType {
     static {
         CANONICAL_STATES = new PhasedGenotypeState[CANONICAL_STATE_COUNT];
 
-        char[] nucs = new char[]{'A', 'C', 'G', 'T'};
         int x = 0;
         char code;
         for(int i = 0; i < 4; ++i) {
             for(int j = 0; j < 4; ++j) {
-                    String name = "" + nucs[i] + nucs[j];
+                    String name = "" + NUCL_CHAR[i] + NUCL_CHAR[j];
                     code = x < 10 ? (char) (x + '0') : (char) (x - 10 + 'a');
                     CANONICAL_STATES[x] = new PhasedGenotypeState(name, Character.toString(code), x);
                     ++x;

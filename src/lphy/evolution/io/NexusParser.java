@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 public class NexusParser {
 
     protected final ImportHelper helper;
-    protected final SequenceTypeFactory sequenceTypeFactory = new SequenceTypeFactory();
 
     protected NexusBlock nextBlock = null;
     protected String nextBlockName = null;
@@ -386,7 +385,7 @@ public class NexusParser {
 
                         try {
                             // add new data type to this method
-                            sequenceType = sequenceTypeFactory.getDataType(token3);
+                            sequenceType = SequenceTypeFactory.getDataType(token3);
                         } catch (UnsupportedOperationException e) {
                             throw new ImportException.UnparsableDataException(e.getMessage());
                         }
