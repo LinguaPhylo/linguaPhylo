@@ -17,6 +17,9 @@ import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.continuous.PhyloBrownian;
 import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.continuous.PhyloOU;
+import lphy.evolution.datatype.BinaryDatatypeFunction;
+import lphy.evolution.datatype.NucleotidesFunction;
+import lphy.evolution.datatype.StandardDatatypeFunction;
 import lphy.evolution.functions.ExtantTaxa;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.likelihood.PhyloCTMCSiteModel;
@@ -99,6 +102,10 @@ public class ParserUtils {
                 NucleotideModel.class,
                 BModelSetFunction.class,
                 bSiteModelFunction.class,
+
+                // Data types
+                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
+
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
                 // Tree

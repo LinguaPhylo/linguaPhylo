@@ -1,0 +1,20 @@
+package lphy.evolution.datatype;
+
+import jebl.evolution.sequences.SequenceType;
+import lphy.evolution.sequences.Binary;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.Value;
+
+public class BinaryDatatypeFunction extends DeterministicFunction<SequenceType> {
+
+    public BinaryDatatypeFunction() {}
+
+    @GeneratorInfo(name = "binaryDataType",
+            verbClause = "is",
+            narrativeName = "binary data type",
+            description = "The binary data type.")
+    public Value<SequenceType> apply() {
+        return new Value<>(null, Binary.getInstance());
+    }
+}

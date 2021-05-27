@@ -20,7 +20,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
     String betaParamName;
     String alignmentParamName;
 
-    RandomGenerator random = Utils.getRandom();
+    RandomGenerator random;
 
     public ErrorModel(@ParameterInfo(name = "alpha", description = "the false positive probability.") Value<Double> alpha,
                       @ParameterInfo(name = "beta", description = "the false negative probability.") Value<Double> beta,
