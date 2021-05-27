@@ -1,5 +1,7 @@
 package lphy.app;
 
+import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
@@ -31,6 +33,38 @@ public class ViewerRegister {
         public JComponent getViewer(Object value) {
             return new MethodInfoPanel((Value) value);
         }
+    };
+
+    private static Viewer sequenceTypeValueViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof SequenceType;
+
+            } else return (object instanceof SequenceType);
+        }
+
+        public JComponent getViewer(Object object) {
+
+            SequenceType sequenceType = null;
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                    sequenceType = ((Value<SequenceType>)value).value();
+            } else sequenceType = (SequenceType)object;
+
+            StringBuilder builder = new StringBuilder();
+            builder.append(sequenceType.getName());
+            builder.append(": ");
+            for (State state : sequenceType.getCanonicalStates()) {
+                builder.append(state);
+                builder.append(" ");
+            }
+
+            return new JLabel(builder.toString());
+        };
     };
 
     private static Viewer primitiveArrayViewer = new Viewer() {
@@ -287,7 +321,8 @@ public class ViewerRegister {
                 continuousCharacterDataViewer,
                 primitiveArrayViewer,
                 new VectorValueViewer(),
-                methodInfoViewer
+                methodInfoViewer,
+                sequenceTypeValueViewer
         };
 
         private static Viewer getViewerForValue(Object object) {

@@ -15,6 +15,6 @@ public class BinaryDatatypeFunction extends DeterministicFunction<SequenceType> 
             narrativeName = "binary data type",
             description = "The binary data type.")
     public Value<SequenceType> apply() {
-        return new Value<>(null, Binary.getInstance());
+        return new Value<>(null, Binary.getInstance(), this);
     }
 }
