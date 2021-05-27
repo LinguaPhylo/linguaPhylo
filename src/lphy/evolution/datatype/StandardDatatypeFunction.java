@@ -28,6 +28,6 @@ public class StandardDatatypeFunction extends DeterministicFunction<SequenceType
     public Value<SequenceType> apply() {
         Value<Integer> stateCountValue = getParams().get(stateCountParamName);
         int stateCount = stateCountValue.value();
-        return new Value<>(null, new Standard(stateCount));
+        return new Value<>(null, new Standard(stateCount), this);
     }
 }

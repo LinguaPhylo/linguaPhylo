@@ -12,6 +12,6 @@ public class NucleotidesFunction extends DeterministicFunction<SequenceType> {
             narrativeName = "nucleotide data type",
             description = "The nucleotide data type.")
     public Value<SequenceType> apply() {
-        return new Value<>(null, SequenceType.NUCLEOTIDE);
+        return new Value<>(null, SequenceType.NUCLEOTIDE, this);
     }
 }
