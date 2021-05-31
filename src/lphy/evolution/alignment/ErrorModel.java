@@ -16,24 +16,20 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
     Value<Double> beta;
     Value<Alignment> alignment;
 
-    String alphaParamName;
-    String betaParamName;
-    String alignmentParamName;
+    public final String alphaParamName = "alpha";
+    public final String betaParamName = "beta";
+    public final String alignmentParamName = "alignment";
 
     RandomGenerator random;
 
-    public ErrorModel(@ParameterInfo(name = "alpha", description = "the false positive probability.") Value<Double> alpha,
-                      @ParameterInfo(name = "beta", description = "the false negative probability.") Value<Double> beta,
-                      @ParameterInfo(name = "alignment", description = "the alignment without errors.") Value<Alignment> alignment) {
+    public ErrorModel(@ParameterInfo(name = alphaParamName, description = "the false positive probability.") Value<Double> alpha,
+                      @ParameterInfo(name = betaParamName, description = "the false negative probability.") Value<Double> beta,
+                      @ParameterInfo(name = alignmentParamName, description = "the alignment without errors.") Value<Alignment> alignment) {
 
         this.alpha = alpha;
         this.beta = beta;
         this.alignment = alignment;
         this.random = Utils.getRandom();
-
-        alphaParamName = getParamName(0);
-        betaParamName = getParamName(1);
-        alignmentParamName = getParamName(2);
     }
 
     @Override
