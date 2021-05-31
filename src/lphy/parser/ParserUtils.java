@@ -8,7 +8,7 @@ import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
 import lphy.evolution.alignment.ErrorModel;
-import lphy.evolution.alignment.GenotypeErrorModel;
+import lphy.evolution.alignment.GT16ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.MultispeciesCoalescent;
@@ -68,7 +68,7 @@ public class ParserUtils {
                 // skyline
                 SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
                 // others
-                ErrorModel.class, GenotypeErrorModel.class, RandomBooleanArray.class,
+                ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
                 PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
