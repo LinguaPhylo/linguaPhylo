@@ -7,6 +7,7 @@ import jebl.evolution.sequences.State;
 import java.util.*;
 
 /**
+ * Used for discrete/categorical data, e.g. morphology, locations, traits, ...
  * @author Walter Xie
  */
 public class Standard extends DataType {
@@ -16,7 +17,7 @@ public class Standard extends DataType {
     private final StandardState UNKNOWN_STATE;
 //    private final StandardState GAP_STATE;
 
-    private final Map<String, StandardState> statesByCode;
+    private final Map<String, StandardState> statesByCode; //TODO
 
     /**
      * Create states from integers

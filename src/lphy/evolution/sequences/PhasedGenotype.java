@@ -4,9 +4,12 @@ package lphy.evolution.sequences;
 import jebl.evolution.sequences.PhasedGenotypeState;
 import jebl.evolution.sequences.State;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
+ * For phased genotype data.
  * @author Alexei Drummond
  * @author Kylie Chen
  * @author Walter Xie
@@ -21,7 +24,6 @@ public final class PhasedGenotype extends DataType {
     public static final PhasedGenotypeState[] STATES;
     public static final PhasedGenotypeState UNKNOWN_STATE;
     public static final PhasedGenotypeState GAP_STATE;
-    private static final Map<String, PhasedGenotypeState> statesByCode;
 
     static {
         CANONICAL_STATES = new PhasedGenotypeState[CANONICAL_STATE_COUNT];
@@ -50,11 +52,6 @@ public final class PhasedGenotype extends DataType {
 
         STATES[16] = UNKNOWN_STATE;
         STATES[17] = GAP_STATE;
-        statesByCode = new HashMap();
-
-        for(i = 0; i < STATES.length; ++i) {
-            statesByCode.put(STATES[i].getCode(), STATES[i]);
-        }
 
     }
 

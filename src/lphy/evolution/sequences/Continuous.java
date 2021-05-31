@@ -5,6 +5,7 @@ import jebl.evolution.sequences.State;
 import java.util.List;
 
 /**
+ * For continuous traits
  * @author Walter Xie
  */
 public class Continuous extends DataType {
@@ -24,12 +25,12 @@ public class Continuous extends DataType {
 
     @Override
     public int getStateCount() {
-        return 0;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public List<State> getStates() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -39,7 +40,7 @@ public class Continuous extends DataType {
 
     @Override
     public List<? extends State> getCanonicalStates() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -49,7 +50,7 @@ public class Continuous extends DataType {
 
     @Override
     public State getState(int index) {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
