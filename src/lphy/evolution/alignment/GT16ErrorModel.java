@@ -5,6 +5,7 @@ import lphy.evolution.sequences.PhasedGenotype;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -75,6 +76,19 @@ public class GT16ErrorModel implements GenerativeDistribution<Alignment> {
 
         return new RandomVariable<>("D", newAlignment, this);
     }
+
+    public double getEpsilon() {
+        return Objects.requireNonNull(epsilon).value();
+    }
+
+    public double getDelta() {
+        return Objects.requireNonNull(delta).value();
+    }
+
+    public Alignment getOriginalAlignment() {
+        return Objects.requireNonNull(alignment).value();
+    }
+
 
     private int error(int state, double[][] errorMatrix) {
 
