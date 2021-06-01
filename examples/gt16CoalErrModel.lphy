@@ -4,4 +4,4 @@
 rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
 Q = gt16(freq=π, rates=rates); // construct the GT16 instantaneous rate matrix
 S ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType="phasedGenotype");
-D ~ PhasedGenotypeErrorModel(errorRate=0.1, ADO=0.1, alignment=S);
+D ~ GT16ErrorModel(delta=0.1, epsilon=0.1, alignment=S);
