@@ -22,6 +22,7 @@ import lphy.evolution.datatype.BinaryDatatypeFunction;
 import lphy.evolution.datatype.NucleotidesFunction;
 import lphy.evolution.datatype.StandardDatatypeFunction;
 import lphy.evolution.functions.ExtantTaxa;
+import lphy.evolution.functions.UnphaseGenotypeAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.evolution.substitutionmodel.*;
@@ -105,7 +106,7 @@ public class ParserUtils {
                 bSiteModelFunction.class,
 
                 // Data types
-                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
+                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class, UnphaseGenotypeAlignment.class,
 
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
