@@ -1,6 +1,5 @@
 package lphy.evolution.sequences;
 
-import jebl.evolution.sequences.PhasedGenotypeState;
 import jebl.evolution.sequences.State;
 import jebl.evolution.sequences.UnphasedGenotypeState;
 
@@ -8,6 +7,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * For unphased genotype data.
+ * @author Alexei Drummond
+ * @author Kylie Chen
+ * @author Walter Xie
+ */
 public class UnphasedGenotype extends DataType {
 
     public static final String NAME = "unphasedGenotype";
@@ -34,9 +39,10 @@ public class UnphasedGenotype extends DataType {
         }
         assert x == CANONICAL_STATE_COUNT;
 
-        // TODO Alexei please check these two
-        UNKNOWN_STATE = new UnphasedGenotypeState("??", "?", 11, CANONICAL_STATES);
-        GAP_STATE = new UnphasedGenotypeState("--", "-", 12, CANONICAL_STATES);
+        // no ambiguous states
+
+        UNKNOWN_STATE = new UnphasedGenotypeState("unknown genotype", "?", 11, CANONICAL_STATES);
+        GAP_STATE = new UnphasedGenotypeState("gap", "-", 12, CANONICAL_STATES);
         STATES = new UnphasedGenotypeState[STATE_COUNT];
 
         int i;
@@ -44,8 +50,8 @@ public class UnphasedGenotype extends DataType {
             STATES[i] = CANONICAL_STATES[i];
         }
 
-        STATES[16] = UNKNOWN_STATE;
-        STATES[17] = GAP_STATE;
+        STATES[11] = UNKNOWN_STATE;
+        STATES[12] = GAP_STATE;
 
     }
 

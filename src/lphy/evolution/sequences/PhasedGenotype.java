@@ -52,8 +52,8 @@ public final class PhasedGenotype extends DataType {
         CG_OR_GC = new PhasedGenotypeState("cg", "S", 19, CANONICAL_STATES);
         CT_OR_TC = new PhasedGenotypeState("ct", "Y", 20, CANONICAL_STATES);
         GT_OR_TG = new PhasedGenotypeState("gt", "K", 21, CANONICAL_STATES);
-        UNKNOWN_STATE = new PhasedGenotypeState("??", "?", 22, CANONICAL_STATES);
-        GAP_STATE = new PhasedGenotypeState("--", "-", 23, CANONICAL_STATES);
+        UNKNOWN_STATE = new PhasedGenotypeState("unknown genotype", "?", 22, CANONICAL_STATES);
+        GAP_STATE = new PhasedGenotypeState("gap", "-", 23, CANONICAL_STATES);
         STATES = new PhasedGenotypeState[STATE_COUNT];
 
         int i;
