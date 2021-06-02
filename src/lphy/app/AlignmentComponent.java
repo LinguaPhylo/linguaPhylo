@@ -1,8 +1,10 @@
 package lphy.app;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ErrorAlignment;
+import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
@@ -40,7 +42,8 @@ public class AlignmentComponent extends JComponent {
     public AlignmentComponent(Value<? extends Alignment> av) {
         this.alignmentValue = av;
         this.alignment = av.value();
-        this.colors = alignment.getColors();
+        SequenceType sequenceType = alignment.getSequenceType();
+        this.colors = SequenceTypeFactory.getCanonicalStateColours(sequenceType);
 
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
@@ -174,13 +177,8 @@ public class AlignmentComponent extends JComponent {
             for (int j = 0; j < alignment.nchar(); j++) {
 
                 int state = alignment.getState(i, j);
-                //TODO col index not hard code
-                // other datatype?
-                int col = alignment.getColourIndex(state);
-                Color c = Color.gray;
-                if (col < colors.length) {
-                    c = colors[col];
-                }
+//                int col = SequenceTypeFactory.getColourIndex(state, alignment.getSequenceType());
+                Color c = ColourPalette.getColour(state, colors);
 
                 if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
                     c = new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue());

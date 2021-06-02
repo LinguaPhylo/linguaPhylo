@@ -4,7 +4,6 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
 import lphy.graphicalModel.MethodInfo;
 
-import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -106,15 +105,5 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return Integer.class;
     }
 
-    /**
-     * @param state  the given state of sequences
-     * @return   A colour index for that state
-     */
-    int getColourIndex(int state);
-
-    /**
-     * @return   The colours for states of sequences.
-     */
-    Color[] getColors();
 
 }

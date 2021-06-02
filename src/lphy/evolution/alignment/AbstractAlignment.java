@@ -1,14 +1,10 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.app.AlignmentColour;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
-import lphy.evolution.datatype.Binary;
-import lphy.evolution.datatype.DataType;
 import lphy.graphicalModel.MethodInfo;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +21,7 @@ public abstract class AbstractAlignment implements Alignment {
     protected Taxa taxa;
 
     // encapsulate stateCount, ambiguousState, and getChar() ...
-    SequenceType sequenceType;
+    final SequenceType sequenceType;
 
 
     /**
@@ -136,39 +132,6 @@ public abstract class AbstractAlignment implements Alignment {
     }
 
     //****** view ******
-
-    public Color[] getColors() {
-        if ( DataType.isSame(Binary.getInstance(), sequenceType) )
-            return AlignmentColour.BINARY_COLORS;
-        else if ( DataType.isSame(DataType.NUCLEOTIDE, sequenceType) )
-            return AlignmentColour.DNA_COLORS;
-        else if ( DataType.isSame(DataType.AMINO_ACID, sequenceType) )
-            return AlignmentColour.PROTEIN_COLORS;
-        //*** other types ***//
-        else if ( getCanonicalStateCount() <=  4 ) // for traits
-            return AlignmentColour.DNA_COLORS;
-        else if ( getCanonicalStateCount() <=  20 ) // TODO
-            return AlignmentColour.PROTEIN_COLORS;
-        else throw new IllegalArgumentException("Cannot choose colours given data type " +
-                    sequenceType + " and numStates " + getCanonicalStateCount() + " !");
-    }
-
-    /**
-     * @return  state, if 0 <= state < numStates (no ambiguous),
-     *          otherwise return numStates which is the last index
-     *          in colours always for ambiguous state.
-     */
-    public int getColourIndex(int state) {
-        if (DataType.isType(this, Binary.getInstance()) && state > 1 )
-            return 2;
-        if (DataType.isType(this, SequenceType.NUCLEOTIDE) && state > 3)
-            return 4;
-        else if (DataType.isType(this, SequenceType.AMINO_ACID) && state > 19) // no ambiguous
-            //TODO why jebl make AMINO_ACID 22 ?
-            return 20; // the last extra is always for ambiguous
-        return state;
-    }
-
 
     @Override
     public int getDimension() {

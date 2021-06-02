@@ -3,7 +3,6 @@ package lphy.evolution.datatype;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
-import lphy.evolution.alignment.Alignment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,29 +13,23 @@ import java.util.List;
  * The supplement of data types not available from {@link SequenceType}.
  * @author Walter Xie
  */
-public abstract class DataType implements SequenceType { // TODO SequenceType implements Comparable
+public abstract class DataType implements SequenceType {
 
     protected static final char[] NUCL_CHAR = new char[]{'A', 'C', 'G', 'T'};
+
+    // TODO SequenceType implements Comparable
 
     public static boolean isSame(SequenceType type1, SequenceType type2) {
         if (type1 == null || type2 == null) return false;
         return type1.getName().equalsIgnoreCase(type2.getName());
     }
 
-    public static boolean isType(Alignment alignment, SequenceType sequenceType) {
-        if (alignment.getSequenceType() == null)
-            throw new IllegalArgumentException("Please define SequenceType !");
-//            return alignment.getNumOfStates() == sequenceType.getCanonicalStateCount();
-        return isSame(alignment.getSequenceType(), sequenceType);
-    }
-
-    /**
-     * @param sequenceType
-     * @return true if it is {@link Standard} data type. Ignore case
-     */
-    public static boolean isStandard(SequenceType sequenceType) {
-        return sequenceType != null && sequenceType.getName().equalsIgnoreCase(Standard.NAME);
-    }
+//    public static boolean isType(Alignment alignment, SequenceType sequenceType) {
+//        if (alignment.getSequenceType() == null)
+//            throw new IllegalArgumentException("Please define SequenceType !");
+////            return alignment.getNumOfStates() == sequenceType.getCanonicalStateCount();
+//        return isSame(alignment.getSequenceType(), sequenceType);
+//    }
 
     //*** these should be inherited to reduce duplicated code ***//
 

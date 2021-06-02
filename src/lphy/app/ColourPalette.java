@@ -1,22 +1,30 @@
 package lphy.app;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Walter Xie
  */
-public class AlignmentColour {
+public class ColourPalette {
 
-    public static Color UNKNOWN = Color.gray;
+    public final static Color UNKNOWN = Color.gray;
+    public final static List<Color> Four = List.of(Color.red, Color.blue, Color.yellow, Color.green);
 
-    public static Color[] DNA_COLORS = {Color.red, Color.blue, Color.yellow, Color.green, UNKNOWN};
+    public static Color[] getTwoPlusOne(){
+        return new Color[]{Four.get(0), Four.get(1), UNKNOWN};
+    }
 
-    public static Color[] BINARY_COLORS = {Color.red, Color.blue, UNKNOWN};
+    public static Color[] getFourPlusOne(){
+        List<Color> colorList = new ArrayList<>(Four);
+        colorList.add(UNKNOWN);
+        return colorList.toArray(Color[]::new);
+    }
 
-    public static Color[] PROTEIN_COLORS = getProteinColors();
-
-    // 20 colours
-    protected static Color[] getProteinColors() {
+    // 20 colours + 1 UNKNOWN
+    public static Color[] getTwentyPlusOne() {
         // https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
         String[] kelly_colors_hex = {
                 "FFB300", // Vivid Yellow
@@ -50,6 +58,13 @@ public class AlignmentColour {
         return kelly_colors;
     }
 
+    public static Color[] getTwentyFourPlusOne() {
+        List<Color> colorList = List.of(getTwentyPlusOne()); // include UNKNOWN
+        colorList.addAll(0, Four);
+        return colorList.toArray(Color[]::new);
+    }
+
+
     // "FFB300"
     protected static Color HexToColor(String hex) {
         if (hex.length() != 6) return null;
@@ -59,4 +74,15 @@ public class AlignmentColour {
                 Integer.valueOf(hex.substring(4, 6), 16));
     }
 
+    /**
+     * @param col
+     * @param palette
+     * @return   state >= palette.length, then return Color.gray
+     */
+    public static Color getColour(int col, Color[] palette) {
+        if (col < palette.length)
+            return palette[col];
+        //TODO need a smart method to colour uncertain states
+        return UNKNOWN;
+    }
 }
