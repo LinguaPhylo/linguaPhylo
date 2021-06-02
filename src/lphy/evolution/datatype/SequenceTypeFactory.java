@@ -20,15 +20,19 @@ public class SequenceTypeFactory {
     static {
         dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
         dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put("nucleotide", SequenceType.NUCLEOTIDE);
+        dataTypeMap.put(sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
 
-        dataTypeMap.put("aminoacid", SequenceType.AMINO_ACID);
+        dataTypeMap.put(sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
         dataTypeMap.put("protein", SequenceType.AMINO_ACID);
 
-        dataTypeMap.put(PhasedGenotype.NAME.trim().toLowerCase(), PhasedGenotype.INSTANCE);
+        dataTypeMap.put(sanitise(PhasedGenotype.NAME), PhasedGenotype.INSTANCE);
 
-        dataTypeMap.put(Binary.NAME.trim().toLowerCase(), Binary.getInstance());
-        dataTypeMap.put(Continuous.NAME.trim().toLowerCase(), Continuous.getInstance());
+        dataTypeMap.put(sanitise(Binary.NAME), Binary.getInstance());
+        dataTypeMap.put(sanitise(Continuous.NAME), Continuous.getInstance());
+    }
+
+    private static String sanitise(String name) {
+        return name.trim().toLowerCase();
     }
 
     // register data types here
@@ -44,55 +48,7 @@ public class SequenceTypeFactory {
      * @see Standard
      */
     public static SequenceType getDataType(String dataTypeName) {
-        return dataTypeMap.get(dataTypeName.trim().toLowerCase());
+        return dataTypeMap.get(sanitise(dataTypeName));
     }
-
-
-    /** TODO
-     * for simulations, so no ambiguous.
-     * @param numStates  Not counting ambiguous characters
-     * @return  {@link SequenceType}, or null if not implemented
-     */
-    public static SequenceType getDataType(int numStates) {
-        switch (numStates) {
-            case 2: return Binary.getInstance();
-            case 4: return SequenceType.NUCLEOTIDE;
-            case 20: return SequenceType.AMINO_ACID;
-            // TODO cannot recognise STANDARD, Codon;
-            default: return null; //not implemented;
-        }
-    }
-
-    /** TODO
-     * @param numStates  the number of states for Standard Data Type
-     */
-    public static SequenceType getStandardDataType(int numStates) {
-        return new Standard(numStates);
-    }
-
-
-//    public SequenceType getDataType(String dataTypeName) {
-//        if (Standard.NAME.equalsIgnoreCase(dataTypeName.trim()))
-//            throw new IllegalArgumentException("Standard data type has to be created " +
-//                    "given either numStates or stateNames !");
-//
-//        switch (dataTypeName.trim().toLowerCase()) {
-//            case "rna":
-//            case "dna":
-//            case "nucleotide":
-//                return SequenceType.NUCLEOTIDE;
-//            case "aminoacid":
-//            case "protein":
-//                return SequenceType.AMINO_ACID;
-//            case PhasedGenotype.NAME:
-//                return PhasedGenotype.INSTANCE;
-//            case Binary.NAME:
-//                return Binary.getInstance();
-//            case Continuous.NAME:
-//                return Continuous.getInstance();
-//            default:
-//                throw new UnsupportedOperationException(dataTypeName);
-//        }
-//    }
 
 } // end of DataType
