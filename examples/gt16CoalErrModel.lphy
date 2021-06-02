@@ -7,4 +7,4 @@ S ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType=phasedGenotype());
 delta ~ LogNormal(meanlog=-2.3, sdlog=1.25);
 epsilon ~ LogNormal(meanlog=-2.3, sdlog=1.25);
 A ~ GT16ErrorModel(delta=delta, epsilon=epsilon, alignment=S);
-D = unphase(A);
+//D = unphase(A);
