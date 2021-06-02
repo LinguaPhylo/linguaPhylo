@@ -6,4 +6,5 @@ Q = gt16(freq=π, rates=rates); // construct the GT16 instantaneous rate matrix
 S ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType="phasedGenotype");
 delta ~ LogNormal(meanlog=-2.3, sdlog=1.25);
 epsilon ~ LogNormal(meanlog=-2.3, sdlog=1.25);
-D ~ GT16ErrorModel(delta=delta, epsilon=epsilon, alignment=S);
+A ~ GT16ErrorModel(delta=delta, epsilon=epsilon, alignment=S);
+D = unphase(A);

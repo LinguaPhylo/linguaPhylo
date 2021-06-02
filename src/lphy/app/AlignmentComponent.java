@@ -177,7 +177,10 @@ public class AlignmentComponent extends JComponent {
                 //TODO col index not hard code
                 // other datatype?
                 int col = alignment.getColourIndex(state);
-                Color c = colors[col];
+                Color c = Color.gray;
+                if (col < colors.length) {
+                    c = colors[col];
+                }
 
                 if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
                     c = new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue());
