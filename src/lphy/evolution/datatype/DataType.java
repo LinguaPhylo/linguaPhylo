@@ -1,4 +1,4 @@
-package lphy.evolution.sequences;
+package lphy.evolution.datatype;
 
 
 import jebl.evolution.sequences.SequenceType;
@@ -20,7 +20,7 @@ public abstract class DataType implements SequenceType { // TODO SequenceType im
 
     public static boolean isSame(SequenceType type1, SequenceType type2) {
         if (type1 == null || type2 == null) return false;
-        return type1.getName().equals(type2.getName());
+        return type1.getName().equalsIgnoreCase(type2.getName());
     }
 
     public static boolean isType(Alignment alignment, SequenceType sequenceType) {
@@ -31,11 +31,11 @@ public abstract class DataType implements SequenceType { // TODO SequenceType im
     }
 
     /**
-     * @param type Ignore case
-     * @return
+     * @param sequenceType
+     * @return true if it is {@link Standard} data type. Ignore case
      */
-    public static boolean isStandard(String type) {
-        return type != null && type.equalsIgnoreCase(Standard.NAME);
+    public static boolean isStandard(SequenceType sequenceType) {
+        return sequenceType != null && sequenceType.getName().equalsIgnoreCase(Standard.NAME);
     }
 
     //*** these should be inherited to reduce duplicated code ***//

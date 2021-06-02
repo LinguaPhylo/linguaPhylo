@@ -1,7 +1,9 @@
-package lphy.evolution.datatype;
+package lphy.core.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.Value;
 
 public class NucleotidesFunction extends DeterministicFunction<SequenceType> {
 

@@ -2,8 +2,7 @@ package lphy.evolution.functions;
 
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.sequences.PhasedGenotype;
-import lphy.evolution.sequences.UnphasedGenotype;
+import lphy.evolution.datatype.PhasedGenotype;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;

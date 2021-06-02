@@ -13,9 +13,9 @@ import jebl.util.Attributable;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ContinuousCharacterData;
-import lphy.evolution.sequences.Continuous;
-import lphy.evolution.sequences.DataType;
-import lphy.evolution.sequences.SequenceTypeFactory;
+import lphy.evolution.datatype.Continuous;
+import lphy.evolution.datatype.DataType;
+import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.utils.LoggerUtils;
 

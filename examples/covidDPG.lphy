@@ -9,8 +9,8 @@ data {
   taxa = D.taxa();
   w = taxa.length()-1;
   // extract traits from the 3rd element
-  trait_D = extractTrait(taxa=taxa, sep="|", i=2);
-  S = trait_D.stateCount();
+  D_trait = extractTrait(taxa=taxa, sep="|", i=2);
+  S = D_trait.stateCount();
   dim = S*(S-1)/2;
 }
 model {
@@ -30,18 +30,19 @@ model {
   
   parts ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=clockRate, tree=ψ);
 
-  trait_π ~ Dirichlet(conc=rep(element=3.0, times=S));
+  π_trait ~ Dirichlet(conc=rep(element=3.0, times=S));
   // symmetric, rates dimension = n * (n-1) / 2
-  trait_rates ~ Dirichlet(conc=rep(element=1.0, times=dim));
+  R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
-  //trait_indicators ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
-  numTraits ~ Poisson(lambda=2, min=S, max=dim);
-  trait_indicators ~ RandomBooleanArray(length=dim, hammingWeight=numTraits);
+  // trait indicators
+  S ~ Poisson(lambda=2, min=S, max=dim);
+  I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
-  //traitClockRate ~ Gamma(shape=0.001, scale=1000.0);
-  traitClockRate ~ LogNormal(meanlog=2.0, sdlog=2.0);
+  //μ_trait ~ Gamma(shape=0.001, scale=1000.0);
+  μ_trait ~ LogNormal(meanlog=2.0, sdlog=2.0);
 
   // construct the GTR instantaneous rate matrix
-  trait_Q = generalTimeReversible(freq=trait_π, rates=select(x=trait_rates, indicator=trait_indicators));
-  trait_D ~ PhyloCTMC(L=1, Q=trait_Q, mu=traitClockRate, tree=ψ, dataType="standard");
+  Q_trait = generalTimeReversible(freq=π_trait, rates=select(x=R_trait, indicator=I));
+  // use the data type of trait alignment extracted from taxa names
+  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType=D_trait.dataType());
 }

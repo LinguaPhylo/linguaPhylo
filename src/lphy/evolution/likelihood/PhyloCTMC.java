@@ -1,16 +1,15 @@
 package lphy.evolution.likelihood;
 
+import jebl.evolution.sequences.Nucleotides;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.sequences.DataType;
-import lphy.evolution.sequences.SequenceTypeFactory;
+import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import lphy.utils.LoggerUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
@@ -18,6 +17,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -41,7 +41,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     Value<Double[]> siteRates;
     Value<Double[]> branchRates;
     Value<Integer> L;
-    Value<Object> dataType;
+    Value<SequenceType> dataType;
     RandomGenerator random;
 
     public static final String treeParamName = "tree";
@@ -72,7 +72,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment", optional = true) Value<Integer> L,
-                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<Object> dataType) {
+                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations", optional = true) Value<SequenceType> dataType) {
 
         this.tree = tree;
         this.Q = Q;
@@ -90,7 +90,11 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 //        if (stateNames != null && stateNames.value().length != numStates)
 //            throw new IllegalArgumentException(stateNamesParamName + " not match " + QParamName + " dimension!");
 
-        this.dataType = dataType;
+        // default to nuc
+        if (dataType == null)
+            this.dataType = new Value<SequenceType>("dataType", SequenceTypeFactory.getDataType(Nucleotides.NAME));
+        else
+            this.dataType = dataType;
         checkCompatibilities();
     }
 
@@ -181,34 +185,34 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
 
 //        final int numStates = transProb.length;
 
-        SequenceType sequenceType = null;
-        // TODO stateNames != null, how to pass states into Standard
-        // dataType="standard", use numStates to create Standard
-        if (dataType != null) {
-            if (dataType.value() instanceof SequenceType) {
-                sequenceType = (SequenceType)dataType.value();
-            } else {
-                if (isStandardDataType())
-                    sequenceType = SequenceTypeFactory.getStandardDataType(numStates);
-                else
-                    sequenceType = SequenceTypeFactory.getDataType((String)dataType.value());
-            }
-        }
+//        SequenceType sequenceType = null;
+//        // TODO stateNames != null, how to pass states into Standard
+//        // dataType="standard", use numStates to create Standard
+//        if (dataType != null) {
+//            if (dataType.value() instanceof SequenceType) {
+//                sequenceType = (SequenceType)dataType.value();
+//            } else {
+//                if (isStandardDataType())
+//                    sequenceType = SequenceTypeFactory.getStandardDataType(numStates);
+//                else
+//                    sequenceType = SequenceTypeFactory.getDataType((String)dataType.value());
+//            }
+//        }
+//
+//        if (sequenceType == null) {
+//            sequenceType = SequenceTypeFactory.getDataType(numStates);
+//            LoggerUtils.log.warning("Data type is unknown ! Assign data type (" + sequenceType +
+//                    ") to the sequences on the basis of " + numStates + " states !");
+//        }
+//        if (sequenceType == null)
+//            throw new UnsupportedOperationException("Cannot define sequence type, numStates = " + numStates);
+//
+//        // validate num of states
+//        if (sequenceType.getCanonicalStateCount() != numStates)
+//            throw new UnsupportedOperationException("Sequence type " + sequenceType + " canonical state count = " +
+//                    sequenceType.getCanonicalStateCount() + "  !=  transProb.length = " + numStates);
 
-        if (sequenceType == null) {
-            sequenceType = SequenceTypeFactory.getDataType(numStates);
-            LoggerUtils.log.warning("Data type is unknown ! Assign data type (" + sequenceType +
-                    ") to the sequences on the basis of " + numStates + " states !");
-        }
-        if (sequenceType == null)
-            throw new UnsupportedOperationException("Cannot define sequence type, numStates = " + numStates);
-
-        // validate num of states
-        if (sequenceType.getCanonicalStateCount() != numStates)
-            throw new UnsupportedOperationException("Sequence type " + sequenceType + " canonical state count = " +
-                    sequenceType.getCanonicalStateCount() + "  !=  transProb.length = " + numStates);
-
-        SimpleAlignment a = new SimpleAlignment(idMap, length, sequenceType);
+        SimpleAlignment a = new SimpleAlignment(idMap, length, dataType.value());
 
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
@@ -241,9 +245,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         return tree;
     }
 
-    public boolean isStandardDataType() {
-        return dataType != null && DataType.isStandard((String)dataType.value());
+    public SequenceType getDataType() {
+        return Objects.requireNonNull(dataType).value();
     }
+
+    //    public boolean isStandardDataType() {
+//        return dataType != null && DataType.isStandard((String)dataType.value());
+//    }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
         getTransitionProbabilities(100, transProb);

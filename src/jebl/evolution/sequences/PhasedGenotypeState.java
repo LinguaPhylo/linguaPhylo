@@ -1,6 +1,6 @@
 package jebl.evolution.sequences;
 
-import lphy.evolution.sequences.PhasedGenotype;
+import lphy.evolution.datatype.PhasedGenotype;
 
 public class PhasedGenotypeState extends State {
 

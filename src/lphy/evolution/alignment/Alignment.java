@@ -26,6 +26,11 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return getStateCount();
     }
 
+    @MethodInfo(description = "get the data type of this alignment.", narrativeName = "data type")
+    default SequenceType dataType() {
+        return getSequenceType();
+    }
+
     //****** states ******//
 
     /**

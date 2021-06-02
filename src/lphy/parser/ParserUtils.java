@@ -7,6 +7,10 @@ import lphy.bmodeltest.bSiteRates;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
+import lphy.core.functions.datatype.BinaryDatatypeFunction;
+import lphy.core.functions.datatype.NucleotidesFunction;
+import lphy.core.functions.datatype.PhasedGenotypeFunction;
+import lphy.core.functions.datatype.StandardDatatypeFunction;
 import lphy.evolution.alignment.ErrorModel;
 import lphy.evolution.alignment.GT16ErrorModel;
 import lphy.evolution.birthdeath.*;
@@ -18,9 +22,6 @@ import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.continuous.PhyloBrownian;
 import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.continuous.PhyloOU;
-import lphy.evolution.datatype.BinaryDatatypeFunction;
-import lphy.evolution.datatype.NucleotidesFunction;
-import lphy.evolution.datatype.StandardDatatypeFunction;
 import lphy.evolution.functions.ExtantTaxa;
 import lphy.evolution.functions.UnphaseGenotypeAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
@@ -106,7 +107,8 @@ public class ParserUtils {
                 bSiteModelFunction.class,
 
                 // Data types
-                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class, UnphaseGenotypeAlignment.class,
+                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
+                PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
 
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,

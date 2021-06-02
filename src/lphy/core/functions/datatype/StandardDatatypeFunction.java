@@ -1,8 +1,11 @@
-package lphy.evolution.datatype;
+package lphy.core.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.evolution.sequences.Standard;
-import lphy.graphicalModel.*;
+import lphy.evolution.datatype.Standard;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 
 /**
  * Created by adru001 on 2/02/20.

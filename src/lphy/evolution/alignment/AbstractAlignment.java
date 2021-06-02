@@ -4,8 +4,8 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.app.AlignmentColour;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
-import lphy.evolution.sequences.Binary;
-import lphy.evolution.sequences.DataType;
+import lphy.evolution.datatype.Binary;
+import lphy.evolution.datatype.DataType;
 import lphy.graphicalModel.MethodInfo;
 
 import java.awt.*;

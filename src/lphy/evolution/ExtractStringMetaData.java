@@ -3,7 +3,7 @@ package lphy.evolution;
 import jebl.evolution.sequences.State;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.sequences.Standard;
+import lphy.evolution.datatype.Standard;
 
 import java.util.*;
 import java.util.regex.Pattern;

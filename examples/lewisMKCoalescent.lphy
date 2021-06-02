@@ -1,4 +1,4 @@
 Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
 ψ ~ Coalescent(n=16, theta=Θ);
 Q = lewisMK(numStates=2);
-D ~ PhyloCTMC(L=200, Q=Q, tree=ψ);
+D ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType=standard(2));

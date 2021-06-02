@@ -32,5 +32,6 @@ model {
 
   // construct the GTR instantaneous rate matrix
   Q_trait = generalTimeReversible(freq=π_trait, rates=select(x=R_trait, indicator=I));
-  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType="standard");
+  // use the data type of trait alignment extracted from taxa names
+  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType=D_trait.dataType());
 }

@@ -1,7 +1,7 @@
-package lphy.evolution.datatype;
+package lphy.core.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.evolution.sequences.Binary;
+import lphy.evolution.datatype.Binary;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.Value;

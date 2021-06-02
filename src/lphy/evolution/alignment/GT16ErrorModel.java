@@ -1,7 +1,7 @@
 package lphy.evolution.alignment;
 
 import lphy.core.distributions.Utils;
-import lphy.evolution.sequences.PhasedGenotype;
+import lphy.evolution.datatype.PhasedGenotype;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 

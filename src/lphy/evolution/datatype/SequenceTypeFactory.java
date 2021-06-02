@@ -1,4 +1,4 @@
-package lphy.evolution.sequences;
+package lphy.evolution.datatype;
 
 
 import jebl.evolution.sequences.SequenceType;

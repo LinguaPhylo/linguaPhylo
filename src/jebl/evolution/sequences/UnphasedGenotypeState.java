@@ -1,7 +1,6 @@
 package jebl.evolution.sequences;
 
-import lphy.evolution.sequences.PhasedGenotype;
-import lphy.evolution.sequences.UnphasedGenotype;
+import lphy.evolution.datatype.UnphasedGenotype;
 
 public class UnphasedGenotypeState extends State {
 
