@@ -5,8 +5,8 @@
     <!-- <property name="lphy" location="lphy"/>-->
 
     <!-- Java 11 -->
-    <property name="sourceVersion" value="15"/>
-    <property name="targetVersion" value="15"/>
+    <property name="sourceVersion" value="16"/>
+    <property name="targetVersion" value="16"/>
 
     <!--*******************************************************************-->
 
@@ -131,6 +131,9 @@
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
+                <!-- TODO in dev -->
+                <exclude name="canis.lphy"/>
+                <exclude name="bModelTest.lphy"/>
             </fileset>
         </copy>
 
