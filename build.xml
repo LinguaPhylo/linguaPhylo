@@ -126,14 +126,15 @@
         <property name="tutDir" value="tutorials"/>
         <mkdir dir="${pack}/${tutDir}"/>
         <copy todir="${pack}/${tutDir}">
-            <fileset dir="${tutDir}" includes="*.lphy"/>
+            <fileset dir="${tutDir}" includes="*.lphy">
+                <!-- TODO in dev -->
+                <exclude name="canis.lphy"/>
+                <exclude name="bModelTest.lphy"/>
+            </fileset>
             <fileset dir="${tutDir}">
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
-                <!-- TODO in dev -->
-                <exclude name="canis.lphy"/>
-                <exclude name="bModelTest.lphy"/>
             </fileset>
         </copy>
 
