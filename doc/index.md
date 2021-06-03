@@ -17,6 +17,7 @@ Generative distributions
 - [ExpMarkovChain](distributions/ExpMarkovChain.md)
 - [FossilBirthDeathTree](distributions/FossilBirthDeathTree.md)
 - [FullBirthDeath](distributions/FullBirthDeath.md)
+- [GT16ErrorModel](distributions/GT16ErrorModel.md)
 - [Gamma](distributions/Gamma.md)
 - [InverseGamma](distributions/InverseGamma.md)
 - [LogNormal](distributions/LogNormal.md)
@@ -77,6 +78,7 @@ Functions
 - [nucleotideModel](functions/nucleotideModel.md)
 - [nucleotides](functions/nucleotides.md)
 - [parseInt](functions/parseInt.md)
+- [phasedGenotype](functions/phasedGenotype.md)
 - [pruneTree](functions/pruneTree.md)
 - [Range](functions/Range.md)
 - [readFasta](functions/readFasta.md)
@@ -91,6 +93,7 @@ Functions
 - [hammingWeight](functions/hammingWeight.md)
 - [treeLength](functions/treeLength.md)
 - [unique](functions/unique.md)
+- [unphase](functions/unphase.md)
 - [wag](functions/wag.md)
 - [bSiteModel](functions/bSiteModel.md)
 

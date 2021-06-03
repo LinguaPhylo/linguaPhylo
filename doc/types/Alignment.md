@@ -5,6 +5,8 @@ Methods
 
 - **ages**
   - gets the ages of these taxa as an array of doubles.
+- **dataType**
+  - get the data type of this alignment.
 - **length**
   - gets the number of taxa.
 - **nchar**

@@ -1,7 +1,7 @@
 PhyloCTMC distribution
 ======================
-PhyloCTMC(TimeTree **tree**, Number **mu**, Double[] **freq**, Double[][] **Q**, Double[] **siteRates**, Double[] **branchRates**, Integer **L**, Object **dataType**)
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PhyloCTMC(TimeTree **tree**, Number **mu**, Double[] **freq**, Double[][] **Q**, Double[] **siteRates**, Double[] **branchRates**, Integer **L**, SequenceType **dataType**)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)
 
@@ -14,7 +14,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 - Double[] **siteRates** - a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.
 - Double[] **branchRates** - a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
 - Integer **L** - length of the alignment
-- Object **dataType** - the data type used for simulations
+- SequenceType **dataType** - the data type used for simulations, default to nucleotide
 
 ### Return type
 
@@ -24,8 +24,8 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 
 Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.[https://doi.org/10.1007/BF01734359](https://doi.org/10.1007/BF01734359)
 
-PhyloCTMC(TimeTree **tree**, Number **mu**, Double[] **freq**, SiteModel **siteModel**, Double[] **branchRates**, Integer **L**, String **dataType**)
------------------------------------------------------------------------------------------------------------------------------------------------------
+PhyloCTMC(TimeTree **tree**, Number **mu**, Double[] **freq**, SiteModel **siteModel**, Double[] **branchRates**, Integer **L**, SequenceType **dataType**)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)
 
@@ -37,7 +37,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 - SiteModel **siteModel** - the site model
 - Double[] **branchRates** - a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
 - Integer **L** - length of the alignment
-- String **dataType** - the data type used for simulations
+- SequenceType **dataType** - the data type used for simulations, default to nucleotide
 
 ### Return type
 
