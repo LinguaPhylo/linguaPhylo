@@ -1,11 +1,8 @@
 package lphy.graphicalModel;
 
 import lphy.core.narrative.Narrative;
-import lphy.graphicalModel.types.DoubleValue;
-import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.functions.ExpressionNode;
 import lphy.parser.functions.ExpressionNodeWrapper;
-import lphy.utils.LoggerUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -234,7 +231,8 @@ public interface GraphicalModel {
                         builder.append(valueNarrative);
                         if (valueNarrative.length() > 0) builder.append("\n");
                     } else {
-                        LoggerUtils.log.severe("No name count found for " + dataValue + " with name " + name);
+                        //TODO need log4j or similar to disable debug messages after release
+//                        LoggerUtils.log.info("No name count found for " + dataValue + " with name " + name);
                     }
 
                 }
@@ -253,7 +251,7 @@ public interface GraphicalModel {
                         builder.append(valueNarrative);
                         if (valueNarrative.length() > 0) builder.append("\n");
                     } else {
-                        LoggerUtils.log.severe("No name count found for " + modelValue + " with name " + name);
+//                        LoggerUtils.log.info("No name count found for " + modelValue + " with name " + name);
                     }
                 }
                 builder.append("\n");
