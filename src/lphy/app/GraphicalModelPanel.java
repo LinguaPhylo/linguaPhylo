@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -285,11 +284,14 @@ public class GraphicalModelPanel extends JPanel {
         repaint();
     }
 
+    // IO should be in one place
+    // use LinguaPhyloStudio readFile(File exampleFile)
+    @Deprecated
     public void readScript(File scriptFile) {
         Path path = Paths.get(scriptFile.getAbsolutePath());
         try {
             String mimeType = Files.probeContentType(path);
-
+            // bug: NullPointerException: Cannot invoke "String.equals(Object)"
             if (mimeType.equals("text/plain")) {
                 // TODO need to find another way to do this
                 //parser.clear();

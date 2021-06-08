@@ -12,15 +12,19 @@ import lphy.utils.LoggerUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.text.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import static lphy.app.Utils.saveToFile;
 
@@ -145,6 +149,9 @@ public class LinguaPhyloStudio {
 
         openMenuItem.addActionListener(e -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
+            jfc.setFileFilter(filter);
             jfc.setMultiSelectionEnabled(false);
             jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -152,7 +159,8 @@ public class LinguaPhyloStudio {
 
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
-                panel.readScript(selectedFile);
+//                panel.readScript(selectedFile);
+                readFile(selectedFile);
             }
         });
 
