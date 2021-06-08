@@ -4,7 +4,7 @@
 rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
 Q = gt16(freq=π, rates=rates); // construct the GT16 instantaneous rate matrix
 A ~ PhyloCTMC(L=200, Q=Q, tree=ψ, dataType=phasedGenotype());
-delta ~ LogNormal(meanlog=-2.3, sdlog=1.25);
-epsilon ~ LogNormal(meanlog=-2.3, sdlog=1.25);
+epsilon ~ Beta(alpha=2, beta=18);
+delta ~ Beta(alpha=5, beta=15);
 E ~ GT16ErrorModel(delta=delta, epsilon=epsilon, alignment=A);
-//D = unphase(E);
+// D = unphase(E);

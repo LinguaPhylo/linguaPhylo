@@ -24,7 +24,7 @@ public class GT16ErrorModel implements GenerativeDistribution<Alignment> {
 
     RandomGenerator random;
 
-    public GT16ErrorModel(@ParameterInfo(name = epsilonParamName, description = "the sequencing/amplification error rate.") Value<Double> epsilon,
+    public GT16ErrorModel(@ParameterInfo(name = epsilonParamName, description = "the sequencing and amplification error probability.") Value<Double> epsilon,
                           @ParameterInfo(name = deltaParamName, description = "the allelic drop out probability.") Value<Double> delta,
                           @ParameterInfo(name = alignmentParamName, description = "the genotype alignment.") Value<Alignment> alignment) {
 
