@@ -9,12 +9,13 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.StringValue;
 import lphy.utils.IOUtils;
+import lphy.utils.LoggerUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * D = readNexus(file="primate.nex");
@@ -63,11 +64,17 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
                 e.printStackTrace();
             }
         // set age to Taxon
-        if (ageRegxStr != null)
+        if (ageRegxStr != null) {
+            if (! Objects.requireNonNull(nexusData).isUltrametric())
+                LoggerUtils.log.severe("Taxa ages were imported from the nexus file ! " +
+                                "It would be problematic to overwrite ages in taxa !");
+
             nexusData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
+        }
+
         // set species to Taxon
         if (spRegxStr != null)
-            nexusData.setSpeciesFromTaxaName(spRegxStr);
+            Objects.requireNonNull(nexusData).setSpeciesFromTaxaName(spRegxStr);
 
         return new Value<>(null, nexusData, this);
 

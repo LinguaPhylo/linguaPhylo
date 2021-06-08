@@ -127,10 +127,6 @@ public class MetaDataAlignment extends SimpleAlignment {
     public void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
         this.ageRegxStr = ageRegxStr;
 
-        if (isUltrametric())
-            LoggerUtils.log.warning("Overwriting ages in taxa, which may have been defined by " +
-                    "TIPCALIBRATION in the nexus file !");
-
         Map<String, String> ageStringMap = new TreeMap<>();
         // guess dates
         final Pattern regx = Pattern.compile(ageRegxStr);
@@ -271,7 +267,7 @@ public class MetaDataAlignment extends SimpleAlignment {
     private AgeDirection getAgeDirection(String ageDirectionStr){
         if (ageDirectionStr == null) {
             ageDirectionStr = AgeDirection.forward.toString();
-            LoggerUtils.log.severe("Tip calibration type is not defined, set to " + ageDirectionStr + " as default.");
+            LoggerUtils.log.warning("Tip calibration type is not defined, set to " + ageDirectionStr + " as default.");
         }
         return AgeDirection.valueOf(ageDirectionStr.toLowerCase());
     }
