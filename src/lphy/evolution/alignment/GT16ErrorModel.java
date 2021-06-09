@@ -77,12 +77,12 @@ public class GT16ErrorModel implements GenerativeDistribution<Alignment> {
         return new RandomVariable<>("D", newAlignment, this);
     }
 
-    public double getEpsilon() {
-        return Objects.requireNonNull(epsilon).value();
+    public Value<Double> getEpsilon() {
+        return Objects.requireNonNull(epsilon);
     }
 
-    public double getDelta() {
-        return Objects.requireNonNull(delta).value();
+    public Value<Double> getDelta() {
+        return Objects.requireNonNull(delta);
     }
 
     public Alignment getOriginalAlignment() {
