@@ -1,6 +1,7 @@
 package lphy.evolution.likelihood;
 
 import jebl.evolution.sequences.Nucleotides;
+import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
@@ -86,11 +87,6 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.random = Utils.getRandom();
         iexp = new double[numStates][numStates];
 
-        // default to nuc
-        if (dataType == null)
-            this.dataType = new Value<SequenceType>("dataType", SequenceTypeFactory.getDataType(Nucleotides.NAME));
-        else
-            this.dataType = dataType;
         checkCompatibilities();
     }
 
@@ -177,9 +173,13 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public RandomVariable<Alignment> sample() {
         setup();
 
+        SequenceType dt = SequenceType.NUCLEOTIDE;
+
+        if (dataType != null) dt = dataType.value();
+
         int length = checkCompatibilities();
 
-        SimpleAlignment a = new SimpleAlignment(idMap, length, dataType.value());
+        SimpleAlignment a = new SimpleAlignment(idMap, length, dt);
 
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
