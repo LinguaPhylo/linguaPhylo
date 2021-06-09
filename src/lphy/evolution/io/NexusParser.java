@@ -76,7 +76,7 @@ public class NexusParser {
         Reader reader = null;
         try {
             if (!(fileName.endsWith("nex") || fileName.endsWith("nexus") || fileName.endsWith("nxs")))
-                throw new IOException("Nexus file name's suffix is invalid ! " + fileName);
+                throw new IOException("Invalid Nexus file name !  fileName = " + fileName);
 
             final Path nexFile = Paths.get(fileName);
 
@@ -87,7 +87,7 @@ public class NexusParser {
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
 //            reader.mark(READ_AHEAD_LIMIT); // to reset reader back to READ_AHEAD_LIMIT
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.logStackTrace(e);
         }
         return reader;
     }

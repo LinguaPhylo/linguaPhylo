@@ -8,7 +8,6 @@ import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
-import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.graphicalModel.DeterministicFunction;
@@ -16,6 +15,7 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.utils.IOUtils;
+import lphy.utils.LoggerUtils;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -59,7 +59,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
         //*** parsing ***//
-        SequenceType sequenceType = SequenceTypeFactory.getDataType("nucleotide");
+        SequenceType sequenceType = SequenceType.NUCLEOTIDE;
 
         Path nexPath = IOUtils.getPath(fileName);
 
@@ -70,7 +70,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             FastaImporter fastaImporter = new FastaImporter(reader, sequenceType);
             sequenceList = fastaImporter.importSequences();
         } catch (IOException | ImportException e) {
-            e.printStackTrace();
+            LoggerUtils.logStackTrace(e);
         }
         if (sequenceList.size() < 1)
             throw new IllegalArgumentException("Fasta file has no sequence !");
@@ -125,7 +125,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             reader = Files.newBufferedReader(nexFile); // StandardCharsets.UTF_8
 //            reader.mark(READ_AHEAD_LIMIT); // to reset reader back to READ_AHEAD_LIMIT
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtils.logStackTrace(e);
         }
         return reader;
     }
