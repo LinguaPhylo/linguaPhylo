@@ -1,13 +1,10 @@
 package lphy.evolution.likelihood;
 
-import jebl.evolution.sequences.Nucleotides;
-import jebl.evolution.sequences.Sequence;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
@@ -18,7 +15,6 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -173,6 +169,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     public RandomVariable<Alignment> sample() {
         setup();
 
+        // default to nuc
         SequenceType dt = SequenceType.NUCLEOTIDE;
 
         if (dataType != null) dt = dataType.value();
@@ -213,7 +210,9 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
     }
 
     public SequenceType getDataType() {
-        return Objects.requireNonNull(dataType).value();
+        // default to nuc
+        if (dataType == null) return SequenceType.NUCLEOTIDE;
+        return dataType.value();
     }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {

@@ -1,12 +1,10 @@
 package lphy.evolution.likelihood;
 
-import jebl.evolution.sequences.Nucleotides;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
 import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
-import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.sitemodel.SiteModel;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
@@ -18,7 +16,6 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -88,11 +85,6 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
         this.random = Utils.getRandom();
         iexp = new double[numStates][numStates];
 
-        // default to nuc
-        if (dataType == null)
-            this.dataType = new Value<SequenceType>("dataType", SequenceTypeFactory.getDataType(Nucleotides.NAME));
-        else
-            this.dataType = dataType;
         siteCount = checkCompatibilities();
     }
 
@@ -201,6 +193,11 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
     public RandomVariable<Alignment> sample() {
         setup();
 
+        // default to nuc
+        SequenceType dt = SequenceType.NUCLEOTIDE;
+
+        if (dataType != null) dt = dataType.value();
+
         for (int i = 0; i < finalSiteRates.length; i++) {
             if (propInvariable > 0 && random.nextDouble()<propInvariable) {
                 finalSiteRates[i] = 0;
@@ -211,7 +208,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
             }
         }
 
-        SimpleAlignment a = new SimpleAlignment(idMap, siteCount, dataType.value());
+        SimpleAlignment a = new SimpleAlignment(idMap, siteCount, dt);
 
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
@@ -242,7 +239,8 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
     }
 
     public SequenceType getDataType() {
-        return Objects.requireNonNull(dataType).value();
+        if (dataType == null) return SequenceType.NUCLEOTIDE;
+        return dataType.value();
     }
 
     private Value<Double[]> computeEquilibrium(double[][] transProb) {
