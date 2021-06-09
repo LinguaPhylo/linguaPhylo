@@ -374,11 +374,15 @@ To construct an analysis of a data set with this model we add a data block:
 
 {\small
 \begin{alltt}
+data \{
+  D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}\textcolor{magenta}{"data/primate.nex"});
+  L = D.\textcolor{magenta!80!black}{nchar}();
+  taxa = D.\textcolor{magenta!80!black}{taxa}();
+\}
 model \{
-  \textcolor{green}{branchRates} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{-0.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{30});
-  \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
-  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{branchRates=}\textcolor{green}{branchRates}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+  \textcolor{green}{lambda} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+  \textcolor{green}{tree} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{lambda}, \textcolor{gray}{taxa=}taxa);
+  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{tree});
 \}
 \end{alltt}}
 
@@ -390,7 +394,7 @@ If a value in the data block has the same name as a random variable in the model
 
 
 So by assigning the alignment in file
-``primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has
+``data/primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has
 been observed, and we will infer all the other random variables
 (tree and lambda in this example) in the model from that observed sequence alignment.
 
