@@ -1,0 +1,1 @@
+x ~ NormalGamma(shape=1, scale=1, mean=1, precision=1);

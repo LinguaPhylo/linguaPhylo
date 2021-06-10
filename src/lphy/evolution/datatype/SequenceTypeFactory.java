@@ -19,6 +19,8 @@ public class SequenceTypeFactory {
 
     public static final Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
 
+    // TODO can we do something here to automatically find all the SequenceTypes on the class path and register them
+    // with there standard name?
     static {
         dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
         dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
