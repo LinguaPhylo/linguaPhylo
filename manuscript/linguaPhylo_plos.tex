@@ -451,7 +451,18 @@ A deterministic function generates either an object or a primitive value that is
 
 \subsection*{Vectorization}
 
-LinguaPhylo has built-in vectorization so that any distribution or function can be called with a vectorized form of its arguments to produce multiple values from the generator
+LinguaPhylo has built-in vectorization so that any distribution or function can be called with a vectorized form of its arguments to produce multiple values from the generator. There are two vectorization patterns: IID and vectorized argument. The following code demonstrates both:
+
+{\singlespacing
+\begin{alltt}
+  n = 3;
+  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}n);
+  \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
+
+\end{alltt} 
+
+The first two lines of this code use the IID pattern, which involves adding a replicates argument of type integer to any generative distribution. In the first line this results in a an array of iid doubles being produced from the specified log-normal distribution of length $n = 3$ instead of a single double. The second line similarly produces a 2D array of doubles representing three iid Dirichlet distributions, instead of the normal 1D array that the Dirichlet distribution would normally produce. The final line vectorises the hky funcgtion by passing arguments that are arrays of the normal argument types, resulting in the production of a 3D array representing and array of three iid HKY instantaneous rate matrices.
 
 \section*{Tree generative distributions}
 
