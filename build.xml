@@ -80,6 +80,10 @@
             <fileset dir="${build}"/>
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
+                <attribute name="Version" value="${projVersion}"/>
+                <!--   ${user.name}    -->
+                <attribute name="Built-By" value="Walter Xie"/>
+                <attribute name="Built-On" value="${TODAY}"/>
             </manifest>
             <zipgroupfileset dir="${lib}" includes="*.jar"/>
         </jar>
