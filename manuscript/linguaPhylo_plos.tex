@@ -464,7 +464,7 @@ LinguaPhylo has built-in vectorization so that any distribution or function can 
 
 The first two lines of this code use the IID pattern, which involves adding a replicates argument of type integer to any generative distribution. In the first line this results in a an array of iid doubles being produced from the specified log-normal distribution of length $n = 3$ instead of a single double. The second line similarly produces a 2D array of doubles representing three iid Dirichlet distributions, instead of the normal 1D array that the Dirichlet distribution would normally produce. The final line vectorises the hky funcgtion by passing arguments that are arrays of the normal argument types, resulting in the production of a 3D array representing and array of three iid HKY instantaneous rate matrices.
 
-\section*{Tree generative distributions}
+\subsection*{Tree generative distributions}
 
 There are many statistical programming languages such as Stan
 \cite{carpenter2017stan}, JAGS \cite{plummer2003jags} and BUGS \cite{lunn2009bugs, gilks1994language} that provide the possibility
@@ -480,7 +480,7 @@ The aim of LPhy is describe the standard phylogenetic tree
 distributions succinctly and precisely, while leaving out trivial algorithmic details related to the method
 of inference and the particular software employed to do the inference.
 
-\subsection*{Coalescent generative distributions for time trees}
+\subsubsection*{Coalescent generative distributions for time trees}
 
 LPhy has describes a family of coalescent generative distributions
 that produce TimeTrees.
@@ -595,7 +595,7 @@ the gene tree for each species.
 It is a tuple of integers with length equal to the number of species
 in the species tree.
 
-\subsection*{Birth-death process generative distributions of trees}
+\subsubsection*{Birth-death process generative distributions of trees}
 
 The other main family of tree distributions is the birth-death-sampling generative distributions.
 
@@ -706,8 +706,7 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
 
 
-
-\section*{Models of evolutionary rates and sequence evolution}
+\subsection*{Models of evolutionary rates and sequence evolution}
 
 Another key distribution necessary to perform phylogenetic inference
 is the phylogenetic continuous-time Markov process and its inference
@@ -776,7 +775,7 @@ rates across branches:
   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
 \end{alltt}
 
-\section*{LinguaPhylo Studio}
+\subsection*{LinguaPhylo Studio}
 
 Along with the language definition, we also provide software to
 specify and visualise models as well as simulate data from models
@@ -790,7 +789,7 @@ This will require software that can convert an LPhy specification into
 an input file that these inference engines understand.
 The first such software converter is LPhyBEAST described below.
 
-\section*{LPhyBEAST}
+\subsection*{LPhyBEAST}
 
 LPhyBEAST is a command-line program that takes an LPhy model
 specification, and some data and produces a BEAST 2 XML input file.
@@ -799,6 +798,23 @@ communicate BEAST analyses.
 
 % Results and Discussion can be combined.
 \section*{Results}
+
+\begin{itemize}
+\item for evolutionary biologists
+\begin{enumerate}
+\item describe complex phylogenetic models succinctly and exactly
+\item simulate prior distributions from these models, including arbitrary statistics
+\item use model description to run inference on a real data set using LPhyBEAST
+\item produce precise methods section and graphical model figure for describing analyses in published works
+\end{enumerate}
+\item for computational biologists
+\begin{enumerate}
+\item enable easy extension of the type system and generative distributions available using the plugin architecture of Lingua Phylo Studio (in Java programming language)
+\item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its plugin architecture
+\item do well-calibrated simulation study that validate the implementation of inference framework
+\end{enumerate}
+\end{itemize}
+
 
 \section*{Discussion}
 
