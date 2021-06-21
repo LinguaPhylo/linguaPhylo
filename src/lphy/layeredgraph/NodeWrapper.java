@@ -1,4 +1,4 @@
-package lphy.app.graphicalmodelcomponent;
+package lphy.layeredgraph;
 
 import java.awt.geom.Point2D;
 import java.util.LinkedList;

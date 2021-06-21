@@ -1,4 +1,4 @@
-package lphy.app.graphicalmodelcomponent;
+package lphy.layeredgraph;
 
 import java.util.Comparator;
 import java.util.List;

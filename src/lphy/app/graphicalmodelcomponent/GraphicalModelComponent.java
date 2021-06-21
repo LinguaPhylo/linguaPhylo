@@ -3,14 +3,9 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.GraphicalModelChangeListener;
 import lphy.app.GraphicalModelListener;
-import lphy.app.Symbols;
-import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
-import lphy.core.distributions.IID;
-import lphy.core.distributions.VectorizedDistribution;
-import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.LaTeXNarrative;
-import lphy.core.narrative.LaTeXUtils;
 import lphy.graphicalModel.*;
+import lphy.layeredgraph.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +17,6 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import static lphy.app.graphicalmodelcomponent.LayeredGNode.*;
-import static lphy.graphicalModel.ValueUtils.isNumber;
 
 /**
  * Created by adru001 on 18/12/19.

@@ -1,8 +1,11 @@
 package lphy.core.narrative;
 
 import lphy.app.Symbols;
-import lphy.app.graphicalmodelcomponent.*;
-import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
+import lphy.app.graphicalmodelcomponent.LayeredGNode;
+import lphy.layeredgraph.LayeredNode;
+import lphy.layeredgraph.NodeWrapper;
+import lphy.layeredgraph.ProperLayeredGraph;
+import lphy.layeredgraph.LatticePoint;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;

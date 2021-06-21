@@ -1,6 +1,6 @@
 package lphy.core.narrative;
 
-import lphy.app.graphicalmodelcomponent.ProperLayeredGraph;
+import lphy.layeredgraph.ProperLayeredGraph;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GraphicalModel;

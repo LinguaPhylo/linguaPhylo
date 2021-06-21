@@ -2,6 +2,7 @@ package lphy.app.graphicalmodelcomponent;
 
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
+import lphy.layeredgraph.LayeredNode;
 import lphy.utils.LoggerUtils;
 
 import javax.swing.*;

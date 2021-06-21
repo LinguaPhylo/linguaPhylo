@@ -1,10 +1,5 @@
-package lphy.app.graphicalmodelcomponent;
+package lphy.layeredgraph;
 
-import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
-import lphy.utils.LoggerUtils;
-
-import javax.swing.*;
-import java.io.IOException;
 import java.util.*;
 
 public class BrandesKopfHorizontalCoordinateAssignment {
@@ -334,17 +329,5 @@ public class BrandesKopfHorizontalCoordinateAssignment {
         LayeredNode root(LayeredNode v) {
             return root.get(v);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        LayeredGraph layeredGraph = LayeredGraph.testGraph();
-
-        BrandesKopfHorizontalCoordinateAssignment bkhca = new BrandesKopfHorizontalCoordinateAssignment(layeredGraph);
-
-        JFrame frame = new JFrame("LayeredGraph");
-        frame.setSize(1200, 800);
-        frame.getContentPane().add(new LayeredGraphComponent(layeredGraph));
-        frame.setVisible(true);
     }
 }

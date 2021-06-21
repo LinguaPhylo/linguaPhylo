@@ -1,4 +1,4 @@
-package lphy.app.graphicalmodelcomponent;
+package lphy.layeredgraph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,10 @@ public class LayeredGraph {
 
     public List<LayeredNode> getNodes() {
         return nodes;
+    }
+
+    public List<List<LayeredNode>> getLayers() {
+        return layers;
     }
 
     public void addNode(LayeredNode node) {

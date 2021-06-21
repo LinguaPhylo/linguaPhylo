@@ -1,5 +1,8 @@
 package lphy.app.graphicalmodelcomponent;
 
+import lphy.layeredgraph.LayeredGraph;
+import lphy.layeredgraph.LayeredNode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -20,11 +23,11 @@ public class LayeredGraphComponent extends JComponent {
 
         Graphics2D g2d = (Graphics2D)g;
 
-        int layerCount = graph.layers.size();
+        int layerCount = graph.getLayerCount();
 
         double maxX = graph.getMaxX();
 
-        double dy = getHeight() / graph.layers.size();
+        double dy = getHeight() / graph.getLayerCount();
 
         double dx = getWidth() / (maxX+1);
 

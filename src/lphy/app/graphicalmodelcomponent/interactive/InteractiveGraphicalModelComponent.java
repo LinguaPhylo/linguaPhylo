@@ -3,6 +3,7 @@ package lphy.app.graphicalmodelcomponent.interactive;
 import lphy.app.GraphicalLPhyParser;
 import lphy.app.graphicalmodelcomponent.*;
 import lphy.core.LPhyParser;
+import lphy.layeredgraph.LayeredNode;
 
 import javax.swing.*;
 import java.awt.*;

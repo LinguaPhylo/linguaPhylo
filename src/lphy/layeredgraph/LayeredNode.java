@@ -1,4 +1,4 @@
-package lphy.app.graphicalmodelcomponent;
+package lphy.layeredgraph;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -84,11 +84,11 @@ public interface LayeredNode {
 
     class Default implements LayeredNode {
 
-        double x = 0.0;
-        double y = 0.0;
+        protected double x = 0.0;
+        protected double y = 0.0;
         private List<LayeredNode> successors = new ArrayList<>();
         private List<LayeredNode> predecessors = new ArrayList<>();
-        int layer;
+        protected int layer;
         int index;
 
         Map<String, Object> metadata = new TreeMap<>();

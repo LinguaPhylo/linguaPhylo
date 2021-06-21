@@ -3,6 +3,8 @@ package lphy.app.graphicalmodelcomponent;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
+import lphy.layeredgraph.LayeredGraph;
+import lphy.layeredgraph.LayeredNode;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package lphy.app.graphicalmodelcomponent.interactive;
+package lphy.layeredgraph;
 
 public class LatticePoint {
 

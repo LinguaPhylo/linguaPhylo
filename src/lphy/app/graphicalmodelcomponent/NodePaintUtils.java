@@ -5,6 +5,8 @@ import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
+import lphy.layeredgraph.LayeredNode;
+import lphy.layeredgraph.NodeWrapper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +85,7 @@ public class NodePaintUtils {
     }
 
     private static void paintGeneratorNode(Generator generator, LayeredGNode node, LayeredNode properNode, Graphics2D g2d) {
-        Rectangle2D rectangle2D = new Rectangle2D.Double(node.x - FACTOR_SIZE, node.y - FACTOR_SIZE, FACTOR_SIZE * 2.0, FACTOR_SIZE * 2.0);
+        Rectangle2D rectangle2D = new Rectangle2D.Double(node.getX() - FACTOR_SIZE, node.getY() - FACTOR_SIZE, FACTOR_SIZE * 2.0, FACTOR_SIZE * 2.0);
         g2d.setColor(Color.white);
         g2d.fill(rectangle2D);
         g2d.setColor(Color.black);
