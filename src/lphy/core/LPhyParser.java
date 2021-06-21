@@ -88,6 +88,20 @@ public interface LPhyParser extends GraphicalModel {
         parse(builder.toString());
     }
 
+    /**
+     *  Start with canonical id, if that is null call value.getUniqueId(), and wrap in single quotes if this is a data value that is clamped in the model.
+     * @param value the value
+     * @return a unique id string for this value.
+     */
+    default String getUniqueId(Value value) {
+        String uniqueId = value.getCanonicalId();
+        if (uniqueId == null) uniqueId = value.getUniqueId();
+        if (isClamped(value.getId()) && isNamedDataValue(value)) {
+            uniqueId = "'" + uniqueId + "'";
+        }
+        return uniqueId;
+    }
+
     class Utils {
         /**
          * Parses the arguments of a command. A command can't be in the data context.

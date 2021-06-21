@@ -1,6 +1,6 @@
 package lphy.core.narrative;
 
-import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphy.app.graphicalmodelcomponent.ProperLayeredGraph;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GraphicalModel;
@@ -136,7 +136,7 @@ public class HTMLNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(GraphicalModelComponent component) {
+    public String graphicalModelBlock(LPhyParser parser, ProperLayeredGraph properLayeredGraph) {
         return "";
     }
 

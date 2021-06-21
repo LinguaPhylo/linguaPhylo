@@ -1,8 +1,12 @@
 package lphy.core.narrative;
 
 import lphy.app.Symbols;
-import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphy.app.graphicalmodelcomponent.*;
+import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 import lphy.core.LPhyParser;
+import lphy.core.distributions.IID;
+import lphy.core.distributions.VectorizedDistribution;
+import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
@@ -14,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.*;
 
-import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
+import static lphy.graphicalModel.ValueUtils.isNumber;
 
 public class LaTeXNarrative implements Narrative {
 
@@ -287,7 +291,7 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(GraphicalModelComponent component) {
+    public String graphicalModelBlock(LPhyParser parser, ProperLayeredGraph properLayeredGraph) {
 
         StringBuilder builder = new StringBuilder();
         builder.append("\\begin{center}\n");
@@ -299,7 +303,7 @@ public class LaTeXNarrative implements Narrative {
         }
 
 
-        builder.append(component.toTikz(0.6, 0.6, true, options));
+        builder.append(properLayeredGraphToTikz(parser, properLayeredGraph, 50,0.6, 0.6, true, options));
 
         if (scaleGraphicalModel) {
             builder.append("\\end{scaletikzpicturetowidth}\n");
@@ -308,6 +312,156 @@ public class LaTeXNarrative implements Narrative {
         builder.append("\\end{center}\n");
 
         return builder.toString();
+    }
+
+    public static String properLayeredGraphToTikz(LPhyParser parser, ProperLayeredGraph properLayeredGraph, double varHeight, double xScale, double yScale, boolean inline, String options) {
+
+        StringBuilder nodes = new StringBuilder();
+        StringBuilder factors = new StringBuilder();
+
+        for (LayeredNode properNode : properLayeredGraph.getNodes()) {
+
+            double x1 = properNode.getX();
+            double y1 = properNode.getY();
+
+            if (!properNode.isDummy()) {
+
+                y1 += varHeight / 2;
+
+                NodeWrapper nodeWrapper = (NodeWrapper) properNode;
+                LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
+
+                if (node.value() instanceof Value) {
+
+                    nodes.append(valueToTikz(parser, node, (Value)node.value(), xScale, yScale)).append("\n");
+
+                } else if (node.value() instanceof Generator) {
+                    factors.append(generatorToTikz(parser, node, (Generator)node.value())).append("\n");
+
+                }
+            }
+        }
+
+        String beginDocument = "\\documentclass[border=3mm]{standalone} % For LaTeX2e\n" +
+                "\\usepackage{tikz}\n" +
+                "\\usepackage{bm}\n" +
+                "\\usetikzlibrary{bayesnet}\n" +
+                "\n" +
+                "\\begin{document}\n\n";
+
+        if (options.length() > 0 && !options.endsWith(",")) {
+            options = options + ",";
+        }
+
+        String preamble =
+                "\\begin{tikzpicture}[" + options + "\n" +
+                        "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
+                        "vstyle/.style={draw=green,fill=green!20},\n" +
+                        "cstyle/.style={font=\\small},\n" +
+                        "detstyle/.style={draw=red!50,fill=red!20}\n" +
+                        "]\n";
+
+        String postamble = "\\end{tikzpicture}\n";
+
+        String endDocument = " \\end{document}";
+
+        StringBuilder builder = new StringBuilder();
+        if (!inline) builder.append(beginDocument);
+        builder.append(preamble);
+        builder.append(nodes.toString());
+        builder.append(factors.toString());
+        builder.append(postamble);
+        if (!inline) builder.append(endDocument);
+        return builder.toString();
+    }
+
+    private static String generatorToTikz(LPhyParser parser, LayeredGNode gNode, Generator generator) {
+
+        Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
+        String valueUniqueId = parser.getUniqueId(value);
+
+        String factorName = generator.getName() + valueUniqueId;
+
+        //factorName = factorName.replace('_', '.');
+
+        StringBuilder predecessors = new StringBuilder();
+
+        List<LayeredNode> pred = gNode.getPredecessors();
+
+        if (pred.size() > 0) {
+            predecessors = new StringBuilder(parser.getUniqueId((Value) ((LayeredGNode) pred.get(0)).value()));
+        }
+        for (int i = 1; i < pred.size(); i++) {
+            predecessors.append(", ").append(parser.getUniqueId((Value) ((LayeredGNode) pred.get(i)).value()));
+        }
+
+        String generatorName = generator.getName();
+
+        if (generator instanceof VectorizedDistribution) {
+            Value replicates = ((VectorizedDistribution)generator).getReplicatesValue();
+            if (replicates != null) generatorName = generatorName + "[" + parser.getUniqueId(replicates) + "]";
+        }
+
+        if (generator instanceof VectorizedFunction) {
+            Value replicates = ((VectorizedFunction)generator).getReplicatesValue();
+            if (replicates != null) generatorName = generatorName + "[" + parser.getUniqueId(replicates) + "]";
+        }
+
+        if (generator instanceof IID) {
+            Value replicates = ((IID)generator).getReplicates();
+            if (replicates != null) generatorName = generatorName + "[" + parser.getUniqueId(replicates) + "]";
+        }
+
+        String factorString =  "\\factor[above=of " + valueUniqueId + "] {" + factorName + "} {left:\\scriptsize " + generatorName + "} {} {} ; %\n";
+        String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + valueUniqueId + "}; %";
+
+        return factorString + factorEdgeString;
+    }
+
+    private static String valueToTikz(LPhyParser parser, LayeredGNode gNode, Value value, double xScale, double yScale) {
+
+        String type = "const";
+        String style = "cstyle";
+
+        if (parser.isClampedVariable(value)) {
+            type = "obs";
+            style = "dstyle";
+        } else if (value instanceof RandomVariable) {
+            type = "latent";
+            style = "vstyle";
+        } else if (value.getGenerator() != null) {
+            type = "det";
+            style = "detstyle";
+        }
+
+        LatticePoint latticePoint = (LatticePoint)gNode.getMetaData(LatticePoint.KEY);
+
+        String uniqueId = parser.getUniqueId(value);
+        //uniqueId = uniqueId.replace("_", "."); // can't have underscore in these names.
+
+        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getTikzLabel(parser, gNode) + "};";
+    }
+
+    private static String getTikzLabel(LPhyParser parser, LayeredGNode gNode) {
+        Value value = (Value)gNode.value();
+        String label = Symbols.getCanonical(gNode.getName(), "$\\", "$");
+        if (!value.isAnonymous()) {
+            label = LaTeXUtils.getMathId(value, true, true);
+        }
+
+        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
+            label = "'" + label + "'";
+        }
+
+        if (value.isAnonymous() && isNumber(value)) {
+            label = unbracket(gNode.getName()) + " = " + value.value().toString();
+        }
+        return label;
+    }
+
+    private static String unbracket(String str) {
+        if (str.startsWith("[") && str.endsWith("]")) return str.substring(1, str.indexOf(']'));
+        return str;
     }
 
     @Override

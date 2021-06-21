@@ -8,6 +8,7 @@ import lphy.app.graphicalmodelcomponent.interactive.LatticePoint;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
+import lphy.core.narrative.LaTeXNarrative;
 import lphy.core.narrative.LaTeXUtils;
 import lphy.graphicalModel.*;
 
@@ -152,173 +153,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         }
     }
 
-    public String toTikz() {
-
-        return toTikz(1.0, 1.0, false, "");
-    }
-
     public String toTikz(boolean inline) {
 
-        return toTikz(1.0, 1.0, inline, "");
+        return LaTeXNarrative.properLayeredGraphToTikz(parser, properLayeredGraph, VAR_HEIGHT, 1.0, 1.0, inline,"");
     }
 
+    public String toTikz() {
 
-    public String toTikz(double xScale, double yScale, boolean inline, String options) {
-
-        StringBuilder nodes = new StringBuilder();
-        StringBuilder factors = new StringBuilder();
-
-        for (LayeredNode properNode : properLayeredGraph.getNodes()) {
-
-            double x1 = properNode.getX();
-            double y1 = properNode.getY();
-
-            if (!properNode.isDummy()) {
-
-                y1 += VAR_HEIGHT / 2;
-
-                NodeWrapper nodeWrapper = (NodeWrapper) properNode;
-                LayeredGNode node = (LayeredGNode) nodeWrapper.wrappedNode();
-
-                if (node.value() instanceof Value) {
-
-                    nodes.append(valueToTikz(node, (Value)node.value(), xScale, yScale)).append("\n");
-
-                } else if (node.value() instanceof Generator) {
-                    factors.append(generatorToTikz(node, (Generator)node.value())).append("\n");
-
-                }
-            }
-        }
-
-        String beginDocument = "\\documentclass[border=3mm]{standalone} % For LaTeX2e\n" +
-                "\\usepackage{tikz}\n" +
-                "\\usepackage{bm}\n" +
-                "\\usetikzlibrary{bayesnet}\n" +
-                "\n" +
-                "\\begin{document}\n\n";
-
-        if (options.length() > 0 && !options.endsWith(",")) {
-            options = options + ",";
-        }
-
-        String preamble =
-                "\\begin{tikzpicture}[" + options + "\n" +
-                "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
-                "vstyle/.style={draw=green,fill=green!20},\n" +
-                "cstyle/.style={font=\\small},\n" +
-                "detstyle/.style={draw=red!50,fill=red!20}\n" +
-                "]\n";
-
-        String postamble = "\\end{tikzpicture}\n";
-
-        String endDocument = " \\end{document}";
-
-        StringBuilder builder = new StringBuilder();
-        if (!inline) builder.append(beginDocument);
-        builder.append(preamble);
-        builder.append(nodes.toString());
-        builder.append(factors.toString());
-        builder.append(postamble);
-        if (!inline) builder.append(endDocument);
-        return builder.toString();
-    }
-
-    private String valueToTikz(LayeredGNode gNode, Value value, double xScale, double yScale) {
-
-        String type = "const";
-        String style = "cstyle";
-
-        if (parser.isClampedVariable(value)) {
-            type = "obs";
-            style = "dstyle";
-        } else if (value instanceof RandomVariable) {
-            type = "latent";
-            style = "vstyle";
-        } else if (value.getGenerator() != null) {
-            type = "det";
-            style = "detstyle";
-        }
-
-        LatticePoint latticePoint = (LatticePoint)gNode.getMetaData(LatticePoint.KEY);
-
-        String uniqueId = getUniqueId(value);
-        //uniqueId = uniqueId.replace("_", "."); // can't have underscore in these names.
-
-        return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getTikzLabel(gNode) + "};";
-    }
-
-    private String getTikzLabel(LayeredGNode gNode) {
-        Value value = (Value)gNode.value();
-        String label = Symbols.getCanonical(gNode.name, "$\\", "$");
-        if (!value.isAnonymous()) {
-            label = LaTeXUtils.getMathId(value, true, true);
-        }
-
-        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
-            label = "'" + label + "'";
-        }
-
-        if (value.isAnonymous() && isNumber(value)) {
-            label = unbracket(gNode.name) + " = " + value.value().toString();
-        }
-        return label;
-    }
-
-    private String getUniqueId(Value value) {
-        String uniqueId = value.getCanonicalId();
-        if (uniqueId == null) uniqueId = value.getUniqueId();
-        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
-            uniqueId = "'" + uniqueId + "'";
-        }
-        return uniqueId;
-    }
-
-    private String unbracket(String str) {
-        if (str.startsWith("[") && str.endsWith("]")) return str.substring(1, str.indexOf(']'));
-        return str;
-    }
-
-    private String generatorToTikz(LayeredGNode gNode, Generator generator) {
-
-        Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
-
-        String factorName = generator.getName() + getUniqueId(value);
-
-        //factorName = factorName.replace('_', '.');
-
-        StringBuilder predecessors = new StringBuilder();
-
-        List<LayeredNode> pred = gNode.getPredecessors();
-
-        if (pred.size() > 0) {
-            predecessors = new StringBuilder(getUniqueId((Value) ((LayeredGNode) pred.get(0)).value()));
-        }
-        for (int i = 1; i < pred.size(); i++) {
-            predecessors.append(", ").append(getUniqueId((Value) ((LayeredGNode) pred.get(i)).value()));
-        }
-
-        String generatorName = generator.getName();
-
-        if (generator instanceof VectorizedDistribution) {
-            Value replicates = ((VectorizedDistribution)generator).getReplicatesValue();
-            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
-        }
-
-        if (generator instanceof VectorizedFunction) {
-            Value replicates = ((VectorizedFunction)generator).getReplicatesValue();
-            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
-        }
-
-        if (generator instanceof IID) {
-            Value replicates = ((IID)generator).getReplicates();
-            if (replicates != null) generatorName = generatorName + "[" + getUniqueId(replicates) + "]";
-        }
-
-        String factorString =  "\\factor[above=of " + getUniqueId(value) + "] {" + factorName + "} {left:\\scriptsize " + generatorName + "} {} {} ; %\n";
-        String factorEdgeString =  "\\factoredge {" + predecessors + "} {" + factorName + "} {" + getUniqueId(value) + "}; %";
-
-        return factorString + factorEdgeString;
+        return toTikz(false);
     }
 
     private boolean isWrappedParameterized(LayeredNode v) {

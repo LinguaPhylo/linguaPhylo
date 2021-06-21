@@ -382,7 +382,7 @@ public class NarrativePanel extends JComponent {
                     break;
                 case GraphicalModel:
                     text += narrative.section("Graphical Model");
-                    text += narrative.graphicalModelBlock(graphicalModelComponent);
+                    text += narrative.graphicalModelBlock(parser, graphicalModelComponent.properLayeredGraph);
                     break;
             }
         }

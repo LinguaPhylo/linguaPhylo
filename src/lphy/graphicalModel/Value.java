@@ -1,10 +1,9 @@
 package lphy.graphicalModel;
 
-import lphy.app.*;
+import lphy.app.Symbols;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.types.DoubleValue;
 
-import javax.swing.*;
 import java.util.*;
 
 /**

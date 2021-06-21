@@ -44,6 +44,10 @@ public class LayeredGNode extends LayeredNode.Default {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void addOutput(LayeredGNode output) {
         getSuccessors().add(output);
 
