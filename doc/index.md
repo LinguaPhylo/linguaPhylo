@@ -1,4 +1,4 @@
-LPhy Language Reference (version 0.0.5)
+LPhy Language Reference (version 0.0.6)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
@@ -23,13 +23,11 @@ Generative distributions
 - [LogNormal](distributions/LogNormal.md)
 - [MultispeciesCoalescent](distributions/MultispeciesCoalescent.md)
 - [Normal](distributions/Normal.md)
+- [NormalGamma](distributions/NormalGamma.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
 - [PhyloCTMC](distributions/PhyloCTMC.md)
-- [PhyloCircularBrownian](distributions/PhyloCircularBrownian.md)
-- [PhyloOU](distributions/PhyloOU.md)
 - [PhyloMultivariateBrownian](distributions/PhyloMultivariateBrownian.md)
-- [PhyloToroidalBrownian](distributions/PhyloToroidalBrownian.md)
-- [PhyloWrappedBivariateDiffusion](distributions/PhyloWrappedBivariateDiffusion.md)
+- [PhyloOU](distributions/PhyloOU.md)
 - [Poisson](distributions/Poisson.md)
 - [RandomBooleanArray](distributions/RandomBooleanArray.md)
 - [RandomComposition](distributions/RandomComposition.md)
@@ -54,7 +52,6 @@ Functions
 - [binaryRateMatrix](functions/binaryRateMatrix.md)
 - [concat](functions/concat.md)
 - [taxa](functions/taxa.md)
-- [dihedralAngleDiffusionMatrix](functions/dihedralAngleDiffusionMatrix.md)
 - [exp](functions/exp.md)
 - [extantTaxa](functions/extantTaxa.md)
 - [extantTree](functions/extantTree.md)

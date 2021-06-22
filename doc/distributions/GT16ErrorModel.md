@@ -3,7 +3,7 @@ GT16ErrorModel distribution
 GT16ErrorModel(Double **epsilon**, Double **delta**, Alignment **alignment**)
 -----------------------------------------------------------------------------
 
-An error model distribution on a phased genotype alignment.
+An error model distribution on an phased genotype alignment.
 
 ### Parameters
 

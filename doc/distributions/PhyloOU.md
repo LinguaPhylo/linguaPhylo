@@ -1,26 +1,5 @@
 PhyloOU distribution
 ====================
-PhyloOU(TimeTree **tree**, Double **variance**, Double **theta**, Double **alpha**, Double **y0**)
---------------------------------------------------------------------------------------------------
-
-The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.
-
-### Parameters
-
-- TimeTree **tree** - the time tree.
-- Double **variance** - the variance of the underlying Brownian process.
-- Double **theta** - the 'optimal' value that the long-term process is centered around.
-- Double **alpha** - the drift term that determines the rate of drift towards the optimal value.
-- Double **y0** - the value of continuous trait at the root.
-
-### Return type
-
-- ContinuousCharacterData
-
-### Reference
-
-Felsenstein J. (1973). Maximum-likelihood estimation of evolutionary trees from continuous characters. American journal of human genetics, 25(5), 471–492.[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/)
-
 PhyloOU(TimeTree **tree**, Double **diffRate**, Double **theta**, Double **alpha**, Double **y0**, Double[] **branchThetas**)
 -----------------------------------------------------------------------------------------------------------------------------
 

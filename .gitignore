@@ -13,6 +13,10 @@
 out/
 build/
 dist/
+LPhy/build/
+LPhy/dist/
+LPhyStudio/build/
+LPhyStudio/dist/
 
 # macOS Files
 **/.DS_Store

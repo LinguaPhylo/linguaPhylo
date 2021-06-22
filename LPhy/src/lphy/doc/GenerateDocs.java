@@ -34,7 +34,9 @@ public class GenerateDocs {
 
 //        GenerateDocs generateDocs = getInstance();
 //        String version = generateDocs.getProperty("version");
-        final String version = "0.0.5";
+        String version = "";
+        if (args.length > 0)
+            version = args[0];
 
         String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, version);
 
