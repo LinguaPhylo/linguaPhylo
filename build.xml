@@ -8,29 +8,29 @@
 
     <!-- Ant build fails if the repo dir isn't named linguaPhylo -->
     <property name="repoName" value="linguaPhylo"/>
-    <property name="projName" value="LPhy"/>
-    <property name="projName2" value="LPhyStudio"/>
+    <property name="lphy" value="LPhy"/>
+    <property name="studio" value="LPhyStudio"/>
 
     <!--*******************************************************************-->
 
     <target name="compile-all">
-        <ant target="compile" antfile="build.xml" dir="${projName}"/>
-<!--        <ant target="compile" antfile="build.xml" dir="${projName2}"/>-->
+        <ant target="compile" antfile="build.xml" dir="${lphy}"/>
+        <ant target="compile" antfile="build.xml" dir="${studio}"/>
     </target>
 
     <target name="compile-all-tests">
-        <ant target="compile-test" antfile="build.xml" dir="${projName}"/>
-        <!--        <ant target="compile-test" antfile="build.xml" dir="${projName2}"/>-->
+        <ant target="compile-test" antfile="build.xml" dir="${lphy}"/>
+        <!-- TODO       <ant target="compile-test" antfile="build.xml" dir="${studio}"/>-->
     </target>
 
     <target name="test-all">
-        <ant target="test" antfile="build.xml" dir="${projName}"/>
-        <!--        <ant target="test" antfile="build.xml" dir="${projName2}"/>-->
+        <ant target="test" antfile="build.xml" dir="${lphy}"/>
+        <!--        <ant target="test" antfile="build.xml" dir="${studio}"/>-->
     </target>
 
     <!--  https://docs.github.com/en/actions  -->
     <target name="github-actions" depends="compile-all, compile-all-tests, test-all">
-        <fail if="testFailed" message="One or more ${projName} tests failed."/>
+        <fail if="testFailed" message="One or more ${lphy} tests failed."/>
     </target>
 
 </project>
