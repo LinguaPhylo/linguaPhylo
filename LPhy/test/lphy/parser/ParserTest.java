@@ -45,7 +45,7 @@ public class ParserTest extends TestCase {
 
     @Test
     public void testThatExamplesRun() {
-        final String dir = System.getProperty("user.dir") + "/examples";
+        final String dir = System.getProperty("user.dir") + "/../examples";
         test_ThatXmlExamplesRun(dir);
     }
     
@@ -63,8 +63,9 @@ public class ParserTest extends TestCase {
             List<String> failedFiles = new ArrayList<String>();
 //            String fileName = "hcv_coal_classic.lphy";
             for (String fileName : Objects.requireNonNull(exampleFiles) ) {
-                // exclude wagCoalescentNex.lphy
-                if (fileName.startsWith("wag")) break;
+                // exclude wagCoalescentNex.lphy, simplePhyloWrappedBivariateDiffusion.lphy, simplePhyloToroidalBrownian.lphy
+                if (fileName.startsWith("wag") || fileName.contains("WrappedBivariate") ||
+                        fileName.contains("Toroidal")) break;
 
                 System.out.println("Processing " + fileName);
                 IOUtils.setUserDir(dir);
