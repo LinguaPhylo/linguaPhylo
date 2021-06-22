@@ -99,58 +99,58 @@
     </target>
 
     <!-- release -->
-    <property name="pack" value="${dist}/package"/>
+<!--    <property name="pack" value="${dist}/package"/>-->
 
-    <target name="release" depends="compile,dist,generate-docs"
-            description="for the release process">
-        <property name="packageName" value="${fullName}"/>
-        <mkdir dir="${pack}"/>
+<!--    <target name="release" depends="compile,dist,generate-docs"-->
+<!--            description="for the release process">-->
+<!--        <property name="packageName" value="${fullName}"/>-->
+<!--        <mkdir dir="${pack}"/>-->
 
-        <copy file="${dist}/${fullName}.jar" tofile="${pack}/${fullName}.jar"/>
+<!--        <copy file="${dist}/${fullName}.jar" tofile="${pack}/${fullName}.jar"/>-->
 
-        <copy file="README.md" tofile="${pack}/README"/>
-        <!--
-            <copy file="COPYING" todir="${pack}" />
-            <copy todir="${pack}">
-              <fileset dir="${lib}" includes="LICENSE*" />
-            </copy>
-        -->
-        <property name="exaDir" value="examples"/>
-        <mkdir dir="${pack}/${exaDir}"/>
-        <copy todir="${pack}/${exaDir}">
-            <fileset dir="${exaDir}" includes="*.lphy">
-                <exclude name="**/*covid*"/>
-            </fileset>
-            <fileset dir="${exaDir}">
-                <include name="**/*.nex"/>
-                <include name="**/*.nexus"/>
-                <include name="**/*.fasta"/>
-                <exclude name="**/*covid*"/>
-            </fileset>
-        </copy>
-        <property name="tutDir" value="tutorials"/>
-        <mkdir dir="${pack}/${tutDir}"/>
-        <copy todir="${pack}/${tutDir}">
-            <fileset dir="${tutDir}" includes="*.lphy">
-                <!-- TODO in dev -->
-                <exclude name="canis.lphy"/>
-                <exclude name="bModelTest.lphy"/>
-            </fileset>
-            <fileset dir="${tutDir}">
-                <include name="**/*.nex"/>
-                <include name="**/*.nexus"/>
-                <include name="**/*.fasta"/>
-            </fileset>
-        </copy>
+<!--        <copy file="README.md" tofile="${pack}/README"/>-->
+<!--        &lt;!&ndash;-->
+<!--            <copy file="COPYING" todir="${pack}" />-->
+<!--            <copy todir="${pack}">-->
+<!--              <fileset dir="${lib}" includes="LICENSE*" />-->
+<!--            </copy>-->
+<!--        &ndash;&gt;-->
+<!--        <property name="exaDir" value="examples"/>-->
+<!--        <mkdir dir="${pack}/${exaDir}"/>-->
+<!--        <copy todir="${pack}/${exaDir}">-->
+<!--            <fileset dir="${exaDir}" includes="*.lphy">-->
+<!--                <exclude name="**/*covid*"/>-->
+<!--            </fileset>-->
+<!--            <fileset dir="${exaDir}">-->
+<!--                <include name="**/*.nex"/>-->
+<!--                <include name="**/*.nexus"/>-->
+<!--                <include name="**/*.fasta"/>-->
+<!--                <exclude name="**/*covid*"/>-->
+<!--            </fileset>-->
+<!--        </copy>-->
+<!--        <property name="tutDir" value="tutorials"/>-->
+<!--        <mkdir dir="${pack}/${tutDir}"/>-->
+<!--        <copy todir="${pack}/${tutDir}">-->
+<!--            <fileset dir="${tutDir}" includes="*.lphy">-->
+<!--                &lt;!&ndash; TODO in dev &ndash;&gt;-->
+<!--                <exclude name="canis.lphy"/>-->
+<!--                <exclude name="bModelTest.lphy"/>-->
+<!--            </fileset>-->
+<!--            <fileset dir="${tutDir}">-->
+<!--                <include name="**/*.nex"/>-->
+<!--                <include name="**/*.nexus"/>-->
+<!--                <include name="**/*.fasta"/>-->
+<!--            </fileset>-->
+<!--        </copy>-->
 
-        <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>
+<!--        <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>-->
 
-<!--        <delete dir="${pack}"/>-->
+<!--&lt;!&ndash;        <delete dir="${pack}"/>&ndash;&gt;-->
 
-        <echo/>
-        <echo/>
-        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>
-    </target>
+<!--        <echo/>-->
+<!--        <echo/>-->
+<!--        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>-->
+<!--    </target>-->
 
     <!-- Prepare for unit test compilation -->
     <target name="init-test">
