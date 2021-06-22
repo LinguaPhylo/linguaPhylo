@@ -24,6 +24,9 @@ public class GT16ErrorModel implements GenerativeDistribution<Alignment> {
 
     RandomGenerator random;
 
+    // for testing
+    public GT16ErrorModel() {}
+
     public GT16ErrorModel(@ParameterInfo(name = epsilonParamName, description = "the sequencing and amplification error probability.") Value<Double> epsilon,
                           @ParameterInfo(name = deltaParamName, description = "the allelic drop out probability.") Value<Double> delta,
                           @ParameterInfo(name = alignmentParamName, description = "the genotype alignment.") Value<Alignment> alignment) {
@@ -105,31 +108,34 @@ public class GT16ErrorModel implements GenerativeDistribution<Alignment> {
     }
 
 
-    private double[][] errorMatrix(double epsilon, double delta) {
-
-        double e = epsilon;
-        double f = epsilon / 6.0;
-        double d = delta;
-        double b = delta / 2.0;
-
+    public double[][] errorMatrix(double epsilon, double delta) {
+        double a = 1 - epsilon + (1/2.0) * delta * epsilon;
+        double b = (1 - delta) * (1/6.0) * epsilon;
+        double c = (1/6.0) * delta * epsilon;
+        double d = (1/2.0) * delta + (1/6.0) * epsilon - (1/3.0) * delta * epsilon;
+        double e = (1/6.0) * delta * epsilon;
+        double f = (1 - delta) * (1/6.0) * epsilon;
+        double g = (1 - delta) * (1 - epsilon);
+        // rows are true states Y, columns are observed states X
+        // the entries in the matrix are P(X | Y)
         double[][] errorMatrix = {
-           // AA     AC     AG     AT     CA   CC     CG     CT     GA     GC   GG     GT     TA     TC     TG   TT
-            {1-e,     f,     f,     f,     f,   0,     0,     0,     f,     0,   0,     0,     f,     0,     0,   0},// AA
-            {f+b, 1-e-d,     f,   f+b,     0, f+b,     0,     0,     0,     f,   0,     0,     0,     f,     0,   0},// AC
-            {f+b,     f, 1-e-d,     f,     0,   0,     f,     0,     0,     0, f+b,     0,     0,     0,     f,   0},// AG
-            {f+b,     f,     f, 1-e-d,     0,   0,     0,     f,     0,     0,   0,     f,     0,     0,     0, f+b},// AT
-            {f+b,     0,     0,     0, 1-e-d, f+b,     f,     f,     f,     0,   0,     0,     f,     0,     0,   0},// CA
-            {  0,     f,     0,     0,     f, 1-e,     f,     f,     0,     f,   0,     0,     0,     f,     0,   0},// CC
-            {  0,     0,     f,     0,     f, f+b, 1-e-d,     f,     0,     0, f+b,     0,     0,     0,     f,   0},// CG
-            {  0,     0,     0,     f,     f, f+b,     f, 1-e-d,     0,     0,   0,     f,     0,     0,     0, f+b},// CT
-            {f+b,     0,     0,     0,     f,   0,     0,     0, 1-e-d,     f, f+b,     f,     f,     0,     0,   0},// GA
-            {  0,     f,     0,     0,     0, f+b,     0,     0,     f, 1-e-d, f+b,     f,     0,     f,     0,   0},// GC
-            {  0,     0,     f,     0,     0,   0,     f,     0,     f,     f, 1-e,     f,     0,     0,     f,   0},// GG
-            {  0,     0,     0,     f,     0,   0,     0,     f,     f,     f, f+b, 1-e-d,     0,     0,     0, f+b},// GT
-            {f+b,     0,     0,     0,     f,   0,     0,     0,     f,     0,   0,     0, 1-e-d,     f,     f, f+b},// TA
-            {  0,     f,     0,     0,     0, f+b,     0,     0,     0,     f,   0,     0,     f, 1-e-d,     f, f+b},// TC
-            {  0,     0,     f,     0,     0,   0,     f,     0,     0,     0, f+b,     0,     f,     f, 1-e-d, f+b},// TG
-            {  0,     0,     0,     f,     0,   0,     0,     f,     0,     0,   0,     f,     f,     f,     f, 1-e} // TT
+          // AA AC AG AT CA CC CG CT GA GC GG GT TA TC TG TT
+            {a, b, b, b, b, c, 0, 0, b, 0, c, 0, b, 0, 0, c}, // AA
+            {d, g, f, f, 0, d, 0, 0, 0, f, e, 0, 0, f, 0, e}, // AC
+            {d, f, g, f, 0, e, f, 0, 0, 0, d, 0, 0, 0, f, e}, // AG
+            {d, f, f, g, 0, e, 0, f, 0, 0, e, f, 0, 0, 0, d}, // AT
+            {d, 0, 0, 0, g, d, f, f, f, 0, e, 0, f, 0, 0, e}, // CA
+            {c, b, 0, 0, b, a, b, b, 0, b, c, 0, 0, b, 0, c}, // CC
+            {e, 0, f, 0, f, d, g, f, 0, 0, d, 0, 0, 0, f, e}, // CG
+            {e, 0, 0, f, f, d, f, g, 0, 0, e, f, 0, 0, 0, d}, // CT
+            {d, 0, 0, 0, f, e, 0, 0, g, f, d, f, f, 0, 0, e}, // GA
+            {e, f, 0, 0, 0, d, 0, 0, f, g, d, f, 0, f, 0, e}, // GC
+            {c, 0, b, 0, 0, c, b, 0, b, b, a, b, 0, 0, b, c}, // GG
+            {e, 0, 0, f, 0, e, 0, f, f, f, d, g, 0, 0, 0, d}, // GT
+            {d, 0, 0, 0, f, e, 0, 0, f, 0, e, 0, g, f, f, d}, // TA
+            {e, f, 0, 0, 0, d, 0, 0, 0, f, e, 0, f, g, f, d}, // TC
+            {e, 0, f, 0, 0, e, f, 0, 0, 0, d, 0, f, f, g, d}, // TG
+            {c, 0, 0, b, 0, c, 0, b, 0, 0, c, b, b, b, b, a}  // TT
         };
         return errorMatrix;
     }
