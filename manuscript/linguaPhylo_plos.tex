@@ -255,32 +255,42 @@ systematic examinations of the literature begun to reveal that
 reproducibility is largely overlooked in pratice.
 Metaresearch efforts have uncovered the so-called ``reproducibility
 crisis'' \cite{baker16} in many scientific domains (but see
-\cite{fanneli18}), among which the dimension of the problem varies.
-In psychology, for example, the frequency of successful replication
-attempts have been reported to be as low as 39\%
-\cite{openscience15}, with numbers being less discouraging
-and in other areas (e.g., economics, 61.1\%,
-\cite{camerer16}; cancer biology, X\%, [citation]).
-The picture is less clear in evolutionary biology, although initial
-probing efforts suggest reproducibility could also be an issue
-[citations].
+\cite{fanelli18}), among which the dimension of the problem varies
+\cite{openscience15,camerer16}.
+Reproducing a scientific finding can be hindered by data being
+unavailable, for example, with many journals now adopting the
+countermeasure of requiring data to be deposited in cloud 
+repositories (e.g., Dryad, Figshare, Zenodo) upon
+submission.
+Another barrier to reproducibility is the complexity of
+data-preparation and analytical protocols. 
+The more technical protocols are, the harder it is to accurately
+report and re-execute them.
 
-Within evolutionary biology, the discipline of phylogenetics has
+Within evolutionary biology, phylogenetics is one discipline that has
 become highly technical over the last few decades.
 The publication of new, complex phylogenetic models happens on a
 regular basis, which is reflected in the myriad of computational tools
-implementing these models, often redundantly.
+implementing these models.
 Many of them fall within one of two families of phylogenetic tools:
 those whose main goal is to reconstruct phylogenetic trees 
 (e.g., \cite{mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
-and those aiming at comparing clades with respect to their number of
-species and the traits those species exhibit (e.g., ).
-The fact that these tools focus 
+and those aiming at characterizing what drives among-clade differences
+ in species number or in the traits those species exhibit (e.g.,
+\cite{diversitree,phytools,bamm,geiger,mvmorph,rpanda,bite,cafe}).
+The narrower focus of these tools makes specifying and reproducing
+analyses relatively easier, but this often comes at a cost of (i)
+information loss, as some types of data are thrown away because they
+are not modelled, (ii) lack of realism or generality in the
+implemented models (which can lead to model misspecification;
+\cite{mendes17,mendes18}), and (iii) failing to capture uncertainty in  
+parameter estimates (e.g., analyses that treat the phylogeny as data).
 
 * Third family: both trees and PCMs, all Bayesian, use the convenience
-of hierarchical Bayesian models and MCMC; loads of pdfs and priors
-though, so it's a mess to set up the analysis, communicate the model,
-and make it reproducible.
+of hierarchical Bayesian models and MCMC, also profits from using all
+the data and accounting for uncertainty around all parameters;
+problem: loads of pdfs and priors though, so it's a mess to set up the
+analysis, communicate the model, and make it reproducible.
 
 * BEAST and BEAST 2 decided to use XML, which contains all you need,
 but it's illegible when models are complex. RevBayes made progress in
