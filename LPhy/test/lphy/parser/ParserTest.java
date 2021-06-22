@@ -63,9 +63,8 @@ public class ParserTest extends TestCase {
             List<String> failedFiles = new ArrayList<String>();
 //            String fileName = "hcv_coal_classic.lphy";
             for (String fileName : Objects.requireNonNull(exampleFiles) ) {
-                // exclude wagCoalescentNex.lphy, simplePhyloWrappedBivariateDiffusion.lphy, simplePhyloToroidalBrownian.lphy
-                if (fileName.startsWith("wag") || fileName.contains("WrappedBivariate") ||
-                        fileName.contains("Toroidal")) break;
+                // exclude wagCoalescentNex.lphy
+                if (fileName.startsWith("wag")) break;
 
                 System.out.println("Processing " + fileName);
                 IOUtils.setUserDir(dir);
