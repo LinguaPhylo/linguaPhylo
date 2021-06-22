@@ -19,7 +19,7 @@
     <property name="build-test" location="../${projName}/build-test"/>
     <property name="test-reports" location="../${projName}/test-reports"/>
 
-    <property name="lphy" location="../LPhy"/>
+<!--    <property name="lphy" location="../LPhy"/>-->
 
     <!--*******************************************************************-->
 
@@ -54,13 +54,13 @@
 
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="src" destdir="${build}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
 <!--                <fileset dir="${lib}" includes="*.jar"/>-->
-                <pathelement path="${lphy}/build"/>
-                <fileset dir="${lphy}/lib" includes="*.jar"/>
+                <pathelement path="../LPhy/build"/>
+                <fileset dir="../LPhy/lib" includes="*.jar"/>
             </classpath>
         </javac>
         <echo message="Successfully compiled ${projName}." />
