@@ -254,42 +254,74 @@ Despite this being a non-contentious point, only recently have
 systematic examinations of the literature begun to reveal that
 reproducibility is largely overlooked in pratice.
 Metaresearch efforts have uncovered the so-called ``reproducibility
-crisis'' \cite{baker16} in many disciplines (but see
+crisis'' \cite{baker16} in many scientific domains (but see
 \cite{fanneli18}), among which the dimension of the problem varies.
-In psychology, for example, a larger scale replication attempt was
-successful in only 39\% of surveyed studies \cite{openscience15},
-with numbers being less discouraging in other attempts (62\%;
-\cite{camerer18}), and in other domains (e.g., economics, 61.1\%,
+In psychology, for example, the frequency of successful replication
+attempts have been reported to be as low as 39\%
+\cite{openscience15}, with numbers being less discouraging
+and in other areas (e.g., economics, 61.1\%,
 \cite{camerer16}; cancer biology, X\%, [citation]).
+The picture is less clear in evolutionary biology, although initial
+probing efforts suggest reproducibility could also be an issue
+[citations].
 
-* In evolutionary biology we don't know very well yet, but some
-initial papers show it also happens.
+Within evolutionary biology, the discipline of phylogenetics has
+become highly technical over the last few decades.
+The publication of new, complex phylogenetic models happens on a
+regular basis, which is reflected in the myriad of computational tools
+implementing these models, often redundantly.
+Many of them fall within one of two families of phylogenetic tools:
+those whose main goal is to reconstruct phylogenetic trees 
+(e.g., \cite{mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
+and those aiming at comparing clades with respect to their number of
+species and the traits those species exhibit (e.g., ).
+The fact that these tools focus 
 
-* Phylogenetics in particular is now highly computational, and the
-intersection with computer science puts this area of evolutionary
-biology in a special position to address reproducibility.
+* Third family: both trees and PCMs, all Bayesian, use the convenience
+of hierarchical Bayesian models and MCMC; loads of pdfs and priors
+though, so it's a mess to set up the analysis, communicate the model,
+and make it reproducible.
 
-A new paradigm for scientific computing and data science has begun to
-emerged in the last decade.
-A recent example is the publication of the
-first ``computationally reproducible article'' using eLife's
-Reproducible Document Stack which blends features of a traditional
-manuscript with live code, data and interactive figures.
+* BEAST and BEAST 2 decided to use XML, which contains all you need,
+but it's illegible when models are complex. RevBayes made progress in
+creating a language that allows the flexible definition of models.
+Rev has a learning curve because it is an actual scripting language;
+the user is also exposed to non-model decisions, like operators, MCMC
+chain lengths. Rev also only works for RevBayes and is limited to the
+models therein.
+Finally, low interoperability.
 
-Although standard tools for statistical phylogenetics provide a degree
-of reproducibility and reusability through popular open-source
-software and computer-readable data file formats, there is still much
-to do.
-The ability to construct and accurately communicate
-probabilistic models in phylogenetics is frustratingly
-underdeveloped.
-There is low interoperability between different
-inference packages (e.g. BEAST1, BEAST2, MrBayes, RevBayes), and the
-file formats that these software use have low readability for
-researchers.
+* We introduce a language for model specification that is intended to
+sit outside BEAST, BEAST 2 and RevBayes, and which focuses exclusively
+on model specification.
+The ultimate goals are (i) facilitate model description, which enhances
+the user understanding of the analysis, (ii) inference runs, (iii)
+make reproducibility possible, (iv) assist with simulations under the
+model for different purposes, like validation or model comparison.
+LPhy is accompanied by LPhyBEAST and LPhyStudio.
+It is also accompanied by documentation and tutorials.
 
-In this paper we describe two related projects, LinguaPhylo (LPhy for
-short) and LPhyBEAST.
+% A new paradigm for scientific computing and data science has begun to
+% emerged in the last decade.
+% A recent example is the publication of the
+% first ``computationally reproducible article'' using eLife's
+% Reproducible Document Stack which blends features of a traditional
+% manuscript with live code, data and interactive figures.
+
+% Although standard tools for statistical phylogenetics provide a degree
+% of reproducibility and reusability through popular open-source
+% software and computer-readable data file formats, there is still much
+% to do.
+% The ability to construct and accurately communicate
+% probabilistic models in phylogenetics is frustratingly
+% underdeveloped.
+% There is low interoperability between different
+% inference packages (e.g. BEAST1, BEAST2, MrBayes, RevBayes), and the
+% file formats that these software use have low readability for
+% researchers.
+
+% In this paper we describe two related projects, LinguaPhylo (LPhy for
+% short) and LPhyBEAST.
 
 \section*{Design and Implementation}
 
