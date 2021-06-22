@@ -11,7 +11,7 @@
     <!-- source code dir separated from test   -->
     <property name="src" location="../${projName}/src" />
     <!-- source code dir of test   -->
-    <property name="lib" location="../${projName}/lib" />
+<!--    <property name="lib" location="../${projName}/lib" />-->
     <property name="test" location="../${projName}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
     <property name="build" location="../${projName}/build" />
@@ -58,7 +58,7 @@
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
+<!--                <fileset dir="${lib}" includes="*.jar"/>-->
                 <pathelement path="${lphy}/build"/>
                 <fileset dir="${lphy}/lib" includes="*.jar"/>
             </classpath>
@@ -83,7 +83,7 @@
                 <attribute name="Built-By" value="Walter Xie"/>
                 <attribute name="Built-On" value="${TODAY}"/>
             </manifest>
-            <zipgroupfileset dir="${lib}" includes="*.jar"/>
+<!--            <zipgroupfileset dir="${lib}" includes="*.jar"/>-->
         </jar>
     </target>
 
