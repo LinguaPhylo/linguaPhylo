@@ -1,6 +1,7 @@
 package lphy.app;
 
 import lphy.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphy.core.Script;
 import lphy.layeredgraph.Layering;
 import lphy.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphy.core.LPhyParser;

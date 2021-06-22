@@ -1,6 +1,5 @@
 package lphy.graphicalModel;
 
-import lphy.app.Symbols;
 import lphy.core.narrative.Narrative;
 import lphy.parser.functions.ExpressionNode;
 import net.steppschuh.markdowngenerator.link.Link;

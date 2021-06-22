@@ -1,7 +1,7 @@
 package lphy.parser;
 
 
-import lphy.app.Script;
+import lphy.core.Script;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.GraphicalModel;

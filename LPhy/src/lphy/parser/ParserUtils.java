@@ -30,7 +30,6 @@ import lphy.evolution.substitutionmodel.*;
 import lphy.evolution.tree.ExtantTree;
 import lphy.evolution.tree.PruneTree;
 import lphy.graphicalModel.*;
-import lphy.toroidalDiffusion.*;
 import lphy.utils.LoggerUtils;
 
 import java.lang.reflect.Constructor;
@@ -73,8 +72,8 @@ public class ParserUtils {
                 // others
                 ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
                 // phylogenetic distribution
-                PhyloBrownian.class, PhyloCircularBrownian.class, PhyloMultivariateBrownian.class,
-                PhyloCircularOU.class, PhyloOU.class, PhyloToroidalBrownian.class, PhyloWrappedBivariateDiffusion.class,
+                PhyloBrownian.class, PhyloMultivariateBrownian.class,
+                PhyloOU.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class};
 
         for (Class<?> genClass : genClasses) {
@@ -116,7 +115,7 @@ public class ParserUtils {
                 // Tree
                 LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
                 // Matrix
-                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class, DihedralAngleDiffusionMatrix.class,
+                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
                 // IO
                 Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
                 // Math

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**TODO should be moved to LPhyStudio?
  * @author Walter Xie
  */

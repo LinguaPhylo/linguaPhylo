@@ -1,6 +1,4 @@
-package lphy.app;
-
-import lphy.core.LPhyParser;
+package lphy.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -64,7 +64,7 @@ public class Gamma implements GenerativeDistribution1D<Double> {
         // in case the scale is type integer
         double sc = ((Number) scale.value()).doubleValue();
 
-        gammaDistribution = new GammaDistribution(sh, sc);
+        gammaDistribution = new GammaDistribution(Utils.getRandom(), sh, sc);
     }
 
     public String toString() {
