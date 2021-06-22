@@ -6,9 +6,8 @@
 
     <!--*******************************************************************-->
 
-    <property name="projName" value="LPhy"/>
     <!-- Ant build fails if the repo dir isn't named linguaPhylo/LPhy -->
-<!--    <property name="repoName" value="linguaPhylo/LPhy"/>-->
+    <property name="projName" value="LPhy"/>
     <!-- source code dir separated from test   -->
     <property name="src" location="../${projName}/src" />
     <!-- source code dir of test   -->
@@ -57,7 +56,7 @@
 
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="src" destdir="${build}"
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
                includeantruntime="false">
             <classpath>
                 <pathelement path="${classpath}"/>

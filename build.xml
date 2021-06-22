@@ -1,8 +1,4 @@
-<project default="build" basedir="." name="lphy" >
-
-    <!-- CONFIGURATION: Source, JUnit test code and jar library locations. -->
-    <!-- <property name="test" location="test"/>-->
-    <!-- <property name="lphy" location="lphy"/>-->
+<project default="compile-all" basedir="." name="linguaPhylo" >
 
     <!-- Java 11 -->
     <property name="sourceVersion" value="15"/>
@@ -12,195 +8,28 @@
 
     <!-- Ant build fails if the repo dir isn't named linguaPhylo -->
     <property name="repoName" value="linguaPhylo"/>
-    <!-- source code dir separated from test   -->
-    <property name="src" location="../${repoName}/src" />
-    <!-- source code dir of test   -->
-    <property name="lib" location="../${repoName}/lib" />
-    <property name="test" location="../${repoName}/test" />
-    <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="build" location="../${repoName}/build" />
-    <property name="dist" location="../${repoName}/dist" />
-    <property name="build-test" location="../${repoName}/build-test"/>
-    <property name="test-reports" location="../${repoName}/test-reports"/>
-
     <property name="projName" value="LPhy"/>
+    <property name="projName2" value="LPhyStudio"/>
 
     <!--*******************************************************************-->
 
-    <!-- Revert to pristine state. -->
-    <target name="clean">
-        <delete dir="${build}"/>
-        <delete dir="${dist}"/>
-        <delete dir="${build-test}"/>
-        <delete dir="${test-reports}"/>
+    <target name="compile-all">
+        <ant target="compile" antfile="build.xml" dir="${projName}"/>
+<!--        <ant target="compile" antfile="build.xml" dir="${projName2}"/>-->
     </target>
 
-    <!-- Prepare for compilation -->
-    <target name="init" depends="clean">
-        <echo message="Java version: ${java.version}"/>
-        <echo message="${ant.project.name}: ${ant.file}" />
-        <echo message="Working dir is ${repoName}." />
-
-        <mkdir dir="${build}"/>
-        <mkdir dir="${dist}"/>
+    <target name="compile-all-tests">
+        <ant target="compile-test" antfile="build.xml" dir="${projName}"/>
+        <!--        <ant target="compile-test" antfile="build.xml" dir="${projName2}"/>-->
     </target>
 
-    <!-- Compile -->
-    <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
-               includeantruntime="false">
-            <classpath>
-                <pathelement path="${classpath}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
-            </classpath>
-        </javac>
-        <echo message="Successfully compiled ${projName}." />
+    <target name="test-all">
+        <ant target="test" antfile="build.xml" dir="${projName}"/>
+        <!--        <ant target="test" antfile="build.xml" dir="${projName2}"/>-->
     </target>
-
-    <!-- Release -->
-    <property name="pack" value="${dist}/package"/>
-
-    <xmlproperty file="pom.xml" collapseAttributes="true"/>
-
-    <property name="projVersion" value="${project.version}"/>
-    <property name="fullName" value="${projName}.v${projVersion}"/>
-
-    <target name="dist" depends="compile">
-        <echo>name=${project.groupId}, version=${project.version}</echo>
-<!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
-        <echo>fullName=${fullName}</echo>
-
-        <mkdir dir="${pack}"/>
-        <!-- examples in ${packageName}.zip, not ${projName}.src.jar -->
-        <jar jarfile="${pack}/${fullName}.src.jar">
-            <fileset dir="${src}"/>
-        </jar>
-
-        <jar jarfile="${pack}/${fullName}.jar">
-            <fileset dir="${build}"/>
-            <manifest>
-                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
-                <attribute name="Version" value="${projVersion}"/>
-                <!--   ${user.name}    -->
-                <attribute name="Built-By" value="Walter Xie"/>
-                <attribute name="Built-On" value="${TODAY}"/>
-            </manifest>
-            <zipgroupfileset dir="${lib}" includes="*.jar"/>
-        </jar>
-    </target>
-
-    <target name="generate-docs" description="generate Lphy docs.">
-        <property name="doc" value="doc" />
-        <echo> Generate Lphy docs to ${user.dir}/${doc} ... </echo>
-        <java classname="lphy.doc.GenerateDocs" fork="true" dir="./${doc}" >
-            <classpath>
-                <pathelement path="${classpath}"/>
-                <pathelement path="${build}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
-            </classpath>
-        </java>
-    </target>
-
-    <!-- release -->
-    <target name="release" depends="compile,dist,generate-docs"
-            description="for the release process">
-        <property name="packageName" value="${fullName}"/>
-        <mkdir dir="${pack}"/>
-
-        <copy file="README.md" tofile="${pack}/README"/>
-        <!--
-            <copy file="COPYING" todir="${pack}" />
-            <copy todir="${pack}">
-              <fileset dir="${lib}" includes="LICENSE*" />
-            </copy>
-        -->
-        <property name="exaDir" value="examples"/>
-        <mkdir dir="${pack}/${exaDir}"/>
-        <copy todir="${pack}/${exaDir}">
-            <fileset dir="${exaDir}" includes="*.lphy">
-                <exclude name="**/*covid*"/>
-            </fileset>
-            <fileset dir="${exaDir}">
-                <include name="**/*.nex"/>
-                <include name="**/*.nexus"/>
-                <include name="**/*.fasta"/>
-                <exclude name="**/*covid*"/>
-            </fileset>
-        </copy>
-        <property name="tutDir" value="tutorials"/>
-        <mkdir dir="${pack}/${tutDir}"/>
-        <copy todir="${pack}/${tutDir}">
-            <fileset dir="${tutDir}" includes="*.lphy">
-                <!-- TODO in dev -->
-                <exclude name="canis.lphy"/>
-                <exclude name="bModelTest.lphy"/>
-            </fileset>
-            <fileset dir="${tutDir}">
-                <include name="**/*.nex"/>
-                <include name="**/*.nexus"/>
-                <include name="**/*.fasta"/>
-            </fileset>
-        </copy>
-
-        <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>
-
-        <!--    <delete dir="${pack}"/>-->
-
-        <echo/>
-        <echo/>
-        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>
-    </target>
-
-    <!-- Prepare for unit test compilation -->
-    <target name="init-test">
-        <echo message="Java version: ${java.version}"/>
-        <echo message="${ant.project.name}: ${ant.file}"/>
-        <echo message="Working dir is ${repoName}." />
-
-        <mkdir dir="${build-test}"/>
-        <mkdir dir="${test-reports}"/>
-    </target>
-
-
-    <!-- Require to compile main code before this -->
-    <target name="compile-test" depends="init-test" description="only compile unit tests">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}"
-               includeantruntime="false">
-            <classpath>
-                <pathelement path="${classpath}"/>
-                <pathelement path="${build}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
-            </classpath>
-        </javac>
-        <echo message="Successfully compiled ${projName} tests." />
-    </target>
-
-
-    <!-- another pipeline parallel with dist -->
-    <target name="test" depends="compile, compile-test"
-            description="run unit tests including compile main code">
-        <junit printsummary="yes" failureproperty="testFailed">
-            <classpath>
-                <pathelement path="${classpath}"/>
-                <pathelement path="${build}"/>
-                <pathelement path="${build-test}"/>
-                <fileset dir="${lib}" includes="*.jar"/>
-            </classpath>
-            <batchtest fork="yes" todir="${test-reports}">
-                <fileset dir="${test}">
-                    <include name="**/*Test.java"/>
-                </fileset>
-                <formatter type="plain"/>
-            </batchtest>
-        </junit>
-
-        <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
-    </target>
-
-    <target name="build" depends="compile"/>
 
     <!--  https://docs.github.com/en/actions  -->
-    <target name="github-actions" depends="build, compile-test, test">
+    <target name="github-actions" depends="compile-all, compile-all-tests, test-all">
         <fail if="testFailed" message="One or more ${projName} tests failed."/>
     </target>
 
