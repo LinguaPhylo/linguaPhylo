@@ -271,10 +271,11 @@ Within evolutionary biology, phylogenetics is one discipline that has
 become highly technical over the last few decades.
 The publication of new, complex phylogenetic models happens on a
 regular basis, which is reflected in the myriad of computational tools
-implementing these models.
-Many of them fall within one of two families of phylogenetic tools:
-those whose main goal is to reconstruct phylogenetic trees 
-(e.g., \cite{mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
+implementing them.
+A large number of these tools fall within one of two methodological
+families: methods whose main goal is to reconstruct phylogenetic trees 
+(e.g.,
+\cite{mrbayes,mcmctree,mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
 and those aiming at characterizing what drives among-clade differences
  in species number or in the traits those species exhibit (e.g.,
 \cite{diversitree,phytools,bamm,geiger,mvmorph,rpanda,bite,cafe}).
@@ -286,11 +287,21 @@ implemented models (which can lead to model misspecification;
 \cite{mendes17,mendes18}), and (iii) failing to capture uncertainty in  
 parameter estimates (e.g., analyses that treat the phylogeny as data).
 
-* Third family: both trees and PCMs, all Bayesian, use the convenience
-of hierarchical Bayesian models and MCMC, also profits from using all
-the data and accounting for uncertainty around all parameters;
-problem: loads of pdfs and priors though, so it's a mess to set up the
-analysis, communicate the model, and make it reproducible.
+As opposed to the two classes of methods mentioned above, a third
+family of phylogenetic tools (e.g., \cite{beast,beast2,revbayes}) can
+simultaneously attain both the goal of reconstructing phylogenetic
+tree(s) (topology and divergence times), as well as that of estimating
+macroevolutionary and trait evolution parameters.
+Common denominators among these programs include the wide variety of
+models they implement, but more distinctively, the large number of
+ways these models can be combined.
+This flexibility in usage arises organically from Bayesian inference --
+the statistical approach all these tools share -- specifically from the
+relative ease with which hierarchical Bayesian models can be
+built and their parameters sampled with Markov chain Monte Carlo
+(MCMC).
+* [positive attributes, using all data, uncertainty around estimates]
+then difficulty in setting up and reproducing.
 
 * BEAST and BEAST 2 decided to use XML, which contains all you need,
 but it's illegible when models are complex. RevBayes made progress in
