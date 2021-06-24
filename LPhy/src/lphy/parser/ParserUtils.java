@@ -1,42 +1,15 @@
 package lphy.parser;
 
-import lphy.bmodeltest.BModelSetFunction;
-import lphy.bmodeltest.NucleotideModel;
-import lphy.bmodeltest.bSiteModelFunction;
-import lphy.bmodeltest.bSiteRates;
-import lphy.core.distributions.Exp;
-import lphy.core.distributions.*;
-import lphy.core.functions.*;
-import lphy.core.functions.datatype.BinaryDatatypeFunction;
-import lphy.core.functions.datatype.NucleotidesFunction;
-import lphy.core.functions.datatype.PhasedGenotypeFunction;
-import lphy.core.functions.datatype.StandardDatatypeFunction;
-import lphy.evolution.alignment.ErrorModel;
-import lphy.evolution.alignment.GT16ErrorModel;
-import lphy.evolution.birthdeath.*;
-import lphy.evolution.branchrates.LocalBranchRates;
-import lphy.evolution.coalescent.MultispeciesCoalescent;
-import lphy.evolution.coalescent.SerialCoalescent;
-import lphy.evolution.coalescent.SkylineCoalescent;
-import lphy.evolution.coalescent.StructuredCoalescent;
-import lphy.evolution.continuous.PhyloBrownian;
-import lphy.evolution.continuous.PhyloMultivariateBrownian;
-import lphy.evolution.continuous.PhyloOU;
-import lphy.evolution.functions.ExtantTaxa;
-import lphy.evolution.functions.UnphaseGenotypeAlignment;
-import lphy.evolution.likelihood.PhyloCTMC;
-import lphy.evolution.likelihood.PhyloCTMCSiteModel;
-import lphy.evolution.substitutionmodel.*;
-import lphy.evolution.tree.ExtantTree;
-import lphy.evolution.tree.PruneTree;
+import lphy.LPhyExtensionFactory;
+import lphy.core.distributions.IID;
+import lphy.core.distributions.VectorizedDistribution;
+import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
 import lphy.utils.LoggerUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ParserUtils {
 
@@ -45,49 +18,49 @@ public class ParserUtils {
     public static Set<String> bivarOperators;
     static Set<String> univarfunctions;
 
-    public static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+    public static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
     static {
-        genDistDictionary = new TreeMap<>();
-        functionDictionary = new TreeMap<>();
+//        genDistDictionary = new TreeMap<>();
+//        functionDictionary = new TreeMap<>();
 
 //        Class<?>[] lightWeightGenClasses = {
 //                lphy.core.lightweight.distributions.Beta.class
 //        };
 
-        Class<?>[] genClasses = {
-                // probability distribution
-                Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
-                Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
-                DiscreteUniform.class, BernoulliMulti.class,
-                NormalGamma.class,
-                // tree distribution
-                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
-                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
-                RhoSampleTree.class, FossilBirthDeathTree.class,
-                SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
-                SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
-                // skyline
-                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
-                // others
-                ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
-                // phylogenetic distribution
-                PhyloBrownian.class, PhyloMultivariateBrownian.class,
-                PhyloOU.class,
-                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class};
+//        Class<?>[] genClasses = {
+//                // probability distribution
+//                Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
+//                Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
+//                DiscreteUniform.class, BernoulliMulti.class,
+//                NormalGamma.class,
+//                // tree distribution
+//                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
+//                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
+//                RhoSampleTree.class, FossilBirthDeathTree.class,
+//                SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
+//                SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
+//                // skyline
+//                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
+//                // others
+//                ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
+//                // phylogenetic distribution
+//                PhyloBrownian.class, PhyloMultivariateBrownian.class,
+//                PhyloOU.class,
+//                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class};
 
-        for (Class<?> genClass : genClasses) {
-            String name = Generator.getGeneratorName(genClass);
-
-            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            genDistSet.add(genClass);
-
-            types.add(GenerativeDistribution.getReturnType((Class<GenerativeDistribution>)genClass));
-
-            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
-
-            Collections.addAll(types, Generator.getReturnType(genClass));
-        }
+//        for (Class<?> genClass : genClasses) {
+//            String name = Generator.getGeneratorName(genClass);
+//
+//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            genDistSet.add(genClass);
+//
+//            types.add(GenerativeDistribution.getReturnType((Class<GenerativeDistribution>)genClass));
+//
+//            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
+//
+//            Collections.addAll(types, Generator.getReturnType(genClass));
+//        }
 
 //        for (Class<?> genClass : lightWeightGenClasses) {
 //            String name = Generator.getGeneratorName(genClass);
@@ -98,51 +71,58 @@ public class ParserUtils {
 //            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 //        }
 
-        Class<?>[] functionClasses = {ARange.class, ArgI.class,
-                // Substitution models
-                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, GT16.class,
-                GeneralTimeReversible.class, LewisMK.class,
-                NucleotideModel.class,
-                BModelSetFunction.class,
-                bSiteModelFunction.class,
+//        Class<?>[] functionClasses = {ARange.class, ArgI.class,
+//                // Substitution models
+//                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, GT16.class,
+//                GeneralTimeReversible.class, LewisMK.class,
+//                NucleotideModel.class,
+//                BModelSetFunction.class,
+//                bSiteModelFunction.class,
+//
+//                // Data types
+//                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
+//                PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
+//
+//                // Taxa
+//                CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
+//                // Tree
+//                LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
+//                // Matrix
+//                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
+//                // IO
+//                Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
+//                // Math
+//                lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
+//                // Utils
+//                ParseInt.class, Concat.class,
+//                Length.class, Unique.class, Range.class, Rep.class,
+//                Select.class, Split.class, SliceDoubleArray.class
+//        };
+//
+//        for (Class<?> functionClass : functionClasses) {
+//
+//            String name = Generator.getGeneratorName(functionClass);
+//
+//            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            funcSet.add(functionClass);
+//
+//            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) functionClass, 0));
+//
+//            Collections.addAll(types, Generator.getReturnType(functionClass));
+//        }
+//        System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
+//        System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
+//
+//        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
+//
+//        System.out.println(typeNames);
 
-                // Data types
-                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-                PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
 
-                // Taxa
-                CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
-                // Tree
-                LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
-                // Matrix
-                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
-                // IO
-                Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
-                // Math
-                lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
-                // Utils
-                ParseInt.class, Concat.class,
-                Length.class, Unique.class, Range.class, Rep.class,
-                Select.class, Split.class, SliceDoubleArray.class
-        };
+        LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
+        genDistDictionary = factory.genDistDictionary;
+        functionDictionary = factory.functionDictionary;
 
-        for (Class<?> functionClass : functionClasses) {
-
-            String name = Generator.getGeneratorName(functionClass);
-
-            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            funcSet.add(functionClass);
-
-            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) functionClass, 0));
-
-            Collections.addAll(types, Generator.getReturnType(functionClass));
-        }
-        System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
-        System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
-
-        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
-
-        System.out.println(typeNames);
+        types = factory.types;
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {

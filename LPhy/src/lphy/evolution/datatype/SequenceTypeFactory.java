@@ -36,7 +36,7 @@ public class SequenceTypeFactory {
         dataTypeMap.put(sanitise(Continuous.NAME), Continuous.getInstance());
     }
 
-    private static String sanitise(String name) {
+    public static String sanitise(String name) {
         return name.trim().toLowerCase();
     }
 
