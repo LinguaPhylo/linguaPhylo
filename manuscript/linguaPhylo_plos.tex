@@ -324,36 +324,54 @@ It is for this reason that multiple-day workshops are held around the
 world to inform the user base beyond what can be found in these programs'
 documentation \cite{taming,revworkshop}.
 Furthermore, after analyses are carried out successfully there is the
-additional challenge of describing the model precisely, as well as
+additional challenge of reporting the model precisely, as well as
 making it possible for other researchers to reproduce the results.
 
 In order to circumvent some of these problems, BEAST \cite{beast} and
-BEAST 2 \cite{beast2} developers adopted the XML (eXtensible Markup
-Language) for model specification and analysis setup.
+BEAST 2 \cite{beast2} developers adopted the XML format (eXtensible
+Markup Language) for specifying models and setting up analyses.
 Because it is extensible, XML allows developers to create new
-tags when implementing new models.
+descriptive tags for the specification of new models.
 XML documents are also human readable, and their hierarchical
 structure can be convenient when specifying the components of a model
 and their relationships.
 On the other hand, XML files become increasingly impenetrable the more
-complex the model, and its syntax is not domain specific.
-For example, $x \sim \text{N}(\mu, \sigma)$ is not a valid XML
-statement.
+complex the model, and its syntax is not domain specific (e.g., $x
+\sim \text{N}(\mu, \sigma)$ is not a valid XML statement).
 Unless created automatically with a dedicated tool \cite{beauti},
 which is not always possible, it is also very easy to write 
-an invalid XML file.
+invalid XML files.
+Moreover, XML instructions do not naturally lead to clear model
+descriptions, nor do they guarantee the model is well understood by
+the user;
+on the contrary, both tasks are likely obscured.
+Without an XML file, reproducing complex BEAST and BEAST 2 analyses
+from what is normally reported in the literature will prove a
+gruelling exercise.
 Finally, BEAST and BEAST 2 XML files are not interchangeable. 
 
-The Rev language, introduced by RevBayes \cite{revbayes}, was a
-welcome addition to the world of computational phylogenetics.
-It circumvents some of the issues the XML solution suffers from.
-* RevBayes made progress in
-creating a language that allows the flexible definition of models.
-Rev has a learning curve because it is an actual scripting language;
-the user is also exposed to non-model decisions, like operators, MCMC
-chain lengths. Rev also only works for RevBayes and is limited to the
-models therein.
-Finally, low interoperability.
+The Rev programming language, introduced with the RevBayes platform
+\cite{revbayes}, was a welcome addition to the world of computational
+phylogenetics. 
+Unlike the XML strategy, Rev's syntax incorporates conventional
+notation from probability theory, exposing model
+components and its hierarchical structure through explicit statements.
+This simplifies the tasks of reporting the model, both verbally and
+graphically, and of reproducing RevBayes analyses even in the absence
+of Rev scripts.
+By making model specification more intuitive while retaining
+flexibility, the Rev language allows users to sharpen their focus on
+the model itself.
+On the other hand, Rev still requires users to contend with
+details extraneous to the model (e.g., MCMC parameters and operator
+schedule).
+At the moment of writing, the RevBayes suite also still lacks a mature
+graphical user interface (GUI) for displaying the graphical structure
+of a model, although ongoing effort in this front might soon change
+these circumstances.
+Lastly, Rev only supports models implemented specifically for
+RevBayes, which detracts from a more general application of this
+programming language.
 
 * We introduce a language for model specification that is intended to
 sit outside BEAST, BEAST 2 and RevBayes, and which focuses exclusively
