@@ -8,7 +8,6 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry Pattern to create instances of {@link SequenceType},
@@ -17,33 +16,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SequenceTypeFactory {
 
-    public static final Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
+    private Map<String, ? extends SequenceType> dataTypeMap;
 
-    // TODO can we do something here to automatically find all the SequenceTypes on the class path and register them
-    // with there standard name?
-    static {
-        dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put(sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
-
-        dataTypeMap.put(sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
-        dataTypeMap.put("protein", SequenceType.AMINO_ACID);
-
-        dataTypeMap.put(sanitise(PhasedGenotype.NAME), PhasedGenotype.INSTANCE);
-        dataTypeMap.put(sanitise(UnphasedGenotype.NAME), PhasedGenotype.INSTANCE);
-
-        dataTypeMap.put(sanitise(Binary.NAME), Binary.getInstance());
-        dataTypeMap.put(sanitise(Continuous.NAME), Continuous.getInstance());
-    }
-
-    public static String sanitise(String name) {
-        return name.trim().toLowerCase();
-    }
-
+    public static SequenceTypeFactory INSTANCE = new SequenceTypeFactory();
     // register data types here
     private SequenceTypeFactory() { }
 
-    public static Set<SequenceType> getAllDataTypes() {
+    public void setDataTypeMap(Map<String, ? extends SequenceType> dataTypeMap) {
+        this.dataTypeMap = dataTypeMap;
+    }
+
+    public Set<SequenceType> getAllDataTypes() {
         return new HashSet<>(dataTypeMap.values());
     }
 
@@ -52,15 +35,23 @@ public class SequenceTypeFactory {
      * @return   a registered data type, but not Standard data type.
      * @see Standard
      */
-    public static SequenceType getDataType(String dataTypeName) {
+    public SequenceType getDataType(String dataTypeName) {
         return dataTypeMap.get(sanitise(dataTypeName));
+    }
+
+    /**
+     * @param name
+     * @return  trimmed lower case
+     */
+    public static String sanitise(String name) {
+        return name.trim().toLowerCase();
     }
 
     /**
      * @param sequenceType
      * @return true if it is {@link Standard} data type. Ignore case
      */
-    public static boolean isStandardDataType(SequenceType sequenceType) {
+    public boolean isStandardDataType(SequenceType sequenceType) {
         return sequenceType != null && sequenceType.getName().equalsIgnoreCase(Standard.NAME);
     }
 
@@ -72,7 +63,7 @@ public class SequenceTypeFactory {
      * @param sequenceType
      * @return  a {@link Color} array to visualise sequences, including uncertain states
      */
-    public static Color[] getCanonicalStateColours(SequenceType sequenceType) {
+    public Color[] getCanonicalStateColours(SequenceType sequenceType) {
         // extra 2 colours for UNKNOWN_STATE, GAP_STATE
         if ( sequenceType.getCanonicalStateCount() <=  2 && sequenceType.getStateCount() <= 4 )
             return ColourPalette.getTwoPlusOne();

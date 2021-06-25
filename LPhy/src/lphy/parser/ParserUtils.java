@@ -1,9 +1,11 @@
 package lphy.parser;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.LPhyExtensionFactory;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
+import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.graphicalModel.*;
 import lphy.utils.LoggerUtils;
 
@@ -20,103 +22,10 @@ public class ParserUtils {
 
     public static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
+    // data types are held in SequenceTypeFactory singleton
+
     static {
-//        genDistDictionary = new TreeMap<>();
-//        functionDictionary = new TreeMap<>();
-
-//        Class<?>[] lightWeightGenClasses = {
-//                lphy.core.lightweight.distributions.Beta.class
-//        };
-
-//        Class<?>[] genClasses = {
-//                // probability distribution
-//                Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
-//                Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
-//                DiscreteUniform.class, BernoulliMulti.class,
-//                NormalGamma.class,
-//                // tree distribution
-//                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
-//                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
-//                RhoSampleTree.class, FossilBirthDeathTree.class,
-//                SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
-//                SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
-//                // skyline
-//                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
-//                // others
-//                ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
-//                // phylogenetic distribution
-//                PhyloBrownian.class, PhyloMultivariateBrownian.class,
-//                PhyloOU.class,
-//                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class};
-
-//        for (Class<?> genClass : genClasses) {
-//            String name = Generator.getGeneratorName(genClass);
-//
-//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-//            genDistSet.add(genClass);
-//
-//            types.add(GenerativeDistribution.getReturnType((Class<GenerativeDistribution>)genClass));
-//
-//            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) genClass, 0));
-//
-//            Collections.addAll(types, Generator.getReturnType(genClass));
-//        }
-
-//        for (Class<?> genClass : lightWeightGenClasses) {
-//            String name = Generator.getGeneratorName(genClass);
-//
-//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-//            genDistSet.add(genClass);
-//
-//            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
-//        }
-
-//        Class<?>[] functionClasses = {ARange.class, ArgI.class,
-//                // Substitution models
-//                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, GT16.class,
-//                GeneralTimeReversible.class, LewisMK.class,
-//                NucleotideModel.class,
-//                BModelSetFunction.class,
-//                bSiteModelFunction.class,
-//
-//                // Data types
-//                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-//                PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
-//
-//                // Taxa
-//                CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
-//                // Tree
-//                LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
-//                // Matrix
-//                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
-//                // IO
-//                Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
-//                // Math
-//                lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
-//                // Utils
-//                ParseInt.class, Concat.class,
-//                Length.class, Unique.class, Range.class, Rep.class,
-//                Select.class, Split.class, SliceDoubleArray.class
-//        };
-//
-//        for (Class<?> functionClass : functionClasses) {
-//
-//            String name = Generator.getGeneratorName(functionClass);
-//
-//            Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-//            funcSet.add(functionClass);
-//
-//            Collections.addAll(types, Generator.getParameterTypes((Class<Generator>) functionClass, 0));
-//
-//            Collections.addAll(types, Generator.getReturnType(functionClass));
-//        }
-//        System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
-//        System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
-//
-//        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
-//
-//        System.out.println(typeNames);
-
+        // registration process is moved to LPhyExtensionFactory
 
         LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
         genDistDictionary = factory.genDistDictionary;
@@ -132,6 +41,10 @@ public class ParserUtils {
         for (String s : new String[]{"abs", "acos", "acosh", "asin", "asinh", "atan", "atanh", "cLogLog", "cbrt", "ceil", "cos", "cosh", "exp", "expm1", "floor", "log", "log10", "log1p", "logFact", "logGamma", "logit", "phi", "probit", "round", "signum", "sin", "sinh", "sqrt", "step", "tan", "tanh"}) {
             univarfunctions.add(s);
         }
+
+        // register data types
+        Map<String, SequenceType> dataTypeMap = factory.dataTypeMap;
+        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
 
     public static List<Generator> getMatchingFunctions(String name, Value[] values) {

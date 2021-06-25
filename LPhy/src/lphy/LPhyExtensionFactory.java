@@ -1,11 +1,13 @@
 package lphy;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.graphicalModel.Func;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.spi.LPhyExtension;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -33,10 +35,13 @@ public class LPhyExtensionFactory {
 
     public TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
 
+    public Map<String, SequenceType> dataTypeMap;
+
     private void registerTypes(ServiceLoader<LPhyExtension> loader) {
 
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
+        dataTypeMap = new ConcurrentHashMap<>();
 
         try {
             Iterator<LPhyExtension> extensions = loader.iterator();
@@ -48,6 +53,7 @@ public class LPhyExtensionFactory {
                  */
                 LPhyExtension lPhyExt = extensions.next();
 
+                // GenerativeDistribution
                 List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
 
                 for (Class<? extends GenerativeDistribution> genClass : genDist) {
@@ -62,7 +68,16 @@ public class LPhyExtensionFactory {
 
                     Collections.addAll(types, Generator.getReturnType(genClass));
                 }
+//        for (Class<?> genClass : lightWeightGenClasses) {
+//            String name = Generator.getGeneratorName(genClass);
+//
+//            Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            genDistSet.add(genClass);
+//
+//            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
+//        }
 
+                // Func
                 List<Class<? extends Func>> funcs = lPhyExt.getFunctions();
 
                 for (Class<? extends Func> functionClass : funcs) {
@@ -76,6 +91,12 @@ public class LPhyExtensionFactory {
                     Collections.addAll(types, Generator.getReturnType(functionClass));
                 }
 
+                // data types
+                Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
+                if (newDataTypes != null)
+                    // TODO validate same data type?
+                    newDataTypes.forEach(dataTypeMap::putIfAbsent);
+
             }
 
             System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
@@ -85,6 +106,7 @@ public class LPhyExtensionFactory {
 
             System.out.println(typeNames);
 
+            System.out.println(Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
 
         } catch (ServiceConfigurationError serviceError) {
             System.err.println(serviceError);

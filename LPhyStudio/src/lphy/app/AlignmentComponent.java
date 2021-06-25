@@ -43,7 +43,7 @@ public class AlignmentComponent extends JComponent {
         this.alignmentValue = av;
         this.alignment = av.value();
         SequenceType sequenceType = alignment.getSequenceType();
-        this.colors = SequenceTypeFactory.getCanonicalStateColours(sequenceType);
+        this.colors = SequenceTypeFactory.INSTANCE.getCanonicalStateColours(sequenceType);
 
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
