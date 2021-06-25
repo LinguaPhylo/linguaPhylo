@@ -26,11 +26,12 @@
     <!--*******************************************************************-->
 
     <xmlproperty file="../pom.xml" collapseAttributes="true"/>
-
     <property name="projVersion" value="${project.version}"/>
     <property name="fullName" value="${projName}.v${projVersion}"/>
+    <!--   ${user.name}    -->
+    <property name="builtBy" value="Walter Xie"/>
 
-<!--    <path id="CLASSPATH">-->
+    <!--    <path id="CLASSPATH">-->
 <!--        <pathelement path="${build}"/>-->
 <!--        <pathelement location="${dist}/${fullName}.jar"/>-->
 <!--        <pathelement location="."/>-->
@@ -73,15 +74,17 @@
         <echo>fullName=${fullName}</echo>
 
         <mkdir dir="${dist}"/>
+        <tstamp/>
 
         <jar jarfile="${dist}/${fullName}.jar">
             <fileset dir="${build}"/>
             <manifest>
 <!--                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>-->
                 <attribute name="Version" value="${projVersion}"/>
-                <!--   ${user.name}    -->
-                <attribute name="Built-By" value="Walter Xie"/>
-                <attribute name="Built-On" value="${TODAY}"/>
+                <attribute name="Class-Path" value="${fullName}.jar"/>
+                <attribute name="Created-By" value="${project.groupId} team"/>
+                <attribute name="Built-By" value="${builtBy}"/>
+                <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
             <zipgroupfileset dir="${lib}" includes="*.jar"/>
         </jar>
@@ -98,59 +101,6 @@
         </java>
     </target>
 
-    <!-- release -->
-<!--    <property name="pack" value="${dist}/package"/>-->
-
-<!--    <target name="release" depends="compile,dist,generate-docs"-->
-<!--            description="for the release process">-->
-<!--        <property name="packageName" value="${fullName}"/>-->
-<!--        <mkdir dir="${pack}"/>-->
-
-<!--        <copy file="${dist}/${fullName}.jar" tofile="${pack}/${fullName}.jar"/>-->
-
-<!--        <copy file="README.md" tofile="${pack}/README"/>-->
-<!--        &lt;!&ndash;-->
-<!--            <copy file="COPYING" todir="${pack}" />-->
-<!--            <copy todir="${pack}">-->
-<!--              <fileset dir="${lib}" includes="LICENSE*" />-->
-<!--            </copy>-->
-<!--        &ndash;&gt;-->
-<!--        <property name="exaDir" value="examples"/>-->
-<!--        <mkdir dir="${pack}/${exaDir}"/>-->
-<!--        <copy todir="${pack}/${exaDir}">-->
-<!--            <fileset dir="${exaDir}" includes="*.lphy">-->
-<!--                <exclude name="**/*covid*"/>-->
-<!--            </fileset>-->
-<!--            <fileset dir="${exaDir}">-->
-<!--                <include name="**/*.nex"/>-->
-<!--                <include name="**/*.nexus"/>-->
-<!--                <include name="**/*.fasta"/>-->
-<!--                <exclude name="**/*covid*"/>-->
-<!--            </fileset>-->
-<!--        </copy>-->
-<!--        <property name="tutDir" value="tutorials"/>-->
-<!--        <mkdir dir="${pack}/${tutDir}"/>-->
-<!--        <copy todir="${pack}/${tutDir}">-->
-<!--            <fileset dir="${tutDir}" includes="*.lphy">-->
-<!--                &lt;!&ndash; TODO in dev &ndash;&gt;-->
-<!--                <exclude name="canis.lphy"/>-->
-<!--                <exclude name="bModelTest.lphy"/>-->
-<!--            </fileset>-->
-<!--            <fileset dir="${tutDir}">-->
-<!--                <include name="**/*.nex"/>-->
-<!--                <include name="**/*.nexus"/>-->
-<!--                <include name="**/*.fasta"/>-->
-<!--            </fileset>-->
-<!--        </copy>-->
-
-<!--        <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>-->
-
-<!--&lt;!&ndash;        <delete dir="${pack}"/>&ndash;&gt;-->
-
-<!--        <echo/>-->
-<!--        <echo/>-->
-<!--        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>-->
-<!--    </target>-->
 
     <!-- Prepare for unit test compilation -->
     <target name="init-test">
