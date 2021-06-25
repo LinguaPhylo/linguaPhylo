@@ -12,6 +12,7 @@
     <property name="src" location="../${projName}/src" />
     <!-- source code dir of test   -->
     <property name="lib" location="../${projName}/lib" />
+    <property name="resources" location="../${projName}/resources" />
     <property name="test" location="../${projName}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
     <property name="build" location="../${projName}/build" />
@@ -64,6 +65,9 @@
                 <fileset dir="${lib}" includes="*.jar"/>
             </classpath>
         </javac>
+        <mkdir dir="${build}/META-INF"/>
+        <mkdir dir="${build}/META-INF/services"/>
+        <copy file="${resources}/META-INF/services/lphy.spi.LPhyExtension" todir="${build}/META-INF/services"/>
         <echo message="Successfully compiled ${projName}." />
     </target>
 
