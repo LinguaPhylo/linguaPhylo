@@ -356,9 +356,6 @@ phylogenetics.
 Unlike the XML strategy, Rev's syntax incorporates conventional
 notation from probability theory, exposing model
 components and its hierarchical structure through explicit statements.
-This simplifies the tasks of reporting the model, both verbally and
-graphically, and of reproducing RevBayes analyses even in the absence
-of Rev scripts.
 By making model specification more intuitive while retaining
 flexibility, the Rev language allows users to sharpen their focus on
 the model itself.
@@ -373,15 +370,38 @@ Lastly, Rev only supports models implemented specifically for
 RevBayes, which detracts from a more general application of this
 programming language.
 
-* We introduce a language for model specification that is intended to
-sit outside BEAST, BEAST 2 and RevBayes, and which focuses exclusively
-on model specification.
-The ultimate goals are (i) facilitate model description, which enhances
-the user understanding of the analysis, (ii) inference runs, (iii)
-make reproducibility possible, (iv) assist with simulations under the
-model for different purposes, like validation or model comparison.
-LPhy is accompanied by LPhyBEAST and LPhyStudio.
-It is also accompanied by documentation and tutorials.
+Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
+language for model specification and simulation.
+A main feature of LinguaPhylo is that it delegates everything unrelated to
+the model to other applications, allowing users to focus entirely and
+exclusively on defining models.
+LPhy makes it easier to report and simulate under complex models, and
+to both set up and reproduce inference analyses.
+We further introduce two additional independent applications: LPhyStudio
+and LPhyBEAST.
+LPhyStudio provides a GUI with a command line for an LPhy
+interpreter, as well as panels for displaying graphical models and
+simulated random variables.
+
+
+% is not exclusive 
+% exclusively with any phylogenetic platform; instead, it is  Java, and is meant to be used alongside applications that convert LPhy
+% instructions into program-specific instructions (e.g., Rev scripts or
+% XML files).
+% The goal of LinguaPhylo is to make model specification as succint and
+% explicit as possible, ultimately leading to clear and accurate as well as making it possible to clearly and
+% accurately report the model used in an analysis.
+
+% focuses on the specification of probabilistic graphical models, but unlike Rev this language is
+% software-agnostic 
+% sit outside BEAST, BEAST 2 and RevBayes, and which focuses exclusively
+% on model specification.
+% The ultimate goals are (i) facilitate model description, which enhances
+% the user understanding of the analysis, (ii) inference runs, (iii)
+% make reproducibility possible, (iv) assist with simulations under the
+% model for different purposes, like validation or model comparison.
+% LPhy is accompanied by LPhyBEAST and LPhyStudio.
+% It is also accompanied by documentation and tutorials.
 
 % A new paradigm for scientific computing and data science has begun to
 % emerged in the last decade.
