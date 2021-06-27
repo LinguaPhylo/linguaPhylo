@@ -99,14 +99,14 @@ public class LPhyExtensionFactory {
 
             }
 
-            System.out.println(Arrays.toString(genDistDictionary.keySet().toArray()));
-            System.out.println(Arrays.toString(functionDictionary.keySet().toArray()));
+            System.out.println("\nGenerativeDistribution : " + Arrays.toString(genDistDictionary.keySet().toArray()));
+            System.out.println("Functions : " + Arrays.toString(functionDictionary.keySet().toArray()));
 
             TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
 
-            System.out.println(typeNames);
+            System.out.println("LPhy data types : " + typeNames);
 
-            System.out.println(Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
+            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
 
         } catch (ServiceConfigurationError serviceError) {
             System.err.println(serviceError);
