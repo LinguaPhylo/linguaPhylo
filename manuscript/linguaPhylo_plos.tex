@@ -282,7 +282,7 @@ and those aiming at characterizing what drives among-clade differences
  in species number or in the traits those species exhibit (e.g.,
 \cite{diversitree,phytools,bamm,geiger,mvmorph,rpanda,bite,cafe}).
 The narrower focus of these tools makes specifying and reproducing
-analyses relatively easier, but this often comes at a cost of (i)
+analyses relatively easy, but this often comes at a cost of (i)
 information loss, as some types of data are thrown away because their
 generative processes are not modelled, (ii) lack of realism or
 generality in the implemented models, which can lead to model
@@ -343,10 +343,9 @@ which is not always possible, it is also very easy to write
 invalid XML files.
 Moreover, XML instructions do not naturally lead to clear model
 descriptions, nor do they guarantee the model is well understood by
-the user;
-on the contrary, both tasks are likely obscured.
+the user.
 Without an XML file, reproducing complex BEAST and BEAST 2 analyses
-from what is normally reported in the literature will prove a
+from what is normally reported in the literature is also often a
 gruelling exercise.
 Finally, BEAST and BEAST 2 XML files are not interchangeable. 
 
@@ -364,25 +363,22 @@ details extraneous to the model (e.g., MCMC parameters and operator
 schedule).
 At the moment of writing, the RevBayes suite also still lacks a mature
 graphical user interface (GUI) for displaying the graphical structure
-of a model, although ongoing effort in this front might soon change
-these circumstances.
+of a model.
 Lastly, Rev only supports models implemented specifically for
 RevBayes, which detracts from a more general application of this
 programming language.
 
 Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
-language for model specification and simulation.
-A main feature of LinguaPhylo is that it delegates everything unrelated to
-the model to other applications, allowing users to focus entirely and
-exclusively on defining models.
-LPhy makes it easier to report and simulate under complex models, and
-to both set up and reproduce inference analyses.
-We further introduce two additional independent applications: LPhyStudio
-and LPhyBEAST.
-LPhyStudio provides a GUI with a command line for an LPhy
-interpreter, as well as panels for displaying graphical models and
-simulated random variables.
-
+language focused exclusively on model specification.
+We also introduce an accompanying GUI, LPhyStudio, which provides an
+LPhy command line, as well as panels for displaying graphical models
+and simulated random variables.
+Lastly, we develop LPhyBEAST, a program that converts LPhy scripts
+specifying models into BEAST 2 XML files for MCMC analyses.
+By delegating everything unrelated to the model to other applications
+(e.g., LPhyBEAST), LinguaPhylo aims to make it easier to report,
+validate and simulate under complex models, and to both set up and
+reproduce inference analyses.
 
 % is not exclusive 
 % exclusively with any phylogenetic platform; instead, it is  Java, and is meant to be used alongside applications that convert LPhy
