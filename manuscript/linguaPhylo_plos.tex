@@ -274,29 +274,28 @@ become highly technical over the last few decades.
 The publication of new, complex phylogenetic models happens on a
 daily basis, which is reflected in the myriad of computational tools
 implementing them.
-A large number of these tools fall within one of two methodological
-families: methods whose main goal is to reconstruct phylogenetic trees 
-(e.g.,
-\cite{mrbayes,mcmctree,mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
-and those aiming at characterizing what drives among-clade differences
- in species number or in the traits those species exhibit (e.g.,
-\cite{diversitree,phytools,bamm,geiger,mvmorph,rpanda,bite,cafe}).
-The narrower focus of these tools makes specifying and reproducing
-analyses relatively easy, but this often comes at a cost of (i)
-information loss, as some types of data are thrown away because their
-generative processes are not modelled, (ii) lack of realism or
-generality in the implemented models, which can lead to model
-misspecification \cite{mendes17,mendes18}, and (iii) failing to
-capture uncertainty in parameter estimates (e.g., analyses that treat
-the phylogeny as data).
+%A large number of these tools fall within one of two methodological
+%families: methods whose main goal is to reconstruct phylogenetic trees 
+%(e.g.,
+%\cite{mrbayes,mcmctree,mpest,phyml,svdquartets,raxml,iqtree,astral3,svdquest}),
+%and those aiming at characterizing what drives among-clade differences
+% in species number or in the traits those species exhibit (e.g.,
+%\cite{diversitree,phytools,bamm,geiger,mvmorph,rpanda,bite,cafe}).
+%The narrower focus of these tools makes specifying and reproducing
+%analyses relatively easy, but this often comes at a cost of (i)
+%information loss, as some types of data are thrown away because their
+%generative processes are not modelled, (ii) lack of realism or
+%generality in the implemented models, which can lead to model
+%misspecification \cite{mendes17,mendes18}, and (iii) failing to
+%capture uncertainty in parameter estimates (e.g., analyses that treat
+%the phylogeny as data).
 
-As opposed to the two classes of methods mentioned above, a third
-family of phylogenetic tools (e.g., BEAST, BEAST 2 and RevBayes;
-\cite{beast,beast2,revbayes}) can simultaneously attain both the goal
+%As opposed to the two classes of methods mentioned above, a third
+The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and RevBayes;
+\cite{beast,beast2,revbayes,mrbayes}) can simultaneously attain both the goal
 of reconstructing phylogenetic tree(s) (topology and divergence
-times), as well as that of estimating macroevolutionary and trait
-evolution parameters.
-Common denominators among these programs include the wide variety of
+times), as well as that of estimating related micro- and macro- evolutionary parameters.
+Beyond joint estimation of the phylogenetic tree and related parameters, common denominators among these programs include the wide variety of
 models they implement, but more distinctively, the large number of
 ways these models can be combined.
 The latter arises organically from Bayesian inference -- the
