@@ -19,20 +19,17 @@
     <property name="build-test" location="../${projName}/build-test"/>
     <property name="test-reports" location="../${projName}/test-reports"/>
 
-<!--    <property name="lphy" location="../LPhy"/>-->
-
     <!--*******************************************************************-->
 
-    <xmlproperty file="../pom.xml" collapseAttributes="true"/>
+    <property name="lphy" location="../LPhy"/>
 
-    <property name="projVersion" value="${project.version}"/>
-    <property name="fullName" value="${projName}.v${projVersion}"/>
+    <import file="${lphy}/build.xml"/>
+<!--    <echo>${lphyJar}</echo>-->
+<!--    <echo>${projVersion}</echo>-->
 
-<!--    <path id="CLASSPATH">-->
-<!--        <pathelement path="${build}"/>-->
-<!--        <pathelement location="${dist}/${fullName}.jar"/>-->
-<!--        <pathelement location="."/>-->
-<!--    </path>-->
+    <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
+    <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
+    <property name="studioJar" value="lphy-studio-${projVersion}"/>
 
     <!-- Revert to pristine state. -->
     <target name="clean">
@@ -52,36 +49,48 @@
         <mkdir dir="${dist}"/>
     </target>
 
+    <path id="studio-clspath">
+        <pathelement path="${classpath}"/>
+        <pathelement path="${lphy}/build"/>
+        <pathelement path="${lphy}/resources"/>
+        <fileset dir="${lphy}/lib" includes="*.jar"/>
+        <pathelement path="${build}"/>
+<!--        <fileset dir="${lib}" includes="*.jar"/>-->
+    </path>
+
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}" destdir="${build}"
-               includeantruntime="false">
-            <classpath>
-                <pathelement path="${classpath}"/>
-<!--                <fileset dir="${lib}" includes="*.jar"/>-->
-                <pathelement path="../LPhy/build"/>
-                <fileset dir="../LPhy/lib" includes="*.jar"/>
-            </classpath>
+        <echo>LPhy studio classpath is ${toString:studio-clspath}</echo>
+
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}"
+               destdir="${build}" includeantruntime="false">
+            <classpath refid="studio-clspath"/>
         </javac>
         <echo message="Successfully compiled ${projName}." />
     </target>
 
     <!-- jar -->
     <target name="dist" depends="compile">
-        <echo>name=${project.groupId}, version=${project.version}</echo>
-<!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
-        <echo>fullName=${fullName}</echo>
+        <!-- manifest -->
+        <tstamp/>
+        <echo message="Version ${projVersion}" />
+        <echo message="Class-Path ${studioJar}.jar" />
+        <echo message="Created-By ${createBy}" />
+        <echo message="Built-By ${builtBy}" />
+        <echo message="Built-Date ${TODAY}" />
 
         <mkdir dir="${dist}"/>
 
-        <jar jarfile="${dist}/${fullName}.jar">
+        <jar jarfile="${dist}/${studioJar}.jar">
             <fileset dir="${build}"/>
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
                 <attribute name="Version" value="${projVersion}"/>
-                <!--   ${user.name}    -->
-                <attribute name="Built-By" value="Walter Xie"/>
-                <attribute name="Built-On" value="${TODAY}"/>
+                <!-- default to have ext/${lphyJar}.jar in classpath -->
+                <attribute name="Class-Path" value="ext/${lphyJar}.jar"/>
+                <attribute name="Created-By" value="${createBy}"/>
+                <attribute name="Built-By" value="${builtBy}"/>
+                <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
 <!--            <zipgroupfileset dir="${lib}" includes="*.jar"/>-->
         </jar>
@@ -90,14 +99,17 @@
     <!-- release -->
     <property name="pack" value="${dist}/package"/>
 
-    <target name="release" depends="compile,dist"
+    <target name="release" depends="compile,dist" unless="file.exists"
             description="for the release process">
-        <property name="packageName" value="${fullName}"/>
         <mkdir dir="${pack}"/>
+        <mkdir dir="${pack}/ext"/>
 
-        <copy file="${dist}/${fullName}.jar" tofile="${pack}/${fullName}.jar"/>
+        <copy file="${dist}/${studioJar}.jar" tofile="${pack}/${studioJar}.jar"/>
+        <available property="file.exists" file="${lphy}/dist/${lphyJar}.jar"/>
+        <!--  lphy core to ext as well  -->
+        <copy file="${lphy}/dist/${lphyJar}.jar" tofile="${pack}/ext/${lphyJar}.jar"/>
 
-        <copy file="README.md" tofile="${pack}/README"/>
+        <copy file="../README.md" tofile="${pack}/README"/>
         <!--
             <copy file="COPYING" todir="${pack}" />
             <copy todir="${pack}">
@@ -107,10 +119,11 @@
         <property name="exaDir" value="examples"/>
         <mkdir dir="${pack}/${exaDir}"/>
         <copy todir="${pack}/${exaDir}">
-            <fileset dir="${exaDir}" includes="*.lphy">
+            <!--  examples files are under the root -->
+            <fileset dir="../${exaDir}" includes="*.lphy">
                 <exclude name="**/*covid*"/>
             </fileset>
-            <fileset dir="${exaDir}">
+            <fileset dir="../${exaDir}">
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
@@ -120,78 +133,28 @@
         <property name="tutDir" value="tutorials"/>
         <mkdir dir="${pack}/${tutDir}"/>
         <copy todir="${pack}/${tutDir}">
-            <fileset dir="${tutDir}" includes="*.lphy">
+            <!--  tutorials files are underCodeBuilder the root -->
+            <fileset dir="../${tutDir}" includes="*.lphy">
                 <!-- TODO in dev -->
                 <exclude name="canis.lphy"/>
                 <exclude name="bModelTest.lphy"/>
             </fileset>
-            <fileset dir="${tutDir}">
+            <fileset dir="../${tutDir}">
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
             </fileset>
         </copy>
 
-        <zip destfile="${dist}/${packageName}.zip" basedir="${pack}"/>
+        <zip destfile="${dist}/${lphyJar}.zip" basedir="${pack}"/>
 
 <!--        <delete dir="${pack}"/>-->
 
         <echo/>
         <echo/>
-        <echo>** Package ${dist}/${packageName}.zip created successfully! **</echo>
+        <echo>** Release ${dist}/${lphyJar}.zip created successfully! **</echo>
     </target>
 
-<!--    &lt;!&ndash; Prepare for unit test compilation &ndash;&gt;-->
-<!--    <target name="init-test">-->
-<!--        <echo message="Java version: ${java.version}"/>-->
-<!--        <echo message="${ant.project.name}: ${ant.file}"/>-->
-<!--        <echo message="Working dir is ${projName}." />-->
-
-<!--        <mkdir dir="${build-test}"/>-->
-<!--        <mkdir dir="${test-reports}"/>-->
-<!--    </target>-->
-
-
-<!--    &lt;!&ndash; Require to compile main code before this &ndash;&gt;-->
-<!--    <target name="compile-test" depends="init-test" description="only compile unit tests">-->
-<!--        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}" destdir="${build-test}"-->
-<!--               includeantruntime="false">-->
-<!--            <classpath>-->
-<!--                <pathelement path="${classpath}"/>-->
-<!--                <pathelement path="${build}"/>-->
-<!--                <fileset dir="${lib}" includes="*.jar"/>-->
-<!--            </classpath>-->
-<!--        </javac>-->
-<!--        <echo message="Successfully compiled ${projName} tests." />-->
-<!--    </target>-->
-
-
-<!--    &lt;!&ndash; another pipeline parallel with dist &ndash;&gt;-->
-<!--    <target name="test" depends="compile, compile-test"-->
-<!--            description="run unit tests including compile main code">-->
-<!--        <junit printsummary="yes" failureproperty="testFailed">-->
-<!--            <classpath>-->
-<!--                <pathelement path="${classpath}"/>-->
-<!--                <pathelement path="${build}"/>-->
-<!--                <pathelement path="${build-test}"/>-->
-<!--                <fileset dir="${lib}" includes="*.jar"/>-->
-<!--            </classpath>-->
-<!--            <batchtest fork="yes" todir="${test-reports}">-->
-<!--                <fileset dir="${test}">-->
-<!--                    <include name="**/*Test.java"/>-->
-<!--                </fileset>-->
-<!--                <formatter type="plain"/>-->
-<!--            </batchtest>-->
-<!--        </junit>-->
-
-<!--        <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>-->
-<!--    </target>-->
-
-<!--    <target name="build" depends="compile"/>-->
-
-<!--    &lt;!&ndash;  https://docs.github.com/en/actions  &ndash;&gt;-->
-<!--    <target name="github-actions" depends="build, compile-test, test">-->
-<!--        <fail if="testFailed" message="One or more ${projName} tests failed."/>-->
-<!--    </target>-->
+<!--TODO tests-->
 
 </project>
