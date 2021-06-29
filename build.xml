@@ -1,4 +1,4 @@
-<project default="compile-all" basedir="." name="linguaPhylo" >
+<project default="test-all" basedir="." name="linguaPhylo" >
 
     <property name="sourceVersion" value="15"/>
     <property name="targetVersion" value="15"/>
@@ -12,23 +12,13 @@
 
     <!--*******************************************************************-->
 
-    <target name="compile-all">
-        <ant target="compile" antfile="build.xml" dir="${lphy}"/>
-        <ant target="compile" antfile="build.xml" dir="${studio}"/>
-    </target>
-
-    <target name="compile-all-tests">
-        <ant target="compile-test" antfile="build.xml" dir="${lphy}"/>
-        <!-- TODO       <ant target="compile-test" antfile="build.xml" dir="${studio}"/>-->
-    </target>
-
     <target name="test-all">
         <ant target="test" antfile="build.xml" dir="${lphy}"/>
         <!--        <ant target="test" antfile="build.xml" dir="${studio}"/>-->
     </target>
 
     <!--  https://docs.github.com/en/actions  -->
-    <target name="github-actions" depends="compile-all, compile-all-tests, test-all">
+    <target name="github-actions" depends="test-all">
         <fail if="testFailed" message="One or more ${lphy} tests failed."/>
     </target>
 
