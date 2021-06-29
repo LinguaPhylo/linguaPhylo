@@ -1,12 +1,11 @@
 <project default="compile-all" basedir="." name="linguaPhylo" >
 
-    <!-- Java 11 -->
     <property name="sourceVersion" value="15"/>
     <property name="targetVersion" value="15"/>
 
     <!--*******************************************************************-->
 
-    <!-- Ant build fails if the repo dir isn't named linguaPhylo -->
+    <!-- this is only for github-actions -->
     <property name="repoName" value="linguaPhylo"/>
     <property name="lphy" value="LPhy"/>
     <property name="studio" value="LPhyStudio"/>

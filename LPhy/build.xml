@@ -30,9 +30,10 @@
     <property name="projVersion" value="${project.version}"/>
     <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
     <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
-    <property name="jarFileName" value="lphy-${projVersion}"/>
+    <property name="lphyJar" value="lphy-${projVersion}"/>
     <!--   ${user.name}    -->
     <property name="builtBy" value="Walter Xie"/>
+    <property name="createBy" value="${project.groupId} team"/>
 
     <!-- Revert to pristine state. -->
     <target name="clean">
@@ -75,19 +76,25 @@
 
     <!-- jar -->
     <target name="dist" depends="compile">
-        <echo>name=${project.groupId}, version=${project.version}</echo>
-<!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
+        <!-- manifest -->
+        <tstamp/>
+        <echo message="Version ${projVersion}" />
+        <echo message="Class-Path ${lphyJar}.jar" />
+        <echo message="Created-By ${createBy}" />
+        <echo message="Built-By ${builtBy}" />
+        <echo message="Built-Date ${TODAY}" />
+
+        <!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
 
         <mkdir dir="${dist}"/>
-        <tstamp/>
 
-        <jar jarfile="${dist}/${jarFileName}.jar">
+        <jar jarfile="${dist}/${lphyJar}.jar">
             <fileset dir="${build}"/>
             <manifest>
 <!--                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>-->
                 <attribute name="Version" value="${projVersion}"/>
-                <attribute name="Class-Path" value="${jarFileName}.jar"/>
-                <attribute name="Created-By" value="${project.groupId} team"/>
+                <attribute name="Class-Path" value="${lphyJar}.jar"/>
+                <attribute name="Created-By" value="${createBy}"/>
                 <attribute name="Built-By" value="${builtBy}"/>
                 <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
