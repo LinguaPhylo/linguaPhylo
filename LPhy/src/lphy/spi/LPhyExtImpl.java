@@ -10,10 +10,8 @@ import lphy.core.distributions.*;
 import lphy.core.functions.*;
 import lphy.core.functions.datatype.BinaryDatatypeFunction;
 import lphy.core.functions.datatype.NucleotidesFunction;
-import lphy.core.functions.datatype.PhasedGenotypeFunction;
 import lphy.core.functions.datatype.StandardDatatypeFunction;
 import lphy.evolution.alignment.ErrorModel;
-import lphy.evolution.alignment.GT16ErrorModel;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.MultispeciesCoalescent;
@@ -23,9 +21,10 @@ import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.continuous.PhyloBrownian;
 import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.continuous.PhyloOU;
-import lphy.evolution.datatype.*;
+import lphy.evolution.datatype.Binary;
+import lphy.evolution.datatype.Continuous;
+import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.functions.ExtantTaxa;
-import lphy.evolution.functions.UnphaseGenotypeAlignment;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.evolution.substitutionmodel.*;
@@ -62,7 +61,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // skyline
             SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
             // others
-            ErrorModel.class, GT16ErrorModel.class, RandomBooleanArray.class,
+            ErrorModel.class, RandomBooleanArray.class, // GT16ErrorModel.class,
             // phylogenetic distribution
             PhyloBrownian.class, PhyloMultivariateBrownian.class,
             PhyloOU.class,
@@ -70,7 +69,7 @@ public class LPhyExtImpl implements LPhyExtension {
 
     List<Class<? extends Func>> functions = Arrays.asList(ARange.class, ArgI.class,
             // Substitution models
-            JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, GT16.class,
+            JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, //GT16.class,
             GeneralTimeReversible.class, LewisMK.class,
             NucleotideModel.class,
             BModelSetFunction.class,
@@ -78,7 +77,7 @@ public class LPhyExtImpl implements LPhyExtension {
 
             // Data types
             BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-            PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
+//            PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
 
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
@@ -123,8 +122,8 @@ public class LPhyExtImpl implements LPhyExtension {
         dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
         dataTypeMap.put("protein", SequenceType.AMINO_ACID);
 
-        dataTypeMap.put(SequenceTypeFactory.sanitise(PhasedGenotype.NAME), PhasedGenotype.INSTANCE);
-        dataTypeMap.put(SequenceTypeFactory.sanitise(UnphasedGenotype.NAME), PhasedGenotype.INSTANCE);
+//        dataTypeMap.put(SequenceTypeFactory.sanitise(PhasedGenotype.NAME), PhasedGenotype.INSTANCE);
+//        dataTypeMap.put(SequenceTypeFactory.sanitise(UnphasedGenotype.NAME), PhasedGenotype.INSTANCE);
 
         dataTypeMap.put(SequenceTypeFactory.sanitise(Binary.NAME), Binary.getInstance());
         dataTypeMap.put(SequenceTypeFactory.sanitise(Continuous.NAME), Continuous.getInstance());
