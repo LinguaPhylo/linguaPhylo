@@ -1,35 +1,30 @@
 <project default="compile" basedir="." name="studio" >
 
-    <!-- TODO Java 16 not available in GitHub Action -->
-    <property name="sourceVersion" value="15"/>
-    <property name="targetVersion" value="15"/>
-
     <!--*******************************************************************-->
 
     <!-- Ant build fails if the repo dir isn't named linguaPhylo/LPhyStudio -->
-    <property name="projName" value="LPhyStudio"/>
+    <property name="studioFolder" value="LPhyStudio"/>
     <!-- source code dir separated from test   -->
-    <property name="src" location="../${projName}/src" />
+    <property name="src" location="../${studioFolder}/src" />
     <!-- source code dir of test   -->
 <!--    <property name="lib" location="../${projName}/lib" />-->
-    <property name="test" location="../${projName}/test" />
+    <property name="test" location="../${studioFolder}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="build" location="../${projName}/build" />
-    <property name="dist" location="../${projName}/dist" />
-    <property name="build-test" location="../${projName}/build-test"/>
-    <property name="test-reports" location="../${projName}/test-reports"/>
+    <property name="build" location="../${studioFolder}/build" />
+    <property name="dist" location="../${studioFolder}/dist" />
+    <property name="build-test" location="../${studioFolder}/build-test"/>
+    <property name="test-reports" location="../${studioFolder}/test-reports"/>
 
     <!--*******************************************************************-->
 
     <property name="lphy" location="../LPhy"/>
-
     <import file="${lphy}/build.xml"/>
 <!--    <echo>${lphyJar}</echo>-->
 <!--    <echo>${projVersion}</echo>-->
 
     <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
     <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
-    <property name="studioJar" value="lphy-studio-${projVersion}"/>
+    <property name="studioJar" value="lphy-studio-${lphyVersion}"/>
 
     <!-- Revert to pristine state. -->
     <target name="clean">
@@ -43,7 +38,7 @@
     <target name="init" depends="clean">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}" />
-        <echo message="Working dir is ${projName}." />
+        <echo message="Working dir is ${studioFolder}." />
 
         <mkdir dir="${build}"/>
         <mkdir dir="${dist}"/>
@@ -61,19 +56,20 @@
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
         <echo>LPhy studio classpath is ${toString:studio-clspath}</echo>
-
+        <!-- imported from ${lphy}/build.xml -->
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}"
                destdir="${build}" includeantruntime="false">
             <classpath refid="studio-clspath"/>
         </javac>
-        <echo message="Successfully compiled ${projName}." />
+        <echo message="Successfully compiled ${studioFolder}." />
     </target>
 
+    <property name="extDir" value="lib"/>
     <!-- jar -->
     <target name="dist" depends="compile">
         <!-- manifest -->
         <tstamp/>
-        <echo message="Version ${projVersion}" />
+        <echo message="Version ${lphyVersion}" />
         <echo message="Class-Path ${studioJar}.jar" />
         <echo message="Created-By ${createBy}" />
         <echo message="Built-By ${builtBy}" />
@@ -85,9 +81,9 @@
             <fileset dir="${build}"/>
             <manifest>
                 <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
-                <attribute name="Version" value="${projVersion}"/>
-                <!-- default to have ext/${lphyJar}.jar in classpath -->
-                <attribute name="Class-Path" value="ext/${lphyJar}.jar"/>
+                <attribute name="Version" value="${lphyVersion}"/>
+                <!-- default to have lib/${lphyJar}.jar in classpath -->
+                <attribute name="Class-Path" value="${extDir}/${lphyJar}.jar"/>
                 <attribute name="Created-By" value="${createBy}"/>
                 <attribute name="Built-By" value="${builtBy}"/>
                 <attribute name="Built-Date" value="${TODAY}"/>
@@ -96,18 +92,18 @@
         </jar>
     </target>
 
-    <!-- release -->
-    <property name="pack" value="${dist}/package"/>
+    <!-- release, depend on lphy.dist -->
 
-    <target name="release" depends="compile,dist" unless="file.exists"
+    <target name="release" depends="lphy.dist,compile,dist" unless="file.exists"
             description="for the release process">
+        <property name="pack" value="${dist}/package"/>
         <mkdir dir="${pack}"/>
-        <mkdir dir="${pack}/ext"/>
+        <mkdir dir="${pack}/${extDir}"/>
 
         <copy file="${dist}/${studioJar}.jar" tofile="${pack}/${studioJar}.jar"/>
         <available property="file.exists" file="${lphy}/dist/${lphyJar}.jar"/>
         <!--  lphy core to ext as well  -->
-        <copy file="${lphy}/dist/${lphyJar}.jar" tofile="${pack}/ext/${lphyJar}.jar"/>
+        <copy file="${lphy}/dist/${lphyJar}.jar" tofile="${pack}/${extDir}/${lphyJar}.jar"/>
 
         <copy file="../README.md" tofile="${pack}/README"/>
         <!--

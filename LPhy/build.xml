@@ -7,57 +7,58 @@
     <!--*******************************************************************-->
 
     <!-- Ant build fails if the repo dir isn't named linguaPhylo/LPhy -->
-    <property name="projName" value="LPhy"/>
+    <property name="lphyFolder" value="LPhy"/>
     <!-- source code dir separated from test   -->
-    <property name="src" location="../${projName}/src" />
+    <property name="lphySrc" location="../${lphyFolder}/src" />
     <!-- source code dir of test   -->
-    <property name="lib" location="../${projName}/lib" />
-    <property name="resources" location="../${projName}/resources" />
-    <property name="test" location="../${projName}/test" />
+    <property name="lphyLib" location="../${lphyFolder}/lib" />
+    <property name="lphyResources" location="../${lphyFolder}/resources" />
+    <property name="lphyTest" location="../${lphyFolder}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="build" location="../${projName}/build" />
-    <property name="dist" location="../${projName}/dist" />
-    <property name="build-test" location="../${projName}/build-test"/>
-    <property name="test-reports" location="../${projName}/test-reports"/>
+    <property name="lphyBuild" location="../${lphyFolder}/build" />
+    <property name="lphyDist" location="../${lphyFolder}/dist" />
+    <property name="lphy-build-test" location="../${lphyFolder}/build-test"/>
+    <property name="lphy-test-reports" location="../${lphyFolder}/test-reports"/>
 
     <!--  linguaPhylo/doc  -->
-    <property name="doc" value="../doc" />
-
+    <property name="lphyDoc" value="../doc" />
 
     <!--*******************************************************************-->
 
     <xmlproperty file="../pom.xml" collapseAttributes="true"/>
-    <property name="projVersion" value="${project.version}"/>
+    <property name="lphyVersion" value="${project.version}"/>
     <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
     <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
-    <property name="lphyJar" value="lphy-${projVersion}"/>
+    <property name="lphyJar" value="lphy-${lphyVersion}"/>
     <!--   ${user.name}    -->
     <property name="builtBy" value="Walter Xie"/>
     <property name="createBy" value="${project.groupId} team"/>
 
+    <!--*******************************************************************-->
+
     <!-- Revert to pristine state. -->
     <target name="clean">
-        <delete dir="${build}"/>
-        <delete dir="${dist}"/>
-        <delete dir="${build-test}"/>
-        <delete dir="${test-reports}"/>
+        <delete dir="${lphyBuild}"/>
+        <delete dir="${lphyDist}"/>
+        <delete dir="${lphy-build-test}"/>
+        <delete dir="${lphy-test-reports}"/>
     </target>
 
     <!-- Prepare for compilation -->
     <target name="init" depends="clean">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}" />
-        <echo message="Working dir is ${projName}." />
+        <echo message="Working dir is ${lphyFolder}." />
 
-        <mkdir dir="${build}"/>
-        <mkdir dir="${dist}"/>
+        <mkdir dir="${lphyBuild}"/>
+        <mkdir dir="${lphyDist}"/>
     </target>
 
     <path id="lphy-classpath">
         <pathelement path="${classpath}"/>
-        <pathelement path="${build}"/>
-        <pathelement path="${resources}"/>
-        <fileset dir="${lib}" includes="*.jar"/>
+        <pathelement path="${lphyBuild}"/>
+        <pathelement path="${lphyResources}"/>
+        <fileset dir="${lphyLib}" includes="*.jar"/>
     </path>
 
     <!-- Compile -->
@@ -65,20 +66,20 @@
         <echo>LPhy classpath is ${toString:lphy-classpath}</echo>
 
         <javac target="${targetVersion}" source="${sourceVersion}"
-               srcdir="${src}" destdir="${build}" includeantruntime="false">
+               srcdir="${lphySrc}" destdir="${lphyBuild}" includeantruntime="false">
             <classpath refid="lphy-classpath"/>
         </javac>
-        <mkdir dir="${build}/META-INF"/>
-        <mkdir dir="${build}/META-INF/services"/>
-        <copy file="${resources}/META-INF/services/lphy.spi.LPhyExtension" todir="${build}/META-INF/services"/>
-        <echo message="Successfully compiled ${projName}." />
+        <mkdir dir="${lphyBuild}/META-INF"/>
+        <mkdir dir="${lphyBuild}/META-INF/services"/>
+        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
+        <echo message="Successfully compiled ${lphyFolder}." />
     </target>
 
     <!-- jar -->
     <target name="dist" depends="compile">
         <!-- manifest -->
         <tstamp/>
-        <echo message="Version ${projVersion}" />
+        <echo message="Version ${lphyVersion}" />
         <echo message="Class-Path ${lphyJar}.jar" />
         <echo message="Created-By ${createBy}" />
         <echo message="Built-By ${builtBy}" />
@@ -86,25 +87,25 @@
 
         <!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
 
-        <mkdir dir="${dist}"/>
+        <mkdir dir="${lphyDist}"/>
 
-        <jar jarfile="${dist}/${lphyJar}.jar">
-            <fileset dir="${build}"/>
+        <jar jarfile="${lphyDist}/${lphyJar}.jar">
+            <fileset dir="${lphyBuild}"/>
             <manifest>
 <!--                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>-->
-                <attribute name="Version" value="${projVersion}"/>
+                <attribute name="Version" value="${lphyVersion}"/>
                 <attribute name="Class-Path" value="${lphyJar}.jar"/>
                 <attribute name="Created-By" value="${createBy}"/>
                 <attribute name="Built-By" value="${builtBy}"/>
                 <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
-            <zipgroupfileset dir="${lib}" includes="*.jar"/>
+            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>
         </jar>
     </target>
 
     <target name="generate-docs" description="generate Lphy docs.">
         <echo> Generate Lphy docs to ${user.dir}/${doc} ... </echo>
-        <java classname="lphy.doc.GenerateDocs" dir="${doc}" args="${projVersion}" fork="true">
+        <java classname="lphy.doc.GenerateDocs" dir="${lphyDoc}" args="${lphyVersion}" fork="true">
             <classpath refid="lphy-classpath"/>
         </java>
     </target>
@@ -114,26 +115,26 @@
     <target name="init-test">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <echo message="Working dir is ${projName}." />
+        <echo message="Working dir is ${lphyFolder}." />
 
-        <mkdir dir="${build-test}"/>
-        <mkdir dir="${test-reports}"/>
+        <mkdir dir="${lphy-build-test}"/>
+        <mkdir dir="${lphy-test-reports}"/>
     </target>
 
     <path id="junit-classpath">
         <pathelement path="${classpath}"/>
-        <pathelement path="${build}"/>
-        <pathelement path="${build-test}"/>
-        <fileset dir="${lib}" includes="*.jar"/>
+        <pathelement path="${lphyBuild}"/>
+        <pathelement path="${lphy-build-test}"/>
+        <fileset dir="${lphyLib}" includes="*.jar"/>
     </path>
 
     <!-- Require to compile main code before this -->
     <target name="compile-test" depends="init-test" description="only compile unit tests">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${test}"
-               destdir="${build-test}" includeantruntime="false">
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphyTest}"
+               destdir="${lphy-build-test}" includeantruntime="false">
             <classpath refid="junit-classpath"/>
         </javac>
-        <echo message="Successfully compiled ${projName} tests." />
+        <echo message="Successfully compiled ${lphyFolder} tests." />
     </target>
 
 
@@ -144,22 +145,22 @@
 
         <junit printsummary="yes" failureproperty="testFailed">
             <classpath refid="junit-classpath"/>
-            <batchtest fork="yes" todir="${test-reports}">
-                <fileset dir="${test}">
+            <batchtest fork="yes" todir="${lphy-test-reports}">
+                <fileset dir="${lphyTest}">
                     <include name="**/*Test.java"/>
                 </fileset>
                 <formatter type="plain"/>
             </batchtest>
         </junit>
 
-        <fail if="testFailed" status="1" message="Unit test of ${projName} failed."/>
+        <fail if="testFailed" status="1" message="Unit test of ${lphyFolder} failed."/>
     </target>
 
     <target name="build" depends="compile"/>
 
     <!--  https://docs.github.com/en/actions  -->
     <target name="github-actions" depends="build, compile-test, test">
-        <fail if="testFailed" message="One or more ${projName} tests failed."/>
+        <fail if="testFailed" message="One or more ${lphyFolder} tests failed."/>
     </target>
 
 </project>
