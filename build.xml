@@ -3,23 +3,30 @@
     <property name="sourceVersion" value="15"/>
     <property name="targetVersion" value="15"/>
 
-    <!--*******************************************************************-->
+    <!--****** this build is used for all LPhy extensions ******-->
 
-    <!-- this is only for github-actions -->
-    <property name="repoName" value="linguaPhylo"/>
-    <property name="lphy" value="LPhy"/>
-    <property name="studio" value="LPhyStudio"/>
+    <property name="lphyRepo" location="../linguaPhylo"/>
 
-    <!--*******************************************************************-->
+    <import file="LPhy/build.xml"/>
+
+    <target name="lphy-compile">
+        <ant target="compile" antfile="build.xml" dir="${lphyFolder}"/>
+    </target>
+
+    <target name="lphy-dist">
+        <ant target="dist" antfile="build.xml" dir="${lphyFolder}"/>
+    </target>
+
+    <!--****** github-actions ******-->
 
     <target name="test-all">
-        <ant target="test" antfile="build.xml" dir="${lphy}"/>
-        <!--        <ant target="test" antfile="build.xml" dir="${studio}"/>-->
+        <ant target="test" antfile="build.xml" dir="${lphyFolder}"/>
+        <!--        <ant target="test" antfile="build.xml" dir="${studioFolder}"/>-->
     </target>
 
     <!--  https://docs.github.com/en/actions  -->
     <target name="github-actions" depends="test-all">
-        <fail if="testFailed" message="One or more ${lphy} tests failed."/>
+        <fail if="testFailed" message="One or more ${lphyFolder} tests failed."/>
     </target>
 
 </project>

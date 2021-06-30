@@ -6,26 +6,28 @@
 
     <!--*******************************************************************-->
 
-    <!-- Ant build fails if the repo dir isn't named linguaPhylo/LPhy -->
     <property name="lphyFolder" value="LPhy"/>
+    <!-- this is for studio build -->
+    <!-- overwrite lphyRepo in other extensions build -->
+    <property name="lphyRepo" location=".."/>
     <!-- source code dir separated from test   -->
-    <property name="lphySrc" location="../${lphyFolder}/src" />
+    <property name="lphySrc" location="${lphyRepo}/${lphyFolder}/src" />
     <!-- source code dir of test   -->
-    <property name="lphyLib" location="../${lphyFolder}/lib" />
-    <property name="lphyResources" location="../${lphyFolder}/resources" />
-    <property name="lphyTest" location="../${lphyFolder}/test" />
+    <property name="lphyLib" location="${lphyRepo}/${lphyFolder}/lib" />
+    <property name="lphyResources" location="${lphyRepo}/${lphyFolder}/resources" />
+    <property name="lphyTest" location="${lphyRepo}/${lphyFolder}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="lphyBuild" location="../${lphyFolder}/build" />
-    <property name="lphyDist" location="../${lphyFolder}/dist" />
-    <property name="lphy-build-test" location="../${lphyFolder}/build-test"/>
-    <property name="lphy-test-reports" location="../${lphyFolder}/test-reports"/>
+    <property name="lphyBuild" location="${lphyRepo}/${lphyFolder}/build" />
+    <property name="lphyDist" location="${lphyRepo}/${lphyFolder}/dist" />
+    <property name="lphy-build-test" location="${lphyRepo}/${lphyFolder}/build-test"/>
+    <property name="lphy-test-reports" location="${lphyRepo}/${lphyFolder}/test-reports"/>
 
     <!--  linguaPhylo/doc  -->
-    <property name="lphyDoc" value="../doc" />
+    <property name="lphyDoc" value="${lphyRepo}/doc" />
 
     <!--*******************************************************************-->
 
-    <xmlproperty file="../pom.xml" collapseAttributes="true"/>
+    <xmlproperty file="${lphyRepo}/pom.xml" collapseAttributes="true"/>
     <property name="lphyVersion" value="${project.version}"/>
     <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
     <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
@@ -48,10 +50,13 @@
     <target name="init" depends="clean">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}" />
-        <echo message="Working dir is ${lphyFolder}." />
+        <echo message="Working dir is ${user.dir}." />
+        <echo message="Current dir is ${basedir}." />
+        <echo message="LPhy repo folder is ${lphyRepo}." />
+        <echo message="LPhy doc folder is ${lphyDoc}." />
 
         <mkdir dir="${lphyBuild}"/>
-        <mkdir dir="${lphyDist}"/>
+<!--        <mkdir dir="${lphyDist}"/>-->
     </target>
 
     <path id="lphy-classpath">
@@ -72,7 +77,7 @@
         <mkdir dir="${lphyBuild}/META-INF"/>
         <mkdir dir="${lphyBuild}/META-INF/services"/>
         <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
-        <echo message="Successfully compiled ${lphyFolder}." />
+        <echo message="Successfully compiled ${lphyRepo}." />
     </target>
 
     <!-- jar -->
@@ -115,7 +120,8 @@
     <target name="init-test">
         <echo message="Java version: ${java.version}"/>
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <echo message="Working dir is ${lphyFolder}." />
+        <echo message="Working dir is ${user.dir}." />
+        <echo message="Current dir is ${basedir}." />
 
         <mkdir dir="${lphy-build-test}"/>
         <mkdir dir="${lphy-test-reports}"/>
