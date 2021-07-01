@@ -5,7 +5,7 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerArrayValue;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

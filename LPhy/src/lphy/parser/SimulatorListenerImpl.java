@@ -10,7 +10,7 @@ import lphy.parser.SimulatorParser.Named_expressionContext;
 import lphy.parser.SimulatorParser.Unnamed_expression_listContext;
 import lphy.parser.SimulatorParser.VarContext;
 import lphy.parser.functions.*;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 

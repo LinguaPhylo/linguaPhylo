@@ -1,14 +1,9 @@
 package lphy.core;
 
-import lphy.app.GraphicalLPhyParser;
-import lphy.app.Symbols;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.SimulatorParsingException;
-import lphy.parser.functions.ExpressionNode;
-import lphy.parser.functions.ExpressionNodeWrapper;
-import lphy.utils.LoggerUtils;
 
 import java.io.BufferedReader;
 import java.io.File;

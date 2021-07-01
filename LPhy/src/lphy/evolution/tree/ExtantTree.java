@@ -1,7 +1,6 @@
 package lphy.evolution.tree;
 
 import lphy.graphicalModel.*;
-import lphy.utils.LoggerUtils;
 
 import java.util.*;
 

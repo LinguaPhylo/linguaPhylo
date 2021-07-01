@@ -14,8 +14,8 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.utils.IOUtils;
-import lphy.utils.LoggerUtils;
+import lphy.util.IOUtils;
+import lphy.util.LoggerUtils;
 
 import java.io.IOException;
 import java.io.Reader;

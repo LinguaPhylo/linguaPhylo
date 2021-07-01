@@ -2,7 +2,7 @@ package lphy.parser;
 
 import junit.framework.TestCase;
 import lphy.core.LPhyParser;
-import lphy.utils.IOUtils;
+import lphy.util.IOUtils;
 import org.junit.Test;
 
 import java.io.BufferedReader;

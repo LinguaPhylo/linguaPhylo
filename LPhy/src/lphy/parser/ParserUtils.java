@@ -7,7 +7,7 @@ import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
 import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.graphicalModel.*;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

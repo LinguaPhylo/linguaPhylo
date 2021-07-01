@@ -17,7 +17,7 @@ import lphy.evolution.datatype.Continuous;
 import lphy.evolution.datatype.DataType;
 import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.traits.CharSetBlock;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.awt.*;
 import java.io.EOFException;

@@ -1,7 +1,6 @@
 package lphy.core.functions;
 
 import lphy.graphicalModel.*;
-import lphy.utils.LoggerUtils;
 
 import java.lang.reflect.Array;
 

@@ -4,7 +4,6 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.utils.LoggerUtils;
 
 import static lphy.evolution.EvolutionConstants.treeParamName;
 import static lphy.evolution.tree.TimeTreeUtils.*;

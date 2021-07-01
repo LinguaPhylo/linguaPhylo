@@ -1,8 +1,8 @@
 package lphy.graphicalModel;
 
-import lphy.app.Symbols;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.types.DoubleValue;
+import lphy.util.Symbols;
 
 import java.util.*;
 

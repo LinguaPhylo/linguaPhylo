@@ -11,7 +11,7 @@ import lphy.graphicalModel.types.DoubleArrayValue;
 import lphy.graphicalModel.types.IntegerArrayValue;
 import lphy.graphicalModel.types.StringArrayValue;
 import lphy.parser.functions.RangeList;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

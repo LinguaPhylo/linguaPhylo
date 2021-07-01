@@ -7,7 +7,7 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 import lphy.parser.ElementWise2Args;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 /**
  * container holding a DeterministicFunction with 2 arguments

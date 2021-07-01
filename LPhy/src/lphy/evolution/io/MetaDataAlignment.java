@@ -8,7 +8,7 @@ import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.MethodInfo;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

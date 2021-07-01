@@ -1,8 +1,7 @@
 package lphy.core;
 
-import lphy.app.GraphicalLPhyParser;
 import lphy.graphicalModel.*;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 
 import java.util.*;
 

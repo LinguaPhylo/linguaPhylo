@@ -10,7 +10,7 @@ import lphy.parser.SimulatorParser.*;
 import lphy.parser.functions.ExpressionNode;
 import lphy.parser.functions.ExpressionNode1Arg;
 import lphy.parser.functions.ExpressionNode2Args;
-import lphy.utils.LoggerUtils;
+import lphy.util.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 

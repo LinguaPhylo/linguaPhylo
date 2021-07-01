@@ -80,7 +80,7 @@
         <jar jarfile="${dist}/${studioJar}.jar">
             <fileset dir="${build}"/>
             <manifest>
-                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>
+                <attribute name="Main-Class" value="lphystudio.app.LinguaPhyloStudio"/>
                 <attribute name="Version" value="${lphyVersion}"/>
                 <!-- default to have lib/${lphyJar}.jar in classpath -->
                 <attribute name="Class-Path" value="${extDir}/${lphyJar}.jar"/>
