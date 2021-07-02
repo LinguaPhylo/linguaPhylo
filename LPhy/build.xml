@@ -22,8 +22,8 @@
     <property name="lphy-build-test" location="${lphyRepo}/${lphyFolder}/build-test"/>
     <property name="lphy-test-reports" location="${lphyRepo}/${lphyFolder}/test-reports"/>
 
-    <!--  linguaPhylo/doc  -->
-    <property name="lphyDoc" value="${lphyRepo}/doc" />
+    <!--  linguaPhylo/LPhy/doc  -->
+    <property name="lphyDoc" value="${lphyRepo}/${lphyFolder}/doc" />
 
     <!--*******************************************************************-->
 
@@ -59,24 +59,23 @@
 <!--        <mkdir dir="${lphyDist}"/>-->
     </target>
 
-    <path id="lphy-classpath">
-        <pathelement path="${classpath}"/>
+    <path id="lphy-module-path">
         <pathelement path="${lphyBuild}"/>
-        <pathelement path="${lphyResources}"/>
         <fileset dir="${lphyLib}" includes="*.jar"/>
     </path>
 
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <echo>LPhy classpath is ${toString:lphy-classpath}</echo>
+        <echo>LPhy classpath is ${toString:lphy-module-path}</echo>
 
         <javac target="${targetVersion}" source="${sourceVersion}"
                srcdir="${lphySrc}" destdir="${lphyBuild}" includeantruntime="false">
-            <classpath refid="lphy-classpath"/>
+        <!-- p or module-path : Specify where to find application modules -->
+            <modulepath refid="lphy-module-path"/>
         </javac>
-        <mkdir dir="${lphyBuild}/META-INF"/>
-        <mkdir dir="${lphyBuild}/META-INF/services"/>
-        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
+<!--        <mkdir dir="${lphyBuild}/META-INF"/>-->
+<!--        <mkdir dir="${lphyBuild}/META-INF/services"/>-->
+<!--        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>-->
         <echo message="Successfully compiled ${lphyRepo}." />
     </target>
 
@@ -109,9 +108,9 @@
     </target>
 
     <target name="generate-docs" description="generate Lphy docs.">
-        <echo> Generate Lphy docs to ${user.dir}/${doc} ... </echo>
-        <java classname="lphy.doc.GenerateDocs" dir="${lphyDoc}" args="${lphyVersion}" fork="true">
-            <classpath refid="lphy-classpath"/>
+        <echo> Generate Lphy docs to ${lphyDoc} ... </echo>
+        <java module="lphy" classname="lphy.doc.GenerateDocs" dir="${lphyDoc}" args="${lphyVersion}" fork="true">
+            <modulepath refid="lphy-module-path"/>
         </java>
     </target>
 
@@ -127,6 +126,7 @@
         <mkdir dir="${lphy-test-reports}"/>
     </target>
 
+    <!-- TODO junit not working for module, have to use classpath -->
     <path id="junit-classpath">
         <pathelement path="${classpath}"/>
         <pathelement path="${lphyBuild}"/>
