@@ -1,16 +1,15 @@
 package lphystudio.app;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.app.ColourPalette;
-import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ErrorAlignment;
-import lphy.evolution.datatype.SequenceTypeFactory;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import lphystudio.ColourPalette;
+import lphystudio.app.treecomponent.TimeTreeComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +40,7 @@ public class AlignmentComponent extends JComponent {
         this.alignmentValue = av;
         this.alignment = av.value();
         SequenceType sequenceType = alignment.getSequenceType();
-        this.colors = SequenceTypeFactory.INSTANCE.getCanonicalStateColours(sequenceType);
+        this.colors = ColourPalette.getCanonicalStateColours(sequenceType);
 
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();

@@ -1,7 +1,8 @@
 
-package jebl.evolution.sequences;
+package lphy.evolution.datatype;
 
-import lphy.evolution.datatype.Binary;
+import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 
 /**
  * @author Walter Xie

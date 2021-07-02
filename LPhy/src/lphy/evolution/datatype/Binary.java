@@ -1,7 +1,6 @@
 
 package lphy.evolution.datatype;
 
-import jebl.evolution.sequences.BinaryState;
 import jebl.evolution.sequences.State;
 
 import java.util.Arrays;
