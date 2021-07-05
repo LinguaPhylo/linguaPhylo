@@ -1,13 +1,15 @@
 package lphy.parser;
 
 
-import lphy.core.Script;
 import lphy.core.LPhyParser;
+import lphy.core.Script;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -139,7 +141,6 @@ public class REPL implements LPhyParser {
      *
      * @param reader assume 1 cmd each line
      * @throws IOException
-     * @see lphy.app.GraphicalModelPanel#source(BufferedReader)
      */
     @Override
     public void source(BufferedReader reader) throws IOException {

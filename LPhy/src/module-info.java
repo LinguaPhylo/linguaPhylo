@@ -31,6 +31,7 @@ module lphy {
     exports lphy.evolution.coalescent;
     exports lphy.evolution.datatype;
     exports lphy.evolution.likelihood;
+    exports lphy.evolution.substitutionmodel;
     exports lphy.evolution.tree;
 
     exports lphy.layeredgraph;

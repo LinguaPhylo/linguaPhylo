@@ -5,6 +5,7 @@
 
     <!--****** this build is used for all LPhy extensions ******-->
 
+    <!--  overwrite lphyRepo in LPhy build to fit in a different folder structure -->
     <property name="lphyRepo" location="../linguaPhylo"/>
 
     <import file="LPhy/build.xml"/>
