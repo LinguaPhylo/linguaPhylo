@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The service interface defined for SPI in META-INF/services.
- * Implement this interface to register classes of LPhy or its extensions,
+ * The service interface defined for SPI.
+ * Implement this interface to create one "Container" provider class
+ * for each module of LPhy or its extensions,
  * which should include {@link GenerativeDistribution}, {@link Func},
  * and {@link SequenceType}.
  *

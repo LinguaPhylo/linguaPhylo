@@ -73,9 +73,6 @@
         <!-- p or module-path : Specify where to find application modules -->
             <modulepath refid="lphy-module-path"/>
         </javac>
-<!--        <mkdir dir="${lphyBuild}/META-INF"/>-->
-<!--        <mkdir dir="${lphyBuild}/META-INF/services"/>-->
-<!--        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>-->
         <echo message="Successfully compiled ${lphyRepo}." />
     </target>
 
@@ -92,6 +89,18 @@
         <!--    <echo>depends=${dependencies.dependency.groupId}, version=${dependencies.dependency.version}</echo>-->
 
         <mkdir dir="${lphyDist}"/>
+
+        <!-- TODO multi-release jar (MR jar) ?  -->
+<!--        <exec executable="jar" failifexecutionfails="true">-->
+<!--            <arg value="&#45;&#45;verbose" />-->
+<!--            <arg value="&#45;&#45;create" />-->
+<!--            <arg value="&#45;&#45;file=${lphyDist}/${lphyJar}.jar" />-->
+<!--            <arg value="&#45;&#45;release" />-->
+<!--            <arg value="9" />-->
+<!--            <arg value="-C" />-->
+<!--            <arg value="${lphyBuild}" />-->
+<!--            <arg value="." />-->
+<!--        </exec>-->
 
         <jar jarfile="${lphyDist}/${lphyJar}.jar">
             <fileset dir="${lphyBuild}"/>
@@ -126,7 +135,7 @@
         <mkdir dir="${lphy-test-reports}"/>
     </target>
 
-    <!-- TODO junit not working for module, have to use classpath -->
+    <!-- TODO patch-module not working, have to use classpath now -->
     <path id="junit-classpath">
         <pathelement path="${classpath}"/>
         <pathelement path="${lphyBuild}"/>
