@@ -289,15 +289,16 @@ implementing them.
 %misspecification \cite{mendes17,mendes18}, and (iii) failing to
 %capture uncertainty in parameter estimates (e.g., analyses that treat
 %the phylogeny as data).
-
 %As opposed to the two classes of methods mentioned above, a third
-The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and RevBayes;
-\cite{beast,beast2,revbayes,mrbayes}) can simultaneously attain both the goal
-of reconstructing phylogenetic tree(s) (topology and divergence
-times), as well as that of estimating related micro- and macro- evolutionary parameters.
-Beyond joint estimation of the phylogenetic tree and related parameters, common denominators among these programs include the wide variety of
-models they implement, but more distinctively, the large number of
-ways these models can be combined.
+The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and
+RevBayes; \cite{beast,beast2,revbayes,mrbayes}) can simultaneously
+attain both the goal of reconstructing phylogenetic tree(s) (topology
+and divergence times), as well as that of estimating related micro-
+and macroevolutionary parameters. 
+Beyond joint estimation of the phylogenetic tree and related
+parameters, common denominators among these programs include the wide
+variety of models they implement, but more distinctively, the large
+number of ways these models can be combined.
 The latter arises organically from Bayesian inference -- the
 statistical framework all these tools share -- more specifically from
 the relative ease with which hierarchical Bayesian models can be 
@@ -360,12 +361,12 @@ the model itself.
 On the other hand, Rev still requires users to contend with
 details extraneous to the model (e.g., MCMC parameters and operator
 schedule).
-At the moment of writing, the RevBayes suite also still lacks a mature
-graphical user interface (GUI) for displaying the graphical structure
-of a model.
-Lastly, Rev only supports models implemented specifically for
-RevBayes, which detracts from a more general application of this
-programming language.
+% At the moment of writing, the RevBayes suite also still lacks a mature
+% graphical user interface (GUI) for displaying the graphical structure
+% of a model.
+% Lastly, Rev only supports models implemented specifically for
+% RevBayes, which detracts from a more general application of this
+% programming language.
 
 Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
 language focused exclusively on model specification.
@@ -424,121 +425,220 @@ reproduce inference analyses.
 
 \subsection*{A concise domain-specific language for phylogenetic inference}
 
-LinguaPhylo is a model specification language to concisely and
-precisely define probabilistic phylogenetic models.
-The aim is to work
-towards a common language for probabilistic models of phylogenetic
-evolution.
-This language should be readable by both humans and
-computers.
-Box \ref{box1} shows a simple example.
+% LinguaPhylo is a model specification language to concisely and
+% precisely define probabilistic phylogenetic models.
+% The aim is to work
+% towards a common language for probabilistic models of phylogenetic
+% evolution.
+% This language should be readable by both humans and
+% computers.
 
-\begin{mybox}[label=box1, float=htpb!]{A simple phylogenetic model}
- % \begin{minipage}[t]{0.60\textwidth}
- 
- \begin{enumerate}
- \item Modeling language
-    {\singlespacing
-\begin{alltt}
-model \{
-  \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
-  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-\}
-\end{alltt}
-}
-%  \end{minipage}%
-%\begin{minipage}[t]{0.40\textwidth}
-\item Graphical model
-\\\\
-{\centering
-\begin{tikzpicture}[scale=0.52,
-dstyle/.style={draw=blue!50,fill=blue!20},
-vstyle/.style={draw=green,fill=green!20},
-cstyle/.style={font=\small},
-detstyle/.style={draw=red!50,fill=red!20}
-]
-\node[const, cstyle] at (1.0, -0.0) (602717583) {meanlog = 3.0};
-\node[const, cstyle] at (5.0, -0.0) (897996787) {sdlog = 1.0};
-\node[latent, vstyle] at (2.0, -4.0) (lambda) {$\lambda$};
-\node[const, cstyle] at (6.0, -4.0) (2011155364) {n = 16};
-\node[latent, vstyle] at (2.0, -8.0) (psi) {$\psi$};
-\node[const, cstyle] at (6.0, -8.0) (1992433642) {L = 200};
-\node[det, detstyle] at (10.0, -8.0) (258223775) {[Q]};
-\node[latent, vstyle] at (6.0, -12.0) (D) {D};
-\factor[above=of lambda] {LogNormallambda} {left:LogNormal} {} {} ; %
-\factoredge {602717583, 897996787} {LogNormallambda} {lambda}; %
-\factor[above=of psi] {Yulepsi} {left:Yule} {} {} ; %
-\factoredge {lambda, 2011155364} {Yulepsi} {psi}; %
-\factor[above=of 258223775] {jukesCantor258223775} {left:jukesCantor} {} {} ; %
-\factoredge {} {jukesCantor258223775} {258223775}; %
-\factor[above=of D] {PhyloCTMCD} {left:PhyloCTMC} {} {} ; %
-\factoredge {1992433642, 258223775, psi} {PhyloCTMCD} {D}; %
-\end{tikzpicture}}
-%\end{minipage}
+%Box \ref{box1} shows a simple example.
 
-\item Posterior
+The LinguaPhylo language is implemented in Java and has been designed
+(i) to concisely and precisely define probabilistic phylogenetic
+models, and (ii) to be readable by both humans and computers.
+We will describe and illustrate LPhy's main features by examining the
+LPhy script that comes with one of the publicly available tutorials
+(``Time-stamped data'', available on
+\url{https://linguaphylo.gihub.io/tutorials/time-stamped-data/})
+accompanying the software.
+We have  modified the script slightly for illustrative purposes:
 
-$$P(\psi, \lambda | D) \propto P(D | \psi) P(\psi | \lambda) P(\lambda) $$
-
-\end{enumerate}
-
-\end{mybox}
-
-Each of the lines in this model specification expresses how a random
-variable (to the left of the tilde) is generated by a generative
-distribution to the right.
-
-The first line creates a random variable (\texttt{lambda}), that is
-log-normally distributed.
-The second line creates a tree (\texttt{tree}) with 16 taxa from the
-Yule process with a lineage birth rate equal to \texttt{lambda}.
-The third line produces a multiple sequence alignment (\texttt{D})
-with a length of 200, by simulating a Jukes Cantor model of sequence
-evolution down the branches of  \texttt{tree}.
-As you can see, each of the random variables depends on the previous,
-so this is a hierarchical model that ultimately defines a probability
-distribution over sequence alignments of size $16 \times 200$.
-
-To construct an analysis of a data set with this model we add a data block:
-
-{\small
+{
+\small
 \begin{alltt}
 data \{
-  D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}\textcolor{magenta}{"data/primate.nex"});
-  L = D.\textcolor{magenta!80!black}{nchar}();
+  options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
+  nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
+  D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
+  codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
+  n = 3 // equivalent to n = length(codon);
+  L = [209, 210, 210]; // equivalent to L = codon.nchar();
   taxa = D.\textcolor{magenta!80!black}{taxa}();
 \}
 model \{
-  \textcolor{green}{lambda} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-  \textcolor{green}{tree} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{lambda}, \textcolor{gray}{taxa=}taxa);
-  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{tree});
+  \textcolor{green}{\(\pi\)} \textasciitilde \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
+  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+  \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
+  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
+  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
+  \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r}), \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
 \}
-\end{alltt}}
+\end{alltt}
+}
 
-These two blocks of statements contain all the information needed to define
-a Bayesian phylogenetic analysis of a multiple sequence alignment.
-The data block may contain literals, and deterministic values, including those read in from a file, but not random variables or generative distributions.
-The model block contains all random variables, generative distributions and boundary conditions that define the model.
-If a value in the data block has the same name as a random variable in the model block, then that signifies that the data block value is an observation of the random variable with the same name.
+Briefly, the script above specifies a phylodynamic model to be used
+with molecular sequences from the Respiratory syncytial virus subgroup
+A (RSVA).
+Commands related to parsing input data and to specifying the model are
+enclosed within the `\texttt{data \{ \}}' and `\texttt{model \{ \}}'
+blocks, respectively.
+We will explain what each line accomplishes in the following sections.
 
 
-So by assigning the alignment in file
-``data/primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has
-been observed, and we will infer all the other random variables
-(tree and lambda in this example) in the model from that observed sequence alignment.
+% \begin{mybox}[label=box1, float=htpb!]{A simple phylogenetic model}
+%  % \begin{minipage}[t]{0.60\textwidth}
+ 
+%  \begin{enumerate}
+%  \item Modeling language
+%     {\singlespacing
+% \begin{alltt}
+% model \{
+%   \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+%   \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
+%   \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+% \}
+% \end{alltt}
+% }
+% %  \end{minipage}%
+% %\begin{minipage}[t]{0.40\textwidth}
+% \item Graphical model
+% \\\\
+% {\centering
+% \begin{tikzpicture}[scale=0.52,
+% dstyle/.style={draw=blue!50,fill=blue!20},
+% vstyle/.style={draw=green,fill=green!20},
+% cstyle/.style={font=\small},
+% detstyle/.style={draw=red!50,fill=red!20}
+% ]
+% \node[const, cstyle] at (1.0, -0.0) (602717583) {meanlog = 3.0};
+% \node[const, cstyle] at (5.0, -0.0) (897996787) {sdlog = 1.0};
+% \node[latent, vstyle] at (2.0, -4.0) (lambda) {$\lambda$};
+% \node[const, cstyle] at (6.0, -4.0) (2011155364) {n = 16};
+% \node[latent, vstyle] at (2.0, -8.0) (psi) {$\psi$};
+% \node[const, cstyle] at (6.0, -8.0) (1992433642) {L = 200};
+% \node[det, detstyle] at (10.0, -8.0) (258223775) {[Q]};
+% \node[latent, vstyle] at (6.0, -12.0) (D) {D};
+% \factor[above=of lambda] {LogNormallambda} {left:LogNormal} {} {} ; %
+% \factoredge {602717583, 897996787} {LogNormallambda} {lambda}; %
+% \factor[above=of psi] {Yulepsi} {left:Yule} {} {} ; %
+% \factoredge {lambda, 2011155364} {Yulepsi} {psi}; %
+% \factor[above=of 258223775] {jukesCantor258223775} {left:jukesCantor} {} {} ; %
+% \factoredge {} {jukesCantor258223775} {258223775}; %
+% \factor[above=of D] {PhyloCTMCD} {left:PhyloCTMC} {} {} ; %
+% \factoredge {1992433642, 258223775, psi} {PhyloCTMCD} {D}; %
+% \end{tikzpicture}}
+% %\end{minipage}
+
+% \item Posterior
+
+% $$P(\psi, \lambda | D) \propto P(D | \psi) P(\psi | \lambda) P(\lambda) $$
+
+% \end{enumerate}
+
+% \end{mybox}
+
+% Each of the lines in this model specification expresses how a random
+% variable (to the left of the tilde) is generated by a generative
+% distribution to the right.
+
+% The first line creates a random variable (\texttt{lambda}), that is
+% log-normally distributed.
+% The second line creates a tree (\texttt{tree}) with 16 taxa from the
+% Yule process with a lineage birth rate equal to \texttt{lambda}.
+% The third line produces a multiple sequence alignment (\texttt{D})
+% with a length of 200, by simulating a Jukes Cantor model of sequence
+% evolution down the branches of  \texttt{tree}.
+% As you can see, each of the random variables depends on the previous,
+% so this is a hierarchical model that ultimately defines a probability
+% distribution over sequence alignments of size $16 \times 200$.
+
+% To construct an analysis of a data set with this model we add a data block:
+
+% {\small
+% \begin{alltt}
+% data \{
+%   D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}\textcolor{magenta}{"data/primate.nex"});
+%   L = D.\textcolor{magenta!80!black}{nchar}();
+%   taxa = D.\textcolor{magenta!80!black}{taxa}();
+% \}
+% model \{
+%   \textcolor{green}{lambda} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+%   \textcolor{green}{tree} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{lambda}, \textcolor{gray}{taxa=}taxa);
+%   \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{tree});
+% \}
+% \end{alltt}}
+
+% These two blocks of statements contain all the information needed to define
+% a Bayesian phylogenetic analysis of a multiple sequence alignment.
+% The data block may contain literals, and deterministic values, including those read in from a file, but not random variables or generative distributions.
+% The model block contains all random variables, generative distributions and boundary conditions that define the model.
+% If a value in the data block has the same name as a random variable in the model block, then that signifies that the data block value is an observation of the random variable with the same name.
+
+
+% So by assigning the alignment in file
+% ``data/primate.nex'' to the name D in the data block we are saying that the random variable in the model named D has
+% been observed, and we will infer all the other random variables
+% (tree and lambda in this example) in the model from that observed sequence alignment.
 
 \subsection*{Language features}
 
-LinguaPhylo has two main components: Values (which can be either constant or random variables, and either objects or primitives) and Generators (which can be either generative distributions, deterministic functions or method calls).
+LinguaPhylo has two main components: values, which come in both atomic
+and vectorized form (see more about vectorization below), and
+generators.
+Table \ref{tab:lphycomponents} summarizes the different types of
+values and generators that can be used in LPhy scripts.
+% (which can be either constant or random variables, and either objects or primitives) and Generators (which can be either generative distributions, deterministic functions or method calls).
 
-\subsection*{Values}
+\begin{table}[]
+  \begin{tabular}{lllll}
+    \hline
+    Value & Form & Type & Example\\\hline
+    Constant & Atomic & Primitive & \texttt{Integer}, \texttt{Double},
+                                    \texttt{String}, \texttt{Boolean}\\
+          & & Object & \texttt{Alignment}, \texttt{TimeTree}\\
+          & Array & Primitive & (Array form of its atomic counterpart)\\
+          & & Object & (Array form of its atomic counterpart)\\\hline
+    Random variable & Atomic & Primitive\\
+          & & Object\\
+          & Array & Primitive\\
+          & & Object\\ 
+\end{tabular}
+\end{table}
 
-Values in LinguaPhylo represent either random variables or constants. The type system of LinguaPhylo is open and can be extended by adding types to the Java implementation of LPhy. The types already developed include standard primitive types such as Double, Integer, String and Boolean, as well as some more complex types such as TimeTree and Alignment.
+\begin{table}[]
+  \begin{tabular}{p{2cm}lll}
+    \hline
+    Generator & Generated type & Example & Ref./Obj.\\\hline
+    Generative distribution & Primitive (\texttt{Double}) & \texttt{Uniform($\cdot$)} &\\
+              & & \texttt{Normal($\cdot$)} &\\
+              & & \texttt{LogNormal($\cdot$)} &\\
+              & & \texttt{Exponential($\cdot$)} &\\
+              & & \texttt{Gamma($\cdot$)} &\\
+              & & \texttt{Dirichlet($\cdot$)} &\\
+              & Object (\texttt{TimeTree}) & \texttt{Yule($\cdot$)} & \cite{yule1925ii}\\
+              & & \texttt{BirthDeath($\cdot$)} &\\
+              & & \texttt{FullBirthDeath($\cdot$)} &\\
+              & & \texttt{BirthDeathSampling($\cdot$)} &\\
+              & & \texttt{BirthDeathSerialSampling($\cdot$)} & \cite{stadler2013dating}\\
+              & & \texttt{Coalescent($\cdot$)} & \cite{kingman82}\\
+              & & \texttt{SkylineCoalescent($\cdot$)} &\\
+              & & \texttt{StructuredCoalescent($\cdot$)} &\\
+              & & \texttt{MultispeciesCoalescent($\cdot$)} &\\
+              & Object (\texttt{Alignment}) & \texttt{PhyloCTMC($\cdot$)} & \cite{felsenstein1981}\\\hline
+    Deterministic functions & Primitive (\texttt{Integer}) & \texttt{length()} &\\
+              & Object (\texttt{Q}) & \texttt{jukesCantor($\cdot$)} & \cite{jc69}\\
+              & & \texttt{hky($\cdot$)} & \cite{hky}\\
+              & & \texttt{gtr($\cdot$)} & \cite{gtr}\\
+              & Object (\texttt{Tree}) & \texttt{newick()} &\\
+              & Object (\texttt{Alignment} & \texttt{readNexus()} &\\\hline
+    Method calls & Primitive (\texttt{Integer}) & \texttt{.nchar()} &\\
+              & Object (\texttt{Taxa}) & \texttt{.taxa()} &\\
+\end{tabular}
+\end{table}
 
-\subsection*{Primitive constants}
+\subsubsection*{Values}
 
-The simplest type of value in LinguaPhylo is a primitive constant such in the following example. The first line defines a constant named `a' with a value of `2.0'. There is no explicit statement of the type, which is simply inferred to be a Double because the literal string `2.0' has a fractional component. The second constant `b' here is a constant of type Integer because it has no decimal point or fractional component. The third constant is of primitive type Boolean, inferred by the keyword `true'. the last constant is of type String because of the double quotes surrounding the literal value.
+Values in LinguaPhylo represent either random variables or
+constants. The type system of LinguaPhylo is open and can be extended
+by adding types to the Java implementation of LPhy. The types already
+developed include standard primitive types such as Double, Integer,
+String and Boolean, as well as some more complex types such as
+TimeTree and Alignment.\newline
+
+\noindent \emph{Primitive constants (atomic)} The simplest type of value in LinguaPhylo is a primitive constant such in the following example. The first line defines a constant named `a' with a value of `2.0'. There is no explicit statement of the type, which is simply inferred to be a Double because the literal string `2.0' has a fractional component. The second constant `b' here is a constant of type Integer because it has no decimal point or fractional component. The third constant is of primitive type Boolean, inferred by the keyword `true'. the last constant is of type String because of the double quotes surrounding the literal value.
 
 {\singlespacing
 \begin{alltt}
@@ -549,9 +649,7 @@ The simplest type of value in LinguaPhylo is a primitive constant such in the fo
 \end{alltt}
 }
 
-\subsection*{Arrays}
-
-The notion of primitives can be extended to arrays and to declare a constant array you can enclose comma-delimited literals in square brackets as shown below. For sequences of consecutive integers a more compact notation can be employed using the `:' to define a range. In the example below a and b represent the same constant array containing the consecutive integers from 1 to 10 inclusive.
+\noindent \emph{Primitive constants (arrays)} The notion of primitives can be extended to arrays and to declare a constant array you can enclose comma-delimited literals in square brackets as shown below. For sequences of consecutive integers a more compact notation can be employed using the `:' to define a range. In the example below a and b represent the same constant array containing the consecutive integers from 1 to 10 inclusive.
 
 \begin{alltt}
   a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
