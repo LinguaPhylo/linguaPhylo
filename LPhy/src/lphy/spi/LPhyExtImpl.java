@@ -39,8 +39,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
- * The provider of SPI which is an implementation of a service.
+ * The "Container" provider class of SPI
+ * which include a list of {@link GenerativeDistribution}, {@link Func},
+ * and {@link SequenceType} to extend.
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
@@ -99,7 +100,7 @@ public class LPhyExtImpl implements LPhyExtension {
      * Required by ServiceLoader.
      */
     public LPhyExtImpl() {
-        //TODO print package or classes info here?
+        //TODO do something here, e.g. print package or classes info ?
     }
 
     @Override

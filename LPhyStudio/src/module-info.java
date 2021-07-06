@@ -1,6 +1,6 @@
 /**
  * @author Walter Xie
  */
-module LPhyStudio {
+module lphystudio {
     requires transitive lphy;
 }
