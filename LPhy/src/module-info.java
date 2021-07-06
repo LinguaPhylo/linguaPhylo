@@ -12,10 +12,10 @@ module lphy {
     requires transitive org.antlr.antlr4.runtime;
     requires transitive org.apache.commons.lang3;
     requires transitive commons.math3;
-    requires transitive junit;
     requires transitive batik.all;
     requires transitive jlatexmath;
     requires transitive markdowngenerator;
+    requires transitive junit;
 
     requires transitive jebl;
 

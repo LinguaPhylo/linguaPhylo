@@ -6,20 +6,20 @@
     <property name="studioFolder" value="LPhyStudio"/>
 
     <property name="lphy" location="../LPhy"/>
-    <import file="${lphy}/build.xml"/>
+    <include file="${lphy}/build.xml"/>
 <!--    <echo>${lphyJar}</echo>-->
 <!--    <echo>${projVersion}</echo>-->
 
     <!-- source code dir separated from test   -->
-    <property name="src" location="${lphyRepo}/${studioFolder}/src" />
+    <property name="studioSrc" location="${lphyRepo}/${studioFolder}/src" />
     <!-- source code dir of test   -->
     <!--    <property name="lib" location="../${projName}/lib" />-->
-    <property name="test" location="${lphyRepo}/${studioFolder}/test" />
+    <property name="studioTest" location="${lphyRepo}/${studioFolder}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
-    <property name="build" location="${lphyRepo}/${studioFolder}/build" />
-    <property name="dist" location="${lphyRepo}/${studioFolder}/dist" />
-    <property name="build-test" location="${lphyRepo}/${studioFolder}/build-test"/>
-    <property name="test-reports" location="${lphyRepo}/${studioFolder}/test-reports"/>
+    <property name="studioBuild" location="${lphyRepo}/${studioFolder}/build" />
+    <property name="studioDist" location="${lphyRepo}/${studioFolder}/dist" />
+    <property name="studio-build-test" location="${lphyRepo}/${studioFolder}/build-test"/>
+    <property name="studio-test-reports" location="${lphyRepo}/${studioFolder}/test-reports"/>
 
     <!-- need 3rd party jar to use script engine, to convert the string to lower cases -->
     <!-- Jar file naming conventions: all small cases  name-major.minor.build.jar  -->
@@ -27,10 +27,10 @@
 
     <!-- Revert to pristine state. -->
     <target name="clean">
-        <delete dir="${build}"/>
-        <delete dir="${dist}"/>
-        <delete dir="${build-test}"/>
-        <delete dir="${test-reports}"/>
+        <delete dir="${studioBuild}"/>
+        <delete dir="${studioDist}"/>
+        <delete dir="${studio-build-test}"/>
+        <delete dir="${studio-test-reports}"/>
     </target>
 
     <!-- Prepare for compilation -->
@@ -40,86 +40,108 @@
         <echo message="Working dir is ${user.dir}." />
         <echo message="Current dir is ${basedir}." />
 
-        <mkdir dir="${build}"/>
+        <mkdir dir="${studioBuild}"/>
 <!--        <mkdir dir="${dist}"/>-->
+        <!--  lphy.dist is called in release  -->
     </target>
 
-    <path id="studio-clspath">
-        <pathelement path="${classpath}"/>
+<!--    <path id="studio-clspath">-->
+<!--        <pathelement path="${classpath}"/>-->
+<!--        <pathelement path="${lphyBuild}"/>-->
+<!--        <pathelement path="${lphyResources}"/>-->
+<!--        <fileset dir="${lphyLib}" includes="*.jar"/>-->
+<!--        <pathelement path="${studioBuild}"/>-->
+<!--&lt;!&ndash;        <fileset dir="${lib}" includes="*.jar"/>&ndash;&gt;-->
+<!--    </path>-->
+
+    <path id="studio-module-path">
+        <pathelement path="${studioBuild}"/>
         <pathelement path="${lphyBuild}"/>
-        <pathelement path="${lphyResources}"/>
         <fileset dir="${lphyLib}" includes="*.jar"/>
-        <pathelement path="${build}"/>
-<!--        <fileset dir="${lib}" includes="*.jar"/>-->
     </path>
 
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <echo>LPhy studio classpath is ${toString:studio-clspath}</echo>
+        <echo>LPhy studio module-path is ${toString:studio-clspath}</echo>
         <!-- imported from ${lphy}/build.xml -->
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${src}"
-               destdir="${build}" includeantruntime="false">
-            <classpath refid="studio-clspath"/>
+        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${studioSrc}"
+               destdir="${studioBuild}" includeantruntime="false">
+            <modulepath refid="studio-module-path"/>
         </javac>
         <echo message="Successfully compiled ${studioFolder}." />
     </target>
 
     <property name="extDir" value="lib"/>
     <!-- jar -->
+
     <target name="dist" depends="compile">
         <!-- manifest -->
-        <tstamp/>
-        <echo message="Version ${lphyVersion}" />
-        <echo message="Class-Path ${studioJar}.jar" />
-        <echo message="Created-By ${createBy}" />
-        <echo message="Built-By ${builtBy}" />
-        <echo message="Built-Date ${TODAY}" />
+<!--        <tstamp/>-->
+<!--        <echo message="Version ${lphyVersion}" />-->
+<!--        <echo message="Class-Path ${studioJar}.jar" />-->
+<!--        <echo message="Created-By ${createBy}" />-->
+<!--        <echo message="Built-By ${builtBy}" />-->
+<!--        <echo message="Built-Date ${TODAY}" />-->
 
-        <mkdir dir="${dist}"/>
+        <mkdir dir="${studioDist}"/>
 
-        <jar jarfile="${dist}/${studioJar}.jar">
-            <fileset dir="${build}"/>
-            <manifest>
-                <attribute name="Main-Class" value="lphystudio.app.LinguaPhyloStudio"/>
-                <attribute name="Version" value="${lphyVersion}"/>
-                <!-- default to have lib/${lphyJar}.jar in classpath -->
-                <attribute name="Class-Path" value="${extDir}/${lphyJar}.jar"/>
-                <attribute name="Created-By" value="${createBy}"/>
-                <attribute name="Built-By" value="${builtBy}"/>
-                <attribute name="Built-Date" value="${TODAY}"/>
-            </manifest>
+        <exec executable="jar" failifexecutionfails="true">
+            <arg value="--create" />
+            <arg value="--file=${studioDist}/${studioJar}.jar" />
+            <arg value="--main-class=lphystudio.app.LinguaPhyloStudio" />
+            <arg value="-C" />
+            <arg value="${studioBuild}" />
+            <arg value="." />
+        </exec>
+        <!-- TODO manifest -->
+        <echo message="Create ${studioJar}.jar to ${studioDist}." />
+
+        <!--        <jar jarfile="${studioDist}/${studioJar}.jar">-->
+<!--            <fileset dir="${studioBuild}"/>-->
+<!--            <manifest>-->
+<!--                <attribute name="Main-Class" value="lphystudio.app.LinguaPhyloStudio"/>-->
+<!--                <attribute name="Version" value="${lphyVersion}"/>-->
+<!--                &lt;!&ndash; default to have lib/${lphyJar}.jar in classpath &ndash;&gt;-->
+<!--                <attribute name="Class-Path" value="${extDir}/${lphyJar}.jar"/>-->
+<!--                <attribute name="Created-By" value="${createBy}"/>-->
+<!--                <attribute name="Built-By" value="${builtBy}"/>-->
+<!--                <attribute name="Built-Date" value="${TODAY}"/>-->
+<!--            </manifest>-->
 <!--            <zipgroupfileset dir="${lib}" includes="*.jar"/>-->
-        </jar>
+<!--        </jar>-->
     </target>
 
     <!-- release, depend on lphy.dist -->
 
     <target name="release" depends="lphy.dist,compile,dist" unless="file.exists"
             description="for the release process">
-        <property name="pack" value="${dist}/package"/>
+        <property name="pack" value="${studioDist}/package"/>
         <mkdir dir="${pack}"/>
         <mkdir dir="${pack}/${extDir}"/>
 
-        <copy file="${dist}/${studioJar}.jar" tofile="${pack}/${studioJar}.jar"/>
-        <available property="file.exists" file="${lphy}/dist/${lphyJar}.jar"/>
+        <copy file="${studioDist}/${studioJar}.jar" tofile="${pack}/${studioJar}.jar"/>
+        <available property="file.exists" file="${lphyDist}/${lphyJar}.jar"/>
         <!--  lphy core to ext as well  -->
-        <copy file="${lphy}/dist/${lphyJar}.jar" tofile="${pack}/${extDir}/${lphyJar}.jar"/>
+        <copy file="${lphyDist}/${lphyJar}.jar" todir="${pack}/${extDir}"/>
+        <copy todir="${pack}/${extDir}">
+            <fileset dir="${lphyLib}" includes="*.jar"/>
+        </copy>
 
-        <copy file="../README.md" tofile="${pack}/README"/>
+        <copy file="../README.md" todir="${pack}"/>
         <!--
             <copy file="COPYING" todir="${pack}" />
             <copy todir="${pack}">
               <fileset dir="${lib}" includes="LICENSE*" />
             </copy>
         -->
-        <property name="exaDir" value="examples"/>
-        <mkdir dir="${pack}/${exaDir}"/>
-        <copy todir="${pack}/${exaDir}">
+        <property name="exmpDir" value="examples"/>
+        <mkdir dir="${pack}/${exmpDir}"/>
+        <copy todir="${pack}/${exmpDir}">
             <!--  examples files are under the root -->
-            <fileset dir="../${exaDir}" includes="*.lphy">
+            <fileset dir="../${exmpDir}" includes="*.lphy">
                 <exclude name="**/*covid*"/>
             </fileset>
-            <fileset dir="../${exaDir}">
+            <fileset dir="../${exmpDir}">
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
@@ -142,13 +164,13 @@
             </fileset>
         </copy>
 
-        <zip destfile="${dist}/${lphyJar}.zip" basedir="${pack}"/>
+        <zip destfile="${studioDist}/${studioFolder}-${lphyVersion}.zip" basedir="${pack}"/>
 
 <!--        <delete dir="${pack}"/>-->
 
         <echo/>
         <echo/>
-        <echo>** Release ${dist}/${lphyJar}.zip created successfully! **</echo>
+        <echo>** Release ${studioDist}/${studioFolder}-${lphyVersion}.zip created successfully! **</echo>
     </target>
 
 <!--TODO tests-->

@@ -66,7 +66,7 @@
 
     <!-- Compile -->
     <target name="compile" depends="init" description="clean, create dirs, and compile.">
-        <echo>LPhy classpath is ${toString:lphy-module-path}</echo>
+        <echo>LPhy module-path is ${toString:lphy-module-path}</echo>
 
         <javac target="${targetVersion}" source="${sourceVersion}"
                srcdir="${lphySrc}" destdir="${lphyBuild}" includeantruntime="false">
@@ -98,12 +98,12 @@
             <manifest>
 <!--                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>-->
                 <attribute name="Version" value="${lphyVersion}"/>
-                <attribute name="Class-Path" value="${lphyJar}.jar"/>
+<!--                <attribute name="Class-Path" value="${lphyJar}.jar"/>-->
                 <attribute name="Created-By" value="${createBy}"/>
                 <attribute name="Built-By" value="${builtBy}"/>
                 <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
-            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>
+<!--            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>-->
         </jar>
     </target>
 
