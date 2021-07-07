@@ -121,6 +121,9 @@
 % array package and thick rules for tables
 \usepackage{array}
 
+% underline
+\usepackage{soul}
+
 % create "+" rule type for thick vertical lines
 \newcolumntype{+}{!{\vrule width 2pt}}
 
@@ -578,11 +581,20 @@ We will explain what each line accomplishes in the following sections.
 LinguaPhylo has two main components: values, which come in both atomic
 and vectorized form (see more about vectorization below), and
 generators.
-Table \ref{tab:lphycomponents} summarizes the different types of
-values and generators that can be used in LPhy scripts.
+In what follows, we summarize and illustrate their different types.
 % (which can be either constant or random variables, and either objects or primitives) and Generators (which can be either generative distributions, deterministic functions or method calls).
 
-\begin{table}[]
+\subsubsection*{Values}
+
+Values in LinguaPhylo represent either random variables or
+constants (Table \ref{tab:lphyvalues}), which can be of standard
+primitive types (e.g., \texttt{Integer}, \texttt{Double},
+\texttt{String}) or more complex types (e.g., \texttt{Alignment},
+\texttt{TimeTree}).
+The type system of LPhy is not limited to aforementioned types,
+however, and new types can be added to its Java implementation.\newline 
+
+\begin{table}[h]
   \begin{tabular}{lllll}
     \hline
     Value & Form & Type & Example\\\hline
@@ -597,6 +609,80 @@ values and generators that can be used in LPhy scripts.
           & & Object\\ 
 \end{tabular}
 \end{table}
+
+\noindent \emph{Atomic primitive constants}. The simplest type of
+values in LinguaPhylo is an atomic primitive constant.
+In the example lines below (extracted from the full script at the
+beginning of this section), we define two primitive constants: a
+\texttt{String} constant named \texttt{nexusFilePath}, and a
+\texttt{Integer} constant named \texttt{n}:
+
+{
+\small
+\begin{alltt}
+  nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
+  n = 3;
+\end{alltt}
+}
+
+In LPhy there is no explicit statement of types, which are
+automatically inferred.
+\texttt{nexusFilePath} is inferred to be a \texttt{String} because its
+literal value is surrounded by double quotes.
+Constant \texttt{n} is inferred to be an \texttt{Integer} because
+string `\texttt{3}' string has no decimal point or fractional component
+(conversely, \texttt{Double} would be inferred if 
+the string had a fractional component).\newline
+
+% The first line defines a constant named `a' with a value of
+% `2.0'. There is no explicit statement of the type, which is simply
+% inferred to be a Double because the literal string `2.0' has a
+% fractional component. The second constant `b' here is a constant of
+% type Integer because it has no decimal point or fractional
+% component. The third constant is of primitive type Boolean, inferred
+% by the keyword `true'. the last constant is of type String because of
+% the double quotes surrounding the literal value.
+
+
+% {\singlespacing
+% \begin{alltt}
+%   a = 2.0;
+%   b = 2;
+%   c = true;
+%   d = "lphy";
+% \end{alltt}
+% }
+
+\noindent \emph{Arrays of primitive constants}. The notion of primitives
+can be extended to arrays.
+In order to declare a constant array, comma-delimited literals should
+be enclosed in square brackets as shown below:
+
+{\small
+  \begin{alltt}
+    L = [209, 210, 210];
+  \end{alltt}  
+}
+
+For sequences of consecutive integers, a more compact notation can be
+employed using the `\texttt{:}' character to define a range.
+In the example below, constant arrays \texttt{a} and \texttt{b}
+represent the same sequence of consecutive integers from 1 to 10
+inclusive.
+
+\begin{alltt}
+  a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  b = 1:10;
+\end{alltt}
+
+\subsubsection*{Generators}
+
+As their name suggests, generators generate atomic or arrays of
+values.
+Generators can be generative distributions, deterministic functions,
+or method calls (Table \ref{tab:lphygenerators}).
+Like values, new generators can also be added to LPhy's Java
+implementation (see Results section below).\newline
 
 \begin{table}[]
   \begin{tabular}{p{2cm}lll}
@@ -629,46 +715,37 @@ values and generators that can be used in LPhy scripts.
 \end{tabular}
 \end{table}
 
-\subsubsection*{Values}
-
-Values in LinguaPhylo represent either random variables or
-constants. The type system of LinguaPhylo is open and can be extended
-by adding types to the Java implementation of LPhy. The types already
-developed include standard primitive types such as Double, Integer,
-String and Boolean, as well as some more complex types such as
-TimeTree and Alignment.\newline
-
-\noindent \emph{Primitive constants (atomic)} The simplest type of value in LinguaPhylo is a primitive constant such in the following example. The first line defines a constant named `a' with a value of `2.0'. There is no explicit statement of the type, which is simply inferred to be a Double because the literal string `2.0' has a fractional component. The second constant `b' here is a constant of type Integer because it has no decimal point or fractional component. The third constant is of primitive type Boolean, inferred by the keyword `true'. the last constant is of type String because of the double quotes surrounding the literal value.
+\noindent \emph{Generative distributions}. A generative distribution
+generates a named random variable value, which can have an object or a
+primitive type.
+Some generative distributions have labelled parameters, like the
+following lines from the full script in the previous section:
 
 {\singlespacing
 \begin{alltt}
-  a = 2.0;
-  b = 2;
-  c = true;
-  d = "lphy";
+  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
+  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
 \end{alltt}
 }
 
-\noindent \emph{Primitive constants (arrays)} The notion of primitives can be extended to arrays and to declare a constant array you can enclose comma-delimited literals in square brackets as shown below. For sequences of consecutive integers a more compact notation can be employed using the `:' to define a range. In the example below a and b represent the same constant array containing the consecutive integers from 1 to 10 inclusive.
+Note that like the Rev language \cite{revbayes}, LPhy's syntax for
+connecting a generative distribution to a random variable borrows from
+the domain-specific notation of probability theory.
+The tilde `\texttt{\~}' symbol in the two lines above indicates that
+under our model, random variables (i.e., parameters) \texttt{$\mu$}
+and \texttt{$\Theta$} are distributed according to a log-normal
+distribution, each with its own mean and standard deviation.
+Simulating under this model entails sampling \texttt{$\mu$} and
+\texttt{$\Theta$} from the specified log-normal distributions, and if
+inference were to be carried out instead, these log-normal distributions
+would constitute these parameters' prior distributions.\newline
 
-\begin{alltt}
-  a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  b = 1:10;
-\end{alltt}
+\noindent \ul{Vectorization}. 
 
-\subsection*{Generative distributions}
-
-A generative distribution generates a named random variable which has a value that is either an object or a primitive type. Some generative distributions have parameters which have argument labels:
-
-{\singlespacing
-\begin{alltt}
-  lambda ~ LogNormal(meanlog=3.0, sdlog=1.0);
-\end{alltt}
-}
-
-\subsection*{Deterministic functions}
-
-A deterministic function generates either an object or a primitive value that is a deterministic function of its arguments. If the function has a single argument then no argument label is needed, otherwise arguments are labelled in the same way as for generative distributions. In the code below the function named hky takes two parameters with argument labels `kappa' and `freq' and deterministically produces an instantaneous rate matrix using those values.
+\noindent \emph{Deterministic functions}. A deterministic function
+generates either an object or a primitive value that is a
+deterministic function of its arguments.
+If the function has a single argument then no argument label is needed, otherwise arguments are labelled in the same way as for generative distributions. In the code below the function named hky takes two parameters with argument labels `kappa' and `freq' and deterministically produces an instantaneous rate matrix using those values.
 
 {\singlespacing
 \begin{alltt}
