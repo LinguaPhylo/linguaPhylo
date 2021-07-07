@@ -28,6 +28,7 @@ module lphy {
 
     exports lphy.evolution;
     exports lphy.evolution.alignment;
+    exports lphy.evolution.birthdeath;
     exports lphy.evolution.coalescent;
     exports lphy.evolution.datatype;
     exports lphy.evolution.likelihood;
