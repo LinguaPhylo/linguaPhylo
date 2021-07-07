@@ -187,6 +187,16 @@
 \newcommand{\lorem}{{\bf LOREM}}
 \newcommand{\ipsum}{{\bf IPSUM}}
 
+% next 6 lines put a caption on \alltt float
+\usepackage{newfloat}
+\usepackage{caption}
+\DeclareFloatingEnvironment[fileext=frm,placement={!ht},name=example]{example}
+\DeclareCaptionSubType*{example}
+\captionsetup[subexample]{name=Example}
+\renewcommand{\thesubexample}{\theexample}
+
+\usepackage{listing}
+
 %% END MACROS SECTION
 
 
@@ -449,32 +459,40 @@ accompanying the software.
 We have  modified the script slightly for illustrative purposes:
 
 {
-\small
-\begin{alltt}
-data \{
-  options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
-  nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
-  D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
-  codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
-  n = 3 // equivalent to n = length(codon);
-  L = [209, 210, 210]; // equivalent to L = codon.nchar();
-  taxa = D.\textcolor{magenta!80!black}{taxa}();
-\}
-model \{
-  \textcolor{green}{\(\pi\)} \textasciitilde \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
-  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-  \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
-  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
-  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
-  \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r}), \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-\}
-\end{alltt}
+  \small
+  \begin{listing}
+    \stepcounter{example}
+    \begin{alltt}
+      data \{
+      options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
+      nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
+      D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
+      codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
+      n = 3;
+      L = [209, 210, 210];
+      taxa = D.\textcolor{magenta!80!black}{taxa}();
+      \}
+      model \{
+      \textcolor{green}{\(\pi\)} \textasciitilde \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
+      \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+      \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+      \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
+      \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
+      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
+      Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
+      \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+      \}
+    \end{alltt}
+    \captionof{subexample}{LPhy script specifying a phylodynamic model
+      to be run with Respiratory syncytial virus subgroup A (RSVA)
+      genetic samples.\newline}
+    \label{lphy:rsva}
+  \end{listing}
 }
 
-Briefly, the script above specifies a phylodynamic model to be used
-with molecular sequences from the Respiratory syncytial virus subgroup
-A (RSVA).
+Briefly, the script above (Example \ref{lphy:rsva}) specifies a
+phylodynamic model to be used with molecular sequences from the
+Respiratory syncytial virus subgroup A (RSVA).
 Commands related to parsing input data and to specifying the model are
 enclosed within the `\texttt{data \{ \}}' and `\texttt{model \{ \}}'
 blocks, respectively.
@@ -586,36 +604,36 @@ In what follows, we summarize and illustrate their different types.
 
 \subsubsection*{Values}
 
-Values in LinguaPhylo represent either random variables or
-constants (Table \ref{tab:lphyvalues}), which can be of standard
-primitive types (e.g., \texttt{Integer}, \texttt{Double},
-\texttt{String}) or more complex types (e.g., \texttt{Alignment},
-\texttt{TimeTree}).
+Values in LinguaPhylo represent either atomic or arrays of random
+variables or constants, which can be of standard
+primitive types (e.g., \texttt{Boolean}, \texttt{Integer},
+\texttt{Double}, \texttt{String}) or more complex types (e.g.,
+\texttt{Alignment}, \texttt{TimeTree}).
 The type system of LPhy is not limited to aforementioned types,
 however, and new types can be added to its Java implementation.\newline 
 
-\begin{table}[h]
-  \begin{tabular}{lllll}
-    \hline
-    Value & Form & Type & Example\\\hline
-    Constant & Atomic & Primitive & \texttt{Integer}, \texttt{Double},
-                                    \texttt{String}, \texttt{Boolean}\\
-          & & Object & \texttt{Alignment}, \texttt{TimeTree}\\
-          & Array & Primitive & (Array form of its atomic counterpart)\\
-          & & Object & (Array form of its atomic counterpart)\\\hline
-    Random variable & Atomic & Primitive\\
-          & & Object\\
-          & Array & Primitive\\
-          & & Object\\ 
-\end{tabular}
-\end{table}
+% \begin{table}[h]
+%   \begin{tabular}{lllll}
+%     \hline
+%     Value & Form & Type & Example\\\hline
+%     Constant & Atomic & Primitive & \texttt{Integer}, \texttt{Double},
+%                                     \texttt{String}, \texttt{Boolean}\\
+%           & & Object & \texttt{Alignment}, \texttt{TimeTree}\\
+%           & Array & Primitive & (Array form of its atomic counterpart)\\
+%           & & Object & (Array form of its atomic counterpart)\\\hline
+%     Random variable & Atomic & Primitive\\
+%           & & Object\\
+%           & Array & Primitive\\
+%           & & Object\\ 
+% \end{tabular}
+% \end{table}
 
 \noindent \emph{Atomic primitive constants}. The simplest type of
 values in LinguaPhylo is an atomic primitive constant.
-In the example lines below (extracted from the full script at the
-beginning of this section), we define two primitive constants: a
-\texttt{String} constant named \texttt{nexusFilePath}, and a
-\texttt{Integer} constant named \texttt{n}:
+In the lines below (extracted from Example \ref{lphy:rsva}), we define
+two primitive constants: a \texttt{String} constant named
+\texttt{nexusFilePath}, and a \texttt{Integer} constant named
+\texttt{n}:
 
 {
 \small
@@ -684,7 +702,11 @@ or method calls (Table \ref{tab:lphygenerators}).
 Like values, new generators can also be added to LPhy's Java
 implementation (see Results section below).\newline
 
-\begin{table}[]
+\begin{table}[h]
+  \caption{Different types of generators supported by
+    LinguaPhylo. `Ref.' stands for bibliographic references proposing
+    special types of phylogenetic generative distributions. `Obj.'
+    stands for objects providing a given method call.}
   \begin{tabular}{p{2cm}lll}
     \hline
     Generator & Generated type & Example & Ref./Obj.\\\hline
@@ -700,7 +722,7 @@ implementation (see Results section below).\newline
               & & \texttt{BirthDeathSampling($\cdot$)} &\\
               & & \texttt{BirthDeathSerialSampling($\cdot$)} & \cite{stadler2013dating}\\
               & & \texttt{Coalescent($\cdot$)} & \cite{kingman82}\\
-              & & \texttt{SkylineCoalescent($\cdot$)} &\\
+              & & \texttt{SkylineCoalescent($\cdot$)} & \cite{pybus00,drummond2005bayesiansequences}\\
               & & \texttt{StructuredCoalescent($\cdot$)} &\\
               & & \texttt{MultispeciesCoalescent($\cdot$)} &\\
               & Object (\texttt{Alignment}) & \texttt{PhyloCTMC($\cdot$)} & \cite{felsenstein1981}\\\hline
@@ -712,7 +734,8 @@ implementation (see Results section below).\newline
               & Object (\texttt{Alignment} & \texttt{readNexus()} &\\\hline
     Method calls & Primitive (\texttt{Integer}) & \texttt{.nchar()} &\\
               & Object (\texttt{Taxa}) & \texttt{.taxa()} &\\
-\end{tabular}
+  \end{tabular}
+  \label{tab:generators}
 \end{table}
 
 \noindent \emph{Generative distributions}. A generative distribution
@@ -740,22 +763,95 @@ Simulating under this model entails sampling \texttt{$\mu$} and
 inference were to be carried out instead, these log-normal distributions
 would constitute these parameters' prior distributions.\newline
 
-\noindent \ul{Vectorization}. 
+\noindent \ul{Tree generative distributions}. Although there are many
+programming languages through which statistical 
+models can be succintly described (e.g., Stan
+\cite{carpenter2017stan}, JAGS \cite{plummer2003jags}, BUGS
+\cite{lunn2009bugs, gilks1994language}), these languages do not
+support the unique feature of phylogenetic models: the phylogenetic
+tree.
+Phylogenetic trees are complex high-dimensional objects, part
+discrete, part continuous.
+There is no bijection between tree space and Euclidean space, so these
+objects cannot be treated with standard statistical distributions
+\textcolor{red}{[Should you cite something here?]}.
+Hence, specialist software is needed to perform inference
+involving phylogenetic trees
+\cite{hohna2016revbayes,bouckaert2019beastanalysis}.
+
+Trees are almost always unknown and must be estimated as parameters
+(i.e., random variables) in phylogenetic inference.
+When specifying phylogenetic tree random variables with LPhy, special
+tree generative distributions must be used (Table
+\ref{tab:generators}):
+
+{\small
+  \begin{alltt}
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
+  \end{alltt}
+}
+
+The line above from Example \ref{lphy:rsva} specifies that the
+phylogenetic tree \texttt{$\psi$} is sampled from a
+constant-population size coalescent tree prior \cite{kingman82}.
+\newline
 
 \noindent \emph{Deterministic functions}. A deterministic function
 generates either an object or a primitive value that is a
 deterministic function of its arguments.
-If the function has a single argument then no argument label is needed, otherwise arguments are labelled in the same way as for generative distributions. In the code below the function named hky takes two parameters with argument labels `kappa' and `freq' and deterministically produces an instantaneous rate matrix using those values.
+When deterministic functions have a single argument, then no argument
+labels are needed; otherwise arguments are labelled in the same way as
+for generative distributions:
 
-{\singlespacing
+{\small
 \begin{alltt}
-  Q = hky(kappa=2.0, freq=[0.2, 0.25, 0.4, 0.15]);
+  Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
 \end{alltt}
 }
 
-\subsection*{Vectorization}
+In the code above from Example \ref{lphy:rsva}, the deterministic
+function named \texttt{hky} takes three parameters with argument
+labels \texttt{kappa}, \texttt{freq} and \texttt{meanRate}, and
+deterministically produces an instantaneous rate matrix using those
+values.\newline
 
-LinguaPhylo has built-in vectorization so that any distribution or function can be called with a vectorized form of its arguments to produce multiple values from the generator. There are two vectorization patterns: IID and vectorized argument. The following code demonstrates both:
+\noindent \emph{Method calls}. Method calls are functions that return
+constant values summarized or calculated from objects those functions
+are associated to.
+The following two lines of code, for example, are equivalent (see
+Example \ref{lphy:rsva} for the definition of the \texttt{codon}
+object):
+
+{\small
+  \begin{alltt}
+    L = [209, 210, 210];
+    L = codon.nchar();
+  \end{alltt}
+}
+
+On the second line, the object named \texttt{codon} has a method
+associated to it called \texttt{nchar}, which can be invoked by
+prepending it with `\texttt{.}' and appending `\texttt{()}'.
+
+\subsubsection*{Vectorization}
+LinguaPhylo is similar to the popular R language \cite{R} in that it
+has built-in vectorization, meaning that any function (including
+generative distributions) can be called with its arguments in
+vectorized form, producing multiple values as its output. 
+There are two vectorization patterns (i) IID and (ii) vectorized
+argument.
+The following lines from Example \ref{lphy:rsva} demonstrate both:
+{\small
+  \begin{alltt}
+    // In data block:
+    // n = 3;
+    // L = [209, 210, 210];
+
+    \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+    \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+    Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
+  \end{alltt}
+}
 
 {\singlespacing
 \begin{alltt}
@@ -766,318 +862,345 @@ LinguaPhylo has built-in vectorization so that any distribution or function can 
 
 \end{alltt} 
 
-The first two lines of this code use the IID pattern, which involves adding a replicates argument of type integer to any generative distribution. In the first line this results in a an array of iid doubles being produced from the specified log-normal distribution of length $n = 3$ instead of a single double. The second line similarly produces a 2D array of doubles representing three iid Dirichlet distributions, instead of the normal 1D array that the Dirichlet distribution would normally produce. The final line vectorises the hky funcgtion by passing arguments that are arrays of the normal argument types, resulting in the production of a 3D array representing and array of three iid HKY instantaneous rate matrices.
+The first two lines of this code (ignoring the commented lines, which
+were added to remind the reader of the values of \texttt{n} and
+\texttt{L}) use the IID pattern.
+Here, all we are doing is providing the \texttt{LogNormal} and
+\texttt{WeightedDirichlet} generative distributions arguments of
+type \texttt{Integer}.
+These arguments -- \texttt{n} for \texttt{LogNormal}, and \texttt{n}
+and \texttt{L} for \texttt{WeightedDirichlet} -- tell these functions
+that we want an array of iid random variables (or 2-D array in the
+case of the weighted Dirichlet), rather than an atomic output. 
+
+The third line vectorises the \texttt{hky} function by passing
+arguments that are arrays themselves.
+More specifically, in this case we pass in the arrays produced by the
+previous two lines of code, namely, \texttt{$\kappa$} and
+\texttt{$r$}, in addition to another previously built array
+\texttt{$\pi$} (see Example \ref{lphy:rsva} for the full script).
+The output of \texttt{hky} is an array of 3-D array of \texttt{Double}
+values representing three iid HKY \cite{hky} instantaneous rate
+matrices, one matrix per codon partition.
+
+\subsubsection*{Data clamping}
+
+\textcolor{red}{[Alexei, if you think it's worth it, could you add
+  something about how you implemented data clamping?]}
+
+% \subsection*{Tree generative distributions}
+
+% There are many statistical programming languages such as Stan
+% \cite{carpenter2017stan}, JAGS \cite{plummer2003jags} and BUGS \cite{lunn2009bugs, gilks1994language} that provide the possibility
+% of succinctly describing statistical models. The unique model feature of
+% phylogenetic analysis is the phylogenetic tree.
+% This is a complex high-dimensional object, part discrete, part
+% continuous.
+% There is no bijection between tree space and Euclidean space, so it
+% can not be treated with standard statistical distributions.
+% As a result specialist software is needed to perform inference \cite{hohna2016revbayes,bouckaert2019beastanalysis}.
+
+% The aim of LPhy is describe the standard phylogenetic tree
+% distributions succinctly and precisely, while leaving out trivial algorithmic details related to the method
+% of inference and the particular software employed to do the inference.
+
+% \subsubsection*{Coalescent generative distributions for time trees}
+
+% LPhy has describes a family of coalescent generative distributions
+% that produce TimeTrees.
+
+% The simplest model in this package is the one parameter model
+% constant-population size coalescent.
+% The generation-time-scaled population size parameter (theta) parameter determines at
+% what rate, per unit time, a pair of lineages coalesce, backwards in time.
+
+% \subsubsection*{Constant population size coalescent model}
+
+% In its simplest form \cite{kingman81} the coalescent model produces a
+% tree on a fixed number of leaves based on a population size parameter (theta):
+
+% \begin{alltt}
+%   g ~ Coalescent(theta=0.1, n=16);
+% \end{alltt}
+
+% It is also possible to give explicit taxa labels to the generative
+% distribution:
+
+% \begin{alltt}
+%   g ~ Coalescent(theta=0.1, taxa=["a", "b", "c", "d"]);
+% \end{alltt}
+
+% It is also possible to handle serially-sampled (time-stamped) data by
+% adding ages.
+% There are two ways to do that:
+
+% Ages without taxa names:
+
+% \begin{alltt}
+%   g ~ Coalescent(theta=0.1, ages=[0.0, 0.1, 0.2, 0.3]);
+% \end{alltt}
+
+% Ages and taxa names:
+
+% \begin{alltt}
+%   taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
+%   g ~ Coalescent(theta=0.1, taxaAges=taxaAges);
+% \end{alltt}
 
-\subsection*{Tree generative distributions}
+% \subsubsection*{Classic skyline coalescent model}
+
+% A highly parametric version of the coalescent is also possible, where
+% a series of theta values are provided, one for each group of consecutive coalescent intervals.
+% If the groupSizes are specified then each coalescent interval is given its
+% own population size.
+% The following code would generate a tree of five taxa, since there are four theta values provided:
 
-There are many statistical programming languages such as Stan
-\cite{carpenter2017stan}, JAGS \cite{plummer2003jags} and BUGS \cite{lunn2009bugs, gilks1994language} that provide the possibility
-of succinctly describing statistical models. The unique model feature of
-phylogenetic analysis is the phylogenetic tree.
-This is a complex high-dimensional object, part discrete, part
-continuous.
-There is no bijection between tree space and Euclidean space, so it
-can not be treated with standard statistical distributions.
-As a result specialist software is needed to perform inference \cite{hohna2016revbayes,bouckaert2019beastanalysis}.
+% \begin{alltt}
+%   g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4]);
+% \end{alltt}
 
-The aim of LPhy is describe the standard phylogenetic tree
-distributions succinctly and precisely, while leaving out trivial algorithmic details related to the method
-of inference and the particular software employed to do the inference.
+% The theta values are indexed from the present into the past.
+% So the first coalescent interval (starting from the leaves)
+% would be generated assuming a population size parameter of 0.1, while
+% the last coalescent interval (culimating at the root of the tree)
+% would be generated from a population size parameter of 0.4.
 
-\subsubsection*{Coalescent generative distributions for time trees}
+% It is also possible to add taxa and/or taxa age information:
 
-LPhy has describes a family of coalescent generative distributions
-that produce TimeTrees.
+% \begin{alltt}
+%   taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
+%   g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3], taxaAges=taxaAges);
+% \end{alltt}
 
-The simplest model in this package is the one parameter model
-constant-population size coalescent.
-The generation-time-scaled population size parameter (theta) parameter determines at
-what rate, per unit time, a pair of lineages coalesce, backwards in time.
+% This will produce a serial coalescent tree with three distinct epochs
+% of population size on four taxa with distinct ages.
 
-\subsubsection*{Constant population size coalescent model}
+% \subsubsection*{Generalized skyline coalescent model}
 
-In its simplest form \cite{kingman81} the coalescent model produces a
-tree on a fixed number of leaves based on a population size parameter (theta):
+% The following generative distribution call will produce a tree of size
+% n=11 taxa, since 4+3+2+1=10= coalescent intervals.
+% The first four intervals will all have theta=0.1, the next three will
+% have theta=0.2, the next two will have theta=0.3, and the last
+% coalescent interval will have theta=0.4:
 
-\begin{alltt}
-  g ~ Coalescent(theta=0.1, n=16);
-\end{alltt}
+% \begin{alltt}
+%   g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
+% \end{alltt}
 
-It is also possible to give explicit taxa labels to the generative
-distribution:
+% \subsubsection*{Structured coalescent}
 
-\begin{alltt}
-  g ~ Coalescent(theta=0.1, taxa=["a", "b", "c", "d"]);
-\end{alltt}
+% A structured coalescent process takes a migration matrix (M) with
+% population sizes of each deme on the diagonal:
+% For K demes, theta is an K-tuple and the dimension of m is $K^2 -
+% K$. $n$ is a tuple of sample sizes, one dimension for each deme:
 
-It is also possible to handle serially-sampled (time-stamped) data by
-adding ages.
-There are two ways to do that:
+% \begin{alltt}
+%   M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
+%   g ~ StructuredCoalescent(M=M, n=[15, 15]);
+% \end{alltt}
 
-Ages without taxa names:
+% \subsubsection*{Multispecies coalescent}
 
-\begin{alltt}
-  g ~ Coalescent(theta=0.1, ages=[0.0, 0.1, 0.2, 0.3]);
-\end{alltt}
+% This model allows for gene tree-species tree discordance, and is a
+% hierarchical model of phylogeny.
+% A simple multispecies coalescent model has one distribution define a
+% species tree, and a second distribution define a gene tree based on
+% the species tree:
 
-Ages and taxa names:
+% \begin{alltt}
+%   S ~ Yule(lambda=5, n=4);
+%   theta = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+%   g ~ MultispeciesCoalescent(theta=theta, n=[2, 2, 2, 2], S=S);
+% \end{alltt}
 
-\begin{alltt}
-  taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
-  g ~ Coalescent(theta=0.1, taxaAges=taxaAges);
-\end{alltt}
+% Each branch in the species tree has its own theta value.
+% The $n$ value describes how many individuals are represented in
+% the gene tree for each species.
+% It is a tuple of integers with length equal to the number of species
+% in the species tree.
 
-\subsubsection*{Classic skyline coalescent model}
+% \subsubsection*{Birth-death process generative distributions of trees}
 
-A highly parametric version of the coalescent is also possible, where
-a series of theta values are provided, one for each group of consecutive coalescent intervals.
-If the groupSizes are specified then each coalescent interval is given its
-own population size.
-The following code would generate a tree of five taxa, since there are four theta values provided:
+% The other main family of tree distributions is the birth-death-sampling generative distributions.
 
-\begin{alltt}
-  g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4]);
-\end{alltt}
+% The simplest model in this family is the one parameter model Yule model \cite{yule1925ii}.
+% The birth rate (lambda) parameter determines at what rate, per unit time, each lineage bifurcates to produce two daughter lineages.
+% This describes a pure birth process, so that the number of lineages grows monotonically forward in time.
 
-The theta values are indexed from the present into the past.
-So the first coalescent interval (starting from the leaves)
-would be generated assuming a population size parameter of 0.1, while
-the last coalescent interval (culimating at the root of the tree)
-would be generated from a population size parameter of 0.4.
+% \subsubsection*{Yule model}
 
-It is also possible to add taxa and/or taxa age information:
+% In its simplest form the Yule model has a stopping criterion based on the final number of leaves in the tree.
+% The following code will generate a random Yule tree with 16 leaves:
 
-\begin{alltt}
-  taxaAges = taxaAges(taxa=["a", "b", "c", "d"], ages=[0.0, 0.1, 0.2, 0.3]);
-  g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3], taxaAges=taxaAges);
-\end{alltt}
+% \begin{alltt}
+%   tree ~ Yule(lambda=1.0, n=16);
+% \end{alltt}
 
-This will produce a serial coalescent tree with three distinct epochs
-of population size on four taxa with distinct ages.
+% It is also possible to give explicit taxa labels to the generative distribution:
 
-\subsubsection*{Generalized skyline coalescent model}
+% \begin{alltt}
+%   taxa = 1:16;
+%   tree ~ Yule(lambda=1.0, taxa=taxa);
+% \end{alltt}
 
-The following generative distribution call will produce a tree of size
-n=11 taxa, since 4+3+2+1=10= coalescent intervals.
-The first four intervals will all have theta=0.1, the next three will
-have theta=0.2, the next two will have theta=0.3, and the last
-coalescent interval will have theta=0.4:
+% or
 
-\begin{alltt}
-  g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
-\end{alltt}
+% \begin{alltt}
+%   taxa = ["A", "B", "C", "D"];
+%   tree ~ Yule(lambda=1.0, taxa=taxa);
+% \end{alltt}
 
-\subsubsection*{Structured coalescent}
+% \subsubsection*{Calibrated Yule model}
 
-A structured coalescent process takes a migration matrix (M) with
-population sizes of each deme on the diagonal:
-For K demes, theta is an K-tuple and the dimension of m is $K^2 -
-K$. $n$ is a tuple of sample sizes, one dimension for each deme:
+% It is also possible the generate a Yule tree with a given rootAge:
 
-\begin{alltt}
-  M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
-  g ~ StructuredCoalescent(M=M, n=[15, 15]);
-\end{alltt}
+% \begin{alltt}
+%   tree ~ Yule(lambda=1.0, n=16, rootAge=10);
+% \end{alltt}
 
-\subsubsection*{Multispecies coalescent}
+% This is useful if you want to produce a calibrated analysis where there is a separate prior on the root age of the tree:
 
-This model allows for gene tree-species tree discordance, and is a
-hierarchical model of phylogeny.
-A simple multispecies coalescent model has one distribution define a
-species tree, and a second distribution define a gene tree based on
-the species tree:
+% \begin{alltt}
+%   rootAge ~ LogNormal(meanlog=2.0, sdlog=1.0);
+%   tree ~ Yule(lambda=1.0, n=16, rootAge=rootAge);
+% \end{alltt}
 
-\begin{alltt}
-  S ~ Yule(lambda=5, n=4);
-  theta = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
-  g ~ MultispeciesCoalescent(theta=theta, n=[2, 2, 2, 2], S=S);
-\end{alltt}
+% \subsubsection*{Birth-death model}
 
-Each branch in the species tree has its own theta value.
-The $n$ value describes how many individuals are represented in
-the gene tree for each species.
-It is a tuple of integers with length equal to the number of species
-in the species tree.
+% The birth-death tree process is a generalisation of the Yule model. A second rate of extinction (mu) is added alongside
+% the rate of speciation (lambda). Running forward in time it is possible for the number of lineages to both grow and
+% shrink, and indeed for the tree process to go completely extinct.
 
-\subsubsection*{Birth-death process generative distributions of trees}
+% \subsubsection*{Calibrated Birth-Death process}
 
-The other main family of tree distributions is the birth-death-sampling generative distributions.
+% A calibrated birth-death process can be describe like so:
 
-The simplest model in this family is the one parameter model Yule model \cite{yule1925ii}.
-The birth rate (lambda) parameter determines at what rate, per unit time, each lineage bifurcates to produce two daughter lineages.
-This describes a pure birth process, so that the number of lineages grows monotonically forward in time.
+% \begin{alltt}
+%   tree ~ BirthDeath(lambda=2.0, mu=1.0, n=16, rootAge=10);
+% \end{alltt}
 
-\subsubsection*{Yule model}
+% It is important to realise that the resulting tree will contain only the extant lineages. All extinct lineages will be
+% suppressed. As with the Yule model it is possible to directly specify the taxa names:
 
-In its simplest form the Yule model has a stopping criterion based on the final number of leaves in the tree.
-The following code will generate a random Yule tree with 16 leaves:
+% \begin{alltt}
+%   taxa = ["A", "B", "C", "D"];
+%   tree ~ BirthDeath(lambda=2.0, mu=1.0, taxa=taxa, rootAge=10);
+% \end{alltt}
 
-\begin{alltt}
-  tree ~ Yule(lambda=1.0, n=16);
-\end{alltt}
+% \subsubsection*{Full birth-death process}
 
-It is also possible to give explicit taxa labels to the generative distribution:
+% It is possible to generate a full birth-death tree that includes also extinct lineages using the following generative
+% distribution:
 
-\begin{alltt}
-  taxa = 1:16;
-  tree ~ Yule(lambda=1.0, taxa=taxa);
-\end{alltt}
+% \begin{alltt}
+%   tree ~ FullBirthDeath(lambda=2.0, mu=1.0, rootAge=10);
+% \end{alltt}
 
-or
+% Note that unlike the BirthDeath generative distribution, this process will generate a tree with a random number of
+% leaf nodes, both in terms of extinct and extant lineages. The only conditioning is on the root age.
 
-\begin{alltt}
-  taxa = ["A", "B", "C", "D"];
-  tree ~ Yule(lambda=1.0, taxa=taxa);
-\end{alltt}
+% \subsubsection*{Birth-death-sampling process}
 
-\subsubsection*{Calibrated Yule model}
+% A birth-death-sampling process adds a third parameter (rho) the probability of sampling each extant lineage. Again,
+% only extant lineages are leaves in the resulting tree and extinct lineages are suppressed:
 
-It is also possible the generate a Yule tree with a given rootAge:
+% \begin{alltt}
+%   T ~ BirthDeathSampling(lambda=2.0, mu=1.0, rho=0.5, rootAge=3);
+% \end{alltt}
 
-\begin{alltt}
-  tree ~ Yule(lambda=1.0, n=16, rootAge=10);
-\end{alltt}
+% An alternative parameterization allows specification of the diversification and turnover rates:
 
-This is useful if you want to produce a calibrated analysis where there is a separate prior on the root age of the tree:
+% \begin{alltt}
+%   T ~ BirthDeathSampling(diversification=1.0, turnover=0.5, rho=0.5, rootAge=3);
+% \end{alltt}
 
-\begin{alltt}
-  rootAge ~ LogNormal(meanlog=2.0, sdlog=1.0);
-  tree ~ Yule(lambda=1.0, n=16, rootAge=rootAge);
-\end{alltt}
+% Again it is important to note that the number of tips of the tree is a random variable, and is not conditioned on,
+% unlike for the BirthDeath generative distribution above.
 
-\subsubsection*{Birth-death model}
+% \subsubsection*{Birth-death-serial-sampling process}
 
-The birth-death tree process is a generalisation of the Yule model. A second rate of extinction (mu) is added alongside
-the rate of speciation (lambda). Running forward in time it is possible for the number of lineages to both grow and
-shrink, and indeed for the tree process to go completely extinct.
+% A birth-death-serial-sampling \cite{stadler2013dating} process adds a fourth parameter (psi), the rate of sampling each lineage per unit time.
+% Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled).
 
-\subsubsection*{Calibrated Birth-Death process}
+% \begin{alltt}
+%   ages = [0.0,1.0,2.0,3.0,4.0];
+%   tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, psi=1, rootAge=5, ages=ages);
+% \end{alltt}
 
-A calibrated birth-death process can be describe like so:
+% In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
 
-\begin{alltt}
-  tree ~ BirthDeath(lambda=2.0, mu=1.0, n=16, rootAge=10);
-\end{alltt}
 
-It is important to realise that the resulting tree will contain only the extant lineages. All extinct lineages will be
-suppressed. As with the Yule model it is possible to directly specify the taxa names:
+% \subsection*{Models of evolutionary rates and sequence evolution}
 
-\begin{alltt}
-  taxa = ["A", "B", "C", "D"];
-  tree ~ BirthDeath(lambda=2.0, mu=1.0, taxa=taxa, rootAge=10);
-\end{alltt}
+% Another key distribution necessary to perform phylogenetic inference
+% is the phylogenetic continuous-time Markov process and its inference
+% equivalent the phylogenetic likelihood \cite{felsenstein1981}.
 
-\subsubsection*{Full birth-death process}
+% In its simplest form the PhyloCTMC generative
+% distribution takes an instantaneous transition matrix (Q), a number of sites (L) and a tree:
 
-It is possible to generate a full birth-death tree that includes also extinct lineages using the following generative
-distribution:
+% \begin{alltt}
+%   tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+%   D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100);
+% \end{alltt}
 
-\begin{alltt}
-  tree ~ FullBirthDeath(lambda=2.0, mu=1.0, rootAge=10);
-\end{alltt}
+% \subsection*{Molecular clock}
 
-Note that unlike the BirthDeath generative distribution, this process will generate a tree with a random number of
-leaf nodes, both in terms of extinct and extant lineages. The only conditioning is on the root age.
+% If the tree is not in units of substitutions per site, then it is possible to include a molecular clock rate
+% to scale the branches of the tree from time to substitutions per site. This example will give the same
+% result as the previous example, but the tree is now in units of time, so the mutation rate (mu) in units of
+% substitutions per site per unit time is given.
 
-\subsubsection*{Birth-death-sampling process}
+% \begin{alltt}
+%   tree = newick(tree="((A:10,B:10):20,(C:15,D:15):15);");
+%   D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100, mu=0.01);
+% \end{alltt}
 
-A birth-death-sampling process adds a third parameter (rho) the probability of sampling each extant lineage. Again,
-only extant lineages are leaves in the resulting tree and extinct lineages are suppressed:
+% \subsection*{ Nucleotide substitution models}
 
-\begin{alltt}
-  T ~ BirthDeathSampling(lambda=2.0, mu=1.0, rho=0.5, rootAge=3);
-\end{alltt}
+% There are a number of built in functions to construct standard nucleotide rate matrices. Some examples:
 
-An alternative parameterization allows specification of the diversification and turnover rates:
+% \begin{alltt}
+%   jc = jukesCantor();
+%   hky = hky(kappa=2.0, freq=[0.2, 0.25, 0.3, 0.25]);
+%   gtr = gtr(rates=[0.1, 0.25, 0.15, 0.15, 0.25, 0.1], freq=[0.2, 0.25, 0.3, 0.25]);
+% \end{alltt}
 
-\begin{alltt}
-  T ~ BirthDeathSampling(diversification=1.0, turnover=0.5, rho=0.5, rootAge=3);
-\end{alltt}
+% The Dirichlet prior is a natural prior for relative rates and frequencies, so a full model for GTR could
+% look like this:
 
-Again it is important to note that the number of tips of the tree is a random variable, and is not conditioned on,
-unlike for the BirthDeath generative distribution above.
+% \begin{alltt}
+%   pi ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]); // dirichlet prior on base frequencies
+%   R ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]); // dirichlet prior on relative rates
+%   Q = gtr(freq=pi, rates=R); // construct the GTR instantaneous rate matrix
+% \end{alltt}
 
-\subsubsection*{Birth-death-serial-sampling process}
+% \subsection*{ Rate heterogeneity across sites}
 
-A birth-death-serial-sampling \cite{stadler2013dating} process adds a fourth parameter (psi), the rate of sampling each lineage per unit time.
-Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled).
+% The PhyloCTMC generative distribution takes a parameter siteRates to describe rates across sites.
+% For inference, a common model is the discretized Gamma distribution of site rate heterogeneity (Yang, 1994).
 
-\begin{alltt}
-  ages = [0.0,1.0,2.0,3.0,4.0];
-  tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, psi=1, rootAge=5, ages=ages);
-\end{alltt}
+% To match this model for simulation in LPHY do the following:
 
-In this case the number of leaves in the tree, and their ages are conditioned on, so are not random variables.
+% \begin{alltt}
+%   tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+%   siteRates ~ G(shape=0.5, ncat=4, reps=100); // generate 100 site rates from a discretized Gamma
+%   D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), siteRates=siteRates);
+% \end{alltt}
 
+% \subsection*{  Relaxed clock models (rate heterogeneity across branches) }
 
-\subsection*{Models of evolutionary rates and sequence evolution}
+% The PhyloCTMC generative distribution can also take an optional parameter branchRates to describe the
+% rates across branches:
 
-Another key distribution necessary to perform phylogenetic inference
-is the phylogenetic continuous-time Markov process and its inference
-equivalent the phylogenetic likelihood \cite{felsenstein1981}.
+% \begin{alltt}
+%   tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
+%   branchRates = [0.5, 2.0, 1.0, 1.0, 2.0, 0.5];
+%   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
+% \end{alltt}
 
-In its simplest form the PhyloCTMC generative
-distribution takes an instantaneous transition matrix (Q), a number of sites (L) and a tree:
-
-\begin{alltt}
-  tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
-  D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100);
-\end{alltt}
-
-\subsection*{Molecular clock}
-
-If the tree is not in units of substitutions per site, then it is possible to include a molecular clock rate
-to scale the branches of the tree from time to substitutions per site. This example will give the same
-result as the previous example, but the tree is now in units of time, so the mutation rate (mu) in units of
-substitutions per site per unit time is given.
-
-\begin{alltt}
-  tree = newick(tree="((A:10,B:10):20,(C:15,D:15):15);");
-  D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), L=100, mu=0.01);
-\end{alltt}
-
-\subsection*{ Nucleotide substitution models}
-
-There are a number of built in functions to construct standard nucleotide rate matrices. Some examples:
-
-\begin{alltt}
-  jc = jukesCantor();
-  hky = hky(kappa=2.0, freq=[0.2, 0.25, 0.3, 0.25]);
-  gtr = gtr(rates=[0.1, 0.25, 0.15, 0.15, 0.25, 0.1], freq=[0.2, 0.25, 0.3, 0.25]);
-\end{alltt}
-
-The Dirichlet prior is a natural prior for relative rates and frequencies, so a full model for GTR could
-look like this:
-
-\begin{alltt}
-  pi ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]); // dirichlet prior on base frequencies
-  R ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]); // dirichlet prior on relative rates
-  Q = gtr(freq=pi, rates=R); // construct the GTR instantaneous rate matrix
-\end{alltt}
-
-\subsection*{ Rate heterogeneity across sites}
-
-The PhyloCTMC generative distribution takes a parameter siteRates to describe rates across sites.
-For inference, a common model is the discretized Gamma distribution of site rate heterogeneity (Yang, 1994).
-
-To match this model for simulation in LPHY do the following:
-
-\begin{alltt}
-  tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
-  siteRates ~ G(shape=0.5, ncat=4, reps=100); // generate 100 site rates from a discretized Gamma
-  D ~ PhyloCTMC(tree=tree, Q=jukesCantor(), siteRates=siteRates);
-\end{alltt}
-
-\subsection*{  Relaxed clock models (rate heterogeneity across branches) }
-
-The PhyloCTMC generative distribution can also take an optional parameter branchRates to describe the
-rates across branches:
-
-\begin{alltt}
-  tree = newick(tree="((A:0.1,B:0.1):0.2,(C:0.15,D:0.15):0.15);");
-  branchRates = [0.5, 2.0, 1.0, 1.0, 2.0, 0.5];
-  D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
-\end{alltt}
+% Results and Discussion can be combined.
+\section*{Results}
 
 \subsection*{LinguaPhylo Studio}
 
@@ -1093,15 +1216,22 @@ This will require software that can convert an LPhy specification into
 an input file that these inference engines understand.
 The first such software converter is LPhyBEAST described below.
 
+\begin{figure}
+  \includegraphics[width=\textwidth]{lphystudio_screenshot.png}
+  \caption{A screenshot of LPhy Studio showing the probabilistic
+    graphical model from Example \ref{lphy:rsva} on the left panel
+    (constants are being hidden), and the automatically generated
+    description of the data, the model and the posterior
+    distribution on the right panel.} 
+  \label{fig:lphystudio}
+\end{figure}
+
 \subsection*{LPhyBEAST}
 
 LPhyBEAST is a command-line program that takes an LPhy model
 specification, and some data and produces a BEAST 2 XML input file.
 It is therefore an alternative way to succinctly express and
 communicate BEAST analyses.
-
-% Results and Discussion can be combined.
-\section*{Results}
 
 \begin{itemize}
 \item for evolutionary biologists
