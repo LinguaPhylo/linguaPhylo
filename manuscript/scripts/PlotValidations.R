@@ -1,4 +1,5 @@
 
+require(tidyverse)
 require(ggplot2)
 
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/figs")
@@ -16,15 +17,25 @@ statNames[length(statNames)] <- "true"
   
 anal <- mu %>% select(!trace) %>% rownames_to_column %>% 
   gather(analysis, value, -rowname) %>% spread(rowname, value) %>%
-  mutate_at(2:ncol(anal), as.numeric)
+  mutate_at(2:ncol(.), as.numeric)
 colnames(anal)[2:ncol(anal)] <- statNames
+# analysis    mean HPD95.lower HPD95.upper   ESS    true
+
+# sort by true value
+anal <- anal %>% arrange(true) %>%
+  mutate(analysis = fct_reorder(analysis, true))
+# add colour
 
 
-p <- ggplot(anal, aes(x=analysis, y=mean)) + 
+p <- ggplot() + 
   scale_x_discrete(labels = NULL, breaks = NULL) +
-  geom_point() +
-  geom_errorbar(aes(ymin=HPD95.lower, ymax=HPD95.upper), width=.2,
-                position=position_dodge(.9)) 
+  scale_y_log10() +
+  geom_point(data=anal, aes(x=analysis, y=mean)) +
+  geom_errorbar(data=anal, aes(x=analysis, y=mean, ymin=HPD95.lower, ymax=HPD95.upper), width=.2,
+                position=position_dodge(.9)) +
+  # true value
+  geom_line(data=anal, aes(x=analysis, y=true, group = 1), colour = "blue") +
+  theme_bw()
 
 
 

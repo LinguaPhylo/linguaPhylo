@@ -1,13 +1,17 @@
 # Compiled class file
-*.class
+**/*.class
 
 # Log file
-*.log
+**/*.log
+**/*.trees
+manuscript/logs/*.txt
+examples/*.xml
+tutorials/*.xml
 
 # Intellij
-*.ipr
-*.iws
-*.iml
+**/*.ipr
+**/*.iws
+**/*.iml
 
 # build
 out/
@@ -20,6 +24,12 @@ LPhyStudio/dist/
 
 # macOS Files
 **/.DS_Store
+
+# R
+**/*.Rproj
+**/.Rproj.user
+**/.Rhistory
+**/.RData
 
 # BlueJ files
 *.ctxt
@@ -38,4 +48,4 @@ LPhyStudio/dist/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-.Rproj.user
+
