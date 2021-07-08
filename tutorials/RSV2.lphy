@@ -17,5 +17,5 @@ model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
   ψ ~ Coalescent(taxa=taxa, theta=Θ);
 
-  sim ~ PhyloCTMC(L=L, Q=hky(kappa=κ, freq=π, meanRate=r), mu=μ, tree=ψ);
+  codon ~ PhyloCTMC(L=L, Q=hky(kappa=κ, freq=π, meanRate=r), mu=μ, tree=ψ);
 }
