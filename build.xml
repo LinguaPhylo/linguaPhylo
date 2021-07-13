@@ -3,26 +3,23 @@
     <property name="sourceVersion" value="16"/>
     <property name="targetVersion" value="16"/>
 
-    <!--****** this build is used for all LPhy extensions ******-->
+    <property name="lphyFolder" location="./LPhy"/>
+    <property name="studioFolder" location="./LPhyStudio"/>
 
-    <!--  overwrite lphyRepo in LPhy build to fit in a different folder structure -->
-    <property name="lphyRepo" location="../linguaPhylo"/>
-
-    <import file="LPhy/build.xml"/>
-
-    <target name="lphy-compile">
-        <ant target="compile" antfile="build.xml" dir="${lphyFolder}"/>
+    <!-- do not use import/include   -->
+    <target name="lphy-dist">
+        <ant target="dist" antfile="build.xml" dir="${lphyFolder}" inheritAll="false"/>
     </target>
 
-    <target name="lphy-dist">
-        <ant target="dist" antfile="build.xml" dir="${lphyFolder}"/>
+    <target name="studio-release">
+        <ant target="release" antfile="build.xml" dir="${studioFolder}" inheritAll="false"/>
     </target>
 
     <!--****** github-actions ******-->
 
     <target name="test-all">
-        <ant target="test" antfile="build.xml" dir="${lphyFolder}"/>
-        <!--        <ant target="test" antfile="build.xml" dir="${studioFolder}"/>-->
+        <ant target="test" antfile="build.xml" dir="${lphyFolder}" inheritAll="false"/>
+        <!--        <ant target="test" antfile="build.xml" dir="${studioFolder}" inheritAll="false"/>-->
     </target>
 
     <!--  https://docs.github.com/en/actions  -->

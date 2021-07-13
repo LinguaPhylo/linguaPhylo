@@ -81,7 +81,7 @@
             <arg value="--create" />
             <arg value="--file=${studioDist}/${studioJar}.jar" />
             <arg value="--main-class=lphystudio.app.LinguaPhyloStudio" />
-            <!-- TODO multi-release jar (MR jar) ?  -->
+            <!-- multi-release jar not working  -->
 <!--            <arg value="&#45;&#45;release" />-->
 <!--            <arg value="9" />-->
             <arg value="-C" />
@@ -134,12 +134,14 @@
         <copy todir="${pack}/${exmpDir}">
             <!--  examples files are under the root -->
             <fileset dir="../${exmpDir}" includes="*.lphy">
+                <!-- not ready -->
                 <exclude name="**/*covid*"/>
             </fileset>
             <fileset dir="../${exmpDir}">
                 <include name="**/*.nex"/>
                 <include name="**/*.nexus"/>
                 <include name="**/*.fasta"/>
+                <!-- not ready -->
                 <exclude name="**/*covid*"/>
             </fileset>
         </copy>
