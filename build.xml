@@ -1,7 +1,7 @@
 <project default="test-all" basedir="." name="linguaPhylo" >
 
-    <property name="sourceVersion" value="15"/>
-    <property name="targetVersion" value="15"/>
+    <property name="sourceVersion" value="16"/>
+    <property name="targetVersion" value="16"/>
 
     <!--****** this build is used for all LPhy extensions ******-->
 
