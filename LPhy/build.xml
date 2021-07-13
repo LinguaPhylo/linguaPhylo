@@ -1,6 +1,5 @@
 <project default="build" basedir="." name="lphy" >
 
-    <!-- TODO Java 16 not available in GitHub Action -->
     <property name="sourceVersion" value="16"/>
     <property name="targetVersion" value="16"/>
 
