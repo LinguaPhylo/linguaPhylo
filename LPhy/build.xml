@@ -14,13 +14,15 @@
     <property name="lphySrc" location="${lphyRepo}/${lphyFolder}/src" />
     <!-- source code dir of test   -->
     <property name="lphyLib" location="${lphyRepo}/${lphyFolder}/lib" />
-    <property name="lphyResources" location="${lphyRepo}/${lphyFolder}/resources" />
     <property name="lphyTest" location="${lphyRepo}/${lphyFolder}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
     <property name="lphyBuild" location="${lphyRepo}/${lphyFolder}/build" />
     <property name="lphyDist" location="${lphyRepo}/${lphyFolder}/dist" />
     <property name="lphy-build-test" location="${lphyRepo}/${lphyFolder}/build-test"/>
     <property name="lphy-test-reports" location="${lphyRepo}/${lphyFolder}/test-reports"/>
+
+    <!--  only for non-module  -->
+    <property name="lphyResources" location="${lphyRepo}/${lphyFolder}/resources" />
 
     <!--  linguaPhylo/LPhy/doc  -->
     <property name="lphyDoc" value="${lphyRepo}/${lphyFolder}/doc" />
@@ -105,7 +107,6 @@
         <jar jarfile="${lphyDist}/${lphyJar}.jar">
             <fileset dir="${lphyBuild}"/>
             <manifest>
-<!--                <attribute name="Main-Class" value="lphy.app.LinguaPhyloStudio"/>-->
                 <attribute name="Version" value="${lphyVersion}"/>
 <!--                <attribute name="Class-Path" value="${lphyJar}.jar"/>-->
                 <attribute name="Created-By" value="${createBy}"/>
@@ -114,6 +115,8 @@
             </manifest>
 <!--            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>-->
         </jar>
+
+        <echo message="Successfully create ${lphyJar}." />
     </target>
 
     <target name="generate-docs" description="generate Lphy docs.">
@@ -121,6 +124,60 @@
         <java module="lphy" classname="lphy.doc.GenerateDocs" dir="${lphyDoc}" args="${lphyVersion}" fork="true">
             <modulepath refid="lphy-module-path"/>
         </java>
+    </target>
+
+    <!-- Java 8 using classpath  -->
+    <path id="j8-classpath">
+        <pathelement path="${classpath}"/>
+        <fileset dir="${lphyLib}" includes="*.jar" excludes="**/module-info.java"/>
+    </path>
+
+    <!-- Compile -->
+    <target name="compile-j8" depends="init" description="clean, create dirs, and compile.">
+        <echo>LPhy Java 8 classpath is ${toString:j8-classpath}</echo>
+
+        <javac target="${targetVersion}" source="${sourceVersion}" destdir="${lphyBuild}"
+               includeantruntime="false" debug="on" failonerror="yes">
+            <!-- important to exclude module-info.java assuming every classes are inside lphy package  -->
+            <!-- every options else are not working, e.g. <exclude name= -->
+            <src path="${lphySrc}/lphy"/>
+<!--            <exclude name="**/module-info.java"/>-->
+            <classpath refid="j8-classpath"/>
+        </javac>
+        <mkdir dir="${lphyBuild}/META-INF"/>
+        <mkdir dir="${lphyBuild}/META-INF/services"/>
+        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
+        <echo message="Successfully compiled ${lphyRepo} using classpath." />
+    </target>
+
+    <!-- jar -->
+    <property name="lphyJ8Jar" value="lphy-j8-${lphyVersion}"/>
+
+    <target name="dist-j8" depends="compile-j8">
+        <!-- manifest -->
+        <tstamp/>
+        <echo message="Version ${lphyVersion}" />
+        <echo message="Class-Path ${lphyJ8Jar}.jar" />
+        <echo message="Created-By ${createBy}" />
+        <echo message="Built-By ${builtBy}" />
+        <echo message="Built-Date ${TODAY}" />
+
+        <mkdir dir="${lphyDist}"/>
+
+        <jar jarfile="${lphyDist}/${lphyJ8Jar}.jar">
+            <fileset dir="${lphyBuild}" excludes="**/module-info.class"/>
+            <manifest>
+                <attribute name="Version" value="${lphyVersion}"/>
+                <attribute name="Class-Path" value="${lphyJ8Jar}.jar"/>
+                <attribute name="Created-By" value="${createBy}"/>
+                <attribute name="Built-By" value="${builtBy}"/>
+                <attribute name="Built-Date" value="${TODAY}"/>
+            </manifest>
+            <!-- jebl3 has module-info.class, but not need SPI  -->
+            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>
+        </jar>
+
+        <echo message="Successfully create ${lphyJ8Jar}." />
     </target>
 
 
