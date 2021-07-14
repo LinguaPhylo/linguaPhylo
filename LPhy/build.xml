@@ -60,6 +60,8 @@
 <!--        <mkdir dir="${lphyDist}"/>-->
     </target>
 
+    <!--****** Java module system ******-->
+
     <path id="lphy-module-path">
         <pathelement path="${lphyBuild}"/>
         <fileset dir="${lphyLib}" includes="*.jar"/>
@@ -131,13 +133,15 @@
         <fileset dir="${lphyLib}" includes="*.jar" excludes="**/module-info.java"/>
     </path>
 
+    <!--****** Non-module Jar ******-->
+
     <!-- Compile -->
-    <target name="compile-j8" depends="init" description="clean, create dirs, and compile.">
+    <target name="compile-j8" depends="init" >
         <echo>LPhy Java 8 classpath is ${toString:j8-classpath}</echo>
 
         <javac target="${targetVersion}" source="${sourceVersion}" destdir="${lphyBuild}"
                includeantruntime="false" debug="on" failonerror="yes">
-            <!-- important to exclude module-info.java assuming every classes are inside lphy package  -->
+            <!-- assume every classes are inside lphy package to exclude module-info.java -->
             <!-- every options else are not working, e.g. <exclude name= -->
             <src path="${lphySrc}/lphy"/>
 <!--            <exclude name="**/module-info.java"/>-->
@@ -152,7 +156,8 @@
     <!-- jar -->
     <property name="lphyJ8Jar" value="lphy-j8-${lphyVersion}"/>
 
-    <target name="dist-j8" depends="compile-j8">
+    <target name="dist-j8" depends="compile-j8"
+            description="Non-module Jar using META-INF services to invoke SPI.">
         <!-- manifest -->
         <tstamp/>
         <echo message="Version ${lphyVersion}" />
@@ -179,6 +184,7 @@
         <echo message="Successfully create ${lphyJ8Jar}." />
     </target>
 
+    <!--****** github-actions ******-->
 
     <!-- Prepare for unit test compilation -->
     <target name="init-test">
