@@ -8,7 +8,7 @@
     <property name="lphyFolder" value="LPhy"/>
     <!-- this is for studio build -->
     <!-- overwrite lphyRepo in other extensions build -->
-    <property name="lphyRepo" location=".."/>
+    <property name="lphyRepo" value=".."/>
     <!-- source code dir separated from test   -->
     <property name="lphySrc" location="${lphyRepo}/${lphyFolder}/src" />
     <!-- source code dir of test   -->
