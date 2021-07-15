@@ -8,11 +8,11 @@ public class IOUtils {
     public static final String USER_DIR = "user.dir";
 
     /**
-     * @see #getPath(Path)
+     * @see #getUserPath(Path)
      */
-    public static Path getPath(String pathStr){
+    public static Path getUserPath(String pathStr){
         Path path = Paths.get(pathStr);
-        return getPath(path);
+        return getUserPath(path);
     }
 
     /**
@@ -21,7 +21,7 @@ public class IOUtils {
      *          concatenating user.dir before the relative path.
      *
      */
-    public static Path getPath(Path path){
+    public static Path getUserPath(Path path){
         if (path.isAbsolute())
             return path;
         else {

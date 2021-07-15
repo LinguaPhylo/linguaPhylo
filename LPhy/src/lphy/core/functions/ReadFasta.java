@@ -61,7 +61,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         //*** parsing ***//
         SequenceType sequenceType = SequenceType.NUCLEOTIDE;
 
-        Path nexPath = IOUtils.getPath(fileName);
+        Path nexPath = IOUtils.getUserPath(fileName);
 
         Reader reader = getReader(nexPath.toString());
 

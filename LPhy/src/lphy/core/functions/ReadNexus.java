@@ -60,7 +60,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
             description = "A function that parses an alignment from a Nexus file.")
     public Value<Alignment> apply() {
 
-        Path nexPath = IOUtils.getPath(fileName.value());
+        Path nexPath = IOUtils.getUserPath(fileName.value());
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(nexPath.toString());
