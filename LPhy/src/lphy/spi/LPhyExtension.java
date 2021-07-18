@@ -18,10 +18,21 @@ import java.util.Map;
  */
 public interface LPhyExtension {
 
+    /**
+     * @return the list of new {@link GenerativeDistribution} implemented in the LPhy extension.
+     */
     List<Class<? extends GenerativeDistribution>> getDistributions();
 
+    /**
+     * @return the list of new {@link Func} implemented in the LPhy extension.
+     */
     List<Class<? extends Func>> getFunctions();
 
+    /**
+     * @return the map of new {@link SequenceType} implemented in the LPhy extension.
+     *         The string key is a keyword to represent this SequenceType.
+     *         The keyword can be used to identify and initialise the corresponding sequence type.
+     */
     Map<String, ? extends SequenceType> getSequenceTypes();
 
 }

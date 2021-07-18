@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The "Container" provider class of SPI
+ * The "Container" provider class that implements SPI
  * which include a list of {@link GenerativeDistribution}, {@link Func},
  * and {@link SequenceType} to extend.
  * It requires a public no-args constructor.
@@ -62,7 +62,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // skyline
             SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
             // others
-            ErrorModel.class, RandomBooleanArray.class, // GT16ErrorModel.class,
+            ErrorModel.class, RandomBooleanArray.class,
             // phylogenetic distribution
             PhyloBrownian.class, PhyloMultivariateBrownian.class,
             PhyloOU.class,
@@ -70,7 +70,7 @@ public class LPhyExtImpl implements LPhyExtension {
 
     List<Class<? extends Func>> functions = Arrays.asList(ARange.class, ArgI.class,
             // Substitution models
-            JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class, //GT16.class,
+            JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
             GeneralTimeReversible.class, LewisMK.class,
             NucleotideModel.class,
             BModelSetFunction.class,
@@ -78,7 +78,6 @@ public class LPhyExtImpl implements LPhyExtension {
 
             // Data types
             BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-//            PhasedGenotypeFunction.class, UnphaseGenotypeAlignment.class,
 
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
@@ -122,9 +121,6 @@ public class LPhyExtImpl implements LPhyExtension {
 
         dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
         dataTypeMap.put("protein", SequenceType.AMINO_ACID);
-
-//        dataTypeMap.put(SequenceTypeFactory.sanitise(PhasedGenotype.NAME), PhasedGenotype.INSTANCE);
-//        dataTypeMap.put(SequenceTypeFactory.sanitise(UnphasedGenotype.NAME), PhasedGenotype.INSTANCE);
 
         dataTypeMap.put(SequenceTypeFactory.sanitise(Binary.NAME), Binary.getInstance());
         dataTypeMap.put(SequenceTypeFactory.sanitise(Continuous.NAME), Continuous.getInstance());
