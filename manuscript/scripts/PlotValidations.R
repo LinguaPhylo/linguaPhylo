@@ -1,5 +1,5 @@
 
-# posteriorFile must have:
+# posterior File must have:
 # mean HPD95.lower HPD95.upper   ESS 
 createAnalysisDF <- function(trueValsFile="trueValue.tsv", param.name="μ", posteriorFile="mu.tsv") {
   require(tidyverse)
@@ -30,18 +30,20 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", param.name="μ", post
 }
 
 # colnames must have: "analysis mean HPD95.lower HPD95.upper ESS true.val is.in"
-plotValidations <- function(df, cov.per, transp = 0.3, x.lab="", x.max.lim=NA, y.max.lim=NA) {
+plotValidations <- function(df, cov.per, transp = 0.3, x.lab="", 
+                            x.max.lim=NA, y.max.lim=NA, x.txt.just=NA) {
   require(ggplot2)
   
   x.txt = min(df$true.val)
   y.txt = max(df$HPD95.upper)
+  if (is.na(x.txt.just)) x.txt.just = max(df$HPD95.upper) * 0.1
   
   p <- ggplot(data=df, aes(x=true.val, y=mean, group = is.in, colour = is.in)) + 
     geom_linerange(aes(ymin=HPD95.lower, ymax=HPD95.upper), size=1.2, alpha=transp) +
     geom_point(size=.2) + 
     geom_abline(intercept = 0, slope = 1, color="black", linetype="dotted", size=.2) +
     annotate("text", x=x.txt, y=y.txt, label= paste("covg. =", cov.per, "%"), 
-             hjust = max(df$HPD95.upper) * 0.1, size = 5) + 
+             hjust = x.txt.just, size = 5) + 
     xlab(x.lab) + ylab("Mean posterior") + 
     guides(colour=FALSE) + theme_classic() + theme(text = element_text(size=15)) 
   
@@ -61,30 +63,40 @@ plotValidations <- function(df, cov.per, transp = 0.3, x.lab="", x.max.lim=NA, y
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/figs")
 setwd(WD)
 
+### mu
 mu <- createAnalysisDF(param.name="μ", posteriorFile="mu.tsv")
 cov.per <- round(nrow(subset(mu, is.in==TRUE)) / nrow(mu) * 100)
 mu.sub <- mu %>% filter(mean < 0.045)
 nrow(mu.sub)
 
-p <- plotValidations(mu.sub, cov.per, x.lab="True mu value")
-ggsave(paste0("mu-sub-",nrow(mu.sub),".pdf"), p, width = 4, height = 3)
+param = "mu"
+p <- plotValidations(mu.sub, cov.per, x.lab=paste("True",param,"value"))
+ggsave(paste0(param, "-sub-",nrow(mu.sub),".pdf"), p, width = 4, height = 3)
 
 bound = 0.15
-p <- plotValidations(mu, cov.per, x.lab="True mu value", x.max.lim=bound, y.max.lim=bound)
-ggsave(paste0("mu-all.pdf"), p, width = 4, height = 3)
+p <- plotValidations(mu, cov.per, x.lab=paste("True",param,"value"), x.max.lim=bound, y.max.lim=bound)
+ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
-
-
-
-
-
+### theta
 theta <- createAnalysisDF(param.name="Θ", posteriorFile="Theta.tsv")
 
-p <- ggplot(data=theta, aes(x=true.val, y=mean, group = is.in, colour = is.in)) + 
-  geom_point(shape=5, size=.1, alpha=transp) +
-  # regression line 
-  geom_smooth(method = "lm", se = FALSE, group = 1, color="blue", size=.3, alpha=.6) +
-  geom_linerange(aes(ymin=HPD95.lower, ymax=HPD95.upper), size=.2, alpha=transp) +
-  xlab("") + ylab("theta") + theme_classic()
+cov.per <- round(nrow(subset(theta, is.in==TRUE)) / nrow(theta) * 100)
+theta.sub <- theta %>% filter(mean < 1000)
+nrow(theta.sub)
 
-ggsave(paste0("theta.png"), p, width = 6, height = 5)
+param = "theta"
+p <- plotValidations(theta.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+ggsave(paste0(param, "-sub-",nrow(theta.sub),".pdf"), p, width = 4, height = 3)
+
+bound = 1000
+p <- plotValidations(theta, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+
+###
+
+
+
+
+
+
+

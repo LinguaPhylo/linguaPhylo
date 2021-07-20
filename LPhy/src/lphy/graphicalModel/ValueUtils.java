@@ -21,7 +21,14 @@ public class ValueUtils {
 
     public static boolean isNumberOrNumberArray(Value value) {
         Class<?> valueClass = value.value().getClass();
-        return Number.class.isAssignableFrom(valueClass) || (valueClass.isArray() && Number.class.isAssignableFrom(valueClass.getComponentType()));
+        return Number.class.isAssignableFrom(valueClass) ||
+                (valueClass.isArray() && Number.class.isAssignableFrom(valueClass.getComponentType()));
+    }
+
+    public static boolean is2DNumberArray(Value value) {
+        Class<?> valueClass = value.value().getClass();
+        return valueClass.isArray() && valueClass.getComponentType().isArray() &&
+                Number.class.isAssignableFrom(valueClass.getComponentType().getComponentType());
     }
 
     public static boolean isNumber(Value value) {

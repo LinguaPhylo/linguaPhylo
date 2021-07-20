@@ -4,10 +4,7 @@ import lphy.graphicalModel.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by adru001 on 10/03/20.
@@ -79,6 +76,61 @@ public class VarFileLogger implements RandomValueLogger {
                 return value.value();
             }
         });
+
+        // only for vectorized 1d array => 2d array
+        loggableMap.put(Double[][].class, new Loggable<Double[][]>() {
+            @Override
+            public String[] getLogTitles(Value<Double[][]> value) {
+                // flatten
+                List<String> names = new ArrayList<>();
+                Double[][] tmpArr = value.value();
+                for (int i = 0; i < tmpArr.length; i++) {
+                    for (int j = 0; j < tmpArr[i].length; j++) {
+                        names.add(value.getId() + VectorUtils.INDEX_SEPARATOR +
+                                i + VectorUtils.INDEX_SEPARATOR + j);
+                    }
+                }
+                return names.toArray(String[]::new);
+            }
+
+            // flatten 2d => 1d
+            public Double[] getLogValues(Value<Double[][]> value) {
+                List<Double> vals = new ArrayList<>();
+                Double[][] tmpArr = value.value();
+                for (Double[] doubles : tmpArr) {
+                    vals.addAll(Arrays.asList(doubles));
+                }
+                return vals.toArray(Double[]::new);
+            }
+        });
+
+        // only for vectorized 1d array => 2d array
+        loggableMap.put(Integer[][].class, new Loggable<Integer[][]>() {
+            @Override
+            public String[] getLogTitles(Value<Integer[][]> value) {
+                // flatten
+                List<String> names = new ArrayList<>();
+                Integer[][] tmpArr = value.value();
+                for (int i = 0; i < tmpArr.length; i++) {
+                    for (int j = 0; j < tmpArr[i].length; j++) {
+                        names.add(value.getId() + VectorUtils.INDEX_SEPARATOR +
+                                i + VectorUtils.INDEX_SEPARATOR + j);
+                    }
+                }
+                return names.toArray(String[]::new);
+            }
+
+            // flatten 2d => 1d
+            public Integer[] getLogValues(Value<Integer[][]> value) {
+                List<Integer> vals = new ArrayList<>();
+                Integer[][] tmpArr = value.value();
+                for (Integer[] doubles : tmpArr) {
+                    vals.addAll(Arrays.asList(doubles));
+                }
+                return vals.toArray(Integer[]::new);
+            }
+        });
+
     }
 
     String name;

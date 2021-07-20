@@ -60,8 +60,11 @@ public class RandomNumberLogger implements RandomValueLogger {
     }
 
     public boolean isLogged(Value randomValue) {
-        boolean random = ((randomValue instanceof RandomVariable && logVariables) || (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics));
-        boolean number = ValueUtils.isNumberOrNumberArray(randomValue) || randomValue.value() instanceof Boolean;
+        boolean random = (randomValue instanceof RandomVariable && logVariables) ||
+                (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics);
+        boolean number = ValueUtils.isNumberOrNumberArray(randomValue) ||
+                ValueUtils.is2DNumberArray(randomValue) ||
+                randomValue.value() instanceof Boolean;
 
         return random && number && !randomValue.isAnonymous();
     }
