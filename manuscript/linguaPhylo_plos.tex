@@ -1202,6 +1202,18 @@ matrices, one matrix per codon partition.
 % Results and Discussion can be combined.
 \section*{Results}
 
+\subsection*{Extension Mechanism}
+
+The extensibility of a software is extremely important to encourage 
+the future growth and collaborations. 
+
+LPhy extensions are implemented by using the Service Provider Interface (SPI) 
+within the Java Platform Module System (JPMS). 
+An LPhy extension module implements the \texttt{LPhyExtension} interface 
+to provide a list of the classes that the extension module provides 
+to extend the functionality of LPhy.
+
+
 \subsection*{LinguaPhylo Studio}
 
 Along with the language definition, we also provide software to
