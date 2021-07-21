@@ -46,9 +46,8 @@ for(lg in allLogs) {
   
   mu[[fn]] <- tru
 }
-
 cat("average mu = ", mean(unlist(mu)), "\n")
-
+# average tree height in units of time * average mu ~ 0.3-0.5
 cat( mean(unlist(tre.height)) * mean(unlist(mu)), "\n")
 
 
