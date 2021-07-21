@@ -1,0 +1,6 @@
+κ ~ LogNormal(meanlog=1.0, sdlog=0.5);
+π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
+// "4.13e-03" "6.74e-03" "1.10e-02"
+μ ~ LogNormal(meanlog=-5.0, sdlog=0.25);
+ψ ~ Coalescent(n=100, theta=20.0);
+D ~ PhyloCTMC(L=200, Q=hky(kappa=κ, freq=π), mu=μ, tree=ψ);

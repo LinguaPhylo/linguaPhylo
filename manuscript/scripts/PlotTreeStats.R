@@ -4,6 +4,11 @@ require(ggplot2)
 require(ape)
 require(phytools)
 
+# preparation
+# "4.13e-03" "6.74e-03" "1.10e-02"
+formatC(qlnorm(p=c(0.025,0.5,0.975), meanlog=-5.0, sdlog=0.25), format = "e", digits = 2)
+
+
 ### true tree
 
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls-theta-20")

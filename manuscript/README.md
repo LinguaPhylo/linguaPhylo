@@ -8,7 +8,7 @@ In RSV2.lphy, change `codon ~ PhyloCTMC` to `sim ~ PhyloCTMC`,
 so that the alignment will be the simulated data.
 
 ```
-lphybeast.LPhyBEAST -r 100 -l 20000000
+lphybeast.LPhyBEAST -r 100 -l 50000000
                     -o ~/WorkSpace/linguaPhylo/manuscript/xmls/RSV2.xml
                     ~/WorkSpace/linguaPhylo/tutorials/RSV2.lphy
 ```
