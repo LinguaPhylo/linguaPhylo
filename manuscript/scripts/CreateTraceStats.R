@@ -1,17 +1,19 @@
 #library("devtools")
 #devtools::install_github("walterxie/TraceR")
-#library("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
+library("TraceR")
+
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs-theta-20")
 setwd(WD)
 
 allLogs = list.files(pattern = ".log") 
+allLogs
 
 mcmc.log <- NULL
 traces <- NULL
 stats <- NULL
 for(lg in allLogs) {
-  cat("Process ", lg, "...\n")
+  cat("\nProcess ", lg, "...\n")
   
   # read MCMC log
   mcmc.log <- readMCMCLog(lg)
