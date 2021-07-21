@@ -67,7 +67,8 @@ p <- ggplot(mapping=aes(vec)) +
   geom_vline(xintercept = (m - 2*se)) + 
   xlab("total branch length of true tree") +
   theme_bw()
-ggsave(paste0("total-branch-length.png"), p, width = 6, height = 5)
+ggsave(paste0("total-branch-length.pdf"), p, width = 6, height = 5)
+#ggsave(paste0("total-branch-length.png"), p, width = 6, height = 5)
 
 vec = unlist(tre.height)
 m = mean(vec)
@@ -80,4 +81,5 @@ p <- ggplot(mapping=aes(vec)) +
   geom_vline(xintercept = (m - 2*se)) + 
   xlab("root height of true tree") +
   theme_bw()
-ggsave(paste0("root-height.png"), p, width = 6, height = 5)
+#ggsave(paste0("root-height.png"), p, width = 6, height = 5)
+ggsave(paste0("root-height.pdf"), p, width = 6, height = 5)
