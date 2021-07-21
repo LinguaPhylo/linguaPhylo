@@ -11,10 +11,11 @@ formatC(qlnorm(p=c(0.025,0.5,0.975), meanlog=-5.0, sdlog=0.25), format = "e", di
 
 ### true tree
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls-theta-20")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/hky-coal")
 setwd(WD)
 
 allTrees = list.files(pattern = ".trees") 
+allTrees
 
 # eval how the simulated (trees) root heights 
 # and total branch lengths are distributed
@@ -31,6 +32,25 @@ for(tre in allTrees) {
   
   tre.height[[fn]] <- max(nodeHeights(tru.tre))
 }
+cat("\naverage tree height = ", mean(unlist(tre.height)), "\n")
+
+# true mu
+allLogs = list.files(pattern = ".log") 
+mu <- list()
+for(lg in allLogs) {
+  cat("Load ", lg, "...\n")
+  fn <- sub('_true\\.log$', '', lg)
+  
+  # must 1 line
+  tru <- read_tsv(lg) %>% select("μ") %>% unlist # need vector here
+  
+  mu[[fn]] <- tru
+}
+
+cat("average mu = ", mean(unlist(mu)), "\n")
+
+cat( mean(unlist(tre.height)) * mean(unlist(mu)), "\n")
+
 
 # histogram
 
