@@ -6,10 +6,13 @@ require(phytools)
 
 ### true tree
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls-theta-20")
 setwd(WD)
 
 allTrees = list.files(pattern = ".trees") 
+
+# eval how the simulated (trees) root heights 
+# and total branch lengths are distributed
 
 tre.tot.len <- list()
 tre.height <- list()
