@@ -1,15 +1,15 @@
 
 # posterior File must have:
 # mean HPD95.lower HPD95.upper   ESS 
-createAnalysisDF <- function(trueValsFile="trueValue.tsv", param.name="μ", posteriorFile="mu.tsv") {
+createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", posteriorFile="mu.tsv") {
   require(tidyverse)
   
   trueVals <- read_tsv(trueValsFile)
   param <- read_tsv(posteriorFile)
   stopifnot( all(colnames(trueVals)[2:ncol(trueVals)] == colnames(param)[2:ncol(param)]) )
   
-  # param.name="μ"
-  param <- param %>% rbind(trueVals %>% filter(parameter==param.name) %>% unlist) 
+  # tru.val.par="μ"
+  param <- param %>% rbind(trueVals %>% filter(parameter==tru.val.par) %>% unlist) 
   statNames <- param %>% select(trace) %>% unlist
   # replace to "true.val"
   statNames[length(statNames)] <- "true.val"
@@ -64,39 +64,84 @@ WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/figs")
 setwd(WD)
 
 ### mu
-mu <- createAnalysisDF(param.name="μ", posteriorFile="mu.tsv")
-cov.per <- round(nrow(subset(mu, is.in==TRUE)) / nrow(mu) * 100)
-mu.sub <- mu %>% filter(mean < 0.045)
-nrow(mu.sub)
-
 param = "mu"
-p <- plotValidations(mu.sub, cov.per, x.lab=paste("True",param,"value"))
-ggsave(paste0(param, "-sub-",nrow(mu.sub),".pdf"), p, width = 4, height = 3)
+df <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv")
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+df.sub <- df %>% filter(mean < 0.045)
+nrow(df.sub)
 
-bound = 0.15
-p <- plotValidations(mu, cov.per, x.lab=paste("True",param,"value"), x.max.lim=bound, y.max.lim=bound)
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"))
+ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+
+p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"))
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
 ### theta
-theta <- createAnalysisDF(param.name="Θ", posteriorFile="Theta.tsv")
-
-cov.per <- round(nrow(subset(theta, is.in==TRUE)) / nrow(theta) * 100)
-theta.sub <- theta %>% filter(mean < 1000)
-nrow(theta.sub)
-
 param = "theta"
-p <- plotValidations(theta.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-ggsave(paste0(param, "-sub-",nrow(theta.sub),".pdf"), p, width = 4, height = 3)
+df <- createAnalysisDF(tru.val.par="Θ", posteriorFile="theta.tsv")
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+df.sub <- df %>% filter(mean < 1000)
+nrow(df.sub)
 
-bound = 1000
-p <- plotValidations(theta, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+
+max(df$HPD95.upper)
+bou = 3300 # show outlier
+p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), 
+                     x.max.lim=bou, y.max.lim=bou, x.txt.just = 0)
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
-###
+### r_0
+for (par in 0:2) {
+  param = paste0("r", par)
+  tru.val.par = paste0("r_", par)
+  post.file = paste0("r_", par, ".tsv")
+  cat("plot", param, ", true val name = ", tru.val.par, ", file = ", post.file, "\n")
+  
+  stopifnot(file.exists(post.file))
+  
+  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
+  cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+  
+  p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+}
 
+### kappa1
+for (par in 0:2) {
+  param = paste0("kappa", (par+1))
+  tru.val.par = paste0("κ_", par)
+  post.file = paste0("kappa.", (par+1), ".tsv")
+  cat("plot", param, ", true val name = ", tru.val.par, ", file = ", post.file, "\n")
+  
+  stopifnot(file.exists(post.file))
+  
+  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
+  cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+  
+  p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+}
 
-
-
-
-
+### pi_0.A
+nuc.arr = c('A','C','G','T')
+for (par in 0:2) {
+  for (nuc.i in 1:length(nuc.arr)) {
+    nuc = nuc.arr[nuc.i]
+    param = paste0("pi_", par, "_", nuc)
+    tru.val.par = paste0("π_", par, "_", (nuc.i-1))
+    post.file = paste0("pi_", par, ".", nuc, ".tsv")
+    cat("plot", param, ", true val name = ", tru.val.par, ", file = ", post.file, "\n")
+    
+    stopifnot(file.exists(post.file))
+    
+    df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
+    cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+    
+    p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+    ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+    
+  }
+}
 
