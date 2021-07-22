@@ -4,7 +4,9 @@
 # Log file
 **/*.log
 **/*.trees
+**/*.state
 manuscript/logs/*.txt
+manuscript/**/*.xml
 examples/*.xml
 tutorials/*.xml
 
