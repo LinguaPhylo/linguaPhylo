@@ -12,10 +12,10 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
 setwd(WD)
 
-allStats = list.files(pattern = ".tsv") 
+allStats = list.files(pattern = "_([0-9]+).tsv") 
 
 et10path = "extra10"
-extraStats = list.files(path = et10path, pattern = ".tsv") 
+extraStats = list.files(path = et10path, pattern = "_([0-9]+).tsv") 
 
 # the selected parameters, do not change the order
 params = c("mu","Theta", "r_0", "r_1", "r_2",
@@ -23,6 +23,7 @@ params = c("mu","Theta", "r_0", "r_1", "r_2",
           "pi_0.A", "pi_0.C", "pi_0.G", "pi_0.T", 
           "pi_1.A", "pi_1.C", "pi_1.G", "pi_1.T", 
           "pi_2.A", "pi_2.C", "pi_2.G", "pi_2.T" )#,"psi.height")
+tre.params = c("total.br.len","tree.height")
 stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")
 
 ### check ESS first
@@ -35,7 +36,7 @@ lowESS <- tibble()
 etr <- 1
 for(fi in allStats) {
   # "mean", "HPD95.lower", "HPD95.upper", "ESS"
-  traces <- readTraces(fi) %>% select(trace,params) 
+  traces <- readTraces(fi) %>% select(trace, params) 
   ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
   minESS <- min(ESS %>% as.numeric)
   cat(fi, ", min ESS = ", tmp.minESS, "\n")
@@ -59,7 +60,13 @@ for(fi in allStats) {
       
       if (minESS >= 200) {
         cat("Replace", fi, "to", et.fi, "\n")
-        tracesDF[[fn]] <- traces
+        # add tree stats
+        tre.sta.fi <- paste0(sub('\\.tsv$', '', et.fi), ".trees.tsv")
+        if (!file.exists(tre.sta.fi)) stop("Cannot find ", tre.sta.fi)
+        tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+          filter(trace %in% stats.name) %>% select(!trace)
+        
+        tracesDF[[fn]] <- cbind(traces, tre.sta)
         break
       }
     }
@@ -69,7 +76,13 @@ for(fi in allStats) {
     
   } else {
     fn <- sub('\\.tsv$', '', fi)
-    tracesDF[[fn]] <- traces
+    # add tree stats
+    tre.sta.fi <- paste0(fn, ".trees.tsv")
+    if (!file.exists(tre.sta.fi)) stop("Cannot find ", tre.sta.fi)
+    tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+      filter(trace %in% stats.name) %>% select(!trace)
+    
+    tracesDF[[fn]] <- cbind(traces, tre.sta)
   }
 }
 stopifnot(length(tracesDF) == 100)
@@ -82,7 +95,7 @@ write_tsv(lowESS %>% mutate_at(3:ncol(.), as.numeric) %>% select(1:2 | where(~ a
 names(tracesDF)
 minESS <- c()
 
-for (pa in params) {
+for (pa in c(params,tre.params)) {
   cat("Analyse parameter : ", pa, "...\n")
   df <- tibble(trace=stats.name)
   
@@ -123,7 +136,7 @@ params2
 params
 
 # save true values to a file
-df2 <- tibble(parameter = params2)
+df2 <- tibble(parameter = c(params2,tre.params))
 tru <- NULL
 # have to use names(tracesDF), it may contain some of extra 10
 for(lg in names(tracesDF)) {
@@ -137,7 +150,18 @@ for(lg in names(tracesDF)) {
 
   # must 1 line
   tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
-
+  
+  # add tree stats
+  fn <- sub('\\.log$', '', lg.fi)
+  # add tree stats
+  tre.fi <- paste0(fn, "_ψ.trees")
+  if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
+  tru.tre <- read.nexus(tre.fi)
+  cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
+  
+  # total branch len and tree height
+  tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
+  
   df2 <- try(df2 %>% add_column(!!(lg) := tru))
 }
 

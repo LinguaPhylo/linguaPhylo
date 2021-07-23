@@ -4,12 +4,14 @@
 createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", posteriorFile="mu.tsv") {
   require(tidyverse)
   
+  cat("Load posterior ", posteriorFile, "...\n")
   trueVals <- read_tsv(trueValsFile)
   param <- read_tsv(posteriorFile)
   stopifnot( all(colnames(trueVals)[2:ncol(trueVals)] == colnames(param)[2:ncol(param)]) )
   
+  cat("Grep true value of ", tru.val.par, "...\n")
   # tru.val.par="μ"
-  param <- param %>% rbind(trueVals %>% filter(parameter==tru.val.par) %>% unlist) 
+  param <- param %>% rbind(trueVals %>% filter(grepl(!!tru.val.par, parameter, fixed = T)) %>% unlist) 
   statNames <- param %>% select(trace) %>% unlist
   # replace to "true.val"
   statNames[length(statNames)] <- "true.val"
@@ -25,7 +27,7 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", pos
     mutate(is.in = (true.val >= HPD95.lower & true.val <= HPD95.upper) ) %>%
     mutate(analysis = fct_reorder(analysis, true.val))
   # analysis    mean HPD95.lower HPD95.upper   ESS    true
-  print(anal)
+  print(anal, n = 5)
   return(anal)
 }
 
@@ -90,6 +92,33 @@ max(df$HPD95.upper)
 bou = 3300 # show outlier
 p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), 
                      x.max.lim=bou, y.max.lim=bou, x.txt.just = 0)
+ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+
+### total.br.len
+param = "total.br.len"
+df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+
+max(df$HPD95.upper)
+p <- plotValidations(df, cov.per, x.lab=paste("True total branch length"), 
+                     x.txt.just = 0)
+ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+
+### tree.height
+param = "tree.height"
+df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+df.sub <- df %>% filter(mean < 2000)
+nrow(df.sub)
+
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True tree height"), 
+                     x.txt.just = 0)
+ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+
+max(df$HPD95.upper)
+bou = 3300 # show outlier
+p <- plotValidations(df, cov.per, x.lab=paste("True tree height"), 
+                     x.txt.just = 0)
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
 ### r_0
