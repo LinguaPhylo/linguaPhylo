@@ -362,6 +362,9 @@ from what is normally reported in the literature will often also prove
 a gruelling exercise.
 Finally, BEAST and BEAST 2 XML files are not interchangeable. 
 
+%%Walter: XML is too verbose.
+%% https://thecontentwrangler.com/2016/02/23/why-does-xml-suck/
+
 The Rev programming language, introduced with the RevBayes platform
 \cite{revbayes}, was a welcome addition to the world of computational
 phylogenetics. 
@@ -384,7 +387,7 @@ schedule).
 Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
 language focused exclusively on model specification.
 We also introduce an accompanying GUI, LPhyStudio, which provides an
-LPhy command line, as well as panels for displaying graphical models
+LPhy command line interface, as well as panels for displaying graphical models
 and simulated random variables.
 A third application we develop, called LPhyBEAST, converts LPhy scripts 
 specifying models into BEAST 2 XML files for MCMC analyses.
@@ -1206,12 +1209,15 @@ matrices, one matrix per codon partition.
 
 The extensibility of a software is extremely important to encourage 
 the future growth and collaborations. 
-
 LPhy extensions are implemented by using the Service Provider Interface (SPI) 
 within the Java Platform Module System (JPMS). 
 An LPhy extension module implements the \texttt{LPhyExtension} interface 
 to provide a list of the classes that the extension module provides 
 to extend the functionality of LPhy.
+
+Using this mechanism, the extension developer can simply create the new 
+distributions or functions in a separate extension module, and make an individual release.
+The user will easily enjoy these new features after installing the extension.
 
 
 \subsection*{LinguaPhylo Studio}
@@ -1255,8 +1261,8 @@ communicate BEAST analyses.
 \end{enumerate}
 \item for computational biologists
 \begin{enumerate}
-\item enable easy extension of the type system and generative distributions available using the plugin architecture of Lingua Phylo Studio (in Java programming language)
-\item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its plugin architecture
+\item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
+\item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
 \item do well-calibrated simulation study that validate the implementation of inference framework
 \end{enumerate}
 \end{itemize}
@@ -1294,7 +1300,7 @@ communicate BEAST analyses.
 {\bf Lorem ipsum.} Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
 
 \section*{Acknowledgments}
-Cras egestas velit mauris, eu mollis turpis pellentesque sit amet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam id pretium nisi. Sed ac quam id nisi malesuada congue. Sed interdum aliquet augue, at pellentesque quam rhoncus vitae.
+Thanks for the New Zealand eScience Infrastructure (NeSI) to provide the high performance computation resource for our model validations.
 
 \nolinenumbers
 
