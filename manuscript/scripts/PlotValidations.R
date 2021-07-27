@@ -180,3 +180,23 @@ for (par in 0:2) {
   }
 }
 
+###
+
+df.mu <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv") %>% subset(is.in==F)
+df.theta <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv") %>% subset(is.in==F)
+df.r0 <- createAnalysisDF(tru.val.par="r_0", posteriorFile="r_0.tsv") %>% subset(is.in==F)
+df.r1 <- createAnalysisDF(tru.val.par="r_1", posteriorFile="r_1.tsv") %>% subset(is.in==F)
+df.r2 <- createAnalysisDF(tru.val.par="r_2", posteriorFile="r_2.tsv") %>% subset(is.in==F)
+df.k1 <- createAnalysisDF(tru.val.par="κ_0", posteriorFile="kappa.1.tsv") %>% subset(is.in==F)
+df.k2 <- createAnalysisDF(tru.val.par="κ_1", posteriorFile="kappa.2.tsv") %>% subset(is.in==F)
+df.k3 <- createAnalysisDF(tru.val.par="κ_2", posteriorFile="kappa.3.tsv") %>% subset(is.in==F)
+
+df.theta %>% inner_join(df.mu, by = c("analysis" = "analysis")) %>% print(width = Inf)
+
+  # left_join(df.r0, by = c("analysis" = "analysis")) %>%
+  # left_join(df.r1, by = c("analysis" = "analysis")) %>%
+  # left_join(df.r2, by = c("analysis" = "analysis")) %>%
+  # left_join(df.k1, by = c("analysis" = "analysis")) %>%
+  # left_join(df.k2, by = c("analysis" = "analysis")) %>%
+  # left_join(df.k3, by = c("analysis" = "analysis")) 
+
