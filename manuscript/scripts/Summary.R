@@ -51,21 +51,21 @@ for(fi in allStats) {
     while (etr < 10) {
       et.fi <- file.path(et10path, extraStats[etr])
       fn <- sub('\\.tsv$', '', extraStats[etr])
-      
-      traces <- readTraces(et.fi) %>% select(trace,params) 
+
+      traces <- readTraces(et.fi) %>% select(trace,params)
       ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
       minESS <- min(ESS %>% as.numeric)
       cat(et.fi, ", min ESS = ", tmp.minESS, "\n")
       etr <- etr + 1
-      
+
       if (minESS >= 200) {
         cat("Replace", fi, "to", et.fi, "\n")
         # add tree stats
         tre.sta.fi <- paste0(sub('\\.tsv$', '', et.fi), ".trees.tsv")
         if (!file.exists(tre.sta.fi)) stop("Cannot find ", tre.sta.fi)
-        tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+        tre.sta <- try(read_tsv(tre.sta.fi)) %>%
           filter(trace %in% stats.name) %>% select(!trace)
-        
+
         tracesDF[[fn]] <- cbind(traces, tre.sta)
         break
       }
@@ -114,13 +114,15 @@ for (pa in c(params,tre.params)) {
   cat("min ESS = ", tmp.minESS, "\n")
   minESS <- c(minESS, tmp.minESS)
 
-  if (!is.na(tmp.minESS) && tmp.minESS >= 200)  
+  if (!is.na(tmp.minESS) && tmp.minESS >= 200) {
     write_tsv(df, file.path("../figs", paste0(pa, ".tsv")))
-  else
+    cat("Write ", paste0(pa, ".tsv"), " to figs folder .\n")
+  } else {
     warning("Summary not generated ! ", pa, " min ESS = ", tmp.minESS, "\n")
+  }
 }
 cat("min ESS = ", paste(minESS, collapse = ", "), "\n")
-
+cat("min of min ESS = ", min(minESS), "\n")
 
 ### true value
 

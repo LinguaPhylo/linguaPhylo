@@ -69,35 +69,38 @@ setwd(WD)
 param = "mu"
 df <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv")
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
-df.sub <- df %>% filter(mean < 0.045)
-nrow(df.sub)
-
-p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"))
-ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
-
+cov.per
 p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"))
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
-### theta
-param = "theta"
-df <- createAnalysisDF(tru.val.par="Θ", posteriorFile="theta.tsv")
-cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
-df.sub <- df %>% filter(mean < 1000)
+df.sub <- df %>% filter(mean < 0.045)
 nrow(df.sub)
-
-p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"))
 ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
+### theta
+param = "theta"
+df <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv")
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+cov.per
+
 max(df$HPD95.upper)
-bou = 3300 # show outlier
+bou = round(max(df$HPD95.upper) / 100) * 100 + 200 # show outlier
 p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), 
                      x.max.lim=bou, y.max.lim=bou, x.txt.just = 0)
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+
+df.sub <- df %>% filter(mean < 700)
+nrow(df.sub)
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+
 
 ### total.br.len
 param = "total.br.len"
 df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+cov.per
 
 max(df$HPD95.upper)
 p <- plotValidations(df, cov.per, x.lab=paste("True total branch length"), 
@@ -108,18 +111,18 @@ ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
 param = "tree.height"
 df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
-df.sub <- df %>% filter(mean < 2000)
-nrow(df.sub)
-
-p <- plotValidations(df.sub, cov.per, x.lab=paste("True tree height"), 
-                     x.txt.just = 0)
-ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+cov.per
 
 max(df$HPD95.upper)
-bou = 3300 # show outlier
 p <- plotValidations(df, cov.per, x.lab=paste("True tree height"), 
                      x.txt.just = 0)
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+
+df.sub <- df %>% filter(mean < 1500)
+nrow(df.sub)
+p <- plotValidations(df.sub, cov.per, x.lab=paste("True tree height"), 
+                     x.txt.just = 0)
+ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
 ### r_0
 for (par in 0:2) {
@@ -132,6 +135,7 @@ for (par in 0:2) {
   
   df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
   cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+  print(cov.per)
   
   p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
   ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
@@ -148,6 +152,7 @@ for (par in 0:2) {
   
   df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
   cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+  print(cov.per)
   
   p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
   ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
@@ -167,6 +172,7 @@ for (par in 0:2) {
     
     df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
     cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+    print(cov.per)
     
     p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
     ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
