@@ -39,6 +39,7 @@ summariseTracesAndTrees <- function(log.file, tree.file=NA, burn.in=0.1) {
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
 setwd(WD)
 
+# inlcude extra 10
 log.files = list.files(pattern = ".log") 
 log.files
 
@@ -48,11 +49,8 @@ for(lg in log.files) {
   summariseTracesAndTrees(lg, tree.file)
 }
 
-### extra 10
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs/extra10")
-setwd(WD)
-
-extra.log.files = list.files(pattern = ".log") 
+### separately summarise extra 10
+extra.log.files = log.files[-grepl("-e_", log.files, fixed = TRUE)]
 extra.log.files
 
 for(lg in extra.log.files) {

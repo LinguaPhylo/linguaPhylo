@@ -9,13 +9,14 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 }
 
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
 setwd(WD)
-
-allStats = list.files(pattern = "_([0-9]+).tsv") 
-
-et10path = "extra10"
-extraStats = list.files(path = et10path, pattern = "_([0-9]+).tsv") 
+# RSV2_0.tsv excl RSV2_0.trees.tsv
+allLogStats = list.files(pattern = "_([0-9]+).tsv") 
+# 100 tsv such as RSV2_0.tsv
+allStats = allLogStats[-grepl("-e_", allLogStats, fixed = TRUE)] 
+# extra 10 such as RSV2-e_0.tsv
+extraStats = allLogStats[grepl("-e_", allLogStats, fixed = TRUE)] 
 
 # the selected parameters, do not change the order
 params = c("mu","Theta", "r_0", "r_1", "r_2",
@@ -49,7 +50,7 @@ for(fi in allStats) {
     tmp.low <- ESS %>% add_column(fn, .before=1)
     
     while (etr < 10) {
-      et.fi <- file.path(et10path, extraStats[etr])
+      et.fi <- file.path(extraStats[etr])
       fn <- sub('\\.tsv$', '', extraStats[etr])
 
       traces <- readTraces(et.fi) %>% select(trace,params)
@@ -144,10 +145,10 @@ tru <- NULL
 for(lg in names(tracesDF)) {
   
   lg.fi <- file.path(paste0(lg,"_true.log"))
-  if ( grepl("-e_", lg, fixed = TRUE) ) {
+#  if ( grepl("-e_", lg, fixed = TRUE) ) {
     # in extra 10
-    lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
-  } 
+#    lg.fi <- file.path(paste0(lg,"_true.log"))
+# } 
   cat("Load ", lg.fi, "...\n")
 
   # must 1 line
@@ -169,38 +170,4 @@ for(lg in names(tracesDF)) {
 
 write_tsv(df2, file.path("../figs", "trueValue.tsv"))
 
-
-
-
-### Deprecated
-
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs-theta-20")
-setwd(WD)
-
-allStats = list.files(pattern = ".tsv") 
-
-# the selected parameters
-params = c("psi.height", "mu","r_0", "r_1", "r_2")
-stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")
-
-minESS <- c()
-for (pa in params) {
-  cat("Analyse parameter : ", pa, "...\n")
-  df <- tibble(trace=stats.name)
-  
-  traces <- NULL
-  for(fi in allStats) {
-    traces <- readTraces(fi, param = pa)
-    fn <- sub('\\.tsv$', '', fi)
-    df <- try(df %>% add_column("{fn}" := traces))
-  }
-  
-  ESS <- df %>% filter(trace == "ESS") %>% select(!trace) %>% unlist %>% as.numeric
-  tmp.minESS <- min(ESS)
-  cat("min ESS = ", tmp.minESS, "\n")
-  minESS <- c(minESS, tmp.minESS)
-  
-  if (pa=="psi.height")  write_tsv(df, file.path("../figs", paste0("theta-20-", pa, ".tsv")))
-}
-cat("min ESS = ", paste(minESS, collapse = ", "), "\n")
 
