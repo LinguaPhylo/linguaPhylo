@@ -9,14 +9,14 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 }
 
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
 setwd(WD)
 # RSV2_0.tsv excl RSV2_0.trees.tsv
 allLogStats = list.files(pattern = "_([0-9]+).tsv") 
 # 100 tsv such as RSV2_0.tsv
-allStats = allLogStats[-grepl("-e_", allLogStats, fixed = TRUE)] 
+allStats = allLogStats[-grep("-e_", allLogStats, fixed = TRUE)] 
 # extra 10 such as RSV2-e_0.tsv
-extraStats = allLogStats[grepl("-e_", allLogStats, fixed = TRUE)] 
+extraStats = allLogStats[grep("-e_", allLogStats, fixed = TRUE)] 
 
 # the selected parameters, do not change the order
 params = c("mu","Theta", "r_0", "r_1", "r_2",
@@ -143,7 +143,7 @@ df2 <- tibble(parameter = c(params2,tre.params))
 tru <- NULL
 # have to use names(tracesDF), it may contain some of extra 10
 for(lg in names(tracesDF)) {
-  
+  # RSV2_0_true.log
   lg.fi <- file.path(paste0(lg,"_true.log"))
 #  if ( grepl("-e_", lg, fixed = TRUE) ) {
     # in extra 10
@@ -156,7 +156,7 @@ for(lg in names(tracesDF)) {
   
   # add tree stats
   fn <- sub('\\.log$', '', lg.fi)
-  # add tree stats
+  # add true tree stats, RSV2_0_true_ψ.trees
   tre.fi <- paste0(fn, "_ψ.trees")
   if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
   tru.tre <- read.nexus(tre.fi)

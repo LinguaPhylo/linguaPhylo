@@ -50,7 +50,7 @@ for(lg in log.files) {
 }
 
 ### separately summarise extra 10
-extra.log.files = log.files[-grepl("-e_", log.files, fixed = TRUE)]
+extra.log.files = log.files[grep("-e_", log.files, fixed = TRUE)]
 extra.log.files
 
 for(lg in extra.log.files) {
