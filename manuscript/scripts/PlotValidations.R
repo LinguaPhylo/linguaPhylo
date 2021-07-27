@@ -90,7 +90,7 @@ p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"),
                      x.max.lim=bou, y.max.lim=bou, x.txt.just = 0)
 ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
-df.sub <- df %>% filter(mean < 700)
+df.sub <- df %>% filter(mean < 200)
 nrow(df.sub)
 p <- plotValidations(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
 ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
