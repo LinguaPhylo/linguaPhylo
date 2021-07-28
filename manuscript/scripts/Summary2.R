@@ -9,21 +9,15 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 }
 
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim2")
 setwd(WD)
 
 allStats = list.files(pattern = "_([0-9]+).tsv") 
-
-et10path = "extra10"
-extraStats = list.files(path = et10path, pattern = "_([0-9]+).tsv") 
+allStats
 
 # the selected parameters, do not change the order
-params = c("mu","Theta", "r_0", "r_1", "r_2",
-          "kappa.1", "kappa.2", "kappa.3",
-          "pi_0.A", "pi_0.C", "pi_0.G", "pi_0.T", 
-          "pi_1.A", "pi_1.C", "pi_1.G", "pi_1.T", 
-          "pi_2.A", "pi_2.C", "pi_2.G", "pi_2.T" )#,"psi.height")
-tre.params = c("total.br.len","tree.height")
+params = c("mu","Theta", "kappa", "pi.A", "pi.C", "pi.G", "pi.T",
+           "psi.treeLength", "psi.height")
 stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")
 
 ### check ESS first
@@ -34,7 +28,10 @@ tracesDF <- list()
 lowESS <- tibble()
 
 etr <- 1
-for(fi in allStats) {
+for(i in 0:99) {
+  fi <- paste0("sim1p_", i, ".tsv")
+  stopifnot(file.exists(fi))
+  
   # "mean", "HPD95.lower", "HPD95.upper", "ESS"
   traces <- readTraces(fi) %>% select(trace, params) 
   ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
@@ -49,8 +46,10 @@ for(fi in allStats) {
     tmp.low <- ESS %>% add_column(fn, .before=1)
     
     while (etr < 10) {
-      et.fi <- file.path(et10path, extraStats[etr])
-      fn <- sub('\\.tsv$', '', extraStats[etr])
+      et.fi <- paste0("sim1p_10", etr, ".tsv")
+      stopifnot(file.exists(et.fi))
+      
+      fn <- sub('\\.tsv$', '', et.fi)
       
       traces <- readTraces(et.fi) %>% select(trace,params) 
       ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
@@ -95,7 +94,7 @@ write_tsv(lowESS %>% mutate_at(3:ncol(.), as.numeric) %>% select(1:2 | where(~ a
 names(tracesDF)
 minESS <- c()
 
-for (pa in c(params,tre.params)) {
+for (pa in params) {
   cat("Analyse parameter : ", pa, "...\n")
   df <- tibble(trace=stats.name)
   
@@ -115,28 +114,27 @@ for (pa in c(params,tre.params)) {
   minESS <- c(minESS, tmp.minESS)
 
   if (!is.na(tmp.minESS) && tmp.minESS >= 200)  
-    write_tsv(df, file.path("../figs", paste0(pa, ".tsv")))
+    write_tsv(df, paste0(pa, ".tsv"))
   else
     warning("Summary not generated ! ", pa, " min ESS = ", tmp.minESS, "\n")
 }
 cat("min ESS = ", paste(minESS, collapse = ", "), "\n")
-
+cat("min of min ESS = ", min(minESS), "\n")
 
 ### true value
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim2")
 setwd(WD)
 
 #allLogs = list.files(pattern = ".log") 
 
 # must have the same order of param
-params2 = c("μ","Θ","r_0","r_1","r_2","κ_0","κ_1","κ_2","π_0_0","π_0_1","π_0_2","π_0_3",
-            "π_1_0","π_1_1","π_1_2","π_1_3","π_2_0","π_2_1","π_2_2","π_2_3")
+params2 = c("μ","Θ","κ","π_0","π_1","π_2","π_3")
 params2
 params
 
 # save true values to a file
-df2 <- tibble(parameter = c(params2,tre.params))
+df2 <- tibble(parameter = c(params2,"total.br.len","tree.height"))
 tru <- NULL
 # have to use names(tracesDF), it may contain some of extra 10
 for(lg in names(tracesDF)) {
@@ -165,7 +163,7 @@ for(lg in names(tracesDF)) {
   df2 <- try(df2 %>% add_column(!!(lg) := tru))
 }
 
-write_tsv(df2, file.path("../figs", "trueValue.tsv"))
+write_tsv(df2, "trueValue.tsv")
 
 
 

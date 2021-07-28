@@ -3,50 +3,17 @@
 
 library("TraceR")
 
-summariseTracesAndTrees <- function(log.file, tree.file=NA, burn.in=0.1) {
-  require("TraceR")
-  require(tidyverse)
-  
-  cat("\nProcess ", log.file, "...\n")
-    if (!file.exists(log.file)) stop("\nRequire log file ", log.file)
-  
-  # read MCMC log
-  mcmc.log <- TraceR::readMCMCLog(log.file)
-  # get traces and remove burn in
-  traces <- TraceR::getTraces(mcmc.log, burn.in=burn.in)
-  # get stats
-  stats <- TraceR::analyseTraces(traces)
-  
-  write_tsv(stats, paste0(sub('\\.log$', '', log.file), ".tsv"))
-  
-  # add tree stats
-  if (!is.na(tree.file)) {
-    
-    if (!file.exists(tree.file)) stop("\nRequire tree file ", tree.file)
-    
-    tre.sta.df <- TraceR::readTrees(tree.file)
-    tre.sta <- TraceR::analyseTreeStats(tre.sta.df)
-  
-    # ? HPD95.lower.STATE_14150000
-    #tre.stats$trace <- sub("\\.STATE.*$","",tre.stats$trace, ignore.case = T)
-    
-    write_tsv(tre.sta, paste0(tree.file, ".tsv"))  
-  }
-  
-}
-
-
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim2")
 setwd(WD)
 
 # inlcude extra 10
-log.files = list.files(pattern = ".log") 
+log.files = list.files(pattern = "_[0-9]+.log") 
 log.files
 
 for(lg in log.files) {
   # assume same file stem
   tree.file=paste0(sub('\\.log$', '', lg), ".trees")
-  summariseTracesAndTrees(lg, tree.file)
+  TraceR::summariseTracesAndTrees(lg, tree.file)
 }
 
 ### separately summarise extra 10
@@ -56,7 +23,7 @@ extra.log.files
 for(lg in extra.log.files) {
   # assume same file stem
   tree.file=paste0(sub('\\.log$', '', lg), ".trees")
-  summariseTracesAndTrees(lg, tree.file)
+  TraceR::summariseTracesAndTrees(lg, tree.file)
 }
 
 

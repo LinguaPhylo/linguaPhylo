@@ -62,12 +62,12 @@ plotValidations <- function(df, cov.per, transp = 0.3, x.lab="",
   return(p)
 }
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/figs")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim")
 setwd(WD)
 
 ### mu
 param = "mu"
-df <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv")
+df <- createAnalysisDF(tru.val.par="μ", posteriorFile=paste0(param,".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"))
@@ -98,7 +98,7 @@ ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
 ### total.br.len
 param = "total.br.len"
-df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
+df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0("psi.treeLength",".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 
@@ -109,7 +109,7 @@ ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
 
 ### tree.height
 param = "tree.height"
-df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0(param,".tsv"))
+df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0("psi.height",".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 
@@ -178,6 +178,34 @@ for (par in 0:2) {
     ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
     
   }
+}
+
+###
+
+param = "kappa"
+df <- createAnalysisDF(tru.val.par="κ", posteriorFile=paste0(param,".tsv"))
+cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+cov.per
+p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+
+nuc.arr = c('A','C','G','T')
+for (nuc.i in 1:length(nuc.arr)) {
+  nuc = nuc.arr[nuc.i]
+  param = paste0("pi_", nuc)
+  tru.val.par = paste0("π_", (nuc.i-1))
+  post.file = paste0("pi.", nuc, ".tsv")
+  cat("plot", param, ", true val name = ", tru.val.par, ", file = ", post.file, "\n")
+  
+  stopifnot(file.exists(post.file))
+  
+  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
+  cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+  print(cov.per)
+  
+  p <- plotValidations(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+  
 }
 
 ###
