@@ -9,7 +9,7 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 }
 
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim2")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim1partition")
 setwd(WD)
 
 allStats = list.files(pattern = "_([0-9]+).tsv") 
@@ -123,7 +123,7 @@ cat("min of min ESS = ", min(minESS), "\n")
 
 ### true value
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim2")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim1partition")
 setwd(WD)
 
 #allLogs = list.files(pattern = ".log") 
@@ -140,10 +140,6 @@ tru <- NULL
 for(lg in names(tracesDF)) {
   
   lg.fi <- file.path(paste0(lg,"_true.log"))
-  if ( grepl("-e_", lg, fixed = TRUE) ) {
-    # in extra 10
-    lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
-  } 
   cat("Load ", lg.fi, "...\n")
 
   # must 1 line

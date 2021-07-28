@@ -12,10 +12,11 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
 setwd(WD)
 
-allStats = list.files(pattern = "_([0-9]+).tsv") 
-
-et10path = "extra10"
-extraStats = list.files(path = et10path, pattern = "_([0-9]+).tsv") 
+allStatsFiles = list.files(pattern = "_([0-9]+).tsv") 
+allStats = allStatsFiles[-grep("-e_", allStatsFiles, ignore.case = T)]
+extraStats = allStatsFiles[grep("-e_", allStatsFiles, ignore.case = T)]
+allStats
+extraStats
 
 # the selected parameters, do not change the order
 params = c("mu","Theta", "r_0", "r_1", "r_2",
@@ -49,7 +50,7 @@ for(fi in allStats) {
     tmp.low <- ESS %>% add_column(fn, .before=1)
     
     while (etr < 10) {
-      et.fi <- file.path(et10path, extraStats[etr])
+      et.fi <- file.path(extraStats[etr])
       fn <- sub('\\.tsv$', '', extraStats[etr])
       
       traces <- readTraces(et.fi) %>% select(trace,params) 
@@ -120,6 +121,7 @@ for (pa in c(params,tre.params)) {
     warning("Summary not generated ! ", pa, " min ESS = ", tmp.minESS, "\n")
 }
 cat("min ESS = ", paste(minESS, collapse = ", "), "\n")
+cat("min of min ESS = ", min(minESS), "\n")
 
 
 ### true value
@@ -134,6 +136,7 @@ params2 = c("μ","Θ","r_0","r_1","r_2","κ_0","κ_1","κ_2","π_0_0","π_0_1","
             "π_1_0","π_1_1","π_1_2","π_1_3","π_2_0","π_2_1","π_2_2","π_2_3")
 params2
 params
+names(tracesDF)
 
 # save true values to a file
 df2 <- tibble(parameter = c(params2,tre.params))
@@ -142,10 +145,9 @@ tru <- NULL
 for(lg in names(tracesDF)) {
   
   lg.fi <- file.path(paste0(lg,"_true.log"))
-  if ( grepl("-e_", lg, fixed = TRUE) ) {
-    # in extra 10
-    lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
-  } 
+  #if ( grepl("-e_", lg, fixed = TRUE) ) 
+    #lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
+   
   cat("Load ", lg.fi, "...\n")
 
   # must 1 line
@@ -163,9 +165,52 @@ for(lg in names(tracesDF)) {
   tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
   
   df2 <- try(df2 %>% add_column(!!(lg) := tru))
+  
 }
 
 write_tsv(df2, file.path("../figs", "trueValue.tsv"))
+
+### 
+
+sub.site <- list()
+tru <- NULL
+# have to use names(tracesDF), it may contain some of extra 10
+for(lg in names(tracesDF)) {
+  
+  lg.fi <- file.path(paste0(lg,"_true.log"))
+  #if ( grepl("-e_", lg, fixed = TRUE) ) 
+  #lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
+  
+  cat("Load ", lg.fi, "...\n")
+  
+  # must 1 line
+  tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
+  
+  # add tree stats
+  fn <- sub('\\.log$', '', lg.fi)
+  # add tree stats
+  tre.fi <- paste0(fn, "_ψ.trees")
+  if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
+  tru.tre <- read.nexus(tre.fi)
+  cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
+  
+  # total branch len and tree height
+  tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
+  
+  ### tree hight * mu * relative rate
+  hei <- max(nodeHeights(tru.tre))
+  mu <- tru[names(tru) == "μ"]
+  r0 <- tru[names(tru) == "r_0"]
+  r1 <- tru[names(tru) == "r_1"]
+  r2 <- tru[names(tru) == "r_2"]
+  tmp.hmr <- c(r0*hei*mu, r1*hei*mu, r2*hei*mu)
+  
+  sub.site[[lg]] <- tmp.hmr
+}
+
+# at least 1 partition (tree hight * mu * relative rate) > 1
+bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
+ncol(bad.sim)
 
 
 
