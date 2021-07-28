@@ -210,7 +210,7 @@ for(lg in names(tracesDF)) {
 
 # at least 1 partition (tree hight * mu * relative rate) > 1
 bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
-ncol(bad.sim)
+ncol(bad.sim) # 56
 
 
 
