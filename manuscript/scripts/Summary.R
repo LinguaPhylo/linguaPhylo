@@ -56,7 +56,7 @@ for(fi in allStats) {
       traces <- readTraces(et.fi) %>% select(trace,params) 
       ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
       minESS <- min(ESS %>% as.numeric)
-      cat(et.fi, ", min ESS = ", tmp.minESS, "\n")
+      cat(et.fi, ", min ESS = ", minESS, "\n")
       etr <- etr + 1
       
       if (minESS >= 200) {

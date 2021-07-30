@@ -8,15 +8,78 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
   return(traces)
 }
 
+# RSV2_0.tsv
+#trace	posterior	likelihood
+#mean	-1395.71800741416	-1260.57129157319
+#stderr.of.mean	0.948421280126143	0.142003271885284
+#stdev	21.6784291082163	5.61509246716363
+pullAValidResultFromExtraPool <- function(file.orig, ext.idx, ext.pool=c(), ext.trees.pool=c(), 
+                                          params=c("trace","mu","Theta"), 
+                                          stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")) {
+  if (ext.idx >= length(ext.pool)) # length(ext.pool) extra
+    stop("All extra simulations have been used ! ", ext.idx, " >= ", length(ext.pool))
+  
+  tre.sta <- NULL
+  lowESS <- tibble()
+  
+  while (ext.idx < length(ext.pool)) {
+    # pick up "ext.idx" result from extra pool
+    et.fi <- ext.pool[ext.idx]
+    stopifnot(file.exists(et.fi))
+    
+    # file steam
+    fstm <- sub('\\.tsv$', '', et.fi)
+    
+    traces <- try(read_tsv(et.fi)) %>% 
+      filter(trace %in% stats.name) %>% 
+      select(params) # must incl trace column
+    
+    ESS <- traces %>% filter(trace == "ESS") %>% 
+      select(!trace) %>% as.numeric
+    minESS <- min(ESS)
+    cat(et.fi, ", min ESS = ", minESS, "\n")
+    
+    # all ESS >= 200 then break, otherwise continue the loop
+    if (minESS >= 200) {
+      cat("Replace the low ESS result", file.orig, "to", et.fi, "\n")
+      
+      # add tree stats
+      if (length(ext.trees.pool)>0) {
+        tre.sta.fi <- ext.trees.pool[ext.idx]
+        stopifnot(file.exists(tre.sta.fi))
+        
+        tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+          filter(trace %in% stats.name) %>% select(!trace)
+        # same row names
+        traces <- cbind(traces, tre.sta)
+      }
+      # point to the next before break loop
+      ext.idx <- ext.idx + 1
+      break
+    } # end if minESS >= 200
+    
+    # must increase after pick up tree stats from extra pool 
+    ext.idx <- ext.idx + 1
+  } # end while
+  list(file.orig=file.orig, file.selected=et.fi, ext.idx=ext.idx, traces=traces)
+}
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim1partition")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
 setwd(WD)
-
+# excl all *_0.trees.tsv
 allStats = list.files(pattern = "_([0-9]+).tsv") 
-allStats
+allStats # a char vector
+extraStats = allStats[grep("_10([0-9]).tsv", allStats, ignore.case = T)]
+extraStats # extra 10 simulations: *_100.tsv ~ *_109.tsv
 
 # the selected parameters, do not change the order
-params = c("mu","Theta", "kappa", "pi.A", "pi.C", "pi.G", "pi.T",
+#params = c("mu","Theta", "kappa", "pi.A", "pi.C", "pi.G", "pi.T",
+#           "psi.treeLength", "psi.height")
+params = c("mu","Theta", "r_0", "r_1", "r_2",
+           "kappa.1", "kappa.2", "kappa.3",
+           "pi_0.A", "pi_0.C", "pi_0.G", "pi_0.T", 
+           "pi_1.A", "pi_1.C", "pi_1.G", "pi_1.T", 
+           "pi_2.A", "pi_2.C", "pi_2.G", "pi_2.T",
            "psi.treeLength", "psi.height")
 stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")
 
@@ -29,59 +92,40 @@ lowESS <- tibble()
 
 etr <- 1
 for(i in 0:99) {
-  fi <- paste0("sim1p_", i, ".tsv")
+  fi <- paste0("al2_", i, ".tsv")
   stopifnot(file.exists(fi))
   
   # "mean", "HPD95.lower", "HPD95.upper", "ESS"
   traces <- readTraces(fi) %>% select(trace, params) 
   ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
   minESS <- min(ESS %>% as.numeric)
-  cat(fi, ", min ESS = ", tmp.minESS, "\n")
+  cat(fi, ", min ESS = ", minESS, "\n")
+  
+  fn <- sub('\\.tsv$', '', fi)
+  tre.sta.fi <- paste0(fn, ".trees.tsv")
+  if (file.exists(tre.sta.fi)) {
+    # add tree stats
+    tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+      filter(trace %in% stats.name) %>% select(!trace)
+    traces <- cbind(traces, tre.sta)
+  }
   
   if (minESS < 200) {
-    # 10 extra
-    if (etr >= 10) stop("All extra simulations have been used ! ", etr)
+    selected <- pullAValidResultFromExtraPool(fi, etr, ext.pool=extraStats, params=c("trace", params))
+    # selected extra
+    file.selected <- selected$file.selected
+    fn.sel <- sub('\\.tsv$', '', file.selected)
+    tracesDF[[fn.sel]] <- selected$traces
     
-    fn <- sub('\\.tsv$', '', fi)
-    tmp.low <- ESS %>% add_column(fn, .before=1)
+    # sync current index in the pool 
+    etr <- selected$ext.idx
     
-    while (etr < 10) {
-      et.fi <- paste0("sim1p_10", etr, ".tsv")
-      stopifnot(file.exists(et.fi))
-      
-      fn <- sub('\\.tsv$', '', et.fi)
-      
-      traces <- readTraces(et.fi) %>% select(trace,params) 
-      ESS <- traces %>% filter(trace == "ESS") %>% select(!trace)
-      minESS <- min(ESS %>% as.numeric)
-      cat(et.fi, ", min ESS = ", tmp.minESS, "\n")
-      etr <- etr + 1
-      
-      if (minESS >= 200) {
-        cat("Replace", fi, "to", et.fi, "\n")
-        # add tree stats
-        tre.sta.fi <- paste0(sub('\\.tsv$', '', et.fi), ".trees.tsv")
-        if (!file.exists(tre.sta.fi)) stop("Cannot find ", tre.sta.fi)
-        tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
-          filter(trace %in% stats.name) %>% select(!trace)
-        
-        tracesDF[[fn]] <- cbind(traces, tre.sta)
-        break
-      }
-    }
-    fn2 <- sub('\\.tsv$', '', et.fi)
-    tmp.low <- tmp.low %>% add_column(fn2, .before=2)
+    # record low ESS
+    tmp.low <- ESS %>% as_tibble %>% add_column(fn, .before=1) %>% add_column(fn.sel, .before=2)
     lowESS <- lowESS %>% rbind(tmp.low) 
     
   } else {
-    fn <- sub('\\.tsv$', '', fi)
-    # add tree stats
-    tre.sta.fi <- paste0(fn, ".trees.tsv")
-    if (!file.exists(tre.sta.fi)) stop("Cannot find ", tre.sta.fi)
-    tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
-      filter(trace %in% stats.name) %>% select(!trace)
-    
-    tracesDF[[fn]] <- cbind(traces, tre.sta)
+    tracesDF[[fn]] <- traces
   }
 }
 stopifnot(length(tracesDF) == 100)
