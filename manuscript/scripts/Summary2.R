@@ -64,6 +64,7 @@ pullAValidResultFromExtraPool <- function(file.orig, ext.idx, ext.pool=c(), ext.
   list(file.orig=file.orig, file.selected=et.fi, ext.idx=ext.idx, traces=traces)
 }
 
+# everthing in the same folder
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
 setwd(WD)
 # excl all *_0.trees.tsv
@@ -71,6 +72,7 @@ allStats = list.files(pattern = "_([0-9]+).tsv")
 allStats # a char vector
 extraStats = allStats[grep("_10([0-9]).tsv", allStats, ignore.case = T)]
 extraStats # extra 10 simulations: *_100.tsv ~ *_109.tsv
+anal = "al2_"
 
 # the selected parameters, do not change the order
 #params = c("mu","Theta", "kappa", "pi.A", "pi.C", "pi.G", "pi.T",
@@ -92,7 +94,7 @@ lowESS <- tibble()
 
 etr <- 1
 for(i in 0:99) {
-  fi <- paste0("al2_", i, ".tsv")
+  fi <- paste0(anal, i, ".tsv")
   stopifnot(file.exists(fi))
   
   # "mean", "HPD95.lower", "HPD95.upper", "ESS"
@@ -166,19 +168,19 @@ cat("min ESS = ", paste(minESS, collapse = ", "), "\n")
 cat("min of min ESS = ", min(minESS), "\n")
 
 ### true value
-
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim1partition")
-setwd(WD)
-
-#allLogs = list.files(pattern = ".log") 
-
+require(ape)
+require(phytools)
 # must have the same order of param
-params2 = c("μ","Θ","κ","π_0","π_1","π_2","π_3")
+#params2 = c("μ","Θ","κ","π_0","π_1","π_2","π_3")
+params2 = c("μ","Θ","r_0","r_1","r_2","κ_0","κ_1","κ_2","π_0_0","π_0_1","π_0_2","π_0_3",
+            "π_1_0","π_1_1","π_1_2","π_1_3","π_2_0","π_2_1","π_2_2","π_2_3")
 params2
 params
+tre.params = c("total.br.len","tree.height")
 
+names(tracesDF)
 # save true values to a file
-df2 <- tibble(parameter = c(params2,"total.br.len","tree.height"))
+df2 <- tibble(parameter = c(params2, tre.params))
 tru <- NULL
 # have to use names(tracesDF), it may contain some of extra 10
 for(lg in names(tracesDF)) {
@@ -210,15 +212,46 @@ write_tsv(df2, "trueValue.tsv")
 
 ### in dev
 
-#library(devtools)
-#install_github("danlwarren/RWTY")
+sub.site <- list()
+tru <- NULL
+# have to use names(tracesDF), it may contain some of extra 10
+for(lg in names(tracesDF)) {
+  
+  lg.fi <- file.path(paste0(lg,"_true.log"))
+  #if ( grepl("-e_", lg, fixed = TRUE) ) 
+  #lg.fi <- file.path(et10path, paste0(lg,"_true.log"))
+  
+  cat("Load ", lg.fi, "...\n")
+  
+  # must 1 line
+  tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
+  
+  # add tree stats
+  fn <- sub('\\.log$', '', lg.fi)
+  # add tree stats
+  tre.fi <- paste0(fn, "_ψ.trees")
+  if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
+  tru.tre <- read.nexus(tre.fi)
+  cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
+  
+  # total branch len and tree height
+  tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
+  
+  ### tree hight * mu * relative rate
+  hei <- max(nodeHeights(tru.tre))
+  mu <- tru[names(tru) == "μ"]
+  r0 <- tru[names(tru) == "r_0"]
+  r1 <- tru[names(tru) == "r_1"]
+  r2 <- tru[names(tru) == "r_2"]
+  tmp.hmr <- c(r0*hei*mu, r1*hei*mu, r2*hei*mu)
+  
+  sub.site[[lg]] <- tmp.hmr
+}
 
-library(rwty)
+# at least 1 partition (tree hight * mu * relative rate) > 1
+bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
+ncol(bad.sim) # 56
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
-setwd(WD)
 
-my.trees <- load.trees("RSV2_3.trees")
 
-approx.ess <- topological.approx.ess(my.trees, burnin = 200)
 

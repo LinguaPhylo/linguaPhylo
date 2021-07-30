@@ -125,6 +125,8 @@ cat("min of min ESS = ", min(minESS), "\n")
 
 
 ### true value
+require(ape)
+require(phytools)
 
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
 setwd(WD)
@@ -171,7 +173,6 @@ for(lg in names(tracesDF)) {
 write_tsv(df2, file.path("../figs", "trueValue.tsv"))
 
 ### 
-
 sub.site <- list()
 tru <- NULL
 # have to use names(tracesDF), it may contain some of extra 10
