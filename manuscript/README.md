@@ -2,26 +2,43 @@
 
 ## XMLs and true value
 
-BEAST XMLs and true values from simulations are in the [xmls](xmls) folder.
-
-In RSV2.lphy, change `codon ~ PhyloCTMC` to `sim ~ PhyloCTMC`, 
-so that the alignment will be the simulated data.
+In `RSV2sim.lphy`, the command `sim ~ PhyloCTMC` instructs the alignment will be the simulated.
 
 ```
-lphybeast.LPhyBEAST -r 100 -l 50000000
-                    -o ~/WorkSpace/linguaPhylo/manuscript/xmls/RSV2.xml
-                    ~/WorkSpace/linguaPhylo/tutorials/RSV2.lphy
+lphybeast.LPhyBEAST -r 110 -l 50000000
+                    -o $USER_HOME$/WorkSpace/linguaPhylo/manuscript/xmls/al2.xml
+                    $USER_HOME$/WorkSpace/linguaPhylo/tutorials/RSV2sim.lphy
 ```
+
+where `$USER_HOME$` is your home directory assigned to the 
+[path variable of IntelliJ](https://www.jetbrains.com/help/idea/absolute-path-variables.html)
+
+BEAST XMLs and true values from 110 simulations will be created in the folder 
+"~/WorkSpace/.../xmls/".
+
+
+## Simulations
+
+- [WeightedDirichlet(conc=[1.0,1.0,1.0]), weights=...](alpha1)
+
+- [WeightedDirichlet(conc=[2.0,2.0,2.0]), weights=...](alpha2)
+
+- [No WeightedDirichlet prior](noWeigDiriPrior)
+
+- [No WeightedDirichlet prior with one partition](sim1partition)
+
 
 ## BEAST logs
 
-BEAST logs and trees are in the [logs](logs) folder. 
-`*.tsv` files contain the statistic summary of all traces from each log.
+BEAST logs and trees are in the same folder. 
+R script will produce intermediate `*.tsv` files containing 
+the statistic summary of all traces from each log.
 
 
 ## Summary and Figures
 
-The final summary `*.tsv` files and figures are in the [figs](figs) folder.
+The final summary `*.tsv` for each parameters and true values are in the same folder,
+but figures are in the sub-folder `figs`.
 
 
 ## R scripts
