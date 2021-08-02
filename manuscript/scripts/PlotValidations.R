@@ -34,7 +34,7 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", pos
 
 require("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha1")
 setwd(WD)
 
 ### mu

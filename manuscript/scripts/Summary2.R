@@ -121,6 +121,7 @@ params2 = c("μ","Θ","r_0","r_1","r_2","κ_0","κ_1","κ_2","π_0_0","π_0_1","
             "π_1_0","π_1_1","π_1_2","π_1_3","π_2_0","π_2_1","π_2_2","π_2_3")
 params2
 params
+# true tree stats have to compute from the true trees
 tre.params = c("total.br.len","tree.height")
 
 names(tracesDF)
