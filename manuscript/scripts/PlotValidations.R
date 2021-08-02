@@ -68,7 +68,7 @@ p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True",param,"value"), x.tx
 ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
 
-### total.br.len
+### total.br.len 
 param = "total.br.len"
 df <- createAnalysisDF(tru.val.par=eval(param), posteriorFile=paste0("psi.treeLength",".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)

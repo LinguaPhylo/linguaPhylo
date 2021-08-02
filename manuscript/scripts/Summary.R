@@ -9,7 +9,7 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
 }
 
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/logs")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim3par")
 setwd(WD)
 
 allStatsFiles = list.files(pattern = "_([0-9]+).tsv") 
@@ -116,7 +116,7 @@ for (pa in c(params,tre.params)) {
   minESS <- c(minESS, tmp.minESS)
 
   if (!is.na(tmp.minESS) && tmp.minESS >= 200)  
-    write_tsv(df, file.path("../figs", paste0(pa, ".tsv")))
+    write_tsv(df, file.path(paste0(pa, ".tsv")))
   else
     warning("Summary not generated ! ", pa, " min ESS = ", tmp.minESS, "\n")
 }
@@ -128,17 +128,15 @@ cat("min of min ESS = ", min(minESS), "\n")
 require(ape)
 require(phytools)
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/xmls")
-setwd(WD)
-
-#allLogs = list.files(pattern = ".log") 
-
 # must have the same order of param
 params2 = c("μ","Θ","r_0","r_1","r_2","κ_0","κ_1","κ_2","π_0_0","π_0_1","π_0_2","π_0_3",
             "π_1_0","π_1_1","π_1_2","π_1_3","π_2_0","π_2_1","π_2_2","π_2_3")
 params2
 params
 names(tracesDF)
+
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/noWeigDiriPrior")
+setwd(WD)
 
 # save true values to a file
 df2 <- tibble(parameter = c(params2,tre.params))
@@ -170,7 +168,10 @@ for(lg in names(tracesDF)) {
   
 }
 
-write_tsv(df2, file.path("../figs", "trueValue.tsv"))
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim3par")
+setwd(WD)
+
+write_tsv(df2, file.path("trueValue.tsv"))
 
 ### 
 sub.site <- list()

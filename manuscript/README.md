@@ -2,7 +2,8 @@
 
 ## XMLs and true value
 
-In `RSV2sim.lphy`, the command `sim ~ PhyloCTMC` instructs the alignment will be the simulated.
+In [RSV2sim.lphy](https://github.com/LinguaPhylo/linguaPhylo/blob/master/tutorials/RSV2sim.lphy), 
+the command `sim ~ PhyloCTMC` instructs the alignment will be the simulated.
 
 ```
 lphybeast.LPhyBEAST -r 110 -l 50000000
@@ -24,6 +25,8 @@ BEAST XMLs and true values from 110 simulations will be created in the folder
 - [WeightedDirichlet(conc=[2.0,2.0,2.0]), weights=...](alpha2)
 
 - [No WeightedDirichlet prior](noWeigDiriPrior)
+
+- [2nd runs using same XMLs](sim3par) without WeightedDirichlet prior
 
 - [No WeightedDirichlet prior with one partition](sim1partition)
 

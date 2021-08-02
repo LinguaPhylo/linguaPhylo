@@ -3,7 +3,7 @@
 
 library("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim3par")
 setwd(WD)
 
 # inlcude extra 10
@@ -12,8 +12,8 @@ log.files
 
 for(lg in log.files) {
   # assume same file stem
-  #tree.file=paste0(sub('\\.log$', '', lg), ".trees")
-  summariseTracesAndTrees(lg, tree.file=NA)
+  tree.file=paste0(sub('\\.log$', '', lg), ".trees")
+  summariseTracesAndTrees(lg, tree.file=tree.file)
 }
 
 ### separately summarise extra 10
