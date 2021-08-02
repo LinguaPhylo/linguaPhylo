@@ -34,7 +34,7 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", pos
 
 require("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/sim3par")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
 setwd(WD)
 
 ### mu
@@ -151,6 +151,105 @@ for (par in 0:2) {
     
   }
 }
+
+### saturation test: root height * mu * r vs. converage
+
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha1")
+setwd(WD)
+
+df1 <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv") %>%
+  select(analysis, is.in) %>% rename(theta=is.in)
+cov.per <- round(nrow(subset(df1, theta==TRUE)) / nrow(df1) * 100)
+cov.per
+
+df2 <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv") %>%
+  select(analysis, is.in) %>% rename(mu=is.in)
+
+df.covg <- inner_join(df1, df2, by = "analysis")
+stopifnot(nrow(df.covg) == nrow(df1) && nrow(df.covg) == nrow(df2))
+
+for (par in 0:2) {
+  post.file = paste0("r_", par, ".tsv")
+  stopifnot(file.exists(post.file))
+  
+  tru.val.par=paste0("r_", par)
+  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file) %>%
+    select(analysis, is.in) %>% rename(!!tru.val.par := is.in)
+  df.covg <- df.covg %>% inner_join(df, by = "analysis")
+}
+stopifnot(nrow(df.covg) == nrow(df) && nrow(df.covg) == nrow(df1))
+df.covg %>% filter(theta==F)
+
+# root height * mu * r
+sub.site <- list()
+tru <- NULL
+for(lg in (df.covg %>% select(analysis) %>% unlist) ) {
+  
+  lg.fi <- file.path(paste0(lg,"_true.log"))
+  cat("Load ", lg.fi, "...\n")
+  
+  # must 1 line
+  tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
+  
+  # add tree stats
+  fn <- sub('\\.log$', '', lg.fi)
+  # add tree stats
+  tre.fi <- paste0(fn, "_ψ.trees")
+  if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
+  tru.tre <- read.nexus(tre.fi)
+  cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
+  
+  # total branch len and tree height
+  tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
+  
+  ### tree hight * mu * relative rate
+  hei <- max(nodeHeights(tru.tre))
+  mu <- tru[names(tru) == "μ"]
+  r0 <- tru[names(tru) == "r_0"]
+  r1 <- tru[names(tru) == "r_1"]
+  r2 <- tru[names(tru) == "r_2"]
+  tmp.hmr <- c(r0*hei*mu, r1*hei*mu, r2*hei*mu)
+  
+  sub.site[[lg]] <- tmp.hmr
+}
+
+# at least 1 partition (tree hight * mu * relative rate) > 1
+bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
+ncol(bad.sim) # 56
+
+gene.dis <- as_tibble(sub.site) %>% add_column(rowname=c("d_0","d_1","d_2")) %>% 
+  pivot_longer(-rowname, 'analysis', 'value') %>%
+  pivot_wider(analysis, rowname)
+
+df <- inner_join(df.covg, gene.dis, by = "analysis")
+stopifnot(nrow(df.covg) == nrow(gene.dis) && nrow(df.covg) == nrow(df))
+df
+
+df.plot <- df %>% select(analysis, theta, starts_with("d_")) %>% 
+  gather(partition, distance, -c(analysis, theta)) %>% 
+  group_by(analysis, theta) %>%  
+  arrange(analysis, desc(distance)) %>% 
+  # take the partition having max distance 
+  slice(which.max(distance)) 
+
+  #select(analysis, theta, starts_with("d_")) %>% 
+  #pivot_longer(cols = starts_with("d_"))
+
+y.txt = max(df.plot$distance)
+param = "Theta"
+p <- ggplot(df.plot, aes(x = analysis, y = distance, group = theta, colour = theta)) + 
+  geom_point(aes(shape = factor(theta)), size = 0.2, alpha = 0.9) + 
+  scale_shape_manual(values=c(4, 1, 0))+
+  geom_hline(yintercept = 1.0, linetype = "dotted", size = 0.2) + 
+  geom_hline(yintercept = 0.5, linetype = "dotted", size = 0.2) + 
+  scale_y_log10() +
+  annotate("text", x = 2, y = y.txt, label = paste("covg. =", cov.per,"%"), hjust = 0, size = 5) +
+  xlab(param) + ylab("root hight * mu * r") + guides(colour = FALSE, shape = FALSE) + 
+  theme_classic() + 
+  theme(text = element_text(size = 15), 
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+ggsave(paste0(param, "-saturation", ".pdf"), p, width = 4, height = 3)
 
 ###
 
