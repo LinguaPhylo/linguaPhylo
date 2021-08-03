@@ -8,6 +8,62 @@ readTraces <- function(traces.file, stats.name = c("mean", "HPD95.lower", "HPD95
   return(traces)
 }
 
+# RSV2_0.tsv
+#trace	posterior	likelihood
+#mean	-1395.71800741416	-1260.57129157319
+#stderr.of.mean	0.948421280126143	0.142003271885284
+#stdev	21.6784291082163	5.61509246716363
+pullAValidResultFromExtraPool <- function(file.orig, ext.idx, ext.pool=c(), ext.trees.pool=c(), 
+                                          params=c("trace","mu","Theta"), 
+                                          stats.name = c("mean", "HPD95.lower", "HPD95.upper", "ESS")) {
+  if (ext.idx >= length(ext.pool)) # length(ext.pool) extra
+    stop("All extra simulations have been used ! ", ext.idx, " >= ", length(ext.pool))
+  
+  tre.sta <- NULL
+  lowESS <- tibble()
+  
+  while (ext.idx < length(ext.pool)) {
+    # pick up "ext.idx" result from extra pool
+    et.fi <- ext.pool[ext.idx]
+    stopifnot(file.exists(et.fi))
+    
+    # file steam
+    fstm <- sub('\\.tsv$', '', et.fi)
+    
+    traces <- try(read_tsv(et.fi)) %>% 
+      filter(trace %in% stats.name) %>% 
+      select(params) # must incl trace column
+    
+    ESS <- traces %>% filter(trace == "ESS") %>% 
+      select(!trace) %>% as.numeric
+    minESS <- min(ESS)
+    cat(et.fi, ", min ESS = ", minESS, "\n")
+    
+    # all ESS >= 200 then break, otherwise continue the loop
+    if (minESS >= 200) {
+      cat("Replace the low ESS result", file.orig, "to", et.fi, "\n")
+      
+      # add tree stats
+      if (length(ext.trees.pool)>0) {
+        tre.sta.fi <- ext.trees.pool[ext.idx]
+        stopifnot(file.exists(tre.sta.fi))
+        
+        tre.sta <- try(read_tsv(tre.sta.fi)) %>% 
+          filter(trace %in% stats.name) %>% select(!trace)
+        # same row names
+        traces <- cbind(traces, tre.sta)
+      }
+      # point to the next before break loop
+      ext.idx <- ext.idx + 1
+      break
+    } # end if minESS >= 200
+    
+    # must increase after pick up tree stats from extra pool 
+    ext.idx <- ext.idx + 1
+  } # end while
+  list(file.orig=file.orig, file.selected=et.fi, ext.idx=ext.idx, traces=traces)
+}
+
 
 # everthing in the same folder
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha1")
