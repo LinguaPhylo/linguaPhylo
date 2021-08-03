@@ -1,0 +1,26 @@
+data {
+  options = {ageDirection="forward", ageRegex="s(\d+)$"};
+  // ntax=129 nchar=629
+  D = readNexus(file="data/RSV2.nex", options=options);
+  // use the dates
+  taxa = D.taxa();
+  L = [200,400];
+  n=length(L);
+}
+model {
+  // 1.020 2.718 7.242
+  κ ~ LogNormal(meanlog=1.0, sdlog=0.5, replicates=n);
+  π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], replicates=n);
+  // relative substitution rates
+  r ~ WeightedDirichlet(conc=rep(element=2.0, times=n), weights=L);
+
+  // 5.81e-04  6.74e-03  7.81e-02
+  μ ~ LogNormal(meanlog=-5.0, sdlog=1.25);
+
+  // 0.399  20.09  1012.28
+  Θ ~ LogNormal(meanlog=3.0, sdlog=2.0);
+  ψ ~ Coalescent(taxa=taxa, theta=Θ);
+
+  // simulated alignments, no data clamping
+  sim ~ PhyloCTMC(L=L, Q=hky(kappa=κ, freq=π, meanRate=r), mu=μ, tree=ψ);
+}

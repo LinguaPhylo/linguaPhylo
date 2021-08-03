@@ -16,6 +16,8 @@ for(lg in log.files) {
   summariseTracesAndTrees(lg, tree.file=tree.file)
 }
 
+
+
 ### separately summarise extra 10
 extra.log.files = log.files[grep("-e_", log.files, fixed = TRUE)]
 extra.log.files
