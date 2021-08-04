@@ -64,7 +64,7 @@ pullAValidResultFromExtraPool <- function(file.orig, ext.idx, ext.pool=c(), ext.
   list(file.orig=file.orig, file.selected=et.fi, ext.idx=ext.idx, traces=traces)
 }
 
-# everthing in the same folder
+# everything in the same folder
 MYPATH = "~/WorkSpace/linguaPhylo"
 prefix = "al2"
 WD = file.path(MYPATH, "manuscript/weights", paste0(prefix, "nowd"))
