@@ -12,11 +12,12 @@ to simulate 110 XMLs each for `WeightedDirichlet(conc=[1.0,1.0], weights=[200,40
 and `WeightedDirichlet(conc=[2.0,2.0], weights=[200,400])`.
 Then remove the WeightedDirichlet prior from XML, 
 and create another two sets of 110 XMLs.
-
+Each XML between with or without the `WeightedDirichlet` prior 
+will use the same simulated alignment.
 
 ## 2 * 2 comparisons
 
-Summarise converage of `Theta`.
+Summarise coverage of `Theta`.
 
 
 
