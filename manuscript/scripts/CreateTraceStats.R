@@ -3,7 +3,7 @@
 
 library("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha1")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/weights/al1")
 setwd(WD)
 
 # inlcude extra 10

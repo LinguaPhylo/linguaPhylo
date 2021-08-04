@@ -7,7 +7,7 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", pos
   cat("Load posterior ", posteriorFile, "...\n")
   trueVals <- try(read_tsv(trueValsFile))
   param <- try(read_tsv(posteriorFile))
-  stopifnot( all(colnames(trueVals)[2:ncol(trueVals)] == colnames(param)[2:ncol(param)]) )
+  #stopifnot( all(colnames(trueVals)[2:ncol(trueVals)] == colnames(param)[2:ncol(param)]) )
   
   cat("Grep true value of ", tru.val.par, "...\n")
   # tru.val.par="μ"
@@ -34,8 +34,10 @@ createAnalysisDF <- function(trueValsFile="trueValue.tsv", tru.val.par="μ", pos
 
 require("TraceR")
 
-WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
+WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/weights/al2nowd")
 setwd(WD)
+figs.dir = "figs"
+if (!dir.exists(figs.dir)) dir.create(figs.dir)
 
 ### mu
 param = "mu"
@@ -43,12 +45,14 @@ df <- createAnalysisDF(tru.val.par="μ", posteriorFile=paste0(param,".tsv"))
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"))
-ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
 
-df.sub <- df %>% filter(mean < 0.045)
-nrow(df.sub)
-p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True",param,"value"))
-ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+stopifnot(cov.per >= 90)
+
+#df.sub <- df %>% filter(mean < 0.045)
+#nrow(df.sub)
+#p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True",param,"value"))
+#ggsave(file.path(figs.dir, paste0(param, "-sub-",nrow(df.sub),".pdf")), p, width = 4, height = 3)
 
 ### theta
 param = "theta"
@@ -60,12 +64,14 @@ max(df$HPD95.upper)
 bou = round(max(df$HPD95.upper) / 100) * 100 + 200 # show outlier
 p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), 
                      x.max.lim=bou, y.max.lim=bou, x.txt.just = 0)
-ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
 
-df.sub <- df %>% filter(mean < 200)
-nrow(df.sub)
-p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+stopifnot(cov.per >= 90)
+
+#df.sub <- df %>% filter(mean < 200)
+#nrow(df.sub)
+#p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
+#ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
 
 ### total.br.len
@@ -77,7 +83,9 @@ cov.per
 max(df$HPD95.upper)
 p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True total branch length"), 
                      x.txt.just = 0)
-ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
+
+stopifnot(cov.per >= 90)
 
 ### tree.height
 param = "tree.height"
@@ -88,13 +96,15 @@ cov.per
 max(df$HPD95.upper)
 p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True tree height"), 
                      x.txt.just = 0)
-ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
+ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
 
-df.sub <- df %>% filter(mean < 1500)
-nrow(df.sub)
-p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True tree height"), 
-                     x.txt.just = 0)
-ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
+stopifnot(cov.per >= 90)
+
+#df.sub <- df %>% filter(mean < 1500)
+#nrow(df.sub)
+#p <- TraceR::ggCoverage(df.sub, cov.per, x.lab=paste("True tree height"), 
+#                     x.txt.just = 0)
+#ggsave(paste0(param, "-sub-",nrow(df.sub),".pdf"), p, width = 4, height = 3)
 
 ### r_0
 for (par in 0:2) {
@@ -110,7 +120,9 @@ for (par in 0:2) {
   print(cov.per)
   
   p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+  ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
+  
+  stopifnot(cov.per >= 90)
 }
 
 ### kappa1
@@ -127,7 +139,9 @@ for (par in 0:2) {
   print(cov.per)
   
   p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+  ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
+  
+  stopifnot(cov.per >= 90)
 }
 
 ### pi_0.A
@@ -147,38 +161,118 @@ for (par in 0:2) {
     print(cov.per)
     
     p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-    ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+    ggsave(file.path(figs.dir, paste0(param, ".pdf")), p, width = 4, height = 3)
+    
+    stopifnot(cov.per >= 90)
     
   }
 }
 
-###
 
-param = "kappa"
-df <- createAnalysisDF(tru.val.par="κ", posteriorFile=paste0(param,".tsv"))
-cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
+### saturation test: root height * mu * r vs. converage
+
+getwd()
+
+df1 <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv") %>%
+  select(analysis, is.in) %>% rename(theta=is.in)
+cov.per <- round(nrow(subset(df1, theta==TRUE)) / nrow(df1) * 100)
 cov.per
-p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-ggsave(paste0(param, "-all.pdf"), p, width = 4, height = 3)
 
-nuc.arr = c('A','C','G','T')
-for (nuc.i in 1:length(nuc.arr)) {
-  nuc = nuc.arr[nuc.i]
-  param = paste0("pi_", nuc)
-  tru.val.par = paste0("π_", (nuc.i-1))
-  post.file = paste0("pi.", nuc, ".tsv")
-  cat("plot", param, ", true val name = ", tru.val.par, ", file = ", post.file, "\n")
+#df2 <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv") %>%
+#  select(analysis, is.in) %>% rename(mu=is.in)
+#df.covg <- inner_join(df1, df2, by = "analysis")
+#stopifnot(nrow(df.covg) == nrow(df1) && nrow(df.covg) == nrow(df2))
+
+#for (par in 0:2) {
+#  post.file = paste0("r_", par, ".tsv")
+#  stopifnot(file.exists(post.file))
   
-  stopifnot(file.exists(post.file))
+#  tru.val.par=paste0("r_", par)
+#  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file) %>%
+#    select(analysis, is.in) %>% rename(!!tru.val.par := is.in)
+#  df.covg <- df.covg %>% inner_join(df, by = "analysis")
+#}
+#stopifnot(nrow(df.covg) == nrow(df) && nrow(df.covg) == nrow(df1))
+#df.covg %>% filter(theta==F)
+
+df.covg <- df1
+# root height * mu * r
+sub.site <- list()
+tru <- NULL
+
+sele.tru <- df.covg %>% select(analysis) %>% unlist
+sele.tru <- sub('-nowd', '', sele.tru) %>% file.path("../al2",.)
+sele.tru
+
+for(lg in sele.tru ) {
   
-  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file)
-  cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
-  print(cov.per)
+  lg.fi <- file.path(paste0(lg,"_true.log"))
+  cat("Load ", lg.fi, "...\n")
   
-  p <- TraceR::ggCoverage(df, cov.per, x.lab=paste("True",param,"value"), x.txt.just = 0)
-  ggsave(paste0(param, ".pdf"), p, width = 4, height = 3)
+  # must 1 line
+  tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
   
+  # add tree stats
+  fn <- sub('\\.log$', '', lg.fi)
+  # add tree stats
+  tre.fi <- paste0(fn, "_ψ.trees")
+  if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
+  tru.tre <- read.nexus(tre.fi)
+  cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
+  
+  # total branch len and tree height
+  tru <- c(tru, sum(tru.tre$edge.length), max(nodeHeights(tru.tre)))
+  
+  ### tree hight * mu * relative rate
+  hei <- max(nodeHeights(tru.tre))
+  mu <- tru[names(tru) == "μ"]
+  r0 <- tru[names(tru) == "r_0"]
+  r1 <- tru[names(tru) == "r_1"]
+  r2 <- tru[names(tru) == "r_2"]
+  tmp.hmr <- c(r0*hei*mu, r1*hei*mu, r2*hei*mu)
+  
+  sub.site[[lg]] <- tmp.hmr
 }
+
+# at least 1 partition (tree hight * mu * relative rate) > 1
+bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
+ncol(bad.sim) # 56
+
+gene.dis <- as_tibble(sub.site) %>% add_column(rowname=c("d_0","d_1")) %>% 
+  pivot_longer(-rowname, 'analysis', 'value') %>%
+  pivot_wider(analysis, rowname)
+
+gene.dis$analysis <- sub('(.*)_', '', gene.dis$analysis) %>% paste0("al2-nowd_", .)
+
+df <- inner_join(df.covg, gene.dis, by = "analysis")
+df
+stopifnot(nrow(df.covg) == nrow(gene.dis) && nrow(df.covg) == nrow(df))
+
+df.plot <- df %>% select(analysis, theta, starts_with("d_")) %>% 
+  gather(partition, distance, -c(analysis, theta)) %>% 
+  group_by(analysis, theta) %>%  
+  arrange(analysis, desc(distance)) %>% 
+  # take the partition having max distance 
+  slice(which.max(distance)) 
+
+#select(analysis, theta, starts_with("d_")) %>% 
+#pivot_longer(cols = starts_with("d_"))
+
+y.txt = max(df.plot$distance)
+param = "Theta"
+p <- ggplot(df.plot, aes(x = analysis, y = distance, group = theta, colour = theta)) + 
+  geom_point(aes(shape = factor(theta)), size = 0.2, alpha = 0.9) + 
+  scale_shape_manual(values=c(4, 1, 0))+
+  geom_hline(yintercept = 1.0, linetype = "dotted", size = 0.2) + 
+  geom_hline(yintercept = 0.5, linetype = "dotted", size = 0.2) + 
+  scale_y_log10() +
+  annotate("text", x = 2, y = y.txt, label = paste("covg. =", cov.per,"%"), hjust = 0, size = 5) +
+  xlab(param) + ylab("max(root height * mu * r)") + guides(colour = FALSE, shape = FALSE) + 
+  theme_classic() + 
+  theme(text = element_text(size = 15), 
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+ggsave(file.path(figs.dir, paste0(param, "-saturation", ".pdf")), p, width = 4, height = 3)
 
 ###
 

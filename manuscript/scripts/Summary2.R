@@ -67,8 +67,9 @@ pullAValidResultFromExtraPool <- function(file.orig, ext.idx, ext.pool=c(), ext.
 
 # everthing in the same folder
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha1")
-anal = "al1_"
 setwd(WD)
+anal = "al1_"
+
 # excl all *_0.trees.tsv
 allStats = list.files(pattern = "_([0-9]+).tsv") 
 allStats # a char vector
