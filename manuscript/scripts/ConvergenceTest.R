@@ -63,8 +63,50 @@ getwd()
 write_tsv(df2, file.path(MYPATH, "noWeigDiriPrior", "converg-test.tsv"))
 
 
+### plot
+
+MYPATH = "~/WorkSpace/linguaPhylo/manuscript"
+setwd(MYPATH)
+
 df3 <- try(read_tsv(file.path(MYPATH, "noWeigDiriPrior", "converg-test.tsv")))
 # 15 simulations
 print(df3[df3$is.in.x==F | df3$is.in.y==F,], width = Inf)
 # 48 simulations
 print(df3[df3$in.bound==F,], width = Inf)
+
+require("ggplot2")
+fail1 = nrow(subset(df3, is.in.x == F))
+fail2 = nrow(subset(df3, is.in.y == F))
+
+x.txt = min(abs(df3$mean.diff), df3$mean.bound)
+y.txt = max(abs(df3$mean.diff), df3$mean.bound)
+x.txt.just = 0 # max(df3$mean.bound) * 0.1
+y2.txt = y.txt * 0.5
+
+df.plot <- df3 %>% select(analysis, mean.diff, mean.bound,contains("in")) %>% 
+  mutate(mean.diff = abs(mean.diff)) %>% 
+  mutate(is.in = if_else(is.in.x & is.in.y, "TT", "")) 
+  # 0 both good, 3 both failed, 1 first group good, 2 second good
+df.plot$is.in[df.plot$is.in.x==F & df.plot$is.in.y==F] <- "FF"
+df.plot$is.in[df.plot$is.in.x==T & df.plot$is.in.y==F] <- "TF"
+df.plot$is.in[df.plot$is.in.x==F & df.plot$is.in.y==T] <- "FT"
+#df.plot[nchar(df.plot$is.in) < 1,]
+stopifnot(all(nchar(df.plot$is.in) > 1)) 
+
+p <- ggplot(data = df.plot, aes(x = mean.bound, y = mean.diff, 
+                                group = is.in, colour = is.in, shape = in.bound)) + 
+  geom_point(size = 1, alpha = 0.5) + 
+  scale_x_log10() + scale_y_log10() +
+  scale_color_manual(values=c("red", "orange", "pink","blue"))+
+  scale_shape_manual(values=c(4, 1, 0))+
+  geom_abline(intercept = 0, slope = 1, color = "black", linetype = "dotted", size = 0.2) + 
+  annotate("text", x = x.txt, y = y.txt, label = paste("1st group fail =", fail1), 
+           hjust = x.txt.just, size = 5) + 
+  annotate("text", x = x.txt, y = y2.txt, label = paste("2nd group fail =", fail2), 
+           hjust = x.txt.just, size = 5) + 
+  xlab("One std. err. of means") + ylab("Mean difference") + #guides(colour = FALSE) + 
+  theme_classic() + theme(text = element_text(size = 15))
+p
+ggsave(file.path(MYPATH, "noWeigDiriPrior", "figs", "converg-test.pdf"), p, width = 5, height = 4)
+
+
