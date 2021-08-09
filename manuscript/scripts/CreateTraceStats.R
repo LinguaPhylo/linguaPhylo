@@ -13,7 +13,7 @@ log.files
 for(lg in log.files) {
   # assume same file stem
   tree.file=paste0(sub('\\.log$', '', lg), ".trees")
-  summariseTracesAndTrees(lg, tree.file=tree.file)
+  res <- summariseTracesAndTrees(lg, tree.file=tree.file)
 }
 
 
