@@ -4,15 +4,20 @@ devtools::install_github("walterxie/TraceR")
 
 ###
 # use https://github.com/walterxie/TraceR/blob/master/examples/Pipeline.R
+# change working directory from "test" to "alpha2"
 # to create all required stats files (*.tsv)
 ###
 
 library("TraceR")
+require("tidyverse")
 
 WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
 setwd(WD)
 figs.dir = "figs"
 if (!dir.exists(figs.dir)) dir.create(figs.dir)
+
+stats.files = list.files(pattern = ".tsv")
+stats.files 
 
 ### mu
 param = "mu"
@@ -31,7 +36,7 @@ stopifnot(cov.per >= 90)
 
 ### theta
 param = "theta"
-df <- read_tsv("Theta.tsv", col_types = cols())
+df <- read_tsv("Theta-coverage.tsv", col_types = cols())
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 
@@ -61,7 +66,7 @@ stopifnot(cov.per >= 90)
 
 ### total.br.len
 param = "total.br.len"
-df <- read_tsv("psi.treeLength.tsv", col_types = cols())
+df <- read_tsv("psi.treeLength-coverage.tsv", col_types = cols())
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 
@@ -74,7 +79,7 @@ stopifnot(cov.per >= 90)
 
 ### tree.height
 param = "tree.height"
-df <- read_tsv("psi.height.tsv", col_types = cols())
+df <- read_tsv("psi.height-coverage.tsv", col_types = cols())
 cov.per <- round(nrow(subset(df, is.in==TRUE)) / nrow(df) * 100)
 cov.per
 
@@ -94,7 +99,7 @@ stopifnot(cov.per >= 90)
 ### r_0
 for (par in 0:2) {
   param = paste0("r", par)
-  post.file = paste0("r_", par, ".tsv")
+  post.file = paste0("r_", par, "-coverage.tsv")
   cat("plot", param, ", summary file = ", post.file, "\n")
   stopifnot(file.exists(post.file))
   
@@ -111,7 +116,7 @@ for (par in 0:2) {
 ### kappa1
 for (par in 0:2) {
   param = paste0("kappa", (par+1))
-  post.file = paste0("kappa.", (par+1), ".tsv")
+  post.file = paste0("kappa.", (par+1), "-coverage.tsv")
   cat("plot", param, ", summary file = ", post.file, "\n")
   
   stopifnot(file.exists(post.file))
@@ -132,7 +137,7 @@ for (par in 0:2) {
   for (nuc.i in 1:length(nuc.arr)) {
     nuc = nuc.arr[nuc.i]
     param = paste0("pi_", par, "_", nuc)
-    post.file = paste0("pi_", par, ".", nuc, ".tsv")
+    post.file = paste0("pi_", par, ".", nuc, "-coverage.tsv")
     cat("plot", param, ", summary file = ", post.file, "\n")
     
     stopifnot(file.exists(post.file))
