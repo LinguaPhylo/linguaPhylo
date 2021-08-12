@@ -161,37 +161,21 @@ WD = file.path("~/WorkSpace/linguaPhylo", "manuscript/alpha2")
 setwd(WD)
 getwd()
 
-df1 <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv") %>%
-  select(analysis, is.in) %>% rename(theta=is.in)
+df.covg <- read_tsv("Theta-coverage.tsv", col_types = cols()) %>%
+  select(simulation, is.in) %>% rename(theta=is.in)
 cov.per <- round(nrow(subset(df1, theta==TRUE)) / nrow(df1) * 100)
 cov.per
 
-#df2 <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv") %>%
-#  select(analysis, is.in) %>% rename(mu=is.in)
-#df.covg <- inner_join(df1, df2, by = "analysis")
-#stopifnot(nrow(df.covg) == nrow(df1) && nrow(df.covg) == nrow(df2))
+sele.tru <- df.covg %>% select(simulation) %>% unlist
+#sele.tru <- sub('-nowd', '', sele.tru) %>% file.path("../al2",.)
+sele.tru
 
-#for (par in 0:2) {
-#  post.file = paste0("r_", par, ".tsv")
-#  stopifnot(file.exists(post.file))
-  
-#  tru.val.par=paste0("r_", par)
-#  df <- createAnalysisDF(tru.val.par=tru.val.par, posteriorFile=post.file) %>%
-#    select(analysis, is.in) %>% rename(!!tru.val.par := is.in)
-#  df.covg <- df.covg %>% inner_join(df, by = "analysis")
-#}
-#stopifnot(nrow(df.covg) == nrow(df) && nrow(df.covg) == nrow(df1))
-#df.covg %>% filter(theta==F)
-
-df.covg <- df1
 # root height * mu * r
 sub.site <- list()
 tru <- NULL
 
-sele.tru <- df.covg %>% select(analysis) %>% unlist
-#sele.tru <- sub('-nowd', '', sele.tru) %>% file.path("../al2",.)
-sele.tru
-
+require("ape")
+require("phytools")
 for(lg in sele.tru ) {
   
   lg.fi <- file.path(paste0(lg,"_true.log"))
@@ -227,28 +211,28 @@ bad.sim <- as_tibble(sub.site) %>% select_if(~any(. > 1))
 ncol(bad.sim) # 56
 
 gene.dis <- as_tibble(sub.site) %>% add_column(rowname=c("d_0","d_1","d_2")) %>% 
-  pivot_longer(-rowname, 'analysis', 'value') %>%
-  pivot_wider(analysis, rowname)
+  pivot_longer(-rowname, 'simulation', 'value') %>%
+  pivot_wider(simulation, rowname)
 
-gene.dis$analysis <- sub('(.*)_', '', gene.dis$analysis) %>% paste0("al2_", .)
+gene.dis$simulation <- sub('(.*)_', '', gene.dis$simulation) %>% paste0("al2_", .)
 
-df <- inner_join(df.covg, gene.dis, by = "analysis")
+df <- inner_join(df.covg, gene.dis, by = "simulation")
 df
 stopifnot(nrow(df.covg) == nrow(gene.dis) && nrow(df.covg) == nrow(df))
 
-df.plot <- df %>% select(analysis, theta, starts_with("d_")) %>% 
-  gather(partition, distance, -c(analysis, theta)) %>% 
-  group_by(analysis, theta) %>%  
-  arrange(analysis, desc(distance)) %>% 
+df.plot <- df %>% select(simulation, theta, starts_with("d_")) %>% 
+  gather(partition, distance, -c(simulation, theta)) %>% 
+  group_by(simulation, theta) %>%  
+  arrange(simulation, desc(distance)) %>% 
   # take the partition having max distance 
   slice(which.max(distance)) 
 
-#select(analysis, theta, starts_with("d_")) %>% 
+#select(simulation, theta, starts_with("d_")) %>% 
 #pivot_longer(cols = starts_with("d_"))
 
 y.txt = max(df.plot$distance)
 param = "Theta"
-p <- ggplot(df.plot, aes(x = analysis, y = distance, group = theta, colour = theta)) + 
+p <- ggplot(df.plot, aes(x = simulation, y = distance, group = theta, colour = theta)) + 
   geom_point(aes(shape = factor(theta)), size = 0.2, alpha = 0.9) + 
   scale_shape_manual(values=c(4, 1, 0))+
   geom_hline(yintercept = 1.0, linetype = "dotted", size = 0.2) + 
@@ -262,24 +246,4 @@ p <- ggplot(df.plot, aes(x = analysis, y = distance, group = theta, colour = the
         axis.ticks.x=element_blank())
 getwd()
 ggsave(file.path("figs", paste0(param, "-saturation", ".pdf")), p, width = 4, height = 3)
-
-###
-
-df.mu <- createAnalysisDF(tru.val.par="μ", posteriorFile="mu.tsv") %>% subset(is.in==F)
-df.theta <- createAnalysisDF(tru.val.par="Θ", posteriorFile="Theta.tsv") %>% subset(is.in==F)
-df.r0 <- createAnalysisDF(tru.val.par="r_0", posteriorFile="r_0.tsv") %>% subset(is.in==F)
-df.r1 <- createAnalysisDF(tru.val.par="r_1", posteriorFile="r_1.tsv") %>% subset(is.in==F)
-df.r2 <- createAnalysisDF(tru.val.par="r_2", posteriorFile="r_2.tsv") %>% subset(is.in==F)
-df.k1 <- createAnalysisDF(tru.val.par="κ_0", posteriorFile="kappa.1.tsv") %>% subset(is.in==F)
-df.k2 <- createAnalysisDF(tru.val.par="κ_1", posteriorFile="kappa.2.tsv") %>% subset(is.in==F)
-df.k3 <- createAnalysisDF(tru.val.par="κ_2", posteriorFile="kappa.3.tsv") %>% subset(is.in==F)
-
-df.theta %>% inner_join(df.mu, by = c("analysis" = "analysis")) %>% print(width = Inf)
-
-  # left_join(df.r0, by = c("analysis" = "analysis")) %>%
-  # left_join(df.r1, by = c("analysis" = "analysis")) %>%
-  # left_join(df.r2, by = c("analysis" = "analysis")) %>%
-  # left_join(df.k1, by = c("analysis" = "analysis")) %>%
-  # left_join(df.k2, by = c("analysis" = "analysis")) %>%
-  # left_join(df.k3, by = c("analysis" = "analysis")) 
 
