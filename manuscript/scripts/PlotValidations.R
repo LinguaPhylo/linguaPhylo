@@ -42,17 +42,14 @@ cov.per
 
 max(df$HPD95.upper)
 #bou = round(max(df$HPD95.upper) / 100) * 100 + 200 # show outlier
-p <- ggCoverage(df, cov.per, x.lab=paste0("True log-",param," value"), y.lab="Log-mean posterior",
-                     #x.max.lim=bou, y.max.lim=bou, 
-                     x.txt.just = 0)
+p <- TraceR::ggCoverage(df, x.lab=paste0("True log-",param," value"), 
+                y.lab="Log-mean posterior", x.txt=1, y.txt=9000)
 # log scale and fix labels and text 
 p <- p + scale_x_log10(limits = c(1,1e4), 
                        breaks = scales::trans_breaks("log10", function(x) 10^x),
                        labels = scales::trans_format("log10", scales::math_format(10^.x))) + 
   scale_y_log10(limits = c(1,1e4), breaks = scales::trans_breaks("log10", function(x) 10^x),
-                labels = scales::trans_format("log10", scales::math_format(10^.x))) +
-  annotate("text", x=1, y=9000, label= paste("covg. =", cov.per, "%"),
-           hjust = 0, size = 5) 
+                labels = scales::trans_format("log10", scales::math_format(10^.x))) 
 
 ggsave(file.path(figs.dir, paste0(param, "-lg10.pdf")), p, width = 4, height = 3)
 
