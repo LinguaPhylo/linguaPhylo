@@ -160,7 +160,7 @@ getwd()
 
 df.covg <- read_tsv("Theta-coverage.tsv", col_types = cols()) %>%
   select(simulation, is.in) %>% rename(theta=is.in)
-cov.per <- round(nrow(subset(df1, theta==TRUE)) / nrow(df1) * 100)
+cov.per <- round(nrow(subset(df.covg, theta==TRUE)) / nrow(df.covg) * 100)
 cov.per
 
 sele.tru <- df.covg %>% select(simulation) %>% unlist
@@ -179,12 +179,12 @@ for(lg in sele.tru ) {
   cat("Load ", lg.fi, "...\n")
   
   # must 1 line
-  tru <- read_tsv(lg.fi) %>% select(params2) %>% unlist # need vector here
+  tru <- read_tsv(lg.fi) %>% unlist # need vector here
   
   # add tree stats
   fn <- sub('\\.log$', '', lg.fi)
   # add tree stats
-  tre.fi <- paste0(fn, "_ψ.trees")
+  tre.fi <- paste0(fn, ".trees")
   if (!file.exists(tre.fi)) stop("Cannot find ", tre.fi)
   tru.tre <- read.nexus(tre.fi)
   cat("Load true tree from", tre.fi, "having", Ntip(tru.tre), "tips ...\n")
