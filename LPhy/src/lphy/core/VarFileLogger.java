@@ -1,6 +1,7 @@
 package lphy.core;
 
 import lphy.graphicalModel.*;
+import lphy.util.Symbols;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class VarFileLogger implements RandomValueLogger {
         loggableMap.put(Integer.class, new Loggable<Integer>() {
             @Override
             public String[] getLogTitles(Value<Integer> value) {
-                return new String[]{value.getId()};
+                return new String[]{Symbols.getCanonical(value.getId())};
             }
 
             public Integer[] getLogValues(Value<Integer> value) {
@@ -28,7 +29,7 @@ public class VarFileLogger implements RandomValueLogger {
         loggableMap.put(Boolean.class, new Loggable<Boolean>() {
             @Override
             public String[] getLogTitles(Value<Boolean> value) {
-                return new String[]{value.getId()};
+                return new String[]{Symbols.getCanonical(value.getId())};
             }
 
             public Boolean[] getLogValues(Value<Boolean> value) {
@@ -39,7 +40,7 @@ public class VarFileLogger implements RandomValueLogger {
         loggableMap.put(Double.class, new Loggable<Double>() {
             @Override
             public String[] getLogTitles(Value<Double> value) {
-                return new String[]{value.getId()};
+                return new String[]{Symbols.getCanonical(value.getId())};
             }
 
             public Double[] getLogValues(Value<Double> value) {
@@ -52,7 +53,7 @@ public class VarFileLogger implements RandomValueLogger {
             public String[] getLogTitles(Value<Double[]> value) {
                 String[] names = new String[value.value().length];
                 for (int i = 0; i < names.length; i++) {
-                    names[i] = value.getId() + VectorUtils.INDEX_SEPARATOR + i;
+                    names[i] = Symbols.getCanonical(value.getId()) + VectorUtils.INDEX_SEPARATOR + i;
                 }
                 return names;
             }
@@ -67,7 +68,7 @@ public class VarFileLogger implements RandomValueLogger {
             public String[] getLogTitles(Value<Integer[]> value) {
                 String[] names = new String[value.value().length];
                 for (int i = 0; i < names.length; i++) {
-                    names[i] = value.getId() + VectorUtils.INDEX_SEPARATOR + i;
+                    names[i] = Symbols.getCanonical(value.getId()) + VectorUtils.INDEX_SEPARATOR + i;
                 }
                 return names;
             }
@@ -86,7 +87,7 @@ public class VarFileLogger implements RandomValueLogger {
                 Double[][] tmpArr = value.value();
                 for (int i = 0; i < tmpArr.length; i++) {
                     for (int j = 0; j < tmpArr[i].length; j++) {
-                        names.add(value.getId() + VectorUtils.INDEX_SEPARATOR +
+                        names.add(Symbols.getCanonical(value.getId()) + VectorUtils.INDEX_SEPARATOR +
                                 i + VectorUtils.INDEX_SEPARATOR + j);
                     }
                 }
@@ -113,7 +114,7 @@ public class VarFileLogger implements RandomValueLogger {
                 Integer[][] tmpArr = value.value();
                 for (int i = 0; i < tmpArr.length; i++) {
                     for (int j = 0; j < tmpArr[i].length; j++) {
-                        names.add(value.getId() + VectorUtils.INDEX_SEPARATOR +
+                        names.add(Symbols.getCanonical(value.getId()) + VectorUtils.INDEX_SEPARATOR +
                                 i + VectorUtils.INDEX_SEPARATOR + j);
                     }
                 }

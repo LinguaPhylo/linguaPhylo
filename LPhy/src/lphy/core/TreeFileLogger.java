@@ -5,6 +5,7 @@ import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.VectorUtils;
 import lphy.nexus.NexusWriter;
+import lphy.util.Symbols;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -41,7 +42,8 @@ public class TreeFileLogger implements RandomValueLogger {
     public void close() {
         trees.forEach((key, treeList) -> {
             try {
-                NexusWriter.write(null, treeList, new PrintStream(name + "_" + key + ".trees"));
+                NexusWriter.write(null, treeList,
+                        new PrintStream(name + "_" + Symbols.getCanonical(key) + ".trees"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
