@@ -26,7 +26,6 @@ public class NarrativeCreator {
     public static final String DIV_BOX_BACKGR_COLOUR =
             "<div id=\"auto-generated\" style=\"background-color: #DCDCDC; " +
                     "padding: 10px; border: 1px solid gray; margin: 0; \">";
-    Path wd; // working dir
     GraphicalModelComponent component; // include GraphicalLPhyParser
     HTMLNarrative htmlNarrative;
     LaTeXNarrative latexNarrative;
@@ -52,14 +51,32 @@ public class NarrativeCreator {
 
 //        panel = new GraphicalModelPanel(parser);
 
+        Path wd = IOUtils.getUserDir(); // working dir
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
         createNarrativeExclImg(parser, imgFile);
 
         // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
 //        createImage(lphyFileName, imgFile);
-        writeNarrative();
+        writeNarrative(wd);
         LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
 
+    }
+
+
+    private LPhyParser readFile(String lphyFileName) throws IOException {
+        if (!lphyFileName.endsWith(".lphy"))
+            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
+
+        Path path = IOUtils.getUserPath(lphyFileName);
+        // set user.dir to the folder containing example file,
+        // so that the relative path given in readNexus always refers to it
+        IOUtils.setUserDir(path.getParent().toString());
+
+        BufferedReader reader = new BufferedReader(new FileReader(path.toString()));
+        LPhyParser parser = new REPL();
+        parser.source(reader);
+
+        return parser;
     }
 
     private void createImage(String lphyFileName, Path imgFile) throws IOException {
@@ -138,47 +155,36 @@ public class NarrativeCreator {
                 .append(" from LPhyStudio.\n");
     }
 
-    private void writeNarrative() throws IOException {
+    private void writeNarrative(Path wd) throws IOException {
         String lphyStr = code.toString();
-        writeToFile(lphyStr, "lphy.md");
+        Path path = Paths.get(wd.toString(), "lphy.md");
+        writeToFile(lphyStr, path);
 
         // validate
         String narStr = narrative.toString();
         validateTags(narStr, "div");
 //        validateTags(narStr, "details");
-        writeToFile(narStr, "narrative.md");
+        path = Paths.get(wd.toString(), "narrative.md");
+        writeToFile(narStr, path);
 
         String ref = references.toString();
         // convert MD, otherwise will have a gap when add new ref in MD
         ref = convertHtmlListToMardown(ref);
         // rm all \n, otherwise will have a gap
         ref = trimEndNewLine(ref);
-        writeToFile(ref, "references.md");
+        path = Paths.get(wd.toString(), "references.md");
+        writeToFile(ref, path);
 
     }
 
-    private void writeToFile(String str, String fileName) throws IOException {
-        File fi = new File(wd.toString(), fileName);
-        PrintWriter writer = new PrintWriter(new FileWriter(fi));
+    private void writeToFile(String str, Path path) throws IOException {
+        PrintWriter writer = new PrintWriter(new FileWriter(path.toString()));
         // references do not new line
         writer.print(str);
         writer.flush();
         writer.close();
-        System.out.println("Write \"" + str.substring(0, 5) + "\" ... to " + fi.getAbsolutePath());
-    }
-
-
-    private LPhyParser readFile(String lphyFileName) throws IOException {
-        if (!lphyFileName.endsWith(".lphy"))
-            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
-        File file = new File(lphyFileName);
-
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        LPhyParser parser = new REPL();
-        parser.source(reader);
-
-        wd = IOUtils.getUserDir();
-        return parser;
+        System.out.println("Write \"" + str.substring(0, 5) +
+                "\" ... to " + path.toAbsolutePath());
     }
 
     // markdown section
