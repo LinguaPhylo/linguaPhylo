@@ -26,7 +26,7 @@ BEAST XMLs and true values from 110 simulations will be created in the folder
 
 Run XMLs using BEAST 2, and put all BEAST logs and trees in the same folder 
 for the pipeline. 
-All required logs (we do not BEAST tree logs) are available from 
+All required logs (we do not need BEAST tree logs) are available from 
 [LPhy website](https://github.com/LinguaPhylo/linguaPhylo.github.io/tree/master/covgtest).
 The full version of backups is also available in the Dropbox.
 
