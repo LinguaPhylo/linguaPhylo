@@ -66,13 +66,6 @@
     <!-- jar -->
 
     <target name="dist" depends="compile">
-        <!-- manifest -->
-<!--        <tstamp/>-->
-<!--        <echo message="Version ${lphyVersion}" />-->
-<!--        <echo message="Class-Path ${studioJar}.jar" />-->
-<!--        <echo message="Created-By ${createBy}" />-->
-<!--        <echo message="Built-By ${builtBy}" />-->
-<!--        <echo message="Built-Date ${TODAY}" />-->
 
         <mkdir dir="${studioDist}"/>
 
@@ -90,26 +83,17 @@
         </exec>
         <!-- TODO manifest -->
         <echo message="Create ${studioJar}.jar to ${studioDist}." />
-
-<!--        <jar jarfile="${studioDist}/${studioJar}.jar">-->
-<!--            <fileset dir="${studioBuild}"/>-->
-<!--            <manifest>-->
-<!--                <attribute name="Main-Class" value="lphystudio.app.LinguaPhyloStudio"/>-->
-<!--                <attribute name="Version" value="${lphyVersion}"/>-->
-<!--                &lt;!&ndash; default to have lib/${lphyJar}.jar in classpath &ndash;&gt;-->
-<!--                <attribute name="Class-Path" value="${extDir}/${lphyJar}.jar"/>-->
-<!--                <attribute name="Created-By" value="${createBy}"/>-->
-<!--                <attribute name="Built-By" value="${builtBy}"/>-->
-<!--                <attribute name="Built-Date" value="${TODAY}"/>-->
-<!--            </manifest>-->
-<!--            <zipgroupfileset dir="${lib}" includes="*.jar"/>-->
-<!--        </jar>-->
+        
     </target>
 
-    <!-- release, depend on lphy.dist -->
-
+    <!-- 1. update version number in pom.xml and LinguaPhyloStudio -->
+    <!-- 2. run GenerateDocs [ version number ] -->
+    <!-- 3. commit all changes -->
+    <!-- 4. ant release : create LPhyStudio-?.?.?.zip -->
+    <!-- 5. upload it to github release page -->
     <target name="release" depends="lphy.dist,compile,dist" unless="file.exists"
             description="for the release process">
+        <!-- release, depend on lphy.dist -->
         <property name="pack" value="${studioDist}/package"/>
         <mkdir dir="${pack}"/>
         <mkdir dir="${pack}/${extDir}"/>
