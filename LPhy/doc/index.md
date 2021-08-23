@@ -1,4 +1,4 @@
-LPhy Language Reference (version 0.0.6)
+LPhy Language Reference (version 1.0.0)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 

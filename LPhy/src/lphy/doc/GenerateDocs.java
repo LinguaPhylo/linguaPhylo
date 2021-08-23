@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class GenerateDocs {
 
+    // set WD: ~/WorkSpace/linguaPhylo/LPhy/doc
     public static void main(String[] args) throws IOException {
 
         List<Class<GenerativeDistribution>> generativeDistributions = ParserUtils.getGenerativeDistributions();
