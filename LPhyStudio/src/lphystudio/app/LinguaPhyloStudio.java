@@ -30,7 +30,7 @@ import java.util.Comparator;
 public class LinguaPhyloStudio {
 
     private static String APP_NAME = "LPhy Studio";
-    private static String VERSION = "0.1";
+    private static String VERSION = "1.0.0";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");

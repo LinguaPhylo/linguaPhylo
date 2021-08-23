@@ -153,6 +153,8 @@
                 <!-- TODO in dev -->
                 <exclude name="canis.lphy"/>
                 <exclude name="bModelTest.lphy"/>
+                <exclude name="RSV2sim1par.lphy"/>
+                <exclude name="RSV2simWeighted2par.lphy"/>
             </fileset>
             <fileset dir="../${tutDir}">
                 <include name="**/*.nex"/>
