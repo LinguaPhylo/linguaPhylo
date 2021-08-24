@@ -167,6 +167,13 @@
         <echo message="Built-Date ${TODAY}" />
 
         <mkdir dir="${lphyDist}"/>
+        <!-- zipgroupfileset cannot exclude file  -->
+        <mkdir dir="${lphyDist}/lib"/>
+        <!-- jebl3 has module-info.class -->
+        <property name="jeblJar" value="jebl-3.0.0.jar"/>
+        <copy todir="${lphyDist}/lib">
+            <fileset dir="${lphyLib}" excludes="${jeblJar}"/>
+        </copy>
 
         <jar jarfile="${lphyDist}/${lphyJ8Jar}.jar">
             <fileset dir="${lphyBuild}" excludes="**/module-info.class"/>
@@ -177,9 +184,14 @@
                 <attribute name="Built-By" value="${builtBy}"/>
                 <attribute name="Built-Date" value="${TODAY}"/>
             </manifest>
-            <!-- jebl3 has module-info.class, but not need SPI  -->
-            <zipgroupfileset dir="${lphyLib}" includes="*.jar"/>
+
+            <!-- exclude jebl3 -->
+            <zipgroupfileset dir="${lphyDist}/lib" includes="*.jar"/>
+            <!-- add jebl3 from lib-->
+            <zipfileset src="${lphyLib}/${jeblJar}" excludes="module-info.class"/>
         </jar>
+        <!-- clean dist -->
+        <delete dir="${lphyDist}/lib"/>
 
         <echo message="Successfully create ${lphyJ8Jar}." />
     </target>
