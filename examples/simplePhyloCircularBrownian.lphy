@@ -1,5 +1,0 @@
-λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(lambda=λ, n=16);
-σ2 ~ LogNormal(meanlog=1.0, sdlog=0.5);
-y0 ~ Normal(mean=0.0, sd=1.0);
-y ~ PhyloCircularBrownian(diffRate=σ2, y0=y0, tree=ψ);
