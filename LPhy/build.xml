@@ -1,4 +1,4 @@
-<project default="github-actions" basedir="." name="lphy" >
+<project default="compile" basedir="." name="lphy" >
 
     <property name="sourceVersion" value="16"/>
     <property name="targetVersion" value="16"/>
