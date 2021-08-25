@@ -12,8 +12,8 @@ jobs:
           java-version: 16
       - name: Run Ant
         run: ant -noinput -buildfile build.xml github-actions
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v2
+        if: always() # always run even if the previous step fails
         with:
-          files: test-results/**/*.xml
+          report_paths: '**/test-reports/TEST-*.txt'
