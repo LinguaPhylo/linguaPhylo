@@ -1,4 +1,4 @@
-<project default="build" basedir="." name="lphy" >
+<project default="github-actions" basedir="." name="lphy" >
 
     <property name="sourceVersion" value="16"/>
     <property name="targetVersion" value="16"/>
@@ -228,13 +228,13 @@
 
 
     <!-- another pipeline parallel with dist -->
-    <target name="test" depends="compile, compile-test"
+    <target name="test" depends="compile-j8, compile-test"
             description="run unit tests including compile main code">
         <echo>LPhy test classpath is ${toString:junit-classpath}</echo>
 
-        <junit printsummary="yes" failureproperty="testFailed">
+        <junit printsummary="on" failureproperty="testFailed">
             <classpath refid="junit-classpath"/>
-            <batchtest fork="yes" todir="${lphy-test-reports}">
+            <batchtest todir="${lphy-test-reports}">
                 <fileset dir="${lphyTest}">
                     <include name="**/*Test.java"/>
                 </fileset>
@@ -245,10 +245,8 @@
         <fail if="testFailed" status="1" message="Unit test of ${lphyFolder} failed."/>
     </target>
 
-    <target name="build" depends="compile"/>
-
     <!--  https://docs.github.com/en/actions  -->
-    <target name="github-actions" depends="build, compile-test, test">
+    <target name="github-actions" depends="test">
         <fail if="testFailed" message="One or more ${lphyFolder} tests failed."/>
     </target>
 
