@@ -238,7 +238,7 @@
                 <fileset dir="${lphyTest}">
                     <include name="**/*Test.java"/>
                 </fileset>
-                <formatter type="plain"/>
+                <formatter type="xml"/>
             </batchtest>
         </junit>
 
