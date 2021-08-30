@@ -10,7 +10,7 @@ model {
   κ ~ LogNormal(meanlog=1.0, sdlog=0.5, replicates=n);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0], replicates=n);
   // relative substitution rates
-  r ~ WeightedDirichlet(conc=rep(element=1.0, times=n), weights=L);
+  r ~ WeightedDirichlet(conc=rep(element=2.0, times=n), weights=L);
 
   μ ~ LogNormal(meanlog=-5.0, sdlog=1.25);
 
