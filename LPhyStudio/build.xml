@@ -133,12 +133,14 @@
         <mkdir dir="${pack}/${tutDir}"/>
         <copy todir="${pack}/${tutDir}">
             <!--  tutorials files are underCodeBuilder the root -->
-            <fileset dir="../${tutDir}" includes="*.lphy">
-                <!-- TODO in dev -->
-                <exclude name="canis.lphy"/>
-                <exclude name="bModelTest.lphy"/>
-                <exclude name="RSV2sim1par.lphy"/>
-                <exclude name="RSV2simWeighted2par.lphy"/>
+            <fileset dir="../${tutDir}">
+                <!-- add new tutorial here -->
+                <include name="h3n2.lphy"/>
+                <include name="h5n1.lphy"/>
+                <include name="hcv_coal.lphy"/>
+                <include name="hcv_coal_classic.lphy"/>
+                <include name="RSV2.lphy"/>
+                <include name="RSV2sim.lphy"/>
             </fileset>
             <fileset dir="../${tutDir}">
                 <include name="**/*.nex"/>
