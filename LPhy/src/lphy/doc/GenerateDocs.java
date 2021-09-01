@@ -22,17 +22,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * For LPhy core, set WD: ~/WorkSpace/linguaPhylo/LPhy/doc,
+ * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/LPhy/doc,
  * and args[0] = version.
- * For extension, set WD: ~/WorkSpace/repo/LPhyExtension/doc,
+ * For extension, set working directory: ~/WorkSpace/repo/LPhyExtension/doc,
  * and args[0] = version, args[1] = extension name (no space),
  * args[2] = class name to implement LPhyExtension.
  */
 public class GenerateDocs {
 
     public static void main(String[] args) throws IOException {
-//        GenerateDocs generateDocs = getInstance();
-//        String version = generateDocs.getProperty("version");
 
         String version = "";
         if (args.length > 0)  version = args[0];
@@ -40,7 +38,9 @@ public class GenerateDocs {
         LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
 
         String extName = "LPhy"; // No white space
-        // for extension only
+        // for extension only, e.g.
+        // 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
+        // WD: ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
             extName = args[1];
             String clsName = args[2];
@@ -62,20 +62,7 @@ public class GenerateDocs {
         writer.write(indexMD);
         writer.close();
     }
-
-//    private static final GenerateDocs instance = new GenerateDocs();
-//    private GenerateDocs() {
-//        try {
-//            getMavenProperties();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public static GenerateDocs getInstance(){
-//        return instance;
-//    }
-//
+    
 //    private Properties properties;
 //
 //    public void getMavenProperties() throws IOException {
