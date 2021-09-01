@@ -2,7 +2,7 @@
 
     <!--*******************************************************************-->
 
-    <!-- build fails if the path isn't ../../linguaPhylo/LPhyStudio -->
+    <!-- build fails if the relative path isn't ../../linguaPhylo/LPhyStudio -->
     <property name="studioFolder" value="LPhyStudio"/>
 
     <property name="lphy" location="../LPhy"/>

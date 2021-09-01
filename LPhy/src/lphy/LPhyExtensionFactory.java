@@ -14,16 +14,19 @@ import java.util.stream.Collectors;
  * The implementation to load LPhy extensions using {@link ServiceLoader}.
  * All distributions, functions and data types will be collected
  * in this class for later use.
+ *
  * @author Walter Xie
  */
 public class LPhyExtensionFactory {
     private static LPhyExtensionFactory factory;
+    final private ServiceLoader<LPhyExtension> loader;
 
     private LPhyExtensionFactory() {
-        ServiceLoader<LPhyExtension> loader = ServiceLoader.load(LPhyExtension.class);
-
-        registerExtensions(loader);
+        loader = ServiceLoader.load(LPhyExtension.class);
+        // register all ext
+        registerExtensions(loader, null);
     }
+
     // singleton
     public static synchronized LPhyExtensionFactory getInstance() {
         if (factory == null)
@@ -48,7 +51,18 @@ public class LPhyExtensionFactory {
      */
     public Map<String, SequenceType> dataTypeMap;
 
-    private void registerExtensions(ServiceLoader<LPhyExtension> loader) {
+    /**
+     * for creating doc only.
+     * @param fullClsName  the full name with package of the class
+     *                 to implement {@link LPhyExtension},
+     *                 such as lphy.spi.LPhyExtImpl
+     */
+    public void loadExtension(String fullClsName) {
+        loader.reload();
+        registerExtensions(loader, fullClsName);
+    }
+
+    private void registerExtensions(ServiceLoader<LPhyExtension> loader, String clsName) {
 
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
@@ -61,20 +75,23 @@ public class LPhyExtensionFactory {
 
                 //*** LPhyExtensionImpl must have a public no-args constructor ***//
                 LPhyExtension lPhyExt = extensions.next();
+                // clsName == null then register all
+                if (clsName == null || lPhyExt.getClass().getName().equalsIgnoreCase(clsName)) {
+                    System.out.println("Registering extension from " + lPhyExt.getClass().getName());
 
-                // GenerativeDistribution
-                List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
+                    // GenerativeDistribution
+                    List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
 
-                for (Class<? extends GenerativeDistribution> genClass : genDist) {
-                    String name = Generator.getGeneratorName(genClass);
+                    for (Class<? extends GenerativeDistribution> genClass : genDist) {
+                        String name = Generator.getGeneratorName(genClass);
 
-                    Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-                    genDistSet.add(genClass);
-                    // collect LPhy data types from GenerativeDistribution
-                    types.add(GenerativeDistribution.getReturnType(genClass));
-                    Collections.addAll(types, Generator.getParameterTypes(genClass, 0));
-                    Collections.addAll(types, Generator.getReturnType(genClass));
-                }
+                        Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+                        genDistSet.add(genClass);
+                        // collect LPhy data types from GenerativeDistribution
+                        types.add(GenerativeDistribution.getReturnType(genClass));
+                        Collections.addAll(types, Generator.getParameterTypes(genClass, 0));
+                        Collections.addAll(types, Generator.getReturnType(genClass));
+                    }
 //        for (Class<?> genClass : lightWeightGenClasses) {
 //            String name = Generator.getGeneratorName(genClass);
 //
@@ -82,24 +99,25 @@ public class LPhyExtensionFactory {
 //            genDistSet.add(genClass);
 //            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 //        }
-                // Func
-                List<Class<? extends Func>> funcs = lPhyExt.getFunctions();
+                    // Func
+                    List<Class<? extends Func>> funcs = lPhyExt.getFunctions();
 
-                for (Class<? extends Func> functionClass : funcs) {
-                    String name = Generator.getGeneratorName(functionClass);
+                    for (Class<? extends Func> functionClass : funcs) {
+                        String name = Generator.getGeneratorName(functionClass);
 
-                    Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-                    funcSet.add(functionClass);
-                    // collect LPhy data types from Func
-                    Collections.addAll(types, Generator.getParameterTypes(functionClass, 0));
-                    Collections.addAll(types, Generator.getReturnType(functionClass));
+                        Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
+                        funcSet.add(functionClass);
+                        // collect LPhy data types from Func
+                        Collections.addAll(types, Generator.getParameterTypes(functionClass, 0));
+                        Collections.addAll(types, Generator.getReturnType(functionClass));
+                    }
+
+                    // sequence types
+                    Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
+                    if (newDataTypes != null)
+                        // TODO validate same sequence type?
+                        newDataTypes.forEach(dataTypeMap::putIfAbsent);
                 }
-
-                // sequence types
-                Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
-                if (newDataTypes != null)
-                    // TODO validate same sequence type?
-                    newDataTypes.forEach(dataTypeMap::putIfAbsent);
             }
 
             System.out.println("\nGenerativeDistribution : " + Arrays.toString(genDistDictionary.keySet().toArray()));

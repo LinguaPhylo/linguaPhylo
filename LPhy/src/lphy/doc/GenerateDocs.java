@@ -1,5 +1,6 @@
 package lphy.doc;
 
+import lphy.LPhyExtensionFactory;
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.core.lightweight.LGenerator;
 import lphy.graphicalModel.DeterministicFunction;
@@ -20,10 +21,32 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * For LPhy core, set WD: ~/WorkSpace/linguaPhylo/LPhy/doc,
+ * and args[0] = version.
+ * For extension, set WD: ~/WorkSpace/repo/LPhyExtension/doc,
+ * and args[0] = version, args[1] = extension name (no space),
+ * args[2] = class name to implement LPhyExtension.
+ */
 public class GenerateDocs {
 
-    // set WD: ~/WorkSpace/linguaPhylo/LPhy/doc
     public static void main(String[] args) throws IOException {
+//        GenerateDocs generateDocs = getInstance();
+//        String version = generateDocs.getProperty("version");
+
+        String version = "";
+        if (args.length > 0)  version = args[0];
+
+        LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
+
+        String extName = "LPhy"; // No white space
+        // for extension only
+        if (args.length > 2)  {
+            extName = args[1];
+            String clsName = args[2];
+            factory.loadExtension(clsName);
+        }
+        System.out.println("Creating doc for " + extName + " ...\n");
 
         List<Class<GenerativeDistribution>> generativeDistributions = ParserUtils.getGenerativeDistributions();
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
@@ -33,13 +56,7 @@ public class GenerateDocs {
 
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
-//        GenerateDocs generateDocs = getInstance();
-//        String version = generateDocs.getProperty("version");
-        String version = "";
-        if (args.length > 0)
-            version = args[0];
-
-        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, version);
+        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, version, extName);
 
         FileWriter writer = new FileWriter("index.md");
         writer.write(indexMD);
@@ -73,15 +90,16 @@ public class GenerateDocs {
 
     private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
                                         List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
-                                        String version) throws IOException {
+                                        String version, String extName) throws IOException {
         StringBuilder builder = new StringBuilder();
 
-        String h1 = "LPhy Language Reference";
+        String h1 = extName + " Language Reference";
         if (version != null || !version.trim().isEmpty())
             h1 += " (version " + version + ")";
         builder.append(new Heading(h1, 1)).append("\n");
 
-        builder.append(new Text("This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language."));
+        builder.append(new Text("This an automatically generated language reference " +
+                "of the LinguaPhylo (LPhy) statistical phylogenetic modeling language."));
         builder.append("\n\n");
 
         builder.append(new Heading("Generative distributions", 2)).append("\n");
