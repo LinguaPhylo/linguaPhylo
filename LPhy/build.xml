@@ -135,13 +135,13 @@
         </java>
     </target>
 
+    <!--****** Non-module Jar ******-->
+
     <!-- Java 8 using classpath  -->
     <path id="j8-classpath">
         <pathelement path="${classpath}"/>
         <fileset dir="${lphyLib}" includes="*.jar" excludes="**/module-info.java"/>
     </path>
-
-    <!--****** Non-module Jar ******-->
 
     <!-- Compile -->
     <target name="compile-j8" depends="init" >
@@ -178,7 +178,7 @@
         <!-- zipgroupfileset cannot exclude file  -->
         <mkdir dir="${lphyDist}/lib"/>
         <!-- jebl3 has module-info.class -->
-        <property name="jeblJar" value="jebl-3.0.0.jar"/>
+        <property name="jeblJar" value="jebl-3.0.1.jar"/>
         <copy todir="${lphyDist}/lib">
             <fileset dir="${lphyLib}" excludes="${jeblJar}"/>
         </copy>

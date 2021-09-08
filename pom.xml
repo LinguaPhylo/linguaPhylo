@@ -84,9 +84,9 @@
         <dependency>
             <groupId>jebl</groupId>
             <artifactId>jebl</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/jebl-23-07-2020.jar</systemPath>
+            <systemPath>${project.basedir}/lib/jebl-3.0.1.jar</systemPath>
         </dependency>
 
     </dependencies>
