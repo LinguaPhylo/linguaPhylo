@@ -52,7 +52,7 @@
     </path>
 
     <!-- Compile -->
-    <target name="compile" depends="init" description="clean, create dirs, and compile.">
+    <target name="compile" depends="init,lphy.compile" description="clean, create dirs, and compile.">
         <echo>LPhy studio module-path is ${toString:studio-module-path}</echo>
         <!-- imported from ${lphy}/build.xml -->
         <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${studioSrc}"
@@ -65,7 +65,7 @@
     <property name="extDir" value="lib"/>
     <!-- jar -->
 
-    <target name="dist" depends="compile">
+    <target name="dist" depends="lphy.dist,compile">
 
         <mkdir dir="${studioDist}"/>
 
@@ -91,7 +91,7 @@
     <!-- 3. commit all changes -->
     <!-- 4. ant release : create LPhyStudio-?.?.?.zip -->
     <!-- 5. upload it to github release page -->
-    <target name="release" depends="lphy.dist,compile,dist" unless="file.exists"
+    <target name="release" depends="dist" unless="file.exists"
             description="for the release process">
         <!-- release, depend on lphy.dist -->
         <property name="pack" value="${studioDist}/package"/>
