@@ -62,6 +62,14 @@ public class LPhyExtensionFactory {
         registerExtensions(loader, fullClsName);
     }
 
+    public List<LPhyExtension> getExtensions() {
+        loader.reload();
+        Iterator<LPhyExtension> extensions = loader.iterator();
+        List<LPhyExtension> extList = new ArrayList<>();
+        extensions.forEachRemaining(extList::add);
+        return extList;
+    }
+
     private void registerExtensions(ServiceLoader<LPhyExtension> loader, String clsName) {
 
         genDistDictionary = new TreeMap<>();

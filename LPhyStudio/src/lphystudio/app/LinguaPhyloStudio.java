@@ -1,5 +1,6 @@
 package lphystudio.app;
 
+import lphystudio.app.extmanager.ExtManagerDialog;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphy.core.GraphicalLPhyParser;
@@ -30,7 +31,7 @@ import java.util.Comparator;
 public class LinguaPhyloStudio {
 
     private static String APP_NAME = "LPhy Studio";
-    private static String VERSION = "1.0.0";
+    public static String VERSION = "1.0.0";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
@@ -130,6 +131,18 @@ public class LinguaPhyloStudio {
 
         buildViewMenu(menuBar);
         menuBar.add(panel.rightPane.getMenu());
+
+        // Tools
+        JMenu toolMenu = new JMenu("Tools");
+        menuBar.add(toolMenu);
+        // extension manager
+        JMenuItem extManMenuItem = new JMenuItem("Extension manager");
+        extManMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
+        toolMenu.add(extManMenuItem);
+        extManMenuItem.addActionListener(e -> {
+            ExtManagerDialog extManager = new ExtManagerDialog(frame);
+            extManager.setVisible(true);
+        });
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
@@ -236,7 +249,7 @@ public class LinguaPhyloStudio {
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
-        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
         showArgumentLabels.setState(GraphicalModelComponent.getUseStraightEdges());
         viewMenu.add(useStraightEdges);
 

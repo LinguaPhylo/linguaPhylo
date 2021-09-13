@@ -43,6 +43,7 @@ module lphy {
     exports lphy.parser;
 
     exports lphy.util;
+    exports lphy; // for lphy.LPhyExtensionFactory
 
     // declare service provider interface (SPI)
     exports lphy.spi;

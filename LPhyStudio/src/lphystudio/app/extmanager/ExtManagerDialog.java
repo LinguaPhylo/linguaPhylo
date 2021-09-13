@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ExtManager extends JDialog {
+public class ExtManagerDialog extends JDialog {
 
-    public ExtManager(Frame owner) {
+    final ExtManager manager = new ExtManager();
+
+    public ExtManagerDialog(Frame owner) {
         super(owner, "LPhy Extension Manager", true);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         // main components
@@ -37,20 +39,22 @@ public class ExtManager extends JDialog {
         this.setSize((int) (owner.getWidth() * 0.8), (int) (owner.getHeight() * 0.5));
         this.setLocation(owner.getX() + owner.getWidth() / 4,
                 owner.getY() + owner.getHeight() / 5);
+
+        try {
+            manager.test();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     class DataTableModel extends AbstractTableModel {
         private static final long serialVersionUID = 1L;
-
         String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
-
         public final int linkColumn = 4;
-
         @Override
         public int getColumnCount() {
             return columnNames.length;
         }
-
         @Override
         public int getRowCount() {
             return 0;
@@ -272,9 +276,10 @@ public class ExtManager extends JDialog {
 //        box.add(closeButton);
 
         JButton button = new JButton("?");
-//        button.setToolTipText(getPackageUserDir() + " " + getPackageSystemDir());
+        button.setToolTipText("help");
 //        button.addActionListener(e -> {
-//            JOptionPane.showMessageDialog(scrollPane, "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
+//            JOptionPane.showMessageDialog(this,
+//                    "<html>By default, packages are installed in <br><br><em>" + getPackageUserDir() +
 //                    "</em><br><br>and are available only to you.<br>" +
 //                    "<br>Packages can also be moved manually to <br><br><em>" + getPackageSystemDir() +
 //                    "</em><br><br>which makes them available to all users<br>"
