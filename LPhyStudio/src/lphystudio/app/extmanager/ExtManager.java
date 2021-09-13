@@ -4,10 +4,7 @@ import lphy.LPhyExtensionFactory;
 import lphy.spi.LPhyExtension;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class ExtManager {
@@ -29,11 +26,11 @@ public class ExtManager {
 
         LPhyExtension ext = extensions.get(0);
 
-        URL url = ext.getClass().getResource("/META-INF/MANIFEST.MF");
-
-        manifest.read(url.openStream());
-
-        Attributes atts = manifest.getMainAttributes();
+//        URL url = ext.getClass().getResource("/META-INF/MANIFEST.MF");
+//
+//        manifest.read(url.openStream());
+//
+//        Attributes atts = manifest.getMainAttributes();
     }
 
 }
