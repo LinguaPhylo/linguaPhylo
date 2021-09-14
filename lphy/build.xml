@@ -261,8 +261,8 @@
     </target>
 
     <!--  https://docs.github.com/en/actions  -->
-    <target name="github-actions" depends="test">
-        <fail if="testFailed" message="One or more ${lphyName} tests failed."/>
-    </target>
+<!--    <target name="github-actions" depends="test">-->
+<!--        <fail if="testFailed" message="One or more ${lphyName} tests failed."/>-->
+<!--    </target>-->
 
 </project>
