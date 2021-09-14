@@ -157,7 +157,7 @@
         </javac>
         <mkdir dir="${lphyBuild}/META-INF"/>
         <mkdir dir="${lphyBuild}/META-INF/services"/>
-        <copy file="${lphyResources}/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
+        <copy file="/META-INF/services/lphy.spi.LPhyExtension" todir="${lphyBuild}/META-INF/services"/>
         <echo message="Successfully compiled ${lphyRepo} using classpath." />
     </target>
 

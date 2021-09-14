@@ -1,5 +1,3 @@
-
-
 /**
  * @author Walter Xie
  */
@@ -15,7 +13,7 @@ module lphy {
 //    requires transitive batik.all;
     requires transitive jlatexmath;
     requires transitive markdowngenerator;
-    requires transitive junit; // TODO rm & use --patch-module ?
+//    requires transitive junit; // TODO rm & use --patch-module ?
 
     requires transitive jebl;
 
