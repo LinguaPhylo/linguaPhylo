@@ -13,7 +13,7 @@
     <!-- source code dir separated from test   -->
     <property name="lphySrc" location="${lphyRepo}/${lphyName}/src" />
     <!-- source code dir of test   -->
-    <property name="lphyLib" location="${lphyRepo}/${lphyName}/lib" />
+    <property name="lphyLib" location="libs" />
     <property name="lphyTest" location="${lphyRepo}/${lphyName}/test" />
     <!-- Names of temporary build/test directories, which are deleted before build -->
     <property name="lphyBuild" location="${lphyRepo}/${lphyName}/build" />

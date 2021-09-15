@@ -23,8 +23,8 @@ dependencies {
     api("org.scilab.forge:jlatexmath-font-greek:1.0.7")
     api("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
     // not in maven
-    api(files("lib/markdowngenerator-1.3.2.jar")) //TODO not used?
-    api(files("lib/jebl-3.0.1.jar"))
+    api(files("libs/markdowngenerator-1.3.2.jar")) //TODO not used?
+    api(files("libs/jebl-3.0.1.jar"))
     //implementation(fileTree("lib") { exclude("junit-*.jar") })
 
     testImplementation("junit:junit:4.8")
