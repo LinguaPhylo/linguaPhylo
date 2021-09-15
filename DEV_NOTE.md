@@ -25,5 +25,5 @@ and [the benefit switching from Groovy to Kotlin](https://stackoverflow.com/ques
 
 ## IntelliJ
 
-- [Getting Started with Gradle](https://www.jetbrains.com/help/idea/getting-started-with-gradle.html) 
+- [Working with Gradle](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/)
 - [Gradle projects](https://www.jetbrains.com/help/idea/work-with-gradle-projects.html)
