@@ -26,21 +26,29 @@ dependencies {
 //    testImplementation("junit:junit:4.8")
 }
 
-//tasks.compileJava {
-//    doFirst {
-//        println("CLASSPATH IS ${classpath.asPath}")
-//        options.compilerArgs = listOf("--module-path", classpath.asPath)
-//        classpath = files()
-//    }
-//}
+tasks.compileJava {
+    // use the project's version or define one directly
+    options.javaModuleVersion.set(provider { project.version as String })
 
+    doFirst {
+        println("CLASSPATH IS ${classpath.asPath}")
+        options.compilerArgs = listOf("--module-path", classpath.asPath)
+        classpath = files()
+    }
+}
+
+
+var maincls = "lphystudio.app.LinguaPhyloStudio"
+application {
+    mainClass.set(maincls)
+}
 
 tasks.jar {
     manifest {
         attributes(
                 "Implementation-Title" to "LPhyStudio",
                 "Implementation-Version" to archiveVersion,
-                "Main-Class" to "lphystudio.app.LinguaPhyloStudio",
+                "Main-Class" to maincls,
                 "Built-By" to "Walter Xie", //System.getProperty("user.name"),
                 "Build-Jdk" to JavaVersion.current().majorVersion.toInt()
         )
