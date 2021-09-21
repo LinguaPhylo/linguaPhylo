@@ -1,4 +1,5 @@
 
+<a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
 
 ## Gradle
 
@@ -18,10 +19,8 @@ suggested, where `--info` provides more information about the build process:
 ./gradlew run
 ```
 
-Or through IntelliJ Gradle tool window:
-
-<a href="./Gradle-run.png"><img src="Gradle-run.png" align="left" height="300" ></a><br>
-
+Or through IntelliJ Gradle tool window, expand lphy-studio => Task => application,
+and click `run`. The screenshot is shown at the right.
 
 5. Upgrade the wrapper if it is not the latest version (e.g. version 7.2 at the time of writing):
 
