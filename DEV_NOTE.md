@@ -1,6 +1,4 @@
 
-<a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
-
 ## Gradle
 
 1. [Installation](https://gradle.org/install/).
@@ -14,6 +12,7 @@ suggested, where `--info` provides more information about the build process:
 ```
 
 3. Run LPhy studio application through Gradle:
+<a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
 
 ```bash
 ./gradlew run
