@@ -1,3 +1,3 @@
 rootProject.name = "linguaPhylo"
-include("lphy")
-include("lphy-studio")
+include(":lphy")
+include(":lphy-studio")
