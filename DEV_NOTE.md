@@ -21,19 +21,19 @@ suggested, where `--info` provides more information about the build process:
 Or through IntelliJ Gradle tool window, expand lphy-studio => Task => application,
 and click `run`. The screenshot is shown at the right.
 
-5. Upgrade the wrapper if it is not the latest version (e.g. version 7.2 at the time of writing):
+4. Upgrade the wrapper if it is not the latest version (e.g. version 7.2 at the time of writing):
 
 ```bash
 ./gradlew -v
 ./gradlew wrapper --gradle-version 7.2
 ```
 
-4. We choose [Gradle + Kotlin](https://gradle.org/kotlin/). 
+5. We choose [Gradle + Kotlin](https://gradle.org/kotlin/). 
 
 Please also see [Gradle Kotlin DSL Primer](https://docs.gradle.org/current/userguide/kotlin_dsl.html) 
 and [the benefit switching from Groovy to Kotlin](https://stackoverflow.com/questions/45335874/gradle-what-is-the-benefit-if-i-switch-from-groovy-to-kotlin).
 
-5. Shared build logic is organised in 
+6. Shared build logic is organised in 
 [the directory `buildSrc`](https://docs.gradle.org/current/userguide/organizing_gradle_projects.html#sec:build_sources). 
 
 Please also see
