@@ -1,5 +1,5 @@
 plugins {
-    lphy.config
+    `java-library`
 }
 
 group = "linguaPhylo"
@@ -22,9 +22,29 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 }
+
+//====== duplicates start ======//
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
+
 repositories {
     mavenCentral()
 }
+
+tasks.withType<JavaCompile>() {
+    options.isWarnings = true
+    // use the project's version or define one directly
+    options.javaModuleVersion.set(provider { project.version as String })
+
+    doFirst {
+        println("CLASSPATH is ${classpath.asPath}")
+        options.compilerArgs = listOf("--module-path", classpath.asPath)
+        classpath = files()
+    }
+}
+//====== duplicates end ======//
 
 tasks.jar {
     manifest {
