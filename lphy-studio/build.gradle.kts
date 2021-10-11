@@ -1,8 +1,11 @@
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
 plugins {
     application
 }
 
-group = "LinguaPhylo"
+group = "lphy"
 version = "1.1-SNAPSHOT"
 
 dependencies {
@@ -15,14 +18,43 @@ application {
     mainClass.set(maincls)
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
+
+// overwrite compileJava to use module-path
+tasks.compileJava {
+    // use the project's version or define one directly
+    options.javaModuleVersion.set(provider { project.version as String })
+
+    println("Java version used is ${JavaVersion.current()}.")
+
+    doFirst {
+        println("CLASSPATH IS ${classpath.asPath}")
+        options.compilerArgs = listOf("--module-path", classpath.asPath)
+        classpath = files()
+    }
+}
+
+// make studio app locating the correct parent path of examples sub-folder
+tasks.withType<JavaExec>() {
+    // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
+    // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
+    jvmArgs = listOf("-Duser.dir=${projectDir.parent}")
+}
+
+var calendar: Calendar? = Calendar.getInstance()
+var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
 
 tasks.jar {
     manifest {
-        // shared attr in buildSrc/src/main/kotlin/lphy.config.gradle.kts
+        // shared attr in the root build
         attributes(
             "Main-Class" to maincls,
             "Implementation-Title" to "LPhyStudio",
-            "Implementation-Version" to archiveVersion
+            "Implementation-Version" to archiveVersion,
+            "Built-Date" to formatter.format(calendar?.time)
         )
     }
 }
