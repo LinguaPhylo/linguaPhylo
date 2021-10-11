@@ -37,9 +37,8 @@ tasks.compileJava {
     // use the project's version or define one directly
     options.javaModuleVersion.set(provider { project.version as String })
 
-    println("Java version used is ${JavaVersion.current()}.")
-
     doFirst {
+        println("Java version used is ${JavaVersion.current()}.")
         println("CLASSPATH IS ${classpath.asPath}")
         options.compilerArgs = listOf("--module-path", classpath.asPath)
         classpath = files()
