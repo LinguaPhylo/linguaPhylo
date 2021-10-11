@@ -7,12 +7,14 @@
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+// Configures this project and each of its sub-projects.
 allprojects {
     repositories {
         mavenCentral()
     }
 }
 
+// Configures the sub-projects of this project.
 subprojects {
 
     tasks.withType<JavaCompile> {

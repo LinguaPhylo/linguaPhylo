@@ -29,6 +29,7 @@ gradle/
 **/.gradle/
 out/
 build/
+build-cache/
 dist/
 LPhy/build/
 LPhy/dist/
