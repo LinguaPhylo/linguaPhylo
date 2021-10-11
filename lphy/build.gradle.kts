@@ -1,6 +1,3 @@
-import java.text.SimpleDateFormat
-import java.util.Calendar
-
 plugins {
     `java-library`
 }
@@ -49,16 +46,11 @@ tasks.compileJava {
     }
 }
 
-var calendar:Calendar? = Calendar.getInstance()
-var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
-
 tasks.jar {
     manifest {
         // shared attr in the root build
         attributes(
             "Implementation-Title" to "LPhy",
-            "Implementation-Version" to archiveVersion,
-            "Built-Date" to formatter.format(calendar?.time)
         )
     }
 }
