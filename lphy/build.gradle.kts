@@ -1,6 +1,4 @@
-plugins {
-    `java-library`
-}
+import java.nio.file.*
 
 group = "lphy"
 version = "1.1-SNAPSHOT"
@@ -29,6 +27,7 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
+    withSourcesJar()
 }
 
 // overwrite compileJava to use module-path
@@ -58,4 +57,33 @@ tasks.test {
     useJUnit()
     // useJUnitPlatform()
     maxHeapSize = "1G"
+}
+
+
+val releaseDir = "releases"
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    doFirst {
+        val path: java.nio.file.Path = Paths.get("${rootDir}", releaseDir)
+        if (Files.exists(path)) {
+            println("Delete the existing previous release : ${path.toAbsolutePath()}")
+            project.delete(path)
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("LPhy") {
+            artifactId = "core"
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = releaseDir
+            url = uri(layout.buildDirectory.dir("${rootDir}/${releaseDir}"))
+            println("Set the base URL of $releaseDir repository to : ${url.path}")
+        }
+    }
 }

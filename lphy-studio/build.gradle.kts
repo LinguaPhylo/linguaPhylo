@@ -18,6 +18,7 @@ application {
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
+    withSourcesJar()
 }
 
 // overwrite compileJava to use module-path
@@ -37,8 +38,9 @@ tasks.compileJava {
 // make studio app locating the correct parent path of examples sub-folder
 tasks.withType<JavaExec>() {
     // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
+    // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
-    jvmArgs = listOf("-Duser.dir=${projectDir.parent}")
+    jvmArgs = listOf("-Duser.dir=${rootDir}")
 }
 
 tasks.jar {
@@ -51,3 +53,19 @@ tasks.jar {
     }
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("LPhyStudio") {
+            from(components["java"])
+        }
+    }
+
+    val releaseDir = "releases"
+    repositories {
+        maven {
+            name = releaseDir
+            url = uri(layout.buildDirectory.dir("${rootDir}/${releaseDir}"))
+            println("Set the base URL of $releaseDir repository to : ${url.path}")
+        }
+    }
+}

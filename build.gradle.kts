@@ -11,15 +11,19 @@ import java.util.Calendar
 allprojects {
     repositories {
         mavenCentral()
+//        mavenLocal() // only for testing
     }
+
+    apply(plugin = "java-library")
 }
 
 // Configures the sub-projects of this project.
 subprojects {
+    apply(plugin = "maven-publish")
 
-    tasks.withType<JavaCompile> {
-        options.isWarnings = true
-    }
+//    tasks.withType<JavaCompile> {
+//        options.isWarnings = true
+//    }
 
     var calendar: Calendar? = Calendar.getInstance()
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
@@ -37,5 +41,6 @@ subprojects {
             )
         }
     }
+
 }
 
