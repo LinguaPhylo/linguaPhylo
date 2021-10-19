@@ -1,5 +1,10 @@
 import java.nio.file.*
 
+plugins {
+    `java-library`
+    `maven-publish`
+}
+
 group = "lphy"
 version = "1.1-SNAPSHOT"
 
@@ -38,9 +43,12 @@ tasks.compileJava {
 
     doFirst {
         println("Java version used is ${JavaVersion.current()}.")
-        println("CLASSPATH IS ${classpath.asPath}")
         options.compilerArgs = listOf("--module-path", classpath.asPath)
         classpath = files()
+    }
+
+    doLast {
+        println("${project.name} compiler args = ${options.compilerArgs}")
     }
 }
 
@@ -59,6 +67,12 @@ tasks.test {
     maxHeapSize = "1G"
 }
 
+
+tasks.register("showCache") {
+    doLast {
+        configurations.compileClasspath.get().forEach { println(it) }
+    }
+}
 
 val releaseDir = "releases"
 tasks.withType<AbstractPublishToMaven>().configureEach {
@@ -87,3 +101,4 @@ publishing {
         }
     }
 }
+

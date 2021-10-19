@@ -1,5 +1,6 @@
 plugins {
     application
+    `maven-publish`
 }
 
 group = "lphy"
@@ -12,6 +13,7 @@ dependencies {
 
 var maincls : String = "lphystudio.app.LinguaPhyloStudio"
 application {
+//    mainModule.set("lphystudio")
     mainClass.set(maincls)
 }
 
@@ -29,9 +31,12 @@ tasks.compileJava {
 
     doFirst {
         println("Java version used is ${JavaVersion.current()}.")
-        println("CLASSPATH IS ${classpath.asPath}")
         options.compilerArgs = listOf("--module-path", classpath.asPath)
         classpath = files()
+    }
+
+    doLast {
+        println("${project.name} compiler args = ${options.compilerArgs}")
     }
 }
 
@@ -40,7 +45,8 @@ tasks.withType<JavaExec>() {
     // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
     // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
-    jvmArgs = listOf("-Duser.dir=${rootDir}")
+    jvmArgs = listOf("-Duser.dir=${rootDir}")//, "-m lphystudio")
+    println("JavaExec : $jvmArgs")
 }
 
 tasks.jar {
