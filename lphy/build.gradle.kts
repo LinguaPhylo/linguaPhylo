@@ -74,6 +74,15 @@ tasks.register("showCache") {
     }
 }
 
+val coreJars by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    extendsFrom(configurations["api"])
+}
+artifacts {
+    add("coreJars", tasks.jar)
+}
+
 val releaseDir = "releases"
 tasks.withType<AbstractPublishToMaven>().configureEach {
     doFirst {

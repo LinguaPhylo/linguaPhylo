@@ -1,13 +1,13 @@
 plugins {
     application
+    distribution
     `maven-publish`
 }
 
 group = "lphy"
 version = "1.1-SNAPSHOT"
-
 dependencies {
-    implementation(project(":lphy"))
+    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
 //    testImplementation("junit:junit:4.13")
 }
 
@@ -58,6 +58,29 @@ tasks.jar {
         )
     }
 }
+
+distributions {
+    main {
+        contents {
+            from("$rootDir/examples") {
+                include("**/*.lphy", "**/*.nex")
+                exclude("todo", "**/*covid*")
+                into("examples")
+            }
+            from("$rootDir/tutorials") {
+                // add new tutorial here
+                include("h3n2.lphy","h5n1.lphy","hcv_coal.lphy","hcv_coal_classic.lphy",
+                    "RSV2.lphy","RSV2sim.lphy", "**/*.nex", "**/*.nexus")//, "**/*.fasta"
+                exclude("**/*canis*")
+                into("tutorials")
+            }
+            from("$rootDir") {
+                include("README.md")
+            }
+        }
+    }
+}
+
 
 publishing {
     publications {
