@@ -224,39 +224,51 @@
         <mkdir dir="${lphy-test-reports}"/>
     </target>
 
-    <!-- TODO patch-module not working, have to use classpath now -->
-    <path id="junit-classpath">
-        <pathelement path="${classpath}"/>
-        <pathelement path="${lphyBuild}"/>
-        <pathelement path="${lphy-build-test}"/>
-        <fileset dir="${lphyLib}" includes="*.jar"/>
-    </path>
+    <!-- patch-module not available in javac task, use exec -->
+    <property name="module.name" value="lphy" />
+    <!-- Require to compile task to clean all folders -->
+    <target name="compile-test" depends="init-test" description="compile junit tests using patch-module">
+        <echo message="Java home = ${java.home}." />
 
-    <!-- Require to compile main code before this -->
-    <target name="compile-test" depends="init-test" description="only compile unit tests">
-        <javac target="${targetVersion}" source="${sourceVersion}" srcdir="${lphyTest}"
-               destdir="${lphy-build-test}" includeantruntime="false">
-            <classpath refid="junit-classpath"/>
-        </javac>
-        <echo message="Successfully compiled ${lphyName} tests." />
+        <fileset id="test.files" dir="${lphyTest}">
+            <include name="**/*.java"/>
+        </fileset>
+        <pathconvert pathsep=" " refid="test.files" property="test.src"/>
+
+        <exec executable="${java.home}/bin/javac" failonerror="true" >
+            <arg line="--patch-module lphy=${lphyTest}" />
+            <arg line="-d ${lphy-build-test}" />
+            <arg line="-p ${lphyBuild}:${lphyLib}" />
+            <arg line="${test.src}" />
+        </exec>
+
+        <echo message="Successfully compiled tests in ${lphyTest}." />
     </target>
 
+    <target name="test" depends="compile, compile-test" description="junit tests under Java module system">
+        <echo message="Start to run junit tests ..." />
 
-    <!-- another pipeline parallel with dist -->
-    <target name="test" depends="compile-j8, compile-test"
-            description="run unit tests including compile main code">
-        <echo>LPhy test classpath is ${toString:junit-classpath}</echo>
+<!--jvm="path-to-java16-home/bin/java"-->
+        <junit fork="true" showoutput="yes">
+            <jvmarg line="--patch-module ${module.name}=${lphy-build-test}"/>
+            <jvmarg line="--add-modules ${module.name}"/>
+            <jvmarg line="--add-reads ${module.name}=ALL-UNNAMED"/>
+            <jvmarg line="--add-exports ${module.name}/lphy=ALL-UNNAMED"/>
 
-        <junit printsummary="on" failureproperty="testFailed">
-            <classpath refid="junit-classpath"/>
-            <batchtest todir="${lphy-test-reports}">
+            <modulepath>
+                <!-- declare where is junit jar -->
+                <pathelement path="${lphyLib}/junit-4.8.2.jar"/>
+                <path refid="lphy-module-path"/>
+                <pathelement path="${module.name}"/>
+            </modulepath>
+
+            <batchtest fork="yes"  todir="${lphy-test-reports}">
                 <fileset dir="${lphyTest}">
                     <include name="**/*Test.java"/>
                 </fileset>
                 <formatter type="xml"/>
             </batchtest>
         </junit>
-
         <fail if="testFailed" status="1" message="Unit test of ${lphyName} failed."/>
     </target>
 
