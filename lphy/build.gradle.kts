@@ -24,7 +24,7 @@ dependencies {
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 
     // not in maven
-    api(files("libs/jebl-3.0.1.jar"))
+    api(files("lib/jebl-3.0.1.jar"))
     //implementation(fileTree("lib") { exclude("junit-*.jar") })
 
 }
