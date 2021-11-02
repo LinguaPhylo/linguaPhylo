@@ -20,13 +20,12 @@ dependencies {
     api("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
     api("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
 
-    testImplementation("junit:junit:4.13.2")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
-
     // not in maven
     api(files("lib/jebl-3.0.1.jar"))
     //implementation(fileTree("lib") { exclude("junit-*.jar") })
 
+    testImplementation("junit:junit:4.13.2")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 }
 
 java {
@@ -52,6 +51,7 @@ tasks.compileJava {
     }
 }
 
+// lphy-$version.jar
 tasks.jar {
     manifest {
         // shared attr in the root build
@@ -61,19 +61,7 @@ tasks.jar {
     }
 }
 
-tasks.test {
-    useJUnit()
-    // useJUnitPlatform()
-    maxHeapSize = "1G"
-}
-
-
-tasks.register("showCache") {
-    doLast {
-        configurations.compileClasspath.get().forEach { println(it) }
-    }
-}
-
+// configure core dependencies, which can be reused in lphy-studio
 val coreJars by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
@@ -83,6 +71,7 @@ artifacts {
     add("coreJars", tasks.jar)
 }
 
+// publishing
 val releaseDir = "releases"
 tasks.withType<AbstractPublishToMaven>().configureEach {
     doFirst {
@@ -111,3 +100,17 @@ publishing {
     }
 }
 
+
+// junit tests
+tasks.test {
+    useJUnit()
+    // useJUnitPlatform()
+    maxHeapSize = "1G"
+}
+
+// list locations of jars in dependencies
+tasks.register("showCache") {
+    doLast {
+        configurations.compileClasspath.get().forEach { println(it) }
+    }
+}
