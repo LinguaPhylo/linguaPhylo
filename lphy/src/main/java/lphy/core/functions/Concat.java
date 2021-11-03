@@ -1,8 +1,10 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 
-import java.lang.reflect.Array;
 import java.util.Objects;
 
 public class Concat extends DeterministicFunction {

@@ -1,21 +1,20 @@
 package lphystudio.app;
 
-import lphystudio.app.extmanager.ExtManagerDialog;
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphy.core.GraphicalLPhyParser;
-import lphystudio.core.narrative.HTMLNarrative;
 import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
+import lphystudio.app.extmanager.ExtManagerDialog;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
+import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
@@ -118,7 +117,9 @@ public class LinguaPhyloStudio {
         exampleMenu.setMnemonic(KeyEvent.VK_X);
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
-        File dir = new File("examples");
+        // relative path not working
+        File dir = new File("examples").getAbsoluteFile();
+        System.out.println("Examples dir = " + dir);
         listAllFiles(exampleMenu, dir);
 
         //Build the tutorials menu.
@@ -126,7 +127,8 @@ public class LinguaPhyloStudio {
         tutMenu.setMnemonic(KeyEvent.VK_U);
 //        fileMenu.addSeparator();
         fileMenu.add(tutMenu);
-        dir = new File("tutorials");
+        dir = new File("tutorials").getAbsoluteFile();
+        System.out.println("Tutorials dir = " + dir);
         listAllFiles(tutMenu, dir);
 
         buildViewMenu(menuBar);
@@ -160,7 +162,8 @@ public class LinguaPhyloStudio {
         frame.setVisible(true);
 
         openMenuItem.addActionListener(e -> {
-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            // use "user.dir" instead of FileSystemView.getFileSystemView().getHomeDirectory()
+            JFileChooser jfc = new JFileChooser(IOUtils.getUserDir().toFile());
 
             FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
             jfc.setFileFilter(filter);
@@ -185,10 +188,14 @@ public class LinguaPhyloStudio {
 
         saveModelToHTML.addActionListener(e -> exportModelToHTML());
         saveModelToRTF.addActionListener(e -> exportToRtf());
+
+        System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
     }
 
     private void listAllFiles(JMenu exampleMenu, File dir) {
         final String postfix = ".lphy";
+        if (!dir.exists()) LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
+
         File[] files = dir.listFiles();
         if (files != null) {
             Arrays.sort(files, Comparator.comparing(File::getName));
@@ -419,6 +426,7 @@ public class LinguaPhyloStudio {
 
     public static void main(String[] args) {
 
+        // use -Duser.dir= to set the working dir, so examples can be loaded properly
         LinguaPhyloStudio app = new LinguaPhyloStudio();
 
         if (args.length > 0) {
