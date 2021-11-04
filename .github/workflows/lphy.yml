@@ -10,12 +10,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
+          cache: 'gradle'
       - name: Validate Gradle wrapper
         # namely v1.0.4
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Run unit tests
         # only available in lphy at the moment
-        run: ./gradlew :lphy:test
+        run: ./gradlew :lphy:test --no-daemon
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
