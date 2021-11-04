@@ -16,4 +16,4 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
-          files: lphy/test-reports/**/*.xml
+          files: lphy/build/test-results/**/*.xml
