@@ -10,6 +10,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: 'adopt'
           cache: 'gradle'
       - name: Java Gradle Cache
         uses: actions/cache@v2
