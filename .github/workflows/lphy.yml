@@ -7,11 +7,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v1
         with:
           java-version: 16
-          distribution: 'adopt'
-          cache: 'gradle'
+          #distribution: 'adopt'
+          #cache: 'gradle'
       - name: Java Gradle Cache
         uses: actions/cache@v2
         with:
@@ -24,6 +24,14 @@ jobs:
       - name: Run unit tests
         # only available in lphy at the moment
         run: ./gradlew :lphy:test --no-daemon
+      - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          ls ./gradle/
+          ls ./build-cache/
+          rm -f ./build-cache/*.lock
+          rm -f ./build-cache/gc.properties
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
