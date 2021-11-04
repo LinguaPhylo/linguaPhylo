@@ -46,7 +46,9 @@ tasks.withType<JavaExec>() {
     // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
     jvmArgs = listOf("-Duser.dir=${rootDir}")//, "-m lphystudio")
-    println("JavaExec : $jvmArgs")
+    doLast {
+        println("JavaExec : $jvmArgs")
+    }
 }
 
 tasks.jar {

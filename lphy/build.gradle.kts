@@ -101,11 +101,16 @@ publishing {
 }
 
 
-// junit tests
+// junit tests, https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
 tasks.test {
     useJUnit()
     // useJUnitPlatform()
+    // set heap size for the test JVM(s)
+    minHeapSize = "128m"
     maxHeapSize = "1G"
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+    //testLogging.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 }
 
 // list locations of jars in dependencies
