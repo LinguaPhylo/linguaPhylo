@@ -6,8 +6,8 @@ plugins {
 }
 
 group = "lphy"
-version = "1.1-SNAPSHOT"
-
+version = "1.1.0-a.1"
+//base.archivesName.set("core")
 
 dependencies {
     // required in test
@@ -28,14 +28,24 @@ dependencies {
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 }
 
+// configure core dependencies, which can be reused in lphy-studio
+val coreJars by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    extendsFrom(configurations["api"])
+}
+artifacts {
+    add("coreJars", tasks.jar)
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
     withSourcesJar()
+    //withJavadocJar() // TODO Problems generating Javadoc
 }
 
 // overwrite compileJava to use module-path
-// overwrite compileJava to pass dependencies to tests
 tasks.compileJava {
     // use the project's version or define one directly
     options.javaModuleVersion.set(provider { project.version as String })
@@ -61,17 +71,16 @@ tasks.jar {
     }
 }
 
-// configure core dependencies, which can be reused in lphy-studio
-val coreJars by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    extendsFrom(configurations["api"])
-}
-artifacts {
-    add("coreJars", tasks.jar)
+// overwrite Javadoc to use module-path
+tasks.javadoc {
+    doFirst {
+        options.modulePath = classpath.files.toList()
+        options.classpath = listOf()
+    }
 }
 
-// publishing
+
+// define and create the release folder under root
 val releaseDir = "releases"
 tasks.withType<AbstractPublishToMaven>().configureEach {
     doFirst {
@@ -82,11 +91,11 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
         }
     }
 }
-
+// publish core to the release folder
 publishing {
     publications {
         create<MavenPublication>("LPhy") {
-            artifactId = "core"
+//            artifactId = base.archivesName.get()
             from(components["java"])
         }
     }

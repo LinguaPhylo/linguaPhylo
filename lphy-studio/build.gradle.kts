@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "lphy"
-version = "1.1-SNAPSHOT"
+version = "1.1.0-a.1"
 dependencies {
     implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
 //    testImplementation("junit:junit:4.13")
@@ -21,6 +21,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
     withSourcesJar()
+//    withJavadocJar()
 }
 
 // overwrite compileJava to use module-path
@@ -78,6 +79,16 @@ distributions {
             }
             from("$rootDir") {
                 include("README.md")
+//                include("LICENSE")
+            }
+            // include src jar
+            from(layout.buildDirectory.dir("libs")) {
+                include("*-sources.jar")
+                into("src")
+            }
+            from(project(":lphy").layout.buildDirectory.dir("libs")) {
+                include("*-sources.jar")
+                into("src")
             }
         }
     }
