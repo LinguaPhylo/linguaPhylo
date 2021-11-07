@@ -79,7 +79,7 @@ tasks.javadoc {
     }
 }
 
-
+// TODO move to root build?
 // define and create the release folder under root
 val releaseDir = "releases"
 tasks.withType<AbstractPublishToMaven>().configureEach {
@@ -91,7 +91,7 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
         }
     }
 }
-// publish core to the release folder
+// publish to maven central
 publishing {
     publications {
         create<MavenPublication>("LPhy") {
@@ -102,8 +102,18 @@ publishing {
 
     repositories {
         maven {
+            // publish to local
             name = releaseDir
             url = uri(layout.buildDirectory.dir("${rootDir}/${releaseDir}"))
+            // publish to maven
+            // url = uri("sftp://repo.mycompany.com:22/maven2")
+            // credentials {
+            //     username = "user"
+            //     password = "password"
+            // }
+            // authentication {
+            //     create<BasicAuthentication>("basic")
+            // }
             println("Set the base URL of $releaseDir repository to : ${url.path}")
         }
     }

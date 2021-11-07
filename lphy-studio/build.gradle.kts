@@ -64,6 +64,7 @@ tasks.jar {
     }
 }
 
+// copy related files and Zip
 distributions {
     main {
         contents {
@@ -96,7 +97,7 @@ distributions {
     }
 }
 
-
+// publish to maven central
 publishing {
     publications {
         create<MavenPublication>("LPhyStudio") {
