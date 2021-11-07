@@ -6,10 +6,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ExtManagerDialog extends JDialog {
 
@@ -20,7 +16,7 @@ public class ExtManagerDialog extends JDialog {
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         // main components
         JLabel jLabel = new JLabel("Available extensions for LPhy " +
-                LinguaPhyloStudio.VERSION + " : ");
+                LinguaPhyloStudio.VERSION + " : "); // TODO
         this.getContentPane().add(jLabel, BorderLayout.NORTH);
 
         DataTableModel dataTableModel = new DataTableModel();

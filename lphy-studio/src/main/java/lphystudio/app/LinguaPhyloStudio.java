@@ -22,15 +22,19 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class LinguaPhyloStudio {
 
     private static String APP_NAME = "LPhy Studio";
-    public static String VERSION = "1.0.0";
+    public static String VERSION;
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
@@ -41,15 +45,12 @@ public class LinguaPhyloStudio {
         System.setProperty("apple.awt.fileDialogForDirectories", "true");
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+        // use MANIFEST.MF to store version in jar, but use system property in development
+        VERSION = getVersion();
     }
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -57,12 +58,11 @@ public class LinguaPhyloStudio {
     private static final int MAX_WIDTH = 1600;
     private static final int MAX_HEIGHT = 1200;
 
-
     GraphicalLPhyParser parser = createParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
 
-    File lastDirectory = null;
+    File lastDirectory = null;//TODO Alexei: is it still used?
 
     public LinguaPhyloStudio() {
 
@@ -190,6 +190,39 @@ public class LinguaPhyloStudio {
         saveModelToRTF.addActionListener(e -> exportToRtf());
 
         System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
+    }
+
+    // use MANIFEST.MF to store version in jar, but use system property in development
+    private static String getVersion() {
+        String version = null;
+        // for Java module system
+        try {
+            Enumeration<URL> resources = LinguaPhyloStudio.class.getClassLoader()
+                    .getResources("META-INF/MANIFEST.MF");
+
+            while (resources.hasMoreElements()) {
+                Manifest manifest = new Manifest(resources.nextElement().openStream());
+                Attributes attr = manifest.getMainAttributes();
+                String name = attr.getValue("Implementation-Title");
+                if ("LPhyStudio".equalsIgnoreCase(name)) {
+                    version = attr.getValue("Implementation-Version");
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            LoggerUtils.log.severe("Cannot find lphy manifest !");
+            e.printStackTrace();
+        }
+        // for class path
+        if (version == null)
+            version = LinguaPhyloStudio.class.getPackage().getImplementationVersion();
+        // for IDE to get version from system property "lphy.studio.version"
+        if (version == null)
+            version = System.getProperty("lphy.studio.version");
+        // should not reach here
+        if (version == null)
+            version = "DEVELOPMENT";
+        return version;
     }
 
     private void listAllFiles(JMenu exampleMenu, File dir) {
