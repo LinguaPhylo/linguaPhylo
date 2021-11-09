@@ -17,9 +17,7 @@ allprojects {
 
 // Configures the sub-projects of this project.
 subprojects {
-//    tasks.withType<JavaCompile> {
-//        options.isWarnings = true
-//    }
+    group = "io.github.linguaphylo"
 
     var calendar: Calendar? = Calendar.getInstance()
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")

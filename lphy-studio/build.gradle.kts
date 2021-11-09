@@ -4,8 +4,8 @@ plugins {
     `maven-publish`
 }
 
-group = "lphy"
 version = "1.1.0-a.1"
+
 dependencies {
     implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
 //    testImplementation("junit:junit:4.13")

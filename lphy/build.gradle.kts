@@ -5,7 +5,6 @@ plugins {
     `maven-publish`
 }
 
-group = "lphy"
 version = "1.1.0-a.1"
 //base.archivesName.set("core")
 
