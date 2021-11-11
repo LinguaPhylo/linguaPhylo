@@ -1,5 +1,8 @@
 # Validations
 
+All supplementary materials have been moved to [lphy2022](https://github.com/LinguaPhylo/supplementary/tree/main/lphy2022/),
+and the [figures](https://github.com/LinguaPhylo/supplementary/tree/main/lphy2022/alpha2/figs).
+
 ## Setup simulations
 
 First, we need to create a LPhy script to configure our simulations for the model validation.
