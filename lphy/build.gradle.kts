@@ -3,9 +3,10 @@ import java.nio.file.*
 plugins {
     `java-library`
     `maven-publish`
+    signing
 }
 
-version = "1.1.0-a.1"
+version = "1.1.0-SNAPSHOT"
 //base.archivesName.set("core")
 
 dependencies {
@@ -19,9 +20,8 @@ dependencies {
     api("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
     api("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
 
-    // not in maven
-    api(files("lib/jebl-3.0.1.jar"))
-    //implementation(fileTree("lib") { exclude("junit-*.jar") })
+    // io.github.linguaphylo
+    api("io.github.linguaphylo:jebl:3.1.0-SNAPSHOT")
 
     testImplementation("junit:junit:4.13.2")
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
@@ -41,7 +41,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
     withSourcesJar()
-    //withJavadocJar() // TODO Problems generating Javadoc
+    withJavadocJar() // TODO Problems generating Javadoc
 }
 
 // overwrite compileJava to use module-path
@@ -70,20 +70,14 @@ tasks.jar {
     }
 }
 
-// overwrite Javadoc to use module-path
-tasks.javadoc {
-    doFirst {
-        options.modulePath = classpath.files.toList()
-        options.classpath = listOf()
-    }
-}
-
-// TODO move to root build?
-// define and create the release folder under root
-val releaseDir = "releases"
+// define the release folder according to version
+val releaseRepoUrl = layout.buildDirectory.dir("releases")
+val snapshotRepoUrl = layout.buildDirectory.dir("snapshots")
+val localUrl = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotRepoUrl else releaseRepoUrl)
+// delete previous release under the local build folder
 tasks.withType<AbstractPublishToMaven>().configureEach {
     doFirst {
-        val path: java.nio.file.Path = Paths.get("${rootDir}", releaseDir)
+        val path: java.nio.file.Path = Paths.get(localUrl.path)
         if (Files.exists(path)) {
             println("Delete the existing previous release : ${path.toAbsolutePath()}")
             project.delete(path)
@@ -91,30 +85,91 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
     }
 }
 // publish to maven central
+val pubId = "LPhy"
 publishing {
     publications {
-        create<MavenPublication>("LPhy") {
-//            artifactId = base.archivesName.get()
+        create<MavenPublication>(pubId) {
+            artifactId = base.archivesName.get()
             from(components["java"])
+
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name.set(pubId)
+                description.set("The Java Evolutionary Biology Library using the Java Platform Module System.")
+                packaging = "jar"
+                properties.set(mapOf(
+                    "maven.compiler.source" to java.sourceCompatibility.majorVersion,
+                    "maven.compiler.target" to java.targetCompatibility.majorVersion
+                ))
+                licenses {
+                    license {
+                        name.set("GNU Lesser General Public License, version 3")
+                        url.set("https://www.gnu.org/licenses/lgpl-3.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        name.set("LPhy developer team")
+                    }
+                }
+                // https://central.sonatype.org/publish/requirements/
+                scm {
+                    connection.set("scm:git:git://github.com/LinguaPhylo/jebl3.git")
+                    developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/jebl3.git")
+                    url.set("https://github.com/LinguaPhylo/jebl3/tree/master")
+                }
+            }
         }
     }
 
     repositories {
         maven {
-            // publish to local
-            name = releaseDir
-            url = uri(layout.buildDirectory.dir("${rootDir}/${releaseDir}"))
-            // publish to maven
-            // url = uri("sftp://repo.mycompany.com:22/maven2")
-            // credentials {
-            //     username = "user"
-            //     password = "password"
-            // }
-            // authentication {
-            //     create<BasicAuthentication>("basic")
-            // }
-            println("Set the base URL of $releaseDir repository to : ${url.path}")
+            if (project.hasProperty("ossrh.user")) {
+                // -Possrh.user=myuser -Possrh.pswd=mypswd
+                val ossrhUser = project.property("ossrh.user")
+                val ossrhPswd = project.property("ossrh.pswd")
+                println("ossrhUser = $ossrhUser, ossrhPswd = ******") // $ossrhPswd
+
+                // publish to maven
+                val releaseOSSRH = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                val snapshotOSSRH = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotOSSRH else releaseOSSRH)
+                credentials {
+                    username = "$ossrhUser"
+                    password = "$ossrhPswd"
+                }
+                authentication {
+                    create<BasicAuthentication>("basic")
+                }
+
+            } else {
+                // publish to local
+                url = localUrl
+            }
+
+            println("Publish $base:$version to : ${url.path}")
         }
+    }
+}
+
+// -Psigning.secretKeyRingFile=/path/to/mysecr.gpg -Psigning.password=mypswd -Psigning.keyId=last8chars
+signing {
+    sign(publishing.publications[pubId])
+}
+
+tasks.javadoc {
+    // if (JavaVersion.current().isJava9Compatible)
+    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    doFirst {
+        options.modulePath = classpath.files.toList()
+        options.classpath = listOf()
     }
 }
 

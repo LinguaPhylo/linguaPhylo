@@ -1,10 +1,13 @@
+import java.nio.file.*
+
 plugins {
     application
     distribution
     `maven-publish`
+    signing
 }
 
-version = "1.1.0-a.1"
+version = "1.1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
@@ -97,20 +100,104 @@ distributions {
     }
 }
 
+// define the release folder according to version
+val releaseRepoUrl = layout.buildDirectory.dir("releases")
+val snapshotRepoUrl = layout.buildDirectory.dir("snapshots")
+val localUrl = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotRepoUrl else releaseRepoUrl)
+// delete previous release under the local build folder
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    doFirst {
+        val path: java.nio.file.Path = Paths.get(localUrl.path)
+        if (Files.exists(path)) {
+            println("Delete the existing previous release : ${path.toAbsolutePath()}")
+            project.delete(path)
+        }
+    }
+}
 // publish to maven central
+val pubId = "LPhyStudio"
 publishing {
     publications {
-        create<MavenPublication>("LPhyStudio") {
+        create<MavenPublication>(pubId) {
+            artifactId = base.archivesName.get()
             from(components["java"])
+
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name.set(pubId)
+                description.set("The Java Evolutionary Biology Library using the Java Platform Module System.")
+                packaging = "jar"
+                properties.set(mapOf(
+                    "maven.compiler.source" to java.sourceCompatibility.majorVersion,
+                    "maven.compiler.target" to java.targetCompatibility.majorVersion
+                ))
+                licenses {
+                    license {
+                        name.set("GNU Lesser General Public License, version 3")
+                        url.set("https://www.gnu.org/licenses/lgpl-3.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        name.set("Alexei Drummond")
+                    }
+                    developer {
+                        name.set("Walter Xie")
+                    }
+                }
+                // https://central.sonatype.org/publish/requirements/
+                scm {
+                    connection.set("scm:git:git://github.com/LinguaPhylo/jebl3.git")
+                    developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/jebl3.git")
+                    url.set("https://github.com/LinguaPhylo/jebl3/tree/master")
+                }
+            }
         }
     }
 
-    val releaseDir = "releases"
     repositories {
         maven {
-            name = releaseDir
-            url = uri(layout.buildDirectory.dir("${rootDir}/${releaseDir}"))
-            println("Set the base URL of $releaseDir repository to : ${url.path}")
+            if (project.hasProperty("ossrh.user")) {
+                // -Possrh.user=myuser -Possrh.pswd=mypswd
+                val ossrhUser = project.property("ossrh.user")
+                val ossrhPswd = project.property("ossrh.pswd")
+                println("ossrhUser = $ossrhUser, ossrhPswd = ******") // $ossrhPswd
+
+                // publish to maven
+                val releaseOSSRH = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                val snapshotOSSRH = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotOSSRH else releaseOSSRH)
+                credentials {
+                    username = "$ossrhUser"
+                    password = "$ossrhPswd"
+                }
+                authentication {
+                    create<BasicAuthentication>("basic")
+                }
+
+            } else {
+                // publish to local
+                url = localUrl
+            }
+
+            println("Publish $base:$version to : ${url.path}")
         }
     }
+}
+
+// -Psigning.secretKeyRingFile=/path/to/mysecr.gpg -Psigning.password=mypswd -Psigning.keyId=last8chars
+signing {
+    sign(publishing.publications[pubId])
+}
+
+tasks.javadoc {
+    // if (JavaVersion.current().isJava9Compatible)
+    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
 }

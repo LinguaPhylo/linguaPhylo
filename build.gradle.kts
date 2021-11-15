@@ -11,6 +11,10 @@ import java.util.Calendar
 allprojects {
     repositories {
         mavenCentral()
+        // add sonatype snapshots repository
+        maven {
+            url=uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        }
 //        mavenLocal() // only for testing
     }
 }
@@ -33,6 +37,12 @@ subprojects {
                 "Build-Jdk" to JavaVersion.current().majorVersion.toInt(),
                 "Built-Date" to formatter.format(calendar?.time)
             )
+        }
+        // copy LICENSE to META-INF
+        metaInf {
+            from (rootDir) {
+                include("LICENSE")
+            }
         }
     }
 
