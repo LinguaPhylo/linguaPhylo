@@ -53,7 +53,22 @@ the property `signing.keyId` in the command line.
 If your password contains special characters, 
 you can use single quotes to wrap the string to avoid errors.
 More details are available in Sonatype's
-[publish guide](https://central.sonatype.org/publish/publish-guide/).
+[publish guide](https://central.sonatype.org/publish/publish-guide/)
+and [release rules](https://central.sonatype.org/publish/release/).
+
+**Note:** once published, you will not be able to remove/update/modify the artifact in Sonatype.
+So for testing purpose, assign the `version` in `build.gradle.kts` to contain 
+the suffix "-SNAPSHOT", the artifact will be published to
+https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/,
+which can be updated.
+
+See also [Snapshot Repository vs Release Repository](https://stackoverflow.com/questions/275555/maven-snapshot-repository-vs-release-repository)
+and [Best Practices for releasing with 3rd party SNAPSHOT dependencies](https://blog.sonatype.com/2009/01/best-practices-for-releasing-with-3rd-party-snapshot-dependencies/).
+
+
+### Versions
+
+- [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/single_versions.html)
 
 
 ### Upgrade the wrapper 
