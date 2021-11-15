@@ -3,11 +3,12 @@
 
 1. [Installation](https://gradle.org/install/).
 
-2. Build project using wrapper as
-[Gradle doc](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper)
-suggested, where `--info` provides more information about the build process:
+2. Clean or build project using wrapper as suggested by
+[Gradle doc](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper),
+where `--info` provides more information about the process:
 
 ```bash
+./gradlew clean
 ./gradlew build --info
 ```
 

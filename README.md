@@ -54,3 +54,7 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 ## Homepage and tutorials
 
 [https://linguaphylo.github.io/](https://linguaphylo.github.io/)
+
+## Developer note
+
+[Gradle project guide](DEV_NOTE.md)
