@@ -11,7 +11,7 @@ import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 
 @Deprecated()

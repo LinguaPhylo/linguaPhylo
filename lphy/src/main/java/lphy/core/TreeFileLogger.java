@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * Created by adru001 on 10/03/20.
+ * Created by Alexei Drummond on 10/03/20.
  */
 public class TreeFileLogger implements RandomValueLogger {
 

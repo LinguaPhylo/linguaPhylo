@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
 

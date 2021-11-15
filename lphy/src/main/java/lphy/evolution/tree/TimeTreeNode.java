@@ -5,7 +5,7 @@ import lphy.evolution.Taxon;
 import java.util.*;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class TimeTreeNode {
 

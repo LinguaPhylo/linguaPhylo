@@ -1,7 +1,7 @@
 package lphy.graphicalModel;
 
 /**
- * Created by adru001 on 24/01/20.
+ * Created by Alexei Drummond on 24/01/20.
  */
 public interface GraphicalModelNodeVisitor {
     void visitValue(Value value);

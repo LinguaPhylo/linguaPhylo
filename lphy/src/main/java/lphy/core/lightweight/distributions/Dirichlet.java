@@ -5,7 +5,7 @@ import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.*;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class Dirichlet implements LGenerativeDistribution<Double[]> {
 

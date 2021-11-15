@@ -12,7 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public class PhyloOU extends PhyloBrownian {
 

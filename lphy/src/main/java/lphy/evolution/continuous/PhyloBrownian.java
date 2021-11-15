@@ -13,7 +13,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.*;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 @Citation(
         value = "Felsenstein J. (1973). Maximum-likelihood estimation of evolutionary trees from continuous characters. American journal of human genetics, 25(5), 471–492.",

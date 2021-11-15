@@ -3,7 +3,7 @@ package lphy.evolution.alignment;
 import java.util.Map;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public class ErrorAlignment extends SimpleAlignment {
 

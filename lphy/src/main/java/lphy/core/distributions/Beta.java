@@ -10,7 +10,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 import static lphy.core.distributions.DistributionConstants.*;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class Beta implements GenerativeDistribution1D<Double> {
 

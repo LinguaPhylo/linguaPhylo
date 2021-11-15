@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by adru001 on 17/12/19.
+ * Created by Alexei Drummond on 17/12/19.
  */
 public class TimeTree implements HasTaxa, MultiDimensional {
 

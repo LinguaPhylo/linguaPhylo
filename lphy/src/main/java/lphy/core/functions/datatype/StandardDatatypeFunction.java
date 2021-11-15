@@ -8,7 +8,7 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public class StandardDatatypeFunction extends DeterministicFunction<SequenceType> {
 

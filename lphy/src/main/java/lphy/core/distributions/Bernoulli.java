@@ -10,7 +10,7 @@ import static lphy.core.distributions.DistributionConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class Bernoulli implements GenerativeDistribution<Boolean> {
     private Value<Number> p;

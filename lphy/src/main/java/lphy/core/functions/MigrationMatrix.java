@@ -7,7 +7,7 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public class MigrationMatrix extends DeterministicFunction<Double[][]> {
 

@@ -8,7 +8,7 @@ import java.util.Map;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 @Citation(
         value="Hasegawa, M., Kishino, H. & Yano, T. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174 (1985)",

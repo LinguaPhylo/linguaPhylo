@@ -12,7 +12,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.*;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 public class OrnsteinUhlenbeck implements GenerativeDistribution<Double> {
 

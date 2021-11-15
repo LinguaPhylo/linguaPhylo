@@ -9,7 +9,7 @@ import java.util.Map;
 import static lphy.core.distributions.DistributionConstants.pParamName;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class Geometric implements GenerativeDistribution1D<Integer> {
 

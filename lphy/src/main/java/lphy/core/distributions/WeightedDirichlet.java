@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.concParamName;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
 

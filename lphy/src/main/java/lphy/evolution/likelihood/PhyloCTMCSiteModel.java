@@ -22,7 +22,7 @@ import java.util.TreeMap;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by adru001 on 2/02/20.
+ * Created by Alexei Drummond on 2/02/20.
  */
 @Citation(
         value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",

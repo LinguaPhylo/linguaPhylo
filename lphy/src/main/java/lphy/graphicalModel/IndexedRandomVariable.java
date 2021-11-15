@@ -6,7 +6,7 @@ import java.util.*;
 import static java.util.Collections.max;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class IndexedRandomVariable<T> extends RandomVariable<T[]> {
 

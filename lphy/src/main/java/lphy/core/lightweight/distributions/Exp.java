@@ -6,7 +6,7 @@ import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * Created by adru001 on 18/12/19.
+ * Created by Alexei Drummond on 18/12/19.
  */
 public class Exp implements LGenerativeDistribution<Double> {
 
