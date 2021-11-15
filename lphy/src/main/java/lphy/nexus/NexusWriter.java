@@ -19,8 +19,8 @@
 
 package lphy.nexus;
 
-import lphy.evolution.tree.TimeTree;
 import lphy.evolution.alignment.SimpleAlignment;
+import lphy.evolution.tree.TimeTree;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Class for producing NEXUS files.
  * 
- * @author Tim Vaughan <tgvaughan@gmail.com>
+ * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
 public class NexusWriter {
     

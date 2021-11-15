@@ -66,10 +66,10 @@ public class CharSetBlock {
 
         /**
          * @param charSet1Block The string must only contain one block.
-         *                      The blocks could be an array, <code>charset="[3-629\3, 4-629\3, 5-629\3]"</code>.
+         *                      The blocks could be an array, {@code charset="[3-629\3, 4-629\3, 5-629\3]"}.
          *                      The blocks could also be separated by spaces, for example,
          *                      "2-457\3 660-896\3" is considered as 2 blocks.
-         *                      Use <code>split("\\s+")</code> to spilt charset blocks
+         *                      Use {@code split("\\s+")} to spilt charset blocks
          *                      before call this method.
          * @return only 1 {@link CharSetBlock} parsed from string
          * @throws IllegalArgumentException

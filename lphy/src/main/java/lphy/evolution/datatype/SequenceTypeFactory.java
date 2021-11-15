@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Class to hold <code>Map<String, ? extends {@link SequenceType}> dataTypeMap</code>.
+ * Class to hold {@code Map<String, ? extends {@link SequenceType}> dataTypeMap}.
  *
  * @author Walter Xie
  */

@@ -8,12 +8,9 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.IntegerValue;
-import lphy.graphicalModel.types.NumberValue;
-import lphy.graphicalModel.types.StringValue;
 
 /**
- * <code>trait_D = extractTrait(taxa, "|", 2);</code>
+ * {@code trait_D = extractTrait(taxa, "|", 2);}
  * returns a trait alignment extracted from taxa names.
  * @see ExtractStringMetaData
  */

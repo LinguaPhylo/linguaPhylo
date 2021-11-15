@@ -731,7 +731,7 @@ public class NexusParser {
 
     //****** NexusBlock ******//
 
-    /**
+    /* Not javadoc
      * TODO make it extendable
      * interface NexusBlockImp{ public NexusBlock findNextBlock(); }
      * enum NexusBlock implements NexusBlockImp{ TAXA, ..., DATA; }

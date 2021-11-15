@@ -26,7 +26,7 @@ import java.util.List;
  * Class for piecewise construction of Nexus files.  Analogous to StringBuilder,
  * but instead of piecing together strings, we piece together NexusBlocks.
  *
- * @author Tim Vaughan <tgvaughan@gmail.com>
+ * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
 public class NexusBuilder {
     List<NexusBlock> blocks;

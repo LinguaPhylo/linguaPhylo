@@ -11,7 +11,7 @@ public class Utils {
 
     /**
      * @param type the type signature for a return value or parameter
-     * @return the generic class. e.g. if type is lphy.graphicalModel.Value<java.lang.Number> then this will return java.lang.Number.class
+     * @return the generic class. e.g. if type is {@code lphy.graphicalModel.Value<java.lang.Number>} then this will return java.lang.Number.class
      */
     public static Class getClass(Type type) {
         Class typeClass;

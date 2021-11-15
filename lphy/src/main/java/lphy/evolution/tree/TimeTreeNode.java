@@ -205,8 +205,6 @@ public class TimeTreeNode {
 
     /**
      * sorts nodes in children according to lowest numbered label in subtree
-     *
-     * @return
      */
     public void sort() {
 

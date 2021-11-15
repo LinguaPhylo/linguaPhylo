@@ -207,8 +207,8 @@ public interface Taxa extends MultiDimensional {
     }
 
     /**
-     * Legacy code of using Map<String, Integer> idMap
-     * @param idMap    Map<String, Integer>
+     * Legacy code of using {@code Map<String, Integer>} idMap
+     * @param idMap    {@code Map<String, Integer>}
      * @return   Taxa
      */
     static Taxa createTaxa(Map<String, Integer> idMap) {

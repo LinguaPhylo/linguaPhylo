@@ -14,7 +14,7 @@ public class DoubleArray2DValue extends Value<Double[][]> {
     }
 
     /**
-     * Constructs an anonymous value of type Value<Double[][]>
+     * Constructs an anonymous value of type {@code Value<Double[][]>}
      * @param value
      * @param function
      */

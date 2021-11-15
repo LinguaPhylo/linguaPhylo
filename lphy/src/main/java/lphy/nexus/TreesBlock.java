@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Nexus block specifying a number of trees.
  *
- * @author Tim Vaughan <tgvaughan@gmail.com>
+ * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
 public class TreesBlock extends NexusBlock {
 

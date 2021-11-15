@@ -60,7 +60,7 @@ public class MetaDataAlignment extends SimpleAlignment {
 
     /**
      * Parse age/date string in Map, and assign to {@link Taxa}.
-     * @param ageStringMap  Taxon name <=> age/date string,
+     * @param ageStringMap  Taxon name &lt;=&gt; age/date string,
      * @param ageDirectionStr  {@link AgeDirection}
      */
     public void assignAges(final Map<String, String> ageStringMap, final String ageDirectionStr) {
@@ -119,10 +119,10 @@ public class MetaDataAlignment extends SimpleAlignment {
     }
 
     /**
+     * TreeMap of Taxon name &lt;=&gt; age/date string,
+     * which can be alternatively obtained from the nexus file.
      * @param ageRegxStr  Java regular expression to extract dates from taxa names.
      * @param ageDirectionStr  {@link AgeDirection}
-     * @return TreeMap of Taxon name <=> age/date string,
-     *         which can be alternatively obtained from the nexus file.
      */
     public void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
         this.ageRegxStr = ageRegxStr;

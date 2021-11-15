@@ -20,7 +20,7 @@ package lphy.nexus;
 import java.util.List;
 
 /**
- * @author Tim Vaughan <tgvaughan@gmail.com>
+ * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
 public abstract class NexusBlock {
     

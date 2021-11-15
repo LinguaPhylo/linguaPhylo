@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  * A Nexus block containing a sequence alignment.  Note that this is preferred
  * over the often-used "data" block by Maddison et al.
  *
- * @author Tim Vaughan <tgvaughan@gmail.com>
+ * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
 public class CharactersBlock extends NexusBlock {
 
