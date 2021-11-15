@@ -29,8 +29,31 @@ inside the sub-folder "build/distributions" under the `lphy-studio` module.
 More details are available in the user guide of
 [distribution plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html).
 
-5. Publish
-TODO
+5. Publish to Maven central repository:
+
+```bash
+./gradlew publish --info 
+    -Psigning.secretKeyRingFile=/path/to/.gnupg/mysecret.gpg 
+    -Psigning.password=mypswd -Psigning.keyId=last8symbols 
+    -Possrh.user=myuser -Possrh.pswd=mypswd
+```
+
+This supplies information of both your authentications for
+[signing](https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials)
+and [publishing](https://docs.gradle.org/current/userguide/publishing_maven.html).
+
+The property `signing.password` is the passphrase of `gpg` used to protect your private key.
+Run `gpg --list-keys` to find your keyId, which is a super long string 
+mixed with letters and numbers, and assign the last 8 symbols to 
+the property `signing.keyId` in the command line.
+
+`ossrh.user` and `ossrh.pswd` are used to login your JIRA account in
+[Sonatype](https://central.sonatype.org/publish/publish-guide/).
+If your password contains special characters, 
+you can use single quotes to wrap the string to avoid errors.
+More details are available in Sonatype's
+[publish guide](https://central.sonatype.org/publish/publish-guide/).
+
 
 ### Upgrade the wrapper 
 
