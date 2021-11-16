@@ -155,9 +155,9 @@ publishing {
                 }
                 // https://central.sonatype.org/publish/requirements/
                 scm {
-                    connection.set("scm:git:git://github.com/LinguaPhylo/jebl3.git")
-                    developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/jebl3.git")
-                    url.set("https://github.com/LinguaPhylo/jebl3/tree/master")
+                    connection.set("scm:git:git://github.com/LinguaPhylo/linguaPhylo.git")
+                    developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/linguaPhylo.git")
+                    url.set("https://github.com/LinguaPhylo/linguaPhylo")
                 }
             }
         }
