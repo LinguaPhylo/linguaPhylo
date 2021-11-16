@@ -11,9 +11,9 @@ version = "1.1.0-SNAPSHOT"
 
 dependencies {
     // required in test
-    api("org.antlr:antlr4-runtime:4.8")
+    api("org.antlr:antlr4-runtime:4.9.3")
     api("org.apache.commons:commons-math3:3.6.1")
-    api("org.apache.commons:commons-lang3:3.10")
+    api("org.apache.commons:commons-lang3:3.12.0")
     // in maven
     api("org.scilab.forge:jlatexmath:1.0.7")
     api("org.scilab.forge:jlatexmath-font-greek:1.0.7")
@@ -21,7 +21,7 @@ dependencies {
     api("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
 
     // io.github.linguaphylo
-    api("io.github.linguaphylo:jebl:3.1.0-SNAPSHOT")
+    api("io.github.linguaphylo:jebl:3.1.0")
 
     testImplementation("junit:junit:4.13.2")
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
@@ -41,7 +41,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
     withSourcesJar()
-    withJavadocJar() // TODO Problems generating Javadoc
+    withJavadocJar()
 }
 
 // overwrite compileJava to use module-path
