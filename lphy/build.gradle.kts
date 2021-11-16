@@ -102,7 +102,8 @@ publishing {
             }
             pom {
                 name.set(pubId)
-                description.set("The Java Evolutionary Biology Library using the Java Platform Module System.")
+                description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")
+                url.set("https://linguaphylo.github.io/")
                 packaging = "jar"
                 properties.set(mapOf(
                     "maven.compiler.source" to java.sourceCompatibility.majorVersion,

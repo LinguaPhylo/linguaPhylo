@@ -132,7 +132,8 @@ publishing {
             }
             pom {
                 name.set(pubId)
-                description.set("The Java Evolutionary Biology Library using the Java Platform Module System.")
+                description.set("The GUI for LPhy language.")
+                url.set("https://linguaphylo.github.io/")
                 packaging = "jar"
                 properties.set(mapOf(
                     "maven.compiler.source" to java.sourceCompatibility.majorVersion,
