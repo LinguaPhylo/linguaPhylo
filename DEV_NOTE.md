@@ -43,10 +43,15 @@ This supplies information of both your authentications for
 [signing](https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials)
 and [publishing](https://docs.gradle.org/current/userguide/publishing_maven.html).
 
+5.1 [GPG](https://central.sonatype.org/publish/requirements/gpg/)
+
 The property `signing.password` is the passphrase of `gpg` used to protect your private key.
 Run `gpg --list-keys` to find your keyId, which is a super long string 
 mixed with letters and numbers, and assign the last 8 symbols to 
-the property `signing.keyId` in the command line.
+the property `signing.keyId` in the command line. 
+Please remember to distribute your public key to a GPG keyserver before release deployment.
+
+5.2 [Sonatype](https://central.sonatype.org/publish/publish-guide/)
 
 `ossrh.user` and `ossrh.pswd` are used to login your JIRA account in
 [Sonatype](https://central.sonatype.org/publish/publish-guide/).
@@ -64,6 +69,11 @@ which can be updated.
 
 See also [Snapshot Repository vs Release Repository](https://stackoverflow.com/questions/275555/maven-snapshot-repository-vs-release-repository)
 and [Best Practices for releasing with 3rd party SNAPSHOT dependencies](https://blog.sonatype.com/2009/01/best-practices-for-releasing-with-3rd-party-snapshot-dependencies/).
+
+6. Release deployment
+
+You need to manually [deploy](https://central.sonatype.org/publish/release/)
+your release from OSSRH to the Central Repository. 
 
 
 ### Versions
