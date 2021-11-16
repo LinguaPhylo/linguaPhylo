@@ -10,7 +10,7 @@ public class TidyTextField extends JTextField {
     }
 
     /**
-     * @inherited <p>
+     * {@inheritDoc}
      */
     @Override
     public Dimension getMaximumSize() {

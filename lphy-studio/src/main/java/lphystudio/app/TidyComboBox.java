@@ -10,7 +10,7 @@ public class TidyComboBox<U> extends JComboBox<U> {
     }
 
     /**
-     * @inherited <p>
+     * {@inheritDoc}
      */
     @Override
     public Dimension getMaximumSize() {

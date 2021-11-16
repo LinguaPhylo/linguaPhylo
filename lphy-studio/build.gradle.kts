@@ -24,7 +24,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
     withSourcesJar()
-//    withJavadocJar()
+    withJavadocJar()
 }
 
 // overwrite compileJava to use module-path
@@ -201,4 +201,8 @@ signing {
 tasks.javadoc {
     // if (JavaVersion.current().isJava9Compatible)
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    doFirst {
+        options.modulePath = classpath.files.toList()
+        options.classpath = listOf()
+    }
 }

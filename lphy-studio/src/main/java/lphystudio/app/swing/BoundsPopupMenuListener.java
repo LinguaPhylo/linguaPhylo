@@ -9,25 +9,25 @@ import java.awt.*;
 
 /**
  * Copyright (C) 2012 NICE Systems ltd.
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * This class will change the bounds of the JComboBox popup menu to support
  * different functionality. It will support the following features:
  * -  a horizontal scrollbar can be displayed when necessary
  * -  the popup can be wider than the combo box
  * -  the popup can be displayed above the combo box
- * <p/>
+ * <p>
  * Class will only work for a JComboBox that uses a BasicComboPop.
  */
 public class BoundsPopupMenuListener implements PopupMenuListener {
