@@ -33,6 +33,7 @@ val coreJars by configurations.creating {
     isCanBeResolved = false
     extendsFrom(configurations["api"])
 }
+// use the coreJars configuration when call jar task
 artifacts {
     add("coreJars", tasks.jar)
 }
