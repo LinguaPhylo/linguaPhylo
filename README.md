@@ -28,15 +28,15 @@ The first line creates a random variable, λ, that is log-normally distributed. 
 
 More details on the available tree generative distributions can be found here: 
 
-* [Birth-death generative distributions](doc/lphy/evolution/birthdeath.md)
-* [Coalescent generative distributions](doc/lphy/evolution/coalescent.md)
+* [Birth-death generative distributions](lphy/doc/lphy/evolution/birthdeath.md)
+* [Coalescent generative distributions](lphy/doc/lphy/evolution/coalescent.md)
 
 ### Models of evolutionary rates and sequence evolution
 
 You can read more details about the PhyloCTMC generative distribution and how to specify substitution models, 
 site rates and branch rates here:
 
-* [PhyloCTMC generative distribution](doc/lphy/evolution/likelihood.md)
+* [PhyloCTMC generative distribution](lphy/doc/lphy/evolution/likelihood.md)
 
 ### LinguaPhylo Studio
 

@@ -75,7 +75,7 @@ and the last coalescent interval will have theta=0.4:
 ## Structured coalescent
 
 A structured coalescent process takes a migration matrix (M) with population sizes of each deme on the diagonal:
-For K demes, theta is an K-tuple and the dimension of m is $K^2 - K$. $n$ is a tuple of sample sizes, one
+For _K_ demes, theta is an K-tuple and the dimension of _m_ is K<sup>2</sup> - K. _n_ is a tuple of sample sizes, one
 dimension for each deme:
 
 ```
