@@ -75,6 +75,7 @@ and [Best Practices for releasing with 3rd party SNAPSHOT dependencies](https://
 You need to manually [deploy](https://central.sonatype.org/publish/release/)
 your release from OSSRH to the Central Repository. 
 
+See also [Publishing your Kotlin Multiplatform library to Maven Central](https://dev.to/kotlin/how-to-build-and-publish-a-kotlin-multiplatform-library-going-public-4a8k).
 
 ### Versions
 
