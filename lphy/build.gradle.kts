@@ -3,7 +3,9 @@ import java.nio.file.*
 plugins {
     `java-library`
     `maven-publish`
-    signing
+//    signing
+    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.0-SNAPSHOT"
+    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.0-SNAPSHOT"
 }
 
 version = "1.1.0-SNAPSHOT"
@@ -38,29 +40,6 @@ artifacts {
     add("coreJars", tasks.jar)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
-    withSourcesJar()
-    withJavadocJar()
-}
-
-// overwrite compileJava to use module-path
-tasks.compileJava {
-    // use the project's version or define one directly
-    options.javaModuleVersion.set(provider { project.version as String })
-
-    doFirst {
-        println("Java version used is ${JavaVersion.current()}.")
-        options.compilerArgs = listOf("--module-path", classpath.asPath)
-        classpath = files()
-    }
-
-    doLast {
-        println("${project.name} compiler args = ${options.compilerArgs}")
-    }
-}
-
 // lphy-$version.jar
 tasks.jar {
     manifest {
@@ -71,28 +50,13 @@ tasks.jar {
     }
 }
 
-// define the release folder according to version
-val releaseRepoUrl = layout.buildDirectory.dir("releases")
-val snapshotRepoUrl = layout.buildDirectory.dir("snapshots")
-val localUrl = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotRepoUrl else releaseRepoUrl)
-// delete previous release under the local build folder
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    doFirst {
-        val path: java.nio.file.Path = Paths.get(localUrl.path)
-        if (Files.exists(path)) {
-            println("Delete the existing previous release : ${path.toAbsolutePath()}")
-            project.delete(path)
-        }
-    }
-}
-// publish to maven central
-val pubId = "LPhy"
 publishing {
     publications {
-        create<MavenPublication>(pubId) {
-            artifactId = base.archivesName.get()
+        // must have "lphy" substring in the name
+        create<MavenPublication>("lphy-core") {
+            artifactId = project.base.archivesName.get()
             from(components["java"])
-
+            // Configures the version mapping strategy
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
@@ -102,14 +66,16 @@ publishing {
                 }
             }
             pom {
-                name.set(pubId)
+                name.set(project.name)
                 description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")
                 url.set("https://linguaphylo.github.io/")
                 packaging = "jar"
-                properties.set(mapOf(
-                    "maven.compiler.source" to java.sourceCompatibility.majorVersion,
-                    "maven.compiler.target" to java.targetCompatibility.majorVersion
-                ))
+                properties.set(
+                    mapOf(
+                        "maven.compiler.source" to java.sourceCompatibility.majorVersion,
+                        "maven.compiler.target" to java.targetCompatibility.majorVersion
+                    )
+                )
                 licenses {
                     license {
                         name.set("GNU Lesser General Public License, version 3")
@@ -129,52 +95,9 @@ publishing {
                 }
             }
         }
-    }
 
-    repositories {
-        maven {
-            if (project.hasProperty("ossrh.user")) {
-                // -Possrh.user=myuser -Possrh.pswd=mypswd
-                val ossrhUser = project.property("ossrh.user")
-                val ossrhPswd = project.property("ossrh.pswd")
-                println("ossrhUser = $ossrhUser, ossrhPswd = ******") // $ossrhPswd
-
-                // publish to maven
-                val releaseOSSRH = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-                val snapshotOSSRH = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotOSSRH else releaseOSSRH)
-                credentials {
-                    username = "$ossrhUser"
-                    password = "$ossrhPswd"
-                }
-                authentication {
-                    create<BasicAuthentication>("basic")
-                }
-
-            } else {
-                // publish to local
-                url = localUrl
-            }
-
-            println("Publish $base:$version to : ${url.path}")
-        }
     }
 }
-
-// -Psigning.secretKeyRingFile=/path/to/mysecr.gpg -Psigning.password=mypswd -Psigning.keyId=last8chars
-signing {
-    sign(publishing.publications[pubId])
-}
-
-tasks.javadoc {
-    // if (JavaVersion.current().isJava9Compatible)
-    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    doFirst {
-        options.modulePath = classpath.files.toList()
-        options.classpath = listOf()
-    }
-}
-
 
 // junit tests, https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
 tasks.test {

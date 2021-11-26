@@ -8,6 +8,21 @@ rootProject.name = "LinguaPhylo"
 include("lphy")
 include("lphy-studio")
 
+pluginManagement {
+    repositories {
+//        maven {
+//            // to local build/plugins
+//            url = uri("${rootDir.parent}/GradlePlugins/platforms/build/releases/")
+//            println("Temp repo : ${url}")
+//        }
+        // add sonatype snapshots repository
+        maven {
+            url=uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        }
+        gradlePluginPortal()
+    }
+}
+
 // https://docs.gradle.org/current/userguide/build_cache.html
 // https://docs.gradle.org/current/userguide/build_cache_use_cases.html
 buildCache {
