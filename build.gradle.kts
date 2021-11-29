@@ -7,6 +7,11 @@
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+plugins {
+    `java-library`
+    `maven-publish`
+}
+
 // Configures this project and each of its sub-projects.
 allprojects {
     repositories {
@@ -46,6 +51,59 @@ subprojects {
             }
         }
     }
+
+    // configure the shared contents in MavenPublication especially POM
+    afterEvaluate{
+        extensions.configure<PublishingExtension>{
+            publications {
+                withType<MavenPublication>().all() {
+                    // only for name.contains("lphy")
+                    if (name.contains("lphy")) {
+                        from(components["java"])
+                        // Configures the version mapping strategy
+                        versionMapping {
+                            usage("java-api") {
+                                fromResolutionOf("runtimeClasspath")
+                            }
+                            usage("java-runtime") {
+                                fromResolutionResult()
+                            }
+                        }
+                        pom {
+                            name.set(project.name)
+//                        description.set("...")
+                            // compulsory
+                            url.set("https://linguaphylo.github.io/")
+                            packaging = "jar"
+                            properties.set(
+                                mapOf(
+                                    "maven.compiler.source" to java.sourceCompatibility.majorVersion,
+                                    "maven.compiler.target" to java.targetCompatibility.majorVersion
+                                )
+                            )
+                            licenses {
+                                license {
+                                    name.set("GNU Lesser General Public License, version 3")
+                                    url.set("https://www.gnu.org/licenses/lgpl-3.0.txt")
+                                }
+                            }
+//                        developers {
+// ...
+//                        }
+                            // https://central.sonatype.org/publish/requirements/
+                            scm {
+                                connection.set("scm:git:git://github.com/LinguaPhylo/linguaPhylo.git")
+                                developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/linguaPhylo.git")
+                                url.set("https://github.com/LinguaPhylo/linguaPhylo")
+                            }
+                        }
+                        println("Define MavenPublication ${name} and set shared contents in POM")
+                    }
+                }
+            }
+        }
+    }
+
 
 }
 

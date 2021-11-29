@@ -1,5 +1,3 @@
-import java.nio.file.*
-
 plugins {
     `java-library`
     `maven-publish`
@@ -55,47 +53,15 @@ publishing {
         // must have "lphy" substring in the name
         create<MavenPublication>("lphy-core") {
             artifactId = project.base.archivesName.get()
-            from(components["java"])
-            // Configures the version mapping strategy
-            versionMapping {
-                usage("java-api") {
-                    fromResolutionOf("runtimeClasspath")
-                }
-                usage("java-runtime") {
-                    fromResolutionResult()
-                }
-            }
             pom {
-                name.set(project.name)
                 description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")
-                url.set("https://linguaphylo.github.io/")
-                packaging = "jar"
-                properties.set(
-                    mapOf(
-                        "maven.compiler.source" to java.sourceCompatibility.majorVersion,
-                        "maven.compiler.target" to java.targetCompatibility.majorVersion
-                    )
-                )
-                licenses {
-                    license {
-                        name.set("GNU Lesser General Public License, version 3")
-                        url.set("https://www.gnu.org/licenses/lgpl-3.0.txt")
-                    }
-                }
                 developers {
                     developer {
                         name.set("LPhy developer team")
                     }
                 }
-                // https://central.sonatype.org/publish/requirements/
-                scm {
-                    connection.set("scm:git:git://github.com/LinguaPhylo/linguaPhylo.git")
-                    developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/linguaPhylo.git")
-                    url.set("https://github.com/LinguaPhylo/linguaPhylo")
-                }
             }
         }
-
     }
 }
 

@@ -9,6 +9,7 @@ include("lphy")
 include("lphy-studio")
 
 pluginManagement {
+    // the repos to load Gradle plugins
     repositories {
 //        maven {
 //            // to local build/plugins
