@@ -2,7 +2,7 @@ plugins {
     application
     distribution
     `maven-publish`
-//    signing
+    signing
     id("io.github.linguaphylo.platforms.lphy-java") version "0.1.0-SNAPSHOT"
     id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.0-SNAPSHOT"
 }
