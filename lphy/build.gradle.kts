@@ -44,6 +44,7 @@ tasks.jar {
         // shared attr in the root build
         attributes(
             "Implementation-Title" to "LPhy",
+            "Implementation-Vendor" to "LPhy team",
         )
     }
 }

@@ -28,6 +28,8 @@ allprojects {
 // Configures the sub-projects of this project.
 subprojects {
     group = "io.github.linguaphylo"
+    val webSteam = "github.com/LinguaPhylo/linguaPhylo"
+    val web = "https://${webSteam}"
 
     var calendar: Calendar? = Calendar.getInstance()
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
@@ -36,9 +38,8 @@ subprojects {
     tasks.withType<Jar>() {
         manifest {
             attributes(
-                "Implementation-Vendor" to "LPhy team",
                 "Implementation-Version" to archiveVersion,
-                "Implementation-URL" to "https://github.com/LinguaPhylo/linguaPhylo",
+                "Implementation-URL" to web,
                 "Built-By" to "Walter Xie", //System.getProperty("user.name"),
                 "Build-Jdk" to JavaVersion.current().majorVersion.toInt(),
                 "Built-Date" to formatter.format(calendar?.time)
@@ -92,9 +93,9 @@ subprojects {
 //                        }
                             // https://central.sonatype.org/publish/requirements/
                             scm {
-                                connection.set("scm:git:git://github.com/LinguaPhylo/linguaPhylo.git")
-                                developerConnection.set("scm:git:ssh://github.com/LinguaPhylo/linguaPhylo.git")
-                                url.set("https://github.com/LinguaPhylo/linguaPhylo")
+                                connection.set("scm:git:git://${webSteam}.git")
+                                developerConnection.set("scm:git:ssh://${webSteam}.git")
+                                url.set(web)
                             }
                         }
                         println("Define MavenPublication ${name} and set shared contents in POM")

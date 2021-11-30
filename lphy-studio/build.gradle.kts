@@ -38,7 +38,8 @@ tasks.jar {
         // shared attr in the root build
         attributes(
             "Main-Class" to maincls,
-            "Implementation-Title" to "LPhyStudio"
+            "Implementation-Title" to "LPhyStudio",
+            "Implementation-Vendor" to "Alexei Drummond and Walter Xie",
         )
     }
 }
