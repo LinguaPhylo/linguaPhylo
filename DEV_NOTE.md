@@ -1,16 +1,27 @@
 
 ## Gradle
 
-1. [Installation](https://gradle.org/install/).
+1. [Installation](https://gradle.org/install/). 
 
-2. Clean or build project using wrapper as suggested by
-[Gradle doc](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper),
+If you are [opening a Gradle project](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/opening-a-gradle-project/)
+in IntelliJ, please make sure the existing project has no previous IntelliJ configuration files. 
+See [more](#IntelliJ).
+
+
+2. Always execute a build with the wrapper, as recommended by
+[Gradle user guide](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:using_wrapper),
 where `--info` provides more information about the process:
-
+   
 ```bash
-./gradlew clean
 ./gradlew build --info
 ```
+
+The command below makes a "clean" build by deleting previous build and ignores caching:
+
+```bash
+./gradlew clean build --info --no-build-cache
+```
+
 
 3. Run LPhy studio application through Gradle:
 <a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
@@ -19,8 +30,9 @@ where `--info` provides more information about the process:
 ./gradlew run
 ```
 
-Or through IntelliJ Gradle tool window, expand lphy-studio => Task => application,
-and click `run`. The screenshot is shown at the right.
+Or through IntelliJ Gradle tool (normally on the right side of IntelliJ window frame).
+Expand lphy-studio => Task => application, as shown in the screenshot on the right,
+and click `run`.
 
 4. Distribute jar files:
 
@@ -33,6 +45,7 @@ More details are available in the user guide of
 5. Publish to Maven central repository:
 
 ```bash
+./gradlew clean
 ./gradlew publish --info 
     -Psigning.secretKeyRingFile=/path/to/.gnupg/mysecret.gpg 
     -Psigning.password=mypswd -Psigning.keyId=last8symbols 
@@ -84,7 +97,9 @@ See also [Publishing your Kotlin Multiplatform library to Maven Central](https:/
 
 ### Upgrade the wrapper 
 
-If it is not the latest version (e.g. version 7.2 at the time of writing):
+If it is not the latest version (e.g. version 7.2 at the time of writing), 
+you can use the following command to
+[upgrade the wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper):
 
 ```bash
 ./gradlew -v
