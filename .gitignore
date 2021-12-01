@@ -1,40 +1,9 @@
-# Compiled class file
-**/*.class
-
-# Log file
-*.png
-**/*.log
-**/*.trees
-**/*.state
+# latex
 manuscript/**/*.aux
 manuscript/**/*.bbl
 manuscript/**/*.blg
 manuscript/**/*.out
 manuscript/**/*.synctex.gz
-manuscript/**/*.txt
-manuscript/**/*.xml
-manuscript/test/
-examples/*.xml
-examples/todo/
-tutorials/
-
-# Intellij
-**/.idea/
-**/*.ipr
-**/*.iws
-**/*.iml
-
-# build
-gradle/
-**/.gradle/
-out/
-build/
-build-cache/
-dist/
-LPhy/build/
-LPhy/dist/
-LPhyStudio/build/
-LPhyStudio/dist/
 
 # macOS Files
 **/.DS_Store
