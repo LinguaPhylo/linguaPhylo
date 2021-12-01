@@ -2,8 +2,8 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.0-SNAPSHOT"
-    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.0-SNAPSHOT"
+    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.0"
+    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.0"
 }
 
 version = "1.1.0-SNAPSHOT"
@@ -15,10 +15,7 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
     api("org.apache.commons:commons-lang3:3.12.0")
     // in maven
-    api("org.scilab.forge:jlatexmath:1.0.7")
-    api("org.scilab.forge:jlatexmath-font-greek:1.0.7")
-    api("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
-    api("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
+    implementation("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
 
     // io.github.linguaphylo
     api("io.github.linguaphylo:jebl:3.1.0")

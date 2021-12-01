@@ -11,6 +11,11 @@ version = "1.1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
+
+    implementation("org.scilab.forge:jlatexmath:1.0.7")
+//    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")
+//    implementation("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
+
 //    testImplementation("junit:junit:4.13")
 }
 

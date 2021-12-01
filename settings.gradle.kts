@@ -11,6 +11,7 @@ include("lphy-studio")
 pluginManagement {
     // the repos to load Gradle plugins
     repositories {
+        mavenCentral()
 //        maven {
 //            // to local build/plugins
 //            url = uri("${rootDir.parent}/GradlePlugins/platforms/build/releases/")
