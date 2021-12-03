@@ -2,8 +2,8 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.0"
-    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.0"
+    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.1"
+    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.1"
 }
 
 version = "1.1.0-SNAPSHOT"
