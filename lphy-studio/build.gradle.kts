@@ -16,23 +16,33 @@ dependencies {
 //    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
 
+    implementation("org.json:json:20210307")
+
 //    testImplementation("junit:junit:4.13")
 }
 
 var maincls : String = "lphystudio.app.LinguaPhyloStudio"
 application {
-//    mainModule.set("lphystudio")
+    // equivalent to -m lphystudio
+    // need both mainModule and mainClass
+    mainModule.set("lphystudio")
+    // if only mainClass, it will auto add maincls to the end of CMD
     mainClass.set(maincls)
 }
 
 // make studio app locating the correct parent path of examples sub-folder
 tasks.withType<JavaExec>() {
+    // set version into system property
+    systemProperty("lphy.studio.version", version)
     // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
     // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
-    jvmArgs = listOf("-Duser.dir=${rootDir}")//, "-m lphystudio")
-    // set version into system property
-    systemProperty("lphy.studio.version", version)
+    systemProperty("user.dir", rootDir)
+    doFirst {
+        // equivalent to: java -p ...
+        jvmArgs = listOf("-p", classpath.asPath)
+        classpath = files()
+    }
     doLast {
         println("JavaExec : $jvmArgs")
     }

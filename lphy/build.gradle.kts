@@ -28,7 +28,7 @@ dependencies {
 val coreJars by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
-    extendsFrom(configurations["api"])
+    extendsFrom(configurations["api"], configurations["implementation"])
 }
 // Attach the task jar to an outgoing configuration coreJars
 artifacts {
