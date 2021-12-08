@@ -49,7 +49,7 @@ tasks.jar {
 publishing {
     publications {
         // must have "lphy" substring in the name
-        create<MavenPublication>("lphy-core") {
+        create<MavenPublication>(project.name) {
             artifactId = project.base.archivesName.get()
             pom {
                 description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")

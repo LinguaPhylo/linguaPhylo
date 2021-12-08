@@ -23,6 +23,7 @@ allprojects {
         // Managing plugin versions via pluginManagement in settings.gradle.kts
 //        mavenLocal() // only for testing
     }
+
 }
 
 // Configures the sub-projects of this project.
@@ -34,8 +35,21 @@ subprojects {
     var calendar: Calendar? = Calendar.getInstance()
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
 
+    // this task call GenerateMavenPom task to create pom.xml
+    // and copy it to build/resources/main/META-INF/maven/...
+    val copyPom by tasks.registering(Copy::class) {
+        dependsOn(tasks.withType(GenerateMavenPom::class))
+        from(layout.buildDirectory.dir("publications/${project.name}"))
+        include("**/*.xml")
+        into(layout.buildDirectory.dir("resources/main/META-INF/maven/${project.group}/${project.name}"))
+        rename("pom-default.xml", "pom.xml")
+    }
+
     // shared attributes
     tasks.withType<Jar>() {
+        // this includes pom.xml in the jar
+        dependsOn(copyPom)
+
         manifest {
             attributes(
                 "Implementation-Version" to archiveVersion,
@@ -47,10 +61,11 @@ subprojects {
         }
         // copy LICENSE to META-INF
         metaInf {
-            from (rootDir) {
+            from(rootDir) {
                 include("LICENSE")
             }
         }
+
     }
 
     // configure the shared contents in MavenPublication especially POM
@@ -104,7 +119,6 @@ subprojects {
             }
         }
     }
-
 
 }
 

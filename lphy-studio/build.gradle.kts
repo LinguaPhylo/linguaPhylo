@@ -62,7 +62,7 @@ tasks.jar {
 publishing {
     publications {
         // must have "lphy" substring in the name
-        create<MavenPublication>("lphy-studio") {
+        create<MavenPublication>(project.name) {
             artifactId = project.base.archivesName.get()
             pom {
                 description.set("The GUI for LPhy language.")
