@@ -36,12 +36,13 @@ subprojects {
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
 
     // this task call GenerateMavenPom task to create pom.xml
-    // and copy it to build/resources/main/META-INF/maven/...
+    // and copy it to classes/java/main, so do not need to guess path when module.getResourceAsStream()
     val copyPom by tasks.registering(Copy::class) {
         dependsOn(tasks.withType(GenerateMavenPom::class))
         from(layout.buildDirectory.dir("publications/${project.name}"))
         include("**/*.xml")
-        into(layout.buildDirectory.dir("resources/main/META-INF/maven/${project.group}/${project.name}"))
+        into(layout.buildDirectory.dir("classes/java/main"))
+//        into(layout.buildDirectory.dir("resources/main/META-INF/maven/${project.group}/${project.name}"))
         rename("pom-default.xml", "pom.xml")
     }
 
