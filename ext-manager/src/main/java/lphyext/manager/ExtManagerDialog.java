@@ -1,25 +1,42 @@
-package lphystudio.app.extmanager;
-
-import lphystudio.app.LinguaPhyloStudio;
+package lphyext.manager;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
+/**
+ * Run from LPhy studio
+ */
 public class ExtManagerDialog extends JDialog {
 
     final ExtManager manager = new ExtManager();
 
-    public ExtManagerDialog(Frame owner) {
-        super(owner, "LPhy Extension Manager", true);
+    public ExtManagerDialog(Frame owner) throws IOException {
+        super(owner, true);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        // main components
-        JLabel jLabel = new JLabel("Available extensions for LPhy " +
-                LinguaPhyloStudio.VERSION + " : "); // TODO
-        this.getContentPane().add(jLabel, BorderLayout.NORTH);
 
-        DataTableModel dataTableModel = new DataTableModel();
+        List<Extension> extList = manager.getLoadedLPhyExts();
+        String dirStr = manager.getJarDirStr();
+        if (dirStr.trim().isEmpty() || dirStr.contains(";"))
+            System.err.println("Warning: no directory or multiple directories " +
+                    "found to store lphy extensions " + dirStr);
+
+        // main components
+        JPanel repoPathPanel = new JPanel();
+        repoPathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        repoPathPanel.add(new JLabel("Extensions are located in "));
+        JTextField repo = new JTextField(dirStr);
+        repo.setEditable(false);
+        repoPathPanel.add(repo);
+        this.getContentPane().add(repoPathPanel, BorderLayout.NORTH);
+
+//        JLabel jLabel = new JLabel("Available extensions for LPhy " +
+//                LinguaPhyloStudio.VERSION + " : "); // TODO
+//        this.getContentPane().add(jLabel, BorderLayout.NORTH);
+
+        DataTableModel dataTableModel = new DataTableModel(extList);
         JTable dataTable = new JTable(dataTableModel);
         dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
@@ -36,42 +53,47 @@ public class ExtManagerDialog extends JDialog {
         this.setLocation(owner.getX() + owner.getWidth() / 4,
                 owner.getY() + owner.getHeight() / 5);
 
-        try {
-            manager.test();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     class DataTableModel extends AbstractTableModel {
-        private static final long serialVersionUID = 1L;
-        String[] columnNames = {"Name", "Installed", "Latest", "Dependencies", "Link", "Detail"};
+
+        String[] columnNames = {"ID", "GroupID", "Installed", "Latest", "Dependencies", "Description"};
         public final int linkColumn = 4;
+
+        private final List<Extension> extList;
+
+        public DataTableModel(List<Extension> extList) {
+            this.extList = extList;
+        }
+
         @Override
         public int getColumnCount() {
             return columnNames.length;
         }
         @Override
         public int getRowCount() {
-            return 0;
+            return extList.size();
         }
 
         @Override
         public Object getValueAt(int row, int col) {
-            Package aPackage = null;
+            Extension ext = extList.get(row);
             switch (col) {
                 case 0:
-                    return "";
+                    return ext.getArtifactId();
                 case 1:
-                    return "";
+                    return ext.getGroupId();
                 case 2:
-                    return "";
+                    return ext.getVersion();
                 case 3:
                     return "";
                 case 4:
-                    return "" ;
+                    return ext.getDependenciesStr();
                 case 5:
-                    return "";
+                    return ext.getWebsite();
+                case 6:
+                    return ext.getDesc();
                 default:
                     throw new IllegalArgumentException("unknown column, " + col);
             }

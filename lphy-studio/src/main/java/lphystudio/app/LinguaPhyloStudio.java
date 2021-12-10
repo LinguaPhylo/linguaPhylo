@@ -7,7 +7,7 @@ import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
-import lphystudio.app.extmanager.ExtManagerDialog;
+import lphyext.manager.ExtManagerDialog;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphystudio.core.narrative.HTMLNarrative;
@@ -142,8 +142,14 @@ public class LinguaPhyloStudio {
         extManMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
         toolMenu.add(extManMenuItem);
         extManMenuItem.addActionListener(e -> {
-            ExtManagerDialog extManager = new ExtManagerDialog(frame);
-            extManager.setVisible(true);
+            ExtManagerDialog extManager = null;
+            try {
+                extManager = new ExtManagerDialog(frame);
+                extManager.setTitle("LPhy Extension Manager " + VERSION);
+                extManager.setVisible(true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // main frame
