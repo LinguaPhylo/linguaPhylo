@@ -3,6 +3,8 @@ package lphyext.manager;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -63,7 +65,12 @@ public class ExtManagerDialog extends JDialog {
 
             this.setSize(width, height);
             this.setLocation((dim.width - getSize().width) / 2, (dim.height - getSize().height) / 2);
-            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            // no JFrame
+            this.addWindowListener(new WindowAdapter() {
+                @Override public void windowClosed(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
         }
 
         this.setTitle("LPhy Extension Manager " +
