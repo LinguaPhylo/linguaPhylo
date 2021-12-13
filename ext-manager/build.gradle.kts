@@ -17,14 +17,12 @@ dependencies {
 
 var maincls : String = "lphyext.app.ExtManagerApp"
 application {
-    // equivalent to -m lphystudio
     // need both mainModule and mainClass
     mainModule.set("extmanager")
     // if only mainClass, it will auto add maincls to the end of CMD
     mainClass.set(maincls)
 }
 
-// make studio app locating the correct parent path of examples sub-folder
 tasks.withType<JavaExec>() {
     // set version into system property
     systemProperty("lphy.ext.manager.version", version)
