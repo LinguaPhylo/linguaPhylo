@@ -33,7 +33,7 @@ public class ExtManager {
         System.out.println(extensions);
     }
 
-    public List<Extension> getLoadedLPhyExts() throws IOException {
+    public List<Extension> getLoadedLPhyExts() {
         List<Extension> extList = new ArrayList<>();
 
         // find all loaded lphy exts
@@ -81,10 +81,6 @@ public class ExtManager {
             }
         }
 
-//        URL url = ext.getClass().getResource("/META-INF/MANIFEST.MF");
-//        manifest.read(url.openStream());
-//        Attributes atts = manifest.getMainAttributes();
-
         //Search ext in Maven API
 
 //        JSONObject mavenResp = ExtManager.getPublishedLPhyExt(url);
@@ -101,6 +97,7 @@ public class ExtManager {
     public String getJarDirStr() {
         return String.join(";", jarDirSet);
     }
+
 
     public static JSONObject getPublishedLPhyExt(String url) throws IOException, JSONException {
         try (InputStream is = new URL(url).openStream()) {

@@ -34,10 +34,7 @@ public class ExtManagerDialog extends JDialog {
         repoPathPanel.add(repo);
         this.getContentPane().add(repoPathPanel, BorderLayout.NORTH);
 
-//        JLabel jLabel = new JLabel("Available extensions for LPhy " +
-//                LinguaPhyloStudio.VERSION + " : "); // TODO
-//        this.getContentPane().add(jLabel, BorderLayout.NORTH);
-
+        // data table
         DataTableModel dataTableModel = new DataTableModel(extList);
         JTable dataTable = new JTable(dataTableModel);
         dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
@@ -46,8 +43,8 @@ public class ExtManagerDialog extends JDialog {
 //        scrollPane.setPreferredSize(new Dimension(660, 400));
         this.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        Box buttonBox = createButtonBox();
-        this.getContentPane().add(buttonBox, BorderLayout.SOUTH);
+//TODO        Box buttonBox = createButtonBox();
+//        this.getContentPane().add(buttonBox, BorderLayout.SOUTH);
         this.pack();
 
         // launch from LinguaPhyloStudio
@@ -80,7 +77,7 @@ public class ExtManagerDialog extends JDialog {
 
     class DataTableModel extends AbstractTableModel {
 
-        String[] columnNames = {"ID", "GroupID", "Installed", "Latest", "Dependencies", "Description"};
+        String[] columnNames = {"ID", "GroupID", "Installed", "Dependencies", "Description"};//"Latest",
         public final int linkColumn = 4;
 
         private final List<Extension> extList;
@@ -108,13 +105,12 @@ public class ExtManagerDialog extends JDialog {
                     return ext.getGroupId();
                 case 2:
                     return ext.getVersion();
+                // TODO insert col Latest version
                 case 3:
-                    return "";
-                case 4:
                     return ext.getDependenciesStr();
-                case 5:
-                    return ext.getWebsite();
-                case 6:
+                case 4:
+//                    return ext.getWebsite();
+//                case 5:
                     return ext.getDesc();
                 default:
                     throw new IllegalArgumentException("unknown column, " + col);
@@ -171,65 +167,6 @@ public class ExtManagerDialog extends JDialog {
 //            setCursor(new Cursor(Cursor.WAIT_CURSOR));
 //
 //            Map<Package, PackageVersion> packagesToInstall = new HashMap<>();
-//            PackageManager.useArchive(!useLatestVersion);
-//            for (int selRow : selectedRows) {
-//                Package selPackage = getSelectedPackage(selRow);
-//                if (selPackage != null) {
-//                    if (useLatestVersion) {
-//                        packagesToInstall.put(selPackage, selPackage.getLatestVersion());
-//                    } else {
-//                        PackageVersion version = (PackageVersion) JOptionPane.showInputDialog( null, "Select DependencyUtils for " + selPackage.getName(),
-//                                "Select version",
-//                                JOptionPane.QUESTION_MESSAGE, null,
-//                                selPackage.getAvailableVersions().toArray(), selPackage.getAvailableVersions().toArray()[0]);
-//                        if (version == null) {
-//                            return;
-//                        }
-//                        packagesToInstall.put(selPackage, version);
-//                    }
-//                }
-//            }
-//
-//            try {
-//                populatePackagesToInstall(packageMap, packagesToInstall);
-//
-//                prepareForInstall(packagesToInstall, false, null);
-//
-//                if (getToDeleteListFile().exists()) {
-//                    JOptionPane.showMessageDialog(frame,
-//                            "<html><body><p style='width: 200px'>Upgrading packages on your machine requires BEAUti " +
-//                                    "to restart. Shutting down now.</p></body></html>");
-//                    System.exit(0);
-//                }
-//
-//                installPackages(packagesToInstall, false, null);
-//
-//                // Refresh classes:
-//                loadExternalJars();
-//
-//                installedPackageNames = String.join(",",
-//                        packagesToInstall.keySet().stream()
-//                                .map(Package::toString)
-//                                .collect(Collectors.toList()));
-//
-//                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//
-//            } catch (DependencyResolutionException | IOException ex) {
-//                JOptionPane.showMessageDialog(null, "Install failed because: " + ex.getMessage());
-//                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//            }
-//
-//            resetPackages();
-//            dataTable.setRowSelectionInterval(selectedRows[0], selectedRows[0]);
-//
-//            if (installedPackageNames.length()>0)
-//                JOptionPane.showMessageDialog(null, "Package(s) "
-//                        + installedPackageNames + " installed. "
-//                        + "Note that any changes to the BEAUti "
-//                        + "interface will\n not appear until a "
-//                        + "new document is created or BEAUti is "
-//                        + "restarted.");
-//        });
         box.add(installButton);
 
         JButton uninstallButton = new JButton("Uninstall");
@@ -238,58 +175,6 @@ public class ExtManagerDialog extends JDialog {
 //            int[] selectedRows = dataTable.getSelectedRows();
 //
 //            for (int selRow : selectedRows) {
-//                Package selPackage = getSelectedPackage(selRow);
-//                if (selPackage != null) {
-//                    try {
-//                        if (selPackage.isInstalled()) {
-//                            setCursor(new Cursor(Cursor.WAIT_CURSOR));
-//                            List<String> deps = getInstalledDependencyNames(selPackage, packageMap);
-//
-//                            if (deps.isEmpty()) {
-//                                String result = uninstallPackage(selPackage, selPackage.getInstalledVersion(), false, null);
-//
-//                                if (result != null) {
-//                                    if (removedPackageNames.length() > 0)
-//                                        removedPackageNames.append(", ");
-//                                    removedPackageNames.append("'")
-//                                            .append(selPackage.getName())
-//                                            .append(" v")
-//                                            .append(selPackage.getInstalledVersion())
-//                                            .append("'");
-//                                }
-//                            } else {
-//                                throw new DependencyResolutionException("package " + selPackage
-//                                        + " is used by the following packages: "
-//                                        + String.join(", ", deps) + "\n"
-//                                        + "Remove those packages first.");
-//                            }
-//
-//                            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//                        }
-//
-//                        resetPackages();
-//                        dataTable.setRowSelectionInterval(selectedRows[0], selectedRows[0]);
-//                    } catch (IOException | DependencyResolutionException ex) {
-//                        JOptionPane.showMessageDialog(null, "Uninstall failed because: " + ex.getMessage());
-//                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//                    }
-//                }
-//            }
-//
-//            if (getToDeleteListFile().exists()) {
-//                JOptionPane.showMessageDialog(frame,
-//                        "<html><body><p style='width: 200px'>Removing packages on your machine requires BEAUti " +
-//                                "to restart. Shutting down now.</p></body></html>");
-//                System.exit(0);
-//            }
-//
-//            if (removedPackageNames.length()>0)
-//                JOptionPane.showMessageDialog(null, "Package(s) "
-//                        + removedPackageNames.toString() + " removed. "
-//                        + "Note that any changes to the BEAUti "
-//                        + "interface will\n not appear until a "
-//                        + "new document is created or BEAUti is "
-//                        + "restarted.");
 //        });
         box.add(uninstallButton);
 

@@ -75,7 +75,7 @@ subprojects {
             publications {
                 withType<MavenPublication>().all() {
                     // only for name.contains("lphy")
-                    if (name.contains("lphy")) {
+                    if (name.contains("lphy") || name.contains("manager")) {
                         from(components["java"])
                         // Configures the version mapping strategy
                         versionMapping {

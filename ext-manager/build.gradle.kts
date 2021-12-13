@@ -1,9 +1,10 @@
 plugins {
     application
-    distribution
+//    distribution
     `maven-publish`
     signing
     id("io.github.linguaphylo.platforms.lphy-java") version "0.1.1"
+    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.1"
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -45,8 +46,27 @@ tasks.jar {
     manifest {
         // shared attr in the root build
         attributes(
+            "Main-Class" to maincls,
             "Implementation-Title" to "LPhy Extension Manager",
             "Implementation-Vendor" to "Walter Xie",
         )
+    }
+}
+
+publishing {
+    publications {
+        // project.name contains "manager" substring
+        create<MavenPublication>(project.name) {
+            artifactId = project.base.archivesName.get()
+            pom {
+                description.set("The GUI to manage and download the LPhy extensions.")
+                developers {
+                    developer {
+                        name.set("Walter Xie")
+                    }
+                }
+            }
+        }
+
     }
 }
