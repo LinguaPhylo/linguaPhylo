@@ -63,6 +63,7 @@ public class ExtManagerDialog extends JDialog {
 
             this.setSize(width, height);
             this.setLocation((dim.width - getSize().width) / 2, (dim.height - getSize().height) / 2);
+            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
 
         this.setTitle("LPhy Extension Manager " +

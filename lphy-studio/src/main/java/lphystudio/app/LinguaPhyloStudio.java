@@ -198,39 +198,6 @@ public class LinguaPhyloStudio {
         System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
     }
 
-    // use MANIFEST.MF to store version in jar, but use system property in development
-//    private static String getVersion() {
-//        String version = null;
-//        // for Java module system
-//        try {
-//            Enumeration<URL> resources = LinguaPhyloStudio.class.getClassLoader()
-//                    .getResources("META-INF/MANIFEST.MF");
-//
-//            while (resources.hasMoreElements()) {
-//                Manifest manifest = new Manifest(resources.nextElement().openStream());
-//                Attributes attr = manifest.getMainAttributes();
-//                String name = attr.getValue("Implementation-Title");
-//                if ("LPhyStudio".equalsIgnoreCase(name)) {
-//                    version = attr.getValue("Implementation-DependencyUtils");
-//                    break;
-//                }
-//            }
-//        } catch (IOException e) {
-//            LoggerUtils.log.severe("Cannot find lphy manifest !");
-//            e.printStackTrace();
-//        }
-//        // for class path
-//        if (version == null)
-//            version = LinguaPhyloStudio.class.getPackage().getImplementationVersion();
-//        // for IDE to get version from system property "lphy.studio.version"
-//        if (version == null)
-//            version = System.getProperty("lphy.studio.version");
-//        // should not reach here
-//        if (version == null)
-//            version = "DEVELOPMENT";
-//        return version;
-//    }
-
     private void listAllFiles(JMenu exampleMenu, File dir) {
         final String postfix = ".lphy";
         if (!dir.exists()) LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
