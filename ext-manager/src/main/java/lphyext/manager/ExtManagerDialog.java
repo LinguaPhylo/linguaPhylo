@@ -48,10 +48,22 @@ public class ExtManagerDialog extends JDialog {
         this.getContentPane().add(buttonBox, BorderLayout.SOUTH);
         this.pack();
 
-        // size and location
-        this.setSize((int) (owner.getWidth() * 0.8), (int) (owner.getHeight() * 0.5));
-        this.setLocation(owner.getX() + owner.getWidth() / 4,
-                owner.getY() + owner.getHeight() / 5);
+        // launch from LinguaPhyloStudio
+        if ( owner != null ) {
+            // size and location
+            this.setSize((int) (owner.getWidth() * 0.8), (int) (owner.getHeight() * 0.5));
+            this.setLocation(owner.getX() + owner.getWidth() / 4,
+                    owner.getY() + owner.getHeight() / 5);
+        } else { // launch from ExtManagerApp
+            final int MAX_WIDTH = 1600;
+            final int MAX_HEIGHT = 1200;
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            int width = Math.min(MAX_WIDTH, dim.width * 7 / 10);
+            int height = Math.min(MAX_HEIGHT, dim.height * 5 / 10);
+
+            this.setSize(width, height);
+            this.setLocation((dim.width - getSize().width) / 2, (dim.height - getSize().height) / 2);
+        }
 
         this.setTitle("LPhy Extension Manager " +
                 DependencyUtils.getVersion(ExtManagerDialog.class, "lphy.ext.manager.version"));

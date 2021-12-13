@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.jar.Manifest;
 
 public class ExtManager {
 
@@ -24,7 +23,6 @@ public class ExtManager {
 
     public final String url = "https://search.maven.org/solrsearch/select?q=lphy";
 
-    Manifest manifest = new Manifest();
 
     public final static String LPHY_ID = "lphy";
     // "META-INF/maven/io.github.linguaphylo/lphy/pom.xml"

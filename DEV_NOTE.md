@@ -27,12 +27,17 @@ The command below makes a "clean" build by deleting previous build and ignores c
 <a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
 
 ```bash
-./gradlew run
+./gradlew :lphy-studio:run
 ```
+
+Please __note__ there are two applications in the project, so you need to specify which
+subproject the task `run` is coming from, such as `:lphy-studio`. 
+If the subproject is not given, then it will trigger two applications at once.
 
 Or through IntelliJ Gradle tool (normally on the right side of IntelliJ window frame).
 Expand lphy-studio => Task => application, as shown in the screenshot on the right,
 and click `run`.
+
 
 4. Distribute jar files:
 
