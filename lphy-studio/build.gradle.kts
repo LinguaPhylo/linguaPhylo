@@ -10,8 +10,8 @@ plugins {
 version = "1.1.0-SNAPSHOT"
 
 dependencies {
-    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
-
+//    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
+    implementation(project(":lphy"))
     implementation(project(":ext-manager"))
 
     implementation("org.scilab.forge:jlatexmath:1.0.7")
