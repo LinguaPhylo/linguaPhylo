@@ -7,6 +7,7 @@ import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
+import lphyext.manager.DependencyUtils;
 import lphyext.manager.ExtManagerDialog;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
@@ -22,14 +23,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 public class LinguaPhyloStudio {
 
@@ -51,6 +48,10 @@ public class LinguaPhyloStudio {
         }
         // use MANIFEST.MF to store version in jar, but use system property in development
         VERSION = getVersion();
+    }
+
+    private static String getVersion() {
+        return DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -145,7 +146,6 @@ public class LinguaPhyloStudio {
             ExtManagerDialog extManager = null;
             try {
                 extManager = new ExtManagerDialog(frame);
-                extManager.setTitle("LPhy Extension Manager " + VERSION);
                 extManager.setVisible(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -199,37 +199,37 @@ public class LinguaPhyloStudio {
     }
 
     // use MANIFEST.MF to store version in jar, but use system property in development
-    private static String getVersion() {
-        String version = null;
-        // for Java module system
-        try {
-            Enumeration<URL> resources = LinguaPhyloStudio.class.getClassLoader()
-                    .getResources("META-INF/MANIFEST.MF");
-
-            while (resources.hasMoreElements()) {
-                Manifest manifest = new Manifest(resources.nextElement().openStream());
-                Attributes attr = manifest.getMainAttributes();
-                String name = attr.getValue("Implementation-Title");
-                if ("LPhyStudio".equalsIgnoreCase(name)) {
-                    version = attr.getValue("Implementation-Version");
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            LoggerUtils.log.severe("Cannot find lphy manifest !");
-            e.printStackTrace();
-        }
-        // for class path
-        if (version == null)
-            version = LinguaPhyloStudio.class.getPackage().getImplementationVersion();
-        // for IDE to get version from system property "lphy.studio.version"
-        if (version == null)
-            version = System.getProperty("lphy.studio.version");
-        // should not reach here
-        if (version == null)
-            version = "DEVELOPMENT";
-        return version;
-    }
+//    private static String getVersion() {
+//        String version = null;
+//        // for Java module system
+//        try {
+//            Enumeration<URL> resources = LinguaPhyloStudio.class.getClassLoader()
+//                    .getResources("META-INF/MANIFEST.MF");
+//
+//            while (resources.hasMoreElements()) {
+//                Manifest manifest = new Manifest(resources.nextElement().openStream());
+//                Attributes attr = manifest.getMainAttributes();
+//                String name = attr.getValue("Implementation-Title");
+//                if ("LPhyStudio".equalsIgnoreCase(name)) {
+//                    version = attr.getValue("Implementation-DependencyUtils");
+//                    break;
+//                }
+//            }
+//        } catch (IOException e) {
+//            LoggerUtils.log.severe("Cannot find lphy manifest !");
+//            e.printStackTrace();
+//        }
+//        // for class path
+//        if (version == null)
+//            version = LinguaPhyloStudio.class.getPackage().getImplementationVersion();
+//        // for IDE to get version from system property "lphy.studio.version"
+//        if (version == null)
+//            version = System.getProperty("lphy.studio.version");
+//        // should not reach here
+//        if (version == null)
+//            version = "DEVELOPMENT";
+//        return version;
+//    }
 
     private void listAllFiles(JMenu exampleMenu, File dir) {
         final String postfix = ".lphy";

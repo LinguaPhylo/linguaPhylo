@@ -53,6 +53,8 @@ public class ExtManagerDialog extends JDialog {
         this.setLocation(owner.getX() + owner.getWidth() / 4,
                 owner.getY() + owner.getHeight() / 5);
 
+        this.setTitle("LPhy Extension Manager " +
+                DependencyUtils.getVersion(ExtManagerDialog.class, "lphy.ext.manager.version"));
 
     }
 
@@ -156,7 +158,7 @@ public class ExtManagerDialog extends JDialog {
 //                    if (useLatestVersion) {
 //                        packagesToInstall.put(selPackage, selPackage.getLatestVersion());
 //                    } else {
-//                        PackageVersion version = (PackageVersion) JOptionPane.showInputDialog( null, "Select Version for " + selPackage.getName(),
+//                        PackageVersion version = (PackageVersion) JOptionPane.showInputDialog( null, "Select DependencyUtils for " + selPackage.getName(),
 //                                "Select version",
 //                                JOptionPane.QUESTION_MESSAGE, null,
 //                                selPackage.getAvailableVersions().toArray(), selPackage.getAvailableVersions().toArray()[0]);
