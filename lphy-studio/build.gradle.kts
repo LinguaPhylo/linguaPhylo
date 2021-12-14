@@ -80,10 +80,28 @@ publishing {
     }
 }
 
+
+//tasks.startScripts {
+//    doLast {
+//        unixScript.forEachLine {
+//            val st = "MODULE_PATH="
+//            if (it.trim().startsWith(st)){
+//                it.replace(st, "$st\$CLASSPATH:")
+//            }
+//        }
+//    }
+//}
+tasks.getByName<Tar>("distTar").enabled = false
+tasks.getByName<CreateStartScripts>("startScripts").enabled = false
+
 // copy related files and Zip
 distributions {
     main {
         contents {
+            // exclude start scripts, Gradle is terrible to handle module path
+            from(layout.buildDirectory.dir("scripts")) {
+                exclude("**")
+            }
             from("$rootDir/examples") {
                 include("**/*.lphy", "**/*.nex")
                 exclude("todo", "**/*covid*")

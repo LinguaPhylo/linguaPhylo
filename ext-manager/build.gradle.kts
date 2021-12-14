@@ -68,3 +68,7 @@ publishing {
 
     }
 }
+
+tasks.getByName<Tar>("distTar").enabled = false
+tasks.getByName<CreateStartScripts>("startScripts").enabled = false
+
