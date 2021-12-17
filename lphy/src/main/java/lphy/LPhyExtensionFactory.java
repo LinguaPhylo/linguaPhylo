@@ -62,6 +62,10 @@ public class LPhyExtensionFactory {
         registerExtensions(loader, fullClsName);
     }
 
+    /**
+     * for extension manager.
+     * @return   a list of detected {@link LPhyExtension}.
+     */
     public List<LPhyExtension> getExtensions() {
         loader.reload();
         Iterator<LPhyExtension> extensions = loader.iterator();
