@@ -113,6 +113,7 @@ distributions {
                 include("*-sources.jar")
                 into("src")
             }
+            //TODO ext manager
         }
     }
 }

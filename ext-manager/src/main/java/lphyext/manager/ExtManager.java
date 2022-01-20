@@ -15,12 +15,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Pull extension information from pom.xml in the root path inside the jar file.
+ * @author Walter Xie
+ */
 public class ExtManager {
-
+    // TODO
     public final static String EXTENSIONS_XML = "https://raw.githubusercontent.com/LinguaPhylo/linguaPhylo.github.io/master/extensions-1.0.xml";
-
+    // TODO
     public final String url = "https://search.maven.org/solrsearch/select?q=lphy";
-
+    // pin lphy on the top of the list
     public final static String LPHY_ID = "lphy";
 
     final List<LPhyExtension> extensions;
@@ -33,13 +37,17 @@ public class ExtManager {
         System.out.println(extensions);
     }
 
+    /**
+     * Find loaded LPhy extensions from loaded modular jars.
+     * @return  a list of {@link Extension}
+     */
     public List<Extension> getLoadedLPhyExts() {
         List<Extension> extList = new ArrayList<>();
 
         // find all loaded lphy exts
         for (LPhyExtension ext : extensions) {
             Class<?> cls = ext.getClass();
-            String pkgNm = "/" + cls.getPackageName().replace(".", "/");
+//            String pkgNm = "/" + cls.getPackageName().replace(".", "/");
             // include jar name
             String jarPath = cls.getProtectionDomain().getCodeSource().getLocation().getPath();
             // rm jar name
@@ -51,6 +59,7 @@ public class ExtManager {
             // use module path
             if (module != null) {
                 try {
+                    // get from pom.xml
                     Extension lphyExt = DependencyUtils.getExtensionFrom(module);
 //                ModuleDescriptor md = module.getDescriptor();
 //                Extension lphyExt = new Extension(md.name(), md.rawVersion().orElse("null"), "");
