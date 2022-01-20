@@ -39,10 +39,11 @@ public class GenerateDocs {
 
         String extName = "LPhy"; // No white space
         // for extension only, e.g.
-        // 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
-        // WD: ~/WorkSpace/beast-phylonco/PhyloncoL/doc
+        // args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
+        // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
             extName = args[1];
+            // class name with package that implements {@link LPhyExtension}
             String clsName = args[2];
             factory.loadExtension(clsName);
         }
