@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
  * For extension, set working directory: ~/WorkSpace/repo/LPhyExtension/doc,
  * and args[0] = version, args[1] = extension name (no space),
  * args[2] = class name to implement LPhyExtension.
+ *
+ * Use "user.dir" to change the output directory
  */
 public class GenerateDocs {
 
@@ -62,6 +64,7 @@ public class GenerateDocs {
         FileWriter writer = new FileWriter("index.md");
         writer.write(indexMD);
         writer.close();
+        System.out.println(extName + " docs are available in " + System.getProperty("user.dir") + "\n");
     }
     
 //    private Properties properties;
