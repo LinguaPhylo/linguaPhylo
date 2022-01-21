@@ -111,6 +111,7 @@ tasks.test {
  * e.g. args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
  *
  * The docs will output to working dir, "user.dir"
+ * This is equivalent to: java -p $LPHY/lib -m lphy/lphy.doc.GenerateDocs 1.1.0
  */
 var wd = System.getProperty("user.dir")
 val lphyDoc = tasks.register("lphyDoc", JavaExec::class.java) {
