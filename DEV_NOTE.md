@@ -125,16 +125,22 @@ Please also see
 - [Working with Gradle](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/)
 - [Gradle projects](https://www.jetbrains.com/help/idea/work-with-gradle-projects.html)
 
-## Release note
+## Release procedure
 
-1. Make sure all versions not containing the postfix "SNAPSHOT". Run `./gradlew clean build`, which will run all unit tests as well. In the end, it creates a Zip file `lphy-studio-1.x.x.zip` in `$PROJECT_DIR/lphy-studio/distributions`.
+1. Make sure all versions not containing the postfix "SNAPSHOT".
+Run `./gradlew clean build`, which will run all unit tests as well.
+In the end, it creates a Zip file `lphy-studio-1.x.x.zip` in `$PROJECT_DIR/lphy-studio/distributions`.
 
 
-2. Run the task `lphyDoc` to generate LPhy docs. The output will be in the directory [$PROJECT_DIR/lphy/doc](lphy/doc) as default.  
+2. Run the task `lphyDoc` to generate LPhy docs.
+The output will be in the directory [$PROJECT_DIR/lphy/doc](lphy/doc) as default.  
 
-For the extension developer, the script `setArgs(listOf("$version"))` in your lphyDoc task needs to be changed
-to `setArgs(listOf("$version", "$EXT_NAME", "$CLS_NAME"))`, where $EXT_NAME is your extension name appeared in the doc title,
-and $CLS_NAME is the full class name with package that implements LPhyExtension, such as phylonco.lphy.spi.Phylonco.
+For the extension developer, you need to change the script to set the arguments
+passed main method in your lphyDoc from `setArgs(listOf("$version"))`
+into `setArgs(listOf("$version", "$EXT_NAME", "$CLS_NAME"))`,
+where $EXT_NAME is your extension name appeared in the doc title,
+and $CLS_NAME is the full class name with package that implements LPhyExtension,
+such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 
 3. Run the task `noModFatJar` to create a non-modular fat jar for LPhyBEAST only.
 
