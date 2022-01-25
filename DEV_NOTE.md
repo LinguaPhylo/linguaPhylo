@@ -150,3 +150,7 @@ such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 
 5. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
 Please note: once published, you will not be able to remove/update/modify the jar.
+
+
+6. Follow the [instruction](https://central.sonatype.org/publish/release/)
+of the releasing deployment to complete publishing. 
