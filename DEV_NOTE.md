@@ -154,3 +154,6 @@ Please note: once published, you will not be able to remove/update/modify the ja
 
 6. Follow the [instruction](https://central.sonatype.org/publish/release/)
 of the releasing deployment to complete publishing. 
+
+For snapshots, check https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/.
+For releases, check https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/.
