@@ -103,9 +103,9 @@ tasks.test {
 }
 
 /**
- * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/LPhy/doc,
+ * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/lphy/doc,
  * and args[0] = version.
- * For extension, set working directory: ~/WorkSpace/repo/LPhyExtension/doc,
+ * For extension, set working directory: ~/WorkSpace/$REPO/lphy/doc,
  * and args[0] = version, args[1] = extension name (no space),
  * args[2] = class name to implement LPhyExtension.
  * e.g. args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
