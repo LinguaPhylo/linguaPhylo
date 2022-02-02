@@ -113,27 +113,21 @@ tasks.test {
  * The docs will output to working dir, "user.dir"
  * This is equivalent to: java -p $LPHY/lib -m lphy/lphy.doc.GenerateDocs 1.1.0
  */
-var wd = System.getProperty("user.dir")
 val lphyDoc = tasks.register("lphyDoc", JavaExec::class.java) {
     description = "Create LPhy doc"
     dependsOn("assemble")
-
-    // set output to .../lphy/doc
-    System.setProperty("user.dir", "${layout.projectDirectory.dir("doc")}")
-    println("set user.dir = " + System.getProperty("user.dir"))
+//    println("user.dir = " + System.getProperty("user.dir"))
 
     // equivalent to: java -p ...
-    jvmArgs = listOf("-p", sourceSets.main.get().runtimeClasspath.asPath)
+    jvmArgs = listOf("-p", sourceSets.main.get().runtimeClasspath.asPath,
+        // set output to .../lphy/doc
+        "-Duser.dir=${layout.projectDirectory.dir("doc")}")
+
     // -m lphy/lphy.doc.GenerateDocs
     mainModule.set("lphy")
     mainClass.set("lphy.doc.GenerateDocs")
     // such as 1.1.0
     setArgs(listOf("$version"))
-
-    doLast {
-        System.setProperty("user.dir", wd)
-        println("user.dir = " + wd)
-    }
 }
 
 // list locations of jars in dependencies

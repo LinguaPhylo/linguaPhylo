@@ -21,7 +21,7 @@ dependencies {
 //    testImplementation("junit:junit:4.13")
 }
 
-var maincls : String = "lphystudio.app.LinguaPhyloStudio"
+val maincls : String = "lphystudio.app.LinguaPhyloStudio"
 application {
     // equivalent to -m lphystudio
     // need both mainModule and mainClass

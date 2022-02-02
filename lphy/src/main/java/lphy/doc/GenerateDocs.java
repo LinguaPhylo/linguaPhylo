@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,12 +61,17 @@ public class GenerateDocs {
 
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
-        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, version, extName);
+        // output
+        final Path dir = Paths.get(System.getProperty("user.dir"));
+        System.out.println("Creating " + extName + " docs to " + dir + "\n");
 
-        FileWriter writer = new FileWriter("index.md");
+        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, dir, version, extName);
+
+        File f = new File(dir.toString(), "index.md");
+        FileWriter writer = new FileWriter(f);
         writer.write(indexMD);
         writer.close();
-        System.out.println(extName + " docs are available in " + System.getProperty("user.dir") + "\n");
+
     }
     
 //    private Properties properties;
@@ -79,9 +86,10 @@ public class GenerateDocs {
 //        return Objects.requireNonNull(this.properties).getProperty(propertyName);
 //    }
 
+    // output to dir
     private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
                                         List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
-                                        String version, String extName) throws IOException {
+                                        Path dir, String version, String extName) throws IOException {
         StringBuilder builder = new StringBuilder();
 
         String h1 = extName + " Language Reference";
@@ -99,7 +107,7 @@ public class GenerateDocs {
 
         Set<String> names = new TreeSet<>();
 
-        File file = new File("distributions");
+        File file = new File(dir.toString(),"distributions");
         if (!file.exists()) file.mkdir();
 
         for (Class<GenerativeDistribution> genDist : generativeDistributions) {
@@ -110,7 +118,7 @@ public class GenerateDocs {
                 genDistLinks.add(new Link(name, fileURL));
                 names.add(name);
 
-                FileWriter writer = new FileWriter(fileURL);
+                FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
                 generateGenerativeDistributions(writer, name, generativeDistributions.stream().filter(o -> Generator.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
                 writer.close();
@@ -125,7 +133,7 @@ public class GenerateDocs {
 
         Set<String> funcNames = new TreeSet<>();
 
-        file = new File("functions");
+        file = new File(dir.toString(), "functions");
         if (!file.exists()) file.mkdir();
 
         for (Class<DeterministicFunction> function : functions) {
@@ -136,7 +144,7 @@ public class GenerateDocs {
                 functionLinks.add(new Link(name, fileURL));
                 funcNames.add(name);
 
-                FileWriter writer = new FileWriter(fileURL);
+                FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
                 generateFunctions(writer, name, functions.stream().filter(o -> Generator.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
                 writer.close();
@@ -151,7 +159,7 @@ public class GenerateDocs {
 
         Set<String> typeNames = new TreeSet<>();
 
-        file = new File("types");
+        file = new File(dir.toString(), "types");
         if (!file.exists()) file.mkdir();
 
         for (Class<?> type : types) {
@@ -162,7 +170,7 @@ public class GenerateDocs {
                 typeLinks.add(new Link(name, fileURL));
                 typeNames.add(name);
 
-                FileWriter writer = new FileWriter(fileURL);
+                FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
                 writer.write(generateType(type));
                 writer.close();

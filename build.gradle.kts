@@ -31,6 +31,7 @@ subprojects {
     group = "io.github.linguaphylo"
     val webSteam = "github.com/LinguaPhylo/linguaPhylo"
     val web = "https://${webSteam}"
+    val homepage = "https://linguaphylo.github.io/"
 
     var calendar: Calendar? = Calendar.getInstance()
     var formatter = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss")
@@ -90,7 +91,7 @@ subprojects {
                             name.set(project.name)
 //                        description.set("...")
                             // compulsory
-                            url.set("https://linguaphylo.github.io/")
+                            url.set(homepage)
                             packaging = "jar"
                             properties.set(
                                 mapOf(
