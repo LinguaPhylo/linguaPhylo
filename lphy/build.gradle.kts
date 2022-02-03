@@ -71,6 +71,7 @@ tasks.register("noModFatJar", Jar::class.java) {
     from(sourcesMain.output) {
         exclude("**/module-info.*")
     }
+    destinationDirectory.set(file("${buildDir}/fatjar"))
 }
 
 publishing {

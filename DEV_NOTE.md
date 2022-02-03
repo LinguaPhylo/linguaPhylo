@@ -143,6 +143,8 @@ and $CLS_NAME is the full class name with package that implements LPhyExtension,
 such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 
 3. Run the task `noModFatJar` to create a non-modular fat jar for LPhyBEAST only.
+It should be available in `$buildDir/fatjar`.
+Then manually update the non-modular fat jar in LPhyBEAST's `lib` folder to the newer version.
 
 
 4. Create a pre-release in Github, and upload both Zip file and fat jar. 
