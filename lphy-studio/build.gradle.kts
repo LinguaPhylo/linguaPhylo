@@ -105,13 +105,9 @@ distributions {
                 include("LICENSE")
             }
             // include src jar
-            from(layout.buildDirectory.dir("libs")) {
-                include("*-sources.jar")
-                into("src")
-            }
-            from(project(":lphy").layout.buildDirectory.dir("libs")) {
-                include("*-sources.jar")
-                into("src")
+            into("src") {
+                from(tasks.sourcesJar)
+                from(project(":lphy").tasks.sourcesJar)
             }
             //TODO ext manager
         }
