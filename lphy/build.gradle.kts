@@ -24,17 +24,6 @@ dependencies {
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 }
 
-//// configure core dependencies, which can be reused in lphy-studio
-//val coreJars by configurations.creating {
-//    isCanBeConsumed = true
-//    isCanBeResolved = false
-//    extendsFrom(configurations["api"], configurations["implementation"])
-//}
-//// Attach the task jar to an outgoing configuration coreJars
-//artifacts {
-//    add("coreJars", tasks.jar)
-//}
-
 // lphy-$version.jar
 tasks.jar {
     manifest {
@@ -46,7 +35,7 @@ tasks.jar {
     }
 }
 
-
+//TODO Deprecated
 // this function is modified from Maksim Kostromin's example
 // https://gist.github.com/daggerok/4f5f63448f24d991c273165615baa39a
 // create a fat non-modular jar containing all dependencies of lphy.
