@@ -29,42 +29,42 @@ fi
 
 echo "Creating Gradle build ..."
 echo 'plugins {
-          `java-library`
-      }
+    `java-library`
+}
 
-      version = "0.0.1-SNAPSHOT"
-      base.archivesName.set("?")
+version = "0.0.1-SNAPSHOT"
+base.archivesName.set("?")
 
-      java {
-          sourceCompatibility = JavaVersion.VERSION_16
-          targetCompatibility = JavaVersion.VERSION_16
-          withSourcesJar()
-      }
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+    withSourcesJar()
+}
 
-      dependencies {
-          // ...
-      }
+dependencies {
+    // ...
+}
 
-      tasks.jar {
-          manifest {
-              // shared attr in the root build
-              attributes(
-                  "Implementation-Title" to "?",
-                  "Implementation-Vendor" to "?",
-              )
-          }
-      }
+tasks.jar {
+    manifest {
+        // shared attr in the root build
+        attributes(
+            "Implementation-Title" to "?",
+            "Implementation-Vendor" to "?",
+        )
+    }
+}
 
-      tasks.test {
-          useJUnit()
-          // useJUnitPlatform()
-          // set heap size for the test JVM(s)
-          minHeapSize = "128m"
-          maxHeapSize = "1G"
-          // show standard out and standard error of the test JVM(s) on the console
-          testLogging.showStandardStreams = true
-          //testLogging.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
+tasks.test {
+    useJUnit()
+    // useJUnitPlatform()
+    // set heap size for the test JVM(s)
+    minHeapSize = "128m"
+    maxHeapSize = "1G"
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+    //testLogging.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+}
 ' > build.gradle.kts
 
 echo "Complete. Create 'lib' or 'examples' folders by yourself if they are required.";
