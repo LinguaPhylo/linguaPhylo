@@ -48,13 +48,14 @@ tasks.withType<JavaExec>() {
     }
 }
 
+val developers = "LPhy developer team"
 tasks.jar {
     manifest {
         // shared attr in the root build
         attributes(
             "Main-Class" to maincls,
             "Implementation-Title" to "LPhyStudio",
-            "Implementation-Vendor" to "Alexei Drummond and Walter Xie",
+            "Implementation-Vendor" to developers,
         )
     }
 }
@@ -68,10 +69,7 @@ publishing {
                 description.set("The GUI for LPhy language.")
                 developers {
                     developer {
-                        name.set("Alexei Drummond")
-                    }
-                    developer {
-                        name.set("Walter Xie")
+                        name.set(developers)
                     }
                 }
             }

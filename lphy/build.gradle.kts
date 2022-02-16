@@ -24,13 +24,14 @@ dependencies {
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
 }
 
+val developers = "LPhy developer team"
 // lphy-$version.jar
 tasks.jar {
     manifest {
         // shared attr in the root build
         attributes(
             "Implementation-Title" to "LPhy",
-            "Implementation-Vendor" to "LPhy team",
+            "Implementation-Vendor" to developers,
         )
     }
 }
@@ -72,7 +73,7 @@ publishing {
                 description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")
                 developers {
                     developer {
-                        name.set("LPhy developer team")
+                        name.set(developers)
                     }
                 }
             }
