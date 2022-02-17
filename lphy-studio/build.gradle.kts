@@ -3,11 +3,11 @@ plugins {
     distribution
     `maven-publish`
     signing
-    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.1"
-    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.1"
+    id("io.github.linguaphylo.platforms.lphy-java") version "0.1.2"
+    id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.2"
 }
 
-version = "1.1.0"
+version = "1.2.0"
 
 dependencies {
 //    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
