@@ -134,7 +134,7 @@ Please also see
 ## Release procedure
 
 1. Make sure all versions not containing the postfix "SNAPSHOT".
-Run `./gradlew clean build`, which will run all unit tests as well.
+Run `./gradlew clean build --no-build-cache`, which will run all unit tests as well.
 In the end, it creates a Zip file `lphy-studio-1.x.x.zip` in `$PROJECT_DIR/lphy-studio/distributions`.
 
 
@@ -148,19 +148,14 @@ where $EXT_NAME is your extension name appeared in the doc title,
 and $CLS_NAME is the full class name with package that implements LPhyExtension,
 such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 
-3. Run the task `noModFatJar` to create a non-modular fat jar for LPhyBEAST only.
-It should be available in `$buildDir/fatjar`.
-Then manually update the non-modular fat jar in LPhyBEAST's `lib` folder to the newer version.
+3. Create a pre-release in Github, and upload both Zip file and fat jar. 
 
 
-4. Create a pre-release in Github, and upload both Zip file and fat jar. 
-
-
-5. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
+4. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
 Please note: once published, you will not be able to remove/update/modify the jar.
 
 
-6. Follow the [instruction](https://central.sonatype.org/publish/release/)
+5. Follow the [instruction](https://central.sonatype.org/publish/release/)
 of the releasing deployment to complete publishing. 
 
 For snapshots, check https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/.
