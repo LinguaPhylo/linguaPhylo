@@ -34,16 +34,22 @@ Please __note__ there are two applications in the project, so you need to specif
 subproject the task `run` is coming from, such as `:lphy-studio`. 
 If the subproject is not given, then it will trigger two applications at once.
 
-Or through IntelliJ Gradle tool (normally on the right side of IntelliJ window frame).
-Expand lphy-studio => Task => application, as shown in the screenshot on the right,
+Or through IntelliJ Gradle toolbar (normally on the right side of IntelliJ window frame).
+Expand lphy-studio => Tasks => application, as shown in the screenshot on the right,
 and click `run`.
 
 
 4. Distribute jar files:
 
-Expand lphy-studio => Task => distribution, and click `distZip`.
-Then the zip file, named as "lphy-studio-${versoin}.zip", will be created
+Please __note__ if you run the `build` task in the 2nd step above,
+it will include `distZip` task.
+The zip file, named as "lphy-studio-${versoin}.zip", will be created
 inside the sub-folder "build/distributions" under the `lphy-studio` module.
+
+But if you want to create the zip without rebuilding the project,
+you can go to the Gradle toolbar, expand lphy-studio => Tasks => distribution,
+and click `distZip`.
+
 More details are available in the user guide of
 [distribution plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html).
 
