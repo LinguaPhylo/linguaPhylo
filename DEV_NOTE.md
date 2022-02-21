@@ -148,7 +148,9 @@ where $EXT_NAME is your extension name appeared in the doc title,
 and $CLS_NAME is the full class name with package that implements LPhyExtension,
 such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 
-3. Create a pre-release in Github, and upload both Zip file and fat jar. 
+3. Create a pre-release in Github, and upload the Zip file.
+In addition, if you do not publish the jars to the Maven central repository,
+you need to provide the jar file and its source jar in the release. 
 
 
 4. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
