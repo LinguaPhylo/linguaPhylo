@@ -23,7 +23,7 @@ The command below makes a "clean" build by deleting previous build and ignores c
 ```
 
 When you run the `build` task above, it will include `jar` task to create a jar file,
-`distribution` tasks if you define it in your build file, as well as `test` task to run unit tests.
+`distribution` tasks because we have defined it in the build file, as well as `test` task to run unit tests.
 
 If you want to build without tests, you can use `-x` to exclude it:
 
