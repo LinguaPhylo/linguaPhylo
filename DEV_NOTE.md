@@ -32,7 +32,7 @@ If you want to build without tests, you can use `-x` to exclude it:
 ```
 
 
-3. Distribution of your product:
+3. Distribution of the project:
 
 The zip file, named as "lphy-studio-${versoin}.zip", will be created
 inside the sub-folder "build/distributions" under the `lphy-studio` module,
