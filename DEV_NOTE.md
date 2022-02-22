@@ -22,8 +22,30 @@ The command below makes a "clean" build by deleting previous build and ignores c
 ./gradlew clean build --info --no-build-cache
 ```
 
+When you run the `build` task above, it will include `jar` task to create a jar file,
+`distribution` tasks if you define it in your build file, as well as `test` task to run unit tests.
 
-3. Run LPhy studio application through Gradle:
+If you want to build without tests, you can use `-x` to exclude it:
+
+```bash
+./gradlew build -x test
+```
+
+
+3. Distribution of your product:
+
+The zip file, named as "lphy-studio-${versoin}.zip", will be created
+inside the sub-folder "build/distributions" under the `lphy-studio` module,
+after build.
+
+But if you want to create the zip without rebuilding the project,
+you can go to the Gradle toolbar, expand lphy-studio => Tasks => distribution,
+and click `distZip`.
+More details about distributing jar files are available in the user guide of
+[distribution plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html).
+
+
+4. Run LPhy studio application through Gradle:
 <a href="./Gradle-run.png"><img src="Gradle-run.png" align="right" height="300" ></a>
 
 ```bash
@@ -38,20 +60,6 @@ Or through IntelliJ Gradle toolbar (normally on the right side of IntelliJ windo
 Expand lphy-studio => Tasks => application, as shown in the screenshot on the right,
 and click `run`.
 
-
-4. Distribute jar files:
-
-Please __note__ if you run the `build` task in the 2nd step above,
-it will include `distZip` task.
-The zip file, named as "lphy-studio-${versoin}.zip", will be created
-inside the sub-folder "build/distributions" under the `lphy-studio` module.
-
-But if you want to create the zip without rebuilding the project,
-you can go to the Gradle toolbar, expand lphy-studio => Tasks => distribution,
-and click `distZip`.
-
-More details are available in the user guide of
-[distribution plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html).
 
 5. Publish to Maven central repository:
 
