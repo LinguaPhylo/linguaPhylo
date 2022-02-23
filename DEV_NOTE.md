@@ -1,12 +1,10 @@
 
 ## Gradle
 
-1. [Installation](https://gradle.org/install/). 
+1. Install [OpenJDK 17](https://jdk.java.net/17/) and [Gradle 7.x](https://gradle.org/install/). 
 
-If you are [opening a Gradle project](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/opening-a-gradle-project/)
-in IntelliJ, please make sure the existing project has no previous IntelliJ configuration files. 
-See [more](#IntelliJ).
-
+You can look at [Setup development environment](https://linguaphylo.github.io/developer/setup-dev-env/)
+for more details.
 
 2. Always execute a build with the wrapper, as recommended by
 [Gradle user guide](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:using_wrapper),
@@ -30,7 +28,6 @@ If you want to build without tests, you can use `-x` to exclude it:
 ```bash
 ./gradlew build -x test
 ```
-
 
 3. Distribution of the project:
 
