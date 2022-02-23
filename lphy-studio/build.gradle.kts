@@ -7,7 +7,8 @@ plugins {
     id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.2"
 }
 
-version = "1.2.0"
+//version = "1.2.0"
+//base.archivesName.set("studio")
 
 dependencies {
 //    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))

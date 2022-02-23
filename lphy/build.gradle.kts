@@ -6,7 +6,7 @@ plugins {
     id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.2"
 }
 
-version = "1.2.0"
+//version = "1.2.0"
 //base.archivesName.set("core")
 
 dependencies {

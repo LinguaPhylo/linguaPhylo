@@ -142,7 +142,6 @@ Please also see
 Run `./gradlew clean build --no-build-cache`, which will run all unit tests as well.
 In the end, it creates a Zip file `lphy-studio-1.x.x.zip` in `$PROJECT_DIR/lphy-studio/distributions`.
 
-
 2. Run the task `lphyDoc` to generate LPhy docs.
 The output will be in the directory [$PROJECT_DIR/lphy/doc](lphy/doc) as default.  
 
@@ -157,13 +156,16 @@ such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
 In addition, if you do not publish the jars to the Maven central repository,
 you need to provide the jar file and its source jar in the release. 
 
-
 4. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
 Please note: once published, you will not be able to remove/update/modify the jar.
-
 
 5. Follow the [instruction](https://central.sonatype.org/publish/release/)
 of the releasing deployment to complete publishing. 
 
 For snapshots, check https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/.
 For releases, check https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/.
+
+6. After final release, it is a good behavior to instantly update your versions
+in the build files into the next version with the postfix "SNAPSHOT".
+
+

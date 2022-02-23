@@ -7,6 +7,7 @@ plugins {
     id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.2"
 }
 
+// overwrite version
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
