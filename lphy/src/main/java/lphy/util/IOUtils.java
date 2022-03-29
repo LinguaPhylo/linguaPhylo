@@ -17,9 +17,10 @@ public class IOUtils {
 
     /**
      * @param path
-     * @return  for the relative path, it will return a path
-     *          concatenating user.dir before the relative path.
-     *
+     * @return  If the given path is a relative path,
+     *          it will return a path concatenating user.dir
+     *          before the relative path.
+     *          Otherwise, it returns the given path.
      */
     public static Path getUserPath(Path path){
         if (path.isAbsolute())
@@ -31,20 +32,24 @@ public class IOUtils {
         }
     }
 
-
-    public static void setUserDir(String pathStr) {
-        if (pathStr != null) {
-            System.setProperty(USER_DIR, pathStr);
-            System.out.println("Set " + USER_DIR + " = " + pathStr);
+    /**
+     * @param wdStr set working directory (user.dir) to the given string
+     */
+    public static void setUserDir(String wdStr) {
+        if (wdStr != null) {
+            System.setProperty(USER_DIR, wdStr);
+            System.out.println("Set " + USER_DIR + " = " + wdStr);
         }
     }
 
+    /**
+     * @return  user.dir, or empty string if it is null.
+     */
     public static Path getUserDir() {
         String wd = System.getProperty(USER_DIR);
         if (wd != null)
             return Paths.get(wd);
         return Paths.get("");
     }
-
 
 }

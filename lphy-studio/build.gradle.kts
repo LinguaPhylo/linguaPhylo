@@ -38,7 +38,7 @@ tasks.withType<JavaExec>() {
     // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
     // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
-    systemProperty("user.dir", rootDir)
+//    systemProperty("user.dir", rootDir)
     doFirst {
         // equivalent to: java -p ...
         jvmArgs = listOf("-p", classpath.asPath)

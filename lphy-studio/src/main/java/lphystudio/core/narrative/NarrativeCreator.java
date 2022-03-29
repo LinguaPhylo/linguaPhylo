@@ -1,15 +1,15 @@
 package lphystudio.core.narrative;
 
 import lphy.core.GraphicalLPhyParser;
-import lphystudio.app.GraphicalModelPanel;
-import lphystudio.app.LinguaPhyloStudio;
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.LPhyParser;
 import lphy.core.narrative.Section;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
+import lphystudio.app.GraphicalModelPanel;
+import lphystudio.app.LinguaPhyloStudio;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -82,7 +82,7 @@ public class NarrativeCreator {
     private void createImage(String lphyFileName, Path imgFile) throws IOException {
         File file = new File(lphyFileName);
         app = new LinguaPhyloStudio();
-        app.readFile(file);
+        app.readFile(file, file.toPath().getParent());
 
         app.exportToPNG(imgFile.toString());
         System.out.println("Save " + imgFile.toAbsolutePath());

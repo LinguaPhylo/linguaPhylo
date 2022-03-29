@@ -23,6 +23,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,24 +114,19 @@ public class LinguaPhyloStudio {
         fileMenu.add(exportTikzMenuItem);
         exportTikzMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.component.toTikz()));
 
-        //Build the example menu.
+        //Build the example's menu.
         JMenu exampleMenu = new JMenu("Examples");
         exampleMenu.setMnemonic(KeyEvent.VK_X);
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
-        // relative path not working
-        File dir = new File("examples").getAbsoluteFile();
-        System.out.println("Examples dir = " + dir);
-        listAllFiles(exampleMenu, dir);
+        listAllFiles(exampleMenu);
 
-        //Build the tutorials menu.
+        //Build the tutorial's menu.
         JMenu tutMenu = new JMenu("Tutorials");
         tutMenu.setMnemonic(KeyEvent.VK_U);
 //        fileMenu.addSeparator();
         fileMenu.add(tutMenu);
-        dir = new File("tutorials").getAbsoluteFile();
-        System.out.println("Tutorials dir = " + dir);
-        listAllFiles(tutMenu, dir);
+        listAllFiles(tutMenu);
 
         buildViewMenu(menuBar);
         menuBar.add(panel.rightPane.getMenu());
@@ -181,7 +177,8 @@ public class LinguaPhyloStudio {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = jfc.getSelectedFile();
 //                panel.readScript(selectedFile);
-                readFile(selectedFile);
+                Path dir = selectedFile.toPath().getParent();
+                readFile(selectedFile, dir);
             }
         });
 
@@ -194,26 +191,45 @@ public class LinguaPhyloStudio {
 
         saveModelToHTML.addActionListener(e -> exportModelToHTML());
         saveModelToRTF.addActionListener(e -> exportToRtf());
-
-        System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
+//        System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
     }
 
-    private void listAllFiles(JMenu exampleMenu, File dir) {
-        final String postfix = ".lphy";
-        if (!dir.exists()) LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
+    private void listAllFiles(JMenu jMenu) {
+        final String EXMP = "examples";
+        final String TUTL = "tutorials";
+//        String wd = System.getProperty(IOUtils.USER_DIR);
 
-        File[] files = dir.listFiles();
-        if (files != null) {
-            Arrays.sort(files, Comparator.comparing(File::getName));
-            for (int i = 0; i < files.length; i++) {
-                String name = files[i].getName();
-                if (name.endsWith(postfix)) {
-                    final File exampleFile = files[i];
-                    JMenuItem exampleItem = new JMenuItem(name.substring(0, name.length() - 5));
-                    exampleMenu.add(exampleItem);
-                    exampleItem.addActionListener(e -> {
-                        readFile(exampleFile);
-                    });
+        File dir = null;
+        if (jMenu.getText().equalsIgnoreCase(EXMP)) {
+            // relative path not working
+            dir = new File(EXMP).getAbsoluteFile();
+        } else if (jMenu.getText().equalsIgnoreCase(TUTL)) {
+            dir = new File(TUTL).getAbsoluteFile();
+        }
+        System.out.println("Menu " + jMenu.getText() + " refer to dir = " + dir);
+
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
+        } else {
+            final String postfix = ".lphy";
+            File[] files = dir.listFiles();
+            if (files != null) {
+                // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
+                IOUtils.setUserDir(dir.toString());
+
+                Arrays.sort(files, Comparator.comparing(File::getName));
+                for (final File file : files) {
+                    Path parent = file.getParentFile().toPath();
+                    String name = file.getName();
+                    File fn = new File(name);
+                    if (name.endsWith(postfix)) {
+                        JMenuItem menuItem = new JMenuItem(name.substring(0, name.length() - 5));
+                        jMenu.add(menuItem);
+                        menuItem.addActionListener(e -> {
+                            // readFile concatenates fn in front of parent path
+                            readFile(fn, parent);
+                        });
+                    }
                 }
             }
         }
@@ -221,26 +237,42 @@ public class LinguaPhyloStudio {
 
     /**
      * Load Lphy script from a file,
-     * and set the user.dir to the folder containing this file.
-     * @param exampleFile  LPhy script file
+     * concatenate user.dir in front of the relative path of example file
+     * @param lphyFile  LPhy script file, if it is
+     * @param dir      if not null, then concatenate to example file path.
      */
-    public void readFile(File exampleFile) {
-        String name = exampleFile.getName();
+    public void readFile(File lphyFile, Path dir) {
+        Path filePath = lphyFile.toPath();
+        if (dir != null) {
+            // must be relative
+            if (lphyFile.isAbsolute())
+                LoggerUtils.log.warning("LPhy script is an absolute file path, ignoring '-d' ! " + lphyFile);
+            else {
+                // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
+                IOUtils.setUserDir(dir.toAbsolutePath().toString());
+                // concatenate user.dir in front of file path
+                filePath = Paths.get(dir.toString(), filePath.toString());
+            }
+        }
+        // verify final file path
+        if (!filePath.toFile().exists()) {
+            LoggerUtils.log.severe("Cannot find the LPhy script : " + filePath +
+                    " from the directory " + dir + ", set it using '-d' !");
+            return;
+        }
+        String name = lphyFile.getName();
+        LoggerUtils.log.info("Read LPhy script " + name + " from " + filePath);
+
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(exampleFile));
-            // set user.dir to the folder containing example file,
-            // so that the relative path given in readNexus always refers to it
-            IOUtils.setUserDir(exampleFile.getParent());
+            reader = new BufferedReader(new FileReader(filePath.toFile()));
             parser.clear();
-            parser.setName(name);
             panel.clear();
+            parser.setName(name);
             panel.source(reader);
             setTitle(name);
         } catch (IOException e1) {
             setTitle(null);
-            // set to where LPhy is launched
-            IOUtils.setUserDir(Paths.get("").toString());
             e1.printStackTrace();
         }
     }
@@ -262,8 +294,8 @@ public class LinguaPhyloStudio {
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
-        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
-        showArgumentLabels.setState(GraphicalModelComponent.getUseStraightEdges());
+        useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
+        useStraightEdges.setState(GraphicalModelComponent.getUseStraightEdges());
         viewMenu.add(useStraightEdges);
 
 
@@ -349,7 +381,7 @@ public class LinguaPhyloStudio {
 
                     } catch (IOException e) {
 
-                    } 
+                    }
                 }
             }
 
@@ -435,21 +467,27 @@ public class LinguaPhyloStudio {
         // use -Duser.dir= to set the working dir, so examples can be loaded properly
         LinguaPhyloStudio app = new LinguaPhyloStudio();
 
-        if (args.length > 0) {
-            // always the last arg
-            String lphyFileName = args[args.length-1];
-            // examples/simpleYule.lphy
-            if (!lphyFileName.endsWith(".lphy"))
-                LoggerUtils.log.severe("Invalid LPhy file name " + lphyFileName + " !");
-            File file = new File(lphyFileName);
-
-            if (file.exists()) {
-                app.readFile(file);
-            } else
-                LoggerUtils.log.severe("Cannot find LPhy file " + lphyFileName + " !");
-//                throw new FileNotFoundException("Cannot find LPhy file !");
+        Path dir = null;
+        String lphyFileName = null;
+        for (int i = 0; i < args.length; i++) {
+            if ("-d".equals(args[i])) {
+                i++;
+                // -d examples
+                dir = Path.of(args[i]);
+            } else {
+                // the rest is input file
+                lphyFileName = args[i];
+            }
         }
 
+        if (lphyFileName != null) {
+            File file = new File(lphyFileName);
+
+            if (!lphyFileName.endsWith(".lphy"))
+                LoggerUtils.log.severe("Invalid LPhy file name " + lphyFileName + " !");
+            else
+                app.readFile(file, dir);
+        }
     }
 
 }
