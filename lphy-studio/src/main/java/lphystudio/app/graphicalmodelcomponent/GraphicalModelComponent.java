@@ -3,16 +3,19 @@ package lphystudio.app.graphicalmodelcomponent;
 import lphy.core.GraphicalLPhyParser;
 import lphy.core.GraphicalModelChangeListener;
 import lphy.core.GraphicalModelListener;
-import lphystudio.core.narrative.LaTeXNarrative;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.Generator;
+import lphy.graphicalModel.Value;
 import lphy.layeredgraph.*;
+import lphystudio.core.narrative.LaTeXNarrative;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.*;
-import java.util.*;
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -36,7 +39,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private static final String SHOW_CONSTANT_NODES = "showConstantNodes";
     private static final String SHOW_ARGUMENT_LABELS = "showArgumentLabels";
     private static final String USE_STRAIGHT_EDGES = "useStraightEdges";
-    private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
+    private static boolean showArgumentLabels = false;//preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
     private static boolean useStraightEdges = preferences.getBoolean(USE_STRAIGHT_EDGES, false);
 
     LayeredGraph layeredGraph = null;
