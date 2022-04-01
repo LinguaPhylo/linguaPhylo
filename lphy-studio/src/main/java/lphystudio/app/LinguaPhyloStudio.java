@@ -193,7 +193,7 @@ public class LinguaPhyloStudio {
      * @param lphyFile  LPhy script file, if it is
      * @param dir      if not null, then concatenate to example file path.
      */
-    private void readFile(File lphyFile, Path dir) {
+    public void readFile(File lphyFile, Path dir) {
         try {
             Utils.readFile(lphyFile, dir, panel);
             setTitle(lphyFile.getName());

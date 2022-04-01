@@ -31,8 +31,9 @@ model {
   R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
   // trait indicators
-  S ~ Poisson(lambda=2, min=K, max=dim);
-  I ~ RandomBooleanArray(length=dim, hammingWeight=S);
+  I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
+//  S ~ Poisson(lambda=2, min=K, max=dim);
+//  I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
   //μ_trait ~ Gamma(shape=0.001, scale=1000.0);
   μ_trait ~ LogNormal(meanlog=2.0, sdlog=2.0);
