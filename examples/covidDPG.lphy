@@ -1,41 +1,37 @@
 data {
   // extract dates
-  D = readNexus(file="data/covid100.nex", options={ageDirection="forward", ageRegex=".*\|(\d+-\d+-\d+)\|.*$"});
-  // 4 partitions
-  parts = D.charset(["codon1","codon2", "codon3", "noncoding"]);
-  weights = parts.nchar();
+  options={ageDirection="forward", ageRegex=".*\|(\d+\.\d+)$"};
+  D = readFasta(file="data/bluff-wedding-cluster.fasta", options=options);
+
   // Bayesian Skyline
   numGroups = 20;
   taxa = D.taxa();
   w = taxa.length()-1;
-  // extract traits from the 3rd element
-  D_trait = extractTrait(taxa=taxa, sep="|", i=2);
-  S = D_trait.stateCount();
-  dim = S*(S-1)/2;
+  // i starts from 0
+  D_trait = extractTrait(taxa=taxa, sep="|", i=1);
+  K = D_trait.stateCount();
+  dim = K*(K-1)/2;
 }
 model {
-  κ ~ LogNormal(meanlog=1.0, sdlog=1.25, replicates=length(parts));
-  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0], replicates=length(parts));
+  κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
+  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
 
   firstValue ~ LogNormal(meanlog=0.0, sdlog=2.0);
   Θ ~ ExpMarkovChain(firstValue=firstValue, n=numGroups);
   groupSizes ~ RandomComposition(n=w, k=numGroups);
   ψ ~ SkylineCoalescent(theta=Θ, taxa=taxa, groupSizes=groupSizes);
 
-  // relative substitution rates
-  mu ~ WeightedDirichlet(conc=rep(element=1.0, times=length(parts)), weights=weights);
-  
   // "7.87e-05" "9.12e-04" "1.06e-02"
   clockRate ~ LogNormal(meanlog=-7.0, sdlog=1.25);
   
-  parts ~ PhyloCTMC(L=weights, Q=hky(kappa=κ, freq=π, meanRate=mu), mu=clockRate, tree=ψ);
+  D ~ PhyloCTMC(L=D.nchar(), Q=hky(kappa=κ, freq=π), mu=clockRate, tree=ψ);
 
-  π_trait ~ Dirichlet(conc=rep(element=3.0, times=S));
+  π_trait ~ Dirichlet(conc=rep(element=3.0, times=K));
   // symmetric, rates dimension = n * (n-1) / 2
   R_trait ~ Dirichlet(conc=rep(element=1.0, times=dim));
 
   // trait indicators
-  S ~ Poisson(lambda=2, min=S, max=dim);
+  S ~ Poisson(lambda=2, min=K, max=dim);
   I ~ RandomBooleanArray(length=dim, hammingWeight=S);
 
   //μ_trait ~ Gamma(shape=0.001, scale=1000.0);
