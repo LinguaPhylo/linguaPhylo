@@ -1,7 +1,5 @@
 package lphystudio.app;
 
-import lphy.graphicalModel.Value;
-
 import javax.swing.*;
 
 public interface Viewer<T> {

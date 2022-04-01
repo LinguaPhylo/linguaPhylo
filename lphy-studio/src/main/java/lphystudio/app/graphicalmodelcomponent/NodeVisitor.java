@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.graphicalmodelcomponent;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
@@ -6,8 +6,8 @@ import lphy.graphicalModel.Value;
 
 import java.awt.geom.Point2D;
 
-/**
- * Created by adru001 on 19/12/19.
+/**TODO this is not used
+ * Created by Alexei on 19/12/19.
  */
 public interface NodeVisitor {
 
