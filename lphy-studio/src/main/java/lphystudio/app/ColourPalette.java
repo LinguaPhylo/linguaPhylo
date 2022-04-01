@@ -1,4 +1,4 @@
-package lphystudio;
+package lphystudio.app;
 
 import jebl.evolution.sequences.SequenceType;
 

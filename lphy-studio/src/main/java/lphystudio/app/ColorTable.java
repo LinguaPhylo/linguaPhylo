@@ -1,4 +1,4 @@
-package lphystudio;
+package lphystudio.app;
 
 import java.awt.*;
 import java.util.List;

@@ -89,18 +89,24 @@ public class LinguaPhyloStudio {
         JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        saveAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(codeBuilder.getCode(parser)));
 
         JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
         fileMenu.add(saveLogAsMenuItem);
+        saveLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.variableLog.getText()));
 
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
+        saveTreeLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.treeLog.getText()));
 
         JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
         fileMenu.add(saveModelToHTML);
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
 
         JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
         fileMenu.add(saveModelToRTF);
+        saveModelToRTF.addActionListener(e -> exportToRtf());
 
         fileMenu.addSeparator();
 
@@ -182,15 +188,6 @@ public class LinguaPhyloStudio {
             }
         });
 
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-
-        saveAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(codeBuilder.getCode(parser)));
-
-        saveTreeLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.treeLog.getText()));
-        saveLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.variableLog.getText()));
-
-        saveModelToHTML.addActionListener(e -> exportModelToHTML());
-        saveModelToRTF.addActionListener(e -> exportToRtf());
 //        System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
     }
 
@@ -246,7 +243,8 @@ public class LinguaPhyloStudio {
         if (dir != null) {
             // must be relative
             if (lphyFile.isAbsolute())
-                LoggerUtils.log.warning("LPhy script is an absolute file path, ignoring '-d' ! " + lphyFile);
+                LoggerUtils.log.warning("LPhy script is an absolute file path, " +
+                        "ignoring '-d' if it is provided ! " + lphyFile);
             else {
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
                 IOUtils.setUserDir(dir.toAbsolutePath().toString());

@@ -8,7 +8,6 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphystudio.ColourPalette;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 
 import javax.swing.*;
