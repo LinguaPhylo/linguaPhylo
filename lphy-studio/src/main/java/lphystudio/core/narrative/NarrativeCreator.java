@@ -8,8 +8,7 @@ import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
 import lphystudio.app.GraphicalModelPanel;
-import lphystudio.app.LinguaPhyloStudio;
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.Utils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -26,7 +25,6 @@ public class NarrativeCreator {
     public static final String DIV_BOX_BACKGR_COLOUR =
             "<div id=\"auto-generated\" style=\"background-color: #DCDCDC; " +
                     "padding: 10px; border: 1px solid gray; margin: 0; \">";
-    GraphicalModelComponent component; // include GraphicalLPhyParser
     HTMLNarrative htmlNarrative;
     LaTeXNarrative latexNarrative;
 
@@ -34,36 +32,39 @@ public class NarrativeCreator {
     StringBuilder narrative = new StringBuilder();
     StringBuilder references = new StringBuilder();
 
-    GraphicalModelPanel panel;
-    LinguaPhyloStudio app;
-
 //    static Preferences preferences = Preferences.userNodeForPackage(NarrativeCreator.class);
 
-    public NarrativeCreator(String lphyFileName) throws IOException {
+    public NarrativeCreator(String lphyFileName) {
         htmlNarrative = new HTMLNarrative();
         latexNarrative = new LaTeXNarrative();
-
-        LPhyParser simplyParser = readFile(lphyFileName);
-        // A wrapper for any implementation of LPhyParser that will be used in the Studio
-        GraphicalLPhyParser parser = new GraphicalLPhyParser(simplyParser);
-//        component = new GraphicalModelComponent(parser);
-//        component.setShowConstantNodes(false);
-
-//        panel = new GraphicalModelPanel(parser);
-
         Path wd = IOUtils.getUserDir(); // working dir
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
-        createNarrativeExclImg(parser, imgFile);
 
-        // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
-//        createImage(lphyFileName, imgFile);
-        writeNarrative(wd);
-        LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
+        try {
+            GraphicalLPhyParser parser = getParser(lphyFileName);
+//            component = new GraphicalModelComponent(parser);
+//            component.setShowConstantNodes(false);
+//            panel = new GraphicalModelPanel(parser);
+
+            createNarrativeExclImg(parser, imgFile);
+            LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
+
+            // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
+//        createImage(lphyFileName, imgFile, panel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            writeNarrative(wd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
 
-    private LPhyParser readFile(String lphyFileName) throws IOException {
+    private GraphicalLPhyParser getParser(String lphyFileName) throws IOException {
         if (!lphyFileName.endsWith(".lphy"))
             throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
 
@@ -76,18 +77,15 @@ public class NarrativeCreator {
         LPhyParser parser = new REPL();
         parser.source(reader);
 
-        return parser;
+        // A wrapper for any implementation of LPhyParser that will be used in the Studio
+        return new GraphicalLPhyParser(parser);
     }
 
-    private void createImage(String lphyFileName, Path imgFile) throws IOException {
-        File file = new File(lphyFileName);
-        app = new LinguaPhyloStudio();
-        app.readFile(file, file.toPath().getParent());
+    private void createImage(File imgFile, GraphicalModelPanel panel) throws IOException {
+        Utils.readFile(imgFile, imgFile.getParentFile().toPath(), panel);
 
-        app.exportToPNG(imgFile.toString());
-        System.out.println("Save " + imgFile.toAbsolutePath());
-
-        app.quit();
+        Utils.exportToPNG(imgFile, panel);
+        LoggerUtils.log.info("Save " + imgFile.getAbsolutePath());
     }
 
     // exclude creating image

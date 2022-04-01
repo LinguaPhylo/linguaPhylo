@@ -1,7 +1,6 @@
 package lphystudio.app;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.graphicalModel.Utils;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.parser.REPL;
@@ -13,7 +12,6 @@ import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphystudio.core.narrative.HTMLNarrative;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
@@ -21,10 +19,8 @@ import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -90,15 +86,15 @@ public class LinguaPhyloStudio {
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        saveAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(codeBuilder.getCode(parser)));
+        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser)));
 
         JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
         fileMenu.add(saveLogAsMenuItem);
-        saveLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.variableLog.getText()));
+        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.rightPane.variableLog.getText()));
 
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
-        saveTreeLogAsMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.rightPane.treeLog.getText()));
+        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.rightPane.treeLog.getText()));
 
         JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
         fileMenu.add(saveModelToHTML);
@@ -113,12 +109,12 @@ public class LinguaPhyloStudio {
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
         fileMenu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser)));
+        exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser)));
 
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
         exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
         fileMenu.add(exportTikzMenuItem);
-        exportTikzMenuItem.addActionListener(e -> lphystudio.app.Utils.saveToFile(panel.component.toTikz()));
+        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.component.toTikz()));
 
         //Build the example's menu.
         JMenu exampleMenu = new JMenu("Examples");
@@ -188,13 +184,33 @@ public class LinguaPhyloStudio {
             }
         });
 
-//        System.out.println("LPhy studio working directory = " + IOUtils.getUserDir());
+//        System.out.println("LPhy studio working directory = " + Utils.getUserDir());
+    }
+
+    /**
+     * Load Lphy script from a file,
+     * concatenate user.dir in front of the relative path of example file
+     * @param lphyFile  LPhy script file, if it is
+     * @param dir      if not null, then concatenate to example file path.
+     */
+    private void readFile(File lphyFile, Path dir) {
+        try {
+            Utils.readFile(lphyFile, dir, panel);
+            setTitle(lphyFile.getName());
+        } catch (IOException e1) {
+            setTitle(null);
+            e1.printStackTrace();
+        }
+    }
+
+    private void setTitle(String name) {
+        frame.setTitle(APP_NAME + " version " + VERSION +
+                (name != null ? " - "  + name : ""));
     }
 
     private void listAllFiles(JMenu jMenu) {
         final String EXMP = "examples";
         final String TUTL = "tutorials";
-//        String wd = System.getProperty(IOUtils.USER_DIR);
 
         File dir = null;
         if (jMenu.getText().equalsIgnoreCase(EXMP)) {
@@ -229,49 +245,6 @@ public class LinguaPhyloStudio {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Load Lphy script from a file,
-     * concatenate user.dir in front of the relative path of example file
-     * @param lphyFile  LPhy script file, if it is
-     * @param dir      if not null, then concatenate to example file path.
-     */
-    public void readFile(File lphyFile, Path dir) {
-        Path filePath = lphyFile.toPath();
-        if (dir != null) {
-            // must be relative
-            if (lphyFile.isAbsolute())
-                LoggerUtils.log.warning("LPhy script is an absolute file path, " +
-                        "ignoring '-d' if it is provided ! " + lphyFile);
-            else {
-                // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
-                IOUtils.setUserDir(dir.toAbsolutePath().toString());
-                // concatenate user.dir in front of file path
-                filePath = Paths.get(dir.toString(), filePath.toString());
-            }
-        }
-        // verify final file path
-        if (!filePath.toFile().exists()) {
-            LoggerUtils.log.severe("Cannot find the LPhy script : " + filePath +
-                    " from the directory " + dir + ", set it using '-d' !");
-            return;
-        }
-        String name = lphyFile.getName();
-        LoggerUtils.log.info("Read LPhy script " + name + " from " + filePath);
-
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(filePath.toFile()));
-            parser.clear();
-            panel.clear();
-            parser.setName(name);
-            panel.source(reader);
-            setTitle(name);
-        } catch (IOException e1) {
-            setTitle(null);
-            e1.printStackTrace();
         }
     }
 
@@ -326,11 +299,6 @@ public class LinguaPhyloStudio {
             panel.repaint();
         });
 
-    }
-
-    private void setTitle(String name) {
-        frame.setTitle(APP_NAME + " version " + VERSION +
-                (name != null ? " - "  + name : ""));
     }
 
     private void exportToRtf() {
@@ -427,31 +395,6 @@ public class LinguaPhyloStudio {
 
         GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
         return parser;
-
-    }
-
-    public File exportToPNG(String filePath) throws IOException {
-        final String imgFormat = "png";
-        if (!filePath.endsWith(imgFormat))
-            throw new IllegalArgumentException("Expect image format " + imgFormat);
-
-        GraphicalModelComponent gm = panel.component;
-        // preference records the previous behaviour
-        boolean prevAction = gm.getShowConstantNodes();
-        gm.setShowConstantNodes(false);
-
-        BufferedImage img = new BufferedImage(gm.getWidth(), gm.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-        Graphics g = img.createGraphics();
-
-        gm.paint(g);
-        // back to previous
-        if (prevAction) gm.setShowConstantNodes(true);
-
-        File imgF = new File(filePath);
-        if (ImageIO.write(img, imgFormat, imgF))
-            return imgF;
-        else
-            throw new IOException("Failed to save graphical model to " + filePath);
 
     }
 

@@ -1,12 +1,12 @@
 package lphystudio.app;
 
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.*;
-import lphy.layeredgraph.Layering;
-import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphy.graphicalModel.*;
-import lphystudio.parser.codecolorizer.LineCodeColorizer;
+import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
+import lphystudio.parser.codecolorizer.LineCodeColorizer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -314,9 +314,13 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
+    /**
+     * clear panel, parser, and interpreters
+     */
     public void clear() {
         rightPane.clear();
         dataInterpreter.clear();
         modelInterpreter.clear();
+        parser.clear();
     }
 }
