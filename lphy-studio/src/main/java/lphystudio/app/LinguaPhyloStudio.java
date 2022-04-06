@@ -13,6 +13,7 @@ import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -21,6 +22,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -329,21 +331,39 @@ public class LinguaPhyloStudio {
     }
 
     private String getHTMLCredits() {
-        return "<html><body width='%1s'><h3>Designed and developed by<br>"+
+        return "<html><body width='%1s'><h3>LPhy developers:<br>"+
                 "Alexei J. Drummond, Walter Xie & Fábio K. Mendes</h3>"+
                 "<p>The Centre for Computational Evolution<br>"+
                 "University of Auckland<br>"+
-                "alexei@cs.auckland.ac.nz</p><br>"+
+                "alexei@cs.auckland.ac.nz</p>"+
                 "<p>Downloads & Source code:<br>"+
-                SOURCE+"</p><br>"+
+                "<a href=\""+SOURCE+"\">"+SOURCE+"</a></p>"+
                 "<p>User manual, Tutorials & Developer note:<br>"+
-                WEB+"</p><br>"+
-                "<p>Source code distributed under the GNU Lesser General Public License Version 3</p><br>"+
+                "<a href=\""+WEB+"\">"+WEB+"</a></p>"+
+                "<p>Source code distributed under the GNU Lesser General Public License Version 3</p>"+
                 "<p>Java version " + System.getProperty("java.version") + "</p></html>";
     }
 
     private void buildAboutDialog(Component parentComponent) {
-        JOptionPane.showMessageDialog(parentComponent, new JLabel(getHTMLCredits()),
+        final JTextPane textPane = new JTextPane();
+        textPane.setEditorKit(JTextPane.createEditorKitForContentType("text/html"));
+        textPane.setText(getHTMLCredits());
+        textPane.setEditable(false);
+        textPane.setAutoscrolls(true);
+        textPane.addHyperlinkListener(e -> {
+            if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                if(Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (IOException | URISyntaxException ex) {
+                        LoggerUtils.log.severe(ex.toString());
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        JOptionPane.showMessageDialog(parentComponent, textPane,
                 APP_NAME + " v " + VERSION, JOptionPane.PLAIN_MESSAGE, null);
     }
 
