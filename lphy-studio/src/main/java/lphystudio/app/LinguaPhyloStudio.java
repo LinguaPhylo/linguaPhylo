@@ -18,6 +18,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.file.Path;
@@ -27,12 +28,15 @@ import java.util.Comparator;
 
 public class LinguaPhyloStudio {
 
-    private static String APP_NAME = "LPhy Studio";
     public static String VERSION;
+
+    private static String APP_NAME = "LPhy Studio";
+    private static String WEB = "https://linguaphylo.github.io";
+    private static String SOURCE = "https://github.com/LinguaPhylo/linguaPhylo";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "PhyloProb");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.macos.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
@@ -48,6 +52,7 @@ public class LinguaPhyloStudio {
     }
 
     private static String getVersion() {
+        // in dev, if system property has no "lphy.studio.version", then VERSION = "DEVELOPMENT"
         return DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
@@ -149,6 +154,28 @@ public class LinguaPhyloStudio {
                 ex.printStackTrace();
             }
         });
+
+        // deal with About menu
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+
+            desktop.setAboutHandler(e ->
+                    buildAboutDialog(frame)
+            );
+//            desktop.setPreferencesHandler(e ->
+//                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
+//            );
+//            desktop.setQuitHandler((e,r) -> {
+//                        JOptionPane.showMessageDialog(frame, "Quit dialog");
+//                        System.exit(0);
+//                    }
+//            );
+        } else {
+            JMenu helpMenu = new JMenu("Help");
+            menuBar.add(helpMenu);
+            helpMenu.setMnemonic('H');
+            helpMenu.add(new ActionAbout());
+        }
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
@@ -300,6 +327,35 @@ public class LinguaPhyloStudio {
         });
 
     }
+
+    private String getHTMLCredits() {
+        return "<html><body width='%1s'><h3>Designed and developed by<br>"+
+                "Alexei J. Drummond, Walter Xie & Fábio K. Mendes</h3>"+
+                "<p>The Centre for Computational Evolution<br>"+
+                "University of Auckland<br>"+
+                "alexei@cs.auckland.ac.nz</p><br>"+
+                "<p>Downloads & Source code:<br>"+
+                SOURCE+"</p><br>"+
+                "<p>User manual, Tutorials & Developer note:<br>"+
+                WEB+"</p><br>"+
+                "<p>Source code distributed under the GNU Lesser General Public License Version 3</p><br>"+
+                "<p>Java version " + System.getProperty("java.version") + "</p></html>";
+    }
+
+    private void buildAboutDialog(Component parentComponent) {
+        JOptionPane.showMessageDialog(parentComponent, new JLabel(getHTMLCredits()),
+                APP_NAME + " v " + VERSION, JOptionPane.PLAIN_MESSAGE, null);
+    }
+
+    class ActionAbout extends AbstractAction {
+        public ActionAbout() {
+            super("About", null);
+        }
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            buildAboutDialog(frame);
+        }
+    } // non Mac About
 
     private void exportToRtf() {
         JTextPane textPane = panel.rightPane.canonicalModelPanel.pane;
