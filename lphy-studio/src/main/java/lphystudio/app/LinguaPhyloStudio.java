@@ -286,48 +286,41 @@ public class LinguaPhyloStudio {
         JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
         showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
         showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
-        viewMenu.add(showArgumentLabels);
+        showArgumentLabels.addActionListener(
+                e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
+//        viewMenu.add(showArgumentLabels);//TODO issue 169
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
         showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
         showSampledValues.setState(LayeredGNode.getShowValueInNode());
+        showSampledValues.addActionListener(
+                e -> panel.component.setShowValueInNode(showSampledValues.getState()));
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
         useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
         useStraightEdges.setState(GraphicalModelComponent.getUseStraightEdges());
+        useStraightEdges.addActionListener(
+                e -> panel.component.setUseStraightEdges(useStraightEdges.getState()));
         viewMenu.add(useStraightEdges);
-
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
         showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
         showTreeInAlignmentView.setState(true);
+        showTreeInAlignmentView.addActionListener(e -> {
+            AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(showTreeInAlignmentView.getState());
+            panel.repaint();
+        });
         viewMenu.add(showTreeInAlignmentView);
 
         JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
         showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MASK));
         showErrorsInErrorAlignmentView.setState(true);
-        viewMenu.add(showErrorsInErrorAlignmentView);
-
-        showArgumentLabels.addActionListener(
-                e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
-
-        useStraightEdges.addActionListener(
-                e -> panel.component.setUseStraightEdges(useStraightEdges.getState()));
-
-
-        showSampledValues.addActionListener(
-                e -> panel.component.setShowValueInNode(showSampledValues.getState()));
-
-        showTreeInAlignmentView.addActionListener(e -> {
-            AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(showTreeInAlignmentView.getState());
-            panel.repaint();
-        });
         showErrorsInErrorAlignmentView.addActionListener(e -> {
             AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState();
             panel.repaint();
         });
-
+        viewMenu.add(showErrorsInErrorAlignmentView);
     }
 
     private String getHTMLCredits() {
