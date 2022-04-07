@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.viewer;
 
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;

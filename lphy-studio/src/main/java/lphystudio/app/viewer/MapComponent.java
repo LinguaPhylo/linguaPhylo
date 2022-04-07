@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.viewer;
 
 import lphy.graphicalModel.types.MapValue;
 

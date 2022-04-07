@@ -9,11 +9,8 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.MapValue;
 import lphy.util.LoggerUtils;
-import lphystudio.app.ContinuousCharacterDataComponent;
-import lphystudio.app.MapComponent;
-import lphystudio.app.graphicalmodelpanel.MethodInfoPanel;
-import lphystudio.app.TaxaComponent;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
+import lphystudio.app.graphicalmodelpanel.MethodInfoPanel;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.app.valueeditors.*;
 

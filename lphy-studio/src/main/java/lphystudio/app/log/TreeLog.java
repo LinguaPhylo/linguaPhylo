@@ -1,11 +1,13 @@
-package lphystudio.app;
+package lphystudio.app.log;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by adru001 on 10/03/20.

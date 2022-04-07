@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.log;
 
 import lphy.graphicalModel.RandomNumberLogger;
 import lphy.graphicalModel.RandomValueLogger;

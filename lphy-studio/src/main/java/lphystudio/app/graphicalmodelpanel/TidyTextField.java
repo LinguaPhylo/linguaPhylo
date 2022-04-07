@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.graphicalmodelpanel;
 
 import javax.swing.*;
 import java.awt.*;

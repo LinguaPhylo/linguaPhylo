@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.log;
 
 public class ValueRow {
 

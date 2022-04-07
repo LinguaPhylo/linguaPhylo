@@ -1,6 +1,5 @@
-package lphystudio.app;
+package lphystudio.app.graphicalmodelpanel;
 
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.GraphicalLPhyParser;
 import lphy.core.GraphicalModelListener;
 import lphy.core.narrative.Narrative;
@@ -9,6 +8,7 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

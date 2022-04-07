@@ -4,8 +4,6 @@ import lphy.core.*;
 import lphy.graphicalModel.*;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
-import lphystudio.app.TidyComboBox;
-import lphystudio.app.TidyTextField;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphystudio.app.valueeditors.DoubleArray2DEditor;

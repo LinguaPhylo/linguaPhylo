@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.LPhyParser;
 import lphy.parser.SimulatorParsingException;

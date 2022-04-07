@@ -1,8 +1,10 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphystudio.app.*;
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphy.core.GraphicalLPhyParser;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.log.TreeLog;
+import lphystudio.app.log.VariableLog;
+import lphystudio.app.log.VariableSummary;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
 

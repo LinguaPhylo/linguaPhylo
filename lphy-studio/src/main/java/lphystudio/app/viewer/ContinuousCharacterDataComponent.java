@@ -1,4 +1,4 @@
-package lphystudio.app;
+package lphystudio.app.viewer;
 
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.ContinuousCharacterData;
