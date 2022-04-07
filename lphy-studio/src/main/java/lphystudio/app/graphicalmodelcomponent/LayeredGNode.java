@@ -4,6 +4,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
 import lphy.layeredgraph.LayeredNode;
 import lphy.util.LoggerUtils;
+import lphystudio.app.swing.*;
 
 import javax.swing.*;
 import java.awt.*;

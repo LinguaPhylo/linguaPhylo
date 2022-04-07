@@ -8,8 +8,10 @@ import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
 import lphyext.manager.DependencyUtils;
 import lphyext.manager.ExtManagerDialog;
+import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.swing.*;
@@ -86,31 +88,27 @@ public class LinguaPhyloStudio {
 
         JMenuItem openMenuItem = new JMenuItem("Open Script...");
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
-
         fileMenu.add(openMenuItem);
+        openMenuItem.addActionListener(e -> {
+            // use "user.dir" instead of FileSystemView.getFileSystemView().getHomeDirectory()
+            JFileChooser jfc = new JFileChooser(IOUtils.getUserDir().toFile());
 
-        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
-        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
-        fileMenu.add(saveAsMenuItem);
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser)));
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
+            jfc.setFileFilter(filter);
+            jfc.setMultiSelectionEnabled(false);
+            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
-        fileMenu.add(saveLogAsMenuItem);
-        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.rightPane.variableLog.getText()));
+            int returnValue = jfc.showOpenDialog(null);
 
-        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
-        fileMenu.add(saveTreeLogAsMenuItem);
-        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.rightPane.treeLog.getText()));
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jfc.getSelectedFile();
+//                panel.readScript(selectedFile);
+                Path dir = selectedFile.toPath().getParent();
+                readFile(selectedFile, dir);
+            }
+        });
 
-        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
-        fileMenu.add(saveModelToHTML);
-        saveModelToHTML.addActionListener(e -> exportModelToHTML());
-
-        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
-        fileMenu.add(saveModelToRTF);
-        saveModelToRTF.addActionListener(e -> exportToRtf());
-
+        buildSaveMenu(fileMenu);
         fileMenu.addSeparator();
 
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
@@ -121,7 +119,7 @@ public class LinguaPhyloStudio {
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
         exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
         fileMenu.add(exportTikzMenuItem);
-        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.component.toTikz()));
+        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz()));
 
         //Build the example's menu.
         JMenu exampleMenu = new JMenu("Examples");
@@ -138,7 +136,7 @@ public class LinguaPhyloStudio {
         listAllFiles(tutMenu);
 
         buildViewMenu(menuBar);
-        menuBar.add(panel.rightPane.getMenu());
+        menuBar.add(panel.getRightPane().getMenu());
 
         // Tools
         JMenu toolMenu = new JMenu("Tools");
@@ -193,26 +191,6 @@ public class LinguaPhyloStudio {
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
-
-        openMenuItem.addActionListener(e -> {
-            // use "user.dir" instead of FileSystemView.getFileSystemView().getHomeDirectory()
-            JFileChooser jfc = new JFileChooser(IOUtils.getUserDir().toFile());
-
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
-            jfc.setFileFilter(filter);
-            jfc.setMultiSelectionEnabled(false);
-            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-            int returnValue = jfc.showOpenDialog(null);
-
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jfc.getSelectedFile();
-//                panel.readScript(selectedFile);
-                Path dir = selectedFile.toPath().getParent();
-                readFile(selectedFile, dir);
-            }
-        });
-
 //        System.out.println("LPhy studio working directory = " + Utils.getUserDir());
     }
 
@@ -277,7 +255,32 @@ public class LinguaPhyloStudio {
         }
     }
 
+    private void buildSaveMenu(JMenu fileMenu) {
+        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
+        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
+        fileMenu.add(saveAsMenuItem);
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser)));
+
+        JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
+        fileMenu.add(saveLogAsMenuItem);
+        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.getRightPane().getVariableLog().getText()));
+
+        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
+        fileMenu.add(saveTreeLogAsMenuItem);
+        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.getRightPane().getTreeLog().getText()));
+
+        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
+        fileMenu.add(saveModelToHTML);
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
+
+        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
+        fileMenu.add(saveModelToRTF);
+        saveModelToRTF.addActionListener(e -> exportToRtf());
+    }
+
     private void buildViewMenu(JMenuBar menuBar) {
+        GraphicalModelComponent component = panel.getComponent();
         //Build the second menu.
         JMenu viewMenu = new JMenu("View");
         viewMenu.setMnemonic(KeyEvent.VK_V);
@@ -287,21 +290,21 @@ public class LinguaPhyloStudio {
         showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
         showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
         showArgumentLabels.addActionListener(
-                e -> panel.component.setShowArgumentLabels(showArgumentLabels.getState()));
+                e -> component.setShowArgumentLabels(showArgumentLabels.getState()));
 //        viewMenu.add(showArgumentLabels);//TODO issue 169
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
         showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
         showSampledValues.setState(LayeredGNode.getShowValueInNode());
         showSampledValues.addActionListener(
-                e -> panel.component.setShowValueInNode(showSampledValues.getState()));
+                e -> component.setShowValueInNode(showSampledValues.getState()));
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
         useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
         useStraightEdges.setState(GraphicalModelComponent.getUseStraightEdges());
         useStraightEdges.addActionListener(
-                e -> panel.component.setUseStraightEdges(useStraightEdges.getState()));
+                e -> component.setUseStraightEdges(useStraightEdges.getState()));
         viewMenu.add(useStraightEdges);
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
@@ -371,7 +374,7 @@ public class LinguaPhyloStudio {
     } // non Mac About
 
     private void exportToRtf() {
-        JTextPane textPane = panel.rightPane.canonicalModelPanel.pane;
+        JTextPane textPane = panel.getCanonicalModelPane();
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document doc = textPane.getDocument();
@@ -430,7 +433,7 @@ public class LinguaPhyloStudio {
 
     private void exportModelToHTML() {
 
-        JTextPane pane = panel.rightPane.canonicalModelPanel.pane;
+        JTextPane pane = panel.getCanonicalModelPane();
 
         if (pane.getDocument().getLength() > 0) {
 
