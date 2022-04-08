@@ -81,7 +81,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         public DataModelASTVisitor() {
         }
 
-        void addTextElement(TextElement element) {
+        public void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
 
             for (int i = 0; i < element.text.size(); i++) {

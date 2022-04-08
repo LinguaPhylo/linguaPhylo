@@ -41,7 +41,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
         public DataModelASTVisitor() {
         }
 
-        void addTextElement(TextElement element) {
+        public void addTextElement(TextElement element) {
 
             StringBuilder builder = new StringBuilder();
 
