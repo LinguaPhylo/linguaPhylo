@@ -41,9 +41,8 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
     LPhyParser.Context context = LPhyParser.Context.model;
 
-
     // the indent within a block
-    String indent = "  ";
+    protected String indent = "  ";
 
     public DataModelCodeColorizer(LPhyParser parser, JTextPane pane) {
 

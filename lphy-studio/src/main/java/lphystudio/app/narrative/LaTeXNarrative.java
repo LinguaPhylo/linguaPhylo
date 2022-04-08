@@ -13,7 +13,6 @@ import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.NodeWrapper;
 import lphy.layeredgraph.ProperLayeredGraph;
 import lphy.util.Symbols;
-import lphystudio.core.codecolorizer.DataModelToLaTeX;
 import lphystudio.core.layeredgraph.LayeredGNode;
 
 import javax.swing.*;

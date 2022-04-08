@@ -31,6 +31,18 @@ public class TextElement {
         }
     }
 
+    public int getSize() {
+        return text.size();
+    }
+
+    public String getText(int i) {
+        return text.get(i);
+    }
+
+    public Style getStyle(int i) {
+        return style.get(i);
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (String t : text) {
