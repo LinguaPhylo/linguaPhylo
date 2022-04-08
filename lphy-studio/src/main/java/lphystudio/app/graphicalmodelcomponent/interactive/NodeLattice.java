@@ -1,16 +1,16 @@
 package lphystudio.app.graphicalmodelcomponent.interactive;
 
-import lphy.layeredgraph.LayeredNode;
-import lphystudio.app.graphicalmodelcomponent.Positioning;
 import lphy.layeredgraph.LatticePoint;
+import lphy.layeredgraph.LayeredNode;
+import lphystudio.core.layeredgraph.Positioning;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-import java.awt.geom.Ellipse2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 public class NodeLattice {
 

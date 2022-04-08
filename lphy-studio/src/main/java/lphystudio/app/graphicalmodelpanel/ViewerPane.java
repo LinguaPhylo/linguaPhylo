@@ -2,11 +2,11 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.log.TreeLog;
-import lphystudio.app.log.VariableLog;
-import lphystudio.app.log.VariableSummary;
-import lphystudio.core.narrative.HTMLNarrative;
-import lphystudio.core.narrative.LaTeXNarrative;
+import lphystudio.app.narrative.HTMLNarrative;
+import lphystudio.app.narrative.LaTeXNarrative;
+import lphystudio.core.log.TreeLog;
+import lphystudio.core.log.VariableLog;
+import lphystudio.core.log.VariableSummary;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;

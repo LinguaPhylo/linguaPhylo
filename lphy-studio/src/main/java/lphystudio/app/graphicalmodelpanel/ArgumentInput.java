@@ -3,8 +3,8 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Argument;
 import lphy.graphicalModel.Value;
-import lphystudio.app.swing.BoundsPopupMenuListener;
-import lphystudio.app.valueeditors.FieldComboBoxEditor;
+import lphystudio.core.swing.BoundsPopupMenuListener;
+import lphystudio.core.valueeditors.FieldComboBoxEditor;
 
 import javax.swing.*;
 import java.util.List;

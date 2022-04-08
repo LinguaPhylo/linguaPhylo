@@ -11,8 +11,8 @@ import lphyext.manager.ExtManagerDialog;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
-import lphystudio.core.narrative.HTMLNarrative;
-import lphystudio.layeredgraph.LayeredGNode;
+import lphystudio.app.narrative.HTMLNarrative;
+import lphystudio.core.layeredgraph.LayeredGNode;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

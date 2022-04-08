@@ -3,8 +3,8 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
-import lphystudio.parser.codecolorizer.DataModelCodeColorizer;
 import lphy.util.LoggerUtils;
+import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;

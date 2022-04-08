@@ -6,8 +6,8 @@ import lphy.parser.ParserUtils;
 import lphy.parser.SimulatorParsingException;
 import lphy.util.LoggerUtils;
 import lphy.util.Symbols;
-import lphystudio.app.swing.TextLineNumber;
-import lphystudio.parser.codecolorizer.LineCodeColorizer;
+import lphystudio.core.codecolorizer.LineCodeColorizer;
+import lphystudio.core.swing.TextLineNumber;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -6,8 +6,10 @@ import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
-import lphystudio.app.valueeditors.DoubleArray2DEditor;
-import lphystudio.parser.codecolorizer.LineCodeColorizer;
+import lphystudio.core.codecolorizer.LineCodeColorizer;
+import lphystudio.core.swing.TidyComboBox;
+import lphystudio.core.swing.TidyTextField;
+import lphystudio.core.valueeditors.DoubleArray2DEditor;
 
 import javax.swing.*;
 import java.awt.*;

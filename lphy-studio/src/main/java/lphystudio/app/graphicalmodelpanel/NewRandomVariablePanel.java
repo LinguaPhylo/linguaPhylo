@@ -5,14 +5,14 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GeneratorInfo;
-import lphystudio.app.swing.BoundsPopupMenuListener;
+import lphystudio.core.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

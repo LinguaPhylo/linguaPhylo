@@ -12,7 +12,7 @@ import lphy.util.LoggerUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelpanel.viewer.*;
 import lphystudio.app.treecomponent.TimeTreeComponent;
-import lphystudio.app.valueeditors.*;
+import lphystudio.core.valueeditors.*;
 
 import javax.swing.*;
 import java.awt.*;

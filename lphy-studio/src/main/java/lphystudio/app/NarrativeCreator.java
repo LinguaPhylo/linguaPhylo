@@ -8,8 +8,8 @@ import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
-import lphystudio.core.narrative.HTMLNarrative;
-import lphystudio.core.narrative.LaTeXNarrative;
+import lphystudio.app.narrative.HTMLNarrative;
+import lphystudio.app.narrative.LaTeXNarrative;
 
 import java.io.*;
 import java.nio.file.Path;

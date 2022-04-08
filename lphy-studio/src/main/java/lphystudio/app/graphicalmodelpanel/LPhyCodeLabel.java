@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.LPhyParser;
 import lphy.parser.SimulatorParsingException;
-import lphystudio.parser.codecolorizer.LineCodeColorizer;
+import lphystudio.core.codecolorizer.LineCodeColorizer;
 
 import javax.swing.*;
 import java.awt.*;
