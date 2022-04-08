@@ -10,9 +10,9 @@ import lphyext.manager.DependencyUtils;
 import lphyext.manager.ExtManagerDialog;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.narrative.HTMLNarrative;
+import lphystudio.layeredgraph.LayeredGNode;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

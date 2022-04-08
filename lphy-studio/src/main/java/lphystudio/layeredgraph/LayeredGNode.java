@@ -1,14 +1,15 @@
-package lphystudio.app.graphicalmodelcomponent;
+package lphystudio.layeredgraph;
 
 import lphy.core.LPhyParser;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Generator;
+import lphy.graphicalModel.RandomVariable;
+import lphy.graphicalModel.Value;
 import lphy.layeredgraph.LayeredNode;
 import lphy.util.LoggerUtils;
 import lphystudio.app.swing.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.prefs.Preferences;
 
 public class LayeredGNode extends LayeredNode.Default {
@@ -19,13 +20,11 @@ public class LayeredGNode extends LayeredNode.Default {
     private Object value;
     String name = null;
 
-    static double VAR_WIDTH = 90;
-    static double VAR_HEIGHT = 50;
+    public static final double VAR_WIDTH = 90;
+    public static final double VAR_HEIGHT = 50;
 
-    static double FACTOR_SIZE = 7;
-    static double FACTOR_LABEL_GAP = 5;
-
-    static DecimalFormat format = new DecimalFormat();
+    public static final double FACTOR_SIZE = 7;
+    public static final double FACTOR_LABEL_GAP = 5;
 
     LPhyParser parser;
 

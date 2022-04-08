@@ -4,7 +4,7 @@ import lphy.core.GraphicalLPhyParser;
 import lphy.core.LPhyParser;
 import lphy.layeredgraph.LayeredNode;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.graphicalmodelcomponent.NodePaintUtils;
+import lphystudio.layeredgraph.NodePaintUtils;
 
 import javax.swing.*;
 import java.awt.*;

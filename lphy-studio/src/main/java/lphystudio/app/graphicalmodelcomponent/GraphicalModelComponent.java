@@ -9,6 +9,9 @@ import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 import lphy.layeredgraph.*;
 import lphystudio.core.narrative.LaTeXNarrative;
+import lphystudio.layeredgraph.LayeredGNode;
+import lphystudio.layeredgraph.LayeredGraphFactory;
+import lphystudio.layeredgraph.NodePaintUtils;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package lphystudio.app.graphicalmodelcomponent;
+package lphystudio.layeredgraph;
 
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.Generator;
@@ -6,7 +6,10 @@ import lphy.graphicalModel.Value;
 import lphy.layeredgraph.LayeredGraph;
 import lphy.layeredgraph.LayeredNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LayeredGraphFactory {
 

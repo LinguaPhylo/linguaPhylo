@@ -1,26 +1,27 @@
 package lphystudio.core.narrative;
 
-import lphy.core.narrative.Narrative;
-import lphy.util.Symbols;
-import lphystudio.app.graphicalmodelcomponent.LayeredGNode;
-import lphy.layeredgraph.LayeredNode;
-import lphy.layeredgraph.NodeWrapper;
-import lphy.layeredgraph.ProperLayeredGraph;
-import lphy.layeredgraph.LatticePoint;
 import lphy.core.LPhyParser;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
+import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
+import lphy.layeredgraph.LatticePoint;
+import lphy.layeredgraph.LayeredNode;
+import lphy.layeredgraph.NodeWrapper;
+import lphy.layeredgraph.ProperLayeredGraph;
+import lphy.util.Symbols;
+import lphystudio.layeredgraph.LayeredGNode;
 import lphystudio.parser.codecolorizer.DataModelToLaTeX;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.prefs.*;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import static lphy.graphicalModel.ValueUtils.isNumber;
 

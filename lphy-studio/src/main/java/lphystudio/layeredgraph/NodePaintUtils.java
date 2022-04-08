@@ -1,4 +1,4 @@
-package lphystudio.app.graphicalmodelcomponent;
+package lphystudio.layeredgraph;
 
 import lphy.core.LPhyParser;
 import lphy.core.distributions.IID;
@@ -14,13 +14,15 @@ import lphy.layeredgraph.NodeWrapper;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.text.DecimalFormat;
 
 public class NodePaintUtils {
+
+    static DecimalFormat format = new DecimalFormat();
 
     private static float FACTOR_LABEL_FONT_SIZE = 11.0f;
     private static double ARROWHEAD_WIDTH = 4;
     private static double ARROWHEAD_DEPTH = 10;
-
 
     private static JLabel renderer = new JLabel("", JLabel.CENTER);
     private static CellRendererPane crp = new CellRendererPane();
@@ -304,7 +306,7 @@ public class NodePaintUtils {
         String valueString = "";
         if (showValue) {
             if (v.value() instanceof Double) {
-                valueString = LayeredGNode.format.format(v.value());
+                valueString = format.format(v.value());
             } else {
                 valueString = v.value().toString();
                 if (v.value() instanceof String) {
