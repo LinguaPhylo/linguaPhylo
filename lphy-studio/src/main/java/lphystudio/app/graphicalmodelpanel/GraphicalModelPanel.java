@@ -7,7 +7,6 @@ import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphystudio.app.valueeditors.DoubleArray2DEditor;
-import lphystudio.app.viewer.ViewerRegister;
 import lphystudio.parser.codecolorizer.LineCodeColorizer;
 
 import javax.swing.*;

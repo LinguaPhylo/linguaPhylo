@@ -1,4 +1,4 @@
-package lphystudio.app.viewer;
+package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
@@ -10,7 +10,7 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.MapValue;
 import lphy.util.LoggerUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
-import lphystudio.app.graphicalmodelpanel.MethodInfoPanel;
+import lphystudio.app.graphicalmodelpanel.viewer.*;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.app.valueeditors.*;
 

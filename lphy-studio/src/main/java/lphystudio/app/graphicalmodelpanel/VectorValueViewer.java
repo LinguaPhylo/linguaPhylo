@@ -1,6 +1,7 @@
-package lphystudio.app.viewer;
+package lphystudio.app.graphicalmodelpanel;
 
 import lphy.graphicalModel.Vector;
+import lphystudio.app.graphicalmodelpanel.viewer.Viewer;
 
 import javax.swing.*;
 

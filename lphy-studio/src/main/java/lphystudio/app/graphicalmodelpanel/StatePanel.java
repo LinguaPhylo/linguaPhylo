@@ -5,7 +5,6 @@ import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.util.LoggerUtils;
-import lphystudio.app.viewer.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;

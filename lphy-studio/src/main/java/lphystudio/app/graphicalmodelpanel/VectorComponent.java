@@ -1,4 +1,4 @@
-package lphystudio.app.viewer;
+package lphystudio.app.graphicalmodelpanel;
 
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.Vector;
