@@ -3,7 +3,6 @@ package lphystudio.app.treecomponent;
 import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphystudio.app.ColorTable;
 import lphystudio.app.Utils;
 
 import javax.swing.*;

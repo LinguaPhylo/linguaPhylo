@@ -2,6 +2,7 @@ package lphystudio.app;
 
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -81,7 +82,7 @@ public class Utils {
         BufferedReader reader;
         reader = new BufferedReader(new FileReader(actualPath.toFile()));
         panel.clear();
-        panel.parser.setName(lphyFile.getName());
+        panel.getParser().setName(lphyFile.getName());
         panel.source(reader);
     }
 
@@ -91,7 +92,7 @@ public class Utils {
         if (!imgFile.getName().endsWith(imgFormat))
             throw new IllegalArgumentException("Expect image format " + imgFormat);
 
-        GraphicalModelComponent gm = panel.component;
+        GraphicalModelComponent gm = panel.getComponent();
         // preference records the previous behaviour
         boolean prevAction = gm.getShowConstantNodes();
         gm.setShowConstantNodes(false);

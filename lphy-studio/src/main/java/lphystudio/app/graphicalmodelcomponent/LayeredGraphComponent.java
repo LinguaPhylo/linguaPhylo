@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 
+//TODO not used
 public class LayeredGraphComponent extends JComponent {
 
     LayeredGraph graph;

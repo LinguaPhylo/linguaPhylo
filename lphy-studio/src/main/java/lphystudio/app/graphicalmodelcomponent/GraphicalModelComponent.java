@@ -8,7 +8,10 @@ import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 import lphy.layeredgraph.*;
-import lphystudio.core.narrative.LaTeXNarrative;
+import lphystudio.app.narrative.LaTeXNarrative;
+import lphystudio.core.layeredgraph.LayeredGNode;
+import lphystudio.core.layeredgraph.LayeredGraphFactory;
+import lphystudio.core.layeredgraph.NodePaintUtils;
 
 import javax.swing.*;
 import java.awt.*;
