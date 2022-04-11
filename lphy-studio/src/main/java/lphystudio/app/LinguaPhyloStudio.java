@@ -3,7 +3,6 @@ package lphystudio.app;
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
-import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
 import lphyext.manager.DependencyUtils;
@@ -65,7 +64,7 @@ public class LinguaPhyloStudio {
     private static final int MAX_WIDTH = 1600;
     private static final int MAX_HEIGHT = 1200;
 
-    GraphicalLPhyParser parser = createParser();
+    GraphicalLPhyParser parser = Utils.createParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
 
@@ -104,7 +103,7 @@ public class LinguaPhyloStudio {
                 File selectedFile = jfc.getSelectedFile();
 //                panel.readScript(selectedFile);
                 Path dir = selectedFile.toPath().getParent();
-                readFile(selectedFile, dir);
+                readFile(selectedFile.getName(), dir.toString());
             }
         });
 
@@ -197,13 +196,13 @@ public class LinguaPhyloStudio {
     /**
      * Load Lphy script from a file,
      * concatenate user.dir in front of the relative path of example file
-     * @param lphyFile  LPhy script file, if it is
+     * @param lphyFileName  LPhy script file, if it is
      * @param dir      if not null, then concatenate to example file path.
      */
-    public void readFile(File lphyFile, Path dir) {
+    private void readFile(String lphyFileName, String dir) {
         try {
-            Utils.readFile(lphyFile, dir, panel);
-            setTitle(lphyFile.getName());
+            Utils.readFileFromDir(lphyFileName, dir, panel);
+            setTitle(lphyFileName);
         } catch (IOException e1) {
             setTitle(null);
             e1.printStackTrace();
@@ -241,13 +240,12 @@ public class LinguaPhyloStudio {
                 for (final File file : files) {
                     Path parent = file.getParentFile().toPath();
                     String name = file.getName();
-                    File fn = new File(name);
                     if (name.endsWith(postfix)) {
                         JMenuItem menuItem = new JMenuItem(name.substring(0, name.length() - 5));
                         jMenu.add(menuItem);
                         menuItem.addActionListener(e -> {
-                            // readFile concatenates fn in front of parent path
-                            readFile(fn, parent);
+                            // equal to cmd: -d parent_folder fn
+                            readFile(name, parent.toString());
                         });
                     }
                 }
@@ -463,13 +461,6 @@ public class LinguaPhyloStudio {
         }
     }
 
-    private GraphicalLPhyParser createParser() {
-
-        GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
-        return parser;
-
-    }
-
     public void quit() {
         frame.dispose();
     }
@@ -477,29 +468,25 @@ public class LinguaPhyloStudio {
 
     public static void main(String[] args) {
 
-        // use -Duser.dir= to set the working dir, so examples can be loaded properly
+        // use -d to set the working dir, so examples can be loaded properly
         LinguaPhyloStudio app = new LinguaPhyloStudio();
 
-        Path dir = null;
+        String dir = null;
         String lphyFileName = null;
         for (int i = 0; i < args.length; i++) {
             if ("-d".equals(args[i])) {
                 i++;
                 // -d examples
-                dir = Path.of(args[i]);
-            } else {
-                // the rest is input file
+                dir = args[i];
+            } else // the rest is input file
                 lphyFileName = args[i];
-            }
         }
 
         if (lphyFileName != null) {
-            File file = new File(lphyFileName);
-
             if (!lphyFileName.endsWith(".lphy"))
                 LoggerUtils.log.severe("Invalid LPhy file name " + lphyFileName + " !");
             else
-                app.readFile(file, dir);
+                app.readFile(lphyFileName, dir);
         }
     }
 

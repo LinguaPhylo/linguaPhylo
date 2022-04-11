@@ -1,17 +1,19 @@
 package lphystudio.app;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyParser;
 import lphy.core.narrative.Section;
 import lphy.graphicalModel.GraphicalModel;
-import lphy.parser.REPL;
 import lphy.util.IOUtils;
 import lphy.util.LoggerUtils;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.app.narrative.LaTeXNarrative;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -42,16 +44,18 @@ public class NarrativeCreator {
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
 
         try {
-            GraphicalLPhyParser parser = getParser(lphyFileName);
-//            component = new GraphicalModelComponent(parser);
-//            component.setShowConstantNodes(false);
-//            panel = new GraphicalModelPanel(parser);
+            GraphicalLPhyParser parser = Utils.createParser();
+            GraphicalModelPanel panel = new GraphicalModelPanel(parser);
+            panel.getComponent().setShowConstantNodes(false);
+            File lphyFile = new File(lphyFileName);
+            // parse and paint
+            Utils.readFile(lphyFile, panel);
 
-            createNarrativeExclImg(parser, imgFile);
+            createNarrativeExclImg(panel.getParser(), imgFile);
             LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
 
             // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
-//        createImage(lphyFileName, imgFile, panel);
+            createImage(imgFile.toFile(), panel.getComponent());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,27 +69,25 @@ public class NarrativeCreator {
     }
 
 
-    private GraphicalLPhyParser getParser(String lphyFileName) throws IOException {
-        if (!lphyFileName.endsWith(".lphy"))
-            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
+//    private GraphicalLPhyParser getParser(String lphyFileName) throws IOException {
+//        if (!lphyFileName.endsWith(".lphy"))
+//            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
+//
+//        Path path = IOUtils.getUserPath(lphyFileName);
+//        // set user.dir to the folder containing example file,
+//        // so that the relative path given in readNexus always refers to it
+//        IOUtils.setUserDir(path.getParent().toString());
+//
+//        BufferedReader reader = new BufferedReader(new FileReader(path.toString()));
+//        LPhyParser parser = new REPL();
+//        parser.source(reader);
+//
+//        // A wrapper for any implementation of LPhyParser that will be used in the Studio
+//        return new GraphicalLPhyParser(parser);
+//    }
 
-        Path path = IOUtils.getUserPath(lphyFileName);
-        // set user.dir to the folder containing example file,
-        // so that the relative path given in readNexus always refers to it
-        IOUtils.setUserDir(path.getParent().toString());
-
-        BufferedReader reader = new BufferedReader(new FileReader(path.toString()));
-        LPhyParser parser = new REPL();
-        parser.source(reader);
-
-        // A wrapper for any implementation of LPhyParser that will be used in the Studio
-        return new GraphicalLPhyParser(parser);
-    }
-
-    private void createImage(File imgFile, GraphicalModelPanel panel) throws IOException {
-        Utils.readFile(imgFile, imgFile.getParentFile().toPath(), panel);
-
-        Utils.exportToPNG(imgFile, panel);
+    private void createImage(File imgFile, GraphicalModelComponent component) throws IOException {
+        Utils.exportToPNG(imgFile, component);
         LoggerUtils.log.info("Save " + imgFile.getAbsolutePath());
     }
 
