@@ -162,7 +162,7 @@ public class LinguaPhyloStudio {
             desktop.setAboutHandler(e ->
                     buildAboutDialog(frame)
             );
-//            desktop.setPreferencesHandler(e ->
+//TODO            desktop.setPreferencesHandler(e ->
 //                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
 //            );
 //            desktop.setQuitHandler((e,r) -> {
@@ -328,7 +328,7 @@ public class LinguaPhyloStudio {
 
     private String getHTMLCredits() {
         return "<html><body width='%1s'><h3>LPhy developers:<br>"+
-                "Alexei J. Drummond, Walter Xie & Fábio K. Mendes</h3>"+
+                "Alexei J. Drummond, Walter Xie, Kylie Chen & Fábio K. Mendes</h3>"+
                 "<p>The Centre for Computational Evolution<br>"+
                 "University of Auckland<br>"+
                 "alexei@cs.auckland.ac.nz</p>"+
