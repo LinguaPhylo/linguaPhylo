@@ -228,7 +228,7 @@ public class NarrativeCreator {
                 ">(.*)</" + HTMLNarrative.SECTION_TAG + ">", section("$1"));
     }
 
-    // input: -Duser.dir ???/tutorials h5n1.lphy
+    // input: -Duser.dir=/lphy/path/tutorials h5n1.lphy
     public static void main(String[] args) {
 
         if (args.length != 1)
