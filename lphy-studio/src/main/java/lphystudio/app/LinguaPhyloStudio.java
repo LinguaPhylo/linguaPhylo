@@ -291,7 +291,7 @@ public class LinguaPhyloStudio {
         showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
         showArgumentLabels.addActionListener(
                 e -> component.setShowArgumentLabels(showArgumentLabels.getState()));
-//        viewMenu.add(showArgumentLabels);//TODO issue 169
+        viewMenu.add(showArgumentLabels);
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
         showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));

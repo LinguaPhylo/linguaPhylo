@@ -155,9 +155,8 @@ public class NodePaintUtils {
             if (showArgumentLabels) {
                 Generator generator = null;
                 if (straightLines) {
-                    generator = (Generator) successor;
-                } else generator = (Generator) getUnwrappedNonDummySuccessor(successor);
-
+                    generator = (Generator) ((LayeredGNode) successor).value();
+                } else generator = (Generator) getUnwrappedNonDummySuccessor(successor).value();
 
                 String label = generator.getParamName(value);
                 g2d.setColor(Color.gray);
