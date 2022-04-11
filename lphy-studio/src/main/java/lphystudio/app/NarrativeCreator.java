@@ -228,13 +228,13 @@ public class NarrativeCreator {
                 ">(.*)</" + HTMLNarrative.SECTION_TAG + ">", section("$1"));
     }
 
-    // input: examples/h5n1.lphy
-    public static void main(String[] args) throws IOException {
+    // input: -Duser.dir ???/tutorials h5n1.lphy
+    public static void main(String[] args) {
 
         if (args.length != 1)
             throw new IllegalArgumentException("Expecting LPhy file name !");
 
-        // always the last arg, examples/h5n1.lphy
+        // always the last arg, h5n1.lphy, with the correct user.dir
         String lphyFileName = args[args.length - 1];
 
         NarrativeCreator narrativeCreator = new NarrativeCreator(lphyFileName);
