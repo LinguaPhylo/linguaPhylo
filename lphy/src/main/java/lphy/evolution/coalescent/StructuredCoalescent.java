@@ -13,6 +13,17 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * The structured coalescent describes a coalescent process
+ * in subpopulations between which individuals can migrate.
+ */
+@Citation(
+        value="Müller, N. F., Rasmussen, D. A., & Stadler, T. (2017).\n" +
+                "The structured coalescent and its approximations.\n" +
+                "Molecular biology and evolution, 34(11), 2970-2981.",
+        title = "The structured coalescent and its approximations",
+        year = 2017, authors = {"Müller","Rasmussen","Stadler"},
+        DOI="https://doi.org/10.1093/molbev/msx186")
 public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
 
     public static final String MParamName = "M";
