@@ -12,7 +12,9 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * lewisMK: for discrete morphological data.
  * @author Alexei Drummond
  */
-@Citation(value="Lewis, P. O. (2001). A likelihood approach to estimating phylogeny from discrete morphological character data. Systematic biology, 50(6), 913-925.",
+@Citation(value="Lewis, P. O. (2001). " +
+        "A likelihood approach to estimating phylogeny from discrete morphological character data. " +
+        "Systematic biology, 50(6), 913-925.",
         title = "A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data",
         year=2001,
         authors={"Lewis"},

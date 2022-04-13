@@ -10,20 +10,19 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
  * GTR: AC, AG, AT, CG, CT, GT, unequal base frequencies, k + 8 free parameters
  * @author Alexei Drummond
  */
-//@Citation(value="Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. " +
-//        "Lectures on mathematics in the life sciences, 17(2), 57-86.",
-//        title = "Some probabilistic and statistical problems in the analysis of DNA sequences",
-//        authors = {"Tavaré"},
-//        year=1986,
-//        DOI=""
-//)
-@Citation(
-        value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",
-        title = "The general stochastic model of nucleotide substitution",
-        authors = {"Rodriguez", "Oliver", "Marín", "Medina"},
-        year=1990,
-        DOI="https://doi.org/10.1016/S0022-5193(05)80104-3"
+@Citation(value="Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. " +
+        "Lectures on mathematics in the life sciences, 17(2), 57-86.",
+        title = "Some probabilistic and statistical problems in the analysis of DNA sequences",
+        authors = {"Tavaré"},
+        year=1986
 )
+//@Citation(
+//        value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",
+//        title = "The general stochastic model of nucleotide substitution",
+//        authors = {"Rodriguez", "Oliver", "Marín", "Medina"},
+//        year=1990,
+//        DOI="https://doi.org/10.1016/S0022-5193(05)80104-3"
+//)
 public class GTR extends RateMatrix {
 
     public static final String ratesParamName = "rates";

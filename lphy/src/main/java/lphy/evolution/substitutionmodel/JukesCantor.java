@@ -12,7 +12,8 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * JC69: AC = AG = AT = CG = CT = GT, equal base frequencies, k free parameters
  * @author Alexei Drummond
  */
-@Citation(value="Jukes, T. H., & Cantor, C. R. (1969). Evolution of protein molecules. Mammalian protein metabolism, 3, 21-132.",
+@Citation(value="Jukes, T. H., & Cantor, C. R. (1969). Evolution of protein molecules. " +
+        "Mammalian protein metabolism, 3, 21-132.",
         title = "Evolution of protein molecules",
         year=1969,
         authors={"Jukes", "Cantor"},

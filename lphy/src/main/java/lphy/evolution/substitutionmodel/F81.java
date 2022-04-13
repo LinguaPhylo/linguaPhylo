@@ -10,7 +10,8 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
  * F81: AC = AG = AT = CG = CT = GT, unequal base frequencies, k + 3 free parameters
  * @author Alexei Drummond
  */
-@Citation(value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",
+@Citation(value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. " +
+        "Journal of molecular evolution, 17(6), 368-376.",
         title = "Evolutionary trees from DNA sequences: A maximum likelihood approach",
         year = 1981,
         authors = {"Felsenstein"},
