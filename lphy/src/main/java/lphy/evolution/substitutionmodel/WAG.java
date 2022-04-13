@@ -9,6 +9,7 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
 import java.util.stream.Stream;
 
 /**
+ * Issue https://github.com/LinguaPhylo/linguaPhylo/issues/128
  * overwrite {@link jebl.evolution.substmodel.WAG}.
  * @author Walter Xie
  */

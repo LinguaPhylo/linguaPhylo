@@ -1,12 +1,16 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Citation;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * JC69: AC = AG = AT = CG = CT = GT, equal base frequencies, k free parameters
+ * @author Alexei Drummond
  */
 @Citation(value="Jukes, T. H., & Cantor, C. R. (1969). Evolution of protein molecules. Mammalian protein metabolism, 3, 21-132.",
         title = "Evolution of protein molecules",

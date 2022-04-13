@@ -1,5 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
+import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
@@ -8,8 +9,14 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * lewisMK: for discrete morphological data.
+ * @author Alexei Drummond
  */
+@Citation(value="Lewis, P. O. (2001). A likelihood approach to estimating phylogeny from discrete morphological character data. Systematic biology, 50(6), 913-925.",
+        title = "A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data",
+        year=2001,
+        authors={"Lewis"},
+        DOI="https://doi.org/10.1080/106351501753462876")
 public class LewisMK extends RateMatrix {
 
     public static final String numStatesParamName = "numStates";

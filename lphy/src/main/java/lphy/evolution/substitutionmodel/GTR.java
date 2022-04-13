@@ -1,11 +1,22 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Citation;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * GTR: AC, AG, AT, CG, CT, GT, unequal base frequencies, k + 8 free parameters
+ * @author Alexei Drummond
  */
+//@Citation(value="Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. " +
+//        "Lectures on mathematics in the life sciences, 17(2), 57-86.",
+//        title = "Some probabilistic and statistical problems in the analysis of DNA sequences",
+//        authors = {"Tavaré"},
+//        year=1986,
+//        DOI=""
+//)
 @Citation(
         value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",
         title = "The general stochastic model of nucleotide substitution",

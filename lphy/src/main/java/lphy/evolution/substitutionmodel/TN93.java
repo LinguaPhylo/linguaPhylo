@@ -1,13 +1,23 @@
 package lphy.evolution.substitutionmodel;
 
+import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * TN93: AC = AT = CG = GT, AG, CT, unequal base frequencies, k + 5 free parameters
+ * @author Alexei Drummond
  */
+@Citation(value="Tamura K,  Nei M. Estimation of the number of nucleotide substitutions " +
+        "in the control region of mitochondrial DNA in humans and chimpanzees, " +
+        "Mol Biol Evol, 1993, vol. 10 (pg. 512-526)",
+        title = "Estimation of the number of nucleotide substitutions " +
+                "in the control region of mitochondrial DNA in humans and chimpanzees",
+        year = 1993,
+        authors = {"Tamura", "Nei"},
+        DOI="https://doi.org/10.1093/oxfordjournals.molbev.a040023")
 public class TN93 extends RateMatrix {
 
     public static final String kappa1ParamName = "kappa1";

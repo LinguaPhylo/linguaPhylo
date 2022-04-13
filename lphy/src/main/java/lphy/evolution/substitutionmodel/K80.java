@@ -1,13 +1,22 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Citation;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
-import java.util.Map;
-
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * K80: AC = AT = CG = GT, AG = CT, equal base frequencies, k + 1 free parameters
+ * @author Alexei Drummond
  */
+@Citation(value="Kimura, M. A simple method for estimating evolutionary rates of base substitutions\n" +
+        "through comparative studies of nucleotide sequences. J Mol Evol 16, 111–120 (1980). ",
+        title = "A simple method for estimating evolutionary rates of base substitutions\n" +
+                "through comparative studies of nucleotide sequences",
+        year = 1980,
+        authors = {"Kimura"},
+        DOI="https://doi.org/10.1007/BF01731581")
 public class K80 extends RateMatrix {
 
     public static final String kappaParamName = "kappa";

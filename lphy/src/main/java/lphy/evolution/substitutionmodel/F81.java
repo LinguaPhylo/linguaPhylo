@@ -1,13 +1,20 @@
 package lphy.evolution.substitutionmodel;
 
+import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * F81: AC = AG = AT = CG = CT = GT, unequal base frequencies, k + 3 free parameters
+ * @author Alexei Drummond
  */
+@Citation(value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",
+        title = "Evolutionary trees from DNA sequences: A maximum likelihood approach",
+        year = 1981,
+        authors = {"Felsenstein"},
+        DOI="https://doi.org/10.1007/BF01734359")
 public class F81 extends RateMatrix {
 
     public static final String freqParamName = "freq";

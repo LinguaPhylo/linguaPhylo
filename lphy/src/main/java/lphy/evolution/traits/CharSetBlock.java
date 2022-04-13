@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * Parse charset, especially codon position expressions.
+ */
 public class CharSetBlock {
 
     private final int from;

@@ -1,6 +1,9 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Citation;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import java.util.Map;
@@ -8,7 +11,8 @@ import java.util.Map;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 2/02/20.
+ * HKY85: AC = AT = CG = GT, AG = CT, unequal base frequencies, k + 4 free parameters
+ * @author Alexei Drummond
  */
 @Citation(
         value="Hasegawa, M., Kishino, H. & Yano, T. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174 (1985)",
