@@ -17,7 +17,6 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * A Kingman coalescent tree generative distribution for serially sampled data
- * TODO add Rodrigo and Felsenstein citation
  */
 //@Citation(value = "Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235–248 (1982)",
 //        title = "The Coalescent",
