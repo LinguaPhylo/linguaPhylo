@@ -20,7 +20,7 @@ public class NarrativeUtils {
         return article;
     }
 
-    public static String sanitizeDOI(String doi) {
+    private static String sanitizeDOI(String doi) {
         if (doi.startsWith("http")) return doi;
         if (doi.startsWith("doi.org")) return "https://" + doi;
         if (doi.length() > 0 && "01923456789".indexOf(doi.charAt(0)) >= 0) return "https://doi.org/" + doi;
