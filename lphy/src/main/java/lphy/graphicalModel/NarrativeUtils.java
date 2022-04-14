@@ -27,6 +27,21 @@ public class NarrativeUtils {
         return doi;
     }
 
+    /**
+     * @param citation  {@link Citation}
+     * @return a URL to this citation. If it has DOI, then use https://doi.org/,
+     *         if it has ISBN, then use https://books.google.co.nz/books?vid=ISBN,
+     *         otherwise return an empty string.
+     */
+    public static String getURL(Citation citation) {
+        if (citation.DOI().length() >0)
+            return sanitizeDOI(citation.DOI());
+        // a book
+        else if (citation.ISBN().length() >0)
+            return "https://books.google.co.nz/books?vid=ISBN" + citation.ISBN();
+        return "";
+    }
+
     static final Map<String, String> TYPE_MAP = Map.of(
             "Alignment[]", "Alignments",
             "Double[]", "Vector",

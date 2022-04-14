@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static lphy.core.distributions.DistributionConstants.*;
-
+import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
@@ -20,12 +19,15 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * A Kingman coalescent tree generative distribution for serially sampled data
  * TODO add Rodrigo and Felsenstein citation
  */
-@Citation(
-        value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235–248 (1982)",
-        title = "The Coalescent",
-        year = 1982,
-        authors = {"Kingman"},
-        DOI="https://doi.org/10.1016/0304-4149(82)90011-4")
+//@Citation(value = "Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235–248 (1982)",
+//        title = "The Coalescent",
+//        year = 1982,
+//        authors = {"Kingman"},
+//        DOI = "https://doi.org/10.1016/0304-4149(82)90011-4")
+@Citation(value = "Rodrigo AG, Felsenstein J. (1999). Coalescent Approaches to HIV Population Genetics, " +
+        "The Evolution of HIV, Chapter 8, edited by Crandall K., Johns Hopkins Univ. Press, Baltimore.",
+        title = "Coalescent Approaches to HIV Population Genetics",
+        authors = {"Rodrigo", "Felsenstein"}, year = 1999, ISBN = "0801861519")
 public class SerialCoalescent extends TaxaConditionedTreeGenerator {
 
     private Value<Number> theta;

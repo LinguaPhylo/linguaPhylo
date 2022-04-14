@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static lphy.graphicalModel.NarrativeUtils.sanitizeDOI;
+import static lphy.graphicalModel.NarrativeUtils.getURL;
 import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class HTMLNarrative implements Narrative {
@@ -210,7 +210,7 @@ public class HTMLNarrative implements Narrative {
         if (citation == null) return "";
         StringBuilder builder = new StringBuilder();
         builder.append("<a href=\"");
-        builder.append(sanitizeDOI(citation.DOI()));
+        builder.append(getURL(citation));
         builder.append("\">(");
         String[] authors = citation.authors();
         if (authors.length > 2) {
@@ -248,8 +248,8 @@ public class HTMLNarrative implements Narrative {
             for (Citation citation : references) {
                 builder.append("<li>");
                 builder.append(citation.value());
-                if (citation.DOI().length() > 0) {
-                    String url = sanitizeDOI(citation.DOI());
+                String url = getURL(citation);
+                if (url.length() > 0) {
                     builder.append(" <a href=\"" + url + "\">" + url + "</a>");
                 }
                 builder.append("</li>\n");

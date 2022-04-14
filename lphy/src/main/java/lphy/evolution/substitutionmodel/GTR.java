@@ -13,8 +13,7 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
 @Citation(value="Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. " +
         "Lectures on mathematics in the life sciences, 17(2), 57-86.",
         title = "Some probabilistic and statistical problems in the analysis of DNA sequences",
-        authors = {"Tavaré"},
-        year=1986
+        authors = {"Tavaré"}, year=1986, ISBN = "082189711X"
 )
 //@Citation(
 //        value="Rodriguez, F. J. L. O. J., Oliver, J. L., Marín, A., & Medina, J. R. (1990). The general stochastic model of nucleotide substitution. Journal of theoretical biology, 142(4), 485-501.",

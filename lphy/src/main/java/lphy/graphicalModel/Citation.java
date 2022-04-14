@@ -33,6 +33,8 @@ public @interface Citation {
 
     String DOI() default "";
 
+    String ISBN() default ""; // for book and used to query Google book
+
     /**
      * The Citations annotation is required to retrieve classes annotated with
      * multiple citations.

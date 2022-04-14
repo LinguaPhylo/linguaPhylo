@@ -270,8 +270,8 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
-            if (citation.DOI().length() > 0) {
-                String url = NarrativeUtils.sanitizeDOI(citation.DOI());
+            String url = NarrativeUtils.getURL(citation);
+            if (url.length() > 0) {
                 html.append("<br><a href=\"" + url + "\">" + url + "</a><br>");
             }
         }
