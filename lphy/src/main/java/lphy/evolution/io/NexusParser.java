@@ -101,12 +101,12 @@ public class NexusParser {
             final NexusParser importer = new NexusParser(fileName);
 
             MetaDataAlignment nexusAlignment;
-            if (fileName.equals("Dengue4.nex")) {
+            if (fileName.endsWith("Dengue4.nex")) {
                 nexusAlignment = importer.importNexus("forward");
 
                 System.out.println(nexusAlignment.toJSON());
 
-            } else if (fileName.equals("primate.nex")) {
+            } else if (fileName.endsWith("primate.nex")) {
                 nexusAlignment = importer.importNexus(null);
 
                 Alignment coding = nexusAlignment.charset("coding");
@@ -114,7 +114,7 @@ public class NexusParser {
                 Alignment noncoding = nexusAlignment.charset("noncoding");
                 System.out.println("noncoding : " + noncoding.toJSON());
 
-            } else if (fileName.equals("haemulidae_trophic_traits.nex")) {
+            } else if (fileName.endsWith("haemulidae_trophic_traits.nex")) {
 
                 importer.importNexus(null);
                 System.out.println(importer.continuousCharacterData.toJSON());
