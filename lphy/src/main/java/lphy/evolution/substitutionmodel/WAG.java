@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.GraphicalModelNode;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import java.util.stream.Stream;
@@ -13,6 +10,13 @@ import java.util.stream.Stream;
  * overwrite {@link jebl.evolution.substmodel.WAG}.
  * @author Walter Xie
  */
+@Citation(value="Whelan, S., & Goldman, N. (2001). " +
+        "A general empirical model of protein evolution derived from multiple protein families using a maximum-likelihood approach. " +
+        "Molecular biology and evolution, 18(5), 691-699.",
+        title = "A general empirical model of protein evolution derived from multiple protein families using a maximum-likelihood approach",
+        year = 2001,
+        authors = {"Whelan", "Goldman"},
+        DOI="https://doi.org/10.1093/oxfordjournals.molbev.a003851")
 public class WAG extends RateMatrix {
 
     public static final String freqParamName = "freq";
@@ -47,10 +51,7 @@ public class WAG extends RateMatrix {
             f = jebl.evolution.substmodel.WAG.getOriginalFrequencies();
         }
         jebl.evolution.substmodel.WAG wag = new jebl.evolution.substmodel.WAG(f);
-        // double[][] rate in WAG (jebl) is the symmetric matrix S.
-        // fromQToR() should be fromSToQ, where Q={s_ij}x{pi_j}
-        // this triggers private WAG.rebuildRateMatrix() and incompleteFromQToR() TODO make them public
-        // no normalise
+        // this will rebuildRateMatrix(rate,parameters); and incompleteFromQToR();
         double totalRate = wag.setParametersNoScale(null);
         // this is Q before normalise
         double[][] Q = wag.getRelativeRates();
