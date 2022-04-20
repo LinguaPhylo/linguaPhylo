@@ -6,8 +6,9 @@ import lphy.graphicalModel.types.DoubleArray2DValue;
 import java.util.stream.Stream;
 
 /**
- * Issue https://github.com/LinguaPhylo/linguaPhylo/issues/128
- * overwrite {@link jebl.evolution.substmodel.WAG}.
+ * An empirical amino acid substitution model,
+ * derived from {@link jebl.evolution.substmodel.WAG}.
+ * Rate matrix is 20 × 20, and frequencies are 20.
  * @author Walter Xie
  */
 @Citation(value="Whelan, S., & Goldman, N. (2001). " +
