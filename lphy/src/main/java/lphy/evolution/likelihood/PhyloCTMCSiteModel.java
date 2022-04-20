@@ -293,6 +293,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
             }
 
             getTransitionProbabilities(branchLength, transProb);
+            // draw state from Q
             int state = drawState(transProb[nodeState]);
 
             traverseTree(child, state, alignment, pos, transProb, clockRate, siteRate);
