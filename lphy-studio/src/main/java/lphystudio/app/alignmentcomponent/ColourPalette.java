@@ -24,45 +24,54 @@ public class ColourPalette {
         return colorList.toArray(Color[]::new);
     }
 
+    // https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
+    public static String[] kelly_colors_hex = {
+            "FFB300", // Vivid Yellow
+            "803E75", // Strong Purple
+            "FF6800", // Vivid Orange
+            "A6BDD7", // Very Light Blue
+            "C10020", // Vivid Red
+            "CEA262", // Grayish Yellow
+            "817066", // Medium Gray
+            // The following don't work well for people with defective color vision
+            "007D34", // Vivid Green
+            "F6768E", // Strong Purplish Pink
+            "00538A", // Strong Blue
+            "FF7A5C", // Strong Yellowish Pink
+            "53377A", // Strong Violet
+            "FF8E00", // Vivid Orange Yellow
+            "B32851", // Strong Purplish Red
+            "F4C800", // Vivid Greenish Yellow
+            "7F180D", // Strong Reddish Brown
+            "93AA00", // Vivid Yellowish Green
+            "593315", // Deep Yellowish Brown
+            "F13A13", // Vivid Reddish Orange
+            "232C16" // Dark Olive Green
+    };
+
     // 20 colours + 1 UNKNOWN
     public static Color[] getTwentyPlusOne() {
-        // https://stackoverflow.com/questions/470690/how-to-automatically-generate-n-distinct-colors
-        String[] kelly_colors_hex = {
-                "FFB300", // Vivid Yellow
-                "803E75", // Strong Purple
-                "FF6800", // Vivid Orange
-                "A6BDD7", // Very Light Blue
-                "C10020", // Vivid Red
-                "CEA262", // Grayish Yellow
-                "817066", // Medium Gray
-                // The following don't work well for people with defective color vision
-                "007D34", // Vivid Green
-                "F6768E", // Strong Purplish Pink
-                "00538A", // Strong Blue
-                "FF7A5C", // Strong Yellowish Pink
-                "53377A", // Strong Violet
-                "FF8E00", // Vivid Orange Yellow
-                "B32851", // Strong Purplish Red
-                "F4C800", // Vivid Greenish Yellow
-                "7F180D", // Strong Reddish Brown
-                "93AA00", // Vivid Yellowish Green
-                "593315", // Deep Yellowish Brown
-                "F13A13", // Vivid Reddish Orange
-                "232C16" // Dark Olive Green
-        };
-
         Color[] kelly_colors = new Color[kelly_colors_hex.length + 1];
-        for (int i = 0; i < kelly_colors_hex.length; i++) {
+        for (int i = 0; i < kelly_colors_hex.length; i++)
             kelly_colors[i] = HexToColor(kelly_colors_hex[i]);
-        }
-        kelly_colors[kelly_colors_hex.length] = UNKNOWN;
+
+        kelly_colors[kelly_colors.length-1] = UNKNOWN;
         return kelly_colors;
     }
 
-    public static Color[] getTwentyFourPlusOne() {
-        List<Color> colorList = List.of(getTwentyPlusOne()); // include UNKNOWN
-        colorList.addAll(0, Four);
-        return colorList.toArray(Color[]::new);
+    /**
+     * @return 22 + 1 colours, because jebl.evolution.sequences.AminoAcids creates 22 amino acids.
+     *         But we only use 20 for genetic coding.
+     */
+    public static Color[] getTwentyTwoPlusOne() {
+        Color[] more_colors = new Color[kelly_colors_hex.length + 1 + Four.size()];
+        for (int i = 0; i < kelly_colors_hex.length; i++)
+            more_colors[i] = HexToColor(kelly_colors_hex[i]);
+        int i = kelly_colors_hex.length;
+        more_colors[i++] = UNKNOWN; // for 20 colours + 1 UNKNOWN
+        more_colors[i++] = Four.get(1);
+        more_colors[i] = Four.get(2);
+        return more_colors;
     }
 
 
@@ -90,7 +99,6 @@ public class ColourPalette {
 
     //*** Colours ***//
 
-    // TODO
     /**
      * @param sequenceType
      * @return  a {@link Color} array to visualise sequences, including uncertain states
@@ -101,8 +109,8 @@ public class ColourPalette {
             return ColourPalette.getTwoPlusOne();
         else if ( sequenceType.getCanonicalStateCount() <=  4 ) // DNA or traits
             return ColourPalette.getFourPlusOne();
-        else if ( sequenceType.getCanonicalStateCount() <=  20 ) // AMINO_ACID
-            return ColourPalette.getTwentyPlusOne();
+        else if ( sequenceType.getCanonicalStateCount() <=  22 ) // AMINO_ACID
+            return ColourPalette.getTwentyTwoPlusOne();
         else throw new IllegalArgumentException("Cannot choose colours given data type " +
                     sequenceType + " and numStates " + sequenceType.getCanonicalStateCount() + " !");
     }
@@ -121,7 +129,6 @@ public class ColourPalette {
 //        if (sequenceType.getName().equals(SequenceType.NUCLEOTIDE.getName()) && state > 3)
 //            return 4;
 //        else if (sequenceType.getName().equals(SequenceType.AMINO_ACID.getName()) && state > 19) // no ambiguous
-//            //TODO why jebl make AMINO_ACID 22 ?
 //            return 20; // the last extra is always for ambiguous
 //        return state;
 //    }

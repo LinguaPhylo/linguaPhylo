@@ -8,6 +8,7 @@ import lphy.bmodeltest.bSiteRates;
 import lphy.core.distributions.Exp;
 import lphy.core.distributions.*;
 import lphy.core.functions.*;
+import lphy.core.functions.datatype.AminoAcidsFunction;
 import lphy.core.functions.datatype.BinaryDatatypeFunction;
 import lphy.core.functions.datatype.NucleotidesFunction;
 import lphy.core.functions.datatype.StandardDatatypeFunction;
@@ -78,7 +79,7 @@ public class LPhyExtImpl implements LPhyExtension {
 
             // Data types
             BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-
+            AminoAcidsFunction.class,
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
             // Tree
