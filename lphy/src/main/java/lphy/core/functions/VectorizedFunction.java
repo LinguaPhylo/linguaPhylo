@@ -9,8 +9,8 @@ import lphy.parser.ParserUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.Map;
+import java.util.*;
 
 import static lphy.graphicalModel.VectorUtils.*;
 
@@ -90,7 +90,8 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
                 if (value instanceof CompoundVector) {
                     componentFunctions.get(i).setInput(paramName, ((CompoundVector) value).getComponentValue(i));
                 } else {
-                    componentFunctions.get(i).setInput(paramName, new SliceValue(i, value));
+                    SliceValue<?> sv = new SliceValue<>(i, value);
+                    componentFunctions.get(i).setInput(paramName, sv);
                 }
             }
         }

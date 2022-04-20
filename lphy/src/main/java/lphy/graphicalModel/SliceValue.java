@@ -1,7 +1,5 @@
 package lphy.graphicalModel;
 
-import lphy.core.narrative.Narrative;
-
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
@@ -11,7 +9,9 @@ public class SliceValue<T> extends Value<T> {
     int index;
 
     public SliceValue(int index, Value<T[]> slicedValue) {
-        super(slicedValue.getId() + VectorUtils.INDEX_SEPARATOR + index, slicedValue.value()[index]);
+        // if id null, then set id null, to avoid null_0
+        super(slicedValue.getId() == null ? null : slicedValue.getId() + VectorUtils.INDEX_SEPARATOR + index,
+                slicedValue.value()[index]);
         this.slicedValue = slicedValue;
         this.index = index;
     }
