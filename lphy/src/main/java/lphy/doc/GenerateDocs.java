@@ -59,8 +59,6 @@ public class GenerateDocs {
         List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
-        functions.sort(Comparator.comparing(Class::getSimpleName));
-
         // output
         final Path dir = Paths.get(System.getProperty("user.dir"));
         System.out.println("Creating " + extName + " docs to " + dir + "\n");
