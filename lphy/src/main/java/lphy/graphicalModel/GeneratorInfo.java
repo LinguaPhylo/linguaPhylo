@@ -15,5 +15,6 @@ public @interface GeneratorInfo {
     String narrativeName() default "";
     String verbClause() default "is assumed to come from";
     String description();
+    GeneratorCategory category() default GeneratorCategory.NONE;
     //Class returnType() default Object.class;
 }
