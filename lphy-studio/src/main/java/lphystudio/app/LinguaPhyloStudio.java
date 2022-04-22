@@ -14,7 +14,6 @@ import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.layeredgraph.LayeredGNode;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -23,7 +22,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,11 +29,8 @@ import java.util.Comparator;
 
 public class LinguaPhyloStudio {
 
-    public static String VERSION;
-
-    private static String APP_NAME = "LPhy Studio";
-    private static String WEB = "https://linguaphylo.github.io";
-    private static String SOURCE = "https://github.com/LinguaPhylo/linguaPhylo";
+    private static String VERSION;
+    private static final String APP_NAME = "LPhy Studio";
 
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
@@ -50,13 +45,9 @@ public class LinguaPhyloStudio {
                 IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        // use MANIFEST.MF to store version in jar, but use system property in development
-        VERSION = getVersion();
-    }
-
-    private static String getVersion() {
-        // in dev, if system property has no "lphy.studio.version", then VERSION = "DEVELOPMENT"
-        return DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
+        // use MANIFEST.MF to store version in jar, or use system property in development,
+        // otherwise VERSION = "DEVELOPMENT"
+        VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -159,7 +150,7 @@ public class LinguaPhyloStudio {
             Desktop desktop = Desktop.getDesktop();
 
             desktop.setAboutHandler(e ->
-                    buildAboutDialog(frame)
+                    LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits())
             );
 //TODO            desktop.setPreferencesHandler(e ->
 //                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
@@ -180,13 +171,8 @@ public class LinguaPhyloStudio {
         frame = new JFrame(APP_NAME + " version " + VERSION);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
-        int width = Math.min(MAX_WIDTH, dim.width * 9 / 10);
-        int height = Math.min(MAX_HEIGHT, dim.height * 9 / 10);
-
-        frame.setSize(width, height);
-        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+        LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT);
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
@@ -331,34 +317,11 @@ public class LinguaPhyloStudio {
                 "University of Auckland<br>"+
                 "alexei@cs.auckland.ac.nz</p>"+
                 "<p>Downloads & Source code:<br>"+
-                "<a href=\""+SOURCE+"\">"+SOURCE+"</a></p>"+
+                "<a href=\""+LPhyAppConfig.LPHY_SOURCE+"\">"+LPhyAppConfig.LPHY_SOURCE+"</a></p>"+
                 "<p>User manual, Tutorials & Developer note:<br>"+
-                "<a href=\""+WEB+"\">"+WEB+"</a></p>"+
+                "<a href=\""+LPhyAppConfig.LPHY_WEB+"\">"+LPhyAppConfig.LPHY_WEB+"</a></p>"+
                 "<p>Source code distributed under the GNU Lesser General Public License Version 3</p>"+
-                "<p>Java version " + System.getProperty("java.version") + "</p></html>";
-    }
-
-    private void buildAboutDialog(Component parentComponent) {
-        final JTextPane textPane = new JTextPane();
-        textPane.setEditorKit(JTextPane.createEditorKitForContentType("text/html"));
-        textPane.setText(getHTMLCredits());
-        textPane.setEditable(false);
-        textPane.setAutoscrolls(true);
-        textPane.addHyperlinkListener(e -> {
-            if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                if(Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException | URISyntaxException ex) {
-                        LoggerUtils.log.severe(ex.toString());
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        JOptionPane.showMessageDialog(parentComponent, textPane,
-                APP_NAME + " v " + VERSION, JOptionPane.PLAIN_MESSAGE, null);
+                "<p>Require Java 17, current Java version " + System.getProperty("java.version") + "</p></html>";
     }
 
     class ActionAbout extends AbstractAction {
@@ -367,7 +330,7 @@ public class LinguaPhyloStudio {
         }
         @Override
         public void actionPerformed(ActionEvent ae) {
-            buildAboutDialog(frame);
+            LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits());
         }
     } // non Mac About
 
