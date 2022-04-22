@@ -410,6 +410,53 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return md.toString();
     }
 
+    static String getGeneratorHtml(Class<? extends Generator> generatorClass) {
+        GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
+
+        List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
+        Class[] types = getParameterTypes(generatorClass, 0);
+
+        StringBuilder html = new StringBuilder("<html><h3>");
+        html.append(Generator.getGeneratorName(generatorClass));
+//        if (this instanceof GenerativeDistribution) {
+//            html.append(" distribution");
+//        }
+        html.append("</h3>");
+
+        if (generatorInfo != null) html.append("<p>").append(generatorInfo.description()).append("</p>");
+
+        if (pInfo.size() > 0) {
+            html.append("<p>parameters: <ul>");
+//            int count = 0;
+            for (int i = 0; i < pInfo.size(); i++) {
+                ParameterInfo pi = pInfo.get(i);
+
+                html.append("<li>").append(pi.name()).append(" (")
+                        .append(types[i].getSimpleName()).append("); <font color=\"#808080\">")
+                        .append(pi.description()).append("</font></li>");
+
+//                if (count > 0) signature.append(", ");
+//                signature.append(new Text(types[i].getSimpleName())).append(" ").append(new BoldText(pi.name()));
+//                count += 1;
+            }
+//            signature.append(")");
+//            md.append(new Heading(signature.toString(), 2)).append("\n\n");
+            html.append("</ul>");
+        }
+
+        Citation citation = getCitation(generatorClass);
+        if (citation != null) {
+            html.append("<h3>Reference</h3>");
+            html.append(citation.value());
+            String url = NarrativeUtils.getURL(citation);
+            if (url.length() > 0)
+                html.append("<br><a href=\"").append(url).append("\">").append(url).append("</a><br>");
+        }
+
+        html.append("</p></html>");
+        return html.toString();
+    }
+
     static List<ParameterInfo> getAllParameterInfo(Class c) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
         for (Constructor constructor : c.getConstructors()) {
