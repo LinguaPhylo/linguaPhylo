@@ -265,16 +265,22 @@ F\'{a}bio K Mendes\textsuperscript{1,2}
 Transparency is a scientific ideal, and replicability and
 reproducibility lie at the heart of the scientific endeavor
 \cite{nas19,munafo17}. 
-Despite this being a non-contentious point, only recently have
-systematic examinations of the literature begun to reveal that
-reproducibility is largely overlooked in practice.
+% Despite this being a non-contentious point, only recently have
+% systematic examinations of the literature begun to reveal that
+% reproducibility is largely overlooked in practice.
 %
 Metaresearch efforts have uncovered the so-called ``reproducibility
-crisis'' \cite{baker16} in many scientific domains ranging from biological sciences \cite{baker16} to psychology \cite{openscience15} and economics \cite{camerer16}. 
-Factors contributing to irreproducible research include selective reporting, low statistical power, inavailability of methods and code, requirement of high technical expertise and inavailability of raw data \cite{baker16}. 
-In recent years, the growing computational needs of life sciences has led to the creation of thousands of software tools \cite{callahan2018u} enabling greater freedom in data analyses than before \cite{eren2021community}. 
+crisis'' \cite{baker16} in many scientific domains \cite{baker16}. 
+% to psychology \cite{openscience15} and economics \cite{camerer16}. 
+% Factors contributing to irreproducible research include the 
+% selective reporting, low statistical power, 
+% inavailability of methods and code, requirement of high technical expertise and inavailability of raw data \cite{baker16}. 
+In recent years, the growing number of computational biology software available enables greater freedom in data analyses, 
+% needs of life sciences has led to the creation of thousands of software tools \cite{callahan2018u} enabling greater freedom in data analyses than before \cite{eren2021community}. 
 % The availability of these tools enabled 
-However this increased freedom often comes at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community} which increases the difficulty of accurately reporting and re-executing them. 
+% However this increased freedom often comes 
+but at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community}. 
+This increases the difficulty of accurately reporting, re-executing and re-using analyses. 
 % Metaresearch efforts have uncovered the so-called ``reproducibility
 % crisis'' \cite{baker16} in many scientific domains (but see
 % \cite{fanelli18}), among which the dimension of the problem varies
@@ -293,20 +299,22 @@ These barriers have been recognized by the wider genomics research community \ci
 In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
 The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
 RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
-can simultaneously reconstruct phylogenetic tree topology and divergence times, and estimate the related micro-evolutionary and macro-evolutionary parameters. 
+that can simultaneously reconstruct phylogenetic tree topology and divergence times, as well as estimate the related micro-evolutionary and macro-evolutionary parameters. 
 Phylogenetic analyses often combine 
-multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, ancestral biogeographical ranges \cite{lemey10,landis18}, 
+multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, ancestral bio-geographical ranges \cite{lemey10,landis18}, and 
 % ecological networks \cite{braga20}, 
-evolution of traits \cite{may19,bite}, and in 
-quantifying the spread of epidemics \cite{faria21,douglas21}. 
-However, the complexity of these models makes reusability and interpretation challenging from a user's perspective.   
+% trait evolution \cite{may19,bite}, and 
+epidemics \cite{faria21,douglas21}. 
+% However, the complexity of these models makes reusability and interpretation challenging from a user's perspective.   
 % The publication of new, complex phylogenetic models happens on a
 % daily basis, which is reflected in the myriad of computational tools
 % implementing them. {}
-Reproducing and resuing a phylogenetics pipeline is no easy task, requiring a user to have an understanding of the input data format (which may vary in different tools), the evolutionary models, details of the model parameters, and software runtime parameters. 
-Additionally, these Bayesian methods usually require the specification of procedural specific Markov chain Monte Carlo (MCMC) parameters which are used to sample the parameters of the evolutionary model \cite{beast,beast2,revbayes,mrbayes}. 
-Currently, there is no standard way to update existing phylogenetics pipelines to perform analyses on new datasets or adjust parameters while maintaining model readability. 
-We believe increasing the readability and reusability of phylogenetic model specifications can contribute to: (i) improve the communication of phylogenetic analyses, (ii) facilitate reproducibility, and (iii) increase reusability of phylogenetic analyses. 
+Reproducing and reusing a phylogenetics pipeline is no easy task. 
+Often requiring the user to understand the input data format, the evolutionary models, details of the model parameters, as well as software runtime parameters. 
+Runtime parameters can include Markov chain Monte Carlo (MCMC) sampling parameters which are not inherently part of the model.
+% Additionally, Bayesian methods usually requires runtime parameters such as sampling parameters of the Markov chain Monte Carlo (MCMC) to be specified \cite{beast,beast2,revbayes,mrbayes}. 
+Currently, little research has been done on the readability and re-usability of phylogenetic models. 
+Our paper presents a tool aimed to: (i) facilitate accurate communication of phylogenetic analyses, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic analyses on new datasets. 
 
 %A large number of these tools fall within one of two methodological
 %families: methods whose main goal is to reconstruct phylogenetic trees 
@@ -363,10 +371,8 @@ We believe increasing the readability and reusability of phylogenetic model spec
 % making it possible for other researchers to reproduce the results.
 
 % In order to circumvent some of these problems, 
-In an attempt to address these issues, BEAST \cite{beast} and
-BEAST 2 \cite{beast2} adopted the XML format (eXtensible
-Markup Language) for specifying models and setting up analyses.
-The extensibility of XMLs allow developers to create new
+Previous attempts to address model specification and analysis setup include BEAST style XMLs (eXtensible Markup Language) developed for BEAST software \cite{beast,beast2} and the Rev language for RevBayes \cite{revbayes}. 
+The extensibility of XMLs provides flexibility to developers allowing them to create new
 descriptive tags for specifying new models.
 % XML documents are also human readable, and their hierarchical
 % structure can be convenient when specifying the components of a model
@@ -377,21 +383,22 @@ descriptive tags for specifying new models.
 % Unless created automatically with a dedicated tool \cite{beauti},
 % which is not always possible, it is also very easy to write 
 % invalid XML files.
-However, XMLs are difficult for humans to read and interpret.  
+However, BEAST style XMLs are difficult for humans to read and interpret due to the verbose syntax and interconnected components that make up BEAST models. 
 % Moreover, XML instructions do not naturally lead to clear model
 % descriptions, nor do they guarantee the model is well understood by
 % the user.
-Moreover, reproducing BEAST and BEAST 2 analyses from plain text descriptions without an XML is notoriously difficult. 
+This also makes it difficulty to translate BEAST or BEAST2 analyses from text descriptions in published work. 
 % from what is normally reported in the literature will often also prove
 % a gruelling exercise. 
 % Finally, BEAST and BEAST 2 XML files are not interchangeable. 
 %%Walter: XML is too verbose.
 %% https://thecontentwrangler.com/2016/02/23/why-does-xml-suck/
-An alternative model specification language, Rev for the RevBayes platform
+On the other hand, the Rev language 
 \cite{revbayes} 
 incorporates conventional notation from probability theory. 
-Although this feature makes Rev model specification to be more intuitive, it still requires users to contend with runtime 
-details extraneous to the model such as MCMC parameters and the operator schedule.
+This feature makes Rev model specification more intuitive, but still requires users to contend with runtime 
+details %extraneous to the model 
+such as MCMC parameters and the operator schedule.
 % , was a welcome addition to the world of computational
 % phylogenetics. 
 % Unlike the XML strategy, Rev's syntax incorporates conventional
@@ -411,7 +418,8 @@ details extraneous to the model such as MCMC parameters and the operator schedul
 % programming language.
 
 Here, we introduce LinguaPhylo (LPhy), an open-source programming
-language focused on model specification to improve reproducibility, reusability and model interpretability. 
+language focused on model specification to improve reproducibility, re-usability and model readability. 
+\textcolor{blue}{[Highlights of LPhy should go here...]}
 We also introduce an accompanying GUI, LPhyStudio, which provides an
 LPhy command line interface, as well as panels for displaying graphical models
 and simulated random variables.
