@@ -269,7 +269,10 @@ Despite this being a non-contentious point, only recently have
 systematic examinations of the literature begun to reveal that
 reproducibility is largely overlooked in practice.
 %
-In recent years, the growing computational needs of life sciences has led to the creation of thousands of software tools \cite{callahan2018u} enabling greater freedom in data analyses. 
+Metaresearch efforts have uncovered the so-called ``reproducibility
+crisis'' \cite{baker16} in many scientific domains ranging from biological sciences \cite{baker16} to psychology \cite{openscience15} and economics \cite{camerer16}. 
+Factors contributing to irreproducible research include selective reporting, low statistical power, inavailability of methods and code, requirement of high technical expertise and inavailability of raw data \cite{baker16}. 
+In recent years, the growing computational needs of life sciences has led to the creation of thousands of software tools \cite{callahan2018u} enabling greater freedom in data analyses than before \cite{eren2021community}. 
 % The availability of these tools enabled 
 However this increased freedom often comes at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community} which increases the difficulty of accurately reporting and re-executing them. 
 % Metaresearch efforts have uncovered the so-called ``reproducibility
@@ -285,13 +288,12 @@ However this increased freedom often comes at the cost of increased complexity i
 % data-preparation and analytical protocols. 
 % The more technical protocols are, the harder it is to accurately
 % report and re-execute them. 
-These barriers have been recognized by the wider omics research community \cite{eren2021community} and also within evolutionary biology \cite{oakley2014osiris}. 
+These barriers have been recognized by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
 
 In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
-The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and
+The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
 RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
-can simultaneously reconstruct phylogenetic tree topology and divergence times, and estimate the related micro-
-and macro-evolutionary parameters. 
+can simultaneously reconstruct phylogenetic tree topology and divergence times, and estimate the related micro-evolutionary and macro-evolutionary parameters. 
 Phylogenetic analyses often combine 
 multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, ancestral biogeographical ranges \cite{lemey10,landis18}, 
 % ecological networks \cite{braga20}, 
@@ -301,7 +303,8 @@ However, the complexity of these models makes reusability and interpretation cha
 % The publication of new, complex phylogenetic models happens on a
 % daily basis, which is reflected in the myriad of computational tools
 % implementing them. {}
-Reproducing and resuing a phylogenetics pipeline is no easy task, requiring a user to have an understanding of the input data format (which may vary in different tools), the evolutionary models, details of the model parameters, and software runtime parameters.   
+Reproducing and resuing a phylogenetics pipeline is no easy task, requiring a user to have an understanding of the input data format (which may vary in different tools), the evolutionary models, details of the model parameters, and software runtime parameters. 
+For Bayesian methods, the evolutionary model parameters are sampled using Markov chain Monte Carlo (MCMC), which poses additional MCMC parameters that needs to be configured. 
 Currently, there is no standard way to update existing phylogenetics pipelines to perform analyses on new datasets or adjust parameters while maintaining model readability. 
 We believe increasing the readability and reusability of phylogenetic model specifications can contribute to: (i) improve the communication of phylogenetic analyses, (ii) facilitate reproducibility, and (iii) increase reusability of phylogenetic analyses. 
 
@@ -387,9 +390,8 @@ Moreover, reproducing BEAST and BEAST 2 analyses from plain text descriptions wi
 An alternative model specification language, Rev for the RevBayes platform
 \cite{revbayes} 
 incorporates conventional notation from probability theory. 
-Although this feature makes Rev model specification to be more intuitive, it still requires users to contend with
-details extraneous to the model (e.g., MCMC parameters and operator
-schedule).
+Although this feature makes Rev model specification to be more intuitive, it still requires users to contend with runtime 
+details extraneous to the model such as MCMC parameters and the operator schedule.
 % , was a welcome addition to the world of computational
 % phylogenetics. 
 % Unlike the XML strategy, Rev's syntax incorporates conventional
@@ -408,15 +410,15 @@ schedule).
 % RevBayes, which detracts from a more general application of this
 % programming language.
 
-Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
-language focused exclusively on model specification.
+Here, we introduce LinguaPhylo (LPhy), an open-source programming
+language focused on model specification to improve reproducibility, reusability and model interpretability. 
 We also introduce an accompanying GUI, LPhyStudio, which provides an
 LPhy command line interface, as well as panels for displaying graphical models
 and simulated random variables.
-A third application we develop, called LPhyBEAST, converts LPhy scripts 
-specifying models into BEAST 2 XML files for MCMC analyses.
-By delegating everything unrelated to the model to other applications
-(e.g., LPhyBEAST), LinguaPhylo aims to make it easier to report,
+A third application we develop, called LPhyBEAST, converts LPhy model specification scripts into BEAST 2 XML files for MCMC analyses.
+% By delegating everything unrelated to the model to other applications
+% (e.g., LPhyBEAST), 
+LinguaPhylo aims to make it easier to report,
 validate and simulate under complex models, and to both set up and
 reproduce inference analyses.
 
