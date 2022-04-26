@@ -304,7 +304,7 @@ However, the complexity of these models makes reusability and interpretation cha
 % daily basis, which is reflected in the myriad of computational tools
 % implementing them. {}
 Reproducing and resuing a phylogenetics pipeline is no easy task, requiring a user to have an understanding of the input data format (which may vary in different tools), the evolutionary models, details of the model parameters, and software runtime parameters. 
-For Bayesian methods, the evolutionary model parameters are sampled using Markov chain Monte Carlo (MCMC), which poses additional MCMC parameters that needs to be configured. 
+Additionally, these Bayesian methods usually require the specification of procedural specific Markov chain Monte Carlo (MCMC) parameters which are used to sample the parameters of the evolutionary model \cite{beast,beast2,revbayes,mrbayes}. 
 Currently, there is no standard way to update existing phylogenetics pipelines to perform analyses on new datasets or adjust parameters while maintaining model readability. 
 We believe increasing the readability and reusability of phylogenetic model specifications can contribute to: (i) improve the communication of phylogenetic analyses, (ii) facilitate reproducibility, and (iii) increase reusability of phylogenetic analyses. 
 
