@@ -416,23 +416,35 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
         Class[] types = getParameterTypes(generatorClass, 0);
 
-        StringBuilder html = new StringBuilder("<html><h3>");
-        html.append(Generator.getGeneratorName(generatorClass));
-//        if (this instanceof GenerativeDistribution) {
-//            html.append(" distribution");
-//        }
-        html.append("</h3>");
+        // parameters
+        StringBuilder signature = new StringBuilder();
+        signature.append(Generator.getGeneratorName(generatorClass)).append("(");
+
+        int count = 0;
+        for (int i = 0; i < pInfo.size(); i++) {
+            ParameterInfo pi = pInfo.get(i);
+            if (count > 0) signature.append(", ");
+            signature //.append(types[i].getSimpleName()).append(" ")
+                    .append("<i>").append(pi.name()).append("</i>");
+            count += 1;
+        }
+        signature.append(")");
+
+        // main content
+        StringBuilder html = new StringBuilder("<html><h2>");
+        html.append(signature);
+        html.append("</h2>");
 
         if (generatorInfo != null) html.append("<p>").append(generatorInfo.description()).append("</p>");
 
         if (pInfo.size() > 0) {
-            html.append("<p>parameters: <ul>");
+            html.append("<h3>Parameters:</h3>").append("<ul>");
 //            int count = 0;
             for (int i = 0; i < pInfo.size(); i++) {
                 ParameterInfo pi = pInfo.get(i);
-
-                html.append("<li>").append(pi.name()).append(" (")
-                        .append(types[i].getSimpleName()).append("); <font color=\"#808080\">")
+                html.append("<li>").append(types[i].getSimpleName()).
+                        append(" <b>").append(pi.name()).append("</b>")
+                        .append(" - <font color=\"#808080\">")
                         .append(pi.description()).append("</font></li>");
 
 //                if (count > 0) signature.append(", ");
@@ -440,7 +452,15 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 //                count += 1;
             }
 //            signature.append(")");
-//            md.append(new Heading(signature.toString(), 2)).append("\n\n");
+//            html.append(new Heading(signature.toString(), 2)).append("\n\n");
+            html.append("</ul>");
+        }
+
+        List<String> returnType = Collections.singletonList(getReturnType(generatorClass).getSimpleName());
+        if (returnType.size() > 0) {
+            html.append("<h3>Return type:</h3>").append("<ul>");
+            for (String itm : returnType)
+                html.append("<li>").append(itm).append("</li>");
             html.append("</ul>");
         }
 
