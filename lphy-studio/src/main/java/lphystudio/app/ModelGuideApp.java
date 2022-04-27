@@ -3,7 +3,6 @@ package lphystudio.app;
 import lphyext.manager.DependencyUtils;
 import lphystudio.app.modelguide.ModelGuide;
 import lphystudio.app.modelguide.ModelGuidePanel;
-import lphystudio.app.modelguide.OptionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,15 +37,14 @@ public class ModelGuideApp extends JFrame {
         VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
     }
 
+    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+
     public ModelGuideApp() {
         // main frame
         setTitle(APP_NAME + " version " + VERSION);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT);
-
-        OptionsPanel optionsPanel = new OptionsPanel();
-        getContentPane().add(optionsPanel, BorderLayout.NORTH);
 
         modelGuide = new ModelGuide();
         ModelGuidePanel guidePanel = new ModelGuidePanel(modelGuide);
@@ -59,6 +57,18 @@ public class ModelGuideApp extends JFrame {
             );
         }
 
+//        JMenuBar menuBar = new JMenuBar();
+//        JMenu summMenu = new JMenu("Summary");
+//        summMenu.setMnemonic(KeyEvent.VK_S);
+//        menuBar.add(summMenu);
+//
+//        JMenuItem showMenuItem = new JMenuItem("Show Summary...");
+//        showMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, MASK));
+//        showMenuItem.addActionListener(e -> {
+//
+//        });
+//        summMenu.add(showMenuItem);
+//
 //        setJMenuBar(menuBar);
         setVisible(true);
     }

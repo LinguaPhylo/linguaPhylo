@@ -2,6 +2,7 @@ package lphystudio.app.modelguide;
 
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.parser.ParserUtils;
 
 import java.util.ArrayList;
@@ -14,9 +15,14 @@ import java.util.List;
  */
 public class ModelGuide {
 
+//    public static final String[] geTy = new String[]{"ALL","Generative Distribution","Functions"};
+
     // Immutable list
     public List<Model> allModels;
-    public List<Model> selectedModels; // for jTable
+    public List<Model> selectedModels = new ArrayList<>(); // for jTable
+
+    private GeneratorCategory currCate = GeneratorCategory.ALL;
+//    private String currGeneType = geTy[0];
     private Model currentModel;
 
     public ModelGuide() {
@@ -27,21 +33,44 @@ public class ModelGuide {
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
         setAllModels(generativeDistributions, functions);
+        addSelectedModels();
     }
 
     private void setAllModels(List<Class<GenerativeDistribution>> generativeDistributions,
-                                     List<Class<DeterministicFunction>> functions) {
+                              List<Class<DeterministicFunction>> functions) {
         List<Model> all = new ArrayList<>();
         Model m;
-        for(Class<GenerativeDistribution> distCls : generativeDistributions) {
+        for (Class<GenerativeDistribution> distCls : generativeDistributions) {
             m = new Model(distCls);
             all.add(m);
         }
-        for(Class<DeterministicFunction> fun : functions) {
+        for (Class<DeterministicFunction> fun : functions) {
             m = new Model(fun);
             all.add(m);
         }
         allModels = Collections.unmodifiableList(all);
+    }
+
+    private void addSelectedModels() {
+        selectedModels.clear();
+        if (currCate.equals(GeneratorCategory.ALL)) {
+            selectedModels.addAll(allModels);
+        } else {
+            for (Model m : allModels) {
+                if (currCate.equals(m.getCategory()))
+                    selectedModels.add(m);
+            }
+        }
+    }
+
+    public void setSelectedModels(Object criteria) {
+        if (criteria instanceof GeneratorCategory cate) {
+            currCate = cate;
+        }
+//        else if (criteria instanceof String geneType) {
+//            currGeneType = geneType;
+//        }
+        addSelectedModels();
     }
 
     public List<Model> getAllModels() {
@@ -49,20 +78,18 @@ public class ModelGuide {
     }
 
     public List<Model> getSelectedModels() {
-
-
-return new ArrayList<>();
+        return Collections.unmodifiableList(selectedModels);
     }
 
     public Model getModel(int i) {
         return allModels.get(i);
     }
 
-    public Model getCurrentModel() {
-        return currentModel;
-    }
+//    public Model getCurrentModel() {
+//        return currentModel;
+//    }
 
-    public void setCurrentModel(Model currentModel) {
-        this.currentModel = currentModel;
-    }
+//    public void setCurrentModel(Model currentModel) {
+//        this.currentModel = currentModel;
+//    }
 }
