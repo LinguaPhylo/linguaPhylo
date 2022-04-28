@@ -9,7 +9,7 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.util.IOUtils;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
             description = "A function that parses an alignment from a Nexus file.")
     public Value<Alignment> apply() {
 
-        Path nexPath = IOUtils.getUserPath(fileName.value());
+        Path nexPath = UserDir.getUserPath(fileName.value());
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(nexPath.toString());

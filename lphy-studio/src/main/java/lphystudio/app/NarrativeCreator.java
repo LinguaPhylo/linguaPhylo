@@ -3,7 +3,7 @@ package lphystudio.app;
 import lphy.core.GraphicalLPhyParser;
 import lphy.core.narrative.Section;
 import lphy.graphicalModel.GraphicalModel;
-import lphy.util.IOUtils;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
@@ -40,7 +40,7 @@ public class NarrativeCreator {
     public NarrativeCreator(String lphyFileName) {
         htmlNarrative = new HTMLNarrative();
         latexNarrative = new LaTeXNarrative();
-        Path wd = IOUtils.getUserDir(); // working dir
+        Path wd = UserDir.getUserDir(); // working dir
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
 
         try {
@@ -73,10 +73,10 @@ public class NarrativeCreator {
 //        if (!lphyFileName.endsWith(".lphy"))
 //            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
 //
-//        Path path = IOUtils.getUserPath(lphyFileName);
+//        Path path = UserDir.getUserPath(lphyFileName);
 //        // set user.dir to the folder containing example file,
 //        // so that the relative path given in readNexus always refers to it
-//        IOUtils.setUserDir(path.getParent().toString());
+//        UserDir.setUserDir(path.getParent().toString());
 //
 //        BufferedReader reader = new BufferedReader(new FileReader(path.toString()));
 //        LPhyParser parser = new REPL();

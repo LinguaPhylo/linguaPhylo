@@ -3,7 +3,7 @@ package lphystudio.app;
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
-import lphy.util.IOUtils;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphyext.manager.DependencyUtils;
 import lphyext.manager.ExtManagerDialog;
@@ -81,7 +81,7 @@ public class LinguaPhyloStudio {
         fileMenu.add(openMenuItem);
         openMenuItem.addActionListener(e -> {
             // use "user.dir" instead of FileSystemView.getFileSystemView().getHomeDirectory()
-            JFileChooser jfc = new JFileChooser(IOUtils.getUserDir().toFile());
+            JFileChooser jfc = new JFileChooser(UserDir.getUserDir().toFile());
 
             FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
             jfc.setFileFilter(filter);
@@ -220,7 +220,7 @@ public class LinguaPhyloStudio {
             File[] files = dir.listFiles();
             if (files != null) {
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
-                IOUtils.setUserDir(dir.toString());
+                UserDir.setUserDir(dir.toString());
 
                 Arrays.sort(files, Comparator.comparing(File::getName));
                 for (final File file : files) {

@@ -192,8 +192,8 @@
 \usepackage{caption}
 \DeclareFloatingEnvironment[fileext=frm,placement={!ht},name=example]{example}
 \DeclareCaptionSubType*{example}
-\captionsetup[subexample]{name=Example}
-\renewcommand{\thesubexample}{\theexample}
+% \captionsetup[subexample]{name=Example}
+% \renewcommand{\thesubexample}{\theexample}
 
 \usepackage{listing}
 
@@ -264,29 +264,58 @@ F\'{a}bio K Mendes\textsuperscript{1,2}
 
 Transparency is a scientific ideal, and replicability and
 reproducibility lie at the heart of the scientific endeavor
-\cite{nas19,munafo17}.
-Despite this being a non-contentious point, only recently have
-systematic examinations of the literature begun to reveal that
-reproducibility is largely overlooked in pratice.
+\cite{nas19,munafo17}. 
+% Despite this being a non-contentious point, only recently have
+% systematic examinations of the literature begun to reveal that
+% reproducibility is largely overlooked in practice.
+%
 Metaresearch efforts have uncovered the so-called ``reproducibility
-crisis'' \cite{baker16} in many scientific domains (but see
-\cite{fanelli18}), among which the dimension of the problem varies
-\cite{openscience15,camerer16}.
-Reproducing a scientific finding can be hindered by data being
-unavailable, for example, with many journals now adopting the
-countermeasure of requiring data to be deposited in cloud 
-repositories (e.g., Dryad, Figshare, Zenodo) upon
-submission.
-Another barrier to reproducibility is the complexity of
-data-preparation and analytical protocols. 
-The more technical protocols are, the harder it is to accurately
-report and re-execute them.
+crisis'' \cite{baker16} in many scientific domains \cite{baker16}. 
+% to psychology \cite{openscience15} and economics \cite{camerer16}. 
+% Factors contributing to irreproducible research include the 
+% selective reporting, low statistical power, 
+% inavailability of methods and code, requirement of high technical expertise and inavailability of raw data \cite{baker16}. 
+In recent years, the growing number of computational biology software available enables greater freedom in data analyses, 
+% needs of life sciences has led to the creation of thousands of software tools \cite{callahan2018u} enabling greater freedom in data analyses than before \cite{eren2021community}. 
+% The availability of these tools enabled 
+% However this increased freedom often comes 
+but at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community}. 
+This increases the difficulty of accurately reporting, re-executing and re-using analyses. 
+% Metaresearch efforts have uncovered the so-called ``reproducibility
+% crisis'' \cite{baker16} in many scientific domains (but see
+% \cite{fanelli18}), among which the dimension of the problem varies
+% \cite{openscience15,camerer16}.
+% Reproducing a scientific finding can be hindered by data being
+% unavailable, for example, with many journals now adopting the
+% countermeasure of requiring data to be deposited in cloud 
+% repositories (e.g., Dryad, Figshare, Zenodo) upon
+% submission.
+% Another barrier to reproducibility is the complexity of
+% data-preparation and analytical protocols. 
+% The more technical protocols are, the harder it is to accurately
+% report and re-execute them. 
+These barriers have been recognized by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
 
-Within evolutionary biology, phylogenetics is one discipline that has
-become highly technical over the last few decades.
-The publication of new, complex phylogenetic models happens on a
-daily basis, which is reflected in the myriad of computational tools
-implementing them.
+In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
+The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
+RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
+that can simultaneously reconstruct phylogenetic tree topology and divergence times, as well as estimate the related micro-evolutionary and macro-evolutionary parameters. 
+Phylogenetic analyses often combine 
+multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, ancestral bio-geographical ranges \cite{lemey10,landis18}, and 
+% ecological networks \cite{braga20}, 
+% trait evolution \cite{may19,bite}, and 
+epidemics \cite{faria21,douglas21}. 
+% However, the complexity of these models makes reusability and interpretation challenging from a user's perspective.   
+% The publication of new, complex phylogenetic models happens on a
+% daily basis, which is reflected in the myriad of computational tools
+% implementing them. {}
+Reproducing and reusing a phylogenetics pipeline is no easy task. 
+Often requiring the user to understand the input data format, the evolutionary models, details of the model parameters, as well as software runtime parameters. 
+Runtime parameters can include Markov chain Monte Carlo (MCMC) sampling parameters which are not inherently part of the model.
+% Additionally, Bayesian methods usually requires runtime parameters such as sampling parameters of the Markov chain Monte Carlo (MCMC) to be specified \cite{beast,beast2,revbayes,mrbayes}. 
+Currently, little research has been done on the readability and re-usability of phylogenetic models. 
+Our paper presents a tool aimed to: (i) facilitate accurate communication of phylogenetic analyses, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic analyses on new datasets. 
+
 %A large number of these tools fall within one of two methodological
 %families: methods whose main goal is to reconstruct phylogenetic trees 
 %(e.g.,
@@ -303,80 +332,84 @@ implementing them.
 %capture uncertainty in parameter estimates (e.g., analyses that treat
 %the phylogeny as data).
 %As opposed to the two classes of methods mentioned above, a third
-The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and
-RevBayes; \cite{beast,beast2,revbayes,mrbayes}) can simultaneously
-attain both the goal of reconstructing phylogenetic tree(s) (topology
-and divergence times), as well as that of estimating related micro-
-and macroevolutionary parameters. 
-Beyond joint estimation of the phylogenetic tree and related
-parameters, common denominators among these programs include the wide
-variety of models they implement, but more distinctively, the large
-number of ways these models can be combined.
-The latter arises organically from Bayesian inference -- the
-statistical framework all these tools share -- more specifically from
-the relative ease with which hierarchical Bayesian models can be 
-built and their parameters sampled (with Markov chain Monte Carlo,
-MCMC).
-Moreover, another key advantage of the Bayesian approach is that it
-accounts for the uncertainty around parameter estimates.
+% The most general phylogenetic tools (e.g., BEAST, BEAST 2, MrBayes and
+% RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
+% can simultaneously reconstruct phylogenetic tree topology and divergence times, and estimate the related micro-
+% attain both the goal of reconstructing phylogenetic tree(s) (topology
+% and divergence times), as well as that of estimating related micro-
+% and macroevolutionary parameters. 
+% Beyond joint estimation of the phylogenetic tree and related
+% parameters, common denominators among these programs include the wide 
+% variety of models they implement, but more distinctively, the large
+% number of ways such models can be combined.
+% The latter arises organically from Bayesian inference -- the
+% statistical framework all these tools share -- more specifically from
+% the relative ease with which hierarchical Bayesian models can be 
+% built and their parameters sampled (with Markov chain Monte Carlo,
+% MCMC).
+% Moreover, another key advantage of the Bayesian approach is that it
+% accounts for the uncertainty around parameter estimates.
+%
+% Variety and flexibility in model specification means Bayesian software
+% platforms like BEAST, BEAST 2 and RevBayes can be used to address a
+% wide range of phylogenetic problems. 
+% These include inferring species trees from living and fossil taxa
+% using molecular and morphological data
+% \cite{gavryushkina17,ogilvie21,zhang21}, reconstructing ancestral
+% biogeographical ranges \cite{lemey10,landis18} and ecological networks
+% \cite{braga20}, characterizing the tempo and mode of trait evolution
+% \cite{may19,bite}, quantifying the spread and dating the origin of
+% epidemics \cite{faria21,douglas21}, to name a few.
+% The price for this flexibility is that specifying models and running
+% analyses with these platforms can become quite convoluted,
+% even for experienced users and developers.
+% It is for this reason that multiple-day workshops are held around the
+% world to inform the user base beyond what can be found in these programs'
+% documentation \cite{taming,revworkshop}.
+% Furthermore, after analyses are carried out successfully there is the
+% additional challenge of reporting the model precisely, as well as
+% making it possible for other researchers to reproduce the results.
 
-Variety and flexibility in model specification means Bayesian software
-platforms like BEAST, BEAST 2 and RevBayes can be used to address a
-wide range of phylogenetic problems. 
-These include inferring species trees from living and fossil taxa
-using molecular and morphological data
-\cite{gavryushkina17,ogilvie21,zhang21}, reconstructing ancestral
-biogeographical ranges \cite{lemey10,landis18} and ecological networks
-\cite{braga20}, characterizing the tempo and mode of trait evolution
-\cite{may19,bite}, quantifying the spread and dating the origin of
-epidemics \cite{faria21,douglas21}, to name a few.
-The price for this flexibility is that specifying models and running
-analyses with these platforms can become quite convoluted,
-even for experienced users and developers.
-It is for this reason that multiple-day workshops are held around the
-world to inform the user base beyond what can be found in these programs'
-documentation \cite{taming,revworkshop}.
-Furthermore, after analyses are carried out successfully there is the
-additional challenge of reporting the model precisely, as well as
-making it possible for other researchers to reproduce the results.
-
-In order to circumvent some of these problems, BEAST \cite{beast} and
-BEAST 2 \cite{beast2} developers adopted the XML format (eXtensible
-Markup Language) for specifying models and setting up analyses.
-Because it is extensible, XML allows developers to create new
-descriptive tags for the specification of new models.
-XML documents are also human readable, and their hierarchical
-structure can be convenient when specifying the components of a model
-and their relationships.
-Conversely, XML files become increasingly impenetrable the more
-complex the model, and its syntax is not domain specific (e.g., $x
-\sim \text{N}(\mu, \sigma)$ is not a valid XML statement).
-Unless created automatically with a dedicated tool \cite{beauti},
-which is not always possible, it is also very easy to write 
-invalid XML files.
-Moreover, XML instructions do not naturally lead to clear model
-descriptions, nor do they guarantee the model is well understood by
-the user.
-Reproducing complex BEAST and BEAST 2 analyses without an XML file
-from what is normally reported in the literature will often also prove
-a gruelling exercise.
-Finally, BEAST and BEAST 2 XML files are not interchangeable. 
-
+% In order to circumvent some of these problems, 
+Previous attempts to address model specification and analysis setup include BEAST style XMLs (eXtensible Markup Language) developed for BEAST software \cite{beast,beast2} and the Rev language for RevBayes \cite{revbayes}. 
+The extensibility of XMLs provides flexibility to developers allowing them to create new
+descriptive tags for specifying new models.
+% XML documents are also human readable, and their hierarchical
+% structure can be convenient when specifying the components of a model
+% and their relationships.
+% Conversely, XML files become increasingly impenetrable the more
+% complex the model, and its syntax is not domain specific (e.g., $x
+% \sim \text{N}(\mu, \sigma)$ is not a valid XML statement).
+% Unless created automatically with a dedicated tool \cite{beauti},
+% which is not always possible, it is also very easy to write 
+% invalid XML files.
+However, BEAST style XMLs are difficult for humans to read and interpret due to the verbose syntax and interconnected components that make up BEAST models. 
+% Moreover, XML instructions do not naturally lead to clear model
+% descriptions, nor do they guarantee the model is well understood by
+% the user.
+This also makes it difficulty to translate BEAST or BEAST2 analyses from text descriptions in published work. 
+% from what is normally reported in the literature will often also prove
+% a gruelling exercise. 
+% Finally, BEAST and BEAST 2 XML files are not interchangeable. 
 %%Walter: XML is too verbose.
 %% https://thecontentwrangler.com/2016/02/23/why-does-xml-suck/
-
-The Rev programming language, introduced with the RevBayes platform
-\cite{revbayes}, was a welcome addition to the world of computational
-phylogenetics. 
-Unlike the XML strategy, Rev's syntax incorporates conventional
-notation from probability theory, exposing model
-components and its hierarchical structure through explicit statements.
-By making model specification more intuitive while retaining
-flexibility, the Rev language allows users to sharpen their focus on
-the model itself.
-On the other hand, Rev still requires users to contend with
-details extraneous to the model (e.g., MCMC parameters and operator
-schedule).
+On the other hand, the Rev language 
+\cite{revbayes} 
+incorporates conventional notation from probability theory. 
+This feature makes Rev model specification more intuitive, but still requires users to contend with runtime 
+details %extraneous to the model 
+such as MCMC parameters and the operator schedule.
+% , was a welcome addition to the world of computational
+% phylogenetics. 
+% Unlike the XML strategy, Rev's syntax incorporates conventional
+% notation from probability theory, exposing model
+% components and its hierarchical structure through explicit statements.
+% By making model specification more intuitive while retaining
+% flexibility, the Rev language allows users to sharpen their focus on
+% the model itself.
+% Rev still requires users to contend with
+% details extraneous to the model (e.g., MCMC parameters and operator
+% schedule).
 % At the moment of writing, the RevBayes suite also still lacks a mature
 % graphical user interface (GUI) for displaying the graphical structure
 % of a model.
@@ -384,15 +417,16 @@ schedule).
 % RevBayes, which detracts from a more general application of this
 % programming language.
 
-Here, we introduce LinguaPhylo (``LPhy''), an open-source programming
-language focused exclusively on model specification.
+Here, we introduce LinguaPhylo (LPhy), an open-source programming
+language focused on model specification to improve reproducibility, re-usability and model readability. 
+\textcolor{blue}{[Highlights of LPhy should go here...]}
 We also introduce an accompanying GUI, LPhyStudio, which provides an
 LPhy command line interface, as well as panels for displaying graphical models
 and simulated random variables.
-A third application we develop, called LPhyBEAST, converts LPhy scripts 
-specifying models into BEAST 2 XML files for MCMC analyses.
-By delegating everything unrelated to the model to other applications
-(e.g., LPhyBEAST), LinguaPhylo aims to make it easier to report,
+A third application we develop, called LPhyBEAST, converts LPhy model specification scripts into BEAST 2 XML files for MCMC analyses.
+% By delegating everything unrelated to the model to other applications
+% (e.g., LPhyBEAST), 
+LinguaPhylo aims to make it easier to report,
 validate and simulate under complex models, and to both set up and
 reproduce inference analyses.
 
@@ -486,7 +520,8 @@ We have  modified the script slightly for illustrative purposes:
       \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
       \}
     \end{alltt}
-    \captionof{subexample}{LPhy script specifying a phylodynamic model
+    % \captionof{subexample}{LPhy script specifying a phylodynamic model
+    \caption{LPhy script specifying a phylodynamic model
       to be run with Respiratory syncytial virus subgroup A (RSVA)
       genetic samples.\newline}
     \label{lphy:rsva}
