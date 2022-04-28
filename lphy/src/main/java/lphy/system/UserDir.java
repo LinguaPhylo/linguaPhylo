@@ -1,9 +1,13 @@
-package lphy.util;
+package lphy.system;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class IOUtils {
+/**
+ * Methods to set and get "user.dir".
+ * This is mainly used to locate a file given the relative path.
+ */
+public class UserDir {
 
     public static final String USER_DIR = "user.dir";
 

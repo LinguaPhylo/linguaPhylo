@@ -2,7 +2,7 @@ package lphy.parser;
 
 import junit.framework.TestCase;
 import lphy.core.LPhyParser;
-import lphy.util.IOUtils;
+import lphy.system.UserDir;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -64,7 +64,7 @@ public class ParserTest extends TestCase {
 //            String fileName = "hcv_coal_classic.lphy";
             for (String fileName : Objects.requireNonNull(exampleFiles) ) {
                 System.out.println("Processing " + fileName);
-                IOUtils.setUserDir(dir);
+                UserDir.setUserDir(dir);
                 try {
                     FileReader lphyFile = new FileReader(dir + "/" + fileName);
                     BufferedReader fin = new BufferedReader(lphyFile);

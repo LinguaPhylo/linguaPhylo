@@ -2,6 +2,7 @@ package lphystudio.app;
 
 import lphy.core.GraphicalLPhyParser;
 import lphy.parser.REPL;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
@@ -73,7 +74,7 @@ public class Utils {
                 if (!fdir.exists())
                     throw new IOException("Dir " + dir + " does not exist !");
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
-                lphy.util.IOUtils.setUserDir(dir);
+                UserDir.setUserDir(dir);
                 // concatenate user.dir in front of file path
                 Path actualPath = Paths.get(dir, lphyFile.toString());
                 readFile(actualPath.toFile(), panel);

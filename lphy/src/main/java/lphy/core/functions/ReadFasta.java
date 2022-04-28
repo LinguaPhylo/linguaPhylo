@@ -14,7 +14,7 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.util.IOUtils;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         //*** parsing ***//
         SequenceType sequenceType = SequenceType.NUCLEOTIDE;
 
-        Path nexPath = IOUtils.getUserPath(fileName);
+        Path nexPath = UserDir.getUserPath(fileName);
 
         Reader reader = getReader(nexPath.toString());
 
