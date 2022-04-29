@@ -78,6 +78,13 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         return layeredGraph;
     }
 
+    /**
+     * @return  GraphicalLPhyParser
+     */
+    public GraphicalLPhyParser getParser() {
+        return parser;
+    }
+
     private void setup() {
 
         removeAll();
@@ -176,6 +183,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         g.draw(line);
     }
 
+    public void clear() {
+        parser.clear();
+    }
 
     @Override
     public void modelChanged() {

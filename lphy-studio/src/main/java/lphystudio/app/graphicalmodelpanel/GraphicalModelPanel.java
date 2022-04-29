@@ -34,8 +34,6 @@ public class GraphicalModelPanel extends JPanel {
 
     ViewerPane rightPane;
 
-    GraphicalLPhyParser parser;
-
     JLabel repsLabel = new JLabel("reps:");
     JTextField repsField = new TidyTextField("1", 4);
     JButton sampleButton = new JButton("Sample");
@@ -48,8 +46,6 @@ public class GraphicalModelPanel extends JPanel {
     Object displayedElement;
 
     public GraphicalModelPanel(GraphicalLPhyParser parser) {
-
-        this.parser = parser;
 
         dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
         modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model);
@@ -118,7 +114,7 @@ public class GraphicalModelPanel extends JPanel {
         };
 
         component.addGraphicalModelListener(listener);
-        parser.addGraphicalModelChangeListener(component);
+//        parser.addGraphicalModelChangeListener(component); // cross interaction should be always avoided
 
         //TODO need a new way to deal with this model listener interaction
 
@@ -220,16 +216,16 @@ public class GraphicalModelPanel extends JPanel {
         loggers.add(rightPane.treeLog);
         loggers.add(rightPane.variableSummary);
 
-        Sampler sampler = new Sampler(parser);
+        Sampler sampler = new Sampler(component.getParser());
         sampler.sample(reps, loggers);
 
         if (id != null) {
-            Value<?> selectedValue = parser.getValue(id, LPhyParser.Context.model);
+            Value<?> selectedValue = component.getParser().getValue(id, LPhyParser.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }
         } else {
-            List<Value<?>> sinks = parser.getModelSinks();
+            List<Value<?>> sinks = component.getParser().getModelSinks();
             if (sinks.size() > 0) showValue(sinks.get(0), false);
         }
         long end = System.currentTimeMillis();
@@ -318,7 +314,7 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     public GraphicalLPhyParser getParser() {
-        return parser;
+        return component.getParser();
     }
 
     public ViewerPane getRightPane() {
@@ -340,6 +336,6 @@ public class GraphicalModelPanel extends JPanel {
         rightPane.clear();
         dataInterpreter.clear();
         modelInterpreter.clear();
-        parser.clear();
+        component.clear();
     }
 }
