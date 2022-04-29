@@ -489,10 +489,10 @@ The LPhy language is designed to enable the specification of probabilistic phylo
 It is built on top of Java and provides the following features: 
 (i) data simulation from phylogenetic generative distributions, (ii) R-style vectorization of parameters, (iii) extensibility mechanism for new functions and data types, (iv) integration with phylogenetic inference software BEAST2, and (v) easy dataset swapping for re-use of phylogenetic models on new datasets.
 
-We demonstrate LPhy's main features using an example script for performing phylogenetic inference on a virus dataset (Example \ref{lphy:rsva}). 
-This dataset contains sequences of the Respiratory syncytial virus subgroup A (RSVA). 
-The accompanying tutorial ``Time-sampled data'' for this script is available at 
-\url{https://linguaphylo.gihub.io/tutorials/time-stamped-data/}.
+Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
+This script concisely specifies a phylogenetic analysis using 19 lines of code.  
+Within the script, a \textbf{data block} is used for specifying the input dataset, and a \textbf{model block} is used to define the phylogenetic model. 
+An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
 % We have modified the script slightly for illustrative purposes:
 
 {
@@ -521,9 +521,8 @@ The accompanying tutorial ``Time-sampled data'' for this script is available at
       \}
     \end{alltt}
     % \captionof{subexample}{LPhy script specifying a phylodynamic model
-    \caption{LPhy script specifying a phylodynamic model
-      to be run with Respiratory syncytial virus subgroup A (RSVA)
-      genetic samples.\newline}
+    \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples.
+    \newline}
     \label{lphy:rsva}
   \end{listing}
 }
@@ -637,99 +636,100 @@ The accompanying tutorial ``Time-sampled data'' for this script is available at
 LinguaPhylo has two main components: values, which come in both atomic
 and vectorized form (see more about vectorization below), and
 generators.
-In what follows, we summarize and illustrate their different types.
+\textcolor{blue}{Primitive, objects and arrays should only be briefly summarized}
+% In what follows, we summarize and illustrate their different types.
 % (which can be either constant or random variables, and either objects or primitives) and Generators (which can be either generative distributions, deterministic functions or method calls).
 
-\subsubsection*{Values}
+% \subsubsection*{Values}
 
-Values in LinguaPhylo represent either atomic or arrays of random
-variables or constants, which can be of standard
-primitive types (e.g., \texttt{Boolean}, \texttt{Integer},
-\texttt{Double}, \texttt{String}) or more complex types (e.g.,
-\texttt{Alignment}, \texttt{TimeTree}).
-The type system of LPhy is not limited to aforementioned types,
-however, and new types can be added to its Java implementation.\newline 
+% Values in LinguaPhylo represent either atomic or arrays of random
+% variables or constants, which can be of standard
+% primitive types (e.g., \texttt{Boolean}, \texttt{Integer},
+% \texttt{Double}, \texttt{String}) or more complex types (e.g.,
+% \texttt{Alignment}, \texttt{TimeTree}).
+% The type system of LPhy is not limited to aforementioned types,
+% however, and new types can be added to its Java implementation.\newline 
 
-% \begin{table}[h]
-%   \begin{tabular}{lllll}
-%     \hline
-%     Value & Form & Type & Example\\\hline
-%     Constant & Atomic & Primitive & \texttt{Integer}, \texttt{Double},
-%                                     \texttt{String}, \texttt{Boolean}\\
-%           & & Object & \texttt{Alignment}, \texttt{TimeTree}\\
-%           & Array & Primitive & (Array form of its atomic counterpart)\\
-%           & & Object & (Array form of its atomic counterpart)\\\hline
-%     Random variable & Atomic & Primitive\\
-%           & & Object\\
-%           & Array & Primitive\\
-%           & & Object\\ 
-% \end{tabular}
-% \end{table}
+% % \begin{table}[h]
+% %   \begin{tabular}{lllll}
+% %     \hline
+% %     Value & Form & Type & Example\\\hline
+% %     Constant & Atomic & Primitive & \texttt{Integer}, \texttt{Double},
+% %                                     \texttt{String}, \texttt{Boolean}\\
+% %           & & Object & \texttt{Alignment}, \texttt{TimeTree}\\
+% %           & Array & Primitive & (Array form of its atomic counterpart)\\
+% %           & & Object & (Array form of its atomic counterpart)\\\hline
+% %     Random variable & Atomic & Primitive\\
+% %           & & Object\\
+% %           & Array & Primitive\\
+% %           & & Object\\ 
+% % \end{tabular}
+% % \end{table}
 
-\noindent \emph{Atomic primitive constants}. The simplest type of
-values in LinguaPhylo is an atomic primitive constant.
-In the lines below (extracted from Example \ref{lphy:rsva}), we define
-two primitive constants: a \texttt{String} constant named
-\texttt{nexusFilePath}, and a \texttt{Integer} constant named
-\texttt{n}:
+% \noindent \emph{Atomic primitive constants}. The simplest type of
+% values in LinguaPhylo is an atomic primitive constant.
+% In the lines below (extracted from Example \ref{lphy:rsva}), we define
+% two primitive constants: a \texttt{String} constant named
+% \texttt{nexusFilePath}, and a \texttt{Integer} constant named
+% \texttt{n}:
 
-{
-\small
-\begin{alltt}
-  nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
-  n = 3;
-\end{alltt}
-}
-
-In LPhy there is no explicit statement of types, which are
-automatically inferred.
-\texttt{nexusFilePath} is inferred to be a \texttt{String} because its
-literal value is surrounded by double quotes.
-Constant \texttt{n} is inferred to be an \texttt{Integer} because
-string `\texttt{3}' string has no decimal point or fractional component
-(conversely, \texttt{Double} would be inferred if 
-the string had a fractional component).\newline
-
-% The first line defines a constant named `a' with a value of
-% `2.0'. There is no explicit statement of the type, which is simply
-% inferred to be a Double because the literal string `2.0' has a
-% fractional component. The second constant `b' here is a constant of
-% type Integer because it has no decimal point or fractional
-% component. The third constant is of primitive type Boolean, inferred
-% by the keyword `true'. the last constant is of type String because of
-% the double quotes surrounding the literal value.
-
-
-% {\singlespacing
+% {
+% \small
 % \begin{alltt}
-%   a = 2.0;
-%   b = 2;
-%   c = true;
-%   d = "lphy";
+%   nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
+%   n = 3;
 % \end{alltt}
 % }
 
-\noindent \emph{Arrays of primitive constants}. The notion of primitives
-can be extended to arrays.
-In order to declare a constant array, comma-delimited literals should
-be enclosed in square brackets as shown below:
+% In LPhy there is no explicit statement of types, which are
+% automatically inferred.
+% \texttt{nexusFilePath} is inferred to be a \texttt{String} because its
+% literal value is surrounded by double quotes.
+% Constant \texttt{n} is inferred to be an \texttt{Integer} because
+% string `\texttt{3}' string has no decimal point or fractional component
+% (conversely, \texttt{Double} would be inferred if 
+% the string had a fractional component).\newline
 
-{\small
-  \begin{alltt}
-    L = [209, 210, 210];
-  \end{alltt}  
-}
+% % The first line defines a constant named `a' with a value of
+% % `2.0'. There is no explicit statement of the type, which is simply
+% % inferred to be a Double because the literal string `2.0' has a
+% % fractional component. The second constant `b' here is a constant of
+% % type Integer because it has no decimal point or fractional
+% % component. The third constant is of primitive type Boolean, inferred
+% % by the keyword `true'. the last constant is of type String because of
+% % the double quotes surrounding the literal value.
 
-For sequences of consecutive integers, a more compact notation can be
-employed using the `\texttt{:}' character to define a range.
-In the example below, constant arrays \texttt{a} and \texttt{b}
-represent the same sequence of consecutive integers from 1 to 10
-inclusive.
 
-\begin{alltt}
-  a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  b = 1:10;
-\end{alltt}
+% % {\singlespacing
+% % \begin{alltt}
+% %   a = 2.0;
+% %   b = 2;
+% %   c = true;
+% %   d = "lphy";
+% % \end{alltt}
+% % }
+
+% \noindent \emph{Arrays of primitive constants}. The notion of primitives
+% can be extended to arrays.
+% In order to declare a constant array, comma-delimited literals should
+% be enclosed in square brackets as shown below:
+
+% {\small
+%   \begin{alltt}
+%     L = [209, 210, 210];
+%   \end{alltt}  
+% }
+
+% For sequences of consecutive integers, a more compact notation can be
+% employed using the `\texttt{:}' character to define a range.
+% In the example below, constant arrays \texttt{a} and \texttt{b}
+% represent the same sequence of consecutive integers from 1 to 10
+% inclusive.
+
+% \begin{alltt}
+%   a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+%   b = 1:10;
+% \end{alltt}
 
 \subsubsection*{Generators}
 
