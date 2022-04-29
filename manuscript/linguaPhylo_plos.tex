@@ -420,15 +420,15 @@ such as MCMC parameters and the operator schedule.
 Here, we introduce LinguaPhylo (LPhy), an open-source programming
 language focused on model specification to improve reproducibility, re-usability and model readability. 
 \textcolor{blue}{[Highlights of LPhy should go here...]}
-We also introduce an accompanying GUI, LPhyStudio, which provides an
-LPhy command line interface, as well as panels for displaying graphical models
-and simulated random variables.
-A third application we develop, called LPhyBEAST, converts LPhy model specification scripts into BEAST 2 XML files for MCMC analyses.
+Our software includes a graphical user interface as well as a command line interface. 
+% , as well as panels for displaying graphical models
+% and simulated random variables.
+Additionally, we introduce a tool, LPhyBEAST, for integrating model specification with phylogenetic analysis via BEAST2.
+% , converts LPhy model specification scripts into BEAST 2 XML files for MCMC analyses.
 % By delegating everything unrelated to the model to other applications
 % (e.g., LPhyBEAST), 
-LinguaPhylo aims to make it easier to report,
-validate and simulate under complex models, and to both set up and
-reproduce inference analyses.
+The software presented in this paper aims to make it easier to report,
+validate and simulate complex phylogenetic models, as well as to reproduce and re-use phylogenetic analyses.
 
 % is not exclusive 
 % exclusively with any phylogenetic platform; instead, it is  Java, and is meant to be used alongside applications that convert LPhy
@@ -492,7 +492,7 @@ It is built on top of Java and provides the following features:
 Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
 This script concisely specifies a phylogenetic analysis using 19 lines of code.  
 Within the script, a \textbf{data block} is used for specifying the input dataset, and a \textbf{model block} is used to define the phylogenetic model. 
-An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
+% An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
 % We have modified the script slightly for illustrative purposes:
 
 {
