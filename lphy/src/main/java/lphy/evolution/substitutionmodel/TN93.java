@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -36,7 +33,9 @@ public class TN93 extends RateMatrix {
     }
 
 
-    @GeneratorInfo(name = "tn93", description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
+    @GeneratorInfo(name = "tn93", verbClause = "is", narrativeName = "HKY model",
+            category = GeneratorCategory.SUBST_MODEL,
+            description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa1 = getKappa1();
         Value<Double> kappa2 = getKappa2();

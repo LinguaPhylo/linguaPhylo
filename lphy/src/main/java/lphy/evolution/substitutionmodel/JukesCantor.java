@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
@@ -24,9 +21,8 @@ public class JukesCantor extends RateMatrix {
         super(rate);
     }
 
-    @GeneratorInfo(name = "jukesCantor",
-            verbClause = "is",
-            narrativeName = "Jukes-Cantor model",
+    @GeneratorInfo(name = "jukesCantor", verbClause = "is", narrativeName = "Jukes-Cantor model",
+            category = GeneratorCategory.SUBST_MODEL, examples = {"examples/jcCoalescent.lphy"},
             description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
     public Value<Double[][]> apply() {
         Value<Number> rateValue = getParams().get(meanRateParamName);

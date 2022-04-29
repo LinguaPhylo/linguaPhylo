@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -39,9 +36,8 @@ public class GTR extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-    @GeneratorInfo(name = "gtr",
-            verbClause = "is",
-            narrativeName = "general time-reversible rate matrix",
+    @GeneratorInfo(name = "gtr", verbClause = "is", narrativeName = "general time-reversible rate matrix",
+            category = GeneratorCategory.SUBST_MODEL, examples = {"examples/gtrCoalescent.lphy"},
             description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getRates();

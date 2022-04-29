@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
@@ -30,7 +27,9 @@ public class LewisMK extends RateMatrix {
         setParam(numStatesParamName, numStates);
     }
 
-    @GeneratorInfo(name = "lewisMK", description = "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.")
+    @GeneratorInfo(name = "lewisMK", verbClause = "is", narrativeName = "LewisMK model",
+            category = GeneratorCategory.SUBST_MODEL, examples = {"examples/lewisMKCoalescent.lphy"},
+            description = "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.")
     public Value<Double[][]> apply() {
         Value<Integer> numStates = getParams().get(numStatesParamName);
         Value<Number> rateValue = getParams().get(meanRateParamName);

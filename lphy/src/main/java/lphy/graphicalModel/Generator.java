@@ -468,12 +468,24 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
+            if (!citation.value().endsWith(".")) html.append(".");
             String url = NarrativeUtils.getURL(citation);
             if (url.length() > 0)
-                html.append("<br><a href=\"").append(url).append("\">").append(url).append("</a><br>");
+                html.append("&nbsp;<a href=\"").append(url).append("\">").append(url).append("</a><br>");
         }
 
-        html.append("</p></html>");
+        String[] examples = Generator.getGeneratorExamples(generatorClass);
+        if (examples.length > 0) {
+            html.append("<h3>Examples</h3>");
+            for (int i = 0; i < examples.length; i++) {
+                String ex = examples[i];
+                html.append(ex);
+                if (i > 0 && i == examples.length - 1)
+                    html.append(", ");
+            }
+        }
+
+        html.append("</html>");
         return html.toString();
     }
 
@@ -507,6 +519,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo ginfo = getGeneratorInfo(c);
         if (ginfo != null) return ginfo.name();
         return c.getSimpleName();
+    }
+
+    static String[] getGeneratorExamples(Class<?> c) {
+        GeneratorInfo ginfo = getGeneratorInfo(c);
+        if (ginfo != null) return ginfo.examples();
+        return new String[]{};
     }
 
     static String getGeneratorDescription(Class<?> c) {

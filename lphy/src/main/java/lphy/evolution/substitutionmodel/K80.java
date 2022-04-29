@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -29,7 +26,9 @@ public class K80 extends RateMatrix {
     }
 
 
-    @GeneratorInfo(name = "k80", description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
+    @GeneratorInfo(name = "k80", verbClause = "is", narrativeName = "K80 model",
+            category = GeneratorCategory.SUBST_MODEL,
+            description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa = getKappa();
         return new DoubleArray2DValue(k80(kappa.value()), this);
