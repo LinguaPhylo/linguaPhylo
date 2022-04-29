@@ -16,7 +16,6 @@ import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 
 /**
  * A Kingman coalescent tree generative distribution
- * @deprecated use {@link SerialCoalescent}.
  */
 @Citation(
         value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
@@ -24,7 +23,6 @@ import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
         year = 1982,
         authors = {"Kingman"},
         DOI="https://doi.org/10.1016/0304-4149(82)90011-4")
-@Deprecated
 public class Coalescent extends TaxaConditionedTreeGenerator {
 
     private Value<Double> theta;
