@@ -63,14 +63,17 @@ public class ModelGuide {
         }
     }
 
-    public void setSelectedModels(Object criteria) {
+    public boolean setSelectedModels(Object criteria) {
+        boolean isSame = false;
         if (criteria instanceof GeneratorCategory cate) {
+            isSame = currCate == cate;
             currCate = cate;
         }
 //        else if (criteria instanceof String geneType) {
 //            currGeneType = geneType;
 //        }
         addSelectedModels();
+        return isSame;
     }
 
     public List<Model> getAllModels() {
@@ -82,7 +85,7 @@ public class ModelGuide {
     }
 
     public Model getModel(int i) {
-        return allModels.get(i);
+        return selectedModels.get(i);
     }
 
 //    public Model getCurrentModel() {

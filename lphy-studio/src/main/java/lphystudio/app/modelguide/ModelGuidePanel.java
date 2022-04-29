@@ -73,8 +73,9 @@ public class ModelGuidePanel extends JPanel {
         cateDropList.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                modelGuide.setSelectedModels(cateDropList.getSelectedItem());
+                boolean isSame = modelGuide.setSelectedModels(cateDropList.getSelectedItem());
                 dataTableModel.fireTableDataChanged();
+                if (!isSame) textPane.setText("");
             }
         });
 
