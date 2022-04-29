@@ -1,19 +1,22 @@
 package lphy.evolution.coalescent;
 
+import lphy.core.distributions.Exp;
+import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.core.distributions.Exp;
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 
-import static lphy.core.distributions.DistributionConstants.*;
-import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import static lphy.core.distributions.DistributionConstants.nParamName;
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 
 /**
  * A Kingman coalescent tree generative distribution
+ * @deprecated use {@link SerialCoalescent}.
  */
 @Citation(
         value="Kingman JFC. The Coalescent. Stochastic Processes and their Applications 13, 235-248 (1982)",
@@ -21,6 +24,7 @@ import java.util.*;
         year = 1982,
         authors = {"Kingman"},
         DOI="https://doi.org/10.1016/0304-4149(82)90011-4")
+@Deprecated
 public class Coalescent extends TaxaConditionedTreeGenerator {
 
     private Value<Double> theta;
