@@ -3,9 +3,10 @@ package lphy.core.distributions;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.meanParamName;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -26,9 +27,8 @@ public class Exp implements GenerativeDistribution<Double> {
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name="Exp",
-            verbClause = "has",
-            narrativeName = "exponential distribution prior",
+    @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",
+            category = GeneratorCategory.PRIOR, examples = {"yuleRelaxed.lphy"},
             description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 

@@ -97,7 +97,10 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         } else return super.n();
     }
 
-    @GeneratorInfo(name = "StructuredCoalescent", description = "The structured coalescent distribution over tip-labelled time trees.")
+    @GeneratorInfo(name = "StructuredCoalescent",
+            category = GeneratorCategory.TREE_PRIOR_COAL,
+            examples = {"https://linguaphylo.github.io/tutorials/structured-coalescent/"},
+            description = "The structured coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
 
 

@@ -5,6 +5,6 @@ package lphy.graphicalModel;
  */
 public enum GeneratorCategory {
     DATA_TYPE, SUBST_MODEL, SITE_MODEL, CLOCK_MODEL,
-    TREE_PRIOR_COAL, TREE_PRIOR_BIRTH_DEATH, NONE,
+    TREE_PRIOR_COAL, TREE_PRIOR_BIRTH_DEATH, PRIOR, NONE,
     ALL // last element is only for GUI
 }

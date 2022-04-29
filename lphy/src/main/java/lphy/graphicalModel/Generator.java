@@ -479,8 +479,11 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             html.append("<h3>Examples</h3>");
             for (int i = 0; i < examples.length; i++) {
                 String ex = examples[i];
+                // add hyperlink
+                if (ex.startsWith("http"))
+                    ex = "&nbsp;<a href=\"" + ex + "\">" + ex + "</a>";
                 html.append(ex);
-                if (i > 0 && i == examples.length - 1)
+                if (i < examples.length - 1)
                     html.append(", ");
             }
         }

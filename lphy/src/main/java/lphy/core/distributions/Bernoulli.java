@@ -6,7 +6,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.pParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -22,7 +22,10 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")
+    @GeneratorInfo(name="Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
+            category = GeneratorCategory.PRIOR,
+            examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
+            description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {
 
         boolean success = (random.nextDouble() < doubleValue(p));

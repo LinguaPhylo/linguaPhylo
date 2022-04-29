@@ -17,7 +17,7 @@ public class StandardDatatypeFunction extends DeterministicFunction<SequenceType
     }
 
     @GeneratorInfo(name = "standard", verbClause = "is", narrativeName = "the Standard data type",
-            category = GeneratorCategory.DATA_TYPE, examples = {"examples/totalEvidence.lphy"},
+            category = GeneratorCategory.DATA_TYPE, examples = {"totalEvidence.lphy"},
             description = "The Standard data type function. Takes a state count and produces a Standard data type with that number of states.")
     public Value<SequenceType> apply() {
         Value<Integer> stateCountValue = getParams().get(numStatesParamName);
