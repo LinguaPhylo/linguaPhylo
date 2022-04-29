@@ -473,7 +473,7 @@ reproduce inference analyses.
 
 \section*{Design and Implementation}
 
-\subsection*{A concise domain-specific language for phylogenetic inference}
+% \subsection*{A concise domain-specific language for phylogenetic inference}
 
 % LinguaPhylo is a model specification language to concisely and
 % precisely define probabilistic phylogenetic models.
@@ -485,15 +485,15 @@ reproduce inference analyses.
 
 %Box \ref{box1} shows a simple example.
 
-The LinguaPhylo language is implemented in Java and has been designed
-(i) to concisely and precisely define probabilistic phylogenetic
-models, and (ii) to be readable by both humans and computers.
-We will describe and illustrate LPhy's main features by examining the
-LPhy script that comes with one of the publicly available tutorials
-(``Time-stamped data'', available on
-\url{https://linguaphylo.gihub.io/tutorials/time-stamped-data/})
-accompanying the software.
-We have  modified the script slightly for illustrative purposes:
+The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax. 
+It is built on top of Java and provides the following features: 
+(i) data simulation from phylogenetic generative distributions, (ii) R-style vectorization of parameters, (iii) extensibility mechanism for new functions and data types, (iv) integration with phylogenetic inference software BEAST2, and (v) easy dataset swapping for re-use of phylogenetic models on new datasets.
+
+We demonstrate LPhy's main features using an example script for performing phylogenetic inference on a virus dataset (Example \ref{lphy:rsva}). 
+This dataset contains sequences of the Respiratory syncytial virus subgroup A (RSVA). 
+The accompanying tutorial ``Time-sampled data'' for this script is available at 
+\url{https://linguaphylo.gihub.io/tutorials/time-stamped-data/}.
+% We have modified the script slightly for illustrative purposes:
 
 {
   \small
@@ -528,13 +528,13 @@ We have  modified the script slightly for illustrative purposes:
   \end{listing}
 }
 
-Briefly, the script above (Example \ref{lphy:rsva}) specifies a
-phylodynamic model to be used with molecular sequences from the
-Respiratory syncytial virus subgroup A (RSVA).
-Commands related to parsing input data and to specifying the model are
-enclosed within the `\texttt{data \{ \}}' and `\texttt{model \{ \}}'
-blocks, respectively.
-We will explain what each line accomplishes in the following sections.
+% Briefly, the script above (Example \ref{lphy:rsva}) specifies a
+% phylodynamic model to be used with molecular sequences from the
+% Respiratory syncytial virus subgroup A (RSVA).
+% Commands related to parsing input data and to specifying the model are
+% enclosed within the `\texttt{data \{ \}}' and `\texttt{model \{ \}}'
+% blocks, respectively.
+% We will explain what each line accomplishes in the following sections.
 
 
 % \begin{mybox}[label=box1, float=htpb!]{A simple phylogenetic model}
