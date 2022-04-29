@@ -114,7 +114,7 @@ public class GraphicalModelPanel extends JPanel {
         };
 
         component.addGraphicalModelListener(listener);
-//        parser.addGraphicalModelChangeListener(component); // cross interaction should be always avoided
+        parser.addGraphicalModelChangeListener(component); // cross interaction should be always avoided
 
         //TODO need a new way to deal with this model listener interaction
 
