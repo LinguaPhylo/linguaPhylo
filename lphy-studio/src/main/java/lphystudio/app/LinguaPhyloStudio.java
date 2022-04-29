@@ -21,7 +21,9 @@ import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,8 +60,6 @@ public class LinguaPhyloStudio {
     GraphicalLPhyParser parser = Utils.createParser();
     GraphicalModelPanel panel = null;
     JFrame frame;
-
-    File lastDirectory = null;//TODO Alexei: is it still used?
 
     public LinguaPhyloStudio() {
 
@@ -104,12 +104,13 @@ public class LinguaPhyloStudio {
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
         exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
         fileMenu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser)));
+        exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
+                lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
 
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
         exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
         fileMenu.add(exportTikzMenuItem);
-        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz()));
+        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz(), frame));
 
         //Build the example's menu.
         JMenu exampleMenu = new JMenu("Examples");
@@ -189,9 +190,9 @@ public class LinguaPhyloStudio {
         try {
             Utils.readFileFromDir(lphyFileName, dir, panel);
             setTitle(lphyFileName);
-        } catch (IOException e1) {
+        } catch (IOException e) {
             setTitle(null);
-            e1.printStackTrace();
+            LoggerUtils.logStackTrace(e);
         }
     }
 
@@ -220,7 +221,7 @@ public class LinguaPhyloStudio {
             File[] files = dir.listFiles();
             if (files != null) {
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
-                UserDir.setUserDir(dir.toString());
+//                UserDir.setUserDir(dir.toString());
 
                 Arrays.sort(files, Comparator.comparing(File::getName));
                 for (final File file : files) {
@@ -244,15 +245,17 @@ public class LinguaPhyloStudio {
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser)));
+        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
 
         JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
         fileMenu.add(saveLogAsMenuItem);
-        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.getRightPane().getVariableLog().getText()));
+        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
+                panel.getRightPane().getVariableLog().getText(), frame));
 
         JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
         fileMenu.add(saveTreeLogAsMenuItem);
-        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(panel.getRightPane().getTreeLog().getText()));
+        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
+                panel.getRightPane().getTreeLog().getText(), frame));
 
         JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
         fileMenu.add(saveModelToHTML);
@@ -344,7 +347,6 @@ public class LinguaPhyloStudio {
             kit.write(baos, doc, doc.getStartPosition().getOffset(), doc.getLength());
             baos.close();
 
-
             String rtfContent = baos.toString();
             {
                 // replace "Monospaced" by a well-known monospace font
@@ -360,67 +362,22 @@ public class LinguaPhyloStudio {
             System.out.println(rtfContent);
 
             if (rtfContent.length() > 0) {
-
-                JFileChooser chooser = new JFileChooser();
-                chooser.setMultiSelectionEnabled(false);
-
-                int option = chooser.showSaveDialog(frame);
-
-                if (option == JFileChooser.APPROVE_OPTION) {
-
-                    BufferedOutputStream out;
-
-                    try {
-                        FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
-
-                        writer.write(rtfContent);
-                        writer.close();
-
-                    } catch (FileNotFoundException e) {
-
-                    } catch (IOException e) {
-
-                    }
-                }
+                Utils.saveToFile(rtfContent,frame);
             }
 
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (BadLocationException e) {
-            e.printStackTrace();
+        } catch (IOException | BadLocationException e) {
+            LoggerUtils.logStackTrace(e);
         }
     }
 
     private void exportModelToHTML() {
-
         JTextPane pane = panel.getCanonicalModelPane();
 
         if (pane.getDocument().getLength() > 0) {
+            HTMLNarrative htmlNarrative = new HTMLNarrative();
+            String html = htmlNarrative.codeBlock(parser, 11);
 
-            JFileChooser chooser = new JFileChooser();
-            chooser.setMultiSelectionEnabled(false);
-
-            int option = chooser.showSaveDialog(frame);
-
-            if (option == JFileChooser.APPROVE_OPTION) {
-
-                HTMLNarrative htmlNarrative = new HTMLNarrative();
-                String html = htmlNarrative.codeBlock(parser, 11);
-
-//                if (html.length() > 0) {
-                try {
-                    FileWriter writer = new FileWriter(chooser.getSelectedFile().getAbsoluteFile());
-                    writer.write(html);
-                    writer.close();
-
-                } catch (FileNotFoundException e) {
-
-                } catch (IOException e) {
-
-                }
-//                }
-            }
+            Utils.saveToFile(html, frame);
         }
     }
 
