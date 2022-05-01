@@ -36,7 +36,7 @@ public class WAG extends RateMatrix {
     }
 
     @GeneratorInfo(name = "wag", verbClause = "is", narrativeName = "WAG model",
-            category = GeneratorCategory.SUBST_MODEL, examples = {"wagCoalescent.lphy"},
+            category = GeneratorCategory.Q_MATRIX, examples = {"wagCoalescent.lphy"},
             description = "The WAG instantaneous rate matrix for amino acid.")
     public Value<Double[][]> apply() {
         Value<Double[]> freq = getParams().get(freqParamName);

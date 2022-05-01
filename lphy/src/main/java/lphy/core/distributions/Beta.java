@@ -6,8 +6,9 @@ import org.apache.commons.math3.distribution.BetaDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.core.distributions.DistributionConstants.alphaParamName;
+import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
-import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -23,7 +24,10 @@ public class Beta implements GenerativeDistribution1D<Double> {
         this.beta = beta;
     }
 
-    @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior", description = "The beta probability distribution.")
+    @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior",
+            category = GeneratorCategory.PROB_DIST,
+            examples = {"birthDeathRhoSampling.lphy","simpleBModelTest.lphy"},
+            description = "The beta probability distribution.")
     public RandomVariable<Double> sample() {
 
         BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));

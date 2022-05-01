@@ -59,8 +59,8 @@ public class SerialCoalescent extends TaxaConditionedTreeGenerator {
         }
     }
 
-    @GeneratorInfo(name = "Coalescent",
-            narrativeName = "Kingman's coalescent tree prior",
+    @GeneratorInfo(name = "Coalescent", narrativeName = "Kingman's coalescent tree prior",
+            category = GeneratorCategory.COAL_TREE, examples = {"https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description = "The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)")
     public RandomVariable<TimeTree> sample() {
 

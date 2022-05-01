@@ -6,7 +6,8 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.alphaParamName;
+import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -30,7 +31,9 @@ public class InverseGamma implements GenerativeDistribution1D<Double> {
         constructGammaDistribution();
     }
 
-    @GeneratorInfo(name = "InverseGamma", description = "The inverse-gamma probability distribution.")
+    @GeneratorInfo(name = "InverseGamma",
+            category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy"},
+            description = "The inverse-gamma probability distribution.")
     public RandomVariable<Double> sample() {
         constructGammaDistribution();
         double x = 1.0 / gammaDistribution.sample();

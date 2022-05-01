@@ -90,7 +90,7 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
     }
 
     @GeneratorInfo(name = "SkylineCoalescent", verbClause = "has", narrativeName = "skyline coalescent prior",
-            category = GeneratorCategory.TREE_PRIOR_COAL,
+            category = GeneratorCategory.COAL_TREE,
             examples = {"https://linguaphylo.github.io/tutorials/skyline-plots/"},
             description = "The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)")
     public RandomVariable<TimeTree> sample() {

@@ -6,7 +6,8 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.scaleParamName;
+import static lphy.core.distributions.DistributionConstants.shapeParamName;
 
 /**
  * Gamma distribution
@@ -29,7 +30,9 @@ public class Gamma implements GenerativeDistribution1D<Double> {
         constructGammaDistribution();
     }
 
-    @GeneratorInfo(name = "Gamma", description = "The gamma probability distribution.")
+    @GeneratorInfo(name = "Gamma", verbClause = "has", narrativeName = "gamma distribution prior",
+            category = GeneratorCategory.PROB_DIST, examples = {"covidDPG.lphy"},
+            description = "The gamma probability distribution.")
     public RandomVariable<Double> sample() {
         constructGammaDistribution();
         double x = gammaDistribution.sample();

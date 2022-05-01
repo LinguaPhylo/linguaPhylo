@@ -23,7 +23,7 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
     }
 
     @GeneratorInfo(name="Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
-            category = GeneratorCategory.PRIOR,
+            category = GeneratorCategory.PROB_DIST,
             examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
             description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {

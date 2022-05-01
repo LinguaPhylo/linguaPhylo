@@ -28,7 +28,7 @@ public class Exp implements GenerativeDistribution<Double> {
     }
 
     @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",
-            category = GeneratorCategory.PRIOR, examples = {"yuleRelaxed.lphy"},
+            category = GeneratorCategory.PROB_DIST, examples = {"birthDeathRhoSampling.lphy","yuleRelaxed.lphy"},
             description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
 

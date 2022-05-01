@@ -29,7 +29,7 @@ public class GeneralTimeReversible extends RateMatrix {
     }
 
     @GeneratorInfo(name = "generalTimeReversible",
-            category = GeneratorCategory.SUBST_MODEL,
+            category = GeneratorCategory.Q_MATRIX,
             examples = {"https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
             description = "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.")
     public Value<Double[][]> apply() {

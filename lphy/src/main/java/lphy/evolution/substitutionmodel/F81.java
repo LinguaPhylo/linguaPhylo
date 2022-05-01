@@ -24,7 +24,7 @@ public class F81 extends RateMatrix {
     }
 
     @GeneratorInfo(name = "f81", verbClause = "is", narrativeName = "F81 model",
-            category = GeneratorCategory.SUBST_MODEL, examples = {"f81Coalescent.lphy"},
+            category = GeneratorCategory.Q_MATRIX, examples = {"f81Coalescent.lphy"},
             description = "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> freq = getFreq();

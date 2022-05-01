@@ -27,7 +27,7 @@ public class K80 extends RateMatrix {
 
 
     @GeneratorInfo(name = "k80", verbClause = "is", narrativeName = "K80 model",
-            category = GeneratorCategory.SUBST_MODEL,
+            category = GeneratorCategory.Q_MATRIX,
             description = "The K80 instantaneous rate matrix. Takes a kappa and produces a K80 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa = getKappa();

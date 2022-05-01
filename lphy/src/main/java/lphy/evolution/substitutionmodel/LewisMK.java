@@ -28,7 +28,7 @@ public class LewisMK extends RateMatrix {
     }
 
     @GeneratorInfo(name = "lewisMK", verbClause = "is", narrativeName = "LewisMK model",
-            category = GeneratorCategory.SUBST_MODEL, examples = {"lewisMKCoalescent.lphy"},
+            category = GeneratorCategory.Q_MATRIX, examples = {"lewisMKCoalescent.lphy"},
             description = "The LewisMK Q matrix construction function. Takes a mean rate and a number of states and produces a LewisMK Q matrix.")
     public Value<Double[][]> apply() {
         Value<Integer> numStates = getParams().get(numStatesParamName);
