@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.evolution.EvolutionConstants.treeParamName;
-import static lphy.evolution.birthdeath.BirthDeathConstants.*;
+import static lphy.evolution.birthdeath.BirthDeathConstants.psiParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -37,7 +37,9 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GeneratorInfo(name = "SimFossilsPoisson", description = "A tree with fossils added to the given tree at rate psi.")
+    @GeneratorInfo(name = "SimFossilsPoisson",
+            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simFossils.lphy"},
+            description = "A tree with fossils added to the given tree at rate psi.")
     public RandomVariable<TimeTree> sample() {
 
         double samplingRate = doubleValue(psi);

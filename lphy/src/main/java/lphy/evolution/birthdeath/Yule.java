@@ -6,7 +6,10 @@ import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.evolution.birthdeath.BirthDeathConstants.lambdaParamName;
@@ -44,7 +47,9 @@ public class Yule extends TaxaConditionedTreeGenerator {
         activeNodes = new ArrayList<>(2 * n());
     }
 
-    @GeneratorInfo(name = "Yule", description = "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.")
+    @GeneratorInfo(name = "Yule",
+            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simpleYule.lphy","yuleRelaxed.lphy"},
+            description = "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.")
     public RandomVariable<TimeTree> sample() {
 
         TimeTree tree = new TimeTree(getTaxa());
