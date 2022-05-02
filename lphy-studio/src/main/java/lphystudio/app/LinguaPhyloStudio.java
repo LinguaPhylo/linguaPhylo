@@ -39,6 +39,7 @@ public class LinguaPhyloStudio {
         System.setProperty("com.apple.macos.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
         System.setProperty("apple.awt.fileDialogForDirectories", "true");
+        System.setProperty("file.encoding", "UTF-8"); // for windows
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException |
