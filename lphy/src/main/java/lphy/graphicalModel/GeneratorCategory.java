@@ -6,7 +6,7 @@ package lphy.graphicalModel;
  * @author Walter Xie
  */
 public enum GeneratorCategory {
-    DATA_TYPE, RATE_MATRIX,
-    COAL_TREE, BIRTH_DEATH_TREE, PROB_DIST, STOCHASTIC_PROCESS, NONE,
+    DATA_TYPE, RATE_MATRIX, COAL_TREE, BIRTH_DEATH_TREE,
+    PROB_DIST, STOCHASTIC_PROCESS, ALIGNMENT, NONE,
     ALL // last element is only for GUI
 }
