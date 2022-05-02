@@ -46,7 +46,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
 
 
     @GeneratorInfo(name="readFasta", verbClause = "is read from", narrativeName = "fasta file",
-            category = GeneratorCategory.ALIGNMENT, examples = {"covidDPG.lphy"},
+            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"covidDPG.lphy"},
             description = "A function that parses an alignment from a fasta file.")
     public Value<Alignment> apply() {
 

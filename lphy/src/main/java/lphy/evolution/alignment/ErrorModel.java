@@ -54,7 +54,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
     }
 
     @GeneratorInfo(name = "ErrorModel",
-            category = GeneratorCategory.ALIGNMENT, examples = {"errorModel1.lphy", "errorModel2.lphy"},
+            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"errorModel1.lphy", "errorModel2.lphy"},
             description = "The error model distribution on an alignment.")
     public RandomVariable<Alignment> sample() {
 
