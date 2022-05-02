@@ -7,10 +7,12 @@ import lphystudio.core.swing.TableColumnAdjuster;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 /**
  * Table + TextPane
@@ -44,8 +46,29 @@ public class ModelGuidePanel extends JPanel {
 
         jLabel = new JLabel("Model category : ", JLabel.TRAILING);
         JComboBox<GeneratorCategory> cateDropList = new JComboBox<>(GeneratorCategory.values());
+        cateDropList.setRenderer(new BasicComboBoxRenderer() {
+            public Component getListCellRendererComponent(JList list, Object value,
+                                                          int index, boolean isSelected, boolean cellHasFocus) {
+                if (isSelected) {
+                    setBackground(list.getSelectionBackground());
+                    setForeground(list.getSelectionForeground());
+                    if (-1 < index) // tooltip
+                        list.setToolTipText(Arrays.stream(GeneratorCategory.values()).toList().get(index).getDescription());
+                } else {
+                    setBackground(list.getBackground());
+                    setForeground(list.getForeground());
+                }
+                setFont(list.getFont());
+                if (value instanceof Icon)
+                    setIcon((Icon)value);
+                else
+                    setText((value == null) ? "" : value.toString());
+                return this;
+            }
+        });
+//        cateDropList.setMaximumRowCount(10);
         // set to ALL
-        cateDropList.setSelectedIndex(GeneratorCategory.values().length-1);
+//        cateDropList.setSelectedIndex(GeneratorCategory.values().length-1);
         topPanel.add(jLabel);
         topPanel.add(cateDropList);
 
@@ -63,7 +86,7 @@ public class ModelGuidePanel extends JPanel {
 
         TableColumnAdjuster tableColumnAdjuster = new TableColumnAdjuster(dataTable);
         // enable auto resize after turn off in TableColumnAdjuster
-        dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         dataTable.getSelectionModel().addListSelectionListener(e -> {
             int i = dataTable.getSelectedRow();
             if (i >= 0) textPane.setText(modelGuide.getModel(i).htmlDoc);
