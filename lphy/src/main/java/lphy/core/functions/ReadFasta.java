@@ -48,7 +48,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
     }
 
 
-    @GeneratorInfo(name="readFasta",description = "A function that parses an alignment from a Nexus file.")
+    @GeneratorInfo(name="readFasta",description = "A function that parses an alignment from a fasta file.")
     public Value<Alignment> apply() {
 
         String fileName = ((Value<String>) getParams().get(fileParamName)).value();
