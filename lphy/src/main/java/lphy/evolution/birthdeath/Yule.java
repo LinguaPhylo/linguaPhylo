@@ -48,7 +48,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
     }
 
     @GeneratorInfo(name = "Yule",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simpleYule.lphy","yuleRelaxed.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simpleYule.lphy","yuleRelaxed.lphy"},
             description = "The Yule tree distribution over tip-labelled time trees. Will be conditional on the root age if one is provided.")
     public RandomVariable<TimeTree> sample() {
 

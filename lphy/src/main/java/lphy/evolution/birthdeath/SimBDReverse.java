@@ -44,7 +44,7 @@ public class SimBDReverse extends TaxaConditionedTreeGenerator {
 
 
     @GeneratorInfo(name = "SimBDReverse",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simFossils.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simFossils.lphy"},
             description = "A complete birth-death tree with both extant and extinct species.<br>" +
             "Conditioned on (a fraction of) extant taxa.")
     public RandomVariable<TimeTree> sample() {

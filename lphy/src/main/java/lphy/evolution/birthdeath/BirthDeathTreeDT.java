@@ -34,7 +34,7 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
 
 
     @GeneratorInfo(name = "BirthDeath",
-            category = GeneratorCategory.BIRTH_DEATH_TREE,
+            category = GeneratorCategory.BD_TREE,
             description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {

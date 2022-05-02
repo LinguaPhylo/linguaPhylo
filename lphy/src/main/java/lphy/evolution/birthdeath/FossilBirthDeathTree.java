@@ -41,7 +41,7 @@ public class FossilBirthDeathTree extends TaxaConditionedTreeGenerator {
     }
 
     @GeneratorInfo(name = "FossilBirthDeathTree",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simFossilsCompact.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simFossilsCompact.lphy"},
             description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and (optionally) on number of *extant* taxa.")
     public RandomVariable<TimeTree> sample() {

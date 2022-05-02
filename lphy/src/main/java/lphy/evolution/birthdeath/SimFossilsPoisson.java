@@ -38,7 +38,7 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
 
 
     @GeneratorInfo(name = "SimFossilsPoisson",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simFossils.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simFossils.lphy"},
             description = "A tree with fossils added to the given tree at rate psi.")
     public RandomVariable<TimeTree> sample() {
 

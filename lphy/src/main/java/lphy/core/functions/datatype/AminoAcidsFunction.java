@@ -15,7 +15,7 @@ public class AminoAcidsFunction extends DeterministicFunction<SequenceType> {
     public AminoAcidsFunction() {}
 
     @GeneratorInfo(name = "aminoAcids", verbClause = "is", narrativeName = "amino acid data type",
-            category = GeneratorCategory.DATA_TYPE, examples = {"wagCoalescent.lphy"},
+            category = GeneratorCategory.SEQU_TYPE, examples = {"wagCoalescent.lphy"},
             description = "The amino acid data type.")
     public Value<SequenceType> apply() {
         return new Value<>(null, SequenceType.AMINO_ACID, this);

@@ -36,7 +36,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
 
     @GeneratorInfo(name = "RhoSampleTree",
-            category = GeneratorCategory.BIRTH_DEATH_TREE,
+            category = GeneratorCategory.BD_TREE,
             description = "A tree sampled from a larger tree by selecting tips at time zero with probability rho.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {

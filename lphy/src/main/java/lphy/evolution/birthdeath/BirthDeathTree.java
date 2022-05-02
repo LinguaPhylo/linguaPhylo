@@ -40,7 +40,7 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
     }
 
     @GeneratorInfo(name = "BirthDeath",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simpleCalibratedBirthDeath.lphy","simpleExtantBirthDeath.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simpleCalibratedBirthDeath.lphy","simpleExtantBirthDeath.lphy"},
             description = "A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {

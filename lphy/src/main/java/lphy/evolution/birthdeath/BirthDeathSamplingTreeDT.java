@@ -35,7 +35,7 @@ public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree
 
     @GeneratorInfo(name = "BirthDeathSampling", verbClause = "is assumed to have evolved according to",
             narrativeName = "birth-death-sampling tree process",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"birthDeathRhoSampling.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"birthDeathRhoSampling.lphy"},
             description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {

@@ -49,7 +49,7 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
 
     @GeneratorInfo(name = "FullBirthDeath",
-            category = GeneratorCategory.BIRTH_DEATH_TREE, examples = {"simpleFullBirthDeath.lphy"},
+            category = GeneratorCategory.BD_TREE, examples = {"simpleFullBirthDeath.lphy"},
             description = "A birth-death tree with both extant and extinct species.<br>" +
             "Conditioned on age of root or origin.")
     public RandomVariable<TimeTree> sample() {
