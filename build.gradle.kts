@@ -5,7 +5,7 @@
 // https://docs.gradle.org/current/userguide/structuring_software_products_details.html
 
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.*
 
 plugins {
     `java-library`
@@ -22,6 +22,10 @@ allprojects {
         }
         // Managing plugin versions via pluginManagement in settings.gradle.kts
 //        mavenLocal() // only for testing
+    }
+
+    tasks.withType(JavaCompile::class.java) {
+        options.encoding = "UTF-8"
     }
 
 }
