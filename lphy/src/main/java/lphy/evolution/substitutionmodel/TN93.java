@@ -34,7 +34,7 @@ public class TN93 extends RateMatrix {
 
 
     @GeneratorInfo(name = "tn93", verbClause = "is", narrativeName = "HKY model",
-            category = GeneratorCategory.Q_MATRIX,
+            category = GeneratorCategory.RATE_MATRIX,
             description = "The TN93 instantaneous rate matrix. Takes kappa1, kappa2 and base frequencies and produces an Tamura-Nei-93 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double> kappa1 = getKappa1();

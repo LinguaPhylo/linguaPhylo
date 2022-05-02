@@ -37,7 +37,7 @@ public class HKY extends RateMatrix {
 
 
     @GeneratorInfo(name = "hky", verbClause = "is", narrativeName = "HKY model",
-            category = GeneratorCategory.Q_MATRIX, examples = {"hkyCoalescent.lphy"},
+            category = GeneratorCategory.RATE_MATRIX, examples = {"hkyCoalescent.lphy"},
             description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.")
     public Value<Double[][]> apply() {
 

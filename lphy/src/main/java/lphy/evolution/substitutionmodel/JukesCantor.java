@@ -22,7 +22,7 @@ public class JukesCantor extends RateMatrix {
     }
 
     @GeneratorInfo(name = "jukesCantor", verbClause = "is", narrativeName = "Jukes-Cantor model",
-            category = GeneratorCategory.Q_MATRIX, examples = {"jcCoalescent.lphy"},
+            category = GeneratorCategory.RATE_MATRIX, examples = {"jcCoalescent.lphy"},
             description = "The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces a Jukes-Cantor Q matrix.")
     public Value<Double[][]> apply() {
         Value<Number> rateValue = getParams().get(meanRateParamName);
