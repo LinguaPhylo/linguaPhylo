@@ -185,9 +185,9 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
         propInvariable = siteModel.value().getProportionInvariable();
     }
 
-    @GeneratorInfo(name = "PhyloCTMC",
-            verbClause = "is assumed to have evolved under",
+    @GeneratorInfo(name = "PhyloCTMC", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic continuous time Markov process",
+            category = GeneratorCategory.STOCHASTIC_PROCESS, examples = {"simpleBModelTest.lphy"},
             description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
             "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {

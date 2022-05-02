@@ -1,16 +1,18 @@
 package lphy.evolution.continuous;
 
+import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created by Alexei Drummond on 2/02/20.
@@ -72,9 +74,9 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
         }
     }
 
-    @GeneratorInfo(name = "PhyloBrownian",
-            verbClause = "is assumed to have evolved under",
+    @GeneratorInfo(name = "PhyloBrownian", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic Brownian motion process",
+            category = GeneratorCategory.STOCHASTIC_PROCESS, examples = {"simplePhyloOU.lphy"},
             description = "The phylogenetic Brownian motion distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id." +
                     "(The sampling distribution that the phylogenetic continuous trait likelihood is derived from.)")
     public RandomVariable<ContinuousCharacterData> sample() {
