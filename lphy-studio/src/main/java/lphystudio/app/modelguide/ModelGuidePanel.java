@@ -45,6 +45,8 @@ public class ModelGuidePanel extends JPanel {
 //        topPanel.add(geneTypeDropList);
 
         jLabel = new JLabel("Model category : ", JLabel.TRAILING);
+        jLabel.setToolTipText("The group of generative distributions or functions " +
+                "play the same or similar roles in the Bayesian phylogenetic frame.");
         JComboBox<GeneratorCategory> cateDropList = new JComboBox<>(GeneratorCategory.values());
         cateDropList.setRenderer(new BasicComboBoxRenderer() {
             public Component getListCellRendererComponent(JList list, Object value,
