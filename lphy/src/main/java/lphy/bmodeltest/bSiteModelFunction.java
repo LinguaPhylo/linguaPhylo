@@ -37,7 +37,9 @@ public class bSiteModelFunction extends DeterministicFunction<SiteModel> {
 
     }
 
-    @GeneratorInfo(name = "bSiteModel", narrativeName = "bModelTest site model", verbClause = "is", description = "Returns the site model for the given parameters.")
+    @GeneratorInfo(name = "bSiteModel", narrativeName = "bModelTest site model", verbClause = "is",
+            category = GeneratorCategory.MODEL_AVE_SEL, examples = {"simpleBModelTest.lphy"},
+            description = "Returns the site model for the given parameters.")
     public Value<SiteModel> apply() {
 
         Map<String, Value> params = getParams();

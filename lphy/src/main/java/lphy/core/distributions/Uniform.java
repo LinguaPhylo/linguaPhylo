@@ -6,7 +6,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.lowerParamName;
+import static lphy.core.distributions.DistributionConstants.upperParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -27,7 +28,9 @@ public class Uniform implements GenerativeDistribution<Double> {
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "Uniform", description = "The uniform probability distribution.")
+    @GeneratorInfo(name = "Uniform",
+            category = GeneratorCategory.PROB_DIST, examples = {"simFossilsCompact.lphy"},
+            description = "The uniform probability distribution.")
     public RandomVariable<Double> sample() {
 
         double l = doubleValue(lower);

@@ -5,10 +5,7 @@ import lphy.evolution.alignment.Alignment;
 import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.evolution.io.NexusParser;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
@@ -54,9 +51,9 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
     }
 
 
-    @GeneratorInfo(name="readNexus",
-            verbClause = "is read from",
-            narrativeName = "Nexus file",
+    @GeneratorInfo(name="readNexus", verbClause = "is read from", narrativeName = "Nexus file",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"primates.lphy","simpleCoalescentNex.lphy","twoPartitionCoalescentNex.lphy"},
             description = "A function that parses an alignment from a Nexus file.")
     public Value<Alignment> apply() {
 

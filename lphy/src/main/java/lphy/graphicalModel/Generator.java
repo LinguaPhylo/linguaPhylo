@@ -410,6 +410,93 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return md.toString();
     }
 
+    static String getGeneratorHtml(Class<? extends Generator> generatorClass) {
+        GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
+
+        List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
+        Class[] types = getParameterTypes(generatorClass, 0);
+
+        // parameters
+        StringBuilder signature = new StringBuilder();
+        signature.append(Generator.getGeneratorName(generatorClass)).append("(");
+
+        int count = 0;
+        for (int i = 0; i < pInfo.size(); i++) {
+            ParameterInfo pi = pInfo.get(i);
+            if (count > 0) signature.append(", ");
+            signature //.append(types[i].getSimpleName()).append(" ")
+                    .append("<i>").append(pi.name()).append("</i>");
+            count += 1;
+        }
+        signature.append(")");
+
+        // main content
+        StringBuilder html = new StringBuilder("<html><h2>");
+        // check if deprecated
+        Annotation a = generatorClass.getAnnotation(Deprecated.class);
+        if (a != null) html.append("<s>");
+        html.append(signature);
+        if (a != null) html.append("</s>").append("<font color=\"#ff0000\">")
+                .append(" @Deprecated").append("</font>");
+        html.append("</h2>");
+
+        if (generatorInfo != null) html.append("<p>").append(generatorInfo.description()).append("</p>");
+
+        if (pInfo.size() > 0) {
+            html.append("<h3>Parameters:</h3>").append("<ul>");
+//            int count = 0;
+            for (int i = 0; i < pInfo.size(); i++) {
+                ParameterInfo pi = pInfo.get(i);
+                html.append("<li>").append(types[i].getSimpleName()).
+                        append(" <b>").append(pi.name()).append("</b>")
+                        .append(" - <font color=\"#808080\">")
+                        .append(pi.description()).append("</font></li>");
+
+//                if (count > 0) signature.append(", ");
+//                signature.append(new Text(types[i].getSimpleName())).append(" ").append(new BoldText(pi.name()));
+//                count += 1;
+            }
+//            signature.append(")");
+//            html.append(new Heading(signature.toString(), 2)).append("\n\n");
+            html.append("</ul>");
+        }
+
+        List<String> returnType = Collections.singletonList(getReturnType(generatorClass).getSimpleName());
+        if (returnType.size() > 0) {
+            html.append("<h3>Return type:</h3>").append("<ul>");
+            for (String itm : returnType)
+                html.append("<li>").append(itm).append("</li>");
+            html.append("</ul>");
+        }
+
+        Citation citation = getCitation(generatorClass);
+        if (citation != null) {
+            html.append("<h3>Reference</h3>");
+            html.append(citation.value());
+            if (!citation.value().endsWith(".")) html.append(".");
+            String url = NarrativeUtils.getURL(citation);
+            if (url.length() > 0)
+                html.append("&nbsp;<a href=\"").append(url).append("\">").append(url).append("</a><br>");
+        }
+
+        String[] examples = Generator.getGeneratorExamples(generatorClass);
+        if (examples.length > 0) {
+            html.append("<h3>Examples</h3>");
+            for (int i = 0; i < examples.length; i++) {
+                String ex = examples[i];
+                // add hyperlink
+                if (ex.startsWith("http"))
+                    ex = "&nbsp;<a href=\"" + ex + "\">" + ex + "</a>";
+                html.append(ex);
+                if (i < examples.length - 1)
+                    html.append(", ");
+            }
+        }
+
+        html.append("</html>");
+        return html.toString();
+    }
+
     static List<ParameterInfo> getAllParameterInfo(Class c) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
         for (Constructor constructor : c.getConstructors()) {
@@ -440,6 +527,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo ginfo = getGeneratorInfo(c);
         if (ginfo != null) return ginfo.name();
         return c.getSimpleName();
+    }
+
+    static String[] getGeneratorExamples(Class<?> c) {
+        GeneratorInfo ginfo = getGeneratorInfo(c);
+        if (ginfo != null) return ginfo.examples();
+        return new String[]{};
     }
 
     static String getGeneratorDescription(Class<?> c) {

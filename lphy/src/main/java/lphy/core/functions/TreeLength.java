@@ -1,10 +1,7 @@
 package lphy.core.functions;
 
 import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 
 public class TreeLength extends DeterministicFunction<Double> {
@@ -16,7 +13,9 @@ public class TreeLength extends DeterministicFunction<Double> {
         setParam(paramName, x);
     }
 
-    @GeneratorInfo(name="treeLength",description = "The sum of all the branch lengths in the tree.")
+    @GeneratorInfo(name="treeLength",
+            category = GeneratorCategory.TREE, examples = {"simpleCalibratedYule.lphy","simpleExtantBirthDeath.lphy"},
+            description = "The sum of all the branch lengths in the tree.")
     public Value<Double> apply() {
         Value<TimeTree> v = (Value<TimeTree>)getParams().get(paramName);
         return new DoubleValue(v.value().treeLength(), this);

@@ -56,7 +56,9 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         checkTaxaParameters(false);
     }
 
-    @GeneratorInfo(name = "BirthDeathSerialSampling", description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
+    @GeneratorInfo(name = "BirthDeathSerialSampling",
+            category = GeneratorCategory.BD_TREE, examples = {"simpleBirthDeathSerial.lphy"},
+            description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).")
     public RandomVariable<TimeTree> sample() {
 

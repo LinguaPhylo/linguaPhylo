@@ -8,7 +8,6 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.lowerParamName;
 import static lphy.core.distributions.DistributionConstants.upperParamName;
-import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -28,7 +27,9 @@ public class DiscreteUniform implements GenerativeDistribution<Integer> {
         this.random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "DiscreteUniform", description = "The discrete uniform distribution over integers.")
+    @GeneratorInfo(name = "DiscreteUniform",
+            category = GeneratorCategory.PROB_DIST, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
+            description = "The discrete uniform distribution over integers.")
     public RandomVariable<Integer> sample() {
 
         int l = lower.value();

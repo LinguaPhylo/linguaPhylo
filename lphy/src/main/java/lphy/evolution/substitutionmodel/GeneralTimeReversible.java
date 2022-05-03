@@ -1,5 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
@@ -28,6 +29,8 @@ public class GeneralTimeReversible extends RateMatrix {
     }
 
     @GeneratorInfo(name = "generalTimeReversible",
+            category = GeneratorCategory.RATE_MATRIX,
+            examples = {"https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
             description = "The general time reversible instantaneous rate matrix. Takes relative rates and base frequencies and produces an general time reversible rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getRates();

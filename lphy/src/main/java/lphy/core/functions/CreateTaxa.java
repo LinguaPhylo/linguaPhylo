@@ -2,10 +2,7 @@ package lphy.core.functions;
 
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 import java.lang.reflect.Array;
 
@@ -23,7 +20,10 @@ public class CreateTaxa extends DeterministicFunction<Taxa> {
         if (ages != null) setParam(agesParamName, ages);
     }
 
-    @GeneratorInfo(name="taxa",description = "A set of taxa with species and ages defined in parallel arrays.")
+    @GeneratorInfo(name="taxa",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"jcCoalescent.lphy","simpleMultispeciesCoalescentTaxa.lphy"},
+            description = "A set of taxa with species and ages defined in parallel arrays.")
     public Value<Taxa> apply() {
         Value names = getParams().get(taxaParamName);
         Value speciesValue = getParams().get(speciesParamName);

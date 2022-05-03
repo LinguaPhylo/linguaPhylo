@@ -23,20 +23,25 @@ public class Utils {
 
     static File lastDirectory = null;
 
-    public static void saveToFile(String text) {
+    /**
+     * Save string into a file through JFileChooser.
+     * @param text   String to save
+     * @param frame  the parent component of the dialog, or null
+     */
+    public static void saveToFile(String text, JFrame frame) {
         JFileChooser jfc = new JFileChooser();
 
         File chooserFile = new File(System.getProperty("user.dir"));
 
-        if (lastDirectory == null) {
+        if (lastDirectory == null)
             jfc.setCurrentDirectory(chooserFile);
-        } else {
+        else
             jfc.setCurrentDirectory(lastDirectory);
-        }
+
         jfc.setMultiSelectionEnabled(false);
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        int returnValue = jfc.showSaveDialog(null);
+        int returnValue = jfc.showSaveDialog(frame);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
@@ -47,7 +52,7 @@ public class Utils {
                 writer.flush();
                 writer.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LoggerUtils.logStackTrace(ex);
             }
             lastDirectory = selectedFile.getParentFile();
         }

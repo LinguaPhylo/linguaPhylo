@@ -3,7 +3,8 @@ package lphy.evolution.birthdeath;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
@@ -32,7 +33,9 @@ public class BirthDeathTreeDT implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GeneratorInfo(name = "BirthDeath", description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
+    @GeneratorInfo(name = "BirthDeath",
+            category = GeneratorCategory.BD_TREE,
+            description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 

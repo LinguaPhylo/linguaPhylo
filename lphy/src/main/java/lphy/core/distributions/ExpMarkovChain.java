@@ -39,9 +39,10 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
 
     }
 
-    @GeneratorInfo(name = "ExpMarkovChain",
-            verbClause = "have",
+    @GeneratorInfo(name = "ExpMarkovChain", verbClause = "have",
             narrativeName = "smoothing prior in which each element has an exponential prior with a mean of the previous element in the chain",
+            category = GeneratorCategory.PROB_DIST,
+            examples = {"skylineCoalescent.lphy", "https://linguaphylo.github.io/tutorials/skyline-plots/"},
             description = "A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(meanlog, sdlog); X[i+1] ~ Exp(mean=X[i])")
     public RandomVariable<Double[]> sample() {
 

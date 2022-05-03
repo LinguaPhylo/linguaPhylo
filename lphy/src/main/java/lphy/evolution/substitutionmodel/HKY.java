@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import java.util.Map;
@@ -39,9 +36,8 @@ public class HKY extends RateMatrix {
     }
 
 
-    @GeneratorInfo(name = "hky",
-            verbClause = "is",
-            narrativeName = "HKY model",
+    @GeneratorInfo(name = "hky", verbClause = "is", narrativeName = "HKY model",
+            category = GeneratorCategory.RATE_MATRIX, examples = {"hkyCoalescent.lphy"},
             description = "The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optionally a total rate) and produces an HKY85 rate matrix.")
     public Value<Double[][]> apply() {
 

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.*;
-import static lphy.core.distributions.DistributionConstants.scaleParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
@@ -43,9 +42,8 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
         random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "NormalGamma",
-            verbClause = "has",
-            narrativeName = "normal-gamma prior",
+    @GeneratorInfo(name = "NormalGamma", verbClause = "has", narrativeName = "normal-gamma prior",
+            category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal-gamma probability distribution.")
     public RandomVariable<Double[]> sample() {
 

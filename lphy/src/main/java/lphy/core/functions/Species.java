@@ -1,10 +1,7 @@
 package lphy.core.functions;
 
 import lphy.evolution.Taxa;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,9 @@ public class Species extends DeterministicFunction<Taxa> {
         setParam(paramName, taxa);
     }
 
-    @GeneratorInfo(name="species", description = "extract the species from the given taxa object as a new taxa object. " +
+    @GeneratorInfo(name="species",
+            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"simpleMultispeciesCoalescentTaxa.lphy"},
+            description = "extract the species from the given taxa object as a new taxa object. " +
             "Useful to generate a species tree in the multispecies coalescent. The age of each species will be the youngest age of the taxa from that species.")
     public Value<Taxa> apply() {
         Value<Taxa> taxa = (Value<Taxa>)getParams().get(paramName);

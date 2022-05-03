@@ -17,7 +17,7 @@ public class LoggerUtils {
     }
 
     /**
-     * log Exception stack trace.
+     * log Exception stack trace, so that it can be printed in Errors panel.
      * @param e Exception
      */
     public static void logStackTrace(Exception e) {

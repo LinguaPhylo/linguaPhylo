@@ -1,10 +1,10 @@
 package lphy.evolution.coalescent;
 
+import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -50,14 +50,16 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
     }
 
     @GeneratorInfo(name = "MultispeciesCoalescent",
+            category = GeneratorCategory.COAL_TREE,
+            examples = {"simpleMultispeciesCoalescent.lphy", "simpleMultispeciesCoalescentTaxa.lphy","twoGeneMultispeciesCoalescent.lphy"},
             description = "The Kingman coalescent distribution within each branch of species tree gives rise to a distribution over gene trees conditional on the species tree. " +
                     "The (optional) taxa object provides for non-trivial mappings from individuals to species, and not all species have to have representatives. " +
                     "The (optional) numLoci parameter can be used to produce more than one gene tree from this distribution.")
-    public RandomVariable sample() {
+    public RandomVariable<TimeTree> sample() {
 
         geneTreeTaxa = createGeneTreeTaxa();
 
-        return new RandomVariable<>(null, simulateGeneTree(), this);
+        return new RandomVariable<TimeTree>(null, simulateGeneTree(), this);
     }
 
     private TimeTree simulateGeneTree() {

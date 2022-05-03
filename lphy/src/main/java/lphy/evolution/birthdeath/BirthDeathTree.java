@@ -4,12 +4,11 @@ import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
@@ -40,7 +39,9 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
         checkTaxaParameters(true);
     }
 
-    @GeneratorInfo(name = "BirthDeath", description = "A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
+    @GeneratorInfo(name = "BirthDeath",
+            category = GeneratorCategory.BD_TREE, examples = {"simpleCalibratedBirthDeath.lphy","simpleExtantBirthDeath.lphy"},
+            description = "A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {
 
