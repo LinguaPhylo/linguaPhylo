@@ -53,7 +53,7 @@ public class LinguaPhyloStudio {
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
-    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
     private static final int MAX_WIDTH = 1600;
     private static final int MAX_HEIGHT = 1200;
