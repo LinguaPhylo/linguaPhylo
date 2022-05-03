@@ -15,7 +15,10 @@ public class ModelGuideApp extends JFrame {
     private static final int MAX_HEIGHT = 800;
 
     private static final String APP_NAME = "Model Guide";
-    private static String VERSION;
+
+    // use MANIFEST.MF to store version in jar, or use system property in development,
+    // otherwise VERSION = "DEVELOPMENT"
+    private final String VERSION;
 
     private final ModelGuide modelGuide;
 
@@ -32,14 +35,12 @@ public class ModelGuideApp extends JFrame {
                 IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        // use MANIFEST.MF to store version in jar, or use system property in development,
-        // otherwise VERSION = "DEVELOPMENT"
-        VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
     }
 
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
     public ModelGuideApp() {
+        VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
         // main frame
         setTitle(APP_NAME + " version " + VERSION);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -84,6 +85,8 @@ public class ModelGuideApp extends JFrame {
     }
 
     public static void main(String[] args) {
+
+        System.setProperty("model.guide.version", "0.0.1-SNAPSHOT");
         ModelGuideApp frame = new ModelGuideApp();
 
     }
