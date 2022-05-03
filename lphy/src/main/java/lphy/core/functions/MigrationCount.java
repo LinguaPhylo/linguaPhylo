@@ -14,6 +14,7 @@ public class MigrationCount extends DeterministicFunction<Integer> {
     }
 
     @GeneratorInfo(name="countMigrations",
+            category = GeneratorCategory.TREE, examples = {"simpleStructuredCoalescent.lphy"},
             description = "The number of single-child nodes in the tree where the '" +
                     StructuredCoalescent.populationLabel + "' attribute changes.")
     public Value<Integer> apply() {

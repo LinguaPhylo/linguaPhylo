@@ -22,7 +22,9 @@ public class LocalBranchRates extends DeterministicFunction<Double[]> {
         setParam(ratesParamName, rates);
     }
 
-    @GeneratorInfo(name = "localBranchRates", description = "A function that returns branch rates for the given tree, " +
+    @GeneratorInfo(name = "localBranchRates",
+            category = GeneratorCategory.TREE, examples = {"simpleRandomLocalClock.lphy","simpleRandomLocalClock2.lphy"},
+            description = "A function that returns branch rates for the given tree, " +
             "indicator mask and raw rates. Each branch takes on the rate of its node index if the indicator is true, " +
             "or inherits the rate of its parent branch otherwise.")
     public Value<Double[]> apply() {

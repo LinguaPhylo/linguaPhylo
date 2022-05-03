@@ -12,6 +12,7 @@ public enum GeneratorCategory {
     RATE_MATRIX("Rate matrix","Instantaneous rate matrix"),
     COAL_TREE("Coalescent tree","Coalescent tree prior"),
     BD_TREE("Birth-death tree","Birth-death tree prior"),
+    TREE("Tree functions","Functions related to tree"),
     PROB_DIST("Probability distribution","Prior probability distribution"),
     STOCHASTIC_PROCESS("Stochastic process","Such as continuous-time Markov chain (CTMC) and Brownian motion"),
     MODEL_AVE_SEL("\"True\" model","Model averaging or model selection"),

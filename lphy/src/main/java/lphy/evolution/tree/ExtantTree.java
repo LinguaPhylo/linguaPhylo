@@ -2,7 +2,8 @@ package lphy.evolution.tree;
 
 import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lphy.evolution.EvolutionConstants.treeParamName;
 import static lphy.evolution.tree.TimeTreeUtils.*;
@@ -16,7 +17,9 @@ public class ExtantTree extends DeterministicFunction<TimeTree> {
         setParam(treeParamName, tree);
     }
 
-    @GeneratorInfo(name = "extantTree", description = "A tree pruned from a larger tree by retaining only the tips at time zero.")
+    @GeneratorInfo(name = "extantTree",
+            category = GeneratorCategory.TREE, examples = {"simFossilsCompact.lphy"},
+            description = "A tree pruned from a larger tree by retaining only the tips at time zero.")
     public Value<TimeTree> apply() {
 
         Value<TimeTree> tree = getParams().get(treeParamName);

@@ -34,8 +34,8 @@ public class ExtractTrait extends DeterministicFunction<Alignment> {
 
 
     @GeneratorInfo(name="extractTrait", verbClause = "extracts", narrativeName = "trait",
-            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"covidDPG.lphy",
-            "https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"covidDPG.lphy", "https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
             description = "return a trait alignment, which contains the set of traits extracted from taxa names.")
     public Value<Alignment> apply() {
 
