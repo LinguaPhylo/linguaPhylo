@@ -432,7 +432,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
         // main content
         StringBuilder html = new StringBuilder("<html><h2>");
+        // check if deprecated
+        Annotation a = generatorClass.getAnnotation(Deprecated.class);
+        if (a != null) html.append("<s>");
         html.append(signature);
+        if (a != null) html.append("</s>").append("<font color=\"#ff0000\">")
+                .append(" @Deprecated").append("</font>");
         html.append("</h2>");
 
         if (generatorInfo != null) html.append("<p>").append(generatorInfo.description()).append("</p>");
