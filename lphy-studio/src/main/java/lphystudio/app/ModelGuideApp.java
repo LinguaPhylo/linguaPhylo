@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class ModelGuideApp extends JFrame {
 
-    private static final String APP_NAME = "Model Guide";
+    public static final String APP_NAME = "Model Guide";
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
@@ -34,12 +34,12 @@ public class ModelGuideApp extends JFrame {
 
     public ModelGuideApp() {
 //        VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
-        // main frame
         setTitle(APP_NAME + " version " + VERSION);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // not close lphy studio frame
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        int MAX_WIDTH = 800;
-        int MAX_HEIGHT = 800;
+        final int MAX_WIDTH = 800;
+        final int MAX_HEIGHT = 800;
         LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT);
 
         modelGuide = new ModelGuide();

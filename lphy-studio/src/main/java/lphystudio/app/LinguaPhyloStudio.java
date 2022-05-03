@@ -126,13 +126,13 @@ public class LinguaPhyloStudio {
         menuBar.add(panel.getRightPane().getMenu());
 
         // Tools
-        JMenu toolMenu = new JMenu("Tools");
-        menuBar.add(toolMenu);
+        JMenu toolsMenu = new JMenu("Tools");
+        menuBar.add(toolsMenu);
         // extension manager
-        JMenuItem extManMenuItem = new JMenuItem("Extension manager");
-        extManMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
-        toolMenu.add(extManMenuItem);
-        extManMenuItem.addActionListener(e -> {
+        JMenuItem toolMenuItem = new JMenuItem(ExtManagerDialog.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
             ExtManagerDialog extManager = null;
             try {
                 extManager = new ExtManagerDialog(frame);
@@ -140,6 +140,13 @@ public class LinguaPhyloStudio {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        });
+        // model guide
+        toolMenuItem = new JMenuItem(ModelGuideApp.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
+            ModelGuideApp modelGuideApp = new ModelGuideApp();
         });
 
         // deal with About menu
@@ -169,8 +176,8 @@ public class LinguaPhyloStudio {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
-        int MAX_WIDTH = 1600;
-        int MAX_HEIGHT = 1200;
+        final int MAX_WIDTH = 1600;
+        final int MAX_HEIGHT = 1200;
         LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT);
 
         frame.setJMenuBar(menuBar);
