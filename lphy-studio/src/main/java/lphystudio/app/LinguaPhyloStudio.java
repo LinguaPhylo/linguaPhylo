@@ -30,10 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class LinguaPhyloStudio {
-
-    private static String VERSION;
     private static final String APP_NAME = "LPhy Studio";
-
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
@@ -48,21 +45,19 @@ public class LinguaPhyloStudio {
                 IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        // use MANIFEST.MF to store version in jar, or use system property in development,
-        // otherwise VERSION = "DEVELOPMENT"
-        VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
-    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
-
-    private static final int MAX_WIDTH = 1600;
-    private static final int MAX_HEIGHT = 1200;
+    private final int MASK = LPhyAppConfig.MASK;
+    private final String VERSION;
 
     GraphicalLPhyParser parser = Utils.createParser();
-    GraphicalModelPanel panel = null;
+    GraphicalModelPanel panel;
     JFrame frame;
 
     public LinguaPhyloStudio() {
+        // use MANIFEST.MF to store version in jar, or use system property in development,
+        // otherwise VERSION = "DEVELOPMENT"
+        VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
 
         panel = new GraphicalModelPanel(parser);
 
@@ -174,6 +169,8 @@ public class LinguaPhyloStudio {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
+        int MAX_WIDTH = 1600;
+        int MAX_HEIGHT = 1200;
         LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT);
 
         frame.setJMenuBar(menuBar);
