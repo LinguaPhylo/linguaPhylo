@@ -28,6 +28,10 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
+    tasks.withType(Javadoc::class.java) {
+        options.encoding = "UTF-8"
+    }
+
 }
 
 // Configures the sub-projects of this project.
