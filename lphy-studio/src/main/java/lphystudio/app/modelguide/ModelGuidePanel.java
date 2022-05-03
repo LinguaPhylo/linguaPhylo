@@ -99,8 +99,10 @@ public class ModelGuidePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean isSame = modelGuide.setSelectedModels(cateDropList.getSelectedItem());
-                dataTableModel.fireTableDataChanged();
                 if (!isSame) textPane.setText("");
+                dataTableModel.fireTableDataChanged();
+                if (dataTable.getRowCount() > 0)
+                    dataTable.setRowSelectionInterval(0,0);
             }
         });
 
@@ -125,8 +127,11 @@ public class ModelGuidePanel extends JPanel {
         jPanel.setBackground(Color.white);
         jPanel.add(textPane);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                scrollPane, jPanel);
+        // after textPane
+        if (dataTable.getRowCount() > 0)
+            dataTable.setRowSelectionInterval(0,0);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, jPanel);
         splitPane.setDividerLocation(200);
         splitPane.setResizeWeight(0.5);
 
