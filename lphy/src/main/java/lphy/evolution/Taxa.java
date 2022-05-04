@@ -1,6 +1,7 @@
 package lphy.evolution;
 
 import lphy.evolution.tree.TimeTreeNode;
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
 
@@ -15,7 +16,8 @@ public interface Taxa extends MultiDimensional {
 
     //****** MethodInfo ******//
 
-    @MethodInfo(description="The names of the taxa.")
+    @MethodInfo(description="The names of the taxa.",
+            category = GeneratorCategory.TAXA_ALIGNMENT)
     default String[] taxaNames() {
         return getTaxaNames();
     }
@@ -30,7 +32,8 @@ public interface Taxa extends MultiDimensional {
         return ntaxa();
     }
 
-    @MethodInfo(description = "the total number of nodes (left + internal) in a binary tree with these taxa.")
+    @MethodInfo(description = "the total number of nodes (left + internal) in a binary tree with these taxa.",
+            examples = {"simpleMultispeciesCoalescentTaxa.lphy"})
     default int nodeCount() {
         return 2*ntaxa()-1;
     }

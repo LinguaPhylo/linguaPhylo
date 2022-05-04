@@ -45,7 +45,9 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         random = Utils.getRandom();
     }
 
-    @GeneratorInfo(name = "SimFBDAge", description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
+    @GeneratorInfo(name = "SimFBDAge",
+            category = GeneratorCategory.BD_TREE, examples = {"simFBDAge.lphy"},
+            description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on origin age.")
     public RandomVariable<TimeTree> sample() {
 

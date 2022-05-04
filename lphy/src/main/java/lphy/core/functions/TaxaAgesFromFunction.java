@@ -6,6 +6,8 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 
+// use CreateTaxa
+@Deprecated
 public class TaxaAgesFromFunction extends DeterministicFunction<Taxa> {
 
     public static final String paramName = "0";

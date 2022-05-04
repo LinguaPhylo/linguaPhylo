@@ -1,12 +1,10 @@
 package lphy.core.functions;
 
 import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
-import java.util.*;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class CoalescentCorrection extends DeterministicFunction<Double[][]> {
 
@@ -29,7 +27,9 @@ public class CoalescentCorrection extends DeterministicFunction<Double[][]> {
         thetaParamName = getParamName(1);
     }
 
-    @GeneratorInfo(name = "coalescentCorrection", description = "Constructs the expected variance-covariance matrix of a gene tree from given species tree and population sizes.")
+    @GeneratorInfo(name = "coalescentCorrection",
+            category = GeneratorCategory.COAL_TREE,
+            description = "Constructs the expected variance-covariance matrix of a gene tree from given species tree and population sizes.")
     public Value<Double[][]> apply() {
 
         // TODO implement Fabio's coalescent correction

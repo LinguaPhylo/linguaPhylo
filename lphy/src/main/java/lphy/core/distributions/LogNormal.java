@@ -3,7 +3,8 @@ package lphy.core.distributions;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
@@ -26,9 +27,9 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
         this.S = S;
     }
 
-    @GeneratorInfo(name = "LogNormal",
-            verbClause = "has",
-            narrativeName = "log-normal prior", description = "The log-normal probability distribution.")
+    @GeneratorInfo(name = "LogNormal", verbClause = "has", narrativeName = "log-normal prior",
+            category = GeneratorCategory.PROB_DIST, examples = {"hkyCoalescent.lphy","errorModel1.lphy"},
+            description = "The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
 
         logNormalDistribution = new LogNormalDistribution(doubleValue(M), doubleValue(S));

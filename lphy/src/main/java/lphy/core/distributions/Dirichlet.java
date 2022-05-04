@@ -1,8 +1,11 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import java.util.*;
-import static lphy.core.distributions.DistributionConstants.*;
+
+import java.util.Collections;
+import java.util.Map;
+
+import static lphy.core.distributions.DistributionConstants.concParamName;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -15,9 +18,9 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         this.concentration = concentration;
     }
 
-    @GeneratorInfo(name="Dirichlet",
-            verbClause = "have",
-            narrativeName = "Dirichlet distribution prior",
+    @GeneratorInfo(name="Dirichlet", verbClause = "have", narrativeName = "Dirichlet distribution prior",
+            category = GeneratorCategory.PROB_DIST,
+            examples = {"birthDeathRhoSampling.lphy","dirichlet.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description="The dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
 

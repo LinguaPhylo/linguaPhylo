@@ -6,7 +6,10 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
@@ -45,7 +48,9 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GeneratorInfo(name = "FullBirthDeath", description = "A birth-death tree with both extant and extinct species.<br>" +
+    @GeneratorInfo(name = "FullBirthDeath",
+            category = GeneratorCategory.BD_TREE, examples = {"simpleFullBirthDeath.lphy"},
+            description = "A birth-death tree with both extant and extinct species.<br>" +
             "Conditioned on age of root or origin.")
     public RandomVariable<TimeTree> sample() {
 

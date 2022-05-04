@@ -1,9 +1,6 @@
 package lphy.evolution.substitutionmodel;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -26,7 +23,9 @@ public class F81 extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-    @GeneratorInfo(name = "f81", description = "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.")
+    @GeneratorInfo(name = "f81", verbClause = "is", narrativeName = "F81 model",
+            category = GeneratorCategory.RATE_MATRIX, examples = {"f81Coalescent.lphy"},
+            description = "The F81 instantaneous rate matrix. Takes base frequencies and produces an F81 rate matrix.")
     public Value<Double[][]> apply() {
         Value<Double[]> freq = getFreq();
         return new DoubleArray2DValue(f81(freq.value()), this);

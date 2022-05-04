@@ -23,7 +23,9 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
         this.weights = weights;
     }
 
-    @GeneratorInfo(name = "WeightedDirichlet", description = "The scaled dirichlet probability distribution.")
+    @GeneratorInfo(name = "WeightedDirichlet",
+            category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy","weightedDirichlet.lphy"},
+            description = "The scaled dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
 
         Number[] weight = weights.value();

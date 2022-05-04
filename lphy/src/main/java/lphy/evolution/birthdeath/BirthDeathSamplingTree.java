@@ -5,7 +5,8 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 
@@ -34,9 +35,9 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
     }
 
 
-    @GeneratorInfo(name = "BirthDeathSampling",
-            verbClause = "is assumed to have evolved according to",
+    @GeneratorInfo(name = "BirthDeathSampling", verbClause = "is assumed to have evolved according to",
             narrativeName = "birth-death-sampling tree process",
+            category = GeneratorCategory.BD_TREE,
             description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {

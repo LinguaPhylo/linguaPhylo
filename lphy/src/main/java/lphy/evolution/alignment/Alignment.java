@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 
 import java.util.Objects;
@@ -15,12 +16,15 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
     //****** MethodInfo ******//
 
-    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa")
+    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
     default Taxa taxa() {
         return getTaxa();
     }
 
-    @MethodInfo(description = "the number of possible states in the alignment.", narrativeName = "number of states")
+    @MethodInfo(description = "the number of possible states in the alignment.",
+            narrativeName = "number of states", examples = {"covidDPG.lphy"})
     default int stateCount() {
         return getStateCount();
     }

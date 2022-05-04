@@ -1,9 +1,6 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 /**
@@ -28,7 +25,10 @@ public class MigrationMatrix extends DeterministicFunction<Double[][]> {
     }
 
 
-    @GeneratorInfo(name = "migrationMatrix", description = "This function constructs the population process rate matrix. Diagonals are the population sizes, off-diagonals are populated with the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).")
+    @GeneratorInfo(name = "migrationMatrix",
+            category = GeneratorCategory.RATE_MATRIX,
+            examples = {"simpleStructuredCoalescent.lphy", "https://linguaphylo.github.io/tutorials/structured-coalescent/"},
+            description = "This function constructs the population process rate matrix. Diagonals are the population sizes, off-diagonals are populated with the migration rate from pop i to pop j (backwards in time in units of expected migrants per generation).")
     public Value<Double[][]> apply() {
         Value<Double[]> rates = getParams().get(mParamName);
         Value<Double[]> popSizes = getParams().get(thetaParamName);

@@ -1,14 +1,10 @@
 package lphy.core.functions;
 
 import jebl.evolution.io.ImportException;
-import lphy.evolution.alignment.Alignment;
 import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.evolution.io.NexusParser;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
@@ -25,7 +21,7 @@ import java.util.TreeMap;
  * This does not involve partitioning.
  * @see MetaDataAlignment
  */
-public class ReadNexus extends DeterministicFunction<Alignment> {
+public class ReadNexus extends DeterministicFunction<MetaDataAlignment> {
 
     private final String fileParamName = "file";
     private final String optionsParamName = "options";
@@ -54,11 +50,11 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
     }
 
 
-    @GeneratorInfo(name="readNexus",
-            verbClause = "is read from",
-            narrativeName = "Nexus file",
+    @GeneratorInfo(name="readNexus", verbClause = "is read from", narrativeName = "Nexus file",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"primates.lphy","simpleCoalescentNex.lphy","twoPartitionCoalescentNex.lphy"},
             description = "A function that parses an alignment from a Nexus file.")
-    public Value<Alignment> apply() {
+    public Value<MetaDataAlignment> apply() {
 
         Path nexPath = UserDir.getUserPath(fileName.value());
 
@@ -83,12 +79,12 @@ public class ReadNexus extends DeterministicFunction<Alignment> {
                 LoggerUtils.log.severe("Taxa ages had been imported from the nexus file ! " +
                         "It would be problematic to overwrite taxa ages from the command line !");
 
-            nexusData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
+            nexusData.setAgesParsedFromTaxaName(ageRegxStr, ageDirectionStr);
         }
 
         // set species to Taxon
         if (spRegxStr != null)
-            Objects.requireNonNull(nexusData).setSpeciesFromTaxaName(spRegxStr);
+            Objects.requireNonNull(nexusData).setSpeciesParsedFromTaxaName(spRegxStr);
 
         return new Value<>(null, nexusData, this);
 

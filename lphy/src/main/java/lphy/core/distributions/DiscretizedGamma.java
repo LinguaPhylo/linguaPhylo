@@ -6,8 +6,8 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.core.distributions.DistributionConstants.shapeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
-import static lphy.core.distributions.DistributionConstants.*;
 
 /**
  * Discretized Gamma distribution
@@ -32,7 +32,9 @@ public class DiscretizedGamma implements GenerativeDistribution<Double> {
         constructGammaDistribution();
     }
 
-    @GeneratorInfo(name = "DiscretizeGamma", description = "The discretized gamma probability distribution with mean = 1.")
+    @GeneratorInfo(name = "DiscretizeGamma",
+            category = GeneratorCategory.PROB_DIST, examples = {"gtrGammaCoalescent.lphy","simpleBModelTest.lphy"},
+            description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double> sample() {
         constructGammaDistribution();
 

@@ -20,7 +20,8 @@ public class Binomial implements GenerativeDistribution<Integer> {
         this.n = n;
     }
 
-    @GeneratorInfo(name = "Binomial", narrativeName = "binomial distribution", description = "The binomial distribution of x successes in n trials given probability p of success of a single trial.")
+    @GeneratorInfo(name = "Binomial", narrativeName = "binomial distribution",
+            description = "The binomial distribution of x successes in n trials given probability p of success of a single trial.")
     public RandomVariable<Integer> sample() {
 
         BinomialDistribution binomial = new BinomialDistribution(n.value(), p.value());

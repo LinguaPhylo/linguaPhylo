@@ -1,9 +1,6 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
@@ -21,6 +18,7 @@ public class BinaryRateMatrix extends DeterministicFunction<Double[][]> {
 
 
     @GeneratorInfo(name = "binaryRateMatrix",
+            category = GeneratorCategory.RATE_MATRIX, examples = {"errorModel1.lphy", "errorModel2.lphy"},
             description = "The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:\n\n" +
                     "    Q = ⎡-1  1⎤\n" + // initial four spaces define a code block in markdown
                     "        ⎣ λ -λ⎦")

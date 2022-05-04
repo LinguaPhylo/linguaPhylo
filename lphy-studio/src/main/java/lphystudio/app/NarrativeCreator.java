@@ -47,6 +47,7 @@ public class NarrativeCreator {
             GraphicalLPhyParser parser = Utils.createParser();
             GraphicalModelPanel panel = new GraphicalModelPanel(parser);
             panel.getComponent().setShowConstantNodes(false);
+            // assume file under working dir
             File lphyFile = new File(lphyFileName);
             // parse and paint
             Utils.readFile(lphyFile, panel);
@@ -234,7 +235,7 @@ public class NarrativeCreator {
         if (args.length != 1)
             throw new IllegalArgumentException("Expecting LPhy file name !");
 
-        // always the last arg, h5n1.lphy, with the correct user.dir
+        // always the last arg, such as h5n1.lphy, assuming the file is under user.dir
         String lphyFileName = args[args.length - 1];
 
         NarrativeCreator narrativeCreator = new NarrativeCreator(lphyFileName);

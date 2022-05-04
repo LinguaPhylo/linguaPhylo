@@ -1,10 +1,10 @@
 package lphy.evolution.continuous;
 
 import lphy.core.StringDoubleArrayMap;
+import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArrayValue;
 import org.apache.commons.lang3.ArrayUtils;
@@ -39,6 +39,10 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
         this.random = Utils.getRandom();
     }
 
+    @GeneratorInfo(name = "PhyloMultivariateBrownian", verbClause = "is assumed to have evolved under",
+            narrativeName = "phylogenetic multivariate Brownian motion process",
+            category = GeneratorCategory.STOCHASTIC_PROCESS, examples = {"simplePhyloMultivariateBrownian.lphy"},
+            description = "The phylogenetic multivariate Brownian motion distribution.")
     public RandomVariable<ContinuousCharacterData> sample() {
 
         SortedMap<String, Integer> idMap = new TreeMap<>();

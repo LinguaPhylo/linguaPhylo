@@ -4,10 +4,7 @@ import lphy.evolution.ExtractStringMetaData;
 import lphy.evolution.Taxa;
 import lphy.evolution.TaxaData;
 import lphy.evolution.alignment.Alignment;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 /**
  * {@code trait_D = extractTrait(taxa, "|", 2);}
@@ -36,9 +33,9 @@ public class ExtractTrait extends DeterministicFunction<Alignment> {
     }
 
 
-    @GeneratorInfo(name="extractTrait",
-            verbClause = "extracts",
-            narrativeName = "trait",
+    @GeneratorInfo(name="extractTrait", verbClause = "extracts", narrativeName = "trait",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"covidDPG.lphy", "https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
             description = "return a trait alignment, which contains the set of traits extracted from taxa names.")
     public Value<Alignment> apply() {
 

@@ -1,5 +1,6 @@
 package lphy.bmodeltest;
 
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 
 import java.util.*;
@@ -282,7 +283,9 @@ public class BModelSet {
         splitModels[parent].add(child);
     }
 
-    @MethodInfo(narrativeName="number of models", verbClause = "in", description = "the number of models in this model set.")
+    @MethodInfo(narrativeName="number of models", verbClause = "in",
+            category = GeneratorCategory.MODEL_AVE_SEL, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
+            description = "the number of models in this model set.")
     public Integer size() {
         return models.length;
     }

@@ -2,12 +2,12 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.meanParamName;
+import static lphy.core.distributions.DistributionConstants.sdParamName;
 
 /**
  * Normal distribution
@@ -28,9 +28,8 @@ public class Normal implements GenerativeDistribution1D<Double> {
         if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
     }
 
-    @GeneratorInfo(name = "Normal",
-            verbClause = "has",
-            narrativeName = "normal prior",
+    @GeneratorInfo(name = "Normal", verbClause = "has", narrativeName = "normal prior",
+            category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal probability distribution.")
     public RandomVariable<Double> sample() {
 

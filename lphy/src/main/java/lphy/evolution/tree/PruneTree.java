@@ -1,9 +1,6 @@
 package lphy.evolution.tree;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 import static lphy.evolution.EvolutionConstants.treeParamName;
 import static lphy.evolution.tree.TimeTreeUtils.*;
@@ -17,7 +14,9 @@ public class PruneTree extends DeterministicFunction<TimeTree> {
         setParam(treeParamName, tree);
     }
 
-    @GeneratorInfo(name = "pruneTree", description = "A tree pruned from a larger tree by retaining only nodes subtending nodes with non-null id's.")
+    @GeneratorInfo(name = "pruneTree",
+            category = GeneratorCategory.TREE, examples = {"simFossils.lphy"},
+            description = "A tree pruned from a larger tree by retaining only nodes subtending nodes with non-null id's.")
     public Value<TimeTree> apply() {
 
         Value<TimeTree> tree = getParams().get(treeParamName);

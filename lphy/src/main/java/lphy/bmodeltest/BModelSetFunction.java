@@ -10,7 +10,9 @@ public class BModelSetFunction extends DeterministicFunction<BModelSet> {
         setParam(paramName, modelSetName);
     }
 
-    @GeneratorInfo(name = "bModelSet", verbClause = "is", description = "Returns the set of models for the given bModelTest model set name.")
+    @GeneratorInfo(name = "bModelSet", verbClause = "is",
+            category = GeneratorCategory.MODEL_AVE_SEL, examples = {"simpleBModelTest.lphy"},
+            description = "Returns the set of models for the given bModelTest model set name.")
     public Value<BModelSet> apply() {
         Value<String> v = (Value<String>) getParams().get(paramName);
 

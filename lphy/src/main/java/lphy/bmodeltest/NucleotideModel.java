@@ -3,9 +3,8 @@ package lphy.bmodeltest;
 import lphy.evolution.substitutionmodel.RateMatrix;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
-import lphy.parser.ParserUtils;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * Created by Alexei Drummond on 2/02/20.
@@ -41,9 +40,8 @@ public class NucleotideModel extends RateMatrix {
         setParam(modelSetParamName, modelSet);
     }
 
-    @GeneratorInfo(name = "nucleotideModel",
-            verbClause = "is",
-            narrativeName = "bModelTest rate matrix",
+    @GeneratorInfo(name = "nucleotideModel", verbClause = "is", narrativeName = "bModelTest rate matrix",
+            category = GeneratorCategory.RATE_MATRIX, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
             description = "The instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
         Map<String, Value> params = getParams();

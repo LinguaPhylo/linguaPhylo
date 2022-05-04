@@ -7,6 +7,7 @@ import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.AlignmentUtils;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.util.LoggerUtils;
 
@@ -124,7 +125,7 @@ public class MetaDataAlignment extends SimpleAlignment {
      * @param ageRegxStr  Java regular expression to extract dates from taxa names.
      * @param ageDirectionStr  {@link AgeDirection}
      */
-    public void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
+    public void setAgesParsedFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
         this.ageRegxStr = ageRegxStr;
 
         Map<String, String> ageStringMap = new TreeMap<>();
@@ -140,7 +141,7 @@ public class MetaDataAlignment extends SimpleAlignment {
         assignAges(ageStringMap, ageDirectionStr);
     }
 
-    public void setSpeciesFromTaxaName(String spRegxStr) {
+    public void setSpeciesParsedFromTaxaName(String spRegxStr) {
         this.spRegxStr = spRegxStr;
         // guess species
         final Pattern regx = Pattern.compile(spRegxStr);
@@ -168,7 +169,10 @@ public class MetaDataAlignment extends SimpleAlignment {
             "If the string doesn't match charset's syntax, then check if the string matches " +
             "a defined name in the nexus file. Otherwise it is an error. " +
             "The string is referred to one partition at a call, but can be multiple blocks, " +
-            "such as d.charset(\"2-457\\3 660-896\\3\").", narrativeName = "character set")
+            "such as d.charset(\"2-457\\3 660-896\\3\").",
+            narrativeName = "character set",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
     public Alignment charset(String str) {
         List<CharSetBlock> charSetBlocks = new ArrayList<>();
         //*** charsets or part names ***//

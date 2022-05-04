@@ -2,10 +2,7 @@ package lphy.evolution.continuous;
 
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.SortedMap;
@@ -85,9 +82,9 @@ public class PhyloOU extends PhyloBrownian {
         return handleBoundaries(distribution.sample());
     }
 
-    @GeneratorInfo(name = "PhyloOU",
-            verbClause = "is assumed to have evolved under",
+    @GeneratorInfo(name = "PhyloOU", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic Ornstein-Ulhenbeck process",
+            category = GeneratorCategory.STOCHASTIC_PROCESS, examples = {"simplePhyloBrownian.lphy"},
             description = "The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.")
     public RandomVariable<ContinuousCharacterData> sample() {
         return super.sample();

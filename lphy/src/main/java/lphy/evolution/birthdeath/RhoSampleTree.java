@@ -6,10 +6,13 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static lphy.evolution.birthdeath.BirthDeathConstants.rhoParamName;
 import static lphy.evolution.EvolutionConstants.treeParamName;
+import static lphy.evolution.birthdeath.BirthDeathConstants.rhoParamName;
 import static lphy.evolution.tree.TimeTreeUtils.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
@@ -32,7 +35,9 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
     }
 
 
-    @GeneratorInfo(name = "RhoSampleTree", description = "A tree sampled from a larger tree by selecting tips at time zero with probability rho.<br>" +
+    @GeneratorInfo(name = "RhoSampleTree",
+            category = GeneratorCategory.BD_TREE,
+            description = "A tree sampled from a larger tree by selecting tips at time zero with probability rho.<br>" +
             "Conditioned on root age.")
     public RandomVariable<TimeTree> sample() {
 

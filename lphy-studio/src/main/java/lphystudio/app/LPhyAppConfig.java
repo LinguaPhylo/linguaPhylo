@@ -16,6 +16,8 @@ public final class LPhyAppConfig {
     public static String LPHY_WEB = "https://linguaphylo.github.io";
     public static String LPHY_SOURCE = "https://github.com/LinguaPhylo/linguaPhylo";
 
+    public static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+
     public static void setFrameLocation(JFrame frame, int maxWidth, int maxHeight) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int width = Math.min(maxWidth, dim.width * 9 / 10);
