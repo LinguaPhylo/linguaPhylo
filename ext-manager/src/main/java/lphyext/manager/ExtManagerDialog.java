@@ -12,6 +12,7 @@ import java.util.List;
  * Run from LPhy studio
  */
 public class ExtManagerDialog extends JDialog {
+    public static final String APP_NAME = "Extension Manager";
 
     final ExtManager manager = new ExtManager();
 
@@ -70,7 +71,7 @@ public class ExtManagerDialog extends JDialog {
             });
         }
 
-        this.setTitle("LPhy Extension Manager " +
+        this.setTitle("LPhy " + APP_NAME + " " +
                 DependencyUtils.getVersion(ExtManagerDialog.class, "lphy.ext.manager.version"));
 
     }

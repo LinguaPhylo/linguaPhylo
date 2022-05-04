@@ -35,6 +35,7 @@ module lphy {
     exports lphy.graphicalModel.types;
 
     exports lphy.parser;
+    exports lphy.parser.functions;
 
     exports lphy.reflection;
     exports lphy.system;

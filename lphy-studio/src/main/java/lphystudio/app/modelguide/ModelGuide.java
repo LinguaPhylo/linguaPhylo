@@ -3,12 +3,11 @@ package lphystudio.app.modelguide;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.GeneratorCategory;
+import lphy.graphicalModel.MethodInfo;
 import lphy.parser.ParserUtils;
+import lphy.parser.functions.MethodCall;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Walter Xie
@@ -32,12 +31,14 @@ public class ModelGuide {
         List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
-        setAllModels(generativeDistributions, functions);
+        Set<Class<?>> types = Collections.unmodifiableSet(ParserUtils.types);
+
+        setAllModels(generativeDistributions, functions, types);
         addSelectedModels();
     }
 
     private void setAllModels(List<Class<GenerativeDistribution>> generativeDistributions,
-                              List<Class<DeterministicFunction>> functions) {
+                              List<Class<DeterministicFunction>> functions, Set<Class<?>> types) {
         List<Model> all = new ArrayList<>();
         Model m;
         for (Class<GenerativeDistribution> distCls : generativeDistributions) {
@@ -47,6 +48,14 @@ public class ModelGuide {
         for (Class<DeterministicFunction> fun : functions) {
             m = new Model(fun);
             all.add(m);
+        }
+        for (Class<?> type : types) {
+            TreeMap<String, MethodInfo>  methodInfoTreeMap = MethodCall.getMethodCalls(type);
+            // only add when it has MethodInfo
+            if (methodInfoTreeMap.size() > 0) {
+                m = new Model(type);
+                all.add(m);
+            }
         }
         allModels = Collections.unmodifiableList(all);
     }

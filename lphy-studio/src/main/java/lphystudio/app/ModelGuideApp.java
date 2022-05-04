@@ -1,6 +1,5 @@
 package lphystudio.app;
 
-import lphyext.manager.DependencyUtils;
 import lphystudio.app.modelguide.ModelGuide;
 import lphystudio.app.modelguide.ModelGuidePanel;
 
@@ -11,17 +10,8 @@ import java.awt.*;
  * @author Walter Xie
  */
 public class ModelGuideApp extends JFrame {
-    public static final int MAX_WIDTH = 800;
-    private static final int MAX_HEIGHT = 800;
 
-    private static final String APP_NAME = "Model Guide";
-
-    // use MANIFEST.MF to store version in jar, or use system property in development,
-    // otherwise VERSION = "DEVELOPMENT"
-    private final String VERSION;
-
-    private final ModelGuide modelGuide;
-
+    public static final String APP_NAME = "Model Guide";
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
@@ -37,14 +27,19 @@ public class ModelGuideApp extends JFrame {
         }
     }
 
-    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    private final int MASK = LPhyAppConfig.MASK;
+    private final String VERSION = "0.1.0";
+
+    private final ModelGuide modelGuide;
 
     public ModelGuideApp() {
-        VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
-        // main frame
+//        VERSION = DependencyUtils.getVersion(ModelGuideApp.class, "model.guide.version");
         setTitle(APP_NAME + " version " + VERSION);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // not close lphy studio frame
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
+        final int MAX_WIDTH = 800;
+        final int MAX_HEIGHT = 800;
         LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT);
 
         modelGuide = new ModelGuide();
@@ -75,7 +70,7 @@ public class ModelGuideApp extends JFrame {
     }
 
     private String getHTMLCredits() {
-        return "<html><body width='%1s'><h3>Created by Walter Xie</h3>"+
+        return "<html><body width='%1s'><h3>Created by Walter Xie and Alexei Drummond</h3>"+
                 "<p>The Centre for Computational Evolution<br>"+
                 "University of Auckland<br></p>"+
                 "<p>Homepage :<br>"+
@@ -85,10 +80,7 @@ public class ModelGuideApp extends JFrame {
     }
 
     public static void main(String[] args) {
-
-        System.setProperty("model.guide.version", "0.0.1-SNAPSHOT");
         ModelGuideApp frame = new ModelGuideApp();
-
     }
 
 }

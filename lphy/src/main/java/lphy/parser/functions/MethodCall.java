@@ -409,4 +409,78 @@ public class MethodCall extends DeterministicFunction {
         if (paramName.equals(objectParamName)) return NarrativeUtils.getTypeName(value);
         throw new RuntimeException("Expected either " + argParamName + "[0-9] or " + objectParamName + ", but got " + paramName);
     }
+
+    public static TreeMap<String, MethodInfo> getMethodCalls(Class<?> typeCls) {
+        TreeMap<String, MethodInfo> methodInfoTreeMap = new TreeMap<>();
+        for (Method method : typeCls.getMethods()) {
+            MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
+            if (methodInfo != null) {
+                methodInfoTreeMap.put(method.getName(), methodInfo);
+            }
+        }
+        return methodInfoTreeMap;
+    }
+
+    /**
+     * @param methodInfoTreeMap from {@link #getMethodCalls(Class)}
+     * @return  the 1st detected {@link GeneratorCategory} which is not NONE,
+     *          otherwise return NONE.
+     */
+    public static GeneratorCategory getCategory(TreeMap<String, MethodInfo>  methodInfoTreeMap) {
+        for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
+            MethodInfo methodInfo = methodInfoEntry.getValue();
+            if (methodInfo.category() != GeneratorCategory.NONE)
+                return methodInfo.category();
+        }
+        return GeneratorCategory.NONE;
+    }
+
+    /**
+     * @param methodInfoTreeMap  from {@link #getMethodCalls(Class)}
+     * @return  all examples concatenated in 1 array
+     */
+    public static String[] getExamples(TreeMap<String, MethodInfo>  methodInfoTreeMap) {
+        if (methodInfoTreeMap.size() < 1) return null;
+
+        Set<String> exSet = new HashSet<>();
+        for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
+            MethodInfo methodInfo = methodInfoEntry.getValue();
+            if (Objects.requireNonNull(methodInfo.examples()).length > 0)
+                exSet.addAll(Arrays.stream(methodInfo.examples()).toList());
+        }
+        return exSet.toArray(String[]::new);
+    }
+
+    public static String getHtmlDoc(String name, TreeMap<String, MethodInfo>  methodInfoTreeMap,
+                                    String[] examples) {
+        // main content
+        StringBuilder html = new StringBuilder("<html><h2>");
+        html.append(name).append("</h2>");
+
+        if (methodInfoTreeMap.size() > 0) {
+            html.append("<h3>Methods:</h3>").append("<ul>");
+
+            for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
+                html.append("<li>").append(" <b>").append(methodInfoEntry.getKey()).append("</b>")
+                        .append(" - <font color=\"#808080\">")
+                        .append(methodInfoEntry.getValue().description()).append("</font></li>");
+            }
+            html.append("</ul>");
+
+            if (examples != null && examples.length > 0) {
+                html.append("<h3>Examples</h3>");
+                for (int i = 0; i < examples.length; i++) {
+                    String ex = examples[i];
+                    // add hyperlink
+                    if (ex.startsWith("http"))
+                        ex = "&nbsp;<a href=\"" + ex + "\">" + ex + "</a>";
+                    html.append(ex);
+                    if (i < examples.length - 1)
+                        html.append(", ");
+                }
+            }
+        }
+        html.append("</html>");
+        return html.toString();
+    }
 }

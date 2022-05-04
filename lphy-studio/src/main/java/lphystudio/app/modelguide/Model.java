@@ -1,59 +1,73 @@
 package lphystudio.app.modelguide;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.GeneratorCategory;
-import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.*;
+import lphy.parser.functions.MethodCall;
 import lphy.util.LoggerUtils;
+
+import java.util.TreeMap;
 
 /**
  * @author Walter Xie
  */
 public class Model {
 
-    final GeneratorInfo generatorInfo;
-    //TODO this should be removed, GeneratorInfo must be compulsory
-    final Class<? extends Generator> generatorClass;
+    private final String name;
+    private String description;
+    private GeneratorCategory category;
+    private String[] examples;
 
-    final boolean isDeterFunc;
+//    final Class<?> cls;
+    boolean isDeterFunc;
 
-    final String htmlDoc;
+    String htmlDoc;
 
-    public Model(Class<? extends Generator> generatorClass) {
-        this.generatorClass = generatorClass;
-        this.generatorInfo = Generator.getGeneratorInfo(generatorClass);
-        if (generatorInfo == null)
-            LoggerUtils.log.severe("Cannot create model from class "+ generatorClass +
-                    "\nGeneratorInfo annotation is not found !");
+    public Model(Class<?> cls) {
+        if (Generator.class.isAssignableFrom(cls)) {
+             GeneratorInfo generatorInfo = Generator.getGeneratorInfo(cls);
+            // GeneratorInfo must be compulsory
+            if (generatorInfo == null) {
+                LoggerUtils.log.severe("Cannot create model from class "+ cls +
+                        "\nGeneratorInfo annotation is not found !");
+                name = cls.getSimpleName();
+            } else {
+                name = generatorInfo.name();
+                description = generatorInfo.description();
+                category = generatorInfo.category();
+                examples = generatorInfo.examples();
+            }
 
-        this.isDeterFunc = generatorClass.isAssignableFrom(DeterministicFunction.class);
+            this.isDeterFunc = cls.isAssignableFrom(DeterministicFunction.class);
+            // cls is Generator
+            htmlDoc = Generator.getGeneratorHtml((Class<? extends Generator>) cls);
+        } else { // MethodInfo
 
-        htmlDoc = Generator.getGeneratorHtml(generatorClass);
+            name = cls.getSimpleName();
+            description = "Method calls";
+            TreeMap<String, MethodInfo> methodInfoTreeMap = MethodCall.getMethodCalls(cls);
+            category = MethodCall.getCategory(methodInfoTreeMap);
+            examples = MethodCall.getExamples(methodInfoTreeMap);
+            htmlDoc = MethodCall.getHtmlDoc(name, methodInfoTreeMap, examples);
 
-//        Class<?> cls = Utils.getClass(generatorClass);
-//        if (!cls.isAssignableFrom(Generator.class))
-//            throw new IllegalArgumentException("The input Class type must be a Generator ! " + generatorClass);
-
-
+        }
 
     }
 
     public String getName() {
-        if (generatorInfo ==null) return generatorClass.getSimpleName();
-        return generatorInfo.name();
+        return name;
     }
 
     public String getDescription() {
-        if (generatorInfo ==null) return "";
-        return generatorInfo.description();
+        if (description == null) return "";
+        return description;
     }
 
     public GeneratorCategory getCategory() {
-        if (generatorInfo ==null) return GeneratorCategory.NONE;
-        return generatorInfo.category();
+        if (category ==null) return GeneratorCategory.NONE;
+        return category;
     }
 
-    public boolean isDeterFunc() {
-        return isDeterFunc;
+    public String[] getExamples() {
+        if (examples ==null) examples = new String[]{""};
+        return examples;
     }
 }

@@ -4,6 +4,7 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
 
+@Deprecated
 public class NodeCount extends DeterministicFunction<Integer> {
 
     final String paramName;

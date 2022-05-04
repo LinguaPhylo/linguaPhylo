@@ -8,6 +8,7 @@ import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.io.MetaDataAlignment;
 import lphy.evolution.io.MetaDataOptions;
 import lphy.graphicalModel.*;
@@ -83,7 +84,19 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             taxons[i] =new Taxon(t.getName());
         }
 
-        MetaDataAlignment faData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+        Alignment faData;
+        if (optionsVal != null) {
+            faData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+
+            // set age to Taxon
+            if (ageRegxStr != null)
+                ((MetaDataAlignment) faData).setAgesParsedFromTaxaName(ageRegxStr, ageDirectionStr);
+            // set species to Taxon
+            if (spRegxStr != null)
+                ((MetaDataAlignment) faData).setSpeciesParsedFromTaxaName(spRegxStr);
+        } else {
+            faData = new SimpleAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
+        }
 
         // fill in sequences
         for (int i = 0; i < sequenceList.size(); i++) {
@@ -96,13 +109,6 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
                 faData.setState(i, s, stateNum);
             }
         }
-
-        // set age to Taxon
-        if (ageRegxStr != null)
-            faData.setAgesFromTaxaName(ageRegxStr, ageDirectionStr);
-        // set species to Taxon
-        if (spRegxStr != null)
-            faData.setSpeciesFromTaxaName(spRegxStr);
 
         return new Value<>(null, faData, this);
 

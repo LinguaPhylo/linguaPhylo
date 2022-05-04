@@ -30,10 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class LinguaPhyloStudio {
-
-    private static String VERSION;
     private static final String APP_NAME = "LPhy Studio";
-
     static {
         System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
@@ -48,21 +45,19 @@ public class LinguaPhyloStudio {
                 IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        // use MANIFEST.MF to store version in jar, or use system property in development,
-        // otherwise VERSION = "DEVELOPMENT"
-        VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
     }
 
-    private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-    private static final int MAX_WIDTH = 1600;
-    private static final int MAX_HEIGHT = 1200;
+    private final int MASK = LPhyAppConfig.MASK;
+    private final String VERSION;
 
     GraphicalLPhyParser parser = Utils.createParser();
-    GraphicalModelPanel panel = null;
+    GraphicalModelPanel panel;
     JFrame frame;
 
     public LinguaPhyloStudio() {
+        // use MANIFEST.MF to store version in jar, or use system property in development,
+        // otherwise VERSION = "DEVELOPMENT"
+        VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
 
         panel = new GraphicalModelPanel(parser);
 
@@ -131,13 +126,13 @@ public class LinguaPhyloStudio {
         menuBar.add(panel.getRightPane().getMenu());
 
         // Tools
-        JMenu toolMenu = new JMenu("Tools");
-        menuBar.add(toolMenu);
+        JMenu toolsMenu = new JMenu("Tools");
+        menuBar.add(toolsMenu);
         // extension manager
-        JMenuItem extManMenuItem = new JMenuItem("Extension manager");
-        extManMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
-        toolMenu.add(extManMenuItem);
-        extManMenuItem.addActionListener(e -> {
+        JMenuItem toolMenuItem = new JMenuItem(ExtManagerDialog.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
             ExtManagerDialog extManager = null;
             try {
                 extManager = new ExtManagerDialog(frame);
@@ -145,6 +140,13 @@ public class LinguaPhyloStudio {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        });
+        // model guide
+        toolMenuItem = new JMenuItem(ModelGuideApp.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
+            ModelGuideApp modelGuideApp = new ModelGuideApp();
         });
 
         // deal with About menu
@@ -174,6 +176,8 @@ public class LinguaPhyloStudio {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
+        final int MAX_WIDTH = 1600;
+        final int MAX_HEIGHT = 1200;
         LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT);
 
         frame.setJMenuBar(menuBar);
