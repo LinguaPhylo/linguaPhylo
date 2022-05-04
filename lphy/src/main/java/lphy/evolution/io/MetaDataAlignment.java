@@ -124,7 +124,7 @@ public class MetaDataAlignment extends SimpleAlignment {
      * @param ageRegxStr  Java regular expression to extract dates from taxa names.
      * @param ageDirectionStr  {@link AgeDirection}
      */
-    public void setAgesFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
+    public void setAgesParsedFromTaxaName(final String ageRegxStr, final String ageDirectionStr) {
         this.ageRegxStr = ageRegxStr;
 
         Map<String, String> ageStringMap = new TreeMap<>();
@@ -140,7 +140,7 @@ public class MetaDataAlignment extends SimpleAlignment {
         assignAges(ageStringMap, ageDirectionStr);
     }
 
-    public void setSpeciesFromTaxaName(String spRegxStr) {
+    public void setSpeciesParsedFromTaxaName(String spRegxStr) {
         this.spRegxStr = spRegxStr;
         // guess species
         final Pattern regx = Pattern.compile(spRegxStr);
