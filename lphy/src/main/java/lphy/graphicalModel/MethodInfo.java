@@ -14,4 +14,6 @@ public @interface MethodInfo {
     String description();
     String verbClause() default "is";
     String narrativeName() default "";
+    GeneratorCategory category() default GeneratorCategory.NONE;
+    String[] examples() default {};
 }

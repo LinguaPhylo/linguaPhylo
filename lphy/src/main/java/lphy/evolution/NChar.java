@@ -1,5 +1,6 @@
 package lphy.evolution;
 
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 
 /**
@@ -10,6 +11,7 @@ public interface NChar {
     /**
      * @return the number of sites this object has.
      */
-    @MethodInfo(description="The number of characters/sites.", narrativeName = "number of characters")
+    @MethodInfo(description="The number of characters/sites.", narrativeName = "number of characters",
+            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"simpleCoalescentNex.lphy"})
     Integer nchar();
 }

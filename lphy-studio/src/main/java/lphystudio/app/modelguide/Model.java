@@ -1,11 +1,10 @@
 package lphystudio.app.modelguide;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.GeneratorCategory;
-import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.*;
 import lphy.parser.functions.MethodCall;
 import lphy.util.LoggerUtils;
+
+import java.util.TreeMap;
 
 /**
  * @author Walter Xie
@@ -44,7 +43,10 @@ public class Model {
 
             name = cls.getSimpleName();
             description = "Method calls";
-            htmlDoc = MethodCall.getHtmlDoc(cls);
+            TreeMap<String, MethodInfo> methodInfoTreeMap = MethodCall.getMethodCalls(cls);
+            category = MethodCall.getCategory(methodInfoTreeMap);
+            examples = MethodCall.getExamples(methodInfoTreeMap);
+            htmlDoc = MethodCall.getHtmlDoc(name, methodInfoTreeMap, examples);
 
         }
 
@@ -62,10 +64,6 @@ public class Model {
     public GeneratorCategory getCategory() {
         if (category ==null) return GeneratorCategory.NONE;
         return category;
-    }
-
-    public boolean isDeterFunc() {
-        return isDeterFunc;
     }
 
     public String[] getExamples() {
