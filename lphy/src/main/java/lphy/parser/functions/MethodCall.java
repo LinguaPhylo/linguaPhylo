@@ -409,4 +409,36 @@ public class MethodCall extends DeterministicFunction {
         if (paramName.equals(objectParamName)) return NarrativeUtils.getTypeName(value);
         throw new RuntimeException("Expected either " + argParamName + "[0-9] or " + objectParamName + ", but got " + paramName);
     }
+
+    public static TreeMap<String, MethodInfo> getMethodCalls(Class<?> typeCls) {
+        TreeMap<String, MethodInfo> methodInfoTreeMap = new TreeMap<>();
+        for (Method method : typeCls.getMethods()) {
+            MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
+            if (methodInfo != null) {
+                methodInfoTreeMap.put(method.getName(), methodInfo);
+            }
+        }
+        return methodInfoTreeMap;
+    }
+
+    public static String getHtmlDoc(Class<?> typeCls) {
+        // main content
+        StringBuilder html = new StringBuilder("<html><h2>");
+
+        html.append(typeCls.getSimpleName()).append("</h2>");
+
+        TreeMap<String, MethodInfo>  methodInfoTreeMap = getMethodCalls(typeCls);
+        if (methodInfoTreeMap.size() > 0) {
+            html.append("<h3>Methods:</h3>").append("<ul>");
+
+            for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
+                html.append("<li>").append(" <b>").append(methodInfoEntry.getKey()).append("</b>")
+                        .append(" - <font color=\"#808080\">")
+                        .append(methodInfoEntry.getValue().description()).append("</font></li>");
+            }
+            html.append("</ul>");
+        }
+
+        return html.toString();
+    }
 }
