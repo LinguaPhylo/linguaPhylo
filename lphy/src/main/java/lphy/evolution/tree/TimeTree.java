@@ -2,6 +2,7 @@ package lphy.evolution.tree;
 
 import lphy.evolution.HasTaxa;
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
 
@@ -233,13 +234,16 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return TL;
     }
 
-    @MethodInfo(description = "the age of the root of the tree.")
+    @MethodInfo(description = "the age of the root of the tree.",
+            category = GeneratorCategory.TREE,
+            examples = {"simFossilsCompact.lphy","simpleBirthDeathSerial.lphy","simpleCalibratedYule.lphy"})
     public Double rootAge() {
 
         return getRoot().age;
     }
 
-    @MethodInfo(description = "the total number of nodes in the tree (both leaf nodes and internal nodes).")
+    @MethodInfo(description = "the total number of nodes in the tree (both leaf nodes and internal nodes).",
+            examples = {"yuleRelaxed.lphy"})
     public Integer nodeCount() {
         return getNodeCount();
     }
