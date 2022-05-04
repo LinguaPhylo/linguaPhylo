@@ -1,5 +1,6 @@
 package lphy.evolution.sitemodel;
 
+import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
 
@@ -23,7 +24,8 @@ public class SiteModel implements MultiDimensional {
         this.proportionInvariable = proportionInvariable;
     }
 
-    @MethodInfo(description = "the Q matrix for this site model")
+    @MethodInfo(description = "the Q matrix for this site model",
+            category = GeneratorCategory.SITE_MODEL, examples = {"simpleBModelTest.lphy"})
     public Double[][] getQ() {
         return Q;
     }

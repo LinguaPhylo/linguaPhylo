@@ -10,6 +10,7 @@ public enum GeneratorCategory {
     SEQU_TYPE("Sequence type","Data type of sequences, e.g. nucleotides, amino acid, binary"),
     TAXA_ALIGNMENT("Taxa & Alignment","Taxa and alignment"),
     RATE_MATRIX("Rate matrix","Instantaneous rate matrix"),
+    SITE_MODEL("Site model", "Wrapper of Q matrix, site rates before invariable, the proportion of invariable sites"),
     COAL_TREE("Coalescent tree","Coalescent tree prior"),
     BD_TREE("Birth-death tree","Birth-death tree prior"),
     TREE("Tree functions","Functions related to tree"),

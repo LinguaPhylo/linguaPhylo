@@ -45,7 +45,7 @@ public class bSiteRates implements GenerativeDistribution<Double[]> {
     }
 
     @GeneratorInfo(name = "bSiteRates", verbClause = "is",
-            category = GeneratorCategory.MODEL_AVE_SEL, examples = {"simpleBModelTest2.lphy"},
+            category = GeneratorCategory.SITE_MODEL, examples = {"simpleBModelTest2.lphy"},
             description = "the site rates for the given bModelTest parameters.")
     public RandomVariable<Double[]> sample() {
 
