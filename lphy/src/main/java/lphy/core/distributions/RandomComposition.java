@@ -19,7 +19,10 @@ public class RandomComposition implements GenerativeDistribution<Integer[]> {
         this.k = k;
     }
 
-    @GeneratorInfo(name = "RandomComposition", description = "Samples a random "+ kParamName + "-tuple of positive integers that sum to " + nParamName + ".")
+    @GeneratorInfo(name = "RandomComposition",
+            category = GeneratorCategory.PROB_DIST,
+            examples = {"skylineCoalescent.lphy", "https://linguaphylo.github.io/tutorials/skyline-plots/"},
+            description = "Samples a random "+ kParamName + "-tuple of positive integers that sum to " + nParamName + ".")
     public RandomVariable<Integer[]> sample() {
         List<Integer> bars = new ArrayList<>();
         RandomGenerator random = Utils.getRandom();

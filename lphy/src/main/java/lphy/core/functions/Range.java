@@ -1,9 +1,6 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RangeElement;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 
@@ -18,6 +15,7 @@ public class Range extends DeterministicFunction<Integer[]> implements RangeElem
     }
 
     @Override
+    @GeneratorInfo(name = "rangeInt", description = "The range of integers from start to end. Boundaries are included.")
     public Value<Integer[]> apply() {
 
         int s = start().value();

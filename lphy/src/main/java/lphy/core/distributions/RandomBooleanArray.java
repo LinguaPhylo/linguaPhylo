@@ -17,7 +17,9 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
         this.hammingWeight = hammingWeight;
     }
 
-    @GeneratorInfo(name="RandomBooleanArray", description="Samples a random boolean array of given length and given hamming weight. " +
+    @GeneratorInfo(name="RandomBooleanArray",
+            category = GeneratorCategory.PROB_DIST, examples = {"simpleRandomLocalClock2.lphy"},
+            description="Samples a random boolean array of given length and given hamming weight. " +
             "The hamming weight is the number of true values in the array and must be less than or equal to the length.")
     public RandomVariable<Boolean[]> sample() {
         List<Boolean> bools = new ArrayList<>();
