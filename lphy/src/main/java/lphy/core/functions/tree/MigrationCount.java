@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.core.functions.tree;
 
 import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.tree.TimeTree;

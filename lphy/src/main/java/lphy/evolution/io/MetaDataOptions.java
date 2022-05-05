@@ -5,9 +5,10 @@ import lphy.graphicalModel.Value;
 import java.util.Map;
 
 /**
- * The options for {@link lphy.core.functions.ReadNexus}.
  * For example, {@link #AGE_DIRECTION} and {@link #AGE_REGEX}.
  * @author Walter Xie
+ * @see lphy.core.functions.alignment.ReadNexus
+ * @see lphy.core.functions.alignment.ReadFasta
  */
 public final class MetaDataOptions {
 

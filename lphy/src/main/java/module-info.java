@@ -19,6 +19,9 @@ module lphy {
     exports lphy.core.distributions;
     exports lphy.core.narrative;
     exports lphy.core.functions;
+    exports lphy.core.functions.taxa;
+    exports lphy.core.functions.tree;
+    exports lphy.core.functions.alignment;
 
     exports lphy.evolution;
     exports lphy.evolution.alignment;

@@ -1,9 +1,13 @@
 package lphy.parser;
 
 
-import lphy.core.functions.*;
+import lphy.core.functions.BinaryRateMatrix;
+import lphy.core.functions.MigrationMatrix;
+import lphy.core.functions.Range;
+import lphy.core.functions.tree.MigrationCount;
+import lphy.core.functions.tree.Newick;
+import lphy.core.functions.tree.NodeCount;
 import lphy.core.lightweight.distributions.*;
-import lphy.core.lightweight.distributions.Exp;
 import lphy.evolution.substitutionmodel.GTR;
 import lphy.evolution.substitutionmodel.HKY;
 import lphy.evolution.substitutionmodel.JukesCantor;
@@ -12,7 +16,6 @@ import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 
 import java.util.*;
-import java.util.Map;
 
 public class AbstractLightweightBaseListener extends SimulatorBaseListener {
 

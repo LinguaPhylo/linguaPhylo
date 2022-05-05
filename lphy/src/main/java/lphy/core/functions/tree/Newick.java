@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.core.functions.tree;
 
 import lphy.core.functions.newickParser.NewickASTVisitor;
 import lphy.core.functions.newickParser.NewickLexer;

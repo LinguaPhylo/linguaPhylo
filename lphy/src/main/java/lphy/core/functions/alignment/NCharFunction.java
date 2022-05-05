@@ -1,11 +1,10 @@
-package lphy.core.functions;
+package lphy.core.functions.alignment;
 
 import lphy.evolution.NChar;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.IntegerArrayValue;
 import lphy.graphicalModel.types.IntegerValue;
 @Deprecated
 public class NCharFunction extends DeterministicFunction<Integer> {
