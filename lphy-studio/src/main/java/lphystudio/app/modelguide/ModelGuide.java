@@ -22,7 +22,7 @@ public class ModelGuide {
 
     private GeneratorCategory currCate = GeneratorCategory.ALL;
 //    private String currGeneType = geTy[0];
-    private Model currentModel;
+//    private Model currentModel;
 
     public ModelGuide() {
         List<Class<GenerativeDistribution>> generativeDistributions = ParserUtils.getGenerativeDistributions();
@@ -87,8 +87,13 @@ public class ModelGuide {
         return isSame;
     }
 
-    public List<Model> getAllModels() {
-        return allModels;
+    public List<Model> getModelsExcl(List<GeneratorCategory> exclCate) {
+        List<Model> currModels = new ArrayList<>();
+        for (Model model : selectedModels) {
+            GeneratorCategory cate = model.getCategory();
+            if (!exclCate.contains(cate)) currModels.add(model);
+        }
+        return currModels;
     }
 
     public List<Model> getSelectedModels() {
@@ -99,11 +104,7 @@ public class ModelGuide {
         return selectedModels.get(i);
     }
 
-//    public Model getCurrentModel() {
-//        return currentModel;
-//    }
-
-//    public void setCurrentModel(Model currentModel) {
-//        this.currentModel = currentModel;
-//    }
+    public GeneratorCategory getCurrentCategory() {
+        return currCate;
+    }
 }

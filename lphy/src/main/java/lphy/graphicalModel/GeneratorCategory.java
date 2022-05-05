@@ -6,18 +6,20 @@ package lphy.graphicalModel;
  * @author Walter Xie
  */
 public enum GeneratorCategory {
-    ALL("All","All categories"),
-    SEQU_TYPE("Sequence type","Data type of sequences, e.g. nucleotides, amino acid, binary"),
-    TAXA_ALIGNMENT("Taxa & Alignment","Taxa and alignment"),
+    ALL("All","All models or functions"),
+    SEQU_TYPE("Sequence type","Data types of sequences, e.g. nucleotides, amino acid, binary"),
+    TAXA_ALIGNMENT("Taxa & Alignment","Taxa and alignments"),
     RATE_MATRIX("Rate matrix","Instantaneous rate matrix"),
-    SITE_MODEL("Site model", "Wrapper of Q matrix, site rates before invariable, the proportion of invariable sites"),
-    COAL_TREE("Coalescent tree","Coalescent tree prior"),
-    BD_TREE("Birth-death tree","Birth-death tree prior"),
-    TREE("Tree functions","Functions related to tree"),
-    PROB_DIST("Probability distribution","Prior probability distribution"),
-    STOCHASTIC_PROCESS("Stochastic process","Such as continuous-time Markov chain (CTMC) and Brownian motion"),
+    SITE_MODEL("Site model",
+            "Wrapper objects of Q matrix, site rates before invariable, the proportion of invariable sites"),
+    COAL_TREE("Coalescent tree","Coalescent tree priors"),
+    BD_TREE("Birth-death tree","Birth-death tree priors"),
+    TREE("Tree functions","Functions related to the tree"),
+    PROB_DIST("Probability distribution","Prior probability distributions"),
+    STOCHASTIC_PROCESS("Stochastic process",
+            "Stochastic Processes, e.g. continuous-time Markov chain (CTMC) and Brownian motion"),
     MODEL_AVE_SEL("\"True\" model","Model averaging or model selection"),
-    NONE("None","Unknown category"); // last element is only for GUI
+    NONE("None","Utils or unclassified models"); // last element is only for GUI
 
     private String name;
     private String description;

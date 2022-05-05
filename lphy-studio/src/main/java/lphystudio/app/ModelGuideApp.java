@@ -68,7 +68,7 @@ public class ModelGuideApp extends JFrame {
 
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 1)
-                latexPane.setText(modelGuide.getSelectedModels());
+                latexPane.setLatexTable();
         });
 
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
