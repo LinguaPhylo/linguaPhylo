@@ -256,14 +256,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         html.append("</h3>");
         GeneratorInfo info = getInfo();
         if (info != null) {
-            html.append("<p>").append(getInfo().description()).append("</p>");
+            html.append("<p>").append(getInfo().description()).append("</p><br>");
         }
         if (pInfo.size() > 0) {
             html.append("<p>parameters: <ul>");
             for (ParameterInfo pi : pInfo) {
                 html.append("<li>").append(pi.name()).append(" (").append(paramValues.get(pi.name())).append("); <font color=\"#808080\">").append(pi.description()).append("</font></li>");
             }
-            html.append("</ul>");
+            html.append("</ul></p>");
         }
 
         Citation citation = getCitation();
@@ -276,7 +276,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             }
         }
 
-        html.append("</p></html>");
+        html.append("</html>");
         return html.toString();
     }
 
