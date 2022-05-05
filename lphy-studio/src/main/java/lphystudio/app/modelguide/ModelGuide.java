@@ -29,16 +29,18 @@ public class ModelGuide {
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
         List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
-        functions.sort(Comparator.comparing(Class::getSimpleName));
+        functions.sort(Comparator.comparing(DeterministicFunction::getName));
 
-        Set<Class<?>> types = Collections.unmodifiableSet(ParserUtils.types);
+//        Set<Class<?>> types = Collections.unmodifiableSet();
+        List<Class<?>> types = new ArrayList<>(ParserUtils.types);
+        types.sort(Comparator.comparing(Class::getSimpleName));
 
         setAllModels(generativeDistributions, functions, types);
         addSelectedModels();
     }
 
     private void setAllModels(List<Class<GenerativeDistribution>> generativeDistributions,
-                              List<Class<DeterministicFunction>> functions, Set<Class<?>> types) {
+                              List<Class<DeterministicFunction>> functions, List<Class<?>> types) {
         List<Model> all = new ArrayList<>();
         Model m;
         for (Class<GenerativeDistribution> distCls : generativeDistributions) {
