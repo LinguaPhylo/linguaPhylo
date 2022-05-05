@@ -1,6 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.*;
+import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
@@ -258,6 +259,8 @@ public class GraphicalModelPanel extends JPanel {
         JComponent viewer = null;
         if (obj instanceof Value) {
             viewer = ViewerRegister.getJComponentForValue(obj);
+        } else if (obj instanceof VectorizedFunction<?>) {
+            viewer = new JLabel(((VectorizedFunction<?>) obj).getComponentFunction(0).getRichDescription(0));
         } else if (obj instanceof Generator) {
             viewer = new JLabel(((Generator) obj).getRichDescription(0));
         } else {
