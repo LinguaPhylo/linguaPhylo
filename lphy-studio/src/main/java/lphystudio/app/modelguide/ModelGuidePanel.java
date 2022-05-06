@@ -90,7 +90,8 @@ public class ModelGuidePanel extends JPanel {
         dataTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         dataTable.getSelectionModel().addListSelectionListener(e -> {
             int i = dataTable.getSelectedRow();
-            if (i >= 0) textPane.setText(modelGuide.getModel(i).htmlDoc);
+            if (i >= 0)
+                SwingUtilities.invokeLater(() -> textPane.setText(modelGuide.getModel(i).htmlDoc));
         });
         JScrollPane scrollPane = new JScrollPane(dataTable);
 
