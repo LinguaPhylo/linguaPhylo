@@ -1,10 +1,12 @@
 package lphystudio.app;
 
+import lphystudio.app.modelguide.LatexPane;
 import lphystudio.app.modelguide.ModelGuide;
 import lphystudio.app.modelguide.ModelGuidePanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Walter Xie
@@ -44,7 +46,6 @@ public class ModelGuideApp extends JFrame {
 
         modelGuide = new ModelGuide();
         ModelGuidePanel guidePanel = new ModelGuidePanel(modelGuide);
-        getContentPane().add(guidePanel, BorderLayout.CENTER);
 
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
@@ -53,19 +54,25 @@ public class ModelGuideApp extends JFrame {
             );
         }
 
-//        JMenuBar menuBar = new JMenuBar();
-//        JMenu summMenu = new JMenu("Summary");
-//        summMenu.setMnemonic(KeyEvent.VK_S);
-//        menuBar.add(summMenu);
-//
-//        JMenuItem showMenuItem = new JMenuItem("Show Summary...");
-//        showMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, MASK));
-//        showMenuItem.addActionListener(e -> {
-//
-//        });
-//        summMenu.add(showMenuItem);
-//
-//        setJMenuBar(menuBar);
+        JTabbedPane tabbedPane = new JTabbedPane();
+        //The following line enables to use scrolling tabs.
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        tabbedPane.addTab("Models", guidePanel);
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+
+        LatexPane latexPane = new LatexPane(modelGuide);
+        JScrollPane scrollPane = new JScrollPane(latexPane);
+        tabbedPane.addTab("Latex", scrollPane);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+
+        tabbedPane.addChangeListener(e -> {
+            if (tabbedPane.getSelectedIndex() == 1)
+                latexPane.setLatexTable();
+        });
+
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
+
         setVisible(true);
     }
 

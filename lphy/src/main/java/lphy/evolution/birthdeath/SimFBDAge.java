@@ -1,7 +1,7 @@
 package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
-import lphy.evolution.tree.PruneTree;
+import lphy.core.functions.tree.PruneTree;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;

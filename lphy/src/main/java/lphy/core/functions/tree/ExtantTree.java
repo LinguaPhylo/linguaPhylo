@@ -1,5 +1,7 @@
-package lphy.evolution.tree;
+package lphy.core.functions.tree;
 
+import lphy.evolution.tree.TimeTree;
+import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package lphy.evolution.birthdeath;
 
 import lphy.core.distributions.Utils;
+import lphy.core.functions.tree.PruneTree;
 import lphy.evolution.Taxa;
-import lphy.evolution.tree.PruneTree;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;

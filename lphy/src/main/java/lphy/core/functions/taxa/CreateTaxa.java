@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.core.functions.taxa;
 
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;

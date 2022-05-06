@@ -1,10 +1,6 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.types.DoubleValue;
+import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
 
 public class SumBoolean extends DeterministicFunction<Integer> {
@@ -15,7 +11,9 @@ public class SumBoolean extends DeterministicFunction<Integer> {
         setParam(arrayParamName, x);
     }
 
-    @GeneratorInfo(name = "hammingWeight", description = "The sum of the true elements of the given boolean array")
+    @GeneratorInfo(name = "hammingWeight",
+            category = GeneratorCategory.PROB_DIST, examples = {"simpleRandomLocalClock2.lphy","covidDPG.lphy"},
+            description = "The sum of the true elements of the given boolean array")
     public Value<Integer> apply() {
         Boolean[] x = (Boolean[])getParams().get(arrayParamName).value();
 

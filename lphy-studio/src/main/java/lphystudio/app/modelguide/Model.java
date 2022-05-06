@@ -21,6 +21,8 @@ public class Model {
 
     String htmlDoc;
 
+    Citation citation; // TODO multiple?
+
     public Model(Class<?> cls) {
         if (Generator.class.isAssignableFrom(cls)) {
              GeneratorInfo generatorInfo = Generator.getGeneratorInfo(cls);
@@ -39,6 +41,7 @@ public class Model {
             this.isDeterFunc = cls.isAssignableFrom(DeterministicFunction.class);
             // cls is Generator
             htmlDoc = Generator.getGeneratorHtml((Class<? extends Generator>) cls);
+
         } else { // MethodInfo
 
             name = cls.getSimpleName();
@@ -49,6 +52,8 @@ public class Model {
             htmlDoc = MethodCall.getHtmlDoc(name, methodInfoTreeMap, examples);
 
         }
+        // can be null
+        citation = Generator.getCitation(cls);
 
     }
 
@@ -69,5 +74,9 @@ public class Model {
     public String[] getExamples() {
         if (examples ==null) examples = new String[]{""};
         return examples;
+    }
+
+    public Citation getCitation() {
+        return citation;
     }
 }

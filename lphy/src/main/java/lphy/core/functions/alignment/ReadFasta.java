@@ -1,4 +1,4 @@
-package lphy.core.functions;
+package lphy.core.functions.alignment;
 
 import jebl.evolution.io.FastaImporter;
 import jebl.evolution.io.ImportException;

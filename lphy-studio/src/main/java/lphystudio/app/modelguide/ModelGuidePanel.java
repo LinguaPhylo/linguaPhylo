@@ -27,10 +27,9 @@ public class ModelGuidePanel extends JPanel {
         this.modelGuide = modelGuide;
 
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
         JPanel topPanel = new JPanel(new SpringLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         JLabel jLabel;
 //        jLabel = new JLabel("Generator type : ", JLabel.TRAILING);
