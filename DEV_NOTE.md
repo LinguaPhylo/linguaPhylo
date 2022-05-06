@@ -136,7 +136,7 @@ Please also see
 - [Working with Gradle](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/)
 - [Gradle projects](https://www.jetbrains.com/help/idea/work-with-gradle-projects.html)
 
-### Breakpoints failed
+### Breakpoints failed in Java class
 
 Please configure your IntelliJ Gradle JVM to 17. You can go to "Preferences",
 and expand `Build, Execution, Deployment` => `Build Tools` => `Gradle`.
