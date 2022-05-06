@@ -136,6 +136,18 @@ Please also see
 - [Working with Gradle](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/)
 - [Gradle projects](https://www.jetbrains.com/help/idea/work-with-gradle-projects.html)
 
+### Breakpoints failed
+
+Please configure your IntelliJ Gradle JVM to 17. You can go to "Preferences",
+and expand `Build, Execution, Deployment` => `Build Tools` => `Gradle`.
+In addition, it is important to set `Build and run using` "IntelliJ IDEA",
+otherwise breakpoints will not work in Java class using the default option "Gradle".
+But if you want to debug the Gradle build file, you have to change this to "Gradle" option.
+
+<a href="./GradleJVM.png"><img src="GradleJVM.png" align="right" ></a>
+
+Alternative, you can use the terminal to run the Gradle tasks.
+
 ## Release procedure
 
 1. Make sure all versions not containing the postfix "SNAPSHOT".
