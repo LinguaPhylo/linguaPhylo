@@ -3,11 +3,16 @@ package lphystudio.app.modelguide;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.NarrativeUtils;
+import lphystudio.app.narrative.LaTeXUtils;
 
 import javax.swing.*;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author Walter Xie
@@ -36,7 +41,11 @@ public class LatexPane extends JTextPane {
     private final int MAX_ROW_PER_PAGE = 40;
     private final int MAX_ROW_1ST_PAGE = 25;
 
+    // insertion-order (in which keys were inserted into the map)
+    private Map<String, Citation> refMap = new LinkedHashMap<>();
+
     private String createLatexTable(List<Model> models) {
+        refMap.clear();
         StringBuilder builder = new StringBuilder("\\documentclass{article}\n")
                 .append("\\begin{document}\n");
 
@@ -55,9 +64,14 @@ public class LatexPane extends JTextPane {
             Model model = models.get(i);
             Citation citation = model.getCitation();
             if (citation == null) key = "";
-            else key = NarrativeUtils.getCitationKey(citation, "et. al.");
-            builder.append(INDENT).append(model.getName()).append(" & ")
-                    .append(key).append("\\\\  \n");
+            else {
+                key = NarrativeUtils.getCitationKey(citation, "et. al.");
+                refMap.put(key, citation);
+            }
+            builder.append(INDENT).append(model.getName()).append(" & ").append(key);
+            if (!key.isEmpty()) // \cite{key}, key must be valid in biblatex
+                builder.append("\\cite{").append(sanitizeKey(key)).append("}");
+            builder.append("\\\\  \n");
 
             if (i >= MAX_ROW_1ST_PAGE && (i-MAX_ROW_1ST_PAGE) % MAX_ROW_PER_PAGE == 0) {
                 tableEnd(builder);
@@ -67,6 +81,8 @@ public class LatexPane extends JTextPane {
         }
 
         tableEnd(builder);
+
+        referenceSection(builder);
 
         builder.append("\\end{document}");
         return builder.toString();
@@ -95,5 +111,39 @@ public class LatexPane extends JTextPane {
         char[] c = string.toCharArray();
         c[0] = Character.toLowerCase(c[0]);
         return new String(c);
+    }
+
+    private void referenceSection(StringBuilder builder) {
+        if (refMap.size() > 0) {
+            builder.append("\\begin{thebibliography}{9}\n\n");
+            for (Map.Entry<String, Citation> ci : refMap.entrySet()) {
+                builder.append("\\bibitem{");
+                builder.append(sanitizeKey(ci.getKey())); // must be valid in biblatex
+                builder.append("}\n");
+
+                String ref = LaTeXUtils.sanitizeText(ci.getValue().value());
+
+                builder.append(ref);
+                builder.append("\n\n");
+            }
+            builder.append("\\end{thebibliography}\n");
+        }
+    }
+
+    private String sanitizeKey(String key) {
+        String citeKey = key.replaceAll(" and ", "&")
+                .replaceAll("\\.", "_")
+                .replaceAll(" et_", "_et_")
+                .replaceAll("\\s+", "");
+                // replace all non ASCII letters
+//                .replaceAll("[^\\x00-\\x7F]", "_");
+        return deAccent(citeKey);
+    }
+
+    // convert accent letters to English alphabet
+    private String deAccent(String str) {
+        String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 }
