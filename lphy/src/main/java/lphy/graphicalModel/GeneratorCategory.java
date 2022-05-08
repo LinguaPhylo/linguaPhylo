@@ -18,7 +18,7 @@ public enum GeneratorCategory {
     PROB_DIST("Probability distribution","Prior probability distributions"),
     STOCHASTIC_PROCESS("Stochastic process",
             "Stochastic Processes, e.g. continuous-time Markov chain (CTMC) and Brownian motion"),
-    MODEL_AVE_SEL("\"True\" model","Model averaging or model selection"),
+    MODEL_AVE_SEL("Model averaging","Model averaging or model selection"),
     NONE("None","Utils or unclassified models"); // last element is only for GUI
 
     private String name;
