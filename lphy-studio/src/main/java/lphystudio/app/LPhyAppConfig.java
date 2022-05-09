@@ -48,4 +48,21 @@ public final class LPhyAppConfig {
         JOptionPane.showMessageDialog(parentComponent, textPane, title, JOptionPane.PLAIN_MESSAGE, null);
     }
 
+
+    public static void setupEcoSys(String appName) {
+        System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", appName);
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+        System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
+        System.setProperty("apple.awt.fileDialogForDirectories", "true");
+        System.setProperty("file.encoding", "UTF-8"); // for windows
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

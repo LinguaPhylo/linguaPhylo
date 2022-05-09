@@ -15,18 +15,7 @@ public class ModelGuideApp extends JFrame {
 
     public static final String APP_NAME = "Model Guide";
     static {
-        System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
-        System.setProperty("apple.awt.fileDialogForDirectories", "true");
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        LPhyAppConfig.setupEcoSys(APP_NAME);
     }
 
     private final int MASK = LPhyAppConfig.MASK;

@@ -32,19 +32,7 @@ import java.util.Comparator;
 public class LinguaPhyloStudio {
     private static final String APP_NAME = "LPhy Studio";
     static {
-        System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", APP_NAME);
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
-        System.setProperty("apple.awt.fileDialogForDirectories", "true");
-        System.setProperty("file.encoding", "UTF-8"); // for windows
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        LPhyAppConfig.setupEcoSys(APP_NAME);
     }
 
     private final int MASK = LPhyAppConfig.MASK;
