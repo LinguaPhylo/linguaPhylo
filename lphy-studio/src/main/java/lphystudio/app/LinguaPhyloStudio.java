@@ -3,7 +3,6 @@ package lphystudio.app;
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
-import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphyext.manager.DependencyUtils;
 import lphyext.manager.ExtManagerDialog;
@@ -64,18 +63,10 @@ public class LinguaPhyloStudio {
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
         fileMenu.add(openMenuItem);
         openMenuItem.addActionListener(e -> {
-            // use "user.dir" instead of FileSystemView.getFileSystemView().getHomeDirectory()
-            JFileChooser jfc = new JFileChooser(UserDir.getUserDir().toFile());
-
             FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
-            jfc.setFileFilter(filter);
-            jfc.setMultiSelectionEnabled(false);
-            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            File selectedFile = Utils.getFileFromFileChooser(frame, filter, JFileChooser.FILES_ONLY, true);
 
-            int returnValue = jfc.showOpenDialog(null);
-
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jfc.getSelectedFile();
+            if (selectedFile != null) {
 //                panel.readScript(selectedFile);
                 Path dir = selectedFile.toPath().getParent();
                 readFile(selectedFile.getName(), dir.toString());

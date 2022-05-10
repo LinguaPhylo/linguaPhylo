@@ -30,7 +30,7 @@ public class Utils {
      * @param parent  the parent component of the dialog, or null
      */
     public static void saveToFile(String text, Component parent) {
-        File selectedFile = getFileFromFileChooser(parent, null);
+        File selectedFile = getFileFromFileChooser(parent, null, JFileChooser.FILES_ONLY, false);
         if (selectedFile != null) {
             PrintWriter writer = null;
             try {
@@ -48,11 +48,13 @@ public class Utils {
      * @param parent the parent component of the dialog, can be null.
      * @param filter a {@link FileNameExtensionFilter} with the specified description
      *               and file name extensions, can be null.
+     * @param fileSelectionMode   the type of files to be displayed.
      * @return The selected {@link File}, and cache its parent directory to lastDirectory.
      *         Or null if selection is cancelled.
      * @see JFileChooser#showSaveDialog(Component)
      */
-    public static File getFileFromFileChooser(Component parent, FileNameExtensionFilter filter) {
+    public static File getFileFromFileChooser(Component parent, FileNameExtensionFilter filter,
+                                              int fileSelectionMode, boolean openFile) {
         JFileChooser jfc = new JFileChooser();
         File chooserFile = new File(System.getProperty("user.dir"));
 
@@ -62,10 +64,10 @@ public class Utils {
             jfc.setCurrentDirectory(lastDirectory);
 
         jfc.setMultiSelectionEnabled(false);
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.setFileSelectionMode(fileSelectionMode);
         if (filter != null) jfc.setFileFilter(filter);
 
-        int returnValue = jfc.showSaveDialog(parent);
+        int returnValue = openFile ? jfc.showOpenDialog(parent) : jfc.showSaveDialog(parent);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
