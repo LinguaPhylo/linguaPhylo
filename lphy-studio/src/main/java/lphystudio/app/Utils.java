@@ -9,6 +9,7 @@ import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -26,25 +27,11 @@ public class Utils {
     /**
      * Save string into a file through JFileChooser.
      * @param text   String to save
-     * @param frame  the parent component of the dialog, or null
+     * @param parent  the parent component of the dialog, or null
      */
-    public static void saveToFile(String text, JFrame frame) {
-        JFileChooser jfc = new JFileChooser();
-
-        File chooserFile = new File(System.getProperty("user.dir"));
-
-        if (lastDirectory == null)
-            jfc.setCurrentDirectory(chooserFile);
-        else
-            jfc.setCurrentDirectory(lastDirectory);
-
-        jfc.setMultiSelectionEnabled(false);
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-        int returnValue = jfc.showSaveDialog(frame);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
+    public static void saveToFile(String text, Component parent) {
+        File selectedFile = getFileFromFileChooser(parent, null);
+        if (selectedFile != null) {
             PrintWriter writer = null;
             try {
                 writer = new PrintWriter(new FileWriter(selectedFile));
@@ -54,8 +41,38 @@ public class Utils {
             } catch (IOException ex) {
                 LoggerUtils.logStackTrace(ex);
             }
-            lastDirectory = selectedFile.getParentFile();
         }
+    }
+
+    /**
+     * @param parent the parent component of the dialog, can be null.
+     * @param filter a {@link FileNameExtensionFilter} with the specified description
+     *               and file name extensions, can be null.
+     * @return The selected {@link File}, and cache its parent directory to lastDirectory.
+     *         Or null if selection is cancelled.
+     * @see JFileChooser#showSaveDialog(Component)
+     */
+    public static File getFileFromFileChooser(Component parent, FileNameExtensionFilter filter) {
+        JFileChooser jfc = new JFileChooser();
+        File chooserFile = new File(System.getProperty("user.dir"));
+
+        if (lastDirectory == null)
+            jfc.setCurrentDirectory(chooserFile);
+        else
+            jfc.setCurrentDirectory(lastDirectory);
+
+        jfc.setMultiSelectionEnabled(false);
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (filter != null) jfc.setFileFilter(filter);
+
+        int returnValue = jfc.showSaveDialog(parent);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            lastDirectory = selectedFile.getParentFile();
+            return selectedFile;
+        }
+        return null;
     }
 
     /**
