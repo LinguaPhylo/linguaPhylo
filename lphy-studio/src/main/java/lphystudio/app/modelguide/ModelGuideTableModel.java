@@ -22,7 +22,7 @@ public class ModelGuideTableModel extends EasyTableModel {
             case 1:
                 return model.getCategory();
             case 2:
-                String desc = model.getDescription();
+                String desc = model.getDescription().replaceAll("<br>", " ");
                 final int max = 80;
                 if (desc.length() > max) {
                     desc = desc.substring(0, max);
