@@ -132,9 +132,14 @@ public class LinguaPhyloStudio {
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
 
-            desktop.setAboutHandler(e ->
-                    LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits())
-            );
+            // avoid UnsupportedOperationException of APP_ABOUT
+            if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+                desktop.setAboutHandler(e ->
+                        LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits())
+                );
+            } else {
+                addAbout(menuBar);
+            }
 //TODO            desktop.setPreferencesHandler(e ->
 //                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
 //            );
@@ -144,10 +149,7 @@ public class LinguaPhyloStudio {
 //                    }
 //            );
         } else {
-            JMenu helpMenu = new JMenu("Help");
-            menuBar.add(helpMenu);
-            helpMenu.setMnemonic('H');
-            helpMenu.add(new ActionAbout());
+            addAbout(menuBar);
         }
 
         // main frame
@@ -309,6 +311,13 @@ public class LinguaPhyloStudio {
                 "<a href=\""+LPhyAppConfig.LPHY_WEB+"\">"+LPhyAppConfig.LPHY_WEB+"</a></p>"+
                 "<p>Source code distributed under the GNU Lesser General Public License Version 3</p>"+
                 "<p>Require Java 17, current Java version " + System.getProperty("java.version") + "</p></html>";
+    }
+
+    private void addAbout(JMenuBar menuBar) {
+        JMenu helpMenu = new JMenu("Help");
+        menuBar.add(helpMenu);
+        helpMenu.setMnemonic('H');
+        helpMenu.add(new ActionAbout());
     }
 
     class ActionAbout extends AbstractAction {
