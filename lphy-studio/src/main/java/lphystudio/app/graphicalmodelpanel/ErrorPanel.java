@@ -101,7 +101,7 @@ public class ErrorPanel extends JComponent {
         String message = "";
         // only apply to INFO
         if ( !( noLvlName && "info".equalsIgnoreCase(lvlNm) ) )
-            message += (noLvlName ? "" : lvlNm + ": ");
+            message += lvlNm + ": ";
         message += logRecord.getMessage() + "\n";
 
         try {
