@@ -13,6 +13,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Print message logged by {@link LoggerUtils} for various levels.
+ */
 public class ErrorPanel extends JComponent {
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
@@ -21,6 +24,8 @@ public class ErrorPanel extends JComponent {
     Style warningStyle;
     Style infoStyle;
     Style defaultStyle;
+
+    private boolean noLvlName = false;
 
     public ErrorPanel() {
 
@@ -67,6 +72,19 @@ public class ErrorPanel extends JComponent {
         });
     }
 
+    public void clear() {
+        pane.setText("");
+    }
+
+    /**
+     * @param noLvlName  set to true, then not print INFO before messages,
+     *                   and also easily fix the new line in the beginning of the string.
+     *                   Otherwise, it will be added between INFO and messages.
+     */
+    public void setNoLvlName(boolean noLvlName) {
+        this.noLvlName = noLvlName;
+    }
+
     private void flush() {
         try {
             pane.getDocument().remove(0, pane.getDocument().getLength());
@@ -78,22 +96,20 @@ public class ErrorPanel extends JComponent {
     private void addText(LogRecord logRecord) {
 
         Level level = logRecord.getLevel();
+        String lvlNm = level.getName();
         StyledDocument document = pane.getStyledDocument();
-        String message = logRecord.getLevel().getName() + ": " + logRecord.getMessage() + "\n";
+        String message = "";
+        // only apply to INFO
+        if ( !( noLvlName && "info".equalsIgnoreCase(lvlNm) ) )
+            message += (noLvlName ? "" : lvlNm + ": ");
+        message += logRecord.getMessage() + "\n";
 
         try {
-            switch (level.getName().toLowerCase()) {
-                case "severe":
-                    document.insertString(document.getLength(), message, severeStyle);
-                    break;
-                case "warning":
-                    document.insertString(document.getLength(), message, warningStyle);
-                    break;
-                case "info":
-                    document.insertString(document.getLength(), message, infoStyle);
-                    break;
-                default:
-                    document.insertString(document.getLength(), message, defaultStyle);
+            switch (lvlNm.toLowerCase()) {
+                case "severe" -> document.insertString(document.getLength(), message, severeStyle);
+                case "warning" -> document.insertString(document.getLength(), message, warningStyle);
+                case "info" -> document.insertString(document.getLength(), message, infoStyle);
+                default -> document.insertString(document.getLength(), message, defaultStyle);
             }
         } catch (BadLocationException e) {
             e.printStackTrace();
