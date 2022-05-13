@@ -1,4 +1,4 @@
-package lphystudio.core.swing;
+package lphy.util;
 
 /**
  * Implement this to pass it into a method, so that it can set progress inside that method.
