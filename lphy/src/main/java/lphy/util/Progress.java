@@ -18,6 +18,11 @@ public interface Progress {
     void setProgressPercentage(double percentage);
 
     /**
+     * @return the last percentage set by {@link #setProgressPercentage(double)}.
+     */
+    double getCurrentPercentage();
+
+    /**
      * @return the start point of progress, which is between 0 and 100.
      */
     int getStart();
