@@ -457,10 +457,15 @@ The code contains a \textbf{data block} for specifying the input dataset, and a 
 % (tree and lambda in this example) in the model from that observed sequence alignment.
 
 \subsection*{Language features}
-Similar to other programming languages, LPhy allows variables to be declared as primitives, objects or arrays.
-In addition to this, the LPhy language provides features specific to phylogenetic models including: probabilistic distributions (e.g., Normal and Exponential distributions), tree generative distributions such as birth-death and coalescent processes, sequence generators such as substitution models (e.g., the general-time-reversible model \cite{gtr}), tree data and sequence alignment data. 
-Our software natively supports input sequences in nexus and fasta formats and trees in newick format. 
-Table \ref{tab:generators} shows the range of phylogentic specific methods currently implemented within the LPhy language.
+% Similar to other programming languages, LPhy allows variables to be declared as primitives, objects or arrays.
+The LPhy language provides a simple syntax for simulating and specifying phylogenetic models.
+The main features include: simulation from tree generative distributions (e.g., birth-death or coalescent processes), sequence generators (e.g., substitution models \cite{gtr}), and statistical distributions (e.g., Normal distribution). %, tree data and sequence alignment data. 
+An LPhy model consists of generators and variables with `datatypes'. 
+These `datatypes' can be sequence alignments, trees, primitives (e.g., doubles and strings), or arrays. 
+Table \ref{tab:generators} shows a summary of LPhy's API. 
+Data can be simulated using LPhy sequence generators, or read in from external data files. 
+An input API is provided to parse input sequences from nexus and fasta formats as well as trees from newick format into `LPhy datatypes'. 
+
 
 \begin{table}[h]
   \caption{A list of methods supported by
@@ -586,7 +591,7 @@ Table \ref{tab:generators} shows the range of phylogentic specific methods curre
 % \end{alltt}
 
 \subsubsection*{Probabilistic distributions}
-...
+LPhy probabilistic distributions enable users to generate values from common statistical distributions. 
 
 {\singlespacing
 \begin{alltt}
