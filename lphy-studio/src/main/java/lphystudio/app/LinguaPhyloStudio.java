@@ -10,6 +10,7 @@ import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.narrative.HTMLNarrative;
+import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
 
 import javax.swing.*;
@@ -18,7 +19,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -128,18 +128,10 @@ public class LinguaPhyloStudio {
             ModelGuideApp modelGuideApp = new ModelGuideApp();
         });
 
-        // deal with About menu
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
+        AboutMenuHelper aboutMenuHelper =
+                new AboutMenuHelper(frame, APP_NAME + " v " + VERSION,
+                        getHTMLCredits(), menuBar);
 
-            // avoid UnsupportedOperationException of APP_ABOUT
-            if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-                desktop.setAboutHandler(e ->
-                        LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits())
-                );
-            } else {
-                addAbout(menuBar);
-            }
 //TODO            desktop.setPreferencesHandler(e ->
 //                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
 //            );
@@ -148,9 +140,7 @@ public class LinguaPhyloStudio {
 //                        System.exit(0);
 //                    }
 //            );
-        } else {
-            addAbout(menuBar);
-        }
+
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
@@ -312,23 +302,6 @@ public class LinguaPhyloStudio {
                 "<p>Source code distributed under the GNU Lesser General Public License Version 3</p>"+
                 "<p>Require Java 17, current Java version " + System.getProperty("java.version") + "</p></html>";
     }
-
-    private void addAbout(JMenuBar menuBar) {
-        JMenu helpMenu = new JMenu("Help");
-        menuBar.add(helpMenu);
-        helpMenu.setMnemonic('H');
-        helpMenu.add(new ActionAbout());
-    }
-
-    class ActionAbout extends AbstractAction {
-        public ActionAbout() {
-            super("About", null);
-        }
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            LPhyAppConfig.buildAboutDialog(frame, APP_NAME + " v " + VERSION, getHTMLCredits());
-        }
-    } // non Mac About
 
     private void exportToRtf() {
         JTextPane textPane = panel.getCanonicalModelPane();

@@ -3,6 +3,7 @@ package lphystudio.app;
 import lphystudio.app.modelguide.LatexPane;
 import lphystudio.app.modelguide.ModelGuide;
 import lphystudio.app.modelguide.ModelGuidePanel;
+import lphystudio.core.awt.AboutMenuHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,13 +37,6 @@ public class ModelGuideApp extends JFrame {
         modelGuide = new ModelGuide();
         ModelGuidePanel guidePanel = new ModelGuidePanel(modelGuide);
 
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
-            desktop.setAboutHandler(e ->
-                    LPhyAppConfig.buildAboutDialog(this, APP_NAME + " v " + VERSION, getHTMLCredits())
-            );
-        }
-
         JTabbedPane tabbedPane = new JTabbedPane();
         //The following line enables to use scrolling tabs.
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -62,11 +56,17 @@ public class ModelGuideApp extends JFrame {
 
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
+        JMenuBar menuBar = new JMenuBar();
+
+        AboutMenuHelper aboutMenuHelper =
+                new AboutMenuHelper(this, APP_NAME + " v " + VERSION,
+                        getHTMLCredits(), menuBar);
+
         setVisible(true);
     }
 
     private String getHTMLCredits() {
-        return "<html><body width='%1s'><h3>Created by Walter Xie and Alexei Drummond</h3>"+
+        return "<html><body width='%1s'><h3>Created by Walter Xie</h3>"+
                 "<p>The Centre for Computational Evolution<br>"+
                 "University of Auckland<br></p>"+
                 "<p>Homepage :<br>"+
