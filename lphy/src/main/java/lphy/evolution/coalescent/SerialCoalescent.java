@@ -8,6 +8,7 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -121,10 +122,44 @@ public class SerialCoalescent extends TaxaConditionedTreeGenerator {
     @Override
     public double logDensity(TimeTree timeTree) {
 
-        // TODO!
+        List<Double> ages = getAllNonZeroNodeAges(timeTree);
 
-        return 0.0;
+        if (ages.size() < timeTree.n() - 1)
+            throw new IllegalArgumentException("Non-zero ages size must >= the number of internal nodes in the tree !");
+
+        Collections.sort(ages);
+        double age = 0;
+        double logDensity = 0;
+        double popSize = doubleValue(this.theta);
+
+        // intervals == non-zero ages, which >= timeTree.n() - 1
+        int k = ages.size();
+        for (double age1 : ages) {
+            double interval = age1 - age;
+
+            logDensity -= k * (k - 1) * interval / (2 * popSize);
+
+            age = age1;
+            k -= 1;
+        }
+
+        logDensity -= k * Math.log(popSize);
+
+        return logDensity;
     }
+
+    // include all internal nodes and leaf node whose ages are greater than 0,
+    // so if all leaf node ages == 0, then return only internal nodes ages.
+    private List<Double> getAllNonZeroNodeAges(TimeTree timeTree) {
+        List<Double> ages = new ArrayList<>();
+        for (TimeTreeNode node : timeTree.getNodes()) {
+            double age = node.getAge();
+            if (age > 0)
+                ages.add(age);
+        }
+        return ages;
+    }
+
 
     @Override
     public Map<String, Value> getParams() {
