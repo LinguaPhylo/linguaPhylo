@@ -1,12 +1,14 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Multivariate Normal distribution
@@ -23,20 +25,9 @@ public class MVN implements GenerativeDistribution<Double[]> {
                @ParameterInfo(name = covariancesParamName, description = "the variance-covariance matrix of the distribution.") Value<Double[][]> covariances) {
 
         this.mean = mean;
-        if (mean == null) throw new IllegalArgumentException("The means can't be null!");
         this.covariances = covariances;
-        if (covariances == null) throw new IllegalArgumentException("The covariances can't be null!");
 
-        double[] means = new double[mean.value().length];
-        double[][] cv = new double[covariances.value().length][covariances.value().length];
-        for (int i = 0; i < means.length; i++) {
-            means[i] = mean.value()[i];
-            for (int j = 0; j < means.length; j++) {
-                cv[i][j] = this.covariances.value()[i][j];
-            }
-        }
-        multivariateNormalDistribution = new MultivariateNormalDistribution(means,cv);
-
+        constructDistribution();
     }
 
     @GeneratorInfo(name="MVN", description="The normal probability distribution.")
@@ -62,6 +53,21 @@ public class MVN implements GenerativeDistribution<Double[]> {
         return multivariateNormalDistribution.density(xx);
     }
 
+    private void constructDistribution() {
+        if (mean == null) throw new IllegalArgumentException("The means can't be null!");
+        if (covariances == null) throw new IllegalArgumentException("The covariances can't be null!");
+
+        double[] means = new double[mean.value().length];
+        double[][] cv = new double[covariances.value().length][covariances.value().length];
+        for (int i = 0; i < means.length; i++) {
+            means[i] = mean.value()[i];
+            for (int j = 0; j < means.length; j++) {
+                cv[i][j] = this.covariances.value()[i][j];
+            }
+        }
+        multivariateNormalDistribution = new MultivariateNormalDistribution(Utils.getRandom(), means, cv);
+    }
+
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(meanParamName, mean);
@@ -81,6 +87,8 @@ public class MVN implements GenerativeDistribution<Double[]> {
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
+
+        constructDistribution();
     }
 
     public String toString() {
