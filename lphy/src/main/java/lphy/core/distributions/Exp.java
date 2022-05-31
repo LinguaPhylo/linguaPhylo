@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
@@ -38,7 +39,8 @@ public class Exp implements GenerativeDistribution<Double> {
 
     @Override
     public double density(Double aDouble) {
-        return 0;
+        ExponentialDistribution exp = new ExponentialDistribution(random, mean.value());
+        return exp.logDensity(aDouble);
     }
 
     @Override
