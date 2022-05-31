@@ -40,7 +40,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
 
     public double density(Double[] d) {
         // TODO
-        return 0;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
