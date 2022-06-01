@@ -1,32 +1,35 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.alphaParamName;
+import static lphy.core.distributions.DistributionConstants.betaParamName;
+import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
 public class Weibull implements GenerativeDistribution<Double> {
 
-    private Value<Double> alpha;
-    private Value<Double> beta;
+    private Value<Number> alpha;
+    private Value<Number> beta;
 
-    public Weibull(@ParameterInfo(name = alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Double> alpha,
-                   @ParameterInfo(name = betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Double> beta) {
+    WeibullDistribution weibullDistribution;
+
+    public Weibull(@ParameterInfo(name = alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Number> alpha,
+                   @ParameterInfo(name = betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Number> beta) {
         this.alpha = alpha;
         this.beta = beta;
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "Weibull", description = "The Weibull distribution.")
     public RandomVariable<Double> sample() {
-
-        WeibullDistribution weibullDistribution = new WeibullDistribution(alpha.value(), beta.value());
 
         double randomVariable = weibullDistribution.sample();
 
@@ -34,8 +37,11 @@ public class Weibull implements GenerativeDistribution<Double> {
     }
 
     public double logDensity(Double d) {
-        BetaDistribution betaDistribution = new BetaDistribution(alpha.value(), beta.value());
-        return betaDistribution.logDensity(d);
+        return weibullDistribution.logDensity(d);
+    }
+
+    private void constructDistribution() {
+        weibullDistribution = new WeibullDistribution(doubleValue(alpha), doubleValue(beta));
     }
 
     @Override
@@ -51,6 +57,8 @@ public class Weibull implements GenerativeDistribution<Double> {
         if (paramName.equals(alphaParamName)) alpha = value;
         else if (paramName.equals(betaParamName)) beta = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        constructDistribution();
     }
 
     public String toString() {
