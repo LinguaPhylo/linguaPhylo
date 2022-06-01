@@ -13,10 +13,14 @@ public class RandomComposition implements GenerativeDistribution<Integer[]> {
     private Value<Integer> n;
     private Value<Integer> k;
 
+    private RandomGenerator random;
+
     public RandomComposition(@ParameterInfo(name = nParamName, description = "the sum of the random tuple.") Value<Integer> n,
                              @ParameterInfo(name = kParamName, description = "the size of the random tuple.") Value<Integer> k) {
         this.n = n;
         this.k = k;
+
+        random = Utils.getRandom();
     }
 
     @GeneratorInfo(name = "RandomComposition",
@@ -25,7 +29,6 @@ public class RandomComposition implements GenerativeDistribution<Integer[]> {
             description = "Samples a random "+ kParamName + "-tuple of positive integers that sum to " + nParamName + ".")
     public RandomVariable<Integer[]> sample() {
         List<Integer> bars = new ArrayList<>();
-        RandomGenerator random = Utils.getRandom();
 
         bars.add(0);
         while (bars.size() < k.value()) {

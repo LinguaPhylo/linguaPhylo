@@ -21,8 +21,7 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
     private Value<Number> mean;
     private Value<Number> precision;
 
-    private RandomGenerator random;
-
+    GammaDistribution gammaDistribution;
     NormalDistribution normalDistribution;
 
     static final String precisionParamName = "precision";
@@ -36,41 +35,38 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
         this.scale = scale;
 
         this.mean = mean;
-        if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.precision = precision;
-        if (precision == null) throw new IllegalArgumentException("The precision value can't be null!");
-        random = Utils.getRandom();
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "NormalGamma", verbClause = "has", narrativeName = "normal-gamma prior",
             category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal-gamma probability distribution.")
     public RandomVariable<Double[]> sample() {
-
-        double m = doubleValue(mean);
-        double sh = doubleValue(shape);
-        double sc = doubleValue(scale);
-        double lambda = doubleValue(precision);
-
-        GammaDistribution gammaDistribution = new GammaDistribution(random, sh, sc);
         double T = gammaDistribution.sample();
-
-        normalDistribution = new NormalDistribution(random, m, lambda * T);
         double x = normalDistribution.sample();
         return new RandomVariable<>(null, new Double[] {x, T}, this);
     }
 
-    @Override
-    public double density(Double[] x) {
+    private void constructDistribution() {
+        if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
+        if (precision == null) throw new IllegalArgumentException("The precision value can't be null!");
+
         double m = doubleValue(mean);
         double sh = doubleValue(shape);
         double sc = doubleValue(scale);
         double lambda = doubleValue(precision);
 
-        GammaDistribution gammaDistribution = new GammaDistribution(random, sh, sc);
+        RandomGenerator random = Utils.getRandom();
+        gammaDistribution = new GammaDistribution(random, sh, sc);
 
-        normalDistribution = new NormalDistribution(random, m, lambda * x[0]);
+        double T = gammaDistribution.sample();
+        normalDistribution = new NormalDistribution(random, m, lambda * T);
+    }
 
+    @Override
+    public double density(Double[] x) {
         return gammaDistribution.density(x[0]) * normalDistribution.density(x[1]);
     }
 
@@ -92,6 +88,7 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
             case scaleParamName -> scale = value;
             default -> throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
+        constructDistribution();
     }
 
     public String toString() {

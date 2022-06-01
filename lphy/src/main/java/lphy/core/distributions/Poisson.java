@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_EPSILON;
+import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_MAX_ITERATIONS;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -59,13 +61,13 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             }
         }
 
-
         return new RandomVariable<>(null, val, this);
     }
 
     @Override
     public void constructDistribution() {
-        poisson = new PoissonDistribution(doubleValue(lambda));
+        poisson = new PoissonDistribution(Utils.getRandom(), doubleValue(lambda),
+                DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
     }
 
 

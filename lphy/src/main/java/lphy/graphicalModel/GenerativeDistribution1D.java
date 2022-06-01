@@ -10,5 +10,11 @@ public interface GenerativeDistribution1D<T> extends GenerativeDistribution<T> {
      */
     T[] getDomainBounds();
 
-    void constructDistribution();
+    /**
+     * Create the instance of distribution class given the parameter(s),
+     * and cache it in order to reuse in sample() and density().
+     * It should be only called in constructor and setParam(),
+     * or any setters to change parameter value.
+     */
+    void constructDistribution(); //TODO mv to GenerativeDistribution
 }

@@ -11,10 +11,14 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
     private Value<Integer> length;
     private Value<Integer> hammingWeight;
 
+    private Random random;
+
     public RandomBooleanArray(@ParameterInfo(name=lengthParamName, description="the length of the boolean array to be generated.") Value<Integer> length,
                               @ParameterInfo(name=hammingWeightParamName, description="the number of true values in the boolean array.") Value<Integer> hammingWeight) {
         this.length = length;
         this.hammingWeight = hammingWeight;
+
+        this.random = Utils.getJavaRandom();
     }
 
     @GeneratorInfo(name="RandomBooleanArray",
@@ -38,7 +42,7 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
             bools.add(false);
         }
 
-        Collections.shuffle(bools);
+        Collections.shuffle(bools, random);
         Boolean[] array = new Boolean[bools.size()];
 
         return new RandomVariable<>("x", bools.toArray(array), this);
