@@ -25,20 +25,26 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
 
         this.M = M;
         this.S = S;
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "LogNormal", verbClause = "has", narrativeName = "log-normal prior",
             category = GeneratorCategory.PROB_DIST, examples = {"hkyCoalescent.lphy","errorModel1.lphy"},
             description = "The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
-
-        logNormalDistribution = new LogNormalDistribution(doubleValue(M), doubleValue(S));
+        // constructDistribution() only required in constructor and setParam
         return new RandomVariable<>(null, logNormalDistribution.sample(), this);
     }
 
     public double logDensity(Double x) {
-
         return logNormalDistribution.logDensity(x);
+    }
+
+    @Override
+    public void constructDistribution() {
+        // in case M/S is type integer
+        logNormalDistribution = new LogNormalDistribution(Utils.getRandom(), doubleValue(M), doubleValue(S));
     }
 
     public Map<String, Value> getParams() {
@@ -53,6 +59,8 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
         if (paramName.equals(meanLogParamName)) M = value;
         else if (paramName.equals(sdLogParamName)) S = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        constructDistribution();
     }
 
     public String toString() {

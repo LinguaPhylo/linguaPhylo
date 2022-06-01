@@ -7,7 +7,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.meanParamName;
+import static lphy.core.distributions.DistributionConstants.nParamName;
 
 @Deprecated()
 public class ExpMulti implements GenerativeDistribution<Double[]> {
@@ -39,7 +40,7 @@ public class ExpMulti implements GenerativeDistribution<Double[]> {
 
     @Override
     public double logDensity(Double[] x) {
-        ExponentialDistribution exp = new ExponentialDistribution(mean.value());
+        ExponentialDistribution exp = new ExponentialDistribution(random, mean.value());
         double logP = exp.logDensity(x[0]);
         for (int i = 1; i < x.length; i++) {
             logP += exp.logDensity(x[i]);

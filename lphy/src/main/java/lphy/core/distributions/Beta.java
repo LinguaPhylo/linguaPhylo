@@ -18,10 +18,14 @@ public class Beta implements GenerativeDistribution1D<Double> {
     private Value<Number> alpha;
     private Value<Number> beta;
 
+    BetaDistribution betaDistribution;
+
     public Beta(@ParameterInfo(name = alphaParamName, description = "the first shape parameter.") Value<Number> alpha,
                 @ParameterInfo(name = betaParamName, description = "the second shape parameter.") Value<Number> beta) {
         this.alpha = alpha;
         this.beta = beta;
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior",
@@ -29,17 +33,20 @@ public class Beta implements GenerativeDistribution1D<Double> {
             examples = {"birthDeathRhoSampling.lphy","simpleBModelTest.lphy"},
             description = "The beta probability distribution.")
     public RandomVariable<Double> sample() {
-
-        BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));
-
+        // constructDistribution() only required in constructor and setParam
         double randomVariable = betaDistribution.sample();
 
         return new RandomVariable<>("x", randomVariable, this);
     }
 
     public double logDensity(Double d) {
-        BetaDistribution betaDistribution = new BetaDistribution(doubleValue(alpha), doubleValue(beta));
         return betaDistribution.logDensity(d);
+    }
+
+    @Override
+    public void constructDistribution() {
+        // in case alpha/beta is type integer
+        betaDistribution = new BetaDistribution(Utils.getRandom(), doubleValue(alpha), doubleValue(beta));
     }
 
     @Override
@@ -55,6 +62,8 @@ public class Beta implements GenerativeDistribution1D<Double> {
         if (paramName.equals(alphaParamName)) alpha = value;
         else if (paramName.equals(betaParamName)) beta = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        constructDistribution();
     }
 
     public String toString() {
@@ -66,4 +75,5 @@ public class Beta implements GenerativeDistribution1D<Double> {
     public Double[] getDomainBounds() {
         return domainBounds;
     }
+
 }

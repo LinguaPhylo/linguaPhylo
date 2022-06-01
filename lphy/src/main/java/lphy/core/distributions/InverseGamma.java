@@ -28,14 +28,14 @@ public class InverseGamma implements GenerativeDistribution1D<Double> {
         this.beta = beta;
         if (beta == null) throw new IllegalArgumentException("The " + betaParamName + " value can't be null!");
 
-        constructGammaDistribution();
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "InverseGamma",
             category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy"},
             description = "The inverse-gamma probability distribution.")
     public RandomVariable<Double> sample() {
-        constructGammaDistribution();
+        // constructDistribution() only required in constructor and setParam
         double x = 1.0 / gammaDistribution.sample();
         return new RandomVariable<>(null, x, this);
     }
@@ -62,10 +62,11 @@ public class InverseGamma implements GenerativeDistribution1D<Double> {
             throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
 
-        constructGammaDistribution();
+        constructDistribution();
     }
 
-    private void constructGammaDistribution() {
+    @Override
+    public void constructDistribution() {
         double a = doubleValue(alpha);
         double b = doubleValue(beta);
 

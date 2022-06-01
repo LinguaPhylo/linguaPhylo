@@ -10,4 +10,5 @@ public interface GenerativeDistribution1D<T> extends GenerativeDistribution<T> {
      */
     T[] getDomainBounds();
 
+    void constructDistribution();
 }

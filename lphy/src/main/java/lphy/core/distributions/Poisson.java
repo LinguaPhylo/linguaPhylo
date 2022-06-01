@@ -22,6 +22,8 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
     private Value<Integer> max;
     private Value<Integer> offset;
 
+    PoissonDistribution poisson;
+
     static final int MAX_TRIES = 10000;
 
     public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Number> lambda,
@@ -32,6 +34,8 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
         this.min = min;
         this.max = max;
         this.offset = offset;
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name="Poisson",
@@ -40,7 +44,7 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {
 
-        PoissonDistribution poisson = new PoissonDistribution(doubleValue(lambda));
+        // constructDistribution() only required in constructor and setParam
 
         int minimum = min();
         int maximum = max();
@@ -58,6 +62,12 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
 
         return new RandomVariable<>(null, val, this);
     }
+
+    @Override
+    public void constructDistribution() {
+        poisson = new PoissonDistribution(doubleValue(lambda));
+    }
+
 
     private int C() {
         int C = 0;
@@ -78,7 +88,6 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
     }
 
     public double density(Integer i) {
-        PoissonDistribution poisson = new PoissonDistribution(doubleValue(lambda));
         if (i < min()) return 0.0;
         if (i > max()) return 0.0;
         return poisson.probability(i-C());
@@ -111,10 +120,13 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             default:
                 throw new RuntimeException("The valid parameter names are " + lambdaParamName + ", " + minParamName + ", " + maxParamName + " and " + offsetParamName);
         }
+
+        constructDistribution();
     }
 
     public void setLambda(double p) {
         this.lambda.setValue(p);
+        constructDistribution();
     }
 
     public String toString() {

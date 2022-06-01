@@ -83,7 +83,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double> {
     private void constructGammaDistribution() {
         double sh = doubleValue(shape);
 
-        gammaDistribution = new GammaDistribution(sh, 1.0 / sh);
+        gammaDistribution = new GammaDistribution(Utils.getRandom(), sh, 1.0 / sh);
 
         rates = new double[ncat.value()];
 

@@ -53,12 +53,12 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
             result[0] = firstValue.value();
         } else {
             // X[0] ~ Exp(mean=initialMean);
-            exp = new ExponentialDistribution(initialMean.value());
+            exp = new ExponentialDistribution(random, initialMean.value());
             result[0] = exp.sample();
         }
         // X[i] ~ Exp(mean=X[i-1])
         for (int i = 1; i < result.length; i++) {
-            exp = new ExponentialDistribution(result[i-1]);
+            exp = new ExponentialDistribution(random, result[i-1]);
             result[i] = exp.sample();
         }
         return new RandomVariable<>("x", result, this);
@@ -71,12 +71,12 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
         if (firstValue != null) {
             logDensity = ((GenerativeDistribution1D) firstValue.getGenerator()).logDensity(x[0]);
         } else {
-            exp = new ExponentialDistribution(initialMean.value());
+            exp = new ExponentialDistribution(random, initialMean.value());
             logDensity = exp.logDensity(x[0]);
         }
         // X[i] ~ Exp(mean=X[i-1])
         for (int i = 1; i < x.length; i++) {
-            exp = new ExponentialDistribution(x[i-1]);
+            exp = new ExponentialDistribution(random, x[i-1]);
             logDensity += exp.logDensity(x[i]);
         }
         return logDensity;

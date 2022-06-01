@@ -125,7 +125,7 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
 
     public static void main(String[] args) {
 
-        Value<Double> thetaExpPriorRate = new Value<>("r", 20.0);
+        Value<Number> thetaExpPriorRate = new Value<>("r", 20.0);
         Exp exp = new Exp(thetaExpPriorRate);
 
         RandomVariable<Double> theta = exp.sample("\u0398");

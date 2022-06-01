@@ -8,35 +8,32 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.meanParamName;
 import static lphy.core.distributions.DistributionConstants.sdParamName;
+import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Normal distribution
  */
 public class Normal implements GenerativeDistribution1D<Double> {
 
-    private Value<Double> mean;
-    private Value<Double> sd;
+    private Value<Number> mean;
+    private Value<Number> sd;
 
     NormalDistribution normalDistribution;
 
-    public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Double> mean,
-                  @ParameterInfo(name = "sd", narrativeName = "standard deviation", description = "the standard deviation of the distribution.") Value<Double> sd) {
+    public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Number> mean,
+                  @ParameterInfo(name = "sd", narrativeName = "standard deviation", description = "the standard deviation of the distribution.") Value<Number> sd) {
 
         this.mean = mean;
-        if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.sd = sd;
-        if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
+
+        constructDistribution();
     }
 
     @GeneratorInfo(name = "Normal", verbClause = "has", narrativeName = "normal prior",
             category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal probability distribution.")
     public RandomVariable<Double> sample() {
-
-        // in case the mean is type integer
-        double d = ((Number) mean.value()).doubleValue();
-
-        normalDistribution = new NormalDistribution(Utils.getRandom(), d, sd.value());
+        // constructDistribution() only required in constructor and setParam
         double x = normalDistribution.sample();
         return new RandomVariable<>("x", x, this);
     }
@@ -44,6 +41,14 @@ public class Normal implements GenerativeDistribution1D<Double> {
     @Override
     public double density(Double x) {
         return normalDistribution.density(x);
+    }
+
+    @Override
+    public void constructDistribution() {
+        if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
+        if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
+
+        normalDistribution = new NormalDistribution(Utils.getRandom(), doubleValue(mean), doubleValue(sd));
     }
 
     public Map<String, Value> getParams() {
@@ -62,17 +67,18 @@ public class Normal implements GenerativeDistribution1D<Double> {
         } else {
             throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
+        constructDistribution();
     }
 
     public String toString() {
         return getName();
     }
 
-    public Value<Double> getMean() {
+    public Value<Number> getMean() {
         return mean;
     }
 
-    public Value<Double> getSd() {
+    public Value<Number> getSd() {
         return sd;
     }
 

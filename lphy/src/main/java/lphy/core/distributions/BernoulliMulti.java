@@ -45,7 +45,7 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
         Boolean[] b = bernoulli(p.value(), n.value());
         if (minSuccesses != null) {
 
-            BinomialDistribution binomialDistribution = new BinomialDistribution(n.value(), p.value());
+            BinomialDistribution binomialDistribution = new BinomialDistribution(random, n.value(), p.value());
 
             double[] p = new double[n.value()-minSuccesses.value()];
 

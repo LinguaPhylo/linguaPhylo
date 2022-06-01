@@ -24,12 +24,12 @@ public class Binomial implements GenerativeDistribution<Integer> {
             description = "The binomial distribution of x successes in n trials given probability p of success of a single trial.")
     public RandomVariable<Integer> sample() {
 
-        BinomialDistribution binomial = new BinomialDistribution(n.value(), p.value());
+        BinomialDistribution binomial = new BinomialDistribution(Utils.getRandom(), n.value(), p.value());
         return new RandomVariable<>(null, binomial.sample(), this);
     }
 
     public double density(Integer i) {
-        BinomialDistribution binomial = new BinomialDistribution(n.value(), p.value());
+        BinomialDistribution binomial = new BinomialDistribution(Utils.getRandom(), n.value(), p.value());
         return binomial.probability(i);
     }
 

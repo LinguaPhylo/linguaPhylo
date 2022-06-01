@@ -6,7 +6,8 @@ import org.apache.commons.math3.distribution.CauchyDistribution;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.meanParamName;
+import static lphy.core.distributions.DistributionConstants.scaleParamName;
 
 /**
  * Gamma distribution
@@ -64,7 +65,7 @@ public class Cauchy implements GenerativeDistribution<Double> {
         // in case the scale is type integer
         double sc = ((Number) scale.value()).doubleValue();
 
-        cauchyDistribution = new CauchyDistribution(mean, sc);
+        cauchyDistribution = new CauchyDistribution(Utils.getRandom(), mean, sc);
     }
 
     public String toString() {
