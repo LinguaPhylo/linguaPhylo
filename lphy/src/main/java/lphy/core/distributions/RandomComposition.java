@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
@@ -20,7 +21,7 @@ public class RandomComposition implements GenerativeDistribution<Integer[]> {
         this.n = n;
         this.k = k;
 
-        random = Utils.getRandom();
+        random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "RandomComposition",

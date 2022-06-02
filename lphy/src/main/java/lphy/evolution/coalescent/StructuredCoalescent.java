@@ -1,12 +1,12 @@
 package lphy.evolution.coalescent;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
@@ -84,7 +84,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         if (count != 1)
             throw new IllegalArgumentException("Exactly one of " + demesParamName + " and " + kParamName + " must be specified!");
 
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         initDemes();
     }
@@ -346,7 +346,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     }
 
     private TimeTreeNode selectRandomNode(List<TimeTreeNode> nodes) {
-        int index = Utils.getRandom().nextInt(nodes.size());
+        int index = RandomUtils.getRandom().nextInt(nodes.size());
         TimeTreeNode node = nodes.remove(index);
         return node;
     }

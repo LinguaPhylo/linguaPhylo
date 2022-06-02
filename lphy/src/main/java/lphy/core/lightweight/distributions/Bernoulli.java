@@ -1,8 +1,9 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -15,7 +16,7 @@ public class Bernoulli implements LGenerativeDistribution<Boolean> {
 
     public Bernoulli(@ParameterInfo(name="p", description="the probability of success.") Double p) {
         this.p = p;
-        this.randomGenerator = Utils.getRandom();
+        this.randomGenerator = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name="Bernoulli", description="The coin toss distribution. With true (heads) having probability p.")

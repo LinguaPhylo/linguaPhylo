@@ -4,11 +4,13 @@ import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
 import java.util.Map;
-import static lphy.core.distributions.DistributionConstants.*;
+
+import static lphy.core.distributions.DistributionConstants.pParamName;
 
 public class Categorical implements GenerativeDistribution<Integer> {
 
@@ -18,7 +20,7 @@ public class Categorical implements GenerativeDistribution<Integer> {
     public Categorical(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs) {
 
         this.probs = probs;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
     public RandomVariable<Integer> sample() {
 

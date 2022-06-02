@@ -1,11 +1,11 @@
 package lphy.evolution.coalescent;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class SkylineCoalescent extends TaxaConditionedTreeGenerator {
 
         this.theta = theta;
         this.groupSizes = groupSizes;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         int c = (ages == null ? 0 : 1) + (taxa == null ? 0 : 1) + (n == null ? 0 : 1);
 

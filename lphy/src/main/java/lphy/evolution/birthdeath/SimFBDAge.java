@@ -1,10 +1,10 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.core.functions.tree.PruneTree;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
         this.psiVal = psiVal;
         this.originAge = originAge;
 
-        random = Utils.getRandom();
+        random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "SimFBDAge",

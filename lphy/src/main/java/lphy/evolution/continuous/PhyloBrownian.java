@@ -1,12 +1,12 @@
 package lphy.evolution.continuous;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -41,7 +41,7 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
         this.tree = tree;
         this.diffusionRate = diffusionRate;
         this.y0 = y0;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     // constructor for subclasses that don't wish to call the above one, for example because arguments are reordered.

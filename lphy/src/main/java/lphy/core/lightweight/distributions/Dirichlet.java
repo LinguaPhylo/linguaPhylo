@@ -1,10 +1,10 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.math.MathUtils;
+import lphy.util.RandomUtils;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -24,7 +24,7 @@ public class Dirichlet implements LGenerativeDistribution<Double[]> {
         Double[] dirichlet = new Double[concentration.length];
         double sum = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
-            double val = MathUtils.randomGamma(concentration[i], 1.0, Utils.getRandom());
+            double val = MathUtils.randomGamma(concentration[i], 1.0, RandomUtils.getRandom());
             dirichlet[i] = val;
             sum += val;
         }

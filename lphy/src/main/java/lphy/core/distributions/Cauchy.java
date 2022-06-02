@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.CauchyDistribution;
 
 import java.util.Map;
@@ -65,7 +66,7 @@ public class Cauchy implements GenerativeDistribution<Double> {
         // in case the scale is type integer
         double sc = ((Number) scale.value()).doubleValue();
 
-        cauchyDistribution = new CauchyDistribution(Utils.getRandom(), mean, sc);
+        cauchyDistribution = new CauchyDistribution(RandomUtils.getRandom(), mean, sc);
     }
 
     public String toString() {

@@ -1,8 +1,9 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -16,7 +17,7 @@ public class Exp implements LGenerativeDistribution<Double> {
 
     public Exp(@ParameterInfo(name="rate", description="the rate of an exponential distribution.") Double rate) {
         this.rate = rate;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name="Exp", description="The exponential probability distribution.")

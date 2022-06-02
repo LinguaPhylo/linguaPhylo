@@ -1,9 +1,9 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 /**
@@ -41,7 +41,7 @@ public class DiscretizedGamma implements LGenerativeDistribution<Double[]> {
 
         Double[] x = new Double[n];
         for (int i = 0; i < x.length; i++){
-            x[i] = rates[Utils.getRandom().nextInt(rates.length)];
+            x[i] = rates[RandomUtils.getRandom().nextInt(rates.length)];
         }
         return x;
     }

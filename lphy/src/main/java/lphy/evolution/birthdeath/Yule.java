@@ -1,10 +1,10 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +40,7 @@ public class Yule extends TaxaConditionedTreeGenerator {
 
         this.birthRate = birthRate;
         this.rootAge = rootAge;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         checkTaxaParameters(true);
 

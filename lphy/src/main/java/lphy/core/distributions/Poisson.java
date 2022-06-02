@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -48,7 +49,7 @@ public class Poisson extends PriorDistributionGenerator<Integer> implements Gene
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        poisson = new PoissonDistribution(Utils.getRandom(), doubleValue(lambda),
+        poisson = new PoissonDistribution(RandomUtils.getRandom(), doubleValue(lambda),
                 DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
     }
 

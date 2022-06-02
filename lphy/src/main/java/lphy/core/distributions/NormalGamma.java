@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -58,7 +59,7 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
         double sc = doubleValue(scale);
         double lambda = doubleValue(precision);
 
-        RandomGenerator random = Utils.getRandom();
+        RandomGenerator random = RandomUtils.getRandom();
         gammaDistribution = new GammaDistribution(random, sh, sc);
 
         double T = gammaDistribution.sample();

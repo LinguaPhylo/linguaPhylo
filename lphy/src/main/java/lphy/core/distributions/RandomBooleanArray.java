@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
         this.length = length;
         this.hammingWeight = hammingWeight;
 
-        this.random = Utils.getJavaRandom();
+        this.random = RandomUtils.getJavaRandom();
     }
 
     @GeneratorInfo(name="RandomBooleanArray",

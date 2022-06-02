@@ -2,12 +2,12 @@ package lphy.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
-import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
@@ -80,7 +80,7 @@ public class PhyloCTMC implements GenerativeDistribution<Alignment> {
         this.L = L;
 
         numStates = Q.value().length;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
         iexp = new double[numStates][numStates];
 
         checkCompatibilities();

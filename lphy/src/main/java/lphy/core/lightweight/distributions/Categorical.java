@@ -1,8 +1,8 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 public class Categorical implements LGenerativeDistribution<Integer> {
@@ -13,7 +13,7 @@ public class Categorical implements LGenerativeDistribution<Integer> {
     public Categorical(@ParameterInfo(name = "p", description = "the probability distribution over integer states 1 to K.") Double[] probs) {
 
         this.probs = probs;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
     public Integer sample() {
         return sample(probs, random);

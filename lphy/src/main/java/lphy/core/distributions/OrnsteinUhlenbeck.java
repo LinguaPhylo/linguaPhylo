@@ -4,12 +4,13 @@ import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.alphaParamName;
 
 /**
  * Created by Alexei Drummond on 2/02/20.
@@ -91,7 +92,7 @@ public class OrnsteinUhlenbeck implements GenerativeDistribution<Double> {
 
         double variance = v * (1.0 - Math.exp(-2.0 * a * time));
 
-        NormalDistribution distribution = new NormalDistribution(Utils.getRandom(), mean, Math.sqrt(variance));
+        NormalDistribution distribution = new NormalDistribution(RandomUtils.getRandom(), mean, Math.sqrt(variance));
         return handleBoundaries(distribution.sample());
     }
 

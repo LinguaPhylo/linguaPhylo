@@ -1,7 +1,7 @@
 package lphy.evolution.alignment;
 
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.SortedMap;
@@ -29,7 +29,7 @@ public class ErrorModel implements GenerativeDistribution<Alignment> {
         this.alpha = alpha;
         this.beta = beta;
         this.alignment = alignment;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @Override

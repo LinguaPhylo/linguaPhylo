@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -24,7 +25,7 @@ public class ExpMulti implements GenerativeDistribution<Double[]> {
         this.mean = mean;
         this.n = n;
 
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "Exp", description = "The exponential probability distribution.")

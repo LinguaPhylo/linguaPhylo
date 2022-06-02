@@ -1,8 +1,9 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -25,7 +26,7 @@ public class Normal implements LGenerativeDistribution<Double> {
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.sd = sd;
         if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
-        random = Utils.getRandom();
+        random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name="Normal", description="The normal probability distribution.")

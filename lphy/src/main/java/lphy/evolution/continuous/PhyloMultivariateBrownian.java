@@ -1,12 +1,12 @@
 package lphy.evolution.continuous;
 
 import lphy.core.StringDoubleArrayMap;
-import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArrayValue;
+import lphy.util.RandomUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -36,7 +36,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
         this.tree = tree;
         this.diffusionMatrix = diffusionRate;
         this.y0 = y0;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "PhyloMultivariateBrownian", verbClause = "is assumed to have evolved under",

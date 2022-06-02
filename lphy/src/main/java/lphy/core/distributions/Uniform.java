@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class Uniform implements GenerativeDistribution<Double> {
 
         this.lower = lower;
         this.upper = upper;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "Uniform",

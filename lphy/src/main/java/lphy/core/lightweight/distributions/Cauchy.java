@@ -1,8 +1,9 @@
 package lphy.core.lightweight.distributions;
 
-import lphy.core.distributions.Utils;
 import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.CauchyDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -25,7 +26,7 @@ public class Cauchy implements LGenerativeDistribution<Double> {
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         this.scale = scale;
         if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
-        random = Utils.getRandom();
+        random = RandomUtils.getRandom();
 
         constructCauchyDistribution();
     }

@@ -1,8 +1,8 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -31,7 +31,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
         this.deathRate = deathRate;
         this.rho = rho;
         this.rootAge = rootAge;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
 

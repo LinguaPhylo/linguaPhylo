@@ -2,6 +2,7 @@ package lphy.bmodeltest;
 
 import lphy.core.distributions.DiscretizedGamma;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class bSiteRates implements GenerativeDistribution<Double[]> {
     public static final String useProportionInvariableParamName = "useProportionInvariable";
     public static final String proportionInvariableParamName = "proportionInvariable";
 
-    RandomGenerator random = lphy.core.distributions.Utils.getRandom();
+    RandomGenerator random = RandomUtils.getRandom();
 
     Value<Number> shape;
     Value<Integer> ncat;

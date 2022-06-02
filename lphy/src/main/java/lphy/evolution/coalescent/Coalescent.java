@@ -1,11 +1,11 @@
 package lphy.evolution.coalescent;
 
 import lphy.core.distributions.Exp;
-import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,7 @@ public class Coalescent extends TaxaConditionedTreeGenerator {
 
         this.theta = theta;
 
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
         checkTaxaParameters(true);
     }
 

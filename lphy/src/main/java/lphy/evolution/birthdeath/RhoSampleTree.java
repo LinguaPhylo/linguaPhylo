@@ -1,9 +1,9 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
         this.tree = tree;
         this.rho = rho;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
 

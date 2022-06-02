@@ -1,10 +1,10 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.Taxon;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -33,7 +33,7 @@ public class SimFossilsPoisson implements GenerativeDistribution<TimeTree> {
 
         this.tree = tree;
         this.psi = psi;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
 

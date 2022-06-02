@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ public class DiscreteUniform implements GenerativeDistribution<Integer> {
 
         this.lower = lower;
         this.upper = upper;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
     }
 
     @GeneratorInfo(name = "DiscreteUniform",

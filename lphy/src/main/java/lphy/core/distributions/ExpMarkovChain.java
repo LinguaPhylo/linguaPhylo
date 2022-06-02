@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -35,7 +36,7 @@ public class ExpMarkovChain implements GenerativeDistribution<Double[]> {
         }
 
         this.n = n;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
     }
 

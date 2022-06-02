@@ -2,13 +2,13 @@ package lphy.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.distributions.Categorical;
-import lphy.core.distributions.Utils;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.sitemodel.SiteModel;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;
@@ -82,7 +82,7 @@ public class PhyloCTMCSiteModel implements GenerativeDistribution<Alignment> {
         this.freq = rootFreq;
         this.L = L;
         numStates = siteModel.value().stateCount();
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
         iexp = new double[numStates][numStates];
 
         siteCount = checkCompatibilities();

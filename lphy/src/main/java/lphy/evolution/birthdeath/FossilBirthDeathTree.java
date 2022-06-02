@@ -1,11 +1,11 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.core.functions.tree.PruneTree;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class FossilBirthDeathTree extends TaxaConditionedTreeGenerator {
         this.deathRate = deathRate;
         this.rhoVal = rhoVal;
         this.psiVal = psiVal;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         checkTaxaParameters(false);
     }

@@ -1,12 +1,11 @@
-package lphy.core.distributions;
+package lphy.util;
 
-import lphy.util.LoggerUtils;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Random;
 
-public class Utils {
+public class RandomUtils {
 
     public static final String SEED_PARA_NAME = "seed";
     public static final String SEED_PARA_DESC = "the seed value of the random number generator in LPhy";

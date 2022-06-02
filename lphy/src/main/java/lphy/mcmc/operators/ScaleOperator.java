@@ -1,8 +1,8 @@
 package lphy.mcmc.operators;
 
-import lphy.core.distributions.Utils;
 import lphy.graphicalModel.RandomVariable;
 import lphy.mcmc.Operator;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
@@ -12,7 +12,7 @@ public class ScaleOperator implements Operator<Double> {
 
     RandomVariable<Double> variable;
 
-    RandomGenerator random = Utils.getRandom();
+    RandomGenerator random = RandomUtils.getRandom();
     double scaleFactor = 0.75;
 
     public ScaleOperator(RandomVariable<Double> variable, double scaleFactor) {

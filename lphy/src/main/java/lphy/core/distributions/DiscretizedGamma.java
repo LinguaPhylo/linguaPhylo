@@ -1,6 +1,7 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.GammaDistribution;
 
 import java.util.Map;
@@ -38,7 +39,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double> {
     public RandomVariable<Double> sample() {
         constructGammaDistribution();
 
-        return new RandomVariable<>(null, rates[Utils.getRandom().nextInt(rates.length)], this);
+        return new RandomVariable<>(null, rates[RandomUtils.getRandom().nextInt(rates.length)], this);
     }
 
     public double logDensity(Double[] x) {
@@ -83,7 +84,7 @@ public class DiscretizedGamma implements GenerativeDistribution<Double> {
     private void constructGammaDistribution() {
         double sh = doubleValue(shape);
 
-        gammaDistribution = new GammaDistribution(Utils.getRandom(), sh, 1.0 / sh);
+        gammaDistribution = new GammaDistribution(RandomUtils.getRandom(), sh, 1.0 / sh);
 
         rates = new double[ncat.value()];
 

@@ -2,6 +2,7 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -15,7 +16,7 @@ public abstract class PriorDistributionGenerator<T> implements GenerativeDistrib
      * This gets the cached pseudo-random number generator
      */
     public PriorDistributionGenerator() {
-        random = Utils.getRandom();
+        random = RandomUtils.getRandom();
         // call constructDistribution() after setting class field parameters
     }
 

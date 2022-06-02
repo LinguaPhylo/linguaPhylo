@@ -1,9 +1,9 @@
 package lphy.evolution.birthdeath;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
         this.deathRate = deathRate;
         this.rootAge = rootAge;
         this.originAge = originAge;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         if (rootAge != null && originAge != null) throw new IllegalArgumentException("Only one of rootAge and originAge may be specified!");
         if (rootAge == null && originAge == null) throw new IllegalArgumentException("One of rootAge and originAge must be specified!");

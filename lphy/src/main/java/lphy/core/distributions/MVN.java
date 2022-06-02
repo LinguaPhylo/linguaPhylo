@@ -1,14 +1,13 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import org.apache.commons.math3.distribution.LogNormalDistribution;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.core.distributions.DistributionConstants.*;
-import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static lphy.core.distributions.DistributionConstants.meanParamName;
 
 /**
  * Multivariate Normal distribution
@@ -65,7 +64,7 @@ public class MVN implements GenerativeDistribution<Double[]> {
                 cv[i][j] = this.covariances.value()[i][j];
             }
         }
-        multivariateNormalDistribution = new MultivariateNormalDistribution(Utils.getRandom(), means, cv);
+        multivariateNormalDistribution = new MultivariateNormalDistribution(RandomUtils.getRandom(), means, cv);
     }
 
     public Map<String, Value> getParams() {

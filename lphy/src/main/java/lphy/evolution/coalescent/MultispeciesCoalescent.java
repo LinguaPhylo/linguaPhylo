@@ -1,11 +1,11 @@
 package lphy.evolution.coalescent;
 
-import lphy.core.distributions.Utils;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
@@ -40,7 +40,7 @@ public class MultispeciesCoalescent implements GenerativeDistribution {
         this.n = n;
         this.taxa = taxa;
         this.S = S;
-        this.random = Utils.getRandom();
+        this.random = RandomUtils.getRandom();
 
         if (n != null) {
             List<TimeTreeNode> extant = S.value().getExtantNodes();
