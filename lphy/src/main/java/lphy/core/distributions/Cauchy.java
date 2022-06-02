@@ -12,7 +12,10 @@ import static lphy.core.distributions.DistributionConstants.scaleParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Cauchy distribution
+ * Cauchy distribution.
+ * @see CauchyDistribution
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
 public class Cauchy extends PriorDistributionGenerator<Double> {
 

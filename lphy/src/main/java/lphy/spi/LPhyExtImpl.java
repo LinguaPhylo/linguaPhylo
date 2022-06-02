@@ -54,7 +54,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // probability distribution
             Normal.class, LogNormal.class, Exp.class, Bernoulli.class, Poisson.class, Beta.class, Uniform.class,
             Dirichlet.class, Gamma.class, InverseGamma.class, DiscretizedGamma.class, WeightedDirichlet.class,
-            DiscreteUniform.class, BernoulliMulti.class,
+            DiscreteUniform.class, BernoulliMulti.class, Cauchy.class,
             NormalGamma.class,
             // tree distribution
             Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
