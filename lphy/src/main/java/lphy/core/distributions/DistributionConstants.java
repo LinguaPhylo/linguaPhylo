@@ -10,6 +10,7 @@ public class DistributionConstants {
 
     // the argument name for the mean of a distribution
     public static final String meanParamName = "mean";
+    public static final String medianParamName = "median";
 
     // the argument name for the standard deviation of a distribution
     public static final String sdParamName = "sd";
