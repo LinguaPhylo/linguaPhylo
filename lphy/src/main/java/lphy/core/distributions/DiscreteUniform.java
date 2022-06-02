@@ -1,7 +1,6 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -13,20 +12,20 @@ import static lphy.core.distributions.DistributionConstants.upperParamName;
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
-public class DiscreteUniform implements GenerativeDistribution<Integer> {
+public class DiscreteUniform extends PriorDistributionGenerator<Integer> {
 
     private Value<Integer> lower;
     private Value<Integer> upper;
 
-    private RandomGenerator random;
-
     public DiscreteUniform(@ParameterInfo(name = lowerParamName, description = "the lower bound (inclusive) of the uniform distribution on integers.") Value<Integer> lower,
                            @ParameterInfo(name = upperParamName, description = "the upper bound (inclusive) of the uniform distribution on integer.") Value<Integer> upper) {
-
+        super();
         this.lower = lower;
         this.upper = upper;
-        this.random = RandomUtils.getRandom();
     }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name = "DiscreteUniform",
             category = GeneratorCategory.PROB_DIST, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
@@ -55,17 +54,6 @@ public class DiscreteUniform implements GenerativeDistribution<Integer> {
             put(lowerParamName, lower);
             put(upperParamName, upper);
         }};
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(lowerParamName)) lower = value;
-        else if (paramName.equals(upperParamName)) upper = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }
-
-    public String toString() {
-        return getName();
     }
 
     public Value<Integer> getLower() {

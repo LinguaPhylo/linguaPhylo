@@ -1,27 +1,27 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
 
-public class RandomComposition implements GenerativeDistribution<Integer[]> {
+public class RandomComposition extends PriorDistributionGenerator<Integer[]> {
 
     private static final String kParamName = "k";
     private Value<Integer> n;
     private Value<Integer> k;
 
-    private RandomGenerator random;
-
     public RandomComposition(@ParameterInfo(name = nParamName, description = "the sum of the random tuple.") Value<Integer> n,
                              @ParameterInfo(name = kParamName, description = "the size of the random tuple.") Value<Integer> k) {
+        super();
         this.n = n;
         this.k = k;
+    }
 
-        random = RandomUtils.getRandom();
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
     }
 
     @GeneratorInfo(name = "RandomComposition",
@@ -55,10 +55,4 @@ public class RandomComposition implements GenerativeDistribution<Integer[]> {
         }};
     }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(nParamName)) n = value;
-        else if (paramName.equals(kParamName)) k = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }
 }

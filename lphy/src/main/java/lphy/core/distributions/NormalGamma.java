@@ -1,7 +1,6 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -15,7 +14,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Normal-gamma distribution
  */
-public class NormalGamma implements GenerativeDistribution<Double[]> {
+public class NormalGamma extends PriorDistributionGenerator<Double[]> {
 
     private Value<Number> shape;
     private Value<Number> scale;
@@ -31,14 +30,14 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
                        @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale,
                        @ParameterInfo(name = meanParamName, description = "the mean of the distribution.") Value<Number> mean,
                        @ParameterInfo(name = precisionParamName, narrativeName = "precision", description = "the standard deviation of the distribution.") Value<Number> precision) {
-
+        super();
         this.shape = shape;
         this.scale = scale;
 
         this.mean = mean;
         this.precision = precision;
 
-        constructDistribution();
+        constructDistribution(random);
     }
 
     @GeneratorInfo(name = "NormalGamma", verbClause = "has", narrativeName = "normal-gamma prior",
@@ -50,7 +49,8 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
         return new RandomVariable<>(null, new Double[] {x, T}, this);
     }
 
-    private void constructDistribution() {
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         if (precision == null) throw new IllegalArgumentException("The precision value can't be null!");
 
@@ -59,7 +59,6 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
         double sc = doubleValue(scale);
         double lambda = doubleValue(precision);
 
-        RandomGenerator random = RandomUtils.getRandom();
         gammaDistribution = new GammaDistribution(random, sh, sc);
 
         double T = gammaDistribution.sample();
@@ -78,22 +77,6 @@ public class NormalGamma implements GenerativeDistribution<Double[]> {
             put(meanParamName, mean);
             put(precisionParamName, precision);
         }};
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        switch (paramName) {
-            case meanParamName -> mean = value;
-            case precisionParamName -> precision = value;
-            case shapeParamName -> shape = value;
-            case scaleParamName -> scale = value;
-            default -> throw new RuntimeException("Unrecognised parameter name: " + paramName);
-        }
-        constructDistribution();
-    }
-
-    public String toString() {
-        return getName();
     }
 
     public Value<Number> getMean() {

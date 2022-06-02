@@ -1,11 +1,10 @@
 package lphy.core.distributions;
 
-import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,7 +14,7 @@ import static lphy.core.distributions.DistributionConstants.alphaParamName;
 /**
  * Created by Alexei Drummond on 2/02/20.
  */
-public class OrnsteinUhlenbeck implements GenerativeDistribution<Double> {
+public class OrnsteinUhlenbeck extends PriorDistributionGenerator<Double> {
 
     protected Value<Double> y0;
     protected Value<Double> time;
@@ -33,47 +32,20 @@ public class OrnsteinUhlenbeck implements GenerativeDistribution<Double> {
                              @ParameterInfo(name = diffRateParamName, description = "the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.") Value<Double> diffRate,
                              @ParameterInfo(name = thetaParamName, description = "the 'optimal' value that the long-term process is centered around.") Value<Double> theta,
                              @ParameterInfo(name = alphaParamName, description = "the drift term that determines the rate of drift towards the optimal value.") Value<Double> alpha) {
-
+        super();
         this.y0 = y0;
         this.time = time;
         this.diffRate = diffRate;
         this.theta = theta;
         this.alpha = alpha;
+
+//        constructDistribution(random);
     }
 
     @Override
-    public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(y0ParamName, y0);
-            put(timeParamName, time);
-            put(diffRateParamName, diffRate);
-            put(thetaParamName, theta);
-            put(alphaParamName, alpha);
-        }};
+    protected void constructDistribution(RandomGenerator random) {
     }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        switch (paramName) {
-            case y0ParamName:
-                y0 = value;
-                break;
-            case timeParamName:
-                time = value;
-                break;
-            case diffRateParamName:
-                diffRate = value;
-                break;
-            case thetaParamName:
-                theta = value;
-                break;
-            case alphaParamName:
-                alpha = value;
-                break;
-            default:
-                throw new RuntimeException("Unrecognised parameter name: " + paramName);
-        }
-    }
 
     public RandomVariable<Double> sample() {
         return new RandomVariable<>(null, sampleNewState(y0.value(), time.value()), this);
@@ -92,11 +64,23 @@ public class OrnsteinUhlenbeck implements GenerativeDistribution<Double> {
 
         double variance = v * (1.0 - Math.exp(-2.0 * a * time));
 
-        NormalDistribution distribution = new NormalDistribution(RandomUtils.getRandom(), mean, Math.sqrt(variance));
+        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance));
         return handleBoundaries(distribution.sample());
     }
 
     protected double handleBoundaries(double rawValue) {
         return rawValue;
     }
+
+    @Override
+    public Map<String, Value> getParams() {
+        return new TreeMap<>() {{
+            put(y0ParamName, y0);
+            put(timeParamName, time);
+            put(diffRateParamName, diffRate);
+            put(thetaParamName, theta);
+            put(alphaParamName, alpha);
+        }};
+    }
+
 }

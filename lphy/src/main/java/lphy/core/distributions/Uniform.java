@@ -1,7 +1,6 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
@@ -14,19 +13,21 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
-public class Uniform implements GenerativeDistribution<Double> {
+public class Uniform extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> lower;
     private Value<Number> upper;
 
-    private RandomGenerator random;
-
     public Uniform(@ParameterInfo(name = lowerParamName, description = "the lower bound of the uniform distribution.") Value<Number> lower,
                    @ParameterInfo(name = upperParamName, description = "the upper bound of the uniform distribution.") Value<Number> upper) {
-
+        super();
         this.lower = lower;
         this.upper = upper;
-        this.random = RandomUtils.getRandom();
+//        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
     }
 
     @GeneratorInfo(name = "Uniform",
@@ -59,15 +60,10 @@ public class Uniform implements GenerativeDistribution<Double> {
         }};
     }
 
+    private static final Double[] domainBounds = {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY};
     @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(lowerParamName)) lower = value;
-        else if (paramName.equals(upperParamName)) upper = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }
-
-    public String toString() {
-        return getName();
+    public Double[] getDomainBounds() {
+        return domainBounds;
     }
 
     public Value<Number> getLower() {
