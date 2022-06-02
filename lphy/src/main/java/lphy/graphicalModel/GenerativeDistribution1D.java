@@ -1,7 +1,9 @@
 package lphy.graphicalModel;
 
 /**
- * Created by Alexei Drummond on 17/12/19.
+ * Define the 1-d distribution.
+ * For example, lphy.core.distributions.ExpMarkovChain requires
+ * 1-d prior at first value.
  */
 public interface GenerativeDistribution1D<T> extends GenerativeDistribution<T> {
 
