@@ -2,6 +2,7 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.GammaDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,9 +12,12 @@ import static lphy.core.distributions.DistributionConstants.shapeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Gamma distribution
+ * Gamma distribution prior.
+ * @see GammaDistribution
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class Gamma implements GenerativeDistribution1D<Double> {
+public class Gamma extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> shape;
     private Value<Number> scale;
@@ -22,13 +26,23 @@ public class Gamma implements GenerativeDistribution1D<Double> {
 
     public Gamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
                  @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale) {
-
+        super();
         this.shape = shape;
-        if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
         this.scale = scale;
-        if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
 
-        constructDistribution();
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
+        if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
+        // in case the shape is type integer
+        double sh = doubleValue(shape);
+        // in case the scale is type integer
+        double sc = doubleValue(scale);
+
+        gammaDistribution = new GammaDistribution(random, sh, sc);
     }
 
     @GeneratorInfo(name = "Gamma", verbClause = "has", narrativeName = "gamma distribution prior",
@@ -50,30 +64,6 @@ public class Gamma implements GenerativeDistribution1D<Double> {
             put(shapeParamName, shape);
             put(scaleParamName, scale);
         }};
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(shapeParamName)) shape = value;
-        else if (paramName.equals(scaleParamName)) scale = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-
-        constructDistribution();
-    }
-
-    @Override
-    public void constructDistribution() {
-        // in case the shape is type integer
-        double sh = doubleValue(shape);
-
-        // in case the scale is type integer
-        double sc = doubleValue(scale);
-
-        gammaDistribution = new GammaDistribution(Utils.getRandom(), sh, sc);
-    }
-
-    public String toString() {
-        return getName();
     }
 
     public Value<Number> getScale() {

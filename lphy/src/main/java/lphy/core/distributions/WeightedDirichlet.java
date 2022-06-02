@@ -1,6 +1,8 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.math.MathUtils;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -8,9 +10,12 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.concParamName;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * The scaled dirichlet probability distribution.
+ * @see Dirichlet
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
+public class WeightedDirichlet extends PriorDistributionGenerator<Double[]> {
 
     public static final String weightsParamName = "weights";
 
@@ -19,9 +24,13 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
 
     public WeightedDirichlet(@ParameterInfo(name = concParamName, narrativeName = "concentration", description = "the concentration parameters of the scaled Dirichlet distribution.") Value<Number[]> concentration,
                              @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.") Value<Integer[]> weights) {
+        super();
         this.concentration = concentration;
         this.weights = weights;
     }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name = "WeightedDirichlet",
             category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy","weightedDirichlet.lphy"},
@@ -39,7 +48,7 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
         Double[] z = new Double[concentration.value().length];
         double sum = 0.0;
         for (int i = 0; i < z.length; i++) {
-            double val = Utils.randomGamma(conc[i].doubleValue(), 1.0);
+            double val = MathUtils.randomGamma(conc[i].doubleValue(), 1.0, random);
             z[i] = val;
             sum += val * (weight[i].doubleValue() / weightsum);
         }
@@ -70,20 +79,5 @@ public class WeightedDirichlet implements GenerativeDistribution<Double[]> {
 
     public Value<Integer[]> getWeights() {
         return weights;
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(concParamName)) {
-            concentration = value;
-        } else if (paramName.equals(weightsParamName)) {
-            weights = value;
-        } else {
-            throw new RuntimeException("Only valid parameter name is " + concParamName);
-        }
-    }
-
-    public String toString() {
-        return getName();
     }
 }

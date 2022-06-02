@@ -11,23 +11,30 @@ import static lphy.core.distributions.DistributionConstants.meanParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * Exponential distribution prior.
+ * @see ExponentialDistribution
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class Exp implements GenerativeDistribution1D<Double> {
+public class Exp extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> mean;
-
-    private RandomGenerator random;
 
     ExponentialDistribution exp;
 
     public Exp(@ParameterInfo(name=meanParamName,
             description="the mean of an exponential distribution.") Value<Number> mean) {
+        super();
         this.mean = mean;
         //this.rate = rate;
         //if (mean != null && rate != null) throw new IllegalArgumentException("Only one of mean and rate can be specified.");
 
-        constructDistribution();
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        exp = new ExponentialDistribution(random, doubleValue(mean));
     }
 
     @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",
@@ -44,24 +51,8 @@ public class Exp implements GenerativeDistribution1D<Double> {
     }
 
     @Override
-    public void constructDistribution() {
-        this.random = Utils.getRandom();
-        exp = new ExponentialDistribution(random, doubleValue(mean));
-    }
-
-    @Override
     public Map<String,Value> getParams() {
         return Collections.singletonMap(meanParamName, mean);
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(meanParamName)) {
-            mean = value;
-        } else
-            throw new RuntimeException("Only valid parameter name is " + meanParamName);
-
-        constructDistribution();
     }
 
     @Override
@@ -76,10 +67,7 @@ public class Exp implements GenerativeDistribution1D<Double> {
 
     public void setMean(double mean) {
         this.mean.setValue(mean);
-        constructDistribution();
+        constructDistribution(random);
     }
 
-    public String toString() {
-        return getName();
-    }
 }

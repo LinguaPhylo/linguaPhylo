@@ -14,26 +14,34 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
  * A Bernoulli process of n trials.
  * Note: because there is a optional condition "minSuccesses",
  * It cannot be replaced by {@link IID}.
+ *
  */
-public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
+public class BernoulliMulti extends PriorDistributionGenerator<Boolean[]> {
     private Value<Double> p;
     private Value<Integer> n;
     private Value<Integer> minSuccesses;
-
-    private RandomGenerator random;
 
     public final String minSuccessesParamName = "minSuccesses";
 
     private final String repParamName = IID.replicatesParamName;
     private static final int MAX_TRIES = 1000;
 
+    BinomialDistribution binomialDistribution;
+
     public BernoulliMulti(@ParameterInfo(name = pParamName, description = "the probability of success.") Value<Double> p,
                           @ParameterInfo(name = repParamName, description = "the number of bernoulli trials.") Value<Integer> n,
                           @ParameterInfo(name = minSuccessesParamName, description = "Optional condition: the minimum number of ones in the boolean array.", optional = true) Value<Integer> minSuccesses) {
+        super();
         this.p = p;
         this.n = n;
         this.minSuccesses = minSuccesses;
-        this.random = Utils.getRandom();
+
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        binomialDistribution = new BinomialDistribution(random, n.value(), p.value());
     }
 
     @GeneratorInfo(name = "Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
@@ -44,9 +52,6 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
 
         Boolean[] b = bernoulli(p.value(), n.value());
         if (minSuccesses != null) {
-
-            BinomialDistribution binomialDistribution = new BinomialDistribution(random, n.value(), p.value());
-
             double[] p = new double[n.value()-minSuccesses.value()];
 
             double probSum = 0.0;
@@ -113,29 +118,8 @@ public class BernoulliMulti implements GenerativeDistribution<Boolean[]> {
         }};
     }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        switch (paramName) {
-            case pParamName:
-                p = value;
-                break;
-            case repParamName:
-                n = value;
-                break;
-            case minSuccessesParamName:
-                minSuccesses = value;
-                break;
-            default:
-                throw new RuntimeException("Expected " + pParamName + " or " + repParamName + " or " + minSuccessesParamName);
-        }
-    }
-
     public void setSuccessProbability(double p) {
         this.p.setValue(p);
-    }
-
-    public String toString() {
-        return getName();
     }
 
     public Value<Double> getP() {

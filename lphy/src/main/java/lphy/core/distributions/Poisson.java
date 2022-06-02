@@ -2,6 +2,7 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,9 +12,13 @@ import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_
 import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_MAX_ITERATIONS;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * The discrete probability distribution of
+ * the number of events when the expected number of events is lambda.
+ * @see PoissonDistribution
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class Poisson implements GenerativeDistribution1D<Integer> {
+public class Poisson extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
 
     private static final String lambdaParamName = "lambda";
     private static final String offsetParamName = "offset";
@@ -32,12 +37,19 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
                    @ParameterInfo(name=offsetParamName, optional = true, description = "optional parameter to add a constant to the returned result. default is 0") Value<Integer> offset,
                    @ParameterInfo(name=minParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be greater than or equal to this mininum") Value<Integer> min,
                    @ParameterInfo(name=maxParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be less than or equal to this maximum") Value<Integer> max) {
+        super();
         this.lambda = lambda;
         this.min = min;
         this.max = max;
         this.offset = offset;
 
-        constructDistribution();
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        poisson = new PoissonDistribution(Utils.getRandom(), doubleValue(lambda),
+                DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
     }
 
     @GeneratorInfo(name="Poisson",
@@ -63,13 +75,6 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
 
         return new RandomVariable<>(null, val, this);
     }
-
-    @Override
-    public void constructDistribution() {
-        poisson = new PoissonDistribution(Utils.getRandom(), doubleValue(lambda),
-                DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
-    }
-
 
     private int C() {
         int C = 0;
@@ -104,35 +109,9 @@ public class Poisson implements GenerativeDistribution1D<Integer> {
             if (offset != null) put(offsetParamName, offset);
         }};    }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        switch (paramName) {
-            case lambdaParamName:
-                lambda = value;
-                break;
-            case minParamName:
-                min = value;
-                break;
-            case maxParamName:
-                max = value;
-                break;
-            case offsetParamName:
-                offset = value;
-                break;
-            default:
-                throw new RuntimeException("The valid parameter names are " + lambdaParamName + ", " + minParamName + ", " + maxParamName + " and " + offsetParamName);
-        }
-
-        constructDistribution();
-    }
-
     public void setLambda(double p) {
         this.lambda.setValue(p);
-        constructDistribution();
-    }
-
-    public String toString() {
-        return getName();
+        constructDistribution(random);
     }
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};

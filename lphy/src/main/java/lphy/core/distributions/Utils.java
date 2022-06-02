@@ -1,7 +1,6 @@
 package lphy.core.distributions;
 
 import lphy.util.LoggerUtils;
-import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -38,10 +37,6 @@ public class Utils {
     @Deprecated
     public static void setRandom(RandomGenerator r) {
         random = r;
-    }
-
-    public static double randomGamma(double shape, double scale) {
-        return new GammaDistribution(getRandom(), shape, scale).sample();
     }
 
     /**

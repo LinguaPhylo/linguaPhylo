@@ -2,6 +2,7 @@ package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,9 +10,12 @@ import java.util.TreeMap;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * log-normal prior.
+ * @see LogNormalDistribution
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class LogNormal implements GenerativeDistribution1D<Double> {
+public class LogNormal extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
 
     public static final String meanLogParamName = "meanlog";
     public static final String sdLogParamName = "sdlog";
@@ -22,11 +26,17 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
 
     public LogNormal(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
                      @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S) {
-
+        super();
         this.M = M;
         this.S = S;
 
-        constructDistribution();
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        // in case M/S is type integer
+        logNormalDistribution = new LogNormalDistribution(random, doubleValue(M), doubleValue(S));
     }
 
     @GeneratorInfo(name = "LogNormal", verbClause = "has", narrativeName = "log-normal prior",
@@ -41,30 +51,11 @@ public class LogNormal implements GenerativeDistribution1D<Double> {
         return logNormalDistribution.logDensity(x);
     }
 
-    @Override
-    public void constructDistribution() {
-        // in case M/S is type integer
-        logNormalDistribution = new LogNormalDistribution(Utils.getRandom(), doubleValue(M), doubleValue(S));
-    }
-
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(meanLogParamName, M);
             put(sdLogParamName, S);
         }};
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(meanLogParamName)) M = value;
-        else if (paramName.equals(sdLogParamName)) S = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-
-        constructDistribution();
-    }
-
-    public String toString() {
-        return getName();
     }
 
     public Value<Number> getMeanLog() {

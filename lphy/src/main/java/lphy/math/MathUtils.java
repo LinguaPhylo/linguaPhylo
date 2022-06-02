@@ -1,5 +1,6 @@
 package lphy.math;
 
+import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 public class MathUtils {
@@ -7,11 +8,16 @@ public class MathUtils {
     /**
      *
      * @param lambda the rate of the exponential distribution
-     * @param randomGenerator a random generator
+     * @param random a random generator
      * @return a random variate from an exponential distribution with the given rate.
      */
-    public static double nextExponential(double lambda, RandomGenerator randomGenerator) {
-        return Math.log(1-randomGenerator.nextDouble())/(-lambda);
+    public static double nextExponential(double lambda, RandomGenerator random) {
+        return Math.log(1-random.nextDouble())/(-lambda);
+    }
+
+
+    public static double randomGamma(double shape, double scale, RandomGenerator random) {
+        return new GammaDistribution(random, shape, scale).sample();
     }
 
 }

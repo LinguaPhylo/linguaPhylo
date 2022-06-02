@@ -54,11 +54,4 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
             put(hammingWeightParamName, hammingWeight);
         }};
     }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(lengthParamName)) length = value;
-        else if (paramName.equals(hammingWeightParamName)) hammingWeight = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }
 }

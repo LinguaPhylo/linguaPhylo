@@ -10,24 +10,26 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * Bernoulli (coin toss) distribution prior.
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class Bernoulli implements GenerativeDistribution<Boolean> {
+public class Bernoulli extends PriorDistributionGenerator<Boolean> {
     private Value<Number> p;
 
-    private RandomGenerator random;
-
     public Bernoulli(@ParameterInfo(name=pParamName, description="the probability of success.") Value<Number> p) {
+        super();
         this.p = p;
-        this.random = Utils.getRandom();
     }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) { }
 
     @GeneratorInfo(name="Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
             category = GeneratorCategory.PROB_DIST,
             examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
             description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {
-
         boolean success = (random.nextDouble() < doubleValue(p));
         return new RandomVariable<>("x", success, this);
     }
@@ -41,20 +43,8 @@ public class Bernoulli implements GenerativeDistribution<Boolean> {
         return Collections.singletonMap(pParamName, p);
     }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(pParamName)) {
-            p = value;
-        } else {
-            throw new RuntimeException("Only valid parameter name is " + pParamName);
-        }
-    }
-
     public void setP(Double p) {
         this.p.setValue(p);
     }
 
-    public String toString() {
-        return getName();
-    }
 }

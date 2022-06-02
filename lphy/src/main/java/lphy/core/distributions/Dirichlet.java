@@ -1,6 +1,8 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
+import lphy.math.MathUtils;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -8,15 +10,21 @@ import java.util.Map;
 import static lphy.core.distributions.DistributionConstants.concParamName;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * Dirichlet distribution prior.
+ * @author Alexei Drummond
+ * @author Walter Xie
  */
-public class Dirichlet implements GenerativeDistribution<Double[]> {
+public class Dirichlet extends PriorDistributionGenerator<Double[]> {
 
     private Value<Number[]> concentration;
 
     public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration", description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration) {
+        super();
         this.concentration = concentration;
     }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name="Dirichlet", verbClause = "have", narrativeName = "Dirichlet distribution prior",
             category = GeneratorCategory.PROB_DIST,
@@ -27,7 +35,7 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
         Double[] dirichlet = new Double[concentration.value().length];
         double sum = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
-            double val = Utils.randomGamma(concentration.value()[i].doubleValue(), 1.0);
+            double val = MathUtils.randomGamma(concentration.value()[i].doubleValue(), 1.0, random);
             dirichlet[i] = val;
             sum += val;
         }
@@ -50,18 +58,5 @@ public class Dirichlet implements GenerativeDistribution<Double[]> {
 
     public Value<Number[]> getConcentration() {
         return concentration;
-    }
-
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(concParamName)) {
-            concentration = value;
-        } else {
-            throw new RuntimeException("Only valid parameter name is " + concParamName);
-        }
-    }
-
-    public String toString() {
-        return getName();
     }
 }
