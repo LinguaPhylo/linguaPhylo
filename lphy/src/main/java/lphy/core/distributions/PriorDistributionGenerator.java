@@ -8,7 +8,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 /**
  * The template for discrete distributions (Integer) and continuous distributions (Double).
  * Call super() to get random number generator,
- * and constructDistribution() in the last line of constructor.
+ * and constructDistribution(RandomGenerator) in the last line of constructor.
  * This setParam handles all parameters automatically,
  * so that the child class of prior distribution does not require to implement setParam() method.
  * The example classes are Beta, Gamma, ...
@@ -24,7 +24,7 @@ public abstract class PriorDistributionGenerator<T> implements GenerativeDistrib
      */
     public PriorDistributionGenerator() {
         random = RandomUtils.getRandom();
-        // call constructDistribution() after setting class field parameters
+        // call constructDistribution(RandomGenerator) after setting class field parameters
     }
 
     /**
