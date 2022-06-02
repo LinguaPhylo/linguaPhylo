@@ -180,10 +180,10 @@ public class PhyloMultivariateBrownianTest {
         System.out.println(StatUtils.mean(diffsSp3Sp4[0])); // 0.03537452751007777
         */
         // after fix seed to 777
-        Assert.assertEquals(5.025018228994451, StatUtils.mean(diffsSp3Sp1[0]), 1e4);
-        Assert.assertEquals(5.02530347588274, StatUtils.mean(diffsSp4Sp1[0]), 1e4);
-        Assert.assertEquals(2.52281054979317, StatUtils.mean(diffsSp3Sp2[0]), 1e4);
-        Assert.assertEquals(0.03537452751007777, StatUtils.mean(diffsSp3Sp4[0]), 1e4);
+        Assert.assertEquals(5.025018228994451, StatUtils.mean(diffsSp3Sp1[0]), 1e-4);
+        Assert.assertEquals(5.02530347588274, StatUtils.mean(diffsSp4Sp1[0]), 1e-4);
+        Assert.assertEquals(2.52281054979317, StatUtils.mean(diffsSp3Sp2[0]), 1e-4);
+        Assert.assertEquals(0.03537452751007777, StatUtils.mean(diffsSp3Sp4[0]), 1e-4);
 
         Assert.assertTrue(StatUtils.mean(diffsSp3Sp1[0]) > StatUtils.mean(diffsSp3Sp2[0]) && StatUtils.mean(diffsSp3Sp2[0]) > StatUtils.mean(diffsSp3Sp4[0]));
         Assert.assertEquals(StatUtils.mean(diffsSp3Sp1[0]), StatUtils.mean(diffsSp4Sp1[0]), 0.001);
