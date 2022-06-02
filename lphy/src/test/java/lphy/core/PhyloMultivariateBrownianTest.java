@@ -8,6 +8,7 @@ import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -66,6 +67,8 @@ public class PhyloMultivariateBrownianTest {
 
     @Before
     public void setUp() {
+        RandomUtils.setSeed(777);
+
         // tree
         TimeTree tree = initializeTree("(sp1:200.0,(sp2:50.0,(sp3:0.01,sp4:0.01)2:49.99)1:150.0)0:0.0;");
         Value<TimeTree> trValue = new Value<TimeTree>("tree", tree);
@@ -172,11 +175,16 @@ public class PhyloMultivariateBrownianTest {
         }
 
         /*
-        System.out.println(StatUtils.mean(diffsSp3Sp1[0]));
-        System.out.println(StatUtils.mean(diffsSp4Sp1[0]));
-        System.out.println(StatUtils.mean(diffsSp3Sp2[0]));
-        System.out.println(StatUtils.mean(diffsSp3Sp4[0]));
-         */
+        System.out.println(StatUtils.mean(diffsSp3Sp1[0])); // 5.025018228994451
+        System.out.println(StatUtils.mean(diffsSp4Sp1[0])); // 5.02530347588274
+        System.out.println(StatUtils.mean(diffsSp3Sp2[0])); // 2.52281054979317
+        System.out.println(StatUtils.mean(diffsSp3Sp4[0])); // 0.03537452751007777
+        */
+        // after fix seed to 777
+        Assert.assertEquals(5.025018228994451, StatUtils.mean(diffsSp3Sp1[0]), 1e4);
+        Assert.assertEquals(5.02530347588274, StatUtils.mean(diffsSp4Sp1[0]), 1e4);
+        Assert.assertEquals(2.52281054979317, StatUtils.mean(diffsSp3Sp2[0]), 1e4);
+        Assert.assertEquals(0.03537452751007777, StatUtils.mean(diffsSp3Sp4[0]), 1e4);
 
         Assert.assertTrue(StatUtils.mean(diffsSp3Sp1[0]) > StatUtils.mean(diffsSp3Sp2[0]) && StatUtils.mean(diffsSp3Sp2[0]) > StatUtils.mean(diffsSp3Sp4[0]));
         Assert.assertEquals(StatUtils.mean(diffsSp3Sp1[0]), StatUtils.mean(diffsSp4Sp1[0]), 0.001);

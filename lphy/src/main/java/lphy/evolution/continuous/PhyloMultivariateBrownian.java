@@ -153,7 +153,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
             }
         }
 
-        MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(means, covariances);
+        MultivariateNormalDistribution mvn = new MultivariateNormalDistribution(random, means, covariances);
 
         return handleBoundaries(mvn.sample());
     }

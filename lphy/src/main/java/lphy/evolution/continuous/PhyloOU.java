@@ -78,7 +78,7 @@ public class PhyloOU extends PhyloBrownian {
 
         double variance = v * (1.0 - Math.exp(-2.0 * a * time));
 
-        NormalDistribution distribution = new NormalDistribution(mean, Math.sqrt(variance));
+        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance));
         return handleBoundaries(distribution.sample());
     }
 

@@ -137,7 +137,7 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
     }
 
     protected double sampleNewState(double initialState, double time, int nodeIndex) {
-        NormalDistribution distribution = new NormalDistribution(initialState, Math.sqrt(time * diffusionRate.value()));
+        NormalDistribution distribution = new NormalDistribution(random, initialState, Math.sqrt(time * diffusionRate.value()));
         return handleBoundaries(distribution.sample());
     }
 
