@@ -1,7 +1,11 @@
 package lphy.core.distributions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RandomVariable;
+import lphy.graphicalModel.Value;
 import org.apache.commons.math3.distribution.WeibullDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,9 +15,12 @@ import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * The Weibull distribution.
+ * @author Alexei Drummond
+ * @author Walter Xie
+ * @see WeibullDistribution
  */
-public class Weibull implements GenerativeDistribution<Double> {
+public class Weibull extends PriorDistributionGenerator<Double> {
 
     private Value<Number> alpha;
     private Value<Number> beta;
@@ -22,10 +29,16 @@ public class Weibull implements GenerativeDistribution<Double> {
 
     public Weibull(@ParameterInfo(name = alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Number> alpha,
                    @ParameterInfo(name = betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Number> beta) {
+        super();
         this.alpha = alpha;
         this.beta = beta;
 
-        constructDistribution();
+        constructDistribution(random);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        weibullDistribution = new WeibullDistribution(random, doubleValue(alpha), doubleValue(beta));
     }
 
     @GeneratorInfo(name = "Weibull", description = "The Weibull distribution.")
@@ -40,10 +53,6 @@ public class Weibull implements GenerativeDistribution<Double> {
         return weibullDistribution.logDensity(d);
     }
 
-    private void constructDistribution() {
-        weibullDistribution = new WeibullDistribution(doubleValue(alpha), doubleValue(beta));
-    }
-
     @Override
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
@@ -52,16 +61,4 @@ public class Weibull implements GenerativeDistribution<Double> {
         }};
     }
 
-    @Override
-    public void setParam(String paramName, Value value) {
-        if (paramName.equals(alphaParamName)) alpha = value;
-        else if (paramName.equals(betaParamName)) beta = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-
-        constructDistribution();
-    }
-
-    public String toString() {
-        return getName();
-    }
 }
