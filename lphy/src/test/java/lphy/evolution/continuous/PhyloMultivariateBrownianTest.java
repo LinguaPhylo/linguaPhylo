@@ -1,10 +1,9 @@
-package lphy.core;
+package lphy.evolution.continuous;
 
 import lphy.core.functions.newickParser.NewickASTVisitor;
 import lphy.core.functions.newickParser.NewickLexer;
 import lphy.core.functions.newickParser.NewickParser;
 import lphy.evolution.alignment.ContinuousCharacterData;
-import lphy.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
