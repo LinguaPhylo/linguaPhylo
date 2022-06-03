@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class BetaTest {
@@ -35,18 +36,18 @@ public class BetaTest {
         });
     }
 
-    Beta b;
+    Beta bt;
 
     @Before
     public void setUp() throws Exception {
-        b = new Beta(alpha, beta);
+        bt = new Beta(alpha, beta);
     }
 
     @Test
     public void sample() {
         SummaryStatistics summ = new SummaryStatistics();
         for (int i = 0; i < 10000; i++) {
-            summ.addValue(b.sample().value());
+            summ.addValue(bt.sample().value());
         }
         double m = summ.getMean();
         double var = summ.getVariance();
@@ -58,8 +59,11 @@ public class BetaTest {
         double expectedVar =  a * b / ( (a + b) * (a + b) * (a + b + 1) );
         System.out.println(a + " " + b + " : " + expectedMean + " " + expectedVar + "\n"  + summ );
 
-        assertEquals(expectedMean, m, 1e-3);
+        assertEquals(expectedMean, m, 5e-3);
         assertEquals(expectedVar, var, 1e-3);
+        // [0,1]
+        assertTrue(summ.getMin() >= bt.getDomainBounds()[0]);
+        assertTrue(summ.getMax() <= bt.getDomainBounds()[1]);
     }
 
     @Test
@@ -69,7 +73,7 @@ public class BetaTest {
         for (int i = 0; i < logDensityArr.length; i++) {
             double x = (double) i/(logDensityArr.length-1);
             // b.betaDistribution.density(x)
-            double ld = b.logDensity(x);
+            double ld = bt.logDensity(x);
             System.out.println(x + "  " + ld);
 
             assertEquals(logDensityArr[i], ld, 1e-5);
