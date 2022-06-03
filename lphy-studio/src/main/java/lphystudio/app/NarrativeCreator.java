@@ -37,20 +37,24 @@ public class NarrativeCreator {
 
 //    static Preferences preferences = Preferences.userNodeForPackage(NarrativeCreator.class);
 
-    public NarrativeCreator(String lphyFileName) {
+    public NarrativeCreator(String lphyFileName) throws IOException {
         htmlNarrative = new HTMLNarrative();
         latexNarrative = new LaTeXNarrative();
         Path wd = UserDir.getUserDir(); // working dir
         Path imgFile = Paths.get(wd.toString(), "GraphicalModel.png");
+        // assume file under working dir
+        Path lphyPath = Paths.get(wd.toString(), lphyFileName);
+
+        if (!lphyPath.toFile().exists())
+            throw new IOException("Cannot find lphy script at " + lphyPath);
 
         try {
             GraphicalLPhyParser parser = Utils.createParser();
             GraphicalModelPanel panel = new GraphicalModelPanel(parser);
             panel.getComponent().setShowConstantNodes(false);
-            // assume file under working dir
-            File lphyFile = new File(lphyFileName);
+
             // parse and paint
-            Utils.readFile(lphyFile, panel);
+            Utils.readFile(lphyPath.toFile(), panel);
 
             createNarrativeExclImg(panel.getParser(), imgFile);
             LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
@@ -158,12 +162,12 @@ public class NarrativeCreator {
     }
 
     private void writeNarrative(Path wd) throws IOException {
-        String lphyStr = code.toString();
+        String lphyStr = replaceEscapeChar(code.toString());
         Path path = Paths.get(wd.toString(), "lphy.md");
         writeToFile(lphyStr, path);
 
         // validate
-        String narStr = narrative.toString();
+        String narStr = replaceEscapeChar(narrative.toString());
         validateTags(narStr, "div");
 //        validateTags(narStr, "details");
         path = Paths.get(wd.toString(), "narrative.md");
@@ -179,14 +183,19 @@ public class NarrativeCreator {
 
     }
 
+    // * is trouble in MD, use &ast;
+    private String replaceEscapeChar(String old) {
+        return old.replaceAll("\\*", "&ast;");
+    }
+
     private void writeToFile(String str, Path path) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(path.toString()));
         // references do not new line
         writer.print(str);
         writer.flush();
         writer.close();
-        System.out.println("Write \"" + str.substring(0, 5) +
-                "\" ... to " + path.toAbsolutePath());
+        System.out.println("Write \"" + (str.length() > 20 ? str.substring(0, 20) : str) +
+                "\" ...\nto " + path.toAbsolutePath());
     }
 
     // markdown section
@@ -238,7 +247,11 @@ public class NarrativeCreator {
         // always the last arg, such as h5n1.lphy, assuming the file is under user.dir
         String lphyFileName = args[args.length - 1];
 
-        NarrativeCreator narrativeCreator = new NarrativeCreator(lphyFileName);
+        try {
+            NarrativeCreator narrativeCreator = new NarrativeCreator(lphyFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         System.exit(0);
     }
