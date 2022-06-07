@@ -4,7 +4,6 @@ import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,14 +33,14 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rootAge = rootAge;
-        this.random = RandomUtils.getRandom();
 
         checkTaxaParameters(true);
     }
 
     @GeneratorInfo(name = "BirthDeath",
             category = GeneratorCategory.BD_TREE, examples = {"simpleCalibratedBirthDeath.lphy","simpleExtantBirthDeath.lphy"},
-            description = "A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
+            description = "A tree of only extant species, which is conceptually embedded<br>" +
+                    "in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and on number of taxa.")
     public RandomVariable<TimeTree> sample() {
 

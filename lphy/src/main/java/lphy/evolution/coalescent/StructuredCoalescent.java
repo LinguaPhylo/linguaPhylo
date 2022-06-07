@@ -6,8 +6,6 @@ import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleArray2DValue;
-import lphy.util.RandomUtils;
-import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;
@@ -34,8 +32,6 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     private Value<Integer[]> k;
     private Value<Object[]> demes;
     private Value<Boolean> sort;
-
-    RandomGenerator random;
 
     // convert demes String/Integer into String for sorting if required,
     // use demeIndex which is the key of reverseDemeToIndex.
@@ -84,8 +80,6 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
         if (count != 1)
             throw new IllegalArgumentException("Exactly one of " + demesParamName + " and " + kParamName + " must be specified!");
 
-        this.random = RandomUtils.getRandom();
-
         initDemes();
     }
 
@@ -102,7 +96,6 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
             examples = {"https://linguaphylo.github.io/tutorials/structured-coalescent/"},
             description = "The structured coalescent distribution over tip-labelled time trees.")
     public RandomVariable<TimeTree> sample() {
-
 
         Taxa taxa = getTaxa();
         TimeTree tree = new TimeTree(taxa);
@@ -346,7 +339,7 @@ public class StructuredCoalescent extends TaxaConditionedTreeGenerator {
     }
 
     private TimeTreeNode selectRandomNode(List<TimeTreeNode> nodes) {
-        int index = RandomUtils.getRandom().nextInt(nodes.size());
+        int index = random.nextInt(nodes.size());
         TimeTreeNode node = nodes.remove(index);
         return node;
     }

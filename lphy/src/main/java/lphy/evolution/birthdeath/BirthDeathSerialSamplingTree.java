@@ -5,7 +5,6 @@ import lphy.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
-import lphy.util.RandomUtils;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
@@ -51,7 +50,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
         this.psiVal = psiVal;
         this.rootAge = rootAge;
         this.ages = ages;
-        this.random = RandomUtils.getRandom();
 
         checkTaxaParameters(false);
     }

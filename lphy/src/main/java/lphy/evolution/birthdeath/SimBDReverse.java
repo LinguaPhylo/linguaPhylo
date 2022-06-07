@@ -6,7 +6,6 @@ import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
 import lphy.math.MathUtils;
-import lphy.util.RandomUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,6 @@ public class SimBDReverse extends TaxaConditionedTreeGenerator {
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rhoVal = rho;
-        this.random = RandomUtils.getRandom();
 
         // Taxa to condition on must all be extant!
         if (!taxa.value().isUltrametric() || taxa.value().getTaxon(0).getAge() != 0.0) {

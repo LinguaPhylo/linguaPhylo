@@ -3,12 +3,14 @@ package lphy.evolution.tree;
 import lphy.evolution.EvolutionConstants;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
-import static lphy.core.distributions.DistributionConstants.*;
+import static lphy.core.distributions.DistributionConstants.nParamName;
 /**
  * Centralized shared code for dealing with taxa-conditioned tree generative distributions.
  */
@@ -35,14 +37,20 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     private Taxa taxa;
     private boolean taxaConstructed = false;
 
+    /**
+     * Make sure to use this random generator in all child classes
+     */
     protected RandomGenerator random;
 
-
-
+    /**
+     * Init parameters and get random generator
+     */
     public TaxaConditionedTreeGenerator(Value<Integer> n, Value taxaValue, Value<Double[]> ages) {
         this.n = n;
         this.taxaValue = taxaValue;
         this.ages = ages;
+
+        this.random = RandomUtils.getRandom();
     }
 
     /**
