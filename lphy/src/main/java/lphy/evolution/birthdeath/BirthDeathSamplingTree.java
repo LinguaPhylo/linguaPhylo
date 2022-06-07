@@ -13,6 +13,12 @@ import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 /**
  * A Birth-death tree generative distribution
  */
+@Citation(value="Tanja Stadler, Roger Kouyos, ..., Sebastian Bonhoeffer, " +
+        "Estimating the Basic Reproductive Number from Viral Sequence Data, " +
+        "Molecular Biology and Evolution, Volume 29, Issue 1, January 2012.",
+        title = "Estimating the Basic Reproductive Number from Viral Sequence Data",
+        DOI="https://doi.org/10.1093/molbev/msr217",
+        authors = {"Stadler", "Kouyos", "...", "Bonhoeffer"}, year=2012)
 public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> {
 
     private Value<Number> birthRate;

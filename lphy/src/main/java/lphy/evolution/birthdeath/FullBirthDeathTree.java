@@ -17,6 +17,12 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * A Birth-death tree generative distribution
  */
+@Citation(value="David G. Kendall. On the Generalized \"Birth-and-Death\" Process, " +
+        "The Annals of Mathematical Statistics, Ann. Math. Statist. 19(1), 1-15, March, 1948.",
+        year=1948,
+        title="On the Generalized \"Birth-and-Death\" Process",
+        authors={"Kendall"},
+        DOI="https://doi.org/10.1214/aoms/1177730285")
 public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     private Value<Number> birthRate;
