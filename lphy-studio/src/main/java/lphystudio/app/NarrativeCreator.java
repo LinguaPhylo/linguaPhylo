@@ -162,12 +162,12 @@ public class NarrativeCreator {
     }
 
     private void writeNarrative(Path wd) throws IOException {
-        String lphyStr = replaceEscapeChar(code.toString());
+        String lphyStr = replaceEscapeCharInLPhyScript(code.toString());
         Path path = Paths.get(wd.toString(), "lphy.md");
         writeToFile(lphyStr, path);
 
-        // validate
-        String narStr = replaceEscapeChar(narrative.toString());
+        // it seems to print as it is if escape chars are inside <div>
+        String narStr = narrative.toString();
         validateTags(narStr, "div");
 //        validateTags(narStr, "details");
         path = Paths.get(wd.toString(), "narrative.md");
@@ -183,10 +183,27 @@ public class NarrativeCreator {
 
     }
 
-    // * is trouble in MD, use &ast;
-    private String replaceEscapeChar(String old) {
-        return old.replaceAll("\\*", "&ast;");
+    // case by case to replace escape char in lphy script.
+    // if * is inside html which is inside a markdown (e.g. jekyll), then use \*,
+    // also \| to \\|, " to &quot;, and so on
+    private String replaceEscapeCharInLPhyScript(String old) {
+        // \| to \\|
+        String newStr = old.replaceAll("\\\\\\|", "\\\\\\\\|");
+        // \. to \\.
+        newStr = newStr.replaceAll("\\\\\\.", "\\\\\\\\.");
+        // " (must be lphy code, not html) to &quot;
+        newStr = newStr.replaceAll(">\"", ">&quot;");
+        newStr = newStr.replaceAll("\"<", "&quot;<");
+        // ' to &apos;
+        newStr = newStr.replaceAll(">'", ">&apos;");
+        newStr = newStr.replaceAll("'<", "&apos;<");
+        // * to \*
+        return newStr.replaceAll("\\*", "\\\\*");
     }
+    // if * is inside a jekyll markdown but not inside html tags, use &ast;
+//    private String replaceAsteriskInMD(String old) {
+//        return old.replaceAll("\\*", "&ast;");
+//    }
 
     private void writeToFile(String str, Path path) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(path.toString()));
@@ -238,7 +255,7 @@ public class NarrativeCreator {
                 ">(.*)</" + HTMLNarrative.SECTION_TAG + ">", section("$1"));
     }
 
-    // input: -Duser.dir=/lphy/path/tutorials h5n1.lphy
+    // input: -Duser.dir=/lphy/path/tutorials h3n2.lphy
     public static void main(String[] args) {
 
         if (args.length != 1)
