@@ -16,6 +16,12 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * A Birth-death tree generative distribution
  */
+@Citation(value="Joseph Heled, Alexei J. Drummond, Calibrated Birth–Death Phylogenetic Time-Tree Priors for Bayesian Inference, " +
+        "Systematic Biology, Volume 64, Issue 3, May 2015.",
+        title = "Calibrated Birth–Death Phylogenetic Time-Tree Priors for Bayesian Inference",
+        DOI="https://doi.org/10.1093/sysbio/syu089",
+        authors = {"Heled", "Drummond"}, year=2015)
+
 public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;
