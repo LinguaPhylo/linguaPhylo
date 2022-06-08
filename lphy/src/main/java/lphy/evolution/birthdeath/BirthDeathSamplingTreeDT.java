@@ -10,8 +10,13 @@ import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * A Birth-death-sampling tree generative distribution
+ * The Birth-Death-Shift process.
  */
+@Citation(value="Tanja Stadler, Mammalian phylogeny reveals recent diversification rate shifts, " +
+        "Proceedings of the National Academy of Sciences, 108 (15), 2011.",
+        title = "Mammalian phylogeny reveals recent diversification rate shifts",
+        DOI="https://doi.org/10.1073/pnas.1016876108",
+        authors = {"Stadler"}, year=2011)
 public class BirthDeathSamplingTreeDT implements GenerativeDistribution<TimeTree> {
 
     private Value<Number> diversificationRate;

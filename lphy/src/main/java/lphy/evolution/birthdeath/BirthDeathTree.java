@@ -21,7 +21,6 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
         title = "Calibrated Birth–Death Phylogenetic Time-Tree Priors for Bayesian Inference",
         DOI="https://doi.org/10.1093/sysbio/syu089",
         authors = {"Heled", "Drummond"}, year=2015)
-
 public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;

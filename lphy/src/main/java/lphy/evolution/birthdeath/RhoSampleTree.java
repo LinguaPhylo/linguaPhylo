@@ -17,7 +17,7 @@ import static lphy.evolution.tree.TimeTreeUtils.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
- * A Birth-death tree generative distribution
+ * A birth-death tree sampled from a larger tree by selecting tips at time zero with probability rho.
  */
 public class RhoSampleTree implements GenerativeDistribution<TimeTree> {
 
