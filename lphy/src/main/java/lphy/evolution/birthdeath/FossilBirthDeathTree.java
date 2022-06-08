@@ -12,8 +12,14 @@ import static lphy.core.distributions.DistributionConstants.nParamName;
 import static lphy.evolution.birthdeath.BirthDeathConstants.*;
 
 /**
- * A Birth-death tree generative distribution
+ * The fossilized birth–death process.
  */
+@Citation(value="Tracy A. Heath, John P. Huelsenbeck, and Tanja Stadler, " +
+        "The fossilized birth–death process for coherent calibration of divergence-time estimates, " +
+        "Proceedings of the National Academy of Sciences, 111 (29), 2014.",
+        title = "The fossilized birth–death process for coherent calibration of divergence-time estimates",
+        DOI="https://doi.org/10.1073/pnas.1319091111",
+        authors = {"Heath","Huelsenbeck","Stadler"}, year=2014)
 public class FossilBirthDeathTree extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;
