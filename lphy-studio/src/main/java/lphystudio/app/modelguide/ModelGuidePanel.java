@@ -122,16 +122,14 @@ public class ModelGuidePanel extends JPanel {
                 }
             }
         });
-        JPanel jPanel = new JPanel(new BorderLayout());
-        jPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel.setBackground(Color.white);
-        jPanel.add(textPane);
+        textPane.setBorder(BorderFactory.createEmptyBorder(1, 6, 6, 10));
+        JScrollPane scrollPane2 = new JScrollPane(textPane);
 
         // after textPane
         if (dataTable.getRowCount() > 0)
             dataTable.setRowSelectionInterval(0,0);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, jPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, scrollPane2);
         splitPane.setDividerLocation(200);
         splitPane.setResizeWeight(0.5);
 
