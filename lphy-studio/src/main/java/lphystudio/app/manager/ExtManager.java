@@ -1,4 +1,4 @@
-package lphyext.manager;
+package lphystudio.app.manager;
 
 import lphy.LPhyExtensionFactory;
 import lphy.spi.LPhyExtension;
@@ -53,7 +53,7 @@ public class ExtManager {
             // rm jar name
             Path jarDir = Paths.get(jarPath).getParent();
             jarDirSet.add(jarDir.toString());
-//            System.out.println(cls + ",  "  + pkgNm + ",  "  + cls.getResource(pkgNm) + ", in " + jarDir);
+//            System.out.println(cls + ",  "  + jarPath + ",  " + jarDir);
 
             Module module = cls.getModule();
             // use module path
@@ -66,7 +66,7 @@ public class ExtManager {
                     if (lphyExt != null)
                         extList.add(lphyExt);
                     else
-                        System.err.println("Warning : cannot create lphy extension from module " + module.getName() + " !");
+                        System.err.println("Warning : cannot find pom.xml to extract extension information from module " + module.getName() + " !");
                 } catch (ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }

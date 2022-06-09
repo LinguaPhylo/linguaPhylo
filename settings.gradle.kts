@@ -7,7 +7,6 @@ rootProject.name = "LinguaPhylo"
 //include("build-logic")
 include("lphy")
 include("lphy-studio")
-include("ext-manager")
 
 pluginManagement {
     // the repos to load Gradle plugins

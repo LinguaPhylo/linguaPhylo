@@ -1,4 +1,4 @@
-package lphyext.manager;
+package lphystudio.app.manager;
 
 import lphy.util.LoggerUtils;
 import org.xml.sax.SAXException;
@@ -6,8 +6,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -88,16 +93,40 @@ public final class DependencyUtils {
      */
     public static Extension getExtensionFrom(Module module)
             throws IOException, ParserConfigurationException, SAXException {
+        // first look for pom.xml in jar
+        InputStream in = module.getResourceAsStream(POM_XML_LOCATION);
+        // then for IntelliJ using out/production/classes/module/... as reference
+        if (in == null) {
+            List<URL> moduleInfoList = Collections.list(module.getClassLoader().
+                    getResources("module-info.class"));
+            String urlStr = null;
+            for (URL url : moduleInfoList) {
+                urlStr = url.getPath();
+                if (urlStr.contains("out/production") && urlStr.contains(module.getName()))
+                    break;
+                urlStr = null;
+            }
 
-        InputStream is = module.getResourceAsStream(POM_XML_LOCATION);
-        if (is == null) return null;
-//               String pom = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            if (urlStr != null) {
+                System.out.println("Load module " + module + " from " + urlStr);
+                // if .../sub-project/out/production/classes/module-info.class
+                String parentFolder = urlStr.substring(0, urlStr.indexOf("out/production"));
+                // then Gradle build path is sub-project/build/classes/java/main/...
+                Path pomFromGradleBuild = Path.of(parentFolder,
+                        "build/classes/java/main", "pom.xml");
+                if (pomFromGradleBuild.toFile().exists())
+                    in = new FileInputStream(pomFromGradleBuild.toFile());
+            }
+        }
+
+        if (in == null) return null;
+//               String pom = new String(in.readAllBytes(), StandardCharsets.UTF_8);
 //               System.out.println(pom);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
         POMXMLHandler handler = new POMXMLHandler();
-        saxParser.parse(is, handler);
+        saxParser.parse(in, handler);
 
         return handler.getExtension();
     }

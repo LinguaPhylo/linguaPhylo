@@ -1,4 +1,4 @@
-package lphyext.manager;
+package lphystudio.app.manager;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;

@@ -1,4 +1,4 @@
-package lphyext.manager;
+package lphystudio.app.manager;
 
 import java.util.Objects;
 

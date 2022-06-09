@@ -14,6 +14,7 @@ public class EasyTableModel extends AbstractTableModel {
     protected final List<?> dataList;
 
     /**
+     * Set dataList
      * @param columnNames  column names
      * @param dataList     list of data to display in the table,
      *                     the type class can be the data structure of a row.

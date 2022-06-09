@@ -3,12 +3,13 @@
  */
 module lphystudio {
     requires transitive lphy;
-    requires transitive extmanager;
 
     requires jlatexmath;
+    requires org.json;
 
     exports lphystudio.app;
     exports lphystudio.app.narrative;
+    exports lphystudio.app.manager;
 
     exports lphystudio.core.codecolorizer;
     exports lphystudio.core.layeredgraph;

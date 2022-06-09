@@ -4,11 +4,10 @@ import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.util.LoggerUtils;
-import lphyext.manager.DependencyUtils;
-import lphyext.manager.ExtManagerDialog;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
+import lphystudio.app.manager.DependencyUtils;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
@@ -108,24 +107,18 @@ public class LinguaPhyloStudio {
         JMenu toolsMenu = new JMenu("Tools");
         menuBar.add(toolsMenu);
         // extension manager
-        JMenuItem toolMenuItem = new JMenuItem(ExtManagerDialog.APP_NAME);
+        JMenuItem toolMenuItem = new JMenuItem(ExtManagerApp.APP_NAME);
         toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
         toolsMenu.add(toolMenuItem);
         toolMenuItem.addActionListener(e -> {
-            ExtManagerDialog extManager = null;
-            try {
-                extManager = new ExtManagerDialog(frame);
-                extManager.setVisible(true);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            new ExtManagerApp();
         });
         // model guide
         toolMenuItem = new JMenuItem(ModelGuideApp.APP_NAME);
         toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, MASK));
         toolsMenu.add(toolMenuItem);
         toolMenuItem.addActionListener(e -> {
-            ModelGuideApp modelGuideApp = new ModelGuideApp();
+            new ModelGuideApp();
         });
 
         AboutMenuHelper aboutMenuHelper =
