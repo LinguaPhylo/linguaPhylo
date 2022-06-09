@@ -3,7 +3,6 @@ package lphystudio.app;
 import lphystudio.app.modelguide.LatexPane;
 import lphystudio.app.modelguide.ModelGuide;
 import lphystudio.app.modelguide.ModelGuidePanel;
-import lphystudio.core.awt.AboutMenuHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,11 +55,11 @@ public class ModelGuideApp extends JFrame {
 
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
-        JMenuBar menuBar = new JMenuBar();
-
-        AboutMenuHelper aboutMenuHelper =
-                new AboutMenuHelper(this, APP_NAME + " v " + VERSION,
-                        getHTMLCredits(), menuBar);
+//        JMenuBar menuBar = new JMenuBar();
+//        AboutMenuHelper aboutMenuHelper =
+//                new AboutMenuHelper(this, APP_NAME + " v " + VERSION,
+//                        getHTMLCredits(), menuBar);
+//        setJMenuBar(menuBar);
 
         setVisible(true);
     }
