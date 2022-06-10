@@ -17,7 +17,7 @@ public class ExtManagerApp extends JFrame {
     }
 
     private final int MASK = LPhyAppConfig.MASK;
-    private final String VERSION = "0.0.1";
+    private final String VERSION = "0.1.0";
 
     private final ExtManager extManager;
 
