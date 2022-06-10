@@ -5,7 +5,7 @@ module lphystudio {
     requires transitive lphy;
 
     requires jlatexmath;
-    requires org.json;
+//    requires org.json;
 
     exports lphystudio.app;
     exports lphystudio.app.narrative;

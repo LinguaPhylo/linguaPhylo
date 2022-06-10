@@ -6,7 +6,7 @@ import lphystudio.app.manager.ExtManagerPanel;
 import javax.swing.*;
 
 /**
- * The GUI to manage the LPhy extensions.
+ * The app to manage the LPhy extensions.
  * @author Walter Xie
  */
 public class ExtManagerApp extends JFrame {

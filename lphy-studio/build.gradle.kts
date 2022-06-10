@@ -18,7 +18,7 @@ dependencies {
 //    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
 
-    implementation("org.json:json:20210307")
+//    implementation("org.json:json:20210307")
 
 //    testImplementation("junit:junit:4.13")
 }

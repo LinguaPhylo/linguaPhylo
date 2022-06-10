@@ -2,18 +2,15 @@ package lphystudio.app.manager;
 
 import lphy.LPhyExtensionFactory;
 import lphy.spi.LPhyExtension;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+
+//import org.json.JSONObject;
 
 /**
  * Pull extension information from pom.xml in the root path inside the jar file.
@@ -59,14 +56,8 @@ public class ExtManager {
             // use module path
             if (module != null) {
                 try {
-                    // get from pom.xml
                     Extension lphyExt = DependencyUtils.getExtensionFrom(module);
-//                ModuleDescriptor md = module.getDescriptor();
-//                Extension lphyExt = new Extension(md.name(), md.rawVersion().orElse("null"), "");
-                    if (lphyExt != null)
-                        extList.add(lphyExt);
-                    else
-                        System.err.println("Warning : cannot find pom.xml to extract extension information from module " + module.getName() + " !");
+                    extList.add(lphyExt);
                 } catch (ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }
@@ -104,15 +95,15 @@ public class ExtManager {
      * @return  single string of all directories containing jars.
      */
     public String getJarDirStr() {
-        return String.join(";", jarDirSet);
+        return String.join("; ", jarDirSet);
     }
 
 
-    public static JSONObject getPublishedLPhyExt(String url) throws IOException, JSONException {
-        try (InputStream is = new URL(url).openStream()) {
-            String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            return new JSONObject(json);
-        }
-    }
+//    public static JSONObject getPublishedLPhyExt(String url) throws IOException, JSONException {
+//        try (InputStream is = new URL(url).openStream()) {
+//            String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+//            return new JSONObject(json);
+//        }
+//    }
 
 }
