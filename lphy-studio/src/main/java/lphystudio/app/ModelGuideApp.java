@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
+ * List all available models and functions in runtime.
+ * It is also producing a Latex table with citations.
  * @author Walter Xie
  */
 public class ModelGuideApp extends JFrame {
