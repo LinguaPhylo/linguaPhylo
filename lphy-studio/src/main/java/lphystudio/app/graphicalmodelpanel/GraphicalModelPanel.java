@@ -103,6 +103,7 @@ public class GraphicalModelPanel extends JPanel {
             }
         });
         editValues.setSelected(component.getEditValues());
+        editValues.setToolTipText("Please click Sample button to refresh variables after setting a new value.");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
