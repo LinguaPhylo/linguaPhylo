@@ -125,6 +125,11 @@ public class ViewerPane extends JTabbedPane {
         }
     }
 
+    @Deprecated
+    public StatePanel getConstantsPanel() {
+        return (StatePanel) valueScrollPane.getViewport().getView();
+    }
+
     public VariableLog getVariableLog() {
         return variableLog;
     }

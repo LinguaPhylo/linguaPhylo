@@ -3,11 +3,13 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.*;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
+import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
+import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.swing.TidyComboBox;
 import lphystudio.core.swing.TidyTextField;
 import lphystudio.core.valueeditors.DoubleArray2DEditor;
@@ -40,6 +42,7 @@ public class GraphicalModelPanel extends JPanel {
     JButton sampleButton = new JButton("Sample");
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
+    JCheckBox editValues = new JCheckBox("Edit values");
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;
@@ -50,6 +53,8 @@ public class GraphicalModelPanel extends JPanel {
 
         dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
         modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model);
+
+        component = new GraphicalModelComponent(parser);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
@@ -68,6 +73,7 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(new JLabel(" Layering:"));
         buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
+        buttonPanel.add(editValues);
 
         sampleButton.addActionListener(e -> sample(getReps()));
 
@@ -75,12 +81,28 @@ public class GraphicalModelPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 component.setShowConstantNodes(showConstantNodes.isSelected());
+                editValues.setEnabled(showConstantNodes.isSelected());
             }
         });
-
-        component = new GraphicalModelComponent(parser);
-
         showConstantNodes.setSelected(component.getShowConstantNodes());
+
+        editValues.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // avoid GraphicalModelComponent depends on GraphicalModelPanel
+                component.setEditValues(editValues.isSelected());
+                // update currentSelectionContainer
+                // take care of selectedNode here, and the rest will update by showObject(...)
+                LayeredNode selectedNode = component.getSelectedNode();
+                if (selectedNode instanceof LayeredGNode lnode) {
+                    if (lnode.value() instanceof Value value) {
+                        showValue(value, false);
+                    }
+                }
+                component.repaint();
+            }
+        });
+        editValues.setSelected(component.getEditValues());
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -253,6 +275,8 @@ public class GraphicalModelPanel extends JPanel {
         showObject(g.codeString(), g, true);
     }
 
+    // TODO It looks ViewerRegister not store ValueEditor (JTextField),
+    // so everytime viewer.getViewer(object) creates a new ValueEditor.
     private void showObject(String label, Object obj, boolean moveToTab) {
         displayedElement = obj;
 
@@ -266,6 +290,8 @@ public class GraphicalModelPanel extends JPanel {
         } else {
             LoggerUtils.log.severe("Trying to show an object that is neither Value nor Generator.");
         }
+        if (viewer instanceof JTextField textField)
+            textField.setEditable(editValues.isSelected());
 
         if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof DoubleArray2DEditor) {
             JPanel viewerPanel = new JPanel();
@@ -281,7 +307,7 @@ public class GraphicalModelPanel extends JPanel {
                         "<html><font color=\"#808080\" >" + label + "</font></html>"));
 
         if (moveToTab) rightPane.setSelectedComponent(rightPane.currentSelectionContainer);
-
+        rightPane.repaint();
         repaint();
     }
 

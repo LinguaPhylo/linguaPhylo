@@ -40,6 +40,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     boolean sizeChanged = true;
 
     private static final String SHOW_CONSTANT_NODES = "showConstantNodes";
+    private static final String EDIT_VALUES = "editValues";
     private static final String SHOW_ARGUMENT_LABELS = "showArgumentLabels";
     private static final String USE_STRAIGHT_EDGES = "useStraightEdges";
     private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
@@ -222,4 +223,17 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public void setUseStraightEdges(boolean useStraightEdges) {
         this.useStraightEdges = useStraightEdges;
     }
+
+    public void setEditValues(boolean selected) {
+        preferences.putBoolean(EDIT_VALUES, selected);
+    }
+
+    public boolean getEditValues() {
+        return preferences.getBoolean(EDIT_VALUES, false);
+    }
+
+    public LayeredNode getSelectedNode() {
+        return selectedNode;
+    }
+
 }

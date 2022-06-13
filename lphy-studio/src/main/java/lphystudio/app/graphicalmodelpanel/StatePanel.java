@@ -35,13 +35,20 @@ public class StatePanel extends JPanel {
         parser.addGraphicalModelChangeListener(this::generateComponents);
     }
 
+    @Deprecated
+    public void setTextFieldEditable(boolean editable) {
+        for (JComponent jc : editors) {
+            if (jc instanceof JTextField textField)
+                textField.setEditable(editable);
+        }
+        repaint();
+    }
+
     void generateComponents() {
 
         labels.clear();
         editors.clear();
         removeAll();
-
-        ;
 
         for (Value value : GraphicalModel.Utils.getAllValuesFromSinks(parser)) {
             if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
@@ -57,6 +64,9 @@ public class StatePanel extends JPanel {
                     jLabel.setForeground(Color.red);
                     editors.add(jLabel);
                 } else {
+                    // use only Current panel to edit
+                    if (jComponent instanceof JTextField textField)
+                        textField.setEditable(false);
                     editors.add(jComponent);
                 }
             }
