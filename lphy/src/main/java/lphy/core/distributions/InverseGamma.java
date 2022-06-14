@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.alphaParamName;
 import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Inverse-gamma distribution.
@@ -41,7 +42,7 @@ public class InverseGamma extends PriorDistributionGenerator<Double> implements 
         double a = doubleValue(alpha);
         double b = doubleValue(beta);
 
-        gammaDistribution = new GammaDistribution(random, a, 1.0/b);
+        gammaDistribution = new GammaDistribution(random, a, 1.0/b, DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "InverseGamma",

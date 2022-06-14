@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static lphy.core.distributions.DistributionConstants.meanParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.ExponentialDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Exponential distribution prior.
@@ -34,7 +35,8 @@ public class Exp extends PriorDistributionGenerator<Double> implements Generativ
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        exp = new ExponentialDistribution(random, doubleValue(mean));
+        // use code available since apache math 3.1
+        exp = new ExponentialDistribution(random, doubleValue(mean), DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",

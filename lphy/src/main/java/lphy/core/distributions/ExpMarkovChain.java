@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
+import static org.apache.commons.math3.distribution.ExponentialDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * A smoothing prior in which each element has an exponential prior with a mean of
@@ -55,12 +56,12 @@ public class ExpMarkovChain extends PriorDistributionGenerator<Double[]> {
             result[0] = firstValue.value();
         } else {
             // X[0] ~ Exp(mean=initialMean);
-            exp = new ExponentialDistribution(random, initialMean.value());
+            exp = new ExponentialDistribution(random, initialMean.value(), DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
             result[0] = exp.sample();
         }
         // X[i] ~ Exp(mean=X[i-1])
         for (int i = 1; i < result.length; i++) {
-            exp = new ExponentialDistribution(random, result[i-1]);
+            exp = new ExponentialDistribution(random, result[i-1], DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
             result[i] = exp.sample();
         }
         return new RandomVariable<>("x", result, this);
@@ -73,12 +74,12 @@ public class ExpMarkovChain extends PriorDistributionGenerator<Double[]> {
         if (firstValue != null) {
             logDensity = ((GenerativeDistribution1D) firstValue.getGenerator()).logDensity(x[0]);
         } else {
-            exp = new ExponentialDistribution(random, initialMean.value());
+            exp = new ExponentialDistribution(random, initialMean.value(), DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
             logDensity = exp.logDensity(x[0]);
         }
         // X[i] ~ Exp(mean=X[i-1])
         for (int i = 1; i < x.length; i++) {
-            exp = new ExponentialDistribution(random, x[i-1]);
+            exp = new ExponentialDistribution(random, x[i-1], DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
             logDensity += exp.logDensity(x[i]);
         }
         return logDensity;

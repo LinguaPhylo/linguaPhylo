@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.alphaParamName;
 import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.WeibullDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * The Weibull distribution.
@@ -38,7 +39,8 @@ public class Weibull extends PriorDistributionGenerator<Double> {
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        weibullDistribution = new WeibullDistribution(random, doubleValue(alpha), doubleValue(beta));
+        weibullDistribution = new WeibullDistribution(random, doubleValue(alpha), doubleValue(beta),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Weibull", description = "The Weibull distribution.")

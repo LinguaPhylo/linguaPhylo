@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.medianParamName;
 import static lphy.core.distributions.DistributionConstants.scaleParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.CauchyDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Cauchy distribution.
@@ -37,8 +38,9 @@ public class Cauchy extends PriorDistributionGenerator<Double> {
     protected void constructDistribution(RandomGenerator random) {
         if (median == null) throw new IllegalArgumentException("The median value can't be null!");
         if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
-        // in case type integer
-        cauchyDistribution = new CauchyDistribution(random, doubleValue(median), doubleValue(scale));
+        // use code available since apache math 3.1
+        cauchyDistribution = new CauchyDistribution(random, doubleValue(median), doubleValue(scale),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Cauchy", verbClause = "has", narrativeName = "Cauchy distribution prior",

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.alphaParamName;
+import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Created by Alexei Drummond on 2/02/20.
@@ -64,7 +65,8 @@ public class OrnsteinUhlenbeck extends PriorDistributionGenerator<Double> {
 
         double variance = v * (1.0 - Math.exp(-2.0 * a * time));
 
-        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance));
+        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
         return handleBoundaries(distribution.sample());
     }
 

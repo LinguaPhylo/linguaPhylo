@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.*;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Normal-gamma distribution
@@ -59,10 +60,11 @@ public class NormalGamma extends PriorDistributionGenerator<Double[]> {
         double sc = doubleValue(scale);
         double lambda = doubleValue(precision);
 
-        gammaDistribution = new GammaDistribution(random, sh, sc);
+        gammaDistribution = new GammaDistribution(random, sh, sc, DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 
         double T = gammaDistribution.sample();
-        normalDistribution = new NormalDistribution(random, m, lambda * T);
+        normalDistribution = new NormalDistribution(random, m, lambda * T,
+                org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @Override

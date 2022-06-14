@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.shapeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Discretized Gamma distribution
@@ -35,8 +36,8 @@ public class DiscretizedGamma extends PriorDistributionGenerator<Double> {
     protected void constructDistribution(RandomGenerator random) {
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
         double sh = doubleValue(shape);
-
-        gammaDistribution = new GammaDistribution(random, sh, 1.0 / sh);
+        // use code available since apache math 3.1
+        gammaDistribution = new GammaDistribution(random, sh, 1.0 / sh, DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 
         rates = new double[ncat.value()];
     }

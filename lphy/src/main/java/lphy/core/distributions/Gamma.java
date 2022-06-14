@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.scaleParamName;
 import static lphy.core.distributions.DistributionConstants.shapeParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Gamma distribution prior.
@@ -41,8 +42,8 @@ public class Gamma extends PriorDistributionGenerator<Double> implements Generat
         double sh = doubleValue(shape);
         // in case the scale is type integer
         double sc = doubleValue(scale);
-
-        gammaDistribution = new GammaDistribution(random, sh, sc);
+        // use code available since apache math 3.1
+        gammaDistribution = new GammaDistribution(random, sh, sc, DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Gamma", verbClause = "has", narrativeName = "gamma distribution prior",

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.LogNormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * log-normal prior.
@@ -35,8 +36,9 @@ public class LogNormal extends PriorDistributionGenerator<Double> implements Gen
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        // in case M/S is type integer
-        logNormalDistribution = new LogNormalDistribution(random, doubleValue(M), doubleValue(S));
+        // use code available since apache math 3.1
+        logNormalDistribution = new LogNormalDistribution(random, doubleValue(M), doubleValue(S),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "LogNormal", verbClause = "has", narrativeName = "log-normal prior",

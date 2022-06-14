@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.meanParamName;
 import static lphy.core.distributions.DistributionConstants.sdParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Normal distribution prior.
@@ -39,7 +40,8 @@ public class Normal extends PriorDistributionGenerator<Double> implements Genera
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
 
-        normalDistribution = new NormalDistribution(RandomUtils.getRandom(), doubleValue(mean), doubleValue(sd));
+        normalDistribution = new NormalDistribution(RandomUtils.getRandom(), doubleValue(mean), doubleValue(sd),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Normal", verbClause = "has", narrativeName = "normal prior",

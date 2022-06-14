@@ -17,7 +17,8 @@ public class MathUtils {
 
 
     public static double randomGamma(double shape, double scale, RandomGenerator random) {
-        return new GammaDistribution(random, shape, scale).sample();
+        return new GammaDistribution(random, shape, scale,
+                GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY).sample();
     }
 
 }

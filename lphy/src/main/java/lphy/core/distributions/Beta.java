@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.alphaParamName;
 import static lphy.core.distributions.DistributionConstants.betaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
+import static org.apache.commons.math3.distribution.BetaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
 /**
  * Beta distribution prior.
@@ -35,8 +36,9 @@ public class Beta extends PriorDistributionGenerator<Double> implements Generati
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        // in case alpha/beta is type integer
-        betaDistribution = new BetaDistribution(random, doubleValue(alpha), doubleValue(beta));
+        // use code available since apache math 3.1
+        betaDistribution = new BetaDistribution(random, doubleValue(alpha), doubleValue(beta),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior",
