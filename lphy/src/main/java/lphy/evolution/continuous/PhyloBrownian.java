@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
+
 /**
  * Created by Alexei Drummond on 2/02/20.
  */
@@ -137,7 +139,10 @@ public class PhyloBrownian implements GenerativeDistribution<ContinuousCharacter
     }
 
     protected double sampleNewState(double initialState, double time, int nodeIndex) {
-        NormalDistribution distribution = new NormalDistribution(random, initialState, Math.sqrt(time * diffusionRate.value()));
+        // use code available since apache math 3.1, see #215
+        NormalDistribution distribution = new
+                NormalDistribution(random, initialState, Math.sqrt(time * diffusionRate.value()),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
         return handleBoundaries(distribution.sample());
     }
 

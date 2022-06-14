@@ -8,6 +8,8 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
+
 /**
  * Created by Alexei Drummond on 2/02/20.
  */
@@ -78,7 +80,9 @@ public class PhyloOU extends PhyloBrownian {
 
         double variance = v * (1.0 - Math.exp(-2.0 * a * time));
 
-        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance));
+        // use code available since apache math 3.1, see #215
+        NormalDistribution distribution = new NormalDistribution(random, mean, Math.sqrt(variance),
+                DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
         return handleBoundaries(distribution.sample());
     }
 
