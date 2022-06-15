@@ -213,8 +213,9 @@
 % Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
 \\
 Alexei J. Drummond\textsuperscript{1,2,3}*,
-Dong Xie\textsuperscript{1,3},
-F\'{a}bio K Mendes\textsuperscript{1,2}
+Dong Xie\textsuperscript{1,2,3},
+Kylie Chen\textsuperscript{1,2,3},
+F\'{a}bio K Mendes\textsuperscript{1,4}
 \\
 \bigskip
 \textbf{1} Centre for Computational Evolution, University of Auckland, Auckland, New Zealand
@@ -222,6 +223,8 @@ F\'{a}bio K Mendes\textsuperscript{1,2}
 \textbf{2} School of Biological Sciences, University of Auckland, Auckland, New Zealand
 \\
 \textbf{3} School of Computer Science, University of Auckland, Auckland, New Zealand
+\\
+\textbf{4} Department of Biology, Washington University in St. Louis, St. Louis, United States
 \\
 \bigskip
 
@@ -795,41 +798,25 @@ matrices, one matrix per codon partition.
 %   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
 % \end{alltt}
 
+
+%%TODO review
+\subsection*{Extension Mechanism}
+The extensibility of a software is extremely important to encourage the future growth and collaborations. 
+LPhy extensions are implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
+
+Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
+The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+
+
+
 % Results and Discussion can be combined.
 \section*{Results}
 
-\subsection*{Data simulation using Phylogenetic Models}
-...
-
-\subsection*{Extension Mechanism}
-The extensibility of a software is extremely important to encourage 
-the future growth and collaborations. 
-LPhy extensions are implemented by using the Service Provider Interface (SPI) 
-within the Java Platform Module System (JPMS). 
-An LPhy extension module implements the \texttt{LPhyExtension} interface 
-to provide a list of the classes that the extension module provides 
-to extend the functionality of LPhy.
-
-Using this mechanism, the extension developer can simply create the new 
-distributions or functions in a separate extension module, and make an individual release.
-The user will easily enjoy these new features after installing the extension.
-
-
 \subsection*{Graphical User Interface}
-Along with the language definition, we also provide software to
-specify and visualise models as well as simulate data from models
-defined in LPhy.
-
-This software will also provide the ability for models specified in
-the LPhy language to be applied to data using standard inference tools
-such as MrBayes, RevBayes, BEAST1 and BEAST2
-\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
-This will require software that can convert an LPhy specification into
-an input file that these inference engines understand.
-The first such software converter is LPhyBEAST described below.
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot in Figure \ref{fig:lphystudio} 
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{lphystudio_screenshot.png}
+  \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
   \caption{A screenshot of LPhy Studio showing the probabilistic
     graphical model from Example \ref{lphy:rsva} on the left panel
     (constants are being hidden), and the automatically generated
@@ -838,7 +825,32 @@ The first such software converter is LPhyBEAST described below.
   \label{fig:lphystudio}
 \end{figure}
 
+Model guide
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/modelguide.png}
+  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the reference of HKY model.} 
+  \label{fig:modelguide}
+\end{figure}
+
+
+\subsection*{Data simulation using Phylogenetic Models}
+...
+
+
+
+
 \subsection*{Integration with phylogenetic analysis software BEAST2}
+
+It also provides the ability for models specified in the LPhy language to be applied to data using standard inference tools
+such as MrBayes, RevBayes, BEAST1 and BEAST2
+\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
+
+This will require software that can convert an LPhy specification into
+an input file that these inference engines understand.
+The first such software converter is LPhyBEAST described below.
+
+
 LPhyBEAST is a command-line program that takes an LPhy model
 specification, and some data and produces a BEAST 2 XML input file.
 It is therefore an alternative way to succinctly express and
