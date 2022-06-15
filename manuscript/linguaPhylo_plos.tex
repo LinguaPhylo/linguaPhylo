@@ -843,26 +843,50 @@ communicate BEAST analyses.
 %%TODO review
 \subsection{Extension Mechanism}
 The extensibility of a software is extremely important to encourage the future growth and collaborations. 
-LPhy extensions are implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
+LPhy and LPhy extensions are developed based on Java 17 which is the latest long-term support (LTS) version at the time of writing. 
+The LPhy extension mechanism is implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
 
 Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
 The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+
+\subsection{As a Gradle project}
+
+The LPhy project is a Gradle project from the perspective of core developers. Gradle is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
+It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
+It integrates with a dependency manager, which helps developers to avoid ?dependency hell?. 
+Another attractive feature of Gradle is that it provides a rich API and many plugins to assist the build and release process, 
+which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
+
+\textcolor{blue}{TODO: Gradle citation?}
+
 
 % Results and Discussion can be combined.
 \section{Results}
 
 \subsection{The graphical user interface}
-Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot in Figure \ref{fig:lphystudio} 
+
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A (Zlateva et al., 2004; Zlateva et al., 2005) is illustrated in Figure \ref{fig:lphystudio}. 
+
+\textcolor{blue}{TODO: the data set citation?}
+
+\textcolor{blue}{TODO: do we still have Example \ref{lphy:rsva} ?}
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
-  \caption{A screenshot of LPhy Studio showing the probabilistic
-    graphical model from Example \ref{lphy:rsva} on the left panel
-    (constants are being hidden), and the automatically generated
-    description of the data, the model and the posterior
-    distribution on the right panel.} 
+  \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
+  %%from Example \ref{lphy:rsva} 
+  on the left panel (constants are being hidden), and the automatically generated description of the data, the model and the posterior distribution on the right panel.} 
   \label{fig:lphystudio}
 \end{figure}
+
+The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. Either way the Studio will guarantee to produce the set of graphical components representing the same phylogenetic model. 
+This allows the user focusing on a simple script but be able to share the same visualizations across different research groups.  
+
+The narrative generator integrated with LPhyStudio can automatically create human-readable descriptions about the data, model, and posterior distribution. 
+It also includes the mathematical definition of the posterior of the given model, and some relevant academic references regarding the model. 
+The generator can also produce these contents in a Latex format, so that the user could simply copy them into a publication manuscript as the reference of the model applied. 
+This will take most researchers in an easy way to precisely describe their models for publishing a Bayesian phylogenetic analysis. 
+
 
 \subsection{A model guide for users}
 
@@ -872,11 +896,25 @@ Along with the language definition, we also provide a GUI, called LPhy Studio, t
   \label{fig:modelguide}
 \end{figure}
 
-\subsection{Example of data simulation using phylogenetic models}
-...
+
+\subsection{Example of data simulation using a phylogenetic model}
+
+Model simulations can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
+It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
+The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/simulations100.png}
+  \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model.} 
+  \label{fig:simulations100}
+\end{figure}
+
+
 
 \subsection{Example of model validation}
 ...
+
+
 
 
 \section*{Discussion}
