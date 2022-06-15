@@ -263,7 +263,7 @@ F\'{a}bio K Mendes\textsuperscript{1,4}
 \linenumbers
 
 % Use "Eq" instead of "Equation" for equation citations.
-\section*{Introduction}
+\section{Introduction}
 
 Transparency is a scientific ideal, and replicability and
 reproducibility lie at the heart of the scientific endeavor
@@ -310,8 +310,8 @@ Additionally, we introduce a tool, LPhyBEAST, for integrating model specificatio
 The software presented in this paper aims to make it easier to report,
 validate and simulate complex phylogenetic models, as well as to reproduce and re-use phylogenetic analyses.
 
-\section*{Design and Implementation}
-
+\section{Methods}
+% \section*{Design and Implementation}
 % \subsection*{A concise domain-specific language for phylogenetic inference}
 The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax. 
 It is built on top of Java and provides the following features: 
@@ -356,7 +356,8 @@ The code contains a \textbf{data block} for specifying the input dataset, and a 
 }
 
 
-\subsection*{Language features}
+\subsection{Language features}
+\textcolor{blue}{TODO: Rewrite to improve clarity, and split between language and model features}
 % Similar to other programming languages, LPhy allows variables to be declared as primitives, objects or arrays.
 The LPhy language provides a simple syntax for simulating and specifying phylogenetic models.
 LPhy allows users to simulate data using tree generative distributions (e.g., birth-death or coalescent processes), sequence generators (e.g., substitution models \cite{gtr}), and common statistical distributions (e.g., Normal distribution). %, tree data and sequence alignment data. 
@@ -400,7 +401,7 @@ Table \ref{tab:generators} shows a summary of generators and methods available i
 \end{table}
 
 
-\subsubsection*{Probabilistic distributions}
+\subsubsection{General probabilistic distributions}
 LPhy provides methods that allow users to generate values from common statistical distributions such as the Normal distribution, Dirichlet distribution, and LogNormal distribution. 
 A full list of distributions available are summarized in Table \ref{tab:generators}. 
 
@@ -424,7 +425,7 @@ For example, the variable $\mu$ can be modified to generate twenty values instea
 \end{alltt}
 }
 
-\subsubsection*{Tree generators}
+\subsubsection{Tree generators}
 Tree generators enable users to generate phylogenetic trees from birth-death processes or coalescent processes. 
 {\small
   \begin{alltt}
@@ -436,10 +437,10 @@ phylogenetic tree \texttt{$\psi$} is sampled from a
 constant-population size coalescent tree prior \cite{kingman82}.
 \newline
 
-\subsubsection*{Sequence generators}
+\subsubsection{Sequence generators}
 ...
 
-\subsubsection*{Generator vectorization}
+\subsubsection{Generator vectorization}
 There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
 
 Example of IID pattern: 
@@ -798,50 +799,16 @@ matrices, one matrix per codon partition.
 %   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
 % \end{alltt}
 
-
-%%TODO review
-\subsection*{Extension Mechanism}
-The extensibility of a software is extremely important to encourage the future growth and collaborations. 
-LPhy extensions are implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
-
-Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
-The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
-
-
-
-% Results and Discussion can be combined.
-\section*{Results}
-
-\subsection*{Graphical User Interface}
-Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot in Figure \ref{fig:lphystudio} 
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
-  \caption{A screenshot of LPhy Studio showing the probabilistic
-    graphical model from Example \ref{lphy:rsva} on the left panel
-    (constants are being hidden), and the automatically generated
-    description of the data, the model and the posterior
-    distribution on the right panel.} 
-  \label{fig:lphystudio}
-\end{figure}
-
-Model guide
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/modelguide.png}
-  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the reference of HKY model.} 
-  \label{fig:modelguide}
-\end{figure}
-
-
-\subsection*{Data simulation using Phylogenetic Models}
+\subsection{Model features}
 ...
 
+\subsubsection{Data simulation using phylogenetic models}
+...
 
+\subsubsection{Integration with phylogeny inference software}
+...
 
-
-\subsection*{Integration with phylogenetic analysis software BEAST2}
-
+\textcolor{blue}{TODO: Rewrite section below}
 It also provides the ability for models specified in the LPhy language to be applied to data using standard inference tools
 such as MrBayes, RevBayes, BEAST1 and BEAST2
 \cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
@@ -872,7 +839,43 @@ communicate BEAST analyses.
 \end{enumerate}
 \end{itemize}
 
-\subsection*{Model validation}
+
+%%TODO review
+\subsection{Extension Mechanism}
+The extensibility of a software is extremely important to encourage the future growth and collaborations. 
+LPhy extensions are implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
+
+Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
+The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+
+% Results and Discussion can be combined.
+\section*{Results}
+
+\subsection{The graphical user interface}
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot in Figure \ref{fig:lphystudio} 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
+  \caption{A screenshot of LPhy Studio showing the probabilistic
+    graphical model from Example \ref{lphy:rsva} on the left panel
+    (constants are being hidden), and the automatically generated
+    description of the data, the model and the posterior
+    distribution on the right panel.} 
+  \label{fig:lphystudio}
+\end{figure}
+
+\subsection{A model guide for users}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/modelguide.png}
+  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the reference of HKY model.} 
+  \label{fig:modelguide}
+\end{figure}
+
+\subsection{Example of data simulation using phylogenetic models}
+...
+
+\subsection{Example of model validation}
 ...
 
 
@@ -905,33 +908,6 @@ vectorized form, producing multiple values as its output.
 
 \section*{Conclusion}
 ...
-
-\section*{Supporting Information}
-
-% Include only the SI item label in the paragraph heading. Use the \nameref{label} command to cite SI items in the text.
-\paragraph*{S1 Fig.}
-\label{S1_Fig}
-{\bf Bold the title sentence.} Add descriptive text after the title of the item (optional).
-
-\paragraph*{S2 Fig.}
-\label{S2_Fig}
-{\bf Lorem ipsum.} Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
-
-\paragraph*{S1 File.}
-\label{S1_File}
-{\bf Lorem ipsum.}  Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
-
-\paragraph*{S1 Video.}
-\label{S1_Video}
-{\bf Lorem ipsum.}  Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
-
-\paragraph*{S1 Appendix.}
-\label{S1_Appendix}
-{\bf Lorem ipsum.} Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
-
-\paragraph*{S1 Table.}
-\label{S1_Table}
-{\bf Lorem ipsum.} Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque.
 
 \section*{Acknowledgments}
 Thanks for the New Zealand eScience Infrastructure (NeSI) to provide the high performance computation resource for our model validations.
