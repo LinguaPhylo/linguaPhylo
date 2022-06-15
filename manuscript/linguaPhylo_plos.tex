@@ -879,23 +879,28 @@ This will take most researchers in an easy way to precisely describe their model
 
 
 \subsection{A model guide for users}
-\textcolor{blue}{TODO}
+
+There are two learning curves for a beginner level of users, one is to learn the LPhy language, the other is to understand the model. To shorten these learning curves, a tool with GUI, called Model Guide, is implemented to list all available LPhy generative distributions and functions in runtime. 
+They are classified into several categories for users to look up easily.
+
+Selecting a model or function, e.g. Figure \ref{fig:modelguide}, the user can find its usage, description, and the example scripts (they are accessible from LPhy Studio). For a published model, the citation is also provided for the convenience of learning, if it has DOI or book ISBN number, the hyperlink will lead the reader to the online publication.   
+
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/modelguide.png}
-  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the reference of HKY model.} 
+  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the citation of HKY85 model.} 
   \label{fig:modelguide}
 \end{figure}
 
 
 \subsection{Data simulations from a phylogenetic model}
 
-Model simulations can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
+Simulations can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
 It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
 The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/simulations100.png}
-  \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model.} 
+  \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model. The ``reps'' text field is used to define the number of simulations to run. The right panel shows the statistical summary of the simulated parameters.} 
   \label{fig:simulations100}
 \end{figure}
 
