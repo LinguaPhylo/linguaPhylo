@@ -800,28 +800,8 @@ matrices, one matrix per codon partition.
 % \end{alltt}
 
 \subsection{Model features}
-...
-
-\subsubsection{Data simulation using phylogenetic models}
-...
-
-\subsubsection{Integration with phylogeny inference software}
-...
 
 \textcolor{blue}{TODO: Rewrite section below}
-It also provides the ability for models specified in the LPhy language to be applied to data using standard inference tools
-such as MrBayes, RevBayes, BEAST1 and BEAST2
-\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
-
-This will require software that can convert an LPhy specification into
-an input file that these inference engines understand.
-The first such software converter is LPhyBEAST described below.
-
-
-LPhyBEAST is a command-line program that takes an LPhy model
-specification, and some data and produces a BEAST 2 XML input file.
-It is therefore an alternative way to succinctly express and
-communicate BEAST analyses.
 
 \begin{itemize}
 \item for evolutionary biologists
@@ -840,8 +820,18 @@ communicate BEAST analyses.
 \end{itemize}
 
 
+\subsubsection{Data tyeps}
+
+nuc, protein, ...
+
+\subsubsection{Subst models, ...}
+
+
+
+
 %%TODO review
 \subsection{Extension Mechanism}
+
 The extensibility of a software is extremely important to encourage the future growth and collaborations. 
 LPhy and LPhy extensions are developed based on Java 17 which is the latest long-term support (LTS) version at the time of writing. 
 The LPhy extension mechanism is implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
@@ -889,7 +879,7 @@ This will take most researchers in an easy way to precisely describe their model
 
 
 \subsection{A model guide for users}
-
+\textcolor{blue}{TODO}
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/modelguide.png}
   \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the reference of HKY model.} 
@@ -897,7 +887,7 @@ This will take most researchers in an easy way to precisely describe their model
 \end{figure}
 
 
-\subsection{Example of data simulation using a phylogenetic model}
+\subsection{Data simulations from a phylogenetic model}
 
 Model simulations can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
 It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
@@ -910,10 +900,29 @@ The result of running 100 simulations from the simple HKY+Coalescent model is il
 \end{figure}
 
 
+\subsection{Integration with Bayesian inference frameworks}
+\textcolor{blue}{TODO}
+It also provides the ability for models specified in the LPhy language to be applied to data using standard inference tools
+such as MrBayes, RevBayes, BEAST1 and BEAST2
+\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
 
-\subsection{Example of model validation}
+This will require software that can convert an LPhy specification into
+an input file that these inference engines understand.
+The first such software converter is LPhyBEAST described below.
+
+LPhyBEAST is a command-line program that takes an LPhy model
+specification, and some data and produces a BEAST 2 XML input file.
+It is therefore an alternative way to succinctly express and
+communicate BEAST analyses.
+
+
+
+
+\subsection{Model validation is necessary}
+
+\textcolor{blue}{TODO: Kylie ?}
+
 ...
-
 
 
 
