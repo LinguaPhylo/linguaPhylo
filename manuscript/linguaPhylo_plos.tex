@@ -841,23 +841,18 @@ The user will easily enjoy these new features, by simply dropping the released j
 
 \subsection{As a Gradle project}
 
-The LPhy project is a Gradle project from the perspective of core developers. Gradle is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
+The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
 It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
-It integrates with a dependency manager, which helps developers to avoid ?dependency hell?. 
-Another attractive feature of Gradle is that it provides a rich API and many plugins to assist the build and release process, 
-which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
+It integrates with a dependency manager, which helps developers to avoid ``dependency hell". 
 
-\textcolor{blue}{TODO: Gradle citation?}
-
+Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
 
 % Results and Discussion can be combined.
 \section{Results}
 
 \subsection{The graphical user interface}
 
-Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A (Zlateva et al., 2004; Zlateva et al., 2005) is illustrated in Figure \ref{fig:lphystudio}. 
-
-\textcolor{blue}{TODO: the data set citation?}
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A \cite{zlateva2004molecular} is illustrated in Figure \ref{fig:lphystudio}. 
 
 \textcolor{blue}{TODO: do we still have Example \ref{lphy:rsva} ?}
 
@@ -885,6 +880,8 @@ They are classified into several categories for users to look up easily.
 
 Selecting a model or function, e.g. Figure \ref{fig:modelguide}, the user can find its usage, description, and the example scripts (they are accessible from LPhy Studio). For a published model, the citation is also provided for the convenience of learning, if it has DOI or book ISBN number, the hyperlink will lead the reader to the online publication.   
 
+\textcolor{blue}{TODO: Figure to suppl?}
+
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/modelguide.png}
   \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the citation of HKY85 model.} 
@@ -898,6 +895,8 @@ Simulations can ever be easy using the LPhy Studio. This can be simply done by l
 It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
 The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
 
+\textcolor{blue}{TODO: Figure to suppl?}
+
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/simulations100.png}
   \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model. The ``reps'' text field is used to define the number of simulations to run. The right panel shows the statistical summary of the simulated parameters.} 
@@ -905,25 +904,20 @@ The result of running 100 simulations from the simple HKY+Coalescent model is il
 \end{figure}
 
 
-\subsection{Integration with Bayesian inference frameworks}
-\textcolor{blue}{TODO}
-It also provides the ability for models specified in the LPhy language to be applied to data using standard inference tools
-such as MrBayes, RevBayes, BEAST1 and BEAST2
-\cite{bouckaert2014beastanalysis,DrummondBouckaert2015,bouckaert2019beastanalysis}.
+\subsection{Integration with Bayesian phylogenetic inference frameworks}
 
-This will require software that can convert an LPhy specification into
-an input file that these inference engines understand.
-The first such software converter is LPhyBEAST described below.
+LPhy specifies the models, but we also provide an integration with BEAST2 \cite{bouckaert2014beastanalysis,bouckaert2019beastanalysis}, called as LPhyBEAST, for the models specified in the LPhy language to be applied to data using Bayesian inference.
+It is a command-line program that takes a LPhy script file including model specification and data block, and then produces a BEAST2 XML file. 
+It is therefore an alternative way to succinctly express and communicate BEAST2 analyses.
 
-LPhyBEAST is a command-line program that takes an LPhy model
-specification, and some data and produces a BEAST 2 XML input file.
-It is therefore an alternative way to succinctly express and
-communicate BEAST analyses.
-
-
+More Integrations are proposing to convert an LPhy specification into an input file that other popular Bayesian phylogenetic inference tools, such as BEAST1\cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes}, RevBayes\cite{hohna2016revbayes}, etc., can understand.
 
 
 \subsection{Model validation is necessary}
+
+It is important to validate the model before publishing it.
+
+Phylonco model validation example?
 
 \textcolor{blue}{TODO: Kylie ?}
 
