@@ -12,6 +12,7 @@ import java.util.TreeMap;
 public class Model {
 
     private final String name;
+    private String narrativeName;
     private String description;
     private GeneratorCategory category;
     private String[] examples;
@@ -33,6 +34,7 @@ public class Model {
                 name = cls.getSimpleName();
             } else {
                 name = generatorInfo.name();
+                narrativeName = generatorInfo.narrativeName();
                 description = generatorInfo.description();
                 category = generatorInfo.category();
                 examples = generatorInfo.examples();
@@ -59,6 +61,11 @@ public class Model {
 
     public String getName() {
         return name;
+    }
+
+    public String getNarrativeName() {
+        if (narrativeName == null) return "";
+        return narrativeName;
     }
 
     public String getDescription() {

@@ -68,9 +68,13 @@ public class LatexPane extends JTextPane {
                 key = NarrativeUtils.getCitationKey(citation, "et. al.");
                 refMap.put(key, citation);
             }
-            builder.append(INDENT).append(model.getName()).append(" & ").append(key);
+            // Latex table rows here
+            builder.append(INDENT).append(model.getName()).append(" & ").
+                    append(model.getNarrativeName());
             if (!key.isEmpty()) // \cite{key}, key must be valid in biblatex
                 builder.append("\\cite{").append(sanitizeKey(key)).append("}");
+            // examples
+            builder.append(" & ").append(String.join(", ", model.getExamples()));
             builder.append("\\\\  \n");
 
             if (i >= MAX_ROW_1ST_PAGE && (i-MAX_ROW_1ST_PAGE) % MAX_ROW_PER_PAGE == 0) {
@@ -97,9 +101,9 @@ public class LatexPane extends JTextPane {
     }
 
     private void tableBegin(StringBuilder builder) {
-        builder.append("\n\\begin{tabular}{ l | c }\n").append(INDENT).append("\\hline\\hline\n")
+        builder.append("\n\\begin{tabular}{ l | l | l }\n").append(INDENT).append("\\hline\\hline\n")
                 // column header
-                .append(INDENT).append("Model & Citation \\\\ \n")
+                .append(INDENT).append("Name & Brief & Examples \\\\ \n")
                 .append(INDENT).append("\\hline\\hline\n");
     }
 
