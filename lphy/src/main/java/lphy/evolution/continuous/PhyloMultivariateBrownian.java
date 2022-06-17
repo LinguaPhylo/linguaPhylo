@@ -41,7 +41,7 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
 
     @GeneratorInfo(name = "PhyloMultivariateBrownian", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic multivariate Brownian motion process",
-            category = GeneratorCategory.STOCHASTIC_PROCESS, examples = {"simplePhyloMultivariateBrownian.lphy"},
+            category = GeneratorCategory.SAMPLING_DIST, examples = {"simplePhyloMultivariateBrownian.lphy"},
             description = "The phylogenetic multivariate Brownian motion distribution.")
     public RandomVariable<ContinuousCharacterData> sample() {
 

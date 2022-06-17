@@ -42,7 +42,7 @@ public class NormalGamma extends PriorDistributionGenerator<Double[]> {
     }
 
     @GeneratorInfo(name = "NormalGamma", verbClause = "has", narrativeName = "normal-gamma prior",
-            category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal-gamma probability distribution.")
     public RandomVariable<Double[]> sample() {
         double T = gammaDistribution.sample();

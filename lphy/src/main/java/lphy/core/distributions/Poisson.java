@@ -54,7 +54,7 @@ public class Poisson extends PriorDistributionGenerator<Integer> implements Gene
     }
 
     @GeneratorInfo(name="Poisson",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"expression4.lphy","simpleRandomLocalClock2.lphy"},
             description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {

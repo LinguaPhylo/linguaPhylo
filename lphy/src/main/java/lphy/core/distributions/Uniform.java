@@ -31,7 +31,7 @@ public class Uniform extends PriorDistributionGenerator<Double> implements Gener
     }
 
     @GeneratorInfo(name = "Uniform",
-            category = GeneratorCategory.PROB_DIST, examples = {"simFossilsCompact.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"simFossilsCompact.lphy"},
             description = "The uniform probability distribution.")
     public RandomVariable<Double> sample() {
 

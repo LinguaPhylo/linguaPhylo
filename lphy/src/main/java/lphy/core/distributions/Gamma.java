@@ -47,7 +47,7 @@ public class Gamma extends PriorDistributionGenerator<Double> implements Generat
     }
 
     @GeneratorInfo(name = "Gamma", verbClause = "has", narrativeName = "gamma distribution prior",
-            category = GeneratorCategory.PROB_DIST, examples = {"covidDPG.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"covidDPG.lphy"},
             description = "The gamma probability distribution.")
     public RandomVariable<Double> sample() {
         // constructDistribution() only required in constructor and setParam

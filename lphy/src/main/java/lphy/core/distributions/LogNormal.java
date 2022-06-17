@@ -42,7 +42,7 @@ public class LogNormal extends PriorDistributionGenerator<Double> implements Gen
     }
 
     @GeneratorInfo(name = "LogNormal", verbClause = "has", narrativeName = "log-normal prior",
-            category = GeneratorCategory.PROB_DIST, examples = {"hkyCoalescent.lphy","errorModel1.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"hkyCoalescent.lphy","errorModel1.lphy"},
             description = "The log-normal probability distribution.")
     public RandomVariable<Double> sample() {
         // constructDistribution() only required in constructor and setParam

@@ -28,7 +28,7 @@ public class DiscreteUniform extends PriorDistributionGenerator<Integer> {
     protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name = "DiscreteUniform",
-            category = GeneratorCategory.PROB_DIST, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
             description = "The discrete uniform distribution over integers.")
     public RandomVariable<Integer> sample() {
 

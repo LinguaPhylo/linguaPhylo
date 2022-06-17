@@ -26,7 +26,7 @@ public class Bernoulli extends PriorDistributionGenerator<Boolean> {
     protected void constructDistribution(RandomGenerator random) { }
 
     @GeneratorInfo(name="Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"simpleBModelTest.lphy","simpleBModelTest2.lphy"},
             description="The coin toss distribution. With true (heads) having probability p.")
     public RandomVariable<Boolean> sample() {

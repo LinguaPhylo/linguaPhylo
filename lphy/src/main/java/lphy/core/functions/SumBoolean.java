@@ -12,7 +12,7 @@ public class SumBoolean extends DeterministicFunction<Integer> {
     }
 
     @GeneratorInfo(name = "hammingWeight",
-            category = GeneratorCategory.PROB_DIST, examples = {"simpleRandomLocalClock2.lphy","covidDPG.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"simpleRandomLocalClock2.lphy","covidDPG.lphy"},
             description = "The sum of the true elements of the given boolean array")
     public Value<Integer> apply() {
         Boolean[] x = (Boolean[])getParams().get(arrayParamName).value();

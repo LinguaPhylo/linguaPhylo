@@ -46,7 +46,7 @@ public class InverseGamma extends PriorDistributionGenerator<Double> implements 
     }
 
     @GeneratorInfo(name = "InverseGamma",
-            category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"totalEvidence.lphy"},
             description = "The inverse-gamma probability distribution.")
     public RandomVariable<Double> sample() {
         // constructDistribution() only required in constructor and setParam

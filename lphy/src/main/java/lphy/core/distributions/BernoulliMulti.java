@@ -45,7 +45,7 @@ public class BernoulliMulti extends PriorDistributionGenerator<Boolean[]> {
     }
 
     @GeneratorInfo(name = "Bernoulli", verbClause = "has", narrativeName = "coin toss distribution prior",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"simpleRandomLocalClock.lphy", "https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},
             description = "The Bernoulli process for n iid trials. The success (true) probability is p. Produces a boolean n-tuple.")
     public RandomVariable<Boolean[]> sample() {

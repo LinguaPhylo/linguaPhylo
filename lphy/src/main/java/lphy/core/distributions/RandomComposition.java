@@ -25,7 +25,7 @@ public class RandomComposition extends PriorDistributionGenerator<Integer[]> {
     }
 
     @GeneratorInfo(name = "RandomComposition",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"skylineCoalescent.lphy", "https://linguaphylo.github.io/tutorials/skyline-plots/"},
             description = "Samples a random "+ kParamName + "-tuple of positive integers that sum to " + nParamName + ".")
     public RandomVariable<Integer[]> sample() {

@@ -45,7 +45,7 @@ public class Normal extends PriorDistributionGenerator<Double> implements Genera
     }
 
     @GeneratorInfo(name = "Normal", verbClause = "has", narrativeName = "normal prior",
-            category = GeneratorCategory.PROB_DIST, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal probability distribution.")
     public RandomVariable<Double> sample() {
         // constructDistribution() only required in constructor and setParam

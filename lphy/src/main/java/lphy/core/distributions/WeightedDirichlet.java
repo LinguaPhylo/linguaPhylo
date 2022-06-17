@@ -33,7 +33,7 @@ public class WeightedDirichlet extends PriorDistributionGenerator<Double[]> {
     protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name = "WeightedDirichlet",
-            category = GeneratorCategory.PROB_DIST, examples = {"totalEvidence.lphy","weightedDirichlet.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"totalEvidence.lphy","weightedDirichlet.lphy"},
             description = "The scaled dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
 

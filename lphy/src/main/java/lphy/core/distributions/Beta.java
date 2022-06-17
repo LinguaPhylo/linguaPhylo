@@ -42,7 +42,7 @@ public class Beta extends PriorDistributionGenerator<Double> implements Generati
     }
 
     @GeneratorInfo(name = "Beta", verbClause = "has", narrativeName = "Beta distribution prior",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"birthDeathRhoSampling.lphy","simpleBModelTest.lphy"},
             description = "The beta probability distribution.")
     public RandomVariable<Double> sample() {

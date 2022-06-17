@@ -34,7 +34,7 @@ public class Geometric extends PriorDistributionGenerator<Integer> implements Ge
         geom = new GeometricDistribution(random, p.value());
     }
 
-    @GeneratorInfo(name="Geometric", category = GeneratorCategory.PROB_DIST,
+    @GeneratorInfo(name="Geometric", category = GeneratorCategory.PRIOR,
             description="The probability distribution of the number of failures before the first success given a fixed probability of success p, supported on the set { 0, 1, 2, 3, ... }.")
     public RandomVariable<Integer> sample() {
        return new RandomVariable<>(null, geom.sample(), this);

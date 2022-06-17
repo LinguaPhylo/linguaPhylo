@@ -44,7 +44,7 @@ public class Cauchy extends PriorDistributionGenerator<Double> {
     }
 
     @GeneratorInfo(name = "Cauchy", verbClause = "has", narrativeName = "Cauchy distribution prior",
-            category = GeneratorCategory.PROB_DIST, description = "The Cauchy distribution.")
+            category = GeneratorCategory.PRIOR, description = "The Cauchy distribution.")
     public RandomVariable<Double> sample() {
         double x = cauchyDistribution.sample();
         return new RandomVariable<>("x", x, this);

@@ -27,7 +27,7 @@ public class Dirichlet extends PriorDistributionGenerator<Double[]> {
     protected void constructDistribution(RandomGenerator random) {  }
 
     @GeneratorInfo(name="Dirichlet", verbClause = "have", narrativeName = "Dirichlet distribution prior",
-            category = GeneratorCategory.PROB_DIST,
+            category = GeneratorCategory.PRIOR,
             examples = {"birthDeathRhoSampling.lphy","dirichlet.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description="The dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {

@@ -44,7 +44,7 @@ public class DiscretizedGamma extends PriorDistributionGenerator<Double> {
 
 
     @GeneratorInfo(name = "DiscretizeGamma",
-            category = GeneratorCategory.PROB_DIST, examples = {"gtrGammaCoalescent.lphy","simpleBModelTest.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"gtrGammaCoalescent.lphy","simpleBModelTest.lphy"},
             description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double> sample() {
 

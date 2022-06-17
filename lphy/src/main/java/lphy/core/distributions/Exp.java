@@ -40,7 +40,7 @@ public class Exp extends PriorDistributionGenerator<Double> implements Generativ
     }
 
     @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",
-            category = GeneratorCategory.PROB_DIST, examples = {"birthDeathRhoSampling.lphy","yuleRelaxed.lphy"},
+            category = GeneratorCategory.PRIOR, examples = {"birthDeathRhoSampling.lphy","yuleRelaxed.lphy"},
             description="The exponential probability distribution.")
     public RandomVariable<Double> sample() {
         double x = - Math.log(random.nextDouble()) * getMean();

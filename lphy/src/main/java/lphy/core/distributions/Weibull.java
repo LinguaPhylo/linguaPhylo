@@ -40,7 +40,7 @@ public class Weibull extends PriorDistributionGenerator<Double> {
                 DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
-    @GeneratorInfo(name = "Weibull", category = GeneratorCategory.PROB_DIST,
+    @GeneratorInfo(name = "Weibull", category = GeneratorCategory.PRIOR,
             description = "The Weibull distribution.")
     public RandomVariable<Double> sample() {
 

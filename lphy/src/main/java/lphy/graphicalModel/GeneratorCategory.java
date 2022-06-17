@@ -15,9 +15,9 @@ public enum GeneratorCategory {
     COAL_TREE("Coalescent tree","Coalescent tree priors"),
     BD_TREE("Birth-death tree","Birth-death tree priors"),
     TREE("Tree functions","Functions related to the tree"),
-    PROB_DIST("Probability distribution","Prior probability distributions"),
-    STOCHASTIC_PROCESS("Stochastic process",
-            "Stochastic Processes, e.g. continuous-time Markov chain (CTMC) and Brownian motion"),
+    PRIOR("Prior distribution","Prior probability distributions"),
+    SAMPLING_DIST("Sampling distribution",
+            "The sampling distribution that the phylogenetic likelihood is derived from"),
     MODEL_AVE_SEL("Model averaging","Model averaging or model selection"),
     NONE("None","Utils or unclassified models"); // last element is only for GUI
 
