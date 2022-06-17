@@ -1,9 +1,6 @@
 package lphy.core.distributions;
 
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.graphicalModel.*;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -43,7 +40,8 @@ public class Weibull extends PriorDistributionGenerator<Double> {
                 DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
-    @GeneratorInfo(name = "Weibull", description = "The Weibull distribution.")
+    @GeneratorInfo(name = "Weibull", category = GeneratorCategory.PROB_DIST,
+            description = "The Weibull distribution.")
     public RandomVariable<Double> sample() {
 
         double randomVariable = weibullDistribution.sample();
