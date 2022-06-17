@@ -28,6 +28,7 @@ public class GeneralTimeReversible extends RateMatrix {
         update(rates, freq);
     }
 
+    // cannot have verbClause and narrativeName here, see tutorials/h5n1.lphy
     @GeneratorInfo(name = "generalTimeReversible",
             category = GeneratorCategory.RATE_MATRIX,
             examples = {"https://linguaphylo.github.io/tutorials/discrete-phylogeography/"},

@@ -36,7 +36,7 @@ public class GTR extends RateMatrix {
         setParam(freqParamName, freq);
     }
 
-    @GeneratorInfo(name = "gtr", verbClause = "is", narrativeName = "general time-reversible rate matrix",
+    @GeneratorInfo(name = "gtr", verbClause = "is", narrativeName = "GTR model",
             category = GeneratorCategory.RATE_MATRIX, examples = {"gtrCoalescent.lphy"},
             description = "The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.")
     public Value<Double[][]> apply() {
