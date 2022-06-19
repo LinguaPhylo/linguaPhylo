@@ -62,15 +62,15 @@ Tables XX to XX
     Function & Brief & Examples \\ 
     \hline\hline
     binaryRateMatrix & binary trait instantaneous rate matrix & errorModel1.lphy, errorModel2.lphy\\  
-    f81 & F81 model\cite{Felsenstein1981} & f81Coalescent.lphy\\  
+    f81 & F81 model\cite{felsenstein1981} & f81Coalescent.lphy\\  
     generalTimeReversible & general time reversible instantaneous rate matrix & h5n1.lphy \\  
-    gtr & GTR model\cite{Tavare1986} & gtrCoalescent.lphy\\  
-    hky & HKY model\cite{Hasegawa_et_al_1985} & hkyCoalescent.lphy\\  
-    jukesCantor & Jukes-Cantor model\cite{Jukes&Cantor1969} & jcCoalescent.lphy\\  
-    k80 & K80 model\cite{Kimura1980} & \\  
-    lewisMK & LewisMK model\cite{Lewis2001} & lewisMKCoalescent.lphy\\  
+    gtr & GTR model\cite{tarvare1986some} & gtrCoalescent.lphy\\  
+    hky & HKY model\cite{hasegawa1985dating} & hkyCoalescent.lphy\\  
+    jukesCantor & Jukes-Cantor model\cite{jc69} & jcCoalescent.lphy\\  
+    k80 & K80 model\cite{kimura1980simple} & \\  
+    lewisMK & LewisMK model\cite{lewis2001likelihood} & lewisMKCoalescent.lphy\\  
     migrationMatrix & population process rate matrix & simpleStructuredCoalescent.lphy\\  
-    wag & WAG model\cite{Whelan&Goldman2001} & wagCoalescent.lphy\\  
+    wag & WAG model\cite{whelan2001general} & wagCoalescent.lphy\\  
     \hline
 \end{tabular}
 
@@ -85,9 +85,9 @@ Tables XX to XX
     Generative distribution & Brief & Examples \\ 
     \hline\hline
     MultispeciesCoalescent & multispecies coalescent prior & simpleMultispeciesCoalescent.lphy, simpleMultispeciesCoalescentTaxa.lphy, twoGeneMultispeciesCoalescent.lphy\\  
-    Coalescent & Kingman's coalescent tree prior\cite{Rodrigo&Felsenstein1999} & RSV2.lphy \\  
-    SkylineCoalescent & skyline coalescent prior\cite{Drummond_et_al_2005} & hcv\_col.lphy\\  
-    StructuredCoalescent & Structured coalescent prior\cite{Muller_et_al_2017} & simpleStructuredCoalescent.lphy\\  
+    Coalescent & Kingman's coalescent tree prior\cite{Rodrigo1999SerialCoalescent} & RSV2.lphy \\  
+    SkylineCoalescent & skyline coalescent prior\cite{drummond2005bayesiansequences} & hcv\_col.lphy\\  
+    StructuredCoalescent & Structured coalescent prior\cite{muller2017structured} & simpleStructuredCoalescent.lphy\\  
     \hline
 \end{tabular}
 
@@ -100,16 +100,16 @@ Tables XX to XX
     \hline\hline
     Generative distribution & Brief & Examples \\ 
     \hline\hline
-    BirthDeathSampling & birth-death-sampling tree\cite{Stadler2011,Stadler_et_al_2012} & birthDeathRhoSampling.lphy\\  
-    BirthDeathSerialSampling & birth-death serial sampling tree\cite{Stadler&Yang2013} & simpleBirthDeathSerial.lphy\\  
-    BirthDeath & calibrated birth-death\cite{Heled&Drummond2015} & simpleCalibratedBirthDeath.lphy, simpleExtantBirthDeath.lphy\\  
-    FossilBirthDeathTree & fossilized birth-death process\cite{Heath_et_al_2014} & simFossilsCompact.lphy\\  
-    FullBirthDeath & birth-death tree\cite{Kendall1948} & simpleFullBirthDeath.lphy\\  
+    BirthDeathSampling & birth-death-sampling tree\cite{stadler2011mammalian,stadler2012estimatingdata} & birthDeathRhoSampling.lphy\\  
+    BirthDeathSerialSampling & birth-death serial sampling tree\cite{stadler2013dating} & simpleBirthDeathSerial.lphy\\  
+    BirthDeath & calibrated birth-death\cite{heled2015calibrated} & simpleCalibratedBirthDeath.lphy, simpleExtantBirthDeath.lphy\\  
+    FossilBirthDeathTree & fossilized birth-death process\cite{heath2014fossilized} & simFossilsCompact.lphy\\  
+    FullBirthDeath & birth-death tree\cite{kendall1948generalized} & simpleFullBirthDeath.lphy\\  
     RhoSampleTree & birth-death tree sampled from a larger tree & \\  
     SimBDReverse & complete birth-death tree with both extant and extinct species & simFossils.lphy\\  
     SimFBDAge & A tree of extant species and those sampled through time & simFBDAge.lphy\\  
     SimFossilsPoisson & A tree with fossils added to the given tree at rate psi & simFossils.lphy\\  
-    Yule & Yule tree\cite{Yule1925} & simpleYule.lphy, yuleRelaxed.lphy\\  
+    Yule & Yule tree\cite{yule1925ii} & simpleYule.lphy, yuleRelaxed.lphy\\  
     \hline
 \end{tabular}
 
@@ -122,10 +122,10 @@ Tables XX to XX
     \hline\hline
     Generative distribution & Brief & Examples \\ 
     \hline\hline
-    PhyloBrownian & phylogenetic Brownian motion process\cite{Felsenstein1973} & simplePhyloOU.lphy\\  
-    PhyloCTMC & phylogenetic continuous time Markov process\cite{Felsenstein1981} & simpleBModelTest.lphy\\  
+    PhyloBrownian & phylogenetic Brownian motion process\cite{felsenstein1973maximum} & simplePhyloOU.lphy\\  
+    PhyloCTMC & phylogenetic continuous time Markov process\cite{felsenstein1981} & simpleBModelTest.lphy\\  
     PhyloMultivariateBrownian & phylogenetic multivariate Brownian motion process & simplePhyloMultivariateBrownian.lphy\\  
-    PhyloOU & phylogenetic Ornstein-Ulhenbeck process\cite{Felsenstein1973} & simplePhyloBrownian.lphy\\  
+    PhyloOU & phylogenetic Ornstein-Ulhenbeck process\cite{felsenstein1973maximum} & simplePhyloBrownian.lphy\\  
     \hline
 \end{tabular}
 
@@ -145,7 +145,7 @@ Tables XX to XX
     DiscreteUniform & discrete-uniform prior & simpleBModelTest.lphy, simpleBModelTest2.lphy\\  
     DiscretizeGamma &  discretize-gamma prior & gtrGammaCoalescent.lphy, simpleBModelTest.lphy\\  
     Exp & exponential distribution prior & birthDeathRhoSampling.lphy, yuleRelaxed.lphy\\  
-    ExpMarkovChain & smoothing prior & skylineCoalescent.lphy\\  
+    ExpMarkovChain & smoothing prior\cite{drummond2005bayesiansequences} & skylineCoalescent.lphy\\  
     Gamma & gamma distribution prior & covidDPG.lphy\\  
     Geometric & geometric distribution prior & \\  
     InverseGamma & inverse-gamma  distribution prior & totalEvidence.lphy\\  
@@ -185,7 +185,7 @@ Tables XX to XX
     \hline\hline
     Function & Brief & Examples \\ 
     \hline\hline
-    nucleotideModel & bModelTest\cite{Bouckaert&Drummond2017} rate matrix & simpleBModelTest.lphy, simpleBModelTest2.lphy\\  
+    nucleotideModel & bModelTest\cite{bouckaert2017bmodeltestcomparison} rate matrix & simpleBModelTest.lphy, simpleBModelTest2.lphy\\  
     bModelSet & bModelTest model set & simpleBModelTest.lphy\\  
     bSiteRates & site rates for the given bModelTest parameters & simpleBModelTest2.lphy\\  
     bSiteModel & bModelTest site model & simpleBModelTest.lphy\\  
@@ -196,47 +196,9 @@ Tables XX to XX
 \end{table}
 
 
+\bibliographystyle{plain}
 
-\begin{thebibliography}{9}
-
-\bibitem{Felsenstein1981}
-Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.
-
-\bibitem{Tavare1986}
-Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. Lectures on mathematics in the life sciences, 17(2), 57-86.
-
-\bibitem{Hasegawa_et_al_1985}
-Hasegawa, M., Kishino, H. \& Yano, T. (1985) Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160--174
-
-\bibitem{Jukes&Cantor1969}
-Jukes, T. H., \& Cantor, C. R. (1969). Evolution of protein molecules. Mammalian protein metabolism, 3, 21-132.
-
-\bibitem{Kimura1980}
-Kimura, M. A simple method for estimating evolutionary rates of base substitutions
-through comparative studies of nucleotide sequences. J Mol Evol 16, 111--120 (1980). 
-
-\bibitem{Lewis2001}
-Lewis, P. O. (2001). A likelihood approach to estimating phylogeny from discrete morphological character data. Systematic biology, 50(6), 913-925.
-
-\bibitem{Bouckaert&Drummond2017}
-Bouckaert, R., Drummond, A. bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evol Biol 17, 42 (2017). https://doi.org/10.1186/s12862-017-0890-6
-
-\bibitem{Whelan&Goldman2001}
-Whelan, S., \& Goldman, N. (2001). A general empirical model of protein evolution derived from multiple protein families using a maximum-likelihood approach. Molecular biology and evolution, 18(5), 691-699.
-
-
-
-\bibitem{Rodrigo&Felsenstein1999}
-Rodrigo AG, Felsenstein J. (1999). Coalescent Approaches to HIV Population Genetics, The Evolution of HIV, Chapter 8, edited by Crandall K., Johns Hopkins Univ. Press, Baltimore.
-
-\bibitem{Drummond_et_al_2005}
-Drummond, A. J., Rambaut, A., Shapiro, B, \& Pybus, O. G. (2005).
-Bayesian coalescent inference of past population dynamics from molecular sequences.
-Molecular biology and evolution, 22(5), 1185-1192.
-
-\bibitem{Muller_et_al_2017}
-Müller, N. F., Rasmussen, D. A., \& Stadler, T. (2017). The structured coalescent and its approximations. Molecular biology and evolution, 34(11), 2970-2981.
-\end{thebibliography}
+\bibliography{linguaPhylo}
 
 
 \end{document}
