@@ -17,5 +17,7 @@ The structured coalescent distribution over tip-labelled time trees.
 
 - TimeTree
 
+### Reference
 
+Müller, N. F., Rasmussen, D. A., & Stadler, T. (2017). The structured coalescent and its approximations. Molecular biology and evolution, 34(11), 2970-2981.[https://doi.org/10.1093/molbev/msx186](https://doi.org/10.1093/molbev/msx186)
 

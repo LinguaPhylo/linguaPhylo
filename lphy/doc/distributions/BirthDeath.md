@@ -3,7 +3,7 @@ BirthDeath distribution
 BirthDeath(Number **lambda**, Number **mu**, Integer **n**, Object **taxa**, Number **rootAge**)
 ------------------------------------------------------------------------------------------------
 
-A tree of only extant species, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa.
+A tree of only extant species, which is conceptually embedded<br>in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>Conditioned on root age and on number of taxa.
 
 ### Parameters
 
@@ -17,7 +17,9 @@ A tree of only extant species, which is conceptually embedded in a full species 
 
 - TimeTree
 
+### Reference
 
+Joseph Heled, Alexei J. Drummond, Calibrated Birth–Death Phylogenetic Time-Tree Priors for Bayesian Inference, Systematic Biology, Volume 64, Issue 3, May 2015.[https://doi.org/10.1093/sysbio/syu089](https://doi.org/10.1093/sysbio/syu089)
 
 BirthDeath(Number **diversification**, Number **turnover**, Number **rootAge**)
 -------------------------------------------------------------------------------

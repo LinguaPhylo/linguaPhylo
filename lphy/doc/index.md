@@ -1,4 +1,4 @@
-LPhy Language Reference (version 1.2.0)
+LPhy Language Reference (version 1.3.0)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
@@ -9,6 +9,7 @@ Generative distributions
 - [BirthDeathSampling](distributions/BirthDeathSampling.md)
 - [BirthDeathSerialSampling](distributions/BirthDeathSerialSampling.md)
 - [BirthDeath](distributions/BirthDeath.md)
+- [Cauchy](distributions/Cauchy.md)
 - [Dirichlet](distributions/Dirichlet.md)
 - [DiscreteUniform](distributions/DiscreteUniform.md)
 - [DiscretizeGamma](distributions/DiscretizeGamma.md)
@@ -18,6 +19,7 @@ Generative distributions
 - [FossilBirthDeathTree](distributions/FossilBirthDeathTree.md)
 - [FullBirthDeath](distributions/FullBirthDeath.md)
 - [Gamma](distributions/Gamma.md)
+- [Geometric](distributions/Geometric.md)
 - [InverseGamma](distributions/InverseGamma.md)
 - [LogNormal](distributions/LogNormal.md)
 - [MultispeciesCoalescent](distributions/MultispeciesCoalescent.md)
@@ -38,6 +40,7 @@ Generative distributions
 - [SkylineCoalescent](distributions/SkylineCoalescent.md)
 - [StructuredCoalescent](distributions/StructuredCoalescent.md)
 - [Uniform](distributions/Uniform.md)
+- [Weibull](distributions/Weibull.md)
 - [WeightedDirichlet](distributions/WeightedDirichlet.md)
 - [Yule](distributions/Yule.md)
 - [bSiteRates](distributions/bSiteRates.md)
@@ -45,6 +48,7 @@ Generative distributions
 Functions
 ---------
 - [arange](functions/arange.md)
+- [aminoAcids](functions/aminoAcids.md)
 - [argi](functions/argi.md)
 - [bModelSet](functions/bModelSet.md)
 - [binaryDataType](functions/binaryDataType.md)
@@ -74,7 +78,7 @@ Functions
 - [nucleotides](functions/nucleotides.md)
 - [parseInt](functions/parseInt.md)
 - [pruneTree](functions/pruneTree.md)
-- [Range](functions/Range.md)
+- [rangeInt](functions/rangeInt.md)
 - [readFasta](functions/readFasta.md)
 - [readNexus](functions/readNexus.md)
 - [rep](functions/rep.md)
@@ -110,6 +114,7 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
+- [MetaDataAlignment](types/MetaDataAlignment.md)
 - [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)
 

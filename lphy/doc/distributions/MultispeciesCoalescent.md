@@ -14,7 +14,7 @@ The Kingman coalescent distribution within each branch of species tree gives ris
 
 ### Return type
 
-- Object
+- TimeTree
 
 
 

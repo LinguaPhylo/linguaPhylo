@@ -17,5 +17,5 @@ The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optio
 
 ### Reference
 
-Hasegawa, M., Kishino, H. & Yano, T. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174 (1985)[https://doi.org/10.1007/BF02101694](https://doi.org/10.1007/BF02101694)
+Hasegawa, M., Kishino, H. & Yano, T. (1985) Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. J Mol Evol 22, 160–174[https://doi.org/10.1007/BF02101694](https://doi.org/10.1007/BF02101694)
 

@@ -3,7 +3,7 @@ readFasta function
 readFasta(String **file**, Object **options**)
 ----------------------------------------------
 
-A function that parses an alignment from a Nexus file.
+A function that parses an alignment from a fasta file.
 
 ### Parameters
 

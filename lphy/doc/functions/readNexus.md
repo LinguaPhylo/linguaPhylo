@@ -12,7 +12,7 @@ A function that parses an alignment from a Nexus file.
 
 ### Return type
 
-- Alignment
+- MetaDataAlignment
 
 
 

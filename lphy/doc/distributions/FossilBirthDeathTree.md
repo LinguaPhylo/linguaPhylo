@@ -18,5 +18,7 @@ A tree of extant species and those sampled through time, which is conceptually e
 
 - TimeTree
 
+### Reference
 
+Tracy A. Heath, John P. Huelsenbeck, and Tanja Stadler, The fossilized birth–death process for coherent calibration of divergence-time estimates, Proceedings of the National Academy of Sciences, 111 (29), 2014.[https://doi.org/10.1073/pnas.1319091111](https://doi.org/10.1073/pnas.1319091111)
 

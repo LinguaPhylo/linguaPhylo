@@ -3,6 +3,8 @@ PhyloMultivariateBrownian distribution
 PhyloMultivariateBrownian(TimeTree **tree**, Double[][] **diffusionMatrix**, Double[] **y0**)
 ---------------------------------------------------------------------------------------------
 
+The phylogenetic multivariate Brownian motion distribution.
+
 ### Parameters
 
 - TimeTree **tree** - the time tree.

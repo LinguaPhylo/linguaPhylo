@@ -1,14 +1,14 @@
 Normal distribution
 ===================
-Normal(Double **mean**, Double **sd**)
+Normal(Number **mean**, Number **sd**)
 --------------------------------------
 
 The normal probability distribution.
 
 ### Parameters
 
-- Double **mean** - the mean of the distribution.
-- Double **sd** - the standard deviation of the distribution.
+- Number **mean** - the mean of the distribution.
+- Number **sd** - the standard deviation of the distribution.
 
 ### Return type
 

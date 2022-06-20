@@ -1,13 +1,13 @@
 Exp distribution
 ================
-Exp(Double **mean**)
+Exp(Number **mean**)
 --------------------
 
 The exponential probability distribution.
 
 ### Parameters
 
-- Double **mean** - the mean of an exponential distribution.
+- Number **mean** - the mean of an exponential distribution.
 
 ### Return type
 
