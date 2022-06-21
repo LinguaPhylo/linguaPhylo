@@ -514,8 +514,25 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 BModel test (rate matrix)
 
 
-\subsubsection{Brownian trait models}
-...
+\subsubsection{Sampling distributions}
+
+\textcolor{blue}{TODO: review, and citation multivariate Brownian}
+
+The continuous-time Markov chain (CTMC) \cite{felsenstein1981} generative distribution is one of fundamental sampling distributions in the LPhy language, which the phylogenetic likelihood is derived from. A sequence alignment is simulated for every leaf node, and every direct ancestor node with an id.
+
+There are also alternative sampling distributions developed in LPhy, such as the phylogenetic Brownian motion process\cite{felsenstein1973maximum}, its multivariate version\cite{}, and Ornstein-Ulhenbeck process\cite{felsenstein1973maximum}. Using them, a continuous trait can be simulated from specified models.
+For example, running the following LPhy script, $y$ containing 16 continuous values are simulated from a Yule tree $\psi$ with the root value $y0$ sampled from a normal distribution at the diffusion rate $\sigma$ sampled from a log-normal distribution.
+
+{\singlespacing
+\begin{alltt}
+  \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
+  \textcolor{green}{\(\sigma\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{0.5});
+  \textcolor{green}{\(y0\)} ~ \textcolor{blue}{Normal}(\textcolor{gray}{mean=}\textcolor{magenta}{0.0}, \textcolor{gray}{sd=}\textcolor{magenta}{1.0});
+  \textcolor{green}{\(y\)} ~ \textcolor{blue}{PhyloBrownian}(\textcolor{gray}{diffRate=}\textcolor{green}{\(\sigma\)}, \textcolor{gray}{y0=}\textcolor{green}{\(y0\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+\end{alltt}
+}
+
 
 \subsubsection{Variable vectorization}
 There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
