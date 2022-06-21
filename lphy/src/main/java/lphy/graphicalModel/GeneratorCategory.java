@@ -16,7 +16,7 @@ public enum GeneratorCategory {
     BD_TREE("Birth-death tree","Birth-death tree priors"),
     TREE("Tree functions","Functions related to the tree"),
     PRIOR("Prior distribution","Prior probability distributions"),
-    SAMPLING_DIST("Sampling distribution",
+    PHYLO_LIKELIHOOD("Phylogenetic likelihood",
             "The sampling distribution that the phylogenetic likelihood is derived from"),
     MODEL_AVE_SEL("Model averaging","Model averaging or model selection"),
     NONE("None","Utils or unclassified models"); // last element is only for GUI
