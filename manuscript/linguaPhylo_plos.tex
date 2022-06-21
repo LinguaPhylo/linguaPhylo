@@ -310,12 +310,41 @@ Additionally, we introduce a tool, LPhyBEAST, for integrating model specificatio
 The software presented in this paper aims to make it easier to report,
 validate and simulate complex phylogenetic models, as well as to reproduce and re-use phylogenetic analyses.
 
+
 \section{Methods}
 % \section*{Design and Implementation}
 % \subsection*{A concise domain-specific language for phylogenetic inference}
-The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax. 
-It is built on top of Java and provides the following features: 
-(i) data simulation from phylogenetic generative distributions, (ii) R-style vectorization of parameters, (iii) extensibility mechanism for new functions and data types, (iv) integration with phylogenetic inference software such as BEAST2, and (v) easy dataset swapping for re-use of phylogenetic models on new datasets.
+The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax.  
+The LPhy framework is built on top of the Java programming language and provides features for: 
+(i) concise specification of phylogenetic models, (ii) data simulation from phylogenetic models, (iii) specification of phylogenetic analyses on real or synthetic data, (iv) integration with the BEAST2 phylogenetic inference framework, and (v) an extensibility mechanism for adding new functions and data types to the LPhy language.
+
+This framework is aimed to improve the communication of phylogenetic models by providing a language for evolutionary biologists to succinctly describe complex phylogenetic models and their priors. 
+LPhy is the first software to provide precise text descriptions and graphical figures of phylogenetic models that are automatically generated from computer readible scripts.  
+
+In addition this this, LPhy is also designed to facilitate computational biologists to more easily develop, validate and test new phylogenetic models. 
+Computational biologists are able to add new simulators by extending LPhy datatypes and generators and integrate with inference software (e.g., BEAST2 with the LPhyBeast package). 
+The LPhyBeast package allows Bayesian phylogenetic inference to be performed on the simulated data, which can be used to validate and test model implementations. 
+New models developed within the LPhy framework will allow data simulation from a rich set of tree priors, molecular clocks, and substitution models. 
+
+% \begin{itemize}
+% \item for evolutionary biologists
+% \begin{enumerate}
+% \item describe complex phylogenetic models succinctly and exactly
+% \item simulate prior distributions from these models, including arbitrary statistics
+% \item use model description to run inference on a real data set using LPhyBEAST
+% \item produce precise methods section and graphical model figure for describing analyses in published works
+% \end{enumerate}
+% \item for computational biologists
+% \begin{enumerate}
+% \item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
+% \item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
+% \item do well-calibrated simulation study that validate the implementation of inference framework
+% \end{enumerate}
+% \end{itemize}
+
+% \newline
+
+\subsection{Example LPhy script}
 
 Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
 This script concisely specifies a phylogenetic analysis using 19 lines of code.  
@@ -356,30 +385,29 @@ The code contains a \textbf{data block} for specifying the input dataset, and a 
 }
 
 
-\subsection{Language features}
-\textcolor{blue}{TODO: Rewrite to improve clarity, and split between language and model features}
-% Similar to other programming languages, LPhy allows variables to be declared as primitives, objects or arrays.
+\subsection{Language and model features}
 The LPhy language provides a simple syntax for simulating and specifying phylogenetic models.
-LPhy allows users to simulate data using tree generative distributions (e.g., birth-death or coalescent processes), sequence generators (e.g., substitution models \cite{gtr}), and common statistical distributions (e.g., Normal distribution). %, tree data and sequence alignment data. 
+LPhy allows users to simulate trees using tree prior models (e.g., birth-death or coalescent processes), genomic sequences using substitution models (e.g., GTR \cite{gtr}), and also supports simulating variables from common statistical distributions (e.g., Normal distribution). 
 
-An LPhy model consists of generators and variables with `datatypes'. 
-These `datatypes' can be sequence alignments, trees, primitives (e.g., doubles and strings), or arrays. 
+An LPhy model consists of generators which simulate data (e.g., trees, sequences, variables) and variables that have `datatypes'. 
+The `datatypes' include sequence alignments, trees, primitives (e.g., doubles and strings), and arrays. 
 The data can be simulated using LPhy sequence generators, or loaded from external nexus or fasta files. 
 An input API is provided to parse input sequences from nexus and fasta formats and trees from newick format into `LPhy datatypes'. 
-Table \ref{tab:generators} shows a summary of generators and methods available in LPhy. 
+Table \ref{tab:generators} shows a summary of models and input parsing methods available in LPhy. 
+A full list of available methods are shown in the suppplementary table XX.
 
 \begin{table}[h]
-  \caption{A list of generators and methods in the LinguaPhylo language.}
+  \caption{A list of models and input parsers in the LinguaPhylo language.}
   \begin{tabular}{|l|l|l|}
     \hline
     Method type & Example & Reference \\\hline
-    Probabilistic distributions & \texttt{Uniform()} &\\
+    Prior distributions & \texttt{Uniform()} &\\
               & \texttt{Normal()} &\\
               & \texttt{LogNormal()} &\\
               & \texttt{Exponential()} &\\
               & \texttt{Gamma()} &\\
               & \texttt{Dirichlet()} &\\ \hline
-    Tree generators & \texttt{Yule()} & \cite{yule1925ii}\\
+    Tree prior models & \texttt{Yule()} & \cite{yule1925ii}\\
               & \texttt{BirthDeath()} &\\
               & \texttt{FullBirthDeath()} &\\
               & \texttt{BirthDeathSampling()} &\\
@@ -388,24 +416,24 @@ Table \ref{tab:generators} shows a summary of generators and methods available i
               & \texttt{SkylineCoalescent()} & \cite{pybus00,drummond2005bayesiansequences}\\
               & \texttt{StructuredCoalescent()} &\\
               & \texttt{MultispeciesCoalescent()} &\\\hline
-    Sequence generators & \texttt{jukesCantor()} & \cite{jc69}\\
+    Substitution models & \texttt{jukesCantor()} & \cite{jc69}\\
               & \texttt{hky()} & \cite{hky}\\
               & \texttt{gtr()} & \cite{gtr}\\ \hline
     Input parsers & \texttt{newick()} &\\
               & \texttt{readNexus()} &\\\hline
-    Other methods & \texttt{length()} &\\
-    & \texttt{nchar()} &\\
-    & \texttt{taxa()} &\\ \hline
+    % Other methods & \texttt{length()} &\\
+    % & \texttt{nchar()} &\\
+    % & \texttt{taxa()} &\\ \hline
   \end{tabular}
   \label{tab:generators}
 \end{table}
 
 
-\subsubsection{General probabilistic distributions}
+\subsubsection{Prior distributions}
 LPhy provides methods that allow users to generate values from common statistical distributions such as the Normal distribution, Dirichlet distribution, and LogNormal distribution. 
-A full list of distributions available are summarized in Table \ref{tab:generators}. 
+A selected list of distributions available are shown in Table \ref{tab:generators}. 
 
-In the script below, the `LogNormal()' method is used to generate the variables $\mu$ and $\theta$. 
+In the example script below, the `LogNormal()' method is used to generate the variables $\mu$ and $\theta$. 
 Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
 The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
 
@@ -425,7 +453,7 @@ For example, the variable $\mu$ can be modified to generate twenty values instea
 \end{alltt}
 }
 
-\subsubsection{Tree generators}
+\subsubsection{Tree prior models}
 Tree generators enable users to generate phylogenetic trees from birth-death processes or coalescent processes. 
 {\small
   \begin{alltt}
@@ -435,12 +463,61 @@ Tree generators enable users to generate phylogenetic trees from birth-death pro
 The line above from Example \ref{lphy:rsva} specifies that the
 phylogenetic tree \texttt{$\psi$} is sampled from a
 constant-population size coalescent tree prior \cite{kingman82}.
-\newline
+\newline 
 
-\subsubsection{Sequence generators}
+\noindent{} \textbf{Structured coalescent model}
+\newline
+A structured coalescent process takes a migration matrix (M) with
+population sizes of each deme on the diagonal:
+For K demes, theta is an K-tuple and the dimension of m is $K^2 -
+K$. $n$ is a tuple of sample sizes, one dimension for each deme:
+
+\begin{alltt}
+  M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
+  g ~ StructuredCoalescent(M=M, n=[15, 15]);
+\end{alltt}
+
+\noindent{} \textbf{Skyline model}
+\newline
+The following generative distribution call will produce a tree of size
+n=11 taxa, since 4+3+2+1=10= coalescent intervals.
+The first four intervals will all have theta=0.1, the next three will
+have theta=0.2, the next two will have theta=0.3, and the last
+coalescent interval will have theta=0.4:
+
+\begin{alltt}
+  g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
+\end{alltt}
+
+
+\noindent{} \textbf{Serially sampled birth-death model}
+\newline
+A birth-death-serial-sampling \cite{stadler2013dating} process adds a fourth parameter (psi), the rate of sampling each lineage per unit time.
+Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled).
+
+\begin{alltt}
+  ages = [0.0,1.0,2.0,3.0,4.0];
+  tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, 
+                                  psi=1, rootAge=5, ages=ages);
+\end{alltt}
+
+
+\subsubsection{Substitution models}
+\textcolor{blue}{KC TODO}
+
+
+\subsubsection{Clock models}
 ...
 
-\subsubsection{Generator vectorization}
+
+\subsubsection{Model averaging}
+BModel test (rate matrix)
+
+
+\subsubsection{Brownian trait models}
+...
+
+\subsubsection{Variable vectorization}
 There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
 
 Example of IID pattern: 
@@ -483,10 +560,6 @@ previous two lines of code, namely, \texttt{$\kappa$} and
 The output of \texttt{hky} is an array of 3-D array of \texttt{Double}
 values representing three iid HKY \cite{hky} instantaneous rate
 matrices, one matrix per codon partition.
-
-% \subsubsection*{Data clamping}
-% \textcolor{red}{[Alexei, if you think it's worth it, could you add
-%   something about how you implemented data clamping?]}
 
 % \subsection*{Tree generative distributions}
 
@@ -799,36 +872,7 @@ matrices, one matrix per codon partition.
 %   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
 % \end{alltt}
 
-\subsection{Model features}
-
-\textcolor{blue}{TODO: Rewrite section below}
-
-\begin{itemize}
-\item for evolutionary biologists
-\begin{enumerate}
-\item describe complex phylogenetic models succinctly and exactly
-\item simulate prior distributions from these models, including arbitrary statistics
-\item use model description to run inference on a real data set using LPhyBEAST
-\item produce precise methods section and graphical model figure for describing analyses in published works
-\end{enumerate}
-\item for computational biologists
-\begin{enumerate}
-\item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
-\item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
-\item do well-calibrated simulation study that validate the implementation of inference framework
-\end{enumerate}
-\end{itemize}
-
-
-\subsubsection{Available data types}
-
-nuc, protein, binary, traits ...
-
-\subsubsection{Subst models, ...}
-
-
-\subsubsection{Data clamping} \textcolor{blue}{TODO: move to Language features}
-
+\subsubsection{Data clamping} 
 In LPhy language, the alignment is generated by the sampling distribution that the phylogenetic likelihood is derived from, such as a PhyloCTMC generative distribution. The data type of the alignment can be various, for instance, the continuous trait can be simulated from a PhyloBrownian generative distribution. 
 
 However, in a real data analysis, it requires to pass the imported alignment rather than the simulated alignment to a Bayesian phylogenetic inference engine. So we implement a mechanism called as data clamping for this kind of tasks. 
@@ -839,7 +883,6 @@ This is a useful feature for users to easily switch the task of a LPhy script be
 
 %%TODO review
 \subsection{Extension Mechanism}
-
 The extensibility of a software is extremely important to encourage the future growth and collaborations. 
 LPhy and LPhy extensions are developed based on Java 17 which is the latest long-term support (LTS) version at the time of writing. 
 The LPhy extension mechanism is implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
@@ -848,27 +891,21 @@ Using this mechanism, the extension developer can develop their own generative d
 The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
 
 \subsection{As a Gradle project}
-
 The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
 It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
 It integrates with a dependency manager, which helps developers to avoid ``dependency hell". 
 
 Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
 
-% Results and Discussion can be combined.
 \section{Results}
 
 \subsection{The graphical user interface}
-
-Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A \cite{zlateva2004molecular} is illustrated in Figure \ref{fig:lphystudio}. 
-
-\textcolor{blue}{TODO: do we still have Example \ref{lphy:rsva} ?}
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A \cite{zlateva2004molecular} is illustrated in Figure \ref{fig:lphystudio} and Example \ref{lphy:rsva}.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
   \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
-  %%from Example \ref{lphy:rsva} 
-  on the left panel (constants are being hidden), and the automatically generated description of the data, the model and the posterior distribution on the right panel.} 
+  on the left panel (constants hidden), and the auto-generated text description of the data and phylogenetic model on the right panel.} 
   \label{fig:lphystudio}
 \end{figure}
 
@@ -882,7 +919,6 @@ This will take most researchers in an easy way to precisely describe their model
 
 
 \subsection{A model guide for users}
-
 There are two learning curves for a beginner level of users, one is to learn the LPhy language, the other is to understand the model. To shorten these learning curves, a tool with GUI, called Model Guide, is implemented to list all available LPhy generative distributions and functions in runtime. 
 They are classified into several categories for users to look up easily.
 
@@ -898,7 +934,6 @@ Selecting a model or function, e.g. Figure \ref{fig:modelguide}, the user can fi
 
 
 \subsection{Data simulations from a phylogenetic model}
-
 Simulating alignments from a specified model can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
 It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
 The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
@@ -913,7 +948,6 @@ The result of running 100 simulations from the simple HKY+Coalescent model is il
 
 
 \subsection{Integration with Bayesian phylogenetic inference frameworks}
-
 LPhy specifies the models, but we also provide an integration with BEAST2 \cite{bouckaert2014beastanalysis,bouckaert2019beastanalysis}, called as LPhyBEAST, for the models specified in the LPhy language to be applied to data using Bayesian inference.
 It is a command-line program that takes a LPhy script file including model specification and data block, and then produces a BEAST2 XML file. 
 It is therefore an alternative way to succinctly express and communicate BEAST2 analyses.
@@ -921,20 +955,12 @@ It is therefore an alternative way to succinctly express and communicate BEAST2 
 More Integrations are proposing to convert an LPhy specification into an input file that other popular Bayesian phylogenetic inference tools, such as BEAST1\cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes}, RevBayes\cite{hohna2016revbayes}, etc., can understand.
 
 
-\subsection{Model validation is necessary}
-
-It is important to validate the model before publishing it.
-
-Phylonco model validation example?
-
-\textcolor{blue}{TODO: Kylie ?}
-
-...
+\subsection{Model validation}
+\textcolor{blue}{KC TODO}
 
 
-
-\section*{Discussion}
-...
+\section*{Discussion and conclusions}
+\textcolor{blue}{TODO}
 
 Although there are many
 programming languages through which statistical 
@@ -959,9 +985,6 @@ has built-in vectorization, meaning that any function (including
 generative distributions) can be called with its arguments in
 vectorized form, producing multiple values as its output. 
 
-
-\section*{Conclusion}
-...
 
 \section*{Acknowledgments}
 Thanks for the New Zealand eScience Infrastructure (NeSI) to provide the high performance computation resource for our model validations.
