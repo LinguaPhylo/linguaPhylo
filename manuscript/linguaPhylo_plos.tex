@@ -521,16 +521,41 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 BModel test (rate matrix)
 
 
+\textcolor{blue}{\subsubsection{The neutrality assumption}}
+
+\url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
+
+phylogenetic probabilistic graphic model
+
+Top down $->$ simulation; bottom up + LPhyBEAST $->$ inference given observed data
+
 \subsubsection{Clock models}
 
+The molecular clock models in the LPhy language can be simply composited by a simple random variable encapsulating an array of branch rates and then being passed into the phylogenetic likelihood distribution, such as PhyloCTMC. The branch rates not only can be independently drawn from a log-normal distribution (i.e. the uncorrelated relax clock model \cite{drummond2006relaxedconfidence}) shown as below, but also a function that returns branch rates for the given tree, indicator mask and raw rates (i.e. random local clock model \cite{}). 
+
+{\singlespacing
+\begin{alltt}
+  \textcolor{green}{\(branchRates\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{-0.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{30});
+\end{alltt}
+}
+
+The $replicates=30$ is used to create the array with 30 rates as the result of a phylogenetic tree with 16 leaf nodes.
+
+The strict molecular clock model is applied by an even much simpler code shown as below, which has no branch rates (as default) in PhyloCTMC, but set a constant to the molecular clock rate $\mu$ (default to 1.0 if not set). 
+
+{\singlespacing
+\begin{alltt}
+  \textcolor{green}{\(D\)} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)}, \textcolor{gray}{mu=}\textcolor{magenta}{0.5});
+\end{alltt}
+}
 
 
-
-\subsubsection{PhyloCTMC and Brownian motion}
+%%%\subsubsection{PhyloCTMC and Brownian motion} 
+\textcolor{blue}{\subsubsection{Phylogenetic likelihoods}}
 
 \textcolor{blue}{TODO: review, and citation multivariate Brownian}
 
-The phylogenetic continuous-time Markov chain (PhyloCTMC) process \cite{felsenstein1981} is one of fundamental components to specify a full phylogenetic analysis. PhyloCTMC in the LPhy language is a core generative distribution derived from the phylogenetic likelihood. It takes the other basic models as inputs, such as phylogenetic time tree, instantaneous rate matrix, molecular clock rate, and so on, and on this account simulates a sequence alignment for every leaf node, and also every direct ancestor node when they exist.
+The phylogenetic continuous-time Markov chain (PhyloCTMC) \cite{felsenstein1981} in the LPhy language is a core generative distribution derived from the phylogenetic likelihood. It takes the other basic models as inputs, such as phylogenetic time tree, instantaneous rate matrix, molecular clock rate, and so on, and on this account simulates a sequence alignment for every leaf node, and also every direct ancestor node when they exist.
 
 There are also alternative generative distributions developed in LPhy, which are derived from a different kind of phylogenetic likelihoods, such as the phylogenetic Brownian motion process\cite{felsenstein1973maximum}, its multivariate version\cite{}, and Ornstein-Ulhenbeck process\cite{felsenstein1973maximum}. Using them, a continuous trait can be simulated from the specified models.
 For example, running the following LPhy script, the continuous trait $y$ containing 16 continuous values are simulated from a Yule tree $\psi$ with the root value $y0$ sampled from a normal distribution at the diffusion rate $\sigma$ sampled from a log-normal distribution.
@@ -547,6 +572,7 @@ For example, running the following LPhy script, the continuous trait $y$ contain
 
 
 \subsubsection{Variable vectorization}
+\textcolor{blue}{TODO: revision}
 There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
 
 Example of IID pattern: 
