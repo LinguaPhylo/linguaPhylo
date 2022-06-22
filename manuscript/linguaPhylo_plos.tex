@@ -304,27 +304,21 @@ such as MCMC parameters and the operator schedule.
 
 Here, we introduce LinguaPhylo (LPhy), an open-source programming
 language focused on model specification to improve reproducibility, re-usability and model readability. 
-\textcolor{blue}{[Highlights of LPhy should go here...]}
-Our software includes a graphical user interface as well as a command line interface. 
-Additionally, we introduce a tool, LPhyBEAST, for integrating model specification with phylogenetic analysis via BEAST2.
-The software presented in this paper aims to make it easier to report,
-validate and simulate complex phylogenetic models, as well as to reproduce and re-use phylogenetic analyses.
+LPhy is integrated with the Bayesian phylogenetic inference framework BEAST2 enabling phylogenetic analyses to be performed using the LPhy scripting language. 
+This work aims to improve the communication of phylogenetic models by providing a language for evolutionary biologists to fully describe complex phylogenetic models and their priors concisely. 
+LPhy is the first software to provide precise text descriptions and graphical figures of phylogenetic models that are automatically generated from computer readible scripts.  
+Additionally, LPhy provides a simple syntax for re-use of existing phylogenetic analyses on new datasets. 
+This framework is also designed to facilitate computational biologists to more easily develop, validate and test new phylogenetic models. 
+% Our software includes a graphical user interface as well as a command line interface. 
+% Additionally, we introduce a tool, LPhyBEAST, for integrating model specification with phylogenetic analysis via BEAST2.
+In doing so, this will make phylogenetic analyses easier to report, reproduce and re-use, as well as improving support for validating and simulating from complex phylogenetic models. 
 
 
 \section{Methods}
-% \section*{Design and Implementation}
-% \subsection*{A concise domain-specific language for phylogenetic inference}
 The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax.  
 The LPhy framework is built on top of the Java programming language and provides features for: 
 (i) concise specification of phylogenetic models, (ii) data simulation from phylogenetic models, (iii) specification of phylogenetic analyses on real or synthetic data, (iv) integration with the BEAST2 phylogenetic inference framework, and (v) an extensibility mechanism for adding new functions and data types to the LPhy language.
-
-This framework is aimed to improve the communication of phylogenetic models by providing a language for evolutionary biologists to succinctly describe complex phylogenetic models and their priors. 
-LPhy is the first software to provide precise text descriptions and graphical figures of phylogenetic models that are automatically generated from computer readible scripts.  
-
-In addition this this, LPhy is also designed to facilitate computational biologists to more easily develop, validate and test new phylogenetic models. 
-Computational biologists are able to add new simulators by extending LPhy datatypes and generators and integrate with inference software (e.g., BEAST2 with the LPhyBeast package). 
-The LPhyBeast package allows Bayesian phylogenetic inference to be performed on the simulated data, which can be used to validate and test model implementations. 
-New models developed within the LPhy framework will allow data simulation from a rich set of tree priors, molecular clocks, and substitution models. 
+ 
 
 % \begin{itemize}
 % \item for evolutionary biologists
@@ -393,20 +387,21 @@ An LPhy model consists of generators which simulate data (e.g., trees, sequences
 The `datatypes' include sequence alignments, trees, primitives (e.g., doubles and strings), and arrays. 
 The data can be simulated using LPhy sequence generators, or loaded from external nexus or fasta files. 
 An input API is provided to parse input sequences from nexus and fasta formats and trees from newick format into `LPhy datatypes'. 
-Table \ref{tab:generators} shows a summary of models and input parsing methods available in LPhy. 
-A full list of available methods are shown in the suppplementary table XX.
+Table \ref{tab:generators} shows a summary of selected methods and models available in LPhy. 
+A full list of available methods are shown in the suppplementary materials.
 
 \begin{table}[h]
-  \caption{A list of models and input parsers in the LinguaPhylo language.}
+  \caption{A selected list of methods and models in the LinguaPhylo language.}
   \begin{tabular}{|l|l|l|}
     \hline
     Method type & Example & Reference \\\hline
-    Prior distributions & \texttt{Uniform()} &\\
+    General statistical distributions & \texttt{Uniform()} &\\
               & \texttt{Normal()} &\\
               & \texttt{LogNormal()} &\\
               & \texttt{Exponential()} &\\
               & \texttt{Gamma()} &\\
-              & \texttt{Dirichlet()} &\\ \hline
+              & \texttt{Dirichlet()} &\\ 
+              & ... &\\\hline
     Tree prior models & \texttt{Yule()} & \cite{yule1925ii}\\
               & \texttt{BirthDeath()} &\\
               & \texttt{FullBirthDeath()} &\\
@@ -419,8 +414,8 @@ A full list of available methods are shown in the suppplementary table XX.
     Substitution models & \texttt{jukesCantor()} & \cite{jc69}\\
               & \texttt{hky()} & \cite{hky}\\
               & \texttt{gtr()} & \cite{gtr}\\ \hline
-    Input parsers & \texttt{newick()} &\\
-              & \texttt{readNexus()} &\\\hline
+    % Input parsers & \texttt{newick()} &\\
+    %           & \texttt{readNexus()} &\\\hline
     % Other methods & \texttt{length()} &\\
     % & \texttt{nchar()} &\\
     % & \texttt{taxa()} &\\ \hline
@@ -429,7 +424,7 @@ A full list of available methods are shown in the suppplementary table XX.
 \end{table}
 
 
-\subsubsection{Prior distributions}
+\subsubsection{General statistical distributions}
 LPhy provides methods that allow users to generate values from common statistical distributions such as the Normal distribution, Dirichlet distribution, and LogNormal distribution. 
 A selected list of distributions available are shown in Table \ref{tab:generators}. 
 
@@ -472,10 +467,12 @@ population sizes of each deme on the diagonal:
 For K demes, theta is an K-tuple and the dimension of m is $K^2 -
 K$. $n$ is a tuple of sample sizes, one dimension for each deme:
 
-\begin{alltt}
+{\small
+  \begin{alltt}
   M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
   g ~ StructuredCoalescent(M=M, n=[15, 15]);
-\end{alltt}
+  \end{alltt}
+}
 
 \noindent{} \textbf{Skyline model}
 \newline
@@ -485,27 +482,29 @@ The first four intervals will all have theta=0.1, the next three will
 have theta=0.2, the next two will have theta=0.3, and the last
 coalescent interval will have theta=0.4:
 
-\begin{alltt}
-  g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
-\end{alltt}
-
+{\small
+  \begin{alltt}
+    g ~ SkylineCoalescent(theta=[0.1, 0.2, 0.3, 0.4], groupSizes=[4,3,2,1]);
+  \end{alltt}
+}
 
 \noindent{} \textbf{Serially sampled birth-death model}
 \newline
 A birth-death-serial-sampling \cite{stadler2013dating} process adds a fourth parameter (psi), the rate of sampling each lineage per unit time.
 Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sampled).
-
-\begin{alltt}
-  ages = [0.0,1.0,2.0,3.0,4.0];
-  tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, 
-                                  psi=1, rootAge=5, ages=ages);
-\end{alltt}
-
+{\small
+  \begin{alltt}
+    ages = [0.0,1.0,2.0,3.0,4.0];
+    tree ~ BirthDeathSerialSampling(lambda=1, mu=0.5, rho=0.1, 
+                                    psi=1, rootAge=5, ages=ages);
+  \end{alltt}
+}
 
 \textcolor{blue}{TODO: Shall we add 1. FDB; 2. examples/totalEvidence.lphy}
 
-\textcolor{blue}{TODO: Kylie, I think serial Coalescent is a better example}
-
+\noindent{} \textbf{Serially sampled coalescent model}
+% \newline
+% \textcolor{blue}{TODO: Kylie, I think serial Coalescent is a better example}
 {\small
   \begin{alltt}
     \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(\textcolor{gray}{names=}[\textcolor{magenta}{"a", "b", "c", "d"}], \\  \textcolor{gray}{ages=}[\textcolor{magenta}{0.0, 1.0, 2.0, 3.0}]));
@@ -985,8 +984,9 @@ More Integrations are proposing to convert an LPhy specification into an input f
 
 
 \subsection{Model validation}
-\textcolor{blue}{KC TODO}
-
+The LPhy framework can also be used to test and verify correctness of implementations of new models \cite{chen2022accounting}. 
+The LPhyBeast package allows Bayesian phylogenetic inference to be performed on data simulated from LPhy, which can be used to validate and test model implementations. 
+New models developed within this framework will benefit from integration with a rich set of phylogenetic models (including tree prior models, molecular clocks, substitution and trait models). 
 
 \section*{Discussion and conclusions}
 \textcolor{blue}{TODO}
