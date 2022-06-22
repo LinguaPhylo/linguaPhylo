@@ -390,6 +390,8 @@ An input API is provided to parse input sequences from nexus and fasta formats a
 Table \ref{tab:generators} shows a summary of selected methods and models available in LPhy. 
 A full list of available methods are shown in the suppplementary materials.
 
+\textcolor{blue}{\subsubsection{I suggest to remove this table from main}}
+
 \begin{table}[h]
   \caption{A selected list of methods and models in the LinguaPhylo language.}
   \begin{tabular}{|l|l|l|}
@@ -423,6 +425,40 @@ A full list of available methods are shown in the suppplementary materials.
   \label{tab:generators}
 \end{table}
 
+\textcolor{blue}{\subsubsection{Probabilistic graphical model representation}}
+
+The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphic model framework\cite{}.
+In the LPhy language, there are four types of components listed below:
+
+\begin{enumerate}
+    \item Constants;
+    \item Random variables;
+    \item Deterministic variables;
+    \item Generators: generative distribution, function, and method call.
+\end{enumerate}
+
+The constants are drawn as the big squares in Figure \ref{fig:RSV2PGM}, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
+The random variables contain the values generated from generators, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. The blue circles are the random variables containing data (alignment).
+The values of deterministic variables are also generated from generators, but the value will be fixed when given the same inputs to its generator. They are drawn as either diamonds.
+The generator can be a generative distribution, function, or method call. They are drawn as the small rectangles.
+ 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/RSV2.png}
+  \caption{A screenshot of the probabilistic graphical model of Example \ref{lphy:rsva}.} 
+  \label{fig:RSV2PGM}
+\end{figure}
+
+
+\textcolor{blue}{TODO: include neutrality assumption}
+
+\url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
+
+phylogenetic probabilistic graphic model
+
+Top down $->$ simulation; bottom up + LPhyBEAST $->$ inference given observed data
+
+
 
 \subsubsection{General statistical distributions}
 LPhy provides methods that allow users to generate values from common statistical distributions such as the Normal distribution, Dirichlet distribution, and LogNormal distribution. 
@@ -439,6 +475,9 @@ The variable $\theta$ is generated from a LogNormal distribution with a mean of 
 \end{alltt}
 }
 
+
+\subsubsection{Variable vectorization}
+
 Multiple values can be generated from a distribution by a process we call `generator vectorization'. 
 For example, the variable $\mu$ can be modified to generate twenty values instead of a single value by appending the parameter \textit{replicates = $20$} to the method call. 
 
@@ -447,6 +486,50 @@ For example, the variable $\mu$ can be modified to generate twenty values instea
   \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25}, \textcolor{gray}{replicates=}20);
 \end{alltt}
 }
+
+There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
+
+Example of IID pattern: 
+{\small
+  \begin{alltt}
+    n = 3;
+    L = [209, 210, 210];
+    \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+    \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+    Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
+  \end{alltt}
+}
+
+Example of vectorized argument pattern: 
+{\singlespacing
+\begin{alltt}
+  n = 3;
+  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}n);
+  \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
+\end{alltt} 
+
+The first two lines of this code (ignoring the commented lines, which
+were added to remind the reader of the values of \texttt{n} and
+\texttt{L}) use the IID pattern.
+Here, all we are doing is providing the \texttt{LogNormal} and
+\texttt{WeightedDirichlet} generative distributions arguments of
+type \texttt{Integer}.
+These arguments -- \texttt{n} for \texttt{LogNormal}, and \texttt{n}
+and \texttt{L} for \texttt{WeightedDirichlet} -- tell these functions
+that we want an array of iid random variables (or 2-D array in the
+case of the weighted Dirichlet), rather than an atomic output. 
+
+The third line vectorises the \texttt{hky} function by passing
+arguments that are arrays themselves.
+More specifically, in this case we pass in the arrays produced by the
+previous two lines of code, namely, \texttt{$\kappa$} and
+\texttt{$r$}, in addition to another previously built array
+\texttt{$\pi$} (see Example \ref{lphy:rsva} for the full script).
+The output of \texttt{hky} is an array of 3-D array of \texttt{Double}
+values representing three iid HKY \cite{hky} instantaneous rate
+matrices, one matrix per codon partition.
+
 
 \subsubsection{Tree prior models}
 Tree generators enable users to generate phylogenetic trees from birth-death processes or coalescent processes. 
@@ -520,16 +603,9 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 BModel test (rate matrix)
 
 
-\textcolor{blue}{\subsubsection{The neutrality assumption}}
-
-\url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
-
-phylogenetic probabilistic graphic model
-
-Top down $->$ simulation; bottom up + LPhyBEAST $->$ inference given observed data
 
 \subsubsection{Clock models}
-
+\label{sec:clockmodels}
 The molecular clock models in the LPhy language can be simply composited by a simple random variable encapsulating an array of branch rates and then being passed into the phylogenetic likelihood distribution, such as PhyloCTMC. The branch rates not only can be independently drawn from a log-normal distribution (i.e. the uncorrelated relax clock model \cite{drummond2006relaxedconfidence}) shown as below, but also a function that returns branch rates for the given tree, indicator mask and raw rates (i.e. random local clock model \cite{}). 
 
 {\singlespacing
@@ -554,7 +630,7 @@ The strict molecular clock model is applied by an even much simpler code shown a
 
 \textcolor{blue}{TODO: review, and citation multivariate Brownian}
 
-The phylogenetic continuous-time Markov chain (PhyloCTMC) \cite{felsenstein1981} in the LPhy language is a core generative distribution derived from the phylogenetic likelihood. It takes the other basic models as inputs, such as phylogenetic time tree, instantaneous rate matrix, molecular clock rate, and so on, and on this account simulates a sequence alignment for every leaf node, and also every direct ancestor node when they exist.
+The phylogenetic continuous-time Markov chain (PhyloCTMC) \cite{felsenstein1981} in the LPhy language is a core generative distribution derived from the phylogenetic likelihood. It takes the other basic models as inputs, such as phylogenetic time tree, instantaneous rate matrix, molecular clock rate, and so on, and on this account simulates a sequence alignment for every leaf node, and also every direct ancestor node when they exist. One example is available in Section \ref{sec:clockmodels}.
 
 There are also alternative generative distributions developed in LPhy, which are derived from a different kind of phylogenetic likelihoods, such as the phylogenetic Brownian motion process\cite{felsenstein1973maximum}, its multivariate version\cite{}, and Ornstein-Ulhenbeck process\cite{felsenstein1973maximum}. Using them, a continuous trait can be simulated from the specified models.
 For example, running the following LPhy script, the continuous trait $y$ containing 16 continuous values are simulated from a Yule tree $\psi$ with the root value $y0$ sampled from a normal distribution at the diffusion rate $\sigma$ sampled from a log-normal distribution.
@@ -570,50 +646,6 @@ For example, running the following LPhy script, the continuous trait $y$ contain
 }
 
 
-\subsubsection{Variable vectorization}
-\textcolor{blue}{TODO: revision}
-There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
-
-Example of IID pattern: 
-{\small
-  \begin{alltt}
-    n = 3;
-    L = [209, 210, 210];
-    \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-    \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-    Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
-  \end{alltt}
-}
-
-Example of vectorized argument pattern: 
-{\singlespacing
-\begin{alltt}
-  n = 3;
-  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}n);
-  \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
-\end{alltt} 
-
-The first two lines of this code (ignoring the commented lines, which
-were added to remind the reader of the values of \texttt{n} and
-\texttt{L}) use the IID pattern.
-Here, all we are doing is providing the \texttt{LogNormal} and
-\texttt{WeightedDirichlet} generative distributions arguments of
-type \texttt{Integer}.
-These arguments -- \texttt{n} for \texttt{LogNormal}, and \texttt{n}
-and \texttt{L} for \texttt{WeightedDirichlet} -- tell these functions
-that we want an array of iid random variables (or 2-D array in the
-case of the weighted Dirichlet), rather than an atomic output. 
-
-The third line vectorises the \texttt{hky} function by passing
-arguments that are arrays themselves.
-More specifically, in this case we pass in the arrays produced by the
-previous two lines of code, namely, \texttt{$\kappa$} and
-\texttt{$r$}, in addition to another previously built array
-\texttt{$\pi$} (see Example \ref{lphy:rsva} for the full script).
-The output of \texttt{hky} is an array of 3-D array of \texttt{Double}
-values representing three iid HKY \cite{hky} instantaneous rate
-matrices, one matrix per codon partition.
 
 % \subsection*{Tree generative distributions}
 
