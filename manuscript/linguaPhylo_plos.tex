@@ -420,10 +420,8 @@ The second approach can be done by using data clamping introduced in Section \re
 
 %\subsubsection{General statistical distributions}
 \subsubsection{Prior distributions}
-Prior distributions as generative distributions in LPhy include most common statistical distributions, such as the normal distribution, Dirichlet distribution, and log-normal distribution, etc. 
-A selected list of distributions available are shown in Table \ref{tab:generators}. 
+Prior distributions are generative distributions in LPhy which include common statistical distributions (e.g., Normal distribution, Dirichlet distribution, Log-Normal distribution).  
 
-In the example script below, the `LogNormal()' is a generative distribution sampling values for the random variable $\mu$ with a mean of a constant $-5$ and a standard deviation of $1.25$. 
 %and $\theta$. 
 %Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
 %The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
@@ -432,6 +430,8 @@ In the example script below, the `LogNormal()' is a generative distribution samp
 \begin{alltt}
   \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
 \end{alltt}
+
+For example, the `LogNormal()' above is a generative distribution which samples values from a Log-Normal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
 }
 %  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
 
@@ -486,14 +486,17 @@ matrices, one matrix per codon partition.
 
 \subsubsection{Tree prior models}
 Tree generators enable users to generate phylogenetic trees from birth-death processes or coalescent processes. 
+\newline
+
+\noindent{} \textbf{Serially sampled coalescent model}
 {\small
   \begin{alltt}
-    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(\textcolor{gray}{names=}[\textcolor{magenta}{"a", "b", "c", "d"}], \\  \textcolor{gray}{ages=}[\textcolor{magenta}{0.0, 1.0, 2.0, 3.0}]));
   \end{alltt}
 }
-The line above from Example \ref{lphy:rsva} specifies that the
-phylogenetic tree \texttt{$\psi$} is sampled from a
-constant-population size coalescent tree prior \cite{kingman82}.
+\noindent{} The example script above specifies a
+constant-population size coalescent tree prior \cite{kingman82} with four taxa named (a, b, c, d) 
+sampled at four different times (ages).
 \newline 
 
 \noindent{} \textbf{Structured coalescent model}
@@ -538,14 +541,6 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 
 \textcolor{blue}{TODO: Shall we add 1. FDB; 2. examples/totalEvidence.lphy}
 
-\noindent{} \textbf{Serially sampled coalescent model}
-% \newline
-% \textcolor{blue}{TODO: Kylie, I think serial Coalescent is a better example}
-{\small
-  \begin{alltt}
-    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(\textcolor{gray}{names=}[\textcolor{magenta}{"a", "b", "c", "d"}], \\  \textcolor{gray}{ages=}[\textcolor{magenta}{0.0, 1.0, 2.0, 3.0}]));
-  \end{alltt}
-}
 
 
 \subsubsection{Substitution models}
