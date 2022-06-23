@@ -388,17 +388,17 @@ The data can be simulated using LPhy sequence generators, or loaded from externa
 An input API is provided to parse input sequences from nexus and fasta formats and trees from newick format into `LPhy datatypes'. 
 A full list of available methods are shown in the suppplementary materials.
 
-\textcolor{blue}{\subsubsection{Probabilistic graphical model representation}}
-
+\subsubsection{Probabilistic graphical model representation}
+\textcolor{blue}{TODO: review}
 The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
 Under this framework, the LPhy language are introducing four types of components listed below:
 
-\begin{enumerate}
+\begin{itemize}
     \item Constants;
     \item Random variables;
     \item Deterministic variables;
     \item Generators: generative distribution, function, and method call.
-\end{enumerate}
+\end{itemize}
 
 The constants are drawn as the big squares in Figure \ref{fig:RSV2PGM}, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
 The random variables contain the values generated from generators, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. The blue circles are the random variables containing data (alignment).
@@ -445,43 +445,23 @@ Multiple values can be generated from a distribution by two ways:
     \item vectorizing arguments of generators.
 \end{enumerate}
 
-For example, the variable $\mu$ can be an array instead of a single-value variable, when appending the parameter \textit{replicates = $20$} to the distribution as below. This IID pattern will sample twenty values independently from the same log-normal distribution. 
+The random variable can be an array instead of a single-value variable. For example, appending the parameter \textit{replicates = $3$} to the distribution below, the IID pattern will sample three values (refer to three partitions) independently from the same log-normal distribution and return them to the variable $\kappa$.
 
 {\singlespacing
 \begin{alltt}
-  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{20});
+  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}\textcolor{magenta}{3});
 \end{alltt}
 }
 
-Example of vectorized argument pattern: 
+The first line of the following code is another example of using IID to sample three sets of base frequencies for the three-partition model. 
+Combining with the above line, the second line below vectorises the \texttt{hky} function by passing arguments that are arrays themselves (i.e. \texttt{$\kappa$} and \texttt{$\pi$}).
+Then the output of \texttt{hky} is an array of three instantaneous rate matrices, where one matrix refers to one codon partition.
+
 {\singlespacing
 \begin{alltt}
-  n = 3;
-  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}n);
+  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}\textcolor{magenta}{3});
   \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
 \end{alltt} 
-
-The first two lines of this code (ignoring the commented lines, which
-were added to remind the reader of the values of \texttt{n} and
-\texttt{L}) use the IID pattern.
-Here, all we are doing is providing the \texttt{LogNormal} and
-\texttt{WeightedDirichlet} generative distributions arguments of
-type \texttt{Integer}.
-These arguments -- \texttt{n} for \texttt{LogNormal}, and \texttt{n}
-and \texttt{L} for \texttt{WeightedDirichlet} -- tell these functions
-that we want an array of iid random variables (or 2-D array in the
-case of the weighted Dirichlet), rather than an atomic output. 
-
-The third line vectorises the \texttt{hky} function by passing
-arguments that are arrays themselves.
-More specifically, in this case we pass in the arrays produced by the
-previous two lines of code, namely, \texttt{$\kappa$} and
-\texttt{$r$}, in addition to another previously built array
-\texttt{$\pi$} (see Example \ref{lphy:rsva} for the full script).
-The output of \texttt{hky} is an array of 3-D array of \texttt{Double}
-values representing three iid HKY \cite{hky} instantaneous rate
-matrices, one matrix per codon partition.
 
 
 \subsubsection{Tree prior models}
