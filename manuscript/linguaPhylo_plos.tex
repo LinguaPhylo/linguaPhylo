@@ -427,8 +427,8 @@ A full list of available methods are shown in the suppplementary materials.
 
 \textcolor{blue}{\subsubsection{Probabilistic graphical model representation}}
 
-The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphic model framework\cite{}.
-In the LPhy language, there are four types of components listed below:
+The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
+Under this framework, the LPhy language are introducing four types of components listed below:
 
 \begin{enumerate}
     \item Constants;
@@ -439,9 +439,8 @@ In the LPhy language, there are four types of components listed below:
 
 The constants are drawn as the big squares in Figure \ref{fig:RSV2PGM}, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
 The random variables contain the values generated from generators, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. The blue circles are the random variables containing data (alignment).
-The values of deterministic variables are also generated from generators, but the value will be fixed when given the same inputs to its generator. They are drawn as either diamonds.
-The generator can be a generative distribution, function, or method call. They are drawn as the small rectangles.
- 
+The values of deterministic variables are also generated from generators, but the value will be fixed when given the same inputs to its generator. They are drawn as diamonds. If the value is generated in the data block, then it will be coloured by yellow. Otherwise it will be a red diamond.
+A generator can be a generative distribution, function, or method call. They are drawn as the small rectangles.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/RSV2.png}
@@ -449,55 +448,46 @@ The generator can be a generative distribution, function, or method call. They a
   \label{fig:RSV2PGM}
 \end{figure}
 
+On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that our alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
+%%%neutrality assumption \url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
 
-\textcolor{blue}{TODO: include neutrality assumption}
-
-\url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
-
-phylogenetic probabilistic graphic model
-
-Top down $->$ simulation; bottom up + LPhyBEAST $->$ inference given observed data
+Given a phylogenetic probabilistic graphical model, we can follow the arrows from the top of the graph to the bottom, which is to simulate the sequence alignment from this graphical model. But when we follow the arrows backwards, namely from the bottom to top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
+The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with the LPhy integration, such as LPhyBEAST introduced in Section \ref{sec:lphybeast}.
 
 
-
-\subsubsection{General statistical distributions}
-LPhy provides methods that allow users to generate values from common statistical distributions such as the Normal distribution, Dirichlet distribution, and LogNormal distribution. 
+%\subsubsection{General statistical distributions}
+\subsubsection{Prior distributions}
+Prior distributions as generative distributions in LPhy include most common statistical distributions, such as the normal distribution, Dirichlet distribution, and log-normal distribution, etc. 
 A selected list of distributions available are shown in Table \ref{tab:generators}. 
 
-In the example script below, the `LogNormal()' method is used to generate the variables $\mu$ and $\theta$. 
-Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
-The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
+In the example script below, the `LogNormal()' is a generative distribution sampling values for the random variable $\mu$ with a mean of a constant $-5$ and a standard deviation of $1.25$. 
+%and $\theta$. 
+%Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
+%The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
 
 {\singlespacing
 \begin{alltt}
   \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
-  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
 \end{alltt}
 }
+%  \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
 
 
 \subsubsection{Variable vectorization}
 
-Multiple values can be generated from a distribution by a process we call `generator vectorization'. 
-For example, the variable $\mu$ can be modified to generate twenty values instead of a single value by appending the parameter \textit{replicates = $20$} to the method call. 
+Multiple values can be generated from a distribution by two ways:
+
+\begin{enumerate}
+    \item sampling independent and identically distributed random variables (IID) for common statistical distributions;
+    \item vectorizing arguments of generators.
+\end{enumerate}
+
+For example, the variable $\mu$ can be an array instead of a single-value variable, when appending the parameter \textit{replicates = $20$} to the distribution as below. This IID pattern will sample twenty values independently from the same log-normal distribution. 
 
 {\singlespacing
 \begin{alltt}
-  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25}, \textcolor{gray}{replicates=}20);
+  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{20});
 \end{alltt}
-}
-
-There are two ways to simulate multiple values: (i) by sampling independent and identically distributed random variables (IID) for common statistical distributions and (ii) vectorized arguments for tree and sequence generators.
-
-Example of IID pattern: 
-{\small
-  \begin{alltt}
-    n = 3;
-    L = [209, 210, 210];
-    \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-    \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-    Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
-  \end{alltt}
 }
 
 Example of vectorized argument pattern: 
@@ -626,7 +616,7 @@ The strict molecular clock model is applied by an even much simpler code shown a
 
 
 %%%\subsubsection{PhyloCTMC and Brownian motion} 
-\textcolor{blue}{\subsubsection{Phylogenetic likelihoods}}
+\textcolor{blue}{\subsubsection{Phylogenetic likelihood distributions}}
 
 \textcolor{blue}{TODO: review, and citation multivariate Brownian}
 
@@ -958,7 +948,8 @@ For example, running the following LPhy script, the continuous trait $y$ contain
 %   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=tree, branchRates=branchRates);
 % \end{alltt}
 
-\subsubsection{Data clamping} 
+\subsubsection{Data clamping}
+\label{sec:dataclamping}
 In LPhy language, the alignment is generated by the sampling distribution that the phylogenetic likelihood is derived from, such as a PhyloCTMC generative distribution. The data type of the alignment can be various, for instance, the continuous trait can be simulated from a PhyloBrownian generative distribution. 
 
 However, in a real data analysis, it requires to pass the imported alignment as an observed state, rather than the simulated alignment to a Bayesian phylogenetic inference engine. So we implement a mechanism called as data clamping for this kind of tasks. 
@@ -1034,6 +1025,7 @@ The result of running 100 simulations from the simple HKY+Coalescent model is il
 
 
 \subsection{Integration with Bayesian phylogenetic inference frameworks}
+\label{sec:lphybeast}
 LPhy specifies the models, but we also provide an integration with BEAST2 \cite{bouckaert2014beastanalysis,bouckaert2019beastanalysis}, called as LPhyBEAST, for the models specified in the LPhy language to be applied to data using Bayesian inference.
 It is a command-line program that takes a LPhy script file including model specification and data block, and then produces a BEAST2 XML file. 
 It is therefore an alternative way to succinctly express and communicate BEAST2 analyses.
