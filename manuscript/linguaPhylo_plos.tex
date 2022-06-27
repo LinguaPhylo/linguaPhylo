@@ -426,7 +426,7 @@ Prior distributions are generative distributions in LPhy which include common st
 %Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
 %The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
 \end{alltt}
@@ -447,7 +447,7 @@ Multiple values can be generated from a distribution by two ways:
 
 The random variable can be an array instead of a single-value variable. For example, appending the parameter \textit{replicates = $3$} to the distribution below, the IID pattern will sample three values (refer to three partitions) independently from the same log-normal distribution and return them to the variable $\kappa$.
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}\textcolor{magenta}{3});
 \end{alltt}
@@ -457,7 +457,7 @@ The first line of the following code is another example of using IID to sample t
 Combining with the above line, the second line below vectorises the \texttt{hky} function by passing arguments that are arrays themselves (i.e. \texttt{$\kappa$} and \texttt{$\pi$}).
 Then the output of \texttt{hky} is an array of three instantaneous rate matrices, where one matrix refers to one codon partition.
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}\textcolor{magenta}{3});
   \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
@@ -527,8 +527,37 @@ Now leaves of the tree can either be extinct (psi-sampled) or extant (rho-sample
 \textcolor{blue}{KC TODO}
 
 
-\subsubsection{Model averaging}
-BModel test (rate matrix)
+\subsubsection{Model averaging using bModelTest}
+
+It has been a problematic approach to select one ``best-fit'' nucleotide substitution model as well as site model in a deterministic manner while doing a Bayesian phylogenetic analysis. Here the site model is a composited model taking a substitution model as an input, and including the parameters to model the base frequencies, rate heterogeneity across sites, and proportion of invariable sites.
+
+BModel test \cite{bouckaert2017bmodeltestcomparison} provides model averaging of substitution models and site models. 
+If the site model is not of direct interest, then bModelTest provides estimates of the phylogeny averaged over site models; otherwise, if the site model is of interest, then bModelTest provides a posterior distribution over site models. \cite{bouckaert2019beastanalysis}
+
+{\small
+  \begin{alltt}
+    \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}]);
+    \textcolor{green}{\(rates\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}]);
+    \textcolor{black}{modelSet = }\textcolor{magenta!80!black}{bModelSet}(\textcolor{magenta}{"transitionTransversionSplit"});
+    \textcolor{green}{\(M\)} ~ \textcolor{blue}{DiscreteUniform}(\textcolor{gray}{lower=}\textcolor{magenta}{0}, \textcolor{gray}{upper=}modelSet.\textcolor{magenta}{size}()-\textcolor{magenta}{1});
+    \textcolor{black}{Q = }\textcolor{magenta!80!black}{nucleotideModel}(\textcolor{gray}{modelSet=}\textcolor{green}{modelSet}, \textcolor{gray}{modelIndicator=}\textcolor{green}{M}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{rates=}\textcolor{green}{rates});
+\end{alltt}
+}
+
+The above lines are the first part of code to specify a bModelTest analysis using LPhy. 
+
+  
+{\small
+  \begin{alltt}  
+  \textcolor{green}{\(I_siteRates\)} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
+  \textcolor{green}{\(I_pInv\)} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
+  \textcolor{green}{\(I_pInv\)} ~ \textcolor{blue}{Beta}(\textcolor{gray}{alpha=}\textcolor{magenta}{1.0},\textcolor{gray}{beta=}\textcolor{magenta}{1.0});
+  \textcolor{green}{\(siteRates\)} ~ \textcolor{blue}{DiscretizeGamma}(\textcolor{gray}{alpha=}\textcolor{magenta}{0.5},\textcolor{gray}{ncat=}\textcolor{magenta}{4}, \textcolor{gray}{replicates=}\textcolor{magenta}{200});
+  \textcolor{black}{siteModel = }\textcolor{magenta!80!black}{bSiteModel}(\textcolor{gray}{Q=}\textcolor{green}{Q}, \textcolor{gray}{siteRates=}\textcolor{green}{siteRates}, \textcolor{gray}{pInv=}\textcolor{pInv}{\(\pi\)}, \\ \textcolor{gray}{useSiteRates=}\textcolor{green}{I_siteRates}, \textcolor{gray}{usePInv=}\textcolor{green}{I_pInv}); 
+  \textcolor{green}{\(D\)} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{siteModel=}siteModel, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+\end{alltt}
+}
+
 
 
 
@@ -536,7 +565,7 @@ BModel test (rate matrix)
 \label{sec:clockmodels}
 The molecular clock models in the LPhy language can be simply composited by a simple random variable encapsulating an array of branch rates and then being passed into the phylogenetic likelihood distribution, such as PhyloCTMC. The branch rates not only can be independently drawn from a log-normal distribution (i.e. the uncorrelated relax clock model \cite{drummond2006relaxedconfidence}) shown as below, but also a function that returns branch rates for the given tree, indicator mask and raw rates (i.e. random local clock model \cite{}). 
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(branchRates\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{-0.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{30});
 \end{alltt}
@@ -546,7 +575,7 @@ The $replicates=30$ is used to create the array with 30 rates as the result of a
 
 The strict molecular clock model is applied by an even much simpler code shown as below, which has no branch rates (as default) in PhyloCTMC, but set a constant to the molecular clock rate $\mu$ (default to 1.0 if not set). 
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(D\)} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)}, \textcolor{gray}{mu=}\textcolor{magenta}{0.5});
 \end{alltt}
@@ -563,7 +592,7 @@ The phylogenetic continuous-time Markov chain (PhyloCTMC) \cite{felsenstein1981}
 There are also alternative generative distributions developed in LPhy, which are derived from a different kind of phylogenetic likelihoods, such as the phylogenetic Brownian motion process\cite{felsenstein1973maximum}, its multivariate version\cite{}, and Ornstein-Ulhenbeck process\cite{felsenstein1973maximum}. Using them, a continuous trait can be simulated from the specified models.
 For example, running the following LPhy script, the continuous trait $y$ containing 16 continuous values are simulated from a Yule tree $\psi$ with the root value $y0$ sampled from a normal distribution at the diffusion rate $\sigma$ sampled from a log-normal distribution.
 
-{\singlespacing
+{\small
 \begin{alltt}
   \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
   \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
