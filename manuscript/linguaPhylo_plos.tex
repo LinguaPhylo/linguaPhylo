@@ -314,7 +314,7 @@ This facilitates computational biologists to more easily develop, validate and t
 
 
 \section{Methods}
-\textcolor{blue}{To Kylie: The LPhy language, as a model specification language, is designed to describe Bayesian phylogenetic models in a representation by the probabilistic graphical model using a concise and readible syntax.}
+\textcolor{blue}{To Kylie: The LPhy language, as a phylogenetic model specification language, is designed to describe Bayesian phylogenetic models in a representation by the probabilistic graphical model using a concise and readible syntax.}
 The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax.  
 The LPhy framework is built on top of the Java programming language and provides features for: 
 (i) concise specification of phylogenetic models, (ii) data simulation from phylogenetic models, (iii) specification of phylogenetic analyses on real or synthetic data, (iv) integration with the BEAST2 phylogenetic inference framework, and (v) an extensibility mechanism for adding new functionality and data types to the LPhy language.
@@ -357,18 +357,19 @@ A complete LPhy script is built in two parts: a \textbf{data block} specifying t
     \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
   \}
     \end{alltt}
-    \caption{A simple LPhy script for JC + Coalescent. All constants are coloured by magenta, random variables are coloured by green, and generative distributions are coloured by blue. The parameters of generative distributions are coloured by grey. The functions are coloured by dark magenta. The constant variables and deterministic variables are coloured by black.}
+    \caption{A simple LPhy script to specify the phylogenetic analysis or simulation that applies the Jukes-Cantor model and constant-size coalescent tree prior, and assumes the 10 nucleotide sequences at the length of 200 evolve at a constant rate (default to 1) through the tree branches.}
     \label{lphy:jccoal}
   \end{listing}
 }
 \textcolor{blue}{TODO: cannot change caption to Example 1.}
 
-This script concisely specifies a simple phylogenetic analysis or simulation using 5 lines of code inside two blocks, which applies the Jukes-Cantor model and constant-size coalescent tree prior, and assumes the 10 nucletide sequences at the length of 200 evolve at a constant rate (default to 1) through the tree branches.
+This script is able to specifies a complete phylogenetic analysis or simulation using just 5 simple lines of code inside two blocks. 
+All constants are coloured by magenta, random variables are coloured by green, and generative distributions are coloured by blue. The parameters of generative distributions are coloured by grey. The functions are coloured by dark magenta. The constant variables and deterministic variables are coloured by black.
 
 \subsubsection{Probabilistic graphical model representation}
 \textcolor{blue}{TODO: review}
 The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
-Under this framework, the LPhy language are introducing four types of components listed below:
+Under this framework, the LPhy language introduces four types of components listed below:
 
 \begin{figure}
   \includegraphics[width=0.8\textwidth]{figs/jc_coal.png}
@@ -385,21 +386,23 @@ Under this framework, the LPhy language are introducing four types of components
 
 As it can be seen in Figure \ref{fig:jccoalPGM}, the constants are drawn as the big squares, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
 
-The random variables contain the values generated from generative distributions, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. 
-But when there is the observed data, such as imported alignment, clamping into a random variable (Section \ref{sec:dataclamping}), the circle representing it will be coloured by blue.
+The random variables contain the values generated from generative distributions, and they are also the set of parameters to estimate in the specified phylogenetic model. They are drawn as the green circles. 
+But when there is an observed data clamped into a random variable (Section \ref{sec:dataclamping}) to replace its previous value, such as importing an alignment, the circle representing it will be coloured by blue.
 
-The values of deterministic variables can be generated from either deterministic functions or method calls, but the value will be fixed when given the same inputs to its generator. They are drawn as diamonds. If the value is generated in the data block, then it will be coloured by yellow. Otherwise it will be a red diamond.
+The values of deterministic variables can be generated from either deterministic functions or method calls, but their values will be fixed when given the same inputs to their generators. They are drawn as diamonds. If the value is generated inside the data block, then it will be coloured by yellow, otherwise it will be a red diamond.
 
 Generative distributions, (deterministic) functions and method calls are all the generators. They are drawn as the small boxes.
 
-On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that our alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
+On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that the alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
 %%%neutrality assumption \url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
+This process, known as simulations, can be replicated by following the arrows from the top of the graphical models to the bottom,
+which produces a simulated sequence alignment from the specified phylogenetic model as a result.
 
-Given a phylogenetic probabilistic graphical model, we can follow the arrows from the top of the graph to the bottom, which is to simulate the sequence alignment from this graphical model. But when we follow the arrows backwards, namely from the bottom to top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
-The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with the LPhy integration, such as LPhyBEAST introduced in Section \ref{sec:lphybeast}.
+When we follow the arrows backwards, namely from the bottom to the top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
+The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with a LPhy integration LPhyBEAST introduced in Section \ref{sec:lphybeast}.
 
 \subsubsection{Conciser format}
-The code in Example \ref{lphy:jccoal} can be shorten to even 3 lines shown in Example \ref{lphy:jccoal2}, if the constants are not the focus of our study, for instance, making simulations from this model.
+The code in Example \ref{lphy:jccoal} can be shorten to even 3 lines shown in Example \ref{lphy:jccoal2}, if the constants are not the focus of our study, for instance, simulating alignments from a coalesent model.
 The keywords ``data'', ``model'' and curly brackets are omitted, because the LPhy parser will treat these lines inside the model block as the default.
 
 {
@@ -417,10 +420,10 @@ The keywords ``data'', ``model'' and curly brackets are omitted, because the LPh
 }
 
 \subsubsection{Achieving readability, re-usability and reproducibility}
-\textcolor{blue}{TODO: revise?} The generative distributions, functions and methods calls in LPhy are named by well-known terms, as well as their parameters. For example, the blue word ``Coalescent'' is a generative distribution to implement Kingman's coalescent tree prior. 
-The variable name in LPhy can be any greek letters, some of which are commonly used for certain parameters in the phylogenetic models. For example, $\Theta$ usually represents the effective population size in a constant-size coalescent model. 
+\textcolor{blue}{TODO: review} All variables and generators in LPhy are named by well-known terms, as well as the parameters. For example, the blue key word ``Coalescent'' in Example \ref{lphy:jccoal} represents a generative distribution to implement Kingman's coalescent tree prior. 
+The variable name in LPhy can be any greek letters, some of which are commonly used to indicate certain parameters in the phylogenetic models. For example, $\Theta$ usually represents the effective population size in a constant-size coalescent model. 
 
-The LPhy script, such as Example \ref{lphy:jccoal}, can be visualised as a probabilistic graphical model, such as Figure \ref{fig:jccoalPGM}. The variables and generators will be one-to-one mapped to the components of the graphical model, vice versa. 
+A LPhy script, such as Example \ref{lphy:jccoal}, can be visualised by a probabilistic graphical model, such as Figure \ref{fig:jccoalPGM}. The variables and generators will be one-to-one mapped to the components of the graphical model, vice versa. 
 Priors are the important part of the specification of a Bayesian phylogenetic model. But this part is often ignored or incompletely described in some publications. The probabilistic graphical model representation naturally solves this issue once the complete graph is delivered.
 It is also very convenient to reuse the same model for a different data (e.g. alignment) or constants by simply replacing the line in the data block.  
 
@@ -448,7 +451,7 @@ Prior distributions are generative distributions in LPhy which include common st
 
 {\small
 \begin{alltt}
-  \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
+    \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
 \end{alltt}
 
 For example, the `LogNormal()' above is a generative distribution which samples values from a Log-Normal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
@@ -469,7 +472,7 @@ The random variable can be an array instead of a single-value variable. For exam
 
 {\small
 \begin{alltt}
-  \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}\textcolor{magenta}{3});
+    \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}\textcolor{magenta}{3});
 \end{alltt}
 }
 
@@ -479,8 +482,8 @@ Then the output of \texttt{hky} is an array of three instantaneous rate matrices
 
 {\small
 \begin{alltt}
-  \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}\textcolor{magenta}{3});
-  \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
+    \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}], \textcolor{gray}{replicates=}\textcolor{magenta}{3});
+    \textcolor{black}{Q = }\textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)});
 \end{alltt} 
 
 
@@ -509,8 +512,8 @@ K$. $n$ is a tuple of sample sizes, one dimension for each deme:
 
 {\small
   \begin{alltt}
-  M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
-  g ~ StructuredCoalescent(M=M, n=[15, 15]);
+    M = migrationMatrix(theta=[0.1, 0.1], m=[1.0, 1.0]);
+    g ~ StructuredCoalescent(M=M, n=[15, 15]);
   \end{alltt}
 }
 
@@ -554,7 +557,7 @@ The molecular clock models in the LPhy language can be simply composited by a si
 
 {\small
 \begin{alltt}
-  \textcolor{green}{branchRates} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{-0.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{30});
+    \textcolor{green}{branchRates} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{sdlog=}\textcolor{magenta}{-0.25}, \textcolor{gray}{replicates=}\textcolor{magenta}{30});
 \end{alltt}
 }
 
@@ -565,7 +568,7 @@ The rest of inputs defines the length of the alignment $L=200$, an instantaneous
 
 {\small
 \begin{alltt}
-  \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)}, \textcolor{gray}{mu=}\textcolor{magenta}{0.5});
+    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)}, \textcolor{gray}{mu=}\textcolor{magenta}{0.5});
 \end{alltt}
 }
 
@@ -582,11 +585,11 @@ For example, running the following LPhy script, the continuous trait $y$ contain
 
 {\small
 \begin{alltt}
-  \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-  \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
-  \textcolor{green}{\(\sigma\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{0.5});
-  \textcolor{green}{y0} ~ \textcolor{blue}{Normal}(\textcolor{gray}{mean=}\textcolor{magenta}{0.0}, \textcolor{gray}{sd=}\textcolor{magenta}{1.0});
-  \textcolor{green}{y} ~ \textcolor{blue}{PhyloBrownian}(\textcolor{gray}{diffRate=}\textcolor{green}{\(\sigma\)}, \textcolor{gray}{y0=}\textcolor{green}{y0}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+    \textcolor{green}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{green}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{magenta}{16});
+    \textcolor{green}{\(\sigma\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{0.5});
+    \textcolor{green}{y0} ~ \textcolor{blue}{Normal}(\textcolor{gray}{mean=}\textcolor{magenta}{0.0}, \textcolor{gray}{sd=}\textcolor{magenta}{1.0});
+    \textcolor{green}{y} ~ \textcolor{blue}{PhyloBrownian}(\textcolor{gray}{diffRate=}\textcolor{green}{\(\sigma\)}, \textcolor{gray}{y0=}\textcolor{green}{y0}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
 \end{alltt}
 }
 
