@@ -242,7 +242,7 @@ F\'{a}bio K Mendes\textsuperscript{1,4}
 \section*{Abstract}
   Phylogenetic models have become increasingly complex and the data sets addressed larger and more rich.
   Yet there is no succinct language to accurately specify the details of a phylogenetic model for the purposes of reproducibility or reuse.
-  We present a new language to specify the details of a phylogenetic model that is both human and machine readable.
+  We present a new model specification language, called as LPhy, to specify the details of a phylogenetic model that is both human and machine readable.
   We also report on the development of a graphical software package that can be used to construct and simulate data from
   models in this new language, as well as create natural language narratives that can form the basis of a description of the model for the method section of a manuscript.
   Finally we report on a command-line program that can be used to generate XML for the BEAST2 software package based
@@ -302,7 +302,7 @@ This feature makes Rev model specification more intuitive, but still requires us
 details %extraneous to the model 
 such as MCMC parameters and the operator schedule.
 
-Here, we introduce LinguaPhylo (LPhy), an open-source model specification 
+Here, we introduce LinguaPhylo (LPhy, pronounced el-fee), an open-source model specification 
 language aimed to improve reproducibility, re-usability and readability of phylogenetic models. 
 LPhy provides a framework for phylogenetic model specification, data simulation, and inference (via integration with BEAST2) using the LPhy scripting language. 
 The LPhy language has a simple syntax capable of fully specifying complex phylogenetic models. 
@@ -314,6 +314,7 @@ This facilitates computational biologists to more easily develop, validate and t
 
 
 \section{Methods}
+\textcolor{blue}{To Kylie: The LPhy language, as a model specification language, is designed to describe Bayesian phylogenetic models in a representation by the probabilistic graphical model using a concise and readible syntax.}
 The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax.  
 The LPhy framework is built on top of the Java programming language and provides features for: 
 (i) concise specification of phylogenetic models, (ii) data simulation from phylogenetic models, (iii) specification of phylogenetic analyses on real or synthetic data, (iv) integration with the BEAST2 phylogenetic inference framework, and (v) an extensibility mechanism for adding new functionality and data types to the LPhy language.
@@ -337,50 +338,43 @@ The LPhy framework is built on top of the Java programming language and provides
 
 % \newline
 
-\subsection{Example LPhy script}
+\subsection{LPhy script}
 
-Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
-This script concisely specifies a phylogenetic analysis using 19 lines of code.  
-The code contains a \textbf{data block} for specifying the input dataset, and a \textbf{model block} which defines the phylogenetic model. 
-% An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
-% We have modified the script slightly for illustrative purposes:
+A complete LPhy script is built in two parts: a \textbf{data block} specifying the observed data to the probabilistic graphical model, and a \textbf{model block} specifying the phylogenetic model. They are defined between curly brackets as shown in Example \ref{lphy:jccoal}.
 
 {
   \small
   \begin{listing}
     \stepcounter{example}
     \begin{alltt}
-      data \{
-      options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
-      nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
-      D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
-      codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
-      n = 3;
-      L = [209, 210, 210];
-      taxa = D.\textcolor{magenta!80!black}{taxa}();
-      \}
-      model \{
-      \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
-      \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-      \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-      \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
-      \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
-      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
-      Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
-      \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-      \}
+  data \{
+    L = \textcolor{magenta}{200};
+    taxa = \textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10});
+  \}
+  model \{
+    \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
+    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+  \}
     \end{alltt}
-    % \captionof{subexample}{LPhy script specifying a phylodynamic model
-    \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples.
-    \newline}
-    \label{lphy:rsva}
+    \caption{A simple LPhy script for JC + Coalescent. All constants are coloured by magenta, random variables are coloured by green, and generative distributions are coloured by blue. The parameters of generative distributions are coloured by grey. The functions are coloured by dark magenta. The constant variables and deterministic variables are coloured by black.}
+    \label{lphy:jccoal}
   \end{listing}
 }
+\textcolor{blue}{TODO: cannot change caption to Example 1.}
+
+This script concisely specifies a simple phylogenetic analysis or simulation using 5 lines of code inside two blocks, which applies the Jukes-Cantor model and constant-size coalescent tree prior, and assumes the 10 nucletide sequences at the length of 200 evolve at a constant rate (default to 1) through the tree branches.
 
 \subsubsection{Probabilistic graphical model representation}
 \textcolor{blue}{TODO: review}
 The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
 Under this framework, the LPhy language are introducing four types of components listed below:
+
+\begin{figure}
+  \includegraphics[width=0.8\textwidth]{figs/jc_coal.png}
+  \caption{The probabilistic graphical model representation of Example \ref{lphy:jccoal}.} 
+  \label{fig:jccoalPGM}
+\end{figure}
 
 \begin{itemize}
     \item Constants;
@@ -389,22 +383,48 @@ Under this framework, the LPhy language are introducing four types of components
     \item Generators: generative distribution, function, and method call.
 \end{itemize}
 
-The constants are drawn as the big squares in Figure \ref{fig:RSV2PGM}, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
-The random variables contain the values generated from generators, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. The blue circles are the random variables containing data (alignment).
-The values of deterministic variables are also generated from generators, but the value will be fixed when given the same inputs to its generator. They are drawn as diamonds. If the value is generated in the data block, then it will be coloured by yellow. Otherwise it will be a red diamond.
-A generator can be a generative distribution, function, or method call. They are drawn as the small rectangles.
+As it can be seen in Figure \ref{fig:jccoalPGM}, the constants are drawn as the big squares, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
 
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/RSV2.png}
-  \caption{A screenshot of the probabilistic graphical model of Example \ref{lphy:rsva}.} 
-  \label{fig:RSV2PGM}
-\end{figure}
+The random variables contain the values generated from generative distributions, and they are also the set of parameters in the specified phylogenetic model to estimate. They are drawn as the green circles. 
+But when there is the observed data, such as imported alignment, clamping into a random variable (Section \ref{sec:dataclamping}), the circle representing it will be coloured by blue.
+
+The values of deterministic variables can be generated from either deterministic functions or method calls, but the value will be fixed when given the same inputs to its generator. They are drawn as diamonds. If the value is generated in the data block, then it will be coloured by yellow. Otherwise it will be a red diamond.
+
+Generative distributions, (deterministic) functions and method calls are all the generators. They are drawn as the small boxes.
 
 On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that our alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
 %%%neutrality assumption \url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
 
 Given a phylogenetic probabilistic graphical model, we can follow the arrows from the top of the graph to the bottom, which is to simulate the sequence alignment from this graphical model. But when we follow the arrows backwards, namely from the bottom to top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
 The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with the LPhy integration, such as LPhyBEAST introduced in Section \ref{sec:lphybeast}.
+
+\subsubsection{Conciser format}
+The code in Example \ref{lphy:jccoal} can be shorten to even 3 lines shown in Example \ref{lphy:jccoal2}, if the constants are not the focus of our study, for instance, making simulations from this model.
+The keywords ``data'', ``model'' and curly brackets are omitted, because the LPhy parser will treat these lines inside the model block as the default.
+
+{
+  \small
+  \begin{listing}
+    \stepcounter{example}
+    \begin{alltt}
+    \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10}));
+    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+    \end{alltt}
+    \caption{A 3-line code for Example \ref{lphy:jccoal}.}
+    \label{lphy:jccoal2}
+  \end{listing}
+}
+
+\subsubsection{Achieving readability, re-usability and reproducibility}
+\textcolor{blue}{TODO: revise?} The generative distributions, functions and methods calls in LPhy are named by well-known terms, as well as their parameters. For example, the blue word ``Coalescent'' is a generative distribution to implement Kingman's coalescent tree prior. 
+The variable name in LPhy can be any greek letters, some of which are commonly used for certain parameters in the phylogenetic models. For example, $\Theta$ usually represents the effective population size in a constant-size coalescent model. 
+
+The LPhy script, such as Example \ref{lphy:jccoal}, can be visualised as a probabilistic graphical model, such as Figure \ref{fig:jccoalPGM}. The variables and generators will be one-to-one mapped to the components of the graphical model, vice versa. 
+Priors are the important part of the specification of a Bayesian phylogenetic model. But this part is often ignored or incompletely described in some publications. The probabilistic graphical model representation naturally solves this issue once the complete graph is delivered.
+It is also very convenient to reuse the same model for a different data (e.g. alignment) or constants by simply replacing the line in the data block.  
+
+This concise and precise representation of LPhy language is the key driver to improve the reproducibility for Bayesian phylogenetics. The convenience to specify a phylogenetic model using LPhy will greatly encourage the researchers to apply the same methodology in this field.
 
 
 \subsection{Language and model features}
@@ -422,9 +442,9 @@ A full list of available methods are shown in the supplementary materials.
 \subsubsection{Prior distributions}
 Prior distributions are generative distributions in LPhy which include common statistical distributions (e.g., Normal distribution, Dirichlet distribution, Log-Normal distribution).  
 
-%and $\theta$. 
+%and $\Theta$. 
 %Here, $\mu$ is generated from a LogNormal distribution with a mean of $-5$ and a standard deviation of $1.25$. 
-%The variable $\theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
+%The variable $\Theta$ is generated from a LogNormal distribution with a mean of $3.0$ and a standard deviation of $2.0$.  
 
 {\small
 \begin{alltt}
@@ -971,7 +991,9 @@ Along with the language definition, we also provide a GUI, called LPhy Studio, t
   \label{fig:lphystudio}
 \end{figure}
 
-The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. Either way the Studio will guarantee to produce the same graphical probability model representing the specified phylogenetic model. 
+The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. 
+The auto-complete feature is supported when the script is typed in the console.
+Either way the Studio will guarantee to produce the same graphical probability model representing the specified phylogenetic model. 
 This allows the user focusing on a simple script while sharing the same visualizations across different collaborators.  
 
 The narrative generator integrated with LPhyStudio can automatically create human-readable descriptions about the data, model, and posterior distribution. 

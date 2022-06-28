@@ -6,6 +6,7 @@
 \usepackage{multirow}
 \usepackage{caption}
 
+\usepackage{alltt}
 
 \hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, urlcolor=blue,
 citecolor=blue }
@@ -26,6 +27,60 @@ citecolor=blue }
 \date{}
 
 \maketitle 
+
+\section{Example LPhy script}
+
+\subsection{RSVA}
+
+Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
+This script concisely specifies a phylogenetic analysis using 19 lines of code.  
+The code contains a \textbf{data block} for specifying the input dataset, and a \textbf{model block} which defines the phylogenetic model. 
+% An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
+% We have modified the script slightly for illustrative purposes:
+
+{
+  \small
+  \begin{listing}
+    \stepcounter{example}
+    \begin{alltt}
+    data \{
+      options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
+      nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
+      D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
+      codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
+      n = 3;
+      L = [209, 210, 210];
+      taxa = D.\textcolor{magenta!80!black}{taxa}();
+    \}
+    model \{
+      \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
+      \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
+      \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+      \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
+      \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
+      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
+      Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
+      \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+    \}
+    \end{alltt}
+    % \captionof{subexample}{LPhy script specifying a phylodynamic model
+    \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples.
+    \newline}
+    \label{lphy:rsva}
+  \end{listing}
+}
+
+
+\newpage
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/RSV2.png}
+  \caption{A screenshot of the probabilistic graphical model of Example \ref{lphy:rsva}.} 
+  \label{fig:RSV2PGM}
+\end{figure}
+
+
+\newpage
 
 
 \bigskip
