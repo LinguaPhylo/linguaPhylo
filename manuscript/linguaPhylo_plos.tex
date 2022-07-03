@@ -116,7 +116,8 @@
 \DisableLigatures[f]{encoding = *, family = * }
 
 % color can be used to apply background shading to table cells only
-\usepackage{xcolor}
+%\usepackage{xcolor}
+%\usepackage[dvipsnames]{xcolor}
 
 % array package and thick rules for tables
 \usepackage{array}
@@ -170,6 +171,7 @@
 % Header and Footer with logo
 \usepackage{lastpage,fancyhdr,graphicx}
 \usepackage{epstopdf}
+
 %\pagestyle{myheadings}
 \pagestyle{fancy}
 \fancyhf{}
@@ -186,6 +188,8 @@
 
 \newcommand{\lorem}{{\bf LOREM}}
 \newcommand{\ipsum}{{\bf IPSUM}}
+
+\newcommand{\alexei}[1]{\textcolor{teal}{{\bf ALEXEI}: {#1}}}
 
 % next 6 lines put a caption on \alltt float
 \usepackage{newfloat}
@@ -245,14 +249,13 @@ F\'{a}bio K Mendes\textsuperscript{1,4}
 
 % Please keep the abstract below 300 words
 \section*{Abstract}
-  Phylogenetic models have become increasingly complex and the data sets addressed larger and more rich.
-  Yet there is no succinct language to accurately specify the details of a phylogenetic model for the purposes of reproducibility or reuse.
-  We present a new model specification language, called as LPhy, to specify the details of a phylogenetic model that is both human and machine readable.
-  We also report on the development of a graphical software package that can be used to construct and simulate data from
-  models in this new language, as well as create natural language narratives that can form the basis of a description of the model for the method section of a manuscript.
-  Finally we report on a command-line program that can be used to generate XML for the BEAST2 software package based
-  on a model specified in this new language.
-  These tools together should aid in the goal of reproducibility and reuse of probabilistic phylogenetic models.
+  Phylogenetic models have become increasingly complex and phylogenetic data sets larger and richer.
+  Yet there is no model building tool or specification language that remains succinct after a full phylogenetic analysis has been described.
+  We present a new lightweight and efficient \textcolor{red}{[FKM: just a suggestion... `concise' is another option]} model specification language, called `LPhy', that is both human and machine readable.
+  'LPhy' is accompanied by a graphical user interface for building models and simulating data using this new language, as well as for creating natural language narratives describing such models.
+  These narratives can form the basis of manuscript method sections.
+  We also introduce a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) to be used alongside the BEAST2 software platform.
+  Together, these tools will clarify the description and reporting of probabilistic models in phylogenetic studies, and improve result reproducibility.
 
 
 % Please keep the Author Summary between 150 and 200 words
@@ -277,7 +280,7 @@ Metaresearch efforts have uncovered the so-called ``reproducibility
 crisis'' \cite{baker16} in many scientific domains \cite{baker16}. 
 In recent years, the growing number of computational biology software available enables greater freedom in data analyses, 
 but at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community}. 
-This increases the difficulty of accurately reporting, re-executing and re-using analyses. 
+This increases the difficulty of accurately reporting and thus of re-executing analyses. 
 These barriers have been recognized by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
 
 In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
@@ -289,153 +292,77 @@ multiple models within a complex pipeline to answer questions in evolutionary bi
 % ecological networks \cite{braga20}, 
 % trait evolution \cite{may19,bite}, and 
 epidemics \cite{faria21,douglas21}. 
-Reproducing and reusing a phylogenetics pipeline is no easy task. 
-Often requiring the user to understand the input data format, the evolutionary models, details of the model parameters, as well as software runtime parameters. 
-Runtime parameters can include Markov chain Monte Carlo (MCMC) sampling parameters which are not inherently part of the model.
-Currently, little research has been done on the readability and re-usability of phylogenetic models. 
-Our paper presents a tool aimed to: (i) facilitate accurate communication of phylogenetic analyses, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic analyses on new datasets. 
+
+Reproducing and reusing a phylogenetics pipeline is no easy task, and it 
+often requires users to understand the input data format, details of the model (i.e., its parameters and how they are are related), and runtime settings. 
+The latter can include Markov chain Monte Carlo (MCMC) sampling settings which are not inherently part of the model.
+Currently, little research has been done on the readability, reproducibility and re-usability of phylogenetic analyses employing phylogenetic models. 
+Our paper presents a tool that aims to: (i) facilitate concise communication of phylogenetic analyses, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic analyses on new datasets. 
  
-Previous attempts to address model specification and analysis setup include BEAST style XMLs (eXtensible Markup Language) developed for BEAST software \cite{beast,beast2} and the Rev language for RevBayes \cite{revbayes}. 
+Previous attempts to address model specification and analysis setup include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2} and the Rev language for RevBayes \cite{revbayes}. 
 The extensibility of XMLs provides flexibility to developers allowing them to create new
 descriptive tags for specifying new models.
-However, BEAST style XMLs are difficult for humans to read and interpret due to the verbose syntax and interconnected components that make up BEAST models. 
-This also makes it difficulty to translate BEAST or BEAST2 analyses from text descriptions in published work. 
+However, BEAST-style XMLs are difficult for humans to read and interpret due to the verbose syntax and interconnected components that make up BEAST models. 
+This also makes it difficulty to translate BEAST or BEAST2 analyses into text descriptions in published work. 
 On the other hand, the Rev language 
 \cite{revbayes} 
 incorporates conventional notation from probability theory. 
 This feature makes Rev model specification more intuitive, but still requires users to contend with runtime 
 details %extraneous to the model 
-such as MCMC parameters and the operator schedule.
+such as MCMC settings and the operator schedule.
 
-Here, we introduce LinguaPhylo (LPhy, pronounced el-fee), an open-source model specification 
-language aimed to improve reproducibility, re-usability and readability of phylogenetic models. 
-LPhy provides a framework for phylogenetic model specification, data simulation, and inference (via integration with BEAST2) using the LPhy scripting language. 
-The LPhy language has a simple syntax capable of fully specifying complex phylogenetic models. 
-This aims to improve the communication of phylogenetic models by providing a language %for evolutionary biologists 
-to fully describe complex phylogenetic models and priors concisely. 
-Precise text descriptions and graphical diagrams of phylogenetic models can be automatically generated from computer readible LPhy scripts.  
-Additionally, LPhy is integrated with the inference software, BEAST2, which enables phylogenetic analyses to be specified using the LPhy language. 
-This facilitates computational biologists to more easily develop, validate and test new phylogenetic models. 
+Here, we introduce LinguaPhylo (LPhy, pronounced `el-fee'), an open-source model specification 
+language aimed at improving readability, reproducibility, and re-usability of phylogenetic models. 
+The LPhy language has a simple syntax for succinct specification of complex models, and is implemented in a framework that generates precise text descriptions and graphical diagrams of phylogenetic models from user input.
+\textcolor{red}{FKM: Maybe add a short sentence saying that we will go over a few simple examples and showcase LPhy's and its GUI/CLI functionalities.}
+\newline
+\newline
 
+\textcolor{red}{FKM and KC: Here is our shot at providing a skeleton for this paper. At the moment, the order of sections seems backward, the difference between `Methods' and `Results' seems arbitrary, and we have too many listings in the main text. I think support for model averaging should be put into the supplementary. We need to move a lot of it to the Supplementary.}
+
+\bigskip
+
+\textcolor{red}{Methods (in the order the bullet points appear!):}
+\begin{enumerate}
+    \item \textcolor{red}{Right after `Methods', not nested within any subsections: What LPHy and its framework do as a simple inline list; This includes (i) model specification and visualization, (ii) data simulation, (iii) model description as natural narratives, (iv) configuration of inferential analyses;}
+    \item \textcolor{red}{(Subsection) LPhy language features: will introduce basic concepts (PGMs, stochastic nodes, etc) and one-liners examplifying how to define a constant, a stochastic and a deterministic node; data clamping; vectorization;} \textcolor{blue}{From Walter: I strongly recommend to use the LPhy terms in this paper that introduced by Alexei previously: Constants, Random variables, Deterministic variables, Generators. @Fabio, I suggest we need to clarify the terms for readers. In my opinion, "Variable" refers to the LPhy code, may be OK also to a node in PGM, but "Node" only refers to the PGM representation of a variable, which should not be used to describe the code.}
+    \item \textcolor{red}{(Subsection) Short description of GUI and CLI (no screenshots just yet, or maybe pointing to a screenshot/figure in the results section);}
+    \item \textcolor{red}{(Subsection) LPhyToBEAST: short paragraph on interface between LPhy and BEAST 2
+    \item \textcolor{red}{(Subsection) Technical details: it's implemented in Java, built as a Gradle project (@Walter: we want like one to two sentences; it was a lot of work for you, certainly, but it is almost entirely irrelevant to the reader), open-source code that is publicly available} \textcolor{blue}{I presume you meant "2.4 As a Gradle project". I just put everything necessary in main for the 1st version of the draft, so we have something to discuss. These technical details can be moved to Suppl. If you meant Introduction, I think Kylie would be happy to refine it after we have a meeting together.}}
+    \newline
+\end{enumerate}
+
+\textcolor{red}{Results (in the order the bullet points appear!):}
+\begin{enumerate}
+    \item \textcolor{red}{Box and figure: Show a full script specifying a moderately complex model as a listing, and a screenshot of the GUI. I suggest using the phylodynamic hierarchical model from the tutorial (RSV) I wrote way back when;}
+    \item \textcolor{red}{Describe/discuss the data/model text blocks in the script;}
+    \item \textcolor{red}{Describe/discuss the graphical representation;}
+    \item \textcolor{red}{Describe/discuss the natural text narrative;}
+    \item \textcolor{red}{Describe/discuss simulation and using those simulations for a coverage study; (@Walter: you even generated these figures before, we should put them here and discuss them)} \textcolor{blue}{(From Walter: @Fabio, Kylie and I discussed to use her model validation in Phylonco, which supposes to be more interested. Please let me know, if this is not the case any more.)}
+    \item \textcolor{red}{Show/comment on data clamping, generating an .xml for actually using the model for inference with similar data with BEAST 2.}
+    \newline
+\end{enumerate}
+
+\textcolor{blue}{From Walter: I have fixed the compile error, so all missing contents are back, please update your comments accordingly. And delete this line.}
+
+\textcolor{red}{Discussion (in the order the bullet points appear!):}
+\begin{enumerate}
+    \item \textcolor{red}{One or two paragraphs briefly recapitulating and summarizing what we are doing here;}
+    \item \textcolor{red}{One or two paragraph on what LPhy allows us to do (`advantages' of LPhy) relative to what is out there or not out there, mention .Rev and BEAUTi;}
+    \item \textcolor{red}{One paragraph on what LPhy does NOT allow us to do (`limitations' of LPhy);}
+    \item \textcolor{red}{One paragraph on extensibility, release, tutorials, examples, community use, etc.;}
+    \item \textcolor{red}{One paragraph to wrap it up with future directions.}
+    \newline
+\end{enumerate}
 
 \section{Methods}
 \textcolor{blue}{To Kylie: The LPhy language is designed to specify phylogenetic models in a representation of the probabilistic graphical model using a concise and readible syntax.}
-The LPhy language is designed to enable the specification of probabilistic phylogenetic models using a concise and readible syntax.  
+The LPhy language is designed to enable the specification of phylogenetic models using a concise and readible syntax.  
 The LPhy framework is built on top of the Java programming language and provides features for: 
 (i) concise specification of phylogenetic models, (ii) data simulation from phylogenetic models, (iii) specification of phylogenetic analyses on real or synthetic data, (iv) integration with the BEAST2 phylogenetic inference framework, and (v) an extensibility mechanism for adding new functionality and data types to the LPhy language.
- 
-
-% \begin{itemize}
-% \item for evolutionary biologists
-% \begin{enumerate}
-% \item describe complex phylogenetic models succinctly and exactly
-% \item simulate prior distributions from these models, including arbitrary statistics
-% \item use model description to run inference on a real data set using LPhyBEAST
-% \item produce precise methods section and graphical model figure for describing analyses in published works
-% \end{enumerate}
-% \item for computational biologists
-% \begin{enumerate}
-% \item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
-% \item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
-% \item do well-calibrated simulation study that validate the implementation of inference framework
-% \end{enumerate}
-% \end{itemize}
-
-% \newline
-
-\subsection{LPhy script}
-
-A complete LPhy script is built in two parts: a \textbf{data block} specifying the observed data to the probabilistic graphical model, and a \textbf{model block} specifying the phylogenetic model. They are defined between curly brackets as shown in Example \ref{lphy:jccoal}.
-
-{
-  \small
-  \begin{listing}
-    \stepcounter{example}
-    \begin{alltt}
-  data \{
-    L = \textcolor{magenta}{200};
-    taxa = \textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10});
-  \}
-  model \{
-    \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
-    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-  \}
-    \end{alltt}
-    \caption{A simple LPhy script to specify the phylogenetic analysis or simulation that applies the Jukes-Cantor model and constant-size coalescent tree prior, and assumes the 10 nucleotide sequences at the length of 200 evolve at a constant rate (default to 1) through the tree branches.}
-    \label{lphy:jccoal}
-  \end{listing}
-}
-\textcolor{blue}{TODO: cannot change caption to Example 1.}
-
-This script is able to specifies a complete phylogenetic analysis or simulation using just 5 simple lines of code inside two blocks. 
-All constants are coloured by magenta, random variables are coloured by green, and generative distributions are coloured by blue. The parameters of generative distributions are coloured by grey. The functions are coloured by dark magenta. The constant variables and deterministic variables are coloured by black.
-
-\subsubsection{Probabilistic graphical model representation}
-\textcolor{blue}{TODO: review}
-The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
-Under this framework, the LPhy language introduces four types of components listed below:
-
-\begin{figure}
-  \includegraphics[width=0.8\textwidth]{figs/jc_coal.png}
-  \caption{The probabilistic graphical model representation of Example \ref{lphy:jccoal}.} 
-  \label{fig:jccoalPGM}
-\end{figure}
-
-\begin{itemize}
-    \item Constants;
-    \item Random variables;
-    \item Deterministic variables;
-    \item Generators: generative distribution, function, and method call.
-\end{itemize}
-
-As it can be seen in Figure \ref{fig:jccoalPGM}, the constants are drawn as the big squares, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
-
-The random variables contain the values generated from generative distributions, and they are also the set of parameters to estimate in the specified phylogenetic model. They are drawn as the green circles. 
-But when there is an observed data clamped into a random variable (Section \ref{sec:dataclamping}) to replace its previous value, such as importing an alignment, the circle representing it will be coloured by blue.
-
-The values of deterministic variables can be generated from either deterministic functions or method calls, but their values will be fixed when given the same inputs to their generators. They are drawn as diamonds. If the value is generated inside the data block, then it will be coloured by yellow, otherwise it will be a red diamond.
-
-Generative distributions, (deterministic) functions and method calls are all the generators. They are drawn as the small boxes.
-
-On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that the alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
-%%%neutrality assumption \url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
-This process, known as simulations, can be replicated by following the arrows from the top of the graphical models to the bottom,
-which produces a simulated sequence alignment from the specified phylogenetic model as a result.
-
-When we follow the arrows backwards, namely from the bottom to the top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
-The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with a LPhy integration LPhyBEAST introduced in Section \ref{sec:lphybeast}.
-
-\subsubsection{Conciser format}
-The code in Example \ref{lphy:jccoal} can be shorten to even 3 lines shown in Example \ref{lphy:jccoal2}, if the constants are not the focus of our study, for instance, simulating alignments from a coalesent model.
-The keywords ``data'', ``model'' and curly brackets are omitted, because the LPhy parser will treat these lines inside the model block as the default.
-
-{
-  \small
-  \begin{listing}
-    \stepcounter{example}
-    \begin{alltt}
-    \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
-    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10}));
-    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-    \end{alltt}
-    \caption{A 3-line code for Example \ref{lphy:jccoal}.}
-    \label{lphy:jccoal2}
-  \end{listing}
-}
-
-\subsubsection{Achieving readability, re-usability and reproducibility}
-\textcolor{blue}{TODO: review} All variables and generators in LPhy are named by well-known terms, as well as the parameters. For example, the blue key word ``Coalescent'' in Example \ref{lphy:jccoal} represents a generative distribution to implement Kingman's coalescent tree prior. 
-The variable name in LPhy can be any greek letters, some of which are commonly used to indicate certain parameters in the phylogenetic models. For example, $\Theta$ usually represents the effective population size in a constant-size coalescent model. 
-
-A LPhy script, such as Example \ref{lphy:jccoal}, can be visualised by a probabilistic graphical model, such as Figure \ref{fig:jccoalPGM}. The variables and generators will be one-to-one mapped to the components of the graphical model, vice versa. 
-Priors are the important part of the specification of a Bayesian phylogenetic model. But this part is often ignored or incompletely described in some publications. The probabilistic graphical model representation naturally solves this issue once the complete graph is delivered.
-It is also very convenient to reuse the same model for a different data (e.g. alignment) or constants by simply replacing the line in the data block.  
-
-This concise and precise representation of LPhy language is the key driver to improve the reproducibility for Bayesian phylogenetics. The convenience to specify a phylogenetic model using LPhy will greatly encourage the researchers to apply the same methodology in this field.
 
 
-\subsection{Language and model features}
+\subsection{Language features}
 The LPhy language provides a simple syntax for simulating and specifying phylogenetic models.
 LPhy allows users to simulate trees using tree prior models (e.g., birth-death or coalescent processes), genomic sequences using substitution models (e.g., GTR \cite{gtr}), and also supports simulating variables from common statistical distributions (e.g., Normal distribution). 
 
@@ -445,8 +372,7 @@ The data can be simulated using LPhy sequence generators, or loaded from externa
 An input API is provided to parse input sequences from nexus and fasta formats and trees from newick format into `LPhy datatypes'. 
 A full list of available methods are shown in the supplementary materials.
 
-
-%\subsubsection{General statistical distributions}
+% Examples below
 \subsubsection{Prior distributions}
 Prior distributions are generative distributions in LPhy which include common statistical distributions (e.g., Normal distribution, Dirichlet distribution, Log-Normal distribution).  
 
@@ -598,54 +524,229 @@ For example, running the following LPhy script, the continuous trait $y$ contain
 \end{alltt}
 }
 
-\subsubsection{Model averaging using bModelTest}
+\subsection{The graphical user interface} 
+% Moved this section up
+Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A \cite{zlateva2004molecular} is illustrated in Figure \ref{fig:lphystudio} and Example \ref{lphy:rsva}.
 
-It has been a problematic approach to select one ``best-fit'' nucleotide substitution model as well as site model in a deterministic manner while doing a Bayesian phylogenetic analysis. Here the site model is a composited model taking a substitution model as an input, and including the parameters to model the base frequencies, rate heterogeneity across sites, and proportion of invariable sites.
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
+  \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
+  on the left panel (constants hidden), and the auto-generated text description of the data and phylogenetic model on the right panel.} 
+  \label{fig:lphystudio}
+\end{figure}
 
-BModel test \cite{bouckaert2017bmodeltestcomparison} provides model averaging of substitution models and site models. 
-If the substitution and site model are not of direct interest, then bModelTest provides estimates of the phylogeny averaged over substitution models and site models; otherwise, if they are of interest, then bModelTest provides a posterior distribution over these models. \cite{bouckaert2019beastanalysis}
+The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. 
+The auto-complete feature is supported when the script is typed in the console.
+Either way the Studio will guarantee to produce the same graphical probability model representing the specified phylogenetic model. 
+This allows the user focusing on a simple script while sharing the same visualizations across different collaborators.  
 
-{\small
-  \begin{alltt}
-    \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}]);
-    \textcolor{green}{rates} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}]);
-    \textcolor{black}{modelSet = }\textcolor{magenta!80!black}{bModelSet}(\textcolor{magenta}{"transitionTransversionSplit"});
-    \textcolor{green}{M} ~ \textcolor{blue}{DiscreteUniform}(\textcolor{gray}{lower=}\textcolor{magenta}{0}, \textcolor{gray}{upper=}modelSet.\textcolor{magenta}{size}()-\textcolor{magenta}{1});
-    \textcolor{black}{Q = }\textcolor{magenta!80!black}{nucleotideModel}(\textcolor{gray}{modelSet=}\textcolor{green}{modelSet}, \textcolor{gray}{modelIndicator=}\textcolor{green}{M}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{rates=}\textcolor{green}{rates});
-\end{alltt}
+\subsection{The command line interface} 
+...
+
+\subsection{Integration with BEAST2 (LPhyBEAST)}
+\label{sec:lphybeast}
+LPhy specifies the models, but we also provide an integration with BEAST2 \cite{bouckaert2014beastanalysis,bouckaert2019beastanalysis}, called as LPhyBEAST, for the models specified in the LPhy language to be applied to data using Bayesian inference.
+It is a command-line program that takes a LPhy script file including model specification and data block, and then produces a BEAST2 XML file. 
+It is therefore an alternative way to succinctly express and communicate BEAST2 analyses.
+
+More Integrations are proposing to convert an LPhy specification into an input file that other popular Bayesian phylogenetic inference tools, such as BEAST1\cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes}, RevBayes\cite{hohna2016revbayes}, etc., can understand.
+
+\subsection{Technical details}
+\textcolor{blue}{Gradle}
+The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
+It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
+It integrates with a dependency manager, which helps developers to avoid ``dependency hell". 
+
+Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
+
+\textcolor{blue}{Extension mechanism}
+%%TODO review
+% \subsection{Extension Mechanism}
+The extensibility of a software is extremely important to encourage the future growth and collaborations. 
+LPhy and LPhy extensions are developed based on Java 17 which is the latest long-term support (LTS) version at the time of writing. 
+The LPhy extension mechanism is implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
+
+Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
+The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+
+
+% \begin{itemize}
+% \item for evolutionary biologists
+% \begin{enumerate}
+% \item describe complex phylogenetic models succinctly and exactly
+% \item simulate prior distributions from these models, including arbitrary statistics
+% \item use model description to run inference on a real data set using LPhyBEAST
+% \item produce precise methods section and graphical model figure for describing analyses in published works
+% \end{enumerate}
+% \item for computational biologists
+% \begin{enumerate}
+% \item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
+% \item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
+% \item do well-calibrated simulation study that validate the implementation of inference framework
+% \end{enumerate}
+% \end{itemize}
+
+% \newline
+
+\section{Results}
+
+% \subsection{LPhy script}
+An LPhy script consists of a \textbf{data block} which specifies the observed data and a \textbf{model block} which specifies the phylogenetic model. 
+Each block is defined by a set of curly brackets such as in Example \ref{lphy:jccoal}.
+
+\textcolor{red}{From Walter: can we agree for all code to indent 2 spaces before the data and model block, and 4 spaces (in total) before any commands no matter there is a data / model keyword or not?}
+
+{
+  \small
+  \begin{listing}
+    \stepcounter{example}
+    \begin{alltt}
+  data \{
+    L = \textcolor{magenta}{200};
+    taxa = \textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10});
+  \}
+  model \{
+    \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+    \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
+    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+  \}
+    \end{alltt}
+    \caption{A simple LPhy script to specify the phylogenetic analysis or simulation that applies the Jukes-Cantor model and constant-size coalescent tree prior, and assumes the 10 nucleotide sequences at the length of 200 evolve at a constant rate (default to 1) through the tree branches.}
+    \label{lphy:jccoal}
+  \end{listing}
 }
+\textcolor{blue}{TODO: cannot change caption to Example 1.}
 
-The above lines are the first part of code to specify a bModelTest analysis using LPhy, 
-where $\pi$ is an array of the nucleotide base frequencies and the $rates$ variable contains the relative rates of the GTR process. They are separately sampled from two different Dirichlet distributions.  
-The third line declares the model space is restricted to the set of substitution models that allow grouping only within transitions and within transversions\cite{bouckaert2019beastanalysis}, where the deterministic variable $modelSet$ encapsulates an instance instantiated from the object BModelSet for this information.
-The index of the substitution model to be employed $M$ will be sampled uniformly from a range of 0 and the size of the returned model set minus one.
-Here the code $modelSet.size()$ is called as ``method call'' in LPhy, which is a method that is similar to a LPhy function but has to be called from an object. 
-The instantaneous rate matrix $Q$ is then determined by given these parameters.
+This script is able to specifies a complete phylogenetic analysis or simulation using just 5 simple lines of code inside two blocks. 
+All constants are coloured by magenta, random variables are coloured by green, and generative distributions are coloured by blue. The parameters of generative distributions are coloured by grey. The functions are coloured by dark magenta. The constant variables and deterministic variables are coloured by black.
+
+\subsubsection{Probabilistic graphical model representation}
+\textcolor{blue}{TODO: review}
+The phylogenetic models constructed from the LPhy language are fitting in the probabilistic graphical model framework\cite{}.
+Under this framework, the LPhy language introduces four types of components listed below:
+
+\begin{figure}
+  % \includegraphics[width=0.8\textwidth]{figs/jc_coal.png}
+  \caption{The probabilistic graphical model representation of Example \ref{lphy:jccoal}.} 
+  \label{fig:jccoalPGM}
+\end{figure}
+
+\begin{itemize}
+    \item Constants;
+    \item Random variables;
+    \item Deterministic variables;
+    \item Generators: generative distribution, function, and method call.
+\end{itemize}
+
+As it can be seen in Figure \ref{fig:jccoalPGM}, the constants are drawn as the big squares, whose values are fixed, such as the mean or stand deviation for a probabilistic distribution, file name, and so on. 
+
+The random variables contain the values generated from generative distributions, and they are also the set of parameters to estimate in the specified phylogenetic model. They are drawn as the green circles. 
+But when there is an observed data clamped into a random variable (Section \ref{sec:dataclamping}) to replace its previous value, such as importing an alignment, the circle representing it will be coloured by blue.
+
+The values of deterministic variables can be generated from either deterministic functions or method calls, but their values will be fixed when given the same inputs to their generators. They are drawn as diamonds. If the value is generated inside the data block, then it will be coloured by yellow, otherwise it will be a red diamond.
+
+Generative distributions, (deterministic) functions and method calls are all the generators. They are drawn as the small boxes.
+
+On the other hand, in the phylogenetic Bayesian inference framework, because of the way we have factorized the joint probability for the data and model parameters, we are implicitly assuming that the alignment could have been produced in a well-known fashion: sampling parameters and tree from their priors, and then simulating the sequence alignment from these sampled parameters and tree. 
+%%%neutrality assumption \url{http://alexeidrummond.org/bayesian_phylo_lectures/lecture9} 3rd slide
+This process, known as simulations, can be replicated by following the arrows from the top of the graphical models to the bottom,
+which produces a simulated sequence alignment from the specified phylogenetic model as a result.
+
+When we follow the arrows backwards, namely from the bottom to the top, we can apply the observed data (sequence alignment) to the model through the phylogenetic Bayesian inference engine, so as to estimate the parameters and tree\cite{hohna2014probabilistic}. 
+The second approach can be done by using data clamping introduced in Section \ref{sec:dataclamping} and combining with a LPhy integration LPhyBEAST introduced in Section \ref{sec:lphybeast}.
+
+\subsection{Natural text description}
+A text description of the model above can be automatically generated ... 
+
+% Walter text moved below
+The narrative generator integrated with LPhyStudio can automatically create human-readable descriptions about the data, model, and posterior distribution. 
+It also includes the mathematical definition of the posterior of the given model, and some relevant academic references regarding the model. 
+The generator can also produce these contents in a Latex format, so that the user could simply copy them into a publication manuscript as the reference of the model applied. 
+This will take most researchers in an easy way to precisely describe their models for publishing a Bayesian phylogenetic analysis. 
+
+
+\subsection{Model validation}
+The LPhy framework can also be used to test and verify correctness of implementations of new models \cite{chen2022accounting}. 
+The LPhyBeast package allows Bayesian phylogenetic inference to be performed on data simulated from LPhy, which can be used to validate and test model implementations. 
+New models developed within this framework will benefit from integration with a rich set of phylogenetic models (including tree prior models, molecular clocks, substitution and trait models). 
+
+% \subsubsection{Conciser format}
+% The code in Example \ref{lphy:jccoal} can be shorten to even 3 lines shown in Example \ref{lphy:jccoal2}, if the constants are not the focus of our study, for instance, simulating alignments from a coalesent model.
+% The keywords ``data'', ``model'' and curly brackets are omitted, because the LPhy parser will treat these lines inside the model block as the default.
+
+% {
+%   \small
+%   \begin{listing}
+%     \stepcounter{example}
+%     \begin{alltt}
+%     \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.0});
+%     \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{magenta!80!black}{taxa}(names=\textcolor{magenta}{1:10}));
+%     \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{Q=}\textcolor{magenta!80!black}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+%     \end{alltt}
+%     \caption{A 3-line code for Example \ref{lphy:jccoal}.}
+%     \label{lphy:jccoal2}
+%   \end{listing}
+% }
+
+% \subsubsection{Achieving readability, re-usability and reproducibility}
+% \textcolor{blue}{TODO: review} All variables and generators in LPhy are named by well-known terms, as well as the parameters. For example, the blue key word ``Coalescent'' in Example \ref{lphy:jccoal} represents a generative distribution to implement Kingman's coalescent tree prior. 
+% The variable name in LPhy can be any greek letters, some of which are commonly used to indicate certain parameters in the phylogenetic models. For example, $\Theta$ usually represents the effective population size in a constant-size coalescent model. 
+
+% A LPhy script, such as Example \ref{lphy:jccoal}, can be visualised by a probabilistic graphical model, such as Figure \ref{fig:jccoalPGM}. The variables and generators will be one-to-one mapped to the components of the graphical model, vice versa. 
+% Priors are the important part of the specification of a Bayesian phylogenetic model. But this part is often ignored or incompletely described in some publications. The probabilistic graphical model representation naturally solves this issue once the complete graph is delivered.
+% It is also very convenient to reuse the same model for a different data (e.g. alignment) or constants by simply replacing the line in the data block.  
+
+% This concise and precise representation of LPhy language is the key driver to improve the reproducibility for Bayesian phylogenetics. The convenience to specify a phylogenetic model using LPhy will greatly encourage the researchers to apply the same methodology in this field.
+
+
+% % move to supplementary
+% \subsubsection{Model averaging using bModelTest}
+% It has been a problematic approach to select one ``best-fit'' nucleotide substitution model as well as site model in a deterministic manner while doing a Bayesian phylogenetic analysis. Here the site model is a composited model taking a substitution model as an input, and including the parameters to model the base frequencies, rate heterogeneity across sites, and proportion of invariable sites.
+
+% BModel test \cite{bouckaert2017bmodeltestcomparison} provides model averaging of substitution models and site models. 
+% If the substitution and site model are not of direct interest, then bModelTest provides estimates of the phylogeny averaged over substitution models and site models; otherwise, if they are of interest, then bModelTest provides a posterior distribution over these models. \cite{bouckaert2019beastanalysis}
+
+% {\small
+%   \begin{alltt}
+%     \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}, \textcolor{magenta}{3.0}]);
+%     \textcolor{green}{rates} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{1.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{1.0}]);
+%     \textcolor{black}{modelSet = }\textcolor{magenta!80!black}{bModelSet}(\textcolor{magenta}{"transitionTransversionSplit"});
+%     \textcolor{green}{M} ~ \textcolor{blue}{DiscreteUniform}(\textcolor{gray}{lower=}\textcolor{magenta}{0}, \textcolor{gray}{upper=}modelSet.\textcolor{magenta}{size}()-\textcolor{magenta}{1});
+%     \textcolor{black}{Q = }\textcolor{magenta!80!black}{nucleotideModel}(\textcolor{gray}{modelSet=}\textcolor{green}{modelSet}, \textcolor{gray}{modelIndicator=}\textcolor{green}{M}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{rates=}\textcolor{green}{rates});
+% \end{alltt}
+% }
+
+% The above lines are the first part of code to specify a bModelTest analysis using LPhy, 
+% where $\pi$ is an array of the nucleotide base frequencies and the $rates$ variable contains the relative rates of the GTR process. They are separately sampled from two different Dirichlet distributions.  
+% The third line declares the model space is restricted to the set of substitution models that allow grouping only within transitions and within transversions\cite{bouckaert2019beastanalysis}, where the deterministic variable $modelSet$ encapsulates an instance instantiated from the object BModelSet for this information.
+% The index of the substitution model to be employed $M$ will be sampled uniformly from a range of 0 and the size of the returned model set minus one.
+% Here the code $modelSet.size()$ is called as ``method call'' in LPhy, which is a method that is similar to a LPhy function but has to be called from an object. 
+% The instantaneous rate matrix $Q$ is then determined by given these parameters.
   
-{\small
-  \begin{alltt}  
-    \textcolor{green}{siteRates} ~ \textcolor{blue}{DiscretizeGamma}(\textcolor{gray}{alpha=}\textcolor{magenta}{0.5}, \textcolor{gray}{ncat=}\textcolor{magenta}{4}, \textcolor{gray}{replicates=}\textcolor{magenta}{200});
-    \textcolor{green}{pInv} ~ \textcolor{blue}{Beta}(\textcolor{gray}{alpha=}\textcolor{magenta}{1.0},\textcolor{gray}{beta=}\textcolor{magenta}{1.0});
-    \textcolor{green}{I_siteRates} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
-    \textcolor{green}{I_pInv} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
-    \textcolor{black}{siteModel = }\textcolor{magenta!80!black}{bSiteModel}(\textcolor{gray}{Q=}\textcolor{green}{Q}, \textcolor{gray}{siteRates=}\textcolor{green}{siteRates}, \textcolor{gray}{pInv=}\textcolor{green}{pInv}, \\ \textcolor{gray}{useSiteRates=}\textcolor{green}{I_siteRates}, \textcolor{gray}{usePInv=}\textcolor{green}{I_pInv}); 
-  \end{alltt}
-}
+% {\small
+%   \begin{alltt}  
+%     \textcolor{green}{siteRates} ~ \textcolor{blue}{DiscretizeGamma}(\textcolor{gray}{alpha=}\textcolor{magenta}{0.5}, \textcolor{gray}{ncat=}\textcolor{magenta}{4}, \textcolor{gray}{replicates=}\textcolor{magenta}{200});
+%     \textcolor{green}{pInv} ~ \textcolor{blue}{Beta}(\textcolor{gray}{alpha=}\textcolor{magenta}{1.0},\textcolor{gray}{beta=}\textcolor{magenta}{1.0});
+%     \textcolor{green}{I_siteRates} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
+%     \textcolor{green}{I_pInv} ~ \textcolor{blue}{Bernoulli}(\textcolor{gray}{p=}\textcolor{magenta}{0.5});
+%     \textcolor{black}{siteModel = }\textcolor{magenta!80!black}{bSiteModel}(\textcolor{gray}{Q=}\textcolor{green}{Q}, \textcolor{gray}{siteRates=}\textcolor{green}{siteRates}, \textcolor{gray}{pInv=}\textcolor{green}{pInv}, \\ \textcolor{gray}{useSiteRates=}\textcolor{green}{I_siteRates}, \textcolor{gray}{usePInv=}\textcolor{green}{I_pInv}); 
+%   \end{alltt}
+% }
 
-The second part of code specifies model averaging of site models.
-The 200 raw site rates are drawn from a DiscretizeGamma with a shape of 0.5 and a ncat of 4 and store into the variable $siteRates$.
-The proportion of invariable sites $pInv$ has a Beta distribution prior with an alpha of 1.0 and a beta of 1.0. 
-The site rate heterogeneity indicator $I\_siteRates$ will be true if the site rates have heterogeneity.
-The proportion invariable indicator $I\_pInv$ will be true if the proportion invariable used.
-Both has a coin toss distribution prior. 
+% The second part of code specifies model averaging of site models.
+% The 200 raw site rates are drawn from a DiscretizeGamma with a shape of 0.5 and a ncat of 4 and store into the variable $siteRates$.
+% The proportion of invariable sites $pInv$ has a Beta distribution prior with an alpha of 1.0 and a beta of 1.0. 
+% The site rate heterogeneity indicator $I\_siteRates$ will be true if the site rates have heterogeneity.
+% The proportion invariable indicator $I\_pInv$ will be true if the proportion invariable used.
+% Both has a coin toss distribution prior. 
 
-The last line below shows how it is used in PhyloCTMC.
+% The last line below shows how it is used in PhyloCTMC.
 
-{\small
-  \begin{alltt}  
-    \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{siteModel=}siteModel, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
-  \end{alltt}
-}
+% {\small
+%   \begin{alltt}  
+%     \textcolor{green}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{magenta}{200}, \textcolor{gray}{siteModel=}siteModel, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+%   \end{alltt}
+% }
 
  
 
@@ -971,87 +1072,35 @@ When the data block has the same random variable containing an existing alignmen
 This is a useful feature for users to easily switch the task of a LPhy script between simulating alignments and a real data analysis. 
 
 
-%%TODO review
-\subsection{Extension Mechanism}
-The extensibility of a software is extremely important to encourage the future growth and collaborations. 
-LPhy and LPhy extensions are developed based on Java 17 which is the latest long-term support (LTS) version at the time of writing. 
-The LPhy extension mechanism is implemented by using the Java Platform Module System (JPMS) combined with the Service Provider Interface (SPI).
+% Move to supplementary
+% \subsection{A model guide for users}
+% There are two learning curves for a beginner level of users, one is to learn the LPhy language, the other is to understand the model. To shorten these learning curves, a tool with GUI, called Model Guide, is implemented to list all available LPhy generative distributions and functions in runtime. 
+% They are classified into several categories for users to look up easily.
 
-Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
-The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+% Selecting a model or function, e.g. Figure \ref{fig:modelguide}, the user can find its usage, description, and the example scripts (they are accessible from LPhy Studio). For a published model, the citation is also provided for the convenience of learning, if it has DOI or book ISBN number, the hyperlink will lead the reader to the online publication.   
 
-\subsection{As a Gradle project}
-The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
-It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
-It integrates with a dependency manager, which helps developers to avoid ``dependency hell". 
+% \textcolor{blue}{TODO: Figure to suppl?}
 
-Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
-
-\section{Results}
-
-\subsection{The graphical user interface}
-Along with the language definition, we also provide a GUI, called LPhy Studio, to specify and visualise models as well as simulate data from models defined in LPhy. A screenshot of a simple HKY+Coalescent model used to study the phylodynamics of the Respiratory syncytial virus subgroup A \cite{zlateva2004molecular} is illustrated in Figure \ref{fig:lphystudio} and Example \ref{lphy:rsva}.
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/lphystudio_screenshot.png}
-  \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
-  on the left panel (constants hidden), and the auto-generated text description of the data and phylogenetic model on the right panel.} 
-  \label{fig:lphystudio}
-\end{figure}
-
-The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. 
-The auto-complete feature is supported when the script is typed in the console.
-Either way the Studio will guarantee to produce the same graphical probability model representing the specified phylogenetic model. 
-This allows the user focusing on a simple script while sharing the same visualizations across different collaborators.  
-
-The narrative generator integrated with LPhyStudio can automatically create human-readable descriptions about the data, model, and posterior distribution. 
-It also includes the mathematical definition of the posterior of the given model, and some relevant academic references regarding the model. 
-The generator can also produce these contents in a Latex format, so that the user could simply copy them into a publication manuscript as the reference of the model applied. 
-This will take most researchers in an easy way to precisely describe their models for publishing a Bayesian phylogenetic analysis. 
+% \begin{figure}
+%   \includegraphics[width=\textwidth]{figs/modelguide.png}
+%   \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the citation of HKY85 model.} 
+%   \label{fig:modelguide}
+% \end{figure}
 
 
-\subsection{A model guide for users}
-There are two learning curves for a beginner level of users, one is to learn the LPhy language, the other is to understand the model. To shorten these learning curves, a tool with GUI, called Model Guide, is implemented to list all available LPhy generative distributions and functions in runtime. 
-They are classified into several categories for users to look up easily.
+% \subsection{Data simulations from a phylogenetic model}
+% Simulating alignments from a specified model can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
+% It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
+% The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
 
-Selecting a model or function, e.g. Figure \ref{fig:modelguide}, the user can find its usage, description, and the example scripts (they are accessible from LPhy Studio). For a published model, the citation is also provided for the convenience of learning, if it has DOI or book ISBN number, the hyperlink will lead the reader to the online publication.   
+% \textcolor{blue}{TODO: Figure to suppl?}
 
-\textcolor{blue}{TODO: Figure to suppl?}
+% \begin{figure}
+%   \includegraphics[width=\textwidth]{figs/simulations100.png}
+%   \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model. The ``reps'' text field is used to define the number of simulations to run. The right panel shows the statistical summary of the simulated parameters.} 
+%   \label{fig:simulations100}
+% \end{figure}
 
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/modelguide.png}
-  \caption{A screenshot of Model Guide showing the usage of \emph{hky} function, its example script, and the citation of HKY85 model.} 
-  \label{fig:modelguide}
-\end{figure}
-
-
-\subsection{Data simulations from a phylogenetic model}
-Simulating alignments from a specified model can ever be easy using the LPhy Studio. This can be simply done by loading a LPhy script and then clicking the ``Sample" button. 
-It logs both ``true" values of the parameters and ``true" trees simulated from the specified model defined in the LPhy script. 
-The result of running 100 simulations from the simple HKY+Coalescent model is illustrated in Figure \ref{fig:simulations100}. 
-
-\textcolor{blue}{TODO: Figure to suppl?}
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/simulations100.png}
-  \caption{A screenshot to run 100 simulations from the simple HKY+Coalescent model. The ``reps'' text field is used to define the number of simulations to run. The right panel shows the statistical summary of the simulated parameters.} 
-  \label{fig:simulations100}
-\end{figure}
-
-
-\subsection{Integration with Bayesian phylogenetic inference frameworks}
-\label{sec:lphybeast}
-LPhy specifies the models, but we also provide an integration with BEAST2 \cite{bouckaert2014beastanalysis,bouckaert2019beastanalysis}, called as LPhyBEAST, for the models specified in the LPhy language to be applied to data using Bayesian inference.
-It is a command-line program that takes a LPhy script file including model specification and data block, and then produces a BEAST2 XML file. 
-It is therefore an alternative way to succinctly express and communicate BEAST2 analyses.
-
-More Integrations are proposing to convert an LPhy specification into an input file that other popular Bayesian phylogenetic inference tools, such as BEAST1\cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes}, RevBayes\cite{hohna2016revbayes}, etc., can understand.
-
-
-\subsection{Model validation}
-The LPhy framework can also be used to test and verify correctness of implementations of new models \cite{chen2022accounting}. 
-The LPhyBeast package allows Bayesian phylogenetic inference to be performed on data simulated from LPhy, which can be used to validate and test model implementations. 
-New models developed within this framework will benefit from integration with a rich set of phylogenetic models (including tree prior models, molecular clocks, substitution and trait models). 
 
 \section*{Discussion and conclusions}
 \textcolor{blue}{TODO}
