@@ -39,7 +39,7 @@ public class Continuous extends DataType {
     }
 
     @Override
-    public List<? extends State> getCanonicalStates() {
+    public List<State> getCanonicalStates() {
         throw new UnsupportedOperationException("TODO");
     }
 

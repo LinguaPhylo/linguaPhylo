@@ -111,8 +111,9 @@ public class Standard extends DataType {
         return CANONICAL_STATES.length;
     }
 
+    // exclude UNKNOWN_STATE, GAP_STATE
     @Override
-    public List<? extends State> getCanonicalStates() {
+    public List<State> getCanonicalStates() {
         return Collections.unmodifiableList(Arrays.asList((State[])CANONICAL_STATES));
     }
 

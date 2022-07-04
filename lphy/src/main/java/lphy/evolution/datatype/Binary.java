@@ -57,7 +57,7 @@ public final class Binary extends DataType {
     }
 
     @Override
-    public List<? extends State> getCanonicalStates() {
+    public List<State> getCanonicalStates() {
         return Collections.unmodifiableList(Arrays.asList((State[])CANONICAL_STATES));
     }
 
