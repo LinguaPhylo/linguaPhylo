@@ -14,9 +14,11 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author: Fabio K. Mendes
@@ -64,7 +66,7 @@ public class PhyloMultivariateBrownianTest {
         return count;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         RandomUtils.setSeed(777);
 
@@ -133,12 +135,12 @@ public class PhyloMultivariateBrownianTest {
         int nWithinSp1Tr3 = countHowManyWithinCI(nTries, nSamples, 2, sp1States, sd); // sp1
         int nWithinSp4Tr3 = countHowManyWithinCI(nTries, nSamples, 2, sp4States, sd); // sp4
 
-        Assert.assertTrue(nWithinSp1Tr1 >= 95);
-        Assert.assertTrue(nWithinSp4Tr1 >= 95);
-        Assert.assertTrue(nWithinSp1Tr2 >= 95);
-        Assert.assertTrue(nWithinSp4Tr2 >= 95);
-        Assert.assertTrue(nWithinSp1Tr3 >= 95);
-        Assert.assertTrue(nWithinSp4Tr3 >= 95);
+        assertTrue(nWithinSp1Tr1 >= 95);
+        assertTrue(nWithinSp4Tr1 >= 95);
+        assertTrue(nWithinSp1Tr2 >= 95);
+        assertTrue(nWithinSp4Tr2 >= 95);
+        assertTrue(nWithinSp1Tr3 >= 95);
+        assertTrue(nWithinSp4Tr3 >= 95);
     }
 
     /*
@@ -180,12 +182,12 @@ public class PhyloMultivariateBrownianTest {
         System.out.println(StatUtils.mean(diffsSp3Sp4[0])); // 0.03537452751007777
         */
         // after fix seed to 777
-        Assert.assertEquals(5.025018228994451, StatUtils.mean(diffsSp3Sp1[0]), 1e-4);
-        Assert.assertEquals(5.02530347588274, StatUtils.mean(diffsSp4Sp1[0]), 1e-4);
-        Assert.assertEquals(2.52281054979317, StatUtils.mean(diffsSp3Sp2[0]), 1e-4);
-        Assert.assertEquals(0.03537452751007777, StatUtils.mean(diffsSp3Sp4[0]), 1e-4);
+        assertEquals(5.025018228994451, StatUtils.mean(diffsSp3Sp1[0]), 1e-4);
+        assertEquals(5.02530347588274, StatUtils.mean(diffsSp4Sp1[0]), 1e-4);
+        assertEquals(2.52281054979317, StatUtils.mean(diffsSp3Sp2[0]), 1e-4);
+        assertEquals(0.03537452751007777, StatUtils.mean(diffsSp3Sp4[0]), 1e-4);
 
-        Assert.assertTrue(StatUtils.mean(diffsSp3Sp1[0]) > StatUtils.mean(diffsSp3Sp2[0]) && StatUtils.mean(diffsSp3Sp2[0]) > StatUtils.mean(diffsSp3Sp4[0]));
-        Assert.assertEquals(StatUtils.mean(diffsSp3Sp1[0]), StatUtils.mean(diffsSp4Sp1[0]), 0.001);
+        assertTrue(StatUtils.mean(diffsSp3Sp1[0]) > StatUtils.mean(diffsSp3Sp2[0]) && StatUtils.mean(diffsSp3Sp2[0]) > StatUtils.mean(diffsSp3Sp4[0]));
+        assertEquals(StatUtils.mean(diffsSp3Sp1[0]), StatUtils.mean(diffsSp4Sp1[0]), 0.001);
     }
 }

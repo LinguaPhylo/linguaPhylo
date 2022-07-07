@@ -1,9 +1,9 @@
 package lphy.parser;
 
-import junit.framework.TestCase;
 import lphy.core.LPhyParser;
 import lphy.system.UserDir;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,13 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ParserTest {
 
     LPhyParser lPhyParser;
 
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         lPhyParser = new REPL();
     }
 
@@ -93,7 +94,7 @@ public class ParserTest extends TestCase {
                 System.out.println("SUCCESS!!!");
                 System.out.println(exampleFiles.length + " file tested : \n" + Arrays.toString(exampleFiles));
             }
-            assertTrue(failedFiles.toString(), failedFiles.size() == 0);
+            assertTrue(failedFiles.size() == 0, failedFiles.toString());
         } catch (Exception e) {
             System.out.println("exception thrown ");
             System.out.println(e.getMessage());

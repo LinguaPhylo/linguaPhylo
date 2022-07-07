@@ -20,7 +20,7 @@ dependencies {
 
 //    implementation("org.json:json:20210307")
 
-//    testImplementation("junit:junit:4.13")
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
 val maincls : String = "lphystudio.app.LinguaPhyloStudio"

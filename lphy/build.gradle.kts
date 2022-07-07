@@ -20,8 +20,7 @@ dependencies {
     // io.github.linguaphylo
     api("io.github.linguaphylo:jebl:3.1.0")
 
-    testImplementation("junit:junit:4.13.2")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:4.13")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
 val developers = "LPhy developer team"
@@ -83,14 +82,21 @@ publishing {
 
 // junit tests, https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
 tasks.test {
-    useJUnit()
-    // useJUnitPlatform()
+    useJUnitPlatform() {
+        excludeTags("dev")
+    }
     // set heap size for the test JVM(s)
     minHeapSize = "128m"
     maxHeapSize = "1G"
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
-    //testLogging.exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+
+    reports {
+        junitXml.apply {
+            isOutputPerTestCase = true // defaults to false
+            mergeReruns.set(true) // defaults to false
+        }
+    }
 }
 
 /**

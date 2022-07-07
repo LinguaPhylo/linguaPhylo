@@ -1,17 +1,20 @@
 package lphy.evolution.coalescent;
 
-import junit.framework.TestCase;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StructuredCoalescentTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class StructuredCoalescentTest {
 
     public List<List<TimeTreeNode>> setupNodes() {
         TimeTree tree = new TimeTree();
@@ -39,6 +42,7 @@ public class StructuredCoalescentTest extends TestCase {
         return nodes;
     }
 
+    @Test
     public void testPopulateRateMatrix() {
 
         List<List<TimeTreeNode>> nodes = setupNodes();
@@ -60,6 +64,7 @@ public class StructuredCoalescentTest extends TestCase {
 
     }
 
+    @Test
     public void testSelectRandomEvent() {
 
         List<List<TimeTreeNode>> nodes = setupNodes();
@@ -83,6 +88,7 @@ public class StructuredCoalescentTest extends TestCase {
         }
     }
 
+    @Test
     public void testSortDemes() {
 
         Double[][] theta = {{10.0, 0.1},{0.1, 10.0}};
@@ -109,7 +115,7 @@ public class StructuredCoalescentTest extends TestCase {
         for (TimeTreeNode tip : tips) {
             String t = tip.getId();
             int i = Integer.parseInt(t);
-            assertEquals(("Taxon " + t + " : "), demes[i], tip.getMetaData(coalescent.getPopulationLabel()));
+            assertEquals(demes[i], tip.getMetaData(coalescent.getPopulationLabel()), ("Taxon " + t + " : "));
         }
 
         coalescent = new StructuredCoalescent(new Value<>("theta", theta),
@@ -130,7 +136,7 @@ public class StructuredCoalescentTest extends TestCase {
         for (TimeTreeNode tip : tips) {
             String t = tip.getId();
             int i = Integer.parseInt(t);
-            assertEquals(("Taxon " + t + " : "), demes[i], tip.getMetaData(coalescent.getPopulationLabel()));
+            assertEquals(demes[i], tip.getMetaData(coalescent.getPopulationLabel()), ("Taxon " + t + " : "));
         }
     }
 
