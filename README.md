@@ -57,4 +57,7 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 
 ## Developer note
 
-[Gradle project guide](DEV_NOTE.md)
+- [Developer note](DEV_NOTE.md)
+
+- [Maven repo: io.github.linguaphylo](https://search.maven.org/search?q=io.github.linguaphylo)
+
