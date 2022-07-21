@@ -172,12 +172,16 @@ you need to provide the jar file and its source jar in the release.
 Please note: once published, you will not be able to remove/update/modify the jar.
 
 5. Follow the [instruction](https://central.sonatype.org/publish/release/)
-of the releasing deployment to complete publishing. 
+of the releasing deployment to complete publishing at https://s01.oss.sonatype.org/.
 
 For snapshots, check https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/.
 For releases, check https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/.
 
-6. After final release, it is a good behavior to instantly update your versions
-in the build files into the next version with the postfix "SNAPSHOT".
+### Tips:
 
+- After final release, it is a good behavior to instantly update your versions
+  in the build files into the next version with the postfix "SNAPSHOT".
+- After release, the version will immediately appear in https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/,
+  but it will take one/two days to synchronise to [Maven Central Repository Search](https://search.maven.org).
+  For example, https://repo.maven.apache.org/maven2/io/github/linguaphylo/.
 
