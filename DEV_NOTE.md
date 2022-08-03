@@ -188,6 +188,6 @@ For releases, check https://s01.oss.sonatype.org/content/repositories/releases/i
 
 ## Useful Links
 
-- [The developer note for LPhyBEAST](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
+- [LPhyBEAST developer note](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
 
 - [Maven linguaphylo group](https://search.maven.org/search?q=io.github.linguaphylo)
