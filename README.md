@@ -57,7 +57,6 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 
 ## Developer note
 
-- [Developer note](DEV_NOTE.md)
+- [LPhy developer note](DEV_NOTE.md)
 
-- [Maven repo: io.github.linguaphylo](https://search.maven.org/search?q=io.github.linguaphylo)
-
+- [LPhyBEAST developer note](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)

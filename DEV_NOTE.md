@@ -1,3 +1,4 @@
+# Developer Note for LPhy
 
 ## Gradle
 
@@ -113,13 +114,13 @@ See also [Publishing your Kotlin Multiplatform library to Maven Central](https:/
 
 ### Upgrade the wrapper 
 
-If it is not the latest version (e.g. version 7.2 at the time of writing), 
+If it is not the latest version (e.g. version 7.5 at the time of writing), 
 you can use the following command to
 [upgrade the wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper):
 
 ```bash
 ./gradlew -v
-./gradlew wrapper --gradle-version 7.2
+./gradlew wrapper --gradle-version 7.5
 ```
 
 ### We choose [Gradle + Kotlin](https://gradle.org/kotlin/). 
@@ -185,3 +186,8 @@ For releases, check https://s01.oss.sonatype.org/content/repositories/releases/i
   but it will take one/two days to synchronise to [Maven Central Repository Search](https://search.maven.org).
   For example, https://repo.maven.apache.org/maven2/io/github/linguaphylo/.
 
+## Useful Links
+
+- [The developer note for LPhyBEAST](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
+
+- [Maven linguaphylo group](https://search.maven.org/search?q=io.github.linguaphylo)
