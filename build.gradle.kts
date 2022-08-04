@@ -37,7 +37,7 @@ allprojects {
 // Configures the sub-projects of this project.
 subprojects {
     group = "io.github.linguaphylo"
-    version = "1.3.0"
+    version = "1.3.1-SNAPSHOT"
     val webSteam = "github.com/LinguaPhylo/linguaPhylo"
     val web = "https://${webSteam}"
     val homepage = "https://linguaphylo.github.io/"
