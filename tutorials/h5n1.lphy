@@ -5,7 +5,8 @@ data {
   taxa = D.taxa();
   // extract traits from the 3rd element
   D_trait = extractTrait(taxa=taxa, sep="_", i=2);
-  K = D_trait.stateCount();
+  locations = D_trait.canonicalStates();
+  K = D_trait.canonicalStateCount();
   dim = K*(K-1)/2;
 }
 model {

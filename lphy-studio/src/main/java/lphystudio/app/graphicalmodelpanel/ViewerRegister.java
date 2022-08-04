@@ -16,6 +16,8 @@ import lphystudio.core.valueeditors.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class registers viewers for different classes of values
@@ -229,8 +231,27 @@ public class ViewerRegister {
             }
         };
 
+    private static Viewer listInValueViewer = new Viewer() {
 
-        private static Viewer alignmentValueViewer = new Viewer() {
+        public boolean match(Object object) {
+
+            if (object instanceof Value value) {
+                return value.value() instanceof List<?>;
+            } else return false;
+        }
+
+        public JComponent getViewer(Object object) {
+
+            if (object instanceof Value value) {
+                List<?> list = (List<?>) Objects.requireNonNull(value).value();
+                String[] strArr = list.stream().map(Object::toString).toArray(String[]::new);
+                return new StringArrayLabel(Objects.requireNonNull(strArr));
+            } else return new JLabel(object.toString());
+        }
+    };
+
+
+    private static Viewer alignmentValueViewer = new Viewer() {
 
             @Override
             public boolean match(Object value) {
@@ -319,6 +340,7 @@ public class ViewerRegister {
                 taxaValueViewer,
                 continuousCharacterDataViewer,
                 primitiveArrayViewer,
+                listInValueViewer,
                 new VectorValueViewer(),
                 methodInfoViewer,
                 sequenceTypeValueViewer

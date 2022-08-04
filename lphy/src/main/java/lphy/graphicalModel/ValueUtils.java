@@ -3,6 +3,7 @@ package lphy.graphicalModel;
 import lphy.graphicalModel.types.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ValueUtils {
@@ -37,7 +38,7 @@ public class ValueUtils {
     }
 
     public static boolean isMultiDimensional(Object v) {
-        return (v instanceof MultiDimensional || v instanceof Map || v.getClass().isArray());
+        return (v instanceof MultiDimensional || v instanceof Map || v.getClass().isArray() || v instanceof List<?>);
     }
 
     public static boolean isInteger(String s) {

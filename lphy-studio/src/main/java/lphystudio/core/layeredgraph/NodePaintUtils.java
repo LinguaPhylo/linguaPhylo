@@ -304,11 +304,11 @@ public class NodePaintUtils {
 
         String valueString = "";
         if (showValue) {
-            if (v.value() instanceof Double) {
-                valueString = format.format(v.value());
+            if (value instanceof Double) {
+                valueString = format.format(value);
             } else {
-                valueString = v.value().toString();
-                if (v.value() instanceof String) {
+                valueString = value.toString();
+                if (value instanceof String) {
                     if (valueString.length() > 8) {
                         valueString = valueString.length() + " chars";
                         if (valueString.length() > 10) {

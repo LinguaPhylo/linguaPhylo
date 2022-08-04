@@ -1,10 +1,12 @@
 package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
+import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,10 +25,25 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return getTaxa();
     }
 
-    @MethodInfo(description = "the number of possible states in the alignment.",
-            narrativeName = "number of states", examples = {"covidDPG.lphy"})
+    @MethodInfo(description = "the number of possible states including ambiguous states in the alignment.")
     default int stateCount() {
         return getStateCount();
+    }
+
+    @MethodInfo(description = "the number of canonical states excluding ambiguous states in the alignment.",
+            narrativeName = "number of canonical states", examples = {"covidDPG.lphy"})
+    default int canonicalStateCount() {
+        return getCanonicalStateCount();
+    }
+
+    @MethodInfo(description = "the possible states including ambiguous states.")
+    default List<? extends State> states() {
+        return getStates();
+    }
+
+    @MethodInfo(description = "the canonical states excluding ambiguous states.")
+    default List<? extends State> canonicalStates() {
+        return getCanonicalStates();
     }
 
     @MethodInfo(description = "get the data type of this alignment.", narrativeName = "data type")
@@ -75,6 +92,8 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return Objects.requireNonNull(getSequenceType()).getName();
     }
 
+    //****** States ******//
+
     /**
      * @return num of states no ambiguous
      */
@@ -89,6 +108,19 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return Objects.requireNonNull(getSequenceType()).getStateCount();
     }
 
+    /**
+     * @return a list of {@link State}
+     */
+    default List<? extends State> getStates() {
+        return Objects.requireNonNull(getSequenceType()).getStates();
+    }
+
+    /**
+     * @return a list of canonical {@link State}
+     */
+    default List<? extends State> getCanonicalStates() {
+        return Objects.requireNonNull(getSequenceType()).getCanonicalStates();
+    }
 
     //****** Taxa ******//
 
