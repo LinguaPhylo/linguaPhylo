@@ -6,6 +6,7 @@ data {
   // extract traits from the 3rd element
   D_trait = extractTrait(taxa=taxa, sep="_", i=2);
   locations = D_trait.canonicalStates();
+  // 5 locations : Guangdong,HongKong,Hunan,Guangxi,Fujian
   K = D_trait.canonicalStateCount();
   dim = K*(K-1)/2;
 }
