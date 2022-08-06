@@ -247,6 +247,11 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     public Integer nodeCount() {
         return getNodeCount();
     }
+    
+    @MethodInfo(description = "the total number of branches in the tree (returns nodeCount() - 1)")
+    public Integer branchCount() {
+        return getNodeCount()-1;
+    }
 
     @MethodInfo(description = "the total number of extant leaves in the tree (leaf nodes with age 0.0).")
     public Integer extantCount() {
