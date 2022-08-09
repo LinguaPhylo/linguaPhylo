@@ -3,6 +3,8 @@ TimeTree
 Methods
 -------
 
+- **branchCount**
+  - the total number of branches in the tree (returns nodeCount() - 1)
 - **directAncestorCount**
   - the total number of nodes in the tree that are direct ancestors (i.e. have a single parent and a single child, or have one child that is a zero-branch-length leaf).
 - **extantCount**
