@@ -138,6 +138,8 @@ The LPhy project and its extensions use the Gradle [dependency configurations](h
 IntelliJ provides nice GUI to [add and manage dependencies](https://www.jetbrains.com/help/idea/work-with-gradle-dependency-diagram.html)
 in your Gradle project.
 
+<a href="./GradleDependencies.png"><img src="GradleDependencies.png" width="800" ></a>
+
 Please see [an example of LPhy extension](https://linguaphylo.github.io/developer/dependencies/).
 
 When the dependencies are changed in the Gradle build, 
@@ -158,7 +160,7 @@ In addition, it is important to set `Build and run using` "IntelliJ IDEA",
 otherwise breakpoints will not work in Java class using the default option "Gradle".
 But if you want to debug the Gradle build file, you have to change this to "Gradle" option.
 
-<a href="./GradleJVM.png"><img src="GradleJVM.png" align="right" ></a>
+<a href="./GradleJVM.png"><img src="GradleJVM.png" width="800" ></a>
 
 Alternative, you can use the terminal to run the Gradle tasks.
 
