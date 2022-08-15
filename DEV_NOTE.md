@@ -107,11 +107,6 @@ your release from OSSRH to the Central Repository.
 
 See also [Publishing your Kotlin Multiplatform library to Maven Central](https://dev.to/kotlin/how-to-build-and-publish-a-kotlin-multiplatform-library-going-public-4a8k).
 
-### Versions
-
-- [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/single_versions.html)
-
-
 ### Upgrade the wrapper 
 
 If it is not the latest version (e.g. version 7.5 at the time of writing), 
@@ -119,8 +114,8 @@ you can use the following command to
 [upgrade the wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper):
 
 ```bash
-./gradlew -v
 ./gradlew wrapper --gradle-version 7.5
+./gradlew -v
 ```
 
 ### We choose [Gradle + Kotlin](https://gradle.org/kotlin/). 
@@ -136,6 +131,24 @@ Please also see
 
 - [Working with Gradle](https://www.jetbrains.com/idea/guide/tutorials/working-with-gradle/)
 - [Gradle projects](https://www.jetbrains.com/help/idea/work-with-gradle-projects.html)
+
+### Dependencies
+
+The LPhy project and its extensions use the Gradle [dependency configurations](https://docs.gradle.org/current/userguide/declaring_dependencies.html).
+IntelliJ provides nice GUI to [add and manage dependencies](https://www.jetbrains.com/help/idea/work-with-gradle-dependency-diagram.html)
+in your Gradle project.
+
+Please see [an example of LPhy extension](https://linguaphylo.github.io/developer/dependencies/).
+
+When the dependencies are changed in the Gradle build, 
+you can simply click the "refresh" icon in the top right corner of IntelliJ.
+It will complete updates automatically.
+
+But to update a snapshot version, which you cannot change from the dependencies in the Gradle build,
+you have to click "Refresh Gradle Dependencies" to download the latest snapshot version from Maven repo.
+Then click the task `clean` and `build` sequentially to rebuild the project.
+See also [force updating all the snapshot Gradle dependencies in intelliJ](https://stackoverflow.com/questions/32652738/how-can-i-force-update-all-the-snapshot-gradle-dependencies-in-intellij).
+
 
 ### Breakpoints failed in Java class
 
