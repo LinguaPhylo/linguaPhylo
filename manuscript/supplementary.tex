@@ -5,6 +5,9 @@
 \usepackage{hyperref}
 \usepackage{multirow}
 \usepackage{caption}
+\usepackage{listing}
+
+\usepackage{pgf}
 
 \usepackage{alltt}
 
@@ -26,22 +29,41 @@ citecolor=blue }
 
 \date{}
 
+\author{
+Alexei J. Drummond\textsuperscript{1,2,3}*,
+Kylie Chen\textsuperscript{1,2,3},
+F\'{a}bio K. Mendes\textsuperscript{1,4},
+Dong Xie\textsuperscript{1,2,3}
+}
+
 \maketitle 
 
-\section{Example LPhy script}
+{\small
+\noindent \textbf{1} Centre for Computational Evolution, University of Auckland, Auckland, New Zealand
+\\
+\textbf{2} School of Biological Sciences, University of Auckland, Auckland, New Zealand
+\\
+\textbf{3} School of Computer Science, University of Auckland, Auckland, New Zealand
+\\
+\textbf{4} Department of Biology, Washington University in St. Louis, St. Louis, United States\\
+}
 
-\subsection{RSVA}
+\medskip
 
-Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
-This script concisely specifies a phylogenetic analysis using 19 lines of code.  
-The code contains a \textbf{data block} for specifying the input dataset, and a \textbf{model block} which defines the phylogenetic model. 
+\noindent *Corresponding author: a.drummond@auckland.ac.nz
+
+\clearpage
+
+% \section{Example LPhy script}
+
+\subsection*{RSVA example}
 % An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
 % We have modified the script slightly for illustrative purposes:
 
 {
   \small
   \begin{listing}
-    \stepcounter{example}
+    % \stepcounter{example}
     \begin{alltt}
     data \{
       options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
@@ -67,11 +89,13 @@ The code contains a \textbf{data block} for specifying the input dataset, and a 
     \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples.
     \newline}
     \label{lphy:rsva}
-  \end{listing}
+    \end{listing}
 }
+Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
+This script concisely specifies a phylogenetic analysis using 19 lines of code.  
+The code contains a \textbf{data block} for specifying the input dataset, and a \textbf{model block} which defines the phylogenetic model. 
 
-
-\newpage
+% \newpage
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/RSV2.png}
@@ -80,30 +104,30 @@ The code contains a \textbf{data block} for specifying the input dataset, and a 
 \end{figure}
 
 
-\newpage
+\clearpage
 
 
 \bigskip
 
-\textbf{This PDF file includes:}
+%\textbf{This PDF file includes:}
 
-\medskip 
+%\medskip 
 
-Figures XX to XX
+%Figures XX to XX
 
-\medskip
+%\medskip
 
-Tables XX to XX
+%Tables XX to XX
 
-\newpage 
+% \newpage 
 
-\begingroup
-\pagestyle{plain}
-\listoffigures
-\listoftables
-\endgroup
+% \begingroup
+% \pagestyle{plain}
+% \listoffigures
+% \listoftables
+% \endgroup
 
-\newpage
+% \newpage
 
 % Figures go here
 
@@ -112,14 +136,15 @@ Tables XX to XX
 % Tables
 
 \begin{table}
+\small
 \centering
 \begin{tabular}{ l | l | l }
     \hline\hline
     Function & Brief & Examples \\ 
     \hline\hline
-    binaryRateMatrix & binary trait instantaneous rate matrix & errorModel1.lphy, errorModel2.lphy\\  
+    binaryRateMatrix & binary trait rate matrix & errorModel1.lphy, errorModel2.lphy\\  
     f81 & F81 model\cite{felsenstein1981} & f81Coalescent.lphy\\  
-    generalTimeReversible & general time reversible instantaneous rate matrix & h5n1.lphy \\  
+    generalTimeReversible & general time reversible rate matrix & h5n1.lphy \\  
     gtr & GTR model\cite{tarvare1986some} & gtrCoalescent.lphy\\  
     hky & HKY model\cite{hasegawa1985dating} & hkyCoalescent.lphy\\  
     jukesCantor & Jukes-Cantor model\cite{jc69} & jcCoalescent.lphy\\  
@@ -134,16 +159,16 @@ Tables XX to XX
 \caption{LPhy functions to produce the instantaneous rate matrix.}
 \end{table}
 
-
 \begin{table}
+\small
 \begin{tabular}{ l | l | l }
     \hline\hline
     Generative distribution & Brief & Examples \\ 
     \hline\hline
-    MultispeciesCoalescent & multispecies coalescent prior & simpleMultispeciesCoalescent.lphy, simpleMultispeciesCoalescentTaxa.lphy, twoGeneMultispeciesCoalescent.lphy\\  
-    Coalescent & Kingman's coalescent tree prior\cite{Rodrigo1999SerialCoalescent} & RSV2.lphy \\  
+    MultispeciesCoalescent & multispecies coalescent & simpleMultispeciesCoalescent.lphy, \\ & & simpleMultispeciesCoalescentTaxa.lphy, \\ & & twoGeneMultispeciesCoalescent.lphy\\  
+    Coalescent & Kingman's coalescent \cite{Rodrigo1999SerialCoalescent} & RSV2.lphy \\  
     SkylineCoalescent & skyline coalescent prior\cite{drummond2005bayesiansequences} & hcv\_col.lphy\\  
-    StructuredCoalescent & Structured coalescent prior\cite{muller2017structured} & simpleStructuredCoalescent.lphy\\  
+    StructuredCoalescent & Structured coalescent\cite{muller2017structured} & simpleStructuredCoalescent.lphy\\  
     \hline
 \end{tabular}
 
@@ -152,20 +177,22 @@ Tables XX to XX
 \end{table}
 
 \begin{table}
-\begin{tabular}{ l | l | l }
+\scriptsize
+\begin{tabular}{ l | p{8cm} | p{4cm} }
     \hline\hline
-    Generative distribution & Brief & Examples \\ 
+    \bf Generative distribution & \bf Brief & \bf Examples \\ 
     \hline\hline
     BirthDeathSampling & birth-death-sampling tree\cite{stadler2011mammalian,stadler2012estimatingdata} & birthDeathRhoSampling.lphy\\  
     BirthDeathSerialSampling & birth-death serial sampling tree\cite{stadler2013dating} & simpleBirthDeathSerial.lphy\\  
-    BirthDeath & calibrated birth-death\cite{heled2015calibrated} & simpleCalibratedBirthDeath.lphy, simpleExtantBirthDeath.lphy\\  
+    BirthDeath & calibrated birth-death\cite{heled2015calibrated} & simpleCalibratedBirthDeath.lphy, \\ & & simpleExtantBirthDeath.lphy\\  
     FossilBirthDeathTree & fossilized birth-death process\cite{heath2014fossilized} & simFossilsCompact.lphy\\  
     FullBirthDeath & birth-death tree\cite{kendall1948generalized} & simpleFullBirthDeath.lphy\\  
     RhoSampleTree & birth-death tree sampled from a larger tree & \\  
     SimBDReverse & complete birth-death tree with both extant and extinct species & simFossils.lphy\\  
     SimFBDAge & A tree of extant species and those sampled through time & simFBDAge.lphy\\  
     SimFossilsPoisson & A tree with fossils added to the given tree at rate psi & simFossils.lphy\\  
-    Yule & Yule tree\cite{yule1925ii} & simpleYule.lphy, yuleRelaxed.lphy\\  
+    Yule & Yule tree\cite{yule1925ii} & simpleYule.lphy, \\ 
+    & & yuleRelaxed.lphy\\  
     \hline
 \end{tabular}
 
@@ -174,13 +201,14 @@ Tables XX to XX
 \end{table}
 
 \begin{table}
+\scriptsize
 \begin{tabular}{ l | l | l }
     \hline\hline
     Generative distribution & Brief & Examples \\ 
     \hline\hline
     PhyloBrownian & phylogenetic Brownian motion process\cite{felsenstein1973maximum} & simplePhyloOU.lphy\\  
     PhyloCTMC & phylogenetic continuous time Markov process\cite{felsenstein1981} & simpleBModelTest.lphy\\  
-    PhyloMultivariateBrownian & phylogenetic multivariate Brownian motion process & simplePhyloMultivariateBrownian.lphy\\  
+    PhyloMultivariateBrownian & phylogenetic multivariate Brownian motion & simplePhyloMultivariateBrownian.lphy\\  
     PhyloOU & phylogenetic Ornstein-Ulhenbeck process\cite{felsenstein1973maximum} & simplePhyloBrownian.lphy\\  
     \hline
 \end{tabular}
@@ -190,30 +218,31 @@ Tables XX to XX
 \end{table}
 
 \begin{table}
-\begin{tabular}{ l | l | l }
+\footnotesize
+\begin{tabular}{ l | p{7cm} | l }
     \hline\hline
     Generative distribution & Brief & Examples \\ 
     \hline\hline
-    Bernoulli & coin toss distribution prior & simpleRandomLocalClock.lphy, simpleBModelTest.lphy\\  
-    Beta & beta distribution prior & birthDeathRhoSampling.lphy, simpleBModelTest.lphy\\  
+    Bernoulli & coin toss distribution prior & simpleRandomLocalClock.lphy, \\ & & simpleBModelTest.lphy\\  
+    Beta & beta distribution prior & birthDeathRhoSampling.lphy, \\ & & simpleBModelTest.lphy\\  
     Cauchy & cauchy distribution prior & \\  
-    Dirichlet & dirichlet distribution prior & birthDeathRhoSampling.lphy, dirichlet.lphy\\  
-    DiscreteUniform & discrete-uniform prior & simpleBModelTest.lphy, simpleBModelTest2.lphy\\  
-    DiscretizeGamma &  discretize-gamma prior & gtrGammaCoalescent.lphy, simpleBModelTest.lphy\\  
-    Exp & exponential distribution prior & birthDeathRhoSampling.lphy, yuleRelaxed.lphy\\  
+    Dirichlet & dirichlet distribution prior & birthDeathRhoSampling.lphy, \\ & & dirichlet.lphy\\  
+    DiscreteUniform & discrete-uniform prior & simpleBModelTest.lphy, \\ & & simpleBModelTest2.lphy\\  
+    DiscretizeGamma &  discretize-gamma prior & gtrGammaCoalescent.lphy, \\ & & simpleBModelTest.lphy\\  
+    Exp & exponential distribution prior & birthDeathRhoSampling.lphy, \\ & & yuleRelaxed.lphy\\  
     ExpMarkovChain & smoothing prior\cite{drummond2005bayesiansequences} & skylineCoalescent.lphy\\  
     Gamma & gamma distribution prior & covidDPG.lphy\\  
     Geometric & geometric distribution prior & \\  
     InverseGamma & inverse-gamma  distribution prior & totalEvidence.lphy\\  
-    LogNormal & log-normal distribution prior & hkyCoalescent.lphy, errorModel1.lphy\\  
-    Normal & normal distribution prior & simplePhyloBrownian.lphy, simplePhyloOU.lphy\\  
-    NormalGamma & normal-gamma distribution prior & simplePhyloBrownian.lphy, simplePhyloOU.lphy\\  
-    Poisson & poisson distribution prior & expression4.lphy, simpleRandomLocalClock2.lphy\\  
+    LogNormal & log-normal distribution prior & hkyCoalescent.lphy, \\ & & errorModel1.lphy\\  
+    Normal & normal distribution prior & simplePhyloBrownian.lphy, \\ & & simplePhyloOU.lphy\\  
+    NormalGamma & normal-gamma distribution prior & simplePhyloBrownian.lphy, \\ & & simplePhyloOU.lphy\\  
+    Poisson & poisson distribution prior & expression4.lphy, \\ & & simpleRandomLocalClock2.lphy\\  
     RandomBooleanArray & samples a random boolean array & simpleRandomLocalClock2.lphy\\  
     RandomComposition & samples a random k-tuple of positive integers that sum to n & skylineCoalescent.lphy\\  
     Uniform & uniform distribution prior & simFossilsCompact.lphy\\  
     Weibull & weibull distribution prior & \\  
-    WeightedDirichlet & weighted dirichlet distribution prior & totalEvidence.lphy, weightedDirichlet.lphy\\  
+    WeightedDirichlet & weighted dirichlet distribution prior & totalEvidence.lphy, \\ & & weightedDirichlet.lphy\\  
     \hline
 \end{tabular}
 
@@ -241,7 +270,7 @@ Tables XX to XX
     \hline\hline
     Function & Brief & Examples \\ 
     \hline\hline
-    nucleotideModel & bModelTest\cite{bouckaert2017bmodeltestcomparison} rate matrix & simpleBModelTest.lphy, simpleBModelTest2.lphy\\  
+    nucleotideModel & bModelTest\cite{bouckaert2017bmodeltestcomparison} rate matrix & simpleBModelTest.lphy, \\ & & simpleBModelTest2.lphy\\  
     bModelSet & bModelTest model set & simpleBModelTest.lphy\\  
     bSiteRates & site rates for the given bModelTest parameters & simpleBModelTest2.lphy\\  
     bSiteModel & bModelTest site model & simpleBModelTest.lphy\\  
