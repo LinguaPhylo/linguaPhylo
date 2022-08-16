@@ -1,0 +1,2 @@
+λ ~ LogNormal(meanlog=-2.5247, sdlog=0.5874);
+T ~ BirthDeathSampling(lambda=λ, mu=0.0, rho=0.2, rootAge=65.092);

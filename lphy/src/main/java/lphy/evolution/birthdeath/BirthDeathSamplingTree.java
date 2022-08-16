@@ -52,8 +52,8 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
         RandomVariable<TimeTree> fullTree = birthDeathTree.sample();
 
         RhoSampleTree rhoSampleTree = new RhoSampleTree(fullTree, rho);
-
-        return rhoSampleTree.sample();
+        RandomVariable<TimeTree> rtree = rhoSampleTree.sample();
+        return new RandomVariable<>(rtree.getId(), rtree.value(), this);
     }
 
     @Override
