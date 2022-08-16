@@ -3,13 +3,19 @@ package lphy.graphicalModel;
 import lphy.reflection.Utils;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Alexei Drummond on 17/12/19.
  */
 public interface GenerativeDistribution<T> extends Generator<T> {
 
+    /**
+     * The {@link RandomVariable} must be re-wrapped
+     * to ensure correct behaviour downstream.
+     * @return {@link RandomVariable} to connect to this {@link GenerativeDistribution}
+     */
     RandomVariable<T> sample();
 
     default Value<T> generate() {

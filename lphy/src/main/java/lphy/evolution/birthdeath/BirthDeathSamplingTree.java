@@ -53,6 +53,7 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
 
         RhoSampleTree rhoSampleTree = new RhoSampleTree(fullTree, rho);
         RandomVariable<TimeTree> rtree = rhoSampleTree.sample();
+        // The random variable must be re-wrapped to ensure correct behaviour downstream.
         return new RandomVariable<>(rtree.getId(), rtree.value(), this);
     }
 
