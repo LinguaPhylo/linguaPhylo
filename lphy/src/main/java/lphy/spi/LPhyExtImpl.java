@@ -92,6 +92,7 @@ public class LPhyExtImpl implements LPhyExtension {
             Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
             // Math
             lphy.core.functions.Exp.class, Sum.class, SumBoolean.class,
+            Abs.class, Floor.class, Ceil.class, Round.class,
             // Utils
             ParseInt.class, Concat.class,
             Length.class, Unique.class, Range.class, Rep.class,
