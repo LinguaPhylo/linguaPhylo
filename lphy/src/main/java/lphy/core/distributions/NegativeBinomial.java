@@ -9,20 +9,20 @@ import java.util.TreeMap;
 import static lphy.core.distributions.DistributionConstants.*;
 
 /**
- * The Pascal distribution is a special case of the Negative Binomial distribution,
- * where the number of successes parameter is an integer.
+ * This uses the Pascal distribution actually,
+ * where the input parameter r, the number of successes, is an integer.
  * @see org.apache.commons.math3.distribution.PascalDistribution
  * @author Walter Xie
  */
-public class PascalDistribution extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
+public class NegativeBinomial extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
 
     private Value<Double> p;
     private Value<Integer> r;
 
     org.apache.commons.math3.distribution.PascalDistribution pascalDist;
 
-    public PascalDistribution(@ParameterInfo(name = rParamName, description = "the number of successes.") Value<Integer> r,
-                              @ParameterInfo(name = pParamName, description = "the probability of a success.") Value<Double> p) {
+    public NegativeBinomial(@ParameterInfo(name = rParamName, description = "the number of successes.") Value<Integer> r,
+                            @ParameterInfo(name = pParamName, description = "the probability of a success.") Value<Double> p) {
         super();
         this.p = p;
         this.r = r;
@@ -35,8 +35,8 @@ public class PascalDistribution extends PriorDistributionGenerator<Integer> impl
         pascalDist = new org.apache.commons.math3.distribution.PascalDistribution(random, r.value(), p.value());
     }
 
-    @GeneratorInfo(name = "Binomial", narrativeName = "binomial distribution",
-            description = "The Pascal distribution with the given number of successes and probability of success.")
+    @GeneratorInfo(name = "NegativeBinomial", narrativeName = "negative binomial distribution",
+            description = "It uses the Pascal distribution with the given number of successes (integer) and probability of success.")
     public RandomVariable<Integer> sample() {
         return new RandomVariable<>(null, pascalDist.sample(), this);
     }
