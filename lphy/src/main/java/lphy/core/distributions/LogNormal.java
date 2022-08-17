@@ -29,7 +29,7 @@ public class LogNormal extends ParametricDistribution<Double> implements Generat
 
     public LogNormal(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
                      @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
-                     @ParameterInfo(name = offsetParamName, optional = true, narrativeName = "offset", description = "optional parameter to add a constant to the returned result. default is 0.") Value<Number> offset) {
+                     @ParameterInfo(name = offsetParamName, optional = true, narrativeName = "offset", description = "optional parameter to shift entire distribution by an offset. default is 0.") Value<Number> offset) {
         super();
         this.M = M;
         this.S = S;
@@ -84,9 +84,7 @@ public class LogNormal extends ParametricDistribution<Double> implements Generat
         return S;
     }
 
-    private static final Double[] domainBounds = {0.0, Double.POSITIVE_INFINITY};
-
     public Double[] getDomainBounds() {
-        return domainBounds;
+        return new Double[] {C(), Double.POSITIVE_INFINITY};
     }
 }
