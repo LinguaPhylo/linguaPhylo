@@ -1,0 +1,25 @@
+data {
+  n=20;
+  taxa = taxa(names=1:20);
+  L=1000;
+}
+model{
+  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+  rates ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
+  Q = gtr(freq=π, rates=rates);
+
+  diversification ~ Exp(mean=10.0);
+  turnover ~ Beta(alpha=2.0, beta=2.0);
+  denom = abs(1.0 - turnover);
+  λ = diversification / denom;
+  death_rate = (turnover * diversification) / denom;
+  root_time ~ LogNormal(meanlog=2.366645, sdlog=0.25, offset=38.0);
+  // Conditioned on root age and on number of taxa
+  ψ ~ BirthDeath(lambda=λ, mu=death_rate, rootAge=root_time, taxa=taxa);
+
+  ucln_mean ~ Exp(mean=2.0);
+  ucln_sigma ~ Exp(mean=3.0);
+  branch_rates ~ LogNormal(meanlog=ucln_mean, sdlog=ucln_sigma, replicates=2*n - 2);
+
+  D ~ PhyloCTMC(tree=ψ, Q=Q, branchRates=branch_rates, L=L);
+}
