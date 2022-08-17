@@ -4,6 +4,7 @@ public class DistributionConstants {
 
     public static final String pParamName = "p";
     public static final String nParamName = "n";
+    public static final String rParamName = "r";
     public static final String shapeParamName = "shape";
     public static final String alphaParamName = "alpha";
     public static final String betaParamName =  "beta";
