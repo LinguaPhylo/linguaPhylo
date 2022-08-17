@@ -14,7 +14,7 @@ import static org.apache.commons.math3.distribution.ExponentialDistribution.DEFA
  * A smoothing prior in which each element has an exponential prior with a mean of
  * the previous element in the chain.
  */
-public class ExpMarkovChain extends PriorDistributionGenerator<Double[]> {
+public class ExpMarkovChain extends ParametricDistribution<Double[]> {
 
     private final static String initialMeanParamName = "initialMean";
     private final static String firstValueParamName = "firstValue";

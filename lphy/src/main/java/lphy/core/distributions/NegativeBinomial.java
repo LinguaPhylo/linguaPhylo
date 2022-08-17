@@ -14,7 +14,7 @@ import static lphy.core.distributions.DistributionConstants.*;
  * @see org.apache.commons.math3.distribution.PascalDistribution
  * @author Walter Xie
  */
-public class NegativeBinomial extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
+public class NegativeBinomial extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
 
     private Value<Double> p;
     private Value<Integer> r;

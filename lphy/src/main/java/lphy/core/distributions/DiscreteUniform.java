@@ -12,7 +12,7 @@ import static lphy.core.distributions.DistributionConstants.upperParamName;
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
-public class DiscreteUniform extends PriorDistributionGenerator<Integer> {
+public class DiscreteUniform extends ParametricDistribution<Integer> {
 
     private Value<Integer> lower;
     private Value<Integer> upper;

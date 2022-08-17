@@ -16,7 +16,7 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
  * It cannot be replaced by {@link IID}.
  *
  */
-public class BernoulliMulti extends PriorDistributionGenerator<Boolean[]> {
+public class BernoulliMulti extends ParametricDistribution<Boolean[]> {
     private Value<Double> p;
     private Value<Integer> n;
     private Value<Integer> minSuccesses;

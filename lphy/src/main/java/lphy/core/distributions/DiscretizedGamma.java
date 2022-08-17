@@ -14,7 +14,7 @@ import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_IN
 /**
  * Discretized Gamma distribution
  */
-public class DiscretizedGamma extends PriorDistributionGenerator<Double> {
+public class DiscretizedGamma extends ParametricDistribution<Double> {
 
     private static final String ncatParamName = "ncat";
     private Value<Number> shape;

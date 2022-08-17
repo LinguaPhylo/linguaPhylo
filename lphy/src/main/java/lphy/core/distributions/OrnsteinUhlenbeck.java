@@ -15,7 +15,7 @@ import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_I
 /**
  * Created by Alexei Drummond on 2/02/20.
  */
-public class OrnsteinUhlenbeck extends PriorDistributionGenerator<Double> {
+public class OrnsteinUhlenbeck extends ParametricDistribution<Double> {
 
     protected Value<Double> y0;
     protected Value<Double> time;

@@ -25,4 +25,6 @@ public class DistributionConstants {
     // the argument name for the upper bound of a distribution
     public static final String upperParamName = "upper";
 
+    // add a double/integer to the returned result from a distribution
+    public static final String offsetParamName = "offset";
 }

@@ -14,7 +14,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Bernoulli extends PriorDistributionGenerator<Boolean> {
+public class Bernoulli extends ParametricDistribution<Boolean> {
     private Value<Number> p;
 
     public Bernoulli(@ParameterInfo(name=pParamName, description="the probability of success.") Value<Number> p) {

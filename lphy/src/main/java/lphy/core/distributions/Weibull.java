@@ -18,7 +18,7 @@ import static org.apache.commons.math3.distribution.WeibullDistribution.DEFAULT_
  * @author Walter Xie
  * @see WeibullDistribution
  */
-public class Weibull extends PriorDistributionGenerator<Double> {
+public class Weibull extends ParametricDistribution<Double> {
 
     private Value<Number> alpha;
     private Value<Number> beta;

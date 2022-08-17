@@ -16,7 +16,7 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Geometric extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
+public class Geometric extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
 
     private Value<Double> p;
 

@@ -7,7 +7,7 @@ import java.util.*;
 
 import static lphy.core.distributions.DistributionConstants.nParamName;
 
-public class RandomComposition extends PriorDistributionGenerator<Integer[]> {
+public class RandomComposition extends ParametricDistribution<Integer[]> {
 
     private static final String kParamName = "k";
     private Value<Integer> n;

@@ -19,7 +19,7 @@ import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_I
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Normal extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
+public class Normal extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> mean;
     private Value<Number> sd;

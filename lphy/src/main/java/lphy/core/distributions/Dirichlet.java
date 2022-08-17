@@ -14,7 +14,7 @@ import static lphy.core.distributions.DistributionConstants.concParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Dirichlet extends PriorDistributionGenerator<Double[]> {
+public class Dirichlet extends ParametricDistribution<Double[]> {
 
     private Value<Number[]> concentration;
 

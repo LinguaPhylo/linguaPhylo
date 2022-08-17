@@ -18,7 +18,7 @@ import static org.apache.commons.math3.distribution.CauchyDistribution.DEFAULT_I
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Cauchy extends PriorDistributionGenerator<Double> {
+public class Cauchy extends ParametricDistribution<Double> {
 
     private Value<Number> median;
     private Value<Number> scale;

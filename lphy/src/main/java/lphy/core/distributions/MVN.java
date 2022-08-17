@@ -15,7 +15,7 @@ import static lphy.core.distributions.DistributionConstants.meanParamName;
 /**
  * Multivariate Normal distribution.
  */
-public class MVN extends PriorDistributionGenerator<Double[]> {
+public class MVN extends ParametricDistribution<Double[]> {
 
     private static final String covariancesParamName = "covariances";
     private Value<Double[]> mean;

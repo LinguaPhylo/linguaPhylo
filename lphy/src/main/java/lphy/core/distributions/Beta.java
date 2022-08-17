@@ -18,7 +18,7 @@ import static org.apache.commons.math3.distribution.BetaDistribution.DEFAULT_INV
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Beta extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
+public class Beta extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> alpha;
     private Value<Number> beta;

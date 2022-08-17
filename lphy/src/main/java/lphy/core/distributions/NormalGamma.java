@@ -15,7 +15,7 @@ import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_IN
 /**
  * Normal-gamma distribution
  */
-public class NormalGamma extends PriorDistributionGenerator<Double[]> {
+public class NormalGamma extends ParametricDistribution<Double[]> {
 
     private Value<Number> shape;
     private Value<Number> scale;

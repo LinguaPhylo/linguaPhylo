@@ -16,7 +16,7 @@ import static lphy.core.distributions.DistributionConstants.pParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Binomial extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
+public class Binomial extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
 
     private Value<Double> p;
     private Value<Integer> n;

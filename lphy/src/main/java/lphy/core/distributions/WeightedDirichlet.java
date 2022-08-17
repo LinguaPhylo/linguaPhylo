@@ -15,7 +15,7 @@ import static lphy.core.distributions.DistributionConstants.concParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class WeightedDirichlet extends PriorDistributionGenerator<Double[]> {
+public class WeightedDirichlet extends ParametricDistribution<Double[]> {
 
     public static final String weightsParamName = "weights";
 

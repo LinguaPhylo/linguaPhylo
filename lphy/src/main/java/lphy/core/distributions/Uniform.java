@@ -13,7 +13,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
-public class Uniform extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
+public class Uniform extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> lower;
     private Value<Number> upper;

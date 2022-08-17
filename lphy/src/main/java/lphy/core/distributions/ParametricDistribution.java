@@ -15,14 +15,14 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @author Walter Xie
  * @author Alexei Drummond
  */
-public abstract class PriorDistributionGenerator<T> implements GenerativeDistribution<T> {
+public abstract class ParametricDistribution<T> implements GenerativeDistribution<T> {
 
     protected RandomGenerator random;
 
     /**
      * This gets the cached pseudo-random number generator
      */
-    public PriorDistributionGenerator() {
+    public ParametricDistribution() {
         random = RandomUtils.getRandom();
         // call constructDistribution(RandomGenerator) after setting class field parameters
     }

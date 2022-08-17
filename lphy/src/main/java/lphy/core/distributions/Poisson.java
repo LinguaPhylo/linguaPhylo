@@ -8,6 +8,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.core.distributions.DistributionConstants.offsetParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_EPSILON;
 import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_MAX_ITERATIONS;
@@ -19,10 +20,9 @@ import static org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Poisson extends PriorDistributionGenerator<Integer> implements GenerativeDistribution1D<Integer> {
+public class Poisson extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
 
     private static final String lambdaParamName = "lambda";
-    private static final String offsetParamName = "offset";
     private static final String minParamName = "min";
     private static final String maxParamName = "max";
     private Value<Number> lambda;

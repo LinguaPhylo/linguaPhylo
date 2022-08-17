@@ -18,7 +18,7 @@ import static org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_IN
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Gamma extends PriorDistributionGenerator<Double> implements GenerativeDistribution1D<Double> {
+public class Gamma extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
 
     private Value<Number> shape;
     private Value<Number> scale;

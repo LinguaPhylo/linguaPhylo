@@ -11,7 +11,7 @@ import java.util.Map;
 import static lphy.core.distributions.DistributionConstants.pParamName;
 
 //TODO
-public class Categorical extends PriorDistributionGenerator<Integer> {
+public class Categorical extends ParametricDistribution<Integer> {
 
     Value<Double[]> probs;
 
