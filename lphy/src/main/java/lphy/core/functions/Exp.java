@@ -1,10 +1,18 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleValue;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
+/**
+ * Already exists in lphy.parser.SimulatorListenerImpl
+ * ValueOrFunction#visitMethodCall(SimulatorParser.MethodCallContext)
+ */
+@Deprecated
 public class Exp extends DeterministicFunction<Double> {
 
     public static final String argParamName = "arg";
