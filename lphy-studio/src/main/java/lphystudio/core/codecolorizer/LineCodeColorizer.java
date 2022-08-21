@@ -339,15 +339,17 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
             public void syntaxError(Recognizer<?, ?> recognizer,
                                     Object offendingSymbol, int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
-                e.printStackTrace();
-                if (e instanceof NoViableAltException) {
-                    NoViableAltException nvae = (NoViableAltException) e;
-                    System.out.println(nvae.getLocalizedMessage());
+                if (e != null) {
+                    e.printStackTrace();
+                    if (e instanceof NoViableAltException) {
+                        NoViableAltException nvae = (NoViableAltException) e;
+                        System.out.println(nvae.getLocalizedMessage());
 //              msg = "X no viable alt; token="+nvae.token+
 //                 " (decision="+nvae.decisionNumber+
 //                 " state "+nvae.stateNumber+")"+
 //                 " decision=<<"+nvae.grammarDecisionDescription+">>";
-                } else {
+                    } else {
+                    }
                 }
                 throw new SimulatorParsingException(msg, charPositionInLine, line);
             }
