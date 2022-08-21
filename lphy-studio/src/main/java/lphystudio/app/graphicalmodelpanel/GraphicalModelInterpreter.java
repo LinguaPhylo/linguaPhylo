@@ -229,9 +229,12 @@ public class GraphicalModelInterpreter extends JPanel {
         try {
             parser.parse(input, context);
 
-
             try {
                 LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);
+                // TODO this is tmp solution, the code should be in one place
+                // parser.parse(input, context) has the same code
+                if (!input.endsWith(";"))
+                    input = input + ";";
                 codeColorizer.parse(input);
             } catch (Exception e) {
                 LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
