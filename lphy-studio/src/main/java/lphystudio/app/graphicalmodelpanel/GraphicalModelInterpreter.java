@@ -233,7 +233,8 @@ public class GraphicalModelInterpreter extends JPanel {
                 LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);
                 // TODO this is tmp solution, the code should be in one place
                 // parser.parse(input, context) has the same code
-                if (!input.endsWith(";"))
+                // if no data{}, input is empty
+                if (!input.endsWith(";") && !input.trim().isEmpty())
                     input = input + ";";
                 codeColorizer.parse(input);
             } catch (Exception e) {
