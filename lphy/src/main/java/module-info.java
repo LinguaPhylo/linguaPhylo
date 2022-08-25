@@ -15,6 +15,8 @@ module lphy {
     requires markdowngenerator;
 
     // lphy
+    exports lphy.bmodeltest;
+
     exports lphy.core;
     exports lphy.core.distributions;
     exports lphy.core.narrative;
@@ -23,23 +25,33 @@ module lphy {
     exports lphy.core.functions.tree;
     exports lphy.core.functions.alignment;
 
+    // evolution
     exports lphy.evolution;
     exports lphy.evolution.alignment;
     exports lphy.evolution.birthdeath;
+    exports lphy.evolution.branchrates;
     exports lphy.evolution.coalescent;
+    exports lphy.evolution.continuous;
     exports lphy.evolution.datatype;
+    exports lphy.evolution.io;
     exports lphy.evolution.likelihood;
+    exports lphy.evolution.sitemodel;
     exports lphy.evolution.substitutionmodel;
+    exports lphy.evolution.traits;
     exports lphy.evolution.tree;
 
-    exports lphy.layeredgraph;
+    // graphical model
     exports lphy.graphicalModel;
     exports lphy.graphicalModel.code;
     exports lphy.graphicalModel.types;
+    exports lphy.layeredgraph;
 
+    // parser
     exports lphy.parser;
     exports lphy.parser.functions;
 
+    // utils
+    exports lphy.math;
     exports lphy.reflection;
     exports lphy.system;
     exports lphy.util;
