@@ -338,9 +338,10 @@ public class GenerateDocs {
         for (Class<?> c : classes) {
 
             if (LGenerator.class.isAssignableFrom(c)) {
+                //TODO not sure if LGenerativeDistribution is still required
                 builder.append(LGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LGenerator>)c)).append("\n\n");
             } else {
-                builder.append(Generator.getGeneratorMarkdown((Class<Generator>)c)).append("\n\n");
+                builder.append(GeneratorMarkdown.getGeneratorMarkdown((Class<Generator>)c)).append("\n\n");
             }
         }
 
@@ -354,7 +355,7 @@ public class GenerateDocs {
         builder.append(new Heading(name + " function",1)).append("\n");
 
         for (Class<DeterministicFunction> c : classes) {
-            builder.append(Generator.getGeneratorMarkdown(c)).append("\n\n");
+            builder.append(GeneratorMarkdown.getGeneratorMarkdown(c)).append("\n\n");
         }
 
         writer.write(builder.toString());

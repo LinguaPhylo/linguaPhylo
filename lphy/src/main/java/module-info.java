@@ -14,7 +14,7 @@ module lphy {
 
     requires markdowngenerator;
 
-    // lphy
+    // bmodel test
     exports lphy.bmodeltest;
 
     exports lphy.core;
@@ -24,6 +24,8 @@ module lphy {
     exports lphy.core.functions.taxa;
     exports lphy.core.functions.tree;
     exports lphy.core.functions.alignment;
+    // doc
+    exports lphy.doc;
 
     // evolution
     exports lphy.evolution;
