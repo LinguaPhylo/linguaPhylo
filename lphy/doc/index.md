@@ -8,7 +8,6 @@ Parametric distribution
 - [Beta](parametric/Beta.md)
 - [Cauchy](parametric/Cauchy.md)
 - [Dirichlet](parametric/Dirichlet.md)
-- [DiscreteUniform](parametric/DiscreteUniform.md)
 - [DiscretizeGamma](parametric/DiscretizeGamma.md)
 - [Exp](parametric/Exp.md)
 - [ExpMarkovChain](parametric/ExpMarkovChain.md)
@@ -23,6 +22,7 @@ Parametric distribution
 - [RandomBooleanArray](parametric/RandomBooleanArray.md)
 - [RandomComposition](parametric/RandomComposition.md)
 - [Uniform](parametric/Uniform.md)
+- [UniformDiscrete](parametric/UniformDiscrete.md)
 - [Weibull](parametric/Weibull.md)
 - [WeightedDirichlet](parametric/WeightedDirichlet.md)
 
@@ -59,7 +59,7 @@ Sequence type
 - [nucleotides](sequence-type/nucleotides.md)
 - [standard](sequence-type/standard.md)
 
-Taxa & Alignment
+Taxa & alignment
 ----------------
 - [taxa](taxa-alignment/taxa.md)
 - [extantTaxa](taxa-alignment/extantTaxa.md)

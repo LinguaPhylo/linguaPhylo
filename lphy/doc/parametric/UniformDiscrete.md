@@ -1,6 +1,6 @@
-DiscreteUniform distribution
+UniformDiscrete distribution
 ============================
-DiscreteUniform(Integer **lower**, Integer **upper**)
+UniformDiscrete(Integer **lower**, Integer **upper**)
 -----------------------------------------------------
 
 The discrete uniform distribution over integers.

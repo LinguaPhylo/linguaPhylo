@@ -253,7 +253,7 @@ public class GenerateDocs {
             builder.append(new UnorderedList<>(seqTypeLinks)).append("\n\n");
         }
         if (taxaAligLinks.size() > 0) {
-            builder.append(new Heading(TAXA_ALIGNMENT.getName(), 2)).append("\n");
+            builder.append(new Heading("Taxa & alignment", 2)).append("\n");
             builder.append(new UnorderedList<>(taxaAligLinks)).append("\n\n");
         }
         if (substSiteLinks.size() > 0) {
