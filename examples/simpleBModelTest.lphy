@@ -4,7 +4,7 @@ nchar = 200;
 π ~ Dirichlet(conc=[3.0,3.0,3.0,3.0]);
 rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
 modelSet = bModelSet("transitionTransversionSplit");
-M ~ DiscreteUniform(lower=0, upper=modelSet.size()-1);
+M ~ UniformDiscrete(lower=0, upper=modelSet.size()-1);
 Q = nucleotideModel(modelSet=modelSet, modelIndicator=M, freq=π, rates=rates);
 I_siteRates ~ Bernoulli(p=0.5);
 I_pInv ~ Bernoulli(p=0.5);

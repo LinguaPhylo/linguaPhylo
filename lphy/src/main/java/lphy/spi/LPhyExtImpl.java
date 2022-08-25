@@ -53,7 +53,7 @@ public class LPhyExtImpl implements LPhyExtension {
     List<Class<? extends GenerativeDistribution>> genDists = Arrays.asList(
             // probability distribution
             Bernoulli.class, BernoulliMulti.class, Beta.class, Cauchy.class, Dirichlet.class,
-            DiscreteUniform.class, DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class,
+            UniformDiscrete.class, DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class,
             InverseGamma.class, LogNormal.class, Normal.class, NormalGamma.class, Poisson.class,
             NegativeBinomial.class, Uniform.class, WeightedDirichlet.class, Weibull.class,
             // tree distribution
