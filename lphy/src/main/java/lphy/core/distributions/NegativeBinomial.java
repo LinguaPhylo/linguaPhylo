@@ -35,7 +35,8 @@ public class NegativeBinomial extends ParametricDistribution<Integer> implements
         pascalDist = new org.apache.commons.math3.distribution.PascalDistribution(random, r.value(), p.value());
     }
 
-    @GeneratorInfo(name = "NegativeBinomial", narrativeName = "negative binomial distribution",
+    @GeneratorInfo(name = "NegativeBinomial", verbClause = "has", narrativeName = "negative binomial distribution",
+            category = GeneratorCategory.PRIOR,
             description = "It uses the Pascal distribution with the given number of successes (integer) and probability of success.")
     public RandomVariable<Integer> sample() {
         return new RandomVariable<>(null, pascalDist.sample(), this);

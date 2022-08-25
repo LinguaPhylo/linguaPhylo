@@ -1,98 +1,116 @@
-LPhy Language Reference (version 1.3.1)
+LPhy Language Reference (version 1.3.2)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
-Generative distributions
-------------------------
-- [Bernoulli](distributions/Bernoulli.md)
-- [Beta](distributions/Beta.md)
-- [BirthDeathSampling](distributions/BirthDeathSampling.md)
-- [BirthDeathSerialSampling](distributions/BirthDeathSerialSampling.md)
-- [BirthDeath](distributions/BirthDeath.md)
-- [Cauchy](distributions/Cauchy.md)
-- [Dirichlet](distributions/Dirichlet.md)
-- [DiscreteUniform](distributions/DiscreteUniform.md)
-- [DiscretizeGamma](distributions/DiscretizeGamma.md)
+Parametric distribution
+-----------------------
+- [Bernoulli](parametric/Bernoulli.md)
+- [Beta](parametric/Beta.md)
+- [Cauchy](parametric/Cauchy.md)
+- [Dirichlet](parametric/Dirichlet.md)
+- [DiscreteUniform](parametric/DiscreteUniform.md)
+- [DiscretizeGamma](parametric/DiscretizeGamma.md)
+- [Exp](parametric/Exp.md)
+- [ExpMarkovChain](parametric/ExpMarkovChain.md)
+- [Gamma](parametric/Gamma.md)
+- [Geometric](parametric/Geometric.md)
+- [InverseGamma](parametric/InverseGamma.md)
+- [LogNormal](parametric/LogNormal.md)
+- [NegativeBinomial](parametric/NegativeBinomial.md)
+- [Normal](parametric/Normal.md)
+- [NormalGamma](parametric/NormalGamma.md)
+- [Poisson](parametric/Poisson.md)
+- [RandomBooleanArray](parametric/RandomBooleanArray.md)
+- [RandomComposition](parametric/RandomComposition.md)
+- [Uniform](parametric/Uniform.md)
+- [Weibull](parametric/Weibull.md)
+- [WeightedDirichlet](parametric/WeightedDirichlet.md)
+
+Tree models
+-----------
+- [BirthDeathSampling](tree-model/BirthDeathSampling.md)
+- [BirthDeathSerialSampling](tree-model/BirthDeathSerialSampling.md)
+- [BirthDeath](tree-model/BirthDeath.md)
+- [FossilBirthDeathTree](tree-model/FossilBirthDeathTree.md)
+- [FullBirthDeath](tree-model/FullBirthDeath.md)
+- [MultispeciesCoalescent](tree-model/MultispeciesCoalescent.md)
+- [RhoSampleTree](tree-model/RhoSampleTree.md)
+- [Coalescent](tree-model/Coalescent.md)
+- [SimBDReverse](tree-model/SimBDReverse.md)
+- [SimFBDAge](tree-model/SimFBDAge.md)
+- [SimFossilsPoisson](tree-model/SimFossilsPoisson.md)
+- [SkylineCoalescent](tree-model/SkylineCoalescent.md)
+- [StructuredCoalescent](tree-model/StructuredCoalescent.md)
+- [Yule](tree-model/Yule.md)
+
+Other generative distributions
+------------------------------
 - [ErrorModel](distributions/ErrorModel.md)
-- [Exp](distributions/Exp.md)
-- [ExpMarkovChain](distributions/ExpMarkovChain.md)
-- [FossilBirthDeathTree](distributions/FossilBirthDeathTree.md)
-- [FullBirthDeath](distributions/FullBirthDeath.md)
-- [Gamma](distributions/Gamma.md)
-- [Geometric](distributions/Geometric.md)
-- [InverseGamma](distributions/InverseGamma.md)
-- [LogNormal](distributions/LogNormal.md)
-- [MultispeciesCoalescent](distributions/MultispeciesCoalescent.md)
-- [Normal](distributions/Normal.md)
-- [NormalGamma](distributions/NormalGamma.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
 - [PhyloCTMC](distributions/PhyloCTMC.md)
 - [PhyloMultivariateBrownian](distributions/PhyloMultivariateBrownian.md)
 - [PhyloOU](distributions/PhyloOU.md)
-- [Poisson](distributions/Poisson.md)
-- [RandomBooleanArray](distributions/RandomBooleanArray.md)
-- [RandomComposition](distributions/RandomComposition.md)
-- [RhoSampleTree](distributions/RhoSampleTree.md)
-- [Coalescent](distributions/Coalescent.md)
-- [SimBDReverse](distributions/SimBDReverse.md)
-- [SimFBDAge](distributions/SimFBDAge.md)
-- [SimFossilsPoisson](distributions/SimFossilsPoisson.md)
-- [SkylineCoalescent](distributions/SkylineCoalescent.md)
-- [StructuredCoalescent](distributions/StructuredCoalescent.md)
-- [Uniform](distributions/Uniform.md)
-- [Weibull](distributions/Weibull.md)
-- [WeightedDirichlet](distributions/WeightedDirichlet.md)
-- [Yule](distributions/Yule.md)
 - [bSiteRates](distributions/bSiteRates.md)
 
-Functions
----------
+Sequence type
+-------------
+- [aminoAcids](sequence-type/aminoAcids.md)
+- [binaryDataType](sequence-type/binaryDataType.md)
+- [nucleotides](sequence-type/nucleotides.md)
+- [standard](sequence-type/standard.md)
+
+Taxa & Alignment
+----------------
+- [taxa](taxa-alignment/taxa.md)
+- [extantTaxa](taxa-alignment/extantTaxa.md)
+- [extractTrait](taxa-alignment/extractTrait.md)
+- [readFasta](taxa-alignment/readFasta.md)
+- [readNexus](taxa-alignment/readNexus.md)
+- [species](taxa-alignment/species.md)
+
+Substitution and site models
+----------------------------
+- [bModelSet](subst-site-model/bModelSet.md)
+- [binaryRateMatrix](subst-site-model/binaryRateMatrix.md)
+- [f81](subst-site-model/f81.md)
+- [gtr](subst-site-model/gtr.md)
+- [generalTimeReversible](subst-site-model/generalTimeReversible.md)
+- [hky](subst-site-model/hky.md)
+- [jukesCantor](subst-site-model/jukesCantor.md)
+- [k80](subst-site-model/k80.md)
+- [lewisMK](subst-site-model/lewisMK.md)
+- [migrationMatrix](subst-site-model/migrationMatrix.md)
+- [nucleotideModel](subst-site-model/nucleotideModel.md)
+- [wag](subst-site-model/wag.md)
+- [bSiteModel](subst-site-model/bSiteModel.md)
+
+Tree functions
+--------------
+- [extantTree](tree-func/extantTree.md)
+- [localBranchRates](tree-func/localBranchRates.md)
+- [countMigrations](tree-func/countMigrations.md)
+- [newick](tree-func/newick.md)
+- [nodecount](tree-func/nodecount.md)
+- [pruneTree](tree-func/pruneTree.md)
+- [treeLength](tree-func/treeLength.md)
+
+Other functions
+---------------
 - [arange](functions/arange.md)
-- [aminoAcids](functions/aminoAcids.md)
 - [argi](functions/argi.md)
-- [bModelSet](functions/bModelSet.md)
-- [binaryDataType](functions/binaryDataType.md)
-- [binaryRateMatrix](functions/binaryRateMatrix.md)
 - [concat](functions/concat.md)
-- [taxa](functions/taxa.md)
-- [exp](functions/exp.md)
-- [extantTaxa](functions/extantTaxa.md)
-- [extantTree](functions/extantTree.md)
-- [extractTrait](functions/extractTrait.md)
-- [f81](functions/f81.md)
-- [gtr](functions/gtr.md)
-- [generalTimeReversible](functions/generalTimeReversible.md)
-- [hky](functions/hky.md)
-- [jukesCantor](functions/jukesCantor.md)
-- [k80](functions/k80.md)
 - [length](functions/length.md)
-- [lewisMK](functions/lewisMK.md)
-- [localBranchRates](functions/localBranchRates.md)
-- [countMigrations](functions/countMigrations.md)
-- [migrationMatrix](functions/migrationMatrix.md)
 - [nchar](functions/nchar.md)
 - [ntaxa](functions/ntaxa.md)
-- [newick](functions/newick.md)
-- [nodecount](functions/nodecount.md)
-- [nucleotideModel](functions/nucleotideModel.md)
-- [nucleotides](functions/nucleotides.md)
 - [parseInt](functions/parseInt.md)
-- [pruneTree](functions/pruneTree.md)
 - [rangeInt](functions/rangeInt.md)
-- [readFasta](functions/readFasta.md)
-- [readNexus](functions/readNexus.md)
 - [rep](functions/rep.md)
 - [select](functions/select.md)
 - [slice](functions/slice.md)
-- [species](functions/species.md)
 - [split](functions/split.md)
-- [standard](functions/standard.md)
 - [sum](functions/sum.md)
 - [hammingWeight](functions/hammingWeight.md)
-- [treeLength](functions/treeLength.md)
 - [unique](functions/unique.md)
-- [wag](functions/wag.md)
-- [bSiteModel](functions/bSiteModel.md)
 
 Types
 -----
@@ -117,4 +135,10 @@ Types
 - [MetaDataAlignment](types/MetaDataAlignment.md)
 - [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)
+
+Built-in
+--------
+- [binary operators functions](built-in-binary-operators.md)
+- [math functions](built-in-math.md)
+- [trigonometric functions](built-in-trigonometry.md)
 
