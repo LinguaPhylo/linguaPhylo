@@ -42,6 +42,7 @@ public class GenerateDocs {
     public static final String SUBST_SITE_MODEL_DIR = "subst-site-model";
     public static final String TREE_FUNC_DIR = "tree-func";
     public static final String OTHER_FUNC_DIR = "functions";
+    public static final String TYPES_DIR = "types";
 
     public static void main(String[] args) throws IOException {
 
@@ -277,7 +278,7 @@ public class GenerateDocs {
 
         for (Class<?> type : types) {
             String name = type.getSimpleName();
-            String fileURL = "types/" + name + ".md";
+            String fileURL = TYPES_DIR + "/" + name + ".md";
 
             if (!typeNames.contains(name)) {
                 typeLinks.add(new Link(name, fileURL));
@@ -341,7 +342,7 @@ public class GenerateDocs {
                 //TODO not sure if LGenerativeDistribution is still required
                 builder.append(LGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LGenerator>)c)).append("\n\n");
             } else {
-                builder.append(GeneratorMarkdown.getGeneratorMarkdown((Class<Generator>)c)).append("\n\n");
+                builder.append(GeneratorMarkdown.getGeneratorMarkdown((Class<Generator>)c, TYPES_DIR)).append("\n\n");
             }
         }
 
@@ -355,7 +356,7 @@ public class GenerateDocs {
         builder.append(new Heading(name + " function",1)).append("\n");
 
         for (Class<DeterministicFunction> c : classes) {
-            builder.append(GeneratorMarkdown.getGeneratorMarkdown(c)).append("\n\n");
+            builder.append(GeneratorMarkdown.getGeneratorMarkdown(c, TYPES_DIR)).append("\n\n");
         }
 
         writer.write(builder.toString());

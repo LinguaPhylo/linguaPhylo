@@ -1,18 +1,18 @@
 Uniform distribution
 ====================
-Uniform(Number **lower**, Number **upper**)
--------------------------------------------
+Uniform([Number](../types/Number.md) **lower**, [Number](../types/Number.md) **upper**)
+---------------------------------------------------------------------------------------
 
 The uniform probability distribution.
 
 ### Parameters
 
-- Number **lower** - the lower bound of the uniform distribution.
-- Number **upper** - the upper bound of the uniform distribution.
+- [Number](../types/Number.md) **lower** - the lower bound of the uniform distribution.
+- [Number](../types/Number.md) **upper** - the upper bound of the uniform distribution.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

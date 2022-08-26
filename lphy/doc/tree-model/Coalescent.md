@@ -1,20 +1,20 @@
 Coalescent distribution
 =======================
-Coalescent(Number **theta**, Integer **n**, Taxa **taxa**, Double[] **ages**)
------------------------------------------------------------------------------
+Coalescent([Number](../types/Number.md) **theta**, [Integer](../types/Integer.md) **n**, [Taxa](../types/Taxa.md) **taxa**, [Double[]](../types/Double[].md) **ages**)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 1999)
 
 ### Parameters
 
-- Number **theta** - effective population size, possibly scaled to mutations or calendar units.
-- Integer **n** - number of taxa.
-- Taxa **taxa** - Taxa object, (e.g. Taxa or TimeTree or Object[])
-- Double[] **ages** - an array of leaf node ages.
+- [Number](../types/Number.md) **theta** - effective population size, possibly scaled to mutations or calendar units.
+- [Integer](../types/Integer.md) **n** - number of taxa.
+- [Taxa](../types/Taxa.md) **taxa** - Taxa object, (e.g. Taxa or TimeTree or Object[])
+- [Double[]](../types/Double[].md) **ages** - an array of leaf node ages.
 
 ### Return type
 
-- TimeTree
+[TimeTree](../types/TimeTree.md)
 
 ### Reference
 

@@ -1,17 +1,17 @@
 Exp distribution
 ================
-Exp(Number **mean**)
---------------------
+Exp([Number](../types/Number.md) **mean**)
+------------------------------------------
 
 The exponential probability distribution.
 
 ### Parameters
 
-- Number **mean** - the mean of an exponential distribution.
+- [Number](../types/Number.md) **mean** - the mean of an exponential distribution.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

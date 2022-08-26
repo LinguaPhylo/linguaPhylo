@@ -1,18 +1,18 @@
 Gamma distribution
 ==================
-Gamma(Number **shape**, Number **scale**)
------------------------------------------
+Gamma([Number](../types/Number.md) **shape**, [Number](../types/Number.md) **scale**)
+-------------------------------------------------------------------------------------
 
 The gamma probability distribution.
 
 ### Parameters
 
-- Number **shape** - the shape of the distribution.
-- Number **scale** - the scale of the distribution.
+- [Number](../types/Number.md) **shape** - the shape of the distribution.
+- [Number](../types/Number.md) **scale** - the scale of the distribution.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

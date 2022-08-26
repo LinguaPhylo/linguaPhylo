@@ -9,7 +9,7 @@ The amino acid data type.
 
 ### Return type
 
-- SequenceType
+[SequenceType](../types/SequenceType.md)
 
 
 

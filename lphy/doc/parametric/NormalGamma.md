@@ -1,20 +1,20 @@
 NormalGamma distribution
 ========================
-NormalGamma(Number **shape**, Number **scale**, Number **mean**, Number **precision**)
---------------------------------------------------------------------------------------
+NormalGamma([Number](../types/Number.md) **shape**, [Number](../types/Number.md) **scale**, [Number](../types/Number.md) **mean**, [Number](../types/Number.md) **precision**)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The normal-gamma probability distribution.
 
 ### Parameters
 
-- Number **shape** - the shape of the distribution.
-- Number **scale** - the scale of the distribution.
-- Number **mean** - the mean of the distribution.
-- Number **precision** - the standard deviation of the distribution.
+- [Number](../types/Number.md) **shape** - the shape of the distribution.
+- [Number](../types/Number.md) **scale** - the scale of the distribution.
+- [Number](../types/Number.md) **mean** - the mean of the distribution.
+- [Number](../types/Number.md) **precision** - the standard deviation of the distribution.
 
 ### Return type
 
-- Double[]
+[Double[]](../types/Double[].md)
 
 
 

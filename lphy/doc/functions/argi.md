@@ -1,18 +1,18 @@
 argi function
 =============
-argi(String **name**, Integer **default**)
-------------------------------------------
+argi([String](../types/String.md) **name**, [Integer](../types/Integer.md) **default**)
+---------------------------------------------------------------------------------------
 
 The arg function for reading an integer.
 
 ### Parameters
 
-- String **name** - the name of the integer argument.
-- Integer **default** - the default value.
+- [String](../types/String.md) **name** - the name of the integer argument.
+- [Integer](../types/Integer.md) **default** - the default value.
 
 ### Return type
 
-- Integer
+[Integer](../types/Integer.md)
 
 
 

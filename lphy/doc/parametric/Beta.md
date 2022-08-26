@@ -1,18 +1,18 @@
 Beta distribution
 =================
-Beta(Number **alpha**, Number **beta**)
----------------------------------------
+Beta([Number](../types/Number.md) **alpha**, [Number](../types/Number.md) **beta**)
+-----------------------------------------------------------------------------------
 
 The beta probability distribution.
 
 ### Parameters
 
-- Number **alpha** - the first shape parameter.
-- Number **beta** - the second shape parameter.
+- [Number](../types/Number.md) **alpha** - the first shape parameter.
+- [Number](../types/Number.md) **beta** - the second shape parameter.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

@@ -1,7 +1,7 @@
 binaryRateMatrix function
 =========================
-binaryRateMatrix(Number **lambda**)
------------------------------------
+binaryRateMatrix([Number](../types/Number.md) **lambda**)
+---------------------------------------------------------
 
 The binary trait instantaneous rate matrix. Takes a lambda and produces an instantaneous rate matrix:
 
@@ -10,11 +10,11 @@ The binary trait instantaneous rate matrix. Takes a lambda and produces an insta
 
 ### Parameters
 
-- Number **lambda** - the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.
+- [Number](../types/Number.md) **lambda** - the lambda parameter of the binary process. Rate of 0->1 is 1, rate of 1->0 is lambda.
 
 ### Return type
 
-- Double[][]
+[Double[][]](../types/Double[][].md)
 
 
 

@@ -1,17 +1,17 @@
 ntaxa function
 ==============
-ntaxa(Taxa **taxa**)
---------------------
+ntaxa([Taxa](../types/Taxa.md) **taxa**)
+----------------------------------------
 
 The number of taxa in the given taxa-dimensioned value (e.g. alignment, tree et cetera).
 
 ### Parameters
 
-- Taxa **taxa** - the taxa-dimensioned value.
+- [Taxa](../types/Taxa.md) **taxa** - the taxa-dimensioned value.
 
 ### Return type
 
-- Integer
+[Integer](../types/Integer.md)
 
 
 

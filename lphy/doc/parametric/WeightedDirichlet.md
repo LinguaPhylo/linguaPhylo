@@ -1,18 +1,18 @@
 WeightedDirichlet distribution
 ==============================
-WeightedDirichlet(Number[] **conc**, Integer[] **weights**)
------------------------------------------------------------
+WeightedDirichlet([Number[]](../types/Number[].md) **conc**, [Integer[]](../types/Integer[].md) **weights**)
+------------------------------------------------------------------------------------------------------------
 
 The scaled dirichlet probability distribution.
 
 ### Parameters
 
-- Number[] **conc** - the concentration parameters of the scaled Dirichlet distribution.
-- Integer[] **weights** - the weight parameters of the scaled Dirichlet distribution.
+- [Number[]](../types/Number[].md) **conc** - the concentration parameters of the scaled Dirichlet distribution.
+- [Integer[]](../types/Integer[].md) **weights** - the weight parameters of the scaled Dirichlet distribution.
 
 ### Return type
 
-- Double[]
+[Double[]](../types/Double[].md)
 
 
 

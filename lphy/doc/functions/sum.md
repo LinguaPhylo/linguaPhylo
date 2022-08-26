@@ -1,17 +1,17 @@
 sum function
 ============
-sum(Number[] **array**)
------------------------
+sum([Number[]](../types/Number[].md) **array**)
+-----------------------------------------------
 
 The sum of the elements of the given array
 
 ### Parameters
 
-- Number[] **array** - the array to sum the elements of.
+- [Number[]](../types/Number[].md) **array** - the array to sum the elements of.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

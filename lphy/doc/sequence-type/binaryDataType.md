@@ -9,7 +9,7 @@ The binary data type.
 
 ### Return type
 
-- SequenceType
+[SequenceType](../types/SequenceType.md)
 
 
 

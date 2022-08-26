@@ -1,18 +1,18 @@
 Weibull distribution
 ====================
-Weibull(Number **alpha**, Number **beta**)
-------------------------------------------
+Weibull([Number](../types/Number.md) **alpha**, [Number](../types/Number.md) **beta**)
+--------------------------------------------------------------------------------------
 
 The Weibull distribution.
 
 ### Parameters
 
-- Number **alpha** - the first shape parameter of the Weibull distribution.
-- Number **beta** - the second shape parameter of the Weibull distribution.
+- [Number](../types/Number.md) **alpha** - the first shape parameter of the Weibull distribution.
+- [Number](../types/Number.md) **beta** - the second shape parameter of the Weibull distribution.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

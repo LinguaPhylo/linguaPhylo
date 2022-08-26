@@ -1,22 +1,22 @@
 PhyloOU distribution
 ====================
-PhyloOU(TimeTree **tree**, Double **diffRate**, Double **theta**, Double **alpha**, Double **y0**, Double[] **branchThetas**)
------------------------------------------------------------------------------------------------------------------------------
+PhyloOU([TimeTree](../types/TimeTree.md) **tree**, [Double](../types/Double.md) **diffRate**, [Double](../types/Double.md) **theta**, [Double](../types/Double.md) **alpha**, [Double](../types/Double.md) **y0**, [Double[]](../types/Double[].md) **branchThetas**)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated for every leaf node, and every direct ancestor node with an id.
 
 ### Parameters
 
-- TimeTree **tree** - the time tree.
-- Double **diffRate** - the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.
-- Double **theta** - the 'optimal' value that the long-term process is centered around.
-- Double **alpha** - the drift term that determines the rate of drift towards the optimal value.
-- Double **y0** - the value of continuous trait at the root.
-- Double[] **branchThetas** - the 'optimal' value for each branch in the tree.
+- [TimeTree](../types/TimeTree.md) **tree** - the time tree.
+- [Double](../types/Double.md) **diffRate** - the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.
+- [Double](../types/Double.md) **theta** - the 'optimal' value that the long-term process is centered around.
+- [Double](../types/Double.md) **alpha** - the drift term that determines the rate of drift towards the optimal value.
+- [Double](../types/Double.md) **y0** - the value of continuous trait at the root.
+- [Double[]](../types/Double[].md) **branchThetas** - the 'optimal' value for each branch in the tree.
 
 ### Return type
 
-- ContinuousCharacterData
+[ContinuousCharacterData](../types/ContinuousCharacterData.md)
 
 ### Reference
 

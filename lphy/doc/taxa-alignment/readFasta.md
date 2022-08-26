@@ -1,18 +1,18 @@
 readFasta function
 ==================
-readFasta(String **file**, Object **options**)
-----------------------------------------------
+readFasta([String](../types/String.md) **file**, [Object](../types/Object.md) **options**)
+------------------------------------------------------------------------------------------
 
 A function that parses an alignment from a fasta file.
 
 ### Parameters
 
-- String **file** - the name of fasta file.
-- Object **options** - the map containing optional arguments and their values for reuse.
+- [String](../types/String.md) **file** - the name of fasta file.
+- [Object](../types/Object.md) **options** - the map containing optional arguments and their values for reuse.
 
 ### Return type
 
-- Alignment
+[Alignment](../types/Alignment.md)
 
 
 

@@ -1,18 +1,18 @@
 concat function
 ===============
-concat(String **prefix**, String **suffix**)
---------------------------------------------
+concat([String](../types/String.md) **prefix**, [String](../types/String.md) **suffix**)
+----------------------------------------------------------------------------------------
 
 A function to concatenate substrings into one sting.
 
 ### Parameters
 
-- String **prefix** - the prefix substring to concatenate.
-- String **suffix** - the suffix substring to concatenate.
+- [String](../types/String.md) **prefix** - the prefix substring to concatenate.
+- [String](../types/String.md) **suffix** - the suffix substring to concatenate.
 
 ### Return type
 
-- String
+[String](../types/String.md)
 
 
 

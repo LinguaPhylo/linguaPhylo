@@ -1,17 +1,17 @@
 treeLength function
 ===================
-treeLength(TimeTree **tree**)
------------------------------
+treeLength([TimeTree](../types/TimeTree.md) **tree**)
+-----------------------------------------------------
 
 The sum of all the branch lengths in the tree.
 
 ### Parameters
 
-- TimeTree **tree** - the tree.
+- [TimeTree](../types/TimeTree.md) **tree** - the tree.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

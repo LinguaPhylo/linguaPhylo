@@ -1,17 +1,17 @@
 pruneTree function
 ==================
-pruneTree(TimeTree **tree**)
-----------------------------
+pruneTree([TimeTree](../types/TimeTree.md) **tree**)
+----------------------------------------------------
 
 A tree pruned from a larger tree by retaining only nodes subtending nodes with non-null id's.
 
 ### Parameters
 
-- TimeTree **tree** - the full tree to sample
+- [TimeTree](../types/TimeTree.md) **tree** - the full tree to sample
 
 ### Return type
 
-- TimeTree
+[TimeTree](../types/TimeTree.md)
 
 
 

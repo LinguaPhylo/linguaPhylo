@@ -1,18 +1,18 @@
 rep function
 ============
-rep(Object **element**, Integer **times**)
-------------------------------------------
+rep([Object](../types/Object.md) **element**, [Integer](../types/Integer.md) **times**)
+---------------------------------------------------------------------------------------
 
 The replication function. Takes a value and an integer representing the number of times to replicate the value. Returns a vector of the value repeated the specified number of times.
 
 ### Parameters
 
-- Object **element** - the element to replicate.
-- Integer **times** - the standard deviation of the distribution.
+- [Object](../types/Object.md) **element** - the element to replicate.
+- [Integer](../types/Integer.md) **times** - the standard deviation of the distribution.
 
 ### Return type
 
-- Object
+[Object](../types/Object.md)
 
 
 

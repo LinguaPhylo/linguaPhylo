@@ -1,17 +1,17 @@
 nodecount function
 ==================
-nodecount(TimeTree **tree**)
-----------------------------
+nodecount([TimeTree](../types/TimeTree.md) **tree**)
+----------------------------------------------------
 
 The number of nodes in the tree
 
 ### Parameters
 
-- TimeTree **tree** - the tree.
+- [TimeTree](../types/TimeTree.md) **tree** - the tree.
 
 ### Return type
 
-- Integer
+[Integer](../types/Integer.md)
 
 
 

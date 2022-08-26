@@ -1,40 +1,40 @@
 BirthDeathSampling distribution
 ===============================
-BirthDeathSampling(Number **lambda**, Number **mu**, Number **rho**, Number **rootAge**)
-----------------------------------------------------------------------------------------
+BirthDeathSampling([Number](../types/Number.md) **lambda**, [Number](../types/Number.md) **mu**, [Number](../types/Number.md) **rho**, [Number](../types/Number.md) **rootAge**)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.
 
 ### Parameters
 
-- Number **lambda** - per-lineage birth rate.
-- Number **mu** - per-lineage death rate.
-- Number **rho** - the sampling proportion.
-- Number **rootAge** - the age of the root of the tree.
+- [Number](../types/Number.md) **lambda** - per-lineage birth rate.
+- [Number](../types/Number.md) **mu** - per-lineage death rate.
+- [Number](../types/Number.md) **rho** - the sampling proportion.
+- [Number](../types/Number.md) **rootAge** - the age of the root of the tree.
 
 ### Return type
 
-- TimeTree
+[TimeTree](../types/TimeTree.md)
 
 ### Reference
 
 Tanja Stadler, Roger Kouyos, ..., Sebastian Bonhoeffer, Estimating the Basic Reproductive Number from Viral Sequence Data, Molecular Biology and Evolution, Volume 29, Issue 1, January 2012.[https://doi.org/10.1093/molbev/msr217](https://doi.org/10.1093/molbev/msr217)
 
-BirthDeathSampling(Number **diversification**, Number **turnover**, Number **rho**, Number **rootAge**)
--------------------------------------------------------------------------------------------------------
+BirthDeathSampling([Number](../types/Number.md) **diversification**, [Number](../types/Number.md) **turnover**, [Number](../types/Number.md) **rho**, [Number](../types/Number.md) **rootAge**)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Conditioned on root age.
 
 ### Parameters
 
-- Number **diversification** - diversification rate.
-- Number **turnover** - turnover.
-- Number **rho** - the sampling proportion.
-- Number **rootAge** - the age of the root node.
+- [Number](../types/Number.md) **diversification** - diversification rate.
+- [Number](../types/Number.md) **turnover** - turnover.
+- [Number](../types/Number.md) **rho** - the sampling proportion.
+- [Number](../types/Number.md) **rootAge** - the age of the root node.
 
 ### Return type
 
-- TimeTree
+[TimeTree](../types/TimeTree.md)
 
 ### Reference
 

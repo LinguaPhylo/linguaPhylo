@@ -1,17 +1,17 @@
 Dirichlet distribution
 ======================
-Dirichlet(Number[] **conc**)
-----------------------------
+Dirichlet([Number[]](../types/Number[].md) **conc**)
+----------------------------------------------------
 
 The dirichlet probability distribution.
 
 ### Parameters
 
-- Number[] **conc** - the concentration parameters of a Dirichlet distribution.
+- [Number[]](../types/Number[].md) **conc** - the concentration parameters of a Dirichlet distribution.
 
 ### Return type
 
-- Double[]
+[Double[]](../types/Double[].md)
 
 
 

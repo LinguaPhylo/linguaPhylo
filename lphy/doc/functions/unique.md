@@ -1,17 +1,17 @@
 unique function
 ===============
-unique(Object **arg**)
-----------------------
+unique([Object](../types/Object.md) **arg**)
+--------------------------------------------
 
 the unique set of the array
 
 ### Parameters
 
-- Object **arg** - the string array to find its unique set.
+- [Object](../types/Object.md) **arg** - the string array to find its unique set.
 
 ### Return type
 
-- Object
+[Object](../types/Object.md)
 
 
 

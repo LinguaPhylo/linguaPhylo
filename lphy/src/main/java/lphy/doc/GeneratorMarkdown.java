@@ -11,7 +11,6 @@ import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
 import net.steppschuh.markdowngenerator.text.heading.Heading;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +20,11 @@ import java.util.List;
  */
 public class GeneratorMarkdown {
 
-    static String getGeneratorMarkdown(Class<? extends Generator> generatorClass) {
+    static String getTypeURL(final String typesDir, final String name) {
+       return  "../" + typesDir + "/" + name + ".md";
+    }
+
+    static String getGeneratorMarkdown(Class<? extends Generator> generatorClass, final String typesDir) {
 
         GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
 
@@ -38,7 +41,9 @@ public class GeneratorMarkdown {
         for (int i = 0; i < pInfo.size(); i++) {
             ParameterInfo pi = pInfo.get(i);
             if (count > 0) signature.append(", ");
-            signature.append(new Text(types[i].getSimpleName())).append(" ").append(new BoldText(pi.name()));
+            String typeName = types[i].getSimpleName();
+            Link typeLink = new Link(typeName, getTypeURL(typesDir, typeName));
+            signature.append(typeLink).append(" ").append(new BoldText(pi.name()));
             count += 1;
         }
         signature.append(")");
@@ -53,7 +58,9 @@ public class GeneratorMarkdown {
 
             for (int i = 0; i < pInfo.size(); i++) {
                 ParameterInfo pi = pInfo.get(i);
-                paramText.add(new Text(types[i].getSimpleName() + " " + new BoldText(pi.name()) + " - " + pi.description()));
+                String typeName = types[i].getSimpleName();
+                Link typeLink = new Link(typeName,getTypeURL(typesDir, typeName));
+                paramText.add(new Text(typeLink + " " + new BoldText(pi.name()) + " - " + pi.description()));
             }
             md.append(new UnorderedList<>(paramText));
         }
@@ -61,8 +68,9 @@ public class GeneratorMarkdown {
 
         md.append(new Heading("Return type", 3)).append("\n\n");
 
-        List<String> returnType = Collections.singletonList(Generator.getReturnType(generatorClass).getSimpleName());
-        md.append(new UnorderedList<>(returnType)).append("\n\n");
+        String returnTypeName = Generator.getReturnType(generatorClass).getSimpleName();
+        Link returnTypeLink = new Link(returnTypeName,getTypeURL(typesDir, returnTypeName));
+        md.append(returnTypeLink).append("\n\n");
 
         Citation citation = Generator.getCitation(generatorClass);
         if (citation != null) {

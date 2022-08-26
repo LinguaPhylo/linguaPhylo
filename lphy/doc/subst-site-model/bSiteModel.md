@@ -1,21 +1,21 @@
 bSiteModel function
 ===================
-bSiteModel(Double[][] **Q**, Double[] **siteRates**, Number **pInv**, Boolean **useSiteRates**, Boolean **usePInv**)
---------------------------------------------------------------------------------------------------------------------
+bSiteModel([Double[][]](../types/Double[][].md) **Q**, [Double[]](../types/Double[].md) **siteRates**, [Number](../types/Number.md) **pInv**, [Boolean](../types/Boolean.md) **useSiteRates**, [Boolean](../types/Boolean.md) **usePInv**)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Returns the site model for the given parameters.
 
 ### Parameters
 
-- Double[][] **Q** - the instantaneous rate matrix.
-- Double[] **siteRates** - raw site rates.
-- Number **pInv** - the proportion of invariable sites parameter
-- Boolean **useSiteRates** - true if the site rates have heterogeneity.
-- Boolean **usePInv** - true if the proportion invariable used.
+- [Double[][]](../types/Double[][].md) **Q** - the instantaneous rate matrix.
+- [Double[]](../types/Double[].md) **siteRates** - raw site rates.
+- [Number](../types/Number.md) **pInv** - the proportion of invariable sites parameter
+- [Boolean](../types/Boolean.md) **useSiteRates** - true if the site rates have heterogeneity.
+- [Boolean](../types/Boolean.md) **usePInv** - true if the proportion invariable used.
 
 ### Return type
 
-- SiteModel
+[SiteModel](../types/SiteModel.md)
 
 ### Reference
 

@@ -1,18 +1,18 @@
 select function
 ===============
-select(Number **x**, Boolean **indicator**)
--------------------------------------------
+select([Number](../types/Number.md) **x**, [Boolean](../types/Boolean.md) **indicator**)
+----------------------------------------------------------------------------------------
 
 A function to select a value if the indicator is true, or return 0 otherwise.
 
 ### Parameters
 
-- Number **x** - the value.
-- Boolean **indicator** - indicator for whether the number should be selected, or replace with zero
+- [Number](../types/Number.md) **x** - the value.
+- [Boolean](../types/Boolean.md) **indicator** - indicator for whether the number should be selected, or replace with zero
 
 ### Return type
 
-- Number
+[Number](../types/Number.md)
 
 
 

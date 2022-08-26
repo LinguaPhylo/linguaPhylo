@@ -1,18 +1,18 @@
 Cauchy distribution
 ===================
-Cauchy(Number **median**, Number **scale**)
--------------------------------------------
+Cauchy([Number](../types/Number.md) **median**, [Number](../types/Number.md) **scale**)
+---------------------------------------------------------------------------------------
 
 The Cauchy distribution.
 
 ### Parameters
 
-- Number **median** - the median of the Cauchy distribution.
-- Number **scale** - the scale of the Cauchy distribution.
+- [Number](../types/Number.md) **median** - the median of the Cauchy distribution.
+- [Number](../types/Number.md) **scale** - the scale of the Cauchy distribution.
 
 ### Return type
 
-- Double
+[Double](../types/Double.md)
 
 
 

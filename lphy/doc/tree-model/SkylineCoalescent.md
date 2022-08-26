@@ -1,21 +1,21 @@
 SkylineCoalescent distribution
 ==============================
-SkylineCoalescent(Double[] **theta**, Integer[] **groupSizes**, Integer **n**, Taxa **taxa**, Double[] **ages**)
-----------------------------------------------------------------------------------------------------------------
+SkylineCoalescent([Double[]](../types/Double[].md) **theta**, [Integer[]](../types/Integer[].md) **groupSizes**, [Integer](../types/Integer.md) **n**, [Taxa](../types/Taxa.md) **taxa**, [Double[]](../types/Double[].md) **ages**)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The skyline coalescent distribution over tip-labelled time trees. If no group sizes are specified, then there is one population parameter per coalescent event (as per classic skyline coalescent of Pybus, Rambaut and Harvey 2000)
 
 ### Parameters
 
-- Double[] **theta** - effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal to the number of population size parameters.
-- Integer[] **groupSizes** - A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent.
-- Integer **n** - number of taxa.
-- Taxa **taxa** - Taxa object, (e.g. Taxa or Object[])
-- Double[] **ages** - an array of leaf node ages.
+- [Double[]](../types/Double[].md) **theta** - effective population size, one value for each group of coalescent intervals, ordered from present to past. Possibly scaled to mutations or calendar units. If no groupSizes are specified, then the number of coalescent intervals will be equal to the number of population size parameters.
+- [Integer[]](../types/Integer[].md) **groupSizes** - A tuple of group sizes. The sum of this tuple determines the number of coalescent events in the tree and thus the number of taxa. By default all group sizes are 1 which is equivalent to the classic skyline coalescent.
+- [Integer](../types/Integer.md) **n** - number of taxa.
+- [Taxa](../types/Taxa.md) **taxa** - Taxa object, (e.g. Taxa or Object[])
+- [Double[]](../types/Double[].md) **ages** - an array of leaf node ages.
 
 ### Return type
 
-- TimeTree
+[TimeTree](../types/TimeTree.md)
 
 ### Reference
 

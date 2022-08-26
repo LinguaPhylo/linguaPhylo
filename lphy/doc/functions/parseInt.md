@@ -1,17 +1,17 @@
 parseInt function
 =================
-parseInt(String **str**)
-------------------------
+parseInt([String](../types/String.md) **str**)
+----------------------------------------------
 
 A function to parse the given string to an integer.
 
 ### Parameters
 
-- String **str** - the string value to parse into an integer.
+- [String](../types/String.md) **str** - the string value to parse into an integer.
 
 ### Return type
 
-- Integer
+[Integer](../types/Integer.md)
 
 
 

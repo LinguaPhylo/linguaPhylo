@@ -1,17 +1,17 @@
 hammingWeight function
 ======================
-hammingWeight(Boolean[] **array**)
-----------------------------------
+hammingWeight([Boolean[]](../types/Boolean[].md) **array**)
+-----------------------------------------------------------
 
 The sum of the true elements of the given boolean array
 
 ### Parameters
 
-- Boolean[] **array** - the boolean array to sum the elements of.
+- [Boolean[]](../types/Boolean[].md) **array** - the boolean array to sum the elements of.
 
 ### Return type
 
-- Integer
+[Integer](../types/Integer.md)
 
 
 

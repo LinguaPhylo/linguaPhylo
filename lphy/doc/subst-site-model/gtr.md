@@ -1,19 +1,19 @@
 gtr function
 ============
-gtr(Double[] **rates**, Double[] **freq**, Number **meanRate**)
----------------------------------------------------------------
+gtr([Double[]](../types/Double[].md) **rates**, [Double[]](../types/Double[].md) **freq**, [Number](../types/Number.md) **meanRate**)
+-------------------------------------------------------------------------------------------------------------------------------------
 
 The GTR instantaneous rate matrix. Takes relative rates and base frequencies and produces an GTR rate matrix.
 
 ### Parameters
 
-- Double[] **rates** - the relative rates of the GTR process.
-- Double[] **freq** - the base frequencies.
-- Number **meanRate** - the rate of substitution.
+- [Double[]](../types/Double[].md) **rates** - the relative rates of the GTR process.
+- [Double[]](../types/Double[].md) **freq** - the base frequencies.
+- [Number](../types/Number.md) **meanRate** - the rate of substitution.
 
 ### Return type
 
-- Double[][]
+[Double[][]](../types/Double[][].md)
 
 ### Reference
 
