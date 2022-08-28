@@ -52,7 +52,7 @@ public class ReadNexus extends DeterministicFunction<MetaDataAlignment> {
 
     @GeneratorInfo(name="readNexus", verbClause = "is read from", narrativeName = "Nexus file",
             category = GeneratorCategory.TAXA_ALIGNMENT,
-            examples = {"primates.lphy","simpleCoalescentNex.lphy","twoPartitionCoalescentNex.lphy"},
+            examples = {"simpleSerialCoalescentNex.lphy","twoPartitionCoalescentNex.lphy"},
             description = "A function that parses an alignment from a Nexus file.")
     public Value<MetaDataAlignment> apply() {
 
