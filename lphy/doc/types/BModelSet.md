@@ -1,7 +1,7 @@
 BModelSet
 ---------
 
-The selected set models for bModelTest.
+The selected model set for bModelTest.
 
 ### Methods
 
