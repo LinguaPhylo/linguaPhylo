@@ -18,6 +18,9 @@ import java.util.*;
  */
 public class GeneratorMarkdown {
 
+    // this is in JEBL lib
+    public static final String SEQU_TYPE = "SequenceType";
+
     static String getGeneratorMarkdown(Class<? extends Generator> generatorClass, final String typesDir) {
 
         GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
@@ -147,6 +150,19 @@ public class GeneratorMarkdown {
             builder.append("\n").append(new Heading("Examples",3)).append("\n\n");
             builder.append(new UnorderedList<>(Arrays.stream(examples).toList())).append("\n\n");
         }
+
+        return builder.toString();
+    }
+
+    static String generateSequenceTypeMarkdown() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(new Heading(SEQU_TYPE,2)).append("\n");
+        final String desc = "Sequences data types, such as nucleotide, amino acid, binary, " +
+                "standard type (e.g. morphology, locations, traits, ...), etc.";
+        builder.append("\n").append(new Text(desc)).append("\n\n");
+        final String seealso = "https://github.com/LinguaPhylo/linguaPhylo/tree/master/lphy/doc/sequence-type";
+        builder.append("\n").append(new Text("See also: " + seealso)).append("\n\n");
 
         return builder.toString();
     }

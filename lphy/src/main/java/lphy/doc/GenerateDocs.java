@@ -293,7 +293,10 @@ public class GenerateDocs {
 
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
-                writer.write(GeneratorMarkdown.generateTypeMarkdown(type));
+                if (GeneratorMarkdown.SEQU_TYPE.equals(name))
+                    writer.write(GeneratorMarkdown.generateSequenceTypeMarkdown());
+                else
+                    writer.write(GeneratorMarkdown.generateTypeMarkdown(type));
                 writer.close();
             }
         }
