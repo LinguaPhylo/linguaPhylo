@@ -1,15 +1,13 @@
 package lphy.parser.functions;
 
 
-import java.util.LinkedHashMap;
-import java.util.function.*;
-
+import lphy.graphicalModel.GraphicalModelNode;
+import lphy.graphicalModel.Value;
 import lphy.parser.ElementWise1Arg;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import lphy.graphicalModel.GraphicalModelNode;
-import lphy.graphicalModel.ParameterInfo;
-import lphy.graphicalModel.Value;
+import java.util.LinkedHashMap;
+import java.util.function.Function;
 
 /**
  * anonymous container holding a DeterministicFunction with 1 argument
@@ -146,7 +144,7 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
     }
 
 	public static Function<Number, Double> probit() {
-        return (a) -> Math.sqrt(2) * org.apache.commons.math3.special.Erf.erf(2 * a.doubleValue() - 1);
+        return (a) -> Math.sqrt(2) * org.apache.commons.math3.special.Erf.erfInv(2 * a.doubleValue() - 1);
     }
 
 	public static Function<Number, Double> round() {
