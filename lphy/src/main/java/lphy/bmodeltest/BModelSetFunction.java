@@ -6,7 +6,10 @@ public class BModelSetFunction extends DeterministicFunction<BModelSet> {
 
     public static final String paramName = "0";
 
-    public BModelSetFunction(@ParameterInfo(name = paramName, narrativeName = "name", description = "the bModelTest model set name.") Value<String> modelSetName) {
+    public BModelSetFunction(@ParameterInfo(name = paramName, narrativeName = "name",
+            description = "the bModelTest model set name. " +
+                    "The option includes: allreversible, transitionTransversionSplit, namedSimple, namedExtended.")
+                             Value<String> modelSetName) {
         setParam(paramName, modelSetName);
     }
 

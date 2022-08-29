@@ -2,9 +2,12 @@ package lphy.bmodeltest;
 
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.TypeInfo;
 
 import java.util.*;
 
+@TypeInfo(description = "The selected set models for bModelTest.",
+        examples = {"simpleBModelTest.lphy"})
 public class BModelSet {
 
     public enum ModelSet {allreversible, transitionTransversionSplit, namedSimple, namedExtended};

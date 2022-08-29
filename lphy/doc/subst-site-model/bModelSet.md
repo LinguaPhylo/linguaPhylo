@@ -7,7 +7,7 @@ Returns the set of models for the given bModelTest model set name.
 
 ### Parameters
 
-- [String](../types/String.md) **0** - the bModelTest model set name.
+- [String](../types/String.md) **0** - the bModelTest model set name. The option includes: allreversible, transitionTransversionSplit, namedSimple, namedExtended.
 
 ### Return type
 

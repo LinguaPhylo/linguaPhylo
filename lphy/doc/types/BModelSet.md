@@ -1,5 +1,8 @@
 BModelSet
 ---------
+
+The selected set models for bModelTest.
+
 ### Methods
 
 - **getModelName**
@@ -8,3 +11,7 @@ BModelSet
   - the number of models in this model set.
 - **size**
   - the number of models in this model set.
+### Examples
+
+- simpleBModelTest.lphy
+
