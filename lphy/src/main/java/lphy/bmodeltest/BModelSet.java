@@ -6,7 +6,7 @@ import lphy.graphicalModel.TypeInfo;
 
 import java.util.*;
 
-@TypeInfo(description = "The selected set models for bModelTest.",
+@TypeInfo(description = "The selected model set for bModelTest.",
         examples = {"simpleBModelTest.lphy"})
 public class BModelSet {
 
