@@ -14,4 +14,9 @@ A function that parses a tree from a newick formatted string.
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- errorModel1.lphy
+
+
 

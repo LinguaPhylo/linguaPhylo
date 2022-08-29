@@ -14,4 +14,9 @@ The number of single-child nodes in the tree where the 'deme' attribute changes.
 [Integer](../types/Integer.md)
 
 
+### Examples
+
+- simpleStructuredCoalescent.lphy
+
+
 

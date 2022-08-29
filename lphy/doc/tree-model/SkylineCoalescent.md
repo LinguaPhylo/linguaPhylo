@@ -17,6 +17,11 @@ The skyline coalescent distribution over tip-labelled time trees. If no group si
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- https://linguaphylo.github.io/tutorials/skyline-plots/
+
 ### Reference
 
 Drummond, A. J., Rambaut, A., Shapiro, B, & Pybus, O. G. (2005).

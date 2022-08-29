@@ -20,6 +20,11 @@ A tree of extant species and those sampled through time, which is conceptually e
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- simpleBirthDeathSerial.lphy
+
 ### Reference
 
 Tanja Stadler, Ziheng Yang (2013) Dating Phylogenies with Sequentially Sampled Tips, Systematic Biology, 62(5):674–688[http://doi.org/10.1093/sysbio/syt030](http://doi.org/10.1093/sysbio/syt030)

@@ -16,4 +16,10 @@ A chain of random variables. X[0] ~ Exp(mean=initialMean) or X[0] ~ LogNormal(me
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- skylineCoalescent.lphy
+- https://linguaphylo.github.io/tutorials/skyline-plots/
+
+
 

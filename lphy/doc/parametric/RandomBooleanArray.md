@@ -15,4 +15,9 @@ Samples a random boolean array of given length and given hamming weight. The ham
 [Boolean[]](../types/Boolean[].md)
 
 
+### Examples
+
+- simpleRandomLocalClock2.lphy
+
+
 

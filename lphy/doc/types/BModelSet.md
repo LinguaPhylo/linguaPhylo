@@ -1,7 +1,6 @@
 BModelSet
-=========
-Methods
--------
+---------
+### Methods
 
 - **getModelName**
   - the name of the given model indicator.

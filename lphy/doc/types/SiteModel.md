@@ -1,7 +1,6 @@
 SiteModel
-=========
-Methods
--------
+---------
+### Methods
 
 - **getProportionInvariable**
   - the proportion of invariable sites

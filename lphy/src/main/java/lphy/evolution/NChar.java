@@ -2,10 +2,13 @@ package lphy.evolution;
 
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.TypeInfo;
 
 /**
  * An interface that site-dimensioned objects can implement, such as Alignment.
  */
+@TypeInfo(description = "An interface that site-dimensioned objects can implement, such as Alignment.",
+        examples = {"simpleSerialCoalescentNex.lphy"})
 public interface NChar {
 
     /**

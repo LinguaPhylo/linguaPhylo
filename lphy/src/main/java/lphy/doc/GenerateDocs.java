@@ -9,13 +9,11 @@ import lphy.util.LoggerUtils;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
-import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
 import net.steppschuh.markdowngenerator.text.heading.Heading;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -51,6 +49,7 @@ public class GenerateDocs {
 
         LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
 
+        // Do not change default
         String extName = "LPhy"; // No white space
         // for extension only, e.g.
         // args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
@@ -69,9 +68,14 @@ public class GenerateDocs {
         List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
-        // output
+        // output dir
         final Path dir = Paths.get(System.getProperty("user.dir"));
-        System.out.println("Creating " + extName + " docs to " + dir + "\n");
+        // out dir must be $project$/lphy/doc
+        if ("LPhy".equalsIgnoreCase(extName.trim())) {
+            if (!dir.endsWith("lphy" + File.separator + "doc"))
+                throw new IllegalArgumentException("The user.dir must set to $project$/lphy/doc !\n" + dir.toAbsolutePath());
+        }
+        System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
         String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, dir, version, extName);
 
@@ -178,6 +182,7 @@ public class GenerateDocs {
         for (Class<GenerativeDistribution> genDist : generativeDistributions) {
             String name = Generator.getGeneratorName(genDist);
             String subDir = getDistDir(genDist);
+            // based on where index.md is
             String fileURL = subDir + "/" + name + ".md";
 
             if (!names.contains(name)) {
@@ -225,6 +230,7 @@ public class GenerateDocs {
         for (Class<DeterministicFunction> function : functions) {
             String name = Generator.getGeneratorName(function);
             String subDir = getFuncDir(function);
+            // based on where index.md is
             String fileURL = subDir + "/" + name + ".md";
 
             if (!funcNames.contains(name)) {
@@ -278,6 +284,7 @@ public class GenerateDocs {
 
         for (Class<?> type : types) {
             String name = type.getSimpleName();
+            // based on where index.md is
             String fileURL = TYPES_DIR + "/" + name + ".md";
 
             if (!typeNames.contains(name)) {
@@ -286,7 +293,7 @@ public class GenerateDocs {
 
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
-                writer.write(generateType(type));
+                writer.write(GeneratorMarkdown.generateTypeMarkdown(type));
                 writer.close();
             }
         }
@@ -301,31 +308,6 @@ public class GenerateDocs {
                 new Link("trigonometric functions","built-in-trigonometry.md") );
         builder.append(new Heading("Built-in", 2)).append("\n");
         builder.append(new UnorderedList<>(builtin)).append("\n\n");
-
-        return builder.toString();
-    }
-
-    private static String generateType(Class<?> type) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(new Heading(type.getSimpleName(),1)).append("\n");
-
-        TreeMap<String, MethodInfo> methodInfoTreeMap = new TreeMap<>();
-        for (Method method : type.getMethods()) {
-            MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
-            if (methodInfo != null) {
-                methodInfoTreeMap.put(method.getName(), methodInfo);
-            }
-        }
-        if (methodInfoTreeMap.size() > 0) {
-            builder.append(new Heading("Methods",2)).append("\n\n");
-            List<Object> methodText = new ArrayList<>();
-
-            for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
-                methodText.add(new BoldText(methodInfoEntry.getKey()) + "\n  - " + methodInfoEntry.getValue().description());
-            }
-            builder.append(new UnorderedList<>(methodText));
-        }
 
         return builder.toString();
     }

@@ -18,6 +18,11 @@ The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated
 
 [ContinuousCharacterData](../types/ContinuousCharacterData.md)
 
+
+### Examples
+
+- simplePhyloBrownian.lphy
+
 ### Reference
 
 Felsenstein J. (1973). Maximum-likelihood estimation of evolutionary trees from continuous characters. American journal of human genetics, 25(5), 471–492.[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1762641/)

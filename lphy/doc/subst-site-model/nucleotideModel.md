@@ -17,6 +17,12 @@ The instantaneous rate matrix. Takes relative rates and base frequencies and pro
 
 [Double[][]](../types/Double[][].md)
 
+
+### Examples
+
+- simpleBModelTest.lphy
+- simpleBModelTest2.lphy
+
 ### Reference
 
 Bouckaert, R., Drummond, A. bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evol Biol 17, 42 (2017). https://doi.org/10.1186/s12862-017-0890-6[https://doi.org/10.1186/s12862-017-0890-6](https://doi.org/10.1186/s12862-017-0890-6)

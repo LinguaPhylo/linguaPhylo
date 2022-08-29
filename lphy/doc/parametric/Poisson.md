@@ -17,4 +17,10 @@ The probability distribution of the number of events when the expected number of
 [Integer](../types/Integer.md)
 
 
+### Examples
+
+- expression4.lphy
+- simpleRandomLocalClock2.lphy
+
+
 

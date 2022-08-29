@@ -5,15 +5,18 @@ import jebl.evolution.sequences.State;
 import lphy.evolution.Taxa;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.TypeInfo;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * An alignment of discrete character states, returned as Integers.
+ * An alignment of discrete character states, where states are integers.
  * @author Alexei Drummond
  * @author Walter Xie
  */
+@TypeInfo(description = "An alignment of discrete character states, where states are integers.",
+        examples = {"simpleSerialCoalescentNex.lphy","twoPartitionCoalescentNex.lphy"})
 public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
 
     //****** MethodInfo ******//

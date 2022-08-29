@@ -14,4 +14,10 @@ The sum of all the branch lengths in the tree.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- simpleCalibratedYule.lphy
+- simpleExtantBirthDeath.lphy
+
+
 

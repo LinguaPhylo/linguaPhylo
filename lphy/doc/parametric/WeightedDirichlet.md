@@ -15,4 +15,10 @@ The scaled dirichlet probability distribution.
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- totalEvidence.lphy
+- weightedDirichlet.lphy
+
+
 

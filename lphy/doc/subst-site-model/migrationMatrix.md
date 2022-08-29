@@ -15,4 +15,10 @@ This function constructs the population process rate matrix. Diagonals are the p
 [Double[][]](../types/Double[][].md)
 
 
+### Examples
+
+- simpleStructuredCoalescent.lphy
+- https://linguaphylo.github.io/tutorials/structured-coalescent/
+
+
 

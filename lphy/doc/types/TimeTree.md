@@ -1,7 +1,9 @@
 TimeTree
-========
-Methods
--------
+--------
+
+A phylogenetic tree scaled by time, including the contemporary taxa as a special case.
+
+### Methods
 
 - **branchCount**
   - the total number of branches in the tree (returns nodeCount() - 1)
@@ -21,3 +23,8 @@ Methods
   - the taxa of the tree.
 - **treeLength**
   - the total length of the tree
+### Examples
+
+- jcCoalescent.lphy
+- simpleSerialCoalescentNex.lphy
+

@@ -16,6 +16,12 @@ A set of taxa with species and ages defined in parallel arrays.
 [Taxa](../types/Taxa.md)
 
 
+### Examples
+
+- jcCoalescent.lphy
+- simpleMultispeciesCoalescentTaxa.lphy
+
+
 
 taxa([Object](../types/Object.md) **taxa**)
 -------------------------------------------

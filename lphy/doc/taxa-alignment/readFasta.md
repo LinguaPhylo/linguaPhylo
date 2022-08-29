@@ -15,4 +15,9 @@ A function that parses an alignment from a fasta file.
 [Alignment](../types/Alignment.md)
 
 
+### Examples
+
+- covidDPG.lphy
+
+
 

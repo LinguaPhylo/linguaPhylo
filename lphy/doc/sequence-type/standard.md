@@ -14,4 +14,9 @@ The Standard data type function. Takes a state count and produces a Standard dat
 [SequenceType](../types/SequenceType.md)
 
 
+### Examples
+
+- totalEvidence.lphy
+
+
 

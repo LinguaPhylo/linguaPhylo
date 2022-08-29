@@ -17,6 +17,11 @@ Returns the site model for the given parameters.
 
 [SiteModel](../types/SiteModel.md)
 
+
+### Examples
+
+- simpleBModelTest.lphy
+
 ### Reference
 
 Bouckaert, R., Drummond, A. bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evol Biol 17, 42 (2017). https://doi.org/10.1186/s12862-017-0890-6[https://doi.org/10.1186/s12862-017-0890-6](https://doi.org/10.1186/s12862-017-0890-6)

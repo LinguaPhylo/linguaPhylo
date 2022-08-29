@@ -14,4 +14,9 @@ A tree pruned from a larger tree by retaining only nodes subtending nodes with n
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- simFossils.lphy
+
+
 

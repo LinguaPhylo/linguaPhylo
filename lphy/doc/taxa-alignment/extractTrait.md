@@ -17,4 +17,10 @@ return a trait alignment, which contains the set of traits extracted from taxa n
 [Alignment](../types/Alignment.md)
 
 
+### Examples
+
+- covidDPG.lphy
+- https://linguaphylo.github.io/tutorials/discrete-phylogeography/
+
+
 

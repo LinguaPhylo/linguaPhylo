@@ -15,4 +15,9 @@ The uniform probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- simFossilsCompact.lphy
+
+
 

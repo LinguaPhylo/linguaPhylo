@@ -14,6 +14,12 @@ The coin toss distribution. With true (heads) having probability p.
 [Boolean](../types/Boolean.md)
 
 
+### Examples
+
+- simpleBModelTest.lphy
+- simpleBModelTest2.lphy
+
+
 
 Bernoulli([Double](../types/Double.md) **p**, [Integer](../types/Integer.md) **replicates**, [Integer](../types/Integer.md) **minSuccesses**)
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -29,6 +35,12 @@ The Bernoulli process for n iid trials. The success (true) probability is p. Pro
 ### Return type
 
 [Boolean[]](../types/Boolean[].md)
+
+
+### Examples
+
+- simpleRandomLocalClock.lphy
+- https://linguaphylo.github.io/tutorials/discrete-phylogeography/
 
 
 

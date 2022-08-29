@@ -17,6 +17,12 @@ A tree of only extant species, which is conceptually embedded<br>in a full speci
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- simpleCalibratedBirthDeath.lphy
+- simpleExtantBirthDeath.lphy
+
 ### Reference
 
 Joseph Heled, Alexei J. Drummond, Calibrated Birth–Death Phylogenetic Time-Tree Priors for Bayesian Inference, Systematic Biology, Volume 64, Issue 3, May 2015.[https://doi.org/10.1093/sysbio/syu089](https://doi.org/10.1093/sysbio/syu089)

@@ -14,4 +14,9 @@ Returns the set of models for the given bModelTest model set name.
 [BModelSet](../types/BModelSet.md)
 
 
+### Examples
+
+- simpleBModelTest.lphy
+
+
 

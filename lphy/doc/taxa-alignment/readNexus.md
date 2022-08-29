@@ -15,4 +15,10 @@ A function that parses an alignment from a Nexus file.
 [MetaDataAlignment](../types/MetaDataAlignment.md)
 
 
+### Examples
+
+- simpleSerialCoalescentNex.lphy
+- twoPartitionCoalescentNex.lphy
+
+
 

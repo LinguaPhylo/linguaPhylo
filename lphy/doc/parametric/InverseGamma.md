@@ -15,4 +15,9 @@ The inverse-gamma probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- totalEvidence.lphy
+
+
 

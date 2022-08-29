@@ -16,6 +16,11 @@ The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 199
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- https://linguaphylo.github.io/tutorials/time-stamped-data/
+
 ### Reference
 
 Rodrigo AG, Felsenstein J. (1999). Coalescent Approaches to HIV Population Genetics, The Evolution of HIV, Chapter 8, edited by Crandall K., Johns Hopkins Univ. Press, Baltimore.

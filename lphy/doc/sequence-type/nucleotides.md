@@ -12,4 +12,9 @@ The nucleotide data type.
 [SequenceType](../types/SequenceType.md)
 
 
+### Examples
+
+- primates2.lphy
+
+
 

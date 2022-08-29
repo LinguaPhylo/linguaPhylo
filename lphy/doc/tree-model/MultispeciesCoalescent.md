@@ -17,4 +17,11 @@ The Kingman coalescent distribution within each branch of species tree gives ris
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- simpleMultispeciesCoalescent.lphy
+- simpleMultispeciesCoalescentTaxa.lphy
+- twoGeneMultispeciesCoalescent.lphy
+
+
 

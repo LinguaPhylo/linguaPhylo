@@ -18,4 +18,9 @@ A tree of extant species and those sampled through time, which is conceptually e
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- simFBDAge.lphy
+
+
 

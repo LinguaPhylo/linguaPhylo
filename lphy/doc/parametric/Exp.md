@@ -14,4 +14,10 @@ The exponential probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- birthDeathRhoSampling.lphy
+- yuleRelaxed.lphy
+
+
 

@@ -20,6 +20,12 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 
 [Alignment](../types/Alignment.md)
 
+
+### Examples
+
+- gtrGammaCoalescent.lphy
+- errorModel1.lphy
+
 ### Reference
 
 Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.[https://doi.org/10.1007/BF01734359](https://doi.org/10.1007/BF01734359)
@@ -42,6 +48,11 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 ### Return type
 
 [Alignment](../types/Alignment.md)
+
+
+### Examples
+
+- simpleBModelTest.lphy
 
 ### Reference
 

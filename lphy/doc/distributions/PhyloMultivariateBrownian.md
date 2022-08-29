@@ -16,4 +16,9 @@ The phylogenetic multivariate Brownian motion distribution.
 [ContinuousCharacterData](../types/ContinuousCharacterData.md)
 
 
+### Examples
+
+- simplePhyloMultivariateBrownian.lphy
+
+
 

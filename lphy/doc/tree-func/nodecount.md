@@ -14,4 +14,9 @@ The number of nodes in the tree
 [Integer](../types/Integer.md)
 
 
+### Examples
+
+- yuleRelaxed.lphy
+
+
 

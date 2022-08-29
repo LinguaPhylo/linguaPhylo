@@ -14,6 +14,11 @@ The LewisMK Q matrix construction function. Takes a mean rate and a number of st
 
 [Double[][]](../types/Double[][].md)
 
+
+### Examples
+
+- lewisMKCoalescent.lphy
+
 ### Reference
 
 Lewis, P. O. (2001). A likelihood approach to estimating phylogeny from discrete morphological character data. Systematic biology, 50(6), 913-925.[https://doi.org/10.1080/106351501753462876](https://doi.org/10.1080/106351501753462876)

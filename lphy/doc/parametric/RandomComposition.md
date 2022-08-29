@@ -15,4 +15,10 @@ Samples a random k-tuple of positive integers that sum to n.
 [Integer[]](../types/Integer[].md)
 
 
+### Examples
+
+- skylineCoalescent.lphy
+- https://linguaphylo.github.io/tutorials/skyline-plots/
+
+
 

@@ -1,17 +1,15 @@
 package lphy.doc;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.GeneratorInfo;
-import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.*;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
 import net.steppschuh.markdowngenerator.text.heading.Heading;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * An util class to create lphy doc in markdown.
@@ -19,10 +17,6 @@ import java.util.List;
  * @author Walter Xie
  */
 public class GeneratorMarkdown {
-
-    static String getTypeURL(final String typesDir, final String name) {
-       return  "../" + typesDir + "/" + name + ".md";
-    }
 
     static String getGeneratorMarkdown(Class<? extends Generator> generatorClass, final String typesDir) {
 
@@ -72,6 +66,14 @@ public class GeneratorMarkdown {
         Link returnTypeLink = new Link(returnTypeName,getTypeURL(typesDir, returnTypeName));
         md.append(returnTypeLink).append("\n\n");
 
+        if (generatorInfo != null){
+            String[] examples = generatorInfo.examples();
+            if (examples.length > 0) {
+                md.append("\n").append(new Heading("Examples",3)).append("\n\n");
+                md.append(new UnorderedList<>(Arrays.stream(examples).toList())).append("\n\n");
+            }
+        }
+
         Citation citation = Generator.getCitation(generatorClass);
         if (citation != null) {
             md.append(new Heading("Reference", 3)).append("\n\n");
@@ -85,6 +87,91 @@ public class GeneratorMarkdown {
             }
         }
         return md.toString();
+    }
+
+    /**
+     * @param typesDir   the dir name where all types are
+     * @param name       type md file name without .md
+     * @return    the link to this type md file, if it cannot be found during runtime,
+     *            then consider as extension doc, and use github repo as link.
+     */
+    private static String getTypeURL(final String typesDir, final String name) {
+        // the working dir should be where index.md is
+        String url = typesDir + "/" + name + ".md";
+        // check if file exists, if no then add repo link
+        File md = new File(url);
+        if (!md.exists())
+            url = "https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/types/" + name + ".md";
+        else url = "../" + url; // otherwise, add ../ because the link is based on where the $name.md file is.
+        return url;
+    }
+
+    static String generateTypeMarkdown(Class<?> type) {
+        StringBuilder builder = new StringBuilder();
+
+        String typeName = type.getSimpleName();
+        builder.append(new Heading(typeName,2)).append("\n");
+
+        // from TypeInfo
+        TypeInfo typeInfo = type.getAnnotation(TypeInfo.class);
+        String desc;
+        String[] examples = new String[0];
+        if (typeInfo == null) {
+            desc = getTypeDescription(typeName);
+        } else {
+            desc = typeInfo.description();
+            examples = typeInfo.examples();
+        }
+        if (!desc.isEmpty())
+            builder.append("\n").append(new Text(desc)).append("\n\n");
+
+        TreeMap<String, MethodInfo> methodInfoTreeMap = new TreeMap<>();
+        for (Method method : type.getMethods()) {
+            MethodInfo methodInfo = method.getAnnotation(MethodInfo.class);
+            if (methodInfo != null) {
+                methodInfoTreeMap.put(method.getName(), methodInfo);
+            }
+        }
+        if (methodInfoTreeMap.size() > 0) {
+            builder.append(new Heading("Methods",3)).append("\n\n");
+            List<Object> methodText = new ArrayList<>();
+
+            for (Map.Entry<String,MethodInfo> methodInfoEntry : methodInfoTreeMap.entrySet()) {
+                methodText.add(new BoldText(methodInfoEntry.getKey()) + "\n  - " + methodInfoEntry.getValue().description());
+            }
+            builder.append(new UnorderedList<>(methodText));
+        }
+
+        // Examples
+        if (examples.length > 0) {
+            builder.append("\n").append(new Heading("Examples",3)).append("\n\n");
+            builder.append(new UnorderedList<>(Arrays.stream(examples).toList())).append("\n\n");
+        }
+
+        return builder.toString();
+    }
+
+    private static String getTypeDescription(String name) {
+        return switch (name) {
+            case "Boolean"     -> "The [boolean](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as true or false.";
+            case "Boolean[]"   -> "The [boolean](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
+            case "Double"      -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as 0.1.";
+            case "Double[]"    -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
+            case "Double[][]"  -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
+            case "Integer"     -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as 1.";
+            case "Integer[]"   -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
+            case "Integer[][]" -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
+            case "Number"      -> "The number data type that could be either double or integer.";
+            case "Number[]"    -> "The number data type array.";
+            case "Number[][]"  -> "The number data type 2-d array.";
+            case "Object"      -> "It could be any data type or class.";
+            case "Object[]"    -> "The Object array.";
+            case "Object[][]"  -> "The Object 2-d array.";
+            case "String"      -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as \"lphy\".";
+            case "String[]"    -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
+            case "String[][]"  -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
+            default            -> "";
+        };
     }
 
 }

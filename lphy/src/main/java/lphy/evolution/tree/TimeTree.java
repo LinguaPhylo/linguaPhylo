@@ -5,6 +5,7 @@ import lphy.evolution.Taxa;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
+import lphy.graphicalModel.TypeInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 /**
  * Created by Alexei Drummond on 17/12/19.
  */
+@TypeInfo(description = "A phylogenetic tree scaled by time, including the contemporary taxa as a special case.",
+        examples = {"jcCoalescent.lphy","simpleSerialCoalescentNex.lphy"})
 public class TimeTree implements HasTaxa, MultiDimensional {
 
     TimeTreeNode rootNode;

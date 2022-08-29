@@ -15,4 +15,9 @@ The gamma probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- covidDPG.lphy
+
+
 

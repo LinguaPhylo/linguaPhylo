@@ -4,6 +4,7 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
+import lphy.graphicalModel.TypeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.Map;
 /**
  * An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.
  */
+@TypeInfo(description = "An interface that taxa-dimensioned objects can implement, such as Alignment and TimeTree.\n" +
+        "It reserves three types of metadata internally: taxa names, ages of taxa, and species.",
+        examples = {"jcCoalescent.lphy","twoPartitionCoalescent.lphy"})
 public interface Taxa extends MultiDimensional {
 
     //****** MethodInfo ******//

@@ -15,4 +15,10 @@ The normal probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- simplePhyloBrownian.lphy
+- simplePhyloOU.lphy
+
+
 

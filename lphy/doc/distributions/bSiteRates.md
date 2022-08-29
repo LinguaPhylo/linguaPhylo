@@ -19,4 +19,9 @@ the site rates for the given bModelTest parameters.
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- simpleBModelTest2.lphy
+
+
 

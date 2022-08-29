@@ -17,4 +17,10 @@ The binary trait instantaneous rate matrix. Takes a lambda and produces an insta
 [Double[][]](../types/Double[][].md)
 
 
+### Examples
+
+- errorModel1.lphy
+- errorModel2.lphy
+
+
 

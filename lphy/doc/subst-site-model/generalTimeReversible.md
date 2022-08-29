@@ -16,4 +16,9 @@ The general time reversible instantaneous rate matrix. Takes relative rates and 
 [Double[][]](../types/Double[][].md)
 
 
+### Examples
+
+- https://linguaphylo.github.io/tutorials/discrete-phylogeography/
+
+
 

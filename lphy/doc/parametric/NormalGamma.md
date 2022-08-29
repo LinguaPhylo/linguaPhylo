@@ -17,4 +17,10 @@ The normal-gamma probability distribution.
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- simplePhyloBrownian.lphy
+- simplePhyloOU.lphy
+
+
 

@@ -16,4 +16,10 @@ The log-normal probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- hkyCoalescent.lphy
+- errorModel1.lphy
+
+
 

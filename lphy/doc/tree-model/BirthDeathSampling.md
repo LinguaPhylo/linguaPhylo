@@ -16,6 +16,11 @@ The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Cond
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- simpleBirthDeath.lphy
+
 ### Reference
 
 Tanja Stadler, Roger Kouyos, ..., Sebastian Bonhoeffer, Estimating the Basic Reproductive Number from Viral Sequence Data, Molecular Biology and Evolution, Volume 29, Issue 1, January 2012.[https://doi.org/10.1093/molbev/msr217](https://doi.org/10.1093/molbev/msr217)
@@ -35,6 +40,11 @@ The Birth-death-sampling tree distribution over tip-labelled time trees.<br>Cond
 ### Return type
 
 [TimeTree](../types/TimeTree.md)
+
+
+### Examples
+
+- birthDeathRhoSampling.lphy
 
 ### Reference
 

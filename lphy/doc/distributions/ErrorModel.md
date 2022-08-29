@@ -16,4 +16,10 @@ The error model distribution on an alignment.
 [Alignment](../types/Alignment.md)
 
 
+### Examples
+
+- errorModel1.lphy
+- errorModel2.lphy
+
+
 

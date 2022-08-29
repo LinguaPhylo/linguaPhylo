@@ -14,4 +14,11 @@ The dirichlet probability distribution.
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- birthDeathRhoSampling.lphy
+- dirichlet.lphy
+- https://linguaphylo.github.io/tutorials/time-stamped-data/
+
+
 

@@ -1,7 +1,9 @@
 Alignment
-=========
-Methods
--------
+---------
+
+An alignment of discrete character states, where states are integers.
+
+### Methods
 
 - **ages**
   - gets the ages of these taxa as an array of doubles.
@@ -25,3 +27,8 @@ Methods
   - the taxa of the alignment.
 - **taxaNames**
   - The names of the taxa.
+### Examples
+
+- simpleSerialCoalescentNex.lphy
+- twoPartitionCoalescentNex.lphy
+

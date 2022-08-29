@@ -14,4 +14,9 @@ extract the species from the given taxa object as a new taxa object. Useful to g
 [Taxa](../types/Taxa.md)
 
 
+### Examples
+
+- simpleMultispeciesCoalescentTaxa.lphy
+
+
 

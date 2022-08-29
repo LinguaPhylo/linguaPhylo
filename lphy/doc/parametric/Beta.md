@@ -15,4 +15,10 @@ The beta probability distribution.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- birthDeathRhoSampling.lphy
+- simpleBModelTest.lphy
+
+
 

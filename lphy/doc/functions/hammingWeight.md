@@ -14,4 +14,10 @@ The sum of the true elements of the given boolean array
 [Integer](../types/Integer.md)
 
 
+### Examples
+
+- simpleRandomLocalClock2.lphy
+- covidDPG.lphy
+
+
 

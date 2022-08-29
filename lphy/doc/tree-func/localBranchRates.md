@@ -16,4 +16,10 @@ A function that returns branch rates for the given tree, indicator mask and raw 
 [Double[]](../types/Double[].md)
 
 
+### Examples
+
+- simpleRandomLocalClock.lphy
+- simpleRandomLocalClock2.lphy
+
+
 

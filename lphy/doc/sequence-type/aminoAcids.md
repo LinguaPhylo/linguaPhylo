@@ -12,4 +12,9 @@ The amino acid data type.
 [SequenceType](../types/SequenceType.md)
 
 
+### Examples
+
+- wagCoalescent.lphy
+
+
 

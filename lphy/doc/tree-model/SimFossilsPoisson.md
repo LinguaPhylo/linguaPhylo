@@ -15,4 +15,9 @@ A tree with fossils added to the given tree at rate psi.
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- simFossils.lphy
+
+
 

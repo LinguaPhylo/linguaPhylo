@@ -17,4 +17,9 @@ A complete birth-death tree with both extant and extinct species.<br>Conditioned
 [TimeTree](../types/TimeTree.md)
 
 
+### Examples
+
+- simFossils.lphy
+
+
 

@@ -15,4 +15,10 @@ The discrete uniform distribution over integers.
 [Integer](../types/Integer.md)
 
 
+### Examples
+
+- simpleBModelTest.lphy
+- simpleBModelTest2.lphy
+
+
 

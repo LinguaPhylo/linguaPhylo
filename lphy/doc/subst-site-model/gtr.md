@@ -15,6 +15,11 @@ The GTR instantaneous rate matrix. Takes relative rates and base frequencies and
 
 [Double[][]](../types/Double[][].md)
 
+
+### Examples
+
+- gtrCoalescent.lphy
+
 ### Reference
 
 Tavaré, S. (1986). Some probabilistic and statistical problems in the analysis of DNA sequences. Lectures on mathematics in the life sciences, 17(2), 57-86.

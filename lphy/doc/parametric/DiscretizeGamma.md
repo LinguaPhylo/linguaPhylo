@@ -15,4 +15,10 @@ The discretized gamma probability distribution with mean = 1.
 [Double](../types/Double.md)
 
 
+### Examples
+
+- gtrGammaCoalescent.lphy
+- simpleBModelTest.lphy
+
+
 

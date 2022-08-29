@@ -16,6 +16,11 @@ A birth-death tree with both extant and extinct species.<br>Conditioned on age o
 
 [TimeTree](../types/TimeTree.md)
 
+
+### Examples
+
+- simpleFullBirthDeath.lphy
+
 ### Reference
 
 David G. Kendall. On the Generalized "Birth-and-Death" Process, The Annals of Mathematical Statistics, Ann. Math. Statist. 19(1), 1-15, March, 1948.[https://doi.org/10.1214/aoms/1177730285](https://doi.org/10.1214/aoms/1177730285)
