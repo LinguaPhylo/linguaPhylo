@@ -1,10 +1,13 @@
 package lphy.evolution.alignment;
 
 import lphy.evolution.Taxa;
+import lphy.graphicalModel.TypeInfo;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@TypeInfo(description = "The continuous character data, where states are doubles.",
+        examples = {"simplePhyloBrownian.lphy","simplePhyloMultivariateBrownian.lphy","simplePhyloOU.lphy"})
 public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
 
     // 1st[] is taxa, index is same order as Taxa

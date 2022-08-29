@@ -9,6 +9,7 @@ import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.traits.CharSetBlock;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
+import lphy.graphicalModel.TypeInfo;
 import lphy.util.LoggerUtils;
 
 import java.time.LocalDate;
@@ -20,11 +21,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The meta data parsed from a nexus file and stored in {@link Taxon},
+ * The metadata parsed from a nexus file and stored in {@link Taxon},
  * and the charsets.
  * @see NexusParser
  * @author Walter Xie
  */
+@TypeInfo(description = "An alignment containing metadata and parsed from a nexus file.",
+        examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
 public class MetaDataAlignment extends SimpleAlignment {
 
     // if null, then no charset in the nexus file

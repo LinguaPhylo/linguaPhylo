@@ -18,7 +18,7 @@ The phylogenetic Brownian motion distribution. A continous trait is simulated fo
 
 ### Examples
 
-- simplePhyloOU.lphy
+- simplePhyloBrownian.lphy
 
 ### Reference
 

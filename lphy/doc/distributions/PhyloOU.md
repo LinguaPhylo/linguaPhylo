@@ -21,7 +21,7 @@ The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated
 
 ### Examples
 
-- simplePhyloBrownian.lphy
+- simplePhyloOU.lphy
 
 ### Reference
 

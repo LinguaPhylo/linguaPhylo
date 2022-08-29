@@ -1,5 +1,8 @@
 MetaDataAlignment
 -----------------
+
+An alignment containing metadata and parsed from a nexus file.
+
 ### Methods
 
 - **ages**
@@ -28,3 +31,8 @@ MetaDataAlignment
   - the taxa of the alignment.
 - **taxaNames**
   - The names of the taxa.
+### Examples
+
+- twoPartitionCoalescentNex.lphy
+- https://linguaphylo.github.io/tutorials/time-stamped-data/
+
