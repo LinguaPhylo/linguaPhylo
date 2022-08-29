@@ -3,7 +3,11 @@ package lphy.evolution.sitemodel;
 import lphy.graphicalModel.GeneratorCategory;
 import lphy.graphicalModel.MethodInfo;
 import lphy.graphicalModel.MultiDimensional;
+import lphy.graphicalModel.TypeInfo;
 
+@TypeInfo(description = "A composited model containing instantaneous rate matrix, " +
+        "rate per site before accounting for proportion invariable, and the proportion of invariable sites.",
+        examples = {"simpleBModelTest.lphy"})
 public class SiteModel implements MultiDimensional {
 
     // instantaneous rate matrix
