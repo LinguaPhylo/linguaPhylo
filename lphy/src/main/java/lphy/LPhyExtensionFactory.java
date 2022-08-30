@@ -45,7 +45,7 @@ public class LPhyExtensionFactory {
     /**
      * LPhy data types
      */
-    public TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+    public TreeSet<Class<?>> types;
     /**
      * LPhy sequence types {@link SequenceType}
      */
@@ -79,6 +79,7 @@ public class LPhyExtensionFactory {
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
         dataTypeMap = new ConcurrentHashMap<>();
+        types = new TreeSet<>(Comparator.comparing(Class::getName));
 
         try {
             Iterator<LPhyExtension> extensions = loader.iterator();
