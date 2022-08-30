@@ -51,6 +51,7 @@ public class ParserTest {
     @Test
     public void testLPhyExamplesRun() {
         final String wd = System.getProperty("user.dir");
+        // github workflow run tests in $project_root/lphy, so "**/lphy/../examples" is required
         final File exampleDir = Paths.get(wd, "..", "examples").toFile();
         assertTrue(exampleDir.exists(), "Cannot find examples folder : " + exampleDir);
 
