@@ -7,7 +7,6 @@ import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
 import net.steppschuh.markdowngenerator.text.heading.Heading;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -95,19 +94,22 @@ public class GeneratorMarkdown {
     /**
      * @param typesDir   the dir name where all types are
      * @param name       type md file name without .md
-     * @return    the link to this type md file, if it cannot be found during runtime,
-     *            then consider as extension doc, and use github repo as link.
+     * @return    the link to this type md file.
      */
     private static String getTypeURL(final String typesDir, final String name) {
         // the working dir should be where index.md is
-        String url = typesDir + "/" + name + ".md";
-        // check if file exists, if no then add repo link
-        File md = new File(url);
-        if (!md.exists())
-            url = "https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/types/" + name + ".md";
-        else url = "../" + url; // otherwise, add ../ because the link is based on where the $name.md file is.
-        return url;
+        return "../" + typesDir + "/" + name + ".md";
     }
+//    private static String getTypeURL(final String typesDir, final String name) {
+//        // the working dir should be where index.md is
+//        String url = typesDir + "/" + name + ".md";
+//        // check if file exists, if no then add repo link
+//        File md = new File(url);
+//        if (!md.exists())
+//            url = "https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/types/" + name + ".md";
+//        else url = "../" + url; // otherwise, add ../ because the link is based on where the $name.md file is.
+//        return url;
+//    }
 
     static String generateTypeMarkdown(Class<?> type) {
         StringBuilder builder = new StringBuilder();

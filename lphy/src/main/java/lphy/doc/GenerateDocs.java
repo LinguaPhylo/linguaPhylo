@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import static lphy.graphicalModel.GeneratorCategory.*;
 
 /**
+ * Delete everything under ???/lphy/doc, if it is not a minor change to docs.
  * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/lphy/doc,
  * and args[0] = version.
  * For extension, set working directory: ~/WorkSpace/$REPO/lphy/doc,
@@ -41,6 +42,8 @@ public class GenerateDocs {
     public static final String TREE_FUNC_DIR = "tree-func";
     public static final String OTHER_FUNC_DIR = "functions";
     public static final String TYPES_DIR = "types";
+    // No white space
+    static final String LPHY_DOC_TITLE = "LPhy";
 
     public static void main(String[] args) throws IOException {
 
@@ -50,7 +53,7 @@ public class GenerateDocs {
         LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
 
         // Do not change default
-        String extName = "LPhy"; // No white space
+        String extName = LPHY_DOC_TITLE;
         // for extension only, e.g.
         // args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
@@ -71,7 +74,7 @@ public class GenerateDocs {
         // output dir
         final Path dir = Paths.get(System.getProperty("user.dir"));
         // out dir must be $project$/lphy/doc
-        if ("LPhy".equalsIgnoreCase(extName.trim())) {
+        if (isLPhyDoc(extName)) {
             if (!dir.endsWith("lphy" + File.separator + "doc"))
                 throw new IllegalArgumentException("The user.dir must set to $project$/lphy/doc !\n" + dir.toAbsolutePath());
         }
@@ -84,6 +87,10 @@ public class GenerateDocs {
         writer.write(indexMD);
         writer.close();
 
+    }
+
+    private static boolean isLPhyDoc(String extName) {
+        return LPHY_DOC_TITLE.equalsIgnoreCase(extName.trim());
     }
     
 //    private Properties properties;
@@ -138,24 +145,15 @@ public class GenerateDocs {
     private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
                                         List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
                                         Path dir, String version, String extName) throws IOException {
-        File file = new File(dir.toString(),OTHER_DIST_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),PARAM_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),TREE_MODEL_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),SEQU_TYPE_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),TAXA_ALIG_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),SUBST_SITE_MODEL_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),TREE_FUNC_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(),OTHER_FUNC_DIR);
-        if (!file.exists()) file.mkdir();
-        file = new File(dir.toString(), "types");
-        if (!file.exists()) file.mkdir();
+        File otherDistDir = new File(dir.toString(),OTHER_DIST_DIR);
+        File paramDir = new File(dir.toString(),PARAM_DIR);
+        File treeModelDir = new File(dir.toString(),TREE_MODEL_DIR);
+        File sequTypeDir = new File(dir.toString(),SEQU_TYPE_DIR);
+        File taxaAligDir = new File(dir.toString(),TAXA_ALIG_DIR);
+        File substSiteDir = new File(dir.toString(),SUBST_SITE_MODEL_DIR);
+        File treeFuncDir = new File(dir.toString(),TREE_FUNC_DIR);
+        File otherFuncDir = new File(dir.toString(),OTHER_FUNC_DIR);
+        File typesDir = new File(dir.toString(), "types");
 
         /**
          * Title
@@ -187,13 +185,18 @@ public class GenerateDocs {
 
             if (!names.contains(name)) {
                 Link link = new Link(name, fileURL);
-                if (PARAM_DIR.equals(subDir))
-                    paramDistLinks.add(link);
-                else if (TREE_MODEL_DIR.equals(subDir))
-                    treeModelLinks.add(link);
-                else
-                    otherDistLinks.add(link);
-
+                switch (subDir) {
+                    case PARAM_DIR -> {
+                        paramDistLinks.add(link);
+                        if (!paramDir.exists()) paramDir.mkdir(); }
+                    case TREE_MODEL_DIR -> {
+                        treeModelLinks.add(link);
+                        if (!treeModelDir.exists()) treeModelDir.mkdir(); }
+                    default -> {
+                        otherDistLinks.add(link);
+                        if (!otherDistDir.exists()) otherDistDir.mkdir();
+                    }
+                }
                 names.add(name);
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
@@ -235,17 +238,24 @@ public class GenerateDocs {
 
             if (!funcNames.contains(name)) {
                 Link link = new Link(name, fileURL);
-                if (SUBST_SITE_MODEL_DIR.equals(subDir))
-                    substSiteLinks.add(link);
-                else if (SEQU_TYPE_DIR.equals(subDir))
-                    seqTypeLinks.add(link);
-                else if (TAXA_ALIG_DIR.equals(subDir))
-                    taxaAligLinks.add(link);
-                else if (TREE_FUNC_DIR.equals(subDir))
-                    treeFuncLinks.add(link);
-                else
-                    otherFuncLinks.add(link);
-
+                switch (subDir) {
+                    case SUBST_SITE_MODEL_DIR -> {
+                        substSiteLinks.add(link);
+                        if (!substSiteDir.exists()) substSiteDir.mkdir(); }
+                    case SEQU_TYPE_DIR -> {
+                        seqTypeLinks.add(link);
+                        if (!sequTypeDir.exists()) sequTypeDir.mkdir(); }
+                    case TAXA_ALIG_DIR -> {
+                        taxaAligLinks.add(link);
+                        if (!taxaAligDir.exists()) taxaAligDir.mkdir(); }
+                    case TREE_FUNC_DIR -> {
+                        treeFuncLinks.add(link);
+                        if (!treeFuncDir.exists()) treeFuncDir.mkdir(); }
+                    default -> {
+                        otherFuncLinks.add(link);
+                        if (!otherFuncDir.exists()) otherFuncDir.mkdir();
+                    }
+                }
                 funcNames.add(name);
 
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
@@ -290,6 +300,7 @@ public class GenerateDocs {
             if (!typeNames.contains(name)) {
                 typeLinks.add(new Link(name, fileURL));
                 typeNames.add(name);
+                if (!typesDir.exists()) typesDir.mkdir();
 
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
@@ -300,17 +311,21 @@ public class GenerateDocs {
                 writer.close();
             }
         }
-        builder.append(new Heading("Types", 2)).append("\n");
-        builder.append(new UnorderedList<>(typeLinks)).append("\n\n");
+        if (typeLinks.size() > 0) {
+            builder.append(new Heading("Types", 2)).append("\n");
+            builder.append(new UnorderedList<>(typeLinks)).append("\n\n");
+        }
 
         /**
-         * Built-in
+         * Built-in, only generated for LPhy core doc
          */
-        List<Link> builtin = List.of(new Link("binary operators functions","built-in-binary-operators.md"),
-                new Link("math functions","built-in-math.md"),
-                new Link("trigonometric functions","built-in-trigonometry.md") );
-        builder.append(new Heading("Built-in", 2)).append("\n");
-        builder.append(new UnorderedList<>(builtin)).append("\n\n");
+        if (isLPhyDoc(extName)) {
+            List<Link> builtin = List.of(new Link("binary operators functions","built-in-binary-operators.md"),
+                    new Link("math functions","built-in-math.md"),
+                    new Link("trigonometric functions","built-in-trigonometry.md") );
+            builder.append(new Heading("Built-in", 2)).append("\n");
+            builder.append(new UnorderedList<>(builtin)).append("\n\n");
+        }
 
         return builder.toString();
     }
