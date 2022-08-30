@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest {
 
@@ -45,29 +45,33 @@ public class ParserTest {
 
 
     @Test
-    public void testThatExamplesRun() {
-        final String dir = System.getProperty("user.dir") + "/../examples";
-        test_ThatXmlExamplesRun(dir);
+    public void testLPhyExamplesRun() {
+        final String wd = System.getProperty("user.dir");
+        final File exampleDir = Paths.get(wd, "..", "examples").toFile();
+        assertTrue(exampleDir.exists(), "Cannot find examples folder : " + exampleDir);
+
+        testLPhyExamplesInDir(exampleDir);
+
+        File[] dirs = exampleDir.listFiles();
+        assertNotNull(dirs);
+        for (final File dir : dirs) {
+            if (dir.isDirectory())
+                testLPhyExamplesInDir(dir);
+        }
     }
     
-    public void test_ThatXmlExamplesRun(String dir) {
+    public void testLPhyExamplesInDir(File exampleDir) {
         try {
-            System.out.println("Test that Examples parse in " + dir);
-            File exampleDir = new File(dir);
-            String[] exampleFiles = exampleDir.list(new FilenameFilter() {
-                @Override
-				public boolean accept(File dir, String name) {
-                    return name.endsWith(".lphy");
-                }
-            });
+            System.out.println("\nTest that Examples parse in " + exampleDir.getAbsolutePath());
+            String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
             List<String> failedFiles = new ArrayList<String>();
 //            String fileName = "hcv_coal_classic.lphy";
             for (String fileName : Objects.requireNonNull(exampleFiles) ) {
                 System.out.println("Processing " + fileName);
-                UserDir.setUserDir(dir);
+                UserDir.setUserDir(exampleDir.getPath());
                 try {
-                    FileReader lphyFile = new FileReader(dir + "/" + fileName);
+                    FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
                     BufferedReader fin = new BufferedReader(lphyFile);
                     lPhyParser = new REPL();
                     lPhyParser.source(fin);
@@ -82,23 +86,23 @@ public class ParserTest {
 //	                fin.close();
 //	                parse(buf.toString());
                 } catch (Exception e) {
-                    System.out.println("ExampleParsing::Failed for " + fileName
-                            + ": " + e.getMessage());
+                    System.out.println("ExampleParsing::Failed for " + fileName + ": " + e.getMessage());
                     failedFiles.add(fileName);
                 }
+                //TODO assert if any Exception
                 System.out.println("Done " + fileName + "\n");
             }
             if (failedFiles.size() > 0) {
-                System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles.toString());
+                System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles);
             } else {
                 System.out.println("SUCCESS!!!");
                 System.out.println(exampleFiles.length + " file tested : \n" + Arrays.toString(exampleFiles));
             }
-            assertTrue(failedFiles.size() == 0, failedFiles.toString());
+            assertEquals(0, failedFiles.size(), failedFiles.toString());
         } catch (Exception e) {
             System.out.println("exception thrown ");
             System.out.println(e.getMessage());
         }
-    } // test_ThatXmlExamplesRun
+    } // testLPhyExamplesInDir
     
 }

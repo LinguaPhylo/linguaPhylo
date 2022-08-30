@@ -23,11 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
 public class LinguaPhyloStudio {
+    static final String LPHY_FILE_EXT = ".lphy";
     private static final String APP_NAME = "LPhy Studio";
     static {
         LPhyAppConfig.setupEcoSys(APP_NAME);
@@ -181,32 +183,57 @@ public class LinguaPhyloStudio {
         } else if (jMenu.getText().equalsIgnoreCase(TUTL)) {
             dir = new File(TUTL).getAbsoluteFile();
         }
-        System.out.println("Menu " + jMenu.getText() + " refer to dir = " + dir);
+        LoggerUtils.log.info("Menu " + jMenu.getText() + " links to dir = " + dir);
 
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
         } else {
-            final String postfix = ".lphy";
             File[] files = dir.listFiles();
-            if (files != null) {
+            if (files != null && files.length > 0) {
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
 //                UserDir.setUserDir(dir.toString());
-
                 Arrays.sort(files, Comparator.comparing(File::getName));
                 for (final File file : files) {
-                    Path parent = file.getParentFile().toPath();
-                    String name = file.getName();
-                    if (name.endsWith(postfix)) {
-                        JMenuItem menuItem = new JMenuItem(name.substring(0, name.length() - 5));
+                    JMenuItem menuItem = createMenuItemForLPhyScript(file, dir);
+                    if (menuItem != null) {
+                        // add file name stem to JMenuItem
                         jMenu.add(menuItem);
-                        menuItem.addActionListener(e -> {
-                            // equal to cmd: -d parent_folder fn
-                            readFile(name, parent.toString());
-                        });
+                    } else if (file.isDirectory()) {
+                        // else allow 1-level sub-folder to organise LPhy scripts
+                        File[] files2 = file.listFiles();
+                        if (files2 != null && files2.length > 0 &&
+                                Arrays.stream(files2).anyMatch(f -> f.getName().endsWith(LPHY_FILE_EXT))) {
+                            // create menu if subfolder contains *.lphy
+                            JMenu dirMenu = new JMenu(file.getName());
+                            for (final File file2 : files2) {
+                                Path parent = Paths.get(dir.getPath(), file.getName());
+                                menuItem = createMenuItemForLPhyScript(file2, parent.toFile());
+                                if (menuItem != null)
+                                    dirMenu.add(menuItem);
+                            }
+                            jMenu.add(dirMenu);
+                        }
                     }
                 }
             }
         }
+    }
+
+    // add file (exclude dir) name stem to JMenuItem if it ends with ".lphy"
+    // give the rest path of its parent folder after root project,
+    // e.g. examples/birth-death/
+    private JMenuItem createMenuItemForLPhyScript(final File file, File parentDir) {
+        String name = file.getName();
+        JMenuItem menuItem = null;
+        if (name.endsWith(LPHY_FILE_EXT)) {
+            // add file name stem to JMenuItem
+            menuItem = new JMenuItem(name.substring(0, name.length() - 5));
+            menuItem.addActionListener(e -> {
+                // equal to cmd: -d parent_folder fn
+                readFile(name, parentDir.getPath());
+            });
+        }
+        return menuItem;
     }
 
     private void buildSaveMenu(JMenu fileMenu) {
