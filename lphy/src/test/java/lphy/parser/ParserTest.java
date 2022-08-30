@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -21,27 +20,32 @@ public class ParserTest {
     LPhyParser lPhyParser;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         lPhyParser = new REPL();
     }
 
     @Test
-	public void testAssingment() {
-		parse("a=3;");
-		parse("a=2;b=a;");
-		parse("a=3.0;b=3.0*a;");	
-		parse("a=3;b=3.0*a;");	
-		parse("a=3.0;b=3*a;");	
-	}
-	
-	private Object parse(String cmd) {
-		SimulatorListenerImpl parser = new SimulatorListenerImpl(lPhyParser, LPhyParser.Context.model);
-		if (!cmd.endsWith(";")) {
-			cmd = cmd + ";";
-		}
-		Object o = parser.parse(cmd);
-		return o;
-	}
+    public void testAssingment() {
+        parse("a=3;");
+        parse("a=2;b=a;");
+        parse("a=3.0;b=3.0*a;");
+        parse("a=3;b=3.0*a;");
+        parse("a=3.0;b=3*a;");
+    }
+
+    private void parse(String cmd) {
+        Object o = null;
+        try {
+            SimulatorListenerImpl parser = new SimulatorListenerImpl(lPhyParser, LPhyParser.Context.model);
+            if (!cmd.endsWith(";")) {
+                cmd = cmd + ";";
+            }
+            o = parser.parse(cmd);
+        } catch (Exception e) {
+            fail("CMD " + cmd + " failed to parse, Exception :\n" + e.getMessage());
+        }
+        assertNotNull(o);
+    }
 
 
     @Test
@@ -59,50 +63,43 @@ public class ParserTest {
                 testLPhyExamplesInDir(dir);
         }
     }
-    
-    public void testLPhyExamplesInDir(File exampleDir) {
-        try {
-            System.out.println("\nTest that Examples parse in " + exampleDir.getAbsolutePath());
-            String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
-            List<String> failedFiles = new ArrayList<String>();
+    public void testLPhyExamplesInDir(File exampleDir) {
+        System.out.println("\nTest that Examples parse in " + exampleDir.getAbsolutePath());
+        String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
+
+//            List<String> failedFiles = new ArrayList<String>();
 //            String fileName = "hcv_coal_classic.lphy";
-            for (String fileName : Objects.requireNonNull(exampleFiles) ) {
-                System.out.println("Processing " + fileName);
-                UserDir.setUserDir(exampleDir.getPath());
-                try {
-                    FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
-                    BufferedReader fin = new BufferedReader(lphyFile);
-                    lPhyParser = new REPL();
-                    lPhyParser.source(fin);
-                    lPhyParser.clear();
-//	                StringBuffer buf = new StringBuffer();
-//	                String str = null;
-//	                while (fin.ready()) {
-//	                    str = fin.readLine();
-//	                    buf.append(str);
-//	                    buf.append('\n');
-//	                }
-//	                fin.close();
-//	                parse(buf.toString());
-                } catch (Exception e) {
-                    System.out.println("ExampleParsing::Failed for " + fileName + ": " + e.getMessage());
-                    failedFiles.add(fileName);
-                }
-                //TODO assert if any Exception
-                System.out.println("Done " + fileName + "\n");
+        for (String fileName : Objects.requireNonNull(exampleFiles)) {
+            System.out.println("Processing " + fileName);
+            UserDir.setUserDir(exampleDir.getPath());
+            lPhyParser = new REPL();
+            try {
+                FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
+                BufferedReader fin = new BufferedReader(lphyFile);
+                lPhyParser.source(fin);
+            } catch (Exception e) {
+//                    failedFiles.add(fileName);
+                fail("Example " + fileName + " failed at Exception :\n" + e.getMessage());
             }
-            if (failedFiles.size() > 0) {
-                System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles);
-            } else {
-                System.out.println("SUCCESS!!!");
-                System.out.println(exampleFiles.length + " file tested : \n" + Arrays.toString(exampleFiles));
-            }
-            assertEquals(0, failedFiles.size(), failedFiles.toString());
-        } catch (Exception e) {
-            System.out.println("exception thrown ");
-            System.out.println(e.getMessage());
+            // lines of code parsed
+            List<String> lines = lPhyParser.getLines();
+            assertTrue(lines.size() > 0);
+
+            String cmd = String.join("", lPhyParser.getLines());
+            // check lines
+            assertTrue(cmd.trim().length() > 3, "Script must contain more than 3 characters : \n" + cmd);
+
+            lPhyParser.clear();
+            System.out.println("Done " + fileName + "\n");
         }
+//            if (failedFiles.size() > 0) {
+//                System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles);
+//            } else {
+        System.out.println("SUCCESS!!!");
+        System.out.println(exampleFiles.length + " file tested : \n" + Arrays.toString(exampleFiles));
+//            }
+//            assertEquals(0, failedFiles.size(), failedFiles.toString());
     } // testLPhyExamplesInDir
-    
+
 }
