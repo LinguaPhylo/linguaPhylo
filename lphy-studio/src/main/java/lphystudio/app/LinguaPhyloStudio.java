@@ -188,6 +188,7 @@ public class LinguaPhyloStudio {
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
         } else {
+            // dir is either examples or tutorials folder
             File[] files = dir.listFiles();
             if (files != null && files.length > 0) {
                 // change user.dir, so that the relative path in LPhy script e.g. 'readNexus' can work
@@ -199,15 +200,17 @@ public class LinguaPhyloStudio {
                         // add file name stem to JMenuItem
                         jMenu.add(menuItem);
                     } else if (file.isDirectory()) {
-                        // else allow 1-level sub-folder to organise LPhy scripts
-                        File[] files2 = file.listFiles();
-                        if (files2 != null && files2.length > 0 &&
-                                Arrays.stream(files2).anyMatch(f -> f.getName().endsWith(LPHY_FILE_EXT))) {
+                        // allow 1-level sub-folder to organise LPhy scripts
+                        File[] subfolderFiles = file.listFiles();
+                        if (subfolderFiles != null && subfolderFiles.length > 0 &&
+                                Arrays.stream(subfolderFiles).anyMatch(f -> f.getName().endsWith(LPHY_FILE_EXT))) {
                             // create menu if subfolder contains *.lphy
                             JMenu dirMenu = new JMenu(file.getName());
-                            for (final File file2 : files2) {
+                            Arrays.sort(subfolderFiles, Comparator.comparing(File::getName));
+                            for (final File subfFile : subfolderFiles) {
+                                // loop through scripts in the subfolder, which is "file" here
                                 Path parent = Paths.get(dir.getPath(), file.getName());
-                                menuItem = createMenuItemForLPhyScript(file2, parent.toFile());
+                                menuItem = createMenuItemForLPhyScript(subfFile, parent.toFile());
                                 if (menuItem != null)
                                     dirMenu.add(menuItem);
                             }
