@@ -1,5 +1,5 @@
 Integer[]
 ---------
 
-The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.
+The [Integer](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html) array.
 

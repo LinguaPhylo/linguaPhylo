@@ -1,5 +1,5 @@
 Double
 ------
 
-The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as 0.1.
+The [Double](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html) data type wraps a real number, such as 0.1.
 

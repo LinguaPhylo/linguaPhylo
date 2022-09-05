@@ -1,5 +1,5 @@
 Number[]
 --------
 
-The number data type array.
+The [Number](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Number.html) data type array.
 

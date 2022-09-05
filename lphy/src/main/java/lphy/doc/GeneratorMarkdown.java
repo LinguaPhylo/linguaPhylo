@@ -171,23 +171,23 @@ public class GeneratorMarkdown {
 
     private static String getTypeDescription(String name) {
         return switch (name) {
-            case "Boolean"     -> "The [boolean](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as true or false.";
-            case "Boolean[]"   -> "The [boolean](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
-            case "Double"      -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as 0.1.";
-            case "Double[]"    -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
-            case "Double[][]"  -> "The [double](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
-            case "Integer"     -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as 1.";
-            case "Integer[]"   -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
-            case "Integer[][]" -> "The [integer](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
-            case "Number"      -> "The number data type that could be either double or integer.";
-            case "Number[]"    -> "The number data type array.";
-            case "Number[][]"  -> "The number data type 2-d array.";
+            case "Boolean"     -> "The [Boolean](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html) wraps a boolean value, such as true or false.";
+            case "Boolean[]"   -> "The [Boolean](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html) array.";
+            case "Double"      -> "The [Double](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html) data type wraps a real number, such as 0.1.";
+            case "Double[]"    -> "The [Double](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html) array.";
+            case "Double[][]"  -> "The [Double](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html) 2-d array.";
+            case "Integer"     -> "The [Integer](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html) data type wraps an integer number, such as 1.";
+            case "Integer[]"   -> "The [Integer](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html) array.";
+            case "Integer[][]" -> "The [Integer](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html) 2-d array.";
+            case "Number"      -> "The [Number](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Number.html) is the superclass of data type wrapping numeric values, such as Double or Integer.";
+            case "Number[]"    -> "The [Number](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Number.html) data type array.";
+            case "Number[][]"  -> "The [Number](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Number.html) data type 2-d array.";
             case "Object"      -> "It could be any data type or class.";
             case "Object[]"    -> "The Object array.";
             case "Object[][]"  -> "The Object 2-d array.";
-            case "String"      -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as \"lphy\".";
-            case "String[]"    -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) array.";
-            case "String[][]"  -> "The [string](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) 2-d array.";
+            case "String"      -> "The [String](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html) data type represents character strings, such as \"lphy\".";
+            case "String[]"    -> "The [String](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html) array.";
+            case "String[][]"  -> "The [String](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html) 2-d array.";
             default            -> "";
         };
     }

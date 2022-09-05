@@ -1,5 +1,5 @@
 Boolean
 -------
 
-The [boolean](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) data type, such as true or false.
+The [Boolean](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html) wraps a boolean value, such as true or false.
 
