@@ -28,12 +28,12 @@ public interface LPhyParserAction {
      * then get tokens, and determine which parser to apply to tokens,
      * finally visit the parse tree returned from the parser.
      * @param CASentence                lphy code
-     * @param simulatorVisitorImpl      the visitor for a parse tree
+     * @param visitor      the visitor for a parse tree
      * @param hasDataModelBlock         true, if containing either or both a data and model block;
      *                                  false, if no data and model blocks.
      * @return  a user-defined result of the operation.
      */
-    static Object parse(String CASentence, AbstractParseTreeVisitor<Object> simulatorVisitorImpl, boolean hasDataModelBlock) {
+    static Object parse(String CASentence, AbstractParseTreeVisitor<Object> visitor, boolean hasDataModelBlock) {
         // if no data{}, CASentence is empty, e.g. GraphicalModelInterpreter line 235
         if (!CASentence.endsWith(";") && !CASentence.trim().isEmpty())
             CASentence = CASentence + ";";
@@ -77,7 +77,8 @@ public interface LPhyParserAction {
 //	    AntlrCompactAnalysisListener listener = new AntlrCompactAnalysisListener();
 //	    walker.walk(listener, CASentenceContext);
 
+        // TODO return null given DataModelParser
         // Traverse parse tree, constructing tree along the way
-        return simulatorVisitorImpl.visit(parseTree);
+        return visitor.visit(parseTree);
     }
 }
