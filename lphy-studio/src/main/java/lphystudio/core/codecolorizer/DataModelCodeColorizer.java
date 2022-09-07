@@ -5,7 +5,7 @@ import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.parser.*;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
 
-public class DataModelCodeColorizer extends DataModelBaseListener implements CodeColorizer {
+public class DataModelCodeColorizer extends DataModelBaseListener implements CodeColorizer,LPhyParserAction {
 
     // CURRENT MODEL STATE
 
@@ -387,61 +387,11 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
         System.out.println("Parsing " + CASentence);
 
-        // Custom parse/lexer error listener
-        BaseErrorListener errorListener = new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                                    Object offendingSymbol, int line, int charPositionInLine,
-                                    String msg, RecognitionException e) {
-                e.printStackTrace();
-                if (e instanceof NoViableAltException) {
-                    NoViableAltException nvae = (NoViableAltException) e;
-                    System.out.println(nvae.getLocalizedMessage());
-//              msg = "X no viable alt; token="+nvae.token+
-//                 " (decision="+nvae.decisionNumber+
-//                 " state "+nvae.stateNumber+")"+
-//                 " decision=<<"+nvae.grammarDecisionDescription+">>";
-                } else {
-                }
-                throw new SimulatorParsingException(msg, charPositionInLine, line);
-            }
+        // Traverse parse tree
+        AbstractParseTreeVisitor visitor = new DataModelASTVisitor();
 
-//            @Override
-//            public void syntaxError(Recognizer<?, ?> recognizer,
-//                                    Object offendingSymbol,
-//                                    int line, int charPositionInLine,
-//                                    String msg, RecognitionException e) {
-//                throw new SimulatorParsingException(msg, charPositionInLine, line);
-//            }
-        };
-
-        // Get our lexer
-        DataModelLexer lexer = new DataModelLexer(CharStreams.fromString(CASentence));
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener);
-
-        // Get a list of matched tokens
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-        // Pass the tokens to the parser
-        DataModelParser parser = new DataModelParser(tokens);
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener);
-
-        ParseTree parseTree = parser.input();
-//	    // Specify our entry point
-//	    CasentenceContext CASentenceContext = parser.casentence();
-//	 
-//	    // Walk it and attach our listener
-//	    ParseTreeWalker walker = new ParseTreeWalker();
-//	    AntlrCompactAnalysisListener listener = new AntlrCompactAnalysisListener();
-//	    walker.walk(listener, CASentenceContext);
-
-
-        // Traverse parse tree, constructing BEAST tree along the way
-        DataModelASTVisitor visitor = new DataModelASTVisitor();
-
-        return visitor.visit(parseTree);
+        // containing either or both a data and model block;
+        return LPhyParserAction.parse(CASentence, visitor, true);
     }
 
 }

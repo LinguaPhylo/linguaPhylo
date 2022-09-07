@@ -33,13 +33,16 @@ public class ParserTest {
         parse("a=3.0;b=3*a;");
     }
 
+    @Test
+    public void testSemicolon() {
+        parse("a=3");
+        parse("a=2;b=a");
+    }
+
     private void parse(String cmd) {
         Object o = null;
         try {
             SimulatorListenerImpl parser = new SimulatorListenerImpl(lPhyParser, LPhyParser.Context.model);
-            if (!cmd.endsWith(";")) {
-                cmd = cmd + ";";
-            }
             o = parser.parse(cmd);
         } catch (Exception e) {
             fail("CMD " + cmd + " failed to parse, Exception :\n" + e.getMessage());

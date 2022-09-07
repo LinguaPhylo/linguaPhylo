@@ -96,9 +96,6 @@ public class REPL implements LPhyParser {
             } else if (!cmd.startsWith("?")) {
                 // either 1 cmd each line, or all cmds in 1 line
                 SimulatorListenerImpl parser = new SimulatorListenerImpl(this, context);
-                if (!cmd.endsWith(";")) {
-                    cmd = cmd + ";";
-                }
                 Object o = parser.parse(cmd);
                 //parser.parse(cmd);
                 lines.add(cmd);
