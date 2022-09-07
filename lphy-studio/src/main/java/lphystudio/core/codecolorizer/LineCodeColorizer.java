@@ -332,7 +332,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
     }
 
     public Object parse(String CASentence) {
-//        System.out.println("Parsing " + CASentence);
+        System.out.println("Parsing " + CASentence + " in code colouriser");
 
         SimulatorASTVisitor visitor = new SimulatorASTVisitor();
         // no data and model blocks

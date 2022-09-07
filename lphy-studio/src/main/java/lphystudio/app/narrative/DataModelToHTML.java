@@ -98,8 +98,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
     }
 
     public Object parse(String CASentence) {
-
-        System.out.println("Parsing " + CASentence);
+//        System.out.println("Parsing " + CASentence + " to HTML");
 
         // Traverse parse tree
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();

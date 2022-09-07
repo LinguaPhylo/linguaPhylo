@@ -385,7 +385,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
     public Object parse(String CASentence) {
 
-        System.out.println("Parsing " + CASentence);
+        System.out.println("Parsing " + CASentence + " in code colouriser");
 
         // Traverse parse tree
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();

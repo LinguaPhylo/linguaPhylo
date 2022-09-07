@@ -104,8 +104,7 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
     }
 
     public Object parse(String CASentence) {
-
-        System.out.println("Parsing " + CASentence);
+//        System.out.println("Parsing " + CASentence + " to Latex");
 
         // Traverse parse tree
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();
