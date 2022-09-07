@@ -20,7 +20,7 @@ dependencies {
 
 //    implementation("org.json:json:20210307")
 
-//    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 
 val maincls : String = "lphystudio.app.LinguaPhyloStudio"
@@ -110,6 +110,25 @@ distributions {
                 from(project(":lphy").tasks.sourcesJar)
             }
             //TODO ext manager
+        }
+    }
+}
+
+// junit tests, https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
+tasks.test {
+    useJUnitPlatform() {
+        excludeTags("dev")
+    }
+    // set heap size for the test JVM(s)
+    minHeapSize = "128m"
+    maxHeapSize = "1G"
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+    reports {
+        junitXml.apply {
+            isOutputPerTestCase = true // defaults to false
+            mergeReruns.set(true) // defaults to false
         }
     }
 }
