@@ -21,9 +21,10 @@ jobs:
       #    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
       #    restore-keys: |
       #      ${{ runner.os }}-gradle-
-      - name: Run unit tests
-        # only available in lphy at the moment
+      - name: Run lphy unit tests
         run: ./gradlew :lphy:test --no-daemon
+      - name: Run studio unit tests
+        run: ./gradlew :lphy-studio:test --no-daemon
       #- name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
@@ -33,7 +34,9 @@ jobs:
       #    rm -f ./build-cache/*.lock
       #    rm -f ./build-cache/gc.properties
       - name: Publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: lphy/build/test-results/**/*.xml
+          junit_files: |
+            lphy/build/test-results/**/*.xml
+            lphy-studio/build/test-results/**/*.xml
