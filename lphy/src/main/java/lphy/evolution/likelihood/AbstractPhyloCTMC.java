@@ -15,14 +15,14 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * The shared code for all kinds of PhyloCTMC.
+ * Extract Alexei's code shared by {@link PhyloCTMC} and {@link PhyloCTMCSiteModel}
+ * for all kinds of PhyloCTMC.
+ * Created by Alexei Drummond on 2/02/20.
  * @author Alexei Drummond
- * @author Walter Xie
  */
 public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignment> {
 
@@ -35,19 +35,17 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
 
     protected Value<TimeTree> tree;
     protected Value<Number> clockRate;
+    // root freqs input
     protected Value<Double[]> freq;
     protected Value<Double[]> branchRates;
     protected Value<Integer> L;
     protected Value<SequenceType> dataType;
     protected RandomGenerator random;
 
-    protected final int numStates; // Q matrix row/column length
-
     // these are all initialized in setup method.
     protected Value<Double[]> rootFreqs;
     protected SortedMap<String, Integer> idMap = new TreeMap<>();
     protected double[][] transProb;
-
     private EigenDecomposition decomposition;
     private double[][] Ievc;
     private double[][] Evec;
@@ -64,12 +62,9 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         this.L = l;
         this.dataType = dataType;
 
-        numStates = getNumStates();
         this.random = RandomUtils.getRandom();
-        // I think creating iexp[][] should mv to setup()
-//        iexp = new double[numStates][numStates];
 
-        checkCompatibilities();
+//        checkCompatibilities();
     }
 
     //+++ protected methods +++//
@@ -80,12 +75,8 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     // return site count
     protected abstract int getSiteCount();
 
+    // return Q matrix
     protected abstract Double[][] getQ();
-
-    // numStates is determined by the length of Q
-    protected int getNumStates() {
-        return Objects.requireNonNull(getQ()).length;
-    }
 
     // setup() before sample()
     protected void setup() {
@@ -98,7 +89,11 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         idMap.clear();
         fillIdMap(tree.value().getRoot(), idMap);
 
-        Double[][] Q = getQ();
+        Double[][] Qm = getQ();
+        if (Qm == null)
+            throw new IllegalArgumentException("matrix Q[][] must be provided !");
+        // Q matrix row/column length
+        final int numStates = Qm.length;
 
         transProb = new double[numStates][numStates];
         iexp = new double[numStates][numStates];
@@ -106,7 +101,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         double[][] primitive = new double[numStates][numStates];
         for (int i = 0; i < numStates; i++) {
             for (int j = 0; j < numStates; j++) {
-                primitive[i][j] = Q[i][j];
+                primitive[i][j] = Qm[i][j];
             }
         }
         Array2DRowRealMatrix Qmatrix = new Array2DRowRealMatrix(primitive);
@@ -132,7 +127,8 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         }
     }
 
-    protected void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment, int pos, double[][] transProb, double clockRate, double siteRate) {
+    protected void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment,
+                                int pos, double[][] transProb, double clockRate, double siteRate) {
 
         if (node.isLeaf() || (node.isSingleChildNonOrigin() && node.getId() != null)) {
             alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
@@ -226,6 +222,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         int i, j, k;
         double temp;
 
+        final int numStates = transProbs.length; // getQ().length ?
         // inverse Eigen vectors
         // Eigen values
         for (i = 0; i < numStates; i++) {
