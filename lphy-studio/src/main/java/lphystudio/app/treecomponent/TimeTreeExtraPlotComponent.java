@@ -6,6 +6,7 @@ import lphy.evolution.tree.TimeTreeNode;
 import lphystudio.app.Utils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
@@ -67,6 +68,8 @@ public class TimeTreeExtraPlotComponent extends JComponent {
         XYPlot plot = Objects.requireNonNull(lineChart).getXYPlot();
 //            plot.getDomainAxis().setLabelFont(minPlotFont);
 //            plot.getRangeAxis().setLabelFont(minPlotFont);
+        // y axis is integer
+        plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         plot.setBackgroundPaint(Color.white);
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.BLACK);
