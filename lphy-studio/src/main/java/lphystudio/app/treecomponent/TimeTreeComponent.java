@@ -13,10 +13,8 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -74,10 +72,6 @@ public class TimeTreeComponent extends JComponent {
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));
         //setPreferredSize(new Dimension(minimumWidth+maximumWidth/2, (minimumHeight+maximumHeight)/2));
-
-        if (tree.getRoot().getMetaData(StructuredCoalescent.populationLabel) != null) {
-            setColorTraitName(StructuredCoalescent.populationLabel);
-        }
     }
 
     public void setBorder(Border border) {
@@ -89,6 +83,14 @@ public class TimeTreeComponent extends JComponent {
         tree = timeTree;
         treeDrawing = new TimeTreeDrawing(this);
         treeDrawing.setRootHeightForCanonicalScaling(tree.getRoot().getAge());
+
+        if (tree.getRoot().getMetaData(StructuredCoalescent.populationLabel) != null) {
+            setColorTraitName(StructuredCoalescent.populationLabel);
+        }
+    }
+
+    public TimeTree getTimeTree() {
+        return Objects.requireNonNull(tree);
     }
 
     private class Location {

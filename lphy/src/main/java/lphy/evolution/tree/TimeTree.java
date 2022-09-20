@@ -8,6 +8,7 @@ import lphy.graphicalModel.MultiDimensional;
 import lphy.graphicalModel.TypeInfo;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -221,6 +222,10 @@ public class TimeTree implements HasTaxa, MultiDimensional {
 
     public List<TimeTreeNode> getExtantNodes() {
         return getNodes().stream().filter(TimeTreeNode::isExtant).collect(Collectors.toList());
+    }
+
+    public List<TimeTreeNode> getInternalNodes() {
+        return getNodes().stream().filter(Predicate.not(TimeTreeNode::isExtant)).collect(Collectors.toList());
     }
 
     // methods permitted pass-through to LPhy

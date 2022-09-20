@@ -6,6 +6,7 @@ module lphystudio {
 
     requires jlatexmath;
 //    requires org.json;
+    requires org.jfree.jfreechart;
 
     exports lphystudio.app;
     exports lphystudio.app.narrative;

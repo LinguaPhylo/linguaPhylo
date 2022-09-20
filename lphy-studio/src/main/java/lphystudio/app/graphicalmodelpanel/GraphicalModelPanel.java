@@ -8,6 +8,8 @@ import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
+import lphystudio.app.treecomponent.TimeTreeComponent;
+import lphystudio.app.treecomponent.TimeTreeExtraPlotComponent;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.swing.TidyComboBox;
@@ -17,6 +19,8 @@ import lphystudio.core.valueeditors.DoubleArray2DEditor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -301,6 +305,13 @@ public class GraphicalModelPanel extends JPanel {
             viewerPanel.add(viewer);
             viewer = viewerPanel;
         }
+
+        if (viewer instanceof TimeTreeComponent timeTreeComponent) {
+//            if (timeTreeComponent.getTimeTree().isUltrametric()) {
+                viewer = createTimeTreeSplitPane(timeTreeComponent);
+//            }
+        }
+
         rightPane.currentSelectionContainer.setViewportView(viewer);
         rightPane.currentSelectionContainer.setBorder(
                 BorderFactory.createTitledBorder(
@@ -310,6 +321,46 @@ public class GraphicalModelPanel extends JPanel {
         if (moveToTab) rightPane.setSelectedComponent(rightPane.currentSelectionContainer);
         rightPane.repaint();
         repaint();
+    }
+
+    private JSplitPane createTimeTreeSplitPane(TimeTreeComponent timeTreeComponent) {
+        TimeTreeExtraPlotComponent plotComponent = new TimeTreeExtraPlotComponent(timeTreeComponent);
+        TimeTreeExtraPlotPanel timeTreePlotPanel = new TimeTreeExtraPlotPanel(plotComponent);
+
+        JSplitPane treeSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, timeTreeComponent, timeTreePlotPanel);
+        treeSplitPane.setResizeWeight(0.5);
+        treeSplitPane.setOneTouchExpandable(true);
+        treeSplitPane.setContinuousLayout(true);
+        treeSplitPane.setBorder(null);
+        treeSplitPane.setBackground(Color.white);
+
+        //TODO not working
+//        if (TimeTreeExtraPlotComponent.isShowExtraPlot())
+//            treeSplitPane.setDividerLocation(0.5);
+//        else
+//            treeSplitPane.setDividerLocation(1.0);
+        //TODO not working
+//        treeSplitPane.addPropertyChangeListener("dividerLocation", evt -> {
+//            //  Get the new divider location of the split pane
+//            int location = (Integer) evt.getNewValue();
+//            // getMaximumDividerLocation() NOT return the maximum position of the divider bar when maximized using the arrow
+//            TimeTreeExtraPlotComponent.setShowExtraPlot(location < treeSplitPane.getMaximumDividerLocation());
+//        });
+
+        treeSplitPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    TimeTreeExtraPlotComponent.setShowExtraPlot(!TimeTreeExtraPlotComponent.isShowExtraPlot());
+                    if (TimeTreeExtraPlotComponent.isShowExtraPlot())
+                        treeSplitPane.setDividerLocation(0.5);
+                    else
+                        treeSplitPane.setDividerLocation(1.0);
+                }
+                treeSplitPane.repaint();
+            }
+        });
+        return treeSplitPane;
     }
 
     // IO should be in one place
