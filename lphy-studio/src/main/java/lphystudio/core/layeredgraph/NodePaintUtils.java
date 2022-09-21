@@ -288,7 +288,9 @@ public class NodePaintUtils {
 
         String name = v.getId();
         if (node.getSuccessors().size() == 1 && v.isAnonymous()) {
-            name = "[" + ((Generator) ((LayeredGNode) node.getSuccessors().get(0)).value()).getParamName(v) + "]";
+//            name = "[" + ((Generator) ((LayeredGNode) node.getSuccessors().get(0)).value()).getParamName(v) + "]";
+            // https://github.com/LinguaPhylo/linguaPhylo/issues/249
+            name = ((Generator) ((LayeredGNode) node.getSuccessors().get(0)).value()).getParamName(v);
         }
         if (name == null) name = "null";
 

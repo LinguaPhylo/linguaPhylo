@@ -53,7 +53,9 @@ public class LayeredGNode extends LayeredNode.Default {
         getSuccessors().add(output);
 
         if (getSuccessors().size() == 1 && (value instanceof Value) && ((Value) value).isAnonymous()) {
-            name = "[" + ((Generator) output.value).getParamName(((Value) value)) + "]";
+//            name = "[" + ((Generator) output.value).getParamName(((Value) value)) + "]";
+            // https://github.com/LinguaPhylo/linguaPhylo/issues/249
+            name = ((Generator) output.value).getParamName(((Value) value));
             button.setText(NodePaintUtils.getNodeString(this, (Value) value, showValue));
         }
     }

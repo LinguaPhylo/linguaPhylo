@@ -4,7 +4,10 @@ import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.util.Symbols;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -51,8 +54,10 @@ public class Value<T> implements GraphicalModelNode<T> {
     public String getLabel() {
         if (isAnonymous()) {
             if (getOutputs().size() > 0) {
-                return "[" + ((Generator) getOutputs().get(0)).getParamName(this) + "]";
-            } else return "[anonymous]";
+//                return "[" + ((Generator) getOutputs().get(0)).getParamName(this) + "]";
+                // https://github.com/LinguaPhylo/linguaPhylo/issues/249
+                return ((Generator) getOutputs().get(0)).getParamName(this);
+            } else return "anonymous";
         } else return getId();
     }
 
