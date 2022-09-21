@@ -12,7 +12,8 @@ import java.util.TreeMap;
 public class LTTUtils {
 
     /**
-     * @param tree  Ultrametric tree
+     * Only work on internal nodes
+     * @param tree  Ultrametric tree. Root node must be the last element of the node list.
      * @return      Lineages through time (LTT) in a {@link NavigableMap},
      *              whose key is age, and value is number of lineages.
      *              Note: before plotting by time in x-axis, ages need to multiply -1.
@@ -28,10 +29,15 @@ public class LTTUtils {
         NavigableMap<Double, Integer> lttMap = new TreeMap<>();
 
         List<TimeTreeNode> nodes = tree.getInternalNodes();
+        double rootAge =  tree.getRoot().getAge();
+        // root must be the last element
+        if (rootAge > 0 && rootAge != nodes.get(nodes.size()-1).getAge())
+            throw new IllegalArgumentException("tree.getNodes() must have the root in the last element ! " +
+                    "\nAges = " + printAges(tree, false));
         // must add root first
-        lttMap.put(tree.getRoot().getAge(), 2);
+        lttMap.put(rootAge, 2);
 
-        // assuming the nodes list contains tips and then nodes, and the last is root.
+        // assuming the last is root.
         for (int i = nodes.size(); i-- > 0; ) {
             TimeTreeNode n = nodes.get(i);
             // all ages > or == 0
@@ -63,18 +69,38 @@ public class LTTUtils {
 
             } // end if isRoot
         } // end for
-
+        // nodes excludes tips, so add max number of lineages to age==0 in the last
+        final int l = lttMap.lastEntry().getValue();
+        lttMap.put(0.0, l);
         return lttMap;
     }
 
-
+    /**
+     * A general solution to consider heterochronous taxa.
+     * Leave nodes are processed.
+     * @param tree  Root node must be the last element of the node list.
+     * @return Lineages through time (LTT) in a {@link NavigableMap},
+     *         whose key is age, and value is number of lineages.
+     *         Note: before plotting by time in x-axis, ages need to multiply -1.
+     */
     public static NavigableMap<Double, Integer> getLTTFromTimeTree(final TimeTree tree) {
         // ordered age , lineages
         NavigableMap<Double, Integer> lttMap = new TreeMap<>();
         // include tips
         List<TimeTreeNode> nodes = tree.getNodes();
+        boolean isLeaf1 = nodes.get(0).isLeaf();
+        boolean isLeafLC = nodes.get(tree.leafCount()-1).isLeaf();
+        // first nTaxa elements must be leave nodes
+        if (! (isLeaf1 && isLeafLC) )
+            throw new IllegalArgumentException("first " + tree.leafCount() + " elements must be leave nodes ! " +
+                    "\nAges = " + printAges(tree, true));
+
+        double rootAge =  tree.getRoot().getAge();
+        // root must be the last element
+        if (rootAge > 0 && rootAge != nodes.get(nodes.size()-1).getAge())
+           throw new IllegalArgumentException("tree.getNodes() must have the root in the last element !");
         // must add root first
-        lttMap.put(tree.getRoot().getAge(), 2);
+        lttMap.put(rootAge, 2);
 
         // assuming the nodes list contains tips and then nodes, and the last is root.
         for (int i = nodes.size(); i-- > 0; ) {
@@ -124,9 +150,16 @@ public class LTTUtils {
                 } // end if
             } // end if isRoot
         } // end for loop
-
-        System.out.println(Arrays.toString(nodes.stream().mapToDouble(TimeTreeNode::getAge).toArray()));
-
+//        System.out.println(Arrays.toString(nodes.stream().mapToDouble(TimeTreeNode::getAge).toArray()));
         return lttMap;
+    }
+
+    public static String printAges(TimeTree tree, boolean includeLeaveNodes) {
+        List<TimeTreeNode> nodes;
+        if (includeLeaveNodes)
+            nodes = tree.getNodes();
+        else
+            nodes = tree.getInternalNodes();
+        return Arrays.toString(nodes.stream().mapToDouble(TimeTreeNode::getAge).toArray());
     }
 }
