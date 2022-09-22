@@ -26,7 +26,7 @@ public class TimeTreeExtraPlotComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(TimeTreeExtraPlotComponent.class);
 
-    static Font minPlotFont = new Font(Font.MONOSPACED, Font.PLAIN, Utils.MIN_FONT_SIZE);
+    static Font axisLabelFont = new Font(Font.MONOSPACED, Font.PLAIN, (Utils.MIN_FONT_SIZE+Utils.MAX_FONT_SIZE)/2);
 
     public static final String LTT_TITLE = "LTT Plot";
     public static final String NE_TITLE = "Ne Plot";
@@ -69,8 +69,8 @@ public class TimeTreeExtraPlotComponent extends JComponent {
 //                    PlotOrientation.VERTICAL, false,true,false);
 //        }
         XYPlot plot = Objects.requireNonNull(lineChart).getXYPlot();
-//            plot.getDomainAxis().setLabelFont(minPlotFont);
-//            plot.getRangeAxis().setLabelFont(minPlotFont);
+        plot.getDomainAxis().setLabelFont(axisLabelFont);
+        plot.getRangeAxis().setLabelFont(axisLabelFont);
         // y axis is integer
         plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         plot.setBackgroundPaint(Color.white);
