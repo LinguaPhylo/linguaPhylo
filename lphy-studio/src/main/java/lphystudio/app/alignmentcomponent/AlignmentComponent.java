@@ -3,29 +3,30 @@ package lphystudio.app.alignmentcomponent;
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.alignment.Alignment;
 import lphy.evolution.alignment.ErrorAlignment;
+import lphy.evolution.likelihood.AbstractPhyloCTMC;
 import lphy.evolution.likelihood.PhyloCTMC;
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphystudio.app.Utils;
+import lphystudio.app.FontUtils;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 public class AlignmentComponent extends JComponent {
+    public static boolean showErrorsIfAvailable = true;
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
 
-    static Font taxaMinFont = new Font(Font.MONOSPACED, Font.PLAIN, Utils.MIN_FONT_SIZE);
+    static Font taxaMinFont = FontUtils.MIN_FONT;
 
     Color[] colors;
-    Value<? extends Alignment> alignmentValue;
+    Value<? extends Alignment> alignmentValue; // required to get the tree from PhyloCTMC
     Alignment alignment;
 
     Value<TimeTree> timeTree = null;
@@ -34,7 +35,8 @@ public class AlignmentComponent extends JComponent {
 
     int maxTaxaWidth = 0;
 
-    public static boolean showErrorsIfAvailable = true;
+    private Font taxaFont = taxaMinFont;
+
 
     public AlignmentComponent(Value<? extends Alignment> av) {
         this.alignmentValue = av;
@@ -45,22 +47,22 @@ public class AlignmentComponent extends JComponent {
         if (av instanceof RandomVariable) {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
             if (gen instanceof PhyloCTMC) {
-                timeTree = ((PhyloCTMC) gen).getParams().get("tree");
+                timeTree = ((AbstractPhyloCTMC) gen).getParams().get("tree");
             }
         }
 
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    setShowTreeInAlignmentViewerIfAvailable(!getShowTreeInAlignmentViewerIfAvailable());
-                } else {
-                    showErrorsIfAvailable = !showErrorsIfAvailable;
-                }
-                repaint();
-            }
-        });
+//        addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//
+//                if (e.getButton() == MouseEvent.BUTTON1) {
+//                    setShowTreeInAlignmentViewerIfAvailable(!getShowTreeInAlignmentViewerIfAvailable());
+//                } else {
+//                    showErrorsIfAvailable = !showErrorsIfAvailable;
+//                }
+//                repaint();
+//            }
+//        });
 
         computeMinMaxSize();
 
@@ -68,17 +70,14 @@ public class AlignmentComponent extends JComponent {
     }
 
     private void computeMinMaxSize() {
-        int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int desktopHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-
-        int maximumWidth = Math.min(desktopWidth, Utils.MAX_FONT_SIZE*alignment.nchar());
-        int maximumHeight = Math.min(desktopHeight, Utils.MAX_FONT_SIZE*alignment.ntaxa());
-        int minimumHeight = Utils.MIN_FONT_SIZE*alignment.ntaxa();
+        int maximumWidth = FontUtils.getMaxWidthWithinScreen(alignment.nchar());
+        int maximumHeight = FontUtils.getMaxHeightWithinScreen(alignment.ntaxa());
+        int minimumHeight = FontUtils.MIN_FONT_SIZE * alignment.ntaxa();
 
         maxTaxaWidth = getMaxStringWidth(alignment.getTaxa().getTaxaNames(), getFontMetrics(taxaMinFont));
         if (maxTaxaWidth < 50) maxTaxaWidth = 50;
 
-        int minimumWidth = maxTaxaWidth + Math.max(alignment.nchar(), Utils.MIN_FONT_SIZE);
+        int minimumWidth = maxTaxaWidth + Math.max(alignment.nchar(), FontUtils.MIN_FONT_SIZE);
 
         if (isShowingTree()) minimumWidth += maxTaxaWidth;
 
@@ -99,7 +98,16 @@ public class AlignmentComponent extends JComponent {
     // for CharSetAlignment
     public AlignmentComponent() { }
 
-    static boolean getShowTreeInAlignmentViewerIfAvailable() {
+    // for other JComponent
+    public Font getTaxaFont() {
+        return taxaFont;
+    }
+
+    public Alignment getAlignment() {
+        return Objects.requireNonNull(alignment);
+    }
+
+    public static boolean getShowTreeInAlignmentViewerIfAvailable() {
         return preferences.getBoolean("showTreeInAlignmentViewerIfAvailable", true);
     }
 
@@ -119,19 +127,8 @@ public class AlignmentComponent extends JComponent {
         int xdelta = 0;
 
         double h = height / (double) alignment.ntaxa();
-
-        Font f = taxaMinFont;
-        if (h<9) {
-            g.setFont(f.deriveFont(8.0f));
-        } else if (h < 10) {
-            g.setFont(f.deriveFont(9.0f));
-        } else if (h < 11) {
-            g.setFont(f.deriveFont(10.0f));
-        } else if (h < 12) {
-            g.setFont(f.deriveFont(11.0f));
-        } else {
-            g.setFont(f.deriveFont(12.0f));
-        }
+        taxaFont = FontUtils.deriveFont(h);
+        g.setFont(taxaFont);
 
         if (isShowingTree()) {
 

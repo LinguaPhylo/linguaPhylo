@@ -3,7 +3,7 @@ package lphystudio.app.treecomponent;
 import lphy.evolution.coalescent.StructuredCoalescent;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
-import lphystudio.app.Utils;
+import lphystudio.app.FontUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -62,12 +62,10 @@ public class TimeTreeComponent extends JComponent {
         this();
 
         setTimeTree(tree);
-        int desktopWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-
-        int maximumWidth = desktopWidth;
-        int maximumHeight = Utils.MAX_FONT_SIZE * tree.n();
+        int maximumWidth = FontUtils.getMaxWidthWithinScreen(-1); // return screen width
+        int maximumHeight = FontUtils.MAX_FONT_SIZE * tree.n();
         int minimumWidth = 100;
-        int minimumHeight = Utils.MIN_FONT_SIZE * tree.n();
+        int minimumHeight = FontUtils.getMinHeight(tree.n());
 
         setMaximumSize(new Dimension(maximumWidth, maximumHeight));
         setMinimumSize(new Dimension(minimumWidth, minimumHeight));

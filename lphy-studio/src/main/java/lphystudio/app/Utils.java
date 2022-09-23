@@ -19,9 +19,6 @@ import java.nio.file.Paths;
 
 public class Utils {
 
-    public static int MIN_FONT_SIZE = 8;
-    public static int MAX_FONT_SIZE = 16;
-
     static File lastDirectory = null;
 
     /**

@@ -1,11 +1,14 @@
 package lphystudio.app.graphicalmodelpanel;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.core.*;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
 import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
+import lphystudio.app.alignmentcomponent.AlignmentComponent;
+import lphystudio.app.alignmentcomponent.SequenceTypePanel;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphystudio.app.treecomponent.TimeTreeComponent;
@@ -288,6 +291,48 @@ public class GraphicalModelPanel extends JPanel {
         JComponent viewer = null;
         if (obj instanceof Value) {
             viewer = ViewerRegister.getJComponentForValue(obj);
+
+            if (viewer instanceof TimeTreeComponent timeTreeComponent) {
+//            if (timeTreeComponent.getTimeTree().isUltrametric()) {
+                viewer = createTimeTreeSplitPane(timeTreeComponent);
+//            }
+            } else if (viewer instanceof AlignmentComponent alignmentComponent) {
+                SequenceType sequenceType = alignmentComponent.getAlignment().getSequenceType();
+                SequenceTypePanel sequenceTypePanel = new SequenceTypePanel(sequenceType);
+                JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, alignmentComponent, sequenceTypePanel);
+                splitPane.setResizeWeight(1.0);
+                splitPane.setOneTouchExpandable(true);
+                splitPane.setContinuousLayout(true);
+                splitPane.setBorder(null);
+                splitPane.setBackground(Color.white);
+                final double ratio = 0.95;
+//                if (SequenceTypePanel.isShowLegends())
+                    splitPane.setDividerLocation(ratio);
+//                else
+//                    splitPane.setDividerLocation(1.0);
+
+                splitPane.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getButton() == MouseEvent.BUTTON1)
+                            AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(
+                                    !AlignmentComponent.getShowTreeInAlignmentViewerIfAvailable());
+                        else if (e.getButton() == MouseEvent.BUTTON3) {
+                            SequenceTypePanel.setShowLegends(!SequenceTypePanel.isShowLegends());
+                            if (SequenceTypePanel.isShowLegends())
+                                splitPane.setDividerLocation(ratio);
+                            else
+                                splitPane.setDividerLocation(1.0);
+                        } else {
+                            AlignmentComponent.showErrorsIfAvailable = !AlignmentComponent.showErrorsIfAvailable;
+                        }
+                        splitPane.repaint();
+                    }
+                });
+
+                viewer = splitPane;
+            }
+
         } else if (obj instanceof VectorizedFunction<?>) {
             viewer = new JLabel(((VectorizedFunction<?>) obj).getComponentFunction(0).getRichDescription(0));
         } else if (obj instanceof Generator) {
@@ -304,12 +349,6 @@ public class GraphicalModelPanel extends JPanel {
             viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             viewerPanel.add(viewer);
             viewer = viewerPanel;
-        }
-
-        if (viewer instanceof TimeTreeComponent timeTreeComponent) {
-//            if (timeTreeComponent.getTimeTree().isUltrametric()) {
-                viewer = createTimeTreeSplitPane(timeTreeComponent);
-//            }
         }
 
         rightPane.currentSelectionContainer.setViewportView(viewer);
@@ -333,6 +372,10 @@ public class GraphicalModelPanel extends JPanel {
         treeSplitPane.setContinuousLayout(true);
         treeSplitPane.setBorder(null);
         treeSplitPane.setBackground(Color.white);
+//        if (TimeTreeExtraPlotComponent.isShowExtraPlot())
+//            treeSplitPane.setDividerLocation(0.5);
+//        else
+//            treeSplitPane.setDividerLocation(1.0);
 
         //TODO not working
 //        if (TimeTreeExtraPlotComponent.isShowExtraPlot())

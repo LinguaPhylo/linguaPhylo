@@ -2,7 +2,7 @@ package lphystudio.app.treecomponent;
 
 import lphy.evolution.tree.LTTUtils;
 import lphy.evolution.tree.TimeTree;
-import lphystudio.app.Utils;
+import lphystudio.app.FontUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -26,7 +26,7 @@ public class TimeTreeExtraPlotComponent extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(TimeTreeExtraPlotComponent.class);
 
-    static Font axisLabelFont = new Font(Font.MONOSPACED, Font.PLAIN, (Utils.MIN_FONT_SIZE+Utils.MAX_FONT_SIZE)/2);
+    static Font axisLabelFont = FontUtils.MID_FONT;
 
     public static final String LTT_TITLE = "LTT Plot";
     public static final String NE_TITLE = "Ne Plot";
