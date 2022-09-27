@@ -457,9 +457,9 @@ public class GraphicalModelPanel extends JPanel {
      * clear panel, parser, and interpreters
      */
     public void clear() {
-        rightPane.clear();
         dataInterpreter.clear();
         modelInterpreter.clear();
         component.clear();
+        rightPane.clear();
     }
 }

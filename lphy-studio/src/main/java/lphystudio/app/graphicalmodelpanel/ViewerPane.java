@@ -41,6 +41,8 @@ public class ViewerPane extends JTabbedPane {
     JMenu viewerMenu = new JMenu("Viewers");
 
     public void clear() {
+        currentSelectionContainer.setViewport(null);
+        currentSelectionContainer.setBorder(null);
         treeLog.clear();
         variableLog.clear();
     }
