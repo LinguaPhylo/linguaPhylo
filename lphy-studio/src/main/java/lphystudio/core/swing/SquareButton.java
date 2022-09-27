@@ -13,8 +13,8 @@ public class SquareButton extends JButton {
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    private Color backgroundColor = Color.white;
-    private Color borderColor = Color.black;
+    protected Color backgroundColor = Color.white;
+    protected Color borderColor = Color.black;
 
     Point2D origin = new Point2D.Double(0,0);
 

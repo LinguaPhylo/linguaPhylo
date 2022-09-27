@@ -12,6 +12,7 @@ public class FontUtils {
     public static int MAX_FONT_SIZE = 16;
 
     public static Font MIN_FONT = new Font(Font.MONOSPACED, Font.PLAIN, FontUtils.MIN_FONT_SIZE);
+    // size (16+8)/2 = 12
     public static Font MID_FONT = new Font(Font.MONOSPACED, Font.PLAIN, (MIN_FONT_SIZE+MAX_FONT_SIZE)/2);
     public static Font MAX_FONT = new Font(Font.MONOSPACED, Font.PLAIN, FontUtils.MAX_FONT_SIZE);
 
