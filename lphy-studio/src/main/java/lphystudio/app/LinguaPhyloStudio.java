@@ -102,7 +102,7 @@ public class LinguaPhyloStudio {
         fileMenu.add(tutMenu);
         listAllFiles(tutMenu);
 
-        buildViewMenu(menuBar);
+        buildPreferenceMenu(menuBar);
         menuBar.add(panel.getRightPane().getMenu());
 
         // Tools
@@ -265,12 +265,23 @@ public class LinguaPhyloStudio {
         saveModelToRTF.addActionListener(e -> exportToRtf());
     }
 
-    private void buildViewMenu(JMenuBar menuBar) {
+    private void buildPreferenceMenu(JMenuBar menuBar) {
         GraphicalModelComponent component = panel.getComponent();
         //Build the second menu.
         JMenu viewMenu = new JMenu("View");
         viewMenu.setMnemonic(KeyEvent.VK_V);
+//        JMenu viewMenu = new JMenu("Preferences");
+//        viewMenu.setMnemonic(KeyEvent.VK_P);
         menuBar.add(viewMenu);
+
+//        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
+//        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
+//        saveAlignments.setState(GraphicalModelComponent.getSaveAlignments());
+//        saveAlignments.addActionListener(
+//                e -> component.setSaveAlignments(saveAlignments.getState()));
+//        viewMenu.add(saveAlignments);
+//
+//        viewMenu.addSeparator();
 
         JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
         showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
