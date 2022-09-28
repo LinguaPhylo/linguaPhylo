@@ -3,11 +3,47 @@ package lphy.evolution.alignment;
 import lphy.evolution.traits.CharSetBlock;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * @author Walter Xie
  */
 public final class AlignmentUtils {
+
+    /**
+     * Exclude ambiguous states and gaps.
+     * @param alignment  {@link SimpleAlignment} storing states as integers.
+     * @return   int[] of counting constant sites, where the index is the state,
+     *           and the value is the count of the constant site on that state.
+     */
+    public static int[] getConstantSites(final SimpleAlignment alignment) {
+        final int ntaxa = Objects.requireNonNull(alignment).ntaxa();
+        final int nsites = alignment.nchar();
+        // Exclude ambiguous states and gaps.
+        final int stateCount = alignment.getCanonicalStateCount();
+
+        // index is state
+        int[] counter = new int[stateCount];
+
+        boolean isConstant;
+        int firstState;
+        for (int i = 0; i < nsites; i++) {
+            isConstant = true;
+            firstState = alignment.getState(0, i);
+            for (int t = 1; t < ntaxa; t++) {
+                if (alignment.getState(t, i) != firstState) {
+                    isConstant = false;
+                    break;
+                }
+            }
+
+            if (isConstant)
+                counter[firstState] += 1;
+        }
+        return counter;
+    }
     
     //*** charsets ***//
 
