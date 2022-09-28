@@ -16,6 +16,8 @@ public class SimpleAlignment extends AbstractAlignment {
 
     int[][] alignment;
 
+    int[] constantSitesMarker;
+
     /**
      * for simulated alignment
      * @see AbstractAlignment
@@ -97,6 +99,40 @@ public class SimpleAlignment extends AbstractAlignment {
             builder.append(Objects.requireNonNull(state));
         }
         return builder.toString();
+    }
+
+    /**
+     * Mark the constant sites.
+     * @return int[], where index is the site index, if constant site, the value is a state,
+     *         otherwise -1 for variable site.
+     */
+    public int[] getConstantSitesMarker() {
+        if (constantSitesMarker != null)
+            return constantSitesMarker; // cached
+
+        constantSitesMarker = new int[nchar];
+        boolean isConstant;
+        int firstState;
+        int tmp;
+        for (int i = 0; i < nchar; i++) {
+            isConstant = true;
+            firstState = getState(0, i);
+            for (int t = 1; t < ntaxa(); t++) {
+                tmp = getState(t, i);
+                if (tmp < 0 )
+                    throw new IllegalArgumentException("Illegal state " + tmp + " in " + getTaxonName(t) + " sequence !");
+                if (tmp != firstState) {
+                    isConstant = false;
+                    break;
+                }
+            }
+
+            if (isConstant)
+                constantSitesMarker[i] = firstState; // constant site
+            else
+                constantSitesMarker[i] = -1; // variable site
+        }
+        return constantSitesMarker;
     }
 
     @Deprecated

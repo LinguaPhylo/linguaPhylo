@@ -13,34 +13,19 @@ import java.util.TreeMap;
 public final class AlignmentUtils {
 
     /**
-     * Exclude ambiguous states and gaps.
      * @param alignment  {@link SimpleAlignment} storing states as integers.
-     * @return   int[] of counting constant sites, where the index is the state,
+     * @return   a counter of counting constant sites, where the index is the state,
      *           and the value is the count of the constant site on that state.
+     *           If any states not existing in the key, then assume the count is 0.
      */
-    public static int[] getConstantSites(final SimpleAlignment alignment) {
-        final int ntaxa = Objects.requireNonNull(alignment).ntaxa();
-        final int nsites = alignment.nchar();
-        // Exclude ambiguous states and gaps.
-        final int stateCount = alignment.getCanonicalStateCount();
+    public static Map<Integer, Integer> countConstantSites(final SimpleAlignment alignment) {
+        Map<Integer, Integer> counter = new TreeMap<>();
 
-        // index is state
-        int[] counter = new int[stateCount];
-
-        boolean isConstant;
-        int firstState;
-        for (int i = 0; i < nsites; i++) {
-            isConstant = true;
-            firstState = alignment.getState(0, i);
-            for (int t = 1; t < ntaxa; t++) {
-                if (alignment.getState(t, i) != firstState) {
-                    isConstant = false;
-                    break;
-                }
-            }
-
-            if (isConstant)
-                counter[firstState] += 1;
+        // index is the site index, if constant site, the value is a state
+        int[] marker = Objects.requireNonNull(alignment).getConstantSitesMarker();
+        for (int m : marker) {
+            if (m > 0) // -1 for variable site
+                counter.merge(m, 1, Integer::sum);
         }
         return counter;
     }
