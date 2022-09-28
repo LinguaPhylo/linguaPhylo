@@ -14,9 +14,10 @@ import java.util.Objects;
  */
 public class SimpleAlignment extends AbstractAlignment {
 
+    public static final int CONSTANT_SITE_STATE = -1;
     int[][] alignment;
 
-    int[] constantSitesMarker;
+    int[] constantSitesMark;
 
     /**
      * for simulated alignment
@@ -106,11 +107,11 @@ public class SimpleAlignment extends AbstractAlignment {
      * @return int[], where index is the site index, if constant site, the value is a state,
      *         otherwise -1 for variable site.
      */
-    public int[] getConstantSitesMarker() {
-        if (constantSitesMarker != null)
-            return constantSitesMarker; // cached
+    public int[] getConstantSitesMark() {
+        if (constantSitesMark != null)
+            return constantSitesMark; // cached
 
-        constantSitesMarker = new int[nchar];
+        constantSitesMark = new int[nchar];
         boolean isConstant;
         int firstState;
         int tmp;
@@ -128,11 +129,23 @@ public class SimpleAlignment extends AbstractAlignment {
             }
 
             if (isConstant)
-                constantSitesMarker[i] = firstState; // constant site
+                constantSitesMark[i] = firstState; // constant site
             else
-                constantSitesMarker[i] = -1; // variable site
+                constantSitesMark[i] = CONSTANT_SITE_STATE; // variable site
         }
-        return constantSitesMarker;
+        return constantSitesMark;
+    }
+
+    public String getSequenceVarSite(int taxonIndex) {
+        StringBuilder builder = new StringBuilder();
+        int[] mark = getConstantSitesMark();
+        State state;
+        for (int j = 0; j < alignment[taxonIndex].length; j++) {
+            state = sequenceType.getState(alignment[taxonIndex][j]);
+            if (mark[j] > CONSTANT_SITE_STATE)
+                builder.append(Objects.requireNonNull(state));
+        }
+        return builder.toString();
     }
 
     @Deprecated

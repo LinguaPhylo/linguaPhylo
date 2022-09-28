@@ -22,8 +22,8 @@ public final class AlignmentUtils {
         Map<Integer, Integer> counter = new TreeMap<>();
 
         // index is the site index, if constant site, the value is a state
-        int[] marker = Objects.requireNonNull(alignment).getConstantSitesMarker();
-        for (int m : marker) {
+        int[] mark = Objects.requireNonNull(alignment).getConstantSitesMark();
+        for (int m : mark) {
             if (m > 0) // -1 for variable site
                 counter.merge(m, 1, Integer::sum);
         }
