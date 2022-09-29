@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class SimpleAlignment extends AbstractAlignment {
 
-    public static final int CONSTANT_SITE_STATE = -1;
+    public static final int VAR_SITE_STATE = -1;
     int[][] alignment;
 
     // index is the site index, if constant site, the value is the constant state,
@@ -98,6 +98,7 @@ public class SimpleAlignment extends AbstractAlignment {
 //                Standard standard = (Standard) sequenceType;
 //                builder.append(standard.getStateName(alignment[taxonIndex][j]));
 //            } else
+            // convert int state into letters
             state = sequenceType.getState(alignment[taxonIndex][j]);
             builder.append(Objects.requireNonNull(state));
         }
@@ -137,10 +138,10 @@ public class SimpleAlignment extends AbstractAlignment {
             if (isConstant)
                 constantSitesMark[i] = firstState; // constant site
             else
-                constantSitesMark[i] = CONSTANT_SITE_STATE; // variable site
+                constantSitesMark[i] = VAR_SITE_STATE; // variable site
         }
-        if (Arrays.stream(constantSitesMark).allMatch(m -> m <= SimpleAlignment.CONSTANT_SITE_STATE))
-            constantSitesMark = new int[0]; // all -1
+        if (Arrays.stream(constantSitesMark).allMatch(m -> m == SimpleAlignment.VAR_SITE_STATE))
+            constantSitesMark = new int[0]; // make convenient for all -1, namely no constant site
         return constantSitesMark;
     }
 
@@ -156,9 +157,11 @@ public class SimpleAlignment extends AbstractAlignment {
         int[] mark = getConstantSitesMark();
         State state;
         for (int j = 0; j < alignment[taxonIndex].length; j++) {
-            state = sequenceType.getState(alignment[taxonIndex][j]);
-            if (mark[j] > CONSTANT_SITE_STATE)
+            // if mark[j] > -1, it is constant site
+            if (mark[j] == VAR_SITE_STATE) {
+                state = sequenceType.getState(alignment[taxonIndex][j]);
                 builder.append(Objects.requireNonNull(state));
+            }
         }
         return builder.toString();
     }
