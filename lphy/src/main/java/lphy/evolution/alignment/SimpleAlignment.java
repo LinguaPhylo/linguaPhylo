@@ -17,6 +17,8 @@ public class SimpleAlignment extends AbstractAlignment {
     public static final int CONSTANT_SITE_STATE = -1;
     int[][] alignment;
 
+    // index is the site index, if constant site, the value is the constant state,
+    // otherwise -1 for variable site. if all -1 then set constantSitesMark = new int[0]
     int[] constantSitesMark;
 
     /**
@@ -104,12 +106,16 @@ public class SimpleAlignment extends AbstractAlignment {
 
     /**
      * Mark the constant sites.
-     * @return int[], where index is the site index, if constant site, the value is a state,
-     *         otherwise -1 for variable site.
+     * @return int[], where index is the site index, if constant site,
+     *         the value is the constant state, otherwise -1 for variable site.
+     *         if all -1 then return int[0]
      */
     public int[] getConstantSitesMark() {
         if (constantSitesMark != null)
             return constantSitesMark; // cached
+        if (alignment.length != ntaxa() && alignment[0].length != nchar)
+            throw new IllegalArgumentException("Illegal alignment : " +
+                    alignment.length + " != " + ntaxa() + ", " + alignment[0].length + " != " + nchar);
 
         constantSitesMark = new int[nchar];
         boolean isConstant;
@@ -133,10 +139,19 @@ public class SimpleAlignment extends AbstractAlignment {
             else
                 constantSitesMark[i] = CONSTANT_SITE_STATE; // variable site
         }
+        if (Arrays.stream(constantSitesMark).allMatch(m -> m <= SimpleAlignment.CONSTANT_SITE_STATE))
+            constantSitesMark = new int[0]; // all -1
         return constantSitesMark;
     }
 
+    public boolean hasConstantSite() {
+        return constantSitesMark == null || constantSitesMark.length == 0;
+    }
+
     public String getSequenceVarSite(int taxonIndex) {
+        if (! hasConstantSite())
+            return getSequence(taxonIndex);
+
         StringBuilder builder = new StringBuilder();
         int[] mark = getConstantSitesMark();
         State state;

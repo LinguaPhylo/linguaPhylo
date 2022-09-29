@@ -3,7 +3,7 @@ package lphy.evolution.alignment;
 import lphy.evolution.traits.CharSetBlock;
 
 import java.util.List;
-import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -14,12 +14,14 @@ public final class AlignmentUtils {
 
     /**
      * @param alignment  {@link SimpleAlignment} storing states as integers.
-     * @return   a counter of counting constant sites, where the index is the state,
+     * @return   a counter of counting constant sites, where the key is the sorted state,
      *           and the value is the count of the constant site on that state.
      *           If any states not existing in the key, then assume the count is 0.
+     *           {@link NavigableMap#firstKey()} is the smallest recorded state in number,
+     *           {@link NavigableMap#lastKey()} is the largest recorded state in number.
      */
-    public static Map<Integer, Integer> countConstantSites(final SimpleAlignment alignment) {
-        Map<Integer, Integer> counter = new TreeMap<>();
+    public static NavigableMap<Integer, Integer> countConstantSites(final SimpleAlignment alignment) {
+        NavigableMap<Integer, Integer> counter = new TreeMap<>();
 
         // index is the site index, if constant site, the value is a state
         int[] mark = Objects.requireNonNull(alignment).getConstantSitesMark();
