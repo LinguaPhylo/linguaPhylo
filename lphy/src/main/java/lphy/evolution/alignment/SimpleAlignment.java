@@ -145,7 +145,7 @@ public class SimpleAlignment extends AbstractAlignment {
     }
 
     public boolean hasConstantSite() {
-        return constantSitesMark == null || constantSitesMark.length == 0;
+        return constantSitesMark != null && constantSitesMark.length > 0;
     }
 
     public String getSequenceVarSite(int taxonIndex) {
