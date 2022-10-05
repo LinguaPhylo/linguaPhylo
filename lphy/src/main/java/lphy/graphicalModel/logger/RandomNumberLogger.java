@@ -1,6 +1,6 @@
-package lphy.graphicalModel;
+package lphy.graphicalModel.logger;
 
-import lphy.core.VarFileLogger;
+import lphy.graphicalModel.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

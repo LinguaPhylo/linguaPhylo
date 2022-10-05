@@ -243,9 +243,8 @@ public class GraphicalModelPanel extends JPanel {
             id = ((Value) displayedElement).getId();
         }
 
-        loggers.add(rightPane.variableLog);
-        loggers.add(rightPane.treeLog);
-        loggers.add(rightPane.variableSummary);
+        // add Loggers here, to trigger after click Sample button
+        loggers.addAll(rightPane.getRandomValueLoggers());
 
         Sampler sampler = new Sampler(component.getParser());
         sampler.sample(reps, loggers);

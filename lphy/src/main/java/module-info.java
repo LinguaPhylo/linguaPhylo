@@ -46,7 +46,10 @@ module lphy {
     exports lphy.graphicalModel;
     exports lphy.graphicalModel.code;
     exports lphy.graphicalModel.types;
+    exports lphy.graphicalModel.logger;
     exports lphy.layeredgraph;
+
+    exports lphy.nexus;
 
     // parser
     exports lphy.parser;

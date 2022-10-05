@@ -1,4 +1,4 @@
-package lphy.core;
+package lphy.graphicalModel.logger;
 
 import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.RandomValueLogger;

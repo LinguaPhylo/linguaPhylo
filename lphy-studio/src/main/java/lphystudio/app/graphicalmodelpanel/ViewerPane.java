@@ -1,9 +1,11 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.GraphicalLPhyParser;
+import lphy.graphicalModel.RandomValueLogger;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.app.narrative.LaTeXNarrative;
+import lphystudio.core.log.AlignmentLog;
 import lphystudio.core.log.TreeLog;
 import lphystudio.core.log.VariableLog;
 import lphystudio.core.log.VariableSummary;
@@ -11,6 +13,7 @@ import lphystudio.core.log.VariableSummary;
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class ViewerPane extends JTabbedPane {
@@ -29,12 +32,14 @@ public class ViewerPane extends JTabbedPane {
     JScrollPane variableSummaryScrollPane;
     JScrollPane variableLogScrollPane;
     JScrollPane treeLogScrollPane;
+    AlignmentLogPanel alignmentLogPanel;
 
     ErrorPanel errorPanel;
 
     VariableSummary variableSummary = new VariableSummary(true, true);
     VariableLog variableLog = new VariableLog(true, true);
     TreeLog treeLog = new TreeLog();
+    AlignmentLog alignmentLog = new AlignmentLog();
 
     JComponent[] viewerComponent = new JComponent[Viewer.values().length];
 
@@ -45,6 +50,7 @@ public class ViewerPane extends JTabbedPane {
         currentSelectionContainer.setBorder(null);
         treeLog.clear();
         variableLog.clear();
+        alignmentLog.clear();
     }
 
     enum Viewer {
@@ -57,6 +63,7 @@ public class ViewerPane extends JTabbedPane {
         Variable_Summary("Variable Summary"),
         Variable_Log("Variable Log"),
         Tree_Log ("Tree Log"),
+        Alignment_Log ("Alignment"),
         Errors ("Errors");
 
         public String name;
@@ -90,6 +97,8 @@ public class ViewerPane extends JTabbedPane {
         variableLogScrollPane = new JScrollPane(variableLog);
         treeLogScrollPane = new JScrollPane(treeLog);
 
+        alignmentLogPanel = new AlignmentLogPanel(alignmentLog);
+
         errorPanel = new ErrorPanel();
 
         viewerComponent[Viewer.Current.ordinal()] = currentSelectionContainer;
@@ -101,6 +110,7 @@ public class ViewerPane extends JTabbedPane {
         viewerComponent[Viewer.Variable_Summary.ordinal()] = variableSummaryScrollPane;
         viewerComponent[Viewer.Variable_Log.ordinal()] = variableLogScrollPane;
         viewerComponent[Viewer.Tree_Log.ordinal()] = treeLogScrollPane;
+        viewerComponent[Viewer.Alignment_Log.ordinal()] = alignmentLogPanel;
         viewerComponent[Viewer.Errors.ordinal()] = errorPanel;
 
         for (Viewer viewer : Viewer.values()) {
@@ -127,6 +137,10 @@ public class ViewerPane extends JTabbedPane {
         }
     }
 
+    public List<RandomValueLogger> getRandomValueLoggers() {
+        return List.of(variableLog, treeLog, variableSummary, alignmentLog);
+    }
+
     @Deprecated
     public StatePanel getConstantsPanel() {
         return (StatePanel) valueScrollPane.getViewport().getView();
@@ -138,6 +152,10 @@ public class ViewerPane extends JTabbedPane {
 
     public TreeLog getTreeLog() {
         return treeLog;
+    }
+
+    public AlignmentLog getAlignmentLog() {
+        return alignmentLog;
     }
 
     public JMenu getMenu() {

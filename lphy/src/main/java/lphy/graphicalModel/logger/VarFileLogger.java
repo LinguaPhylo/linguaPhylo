@@ -1,4 +1,4 @@
-package lphy.core;
+package lphy.graphicalModel.logger;
 
 import lphy.graphicalModel.*;
 import lphy.util.Symbols;

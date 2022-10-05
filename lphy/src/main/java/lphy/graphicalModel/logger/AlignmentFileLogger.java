@@ -1,8 +1,9 @@
-package lphy.evolution.alignment;
+package lphy.graphicalModel.logger;
 
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.RandomValueLogger;
+import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.nexus.NexusWriter;
 

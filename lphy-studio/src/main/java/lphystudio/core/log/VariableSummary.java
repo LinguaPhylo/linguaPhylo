@@ -1,8 +1,8 @@
 package lphystudio.core.log;
 
-import lphy.graphicalModel.RandomNumberLogger;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
+import lphy.graphicalModel.logger.RandomNumberLogger;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
