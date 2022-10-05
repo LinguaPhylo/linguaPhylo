@@ -1,5 +1,6 @@
 package lphystudio.core.log;
 
+import lphy.core.LPhyParser;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
@@ -23,7 +24,10 @@ import static lphystudio.app.graphicalmodelpanel.AlignmentLogPanel.isLogAlignmen
  */
 public class AlignmentLog extends JTextArea implements RandomValueLogger {
 
-    public AlignmentLog() {
+    final LPhyParser parser;
+
+    public AlignmentLog(LPhyParser parser) {
+        this.parser = parser;
     }
 
     public void clear() {
@@ -36,14 +40,15 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         if (rep == 0) {
             setText("alignment");
             for (Value<SimpleAlignment> al : alignmentVariables) {
-                append("\t" + al.getId());
+                String colNm = parser.isClampedVariable(al) ? al.getId() + "-clamped" : al.getId();
+                append("\t" + colNm);
             }
             append("\n");
         }
 
         append(rep+"");
         for (Value<SimpleAlignment> al : alignmentVariables) {
-            append("\t" + al.value().getSummary());
+            append("\t" + al.value().toString());
             if (isLogAlignment())
                 logAlignment(al, rep);
         }
@@ -59,6 +64,13 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         for (Value<?> v : variables) {
             if (v.value() instanceof SimpleAlignment)
                 values.add((Value<SimpleAlignment>) v);
+            else if (v.value() instanceof SimpleAlignment[] simpleAlignments) {
+                // VectorizedRandomVariable value is SimpleAlignment[]
+                String id = v.getCanonicalId();
+                for (int i = 0; i < simpleAlignments.length; i++) {
+                    values.add(new Value<>(id + "-" + i, simpleAlignments[i]));
+                }
+            }
         }
         values.sort(Comparator.comparing(Value::getCanonicalId));
         return values;

@@ -39,7 +39,7 @@ public class ViewerPane extends JTabbedPane {
     VariableSummary variableSummary = new VariableSummary(true, true);
     VariableLog variableLog = new VariableLog(true, true);
     TreeLog treeLog = new TreeLog();
-    AlignmentLog alignmentLog = new AlignmentLog();
+    AlignmentLog alignmentLog;
 
     JComponent[] viewerComponent = new JComponent[Viewer.values().length];
 
@@ -97,6 +97,7 @@ public class ViewerPane extends JTabbedPane {
         variableLogScrollPane = new JScrollPane(variableLog);
         treeLogScrollPane = new JScrollPane(treeLog);
 
+        alignmentLog = new AlignmentLog(parser);
         alignmentLogPanel = new AlignmentLogPanel(alignmentLog);
 
         errorPanel = new ErrorPanel();

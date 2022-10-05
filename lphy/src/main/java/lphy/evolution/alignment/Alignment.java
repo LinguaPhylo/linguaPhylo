@@ -144,9 +144,4 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return Integer.class;
     }
 
-    default String getSummary() {
-        return ntaxa() + " taxa, " + nchar() + " site" + (nchar() <= 1 ? "" : "s") +
-                (getSequenceType() != null ? ", " + getSequenceType().getName() : "");
-    }
-
 }
