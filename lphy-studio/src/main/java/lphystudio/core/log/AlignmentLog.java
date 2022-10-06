@@ -68,7 +68,9 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
                 // VectorizedRandomVariable value is SimpleAlignment[]
                 String id = v.getCanonicalId();
                 for (int i = 0; i < simpleAlignments.length; i++) {
-                    values.add(new Value<>(id + "-" + i, simpleAlignments[i]));
+                    // new id
+                    String newID = parser.isClampedVariable(v) ? id + "-" + i + "-clamped" : id + "-" + i;
+                    values.add(new Value<>(newID, simpleAlignments[i]));
                 }
             }
         }
