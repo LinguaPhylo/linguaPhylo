@@ -34,6 +34,10 @@ allprojects {
 
 }
 
+// disable build folder at root project
+tasks.jar {enabled = false}
+tasks.build {enabled = false}
+
 // Configures the sub-projects of this project.
 subprojects {
     group = "io.github.linguaphylo"
