@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.meanParamName;
 import static lphy.core.distributions.DistributionConstants.sdParamName;
+import static lphy.evolution.coalescent.CoalescentConstants.thetaParamName;
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 import static org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY;
 
@@ -63,6 +64,12 @@ public class Normal extends ParametricDistribution<Double> implements Generative
             put(meanParamName, mean);
             put(sdParamName, sd);
         }};
+    }
+
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(meanParamName)) mean = value;
+        else if (paramName.equals(sdParamName)) sd = value;
+        else super.setParam(paramName, value);
     }
 
     public Value<Number> getMean() {

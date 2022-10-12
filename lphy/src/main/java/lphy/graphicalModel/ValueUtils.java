@@ -60,6 +60,15 @@ public class ValueUtils {
         return value.value().doubleValue();
     }
 
+    public static double[] doubleArrayValue(Value<Number[]> value) {
+        Number[] num = value.value();
+        double[] values = new double[num.length];
+        for (int i = 0; i < num.length; i++) {
+            values[i] = num[i].doubleValue();
+        }
+        return values;
+    }
+
     public static Value createValue(Integer intValue, DeterministicFunction generator) {
         return new IntegerValue(null, intValue, generator);
     }
