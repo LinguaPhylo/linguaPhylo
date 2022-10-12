@@ -1,10 +1,11 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.*;
-import lphy.math.MathUtils;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import static lphy.core.distributions.DistributionConstants.sdParamName;
 import static lphy.core.functions.GeneralLinearFunction.betaParamName;
