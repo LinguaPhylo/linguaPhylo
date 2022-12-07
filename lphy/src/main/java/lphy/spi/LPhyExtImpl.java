@@ -18,6 +18,8 @@ import lphy.core.functions.datatype.StandardDatatypeFunction;
 import lphy.core.functions.taxa.*;
 import lphy.core.functions.tree.*;
 import lphy.evolution.alignment.ErrorModel;
+import lphy.evolution.alignment.FilterMissingSites;
+import lphy.evolution.alignment.MissingSites;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.MultispeciesCoalescent;
@@ -64,8 +66,10 @@ public class LPhyExtImpl implements LPhyExtension {
             SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
             // skyline
             SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
+            // alignment
+            ErrorModel.class, FilterMissingSites.class, MissingSites.class,
             // others
-            ErrorModel.class, RandomBooleanArray.class,
+            RandomBooleanArray.class,
             // phylogenetic distribution
             PhyloBrownian.class, PhyloMultivariateBrownian.class,
             PhyloOU.class,
