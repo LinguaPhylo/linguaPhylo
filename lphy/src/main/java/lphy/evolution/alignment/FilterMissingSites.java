@@ -61,7 +61,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
         }
 
         // have to know nchar before create a new alignment
-        Alignment newAlignment = new SimpleAlignment(newSites.size(), original);
+        Alignment newAlignment = new ErrorAlignment(newSites.size(), original);
         for (int j = 0; j < newSites.size(); j++) {
             aSite = newSites.get(j);
             for (int i = 0; i < original.ntaxa(); i++) {
