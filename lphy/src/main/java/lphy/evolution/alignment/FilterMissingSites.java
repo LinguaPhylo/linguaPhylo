@@ -11,7 +11,7 @@ import java.util.TreeMap;
 /**
  * @author Walter Xie
  */
-public class FilterMissingSites implements GenerativeDistribution<Alignment> {
+public class FilterMissingSites extends DeterministicFunction<Alignment> {
 
     Value<Double> thresholdDecimal;
     Value<Alignment> originalAlignment;
@@ -44,7 +44,7 @@ public class FilterMissingSites implements GenerativeDistribution<Alignment> {
     @GeneratorInfo(name = "FilterMissingSites",
             category = GeneratorCategory.TAXA_ALIGNMENT,
             description = "To filter out the sites having missing data > the threshold in a decimal form (e.g. 0.5).")
-    public RandomVariable<Alignment> sample() {
+    public Value<Alignment> apply() {
 
         Alignment original = originalAlignment.value();
 
@@ -69,7 +69,7 @@ public class FilterMissingSites implements GenerativeDistribution<Alignment> {
             }
         }
 
-        return new RandomVariable<>("D", newAlignment, this);
+        return new Value<>(null, newAlignment, this);
     }
 
     private boolean isFiltered(int[] aSite, double threshold) {

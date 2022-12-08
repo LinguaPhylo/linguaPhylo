@@ -67,7 +67,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // skyline
             SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
             // alignment
-            ErrorModel.class, FilterMissingSites.class, MissingSites.class,
+            ErrorModel.class, MissingSites.class,
             // others
             RandomBooleanArray.class,
             // phylogenetic distribution
@@ -88,6 +88,8 @@ public class LPhyExtImpl implements LPhyExtension {
             AminoAcidsFunction.class,
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
+            // Alignment
+            FilterMissingSites.class,
             // Tree
             LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
             // Matrix
