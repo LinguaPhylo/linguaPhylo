@@ -41,7 +41,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
     }
 
 
-    @GeneratorInfo(name = "FilterMissingSites",
+    @GeneratorInfo(name = "filterMissingSites",
             category = GeneratorCategory.TAXA_ALIGNMENT,
             description = "To filter out the sites having missing data > the threshold in a decimal form (e.g. 0.5).")
     public Value<Alignment> apply() {
