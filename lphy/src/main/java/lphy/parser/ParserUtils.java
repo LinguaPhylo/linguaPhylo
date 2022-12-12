@@ -180,7 +180,7 @@ public class ParserUtils {
                 // do vector match
                 return vectorGenerator(constructor, arguments, initargs);
             } else {
-                throw new RuntimeException("ERROR! No match, including vector match!");
+                throw new RuntimeException("ERROR! No match in " + name + " constructor arguments, including vector match! ");
             }
 
         } catch (InstantiationException e) {

@@ -1,0 +1,10 @@
+data {
+  D = simulate(lphy="examples/simulation/jcSimData.lphy", alignmentId="F", seed=777);
+  taxa = D.taxa();
+  L = D.nchar();
+}
+model {
+  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+}

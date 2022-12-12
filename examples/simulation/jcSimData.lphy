@@ -1,0 +1,11 @@
+data {
+  L = 200;
+  taxa = taxa(names=1:10);
+}
+model {
+  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+  M ~ MissingSites(alignment=D, prob=0.75);
+  F = filterMissingSites(alignment=M, threshold=0.75);
+}
