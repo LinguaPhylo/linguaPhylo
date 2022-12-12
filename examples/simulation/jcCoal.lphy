@@ -1,5 +1,8 @@
+// set working dir = $PROJECT_DIR$/examples/simulation
+// keep no parent dir in the path to make unit test working
+// TODO: script works in studio but not in unit test
 data {
-  D = simulate(lphy="examples/simulation/jcSimData.lphy", alignmentId="F", seed=777);
+  D = simulate(lphy="jcSimData.lphy", alignmentId="F", seed=777);
   taxa = D.taxa();
   L = D.nchar();
 }

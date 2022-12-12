@@ -6,6 +6,7 @@ import lphy.core.Sampler;
 import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.*;
 import lphy.parser.REPL;
+import lphy.util.LoggerUtils;
 import lphy.util.RandomUtils;
 
 import java.io.File;
@@ -55,6 +56,9 @@ public class Simulate extends DeterministicFunction<Alignment> {
 
         Value<?> algValue = parser.getValue(algId, LPhyParser.Context.model);
         if (algValue != null && algValue.value() instanceof Alignment alig) {
+            LoggerUtils.log.info("Simulate alignment (" + alig.getTaxa().ntaxa() +
+                    " taxa, " + alig.nchar() + " sites, " + alig.getSequenceTypeStr() +
+                    ") from " + file.getAbsolutePath());
             return new Value<>(algId, alig, this);
         }
 
