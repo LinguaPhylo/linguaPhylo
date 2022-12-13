@@ -28,7 +28,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
     private final String algId;
     private boolean saveIntermediateAlg = true;
 
-    private static Map<String, Alignment> intermediateAlignments = new HashMap<>();
+    private Map<String, Alignment> intermediateAlignments = new HashMap<>();
 
     public Simulate(@ParameterInfo(name = lphyScriptParamName, description = "the file path of the lphy script to simulate data.") Value<String> filePathVal,
                     @ParameterInfo(name = idParamName, description = "the selected alignment ID if script produces intermediate alignment(s).") Value<String> algIdVal,
@@ -89,7 +89,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
                 " from the lphy script " + file);
     }
 
-    public static Map<String, Alignment> getIntermediateAlignments() {
+    public Map<String, Alignment> getIntermediateAlignments() {
         return intermediateAlignments;
     }
 }
