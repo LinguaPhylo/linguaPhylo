@@ -20,8 +20,11 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
     public final String alignmentParamName = "alignment";
 
 
-    public FilterMissingSites(@ParameterInfo(name = thresholdParamName, description = "the threshold (decimal form) to remove a site, if the proportion of missing data in this site is greater than the threshold.") Value<Double> thresholdDecimal,
-                              @ParameterInfo(name = alignmentParamName, description = "the alignment without missing sites.") Value<Alignment> originalAlignment) {
+    public FilterMissingSites(@ParameterInfo(name = thresholdParamName,
+            description = "the threshold (decimal form) to remove a site, if the fraction of missing data in this site is greater than or equal to the threshold.")
+                              Value<Double> thresholdDecimal,
+                              @ParameterInfo(name = alignmentParamName,
+            description = "the alignment without missing sites.") Value<Alignment> originalAlignment) {
         this.thresholdDecimal = thresholdDecimal;
         if (thresholdDecimal.value() >= 1)
             throw new IllegalArgumentException("Threshold must < 1 : " + thresholdDecimal.value());
@@ -43,7 +46,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
 
     @GeneratorInfo(name = "filterMissingSites",
             category = GeneratorCategory.TAXA_ALIGNMENT,
-            description = "To filter out the sites having missing data > the threshold in a decimal form (e.g. 0.5).")
+            description = "Remove the site where the fraction of missing genotypes are greater or equal to the threshold in that site.")
     public Value<Alignment> apply() {
 
         Alignment original = originalAlignment.value();
@@ -56,7 +59,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
                 aSite[i] = original.getState(i, j);
             }
             // filter
-            if (isFiltered(aSite, thresholdDecimal.value()))
+            if (!isFiltered(aSite, thresholdDecimal.value()))
                 newSites.add(aSite);
         }
 
@@ -78,6 +81,6 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
             if ( state == sequenceType.getUnknownState().getIndex() )
                 missing++;
         }
-        return missing/aSite.length > threshold;
+        return missing/aSite.length >= threshold;
     }
 }
