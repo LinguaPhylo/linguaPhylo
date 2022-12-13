@@ -53,8 +53,8 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
 
         List<int[]> newSites = new ArrayList<>();
 
-        int[] aSite = new int[original.ntaxa()];
         for (int j = 0; j < original.nchar(); j++) {
+            int[] aSite = new int[original.ntaxa()];
             for (int i = 0; i < original.ntaxa(); i++) {
                 aSite[i] = original.getState(i, j);
             }
@@ -66,7 +66,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
         // have to know nchar before create a new alignment
         Alignment newAlignment = new ErrorAlignment(newSites.size(), original);
         for (int j = 0; j < newSites.size(); j++) {
-            aSite = newSites.get(j);
+            int[] aSite = newSites.get(j);
             for (int i = 0; i < original.ntaxa(); i++) {
                 newAlignment.setState(i, j, aSite[i]);
             }
