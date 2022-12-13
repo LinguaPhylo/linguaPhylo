@@ -59,7 +59,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
                 aSite[i] = original.getState(i, j);
             }
             // filter
-            if (!isFiltered(aSite, thresholdDecimal.value()))
+            if (!toBeRemoved(aSite, thresholdDecimal.value()))
                 newSites.add(aSite);
         }
 
@@ -75,12 +75,12 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
         return new Value<>(null, newAlignment, this);
     }
 
-    private boolean isFiltered(int[] aSite, double threshold) {
+    private boolean toBeRemoved(int[] aSite, double threshold) {
         double missing = 0.0;
         for (int state : aSite) {
             if ( state == sequenceType.getUnknownState().getIndex() )
                 missing++;
         }
-        return missing/aSite.length >= threshold;
+        return missing/(double)aSite.length >= threshold;
     }
 }
