@@ -28,7 +28,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
     private final String algId;
     private boolean saveIntermediateAlg = true;
 
-    private Map<String, Alignment> intermediateAlignments = new HashMap<>();
+    private Map<String, Value<Alignment>> intermediateAlignments = new HashMap<>();
 
     public Simulate(@ParameterInfo(name = lphyScriptParamName, description = "the file path of the lphy script to simulate data.") Value<String> filePathVal,
                     @ParameterInfo(name = idParamName, description = "the selected alignment ID if script produces intermediate alignment(s).") Value<String> algIdVal,
@@ -77,7 +77,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
                 Map<String, Value<?>> model = parser.getModelDictionary();
                 for (Map.Entry<String, Value<?>> entry : model.entrySet()) {
                     if (!entry.getKey().equals(algId) && entry.getValue().value() instanceof Alignment al) {
-                        intermediateAlignments.put(entry.getKey(), al);
+                        intermediateAlignments.put(entry.getKey(), (Value<Alignment>) entry.getValue());
                     }
 //                    System.out.println(entry.getKey() + " => " + entry.getValue());
                 }
@@ -89,7 +89,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
                 " from the lphy script " + file);
     }
 
-    public Map<String, Alignment> getIntermediateAlignments() {
+    public Map<String, Value<Alignment>> getIntermediateAlignments() {
         return intermediateAlignments;
     }
 }
