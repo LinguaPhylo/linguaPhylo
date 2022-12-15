@@ -3,7 +3,7 @@
 // TODO: script works in studio but not in unit test
 data {
   // provide the absolute path if it is not working
-  D = simulate(lphy="jcSimData.lphy", alignmentId="F", seed=777);
+  D = simulate(lphy="jcSimData.lphy", alignmentId="F");
   taxa = D.taxa();
   L = D.nchar();
 }

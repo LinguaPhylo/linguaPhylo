@@ -7,7 +7,6 @@ import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.*;
 import lphy.parser.REPL;
 import lphy.util.LoggerUtils;
-import lphy.util.RandomUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static lphy.util.RandomUtils.SEED_PARA_NAME;
 
 public class Simulate extends DeterministicFunction<Alignment> {
 
@@ -31,8 +28,7 @@ public class Simulate extends DeterministicFunction<Alignment> {
     private Map<String, Alignment> intermediateAlignments = new HashMap<>();
 
     public Simulate(@ParameterInfo(name = lphyScriptParamName, description = "the file path of the lphy script to simulate data.") Value<String> filePathVal,
-                    @ParameterInfo(name = idParamName, description = "the selected alignment ID if script produces intermediate alignment(s).") Value<String> algIdVal,
-                    @ParameterInfo(name = SEED_PARA_NAME, description = "the seed.", optional = true) Value<Integer> seedVal){
+                    @ParameterInfo(name = idParamName, description = "the selected alignment ID if script produces intermediate alignment(s).") Value<String> algIdVal){
 //                    @ParameterInfo(name = logAlgParamName, description = "log intermediate alignments.", optional = true) Value<Boolean> logAlgVal) {
 
         if (filePathVal == null) throw new IllegalArgumentException("The lphy file path can't be null!");
@@ -43,9 +39,6 @@ public class Simulate extends DeterministicFunction<Alignment> {
 
         if (algIdVal == null) throw new IllegalArgumentException("The alignment ID can't be null!");
         this.algId = algIdVal.value();
-        if (seedVal != null) {
-            RandomUtils.setSeed(seedVal.value());
-        }
 //        if (logAlgVal != null) {
 //            saveIntermediateAlg = logAlgVal.value();
 //        }

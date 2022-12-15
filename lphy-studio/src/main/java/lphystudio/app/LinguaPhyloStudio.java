@@ -4,6 +4,7 @@ import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.util.LoggerUtils;
+import lphy.util.RandomUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
@@ -394,10 +395,15 @@ public class LinguaPhyloStudio {
         String dir = null;
         String lphyFileName = null;
         for (int i = 0; i < args.length; i++) {
-            if ("-d".equals(args[i])) {
+            if ("-d".equals(args[i].trim())) {
                 i++;
                 // -d examples
                 dir = args[i];
+            } else if ("-seed".equals(args[i].trim())) {
+                i++;
+                // -seed 777
+                long seed = Long.parseLong(args[i]);
+                RandomUtils.setSeed(seed);
             } else // the rest is input file
                 lphyFileName = args[i];
         }
