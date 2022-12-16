@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.traits.CharSetBlock;
+import lphy.util.LoggerUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -36,6 +37,44 @@ public final class AlignmentUtils {
     }
 
     /**
+     * @param alignment  {@link SimpleAlignment} only containing the constant sites.
+     * @param ignoreUnknown    ignore unknown or gap
+     * @return   a counter of constant sites,
+     *           where the key is one of the sorted canonical states,
+     *           and the value is how many constant sites at that state.
+     *           If a canonical state does not exist in the alignment,
+     *           then it will be not in the key set.
+     *           {@link NavigableMap#firstKey()} is the smallest recorded canonical state in number,
+     *           {@link NavigableMap#lastKey()} is the largest recorded canonical state in number.
+     */
+    public static NavigableMap<Integer, Integer> getConstantSiteWeights(
+            final SimpleAlignment alignment, boolean ignoreUnknown) {
+        SequenceType sequenceType = alignment.getSequenceType();
+
+        int miss = 0;
+        NavigableMap<Integer, Integer> counter = new TreeMap<>();
+        for (int j = 0; j < alignment.nchar(); j++) {
+            int[] aSite = new int[alignment.ntaxa()];
+            for (int i = 0; i < alignment.ntaxa(); i++) {
+                aSite[i] = alignment.getState(i, j);
+            }
+            // find the state
+            OptionalInt state = IntStream.of(aSite).
+                    filter(x -> x != sequenceType.getUnknownState().getIndex() &&
+                            x != sequenceType.getGapState().getIndex() ).
+                    findFirst();
+            if (state.isPresent())
+                counter.merge(state.getAsInt(), 1, Integer::sum);
+            else
+                miss++;
+        }
+        if (miss > 0)
+            LoggerUtils.log.severe("Error: the constant alignment contains " + miss +
+                    " non-constant sites" + (ignoreUnknown ? ", when ignoring unknown state or gap !" : " !"));
+        return counter;
+    }
+
+    /**
      * @param alignment  {@link SimpleAlignment} storing states as integers.
      * @return   a counter of counting constant sites, where the key is the sorted state,
      *           and the value is the count of the constant site on that state.
@@ -43,6 +82,7 @@ public final class AlignmentUtils {
      *           {@link NavigableMap#firstKey()} is the smallest recorded state in number,
      *           {@link NavigableMap#lastKey()} is the largest recorded state in number.
      */
+    @Deprecated
     public static NavigableMap<Integer, Integer> countConstantSites(final SimpleAlignment alignment) {
         NavigableMap<Integer, Integer> counter = new TreeMap<>();
 
