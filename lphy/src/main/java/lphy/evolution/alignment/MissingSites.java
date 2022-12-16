@@ -18,12 +18,11 @@ public class MissingSites implements GenerativeDistribution<Alignment> {
     Value<Alignment> alignment;
 
     public final String probParamName = "prob";
-    public final String alignmentParamName = "alignment";
 
     RandomGenerator random;
 
     public MissingSites(@ParameterInfo(name = probParamName, description = "the probability that a site is missing.") Value<Number> prob,
-                        @ParameterInfo(name = alignmentParamName, description = "the alignment before data is missing.") Value<Alignment> alignment) {
+                        @ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME, description = "the alignment before data is missing.") Value<Alignment> alignment) {
 
         this.prob = prob;
         this.alignment = alignment;
@@ -34,7 +33,7 @@ public class MissingSites implements GenerativeDistribution<Alignment> {
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(probParamName, prob);
-        map.put(alignmentParamName, alignment);
+        map.put(AlignmentUtils.ALIGNMENT_PARAM_NAME, alignment);
         return map;
     }
 
@@ -45,7 +44,7 @@ public class MissingSites implements GenerativeDistribution<Alignment> {
                 prob = value;
             } else throw new IllegalArgumentException("Expecting type double, but got " + value.value().getClass());
         }
-        else if (paramName.equals(alignmentParamName)) alignment = value;
+        else if (paramName.equals(AlignmentUtils.ALIGNMENT_PARAM_NAME)) alignment = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 

@@ -3,12 +3,16 @@
 // TODO: script works in studio but not in unit test
 data {
   // provide the absolute path if it is not working
-  D = simulate(lphy="jcSimData.lphy", alignmentId="F");
-  taxa = D.taxa();
-  L = D.nchar();
+  D = simulate(lphy="jcSimData.lphy", alignmentId=["V","C"]);
+  V = get(key="V", map=D);
+  C = get(key="C", map=D);
+  taxa = V.taxa();
 }
 model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
-  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+  Q = jukesCantor();
+  // clamped to the simulated data
+  V ~ PhyloCTMC(tree=ψ, L=V.nchar(), Q=Q);
+  C ~ PhyloCTMC(tree=ψ, L=C.nchar(), Q=Q);
 }

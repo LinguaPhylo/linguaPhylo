@@ -1,16 +1,39 @@
 package lphy.evolution.alignment;
 
+import jebl.evolution.sequences.SequenceType;
 import lphy.evolution.traits.CharSetBlock;
 
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * @author Walter Xie
  */
 public final class AlignmentUtils {
+
+    public final static String ALIGNMENT_PARAM_NAME = "alignment";
+
+    /**
+     * @param aSite            states as an int array
+     * @param ignoreUnknown    ignore unknown or gap
+     * @param sequenceType     {@link  SequenceType}
+     * @return      true if the site is constant site
+     */
+    public static boolean isConstantSite(final int[] aSite, boolean ignoreUnknown, SequenceType sequenceType) {
+        int[] unique = Arrays.stream(aSite).distinct().toArray();
+        if (unique == null || unique.length == 0)
+            throw new IllegalArgumentException("Illegal array cannot find unique int : " + Arrays.toString(aSite));
+        // all same
+        if (unique.length == 1) return true;
+        // all same after ignore unknown state ?
+        if (ignoreUnknown) {
+            return unique.length == 2 &&
+                    IntStream.of(unique).
+                            anyMatch(x -> x == sequenceType.getUnknownState().getIndex() ||
+                                    x == sequenceType.getGapState().getIndex() );
+        }
+        return false;
+    }
 
     /**
      * @param alignment  {@link SimpleAlignment} storing states as integers.

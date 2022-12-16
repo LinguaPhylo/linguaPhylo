@@ -44,4 +44,17 @@ public class MapValue extends Value<Map<String, Object>> {
         if (isAnonymous()) return getGenerator().codeString();
         return getId() + " = " + getGenerator().codeString();
     }
+
+
+//    @MethodInfo(description = "get the map value given the key.",
+//            category = GeneratorCategory.TAXA_ALIGNMENT,
+//            examples = {"simulation/jcCoal.lphy"})
+//    public Object get(String key) {
+//        Map<String, Object> map = this.value();
+//        if (!map.containsKey(key))
+//            LoggerUtils.log.severe("The map (" + getId() + ") does not contain the key (" +
+//                    key + "), all keys = " + map.keySet());
+//        return map.get(key);
+//    }
+
 }

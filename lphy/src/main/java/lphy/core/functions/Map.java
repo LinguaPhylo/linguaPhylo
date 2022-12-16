@@ -4,7 +4,7 @@ import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
-
+//lphy.parser.functions.MapValue
 @Deprecated
 public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {
 

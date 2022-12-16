@@ -18,9 +18,7 @@ import lphy.core.functions.datatype.NucleotidesFunction;
 import lphy.core.functions.datatype.StandardDatatypeFunction;
 import lphy.core.functions.taxa.*;
 import lphy.core.functions.tree.*;
-import lphy.evolution.alignment.ErrorModel;
-import lphy.evolution.alignment.FilterMissingSites;
-import lphy.evolution.alignment.MissingSites;
+import lphy.evolution.alignment.*;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
 import lphy.evolution.coalescent.MultispeciesCoalescent;
@@ -91,6 +89,7 @@ public class LPhyExtImpl implements LPhyExtension {
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
             // Alignment
             FilterMissingSites.class, Simulate.class,
+            ConstantSitesAlignment.class, VariableSitesAlignment.class,
             // Tree
             LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
             // Matrix
@@ -101,7 +100,7 @@ public class LPhyExtImpl implements LPhyExtension {
 //            lphy.core.functions.Exp.class,
             Sum.class, SumBoolean.class,
             // Utils
-            ParseInt.class, Concat.class,
+            ParseInt.class, Concat.class, Get.class,
             Length.class, Unique.class, Range.class, Rep.class,
             Select.class, Split.class, SliceDoubleArray.class);
 

@@ -17,13 +17,11 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
     Value<Alignment> originalAlignment;
     SequenceType sequenceType;
     public final String thresholdParamName = "threshold";
-    public final String alignmentParamName = "alignment";
-
 
     public FilterMissingSites(@ParameterInfo(name = thresholdParamName,
             description = "the threshold (decimal form) to remove a site, if the fraction of missing data in this site is greater than or equal to the threshold.")
                               Value<Double> thresholdDecimal,
-                              @ParameterInfo(name = alignmentParamName,
+                              @ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
             description = "the alignment without missing sites.") Value<Alignment> originalAlignment) {
         this.thresholdDecimal = thresholdDecimal;
         if (thresholdDecimal.value() >= 1)
@@ -39,7 +37,7 @@ public class FilterMissingSites extends DeterministicFunction<Alignment> {
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(thresholdParamName, thresholdDecimal);
-        map.put(alignmentParamName, originalAlignment);
+        map.put(AlignmentUtils.ALIGNMENT_PARAM_NAME, originalAlignment);
         return map;
     }
 
