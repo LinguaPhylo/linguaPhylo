@@ -1,5 +1,6 @@
-// Generated from /Users/.../Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from java-escape by ANTLR 4.11.1
 package lphy.parser;
+
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -41,13 +42,13 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeterm_relations(DataModelParser.Determ_relationsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#relation_list}.
+	 * Visit a parse tree produced by {@link DataModelParser#relation_list()}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRelation_list(DataModelParser.Relation_listContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_list()}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -161,7 +162,7 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNamed_expression(DataModelParser.Named_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#expression}.
+	 * Visit a parse tree produced by {@link DataModelParser#expression()}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

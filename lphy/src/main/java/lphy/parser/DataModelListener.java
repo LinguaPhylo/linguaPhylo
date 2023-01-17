@@ -1,5 +1,6 @@
-// Generated from /Users/.../Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from java-escape by ANTLR 4.11.1
 package lphy.parser;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -58,22 +59,22 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitDeterm_relations(DataModelParser.Determ_relationsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#relation_list}.
+	 * Enter a parse tree produced by {@link DataModelParser#relation_list()}.
 	 * @param ctx the parse tree
 	 */
 	void enterRelation_list(DataModelParser.Relation_listContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#relation_list}.
+	 * Exit a parse tree produced by {@link DataModelParser#relation_list()}.
 	 * @param ctx the parse tree
 	 */
 	void exitRelation_list(DataModelParser.Relation_listContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * Enter a parse tree produced by {@link DataModelParser#determ_relation_list()}.
 	 * @param ctx the parse tree
 	 */
 	void enterDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#determ_relation_list}.
+	 * Exit a parse tree produced by {@link DataModelParser#determ_relation_list()}.
 	 * @param ctx the parse tree
 	 */
 	void exitDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx);
@@ -258,12 +259,12 @@ public interface DataModelListener extends ParseTreeListener {
 	 */
 	void exitNamed_expression(DataModelParser.Named_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DataModelParser#expression}.
+	 * Enter a parse tree produced by {@link DataModelParser#expression()}.
 	 * @param ctx the parse tree
 	 */
 	void enterExpression(DataModelParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DataModelParser#expression}.
+	 * Exit a parse tree produced by {@link DataModelParser#expression()}.
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(DataModelParser.ExpressionContext ctx);
