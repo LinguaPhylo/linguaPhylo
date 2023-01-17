@@ -18,9 +18,9 @@ dependencies {
 //    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
 //    implementation("org.json:json:20210307")
-    implementation("org.jfree:jfreechart:1.5.3")
+    implementation("org.jfree:jfreechart:1.5.4")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }
 
 val maincls : String = "lphystudio.app.LinguaPhyloStudio"
