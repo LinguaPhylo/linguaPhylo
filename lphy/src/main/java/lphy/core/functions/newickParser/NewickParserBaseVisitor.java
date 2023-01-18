@@ -1,5 +1,6 @@
-// Generated from NewickParser.g4 by ANTLR 4.7
 package lphy.core.functions.newickParser;
+
+// Generated from NewickParser.g4 by ANTLR 4.10
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -15,42 +16,42 @@ public class NewickParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTree(NewickParser.TreeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitNode(NewickParser.NodeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPost(NewickParser.PostContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitLabel(NewickParser.LabelContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitMeta(NewickParser.MetaContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAttrib(NewickParser.AttribContext ctx) { return visitChildren(ctx); }
 	/**
