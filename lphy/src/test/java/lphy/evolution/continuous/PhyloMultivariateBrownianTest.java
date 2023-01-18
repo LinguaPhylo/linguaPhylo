@@ -1,12 +1,12 @@
 package lphy.evolution.continuous;
 
-import lphy.core.functions.newickParser.NewickASTVisitor;
-import lphy.core.functions.newickParser.NewickLexer;
-import lphy.core.functions.newickParser.NewickParser;
 import lphy.evolution.alignment.ContinuousCharacterData;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.Value;
+import lphy.parser.newickParser.NewickASTVisitor;
+import lphy.parser.newickParser.NewickLexer;
+import lphy.parser.newickParser.NewickParser;
 import lphy.util.RandomUtils;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;

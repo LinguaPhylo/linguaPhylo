@@ -1,13 +1,13 @@
 package lphy.core.functions.tree;
 
-import lphy.core.functions.newickParser.NewickASTVisitor;
-import lphy.core.functions.newickParser.NewickLexer;
-import lphy.core.functions.newickParser.NewickParser;
-import lphy.core.functions.newickParser.TreeParsingException;
 import lphy.evolution.Taxa;
 import lphy.evolution.tree.TimeTree;
 import lphy.evolution.tree.TimeTreeNode;
 import lphy.graphicalModel.*;
+import lphy.parser.newickParser.NewickASTVisitor;
+import lphy.parser.newickParser.NewickLexer;
+import lphy.parser.newickParser.NewickParser;
+import lphy.parser.newickParser.TreeParsingException;
 import lphy.util.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;

@@ -1,5 +1,5 @@
-// Generated from NewickParser.g4 by ANTLR 4.7
-package lphy.core.functions.newickParser;
+// Generated from java-escape by ANTLR 4.11.1
+package lphy.parser.newickParser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -10,47 +10,48 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
+@SuppressWarnings("CheckReturnValue")
 public class NewickParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements NewickParserVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTree(NewickParser.TreeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitNode(NewickParser.NodeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPost(NewickParser.PostContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitLabel(NewickParser.LabelContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitMeta(NewickParser.MetaContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.<p>
+	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAttrib(NewickParser.AttribContext ctx) { return visitChildren(ctx); }
 	/**

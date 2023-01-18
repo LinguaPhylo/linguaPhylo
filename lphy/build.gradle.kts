@@ -86,8 +86,8 @@ tasks.test {
         excludeTags("dev")
     }
     // set heap size for the test JVM(s)
-    minHeapSize = "128m"
-    maxHeapSize = "1G"
+    minHeapSize = "256m"
+    maxHeapSize = "3G"
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
 
@@ -98,6 +98,7 @@ tasks.test {
         }
     }
 }
+
 
 /**
  * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/lphy/doc,

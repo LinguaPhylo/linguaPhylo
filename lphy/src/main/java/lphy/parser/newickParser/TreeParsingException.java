@@ -1,4 +1,4 @@
-package lphy.core.functions.newickParser;
+package lphy.parser.newickParser;
 
 public class TreeParsingException extends RuntimeException {
     String message;

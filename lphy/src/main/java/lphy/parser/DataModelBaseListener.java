@@ -1,4 +1,4 @@
-// Generated from /Users/.../Git/graphicalModelSimulation/src/lphy/parser/DataModel.g4 by ANTLR 4.8
+// Generated from java-escape by ANTLR 4.11.1
 package lphy.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -10,89 +10,90 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class DataModelBaseListener implements DataModelListener {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterInput(DataModelParser.InputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInput(DataModelParser.InputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterDatablock(DataModelParser.DatablockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDatablock(DataModelParser.DatablockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterModelblock(DataModelParser.ModelblockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitModelblock(DataModelParser.ModelblockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterRelations(DataModelParser.RelationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelations(DataModelParser.RelationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterDeterm_relations(DataModelParser.Determ_relationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDeterm_relations(DataModelParser.Determ_relationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterRelation_list(DataModelParser.Relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelation_list(DataModelParser.Relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>The default implementation does nothing.<p>
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDeterm_relation_list(DataModelParser.Determ_relation_listContext ctx) { }
 	/**
