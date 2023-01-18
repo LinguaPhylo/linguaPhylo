@@ -1,4 +1,4 @@
-// Generated from /Users/.../Git/graphicalModelSimulation/src/lphy/parser/Simulator.g4 by ANTLR 4.8
+// Generated from java-escape by ANTLR 4.11.1
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -23,7 +23,7 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelations(SimulatorParser.RelationsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#relation_list}.
+	 * Visit a parse tree produced by {@link SimulatorParser#relation_list()}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -131,7 +131,7 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNamed_expression(SimulatorParser.Named_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#expression}.
+	 * Visit a parse tree produced by {@link SimulatorParser#expression()}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
