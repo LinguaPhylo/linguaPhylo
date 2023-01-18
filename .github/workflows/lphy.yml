@@ -5,9 +5,9 @@ jobs:
   test-lphy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'adopt'
@@ -21,10 +21,8 @@ jobs:
       #    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
       #    restore-keys: |
       #      ${{ runner.os }}-gradle-
-      - name: Run lphy unit tests
-        run: ./gradlew :lphy:test --no-daemon
-      - name: Run studio unit tests
-        run: ./gradlew :lphy-studio:test --no-daemon
+      - name: Run all unit tests
+        run: ./gradlew test --no-daemon
       #- name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
