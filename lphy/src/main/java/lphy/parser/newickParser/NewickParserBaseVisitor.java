@@ -1,6 +1,5 @@
-package lphy.core.functions.newickParser;
-
-// Generated from NewickParser.g4 by ANTLR 4.10
+// Generated from java-escape by ANTLR 4.11.1
+package lphy.parser.newickParser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -11,6 +10,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
+@SuppressWarnings("CheckReturnValue")
 public class NewickParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements NewickParserVisitor<T> {
 	/**
 	 * {@inheritDoc}

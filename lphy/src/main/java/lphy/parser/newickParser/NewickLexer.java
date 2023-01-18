@@ -1,5 +1,5 @@
-package lphy.core.functions.newickParser;
-// Generated from NewickLexer.g4 by ANTLR 4.10
+// Generated from java-escape by ANTLR 4.11.1
+package lphy.parser.newickParser;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
@@ -8,9 +8,9 @@ import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class NewickLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.10", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =

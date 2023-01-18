@@ -1,5 +1,5 @@
-package lphy.core.functions.newickParser;
-// Generated from NewickParser.g4 by ANTLR 4.10
+// Generated from java-escape by ANTLR 4.11.1
+package lphy.parser.newickParser;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
@@ -13,9 +13,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class NewickParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -86,7 +86,7 @@ public class NewickParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "NewickParser.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -102,6 +102,7 @@ public class NewickParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class TreeContext extends ParserRuleContext {
 		public NodeContext node() {
 			return getRuleContext(NodeContext.class,0);
@@ -161,6 +162,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class NodeContext extends ParserRuleContext {
 		public PostContext post() {
 			return getRuleContext(PostContext.class,0);
@@ -248,6 +250,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class PostContext extends ParserRuleContext {
 		public MetaContext nodeMeta;
 		public MetaContext lengthMeta;
@@ -294,7 +297,7 @@ public class NewickParser extends Parser {
 			setState(42);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FLOAT_SCI) | (1L << FLOAT) | (1L << INT) | (1L << STRING))) != 0)) {
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 2496L) != 0) {
 				{
 				setState(41);
 				label();
@@ -346,6 +349,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class LabelContext extends ParserRuleContext {
 		public NumberContext number() {
 			return getRuleContext(NumberContext.class,0);
@@ -408,6 +412,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class MetaContext extends ParserRuleContext {
 		public TerminalNode OPENA() { return getToken(NewickParser.OPENA, 0); }
 		public List<AttribContext> attrib() {
@@ -482,6 +487,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class AttribContext extends ParserRuleContext {
 		public Token attribKey;
 		public TerminalNode EQ() { return getToken(NewickParser.EQ, 0); }
@@ -533,6 +539,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class AttribValueContext extends ParserRuleContext {
 		public AttribNumberContext attribNumber() {
 			return getRuleContext(AttribNumberContext.class,0);
@@ -605,6 +612,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class NumberContext extends ParserRuleContext {
 		public TerminalNode INT() { return getToken(NewickParser.INT, 0); }
 		public TerminalNode FLOAT() { return getToken(NewickParser.FLOAT, 0); }
@@ -637,7 +645,7 @@ public class NewickParser extends Parser {
 			{
 			setState(78);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FLOAT_SCI) | (1L << FLOAT) | (1L << INT))) != 0)) ) {
+			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 448L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -658,6 +666,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class AttribNumberContext extends ParserRuleContext {
 		public TerminalNode AINT() { return getToken(NewickParser.AINT, 0); }
 		public TerminalNode AFLOAT() { return getToken(NewickParser.AFLOAT, 0); }
@@ -690,7 +699,7 @@ public class NewickParser extends Parser {
 			{
 			setState(80);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << AFLOAT_SCI) | (1L << AFLOAT) | (1L << AINT))) != 0)) ) {
+			if ( !(((_la) & ~0x3f) == 0 && ((1L << _la) & 458752L) != 0) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -711,6 +720,7 @@ public class NewickParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class VectorContext extends ParserRuleContext {
 		public TerminalNode OPENV() { return getToken(NewickParser.OPENV, 0); }
 		public List<AttribValueContext> attribValue() {

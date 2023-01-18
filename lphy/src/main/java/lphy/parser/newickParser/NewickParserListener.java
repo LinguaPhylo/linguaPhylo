@@ -1,5 +1,5 @@
-package lphy.core.functions.newickParser;
-// Generated from NewickParser.g4 by ANTLR 4.10
+// Generated from java-escape by ANTLR 4.11.1
+package lphy.parser.newickParser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**

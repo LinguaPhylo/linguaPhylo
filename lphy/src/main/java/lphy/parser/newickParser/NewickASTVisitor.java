@@ -1,4 +1,4 @@
-package lphy.core.functions.newickParser;
+package lphy.parser.newickParser;
 
 import lphy.evolution.tree.TimeTreeNode;
 
