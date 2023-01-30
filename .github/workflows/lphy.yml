@@ -32,10 +32,11 @@ jobs:
       #    ls ./build-cache/
       #    rm -f ./build-cache/*.lock
       #    rm -f ./build-cache/gc.properties
-      - name: Publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: |
-            lphy/build/test-results/**/*.xml
-            lphy-studio/build/test-results/**/*.xml
+
+#      - name: Publish unit test results
+#        uses: EnricoMi/publish-unit-test-result-action@v2
+#        if: always()
+#        with:
+#          junit_files: |
+#            lphy/build/test-results/**/*.xml
+#            lphy-studio/build/test-results/**/*.xml
