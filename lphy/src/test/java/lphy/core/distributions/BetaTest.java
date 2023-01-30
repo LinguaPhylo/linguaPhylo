@@ -1,7 +1,9 @@
 package lphy.core.distributions;
 
 import lphy.graphicalModel.Value;
+import lphy.util.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -24,6 +26,11 @@ public class BetaTest {
                         // expected log density
                         new double[]{Double.NEGATIVE_INFINITY,1.0125139, 0.2672508,-1.3546097,-4.5326635,Double.NEGATIVE_INFINITY})
         );
+    }
+
+    @BeforeEach
+    void setUp() {
+        RandomUtils.setSeed(777);
     }
 
     @ParameterizedTest
