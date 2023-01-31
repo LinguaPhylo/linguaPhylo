@@ -183,13 +183,8 @@ public class ParserUtils {
                 throw new RuntimeException("ERROR! No match in " + name + " constructor arguments, including vector match! ");
             }
 
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            LoggerUtils.log.severe("Parsing generator " + name + " failed.");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            LoggerUtils.log.severe("Parsing generator " + name + " failed.");
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException|IllegalAccessException|InvocationTargetException e) {
+            LoggerUtils.logStackTrace(e);
             LoggerUtils.log.severe("Parsing generator " + name + " failed.");
         }
         return null;

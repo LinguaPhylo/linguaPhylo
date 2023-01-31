@@ -1,6 +1,4 @@
-// set working dir = $PROJECT_DIR$/examples/simulation
-// keep no parent dir in the path to make unit test working
-// TODO: script works in studio but not in unit test
+// NOTE: set working dir = $PROJECT_DIR$/examples/simulation
 data {
   // provide the absolute path if it is not working
   D = simulate(lphy="jcSimData.lphy", alignmentId=["V","C"]);

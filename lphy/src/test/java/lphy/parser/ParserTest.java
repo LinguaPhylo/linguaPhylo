@@ -75,11 +75,14 @@ public class ParserTest {
 //            List<String> failedFiles = new ArrayList<String>();
 //            String fileName = "hcv_coal_classic.lphy";
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
-            if (fileName.equals("jcCoal.lphy"))
-                break; //TODO script works in studio but not in unit test
+            System.out.println("Processing " + fileName + " in " + exampleDir);
 
-            System.out.println("Processing " + fileName);
-            UserDir.setUserDir(exampleDir.getPath());
+            if (fileName.equals("jcCoal.lphy"))
+                break;//TODO: not sure why not working here
+                //NOTE: set working dir = $PROJECT_DIR$/examples/simulation
+//                UserDir.setUserDir(exampleDir.getPath());
+            else
+                UserDir.setUserDir(exampleDir.getPath());
             lPhyParser = new REPL();
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
