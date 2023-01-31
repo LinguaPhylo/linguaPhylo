@@ -76,13 +76,10 @@ public class ParserTest {
 //            String fileName = "hcv_coal_classic.lphy";
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
             System.out.println("Processing " + fileName + " in " + exampleDir);
+//            if (fileName.equals("jcCoal.lphy"))
+//                break;
 
-            if (fileName.equals("jcCoal.lphy"))
-                break;//TODO: not sure why not working here
-                //NOTE: set working dir = $PROJECT_DIR$/examples/simulation
-//                UserDir.setUserDir(exampleDir.getPath());
-            else
-                UserDir.setUserDir(exampleDir.getPath());
+            UserDir.setUserDir(exampleDir.getPath());
             lPhyParser = new REPL();
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);

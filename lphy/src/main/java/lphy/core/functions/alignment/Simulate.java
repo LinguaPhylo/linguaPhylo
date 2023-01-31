@@ -7,6 +7,7 @@ import lphy.evolution.alignment.Alignment;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.MapValue;
 import lphy.parser.REPL;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
 import java.io.File;
@@ -33,8 +34,11 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
         if (filePathVal == null) throw new IllegalArgumentException("The lphy file path can't be null!");
         File filePath = Paths.get(filePathVal.value()).toFile();
         if (!filePath.exists())
+            filePath = UserDir.getUserPath(filePathVal.value()).toFile();
+        if (!filePath.exists())
             throw new IllegalArgumentException("Cannot locate the lphy file path : " + filePath);
         this.file = filePath;
+        LoggerUtils.log.info("Simulate data from lphy script: " + filePath.getAbsolutePath());
 
         if (algIdVal == null) throw new IllegalArgumentException("The alignment ID can't be null!");
         this.algId = algIdVal.value();
