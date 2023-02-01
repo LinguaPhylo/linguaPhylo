@@ -38,7 +38,7 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(values);
 
         if (rep == 0) {
-            setText("alignment");
+            setText("sample");
             for (Value<SimpleAlignment> al : alignmentVariables) {
                 String colNm = parser.isClampedVariable(al) ? al.getId() + "-clamped" : al.getId();
                 append("\t" + colNm);
