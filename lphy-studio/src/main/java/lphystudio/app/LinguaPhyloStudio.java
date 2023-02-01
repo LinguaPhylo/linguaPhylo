@@ -16,6 +16,7 @@ import lphystudio.core.layeredgraph.LayeredGNode;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
@@ -51,17 +52,13 @@ public class LinguaPhyloStudio {
         // use MANIFEST.MF to store version in jar, or use system property in development,
         // otherwise VERSION = "DEVELOPMENT"
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
-
         panel = new GraphicalModelPanel(parser);
 
-        JMenuBar menuBar;
-        JMenu fileMenu;
-
         //Create the menu bar.
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
-        //Build the first menu.
-        fileMenu = new JMenu("File");
+        // 1. Build File menu.
+        JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
         menuBar.add(fileMenu);
 
@@ -85,6 +82,7 @@ public class LinguaPhyloStudio {
                 readFile(selectedFile.getName(), dir.toString());
             }
         });
+        fileMenu.addSeparator();
 
         buildSaveMenu(fileMenu);
         fileMenu.addSeparator();
@@ -102,22 +100,25 @@ public class LinguaPhyloStudio {
 
         //Build the example's menu.
         JMenu exampleMenu = new JMenu("Examples");
-        exampleMenu.setMnemonic(KeyEvent.VK_X);
         fileMenu.addSeparator();
         fileMenu.add(exampleMenu);
         listAllFiles(exampleMenu);
 
         //Build the tutorial's menu.
         JMenu tutMenu = new JMenu("Tutorials");
-        tutMenu.setMnemonic(KeyEvent.VK_U);
 //        fileMenu.addSeparator();
         fileMenu.add(tutMenu);
         listAllFiles(tutMenu);
 
-        buildPreferenceMenu(menuBar);
+        // 2. Build Edit menu
+        buildEditMenu(menuBar);
+
+        // 3. Build View menu
+        buildViewPreferenceMenu(menuBar);
+        // 4. Viewer menu
         menuBar.add(panel.getRightPane().getMenu());
 
-        // Tools
+        // 5. Tools
         JMenu toolsMenu = new JMenu("Tools");
         menuBar.add(toolsMenu);
         // extension manager
@@ -279,11 +280,39 @@ public class LinguaPhyloStudio {
         saveModelToRTF.addActionListener(e -> exportToRtf());
     }
 
-    private void buildPreferenceMenu(JMenuBar menuBar) {
+    private void buildEditMenu(JMenuBar menuBar) {
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);//TODO duplicate
+
+        //TODO undo redo
+
+//        Action cutAction = new DefaultEditorKit.CutAction();
+//        cutAction.putValue(Action.NAME, "Cut");
+        JMenuItem cutMenu = new JMenuItem("Cut");
+        cutMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, MASK));
+        cutMenu.addActionListener(new DefaultEditorKit.CutAction());
+        editMenu.add(cutMenu);
+
+        JMenuItem copyMenu = new JMenuItem("Copy");
+        copyMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, MASK));
+        copyMenu.addActionListener(new DefaultEditorKit.CopyAction());
+        editMenu.add(copyMenu);
+
+        JMenuItem pasteMenu = new JMenuItem("Paste");
+        pasteMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, MASK));
+        pasteMenu.addActionListener(new DefaultEditorKit.PasteAction());
+        editMenu.add(pasteMenu);
+
+        //TODO select all
+
+        menuBar.add(editMenu);
+    }
+
+    private void buildViewPreferenceMenu(JMenuBar menuBar) {
         GraphicalModelComponent component = panel.getComponent();
         //Build the second menu.
         JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic(KeyEvent.VK_V);
+//        viewMenu.setMnemonic(KeyEvent.VK_V);
 //        JMenu viewMenu = new JMenu("Preferences");
 //        viewMenu.setMnemonic(KeyEvent.VK_P);
         menuBar.add(viewMenu);
