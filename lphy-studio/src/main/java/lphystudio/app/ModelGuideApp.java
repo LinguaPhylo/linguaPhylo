@@ -33,7 +33,7 @@ public class ModelGuideApp extends JFrame {
 
         final int MAX_WIDTH = 800;
         final int MAX_HEIGHT = 800;
-        LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT);
+        LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT, 0);
 
         modelGuide = new ModelGuide();
         ModelGuidePanel guidePanel = new ModelGuidePanel(modelGuide);

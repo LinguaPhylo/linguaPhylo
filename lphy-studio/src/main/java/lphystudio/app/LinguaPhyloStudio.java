@@ -44,6 +44,10 @@ public class LinguaPhyloStudio {
     JFrame frame;
 
     public LinguaPhyloStudio() {
+        this(0);
+    }
+
+    public LinguaPhyloStudio(int frameLocationOffset) {
         // use MANIFEST.MF to store version in jar, or use system property in development,
         // otherwise VERSION = "DEVELOPMENT"
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
@@ -60,6 +64,13 @@ public class LinguaPhyloStudio {
         fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
         menuBar.add(fileMenu);
+
+        JMenuItem newMenuItem = new JMenuItem("New");
+        newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MASK));
+        fileMenu.add(newMenuItem);
+        newMenuItem.addActionListener(e -> {
+            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
+        });
 
         JMenuItem openMenuItem = new JMenuItem("Open Script...");
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
@@ -140,12 +151,14 @@ public class LinguaPhyloStudio {
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // Hide and dispose of the window when the user closes it.
+        // It will not close all new frames.
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
         final int MAX_WIDTH = 1600;
         final int MAX_HEIGHT = 1200;
-        LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT);
+        LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT, frameLocationOffset);
 
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
@@ -382,9 +395,9 @@ public class LinguaPhyloStudio {
         }
     }
 
-    public void quit() {
-        frame.dispose();
-    }
+//    public void quit() {
+//        frame.dispose();
+//    }
 
 
     public static void main(String[] args) {

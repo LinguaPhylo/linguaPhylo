@@ -13,13 +13,13 @@ public final class LPhyAppConfig {
 
     public static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
-    public static void setFrameLocation(JFrame frame, int maxWidth, int maxHeight) {
+    public static void setFrameLocation(JFrame frame, int maxWidth, int maxHeight, int offset) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int width = Math.min(maxWidth, dim.width * 9 / 10);
         int height = Math.min(maxHeight, dim.height * 9 / 10);
         frame.setSize(width, height);
-        frame.setLocation(dim.width / 2 - frame.getSize().width / 2,
-                dim.height / 2 - frame.getSize().height / 2);
+        frame.setLocation(dim.width / 2 - frame.getSize().width / 2 + offset,
+                dim.height / 2 - frame.getSize().height / 2 + offset);
     }
 
     public static void setupEcoSys(String appName) {

@@ -29,7 +29,7 @@ public class ExtManagerApp extends JFrame {
 
         final int MAX_WIDTH = 1200;
         final int MAX_HEIGHT = 600;
-        LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT);
+        LPhyAppConfig.setFrameLocation(this, MAX_WIDTH, MAX_HEIGHT, 0);
 
         extManager = new ExtManager();
         ExtManagerPanel guidePanel = new ExtManagerPanel(extManager);
