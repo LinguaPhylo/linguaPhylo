@@ -176,6 +176,14 @@ public class LinguaPhyloStudio {
         CodeBuilder codeBuilder = new CanonicalCodeBuilder();
         saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
 
+        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
+        fileMenu.add(saveModelToHTML);
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
+
+        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
+        fileMenu.add(saveModelToRTF);
+        saveModelToRTF.addActionListener(e -> exportToRtf());
+
         JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
         fileMenu.add(saveLogAsMenuItem);
         saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
@@ -185,14 +193,6 @@ public class LinguaPhyloStudio {
         fileMenu.add(saveTreeLogAsMenuItem);
         saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
                 panel.getRightPane().getTreeLog().getText(), frame));
-
-        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
-        fileMenu.add(saveModelToHTML);
-        saveModelToHTML.addActionListener(e -> exportModelToHTML());
-
-        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
-        fileMenu.add(saveModelToRTF);
-        saveModelToRTF.addActionListener(e -> exportToRtf());
 
 //        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
 //        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
