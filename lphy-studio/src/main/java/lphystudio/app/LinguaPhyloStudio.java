@@ -60,6 +60,7 @@ public class LinguaPhyloStudio {
         // 1. Build File menu.
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+        fileMenu.setDisplayedMnemonicIndex(1);
         menuBar.add(fileMenu);
 
         JMenuItem newMenuItem = new JMenuItem("New");
@@ -88,13 +89,15 @@ public class LinguaPhyloStudio {
         fileMenu.addSeparator();
 
         JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
-        exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
+//        exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
+        exportGraphvizMenuItem.setMnemonic(KeyEvent.VK_G);
         fileMenu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
                 lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
 
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
-        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
+//        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
+        exportTikzMenuItem.setMnemonic(KeyEvent.VK_K);
         fileMenu.add(exportTikzMenuItem);
         exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz(), frame));
 
@@ -114,7 +117,7 @@ public class LinguaPhyloStudio {
         buildEditMenu(menuBar);
 
         // 3. Build View menu
-        buildViewPreferenceMenu(menuBar);
+        buildViewPreferenceMenu(menuBar, panel.getComponent());
         // 4. Viewer menu
         menuBar.add(panel.getRightPane().getMenu());
 
@@ -278,11 +281,20 @@ public class LinguaPhyloStudio {
         JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
         fileMenu.add(saveModelToRTF);
         saveModelToRTF.addActionListener(e -> exportToRtf());
+
+//        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
+//        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
+//        saveAlignments.setState(GraphicalModelComponent.getSaveAlignments());
+//        saveAlignments.addActionListener(
+//                e -> component.setSaveAlignments(saveAlignments.getState()));
+//        viewMenu.add(saveAlignments);
+//        viewMenu.addSeparator();
+
     }
 
     private void buildEditMenu(JMenuBar menuBar) {
         JMenu editMenu = new JMenu("Edit");
-        editMenu.setMnemonic(KeyEvent.VK_E);//TODO duplicate
+        editMenu.setMnemonic(KeyEvent.VK_E);
 
         //TODO undo redo
 
@@ -308,47 +320,38 @@ public class LinguaPhyloStudio {
         menuBar.add(editMenu);
     }
 
-    private void buildViewPreferenceMenu(JMenuBar menuBar) {
-        GraphicalModelComponent component = panel.getComponent();
+    private void buildViewPreferenceMenu(JMenuBar menuBar, GraphicalModelComponent component) {
         //Build the second menu.
         JMenu viewMenu = new JMenu("View");
 //        viewMenu.setMnemonic(KeyEvent.VK_V);
-//        JMenu viewMenu = new JMenu("Preferences");
-//        viewMenu.setMnemonic(KeyEvent.VK_P);
         menuBar.add(viewMenu);
 
-//        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
-//        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
-//        saveAlignments.setState(GraphicalModelComponent.getSaveAlignments());
-//        saveAlignments.addActionListener(
-//                e -> component.setSaveAlignments(saveAlignments.getState()));
-//        viewMenu.add(saveAlignments);
-//
-//        viewMenu.addSeparator();
+        //CTRL/COMMAND + SHIFT
+        int modifiers = MASK + KeyEvent.SHIFT_DOWN_MASK;
 
         JCheckBoxMenuItem showArgumentLabels = new JCheckBoxMenuItem("Show Argument Names");
-        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, MASK));
+        showArgumentLabels.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, modifiers));
         showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
         showArgumentLabels.addActionListener(
                 e -> component.setShowArgumentLabels(showArgumentLabels.getState()));
         viewMenu.add(showArgumentLabels);
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
-        showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, MASK));
+        showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, modifiers));
         showSampledValues.setState(LayeredGNode.getShowValueInNode());
         showSampledValues.addActionListener(
                 e -> component.setShowValueInNode(showSampledValues.getState()));
         viewMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
-        useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MASK));
+        useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifiers));
         useStraightEdges.setState(GraphicalModelComponent.getUseStraightEdges());
         useStraightEdges.addActionListener(
                 e -> component.setUseStraightEdges(useStraightEdges.getState()));
         viewMenu.add(useStraightEdges);
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
-        showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, MASK));
+        showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, modifiers));
         showTreeInAlignmentView.setState(true);
         showTreeInAlignmentView.addActionListener(e -> {
             AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(showTreeInAlignmentView.getState());
@@ -357,7 +360,7 @@ public class LinguaPhyloStudio {
         viewMenu.add(showTreeInAlignmentView);
 
         JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
-        showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, MASK));
+        showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, modifiers));
         showErrorsInErrorAlignmentView.setState(true);
         showErrorsInErrorAlignmentView.addActionListener(e -> {
             AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState();
