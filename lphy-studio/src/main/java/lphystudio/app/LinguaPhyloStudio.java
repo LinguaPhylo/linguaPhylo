@@ -62,82 +62,30 @@ public class LinguaPhyloStudio {
         fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.setDisplayedMnemonicIndex(1);
         menuBar.add(fileMenu);
-
-        JMenuItem newMenuItem = new JMenuItem("New");
-        newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MASK));
-        fileMenu.add(newMenuItem);
-        newMenuItem.addActionListener(e -> {
-            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
-        });
-
-        JMenuItem openMenuItem = new JMenuItem("Open Script...");
-        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
-        fileMenu.add(openMenuItem);
-        openMenuItem.addActionListener(e -> {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
-            File selectedFile = Utils.getFileFromFileChooser(frame, filter, JFileChooser.FILES_ONLY, true);
-
-            if (selectedFile != null) {
-//                panel.readScript(selectedFile);
-                Path dir = selectedFile.toPath().getParent();
-                readFile(selectedFile.getName(), dir.toString());
-            }
-        });
-        fileMenu.addSeparator();
-
-        buildSaveMenu(fileMenu);
-        fileMenu.addSeparator();
-
-        JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
-//        exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
-        exportGraphvizMenuItem.setMnemonic(KeyEvent.VK_G);
-        fileMenu.add(exportGraphvizMenuItem);
-        exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
-                lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
-
-        JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
-//        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
-        exportTikzMenuItem.setMnemonic(KeyEvent.VK_K);
-        fileMenu.add(exportTikzMenuItem);
-        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz(), frame));
-
-        //Build the example's menu.
-        JMenu exampleMenu = new JMenu("Examples");
-        fileMenu.addSeparator();
-        fileMenu.add(exampleMenu);
-        listAllFiles(exampleMenu);
-
-        //Build the tutorial's menu.
-        JMenu tutMenu = new JMenu("Tutorials");
-//        fileMenu.addSeparator();
-        fileMenu.add(tutMenu);
-        listAllFiles(tutMenu);
+        buildFileMenu(fileMenu);
 
         // 2. Build Edit menu
-        buildEditMenu(menuBar);
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);
+        menuBar.add(editMenu);
+        buildEditMenu(editMenu);
 
         // 3. Build View menu
-        buildViewPreferenceMenu(menuBar, panel.getComponent());
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_W);
+        menuBar.add(viewMenu);
+        buildViewPreferenceMenu(viewMenu, panel.getComponent());
+
         // 4. Viewer menu
-        menuBar.add(panel.getRightPane().getMenu());
+        JMenu panelViewerMenu = panel.getRightPane().getMenu();
+        panelViewerMenu.setMnemonic(KeyEvent.VK_R);
+        menuBar.add(panelViewerMenu);
 
         // 5. Tools
         JMenu toolsMenu = new JMenu("Tools");
+        toolsMenu.setMnemonic(KeyEvent.VK_T);
         menuBar.add(toolsMenu);
-        // extension manager
-        JMenuItem toolMenuItem = new JMenuItem(ExtManagerApp.APP_NAME);
-        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
-        toolsMenu.add(toolMenuItem);
-        toolMenuItem.addActionListener(e -> {
-            new ExtManagerApp();
-        });
-        // model guide
-        toolMenuItem = new JMenuItem(ModelGuideApp.APP_NAME);
-        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, MASK));
-        toolsMenu.add(toolMenuItem);
-        toolMenuItem.addActionListener(e -> {
-            new ModelGuideApp();
-        });
+        buildToolsMenu(toolsMenu);
 
         AboutMenuHelper aboutMenuHelper =
                 new AboutMenuHelper(frame, APP_NAME + " v " + VERSION,
@@ -167,6 +115,106 @@ public class LinguaPhyloStudio {
         frame.setJMenuBar(menuBar);
         frame.setVisible(true);
 //        System.out.println("LPhy studio working directory = " + Utils.getUserDir());
+    }
+
+    private void buildToolsMenu(JMenu toolsMenu) {
+        // extension manager
+        JMenuItem toolMenuItem = new JMenuItem(ExtManagerApp.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
+            new ExtManagerApp();
+        });
+        // model guide
+        toolMenuItem = new JMenuItem(ModelGuideApp.APP_NAME);
+        toolMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, MASK));
+        toolsMenu.add(toolMenuItem);
+        toolMenuItem.addActionListener(e -> {
+            new ModelGuideApp();
+        });
+    }
+
+    private void buildFileMenu(JMenu fileMenu) {
+        JMenuItem newMenuItem = new JMenuItem("New");
+        newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, MASK));
+        fileMenu.add(newMenuItem);
+        newMenuItem.addActionListener(e -> {
+            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
+        });
+
+        JMenuItem openMenuItem = new JMenuItem("Open Script...");
+        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
+        fileMenu.add(openMenuItem);
+        openMenuItem.addActionListener(e -> {
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
+            File selectedFile = Utils.getFileFromFileChooser(frame, filter, JFileChooser.FILES_ONLY, true);
+
+            if (selectedFile != null) {
+//                panel.readScript(selectedFile);
+                Path dir = selectedFile.toPath().getParent();
+                readFile(selectedFile.getName(), dir.toString());
+            }
+        });
+        fileMenu.addSeparator();
+
+        // Save ...
+        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
+        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
+        fileMenu.add(saveAsMenuItem);
+        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
+
+        JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
+        fileMenu.add(saveLogAsMenuItem);
+        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
+                panel.getRightPane().getVariableLog().getText(), frame));
+
+        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
+        fileMenu.add(saveTreeLogAsMenuItem);
+        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
+                panel.getRightPane().getTreeLog().getText(), frame));
+
+        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
+        fileMenu.add(saveModelToHTML);
+        saveModelToHTML.addActionListener(e -> exportModelToHTML());
+
+        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
+        fileMenu.add(saveModelToRTF);
+        saveModelToRTF.addActionListener(e -> exportToRtf());
+
+//        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
+//        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
+//        saveAlignments.setState(GraphicalModelComponent.getSaveAlignments());
+//        saveAlignments.addActionListener(
+//                e -> component.setSaveAlignments(saveAlignments.getState()));
+//        viewMenu.add(saveAlignments);
+//        viewMenu.addSeparator();
+        fileMenu.addSeparator();
+
+        JMenuItem exportGraphvizMenuItem = new JMenuItem("Export to Graphviz DOT file...");
+//        exportGraphvizMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, MASK));
+        exportGraphvizMenuItem.setMnemonic(KeyEvent.VK_G);
+        fileMenu.add(exportGraphvizMenuItem);
+        exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
+                lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
+
+        JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
+//        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
+        exportTikzMenuItem.setMnemonic(KeyEvent.VK_K);
+        fileMenu.add(exportTikzMenuItem);
+        exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz(), frame));
+
+        //Build the example's menu.
+        JMenu exampleMenu = new JMenu("Examples");
+        fileMenu.addSeparator();
+        fileMenu.add(exampleMenu);
+        listAllFiles(exampleMenu);
+
+        //Build the tutorial's menu.
+        JMenu tutMenu = new JMenu("Tutorials");
+//        fileMenu.addSeparator();
+        fileMenu.add(tutMenu);
+        listAllFiles(tutMenu);
     }
 
     /**
@@ -257,44 +305,7 @@ public class LinguaPhyloStudio {
         return menuItem;
     }
 
-    private void buildSaveMenu(JMenu fileMenu) {
-        JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
-        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
-        fileMenu.add(saveAsMenuItem);
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
-
-        JMenuItem saveLogAsMenuItem = new JMenuItem("Save VariableLog to File...");
-        fileMenu.add(saveLogAsMenuItem);
-        saveLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
-                panel.getRightPane().getVariableLog().getText(), frame));
-
-        JMenuItem saveTreeLogAsMenuItem = new JMenuItem("Save Tree VariableLog to File...");
-        fileMenu.add(saveTreeLogAsMenuItem);
-        saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
-                panel.getRightPane().getTreeLog().getText(), frame));
-
-        JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
-        fileMenu.add(saveModelToHTML);
-        saveModelToHTML.addActionListener(e -> exportModelToHTML());
-
-        JMenuItem saveModelToRTF = new JMenuItem("Save Canonical Model to RTF...");
-        fileMenu.add(saveModelToRTF);
-        saveModelToRTF.addActionListener(e -> exportToRtf());
-
-//        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
-//        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));
-//        saveAlignments.setState(GraphicalModelComponent.getSaveAlignments());
-//        saveAlignments.addActionListener(
-//                e -> component.setSaveAlignments(saveAlignments.getState()));
-//        viewMenu.add(saveAlignments);
-//        viewMenu.addSeparator();
-
-    }
-
-    private void buildEditMenu(JMenuBar menuBar) {
-        JMenu editMenu = new JMenu("Edit");
-        editMenu.setMnemonic(KeyEvent.VK_E);
+    private void buildEditMenu(JMenu editMenu) {
 
         //TODO undo redo
 
@@ -317,15 +328,9 @@ public class LinguaPhyloStudio {
 
         //TODO select all
 
-        menuBar.add(editMenu);
     }
 
-    private void buildViewPreferenceMenu(JMenuBar menuBar, GraphicalModelComponent component) {
-        //Build the second menu.
-        JMenu viewMenu = new JMenu("View");
-//        viewMenu.setMnemonic(KeyEvent.VK_V);
-        menuBar.add(viewMenu);
-
+    private void buildViewPreferenceMenu(JMenu viewMenu, GraphicalModelComponent component) {
         //CTRL/COMMAND + SHIFT
         int modifiers = MASK + KeyEvent.SHIFT_DOWN_MASK;
 
