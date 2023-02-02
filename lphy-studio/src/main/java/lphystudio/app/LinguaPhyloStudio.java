@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.prefs.Preferences;
 
 public class LinguaPhyloStudio {
     static final String LPHY_FILE_EXT = ".lphy";
@@ -39,6 +40,10 @@ public class LinguaPhyloStudio {
 
     private final int MASK = LPhyAppConfig.MASK;
     private final String VERSION;
+
+    static Preferences preferences = Preferences.userNodeForPackage(LinguaPhyloStudio.class);
+    private final String PRINT_PREVIEW = "Show Print Preview";
+    private boolean showPrintPreview = preferences.getBoolean(PRINT_PREVIEW, true);
 
     GraphicalLPhyParser parser = Utils.createParser();
     GraphicalModelPanel panel;
@@ -220,7 +225,15 @@ public class LinguaPhyloStudio {
 
         JMenuItem printMenu = new JMenuItem("Print Script ...");
         fileMenu.add(printMenu);
-        printMenu.addActionListener(e -> print(true));
+        printMenu.addActionListener(e -> printLPhyScript());
+
+        JCheckBoxMenuItem printPreview = new JCheckBoxMenuItem(PRINT_PREVIEW);
+        printPreview.setState(showPrintPreview);
+        printPreview.addActionListener(e -> {
+            showPrintPreview = printPreview.getState();
+            preferences.putBoolean(PRINT_PREVIEW, showPrintPreview);
+        });
+        fileMenu.add(printPreview);
 
     }
 
@@ -295,7 +308,7 @@ public class LinguaPhyloStudio {
         }
     }
 
-    private void print(boolean preview) {
+    private void printLPhyScript() {
         JTextPane pane = panel.getCanonicalModelPane();
 
         if (pane.getDocument().getLength() > 0) {
@@ -317,12 +330,12 @@ public class LinguaPhyloStudio {
                 LoggerUtils.logStackTrace(e);
             }
 
-            if (preview) {
-                JFrame frame = new JFrame("Print Preview");
-                frame.add(pane);
-                frame.setSize(500,500);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setVisible(true);
+            if (showPrintPreview) {
+                final JDialog dialog = new JDialog(frame, "Print Preview");
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.add(pane, BorderLayout.CENTER);
+                dialog.pack();
+                dialog.setVisible(true);
             }
 
             try{
