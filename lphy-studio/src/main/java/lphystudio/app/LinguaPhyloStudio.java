@@ -220,7 +220,7 @@ public class LinguaPhyloStudio {
 
         JMenuItem printMenu = new JMenuItem("Print Script ...");
         fileMenu.add(printMenu);
-        printMenu.addActionListener(e -> print());
+        printMenu.addActionListener(e -> print(true));
 
     }
 
@@ -295,7 +295,7 @@ public class LinguaPhyloStudio {
         }
     }
 
-    private void print() {
+    private void print(boolean preview) {
         JTextPane pane = panel.getCanonicalModelPane();
 
         if (pane.getDocument().getLength() > 0) {
@@ -317,8 +317,17 @@ public class LinguaPhyloStudio {
                 LoggerUtils.logStackTrace(e);
             }
 
+            if (preview) {
+                JFrame frame = new JFrame("Print Preview");
+                frame.add(pane);
+                frame.setSize(500,500);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+
             try{
-                pane.print(null, null, false, PrintServiceLookup.lookupDefaultPrintService(), null, false);
+                pane.print(null, null, true,
+                        PrintServiceLookup.lookupDefaultPrintService(), null, false);
             } catch (PrinterException e){
                 LoggerUtils.log.severe("Cannot print !");
                 LoggerUtils.logStackTrace(e);
