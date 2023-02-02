@@ -13,6 +13,7 @@ import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
 
+import javax.print.PrintServiceLookup;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
@@ -21,9 +22,8 @@ import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.awt.print.PrinterException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -155,6 +155,18 @@ public class LinguaPhyloStudio {
                 readFile(selectedFile.getName(), dir.toString());
             }
         });
+
+        fileMenu.addSeparator();
+
+        //Build the example's menu.
+        JMenu exampleMenu = new JMenu("Load Examples ...");
+        fileMenu.add(exampleMenu);
+        listAllFiles(exampleMenu);
+        //Build the tutorial's menu.
+        JMenu tutMenu = new JMenu("Load Tutorials ...");
+        fileMenu.add(tutMenu);
+        listAllFiles(tutMenu);
+
         fileMenu.addSeparator();
 
         // Save ...
@@ -204,17 +216,12 @@ public class LinguaPhyloStudio {
         fileMenu.add(exportTikzMenuItem);
         exportTikzMenuItem.addActionListener(e -> Utils.saveToFile(panel.getComponent().toTikz(), frame));
 
-        //Build the example's menu.
-        JMenu exampleMenu = new JMenu("Examples");
         fileMenu.addSeparator();
-        fileMenu.add(exampleMenu);
-        listAllFiles(exampleMenu);
 
-        //Build the tutorial's menu.
-        JMenu tutMenu = new JMenu("Tutorials");
-//        fileMenu.addSeparator();
-        fileMenu.add(tutMenu);
-        listAllFiles(tutMenu);
+        JMenuItem printMenu = new JMenuItem("Print Script ...");
+        fileMenu.add(printMenu);
+        printMenu.addActionListener(e -> print());
+
     }
 
     /**
@@ -243,10 +250,10 @@ public class LinguaPhyloStudio {
         final String TUTL = "tutorials";
 
         File dir = null;
-        if (jMenu.getText().equalsIgnoreCase(EXMP)) {
+        if (jMenu.getText().toLowerCase().contains(EXMP)) {
             // relative path not working
             dir = new File(EXMP).getAbsoluteFile();
-        } else if (jMenu.getText().equalsIgnoreCase(TUTL)) {
+        } else if (jMenu.getText().toLowerCase().contains(TUTL)) {
             dir = new File(TUTL).getAbsoluteFile();
         }
         LoggerUtils.log.info("Menu " + jMenu.getText() + " links to dir = " + dir);
@@ -286,6 +293,40 @@ public class LinguaPhyloStudio {
                 }
             }
         }
+    }
+
+    private void print() {
+        JTextPane pane = panel.getCanonicalModelPane();
+
+        if (pane.getDocument().getLength() > 0) {
+            HTMLNarrative htmlNarrative = new HTMLNarrative();
+            String html = htmlNarrative.codeBlock(parser, 11);
+
+            try{
+                File tempFile = File.createTempFile("tmp-lphy-", ".html");
+                FileWriter fileWriter = new FileWriter(tempFile, true);
+                System.out.println(tempFile.getAbsolutePath());
+                BufferedWriter bw = new BufferedWriter(fileWriter);
+                bw.write(html);
+                bw.close();
+
+                pane.setPage(tempFile.toURI().toURL());
+                tempFile.deleteOnExit();
+            }catch (IOException e){
+                LoggerUtils.log.severe("I/O ERROR to print !");
+                LoggerUtils.logStackTrace(e);
+            }
+
+            try{
+                pane.print(null, null, false, PrintServiceLookup.lookupDefaultPrintService(), null, false);
+            } catch (PrinterException e){
+                LoggerUtils.log.severe("Cannot print !");
+                LoggerUtils.logStackTrace(e);
+            }
+        } else
+            JOptionPane.showMessageDialog(frame, "Nothing to print !", "Printing",
+                    JOptionPane.ERROR_MESSAGE);
+
     }
 
     // add file (exclude dir) name stem to JMenuItem if it ends with ".lphy"
