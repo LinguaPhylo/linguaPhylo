@@ -21,7 +21,7 @@ public class MissingSites implements GenerativeDistribution<Alignment> {
 
     RandomGenerator random;
 
-    public MissingSites(@ParameterInfo(name = probParamName, description = "the probability that a site is missing.") Value<Number> prob,
+    public MissingSites(@ParameterInfo(name = probParamName, description = "the probability that the state in a site is changed to the unknown state.") Value<Number> prob,
                         @ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME, description = "the alignment before data is missing.") Value<Alignment> alignment) {
 
         this.prob = prob;
