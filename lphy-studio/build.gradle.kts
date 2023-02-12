@@ -39,10 +39,10 @@ tasks.withType<JavaExec>() {
     // projectDir = ~/WorkSpace/linguaPhylo/lphy-studio/
     // rootDir = projectDir.parent = ~/WorkSpace/linguaPhylo
     // user.dir = ~/WorkSpace/linguaPhylo/, so examples can be loaded properly
-//    systemProperty("user.dir", rootDir)
     doFirst {
         // equivalent to: java -p ...
-        jvmArgs = listOf("-p", classpath.asPath)
+        // user.dir=rootDir (~/WorkSpace/linguaPhylo/), so examples can be loaded properly
+        jvmArgs = listOf("-p", classpath.asPath, "-Duser.dir=${rootDir}")
         classpath = files()
     }
     doLast {
