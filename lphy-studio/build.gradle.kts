@@ -5,6 +5,7 @@ plugins {
     signing
     id("io.github.linguaphylo.platforms.lphy-java") version "0.1.2"
     id("io.github.linguaphylo.platforms.lphy-publish") version "0.1.2"
+    id("org.panteleyev.jpackageplugin") version "1.5.1"
 }
 
 //version = "1.2.0"
@@ -62,21 +63,40 @@ tasks.jar {
     }
 }
 
-publishing {
-    publications {
-        // project.name contains "lphy" substring
-        create<MavenPublication>(project.name) {
-            artifactId = project.base.archivesName.get()
-            pom {
-                description.set("The GUI for LPhy language.")
-                developers {
-                    developer {
-                        name.set(developers)
-                    }
-                }
-            }
-        }
+task("copyDependencies", Copy::class) {
+    from(configurations.compileClasspath.get().files).into("$buildDir/jmods")
+    from(tasks.jar).into("$buildDir/jmods")
+}
 
+tasks.jpackage {
+    dependsOn("copyDependencies")
+//    mustRunAfter("copyDependencies")
+
+    appName = "LPhyStudio"//"${project.name}-${project.version}"
+    appVersion = project.version.toString().removeSuffix("-SNAPSHOT")
+    appDescription = "The GUI for LPhy language."
+    vendor = "io.github.linguaphylo"
+    copyright = "Copyright (c) 2023 LPhy team"
+    runtimeImage = System.getProperty("java.home")
+    module = "lphystudio/$maincls"
+    modulePaths = fileTree("$buildDir/jmods").map{ it.canonicalPath } //configurations.compileClasspath.get().files.map{ it.canonicalPath }
+    destination = "$buildDir/distributions/"
+    javaOptions = listOf("-Dfile.encoding=UTF-8")
+
+    mac {
+        icon = "$rootDir/icons/lphy.icns"
+    }
+
+    windows {
+        icon = "$rootDir/icons/lphy.ico"
+        winMenu = true
+        winDirChooser = true
+    }
+
+    doFirst {
+        println("jpackage module path :")
+        println(configurations.compileClasspath.get().files)
+//        println(fileTree("$buildDir/distributions/${project.name}-${project.version}/lib").map{ it.canonicalPath })
     }
 }
 
@@ -111,6 +131,24 @@ distributions {
             }
             //TODO ext manager
         }
+    }
+}
+
+publishing {
+    publications {
+        // project.name contains "lphy" substring
+        create<MavenPublication>(project.name) {
+            artifactId = project.base.archivesName.get()
+            pom {
+                description.set("The GUI for LPhy language.")
+                developers {
+                    developer {
+                        name.set(developers)
+                    }
+                }
+            }
+        }
+
     }
 }
 
