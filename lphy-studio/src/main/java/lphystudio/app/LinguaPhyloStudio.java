@@ -34,8 +34,23 @@ import java.util.prefs.Preferences;
 public class LinguaPhyloStudio {
     static final String LPHY_FILE_EXT = ".lphy";
     private static final String APP_NAME = "LPhy Studio";
+    private static final String LPHY_ICON = "lphy512x512.png";
     static {
         LPhyAppConfig.setupEcoSys(APP_NAME);
+
+        // set icon for mac os
+        // https://stackoverflow.com/questions/6006173/how-do-you-change-the-dock-icon-of-a-java-program
+        final Taskbar taskbar = Taskbar.getTaskbar();
+        if (Taskbar.isTaskbarSupported()) {
+            try {
+                taskbar.setIconImage(LPhyAppConfig.getLPhyIcon(LPHY_ICON));
+            } catch (final UnsupportedOperationException e) {
+                LoggerUtils.log.warning("The os does not support: 'taskbar.setIconImage'");
+            } catch (final SecurityException e) {
+                LoggerUtils.log.severe("There was a security exception for: 'taskbar.setIconImage'");
+            }
+        }
+        // or java -Xdock:icon=/path/lphy.png LinguaPhyloStudio
     }
 
     private final int MASK = LPhyAppConfig.MASK;
@@ -54,6 +69,7 @@ public class LinguaPhyloStudio {
     }
 
     public LinguaPhyloStudio(int frameLocationOffset) {
+
         // use MANIFEST.MF to store version in jar, or use system property in development,
         // otherwise VERSION = "DEVELOPMENT"
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
@@ -108,6 +124,10 @@ public class LinguaPhyloStudio {
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
+        Image img = LPhyAppConfig.getLPhyIcon(LPHY_ICON);
+        if (img != null)
+            frame.setIconImage(img);
+
         // Hide and dispose of the window when the user closes it.
         // It will not close all new frames.
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -118,8 +138,8 @@ public class LinguaPhyloStudio {
         LPhyAppConfig.setFrameLocation(frame, MAX_WIDTH, MAX_HEIGHT, frameLocationOffset);
 
         frame.setJMenuBar(menuBar);
-        frame.setVisible(true);
 //        System.out.println("LPhy studio working directory = " + Utils.getUserDir());
+        frame.setVisible(true);
     }
 
     private void buildToolsMenu(JMenu toolsMenu) {
