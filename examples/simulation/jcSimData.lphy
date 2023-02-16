@@ -3,11 +3,12 @@ data {
   taxa = taxa(names=1:10);
 }
 model {
-  Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-  ψ ~ Coalescent(theta=Θ, taxa=taxa);
+  ψ ~ Coalescent(theta=0.2, taxa=taxa);
   D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
   M ~ MissingSites(alignment=D, prob=0.75);
-//  F = filterMissingSites(alignment=M, threshold=0.75);
-//  V = variableSitesAlignment(alignment=F, ignoreUnknown=true);
-//  C = constantSitesAlignment(alignment=F, ignoreUnknown=true);
+  mis = selectSites(alignment=M, unknownFracLess=0.75);
+  var = variableSites(alignment=M);
+  const = invariableSites(alignment=M);
+  V = copySites(ids=var, alignment=M);
+  C = copySites(ids=const, alignment=M);
 }
