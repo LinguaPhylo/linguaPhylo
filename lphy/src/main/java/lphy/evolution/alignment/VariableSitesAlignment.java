@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * replaced by {@link ClassifySites} and {@link CopySites}
+ * replaced by {@link VariableSites} and {@link CopySites}
  * @author Walter Xie
  */
 @Deprecated
@@ -49,7 +49,7 @@ public class VariableSitesAlignment extends DeterministicFunction<Alignment> {
                 aSite[i] = original.getState(i, j);
             }
             // filter
-            if (!AlignmentUtils.isConstantSite(aSite, ignoreUnknown, sequenceType))
+            if (!AlignmentUtils.isInvarSite(aSite, ignoreUnknown, sequenceType))
                 newSites.add(aSite);
         }
 

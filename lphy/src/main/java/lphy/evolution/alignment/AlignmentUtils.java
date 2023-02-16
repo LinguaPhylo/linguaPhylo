@@ -13,14 +13,15 @@ import java.util.stream.IntStream;
 public final class AlignmentUtils {
 
     public final static String ALIGNMENT_PARAM_NAME = "alignment";
+    public final static String IGNORE_UNKNOWN_PARAM_NAME = "ignoreUnknown";
 
     /**
      * @param aSite            states as an int array
      * @param ignoreUnknown    ignore unknown or gap
      * @param sequenceType     {@link  SequenceType}
-     * @return      true if the site is constant site
+     * @return      true if the site is an invariable site
      */
-    public static boolean isConstantSite(final int[] aSite, boolean ignoreUnknown, SequenceType sequenceType) {
+    public static boolean isInvarSite(final int[] aSite, boolean ignoreUnknown, SequenceType sequenceType) {
         int[] unique = Arrays.stream(aSite).distinct().toArray();
         if (unique == null || unique.length == 0)
             throw new IllegalArgumentException("Illegal array cannot find unique int : " + Arrays.toString(aSite));

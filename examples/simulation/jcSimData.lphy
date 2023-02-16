@@ -7,7 +7,7 @@ model {
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
   M ~ MissingSites(alignment=D, prob=0.75);
-  F = filterMissingSites(alignment=M, threshold=0.75);
-  V = variableSitesAlignment(alignment=F, ignoreUnknown=true);
-  C = constantSitesAlignment(alignment=F, ignoreUnknown=true);
+//  F = filterMissingSites(alignment=M, threshold=0.75);
+//  V = variableSitesAlignment(alignment=F, ignoreUnknown=true);
+//  C = constantSitesAlignment(alignment=F, ignoreUnknown=true);
 }
