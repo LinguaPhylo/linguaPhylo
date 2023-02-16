@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * replaced by {@link ClassifySites} and {@link CopySites}
  * @author Walter Xie
  */
+@Deprecated
 public class VariableSitesAlignment extends DeterministicFunction<Alignment> {
 
     Value<Alignment> originalAlignment;

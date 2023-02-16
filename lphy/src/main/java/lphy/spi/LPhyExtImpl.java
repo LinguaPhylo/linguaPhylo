@@ -89,7 +89,7 @@ public class LPhyExtImpl implements LPhyExtension {
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
             // Alignment
             FilterMissingSites.class, Simulate.class,
-            ConstantSitesAlignment.class, VariableSitesAlignment.class,
+            ConstantSitesAlignment.class, VariableSitesAlignment.class, ClassifySites.class, CopySites.class,
             // Tree
             LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
             // Matrix
