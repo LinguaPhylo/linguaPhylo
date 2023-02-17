@@ -9,6 +9,8 @@ model {
   mis = selectSites(alignment=M, unknownFracLess=0.75);
   var = variableSites(alignment=M);
   const = invariableSites(alignment=M);
+  varmis = intersect(mis, var);
+  constmis = intersect(mis, const);
   V = copySites(ids=var, alignment=M);
   C = copySites(ids=const, alignment=M);
 }

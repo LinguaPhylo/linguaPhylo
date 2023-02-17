@@ -72,9 +72,13 @@ public class ViewerRegister {
         public boolean match(Object object) {
             if (object instanceof Value) {
                 Object value = ((Value) object).value();
-                return (value instanceof Double[] || value instanceof Number[] || value instanceof Integer[] || value instanceof Boolean[] || value instanceof String[]);
+                return (value instanceof Double[] || value instanceof Number[] ||
+                        value instanceof Integer[] || value instanceof Boolean[] ||
+                        value instanceof String[] || value instanceof Object[]);
             } else
-                return (object instanceof Double[] || object instanceof Number[] || object instanceof Integer[] || object instanceof Boolean[] || object instanceof String[]);
+                return (object instanceof Double[] || object instanceof Number[] ||
+                        object instanceof Integer[] || object instanceof Boolean[] ||
+                        object instanceof String[]);
         }
 
         public JComponent getViewer(Object object) {
@@ -107,6 +111,9 @@ public class ViewerRegister {
                 return new ArrayLabel((Boolean[]) array);
             }
 
+            if (array instanceof Object[]) {
+                return new ArrayLabel((Object[]) array);
+            }
             throw new IllegalArgumentException("Unexpected argument: " + object);
         }
     };
@@ -358,7 +365,7 @@ public class ViewerRegister {
             for (Viewer viewer : viewers) {
                 if (viewer.match(object)) return viewer.getViewer(object);
             }
-            LoggerUtils.log.severe("Found no viewer for " + object);
+//            LoggerUtils.log.severe("Found no viewer for " + object);
             String label;
             if (object instanceof Value) {
                 label = ((Value) object).getLabel();

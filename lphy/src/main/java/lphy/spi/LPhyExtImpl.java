@@ -99,6 +99,8 @@ public class LPhyExtImpl implements LPhyExtension {
             // Math
 //            lphy.core.functions.Exp.class,
             Sum.class, SumBoolean.class,
+            // Set Op
+            Intersect.class,
             // Utils
             ParseInt.class, Concat2Str.class, Get.class, //ConcatStr.class,
             Length.class, Unique.class, Range.class, Rep.class,
