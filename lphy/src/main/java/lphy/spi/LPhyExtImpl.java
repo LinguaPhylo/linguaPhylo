@@ -88,7 +88,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
             // Alignment
-            SelectSitesByMissingFraction.class, Simulate.class, ConstantSitesAlignment.class, VariableSitesAlignment.class,
+            SelectSitesByMissingFraction.class, Simulate.class,
             VariableSites.class, InvariableSites.class, CopySites.class,
             // Tree
             LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
@@ -100,7 +100,7 @@ public class LPhyExtImpl implements LPhyExtension {
 //            lphy.core.functions.Exp.class,
             Sum.class, SumBoolean.class,
             // Utils
-            ParseInt.class, Concat.class, Get.class,
+            ParseInt.class, Concat2Str.class, Get.class, //ConcatStr.class,
             Length.class, Unique.class, Range.class, Rep.class,
             Select.class, Split.class, SliceDoubleArray.class);
 

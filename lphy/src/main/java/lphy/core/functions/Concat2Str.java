@@ -7,22 +7,22 @@ import lphy.graphicalModel.Value;
 
 import java.util.Objects;
 
-public class Concat extends DeterministicFunction {
+public class Concat2Str extends DeterministicFunction {
 
     public static final String firstParamName = "prefix";
     public static final String secondParamName = "suffix";
 
-    public Concat(@ParameterInfo(name = firstParamName, description ="the prefix substring to concatenate.")
-                         Value<String> substr1,
-                  @ParameterInfo(name = secondParamName, description ="the suffix substring to concatenate.")
-                         Value<String> substr2) {
+    public Concat2Str(@ParameterInfo(name = firstParamName, description ="the prefix substring to concatenate.")
+                  Value<String> substr1,
+                      @ParameterInfo(name = secondParamName, description ="the suffix substring to concatenate.")
+                  Value<String> substr2) {
 
         setInput(firstParamName, substr1);
         setInput(secondParamName, substr2);
     }
 
     @Override
-    @GeneratorInfo(name = "concat", description = "A function to concatenate substrings into one sting.")
+    @GeneratorInfo(name = "concat2Str", description = "A function to concatenate substrings into one sting.")
     public Value<String> apply() {
         Value<String> substr1 = getParams().get(firstParamName);
         Value<String> substr2 = getParams().get(secondParamName);

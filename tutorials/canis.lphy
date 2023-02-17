@@ -4,7 +4,8 @@ data {
            "APOBS2.fasta","Ch14.fasta","CMKOR1.fasta","RAG1.fasta",
            "VWF.fasta","BDNF.fasta","Ch21.fasta","FGFR3.fasta",
            "BRCA1S1.fasta","Ch24.fasta","GHRex09.fasta","TMEM20.fasta"];
-  paths = concat("data/", files);
+  // TODO concatStr not working, cannot trigger IID
+  paths = concat2Str("data/", files);
   options = {speciesRegex="^(.*)\_(.*)$"};
   genes = readFasta(file=paths, options=options);
 
