@@ -10,15 +10,15 @@ import java.util.Arrays;
 public class Intersect<T> extends DeterministicFunction<T[]> {
 
 
-    public Intersect(@ParameterInfo(name = "0", description = "the set.") Value<T[]> a,
-                     @ParameterInfo(name = "1", description = "the set.") Value<T[]> b) {
+    public Intersect(@ParameterInfo(name = "0", description = "set 1.") Value<T[]> a,
+                     @ParameterInfo(name = "1", description = "set 2.") Value<T[]> b) {
         setInput("0", a);
         setInput("1", b);
     }
 
     @Override
     @GeneratorInfo(name = "intersect",
-            description = "A function to take intersection between two sets.")
+            description = "A function to get intersection between two sets.")
     public Value<T[]> apply() {
         Value<T[]> a = (Value<T[]>)paramMap.get("0");
         Class<?> aTy = a.value().getClass().getComponentType();
