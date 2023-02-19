@@ -1,0 +1,16 @@
+data {
+  L = 200;
+  taxa = taxa(names=1:10);
+}
+model {
+  ψ ~ Coalescent(theta=0.2, taxa=taxa);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+  M ~ MissingSites(alignment=D, prob=0.75);
+  mis = selectSites(alignment=M, unknownFracLess=0.75);
+  var = variableSites(alignment=M);
+  const = invariableSites(alignment=M);
+  varmis = intersect(mis, var);
+  constmis = intersect(mis, const);
+  cmn = repArray(arr=constmis, n=10);
+  //S = copySites(ids=varmis, ids2=cmn, alignment=M);
+}
