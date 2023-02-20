@@ -6,6 +6,10 @@ import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
 
+/**
+ * replaced by built-in {@link lphy.parser.functions.ExpressionNode1Arg}
+ */
+@Deprecated
 public class Round extends DeterministicFunction<Integer> {
 
     public static final String paramName = "0";

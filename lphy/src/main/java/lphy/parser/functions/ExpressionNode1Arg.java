@@ -147,8 +147,8 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
         return (a) -> Math.sqrt(2) * org.apache.commons.math3.special.Erf.erfInv(2 * a.doubleValue() - 1);
     }
 
-	public static Function<Number, Double> round() {
-        return (a) -> (double) Math.round(a.doubleValue());
+	public static Function<Number, Integer> round() {
+        return (a) -> (int) Math.round(a.doubleValue());
     }
 
 	public static Function<Number, Double> signum() {
