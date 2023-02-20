@@ -3,6 +3,7 @@ package lphy.core.functions;
 import lphy.graphicalModel.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Walter Xie
@@ -29,16 +30,9 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
             throw new IllegalArgumentException("Must use the same type !");
 
         // Object[]
-        T[] intsect = (T[]) Arrays.stream(a.value()).distinct()
-                .filter(x -> Arrays.stream(b.value()).anyMatch(y -> y == x)).
-                toArray();
-
-//            return ValueUtils.createValue(intsect.toArray(Integer[]::new), this);
-//        if (intsect[0] instanceof Double)
-//            return ValueUtils.createValue((Double[]) intsect, this);
-//        if (intsect[0] instanceof Boolean)
-//            return ValueUtils.createValue((Boolean[]) intsect, this);
-        return ValueUtils.createValue(intsect, this);
+        List<T> intersect = Arrays.stream(a.value()).distinct()
+                .filter(x -> Arrays.stream(b.value()).anyMatch(y -> y == x)).toList();
+        return ValueUtils.createValue(intersect, this);
     }
 
 }

@@ -26,7 +26,8 @@ public class ConcatArray<T> extends DeterministicFunction<T[]> {
         Class<?> bTy = b.getClass().getComponentType();
 
         if (!aTy.equals(bTy))
-            throw new IllegalArgumentException("Must use the same type !");
+            throw new IllegalArgumentException("concatArray function must use the same type between arguments ! " +
+                    aTy + " != " + bTy);
 
         // Object[]
         T[] array = Arrays.copyOf(a, a.length + b.length);

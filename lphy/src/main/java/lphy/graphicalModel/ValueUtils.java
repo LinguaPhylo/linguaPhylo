@@ -103,6 +103,23 @@ public class ValueUtils {
         return new Value(null, value, generator);
     }
 
+    /**
+     * This is used to handle generic array, which has to be initiated as Object[].
+     * @param arr2List   generic type
+     * @param generator  a {@link DeterministicFunction}
+     * @return           an array value created from a generic type list.
+     * @param <T>        Integer, Double, Boolean, ...
+     */
+    public static <T> Value<T[]> createValue(List<T> arr2List, DeterministicFunction generator) {
+        if (arr2List.get(0) instanceof Integer)
+            return ValueUtils.createValue(arr2List.toArray(Integer[]::new), generator);
+        else if (arr2List.get(0) instanceof Double)
+            return ValueUtils.createValue(arr2List.toArray(Double[]::new), generator);
+        else if (arr2List.get(0) instanceof Boolean)
+            return ValueUtils.createValue(arr2List.toArray(Boolean[]::new), generator);
+        return ValueUtils.createValue(arr2List.toArray(), generator);
+    }
+
     public static String valueToString(Object value) {
 
         if (value.getClass().isArray()) {

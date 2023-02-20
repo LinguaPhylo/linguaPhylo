@@ -9,10 +9,10 @@ model {
   M ~ MissingSites(alignment=D, prob=0.75);
   mis = selectSites(alignment=M, unknownFracLess=0.75);
   var = variableSites(alignment=M);
-  const = invariableSites(alignment=M);
-  varmis = intersect(mis, var);
-  constmis = intersect(mis, const);
-  samp ~ sample(arr=constmis, size=round(length(constmis)/RE));
-  newsites = concatArray(varmis, repArray(arr=samp, n=RE));
-  //S = copySites(ids=newsites, alignment=M);
+  cst = invariableSites(alignment=M);
+  VM = intersect(mis, var);
+  CM = intersect(mis, cst);
+  P ~ sample(arr=CM, size=round(length(CM)/RE));
+  Sid = concatArray(VM, repArray(arr=P, n=RE));
+  //S = copySites(ids=Sid, alignment=M);
 }
