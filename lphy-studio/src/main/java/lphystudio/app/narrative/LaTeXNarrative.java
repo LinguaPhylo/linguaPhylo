@@ -464,6 +464,7 @@ public class LaTeXNarrative implements Narrative {
     }
 
     private static String unbracket(String str) {
+        if (str==null) return "";
         if (str.startsWith("[") && str.endsWith("]")) return str.substring(1, str.indexOf(']'));
         return str;
     }
