@@ -12,7 +12,7 @@ model {
   const = invariableSites(alignment=M);
   varmis = intersect(mis, var);
   constmis = intersect(mis, const);
-  samp ~ sample(arr=length(constmis), size=round(len/RE));
-  cmn = repArray(arr=samp, n=RE);
-  //S = copySites(ids=varmis, ids2=cmn, alignment=M);
+  samp ~ sample(arr=constmis, size=round(length(constmis)/RE));
+  newsites = concatArray(varmis, repArray(arr=samp, n=RE));
+  //S = copySites(ids=newsites, alignment=M);
 }
