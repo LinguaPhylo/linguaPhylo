@@ -68,7 +68,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // alignment
             ErrorModel.class, MissingSites.class,
             // others
-            RandomBooleanArray.class,
+            RandomBooleanArray.class, Sample.class,
             // phylogenetic distribution
             PhyloBrownian.class, PhyloMultivariateBrownian.class,
             PhyloOU.class,
