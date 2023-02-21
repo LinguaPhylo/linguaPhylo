@@ -1,19 +1,25 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import static lphy.core.ParameterNames.TimesParamName;
 
 public class Rep<U> extends DeterministicFunction<U[]> {
 
     private final String xParamName = "element";
-    private final String timesParamName = "times";
     private Value<U> x;
     private Value<Integer> times;
 
     public Rep(@ParameterInfo(name = xParamName, description = "the element to replicate.") Value<U> x,
-               @ParameterInfo(name = timesParamName, description = "the standard deviation of the distribution.") Value<Integer> times) {
+               @ParameterInfo(name = TimesParamName, description = "the standard deviation of the distribution.") Value<Integer> times) {
 
         this.x = x;
         if (x == null) throw new IllegalArgumentException("The element can't be null!");
@@ -34,13 +40,13 @@ public class Rep<U> extends DeterministicFunction<U[]> {
     public java.util.Map<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
         map.put(xParamName, x);
-        map.put(timesParamName, times);
+        map.put(TimesParamName, times);
         return map;
     }
 
     public void setParam(String paramName, Value value) {
         if (paramName.equals(xParamName)) x = value;
-        else if (paramName.equals(timesParamName)) times = value;
+        else if (paramName.equals(TimesParamName)) times = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 

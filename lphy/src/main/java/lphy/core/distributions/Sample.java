@@ -8,7 +8,6 @@ import java.util.*;
 
 public class Sample<T> implements GenerativeDistribution<T[]> {
 
-    private final String xParamName = "arr";
     private final String replParamName = "replace";
 
     private Value<T[]> x;
@@ -17,7 +16,8 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
 
     Random random;
 
-    public Sample(@ParameterInfo(name = xParamName, description = "1d-array to be sampled.") Value<T[]> x,
+    public Sample(@ParameterInfo(name = ParameterNames.ArrayParamName,
+                          description = "1d-array to be sampled.") Value<T[]> x,
                   @ParameterInfo(name = ParameterNames.SizeParamName,
                           description = "the number of elements to choose.") Value<Integer> size,
                   @ParameterInfo(name = replParamName, description = "If replace is true, " +
@@ -65,7 +65,7 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(xParamName, x);
+            put(ParameterNames.ArrayParamName, x);
             put(ParameterNames.SizeParamName, size);
             put(replParamName, replace);
         }};

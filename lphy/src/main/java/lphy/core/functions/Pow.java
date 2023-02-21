@@ -1,5 +1,6 @@
 package lphy.core.functions;
 
+import lphy.core.ParameterNames;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -8,13 +9,11 @@ import lphy.graphicalModel.types.DoubleValue;
 
 public class Pow extends DeterministicFunction<Double> {
 
-    String bparamName;
-    String xparamName;
+    final String bparamName = ParameterNames.NoParamName0;
+    final String xparamName = ParameterNames.NoParamName1;
 
-    public Pow(@ParameterInfo(name = "0", description = "the base.") Value<Double> b,
-               @ParameterInfo(name = "1", description = "the exponent.") Value<Double> x) {
-        bparamName = getParamName(0);
-        xparamName = getParamName(1);
+    public Pow(@ParameterInfo(name = bparamName, description = "the base.") Value<Double> b,
+               @ParameterInfo(name = xparamName, description = "the exponent.") Value<Double> x) {
         setParam(bparamName, b);
         setParam(xparamName, x);
     }

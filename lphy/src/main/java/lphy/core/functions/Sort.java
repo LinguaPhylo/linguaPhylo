@@ -1,6 +1,5 @@
 package lphy.core.functions;
 
-import lphy.core.ParameterNames;
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
@@ -9,14 +8,16 @@ import lphy.graphicalModel.Value;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static lphy.core.ParameterNames.ArrayParamName;
+import static lphy.core.ParameterNames.DecreasingParamName;
+
 public class Sort<T> extends DeterministicFunction<T[]> {
 
-    private final String sortByParamName = ParameterNames.DecreasingParamName;
+    private final String sortByParamName = DecreasingParamName;
     private Value<T[]> x;
     private Value<Boolean> decreasing;
 
-    public Sort(@ParameterInfo(name = ParameterNames.ArrayParamName,
-            description = "1d-array to sort.") Value<T[]> x,
+    public Sort(@ParameterInfo(name = ArrayParamName, description = "1d-array to sort.") Value<T[]> x,
                 @ParameterInfo(name = sortByParamName,
             description = "sort the array by increasing (as default) or decreasing.",
                 optional = true) Value<Boolean> decreasing) {

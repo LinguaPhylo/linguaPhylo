@@ -8,12 +8,15 @@ import lphy.graphicalModel.types.IntegerValue;
 
 import java.lang.reflect.Array;
 
+import static lphy.core.ParameterNames.NoParamName0;
+
 public class Length extends DeterministicFunction<Integer> {
 
     // by setting the arg param to an integer it will not be displayed in the code string.
-    public static final String argParamName = "0";
+    public static final String argParamName = NoParamName0;
 
-    public Length(@ParameterInfo(name = argParamName, verb="of", suppressNameInNarrative=true, description = "the array to return the length of.") Value x) {
+    public Length(@ParameterInfo(name = NoParamName0, verb="of",
+            suppressNameInNarrative=true, description = "the array to return the length of.") Value x) {
         setParam(argParamName, x);
     }
 

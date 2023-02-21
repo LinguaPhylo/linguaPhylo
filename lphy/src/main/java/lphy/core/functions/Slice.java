@@ -4,11 +4,13 @@ import lphy.graphicalModel.*;
 
 import java.lang.reflect.Array;
 
+import static lphy.core.ParameterNames.ArrayParamName;
+
 public class Slice<T> extends DeterministicFunction {
 
     public static final String startParamName = "start";
     public static final String endParamName = "end";
-    public static final String arrayParamName = "array";
+    public static final String arrayParamName = ArrayParamName;
 
     public Slice(@ParameterInfo(name=startParamName, description ="start index") Value<Integer> start,
                  @ParameterInfo(name=endParamName, description ="end index") Value<Integer> end,

@@ -2,16 +2,16 @@ package lphy.core.functions;
 
 import lphy.graphicalModel.*;
 
+import static lphy.core.ParameterNames.EndParamName;
+import static lphy.core.ParameterNames.StartParamName;
+
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 
-    public static final String startParamName = "start";
-    public static final String endParamName = "end";
+    public Range(@ParameterInfo(name=StartParamName, description ="start of the range (inclusive)") Value<Integer> start,
+                 @ParameterInfo(name=EndParamName, description ="end of the range (inclusive)") Value<Integer> end) {
 
-    public Range(@ParameterInfo(name=startParamName, description ="start of the range (inclusive)") Value<Integer> start,
-                 @ParameterInfo(name=endParamName, description ="end of the range (inclusive)") Value<Integer> end) {
-
-        setParam(endParamName, end);
-        setParam(startParamName, start);
+        setParam(EndParamName, end);
+        setParam(StartParamName, start);
     }
 
     @Override
@@ -28,11 +28,11 @@ public class Range extends DeterministicFunction<Integer[]> implements RangeElem
     }
 
     public Value<Integer> start() {
-        return (Value<Integer>)paramMap.get(startParamName);
+        return (Value<Integer>)paramMap.get(StartParamName);
     }
 
     public Value<Integer> end() {
-        return (Value<Integer>) paramMap.get(endParamName);
+        return (Value<Integer>) paramMap.get(EndParamName);
     }
 
     @Override

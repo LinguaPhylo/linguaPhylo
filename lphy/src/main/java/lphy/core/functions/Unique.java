@@ -1,6 +1,9 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.CompoundVectorValue;
 
 import java.util.*;
@@ -9,7 +12,8 @@ public class Unique extends DeterministicFunction<CompoundVectorValue> {
 
     public static final String argParamName = "arg";
 
-    public Unique(@ParameterInfo(name = argParamName, verb="of", description = "the string array to find its unique set.") Value<?> x) {
+    public Unique(@ParameterInfo(name = argParamName, verb="of",
+            description = "the string array to find its unique set.") Value<?> x) {
         setParam(argParamName, x);
     }
 

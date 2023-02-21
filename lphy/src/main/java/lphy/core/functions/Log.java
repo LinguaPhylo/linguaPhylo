@@ -1,14 +1,18 @@
 package lphy.core.functions;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleValue;
+
+import static lphy.core.ParameterNames.NoParamName0;
 
 public class Log extends DeterministicFunction<Double> {
 
-    final String paramName;
+    final String paramName = NoParamName0;
 
-    public Log(@ParameterInfo(name = "0", description = "the argument.") Value<Double> x) {
-        paramName = getParamName(0);
+    public Log(@ParameterInfo(name = paramName, description = "the argument.") Value<Double> x) {
         setParam(paramName, x);
     }
 

@@ -1,32 +1,31 @@
 package lphy.core.functions;
 
-import lphy.core.ParameterNames;
 import lphy.graphicalModel.*;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static lphy.core.ParameterNames.NoParamName0;
+import static lphy.core.ParameterNames.NoParamName1;
 
 /**
  * @author Walter Xie
  */
 public class Intersect<T> extends DeterministicFunction<T[]> {
 
-    private final String Pa1st = ParameterNames.NoParamName0;
-    private final String Pa2nd = ParameterNames.NoParamName1;
-
-    public Intersect(@ParameterInfo(name = Pa1st, description = "set 1.") Value<T[]> a,
-                     @ParameterInfo(name = Pa2nd, description = "set 2.") Value<T[]> b) {
-        setInput(Pa1st, a);
-        setInput(Pa2nd, b);
+    public Intersect(@ParameterInfo(name = NoParamName0, description = "set 1.") Value<T[]> a,
+                     @ParameterInfo(name = NoParamName1, description = "set 2.") Value<T[]> b) {
+        setInput(NoParamName0, a);
+        setInput(NoParamName1, b);
     }
 
     @Override
     @GeneratorInfo(name = "intersect",
             description = "A function to get intersection between two sets.")
     public Value<T[]> apply() {
-        Value<T[]> a = (Value<T[]>)paramMap.get(Pa1st);
+        Value<T[]> a = (Value<T[]>)paramMap.get(NoParamName0);
         Class<?> aTy = a.value().getClass().getComponentType();
-        Value<T[]> b = (Value<T[]>)paramMap.get(Pa2nd);
+        Value<T[]> b = (Value<T[]>)paramMap.get(NoParamName1);
         Class<?> bTy = b.value().getClass().getComponentType();
 
         if (!aTy.equals(bTy))
