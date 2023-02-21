@@ -13,6 +13,6 @@ model {
   VM = intersect(mis, var);
   CM = intersect(mis, cst);
   P ~ sample(arr=CM, size=round(length(CM)/RE));
-  Sid = concatArray(VM, repArray(arr=P, n=RE));
-  //S = copySites(ids=Sid, alignment=M);
+  Sid = concatArray(VM, repArray(arr=sort(arr=P), n=RE));
+  S = copySites(ids=Sid, alignment=M);
 }
