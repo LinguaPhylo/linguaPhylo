@@ -20,7 +20,7 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
     }
 
     @Override
-    @GeneratorInfo(name = "intersect",
+    @GeneratorInfo(name = "intersect", verbClause = "is", narrativeName = "intersection",
             description = "A function to get intersection between two sets.")
     public Value<T[]> apply() {
         Value<T[]> a = (Value<T[]>)paramMap.get(NoParamName0);

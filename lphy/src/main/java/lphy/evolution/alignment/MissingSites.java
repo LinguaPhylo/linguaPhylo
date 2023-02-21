@@ -48,7 +48,7 @@ public class MissingSites implements GenerativeDistribution<Alignment> {
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
-    @GeneratorInfo(name = "MissingSites",
+    @GeneratorInfo(name = "MissingSites", verbClause = "is created by",
             category = GeneratorCategory.TAXA_ALIGNMENT,
             description = "The missing data distribution for an alignment.")
     public RandomVariable<Alignment> sample() {

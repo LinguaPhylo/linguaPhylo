@@ -20,7 +20,7 @@ public class ConcatArray<T> extends DeterministicFunction<T[]> {
     }
 
     @Override
-    @GeneratorInfo(name = "concatArray",
+    @GeneratorInfo(name = "concatArray", verbClause = "is concatenated by", narrativeName = "vector",
             description = "A function to concatenate two arrays into one.")
     public Value<T[]> apply() {
         T[] a = (T[])paramMap.get(NoParamName0).value();

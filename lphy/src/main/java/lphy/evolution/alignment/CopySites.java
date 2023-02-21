@@ -29,7 +29,7 @@ public class CopySites extends DeterministicFunction<Alignment> {
             throw new IllegalArgumentException("Cannot find Alignment ! " + originalAlignment.getId());
     }
 
-    @GeneratorInfo(name = "copySites",
+    @GeneratorInfo(name = "copySites", verbClause = "is created by",
             category = GeneratorCategory.TAXA_ALIGNMENT,
             description = "Create a new alignment by copying sites from the original alignment. " +
                     "The sites can be duplicated. Use other function to sample or manipulate the site indices.")
