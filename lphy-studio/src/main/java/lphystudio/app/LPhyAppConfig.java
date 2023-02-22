@@ -6,12 +6,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Objects;
+import java.io.InputStream;
 
 /**
  * @author Walter Xie
@@ -50,12 +46,17 @@ public final class LPhyAppConfig {
 
     // icon
     public static BufferedImage getLPhyIcon(String iconFile) {
-        URL url = LinguaPhyloStudio.class.getClassLoader().getResource( iconFile );
+//        URL url = LinguaPhyloStudio.class.getClassLoader().getResource( iconFile );
+        InputStream in = LinguaPhyloStudio.class.getClassLoader().getResourceAsStream( iconFile );
+        if (in == null) {
+            LoggerUtils.log.warning("Cannot find LPhy icon !");
+            return null;
+        }
         BufferedImage img = null;
         try {
-            File ico = Paths.get(Objects.requireNonNull(url).toURI()).toFile();
-            img = ImageIO.read(ico);
-        } catch (IOException | URISyntaxException e) {
+//            File ico = Paths.get(Objects.requireNonNull(url).toURI()).toFile();
+            img = ImageIO.read(in);
+        } catch (IOException e) {
             LoggerUtils.log.warning("Cannot find LPhy icon !");
         }
         return img;

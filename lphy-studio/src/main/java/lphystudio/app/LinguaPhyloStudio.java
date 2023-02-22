@@ -22,6 +22,7 @@ import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.*;
 import java.nio.file.Path;
@@ -43,7 +44,9 @@ public class LinguaPhyloStudio {
         final Taskbar taskbar = Taskbar.getTaskbar();
         if (Taskbar.isTaskbarSupported()) {
             try {
-                taskbar.setIconImage(LPhyAppConfig.getLPhyIcon(LPHY_ICON));
+                BufferedImage ioc = LPhyAppConfig.getLPhyIcon(LPHY_ICON);
+                if (ioc != null)
+                    taskbar.setIconImage(ioc);
             } catch (final UnsupportedOperationException e) {
                 LoggerUtils.log.warning("The os does not support: 'taskbar.setIconImage'");
             } catch (final SecurityException e) {
