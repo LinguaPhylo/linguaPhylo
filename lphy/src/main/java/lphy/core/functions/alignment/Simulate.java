@@ -1,10 +1,11 @@
 package lphy.core.functions.alignment;
 
-import lphy.core.GraphicalLPhyParser;
 import lphy.core.LPhyParser;
-import lphy.core.Sampler;
 import lphy.evolution.alignment.Alignment;
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.DeterministicFunction;
+import lphy.graphicalModel.GeneratorInfo;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.MapValue;
 import lphy.parser.REPL;
 import lphy.system.UserDir;
@@ -13,7 +14,9 @@ import lphy.util.LoggerUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Simulate extends DeterministicFunction<Map<String, Object>> {
 
@@ -51,15 +54,12 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
     public Value<Map<String, Object>> apply() {
         LPhyParser parser = new REPL();
         try {
+            // this also samples values while parsing
             parser.source(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        GraphicalLPhyParser gparser = new GraphicalLPhyParser(parser);
-        Sampler sampler = new Sampler(gparser);
-
-        List<RandomValueLogger> loggers = new ArrayList<>();
-        sampler.sample(1, loggers);
+        //so, DO NOT need to create Sampler to sample
 
         // have to match MapValue
         Map<String, Object> alignmentMap = new HashMap<>();
