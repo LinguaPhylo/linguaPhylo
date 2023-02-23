@@ -31,9 +31,11 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
         if (!aTy.equals(bTy))
             throw new IllegalArgumentException("Must use the same type !");
 
-        // Object[]
+//        Set<String> intersection = set1.stream()
+//                .filter(set2::contains)
+//                .collect(Collectors.toSet());
         List<T> intersect = Arrays.stream(a.value()).distinct()
-                .filter(x -> Arrays.stream(b.value()).anyMatch(y -> y == x)).toList();
+                .filter(x -> Arrays.asList(b.value()).contains(x)).toList();
 
         System.out.println("Intersect a vector "+ a.getCanonicalId() + " (" + a.value().length +
                 ") with " + b.getCanonicalId() + " (" + b.value().length +
