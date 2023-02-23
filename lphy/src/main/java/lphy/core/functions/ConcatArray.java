@@ -36,6 +36,8 @@ public class ConcatArray<T> extends DeterministicFunction<T[]> {
         T[] array = Arrays.copyOf(a, a.length + b.length);
         System.arraycopy(b, 0, array, a.length, b.length);
 
+        System.out.println("Concatenate two vectors sized at " + a.length + " and " + b.length +
+                " into one, final length = " + array.length);
         return ValueUtils.createValue(array, this);
     }
 

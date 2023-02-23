@@ -34,6 +34,9 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
         // Object[]
         List<T> intersect = Arrays.stream(a.value()).distinct()
                 .filter(x -> Arrays.stream(b.value()).anyMatch(y -> y == x)).toList();
+
+        System.out.println("Intersect a vector (" + a.value().length + ") with another (" + b.value().length +
+                "), the result length = " + intersect.size());
         return ValueUtils.createValue(intersect, this);
     }
 
