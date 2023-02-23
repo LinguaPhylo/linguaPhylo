@@ -60,7 +60,7 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
             list2Arr = origArr.stream().limit(s).toList();
         }
         System.out.println("Sample " + list2Arr.size() + " elements from the vector of " + origArr.size() +
-                (replace.value() ? " with ":" without ") + " the replacement.");
+                (replace.value() ? " with":" without") + " the replacement.");
 
         return VariableUtils.createRandomVariable( null, list2Arr, this);
     }
