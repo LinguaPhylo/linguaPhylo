@@ -19,10 +19,10 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
     public VariableSites(@ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
             description = "the original alignment.") Value<Alignment> originalAlignment,
                          @ParameterInfo(name = AlignmentUtils.IGNORE_UNKNOWN_PARAM_NAME,
-            description = "If true, ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites.",
+            description = "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites.",
             optional=true) Value<Boolean> ignoreUnknownState  ) {
         if (ignoreUnknownState == null)
-            ignoreUnknownState = new Value<>(null, Boolean.TRUE);
+            ignoreUnknownState = new Value<>(null, true);
         this.ignoreUnknownState = ignoreUnknownState;
 
         this.originalAlignment = originalAlignment;
