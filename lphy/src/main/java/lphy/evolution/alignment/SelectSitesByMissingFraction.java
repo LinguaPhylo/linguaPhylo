@@ -49,7 +49,7 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
                 aSite[i] = original.getState(i, j);
             }
             // filter
-            if (!toBeRemoved(aSite, fracLessThan.value()))
+            if (isSelected(aSite, fracLessThan.value()))
                 selectedSiteIds.add(j);
         }
 
@@ -61,13 +61,14 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
         return new Value<>(null, ids, this);
     }
 
-    private boolean toBeRemoved(int[] aSite, double threshold) {
+    // select a site, if the fraction of unknown states (incl. gap) < threshold
+    private boolean isSelected(int[] aSite, double threshold) {
         double missing = 0.0;
         for (int state : aSite) {
             if ( state == sequenceType.getUnknownState().getIndex() ||
                     state == sequenceType.getGapState().getIndex())
                 missing++;
         }
-        return missing/(double)aSite.length >= threshold;
+        return missing/(double)aSite.length < threshold;
     }
 }
