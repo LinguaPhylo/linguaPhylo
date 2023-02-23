@@ -4,6 +4,7 @@ import lphy.graphicalModel.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static lphy.core.ParameterNames.NoParamName0;
 import static lphy.core.ParameterNames.NoParamName1;
@@ -23,10 +24,10 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
     @GeneratorInfo(name = "intersect", verbClause = "is", narrativeName = "intersection",
             description = "A function to get intersection between two sets.")
     public Value<T[]> apply() {
-        Value<T[]> a = (Value<T[]>)paramMap.get(NoParamName0);
-        Class<?> aTy = a.value().getClass().getComponentType();
-        Value<T[]> b = (Value<T[]>)paramMap.get(NoParamName1);
-        Class<?> bTy = b.value().getClass().getComponentType();
+        T[] a = (T[]) Objects.requireNonNull(paramMap.get(NoParamName0)).value();
+        Class<?> aTy = a.getClass().getComponentType();
+        T[] b = (T[]) Objects.requireNonNull(paramMap.get(NoParamName1)).value();
+        Class<?> bTy = b.getClass().getComponentType();
 
         if (!aTy.equals(bTy))
             throw new IllegalArgumentException("Must use the same type !");
@@ -34,12 +35,17 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
 //        Set<String> intersection = set1.stream()
 //                .filter(set2::contains)
 //                .collect(Collectors.toSet());
-        List<T> intersect = Arrays.stream(a.value()).distinct()
-                .filter(x -> Arrays.asList(b.value()).contains(x)).toList();
+        List<T> intersect;
+        if (a.length < b.length) // stream b if it is larger
+            intersect = Arrays.stream(b).distinct()
+                    .filter(x -> Arrays.asList(a).contains(x)).toList();
+        else
+            intersect= Arrays.stream(a).distinct()
+                .filter(x -> Arrays.asList(b).contains(x)).toList();
 
-        System.out.println("Intersect a vector "+ a.getCanonicalId() + " (" + a.value().length +
-                ") with " + b.getCanonicalId() + " (" + b.value().length +
-                "), the result length = " + intersect.size());
+        System.out.println("Intersect a vector "+ paramMap.get(NoParamName0).getCanonicalId() +
+                " (" + a.length + ") with " + paramMap.get(NoParamName1).getCanonicalId() +
+                " (" + b.length + "), the result length = " + intersect.size());
         return ValueUtils.createValue(intersect, this);
     }
 
