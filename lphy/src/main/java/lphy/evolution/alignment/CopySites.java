@@ -1,6 +1,7 @@
 package lphy.evolution.alignment;
 
 import lphy.graphicalModel.*;
+import lphy.util.LoggerUtils;
 
 /**
  * @author Walter Xie
@@ -62,6 +63,8 @@ public class CopySites extends DeterministicFunction<Alignment> {
                 newAlignment.setState(i, j+sitesId.length, tmpS);
             }
         }
+        LoggerUtils.log.info("Create new alignment copying " + newAlignment.nchar() +
+                " sites (can be duplicated) from the original alignment " + originalAlignment.getId() );
 
         return new Value<>(null, newAlignment, this);
     }
