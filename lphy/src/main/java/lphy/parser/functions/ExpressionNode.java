@@ -1,14 +1,14 @@
 package lphy.parser.functions;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import lphy.graphicalModel.DeterministicFunction;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 abstract public class ExpressionNode<T> extends DeterministicFunction<T> implements Generator {
 
@@ -20,7 +20,22 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 	ExpressionNode() {
 		
 	}
-	
+
+	protected void addValue2Params(Value value) {
+		String key = null;
+		if (!value.isAnonymous()) {
+			key = value.getId();
+		} else if (value.isRandom() || value.getGenerator() != null) {
+			// the or above is required to ensure that constant named parameter dependencies are displayed in graphical model
+			key = value.codeString();
+		}
+
+		if (key != null) {
+			params.put(key, value);
+		}
+		value.addOutput(this);
+	}
+
 	@Override
 	public String getName() {
 		return expression;

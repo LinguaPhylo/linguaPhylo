@@ -1,16 +1,18 @@
 package lphy.parser.functions;
 
-import java.util.*;
-import java.util.function.*;
-
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 import lphy.parser.ElementWise2Args;
 import lphy.util.LoggerUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BinaryOperator;
+
 /**
- * container holding a DeterministicFunction with 2 arguments
+ * container holding a DeterministicFunction with 2 arguments.
+ * TODO: this only handles BinaryOperator but not BiFunction.
  **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
     BinaryOperator func;
@@ -29,21 +31,8 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 //					params.put(value2.getId(), value2);
 //					ids.add(value2.getId());
 //				}
-            } else if (node instanceof Value) {
-                Value value = (Value)node;
-
-                String key = null;
-                if (!value.isAnonymous()) {
-                    key = value.getId();
-                } else if (value.isRandom() || value.getGenerator() != null) {
-                    // the or above is required to ensure that constant named parameter dependencies are displayed in graphical model
-                    key = value.codeString();
-                }
-
-                if (key != null) {
-                    params.put(key, value);
-                }
-                value.addOutput(this);
+            } else if (node instanceof Value val) {
+                addValue2Params(val);
             }
         }
         inputValues = values;

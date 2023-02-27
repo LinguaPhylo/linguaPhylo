@@ -10,7 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.function.Function;
 
 /**
- * anonymous container holding a DeterministicFunction with 1 argument
+ * anonymous container holding a DeterministicFunction with 1 argument.
+ * The functions containing more than 1 argument are implemented by
+ * extending {@link lphy.graphicalModel.DeterministicFunction}.
  **/
 public class ExpressionNode1Arg<T> extends ExpressionNode {
     Function func;
@@ -20,16 +22,15 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
         this.expression = expression;
         this.func = func;
         params = new LinkedHashMap<>();
-        for (GraphicalModelNode value : values) {
-            if (value instanceof ExpressionNode) {
-                for (Object o : ((ExpressionNode) value).getInputs()) {
+        for (GraphicalModelNode node : values) {
+            if (node instanceof ExpressionNode) {
+                for (Object o : ((ExpressionNode) node).getInputs()) {
                     Value value2 = (Value) o;
                     value2.addOutput(this);
                     params.put(value2.getId(), value2);
                 }
-            } else if (value instanceof Value) {
-                ((Value) value).addOutput(this);
-                params.put(((Value) value).getId(), value);
+            } else if (node instanceof Value val) {
+                addValue2Params(val);
             }
         }
         inputValues = values;

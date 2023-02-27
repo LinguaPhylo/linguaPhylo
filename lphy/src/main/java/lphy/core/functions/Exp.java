@@ -5,12 +5,14 @@ import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.ParameterInfo;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleValue;
+import lphy.parser.functions.ExpressionNode1Arg;
 
 import static lphy.graphicalModel.ValueUtils.doubleValue;
 
 /**
  * Already exists in lphy.parser.SimulatorListenerImpl
  * ValueOrFunction#visitMethodCall(SimulatorParser.MethodCallContext)
+ * Use built-in function {@link ExpressionNode1Arg#exp()}
  */
 @Deprecated
 public class Exp extends DeterministicFunction<Double> {

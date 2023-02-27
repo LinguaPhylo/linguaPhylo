@@ -18,6 +18,8 @@ public class Pow extends DeterministicFunction<Double> {
         setParam(xparamName, x);
     }
 
+    // This cannot be built-in func, because ExpressionNode1Arg is only parsing 1-arg Function,
+    // and ExpressionNode2Args implemented is for BinaryOperator (not BiFunction).
     @GeneratorInfo(name = "pow", description = "The power function: b^x")
     public Value<Double> apply() {
         Value<Double> b = getParams().get(bparamName);
