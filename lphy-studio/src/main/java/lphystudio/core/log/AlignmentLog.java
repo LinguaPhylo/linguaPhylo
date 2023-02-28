@@ -5,21 +5,26 @@ import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 import lphy.nexus.NexusWriter;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static lphystudio.app.graphicalmodelpanel.AlignmentLogPanel.getAlignmentDir;
 import static lphystudio.app.graphicalmodelpanel.AlignmentLogPanel.isLogAlignment;
 
 /**
+ * Write each alignment to a file during sampling.
+ * The viewer is {@link lphystudio.app.graphicalmodelpanel.AlignmentLogPanel}.
+ * This is a duplicated version of {@link lphy.graphicalModel.logger.AlignmentFileLogger},
+ * but contains GUI code.
  * @author Walter Xie
  */
 public class AlignmentLog extends JTextArea implements RandomValueLogger {
@@ -79,16 +84,19 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
     }
 
     private void logAlignment(Value<SimpleAlignment> alignment, int rep) {
-        String dir = getAlignmentDir();
+//        String dir = getAlignmentDir();
+        Path dir = UserDir.getUserDir();
         String fileName = alignment.getCanonicalId() + "_" + rep + ".nexus";
 
         try {
-            File file = Paths.get(dir, fileName).toFile();
+            File file = Paths.get(dir.toString(), fileName).toFile();
             if (!file.getParentFile().exists())
                 throw new IllegalArgumentException("Directory " + file.getParentFile() + " does not exist !");
             PrintStream stream = new PrintStream(file);
             // no tree
             NexusWriter.write(alignment.value(), new LinkedList<>(), stream);
+
+            LoggerUtils.log.info("Sample " + rep + " writes alignment " + alignment.getCanonicalId() + " to " + file);
         } catch (Exception e) {
             LoggerUtils.logStackTrace(e);
             e.printStackTrace();
