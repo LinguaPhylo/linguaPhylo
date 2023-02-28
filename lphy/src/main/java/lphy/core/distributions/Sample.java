@@ -1,10 +1,12 @@
 package lphy.core.distributions;
 
-import lphy.core.ParameterNames;
 import lphy.graphicalModel.*;
 import lphy.util.RandomUtils;
 
 import java.util.*;
+
+import static lphy.core.ParameterNames.ArrayParamName;
+import static lphy.core.ParameterNames.SizeParamName;
 
 public class Sample<T> implements GenerativeDistribution<T[]> {
 
@@ -16,9 +18,9 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
 
     Random random;
 
-    public Sample(@ParameterInfo(name = ParameterNames.ArrayParamName,
+    public Sample(@ParameterInfo(name = ArrayParamName,
                           description = "1d-array to be sampled.") Value<T[]> x,
-                  @ParameterInfo(name = ParameterNames.SizeParamName,
+                  @ParameterInfo(name = SizeParamName,
                           description = "the number of elements to choose.") Value<Integer> size,
                   @ParameterInfo(name = replParamName, description = "If replace is true, " +
                           "the same element can be sampled multiple times, if false (as default), " +
@@ -27,13 +29,8 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
 
         this.x = x;
         if (x == null) throw new IllegalArgumentException("The array can't be null!");
-        T[] value = x.value();
-        if (value == null || value.length < 1)
-            throw new IllegalArgumentException("Must have at least 1 element in the array!");
         this.size = size;
         if (size == null) throw new IllegalArgumentException("The size can't be null!");
-        if (size.value() <= 0 || size.value() > value.length)
-            throw new IllegalArgumentException("Invalid size : " + size.value());
         if (replace == null)
             replace = new Value<>(null, false);
         this.replace = replace;
@@ -41,10 +38,23 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
         random = RandomUtils.getJavaRandom();
     }
 
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(ArrayParamName)) {
+            T[] arr = x.value();
+            if (arr == null || arr.length < 1)
+                throw new IllegalArgumentException("Must have at least 1 element in the array! " + Arrays.toString(arr));
+        }
+        else if (paramName.equals(SizeParamName)) {
+            if (size.value() <= 0 || size.value() > x.value().length)
+                throw new IllegalArgumentException("Invalid size : " + size.value());
+        }
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+    }
+
     @GeneratorInfo(name = "sample", description = "The sample function uniformly sample the subset of " +
             "a given size from an array of the elements either with or without the replacement.")
     public RandomVariable<T[]> sample() {
-        List<T> origArr = new ArrayList<>(List.of(x.value()));
+        List<T> origArr = Arrays.asList(x.value());
         int s = size.value();
         // use List to handle generic
         List<T> list2Arr;
@@ -62,13 +72,13 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
         System.out.println("Sample " + list2Arr.size() + " elements from the vector of " + origArr.size() +
                 (replace.value() ? " with":" without") + " the replacement.");
 
-        return VariableUtils.createRandomVariable( null, list2Arr, this);
+        return VariableUtils.createRandomVariable( "S", list2Arr, this);
     }
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(ParameterNames.ArrayParamName, x);
-            put(ParameterNames.SizeParamName, size);
+            put(ArrayParamName, x);
+            put(SizeParamName, size);
             put(replParamName, replace);
         }};
     }

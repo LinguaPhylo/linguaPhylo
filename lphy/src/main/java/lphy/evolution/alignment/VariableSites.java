@@ -39,7 +39,7 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
                     "which variable sites.")
     public Value<Integer[]> apply() {
 
-        Alignment original = originalAlignment.value();
+        final Alignment original = originalAlignment.value();
         final boolean ignUnk = ignoreUnknownState.value();
 
         List<Integer> selectedSiteIds = new ArrayList<>();

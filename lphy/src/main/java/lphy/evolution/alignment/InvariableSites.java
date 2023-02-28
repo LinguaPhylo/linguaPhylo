@@ -39,7 +39,7 @@ public class InvariableSites extends DeterministicFunction<Integer[]> {
                     "which are invariable sites.")
     public Value<Integer[]> apply() {
 
-        Alignment original = originalAlignment.value();
+        final Alignment original = originalAlignment.value();
         final boolean ignUnk = ignoreUnknownState.value();
 
         List<Integer> selectedSiteIds = new ArrayList<>();

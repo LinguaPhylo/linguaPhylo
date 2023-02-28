@@ -39,10 +39,9 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
             description = "Select the site where the fraction of unknown states are less than the threshold in that site.")
     public Value<Integer[]> apply() {
 
-        Alignment original = originalAlignment.value();
+        final Alignment original = originalAlignment.value();
 
         List<Integer> selectedSiteIds = new ArrayList<>();
-
         for (int j = 0; j < original.nchar(); j++) {
             int[] aSite = new int[original.ntaxa()];
             for (int i = 0; i < original.ntaxa(); i++) {
