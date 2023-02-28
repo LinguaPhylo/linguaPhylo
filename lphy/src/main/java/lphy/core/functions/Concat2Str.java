@@ -17,8 +17,8 @@ public class Concat2Str extends DeterministicFunction {
                       @ParameterInfo(name = secondParamName, description ="the suffix substring to concatenate.")
                   Value<String> substr2) {
 
-        setInput(firstParamName, substr1);
-        setInput(secondParamName, substr2);
+        setParam(firstParamName, substr1);
+        setParam(secondParamName, substr2);
     }
 
     @Override

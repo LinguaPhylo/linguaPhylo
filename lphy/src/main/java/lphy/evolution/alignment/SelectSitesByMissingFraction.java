@@ -7,31 +7,30 @@ import lphy.util.LoggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static lphy.evolution.alignment.AlignmentUtils.ALIGNMENT_PARAM_NAME;
+
 /**
  * @author Walter Xie
  */
 public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[]> {
 
-    Value<Double> fracLessThan;
-    Value<Alignment> originalAlignment;
-    SequenceType sequenceType;
     public final String thresholdParamName = "unknownFracLess";
 
     public SelectSitesByMissingFraction(@ParameterInfo(name = thresholdParamName,
             description = "the threshold to select a site, if the fraction of unknown states (incl. gap) " +
                     "in this site is less than the threshold.")
                               Value<Double> fracLessThan,
-                                        @ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
+                                        @ParameterInfo(name = ALIGNMENT_PARAM_NAME,
             description = "the original alignment.") Value<Alignment> originalAlignment) {
 
-        this.fracLessThan = fracLessThan;
         if (fracLessThan.value() >= 1)
             throw new IllegalArgumentException("Fraction threshold must < 1 : " + fracLessThan.value());
-        this.originalAlignment = originalAlignment;
+        setParam(thresholdParamName, fracLessThan);
+
         Alignment origAlg = originalAlignment.value();
         if (origAlg == null)
             throw new IllegalArgumentException("Cannot find Alignment ! " + originalAlignment.getId());
-        sequenceType = origAlg.getSequenceType();
+        setParam(ALIGNMENT_PARAM_NAME, originalAlignment);
     }
 
     @GeneratorInfo(name = "selectSites",
@@ -39,7 +38,9 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
             description = "Select the site where the fraction of unknown states are less than the threshold in that site.")
     public Value<Integer[]> apply() {
 
+        Value<Alignment> originalAlignment = getAlignment();
         final Alignment original = originalAlignment.value();
+        Value<Double> fracLessThan = getUnknownFracLess();
 
         List<Integer> selectedSiteIds = new ArrayList<>();
         for (int j = 0; j < original.nchar(); j++) {
@@ -48,7 +49,7 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
                 aSite[i] = original.getState(i, j);
             }
             // filter
-            if (isSelected(aSite, fracLessThan.value()))
+            if (isSelected(aSite, fracLessThan.value(), original.getSequenceType()))
                 selectedSiteIds.add(j);
         }
 
@@ -61,7 +62,7 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
     }
 
     // select a site, if the fraction of unknown states (incl. gap) < threshold
-    private boolean isSelected(int[] aSite, double threshold) {
+    private boolean isSelected(int[] aSite, double threshold, SequenceType sequenceType) {
         double missing = 0.0;
         for (int state : aSite) {
             if ( state == sequenceType.getUnknownState().getIndex() ||
@@ -69,5 +70,13 @@ public class SelectSitesByMissingFraction extends DeterministicFunction<Integer[
                 missing++;
         }
         return missing/(double)aSite.length < threshold;
+    }
+
+    public Value<Alignment> getAlignment() {
+        return getParams().get(ALIGNMENT_PARAM_NAME);
+    }
+
+    public Value<Double> getUnknownFracLess() {
+        return getParams().get(thresholdParamName);
     }
 }

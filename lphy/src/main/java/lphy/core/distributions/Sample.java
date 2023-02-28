@@ -43,10 +43,15 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
             T[] arr = x.value();
             if (arr == null || arr.length < 1)
                 throw new IllegalArgumentException("Must have at least 1 element in the array! " + Arrays.toString(arr));
+            x = value;
         }
         else if (paramName.equals(SizeParamName)) {
             if (size.value() <= 0 || size.value() > x.value().length)
                 throw new IllegalArgumentException("Invalid size : " + size.value());
+            size = value;
+        }
+        else if (paramName.equals(replParamName)) {
+            replace = value;
         }
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }

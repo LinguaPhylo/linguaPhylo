@@ -4,7 +4,6 @@ import lphy.graphicalModel.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static lphy.core.ParameterNames.NoParamName0;
 import static lphy.core.ParameterNames.NoParamName1;
@@ -16,17 +15,17 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
 
     public Intersect(@ParameterInfo(name = NoParamName0, description = "set 1.") Value<T[]> a,
                      @ParameterInfo(name = NoParamName1, description = "set 2.") Value<T[]> b) {
-        setInput(NoParamName0, a);
-        setInput(NoParamName1, b);
+        setParam(NoParamName0, a);
+        setParam(NoParamName1, b);
     }
 
     @Override
     @GeneratorInfo(name = "intersect", verbClause = "is", narrativeName = "intersection",
             description = "A function to get intersection between two sets.")
     public Value<T[]> apply() {
-        T[] a = (T[]) Objects.requireNonNull(paramMap.get(NoParamName0)).value();
+        T[] a = (T[]) getParams().get(NoParamName0).value();
         Class<?> aTy = a.getClass().getComponentType();
-        T[] b = (T[]) Objects.requireNonNull(paramMap.get(NoParamName1)).value();
+        T[] b = (T[]) getParams().get(NoParamName1).value();
         Class<?> bTy = b.getClass().getComponentType();
 
         if (!aTy.equals(bTy))
@@ -48,5 +47,6 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
                 " (" + b.length + "), the result length = " + intersect.size());
         return ValueUtils.createValue(intersect, this);
     }
+
 
 }

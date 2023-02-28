@@ -1,35 +1,31 @@
 package lphy.evolution.alignment;
 
-import jebl.evolution.sequences.SequenceType;
 import lphy.graphicalModel.*;
 import lphy.util.LoggerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static lphy.evolution.alignment.AlignmentUtils.ALIGNMENT_PARAM_NAME;
+import static lphy.evolution.alignment.AlignmentUtils.IGNORE_UNKNOWN_PARAM_NAME;
+
 /**
  * @author Walter Xie
  */
 public class VariableSites extends DeterministicFunction<Integer[]> {
 
-    Value<Boolean> ignoreUnknownState;
-    Value<Alignment> originalAlignment;
-    final SequenceType sequenceType;
-
-    public VariableSites(@ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
+    public VariableSites(@ParameterInfo(name = ALIGNMENT_PARAM_NAME,
             description = "the original alignment.") Value<Alignment> originalAlignment,
-                         @ParameterInfo(name = AlignmentUtils.IGNORE_UNKNOWN_PARAM_NAME,
+                         @ParameterInfo(name = IGNORE_UNKNOWN_PARAM_NAME,
             description = "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites.",
             optional=true) Value<Boolean> ignoreUnknownState  ) {
-        if (ignoreUnknownState == null)
-            ignoreUnknownState = new Value<>(null, true);
-        this.ignoreUnknownState = ignoreUnknownState;
-
-        this.originalAlignment = originalAlignment;
         Alignment origAlg = originalAlignment.value();
         if (origAlg == null)
             throw new IllegalArgumentException("Cannot find Alignment ! " + originalAlignment.getId());
-        sequenceType = origAlg.getSequenceType();
+        setParam(ALIGNMENT_PARAM_NAME, originalAlignment);
+
+        if (ignoreUnknownState != null)
+            setParam(IGNORE_UNKNOWN_PARAM_NAME, ignoreUnknownState);
     }
 
 
@@ -39,8 +35,9 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
                     "which variable sites.")
     public Value<Integer[]> apply() {
 
+        Value<Alignment> originalAlignment = getAlignment();
         final Alignment original = originalAlignment.value();
-        final boolean ignUnk = ignoreUnknownState.value();
+        Value<Boolean> ignUnk = getIgnoreUnknown();
 
         List<Integer> selectedSiteIds = new ArrayList<>();
         for (int j = 0; j < original.nchar(); j++) {
@@ -49,7 +46,7 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
                 aSite[i] = original.getState(i, j);
             }
             // var sites
-            if (!AlignmentUtils.isInvarSite(aSite, ignUnk, sequenceType))
+            if (!AlignmentUtils.isInvarSite(aSite, ignUnk == null || ignUnk.value(), original.getSequenceType()))
                 selectedSiteIds.add(j);
         }
         Integer[] ids = selectedSiteIds.toArray(new Integer[0]);
@@ -58,5 +55,12 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
 
         return new Value<>(null, ids, this);
     }
-    
+
+    public Value<Alignment> getAlignment() {
+        return getParams().get(ALIGNMENT_PARAM_NAME);
+    }
+
+    public Value<Boolean> getIgnoreUnknown() {
+        return getParams().get(IGNORE_UNKNOWN_PARAM_NAME);
+    }
 }
