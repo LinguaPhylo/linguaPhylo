@@ -31,6 +31,9 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 		}
 
 		if (key != null) {
+			// use value instead of func, look pretty inside red diamond button in GUI
+			if ( value.getGenerator() != null && key.equals(value.getGenerator().codeString()) )
+				key = value.toString();
 			params.put(key, value);
 		}
 		value.addOutput(this);

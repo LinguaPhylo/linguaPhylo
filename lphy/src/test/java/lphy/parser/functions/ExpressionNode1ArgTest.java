@@ -1,14 +1,30 @@
 package lphy.parser.functions;
 
+import lphy.graphicalModel.Value;
+import lphy.graphicalModel.types.IntegerValue;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Walter Xie
  */
 class ExpressionNode1ArgTest {
+
+    @Test
+    void testIdNull() {
+        final String exprStr = "round(10/3)";
+        Value[] values = new Value[]{new IntegerValue(null, 3)};
+        ExpressionNode expr = new ExpressionNode1Arg(exprStr, ExpressionNode1Arg.round(), values);
+        
+        assertNotNull(expr, "test expression " + exprStr);
+        assertNotNull(expr.getParams(), "test expression " + exprStr);
+        // key cannot be null
+        expr.getParams().forEach((key, value) ->
+                assertNotNull(key, "test key of " + expr.getName()));
+    }
 
     // https://en.wikipedia.org/wiki/Probit
     @Test
