@@ -14,8 +14,9 @@ public class Pow extends DeterministicFunction<Double> {
 
     public Pow(@ParameterInfo(name = bparamName, description = "the base.") Value<Double> b,
                @ParameterInfo(name = xparamName, description = "the exponent.") Value<Double> x) {
-        setParam(bparamName, b);
-        setParam(xparamName, x);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(bparamName, b);
+        setInput(xparamName, x);
     }
 
     // This cannot be built-in func, because ExpressionNode1Arg is only parsing 1-arg Function,

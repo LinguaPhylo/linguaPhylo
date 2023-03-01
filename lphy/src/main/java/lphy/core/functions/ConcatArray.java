@@ -15,8 +15,9 @@ public class ConcatArray<T> extends DeterministicFunction<T[]> {
 
     public ConcatArray(@ParameterInfo(name = NoParamName0, description = "array 1.") Value<T[]> a,
                        @ParameterInfo(name = NoParamName1, description = "array 2.") Value<T[]> b) {
-        setParam(NoParamName0, a);
-        setParam(NoParamName1, b);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(NoParamName0, a);
+        setInput(NoParamName1, b);
     }
 
     @Override

@@ -15,8 +15,9 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
 
     public Intersect(@ParameterInfo(name = NoParamName0, description = "set 1.") Value<T[]> a,
                      @ParameterInfo(name = NoParamName1, description = "set 2.") Value<T[]> b) {
-        setParam(NoParamName0, a);
-        setParam(NoParamName1, b);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(NoParamName0, a);
+        setInput(NoParamName1, b);
     }
 
     @Override
@@ -47,6 +48,4 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
                 " (" + b.length + "), the result length = " + intersect.size());
         return ValueUtils.createValue(intersect, this);
     }
-
-
 }

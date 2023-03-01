@@ -17,7 +17,8 @@ public class Length extends DeterministicFunction<Integer> {
 
     public Length(@ParameterInfo(name = NoParamName0, verb="of",
             suppressNameInNarrative=true, description = "the array to return the length of.") Value x) {
-        setParam(argParamName, x);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(argParamName, x);
     }
 
     @GeneratorInfo(name="length", verbClause = "is", description = "the length of the argument")

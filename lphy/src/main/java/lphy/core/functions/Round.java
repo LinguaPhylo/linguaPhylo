@@ -15,7 +15,8 @@ public class Round extends DeterministicFunction<Integer> {
     public static final String paramName = "0";
 
     public Round(@ParameterInfo(name = paramName, description = "the argument.") Value<Double> x) {
-        setParam(paramName, x);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(paramName, x);
     }
 
     // TODO why no LongValue

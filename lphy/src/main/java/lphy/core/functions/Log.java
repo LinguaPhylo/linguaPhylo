@@ -18,7 +18,8 @@ public class Log extends DeterministicFunction<Double> {
     final String paramName = NoParamName0;
 
     public Log(@ParameterInfo(name = paramName, description = "the argument.") Value<Double> x) {
-        setParam(paramName, x);
+        // this adds value to output, so no arg name works when click sample button
+        setInput(paramName, x);
     }
 
     @GeneratorInfo(name="log",description = "The natural logarithm function: ln x")
