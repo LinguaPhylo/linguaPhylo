@@ -20,7 +20,8 @@ public class Get<V> extends DeterministicFunction<V> {
         setParam(MAP, mapVal);
     }
 
-    @GeneratorInfo(name="get",description = "Get the value from a map given a string ID as the key.")
+    @GeneratorInfo(name="get", verbClause = "is the value from",
+            description = "Get the value from a map given a string ID as the key.")
     public Value<V> apply() {
         String key = getKey().value();
         java.util.Map<String, V> map = getMap().value();
@@ -29,6 +30,8 @@ public class Get<V> extends DeterministicFunction<V> {
                     key + "), all keys = " + map.keySet());
 
         V val = map.get(key);
+        if (val instanceof Value<?> value)
+            return new Value<>(value.getId(), (V) value.value(), this);
         return new Value<>(null, val, this);
     }
 
