@@ -22,24 +22,23 @@ public class AlignmentComponent extends JComponent {
     public static boolean showErrorsIfAvailable = true;
 
     static Preferences preferences = Preferences.userNodeForPackage(AlignmentComponent.class);
-
     static Font taxaMinFont = FontUtils.MIN_FONT;
 
     Color[] colors;
-    Value<? extends Alignment> alignmentValue; // required to get the tree from PhyloCTMC
+//    Value<? extends Alignment> alignmentValue; // required to get the tree from PhyloCTMC
     Alignment alignment;
-
     Value<TimeTree> timeTree = null;
 
     int spacer = 5;
-
     int maxTaxaWidth = 0;
 
     private Font taxaFont = taxaMinFont;
 
+    private boolean isClamped;
 
     public AlignmentComponent(Value<? extends Alignment> av) {
-        this.alignmentValue = av;
+//        this.alignmentValue = av;
+        this.isClamped = av.isClamped();
         this.alignment = av.value();
         SequenceType sequenceType = alignment.getSequenceType();
         this.colors = ColourPalette.getCanonicalStateColours(sequenceType);
@@ -190,6 +189,7 @@ public class AlignmentComponent extends JComponent {
     }
 
     boolean isShowingTree() {
+        if (isClamped) return false;
         return getShowTreeInAlignmentViewerIfAvailable() && timeTree != null;
     }
 }

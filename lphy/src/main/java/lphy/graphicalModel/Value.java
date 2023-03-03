@@ -22,6 +22,9 @@ public class Value<T> implements GraphicalModelNode<T> {
     // the function that produced this value, or null if this value was initialized another way;
     DeterministicFunction<T> function = null;
 
+    // for UI
+    boolean isClamped = false;
+
     public Value(String id, T value) {
         this.id = id;
         this.value = value;
@@ -189,6 +192,13 @@ public class Value<T> implements GraphicalModelNode<T> {
         this.function = f;
     }
 
+    public boolean isClamped() {
+        return isClamped;
+    }
+
+    public void setClamped(boolean clamped) {
+        isClamped = clamped;
+    }
 
     public static final Value<Double> Double_1 = new DoubleValue(null, 1.0, null);
 }
