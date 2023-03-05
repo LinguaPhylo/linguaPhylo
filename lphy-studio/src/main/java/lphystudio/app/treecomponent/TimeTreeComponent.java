@@ -55,6 +55,8 @@ public class TimeTreeComponent extends JComponent {
     // for indexing String traits
     private List<Object> uniqueMetaData = new ArrayList<>();
 
+    List<String> tips2Draw = null;
+
     public TimeTreeComponent() {
     }
 
@@ -344,6 +346,8 @@ public class TimeTreeComponent extends JComponent {
                 uniqueMetaData.clear();
                 getUniqueMetaData(StructuredCoalescent.populationLabel, node, uniqueMetaData);
             }
+
+            tips2Draw = new ArrayList<>();
         }
 
         if (treeDrawing.showLeafLabels()) {
@@ -393,6 +397,7 @@ public class TimeTreeComponent extends JComponent {
                 }
             }
         }
+        if (node.isLeaf()) tips2Draw.add(node.getId());
     }
 
     public void paintComponent(Graphics g) {
@@ -434,6 +439,10 @@ public class TimeTreeComponent extends JComponent {
 
     public void setTraitColorTable(ColorTable colorTable) {
         this.traitColorTable = colorTable;
+    }
+
+    public String[] getTips2Draw() {
+        return tips2Draw.toArray(String[]::new);
     }
 }
 

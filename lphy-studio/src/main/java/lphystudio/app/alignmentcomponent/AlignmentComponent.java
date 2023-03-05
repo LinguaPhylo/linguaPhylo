@@ -15,6 +15,8 @@ import lphystudio.app.treecomponent.TimeTreeComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.prefs.Preferences;
 
@@ -34,11 +36,11 @@ public class AlignmentComponent extends JComponent {
 
     private Font taxaFont = taxaMinFont;
 
-    private boolean isClamped;
+//    private boolean isClamped;
 
     public AlignmentComponent(Value<? extends Alignment> av) {
 //        this.alignmentValue = av;
-        this.isClamped = av.isClamped();
+//        this.isClamped = av.isClamped();
         this.alignment = av.value();
         SequenceType sequenceType = alignment.getSequenceType();
         this.colors = ColourPalette.getCanonicalStateColours(sequenceType);
@@ -47,6 +49,15 @@ public class AlignmentComponent extends JComponent {
             GenerativeDistribution gen = ((RandomVariable)av).getGenerativeDistribution();
             if (gen instanceof PhyloCTMC) {
                 timeTree = ((AbstractPhyloCTMC) gen).getParams().get("tree");
+
+                // validate
+                String[] taxaNames = alignment.getTaxaNames();
+                Arrays.sort(taxaNames);
+                String[] taxaNames2 = timeTree.value().getTaxaNames();
+                Arrays.sort(taxaNames2);
+                if (!Arrays.equals(taxaNames, taxaNames2))
+                    throw new IllegalArgumentException("Alignment " + av.getId() +
+                            " has different taxa names to tree " + timeTree.getId() + " !");
             }
         }
 
@@ -129,6 +140,10 @@ public class AlignmentComponent extends JComponent {
         taxaFont = FontUtils.deriveFont(h);
         g.setFont(taxaFont);
 
+        // alignment taxa order is not same as the order to draw tips in the tree
+        // if isShowingTree() then extract the order to draw tips into taxa2Draw,
+        // otherwise use the alignment taxa order
+        String[] taxa2Draw = alignment.getTaxaNames();
         if (isShowingTree()) {
 
             int ytrans = (int)Math.round(h/2);
@@ -143,14 +158,16 @@ public class AlignmentComponent extends JComponent {
             width -= 2.0*maxTaxaWidth;
             xdelta = 2*maxTaxaWidth;
             g.translate(0, -ytrans);
+
+            taxa2Draw = treeComponent.getTips2Draw();
+            assert taxa2Draw.length == alignment.ntaxa();
         }
 
         int maxWidth = 0;
-        int[] sWidth = new int[alignment.ntaxa()];
-
-        for (int i = 0; i < alignment.ntaxa(); i++) {
-
-            sWidth[i] = g.getFontMetrics().stringWidth(alignment.getTaxonName(i));
+        int[] sWidth = new int[taxa2Draw.length];
+        // compute max width of taxa names
+        for (int i = 0; i < taxa2Draw.length; i++) {
+            sWidth[i] = g.getFontMetrics().stringWidth(taxa2Draw[i]);
             if (sWidth[i] > maxWidth) maxWidth = sWidth[i];
         }
 
@@ -159,21 +176,26 @@ public class AlignmentComponent extends JComponent {
         int ascent = g.getFontMetrics().getAscent();
         double ydelta = (h - ascent) / 2.0 + ascent;
 
-        for (int i = 0; i < alignment.ntaxa(); i++) {
+        List<String> algTaxaNames = Arrays.asList(alignment.taxaNames());
+        // draw alignment
+        for (int i = 0; i < taxa2Draw.length; i++) {
             double y = i * h;
 
             if (!isShowingTree()) {
                 g.setColor(Color.black);
-                g.drawString(alignment.getTaxonName(i),maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
+                g.drawString(taxa2Draw[i], maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
             }
 
             for (int j = 0; j < alignment.nchar(); j++) {
+                // need to adjust id according to what taxa order is used.
+                int adjustedId = algTaxaNames.indexOf(taxa2Draw[i]);
 
-                int state = alignment.getState(i, j);
+                int state = alignment.getState(adjustedId, j);
 //                int col = SequenceTypeFactory.getColourIndex(state, alignment.getSequenceType());
                 Color c = ColourPalette.getColour(state, colors);
 
-                if (alignment instanceof ErrorAlignment && showErrorsIfAvailable && ((ErrorAlignment)alignment).isError(i,j)) {
+                if (alignment instanceof ErrorAlignment && showErrorsIfAvailable
+                        && ((ErrorAlignment)alignment).isError(adjustedId,j)) {
                     c = new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue());
                 }
 
@@ -189,7 +211,7 @@ public class AlignmentComponent extends JComponent {
     }
 
     boolean isShowingTree() {
-        if (isClamped) return false;
+//        if (isClamped) return false;
         return getShowTreeInAlignmentViewerIfAvailable() && timeTree != null;
     }
 }
