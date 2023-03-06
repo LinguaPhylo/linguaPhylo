@@ -7,6 +7,7 @@ import lphy.graphicalModel.VectorUtils;
 import lphy.nexus.NexusWriter;
 import lphy.util.Symbols;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -14,7 +15,7 @@ import java.util.*;
  * Created by Alexei Drummond on 10/03/20.
  */
 public class TreeFileLogger implements RandomValueLogger {
-
+    File dir = null;
     String name;
 
     Map<String, List<TimeTree>> trees;
@@ -22,6 +23,11 @@ public class TreeFileLogger implements RandomValueLogger {
     public TreeFileLogger(String name) {
 
         this.name = name;
+    }
+
+    public TreeFileLogger(String name, File dir) {
+        this.name = name;
+        this.dir = dir;
     }
 
     public void log(int rep, List<Value<?>> values) {
@@ -41,9 +47,13 @@ public class TreeFileLogger implements RandomValueLogger {
 
     public void close() {
         trees.forEach((key, treeList) -> {
+            String fileName = name + "_" + Symbols.getCanonical(key) + ".trees";
+            File file;
+            if (dir != null)
+                file = new File(dir + File.separator + fileName);
+            else file = new File(fileName);
             try {
-                NexusWriter.write(null, treeList,
-                        new PrintStream(name + "_" + Symbols.getCanonical(key) + ".trees"));
+                NexusWriter.write(null, treeList,  new PrintStream(file));
             } catch (Exception e) {
                 e.printStackTrace();
             }

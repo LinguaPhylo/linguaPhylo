@@ -3,6 +3,7 @@ package lphy.graphicalModel.logger;
 import lphy.graphicalModel.*;
 import lphy.util.Symbols;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -134,6 +135,7 @@ public class VarFileLogger implements RandomValueLogger {
 
     }
 
+    File dir = null;
     String name;
 
     List<String> lines;
@@ -148,6 +150,12 @@ public class VarFileLogger implements RandomValueLogger {
         this.logStatistics = logStatistics;
         this.logVariables = logVariables;
     }
+
+    public VarFileLogger(String name, File dir, boolean logStatistics, boolean logVariables) {
+        this(name, logStatistics, logVariables);
+        this.dir = dir;
+    }
+
 
     public void log(int rep, List<Value<?>> randomValues) {
         StringBuilder builder = new StringBuilder();
@@ -188,9 +196,14 @@ public class VarFileLogger implements RandomValueLogger {
     }
 
     public void close() {
+        String fileName = name + ".log";
+        File file;
+        if (dir != null)
+            file = new File(dir + File.separator + fileName);
+        else file = new File(fileName);
 
         try {
-            FileWriter writer = new FileWriter(name + ".log");
+            FileWriter writer = new FileWriter(file);
             for (String line : lines) {
                 writer.write(line);
             }
