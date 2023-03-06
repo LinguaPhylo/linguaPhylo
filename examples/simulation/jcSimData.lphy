@@ -11,6 +11,6 @@ model {
   const = invariableSites(alignment=M);
   varmis = intersect(mis, var);
   constmis = intersect(mis, const);
-  V = copySites(ids=var, alignment=M);
-  C = copySites(ids=const, alignment=M);
+  V = copySites(ids=varmis, alignment=M);
+  C = copySites(ids=constmis, alignment=M);
 }

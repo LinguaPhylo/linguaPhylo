@@ -1,6 +1,9 @@
 package lphy.core;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.GenerativeDistribution;
+import lphy.graphicalModel.ParameterInfo;
+import lphy.graphicalModel.RandomVariable;
+import lphy.graphicalModel.Value;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -9,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+//TODO in dev
 public class CTMC implements GenerativeDistribution<Integer> {
 
     Value<Integer> X;
