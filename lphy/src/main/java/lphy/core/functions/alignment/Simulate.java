@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Simulate data from a given lphy script.
@@ -63,7 +64,7 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
         Integer seed = (Integer) getParams().get(seedParamName).value();
         RandomUtils.setSeed(seed);
 
-        File outDir = filePath.getParentFile();
+        File outDir = Objects.requireNonNull(filePath.getAbsoluteFile()).getParentFile();
         Value<String> outVal = getParams().get(outParamName);
         if (outVal != null) {
             outDir = PathVariables.convertPathVar(outVal.value()).toFile();
