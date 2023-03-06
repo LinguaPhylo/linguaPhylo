@@ -73,12 +73,11 @@ public class ViewerRegister {
             if (object instanceof Value) {
                 Object value = ((Value) object).value();
                 return (value instanceof Double[] || value instanceof Number[] ||
-                        value instanceof Integer[] || value instanceof Boolean[] ||
-                        value instanceof String[] || value instanceof Object[]);
+                        value instanceof Boolean[] || value instanceof String[] ||
+                        value instanceof Object[]);
             } else
                 return (object instanceof Double[] || object instanceof Number[] ||
-                        object instanceof Integer[] || object instanceof Boolean[] ||
-                        object instanceof String[]);
+                        object instanceof Boolean[] || object instanceof String[]);
         }
 
         public JComponent getViewer(Object object) {
@@ -101,10 +100,6 @@ public class ViewerRegister {
 
             if (array instanceof String[]) {
                 return new StringArrayLabel((String[]) array);
-            }
-
-            if (array instanceof Integer[]) {
-                return new ArrayLabel((Integer[]) array);
             }
 
             if (array instanceof Boolean[]) {

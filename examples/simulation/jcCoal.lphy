@@ -9,6 +9,8 @@ data {
   T = get(key="ψ", map=D);
   TL = treeLength(tree=T);
   rootAge = T.rootAge();
+  mis = get(key="mis", map=D);
+  l = length(mis);
 }
 model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
