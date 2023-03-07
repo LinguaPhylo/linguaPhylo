@@ -4,6 +4,10 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.DoubleValue;
 
+/**
+ * use {@link TimeTree#treeLength()}
+ */
+@Deprecated
 public class TreeLength extends DeterministicFunction<Double> {
 
     final String paramName;

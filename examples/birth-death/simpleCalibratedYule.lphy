@@ -1,5 +1,5 @@
 λ = 10.0;
 tmrca = 0.1;
 ψ ~ Yule(lambda=λ, n=16, rootAge=tmrca);
-TL = treeLength(tree=ψ);
+TL = ψ.treeLength();
 rootAge = ψ.rootAge();

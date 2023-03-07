@@ -4,6 +4,9 @@ import lphy.evolution.tree.TimeTree;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
 
+/**
+ * use {@link TimeTree#nodeCount()}
+ */
 @Deprecated
 public class NodeCount extends DeterministicFunction<Integer> {
 

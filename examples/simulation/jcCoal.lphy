@@ -7,7 +7,7 @@ data {
   taxa = V.taxa();
   // True tree from jcSimData.lphy
   T = get(key="ψ", map=D);
-  TL = treeLength(tree=T);
+  TL = T.treeLength();
   rootAge = T.rootAge();
   mis = get(key="mis", map=D);
   l = length(mis);

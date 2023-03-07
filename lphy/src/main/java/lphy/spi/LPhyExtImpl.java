@@ -17,7 +17,10 @@ import lphy.core.functions.datatype.BinaryDatatypeFunction;
 import lphy.core.functions.datatype.NucleotidesFunction;
 import lphy.core.functions.datatype.StandardDatatypeFunction;
 import lphy.core.functions.taxa.*;
-import lphy.core.functions.tree.*;
+import lphy.core.functions.tree.ExtantTree;
+import lphy.core.functions.tree.MigrationCount;
+import lphy.core.functions.tree.Newick;
+import lphy.core.functions.tree.PruneTree;
 import lphy.evolution.alignment.*;
 import lphy.evolution.birthdeath.*;
 import lphy.evolution.branchrates.LocalBranchRates;
@@ -91,7 +94,7 @@ public class LPhyExtImpl implements LPhyExtension {
             SelectSitesByMissingFraction.class, Simulate.class,
             VariableSites.class, InvariableSites.class, CopySites.class,
             // Tree
-            LocalBranchRates.class, NodeCount.class, TreeLength.class, ExtantTree.class, PruneTree.class,
+            LocalBranchRates.class, ExtantTree.class, PruneTree.class, //NodeCount.class, TreeLength.class,
             // Matrix
             BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
             // IO
