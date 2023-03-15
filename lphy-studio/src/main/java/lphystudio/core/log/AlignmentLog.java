@@ -37,6 +37,7 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
 
     public void clear() {
         setText("");
+        setEditable(false);
     }
 
     public void log(int rep, List<Value<?>> values) {
