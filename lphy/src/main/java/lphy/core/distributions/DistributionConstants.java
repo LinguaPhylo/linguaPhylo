@@ -27,4 +27,7 @@ public class DistributionConstants {
 
     // add a double/integer to the returned result from a distribution
     public static final String offsetParamName = "offset";
+
+    // type for sequence
+    public static final String typeParamName = "type";
 }

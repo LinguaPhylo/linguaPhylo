@@ -25,6 +25,7 @@ import static lphy.graphicalModel.ValueUtils.doubleValue;
 public class PhyloCTMC extends AbstractPhyloCTMC {
     Value<Double[][]> Q; // to keep the input Value<Double[][]>
     Value<Double[]> siteRates;
+    Value<SimpleAlignment> rootSeq;
 
     public static final String QParamName = "Q";
     public static final String siteRatesParamName = "siteRates";
@@ -33,15 +34,20 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
     public PhyloCTMC(@ParameterInfo(name = treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
                      @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
-                     @ParameterInfo(name = QParamName, narrativeName="instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
+                     @ParameterInfo(name = QParamName, narrativeName= "instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                     @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment", optional = true) Value<Integer> L,
-                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations, default to nucleotide", optional = true) Value<SequenceType> dataType) {
+                     @ParameterInfo(name = LParamName, narrativeName= "length", description = "length of the alignment", optional = true) Value<Integer> L,
+                     @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations, default to nucleotide", optional = true) Value<SequenceType> dataType,
+                     @ParameterInfo(name = rootSeqParamName, description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<SimpleAlignment> rootSeq) {
 
         super(tree, mu, rootFreq, branchRates, L, dataType);
         this.Q = Q;
         this.siteRates = siteRates;
+
+        if (rootSeq != null) {
+            this.rootSeq = rootSeq;
+        }
 
         checkCompatibilities();
     }
@@ -49,8 +55,18 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
     @Override
     protected void checkCompatibilities() {
         // check L and siteRates compatibility
-        if (L != null && siteRates != null && L.value() != siteRates.value().length)
+        if (L != null && siteRates != null && L.value() != siteRates.value().length) {
             throw new RuntimeException(LParamName + " and " + siteRatesParamName + " have incompatible values!");
+        }
+        // check root sequence and alignment compatibility
+        if (this.rootSeq != null) {
+            int rootSeqLength = rootSeq.value().nchar();
+            int alignmentLength = L.value();
+            if (rootSeq != null && rootSeqLength != alignmentLength) {
+                throw new RuntimeException("Length of root sequence " + rootSeqParamName + " = " + rootSeqLength +
+                        " is not equal to alignment length " + LParamName + " = " + alignmentLength);
+            }
+        }
     }
 
     @Override
@@ -76,6 +92,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
         if (branchRates != null) map.put(branchRatesParamName, branchRates);
         if (L != null) map.put(LParamName, L);
         if (dataType != null) map.put(dataTypeParamName, dataType);
+        if (rootSeq != null) map.put(rootSeqParamName, rootSeq);
         return map;
     }
 
@@ -90,6 +107,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
         else if (paramName.equals(LParamName)) L = value;
 //        else if (paramName.equals(stateNamesParamName)) stateNames = value;
         else if (paramName.equals(dataTypeParamName)) dataType = value;
+        else if (paramName.equals(rootSeqParamName)) rootSeq = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -115,9 +133,17 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
         double mu = (this.clockRate == null) ? 1.0 : doubleValue(clockRate);
 
         for (int i = 0; i < length; i++) {
-            int rootState = Categorical.sample(rootFreqs.value(), random);
-            traverseTree(tree.value().getRoot(), rootState, a, i, transProb, mu,
-                    (siteRates == null) ? 1.0 : siteRates.value()[i]);
+            if (rootSeq != null) {
+                // use simulated or user specified root sequence
+                int rootState = rootSeq.value().getState(0, i); // root taxon is 0
+                traverseTree(tree.value().getRoot(), rootState, a, i, transProb, mu,
+                        (siteRates == null) ? 1.0 : siteRates.value()[i]);
+            } else {
+                int rootState = Categorical.sample(rootFreqs.value(), random);
+                traverseTree(tree.value().getRoot(), rootState, a, i, transProb, mu,
+                        (siteRates == null) ? 1.0 : siteRates.value()[i]);
+            }
+
         }
 
         return new RandomVariable<>("D", a, this);

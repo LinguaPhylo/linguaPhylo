@@ -32,6 +32,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     public static final String branchRatesParamName = "branchRates";
     public static final String LParamName = "L";
     public static final String dataTypeParamName = "dataType";
+    public static final String rootSeqParamName = "root";
 
     protected Value<TimeTree> tree;
     protected Value<Number> clockRate;

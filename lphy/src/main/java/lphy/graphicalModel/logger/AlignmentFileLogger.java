@@ -60,7 +60,7 @@ public class AlignmentFileLogger implements RandomValueLogger {
 //        }
 //    }
 
-    private List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> values) {
+    public List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> values) {
         List<Value<SimpleAlignment>> alignments = new ArrayList<>();
         for (Value v : values) {
             if (v.value() instanceof SimpleAlignment) {

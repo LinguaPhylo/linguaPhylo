@@ -85,15 +85,16 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
     }
 
     private void logAlignment(Value<SimpleAlignment> alignment, int rep) {
-//        String dir = getAlignmentDir();
-        Path dir = UserDir.getUserDir();
+        Path dir = UserDir.getAlignmentDir();
         String fileName = alignment.getCanonicalId() + "_" + rep + ".nexus";
-
+        PrintStream stream = null;
         try {
             File file = Paths.get(dir.toString(), fileName).toFile();
-            if (!file.getParentFile().exists())
-                throw new IllegalArgumentException("Directory " + file.getParentFile() + " does not exist !");
-            PrintStream stream = new PrintStream(file);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+                // throw new IllegalArgumentException("Directory " + file.getParentFile() + " does not exist !");
+            }
+            stream = new PrintStream(file);
             // no tree
             NexusWriter.write(alignment.value(), new LinkedList<>(), stream);
 
@@ -101,6 +102,8 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         } catch (Exception e) {
             LoggerUtils.logStackTrace(e);
             e.printStackTrace();
+        } finally {
+            NexusWriter.close(stream);
         }
     }
 
