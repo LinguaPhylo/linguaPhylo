@@ -227,7 +227,7 @@ public class LinguaPhyloStudio {
         saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
                 panel.getRightPane().getTreeLog().getText(), frame));
 
-        JMenuItem saveAlignmentAsMenuItem = new JMenuItem("Save Alignments to File...");
+        JMenuItem saveAlignmentAsMenuItem = new JMenuItem("Save Alignments to Directory...");
         fileMenu.add(saveAlignmentAsMenuItem);
         saveAlignmentAsMenuItem.addActionListener(e -> {
             File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
@@ -235,16 +235,17 @@ public class LinguaPhyloStudio {
             if (selectedDir != null && selectedDir.isDirectory() && panel.getSampler() != null && panel.getSampler().getValuesMap() != null) {
                 Path dir = selectedDir.toPath();
                 UserDir.setAlignmentDir(dir.toString());
-                LoggerUtils.log.info("Alignment directory set: " + dir);
+                LoggerUtils.log.info("Alignments saved to: " + dir);
                 // save all sampled alignments
                 Map<Integer, List<Value<?>>> valuesMap = panel.getSampler().getValuesMap();
                 AlignmentLog alignmentLogger = new AlignmentLog(parser);
+                alignmentLogger.setLogAlignment(true);
                 for (int i: valuesMap.keySet()) {
                     alignmentLogger.log(i, valuesMap.get(i));
                 }
 
             } else {
-                throw new IllegalArgumentException("Should select directory rather than file for alignment directory.");
+                throw new IllegalArgumentException("Should select directory rather than file for saving alignments.");
             }
         });
 
