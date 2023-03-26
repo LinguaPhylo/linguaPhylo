@@ -18,8 +18,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static lphystudio.app.graphicalmodelpanel.AlignmentLogPanel.isLogAlignment;
-
 /**
  * Write each alignment to a file during sampling.
  * The viewer is {@link lphystudio.app.graphicalmodelpanel.AlignmentLogPanel}.
@@ -31,6 +29,8 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
 
     final LPhyParser parser;
 
+    boolean logAlignment = false;
+
     public AlignmentLog(LPhyParser parser) {
         this.parser = parser;
     }
@@ -38,6 +38,10 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
     public void clear() {
         setText("");
         setEditable(false);
+    }
+
+    public void setLogAlignment(boolean bool) {
+        this.logAlignment = bool;
     }
 
     public void log(int rep, List<Value<?>> values) {
@@ -55,8 +59,9 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         append(rep+"");
         for (Value<SimpleAlignment> al : alignmentVariables) {
             append("\t" + al.value().toString());
-            if (isLogAlignment())
+            if (logAlignment) {
                 logAlignment(al, rep);
+            }
         }
         append("\n");
     }
@@ -85,15 +90,16 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
     }
 
     private void logAlignment(Value<SimpleAlignment> alignment, int rep) {
-//        String dir = getAlignmentDir();
-        Path dir = UserDir.getUserDir();
+        Path dir = UserDir.getAlignmentDir();
         String fileName = alignment.getCanonicalId() + "_" + rep + ".nexus";
-
+        PrintStream stream = null;
         try {
             File file = Paths.get(dir.toString(), fileName).toFile();
-            if (!file.getParentFile().exists())
-                throw new IllegalArgumentException("Directory " + file.getParentFile() + " does not exist !");
-            PrintStream stream = new PrintStream(file);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+                // throw new IllegalArgumentException("Directory " + file.getParentFile() + " does not exist !");
+            }
+            stream = new PrintStream(file);
             // no tree
             NexusWriter.write(alignment.value(), new LinkedList<>(), stream);
 
@@ -101,6 +107,8 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         } catch (Exception e) {
             LoggerUtils.logStackTrace(e);
             e.printStackTrace();
+        } finally {
+            NexusWriter.close(stream);
         }
     }
 

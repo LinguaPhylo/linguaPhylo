@@ -188,7 +188,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
         public Value visitStoch_relation(SimulatorParser.Stoch_relationContext ctx) {
 
             if (context == LPhyParser.Context.data) {
-                throw new SimulatorParsingException("Generative distributions are not allowed in the data block!", ctx);
+                throw new SimulatorParsingException("Generative distributions are not allowed in the data block! Use model block for Generative distributions. ", ctx);
             }
 
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));

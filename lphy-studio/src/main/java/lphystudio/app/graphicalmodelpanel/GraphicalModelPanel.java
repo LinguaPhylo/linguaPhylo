@@ -56,6 +56,8 @@ public class GraphicalModelPanel extends JPanel {
 
     Object displayedElement;
 
+    Sampler sampler;
+
     public GraphicalModelPanel(GraphicalLPhyParser parser) {
 
         dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
@@ -190,6 +192,10 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
+    public Sampler getSampler() {
+        return this.sampler;
+    }
+
     /**
      * This is duplicated to {@link lphy.parser.REPL#source(BufferedReader)},
      * but has extra code using {@link LineCodeColorizer}
@@ -248,6 +254,7 @@ public class GraphicalModelPanel extends JPanel {
 
         Sampler sampler = new Sampler(component.getParser());
         sampler.sample(reps, loggers);
+        this.sampler = sampler;
 
         if (id != null) {
             Value<?> selectedValue = component.getParser().getValue(id, LPhyParser.Context.model);

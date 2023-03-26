@@ -1,8 +1,13 @@
 package lphystudio.app;
 
 import lphy.core.GraphicalLPhyParser;
+import lphy.evolution.alignment.SimpleAlignment;
+import lphy.graphicalModel.GraphicalModel;
+import lphy.graphicalModel.RandomValueLogger;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
+import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphy.util.RandomUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
@@ -12,6 +17,7 @@ import lphystudio.app.manager.DependencyUtils;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
+import lphystudio.core.log.AlignmentLog;
 
 import javax.print.PrintServiceLookup;
 import javax.swing.*;
@@ -27,9 +33,8 @@ import java.awt.print.PrinterException;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class LinguaPhyloStudio {
@@ -221,6 +226,28 @@ public class LinguaPhyloStudio {
         fileMenu.add(saveTreeLogAsMenuItem);
         saveTreeLogAsMenuItem.addActionListener(e -> Utils.saveToFile(
                 panel.getRightPane().getTreeLog().getText(), frame));
+
+        JMenuItem saveAlignmentAsMenuItem = new JMenuItem("Save Alignments to Directory...");
+        fileMenu.add(saveAlignmentAsMenuItem);
+        saveAlignmentAsMenuItem.addActionListener(e -> {
+            File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
+            // set alignment directory
+            if (selectedDir != null && selectedDir.isDirectory() && panel.getSampler() != null && panel.getSampler().getValuesMap() != null) {
+                Path dir = selectedDir.toPath();
+                UserDir.setAlignmentDir(dir.toString());
+                LoggerUtils.log.info("Alignments saved to: " + dir);
+                // save all sampled alignments
+                Map<Integer, List<Value<?>>> valuesMap = panel.getSampler().getValuesMap();
+                AlignmentLog alignmentLogger = new AlignmentLog(parser);
+                alignmentLogger.setLogAlignment(true);
+                for (int i: valuesMap.keySet()) {
+                    alignmentLogger.log(i, valuesMap.get(i));
+                }
+
+            } else {
+                throw new IllegalArgumentException("Should select directory rather than file for saving alignments.");
+            }
+        });
 
 //        JCheckBoxMenuItem saveAlignments = new JCheckBoxMenuItem("Save Alignments");
 //        saveAlignments.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, MASK));

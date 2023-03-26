@@ -1,6 +1,8 @@
 package lphy.core;
 
+import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.logger.AlignmentFileLogger;
 import lphy.util.LoggerUtils;
 
 import java.util.*;
@@ -9,8 +11,12 @@ public class Sampler {
 
     GraphicalLPhyParser parser;
 
+    Map<Integer, List<Value<?>>> valuesMap;
+
     public Sampler(GraphicalLPhyParser parser) {
         this.parser = parser;
+        this.valuesMap = new TreeMap<>();
+        this.valuesMap.clear();
     }
 
     /**
@@ -20,7 +26,6 @@ public class Sampler {
      * @param loggers the loggers to log to
      */
     public void sample(int reps, List<RandomValueLogger> loggers) {
-
         for (int i = 0; i < reps; i++) {
             Set<String> sampled = new TreeSet<>();
             List<Value<?>> sinks = parser.getModelSinks();
@@ -42,6 +47,7 @@ public class Sampler {
 
             if (loggers != null) {
                 List<Value<?>> values = GraphicalModel.Utils.getAllValuesFromSinks(parser);
+                valuesMap.put(i, values);
                 for (RandomValueLogger logger : loggers) {
                     logger.log(i, values);
                 }
@@ -53,6 +59,10 @@ public class Sampler {
             }
         }
         parser.notifyListeners();
+    }
+
+    public Map<Integer, List<Value<?>>> getValuesMap() {
+        return this.valuesMap;
     }
 
     private Value sampleAll(Value oldValue, Generator generator, Set<String> sampled) {

@@ -67,5 +67,9 @@ public class NexusWriter {
         
         nb.write(pstream);
     }
+
+    public static void close(PrintStream pstream) {
+        pstream.close();
+    }
     
 }
