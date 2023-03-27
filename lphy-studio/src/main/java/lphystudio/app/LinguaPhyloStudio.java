@@ -136,6 +136,9 @@ public class LinguaPhyloStudio {
         // Hide and dispose of the window when the user closes it.
         // It will not close all new frames.
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        JToolBar toolBar = createToolbar();
+        frame.getContentPane().add(toolBar, BorderLayout.NORTH);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
         final int MAX_WIDTH = 1600;
@@ -145,6 +148,45 @@ public class LinguaPhyloStudio {
         frame.setJMenuBar(menuBar);
 //        System.out.println("LPhy studio working directory = " + Utils.getUserDir());
         frame.setVisible(true);
+    }
+
+    private JToolBar createToolbar(){
+        JToolBar toolbar = new JToolBar();
+        JButton toolButt = new JButton("New");
+        toolbar.add(toolButt); // TODO add clean?
+        toolButt.addActionListener(e -> {
+            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
+        });
+        toolButt = new JButton("Cut");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(new DefaultEditorKit.CutAction());
+        toolButt = new JButton("Copy");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(new DefaultEditorKit.CopyAction());
+        toolButt = new JButton("Paste");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(new DefaultEditorKit.PasteAction());
+        toolButt = new JButton("Undo");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(e -> {
+            // Code to execute when button is clicked
+        });
+        toolButt = new JButton("Redo");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(e -> {
+            // Code to execute when button is clicked
+        });
+        toolButt = new JButton("Preferences");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(e -> {
+            // Code to execute when button is clicked
+        });
+        toolButt = new JButton("View");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(e -> {
+            // Code to execute when button is clicked
+        });
+        return toolbar;
     }
 
     private void buildToolsMenu(JMenu toolsMenu) {
