@@ -13,6 +13,7 @@ import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
+import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.log.AlignmentLog;
 
@@ -23,7 +24,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
@@ -69,6 +72,8 @@ public class LinguaPhyloStudio {
     GraphicalModelPanel panel;
     JFrame frame;
 
+    protected UndoManagerHelper undoManagerHelper = new UndoManagerHelper();
+
     public LinguaPhyloStudio() {
         this(0);
     }
@@ -78,7 +83,7 @@ public class LinguaPhyloStudio {
         // use MANIFEST.MF to store version in jar, or use system property in development,
         // otherwise VERSION = "DEVELOPMENT"
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
-        panel = new GraphicalModelPanel(parser);
+        panel = new GraphicalModelPanel(parser, undoManagerHelper);
 
         //Create the menu bar.
         JMenuBar menuBar = new JMenuBar();
@@ -168,14 +173,10 @@ public class LinguaPhyloStudio {
         toolButt.addActionListener(new DefaultEditorKit.PasteAction());
         toolButt = new JButton("Undo");
         toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
+        toolButt.addActionListener(undoManagerHelper.undoAction);
         toolButt = new JButton("Redo");
         toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
+        toolButt.addActionListener(undoManagerHelper.redoAction);
         toolButt = new JButton("Preferences");
         toolbar.add(toolButt);
         toolButt.addActionListener(e -> {
@@ -459,7 +460,7 @@ public class LinguaPhyloStudio {
 
     private void buildEditMenu(JMenu editMenu) {
 
-        //TODO undo redo
+        UndoManager manager = new UndoManager();
 
 //        Action cutAction = new DefaultEditorKit.CutAction();
 //        cutAction.putValue(Action.NAME, "Cut");
@@ -478,7 +479,16 @@ public class LinguaPhyloStudio {
         pasteMenu.addActionListener(new DefaultEditorKit.PasteAction());
         editMenu.add(pasteMenu);
 
-        //TODO select all
+        JMenuItem undoMenu = new JMenuItem("Undo");
+        undoMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, MASK));
+        undoMenu.addActionListener(undoManagerHelper.undoAction);
+        editMenu.add(undoMenu);
+
+        KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, MASK | InputEvent.SHIFT_DOWN_MASK);
+        JMenuItem redoMenu = new JMenuItem("Redo");
+        redoMenu.setAccelerator(redoKeyStroke);
+        redoMenu.addActionListener(undoManagerHelper.redoAction);
+        editMenu.add(redoMenu);
 
     }
 

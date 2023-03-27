@@ -7,6 +7,7 @@ import lphy.parser.SimulatorParsingException;
 import lphy.util.LoggerUtils;
 import lphy.util.Symbols;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
+import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.swing.TextLineNumber;
 
 import javax.swing.*;
@@ -47,7 +48,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
-    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context) {
+    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context, UndoManagerHelper.UndoManagerHelperListener undoableEditListener) {
         this.parser = parser;
         this.context = context;
 
@@ -95,6 +96,10 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.getDocument().addDocumentListener(autoComplete);
         interpreterField.getInputMap().put(KeyStroke.getKeyStroke('\t'), COMMIT_ACTION);
         interpreterField.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
+
+        if (undoableEditListener != null)
+            interpreterField.getDocument().addUndoableEditListener(undoableEditListener);
+
 
         interpreterField.addActionListener(e -> {
             interpretInput(interpreterField.getText(), context);
@@ -206,6 +211,7 @@ public class GraphicalModelInterpreter extends JPanel {
             }
         });
     }
+
 
     private void setMessage(String message) {
         infoLine.setText(message);

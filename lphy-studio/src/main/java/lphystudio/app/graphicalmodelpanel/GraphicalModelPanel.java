@@ -14,6 +14,7 @@ import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalMo
 import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.app.treecomponent.TimeTreeExtraPlotComponent;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
+import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.swing.TidyComboBox;
 import lphystudio.core.swing.TidyTextField;
@@ -58,10 +59,10 @@ public class GraphicalModelPanel extends JPanel {
 
     Sampler sampler;
 
-    public GraphicalModelPanel(GraphicalLPhyParser parser) {
+    public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoableEditListener) {
 
-        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
-        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model);
+        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, undoableEditListener);
+        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, undoableEditListener);
 
         component = new GraphicalModelComponent(parser);
 

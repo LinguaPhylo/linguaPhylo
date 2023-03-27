@@ -31,8 +31,8 @@ public class LineCodeColorizerTest {
     @BeforeEach
     public void setUp() {
         parser = Utils.createParser();
-        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data);
-        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model);
+        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, null);
+        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, null);
 
         dataInterpreter.interpretInput(taxa, LPhyParser.Context.data);
         modelInterpreter.interpretInput(coal, LPhyParser.Context.model);

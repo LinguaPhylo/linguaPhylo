@@ -50,7 +50,7 @@ public class NarrativeCreator {
 
         try {
             GraphicalLPhyParser parser = Utils.createParser();
-            GraphicalModelPanel panel = new GraphicalModelPanel(parser);
+            GraphicalModelPanel panel = new GraphicalModelPanel(parser, null);
             panel.getComponent().setShowConstantNodes(false);
 
             // parse and paint
