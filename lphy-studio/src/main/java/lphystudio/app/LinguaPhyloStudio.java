@@ -1,9 +1,6 @@
 package lphystudio.app;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.evolution.alignment.SimpleAlignment;
-import lphy.graphicalModel.GraphicalModel;
-import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
@@ -33,8 +30,8 @@ import java.awt.print.PrinterException;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 public class LinguaPhyloStudio {
@@ -192,11 +189,11 @@ public class LinguaPhyloStudio {
         fileMenu.addSeparator();
 
         //Build the example's menu.
-        JMenu exampleMenu = new JMenu("Load Examples ...");
+        JMenu exampleMenu = new JMenu("Load Examples");
         fileMenu.add(exampleMenu);
         listAllFiles(exampleMenu);
         //Build the tutorial's menu.
-        JMenu tutMenu = new JMenu("Load Tutorials ...");
+        JMenu tutMenu = new JMenu("Load Tutorials");
         fileMenu.add(tutMenu);
         listAllFiles(tutMenu);
 
