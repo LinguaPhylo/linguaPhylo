@@ -246,11 +246,11 @@ public class LinguaPhyloStudio {
         fileMenu.addSeparator();
 
         //Build the example's menu.
-        JMenu exampleMenu = new JMenu("Load Examples");
+        JMenu exampleMenu = new JMenu("Example Scripts");
         fileMenu.add(exampleMenu);
         listAllFiles(exampleMenu);
         //Build the tutorial's menu.
-        JMenu tutMenu = new JMenu("Load Tutorials");
+        JMenu tutMenu = new JMenu("Tutorial Scripts");
         fileMenu.add(tutMenu);
         listAllFiles(tutMenu);
 
@@ -374,15 +374,16 @@ public class LinguaPhyloStudio {
     }
 
     private void listAllFiles(JMenu jMenu) {
-        final String EXMP = "examples";
-        final String TUTL = "tutorials";
+        final String EXMP_FOLDER = "examples";
+        final String TUTL_FOLDER = "tutorials";
 
         File dir = null;
-        if (jMenu.getText().toLowerCase().contains(EXMP)) {
+        // check which is selected in menu
+        if (jMenu.getText().toLowerCase().contains("example")) {
             // relative path not working
-            dir = new File(EXMP).getAbsoluteFile();
-        } else if (jMenu.getText().toLowerCase().contains(TUTL)) {
-            dir = new File(TUTL).getAbsoluteFile();
+            dir = new File(EXMP_FOLDER).getAbsoluteFile();
+        } else if (jMenu.getText().toLowerCase().contains("tutorial")) {
+            dir = new File(TUTL_FOLDER).getAbsoluteFile();
         }
         LoggerUtils.log.info("Menu " + jMenu.getText() + " links to dir = " + dir);
 
