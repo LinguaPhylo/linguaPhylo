@@ -48,7 +48,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
-    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context, UndoManagerHelper.UndoManagerHelperListener undoableEditListener) {
+    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context, UndoManagerHelper undoManagerHelper) {
         this.parser = parser;
         this.context = context;
 
@@ -96,9 +96,9 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.getDocument().addDocumentListener(autoComplete);
         interpreterField.getInputMap().put(KeyStroke.getKeyStroke('\t'), COMMIT_ACTION);
         interpreterField.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
-
-        if (undoableEditListener != null)
-            interpreterField.getDocument().addUndoableEditListener(undoableEditListener);
+        // set null for unit test
+        if (undoManagerHelper != null)
+            interpreterField.getDocument().addUndoableEditListener(undoManagerHelper.undoableEditListener);
 
 
         interpreterField.addActionListener(e -> {

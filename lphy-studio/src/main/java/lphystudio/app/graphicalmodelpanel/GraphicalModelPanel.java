@@ -59,10 +59,10 @@ public class GraphicalModelPanel extends JPanel {
 
     Sampler sampler;
 
-    public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoableEditListener) {
+    public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoManagerHelper) {
 
-        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, undoableEditListener);
-        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, undoableEditListener);
+        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, undoManagerHelper);
+        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, undoManagerHelper);
 
         component = new GraphicalModelComponent(parser);
 
