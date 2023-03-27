@@ -45,11 +45,11 @@ public final class LPhyAppConfig {
     }
 
     // icon
-    public static BufferedImage getLPhyIcon(String iconFile) {
+    public static BufferedImage getIcon(String iconFile) {
 //        URL url = LinguaPhyloStudio.class.getClassLoader().getResource( iconFile );
         InputStream in = LinguaPhyloStudio.class.getClassLoader().getResourceAsStream( iconFile );
         if (in == null) {
-            LoggerUtils.log.warning("Cannot find LPhy icon !");
+            LoggerUtils.log.warning("Cannot find icon ! " + iconFile);
             return null;
         }
         BufferedImage img = null;
@@ -57,7 +57,7 @@ public final class LPhyAppConfig {
 //            File ico = Paths.get(Objects.requireNonNull(url).toURI()).toFile();
             img = ImageIO.read(in);
         } catch (IOException e) {
-            LoggerUtils.log.warning("Cannot find LPhy icon !");
+            LoggerUtils.log.warning("Cannot find icon ! " + iconFile);
         }
         return img;
     }

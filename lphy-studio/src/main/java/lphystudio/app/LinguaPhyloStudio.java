@@ -49,7 +49,7 @@ public class LinguaPhyloStudio {
         final Taskbar taskbar = Taskbar.getTaskbar();
         if (Taskbar.isTaskbarSupported()) {
             try {
-                BufferedImage ioc = LPhyAppConfig.getLPhyIcon(LPHY_ICON);
+                BufferedImage ioc = LPhyAppConfig.getIcon(LPHY_ICON);
                 if (ioc != null)
                     taskbar.setIconImage(ioc);
             } catch (final UnsupportedOperationException e) {
@@ -134,7 +134,7 @@ public class LinguaPhyloStudio {
 
         // main frame
         frame = new JFrame(APP_NAME + " version " + VERSION);
-        Image img = LPhyAppConfig.getLPhyIcon(LPHY_ICON);
+        Image img = LPhyAppConfig.getIcon(LPHY_ICON);
         if (img != null)
             frame.setIconImage(img);
 
@@ -157,37 +157,58 @@ public class LinguaPhyloStudio {
 
     private JToolBar createToolbar(){
         JToolBar toolbar = new JToolBar();
-        JButton toolButt = new JButton("New");
-        toolbar.add(toolButt); // TODO add clean?
-        toolButt.addActionListener(e -> {
-            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
-        });
-        toolButt = new JButton("Cut");
+        // TODO add clean?
+        JButton toolButt = createToolbarButton("New");
+        toolbar.add(toolButt);
+        toolButt.setToolTipText("Create new LPhy studio");
+        toolButt.addActionListener(e -> new LinguaPhyloStudio(50));
+        toolButt = createToolbarButton("Open");
+        toolButt.setToolTipText("Open a LPhy script file");
+        toolbar.add(toolButt);
+        toolButt.addActionListener(e -> openLPhyFile(frame));
+        toolButt = createToolbarButton("Cut");
+        toolButt.setToolTipText("Cut the selected input in the console");
         toolbar.add(toolButt);
         toolButt.addActionListener(new DefaultEditorKit.CutAction());
-        toolButt = new JButton("Copy");
+        toolButt = createToolbarButton("Copy");
+        toolButt.setToolTipText("Copy the selected input in the console");
         toolbar.add(toolButt);
         toolButt.addActionListener(new DefaultEditorKit.CopyAction());
-        toolButt = new JButton("Paste");
+        toolButt = createToolbarButton("Paste");
+        toolButt.setToolTipText("Paste the content in the console");
         toolbar.add(toolButt);
         toolButt.addActionListener(new DefaultEditorKit.PasteAction());
-        toolButt = new JButton("Undo");
+        toolButt = createToolbarButton("Undo");
+        toolButt.setToolTipText("Undo the typing in the console");
         toolbar.add(toolButt);
         toolButt.addActionListener(undoManagerHelper.undoAction);
-        toolButt = new JButton("Redo");
+        toolButt = createToolbarButton("Redo");
+        toolButt.setToolTipText("Redo the typing in the console");
         toolbar.add(toolButt);
         toolButt.addActionListener(undoManagerHelper.redoAction);
-        toolButt = new JButton("Preferences");
+        toolButt = createToolbarButton("Preferences");
+        toolButt.setToolTipText("Preferences to show the probabilistic graphical model");
         toolbar.add(toolButt);
         toolButt.addActionListener(e -> {
             // Code to execute when button is clicked
         });
-        toolButt = new JButton("View");
+        toolButt = createToolbarButton("View");
+        toolButt.setToolTipText("Open/close the set of views for the parameters or simulations");
         toolbar.add(toolButt);
         toolButt.addActionListener(e -> {
             // Code to execute when button is clicked
         });
         return toolbar;
+    }
+
+    private static JButton createToolbarButton(String name) {
+        JButton toolButt = new JButton();
+        BufferedImage icon = LPhyAppConfig.getIcon(name + "24.gif");
+        if (icon != null)                     //image found
+            toolButt.setIcon(new ImageIcon(icon, name));
+        else                                     //no image found
+            toolButt.setText(name);
+        return toolButt;
     }
 
     private void buildToolsMenu(JMenu toolsMenu) {
@@ -219,14 +240,7 @@ public class LinguaPhyloStudio {
         openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MASK));
         fileMenu.add(openMenuItem);
         openMenuItem.addActionListener(e -> {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
-            File selectedFile = Utils.getFileFromFileChooser(frame, filter, JFileChooser.FILES_ONLY, true);
-
-            if (selectedFile != null) {
-//                panel.readScript(selectedFile);
-                Path dir = selectedFile.toPath().getParent();
-                readFile(selectedFile.getName(), dir.toString());
-            }
+            openLPhyFile(frame);
         });
 
         fileMenu.addSeparator();
@@ -325,6 +339,17 @@ public class LinguaPhyloStudio {
         });
         fileMenu.add(printPreview);
 
+    }
+
+    private void openLPhyFile(Component parent) {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("LPhy scripts", "lphy");
+        File selectedFile = Utils.getFileFromFileChooser(parent, filter, JFileChooser.FILES_ONLY, true);
+
+        if (selectedFile != null) {
+//                panel.readScript(selectedFile);
+            Path dir = selectedFile.toPath().getParent();
+            readFile(selectedFile.getName(), dir.toString());
+        }
     }
 
     /**
