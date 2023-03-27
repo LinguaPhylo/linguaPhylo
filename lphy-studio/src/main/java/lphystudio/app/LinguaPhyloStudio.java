@@ -24,9 +24,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
-import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
@@ -486,8 +484,6 @@ public class LinguaPhyloStudio {
 
     private void buildEditMenu(JMenu editMenu) {
 
-        UndoManager manager = new UndoManager();
-
 //        Action cutAction = new DefaultEditorKit.CutAction();
 //        cutAction.putValue(Action.NAME, "Cut");
         JMenuItem cutMenu = new JMenuItem("Cut");
@@ -510,7 +506,9 @@ public class LinguaPhyloStudio {
         undoMenu.addActionListener(undoManagerHelper.undoAction);
         editMenu.add(undoMenu);
 
-        KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, MASK | InputEvent.SHIFT_DOWN_MASK);
+        //CTRL/COMMAND + SHIFT
+        int modifiers = MASK + KeyEvent.SHIFT_DOWN_MASK;
+        KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, modifiers);
         JMenuItem redoMenu = new JMenuItem("Redo");
         redoMenu.setAccelerator(redoKeyStroke);
         redoMenu.addActionListener(undoManagerHelper.redoAction);
