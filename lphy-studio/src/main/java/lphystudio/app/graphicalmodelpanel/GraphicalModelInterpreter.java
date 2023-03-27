@@ -6,7 +6,6 @@ import lphy.parser.ParserUtils;
 import lphy.parser.SimulatorParsingException;
 import lphy.util.LoggerUtils;
 import lphy.util.Symbols;
-import lphystudio.app.LinguaPhyloStudio;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.swing.TextLineNumber;
 
@@ -15,7 +14,6 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -163,53 +161,18 @@ public class GraphicalModelInterpreter extends JPanel {
         infoLine.setForeground(Color.gray);
         //add(infoLine);
 
-        JToolBar toolbar = new JToolBar();
-        JButton toolButt = new JButton("New");
-        toolbar.add(toolButt); // TODO add clean?
-        toolButt.addActionListener(e -> {
-            LinguaPhyloStudio app = new LinguaPhyloStudio(50);
-        });
-        toolButt = new JButton("Cut");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            new DefaultEditorKit.CutAction();
-        });
-        toolButt = new JButton("Copy");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            new DefaultEditorKit.CopyAction();
-        });
-        toolButt = new JButton("Paste");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            new DefaultEditorKit.PasteAction();
-        });
-        toolButt = new JButton("Undo");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
-        toolButt = new JButton("Redo");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
-
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
 
         GroupLayout.ParallelGroup horizParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        horizParallelGroup.addComponent(toolbar);
         horizParallelGroup.addComponent(scrollPane);
         horizParallelGroup.addComponent(activeLine);
         horizParallelGroup.addComponent(infoLine);
 
         GroupLayout.SequentialGroup vertSequentialGroup = layout.createSequentialGroup();
-        vertSequentialGroup.addComponent(toolbar);
         vertSequentialGroup.addComponent(scrollPane);
         vertSequentialGroup.addComponent(activeLine);
         vertSequentialGroup.addComponent(infoLine);
-
 
         layout.setHorizontalGroup(horizParallelGroup);
 
