@@ -43,7 +43,7 @@ public class ViewerPane extends JTabbedPane {
 
     JComponent[] viewerComponent = new JComponent[Viewer.values().length];
 
-    JMenu viewerMenu = new JMenu("Viewers");
+    JMenu viewerMenu = new JMenu("View");
 
     public void clear() {
         currentSelectionContainer.setViewport(null);

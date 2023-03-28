@@ -7,14 +7,12 @@ import lphy.graphicalModel.code.CodeBuilder;
 import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphy.util.RandomUtils;
-import lphystudio.app.alignmentcomponent.AlignmentComponent;
-import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
+import lphystudio.core.awt.PreferencesHelper;
 import lphystudio.core.editor.UndoManagerHelper;
-import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.log.AlignmentLog;
 
 import javax.print.PrintServiceLookup;
@@ -100,15 +98,16 @@ public class LinguaPhyloStudio {
         buildEditMenu(editMenu);
 
         // 3. Build View menu
-        JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic(KeyEvent.VK_W);
-        menuBar.add(viewMenu);
-        buildViewPreferenceMenu(viewMenu, panel.getComponent());
+        // mv to PreferencesHelper
+//        JMenu prefMenu = new JMenu("Preferences");
+//        prefMenu.setMnemonic(KeyEvent.VK_R);
+//        menuBar.add(prefMenu);
+//        buildPreferenceMenu(prefMenu, panel.getComponent());
 
         // 4. Viewer menu
-        JMenu panelViewerMenu = panel.getRightPane().getMenu();
-        panelViewerMenu.setMnemonic(KeyEvent.VK_R);
-        menuBar.add(panelViewerMenu);
+        JMenu viewMenu = panel.getRightPane().getMenu();
+        viewMenu.setMnemonic(KeyEvent.VK_W);
+        menuBar.add(viewMenu);
 
         // 5. Tools
         JMenu toolsMenu = new JMenu("Tools");
@@ -120,9 +119,8 @@ public class LinguaPhyloStudio {
                 new AboutMenuHelper(frame, APP_NAME + " v " + VERSION,
                         getHTMLCredits(), menuBar);
 
-//TODO            desktop.setPreferencesHandler(e ->
-//                    JOptionPane.showMessageDialog(frame, "Preferences dialog")
-//            );
+        PreferencesHelper preferencesHelper = new PreferencesHelper(frame, panel, editMenu);
+
 //            desktop.setQuitHandler((e,r) -> {
 //                        JOptionPane.showMessageDialog(frame, "Quit dialog");
 //                        System.exit(0);
@@ -140,7 +138,7 @@ public class LinguaPhyloStudio {
         // It will not close all new frames.
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        JToolBar toolBar = createToolbar();
+        JToolBar toolBar = createToolbar(preferencesHelper);
         frame.getContentPane().add(toolBar, BorderLayout.NORTH);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
@@ -153,7 +151,7 @@ public class LinguaPhyloStudio {
         frame.setVisible(true);
     }
 
-    private JToolBar createToolbar(){
+    private JToolBar createToolbar(PreferencesHelper preferencesHelper){
         JToolBar toolbar = new JToolBar();
         // TODO add clean?
         JButton toolButt = createToolbarButton("New");
@@ -187,15 +185,13 @@ public class LinguaPhyloStudio {
         toolButt = createToolbarButton("Preferences");
         toolButt.setToolTipText("Preferences to show the probabilistic graphical model");
         toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
-        toolButt = createToolbarButton("View");
-        toolButt.setToolTipText("Open/close the set of views for the parameters or simulations");
-        toolbar.add(toolButt);
-        toolButt.addActionListener(e -> {
-            // Code to execute when button is clicked
-        });
+        toolButt.addActionListener(e -> preferencesHelper.showPrefDialog(frame, panel));
+//        toolButt = createToolbarButton("View");
+//        toolButt.setToolTipText("Open/close the set of views for the parameters or simulations");
+//        toolbar.add(toolButt);
+//        toolButt.addActionListener(e -> {
+//            // Code to execute when button is clicked
+//        });
         return toolbar;
     }
 
@@ -516,7 +512,7 @@ public class LinguaPhyloStudio {
 
     }
 
-    private void buildViewPreferenceMenu(JMenu viewMenu, GraphicalModelComponent component) {
+    /*private void buildPreferenceMenu(JMenu prefMenu, GraphicalModelComponent component) {
         //CTRL/COMMAND + SHIFT
         int modifiers = MASK + KeyEvent.SHIFT_DOWN_MASK;
 
@@ -525,21 +521,21 @@ public class LinguaPhyloStudio {
         showArgumentLabels.setState(GraphicalModelComponent.getShowArgumentLabels());
         showArgumentLabels.addActionListener(
                 e -> component.setShowArgumentLabels(showArgumentLabels.getState()));
-        viewMenu.add(showArgumentLabels);
+        prefMenu.add(showArgumentLabels);
 
         JCheckBoxMenuItem showSampledValues = new JCheckBoxMenuItem("Show Sampled Values");
         showSampledValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, modifiers));
         showSampledValues.setState(LayeredGNode.getShowValueInNode());
         showSampledValues.addActionListener(
                 e -> component.setShowValueInNode(showSampledValues.getState()));
-        viewMenu.add(showSampledValues);
+        prefMenu.add(showSampledValues);
 
         JCheckBoxMenuItem useStraightEdges = new JCheckBoxMenuItem("Use Straight Edges");
         useStraightEdges.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, modifiers));
         useStraightEdges.setState(GraphicalModelComponent.getUseStraightEdges());
         useStraightEdges.addActionListener(
                 e -> component.setUseStraightEdges(useStraightEdges.getState()));
-        viewMenu.add(useStraightEdges);
+        prefMenu.add(useStraightEdges);
 
         JCheckBoxMenuItem showTreeInAlignmentView = new JCheckBoxMenuItem("Show tree with alignment if available");
         showTreeInAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, modifiers));
@@ -548,7 +544,7 @@ public class LinguaPhyloStudio {
             AlignmentComponent.setShowTreeInAlignmentViewerIfAvailable(showTreeInAlignmentView.getState());
             panel.repaint();
         });
-        viewMenu.add(showTreeInAlignmentView);
+        prefMenu.add(showTreeInAlignmentView);
 
         JCheckBoxMenuItem showErrorsInErrorAlignmentView = new JCheckBoxMenuItem("Show errors in alignment if available");
         showErrorsInErrorAlignmentView.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, modifiers));
@@ -557,8 +553,8 @@ public class LinguaPhyloStudio {
             AlignmentComponent.showErrorsIfAvailable = showErrorsInErrorAlignmentView.getState();
             panel.repaint();
         });
-        viewMenu.add(showErrorsInErrorAlignmentView);
-    }
+        prefMenu.add(showErrorsInErrorAlignmentView);
+    }*/
 
     private String getHTMLCredits() {
         return "<html><body width='%1s'><h3>LPhy developers:<br>"+
