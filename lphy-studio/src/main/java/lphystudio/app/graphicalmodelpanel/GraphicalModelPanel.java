@@ -35,6 +35,10 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The main panel to include prob graphical model,
+ * views {@link ViewerPane}, and command line console {@link GraphicalModelInterpreter}.
+ */
 public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;

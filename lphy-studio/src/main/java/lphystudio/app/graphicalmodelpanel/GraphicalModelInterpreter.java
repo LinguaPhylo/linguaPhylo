@@ -25,6 +25,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Command console for either data or model.
+ */
 public class GraphicalModelInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
