@@ -48,6 +48,10 @@ public class GraphicalModelInterpreter extends JPanel {
 
     Map<String, String> canonicalWords = new TreeMap<>();
 
+    /** command history **/
+    private List<String> commandsHistory = new ArrayList<>();
+    private int currCMD = -1;
+
     public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context, UndoManagerHelper undoManagerHelper) {
         this.parser = parser;
         this.context = context;
@@ -102,10 +106,36 @@ public class GraphicalModelInterpreter extends JPanel {
 
 
         interpreterField.addActionListener(e -> {
-            interpretInput(interpreterField.getText(), context);
+            final String cmd = interpreterField.getText();
+            interpretInput(cmd, context);
             interpreterField.setText("");
+            // always insert to first
+            commandsHistory.add(0, cmd);
+            currCMD = -1;
         });
-
+        interpreterField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                switch( keyCode ) {
+                    case KeyEvent.VK_UP:
+                        // handle up
+                        if (currCMD < commandsHistory.size()-1) {
+                            currCMD++; // this must be the 1st line
+                            String cmd = commandsHistory.get(currCMD);
+                            interpreterField.setText(cmd);
+                        }
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        // handle down
+                        if (currCMD > 0) {
+                            currCMD--;
+                            String cmd = commandsHistory.get(currCMD);
+                            interpreterField.setText(cmd);
+                        }
+                        break;
+                }
+            }
+        });
 
         for (int i = 0; i < Symbols.symbolCodes.length; i++) {
             canonicalWords.put(Symbols.symbolCodes[i], Symbols.unicodeSymbols[i]);
