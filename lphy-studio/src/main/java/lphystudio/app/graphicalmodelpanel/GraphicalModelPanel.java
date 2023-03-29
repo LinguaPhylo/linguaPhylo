@@ -4,7 +4,6 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.core.*;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
-import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
@@ -15,7 +14,6 @@ import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.app.treecomponent.TimeTreeExtraPlotComponent;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
-import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.swing.TidyComboBox;
 import lphystudio.core.swing.TidyTextField;
 import lphystudio.core.valueeditors.DoubleArray2DEditor;
@@ -54,7 +52,9 @@ public class GraphicalModelPanel extends JPanel {
     JButton sampleButton = new JButton("Sample");
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
-    JCheckBox editValues = new JCheckBox("Edit values");
+
+    //TODO https://github.com/LinguaPhylo/linguaPhylo/issues/307
+    //    JCheckBox editValues = new JCheckBox("Edit values");
 
     JSplitPane horizSplitPane;
     JSplitPane verticalSplitPane;
@@ -87,7 +87,7 @@ public class GraphicalModelPanel extends JPanel {
         buttonPanel.add(new JLabel(" Layering:"));
         buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
-        buttonPanel.add(editValues);
+//        buttonPanel.add(editValues);
 
         sampleButton.addActionListener(e -> sample(getReps()));
 
@@ -95,29 +95,29 @@ public class GraphicalModelPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 component.setShowConstantNodes(showConstantNodes.isSelected());
-                editValues.setEnabled(showConstantNodes.isSelected());
+//                editValues.setEnabled(showConstantNodes.isSelected());
             }
         });
         showConstantNodes.setSelected(component.getShowConstantNodes());
 
-        editValues.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // avoid GraphicalModelComponent depends on GraphicalModelPanel
-                component.setEditValues(editValues.isSelected());
-                // update currentSelectionContainer
-                // take care of selectedNode here, and the rest will update by showObject(...)
-                LayeredNode selectedNode = component.getSelectedNode();
-                if (selectedNode instanceof LayeredGNode lnode) {
-                    if (lnode.value() instanceof Value value) {
-                        showValue(value, false);
-                    }
-                }
-                component.repaint();
-            }
-        });
-        editValues.setSelected(component.getEditValues());
-        editValues.setToolTipText("Please click Sample button to refresh variables after setting a new value.");
+//        editValues.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // avoid GraphicalModelComponent depends on GraphicalModelPanel
+//                component.setEditValues(editValues.isSelected());
+//                // update currentSelectionContainer
+//                // take care of selectedNode here, and the rest will update by showObject(...)
+//                LayeredNode selectedNode = component.getSelectedNode();
+//                if (selectedNode instanceof LayeredGNode lnode) {
+//                    if (lnode.value() instanceof Value value) {
+//                        showValue(value, false);
+//                    }
+//                }
+//                component.repaint();
+//            }
+//        });
+//        editValues.setSelected(component.getEditValues());
+//        editValues.setToolTipText("Please click Sample button to refresh variables after setting a new value.");
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -351,8 +351,8 @@ public class GraphicalModelPanel extends JPanel {
         } else {
             LoggerUtils.log.severe("Trying to show an object that is neither Value nor Generator.");
         }
-        if (viewer instanceof JTextField textField)
-            textField.setEditable(editValues.isSelected());
+//        if (viewer instanceof JTextField textField)
+//            textField.setEditable(editValues.isSelected());
 
         if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof DoubleArray2DEditor) {
             JPanel viewerPanel = new JPanel();
