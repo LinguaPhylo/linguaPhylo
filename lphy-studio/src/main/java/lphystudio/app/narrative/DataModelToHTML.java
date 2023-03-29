@@ -5,6 +5,7 @@ import lphy.parser.LPhyParserAction;
 import lphystudio.core.codecolorizer.ColorizerStyles;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 import lphystudio.core.codecolorizer.TextElement;
+import lphystudio.core.theme.ThemeColours;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 import javax.swing.*;
@@ -16,12 +17,12 @@ import java.util.List;
 public class DataModelToHTML extends DataModelCodeColorizer {
     // CURRENT MODEL STATE
 
-    static Color randomVarColor = Color.green;
-    static Color constantColor = Color.magenta;
-    static Color keywordColor = Color.black;
-    static Color argumentNameColor = Color.gray;
-    static Color functionColor = Color.magenta.darker();
-    static Color distributionColor = Color.blue;
+    static Color randomVarColor = ThemeColours.getRandomVarColor();
+    static Color constantColor = ThemeColours.getConstantColor();
+    static Color keywordColor = ThemeColours.getMainColor();
+    static Color argumentNameColor = ThemeColours.getArgumentNameColor().darker();
+    static Color functionColor = ThemeColours.getFunctionColor();
+    static Color distributionColor = ThemeColours.getGenDistColor();
 
     List<String> elements = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
             for (int i = 0; i < element.getSize(); i++) {
                 String text = element.getText(i);
                 Style style = element.getStyle(i);
-                Color c = Color.black;
+                Color c = ThemeColours.getMainColor();
 
                 switch (style.getName()) {
                     case ColorizerStyles.function:
@@ -65,7 +66,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
                 }
 
                 if (text.startsWith(indent)) {
-                    builder.append(span("&nbsp;".repeat(indent.length()), Color.black));
+                    builder.append(span("&nbsp;".repeat(indent.length()), ThemeColours.getMainColor()));
                     text = text.substring(indent.length());
                 }
                 builder.append(span(text, c));

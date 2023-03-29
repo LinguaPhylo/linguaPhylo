@@ -6,6 +6,7 @@ import lphy.util.Symbols;
 import lphystudio.core.codecolorizer.ColorizerStyles;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 import lphystudio.core.codecolorizer.TextElement;
+import lphystudio.core.theme.ThemeColours;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 import javax.swing.*;
@@ -17,12 +18,12 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
     // CURRENT MODEL STATE
 
-    static String randomVarColor = "green";
-    static String constantColor = "magenta";
-    static String keywordColor = "black";
-    static String argumentNameColor = "gray";
-    static String functionColor = "magenta!80!black";
-    static String distributionColor = "blue";
+    static String randomVarColor = Integer.toHexString(ThemeColours.getRandomVarColor().getRGB());
+    static String constantColor = Integer.toHexString(ThemeColours.getConstantColor().getRGB());
+    static String keywordColor = Integer.toHexString(ThemeColours.getMainColor().getRGB());
+    static String argumentNameColor = Integer.toHexString(ThemeColours.getArgumentNameColor().darker().getRGB());
+    static String functionColor = Integer.toHexString(ThemeColours.getFunctionColor().getRGB());
+    static String distributionColor = Integer.toHexString(ThemeColours.getGenDistColor().getRGB());
 
     List<String> elements = new ArrayList<>();
 
@@ -40,6 +41,7 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
         public void addTextElement(TextElement element) {
 
             StringBuilder builder = new StringBuilder();
+            final String latexColTag = "\\color[HTML]{";
 
             for (int i = 0; i < element.getSize(); i++) {
                 String text = element.getText(i);
@@ -47,27 +49,27 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
                 switch (style.getName()) {
                     case ColorizerStyles.function:
-                        builder.append("\\textcolor{");
+                        builder.append(latexColTag);
                         builder.append(functionColor);
                         builder.append("}{");
                         break;
                     case ColorizerStyles.distribution:
-                        builder.append("\\textcolor{");
+                        builder.append(latexColTag);
                         builder.append(distributionColor);
                         builder.append("}{");
                         break;
                     case ColorizerStyles.argumentName:
-                        builder.append("\\textcolor{");
+                        builder.append(latexColTag);
                         builder.append(argumentNameColor);
                         builder.append("}{");
                         break;
                     case ColorizerStyles.constant:
-                        builder.append("\\textcolor{");
+                        builder.append(latexColTag);
                         builder.append(constantColor);
                         builder.append("}{");
                         break;
                     case ColorizerStyles.randomVariable:
-                        builder.append("\\textcolor{");
+                        builder.append(latexColTag);
                         builder.append(randomVarColor);
                         builder.append("}{");
                 }

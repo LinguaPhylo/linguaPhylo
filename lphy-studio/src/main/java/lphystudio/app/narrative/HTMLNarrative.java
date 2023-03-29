@@ -8,6 +8,7 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.graphicalModel.code.CodeBuilder;
 import lphy.layeredgraph.ProperLayeredGraph;
+import lphystudio.core.theme.ThemeColours;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
@@ -177,10 +178,10 @@ public class HTMLNarrative implements Narrative {
 
         Graphics2D g2d = bimg.createGraphics();
 
-        g2d.setColor(Color.white);
+        g2d.setColor(ThemeColours.getBackgroundColor());
         g2d.fillRect(0,0,ti.getIconWidth(),ti.getIconHeight());
         JLabel jl = new JLabel();
-        jl.setForeground(new Color(0, 0, 0));
+        jl.setForeground(ThemeColours.getMainColor());
         ti.paintIcon(jl, g2d, 0, 0);
 
         ImageIO.write(bimg, "png", out);
