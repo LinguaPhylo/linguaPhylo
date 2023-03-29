@@ -7,6 +7,7 @@ import lphy.graphicalModel.Value;
 import lphy.layeredgraph.LayeredNode;
 import lphy.util.LoggerUtils;
 import lphystudio.core.swing.*;
+import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,8 +76,8 @@ public class LayeredGNode extends LayeredNode.Default {
 
 
     private void createValueButton(Value value) {
-        Color backgroundColor = NodePaintUtils.getFillColor(value, parser);
-        Color borderColor = NodePaintUtils.getDrawColor(value, parser);
+        Color backgroundColor = ThemeColours.getFillColor(value, parser);
+        Color borderColor = ThemeColours.getBorderColor(value, parser);
 
         if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyParser.Context.model) != value) {
             backgroundColor = backgroundColor.darker();

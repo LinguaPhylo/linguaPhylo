@@ -1,11 +1,13 @@
 package lphystudio.core.swing;
 
+import lphystudio.core.theme.ThemeColours;
+
 import java.awt.*;
 
 public class DataDiamondButton extends DiamondButton {
 
     public DataDiamondButton(String text) {
-        super(text, Color.orange, Color.darkGray);
+        super(text, ThemeColours.getDataColor(), ThemeColours.getDataButtonColor());
     }
 
     @Override

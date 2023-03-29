@@ -37,10 +37,14 @@ class Var {
         TextElement element;
         if (model.hasValue(id, context)) {
             Value value = model.getValue(id, context);
-            element = new TextElement(id, value instanceof RandomVariable ? codeColorizer.getStyle(CodeColorizer.ElementType.randomVariable) : codeColorizer.getStyle(CodeColorizer.ElementType.value));
+            if (model.isClamped(id)) // data clamping
+                element = new TextElement(id, codeColorizer.getStyle(CodeColorizer.ElementType.clampedVar));
+            else
+                element = new TextElement(id, value instanceof RandomVariable ? codeColorizer.getStyle(CodeColorizer.ElementType.randomVariable) : codeColorizer.getStyle(CodeColorizer.ElementType.value));
         } else {
             element = new TextElement(id, codeColorizer.getStyle(CodeColorizer.ElementType.literal));
         }
         return element;
     }
+
 }

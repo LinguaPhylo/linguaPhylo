@@ -1,5 +1,7 @@
 package lphystudio.core.swing;
 
+import lphystudio.core.theme.ThemeColours;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -94,7 +96,7 @@ public class DiamondButton extends JButton {
         path.closePath();
 
         if(mousePressed){
-            g.setColor(Color.LIGHT_GRAY);
+            g.setColor(ThemeColours.getTransparentColor(ThemeColours.getGenDistColor()));
         }
         else{
             g.setColor(backgroundColor);
@@ -102,7 +104,7 @@ public class DiamondButton extends JButton {
         g2d.fill(path);
 
         if(mouseOver){
-            g.setColor(Color.BLUE);
+            g.setColor(ThemeColours.getGenDistColor());
         }
         else{
             g.setColor(borderColor);

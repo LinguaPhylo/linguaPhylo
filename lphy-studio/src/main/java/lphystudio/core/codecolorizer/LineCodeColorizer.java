@@ -32,6 +32,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
     Style argumentNameStyle;
     Style functionStyle;
     Style valueStyle;
+    Style clampedStyle;
 
     public LineCodeColorizer(LPhyParser parser, LPhyParser.Context context, JTextPane pane) {
 
@@ -47,6 +48,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
         functionStyle = pane.getStyle("functionStyle");
         randomStyle = pane.getStyle("randomVarStyle");
         valueStyle = pane.getStyle("valueStyle");
+        clampedStyle = pane.getStyle(ColorizerStyles.clampedVariable);
     }
 
     @Override
@@ -60,6 +62,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
             case function -> {return functionStyle;}
             case distibution -> {return genDistStyle;}
             case punctuation -> {return punctuationStyle;}
+            case clampedVar -> {return clampedStyle;}
         }
         return punctuationStyle;
     }
@@ -124,6 +127,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
             return element;
         }
 
+        //TODO Can access the model tab from data tab, so cannot determine isClamped
         @Override
         public Object visitDeterm_relation(Determ_relationContext ctx) {
 
@@ -142,8 +146,14 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
 
         @Override
         public Object visitStoch_relation(Stoch_relationContext ctx) {
-
-            TextElement var = new TextElement(ctx.getChild(0).getText(), textPane.getStyle("randomVarStyle"));
+            ParseTree childContext = ctx.getChild(0);
+            String key = childContext.getText();
+            TextElement var;
+            if (parser.hasValue(key, context) && parser.isClamped(key)) {
+                // data clamping
+                var = new TextElement(key, textPane.getStyle(ColorizerStyles.clampedVariable));
+            } else
+                var = new TextElement(key, textPane.getStyle("randomVarStyle"));
 
             var.add(" " + ctx.getChild(1).getText() + " ", textPane.getStyle("punctuationStyle"));
 
@@ -342,8 +352,12 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
     private TextElement getIDElement(String key) {
         if (parser.hasValue(key, context)) {
             Value value = parser.getValue(key, context);
+
+            if (parser.isClamped(key)) // data clamping
+                return new TextElement(key, textPane.getStyle(ColorizerStyles.clampedVariable));
+
             return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);
-        } 
+        }
         return new TextElement(key, constantStyle);
     }
 }

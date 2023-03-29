@@ -6,6 +6,7 @@ public interface CodeColorizer {
 
     enum ElementType {
         randomVariable,
+        clampedVar,
         literal,
         argumentName,
         function,

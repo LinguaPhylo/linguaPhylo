@@ -1,5 +1,7 @@
 package lphystudio.core.swing;
 
+import lphystudio.core.theme.ThemeColours;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,8 +15,8 @@ public class SquareButton extends JButton {
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    protected Color backgroundColor = Color.white;
-    protected Color borderColor = Color.black;
+    protected Color backgroundColor = ThemeColours.getBackgroundColor();
+    protected Color borderColor = ThemeColours.getMainColor();
 
     Point2D origin = new Point2D.Double(0,0);
 
@@ -80,7 +82,7 @@ public class SquareButton extends JButton {
         int size = Math.min(width-1, height-1);
 
         if(mousePressed){
-            g.setColor(Color.LIGHT_GRAY);
+            g.setColor(ThemeColours.getMousePressColor());
         }
         else{
             g.setColor(backgroundColor);
@@ -95,7 +97,7 @@ public class SquareButton extends JButton {
         g2d.fill(rect);
 
         if(mouseOver){
-            g.setColor(Color.BLUE);
+            g.setColor(ThemeColours.getGenDistColor());
         }
         else{
             g.setColor(borderColor);

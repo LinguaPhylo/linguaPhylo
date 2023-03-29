@@ -1,5 +1,7 @@
 package lphystudio.core.swing;
 
+import lphystudio.core.theme.ThemeColours;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -12,8 +14,10 @@ public class CircleButton extends JButton {
     private boolean mouseOver = false;
     private boolean mousePressed = false;
 
-    private Color backgroundColor = Color.white;
-    private Color borderColor = Color.black;
+    private Color backgroundColor = ThemeColours.getBackgroundColor();
+    private Color borderColor = ThemeColours.getMainColor();
+
+    private Color genDistColor = ThemeColours.getGenDistColor();
 
     public CircleButton(String text, Color backgroundColor, Color borderColor) {
 
@@ -86,7 +90,7 @@ public class CircleButton extends JButton {
         int radius = diameter/2;
 
         if(mousePressed){
-            g.setColor(Color.LIGHT_GRAY);
+            g.setColor(ThemeColours.getMousePressColor());
         }
         else{
             g.setColor(backgroundColor);
@@ -94,7 +98,7 @@ public class CircleButton extends JButton {
         g.fillOval(getWidth()/2 - radius, getHeight()/2 - radius, diameter, diameter);
 
         if(mouseOver){
-            g.setColor(Color.BLUE);
+            g.setColor(getGenDistColor());
         }
         else{
             g.setColor(borderColor);
@@ -102,5 +106,13 @@ public class CircleButton extends JButton {
         g.drawOval(getWidth()/2 - radius, getHeight()/2 - radius, diameter, diameter);
 
         super.paintComponent(g);
+    }
+
+    public Color getGenDistColor() {
+        return genDistColor;
+    }
+
+    public void setGenDistColor(Color genDistColor) {
+        this.genDistColor = genDistColor;
     }
 }

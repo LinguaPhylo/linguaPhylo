@@ -10,6 +10,7 @@ import lphy.graphicalModel.Value;
 import lphy.graphicalModel.ValueUtils;
 import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.NodeWrapper;
+import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,8 +52,8 @@ public class NodePaintUtils {
             shape = nodeDiamond(gNode);
         } else shape = nodeSquare(gNode);
 
-        Color fillColor = NodePaintUtils.getFillColor(value, parser);
-        Color borderColor = NodePaintUtils.getDrawColor(value, parser);
+        Color fillColor = ThemeColours.getFillColor(value, parser);
+        Color borderColor = ThemeColours.getBorderColor(value, parser);
 
         g2d.setColor(fillColor);
         g2d.fill(shape);
@@ -325,31 +326,5 @@ public class NodePaintUtils {
         return "<html><center><p>" + displayName + "</p>" + valueString + "</center></html>";
     }
 
-    public static Color getFillColor(Value value, LPhyParser parser) {
-        Color fillColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
 
-        if (ValueUtils.isFixedValue(value)) {
-            fillColor = Color.white;
-        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
-            fillColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
-        } else if (parser.isClampedVariable(value)) {
-            fillColor = new Color(0.2f, 0.2f, 1.0f, 0.5f);
-        }
-
-        return fillColor;
-    }
-
-    public static Color getDrawColor(Value value, LPhyParser parser) {
-        Color drawColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
-
-        if (ValueUtils.isFixedValue(value)) {
-            drawColor = Color.black;
-        } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
-            drawColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
-        } else if (parser.isClampedVariable(value)) {
-            drawColor = new Color(0.15f, 0.15f, 0.75f, 1.0f);
-        }
-
-        return drawColor;
-    }
 }

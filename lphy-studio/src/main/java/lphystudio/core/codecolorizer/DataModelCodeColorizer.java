@@ -12,20 +12,15 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
-import java.awt.*;
 
+/**
+ * TODO merge common code with {@link LineCodeColorizer}
+ */
 public class DataModelCodeColorizer extends DataModelBaseListener implements CodeColorizer,LPhyParserAction {
 
     // CURRENT MODEL STATE
 
     private JTextPane textPane;
-
-    static Color randomVarColor = new Color(0, 196, 0);
-    static Color constantColor = Color.magenta;
-    static Color keywordColor = Color.black;
-    static Color argumentNameColor = Color.gray;
-    static Color functionColor = new Color(196, 0, 196);
-
     static int argumentNameSize = 10;
 
     Style randomVarStyle;
@@ -36,6 +31,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
     Style punctuationStyle;
     Style valueStyle;
     Style keywordStyle;
+    Style clampedStyle;
 
     LPhyParser parser;
 
@@ -59,6 +55,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         argumentNameStyle = textPane.getStyle(ColorizerStyles.argumentName);
         literalStyle = textPane.getStyle(ColorizerStyles.constant);
         punctuationStyle = textPane.getStyle(ColorizerStyles.punctuation);
+        clampedStyle = pane.getStyle(ColorizerStyles.clampedVariable);
     }
 
     @Override
@@ -72,6 +69,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
             case function -> {return functionStyle;}
             case distibution -> {return genDistStyle;}
             case punctuation -> {return punctuationStyle;}
+            case clampedVar -> {return clampedStyle;}
         }
         return punctuationStyle;
     }
@@ -163,7 +161,13 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
             TextElement varText = new TextElement(indent, punctuationStyle);
 
-            varText.add(ctx.getChild(0).getText(), randomVarStyle);
+            ParseTree childContext = ctx.getChild(0);
+            String key = childContext.getText();
+            if (parser.hasValue(key, context) && parser.isClamped(key)) {
+                // data clamping
+                varText.add(key, textPane.getStyle(ColorizerStyles.clampedVariable));
+            } else
+                varText.add(key, randomVarStyle);
 
             varText.add(" " + ctx.getChild(1).getText() + " ", punctuationStyle);
 
@@ -362,10 +366,15 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
         public Object visitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) {
 
-            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
-            TextElement e = var.getTextElement(parser, context);
+//            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
+//            TextElement e = var.getTextElement(parser, context);
+//            String methodName = ctx.children.get(2).getText();
+
+            String objectName = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();
-            
+
+            TextElement e = getIDElement(objectName);
+
             e.add(new TextElement(".", punctuationStyle));
             e.add(new TextElement(methodName, functionStyle));
 
@@ -381,6 +390,18 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
 
             return e;
         }
+    }
+
+    private TextElement getIDElement(String key) {
+        if (parser.hasValue(key, context)) {
+            Value value = parser.getValue(key, context);
+
+            if (parser.isClamped(key)) // data clamping
+                return new TextElement(key, textPane.getStyle(ColorizerStyles.clampedVariable));
+
+            return new TextElement(key, value instanceof RandomVariable ? randomVarStyle : valueStyle);
+        }
+        return new TextElement(key, literalStyle);
     }
 
     public Object parse(String CASentence) {

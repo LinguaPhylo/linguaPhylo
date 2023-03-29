@@ -12,6 +12,7 @@ import lphystudio.app.narrative.LaTeXNarrative;
 import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.layeredgraph.LayeredGraphFactory;
 import lphystudio.core.layeredgraph.NodePaintUtils;
+import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,9 +148,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g.setColor(Color.white);
+        g.setColor(ThemeColours.getBackgroundColor());
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.black);
+        g.setColor(ThemeColours.getMainColor());
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 
