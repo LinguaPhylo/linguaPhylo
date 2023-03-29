@@ -7,11 +7,12 @@ import java.awt.*;
 
 public class ColorizerStyles {
 
-    static Color randomVarColor = new Color(0, 196, 0);
-    static Color constantColor = Color.magenta;
-    static Color argumentNameColor = Color.gray;
-    static Color functionColor = new Color(196, 0, 196);
-
+    static Color constantColor = Theme.theme1[0];
+    static Color randomVarColor = Theme.theme1[1];
+    static Color genDistColor = Theme.theme1[2];
+    static Color functionColor = Theme.theme1[3];
+    static Color argumentNameColor = Theme.theme1[4];
+    static Color mainColor = Theme.theme1[5];
     static int argumentNameSize = 10;
 
     public static final String function = "functionStyle";
@@ -25,20 +26,20 @@ public class ColorizerStyles {
 
     static void addStyles(JTextPane textPane) {
         Style punctuationStyle = textPane.addStyle(punctuation, null);
-        StyleConstants.setForeground(punctuationStyle, Color.black);
+        StyleConstants.setForeground(punctuationStyle, mainColor);
 
         Style functionStyle = textPane.addStyle(function, null);
         StyleConstants.setForeground(functionStyle, functionColor);
 
         Style genDistStyle = textPane.addStyle(distribution, null);
-        StyleConstants.setForeground(genDistStyle, Color.blue);
+        StyleConstants.setForeground(genDistStyle, genDistColor);
         StyleConstants.setBold(genDistStyle, true);
 
         Style randomVarStyle = textPane.addStyle(randomVariable, null);
         StyleConstants.setForeground(randomVarStyle, randomVarColor);
 
         Style valueStyle = textPane.addStyle(value, null);
-        StyleConstants.setForeground(valueStyle, Color.black);
+        StyleConstants.setForeground(valueStyle, mainColor);
 
         Style argumentNameStyle = textPane.addStyle(argumentName, null);
         StyleConstants.setForeground(argumentNameStyle, argumentNameColor);
@@ -48,6 +49,6 @@ public class ColorizerStyles {
         StyleConstants.setForeground(constantStyle, constantColor);
 
         Style keywordStyle = textPane.addStyle(keyword, null);
-        StyleConstants.setForeground(keywordStyle, Color.black);
+        StyleConstants.setForeground(keywordStyle, mainColor);
     }
 }
