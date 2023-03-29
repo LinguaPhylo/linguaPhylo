@@ -14,11 +14,14 @@ public class ThemeColours {
     // "#000000"    "#E69F00"   "#56B4E9"    "#009E73"     "#F0E442"
     // blue       vermillion    reddishpurple  gray
     // "#0072B2"  "#D55E00"     "#CC79A7"      "#999999"
-    static final Color[] theme1 = new Color[]{Color.decode("#D55E00"), // vermillion
+    static final Color[] theme1 = new Color[]{
+            Color.decode("#D55E00"), // vermillion
             Color.decode("#009E73"), // bluishgreen
             Color.decode("#0072B2"), // blue
             Color.decode("#CC79A7"), // reddishpurple
-            Color.gray, Color.black, Color.decode("#E69F00"), // orange
+            Color.gray,
+            Color.black,
+            Color.decode("#E69F00"), // orange
             Color.decode("#56B4E9"), // skyblue
             Color.lightGray, // mouse press
             Color.darkGray // DataButton border

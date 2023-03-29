@@ -96,7 +96,7 @@ public class DiamondButton extends JButton {
         path.closePath();
 
         if(mousePressed){
-            g.setColor(ThemeColours.getTransparentColor(ThemeColours.getGenDistColor()));
+            g.setColor(ThemeColours.getMousePressColor());
         }
         else{
             g.setColor(backgroundColor);
