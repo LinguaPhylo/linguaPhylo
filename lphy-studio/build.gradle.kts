@@ -33,6 +33,7 @@ application {
     mainModule.set("lphystudio")
     // if only mainClass, it will auto add maincls to the end of CMD
     mainClass.set(maincls)
+    // applicationDefaultJvmArgs = listOf("-Dgreeting.language=en")
 }
 
 // make studio app locating the correct parent path of examples sub-folder
