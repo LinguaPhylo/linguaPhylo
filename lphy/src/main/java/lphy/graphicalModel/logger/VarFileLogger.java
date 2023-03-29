@@ -196,7 +196,7 @@ public class VarFileLogger implements RandomValueLogger {
     }
 
     public void close() {
-        String fileName = name + ".log";
+        String fileName = getFileName();
         File file;
         if (dir != null)
             file = new File(dir + File.separator + fileName);
@@ -219,5 +219,13 @@ public class VarFileLogger implements RandomValueLogger {
                 // random value but no anonymous
                 (!(randomValue instanceof RandomVariable) && randomValue.isRandom() &&
                         logStatistics && !randomValue.isAnonymous()));
+    }
+
+    public File getDir() {
+        return dir;
+    }
+
+    public String getFileName() {
+        return name + ".log";
     }
 }

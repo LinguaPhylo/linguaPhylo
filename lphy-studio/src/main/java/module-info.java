@@ -7,6 +7,9 @@ module lphystudio {
     requires jlatexmath;
 //    requires org.json;
     requires org.jfree.jfreechart;
+    requires info.picocli;
+    opens lphystudio.app.simulator;
+//    exports lphystudio.app.simulator;
 
     exports lphystudio.app;
     exports lphystudio.app.narrative;

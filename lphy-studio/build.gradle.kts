@@ -21,6 +21,8 @@ dependencies {
 //    implementation("org.json:json:20210307")
     implementation("org.jfree:jfreechart:1.5.4")
 
+    implementation("info.picocli:picocli:4.7.1")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }
 
