@@ -18,17 +18,13 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
     // CURRENT MODEL STATE
 
-    static String randomVarColor = ThemeColours.THEME1.RandomVar.getIdLowerCase();
-    static String constantColor = ThemeColours.THEME1.Constant.getIdLowerCase();
-    static String keywordColor = ThemeColours.THEME1.Default.getIdLowerCase();
-    static String argumentNameColor = ThemeColours.THEME1.ArgumentName.getIdLowerCase();
-    static String functionColor = ThemeColours.THEME1.Function.getIdLowerCase();
-    static String distributionColor = ThemeColours.THEME1.GenDist.getIdLowerCase();
+    static String randomVarColor = ThemeColours.getRandomVarIdLowerCase();
+    static String constantColor = ThemeColours.getConstantIdLowerCase();
+    static String keywordColor = ThemeColours.getDefaultIdLowerCase();
+    static String argumentNameColor = ThemeColours.getArgumentNameIdLowerCase();
+    static String functionColor = ThemeColours.getFunctionIdLowerCase();
+    static String distributionColor = ThemeColours.getGenDistIdLowerCase();
     final String latexColTag = "\\textcolor{";
-    //TODO increase indent when having data/model block,
-    // maybe should implement visitDatablock(DataModelParser.DatablockContext ctx)?
-    final String indent = "  ";
-
 
     List<String> elements = new ArrayList<>();
 

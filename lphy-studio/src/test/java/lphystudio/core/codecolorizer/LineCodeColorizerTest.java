@@ -103,8 +103,8 @@ public class LineCodeColorizerTest {
         // brief test the substr
         assertTrue(latex.contains("\\begin{alltt}") && latex.contains("\\end{alltt}") &&
                 latex.contains("data \\{") && latex.contains("model \\{") &&
-                latex.contains("\\textcolor{" + ThemeColours.THEME1.GenDist.getIdLowerCase() + "}{LogNormal}") &&
-                latex.contains("\\textcolor{" + ThemeColours.THEME1.GenDist.getIdLowerCase() + "}{Coalescent}"));
+                latex.contains("\\textcolor{" + ThemeColours.getGenDistIdLowerCase() + "}{LogNormal}") &&
+                latex.contains("\\textcolor{" + ThemeColours.getGenDistIdLowerCase() + "}{Coalescent}"));
 
     }
 

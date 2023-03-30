@@ -15,7 +15,7 @@ public class CircleButton extends JButton {
     private boolean mousePressed = false;
 
     private Color backgroundColor = ThemeColours.getBackgroundColor();
-    private Color borderColor = ThemeColours.getMainColor();
+    private Color borderColor = ThemeColours.getDefaultColor();
 
     private Color genDistColor = ThemeColours.getGenDistColor();
 

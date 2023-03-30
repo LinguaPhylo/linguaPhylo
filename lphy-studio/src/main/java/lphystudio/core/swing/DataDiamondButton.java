@@ -7,7 +7,7 @@ import java.awt.*;
 public class DataDiamondButton extends DiamondButton {
 
     public DataDiamondButton(String text) {
-        super(text, ThemeColours.getDataColor(), ThemeColours.getDataButtonColor());
+        super(text, ThemeColours.getDataButtonColor(), ThemeColours.getDataButtonBorderColor());
     }
 
     @Override

@@ -133,7 +133,7 @@ public class LaTeXNarrative implements Narrative {
             builder.append("\\begin{minipage}[t]{0.50\\textwidth}\n");
         }
 
-        // define colours
+        // must to define colours
         builder.append(ThemeColours.defineLatexColours());
 
         return builder.toString();
@@ -354,7 +354,9 @@ public class LaTeXNarrative implements Narrative {
                 "\\usepackage{bm}\n" +
                 "\\usetikzlibrary{bayesnet}\n" +
                 "\n" +
-                "\\begin{document}\n\n";
+                "\\begin{document}\n\n" +
+                ThemeColours.defineLatexColours() + // must to define colours
+                "\n\n";
 
         if (options.length() > 0 && !options.endsWith(",")) {
             options = options + ",";
@@ -362,10 +364,13 @@ public class LaTeXNarrative implements Narrative {
 
         String preamble =
                 "\\begin{tikzpicture}[" + options + "\n" +
-                        "dstyle/.style={draw=blue!50,fill=blue!20},\n" +
-                        "vstyle/.style={draw=green,fill=green!20},\n" +
+                        "dstyle/.style={draw=" + ThemeColours.getGenDistIdLowerCase() + "!50,fill=" +
+                        ThemeColours.getGenDistIdLowerCase() + "!20},\n" +
+                        "vstyle/.style={draw=" + ThemeColours.getRandomVarIdLowerCase() + ",fill=" +
+                        ThemeColours.getRandomVarIdLowerCase() + "!20},\n" +
                         "cstyle/.style={font=\\small},\n" +
-                        "detstyle/.style={draw=red!50,fill=red!20}\n" +
+                        "detstyle/.style={draw=" + ThemeColours.getFunctionIdLowerCase() + "!50,fill=" +
+                        ThemeColours.getFunctionIdLowerCase() +"!20}\n" +
                         "]\n";
 
         String postamble = "\\end{tikzpicture}\n";

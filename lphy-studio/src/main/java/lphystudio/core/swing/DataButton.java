@@ -8,7 +8,7 @@ public class DataButton extends SquareButton {
 
     public DataButton(String text) {
 
-        super(text, ThemeColours.getDataColor(), ThemeColours.getDataButtonColor());
+        super(text, ThemeColours.getDataButtonColor(), ThemeColours.getDataButtonBorderColor());
 
     }
 
