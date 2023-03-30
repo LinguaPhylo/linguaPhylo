@@ -391,7 +391,7 @@ The syntax for the specification of random variables is similar to the JAGS \cit
 Scripts can be loaded into LPhyStudio via the Menu or toolbar. 
 Additionally, we also provide a console for executing LPhy commands line by line within LPhyStudio. 
 
-\subsubsection*{Syntax}
+\subsubsection{Syntax}
 The syntax for each line has a variable declaration on the left-hand side, an assignment operator followed by the assignee on the right-hand side. 
 The end of a line is denoted by a semicolon character.
 For example: 
@@ -412,7 +412,7 @@ A list of functions and generative distributions is shown in the \href{https://g
 Parameters inside functions or generative distributions follow the convention: 
 (\textit{parameter name}) = (\textit{parameter value}).
 
-\subsubsection*{Assignment operators}
+\subsubsection{Assignment operators}
 An equal sign = is used for assigning deterministic or constant values to variables, for example: 
 {
   \small
@@ -434,12 +434,29 @@ An equal sign = is used for assigning deterministic or constant values to variab
 \noindent The type of a variable is inferred from the return type of its assigned function and does not need to be declared. 
 For arguments of functions or generative distributions, the types are defined in the LPhy language reference manual. 
 
-\subsubsection*{Code blocks}
+\subsubsection{Arrays}
+Arrays can be defined using square brackets with elements delimitted by comma separators. 
+For sequences of consecutive integers, we allow a more compact notation using the colon `:’ to define a range.
+For example:  
+{
+  \small
+  \begin{listing}
+    \stepcounter{example}
+    \begin{alltt}
+    c =[\textcolor{constant}{1}, \textcolor{constant}{2}, \textcolor{constant}{3}, \textcolor{constant}{4}, \textcolor{constant}{5}];
+    d =[\textcolor{constant}{2}:\textcolor{constant}{10}];
+    \end{alltt}
+  \end{listing}
+}
+\noindent The variable c is assigned an array with values (1, 2, 3, 4, 5). 
+The variable d is assigned an array with values 2 to 10.
+
+\subsubsection{Code blocks}
 The \textbf{data} and \textbf{model} keywords are reserved to specify code blocks inside curly brackets. 
 The data block is used to read in and store input data, which are used by the model. 
 Within the data block, we can read in alignment data via the NEXUS or FASTA parsers, assign constant values, and store metadata about the dataset.
 The model block is used to define the models and parameters in a Bayesian phylogenetic analysis. 
-
+% end changes
 
 {
   \small
@@ -470,25 +487,7 @@ Taxa can be named as strings or as numbers.
 In this example, the taxa are numbered. 
 The second block declares the stochastic nodes or random variables in bluishgreen, and their generative distributions in blue. 
 Constant nodes with fixed values are shown in vermillion.  
-
-% \subsubsection*{Parsing}
-% How we parse the language using ANTLR. Description of grammar rules.
-
-\subsubsection*{Extension mechanism}
-The extensibility of LPhy is designed to encourage software growth and adoptation by researchers in our field. 
-LPhy and LPhy extensions are built using Java 17 with long-term support (LTS) and Gradle. 
-The LPhy extension mechanism is implemented using the Java Platform Module System (JPMS) and the Java Service Provider Interface (SPI).
-This modular extension framework allows developers greater flexibility in code development and software releases. 
-New generative distributions and deterministic functions can be developed within a separate module, and individual releases can be done independently to core LPhy releases. 
-
 % end changes
-
-% Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
-% The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
-% The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
-% It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
-% It integrates with a dependency manager, which helps developers to avoid ``dependency hell".
-% Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
 
 
 \begin{figure}
@@ -544,6 +543,27 @@ Finally, vectorization can be performed by passing a vector of elements instead 
 }
 
 Here, since both $\kappa$ and $\pi$ are random vectors with the same major dimension length (3), we can assign them as values of the \texttt{hky} deterministic function, which in turn outputs a vector of three instantaneous rate matrices, stored in $Q$.
+
+% revision changes
+
+% \subsubsection*{Parsing}
+% How we parse the language using ANTLR. Description of grammar rules.
+
+\subsubsection{Extension mechanism}
+The extensibility of LPhy is designed to encourage software growth and adoptation by researchers in our field. 
+LPhy and LPhy extensions are built using Java 17 with long-term support (LTS) and Gradle. 
+The LPhy extension mechanism is implemented using the Java Platform Module System (JPMS) and the Java Service Provider Interface (SPI).
+This modular extension framework allows developers greater flexibility in code development and software releases. 
+New generative distributions and deterministic functions can be developed within a separate module, and individual releases can be done independently to core LPhy releases. 
+
+% end changes
+
+% Using this mechanism, the extension developer can develop their own generative distributions and deterministic functions in a separate extension module, and make an individual release.
+% The user will easily enjoy these new features, by simply dropping the released jar file into the LPhy library deployment folder.
+% The LPhy project is a Gradle project from the perspective of developers. Gradle (https://docs.gradle.org) is not only a build system (c.f. ANT), but also contains dependency management, structuring project, and other advanced features. 
+% It is well supported by popular IDEs (integrated development environments), such as IntelliJ, so the LPhy core and extension developers can easily share the same software ecosystem and project configurations during development. 
+% It integrates with a dependency manager, which helps developers to avoid ``dependency hell".
+% Another attractive feature of Gradle is that it provides a rich API and many plugins to support the multiple stages of the software build, test, release, and deploying cycle, which helps to define the code conventions and automate the steps of delivering LPhy software and its extensions.  
 
 % Examples below
 \subsubsection{Parametric distributions}
