@@ -27,8 +27,8 @@ public class ThemeColours {
             this.color = color;
         }
 
-        public String getId() {
-            return id;
+        public String getIdLowerCase() {
+            return id.toLowerCase(); // for latex
         }
 
         public Color getColor() {
@@ -142,7 +142,7 @@ public class ThemeColours {
     public static String defineLatexColours() {
         StringBuilder builder = new StringBuilder();
         for (THEME1 theme : THEME1.values()) {
-            builder.append("\\definecolor{").append(theme.getId().toLowerCase()).
+            builder.append("\\definecolor{").append(theme.getIdLowerCase()).
                     append("}{RGB}{").append(theme.getColor().getRed()).append(", ").
                     append(theme.getColor().getGreen()).append(", ").
                     append(theme.getColor().getBlue()).append("}\n");
