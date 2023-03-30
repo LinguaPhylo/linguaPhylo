@@ -244,7 +244,8 @@ public class MetaDataAlignment extends SimpleAlignment {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         if (getCharsetMap() != null)
-            sb.append(", ").append( getCharsetMap().size() ).append(" charset(s)");
+            sb.append(", ").append( getCharsetMap().size() ).
+                    append(" charset").append(getCharsetMap().size() > 1 ? "s" : "");
         if (isUltrametric())
             sb.append(", age direction is ").append( getAgeDirection() );
         return sb.toString();
