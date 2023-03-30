@@ -382,13 +382,14 @@ Control flow structures are not allowed to encourage script readability.
 Instead of loop structures, we provide variable vectorization similar to R \cite{ihaka1996r}, where we can generate an array of elements using the `replicates' argument. 
 
 An LPhy script is a text file with the `.lphy' file extension and is case-sensitive. 
-We also provide a console for executing LPhy commands within LPhyStudio. 
 As a scripting language, type and syntax checking is performed during execution. 
 Overloading of functions is supported (Java-style overloading). 
 Optional arguments in functions and generative distributions are allowed, with or without default values. 
 Code blocks surrounded by curly braces are used to differentiate between parts of the script describing the data (the data block), and parts describing the model (the model block). 
 The code block structure is inspired by the programming language STAN \cite{carpenter2017stan}. 
 The syntax for the specification of random variables is similar to the JAGS \cite{plummer2004jags} and BUGS \cite{lunn2009bugs, gilks1994language} languages. 
+Scripts can be loaded into LPhyStudio via the Menu or toolbar. 
+Additionally, we also provide a console for executing LPhy commands line by line within LPhyStudio. 
 
 \subsubsection*{Syntax}
 The syntax for each line has a variable declaration on the left-hand side, an assignment operator followed by the assignee on the right-hand side. 
