@@ -10,6 +10,32 @@ import java.awt.*;
  * Colours for the code
  */
 public class ThemeColours {
+
+    public enum THEME1 {
+        Constant     ("Constant", Color.decode("#D55E00")),
+        RandomVar    ("RandomVar", Color.decode("#009E73")), // bluishgreen
+        GenDist      ("GenDist", Color.decode("#0072B2")), // blue
+        Function     ("Function", Color.decode("#CC79A7")), // reddishpurple
+        ArgumentName ("ArgumentName",   Color.gray),
+        Default      ("Default", Color.black),
+        Background   ("Background", Color.white);
+
+        private final String id;
+        private final Color color;
+        THEME1(String id, Color color) {
+            this.id = id;
+            this.color = color;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+    }
+
     // black        orange      skyblue      bluishgreen   yellow
     // "#000000"    "#E69F00"   "#56B4E9"    "#009E73"     "#F0E442"
     // blue       vermillion    reddishpurple  gray
@@ -112,4 +138,17 @@ public class ThemeColours {
 
         return drawColor;
     }
+
+    public static String defineLatexColours() {
+        StringBuilder builder = new StringBuilder();
+        for (THEME1 theme : THEME1.values()) {
+            builder.append("\\definecolor{").append(theme.getId().toLowerCase()).
+                    append("}{RGB}{").append(theme.getColor().getRed()).append(", ").
+                    append(theme.getColor().getGreen()).append(", ").
+                    append(theme.getColor().getBlue()).append("}\n");
+        }
+        builder.append("\n");
+        return builder.toString();
+    }
+
 }

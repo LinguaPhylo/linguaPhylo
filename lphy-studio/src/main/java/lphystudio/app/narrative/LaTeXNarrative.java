@@ -14,6 +14,7 @@ import lphy.layeredgraph.NodeWrapper;
 import lphy.layeredgraph.ProperLayeredGraph;
 import lphy.util.Symbols;
 import lphystudio.core.layeredgraph.LayeredGNode;
+import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -132,6 +133,8 @@ public class LaTeXNarrative implements Narrative {
             builder.append("\\begin{minipage}[t]{0.50\\textwidth}\n");
         }
 
+        // define colours
+        builder.append(ThemeColours.defineLatexColours());
 
         return builder.toString();
     }
