@@ -4,7 +4,7 @@ data {
   L=1000;
 }
 model{
-  π ~ Dirichlet(conc=[1.0,1.0,1.0,1.0]);
+  π ~ Dirichlet(conc=[10.0,10.0,10.0,10.0]);
   rates ~ Dirichlet(conc=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
   Q = gtr(freq=π, rates=rates);
 

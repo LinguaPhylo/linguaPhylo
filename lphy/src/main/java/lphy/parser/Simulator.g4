@@ -15,14 +15,14 @@ relation_list:	relation
 
 relation: stoch_relation ';'
 | determ_relation ';'
-| for_loop ';'
+//| for_loop ';'
 ;
 
-for_loop: counter relations 
-;
+//for_loop: counter relations
+//;
 
-counter: 'for' '(' NAME 'in' range_element ')'
-;
+//counter: 'for' '(' NAME 'in' range_element ')'
+//;
 
 assignment: ARROW 
 | '='
