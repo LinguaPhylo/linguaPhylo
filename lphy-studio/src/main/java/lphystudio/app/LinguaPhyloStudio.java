@@ -379,7 +379,7 @@ public class LinguaPhyloStudio {
         } else if (jMenu.getText().toLowerCase().contains("tutorial")) {
             dir = new File(TUTL_FOLDER).getAbsoluteFile();
         }
-        LoggerUtils.log.info("Menu " + jMenu.getText() + " links to dir = " + dir);
+        LoggerUtils.log.config("Menu " + jMenu.getText() + " links to dir = " + dir);
 
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             LoggerUtils.log.warning("Cannot locate dir : " + dir + " !");
