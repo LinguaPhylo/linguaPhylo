@@ -19,7 +19,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
 
     static Color randomVarColor = ThemeColours.getRandomVarColor();
     static Color constantColor = ThemeColours.getConstantColor();
-    static Color keywordColor = ThemeColours.getMainColor();
+    static Color keywordColor = ThemeColours.getDefaultColor();
     static Color argumentNameColor = ThemeColours.getArgumentNameColor().darker();
     static Color functionColor = ThemeColours.getFunctionColor();
     static Color distributionColor = ThemeColours.getGenDistColor();
@@ -46,7 +46,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
             for (int i = 0; i < element.getSize(); i++) {
                 String text = element.getText(i);
                 Style style = element.getStyle(i);
-                Color c = ThemeColours.getMainColor();
+                Color c = ThemeColours.getDefaultColor();
 
                 switch (style.getName()) {
                     case ColorizerStyles.function:
@@ -66,7 +66,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
                 }
 
                 if (text.startsWith(indent)) {
-                    builder.append(span("&nbsp;".repeat(indent.length()), ThemeColours.getMainColor()));
+                    builder.append(span("&nbsp;".repeat(indent.length()), ThemeColours.getDefaultColor()));
                     text = text.substring(indent.length());
                 }
                 builder.append(span(text, c));

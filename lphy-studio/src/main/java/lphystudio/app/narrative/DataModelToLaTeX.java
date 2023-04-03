@@ -18,12 +18,13 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
     // CURRENT MODEL STATE
 
-    static String randomVarColor = Integer.toHexString(ThemeColours.getRandomVarColor().getRGB());
-    static String constantColor = Integer.toHexString(ThemeColours.getConstantColor().getRGB());
-    static String keywordColor = Integer.toHexString(ThemeColours.getMainColor().getRGB());
-    static String argumentNameColor = Integer.toHexString(ThemeColours.getArgumentNameColor().darker().getRGB());
-    static String functionColor = Integer.toHexString(ThemeColours.getFunctionColor().getRGB());
-    static String distributionColor = Integer.toHexString(ThemeColours.getGenDistColor().getRGB());
+    static String randomVarColor = ThemeColours.getRandomVarIdLowerCase();
+    static String constantColor = ThemeColours.getConstantIdLowerCase();
+    static String keywordColor = ThemeColours.getDefaultIdLowerCase();
+    static String argumentNameColor = ThemeColours.getArgumentNameIdLowerCase();
+    static String functionColor = ThemeColours.getFunctionIdLowerCase();
+    static String distributionColor = ThemeColours.getGenDistIdLowerCase();
+    final String latexColTag = "\\textcolor{";
 
     List<String> elements = new ArrayList<>();
 
@@ -31,6 +32,10 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
     public DataModelToLaTeX(LPhyParser parser, JTextPane pane) {
         super(parser, pane);
+    }
+
+    public String getLatexColour(String colorName) {
+        return latexColTag + colorName + "}{";
     }
 
     public class DataModelASTVisitor extends DataModelCodeColorizer.DataModelASTVisitor {
@@ -41,7 +46,6 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
         public void addTextElement(TextElement element) {
 
             StringBuilder builder = new StringBuilder();
-            final String latexColTag = "\\color[HTML]{";
 
             for (int i = 0; i < element.getSize(); i++) {
                 String text = element.getText(i);
@@ -49,29 +53,19 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
                 switch (style.getName()) {
                     case ColorizerStyles.function:
-                        builder.append(latexColTag);
-                        builder.append(functionColor);
-                        builder.append("}{");
+                        builder.append(getLatexColour(functionColor));
                         break;
                     case ColorizerStyles.distribution:
-                        builder.append(latexColTag);
-                        builder.append(distributionColor);
-                        builder.append("}{");
+                        builder.append(getLatexColour(distributionColor));
                         break;
                     case ColorizerStyles.argumentName:
-                        builder.append(latexColTag);
-                        builder.append(argumentNameColor);
-                        builder.append("}{");
+                        builder.append(getLatexColour(argumentNameColor));
                         break;
                     case ColorizerStyles.constant:
-                        builder.append(latexColTag);
-                        builder.append(constantColor);
-                        builder.append("}{");
+                        builder.append(getLatexColour(constantColor));
                         break;
                     case ColorizerStyles.randomVariable:
-                        builder.append(latexColTag);
-                        builder.append(randomVarColor);
-                        builder.append("}{");
+                        builder.append(getLatexColour(randomVarColor));
                 }
 
                 text = text.replace("{", "\\{");

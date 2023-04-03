@@ -215,7 +215,8 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
             totalP += p[i];
             if (U <= totalP) return i;
         }
-        throw new RuntimeException("p vector doesn't add to 1.0!");
+        if (Math.abs(totalP - 1.0) < 1e-6) return p.length - 1;
+        throw new RuntimeException("p vector should add to 1.0 but adds to " + totalP +  " instead.");
     }
 
     private void getTransitionProbabilities(double branchLength, double[][] transProbs) {

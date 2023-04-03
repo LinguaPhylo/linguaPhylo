@@ -45,12 +45,11 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     }
 
     public String getInferenceStatement(Value value, Narrative narrative) {
+        StringBuilder builder = new StringBuilder();
 
         if (value instanceof VectorizedRandomVariable) {
 
             VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
-
-            StringBuilder builder = new StringBuilder();
 
             builder.append(narrative.product("i", "0", getTo(vrv, narrative)));
 
@@ -66,6 +65,22 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
             return builder.toString();
 
+        } else if (value instanceof RandomVariable && value.value().getClass().isArray()) {
+            Object[] arr = (Object[]) value.value();
+
+            Generator generator = componentDistributions.get(0);
+            Value v = new Value(null, arr[0]);
+
+            builder.append(narrative.product("i", "0", Integer.toString((arr.length - 1))));
+
+            String componentStatement = generator.getInferenceStatement(v, narrative);
+
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+
+            builder.append(componentStatement);
+
+            return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
     }
@@ -101,15 +116,26 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     }
 
     public String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
+        StringBuilder builder = new StringBuilder();
 
         if (value instanceof VectorizedRandomVariable) {
             VectorizedRandomVariable vrv = (VectorizedRandomVariable) value;
 
-            StringBuilder builder = new StringBuilder();
-
             Generator generator = componentDistributions.get(0);
             Value v = vrv.getComponentValue(0);
 
+
+            String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
+            inferenceNarrative = inferenceNarrative.replace( narrative.subscript("0"), narrative.subscript("i"));
+
+            builder.append(inferenceNarrative);
+
+            return builder.toString();
+//        } else if (value.getGenerator() != null && value.getGenerator() instanceof VectorizedDistribution vectorizedDistribution) {
+        } else if (value instanceof RandomVariable && value.value().getClass().isArray()) {
+            Object[] arr = (Object[]) value.value();
+            Generator generator = componentDistributions.get(0);
+            Value v = new Value(null, arr[0]);
 
             String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
             inferenceNarrative = inferenceNarrative.replace( narrative.subscript("0"), narrative.subscript("i"));

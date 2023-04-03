@@ -118,7 +118,7 @@ public class Utils {
             return;
         }
 
-        LoggerUtils.log.info("Read LPhy script " + lphyFile + " from " + lphyFile.getParent());
+        LoggerUtils.log.config("Read LPhy script " + lphyFile + " from " + lphyFile.getParent());
 
         BufferedReader reader;
         reader = new BufferedReader(new FileReader(lphyFile));

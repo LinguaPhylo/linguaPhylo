@@ -1,0 +1,28 @@
+#!/bin/sh
+
+### The command line program for running a LPhy script to create simulated data.
+
+if [ -z "$LPHY" ]; then
+	## resolve links - $0 may be a link to application
+	PRG="$0"
+
+	# need this for relative symlinks
+	while [ -h "$PRG" ] ; do
+	    ls=`ls -ld "$PRG"`
+	    link=`expr "$ls" : '.*-> \(.*\)$'`
+	    if expr "$link" : '/.*' > /dev/null; then
+		PRG="$link"
+	    else
+		PRG="`dirname "$PRG"`/$link"
+	    fi
+	done
+
+	# make it fully qualified
+	saveddir=`pwd`
+	LPHY0=`dirname "$PRG"`/..
+	LPHY=`cd "$LPHY0" && pwd`
+	cd "$saveddir"
+fi
+
+LPHY_LIB=$LPHY/lib
+java -Xms64m -Xmx5g -p $LPHY_LIB -m lphystudio/lphystudio.app.simulator.SLPhy $*

@@ -111,6 +111,9 @@ tasks.getByName<CreateStartScripts>("startScripts").enabled = false
 distributions {
     main {
         contents {
+            from("$rootDir/bin") {
+                into("bin")
+            }
             from("$rootDir/examples") {
                 include("**/*.lphy", "**/*.nex")
                 exclude("todo", "**/*covid*")

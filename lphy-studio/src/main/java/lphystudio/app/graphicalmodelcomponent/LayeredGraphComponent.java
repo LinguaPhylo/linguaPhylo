@@ -64,7 +64,7 @@ public class LayeredGraphComponent extends JComponent {
                 if (v.isDummy()) {
                     g2d.setColor(g2d.getBackground());
                     g2d.fill(ellipse2D);
-                    g2d.setColor(ThemeColours.getMainColor());
+                    g2d.setColor(ThemeColours.getDefaultColor());
                     g2d.draw(ellipse2D);
                 } else {
                     g2d.fill(ellipse2D);

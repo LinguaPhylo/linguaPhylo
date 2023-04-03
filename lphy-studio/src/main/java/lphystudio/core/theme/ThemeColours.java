@@ -14,18 +14,35 @@ public class ThemeColours {
     // "#000000"    "#E69F00"   "#56B4E9"    "#009E73"     "#F0E442"
     // blue       vermillion    reddishpurple  gray
     // "#0072B2"  "#D55E00"     "#CC79A7"      "#999999"
-    static final Color[] theme1 = new Color[]{
-            Color.decode("#D55E00"), // vermillion
-            Color.decode("#009E73"), // bluishgreen
-            Color.decode("#0072B2"), // blue
-            Color.decode("#CC79A7"), // reddishpurple
-            Color.gray,
-            Color.black,
-            Color.decode("#E69F00"), // orange
-            Color.decode("#56B4E9"), // skyblue
-            Color.lightGray, // mouse press
-            Color.darkGray // DataButton border
-    };
+    public enum THEME1 {
+        Constant     ("Constant", Color.decode("#D55E00")), // vermillion
+        RandomVar    ("RandomVar", Color.decode("#009E73")), // bluishgreen
+        GenDist      ("GenDist", Color.decode("#0072B2")), // blue
+        Function     ("Function", Color.decode("#CC79A7")), // reddishpurple
+        ArgumentName ("ArgumentName", Color.gray),
+        DataButton   ("DataButton", getTransparentColor(Color.decode("#E69F00"))), // orange
+        DataButtonBorder ("DataButtonBorder", Color.decode("#E69F00")),
+        ClampedVar   ("ClampedVar", Color.decode("#56B4E9")), // skyblue
+        MousePress   ("MousePress", Color.lightGray),
+        Default      ("Default", Color.black),
+        Background   ("Background", Color.white);
+
+        private final String id;
+        private final Color color;
+        THEME1(String id, Color color) {
+            this.id = id;
+            this.color = color;
+        }
+
+        public String getIdLowerCase() {
+            return id.toLowerCase(); // for latex
+        }
+
+        public Color getColor() {
+            return color;
+        }
+    }
+
     static final Color[] theme2 = new Color[]{Color.magenta,
             new Color(0, 196, 0), Color.blue,
             new Color(196, 0, 196), Color.gray, Color.black, Color.orange,
@@ -34,45 +51,73 @@ public class ThemeColours {
             Color.darkGray // border
     };
 
-    // the order is constantColor, randomVarColor, genDistColor,
-    // argumentNameColor, functionColor, mainColor
-    public static Color[] getTheme() {
-       return theme1;
-    }
-
     public static Color getConstantColor() {
-        return getTheme()[0];
+        return THEME1.Constant.getColor();
     }
     public static Color getRandomVarColor() {
-        return getTheme()[1];
+        return THEME1.RandomVar.getColor();
     }
     public static Color getGenDistColor() {
-        return getTheme()[2];
+        return THEME1.GenDist.getColor();
     }
     public static Color getFunctionColor() {
-        return getTheme()[3];
+        return THEME1.Function.getColor();
     }
     public static Color getArgumentNameColor() {
-        return getTheme()[4];
+        return THEME1.ArgumentName.getColor();
     }
-    public static Color getMainColor() {
-        return getTheme()[5];
+    public static Color getDefaultColor() {
+        return THEME1.Default.getColor();
     }
     public static Color getBackgroundColor() {
-        return Color.white;
+        return THEME1.Background.getColor();
     }
     // +++ graphical nodes +++ //
-    public static Color getDataColor() {
-        return getTheme()[6];
+    public static Color getDataButtonColor() {
+        return THEME1.DataButton.getColor();
     }
     public static Color getClampedVarColor() {
-        return getTheme()[7];
+        return THEME1.ClampedVar.getColor();
     }
     public static Color getMousePressColor() {
-        return getTheme()[8];
+        return THEME1.MousePress.getColor();
     }
-    public static Color getDataButtonColor() {
-        return getTheme()[9];
+    public static Color getDataButtonBorderColor() {
+        return THEME1.DataButtonBorder.getColor();
+    }
+    public static String getConstantIdLowerCase() {
+        return THEME1.Constant.getIdLowerCase();
+    }
+    public static String getRandomVarIdLowerCase() {
+        return THEME1.RandomVar.getIdLowerCase();
+    }
+    public static String getGenDistIdLowerCase() {
+        return THEME1.GenDist.getIdLowerCase();
+    }
+    public static String getFunctionIdLowerCase() {
+        return THEME1.Function.getIdLowerCase();
+    }
+    public static String getArgumentNameIdLowerCase() {
+        return THEME1.ArgumentName.getIdLowerCase();
+    }
+    public static String getDefaultIdLowerCase() {
+        return THEME1.Default.getIdLowerCase();
+    }
+    public static String getBackgroundIdLowerCase() {
+        return THEME1.Background.getIdLowerCase();
+    }
+    // +++ graphical nodes +++ //
+    public static String getDataButtonIdLowerCase() {
+        return THEME1.DataButton.getIdLowerCase();
+    }
+    public static String getClampedVarIdLowerCase() {
+        return THEME1.ClampedVar.getIdLowerCase();
+    }
+    public static String getMousePressIdLowerCase() {
+        return THEME1.MousePress.getIdLowerCase();
+    }
+    public static String getDataButtonBorderIdLowerCase() {
+        return THEME1.DataButtonBorder.getIdLowerCase();
     }
 
     // create a transparent version with alpha = 128 (50% transparency)
@@ -101,7 +146,7 @@ public class ThemeColours {
 //        Color drawColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
         Color drawColor = getRandomVarColor();
         if (ValueUtils.isFixedValue(value)) {
-            drawColor = ThemeColours.getMainColor();
+            drawColor = ThemeColours.getDefaultColor();
         } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
 //            drawColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
             drawColor = getFunctionColor();
@@ -112,4 +157,17 @@ public class ThemeColours {
 
         return drawColor;
     }
+
+    public static String defineLatexColours() {
+        StringBuilder builder = new StringBuilder();
+        for (THEME1 theme : THEME1.values()) {
+            builder.append("\\definecolor{").append(theme.getIdLowerCase()).
+                    append("}{RGB}{").append(theme.getColor().getRed()).append(", ").
+                    append(theme.getColor().getGreen()).append(", ").
+                    append(theme.getColor().getBlue()).append("}\n");
+        }
+        builder.append("\n");
+        return builder.toString();
+    }
+
 }

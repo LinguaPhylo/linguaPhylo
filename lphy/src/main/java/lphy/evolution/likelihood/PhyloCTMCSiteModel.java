@@ -37,8 +37,8 @@ public class PhyloCTMCSiteModel extends AbstractPhyloCTMC {
                               @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                               @ParameterInfo(name = siteModelParamName, narrativeName = "site model", description = "the site model") Value<SiteModel> siteModel,
                               @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
-                              @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment", optional = true) Value<Integer> L,
-                              @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations, default to nucleotide", optional = true) Value<SequenceType> dataType) {
+                              @ParameterInfo(name = LParamName, narrativeName="alignment length", description = "length of the alignment", optional = true) Value<Integer> L,
+                              @ParameterInfo(name = dataTypeParamName, narrativeName="the data type used for simulations", description = "the data type used for simulations, default to nucleotide", optional = true) Value<SequenceType> dataType) {
 
         super(tree, mu, rootFreq, branchRates, L, dataType);
         this.siteModel = siteModel;

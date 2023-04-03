@@ -181,7 +181,7 @@ public class HTMLNarrative implements Narrative {
         g2d.setColor(ThemeColours.getBackgroundColor());
         g2d.fillRect(0,0,ti.getIconWidth(),ti.getIconHeight());
         JLabel jl = new JLabel();
-        jl.setForeground(ThemeColours.getMainColor());
+        jl.setForeground(ThemeColours.getDefaultColor());
         ti.paintIcon(jl, g2d, 0, 0);
 
         ImageIO.write(bimg, "png", out);

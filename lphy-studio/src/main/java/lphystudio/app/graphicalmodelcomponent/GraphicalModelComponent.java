@@ -150,7 +150,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         g.setColor(ThemeColours.getBackgroundColor());
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(ThemeColours.getMainColor());
+        g.setColor(ThemeColours.getDefaultColor());
 
         g2d.setStroke(new BasicStroke(STROKE_SIZE));
 

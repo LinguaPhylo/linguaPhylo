@@ -8,6 +8,7 @@ import lphystudio.app.Utils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
 import lphystudio.app.narrative.DataModelToHTML;
 import lphystudio.app.narrative.DataModelToLaTeX;
+import lphystudio.core.theme.ThemeColours;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -102,7 +103,8 @@ public class LineCodeColorizerTest {
         // brief test the substr
         assertTrue(latex.contains("\\begin{alltt}") && latex.contains("\\end{alltt}") &&
                 latex.contains("data \\{") && latex.contains("model \\{") &&
-                latex.contains("\\textcolor{blue}{LogNormal}") && latex.contains("\\textcolor{blue}{Coalescent}"));
+                latex.contains("\\textcolor{" + ThemeColours.getGenDistIdLowerCase() + "}{LogNormal}") &&
+                latex.contains("\\textcolor{" + ThemeColours.getGenDistIdLowerCase() + "}{Coalescent}"));
 
     }
 

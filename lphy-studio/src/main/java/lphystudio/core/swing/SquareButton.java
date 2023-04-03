@@ -16,7 +16,7 @@ public class SquareButton extends JButton {
     private boolean mousePressed = false;
 
     protected Color backgroundColor = ThemeColours.getBackgroundColor();
-    protected Color borderColor = ThemeColours.getMainColor();
+    protected Color borderColor = ThemeColours.getDefaultColor();
 
     Point2D origin = new Point2D.Double(0,0);
 

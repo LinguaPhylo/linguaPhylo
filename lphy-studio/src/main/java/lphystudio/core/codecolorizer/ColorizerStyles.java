@@ -14,7 +14,7 @@ public class ColorizerStyles {
     static Color genDistColor = ThemeColours.getGenDistColor();
     static Color functionColor = ThemeColours.getFunctionColor();
     static Color argumentNameColor = ThemeColours.getArgumentNameColor();
-    static Color mainColor = ThemeColours.getMainColor();
+    static Color mainColor = ThemeColours.getDefaultColor();
     static int argumentNameSize = 10;
 
     public static final String function = "functionStyle";
