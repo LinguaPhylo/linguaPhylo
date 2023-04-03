@@ -1,0 +1,184 @@
+<project>
+    <shortName>lphystudio</shortName>
+    <fullName>LPhyStudio</fullName>
+    <version>1.4.1</version>
+    <readmeFile>${build_project_directory}/../README.md</readmeFile>
+    <licenseFile>${build_project_directory}/../LICENSE</licenseFile>
+    <componentList>
+        <component>
+            <name>default</name>
+            <description>Default Component</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfiles</name>
+                    <platforms>all</platforms>
+                    <shortcutList>
+                        <shortcut>
+                            <comment>Uninstall</comment>
+                            <exec>${installdir}/${uninstallerName}</exec>
+                            <icon></icon>
+                            <name>Uninstall ${product_fullname}</name>
+                            <path>${installdir}</path>
+                            <platforms>all</platforms>
+                            <runAsAdmin>0</runAsAdmin>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                            <windowsExecArgs></windowsExecArgs>
+                            <windowsIcon></windowsIcon>
+                            <windowsPath>${installdir}</windowsPath>
+                        </shortcut>
+                    </shortcutList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux64</name>
+                    <platforms>linux-x64</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows64</name>
+                    <platforms>windows-x64</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/examples</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/tutorials</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/LICENSE</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/README.md</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>Uninstall ${product_fullname}</comment>
+                    <name>Uninstall ${product_fullname}</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}/</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+    <preInstallationActionList>
+        <autodetectJava>
+            <explanation>Detecting Java version</explanation>
+            <promptUser>0</promptUser>
+            <selectionOrder>newest</selectionOrder>
+            <validVersionList>
+                <validVersion>
+                    <bitness></bitness>
+                    <maxVersion></maxVersion>
+                    <minVersion>17</minVersion>
+                    <requireJDK>0</requireJDK>
+                    <vendor></vendor>
+                </validVersion>
+            </validVersionList>
+        </autodetectJava>
+    </preInstallationActionList>
+    <postInstallationActionList>
+        <addEnvironmentVariable>
+            <explanation>Adding environmental path</explanation>
+            <name>LPHY_PATH</name>
+            <scope>system</scope>
+            <value>${installdir}</value>
+        </addEnvironmentVariable>
+        <createJavaLaunchers>
+            <destination>${installdir}</destination>
+            <explanation>Creating launcher</explanation>
+            <javaLauncherList>
+                <!-- A launcher for LPhyStudio-->
+
+                <javaLauncher>
+                    <allowCommandLineArguments>0</allowCommandLineArguments>
+                    <arguments></arguments>
+                    <binaryName>LPhyStudioLauncher</binaryName>
+                    <classpath></classpath>
+                    <jarFile></jarFile>
+                    <mainClass></mainClass>
+                    <osxApplicationBundleIcon>${installdir}/src/lphy.icns</osxApplicationBundleIcon>
+                    <preferredJavaBinary></preferredJavaBinary>
+                    <runInBackground>0</runInBackground>
+                    <runInConsole>1</runInConsole>
+                    <useLauncherDirectoryAsWorkingDirectory>1</useLauncherDirectoryAsWorkingDirectory>
+                    <usePropertiesFile>0</usePropertiesFile>
+                    <vmParameters>-Xms256m -Xmx4g -p lib -m lphystudio</vmParameters>
+                    <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
+                    <workingDirectory>${installdir}</workingDirectory>
+                    <validVersionList>
+                        <validVersion>
+                            <bitness></bitness>
+                            <maxVersion></maxVersion>
+                            <minVersion>17</minVersion>
+                            <requireJDK>0</requireJDK>
+                            <vendor></vendor>
+                        </validVersion>
+                    </validVersionList>
+                </javaLauncher>
+            </javaLauncherList>
+        </createJavaLaunchers>
+    </postInstallationActionList>
+    <createOsxBundleDmg>1</createOsxBundleDmg>
+    <enableRollback>0</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <osxDmgTitle>LPhyStudio DMG</osxDmgTitle>
+    <vendor>LPhy Development Team</vendor>
+    <parameterList>
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value></value>
+            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>30</width>
+        </directoryParameter>
+    </parameterList>
+</project>
+
