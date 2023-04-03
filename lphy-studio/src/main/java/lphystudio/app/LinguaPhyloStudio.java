@@ -637,8 +637,9 @@ public class LinguaPhyloStudio {
                 long seed = Long.parseLong(args[i]);
                 RandomUtils.setSeed(seed);
             } else if (!args[i].trim().isEmpty()) {
+                // Installer adds unnecessary spaces
                 lphyFileName = args[i];
-            } // the rest is invaild
+            } // the rest is invalid
         }
 
         if (lphyFileName != null) {
