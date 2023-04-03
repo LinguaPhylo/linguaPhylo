@@ -22,6 +22,25 @@ citecolor=blue }
 
 \renewcommand{\baselinestretch}{1.3}
 
+
+% colors
+\definecolor{constant}{HTML}{D55E00} % vermillion 
+\definecolor{bluishgreen}{HTML}{009E73} % bluishgreen
+\definecolor{blue}{HTML}{0072B2} % blue
+\definecolor{generator}{HTML}{CC79A7} % reddishpurple
+\definecolor{orange}{HTML}{E69F00} % orange
+\definecolor{skyblue}{HTML}{56B4E9} % skyblue
+
+% link colors
+\hypersetup{
+    colorlinks=true, 
+    linkcolor=blue, 
+    filecolor=blue, 
+    urlcolor=blue,
+    citecolor=blue
+}
+
+
 \begin{document}
 
 
@@ -66,23 +85,23 @@ Dong Xie\textsuperscript{1,2,3}
     % \stepcounter{example}
     \begin{alltt}
     data \{
-      options = \{\textcolor{gray}{ageDirection=}\textcolor{magenta}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{magenta}{"s(\textbackslash{}d+)"}\};
-      nexusFilePath = \textcolor{magenta}{"tutorials/data/RSV2.nex"};
-      D = \textcolor{magenta!80!black}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
-      codon = D.\textcolor{magenta!80!black}{charset}([\textcolor{magenta}{"3-629\textbackslash{}3"}, \textcolor{magenta}{"1-629\textbackslash{}3"}, \textcolor{magenta}{"2-629\textbackslash{}3"}]);
+      options = \{\textcolor{gray}{ageDirection=}\textcolor{constant}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{constant}{"s(\textbackslash{}d+)"}\};
+      nexusFilePath = \textcolor{constant}{"tutorials/data/RSV2.nex"};
+      D = \textcolor{generator}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
+      codon = D.\textcolor{generator}{charset}([\textcolor{constant}{"3-629\textbackslash{}3"}, \textcolor{constant}{"1-629\textbackslash{}3"}, \textcolor{constant}{"2-629\textbackslash{}3"}]);
       n = 3;
       L = [209, 210, 210];
-      taxa = D.\textcolor{magenta!80!black}{taxa}();
+      taxa = D.\textcolor{generator}{taxa}();
     \}
     model \{
-      \textcolor{green}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}, \textcolor{magenta}{2.0}]);
-      \textcolor{green}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{magenta}{0.5}, \textcolor{gray}{meanlog=}\textcolor{magenta}{1.0}, \textcolor{gray}{replicates=}n);
-      \textcolor{green}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{magenta!80!black}{rep}(\textcolor{gray}{element=}\textcolor{magenta}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-      \textcolor{green}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{1.25});
-      \textcolor{green}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{magenta}{3.0}, \textcolor{gray}{sdlog=}\textcolor{magenta}{2.0});
-      \textcolor{green}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{green}{\(\Theta\)});
-      Q = \textcolor{magenta!80!black}{hky}(\textcolor{gray}{kappa=}\textcolor{green}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{green}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{green}{r});
-      \textcolor{green}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{green}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{green}{\(\psi\)});
+      \textcolor{bluishgreen}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}]);
+      \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{constant}{0.5}, \textcolor{gray}{meanlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}n);
+      \textcolor{bluishgreen}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{generator}{rep}(\textcolor{gray}{element=}\textcolor{constant}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+      \textcolor{bluishgreen}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.25});
+      \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{2.0});
+      \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)});
+      Q = \textcolor{generator}{hky}(\textcolor{gray}{kappa=}\textcolor{bluishgreen}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{bluishgreen}{r});
+      \textcolor{bluishgreen}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{bluishgreen}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
     \}
     \end{alltt}
     % \captionof{subexample}{LPhy script specifying a phylodynamic model
