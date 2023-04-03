@@ -163,7 +163,9 @@
     <createOsxBundleDmg>1</createOsxBundleDmg>
     <enableRollback>0</enableRollback>
     <enableTimestamp>1</enableTimestamp>
+    <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
     <osxDmgTitle>LPhyStudio DMG</osxDmgTitle>
+    <osxSigningIdentity>Developer ID Application: Walter Xie</osxSigningIdentity>
     <vendor>LPhy Development Team</vendor>
     <parameterList>
         <directoryParameter>
