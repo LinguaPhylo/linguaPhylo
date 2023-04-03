@@ -24,6 +24,10 @@ dependencies {
     implementation("info.picocli:picocli:4.7.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+
+    // for mac release
+//    compileOnly("com.ultramixer.jarbundler:jarbundler-core:3.3.0")
+
 }
 
 val maincls : String = "lphystudio.app.LinguaPhyloStudio"
@@ -113,6 +117,10 @@ distributions {
         contents {
             from("$rootDir/bin") {
                 into("bin")
+                eachFile {
+                    // fileMode 755 not working
+                    file.setExecutable(true, true)
+                }
             }
             from("$rootDir/examples") {
                 include("**/*.lphy", "**/*.nex")
@@ -134,6 +142,12 @@ distributions {
             into("src") {
                 from(tasks.sourcesJar)
                 from(project(":lphy").tasks.sourcesJar)
+                // icon
+                from("src/main/resources") {
+                    include("lphy48x48.png")
+                    include("lphy.icns")
+                    include("lphy.ico")
+                }
             }
             //TODO ext manager
         }
