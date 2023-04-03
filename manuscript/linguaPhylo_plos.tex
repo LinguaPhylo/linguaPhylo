@@ -337,8 +337,7 @@ Currently, little research has been done on the readability, reproducibility and
 Our paper presents a tool that aims to: (i) facilitate concise communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic models and their variations on new datasets. 
 
 % revision changes
-The idea of explicitly modelling a phylogenetic analysis as a graph, and the use of a graph to generate a textual description of the analysis with citations was introduced in the 2018 release of SplitsTree5 for phylogenetic networks \cite{huson2006application}. 
-In this paper, we address this in the context of Bayesian phylogenetic model specification. 
+Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by Hohna et al. \cite{revbayes}, and can be described in the Rev language of RevBayes \cite{revbayes}. 
 Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2} and the Rev programming language for RevBayes \cite{revbayes}. 
 The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
 However, BEAST-style XMLs are hard to read due to their verbose syntax and the usual complexity of the models being specified. 
@@ -346,9 +345,9 @@ Unsurprisingly, translating BEAST or BEAST 2 analyses from XMLs into text descri
 The Rev language \cite{revbayes} is an alternative to XMLs, and it incorporates conventional notation from more general probabilistic programming languages. 
 This feature makes Rev model specification more recognisable to statistically literate users and sometimes more flexible, but users must still contend with verbose and prosaic implementation 
 details extraneous to the model
-(such as MCMC sampling settings, logging details and proposal distributions), as well as with the error-prone task of describing the REV model accurately in natural language when describing it in the methods section of a manuscript.
+(such as MCMC sampling settings, logging details and proposal distributions), as well as with the error-prone task of describing the REV model accurately in natural language when describing it in the methods section of a manuscript. 
  
-Here, we introduce LinguaPhylo (LPhy, pronounced `el-fee'), an open-source model specification 
+Here, we introduce LinguaPhylo (LPhy, which we pronounce `el-fee'), an open-source model specification 
 language aimed at improving readability, reproducibility, and re-usability of phylogenetic models. 
 The LPhy language has a simple syntax for succinct specification of complex models, and is implemented in a framework that generates precise text descriptions and graphical diagrams of phylogenetic models from user input.
 
@@ -363,33 +362,44 @@ The reference implementation is built on top of the Java programming language an
 % These include tree models for phylogenies and genealogies (e.g., birth-death, coalescent), substitution models for genomic sequences (e.g., GTR \cite{gtr}), and parametric distributions for discrete and continuous parameters (e.g., Dirichlet, Normal). 
 
 % revision changes
-The LPhy language uses Extended Backus–Naur form (EBNF) grammar with an ANTLR-based parser which parses the model specification language into Java Objects. 
-The main components are variables with types, arrays of variables, and generators. 
+The LPhy language is described by an Extended Backus–Naur form grammar (EBNF) \cite{ebnf}. 
+We used ANTLR \cite{parr1995antlr,parr2013definitive} to generate a LPhy parser in Java. 
+This Java-based LPhy parser was used to write LPhyStudio and LPhyBEAST. 
+The ANTLR parser generator can also be targeted to other general programming languages like Python, C++ and Javascript. 
+This gives an relatively easy path to implementation of LPhy support in other phylogenetic software packages.
+%The LPhy language uses Extended Backus–Naur form (EBNF) grammar with an ANTLR-based parser which parses the model specification language into Java Objects. 
+
+The main components of the LPhy language grammar are variables, arrays of variables, and generators. 
 %(vectorization similar to R), generative distributions, and deterministic functions that can return variables or arrays. 
 % revision changes (distributions typo)
-
-There are three classes of generators: (i) generative distributions which produce values for random variables, (ii) deterministic functions that produce the deterministic values given the same input parameters, and (iii) method calls.
+There are three classes of generators: (i) generative distributions which produce values for random variables, (ii) deterministic functions that produce the deterministic values given the same input values, and (iii) method calls.
 For deterministic functions and method calls, these generators produce deterministic nodes in the PGM.
 This is illustrated in Figure \ref{fig:jccoalPGM}, which shows a graphical representation of the model specified in Listing \ref{lphy:jccoal}.
 Deterministic nodes are shown as diamonds (e.g., the `Q' matrix of the Jukes-Cantor model).
 Stochastic nodes are represented by circles (e.g., $\Theta$, the population size governing the coalescent times generated by the Coalescent process), and constant nodes are represented by squares (e.g., the mean of the log-normal generative distribution underlying $\Theta$). 
 
-% revision changes
-Variables can be of a primitive type or a custom type. 
-Standard primitive variable types include doubles, integers, booleans, and strings. 
-Custom types such as alignments, trees, discrete traits are created from Java Objects by invoking the generator's constructor. 
-Control flow structures are not allowed to encourage script readability. 
-Instead of loop structures, we provide variable vectorization similar to R \cite{ihaka1996r}, where we can generate an array of elements using the `replicates' argument. 
-
 An LPhy script is a text file with the `.lphy' file extension and is case-sensitive. 
 As a scripting language, type and syntax checking is performed during execution. 
-Overloading of functions is supported (Java-style overloading). 
-Optional arguments in functions and generative distributions are allowed, with or without default values. 
+Control flow structures are not allowed to encourage script readability. 
+Instead of loop structures, we provide variable vectorization similar to R \cite{ihaka1996r}, where we can generate an array of elements using the `replicates' keyword. 
+Optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
 Code blocks surrounded by curly braces are used to differentiate between parts of the script describing the data (the data block), and parts describing the model (the model block). 
 The code block structure is inspired by the programming language STAN \cite{carpenter2017stan}. 
 The syntax for the specification of random variables is similar to the JAGS \cite{plummer2004jags} and BUGS \cite{lunn2009bugs, gilks1994language} languages. 
-Scripts can be loaded into LPhyStudio via the Menu or toolbar. 
-Additionally, we also provide a console for executing LPhy commands line by line within LPhyStudio. 
+Scripts can be loaded into LPhyStudio via the Menu or the toolbar. 
+Additionally, we provide a console for executing LPhy commands line by line within LPhyStudio. 
+
+% revision changes
+The LPhy language grammar does not specify any explicit types, nor does it specify any protected pre-defined generative distributions or functions, except for a very small number of mathematical functions that allow simple expressions. 
+Alongside the LPhy language grammar is the LPhy reference implementation. 
+This is an implementation in Java which provides a number of standard statistical and phylogenetic distributions as well as supporting functions along with specified Java types. 
+Implementers of the LPhy language in other systems should include support for the reference distributions, but may use equivalent types in the language that is employed.
+In the reference Java implementation, variables can have a primitive type or a custom type.  
+Standard primitive types include doubles, integers, booleans, and strings. 
+Custom types include alignments, trees, and discrete traits, which are created from Java Objects by invoking the generator's constructor. 
+These variables can be vectorized to an array of elements using the `replicates' argument. 
+Overloading of functions is supported using Java-style overloading. 
+
 
 \subsubsection{Syntax}
 The syntax for each line has a variable declaration on the left-hand side, an assignment operator followed by the assignee on the right-hand side. 
@@ -403,14 +413,14 @@ For example:
     \end{alltt}
   \end{listing}
 }
-In the above example, the variable \textit{\textcolor{bluishgreen}{b}} is assigned a return value from the Normal generative distribution \textit{\textcolor{blue}{Normal}()} parameterized by arguments two arguments the mean of the Normal distribution \textit{\textcolor{gray}{mean}} with a value of 0.0, and the standard deviation of the distribution \textit{\textcolor{gray}{sd}} with a value of 1.0.
+In the above example, the variable \textit{\textcolor{bluishgreen}{b}} is assigned a return value from the Normal generative distribution \textit{\textcolor{blue}{Normal}()} with two arguments, the mean of the Normal distribution \textit{\textcolor{gray}{mean}} which has a value of 0.0, and the standard deviation of the distribution \textit{\textcolor{gray}{sd}} which has a value of 1.0.
 
 The left-hand side declares the name of a variable or an array of variables (case sensitive).
 The right-hand side returns the values of the variable or array. This can be a constant value, array of constant values, deterministic function, stochastic generative distribution, or several nested functions.
-Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class. 
-A list of functions and generative distributions is shown in the \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference manual}.
-Parameters inside functions or generative distributions follow the convention: 
-(\textit{parameter name}) = (\textit{parameter value}).
+Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class in the reference implementation. 
+A list of functions and generative distributions is shown in the \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference implementation manual}.
+Arguments inside functions or generative distributions follow the convention: 
+(\textit{argument name}) = (\textit{value}).
 
 \subsubsection{Assignment operators}
 An equal sign = is used for assigning deterministic or constant values to variables, for example: 
@@ -432,7 +442,7 @@ An equal sign = is used for assigning deterministic or constant values to variab
   \end{listing}
 }
 \noindent The type of a variable is inferred from the return type of its assigned function and does not need to be declared. 
-For arguments of functions or generative distributions, the types are defined in the LPhy language reference manual. 
+For arguments of functions or generative distributions, the types are defined in the  \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference implementation manual}. 
 
 \subsubsection{Arrays}
 Arrays can be defined using square brackets with elements delimitted by comma separators. 
@@ -491,7 +501,7 @@ Constant nodes with fixed values are shown in vermillion.
 
 
 \begin{figure}
-   \includegraphics[width=0.8\textwidth]{figs_plos/jc_coal.png}
+   \includegraphics[width=0.8\textwidth]{figs_plos/jc.png}
   \caption{The graphical representation of the probabilistic model defined in Listing \ref{lphy:jccoal}.} 
   \label{fig:jccoalPGM}
 \end{figure}
@@ -545,10 +555,6 @@ Finally, vectorization can be performed by passing a vector of elements instead 
 Here, since both $\kappa$ and $\pi$ are random vectors with the same major dimension length (3), we can assign them as values of the \texttt{hky} deterministic function, which in turn outputs a vector of three instantaneous rate matrices, stored in $Q$.
 
 % revision changes
-
-% \subsubsection*{Parsing}
-% How we parse the language using ANTLR. Description of grammar rules.
-
 \subsubsection{Extension mechanism}
 The extensibility of LPhy is designed to encourage software growth and adoptation by researchers in our field. 
 LPhy and LPhy extensions are built using Java 17 with long-term support (LTS) and Gradle. 
@@ -738,7 +744,8 @@ Data clamping should be familiar to users of the Rev language \cite{revbayes}, a
 
 In the example above, we used a Respiratory syncytial virus subgroup A (RSVA) dataset \cite{zlateva2004molecular, zlateva2005genetic} containing 129 molecular sequences coding for the G protein collected between years 1956 and 2002. 
 We use three partitions corresponding to the codon position, an HKY substitution model \cite{hasegawa1985dating}, coalescent tree prior \cite{kingman82} and a strict molecular clock with a Lognormal prior on the mean clock rate. 
-Within the \texttt{data} block we clamp the value of `codon', a stochastic node that appears below inside the \texttt{model} block. This is achieved by specifying a data node of the same name (codon) in the data block. 
+Within the \texttt{data} block we clamp the value of `codon', a stochastic node that appears below inside the \texttt{model} block. 
+This is achieved by specifying a data node of the same name (codon) in the data block. 
 In this example the data is vectorized into three codon positions to allow different site models for the different codon positions.
 
 % In LPhy language, the alignment is generated by the sampling distribution that the phylogenetic likelihood is derived from, such as a PhyloCTMC generative distribution. The data type of the alignment can be various, for instance, the continuous trait can be simulated from a PhyloBrownian generative distribution. 
@@ -748,18 +755,10 @@ In this example the data is vectorized into three codon positions to allow diffe
 % When the data block has the same random variable containing an existing alignment (e.g. imported from a file), the simulated alignment will be replaced by this imported alignment. 
 % This is a useful feature for users to easily switch the task of a LPhy script between simulating alignments and a real data analysis. 
 
-% \textcolor{blue}{TODO: review, and citation multivariate Brownian}
-
-% \subsubsection{\st{Phylogenetic likelihood distributions}}
-% \textcolor{blue}{FKM: Not sure if we need this section at all, especially here in the main body. I think we can mention other likelihoods in the Discussion as future directions}
-% \st{The phylogenetic continuous-time Markov chain (PhyloCTMC) \cite{felsenstein1981} in the LPhy language is a core generative distribution derived from the phylogenetic likelihood. It takes the other basic models as inputs, such as phylogenetic time tree, instantaneous rate matrix, molecular clock rate, and so on, and on this account simulates a sequence alignment for every leaf node, and also every direct ancestor node when they exist. One example is available in Section \ref{sec:clockmodels}.}
-
-% \st{There are also alternative generative distributions developed in LPhy, which are derived from a different kind of phylogenetic likelihoods, such as the phylogenetic Brownian motion process\cite{felsenstein1973maximum}, its multivariate version, and Ornstein-Ulhenbeck process\cite{felsenstein1973maximum}. Using them, a continuous trait can be simulated from the specified models. For example, running the following LPhy script, the continuous trait $y$ containing 16 continuous values are simulated from a Yule tree $\psi$ with the root value $y0$ sampled from a normal distribution at the diffusion rate $\sigma$ sampled from a log-normal distribution.}
-
 \subsection{LPhyStudio} 
 % Moved this section up
 \begin{figure}[!h]
-  \includegraphics[width=\textwidth]{figs_plos/lphystudio_screenshot.png}
+  \includegraphics[width=\textwidth]{figs_plos/RSV2.png}
   \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
   on the left panel (constants hidden), and the auto-generated text description of the data and phylogenetic model on the right panel.} 
   \label{fig:lphystudio}
@@ -767,7 +766,8 @@ In this example the data is vectorized into three codon positions to allow diffe
 Along with the language definition, we introduce LPhy Studio, a GUI intended for (i) model specification, (ii) PGM graphical and textual display, and (iii) simulated data visualization.
 Figure \ref{fig:lphystudio} shows a screenshot of LPhyStudio after a simple phylogenetic model was specified. 
 % revision changes
-LPhyStudio's features include a scripting console, inbuilt syntax highlighting, a toolbar with commonly used items, support for loading in LPhy script files, generation of PGMs, generation of natural language text descriptions for models with citations, and the option of exporting PGM and text descriptions as LaTeX documents. 
+LPhyStudio's features include a scripting console, syntax highlighting, generation of PGMs and natural text narratives of models with citations, and optionally exporting these PGM and narratives as LaTeX documents. 
+LPhy scripts can be imported using the toolbar or File Menu, or created using the scripting console. 
 % The GUI can either import the existing LPhy script or take the script typed from the console on the bottom of LPhy Studio panel. The auto-complete feature is supported when the script is typed in the console. Either way the Studio will guarantee to produce the same graphical probability model representing the specified phylogenetic model. This allows the user focusing on a simple script while sharing the same visualizations across different collaborators.
 
 \subsection{LPhy and BEAST2}
@@ -813,7 +813,7 @@ Additionally, we showcase how LPhy can be used to validate the correctness of th
 % \subsubsection*{LPhyStudio graphical user interface}
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{figs_plos/lphystudio-gt16-mac.jpg}
+    \includegraphics[width=\textwidth]{figs_plos/phylonco.png }
     \caption{A screenshot of LPhyStudio showing the GT16 substitution and error model \cite{kozlov2022cellphy, chen2022accounting}. 
     The left panel shows the graphical model representation, the right panel shows the simulated tree and diploid nucleotide genotypes, and the bottom panel shows the LPhy script. }
 \end{figure}
@@ -821,7 +821,7 @@ Additionally, we showcase how LPhy can be used to validate the correctness of th
 \subsubsection*{LPhy script}
 We start from an LPhy script below which specifies a GT16 substitution and error model \cite{kozlov2022cellphy} for single-cell diploid nucleotides with sequencing and allelic dropout error.
 % revision changes
-The Dirichlet generator below has a parameter `conc' which is the concentration parameter. 
+The Dirichlet generator below has an argument `conc' which is the concentration parameter. 
 
 \begin{listing}
 \small
