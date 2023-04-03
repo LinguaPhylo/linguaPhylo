@@ -636,8 +636,9 @@ public class LinguaPhyloStudio {
                 // -seed 777
                 long seed = Long.parseLong(args[i]);
                 RandomUtils.setSeed(seed);
-            } else // the rest is input file
+            } else if (!args[i].trim().isEmpty()) {
                 lphyFileName = args[i];
+            } // the rest is invaild
         }
 
         if (lphyFileName != null) {
