@@ -183,6 +183,8 @@ public class GraphicalModelPanel extends JPanel {
 
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
         horizSplitPane.setResizeWeight(0.5);
+//        horizSplitPane.setOneTouchExpandable(true);
+        horizSplitPane.setContinuousLayout(true);
 
         JTabbedPane interpreterPane = new JTabbedPane();
         interpreterPane.add("data", dataInterpreter);
@@ -190,6 +192,8 @@ public class GraphicalModelPanel extends JPanel {
 
         verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreterPane);
         verticalSplitPane.setResizeWeight(0.75);
+//        verticalSplitPane.setOneTouchExpandable(true);
+        verticalSplitPane.setContinuousLayout(true);
         add(verticalSplitPane, BorderLayout.CENTER);
 
         if (parser.getModelSinks().size() > 0) {
