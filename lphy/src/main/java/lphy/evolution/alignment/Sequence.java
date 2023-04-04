@@ -24,7 +24,7 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
 
     Value<Integer> nchar;
 
-    public Sequence(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs,
+    public Sequence(@ParameterInfo(name = pParamName, narrativeName = "probability distribution", description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs,
                     @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment") Value<Integer> nchar) {
         super();
         this.probs = probs; // check probs is same dimension as nucleotide datatype

@@ -33,15 +33,15 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
 
     public PhyloCTMC(@ParameterInfo(name = treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
                      @ParameterInfo(name = muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
-                     @ParameterInfo(name = rootFreqParamName, description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
+                     @ParameterInfo(name = rootFreqParamName, verb = "are", narrativeName = "root frequencies", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = QParamName, narrativeName= "instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
                      @ParameterInfo(name = branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = LParamName, narrativeName= "alignment length",
                              description = "length of the alignment", optional = true) Value<Integer> L,
                      @ParameterInfo(name = dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
-                             narrativeName = "the data type used for simulations", optional = true) Value<SequenceType> dataType,
-                     @ParameterInfo(name = rootSeqParamName, description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<SimpleAlignment> rootSeq) {
+                             narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
+                     @ParameterInfo(name = rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<SimpleAlignment> rootSeq) {
 
         super(tree, mu, rootFreq, branchRates, L, dataType);
         this.Q = Q;
