@@ -12,7 +12,7 @@ This tool contains two related projects: LinguaPhylo (LPhy for short) and [LPhyB
 
 In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is a full example:
 
-<a href="./jc-yule.png"><img src="jc-yule.png" width="700" ></a>
+<a href="./jc-yule.png"><img src="jc-yule.png" width="450" ></a>
 
 Each of the lines in this  model block expresses how a random variable (to the left of the tilde) is generated from a generative distribution.
 
@@ -54,3 +54,11 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 - [LPhy developer note](DEV_NOTE.md)
 
 - [LPhyBEAST developer note](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
+
+## License 
+
+This software is licensed under the [GNU Lesser General Public License v3.0](https://github.com/LinguaPhylo/linguaPhylo/blob/master/LICENSE)
+
+The toolbar icon art is licensed under the [Oracle Software Icon License](https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy-studio/src/main/resources/LICENSE.txt)
+
+Also see https://www.oracle.com/a/tech/docs/software-icon-license-943-2012.html
