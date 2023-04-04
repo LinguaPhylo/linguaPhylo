@@ -167,7 +167,7 @@
                     <osxApplicationBundleIcon>${installdir}/src/lphy.icns</osxApplicationBundleIcon>
                     <preferredJavaBinary></preferredJavaBinary>
                     <runInBackground>0</runInBackground>
-                    <runInConsole>1</runInConsole>
+                    <runInConsole>0</runInConsole>
                     <useLauncherDirectoryAsWorkingDirectory>1</useLauncherDirectoryAsWorkingDirectory>
                     <usePropertiesFile>0</usePropertiesFile>
                     <vmParameters>-Xms256m -Xmx4g -p lib -m lphystudio</vmParameters>
