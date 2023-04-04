@@ -6,17 +6,17 @@ A new paradigm for scientific computing and data science has begun to emerged in
 
 Although standard tools for statistical phylogenetics provide a degree of reproducibility and reusability through popular open-source software and computer-readable data file formats, there is still much to do. The ability to construct and accurately communicate probabilistic models in phylogenetics is frustratingly underdeveloped. There is low interoperability between different inference packages (e.g. BEAST1, BEAST2, MrBayes, RevBayes), and the file formats that these software use have low readability for researchers.
 
-This tool contains two related projects: LinguaPhylo (LPhy for short) and [LPhyBEAST](https://github.com/LinguaPhylo/LPhyBeast).
+This tool contains two related projects: [LinguaPhylo](https://github.com/LinguaPhylo/linguaPhylo) (LPhy for short) and [LPhyBEAST](https://github.com/LinguaPhylo/LPhyBeast).
 
 ## LinguaPhylo (LPhy for short - pronounced el-fee)
 
 In this project we aim to develop a model specification language to concisely and precisely define probabilistic phylogenetic models. The aim is to work towards a _lingua franca_ for probabilistic models of phylogenetic evolution. This language should be readable by both humans and computers. Here is a full example:
 
-<a href="./jc-yule.png"><img src="jc-yule.png" width="700" ></a>
+<a href="./jc-yule.png"><img src="jc-yule.png" width="450" ></a>
 
-Each of the lines in this  model block expresses how a random variable (to the left of the tilde) is generated from a generative distribution.
+Each line in this  model block expresses how a random variable (left of the tilde) is generated from a generative distribution.
 
-The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. As you can see, each of the random variables depends on the last, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
+The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. Each random variable depends on the previous, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
 
 ### Tree generative distributions
 
@@ -54,3 +54,11 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 - [LPhy developer note](DEV_NOTE.md)
 
 - [LPhyBEAST developer note](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
+
+## License 
+
+This software is licensed under the [GNU Lesser General Public License v3.0](https://github.com/LinguaPhylo/linguaPhylo/blob/master/LICENSE)
+
+The toolbar icon art is licensed under the [Oracle Software Icon License](https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy-studio/src/main/resources/LICENSE.txt)
+
+Also see https://www.oracle.com/a/tech/docs/software-icon-license-943-2012.html
