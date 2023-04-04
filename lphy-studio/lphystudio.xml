@@ -57,6 +57,32 @@
                     <destination>${installdir}</destination>
                     <name>programfileswindows64</name>
                     <platforms>windows-x64</platforms>
+
+                    <!-- Download zip, unzip and move to C:\-->
+
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>/lphy-studio-${product_version}/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/lphy-studio-${product_version}/examples</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/lphy-studio-${product_version}/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/lphy-studio-${product_version}/src</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/lphy-studio-${product_version}/tutorials</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>/lphy-studio-${product_version}/LICENSE</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/lphy-studio-${product_version}/README.md</origin>
+                        </distributionFile>
+                    </distributionFileList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
