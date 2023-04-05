@@ -125,6 +125,14 @@ public class ThemeColours {
         return new Color(origColor.getRed(), origColor.getGreen(), origColor.getBlue(), 128);
     }
 
+    /**
+     * @param color Color
+     * @return the hex string without #.
+     */
+    public static String getHexString(Color color) {
+        return "#" + Integer.toHexString(color.getRGB()).substring(2);
+    }
+
     public static Color getFillColor(Value value, LPhyParser parser) {
 //        Color fillColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
         Color fillColor = getTransparentColor(getRandomVarColor());

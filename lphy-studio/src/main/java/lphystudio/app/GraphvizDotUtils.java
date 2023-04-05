@@ -2,8 +2,13 @@ package lphystudio.app;
 
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.*;
+import lphystudio.core.theme.ThemeColours;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
+
+import static lphystudio.core.theme.ThemeColours.*;
 
 /**
  * @author Alexei Drummond
@@ -71,7 +76,8 @@ public class GraphvizDotUtils {
             }
 
             String name = getUniqueId(node, parser);
-            String nodeString = graphvizNodeString(node, name) + ";\n";
+            boolean isClamped = parser.isClamped(node.getUniqueId());
+            String nodeString = graphvizNodeString(node, name, isData, isClamped) + ";\n";
             if (isData) {
                 dataNodes.add(nodeString);
             } else {
@@ -137,20 +143,40 @@ public class GraphvizDotUtils {
         return label;
     }
 
-    private static String graphvizNodeString(GraphicalModelNode node, String name) {
+    private static String graphvizNodeString(GraphicalModelNode node, String name, boolean isData, boolean isClamped) {
         String labelString = "label=\"" + graphvizLabel(node) + "\", ";
 
-        if (node instanceof GenerativeDistribution) {
-            return name + "[" + labelString + "shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
+        if (node instanceof GenerativeDistribution) { // use gray
+            Color color = ThemeColours.getArgumentNameColor();
+            String hex = getHexString(color);
+            return name + "[" + labelString + "shape=box, fixedsize=true, width=0.2, height=0.2, label=\"\", " +
+                    "fillcolor=\"" + hex + "\", style=filled]";
             //, label=\"" + ((Generator)node).getName() + "\"]";
-        } if (node instanceof DeterministicFunction) {
-            return name + "[" + labelString + "shape=diamond, fixedsize=true, width=0.2, height=0.2, label=\"\", fillcolor=gray, style=filled]";
+        } if (node instanceof DeterministicFunction) { // use gray
+            Color color = ThemeColours.getArgumentNameColor();
+            String hex = getHexString(color);
+            return name + "[" + labelString + "shape=diamond, fixedsize=true, width=0.2, height=0.2, label=\"\", " +
+                    "fillcolor=\"" + hex + "\", style=filled]";
             //, label=\"" + ((Generator)node).getName() + "\"]";
         }  else if (node instanceof RandomVariable) {
-            return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#66ff66\"\t, style=filled]";
+            Color color;
+            if (isClamped)
+                color = getClampedVarColor();
+            else
+                color = getRandomVarColor();
+            String hex = getHexString(color);
+            return name + "[" + labelString +"shape=circle, fixedsize=true, width=0.8, height=0.8, " +
+                    "fillcolor=\"" + hex + "\"\t, style=filled]";
         } else if (node instanceof Value) {
             if (((Value)node).getGenerator() != null) {
-                return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, fillcolor=\"#ff6666\", style=filled]";
+                Color color;
+                if (isData)
+                    color = getDataButtonColor();
+                else
+                    color = getFunctionColor();
+                String hex = getHexString(color);
+                return name + "[" + labelString +"shape=diamond, fixedsize=true, width=0.8, height=0.8, " +
+                        "fillcolor=\"" + hex + "\", style=filled]";
             } else return name + "[" + labelString +"shape=rect]";
         }
         return name;
