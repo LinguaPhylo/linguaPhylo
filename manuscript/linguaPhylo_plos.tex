@@ -345,7 +345,7 @@ Currently, little research has been done on the readability, reproducibility and
 Our paper presents a tool that aims to: (i) facilitate concise communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic models and their variations on new datasets. 
 
 % revision changes
-Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by Hohna et al. \cite{revbayes}, and can be described in the Rev language of RevBayes \cite{revbayes}. 
+Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by Hohna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
 Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2} and the Rev programming language for RevBayes \cite{revbayes}. 
 The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
 However, BEAST-style XMLs are hard to read due to their verbose syntax and the usual complexity of the models being specified. 
@@ -404,13 +404,13 @@ This is an implementation in Java which provides a number of standard statistica
 Implementers of the LPhy language in other systems should include support for the reference distributions, but may use equivalent types in the language that is employed.
 In the reference Java implementation, variables can have a primitive type or a custom type.  
 Standard primitive types include doubles, integers, booleans, and strings. 
-Custom types include alignments, trees, and discrete traits, which are created from Java Objects by invoking the generator's constructor. 
+Custom types include alignments, trees, and discrete traits, which are internally created as Java Objects by invoking the generator's constructor. 
 These variables can be vectorized to an array of elements using the `replicates' argument. 
 Overloading of functions is supported using Java-style overloading. 
 
 
 \subsubsection{Syntax}
-The syntax for each line has a variable declaration on the left-hand side, an assignment operator followed by the assignee on the right-hand side. 
+The syntax for each line has a variable declaration on the left-hand side, a specification operator followed by the generator on the right-hand side. 
 The end of a line is denoted by a semicolon character.
 For example: 
 {
@@ -423,17 +423,17 @@ For example:
   \end{listing}
 }
 
-In the above example, the variable \textit{\textcolor{bluishgreen}{b}} is assigned a return value from the normal generative distribution \textit{\textcolor{blue}{Normal}()} with two arguments, the mean of the normal distribution \textit{\textcolor{gray}{mean}} which has a value of 0.0, and the standard deviation of the distribution \textit{\textcolor{gray}{sd}} which has a value of 1.0.
+In the above example, the variable \textit{\textcolor{bluishgreen}{b}} is specified by the normal generative distribution \textit{\textcolor{blue}{Normal}()} with two arguments, the mean of the normal distribution \textit{\textcolor{gray}{mean}} which has a value of 0.0, and the standard deviation of the distribution \textit{\textcolor{gray}{sd}} which has a value of 1.0.
 
 The left-hand side declares the name of a variable or an array of variables (case sensitive).
-The right-hand side returns the values of the variable or array. This can be a constant value, array of constant values, deterministic function, stochastic generative distribution, or several nested functions.
+The right-hand side specifies the values of the variable or array. This can be a constant value, array of constant values, deterministic function, stochastic generative distribution, or several nested functions.
 Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class in the reference implementation. 
 A list of functions and generative distributions is shown in the \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference implementation manual}.
 Arguments inside functions or generative distributions follow the convention: 
 (\textit{argument name}) = (\textit{value}).
 
-\subsubsection{Assignment operators}
-An equal sign = is used for assigning deterministic or constant values to variables, for example: 
+\subsubsection{Specification operators}
+An equal sign = is used for specifying deterministic or constant values to variables, for example: 
 {
   \small
   \begin{listing}
@@ -443,7 +443,7 @@ An equal sign = is used for assigning deterministic or constant values to variab
     \end{alltt}
   \end{listing}
 }
-\noindent A tilde sign $\sim$ is used for assigning stochastic random variables from generators, for example:  
+\noindent A tilde sign $\sim$ is used for specifying stochastic random variables from generators, for example:  
 {
   \small
   \begin{listing}
@@ -453,12 +453,12 @@ An equal sign = is used for assigning deterministic or constant values to variab
     \end{alltt}
   \end{listing}
 }
-\noindent The type of a variable is inferred from the return type of its assigned function and does not need to be declared. 
+\noindent The type of a variable is inferred from the return type of its generator and does not need to be declared. 
 For arguments of functions or generative distributions, the types are defined in the  \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference implementation manual}. 
 
 \subsubsection{Arrays}
-Arrays can be defined using square brackets with elements delimitted by comma separators. 
-For sequences of consecutive integers, we allow a more compact notation using the colon `:’ to define a range.
+Arrays can be defined using square brackets with elements delimited by comma separators. 
+For sequences of consecutive integers, we allow a more compact notation using the colon `:' to define a range.
 For example:  
 {
   \small
