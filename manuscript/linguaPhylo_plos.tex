@@ -557,7 +557,7 @@ Vectorization can also be applied to a generative distribution that produces vec
 Here, $\pi$ contains 3 vectors, where each vector represents nucleotide base frequencies. 
 So the resultant matrix will be 3 x 4 (major dimension of 3 and a minor dimension of 4). 
 
-Finally, vectorization can be performed by passing a vector of elements instead of a single element as an input argument of a generator:
+A second mechanism for vectorization can be used by passing a vector of elements instead of a single element as an input argument of a generator:
 
 {\small
 \begin{alltt}
@@ -570,7 +570,7 @@ These are passed as arguments into the \texttt{hky} deterministic function, whic
 
 % revision changes
 \subsubsection{Extension mechanism}
-LPhy is designed to be modular and extensible to encourage integrative software development and adoptation by method developers in the field. 
+LPhy is designed to be modular and extensible to encourage integrative software development and adoption by method developers in the field. 
 LPhy core and its extensions are built using Java 17 with long-term support (LTS) and Gradle 4. 
 The LPhy extension mechanism is implemented using the Java Platform Module System (JPMS) and the Java Service Provider Interface (SPI).
 This modular extension framework allows developers greater flexibility in code development and software releases. 
@@ -588,7 +588,7 @@ Additionally, software releases can be done independently to core LPhy releases.
 
 % Examples below
 \subsubsection{Parametric distributions}
-LPhy implements a series of parametric distributions commonly used in evolutionary models, including uniform, normal, log-normal, gamma, exponential, and dirichlet distributions. 
+The LPhy reference implementation comes with a series of parametric distributions commonly used in evolutionary models, including uniform, normal, log-normal, gamma, exponential, and dirichlet distributions. 
 Parametric distributions can be specified as generative distributions for model parameters by:
 
 {\small
@@ -732,11 +732,11 @@ Here, 30 rates are drawn independently from a log-normal distribution, and then 
 \subsubsection{Inference and data clamping}
 \label{sec:dataclamping}
 In addition to simulation, LPhy allows users to use a specified model for inference. 
-The current reference implementation supports inference with the BEAST2 engine. 
+We have developed LPhyBEAST which provides supports for inference with the BEAST2 engine. 
 
 To set up an inferential analysis with LPhy `data clamping' is performed similar to the Rev language \cite{revbayes}.
-Data clamping involves assigning an observed value to a random variable in the model, which is represented as a stochastic node in the probabilistic graphical model (PGM). 
-By clamping data to a node, the user is informing the inference engine that the value of that particular random variable is known and will be conditioned on for the purpose of inference.
+Data clamping involves associating an observed value with a random variable in the model, which is represented as a stochastic node in the probabilistic graphical model (PGM). 
+By clamping data to a node, the user is informing the inference engine that the value of that particular variable is known and will be conditioned on for the purpose of inference.
 
 In LPhy, data clamping can be accomplished using the `data block'. 
 This block allows the user to specify the observed values of certain variables in the model, effectively clamping these variables to their observed values during inference. 
@@ -799,7 +799,7 @@ In this example the data is vectorized into three codon positions to allow diffe
 Along with the language definition, we introduce LPhy Studio, a Graphical User Interface, GUI, intended for (i) model specification, (ii) PGM graphical and textual display, and (iii) visualization of simulated data.
 Figure \ref{fig:lphystudio} shows a screenshot of LPhyStudio after a simple phylogenetic model was specified. 
 % revision changes
-LPhyStudio's features include a scripting console, syntax highlighting, generation of PGMs and natural text narratives of models with citations, and optionally exporting these PGM and narratives as LaTeX documents. 
+LPhyStudio's features include a scripting console, syntax highlighting, generation of PGMs and natural language text narratives of models with citations, and optionally exporting these PGM and narratives as LaTeX documents. 
 LPhy scripts can be imported using the toolbar or file menu, or created using the scripting console. 
 
 \subsection{LPhy and BEAST2}
@@ -871,9 +871,9 @@ model \{
 \end{example}
 
 
-\subsubsection*{Natural text description}
+\subsubsection*{Natural language description}
 \noindent LPhyStudio can automatically generate a text description of the model as a narrative. 
-This natural text narrative can provide a precise starting point for the model description section in a research article.
+This natural language narrative can provide a precise starting point for the model description section in a research article.
 The LPhy script in Example \ref{lphy:phylonco} generates the following narrative. 
 
 \begin{quote} 
