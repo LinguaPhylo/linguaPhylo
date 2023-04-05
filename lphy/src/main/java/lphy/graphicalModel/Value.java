@@ -108,7 +108,9 @@ public class Value<T> implements GraphicalModelNode<T> {
         }
     }
 
-    // returns a unique id for this value for internal purposes.
+    /**
+     * @return a unique id for this value for internal purposes.
+     */
     public String getUniqueId() {
         if (!isAnonymous()) return getId();
         return hashCode() + "";
@@ -127,6 +129,9 @@ public class Value<T> implements GraphicalModelNode<T> {
         this.id = id;
     }
 
+    /**
+     * @return the function that produced this value, or null if this value was initialized another way
+     */
     public Generator<T> getGenerator() {
         return function;
     }

@@ -311,7 +311,7 @@ public class LinguaPhyloStudio {
         exportGraphvizMenuItem.setMnemonic(KeyEvent.VK_G);
         fileMenu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
-                lphy.graphicalModel.Utils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
+                GraphvizDotUtils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
 
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
 //        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
