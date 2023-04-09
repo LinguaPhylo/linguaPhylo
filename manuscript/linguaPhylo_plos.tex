@@ -299,23 +299,23 @@ Dong Xie\textsuperscript{1,2,3}
 
 % Please keep the abstract below 300 words
 \section*{Abstract}
-  Phylogenetic models have become increasingly complex and phylogenetic data sets larger and richer.
-  Yet inference tools lack a model specification language that succinctly describes a full phylogenetic analysis independently of implementation details.
-  We present a new lightweight and concise model specification language, called `LPhy', that is both human and machine readable.
-  `LPhy' is accompanied by a graphical user interface for building models and simulating data using this new language, as well as for creating natural language narratives describing such models.
-  These narratives can form the basis of manuscript method sections.
-  We also introduce a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) to be used alongside the BEAST2 software platform.
-  Together, these tools will clarify the description and reporting of probabilistic models in phylogenetic studies, and improve result reproducibility.
+Phylogenetic models have become increasingly complex, and phylogenetic data sets have expanded in both size and richness. 
+However, current inference tools lack a model specification language that can concisely describe a complete phylogenetic analysis while remaining independent of implementation details. 
+We introduce a new lightweight and concise model specification language, LPhy', which is designed to be both human and machine-readable. 
+A graphical user interface accompanies LPhy', allowing users to build models, simulate data, and create natural language narratives describing the models. 
+These narratives can serve as the foundation for manuscript method sections. 
+Additionally, we present a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) compatible with the BEAST2 software platform. 
+Collectively, these tools aim to enhance the clarity of descriptions and reporting of probabilistic models in phylogenetic studies, ultimately promoting reproducibility of results.
 
 
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
 % Author Summary not valid for PLOS ONE submissions.   
 \section*{Author summary}
-  We describe a succinct domain-specific language to accurately specify the details of a phylogenetic model for the purposes of reproducibility or reuse.
-  In addition, we have developed a graphical software package that can be used to construct and simulate data from models described in this new language, as well as create natural language narratives that can form the basis of a description of the model for the method section of a manuscript.
-  Finally, we report on a command-line program that can be used to generate input files for the BEAST2 software package based on a model specified in this new language.
-  These tools together should aid in the goal of reproducibility and reuse of probabilistic phylogenetic models. 
+  In this study, we introduce a concise domain-specific language designed to accurately specify the details of a phylogenetic model, promoting reproducibility and reuse. 
+  We have also developed a graphical software package that enables users to construct and simulate data from models described in this new language, while also generating natural language narratives that can serve as the foundation for the method section of a manuscript. 
+  Furthermore, we present a command-line program that facilitates the creation of input files for the BEAST2 software package based on a model specified in our novel language. 
+  Collectively, these tools contribute to the goals of reproducibility and reuse within the realm of probabilistic phylogenetic models. 
 
 
 \linenumbers
@@ -323,41 +323,38 @@ Dong Xie\textsuperscript{1,2,3}
 % Use "Eq" instead of "Equation" for equation citations.
 \section{Introduction}
 Transparency is a scientific ideal, and replicability and
-reproducibility lie at the heart of the scientific endeavor
+reproducibility lie at the heart of the scientific endeavour
 \cite{nas19,munafo17}. 
 Metaresearch efforts have uncovered the so-called `reproducibility
 crisis' \cite{baker16} in many scientific domains \cite{baker16}. 
 In recent years, the growing number of computational biology software packages available has enabled greater choice in data analyses, 
 but at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community}. 
 This increases the difficulty of accurately reporting and reproducing analyses. 
-These barriers have been recognized by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
+These barriers have been recognised by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
 
 In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
 The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
 RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
 that can simultaneously reconstruct phylogenetic tree topology and divergence times, as well as estimate the related micro-evolutionary and macro-evolutionary parameters. 
 Phylogenetic analyses often combine multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, 
-ancestral bio-geographical ranges \cite{lemey10,landis18}, and epidemic dynamics \cite{faria21,douglas21}. 
+ancestral biogeographical ranges \cite{lemey10,landis18}, and epidemic dynamics \cite{faria21,douglas21}. 
 
-Reproducing, reusing and interpreting a phylogenetic model is not trivial, and requires an understanding of the input data, details of the model (i.e., its parameters and how they are are related and their priors), and inference methodology. 
+Reproducing, reusing and interpreting a phylogenetic model is not trivial, and requires an understanding of the input data, details of the model (i.e., its parameters and how they are related and their priors), and inference methodology. 
 The latter can include complex Markov chain Monte Carlo (MCMC) proposal distributions and sampling algorithms which are not part of the model.
-Currently, little research has been done on the readability, reproducibility and re-usability of phylogenetic analyses employing phylogenetic models. 
-Our paper presents a tool that aims to: (i) facilitate concise communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic models and their variations on new datasets. 
+Currently, little research has been done on the readability, reproducibility and reusability of phylogenetic analyses employing phylogenetic models. 
+Our paper presents a tool that aims to: (i) facilitate concise and exact communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase re-usability of phylogenetic models and their variations on new datasets. 
 
 % revision changes
-Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by Hohna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
-Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2} and the Rev programming language for RevBayes \cite{revbayes}. 
+Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by H\"{o}hna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
+Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}. 
 The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
-However, BEAST-style XMLs are hard to read due to their verbose syntax and the usual complexity of the models being specified. 
-Unsurprisingly, translating BEAST or BEAST 2 analyses from XMLs into text descriptions is difficult and error prone. Our experience suggests that most users are unable to verify if the XML analysis file matches the description in their manuscript.
-The Rev language \cite{revbayes} is an alternative to XMLs, and it incorporates conventional notation from more general probabilistic programming languages. 
-This feature makes Rev model specification more recognisable to statistically literate users and sometimes more flexible, but users must still contend with verbose and prosaic implementation 
-details extraneous to the model
-(such as MCMC sampling settings, logging details and proposal distributions), as well as with the error-prone task of describing the REV model accurately in natural language when describing it in the methods section of a manuscript. 
- 
-Here, we introduce LinguaPhylo (LPhy, which we pronounce `el-fee'), an open-source model specification 
-language aimed at improving readability, reproducibility, and re-usability of phylogenetic models. 
-The LPhy language has a simple syntax for succinct specification of complex models, and is implemented in a framework that generates precise text descriptions and graphical diagrams of phylogenetic models from user input.
+Unfortunately, BEAST XMLs can be hard to read due to their XML-based, verbose syntax, which is unfamiliar to many users. The deeply nested structures and hierarchical organisation in BEAST XMLs make understanding model components and their relationships more challenging. In contrast, more general probabilistic programming languages such as found in JAGS, BUGS, and Stan employ more concise, linear structures that simplify comprehension and modification of models. Additionally, probabilistic programming languages are more accessible and widely applicable within the statistical modelling community, while BEAST XMLs are more domain-specific. 
+%Unsurprisingly, translating BEAST or BEAST 2 analyses from XMLs into text descriptions is difficult and error prone. Our experience suggests that most users are unable to verify if the XML analysis file matches the description in their manuscript.
+The Rev language \cite{revbayes} offers an alternative to XMLs, incorporating conventional notation from general probabilistic programming languages, making model specifications more recognizable and flexible for statistically literate users. 
+However, users still face challenges with verbose and extraneous implementation details, such as MCMC sampling settings, logging information, and proposal distributions. 
+Additionally, the task of accurately describing the Rev model in natural language for a manuscript's methods section can be error-prone, further complicating the process of model specification and communication.
+
+In this study, we present LinguaPhylo (LPhy, pronounced `el-fee'), an open-source model specification language designed to enhance the readability, reproducibility, and reusability of phylogenetic models. LPhy boasts a simple syntax that enables succinct specification of complex models, and is implemented within a framework that generates accurate textual descriptions and graphical diagrams of phylogenetic models based on user input.
 
 \section{Methods}
 The LPhy language is designed to enable the specification of phylogenetic models using a concise and readable syntax.  
@@ -371,15 +368,12 @@ The reference implementation is built on top of the Java programming language an
 
 % revision changes
 The LPhy language is described by an Extended Backus–Naur form grammar (EBNF) \cite{ebnf}. 
-We used ANTLR \cite{parr1995antlr,parr2013definitive} to generate a LPhy parser in Java. 
-This Java-based LPhy parser was used to write LPhyStudio and LPhyBEAST. 
+We used ANTLR \cite{parr1995antlr,parr2013definitive} to generate an LPhy parser in Java. 
+This Java-based LPhy parser was used as the foundation for the development of LPhyStudio and LPhyBEAST software packages. 
 The ANTLR parser generator can also be targeted to other general programming languages like Python, C++ and Javascript. 
-This gives an relatively easy path to implementation of LPhy support in other phylogenetic software packages.
-%The LPhy language uses Extended Backus–Naur form (EBNF) grammar with an ANTLR-based parser which parses the model specification language into Java Objects. 
+This gives a relatively easy path to implementation of LPhy support in other phylogenetic software packages.
 
 The main components of the LPhy language grammar are variables, arrays of variables, and generators. 
-%(vectorization similar to R), generative distributions, and deterministic functions that can return variables or arrays. 
-% revision changes (distributions typo)
 There are three classes of generators: (i) generative distributions which produce values for random variables, (ii) deterministic functions that produce the deterministic values given the same input values, and (iii) method calls.
 For deterministic functions and method calls, these generators produce deterministic nodes in the PGM.
 This is illustrated in Figure \ref{fig:jccoalPGM}, which shows a graphical representation of the model specified in Example \ref{lphy:jccoal}.
@@ -387,33 +381,30 @@ Deterministic nodes are shown as diamonds (e.g., the `Q' matrix of the Jukes-Can
 Stochastic nodes are represented by circles (e.g., $\Theta$, the population size governing the coalescent times generated by the Coalescent process \cite{kingman82}), and constant nodes are represented by squares (e.g., the mean of the log-normal generative distribution underlying $\Theta$). 
 
 An LPhy script is a text file with the `.lphy' file extension and is case-sensitive. 
-As a scripting language, syntax checking is performed during execution. 
-Control flow structures are not allowed to encourage script readability. 
-Instead of loop structures, we provide variable vectorization similar to R \cite{ihaka1996r}, where we can generate an array of elements using one of the vectorization mechanisms. 
-Optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
-Code blocks surrounded by curly braces are used to differentiate between parts of the script describing the data (the data block), and parts describing the model (the model block). 
+In the reference implementation, syntax checking is performed during execution. 
+Control flow structures are not allowed in order to promote simplicity and readability, facilitating a lower barrier to entry and a gentler learning curve. 
+Instead of loop structures, we provide implicit vectorization similar to R \cite{ihaka1996r}. Allowing all arguments of distributions and functions to be vectorised results in more compact and expressive model specifications. This can lead to clearer representations of the model's structure and relationships. Additionally an optional "replicates" argument allows users to generate vectors of IID random variables easily, further simplifying the model specification.
+When designing new generators, optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
+Two distinct code blocks are used to differentiate between the part of the script describing the data (the data block), and part describing the model (the model block). 
 The code block structure is inspired by the programming language Stan \cite{carpenter2017stan}. 
-The syntax for the specification of random variables is similar to the JAGS \cite{plummer2004jags} and BUGS \cite{lunn2009bugs, gilks1994language} languages. 
+The syntax for the specification of random variables is similar to probabilistic programming languages such as JAGS \cite{plummer2004jags}, BUGS \cite{lunn2009bugs, gilks1994language} and Stan \cite{carpenter2017stan}.
 Scripts can be loaded into LPhyStudio via the menu or the toolbar. 
 Additionally, we provide a console for executing LPhy commands line by line within LPhyStudio. 
 
 % revision changes
 The LPhy language grammar does not specify any explicit types, nor does it specify any protected pre-defined generative distributions or functions, except for a very small number of mathematical functions that allow simple expressions. 
-Alongside the LPhy language grammar is the LPhy reference implementation. 
-This is an implementation in Java which provides a number of standard statistical and phylogenetic distributions as well as supporting functions along with specified Java types. 
-Implementers of the LPhy language in other systems should include support for the reference distributions, but may use equivalent types in the language that is employed.
-In the reference Java implementation, variables can have a primitive type or a custom type.  
-Standard primitive types include doubles, integers, booleans, and strings. 
-Custom types include alignments, trees, and discrete traits, which are internally created as Java Objects by invoking the generator's constructor. 
-These variables can be vectorized to an array of elements using the `replicates' argument. 
-Overloading of functions is supported using Java-style overloading. 
-Type checking for generator arguments is done during execution. 
+Accompanying the LPhy language grammar is the LPhy reference implementation, a Java implementation offering standard statistical and phylogenetic distributions, as well as supporting functions with specified Java types.
+Implementers of the LPhy language in other systems should support the reference distributions, using equivalent types in their respective languages.
+
+In the reference Java implementation, variables can possess primitive or custom types. 
+Primitive types include doubles, integers, booleans, and strings, while custom types, such as alignments, trees, and discrete traits, are created as Java Objects using the generator's constructor. 
+Variables can be vectorised into an array of elements using the `replicates' argument. 
+Java-style overloading supports function overloading, and type checking for generator arguments is performed during execution.
 
 
 \subsubsection{Syntax}
-The syntax for each line has a variable declaration on the left-hand side, a specification operator followed by the generator on the right-hand side. 
-The end of a line is denoted by a semicolon character.
-For example: 
+In LPhy, each line's syntax consists of a variable declaration on the left-hand side, a specification operator, and a generator on the right-hand side, with lines ending with a semicolon character. 
+For instance:
 {
   \small
   \begin{listing}
@@ -424,11 +415,11 @@ For example:
   \end{listing}
 }
 
-In the above example, the variable \textit{\textcolor{bluishgreen}{b}} is specified by the normal generative distribution \textit{\textcolor{blue}{Normal}()} with two arguments, the mean of the normal distribution \textit{\textcolor{gray}{mean}} which has a value of 0.0, and the standard deviation of the distribution \textit{\textcolor{gray}{sd}} which has a value of 1.0.
+In this example, variable \textit{\textcolor{bluishgreen}{b}} is specified by the normal generative distribution \texttt{\textcolor{blue}{Normal}()} with two arguments: the mean \texttt{\textcolor{gray}{mean}} (0.0) and the standard deviation \texttt{\textcolor{gray}{sd}} (1.0).
 
 The left-hand side declares the name of a variable or an array of variables (case sensitive).
 The right-hand side specifies the values of the variable or array. 
-This can be a constant value, array of constant values, deterministic function, stochastic generative distribution, or several nested functions.
+This can be a constant value, array of constant values, deterministic function or stochastic generative distribution.
 Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class in the reference implementation. 
 A list of functions and generative distributions is shown in the \href{https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy/doc/index.md}{LPhy reference implementation manual}.
 Arguments inside functions or generative distributions follow the convention: 
