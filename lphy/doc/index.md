@@ -1,4 +1,4 @@
-LPhy Language Reference (version 1.3.2)
+LPhy Language Reference (version 1.4.1)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
@@ -45,11 +45,15 @@ Tree models
 
 Other generative distributions
 ------------------------------
+- [Categorical](distributions/Categorical.md)
 - [ErrorModel](distributions/ErrorModel.md)
+- [MissingSites](distributions/MissingSites.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
 - [PhyloCTMC](distributions/PhyloCTMC.md)
 - [PhyloMultivariateBrownian](distributions/PhyloMultivariateBrownian.md)
 - [PhyloOU](distributions/PhyloOU.md)
+- [sample](distributions/sample.md)
+- [Sequence](distributions/Sequence.md)
 - [bSiteRates](distributions/bSiteRates.md)
 
 Sequence type
@@ -61,12 +65,16 @@ Sequence type
 
 Taxa & alignment
 ----------------
+- [copySites](taxa-alignment/copySites.md)
 - [taxa](taxa-alignment/taxa.md)
 - [extantTaxa](taxa-alignment/extantTaxa.md)
 - [extractTrait](taxa-alignment/extractTrait.md)
+- [invariableSites](taxa-alignment/invariableSites.md)
 - [readFasta](taxa-alignment/readFasta.md)
 - [readNexus](taxa-alignment/readNexus.md)
+- [selectSites](taxa-alignment/selectSites.md)
 - [species](taxa-alignment/species.md)
+- [variableSites](taxa-alignment/variableSites.md)
 
 Substitution and site models
 ----------------------------
@@ -90,23 +98,27 @@ Tree functions
 - [localBranchRates](tree-func/localBranchRates.md)
 - [countMigrations](tree-func/countMigrations.md)
 - [newick](tree-func/newick.md)
-- [nodecount](tree-func/nodecount.md)
 - [pruneTree](tree-func/pruneTree.md)
-- [treeLength](tree-func/treeLength.md)
 
 Other functions
 ---------------
 - [arange](functions/arange.md)
 - [argi](functions/argi.md)
-- [concat](functions/concat.md)
+- [concat2Str](functions/concat2Str.md)
+- [concatArray](functions/concatArray.md)
+- [get](functions/get.md)
+- [intersect](functions/intersect.md)
 - [length](functions/length.md)
 - [nchar](functions/nchar.md)
 - [ntaxa](functions/ntaxa.md)
 - [parseInt](functions/parseInt.md)
 - [rangeInt](functions/rangeInt.md)
 - [rep](functions/rep.md)
+- [repArray](functions/repArray.md)
 - [select](functions/select.md)
+- [simulate](functions/simulate.md)
 - [slice](functions/slice.md)
+- [sort](functions/sort.md)
 - [split](functions/split.md)
 - [sum](functions/sum.md)
 - [hammingWeight](functions/hammingWeight.md)
@@ -132,6 +144,7 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
+- [SimpleAlignment](types/SimpleAlignment.md)
 - [MetaDataAlignment](types/MetaDataAlignment.md)
 - [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)

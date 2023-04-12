@@ -1,7 +1,7 @@
 PhyloCTMC distribution
 ======================
-PhyloCTMC([TimeTree](../types/TimeTree.md) **tree**, [Number](../types/Number.md) **mu**, [Double[]](../types/Double[].md) **freq**, [Double[][]](../types/Double[][].md) **Q**, [Double[]](../types/Double[].md) **siteRates**, [Double[]](../types/Double[].md) **branchRates**, [Integer](../types/Integer.md) **L**, [SequenceType](../types/SequenceType.md) **dataType**)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PhyloCTMC([TimeTree](../types/TimeTree.md) **tree**, [Number](../types/Number.md) **mu**, [Double[]](../types/Double[].md) **freq**, [Double[][]](../types/Double[][].md) **Q**, [Double[]](../types/Double[].md) **siteRates**, [Double[]](../types/Double[].md) **branchRates**, [Integer](../types/Integer.md) **L**, [SequenceType](../types/SequenceType.md) **dataType**, [SimpleAlignment](../types/SimpleAlignment.md) **root**)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id.(The sampling distribution that the phylogenetic likelihood is derived from.)
 
@@ -15,6 +15,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 - [Double[]](../types/Double[].md) **branchRates** - a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
 - [Integer](../types/Integer.md) **L** - length of the alignment
 - [SequenceType](../types/SequenceType.md) **dataType** - the data type used for simulations, default to nucleotide
+- [SimpleAlignment](../types/SimpleAlignment.md) **root** - root sequence, defaults to root sequence generated from equilibrium frequencies.
 
 ### Return type
 
