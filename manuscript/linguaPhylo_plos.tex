@@ -546,6 +546,8 @@ A second mechanism for vectorization can be used by passing a vector of elements
 
 {\small
 \begin{alltt}
+    \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{0.5}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}\textcolor{constant}{3});
+    \textcolor{bluishgreen}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}], \textcolor{gray}{replicates=}\textcolor{constant}{3});
     \textcolor{black}{Q = }\textcolor{generator}{hky}(\textcolor{gray}{kappa=}\textcolor{bluishgreen}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)});
 \end{alltt} 
 }
@@ -588,6 +590,7 @@ This includes coalescent models and birth-death models.
 The simplest coalescent model LPhy implements is the constant-population size coalescent, which can be extended to generate serially sampled (heterochronous) data \cite{Rodrigo1999SerialCoalescent}:
 {\small
   \begin{alltt}
+    \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
     \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{generator}{taxa}(\textcolor{gray}{names=}[\textcolor{constant}{"a"}, \textcolor{constant}{"b"}, \textcolor{constant}{"c"}, \textcolor{constant}{"d"}], 
       \textcolor{gray}{ages=}[\textcolor{constant}{0.0}, \textcolor{constant}{1.0}, \textcolor{constant}{2.0}, \textcolor{constant}{3.0}]));
   \end{alltt}
@@ -658,6 +661,7 @@ The first line below constructs the instantaneous rate matrix $Q$ for an HKY mod
   \small
   \begin{listing}
     \begin{alltt}
+    taxa = \textcolor{generator}{taxa}(\textcolor{gray}{names=}\textcolor{constant}{1}:\textcolor{constant}{10});
     Q = \textcolor{generator}{hky}(\textcolor{gray}{kappa}=\textcolor{constant}{2.0}, \textcolor{gray}{freq}=[\textcolor{constant}{0.2}, \textcolor{constant}{0.25}, \textcolor{constant}{0.3}, \textcolor{constant}{0.25}]);
     \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
     \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
