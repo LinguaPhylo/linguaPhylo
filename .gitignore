@@ -9,7 +9,6 @@ manuscript/**/*.fls
 manuscript/**/*.lof
 manuscript/**/*.log
 manuscript/**/*.lot
-manuscript/*.pdf
 manuscript/**/*.pyg
 *.iml
 
