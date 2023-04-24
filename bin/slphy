@@ -24,5 +24,7 @@ if [ -z "$LPHY" ]; then
 	cd "$saveddir"
 fi
 
-LPHY_LIB=$LPHY/lib
-java -Xms64m -Xmx5g -p $LPHY_LIB -m lphystudio/lphystudio.app.simulator.SLPhy $*
+echo "LPHY path = $LPHY"
+
+LPHY_LIB="$LPHY/lib"
+java -Xms64m -Xmx5g -p "$LPHY_LIB" -m lphystudio/lphystudio.app.simulator.SLPhy $*
