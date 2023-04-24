@@ -170,7 +170,7 @@
                     <runInConsole>0</runInConsole>
                     <useLauncherDirectoryAsWorkingDirectory>1</useLauncherDirectoryAsWorkingDirectory>
                     <usePropertiesFile>0</usePropertiesFile>
-                    <vmParameters>-Xms256m -Xmx4g -p lib -m lphystudio</vmParameters>
+                    <vmParameters>-Xms256m -Xmx4g -Dfile.encoding=UTF-8 -p lib -m lphystudio</vmParameters>
                     <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
                     <workingDirectory>${installdir}</workingDirectory>
                     <validVersionList>
