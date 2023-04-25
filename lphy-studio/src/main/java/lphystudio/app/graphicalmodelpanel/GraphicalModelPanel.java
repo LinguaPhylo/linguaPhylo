@@ -4,6 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.core.*;
 import lphy.core.functions.VectorizedFunction;
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.layeredgraph.Layering;
 import lphy.util.LoggerUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
@@ -62,6 +63,9 @@ public class GraphicalModelPanel extends JPanel {
     Object displayedElement;
 
     Sampler sampler;
+
+    CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
+
 
     public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoManagerHelper) {
 
@@ -152,7 +156,7 @@ public class GraphicalModelPanel extends JPanel {
         };
 
         component.addGraphicalModelListener(listener);
-        parser.addGraphicalModelChangeListener(component); // cross interaction should be always avoided
+        parser.addGraphicalModelChangeListener(component);
 
         //TODO need a new way to deal with this model listener interaction
 
@@ -261,6 +265,15 @@ public class GraphicalModelPanel extends JPanel {
         // add Loggers here, to trigger after click Sample button
         loggers.addAll(rightPane.getRandomValueLoggers());
 
+        // These sync the consoles with GraphicalModelComponent containing the lphy code
+        // the code may be changed by GUI, such as squared rectangles.
+        dataInterpreter.clear();
+        modelInterpreter.clear();
+        String text = codeBuilder.getCode(component.getParser());
+        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParser.Context.data);
+        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParser.Context.model);
+
+        // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParser());
         sampler.sample(reps, loggers);
         this.sampler = sampler;

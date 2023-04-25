@@ -7,7 +7,6 @@ import lphy.core.functions.VectorizedFunction;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.graphicalModel.code.CodeBuilder;
 import lphy.layeredgraph.LatticePoint;
 import lphy.layeredgraph.LayeredNode;
 import lphy.layeredgraph.NodeWrapper;
@@ -283,7 +282,7 @@ public class LaTeXNarrative implements Narrative {
         JTextPane dummyPane = new JTextPane();
 
         DataModelToLaTeX dataModelToLaTeX = new DataModelToLaTeX(parser, dummyPane);
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parser);
         dataModelToLaTeX.parse(text);
 

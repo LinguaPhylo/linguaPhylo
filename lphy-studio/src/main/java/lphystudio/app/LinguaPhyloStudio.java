@@ -3,7 +3,6 @@ package lphystudio.app;
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.graphicalModel.code.CodeBuilder;
 import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphy.util.RandomUtils;
@@ -254,7 +253,7 @@ public class LinguaPhyloStudio {
         JMenuItem saveAsMenuItem = new JMenuItem("Save Canonical Script to File...");
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
 
         JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");

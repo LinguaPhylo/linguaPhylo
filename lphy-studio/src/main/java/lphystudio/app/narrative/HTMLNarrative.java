@@ -6,7 +6,6 @@ import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.graphicalModel.code.CodeBuilder;
 import lphy.layeredgraph.ProperLayeredGraph;
 import lphystudio.core.theme.ThemeColours;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -127,7 +126,7 @@ public class HTMLNarrative implements Narrative {
 
         DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, dummyPane, fontSize + "pt");
 
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parser);
         dataModelToHTML.parse(text);
 

@@ -2,7 +2,6 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.GraphicalLPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.graphicalModel.code.CodeBuilder;
 import lphy.util.LoggerUtils;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 
@@ -45,7 +44,7 @@ public class CanonicalModelPanel extends JComponent {
             e.printStackTrace();
         }
 
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parser);
 
         System.out.println(text);

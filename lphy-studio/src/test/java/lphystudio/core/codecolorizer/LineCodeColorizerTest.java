@@ -3,7 +3,6 @@ package lphystudio.core.codecolorizer;
 import lphy.core.GraphicalLPhyParser;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.graphicalModel.code.CodeBuilder;
 import lphystudio.app.Utils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
 import lphystudio.app.narrative.DataModelToHTML;
@@ -38,7 +37,7 @@ public class LineCodeColorizerTest {
         dataInterpreter.interpretInput(taxa, LPhyParser.Context.data);
         modelInterpreter.interpretInput(coal, LPhyParser.Context.model);
 
-        CodeBuilder codeBuilder = new CanonicalCodeBuilder();
+        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         cmd = codeBuilder.getCode(parser);
     }
 

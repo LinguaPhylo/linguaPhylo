@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 /**
- * Created by adru001 on 18/12/19.
+ * JComponent to paint graphical models from {@link GraphicalLPhyParser}
  */
 public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
 
