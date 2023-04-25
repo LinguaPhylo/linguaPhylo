@@ -73,60 +73,6 @@ Dong Xie\textsuperscript{1,2,3}
 
 \clearpage
 
-% \section{Example LPhy script}
-
-\subsection*{RSVA example}
-% An accompanying tutorial for this analysis is publicly available at \url{www.linguaphylo.gihub.io/tutorials/time-stamped-data/}.
-% We have modified the script slightly for illustrative purposes:
-
-{
-  \small
-  \begin{listing}
-    % \stepcounter{example}
-    \begin{alltt}
-    data \{
-      options = \{\textcolor{gray}{ageDirection=}\textcolor{constant}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{constant}{"s(\textbackslash{}d+)"}\};
-      nexusFilePath = \textcolor{constant}{"tutorials/data/RSV2.nex"};
-      D = \textcolor{generator}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
-      codon = D.\textcolor{generator}{charset}([\textcolor{constant}{"3-629\textbackslash{}3"}, \textcolor{constant}{"1-629\textbackslash{}3"}, \textcolor{constant}{"2-629\textbackslash{}3"}]);
-      n = 3;
-      L = [209, 210, 210];
-      taxa = D.\textcolor{generator}{taxa}();
-    \}
-    model \{
-      \textcolor{bluishgreen}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}]);
-      \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{constant}{0.5}, \textcolor{gray}{meanlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}n);
-      \textcolor{bluishgreen}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{generator}{rep}(\textcolor{gray}{element=}\textcolor{constant}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
-      \textcolor{bluishgreen}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.25});
-      \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{2.0});
-      \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)});
-      Q = \textcolor{generator}{hky}(\textcolor{gray}{kappa=}\textcolor{bluishgreen}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{bluishgreen}{r});
-      \textcolor{bluishgreen}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{bluishgreen}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
-    \}
-    \end{alltt}
-    % \captionof{subexample}{LPhy script specifying a phylodynamic model
-    \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples.
-    \newline}
-    \label{lphy:rsva}
-    \end{listing}
-}
-Example \ref{lphy:rsva} shows an LPhy script for performing phylogenetic inference on a virus dataset containing sequences of the Respiratory syncytial virus subgroup A (RSVA). 
-This script concisely specifies a phylogenetic analysis using 19 lines of code.  
-The code contains a \textbf{data block} for specifying the input dataset, and a \textbf{model block} which defines the phylogenetic model. 
-
-% \newpage
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs_plos/RSV2.tiff} 
-  \caption{A screenshot of the probabilistic graphical model of Example \ref{lphy:rsva}.} 
-  \label{fig:RSV2PGM}
-\end{figure}
-
-
-\clearpage
-
-
-\bigskip
 
 %\textbf{This PDF file includes:}
 
