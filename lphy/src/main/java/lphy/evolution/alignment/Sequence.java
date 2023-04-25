@@ -18,7 +18,7 @@ import static lphy.evolution.likelihood.AbstractPhyloCTMC.dataTypeParamName;
 
 public class Sequence extends ParametricDistribution<SimpleAlignment> {
 
-    SequenceType sequenceType = SequenceType.NUCLEOTIDE; // default data type
+    Value<SequenceType> sequenceType;
 
     Value<Double[]> probs;
 
@@ -29,11 +29,12 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
         super();
         this.probs = probs; // check probs is same dimension as nucleotide datatype
         this.nchar = nchar;
+        this.sequenceType =  new Value<>(null, SequenceType.NUCLEOTIDE); // default data type is nucleotide
     }
 
     public Sequence(@ParameterInfo(name = pParamName, description = "the probability distribution over integer states 1 to K.") Value<Double[]> probs,
                     @ParameterInfo(name = LParamName, narrativeName="length", description = "length of the alignment") Value<Integer> nchar,
-                    @ParameterInfo(name = dataTypeParamName, narrativeName="data type", description = "the sequence type of the alignment") SequenceType sequenceType) {
+                    @ParameterInfo(name = dataTypeParamName, narrativeName="data type", description = "the sequence type of the alignment") Value<SequenceType> sequenceType) {
         super();
         this.probs = probs; // check probs is same dimension as datatype
         this.nchar = nchar;
@@ -47,7 +48,7 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
 
     public RandomVariable<SimpleAlignment> sample() {
         Taxa t = Taxa.createTaxa(1);
-        SimpleAlignment alignment = new SimpleAlignment(t, nchar.value(), sequenceType);
+        SimpleAlignment alignment = new SimpleAlignment(t, nchar.value(), sequenceType.value());
 
         for (int i = 0; i < nchar.value(); i++) {
             int value = sample(probs.value(), random);
@@ -57,7 +58,7 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
     }
 
     private State translate(int i) {
-        return sequenceType.getState(i);
+        return sequenceType.value().getState(i);
     }
 
     private int sample(Double[] p, RandomGenerator random) {
@@ -76,6 +77,7 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
         return new TreeMap<>() {{
             put(pParamName, probs);
             put(LParamName, nchar);
+            put(dataTypeParamName, sequenceType);
         }};
     }
 
