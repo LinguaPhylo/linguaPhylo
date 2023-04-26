@@ -1,6 +1,7 @@
 package lphy.graphicalModel;
 
 import lphy.core.narrative.Narrative;
+import lphy.core.narrative.NarrativeName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +118,13 @@ public class NarrativeUtils {
         if (hasSingleGeneratorOutput(value)) {
             Generator generator = (Generator) value.getOutputs().get(0);
             name = generator.getNarrativeName(value);
-            if (name == null || name.equals("")) name = getTypeName(value);
+            if (name == null || name.equals("")) {
+                if (value.value != null && value.value instanceof NarrativeName val) {
+                    name = val.getNarrativeName();
+                } else name = getTypeName(value);
+            }
+        } else if (value.value != null && value.value instanceof NarrativeName val) {
+            name = val.getNarrativeName();
         } else name = getTypeName(value);
         return name;
     }

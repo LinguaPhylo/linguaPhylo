@@ -2,6 +2,7 @@ package lphy.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
+import lphy.core.narrative.NarrativeName;
 import lphy.evolution.Taxa;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class SimpleAlignment extends AbstractAlignment {
+public class SimpleAlignment extends AbstractAlignment implements NarrativeName {
 
     public static final int VAR_SITE_STATE = -1;
     int[][] alignment;
@@ -173,4 +174,8 @@ public class SimpleAlignment extends AbstractAlignment {
         return (char)('0' + state);
     }
 
+    @Override
+    public String getNarrativeName() {
+        return "alignment";
+    }
 }
