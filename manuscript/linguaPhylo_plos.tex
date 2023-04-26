@@ -302,8 +302,8 @@ Dong Xie\textsuperscript{1,2,3}
 \section*{Abstract}
 Phylogenetic models have become increasingly complex, and phylogenetic data sets have expanded in both size and richness. 
 However, current inference tools lack a model specification language that can concisely describe a complete phylogenetic analysis while remaining independent of implementation details. 
-We introduce a new lightweight and concise model specification language, LPhy', which is designed to be both human and machine-readable. 
-A graphical user interface accompanies LPhy', allowing users to build models, simulate data, and create natural language narratives describing the models. 
+We introduce a new lightweight and concise model specification language, `LPhy', which is designed to be both human and machine-readable. 
+A graphical user interface accompanies LPhy, allowing users to build models, simulate data, and create natural language narratives describing the models. 
 These narratives can serve as the foundation for manuscript method sections. 
 Additionally, we present a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) compatible with the BEAST2 software platform. 
 Collectively, these tools aim to enhance the clarity of descriptions and reporting of probabilistic models in phylogenetic studies, ultimately promoting reproducibility of results.
@@ -385,7 +385,8 @@ Stochastic nodes are represented by circles (e.g., $\Theta$, the population size
 An LPhy script is a text file with the `.lphy' file extension and is case-sensitive. 
 In the reference implementation, syntax checking is performed during execution. 
 Control flow structures are not allowed in order to promote simplicity and readability, facilitating a lower barrier to entry and a gentler learning curve. 
-Instead of loop structures, we provide implicit vectorization similar to R \cite{ihaka1996r}. Allowing all arguments of distributions and functions to be vectorised results in more compact and expressive model specifications. This can lead to clearer representations of the model's structure and relationships. Additionally an optional "replicates" argument allows users to generate vectors of IID random variables easily, further simplifying the model specification.
+Instead of loop structures, we provide implicit vectorization similar to R \cite{ihaka1996r}. Allowing all arguments of distributions and functions to be vectorised results in more compact and expressive model specifications. 
+This can lead to clearer representations of the model's structure and relationships. Additionally an optional `replicates' argument allows users to generate vectors of independent and identically distributed (IID) random variables easily, further simplifying the model specification.
 When designing new generators, optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
 Two distinct code blocks are used to differentiate between the part of the script describing the data (the data block), and part describing the model (the model block). 
 The code block structure is inspired by the programming language Stan \cite{carpenter2017stan}. 
@@ -523,7 +524,7 @@ Stochastic nodes are shown as circles, deterministic functions are shown as diam
 
 % revision changes
 Named variables can be scalars or vectors. 
-Any generator can be vectorized to produce a vector of independent and identically distributed (i.i.d.) random variables using the \texttt{replicates} keyword:
+Any generator can be vectorized to produce a vector of IID random variables using the \texttt{replicates} keyword:
 
 {\small
 \begin{alltt}
@@ -532,7 +533,7 @@ Any generator can be vectorized to produce a vector of independent and identical
 }
 
 % revision changes
-In the example above, $\kappa$ is a random vector of three log-normally distributed i.i.d. values.
+In the example above, $\kappa$ is a random vector of three log-normally distributed IID values.
 
 Vectorization can also be applied to a generative distribution that produces vectors. In this case, the output will be a matrix, as seen in the following example. 
 
