@@ -1,6 +1,7 @@
 package lphy.evolution.io;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.core.narrative.NarrativeName;
 import lphy.evolution.Taxa;
 import lphy.evolution.Taxon;
 import lphy.evolution.alignment.Alignment;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
  */
 @TypeInfo(description = "An alignment containing metadata and parsed from a nexus file.",
         examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
-public class MetaDataAlignment extends SimpleAlignment {
+public class MetaDataAlignment extends SimpleAlignment implements NarrativeName {
 
     // if null, then no charset in the nexus file
     protected Map<String, List<CharSetBlock>> charsetMap;
@@ -251,7 +252,12 @@ public class MetaDataAlignment extends SimpleAlignment {
         return sb.toString();
     }
 
-//    @Override
+    @Override
+    public String getNarrativeName() {
+        return "metadata alignment";
+    }
+
+    //    @Override
 //    public JComponent getComponent(Value<Alignment> value) {
 //        StringBuilder sb = new StringBuilder(super.toString());
 //        if (getCharsetMap() != null) {
