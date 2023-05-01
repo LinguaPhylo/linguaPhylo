@@ -1,5 +1,0 @@
-Object[]
---------
-
-The Object array.
-
