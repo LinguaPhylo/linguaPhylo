@@ -348,7 +348,7 @@ Our paper presents a tool that aims to: (i) facilitate concise and exact communi
 
 % revision changes
 Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by H\"{o}hna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
-Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}. 
+Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}.
 The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
 Unfortunately, BEAST XMLs can be hard to read due to their XML-based, verbose syntax, which is unfamiliar to many users. The deeply nested structures and hierarchical organisation in BEAST XMLs make understanding model components and their relationships more challenging. In contrast, more general probabilistic programming languages such as found in JAGS, BUGS, and Stan employ more concise, linear structures that simplify comprehension and modification of models. Additionally, probabilistic programming languages are more accessible and widely applicable within the statistical modelling community, while BEAST XMLs are more domain-specific. 
 %Unsurprisingly, translating BEAST or BEAST 2 analyses from XMLs into text descriptions is difficult and error prone. Our experience suggests that most users are unable to verify if the XML analysis file matches the description in their manuscript.
@@ -424,7 +424,7 @@ The left-hand side declares the name of a variable or an array of variables (cas
 The right-hand side specifies the values of the variable or array. 
 This can be a constant value, array of constant values, deterministic function or stochastic generative distribution.
 Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class in the reference implementation. 
-A list of functions and generative distributions is shown in the \href{https://linguaphylo.github.io/docs/}{LPhy reference implementation manual}.
+See the LPhy reference implementation manual available from the homepage \url{https://linguaphylo.github.io/} for a complete list of functions and generative distributions. 
 Arguments inside functions or generative distributions follow the convention: 
 (\textit{argument name}) = (\textit{value}).
 
@@ -454,7 +454,7 @@ For example, this specifies a prior for the variable $b$:
 }
 
 The type of a variable is inferred from the return type of its generator and does not need to be declared. 
-For arguments of functions or generative distributions, the types are defined in the  \href{https://linguaphylo.github.io/docs/}{LPhy reference implementation manual}. 
+For arguments of functions or generative distributions, the types are defined in the LPhy reference implementation manual available from the homepage \url{https://linguaphylo.github.io/}. 
 
 \subsubsection{Arrays}
 Arrays can be defined using square brackets with elements delimited by comma separators. 
@@ -887,8 +887,8 @@ Figure \ref{fig_validation} presents the validation results for the model descri
 
 \section*{Availability and Future Directions}
 \href{https://github.com/LinguaPhylo/linguaPhylo}{LPhyStudio} and \href{https://github.com/LinguaPhylo/LPhyBeast}{LPhyBEAST} are available on github. 
-This suite of programs is accompanied by a user guide \url{https://linguaphylo.github.io/setup} and extensive documentation available on the homepage \url{https://linguaphylo.github.io/}.
-A growing list of tutorials is available at \url{https://linguaphylo.github.io/tutorials/} which cover common use cases and extension mechanisms. 
+This suite of programs is accompanied by a user guide and extensive documentation available via the homepage \url{https://linguaphylo.github.io/}.
+A growing list of tutorials on the webpage covers common use cases and extension mechanisms. 
 LPhy is designed in a modular fashion, researchers interested in implementing new models within the LPhy language can do so by releasing extension modules that can extend the LPhy application post-deployment.
 
 Although there are many
