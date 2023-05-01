@@ -246,6 +246,9 @@
 
 \usepackage{amsthm}
 
+\usepackage{enumitem}
+
+
 % examples
 \theoremstyle{definition}
 \newtheorem{exmp}{Example}[]
@@ -790,22 +793,6 @@ LPhy scripts can be imported using the toolbar or file menu, or created using th
 To facilitate the application of specified models for evolutionary inference, the companion program `LPhyBEAST' was developed as an interface between LPhy and BEAST2.
 LPhyBEAST is a command-line tool that takes as input an LPhy script file specifying a model with simulated or observed data, and produces a BEAST2 XML file as output.
 
-% \begin{itemize}
-% \item for evolutionary biologists
-% \begin{enumerate}
-% \item describe complex phylogenetic models succinctly and exactly
-% \item simulate prior distributions from these models, including arbitrary statistics
-% \item use model description to run inference on a real data set using LPhyBEAST
-% \item produce precise methods section and graphical model figure for describing analyses in published works
-% \end{enumerate}
-% \item for computational biologists
-% \begin{enumerate}
-% \item enable easy extension of the type system and generative distributions available using the extension mechanism of Lingua Phylo Studio (in Java programming language)
-% \item implement MCMC inference in BEAST2 for new models using LPhyBEAST and its extension mechanism
-% \item do well-calibrated simulation study that validate the implementation of inference framework
-% \end{enumerate}
-% \end{itemize}
-
 \section{Results}
 We present key features of the LPhy software using the GT16 substitution and error models \cite{kozlov2022cellphy}. 
 Starting from an LPhy script, our software generates a text description of the model, a graphical representation of the model (i.e., a PGM), and multiple displays of the simulated data shown in Figure \ref{fig:phylonco_lphystudio}. 
@@ -937,7 +924,25 @@ AJD was supported by a James Cook Fellowship from the Royal Society of New Zeala
 % 
 \bibliography{linguaPhylo}
 
+\section*{Supplementary Information}
 
+The Supplementary PDF file includes a list of tables with distributions in the LPhy reference implementation: 
+
+\begin{enumerate}[label=\bf S\arabic*]
+\item Functions for substitution models and rate matrices in LPhy
+
+\item Coalescent tree generative distributions in LPhy
+
+\item Birth-death tree generative distributions in LPhy
+
+\item Phylogenetic likelihood distributions in LPhy
+
+\item Parametric distributions in LPhy
+
+\item Alignment data types in LPhy
+
+\item Bayesian phylogenetic site model averaging in LPhy
+\end{enumerate}
 
 \end{document}
 
