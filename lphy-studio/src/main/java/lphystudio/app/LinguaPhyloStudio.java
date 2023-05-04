@@ -41,8 +41,8 @@ public class LinguaPhyloStudio {
 
         // set icon for mac os
         // https://stackoverflow.com/questions/6006173/how-do-you-change-the-dock-icon-of-a-java-program
-        final Taskbar taskbar = Taskbar.getTaskbar();
-        if (Taskbar.isTaskbarSupported()) {
+        if (Desktop.isDesktopSupported() && Taskbar.isTaskbarSupported()) {
+            final Taskbar taskbar = Taskbar.getTaskbar();
             try {
                 BufferedImage ioc = LPhyAppConfig.getIcon(LPHY_ICON);
                 if (ioc != null)
