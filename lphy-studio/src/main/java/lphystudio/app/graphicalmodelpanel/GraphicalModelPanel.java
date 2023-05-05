@@ -17,7 +17,7 @@ import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.swing.TidyComboBox;
 import lphystudio.core.swing.TidyTextField;
-import lphystudio.core.valueeditors.DoubleArray2DEditor;
+import lphystudio.core.valueeditors.Abstract2DEditor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -371,7 +371,7 @@ public class GraphicalModelPanel extends JPanel {
 //        if (viewer instanceof JTextField textField)
 //            textField.setEditable(editValues.isSelected());
 
-        if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof DoubleArray2DEditor) {
+        if (viewer instanceof JTextField || viewer instanceof JLabel || viewer instanceof Abstract2DEditor) {
             JPanel viewerPanel = new JPanel();
             viewerPanel.setOpaque(false);
             viewerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

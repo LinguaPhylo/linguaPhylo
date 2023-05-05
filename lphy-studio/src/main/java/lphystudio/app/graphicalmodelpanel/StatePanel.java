@@ -5,6 +5,7 @@ import lphy.graphicalModel.GraphicalModel;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.util.LoggerUtils;
+import lphystudio.core.valueeditors.Abstract2DEditor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,6 +68,8 @@ public class StatePanel extends JPanel {
                     // use only Current panel to edit
                     if (jComponent instanceof JTextField textField)
                         textField.setEditable(false);
+                    if (jComponent instanceof Abstract2DEditor editor)
+                        editor.redraw2DArray(false);
                     editors.add(jComponent);
                 }
             }

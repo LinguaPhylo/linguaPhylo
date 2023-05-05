@@ -186,6 +186,32 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer integerArray2DViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof Integer[][];
+
+            } else return object instanceof Integer[][];
+        }
+
+        public JComponent getViewer(Object object) {
+            boolean editable = false;
+            Integer[][] rawValue;
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                editable = value.getGenerator() == null;
+                rawValue = (Integer[][]) value.value();
+            } else {
+                rawValue = (Integer[][]) object;
+            }
+
+            return new IntegerArray2DEditor(rawValue, editable);
+        }
+    };
+
     private static Viewer stringValueViewer = new Viewer() {
 
         public boolean match(Object object) {
@@ -336,6 +362,7 @@ public class ViewerRegister {
                 stringValueViewer,
                 booleanValueViewer,
                 doubleArray2DViewer,
+                integerArray2DViewer,
                 mapValueViewer,
                 alignmentValueViewer,
                 timeTreeValueViewer,
