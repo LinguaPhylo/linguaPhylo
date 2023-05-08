@@ -1,7 +1,6 @@
 package lphy.parser;
 
 import lphy.graphicalModel.GraphicalModelNode;
-import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.*;
 
@@ -12,7 +11,7 @@ public interface ElementWise1Arg<R> {
 	
 	Value apply(R a, Function o);
 
-	static ElementWise1Arg<RandomVariable> elementWiseRV() {
+	static ElementWise1Arg<Value<Double>> elementWiseD() {
 		return (a,o) -> {
 			Double va = (Double) a.value();
 			Double r = (Double) o.apply(va);
@@ -20,15 +19,7 @@ public interface ElementWise1Arg<R> {
 		};
 	}
 
-	static ElementWise1Arg<DoubleValue> elementWiseD() {
-		return (a,o) -> {
-			Double va = (Double) a.value();
-			Double r = (Double) o.apply(va);
-			return new DoubleValue("", r);
-		};
-	}
-
-	static ElementWise1Arg<DoubleArray2DValue> elementWiseD2() {
+	static ElementWise1Arg<Value<Double[][]>> elementWiseD2() {
 		return (a,o) -> {
 			Double[][] va = (Double[][]) a.value();
 			Double[][] r = new Double[va.length][va[0].length];
@@ -41,7 +32,7 @@ public interface ElementWise1Arg<R> {
 		};
 	}
 	
-	static ElementWise1Arg<DoubleArrayValue> elementWiseDA() {
+	static ElementWise1Arg<Value<Double[]>> elementWiseDA() {
 		return (a,o) -> {
 			Double[] va = (Double[]) a.value();
 			Double[] r = new Double[va.length];
@@ -53,14 +44,14 @@ public interface ElementWise1Arg<R> {
 	}
 	
 	
-	static ElementWise1Arg<IntegerValue> elementWiseI() {
+	static ElementWise1Arg<Value<Integer>> elementWiseI() {
 		return (a,o) -> {
 			Integer va = a.value();
 			return new Value(null, o.apply(va));
 		};
 	}
 
-	static ElementWise1Arg<IntegerArray2DValue> elementWiseI2() {
+	static ElementWise1Arg<Value<Integer[][]>> elementWiseI2() {
 		return (a,o) -> {
 			Integer[][] va = (Integer[][]) a.value();
 			Integer[][] r = new Integer[va.length][va[0].length];
@@ -73,7 +64,7 @@ public interface ElementWise1Arg<R> {
 		};
 	}
 	
-	static ElementWise1Arg<IntegerArrayValue> elementWiseIA() {
+	static ElementWise1Arg<Value<Integer[]>> elementWiseIA() {
 		return (a,o) -> {
 			Integer[] va = (Integer[]) a.value();
 			Integer[] r = new Integer[va.length];
@@ -95,9 +86,7 @@ public interface ElementWise1Arg<R> {
 		} else if (values[0].value() instanceof Double[]) {
 			return elementWiseDA();
 		} else if (values[0].value() instanceof Double) {
-			if (values[0] instanceof RandomVariable)
-				return elementWiseRV();
-			else return elementWiseD();
+			return elementWiseD();
 		} else if (values[0].value() instanceof Integer[][]) {
 			return elementWiseI2();
 		} else if (values[0].value() instanceof Integer[]) {
