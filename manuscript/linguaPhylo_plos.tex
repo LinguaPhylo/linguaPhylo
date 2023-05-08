@@ -306,7 +306,7 @@ Dong Xie\textsuperscript{1,2,3}
 Phylogenetic models have become increasingly complex, and phylogenetic data sets have expanded in both size and richness. 
 However, current inference tools lack a model specification language that can concisely describe a complete phylogenetic analysis while remaining independent of implementation details. 
 We introduce a new lightweight and concise model specification language, `LPhy', which is designed to be both human and machine-readable. 
-A graphical user interface accompanies LPhy, allowing users to build models, simulate data, and create natural language narratives describing the models. 
+A graphical user interface accompanies `LPhy', allowing users to build models, simulate data, and create natural language narratives describing the models. 
 These narratives can serve as the foundation for manuscript method sections. 
 Additionally, we present a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) compatible with the BEAST2 software platform. 
 Collectively, these tools aim to enhance the clarity of descriptions and reporting of probabilistic models in phylogenetic studies, ultimately promoting reproducibility of results.
@@ -403,7 +403,7 @@ Accompanying the LPhy language grammar is the LPhy reference implementation, a J
 Implementers of the LPhy language in other systems should support the reference distributions, using equivalent types in their respective languages.
 
 In the reference Java implementation, variables can possess primitive or custom types. 
-Primitive types include doubles, integers, booleans, and strings, while custom types, such as alignments, trees, and discrete traits, are created as Java Objects using the generator's constructor. 
+Primitive types include doubles, integers, booleans, and strings, while custom types, such as alignments, trees, and discrete traits, are internally created as Java Objects by invoking the generator's constructor. 
 Variables can be vectorised into an array of elements using the `replicates' argument. 
 Java-style overloading supports function overloading, and type checking for generator arguments is performed during execution.
 
