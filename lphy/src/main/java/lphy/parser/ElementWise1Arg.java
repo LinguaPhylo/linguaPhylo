@@ -1,6 +1,7 @@
 package lphy.parser;
 
 import lphy.graphicalModel.GraphicalModelNode;
+import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.*;
 
@@ -10,7 +11,15 @@ import java.util.function.Function;
 public interface ElementWise1Arg<R> {
 	
 	Value apply(R a, Function o);
-	
+
+	static ElementWise1Arg<RandomVariable> elementWiseRV() {
+		return (a,o) -> {
+			Double va = (Double) a.value();
+			Double r = (Double) o.apply(va);
+			return new DoubleValue("", r);
+		};
+	}
+
 	static ElementWise1Arg<DoubleValue> elementWiseD() {
 		return (a,o) -> {
 			Double va = (Double) a.value();
@@ -86,7 +95,9 @@ public interface ElementWise1Arg<R> {
 		} else if (values[0].value() instanceof Double[]) {
 			return elementWiseDA();
 		} else if (values[0].value() instanceof Double) {
-			return elementWiseD();
+			if (values[0] instanceof RandomVariable)
+				return elementWiseRV();
+			else return elementWiseD();
 		} else if (values[0].value() instanceof Integer[][]) {
 			return elementWiseI2();
 		} else if (values[0].value() instanceof Integer[]) {

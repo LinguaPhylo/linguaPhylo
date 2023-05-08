@@ -3,12 +3,13 @@ package lphy.core.distributions;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.IntegerValue;
+import lphy.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static lphy.graphicalModel.VectorUtils.*;
+import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
 
 public class IID<T> implements GenerativeDistribution<T[]> {
 
@@ -39,6 +40,8 @@ public class IID<T> implements GenerativeDistribution<T[]> {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
+            LoggerUtils.log.severe("Cannot create instance of " + baseDistributionConstructor.getName() +
+                    ", check if parameters are valid : " + Arrays.toString(initArgs));
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();

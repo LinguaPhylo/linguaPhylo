@@ -7,6 +7,7 @@ model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  coding ~ PhyloCTMC(tree=ψ, L=codingL, Q=f81(freq=π));
-  noncoding ~ PhyloCTMC(tree=ψ, L=noncodingL, Q=f81(freq=π));
+  Q=f81(freq=π);
+  coding ~ PhyloCTMC(tree=ψ, L=codingL, Q=Q);
+  noncoding ~ PhyloCTMC(tree=ψ, L=noncodingL, Q=Q);
 }

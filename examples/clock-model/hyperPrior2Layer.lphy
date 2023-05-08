@@ -1,0 +1,19 @@
+data {
+  N=8;
+  BrN = (N-1)*2;
+}
+model {
+  hyperMean ~ LogNormal(meanlog=-6.0, sdlog=2.5);
+  hyperStdv ~ LogNormal(meanlog=-2.0, sdlog=0.3);
+  meanlog = log(hyperMean);
+  branchRates1 ~ LogNormal(meanlog=meanlog, sdlog=hyperStdv, replicates=BrN);
+  branchRates2 ~ LogNormal(meanlog=meanlog, sdlog=hyperStdv, replicates=BrN);
+
+  Θ1 ~ LogNormal(meanlog=1.6, sdlog=1.5);
+  ψ1 ~ Coalescent(n=N, theta=Θ1);
+  D1 ~ PhyloCTMC(L=1000, Q=jukesCantor(), tree=ψ1, branchRates=branchRates1);
+
+  Θ2 ~ LogNormal(meanlog=1.6, sdlog=1.5);
+  ψ2 ~ Coalescent(n=N, theta=Θ2);
+  D2 ~ PhyloCTMC(L=6500, Q=jukesCantor(), tree=ψ2, branchRates=branchRates2);
+}
