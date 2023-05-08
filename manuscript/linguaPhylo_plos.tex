@@ -372,7 +372,7 @@ The reference implementation is built on top of the Java programming language an
 % These include tree models for phylogenies and genealogies (e.g., birth-death, coalescent), substitution models for genomic sequences (e.g., GTR \cite{gtr}), and parametric distributions for discrete and continuous parameters (e.g., Dirichlet, Normal). 
 
 % revision changes
-The LPhy language is described by an Extended Backus–Naur form grammar (EBNF) \cite{ebnf}. 
+The LPhy language is described by an Extended Backus-Naur form grammar (EBNF) \cite{ebnf}. 
 We used ANTLR \cite{parr1995antlr,parr2013definitive} to generate an LPhy parser in Java. 
 This Java-based LPhy parser was used as the foundation for the development of LPhyStudio and LPhyBEAST software packages. 
 The ANTLR parser generator can also be targeted to other general programming languages like Python, C++ and Javascript. 
@@ -856,13 +856,7 @@ The sequencing and amplification error probability, $\textrm{epsilon}$ has a Bet
 
 \subsubsection*{Model validation}
 \begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_delta.pdf}
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_epsilon.pdf}
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_pi_0.pdf}
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_rates_ac.pdf}
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_treeheight.pdf}
-    \includegraphics[width=0.25\textwidth]{figs_plos/gt16_EM_treelength.pdf}
+    \includegraphics{figs_plos/Fig4.pdf}
     \caption{Model validation for the GT16 diploid nucleotide substitution model and GT16 error model. Each plot shows the 95\% highest posterior density for model parameters: allelic dropout error $\delta$, sequencing error $\epsilon$, equilibrium frequency for $\pi_{AA}$, relative rate $r_{AC}$, tree height, and tree length. }
     \label{fig_validation}
 \end{figure}
