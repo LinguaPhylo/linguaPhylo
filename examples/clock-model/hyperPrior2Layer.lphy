@@ -3,11 +3,11 @@ data {
   BrN = (N-1)*2;
 }
 model {
-  hyperMean ~ LogNormal(meanlog=-6.0, sdlog=2.5);
+  // HPD95 [-0.109, -1.1]
+  hyperLogMean ~ Normal(mean=-6.0, sd=2.5);
   hyperStdv ~ LogNormal(meanlog=-2.0, sdlog=0.3);
-  meanlog = log(hyperMean);
-  branchRates1 ~ LogNormal(meanlog=meanlog, sdlog=hyperStdv, replicates=BrN);
-  branchRates2 ~ LogNormal(meanlog=meanlog, sdlog=hyperStdv, replicates=BrN);
+  branchRates1 ~ LogNormal(meanlog=hyperLogMean, sdlog=hyperStdv, replicates=BrN);
+  branchRates2 ~ LogNormal(meanlog=hyperLogMean, sdlog=hyperStdv, replicates=BrN);
 
   Θ1 ~ LogNormal(meanlog=1.6, sdlog=1.5);
   ψ1 ~ Coalescent(n=N, theta=Θ1);
