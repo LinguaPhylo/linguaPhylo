@@ -1,7 +1,13 @@
-// 2d array
-weights = rep([100.0, 100.0, 100.0, 1000.0], 2);
-sum = sum(weights);
-rowSums = sumRows(weights);
 // 1d array
 x = 1:10;
 sumX = sum(x);
+// 2d array
+weights = rep([100.0, 100.0, 100.0, 1000.0], 2);
+sum = sum(weights);
+sum2 = sum([[1,2,3],[3,2,1]]);
+// sum matrix by rows
+rowSums = sumRows(weights);
+sumAxis1 = sum(array=weights, axis=1);
+// sum matrix by columns
+sumCols = sumCols(weights);
+sumAxis0 = sum(array=weights, axis=0);
