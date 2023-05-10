@@ -18,45 +18,20 @@ public class Sum2dArray extends DeterministicFunction<Number[]> {
 
     @GeneratorInfo(name = "sum", description = "The sums over each row of the given array")
     public Value<Number[]> apply() {
-        Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
-        Integer axis = (Integer) getParams().get(AxisParamName).value();
-
         Value<Number[][]> x = getParams().get(ArrayParamName);
-
+        Integer axis = (Integer) getParams().get(AxisParamName).value();
+        
         if (axis == 0) {
+            // sum by rols
             SumCols sumCols = new SumCols(x);
             return sumCols.apply();
-            // sum columns
-            // original implementation below moved to sumCols
-//            Number[] sum = new Number[v[0].length];
-//            for (int j = 0; j < v[0].length; j++) {
-//                double colSum = 0.0;
-//                for (int i = 0; i < v.length; i++) {
-//                    colSum = colSum + v[i][j].doubleValue();
-//                }
-//                sum[j] = colSum;
-//            }
-//            return ValueUtils.createValue(sum, this);
-
         } else {
-            // sum rows
+            // sum by rows
             if (axis != 1) {
                 LoggerUtils.log.warning("sum(array, axis) axis should be 0 or 1, input axis is " + axis + ", using default axis=1.");
             }
-
             SumRows sumRows = new SumRows(x);
             return sumRows.apply();
-            // original implementation below moved to sumRows
-//            Number[] sum = new Number[v.length];
-//            for (int i = 0; i < v.length; i++) {
-//                double rowSum = 0.0;
-//                for (int j = 0; j < v[i].length; j++) {
-//                    rowSum = rowSum + v[i][j].doubleValue();
-//                }
-//                sum[i] = rowSum;
-//            }
-//            return ValueUtils.createValue(sum, this);
-
         }
     }
 }
