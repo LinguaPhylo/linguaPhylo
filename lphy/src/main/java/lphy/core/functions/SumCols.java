@@ -12,7 +12,7 @@ public class SumCols extends DeterministicFunction<Number[]> {
         setParam(ArrayParamName, x);
     }
 
-    @GeneratorInfo(name = "sumCols", description = "The sums over each column of the given array")
+    @GeneratorInfo(name = "sumCols", description = "Sums over each column of the given array")
     public Value<Number[]> apply() {
         Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
 

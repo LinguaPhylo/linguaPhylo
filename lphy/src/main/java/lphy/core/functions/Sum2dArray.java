@@ -10,13 +10,13 @@ public class Sum2dArray extends DeterministicFunction<Number[]> {
 
     public Sum2dArray(@ParameterInfo(name = ArrayParamName, description = "the 2d array to sum the elements of.")
                       Value<Number[][]> x,
-                      @ParameterInfo(name = AxisParamName, description = "the axis over which the array is summed: axis=0 to sum by column, axis=1 to sum by row. Defaults to axis=1 (row summation).")
+                      @ParameterInfo(name = AxisParamName, description = "the axis over which the array is summed: axis=0 for sum by column, axis=1 for sum by row. Defaults to axis=1 (row summation).")
                       Value<Integer> axis) {
         setParam(ArrayParamName, x);
         setParam(AxisParamName, axis);
     }
 
-    @GeneratorInfo(name = "sum", description = "The sums over the axis of the given 2d array")
+    @GeneratorInfo(name = "sum", description = "Sums over an axis of the 2d array")
     public Value<Number[]> apply() {
         Value<Number[][]> x = getParams().get(ArrayParamName);
         Integer axis = (Integer) getParams().get(AxisParamName).value();
