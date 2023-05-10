@@ -101,7 +101,7 @@ public class LPhyExtImpl implements LPhyExtension {
             // IO
             Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
             // Math
-            SumBoolean.class, SumRows.class, Sum.class,
+            SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,
             // Set Op
             Intersect.class,
             // Utils

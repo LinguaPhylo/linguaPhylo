@@ -17,5 +17,7 @@ public class ParameterNames {
     public static final String StartParamName = "start";
     public static final String EndParamName = "end";
 
+    public static final String AxisParamName = "axis";
+
     public static final String DecreasingParamName = "decreasing";
 }
