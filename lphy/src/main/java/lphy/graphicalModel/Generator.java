@@ -529,10 +529,12 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                 Class parameterType = argumentInfo.type;
                 Class valueType = lightweight ? arg.getClass() : ((Value) arg).value().getClass();
 
-                if (!parameterType.isAssignableFrom(valueType)) return false;
+                if (!parameterType.isAssignableFrom(valueType))
+                    return false;
                 count += 1;
             } else {
-                if (!argumentInfo.optional) return false;
+                if (!argumentInfo.optional)
+                    return false;
             }
         }
         return params == null || count == params.size();

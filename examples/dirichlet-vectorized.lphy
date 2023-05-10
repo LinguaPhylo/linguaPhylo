@@ -1,0 +1,4 @@
+weights = rep([100.0,100.0,100.0,1000.0], 2);
+rates ~ Dirichlet(conc=[100.0,100.0,100.0,1000.0], replicates=2);
+sum = sum(rates * weights);
+normalized = sum / sum(weights);

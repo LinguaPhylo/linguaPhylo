@@ -47,10 +47,10 @@ public class ParserUtils {
         SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
 
-    public static List<Generator> getMatchingFunctions(String name, Value[] values) {
+    public static List<Generator> getMatchingFunctions(String name, Value[] argValues) {
         List<Generator> matches = new ArrayList<>();
         for (Class functionClass : getFunctionClasses(name)) {
-            matches.addAll(getFunctionByArguments(name, values, functionClass));
+            matches.addAll(getFunctionByArguments(name, argValues, functionClass));
         }
         return matches;
     }
@@ -140,18 +140,18 @@ public class ParserUtils {
         return keys.size() == 0 || (keys.size() == 1 && keys.contains(IID.replicatesParamName));
     }
 
-    private static List<DeterministicFunction> getFunctionByArguments(String name, Value[] values, Class generatorClass) {
+    private static List<DeterministicFunction> getFunctionByArguments(String name, Value[] argValues, Class generatorClass) {
 
         List<DeterministicFunction> matches = new ArrayList<>();
         for (Constructor constructor : generatorClass.getConstructors()) {
             List<Argument> arguments = Generator.getArguments(constructor);
 
-            if (values.length == arguments.size() && (values.length == 1 || values.length == 2)) {
-                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, values, null, false);
+            if (argValues.length == arguments.size() && (argValues.length == 1 || argValues.length == 2)) {
+                DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, argValues, null, false);
                 if (f != null) {
                     matches.add(f);
                 }
-            } else if (values.length == 0 && arguments.stream().allMatch(x -> x.optional)) {
+            } else if (argValues.length == 0 && arguments.stream().allMatch(x -> x.optional)) {
                 DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, new Object[arguments.size()], null, false);
                 if (f != null) {
                     matches.add(f);

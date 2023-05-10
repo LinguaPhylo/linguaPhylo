@@ -26,7 +26,7 @@ public interface ElementWise2Args<R,S> {
 			Double[][] vb = b.value();
 			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 
 					r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
 				}
@@ -77,7 +77,7 @@ public interface ElementWise2Args<R,S> {
 			Double[][] vb = b.value();
 			Double[][] r = new Double[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
-				for (int j = 0; j < vb.length; j++) {
+				for (int j = 0; j < vb[i].length; j++) {
 
 					r[i][j] = (Double) o.apply(va, vb[i][j]);
 				}
@@ -92,7 +92,7 @@ public interface ElementWise2Args<R,S> {
 			Double vb = b.value();
 			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 
 					r[i][j] = (Double) o.apply(va[i][j], vb);
 				}
@@ -123,7 +123,7 @@ public interface ElementWise2Args<R,S> {
 			Integer[][] vb = b.value();
 			Integer[][] r = new Integer[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 
 					r[i][j] = (Integer) o.apply(va[i][j], vb[i][j]);
 				}
@@ -175,7 +175,7 @@ public interface ElementWise2Args<R,S> {
 			Integer[][] vb = b.value();
 			Integer[][] r = new Integer[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
-				for (int j = 0; j < vb.length; j++) {
+				for (int j = 0; j < vb[i].length; j++) {
 
 					r[i][j] = (Integer) o.apply(va, vb[i][j]);
 				}
@@ -190,7 +190,7 @@ public interface ElementWise2Args<R,S> {
 			Integer vb = b.value();
 			Integer[][] r = new Integer[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 
 					r[i][j] = (Integer) o.apply(va[i][j], vb);
 				}
@@ -248,7 +248,7 @@ public interface ElementWise2Args<R,S> {
 			Double[][] vb = b.value();
 			Double[][] r = new Double[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
-				for (int j = 0; j < vb.length; j++) {
+				for (int j = 0; j < vb[i].length; j++) {
 					r[i][j] = (Double) o.apply(va, vb[i][j]);
 				}
 			}
@@ -262,7 +262,7 @@ public interface ElementWise2Args<R,S> {
 			Integer vb = b.value();
 			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 					r[i][j] = (Double) o.apply(va[i][j], vb);
 				}
 			}
@@ -300,7 +300,7 @@ public interface ElementWise2Args<R,S> {
 			Integer[][] vb = b.value();
 			Double[][] r = new Double[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
-				for (int j = 0; j < vb.length; j++) {
+				for (int j = 0; j < vb[i].length; j++) {
 					r[i][j] = (Double) o.apply(va, vb[i][j]);
 				}
 			}
@@ -314,7 +314,7 @@ public interface ElementWise2Args<R,S> {
 			Double vb = b.value();
 			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 					r[i][j] = (Double) o.apply(va[i][j], vb);
 				}
 			}
@@ -352,7 +352,7 @@ public interface ElementWise2Args<R,S> {
 			Integer[][] vb = b.value();
 			Double[][] r = new Double[vb.length][vb[0].length];
 			for (int i = 0; i < vb.length; i++) {
-				for (int j = 0; j < vb.length; j++) {
+				for (int j = 0; j < vb[i].length; j++) {
 					r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
 				}
 			}
@@ -366,7 +366,7 @@ public interface ElementWise2Args<R,S> {
 			Double[][] vb = b.value();
 			Double[][] r = new Double[va.length][va[0].length];
 			for (int i = 0; i < va.length; i++) {
-				for (int j = 0; j < va.length; j++) {
+				for (int j = 0; j < va[i].length; j++) {
 					r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
 				}
 			}

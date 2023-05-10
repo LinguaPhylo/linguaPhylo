@@ -1,0 +1,7 @@
+// 2d array
+weights = rep([100.0, 100.0, 100.0, 1000.0], 2);
+sum = sum(weights);
+rowSums = sumRows(weights);
+// 1d array
+x = 1:10;
+sumX = sum(x);
