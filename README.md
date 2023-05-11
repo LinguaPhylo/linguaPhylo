@@ -14,9 +14,19 @@ In this project we aim to develop a model specification language to concisely an
 
 <a href="./jc-yule.png"><img src="jc-yule.png" width="450" ></a>
 
-Each line in this  model block expresses how a random variable (left of the tilde) is generated from a generative distribution.
+Each line in this model block expresses how a random variable (left of the tilde) is generated from a generative distribution.
 
 The first line creates a random variable, λ, that is log-normally distributed. The second line creates a tree, ψ, with 16 taxa from the Yule process with a lineage birth rate equal to λ. The third line produces a multiple sequence alignment with a length of 200, by simulating a Jukes Cantor model of sequence evolution down the branchs of the tree ψ. Each random variable depends on the previous, so this is a hierarchical model that ultimately defines a probability distribution of sequence alignments of size 16 x 200.
+
+### Language features
+
+The LPhy language features are described at https://linguaphylo.github.io/features/. 
+
+### ANTLR parse tree
+
+The parse tree to show how the above lphy script to be parsed by [ANTLR grammar](lphy/src/main/java/lphy/parser/Simulator.g4):
+
+<a href="./parseTree.png"><img src="parseTree.png" width="600" ></a>
 
 ### Tree generative distributions
 
