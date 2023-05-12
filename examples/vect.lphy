@@ -1,0 +1,7 @@
+x ~ Dirichlet(conc=[1,1,1,1]);
+l1 = length(x);
+y ~ Dirichlet(conc=[1,1,1,1], replicates=1);
+l2 = length(y);
+// 2d
+z ~ Dirichlet(conc=[1,1,1,1], replicates=2);
+dim = [length(z), length(z[0])];

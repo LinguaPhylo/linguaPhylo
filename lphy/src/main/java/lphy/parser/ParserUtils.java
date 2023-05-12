@@ -13,6 +13,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import static lphy.core.distributions.IID.replicatesParamName;
+
 public class ParserUtils {
 
     static Map<String, Set<Class<?>>> genDistDictionary;
@@ -137,7 +139,7 @@ public class ParserUtils {
 
         keys.removeAll(requiredArguments);
         keys.removeAll(optionalArguments);
-        return keys.size() == 0 || (keys.size() == 1 && keys.contains(IID.replicatesParamName));
+        return keys.size() == 0 || (keys.size() == 1 && keys.contains(replicatesParamName));
     }
 
     private static List<DeterministicFunction> getFunctionByArguments(String name, Value[] argValues, Class generatorClass) {
@@ -175,7 +177,12 @@ public class ParserUtils {
             if (Generator.matchingParameterTypes(arguments, initargs, params, lightweight)) {
                 return (Generator) constructor.newInstance(initargs);
             } else if (IID.match(constructor, arguments, initargs, params)) {
-                return new IID(constructor, initargs, params);
+                IID iid = new IID(constructor, initargs, params);
+                // if replicates = 1, do not apply IID
+                if (iid.size() == 1) {
+                    return (Generator) constructor.newInstance(initargs);
+                } else
+                    return new IID(constructor, initargs, params);
             } else if (vectorMatch(arguments, initargs) > 0) {
                 // do vector match
                 return vectorGenerator(constructor, arguments, initargs);
