@@ -1,6 +1,7 @@
 package lphy.core.functions;
 
 import lphy.graphicalModel.*;
+import lphy.graphicalModel.types.NumberArrayValue;
 import lphy.util.LoggerUtils;
 
 import static lphy.core.ParameterNames.ArrayParamName;
@@ -22,16 +23,20 @@ public class Sum2dArray extends DeterministicFunction<Number[]> {
         Integer axis = (Integer) getParams().get(AxisParamName).value();
 
         if (axis == 0) {
-            // sum by rols
-            SumCols sumCols = new SumCols(x);
-            return sumCols.apply();
+            // sum by cols
+            Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
+            SumUtils utils = new SumUtils();
+            Number[] sumCols = utils.sumCols(v);
+            return new NumberArrayValue(null, sumCols, this);
         } else {
             // sum by rows
             if (axis != 1) {
                 LoggerUtils.log.warning("sum(array, axis) axis should be 0 or 1, input axis is " + axis + ", using default axis=1.");
             }
-            SumRows sumRows = new SumRows(x);
-            return sumRows.apply();
+            Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
+            SumUtils utils = new SumUtils();
+            Number[] sumRows = utils.sumRows(v);
+            return new NumberArrayValue(null, sumRows, this);
         }
     }
 }

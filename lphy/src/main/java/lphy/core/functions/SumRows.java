@@ -18,15 +18,8 @@ public class SumRows extends DeterministicFunction<Number[]> {
     @GeneratorInfo(name = "sumRows", description = "Sums over each row of the given array")
     public Value<Number[]> apply() {
         Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
-
-        Number[] sum = new Number[v.length];
-        for (int i = 0; i < v.length; i++) {
-            double rowSum = 0.0;
-            for (int j = 0; j < v[i].length; j++) {
-                rowSum = rowSum + v[i][j].doubleValue();
-            }
-            sum[i] = rowSum;
-        }
+        SumUtils utils = new SumUtils();
+        Number[] sum = utils.sumRows(v);
         return new NumberArrayValue(null, sum, this);
     }
 }

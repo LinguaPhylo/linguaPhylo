@@ -15,16 +15,8 @@ public class SumCols extends DeterministicFunction<Number[]> {
     @GeneratorInfo(name = "sumCols", description = "Sums over each column of the given array")
     public Value<Number[]> apply() {
         Number[][] v = (Number[][]) getParams().get(ArrayParamName).value();
-
-        Number[] sum = new Number[v[0].length];
-        for (int j = 0; j < v[0].length; j++) {
-            double colSum = 0.0;
-            for (int i = 0; i < v.length; i++) {
-                colSum = colSum + v[i][j].doubleValue();
-            }
-            sum[j] = colSum;
-        }
-
+        SumUtils utils = new SumUtils();
+        Number[] sum = utils.sumCols(v);
         return new NumberArrayValue(null, sum, this);
     }
 }
