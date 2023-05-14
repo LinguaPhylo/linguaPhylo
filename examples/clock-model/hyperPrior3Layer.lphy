@@ -1,0 +1,27 @@
+data {
+  N=[4,6,8,10];
+  BrN = (N-1)*2;
+}
+model {
+  // mean in real space : 4.14e-08, HPD95 [3.08e-10, 5.56e-06]
+  hyperLgMean ~ Normal(mean=-17.0, sd=2.5);
+  // mean stdv : 0.135, HPD95 [0.051, 0.361]
+  hyperStdv ~ LogNormal(meanlog=-2.0, sdlog=0.3);
+
+  hypLgMeanMSS ~ Normal(mean=hyperLgMean, sd=0.5, replicates=2);
+
+  // multiplier in log space : 1.124022  2.300000  3.475978
+  // real space :              3.077205  9.974182 32.329444
+  multiplierLg ~ LogNormal(meanlog=2.3, sdlog=0.6);
+  // hyperMean * multiplier
+  hyperLgMean2 = hyperLgMean + multiplierLg;
+
+  hypLgMeanMSI ~ Normal(mean=hyperLgMean2, sd=0.5, replicates=2);
+
+  branchRatesMSS0 ~ LogNormal(meanlog=hypLgMeanMSS[0], sdlog=hyperStdv, replicates=BrN[0]);
+  branchRatesMSS1 ~ LogNormal(meanlog=hypLgMeanMSS[1], sdlog=hyperStdv, replicates=BrN[1]);
+
+  branchRatesMSI0 ~ LogNormal(meanlog=hypLgMeanMSI[0], sdlog=hyperStdv, replicates=BrN[2]);
+  branchRatesMSI1 ~ LogNormal(meanlog=hypLgMeanMSI[1], sdlog=hyperStdv, replicates=BrN[3]);
+
+}
