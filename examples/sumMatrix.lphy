@@ -1,9 +1,0 @@
-// sum of 2d array or matrix
-x = rep(1:10, 2);
-// sum matrix by rows
-sum = sum(x);
-sumRows = sumRows(x);
-sumAxis1 = sum(array=x, axis=1);
-// sum matrix by columns
-sumCols = sumCols(x);
-sumAxis0 = sum(array=x, axis=0);
