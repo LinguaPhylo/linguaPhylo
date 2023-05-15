@@ -1,7 +1,13 @@
 x ~ Dirichlet(conc=[1,1,1,1]);
 l1 = length(x);
+// replicates=1
 y ~ Dirichlet(conc=[1,1,1,1], replicates=1);
 l2 = length(y);
 // 2d
 z ~ Dirichlet(conc=[1,1,1,1], replicates=2);
 dim = [length(z), length(z[0])];
+
+// replicates = 1, 2, 3, ...
+k ~ Poisson(lambda=1.0, min=1);
+pi ~ Dirichlet(conc=[1, 1, 1, 1], replicates=k);
+L = length(pi);

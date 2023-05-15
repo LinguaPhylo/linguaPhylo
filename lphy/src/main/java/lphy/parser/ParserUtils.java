@@ -179,10 +179,10 @@ public class ParserUtils {
             } else if (IID.match(constructor, arguments, initargs, params)) {
                 IID iid = new IID(constructor, initargs, params);
                 // if replicates = 1, do not apply IID
-                if (iid.size() == 1) {
-                    return (Generator) constructor.newInstance(initargs);
-                } else
-                    return new IID(constructor, initargs, params);
+//                if (iid.size() == 1) {
+//                    return (Generator) constructor.newInstance(initargs);
+//                } else
+                    return iid;
             } else if (vectorMatch(arguments, initargs) > 0) {
                 // do vector match
                 return vectorGenerator(constructor, arguments, initargs);
