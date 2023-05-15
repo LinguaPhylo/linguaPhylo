@@ -275,8 +275,13 @@ public class GraphicalModelInterpreter extends JPanel {
                 LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
                 e.printStackTrace(System.err);
             }
+
+        //TODO below it will handle err messages for user
         } catch (SimulatorParsingException spe) {
             LoggerUtils.log.severe("Parsing of " + context + " block failed: " + spe.getMessage());
+        } catch (IllegalArgumentException ex) {
+            LoggerUtils.log.severe(ex.getMessage());
+//            LoggerUtils.logStackTrace(ex);
         }
     }
 

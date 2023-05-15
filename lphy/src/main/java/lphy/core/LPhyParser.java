@@ -1,6 +1,8 @@
 package lphy.core;
 
-import lphy.graphicalModel.*;
+import lphy.graphicalModel.Command;
+import lphy.graphicalModel.GraphicalModel;
+import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.DoubleValue;
 import lphy.graphicalModel.types.IntegerValue;
 import lphy.parser.SimulatorParsingException;
@@ -42,7 +44,7 @@ public interface LPhyParser extends GraphicalModel {
         parse(code, Context.model);
     }
 
-    void parse(String code, Context context) throws SimulatorParsingException;
+    void parse(String code, Context context) throws SimulatorParsingException,IllegalArgumentException;
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy

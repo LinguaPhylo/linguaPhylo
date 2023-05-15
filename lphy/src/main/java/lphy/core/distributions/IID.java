@@ -59,8 +59,9 @@ public class IID<T> implements GenerativeDistribution<T[]> {
         // the base distribution must be a generative distribution
         if (!(GenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass()))) return false;
 
-        // there must be a value replicates parameter
-        if (!hasValidReplicatesParam(params)) return false;
+        // there must be a valid value in replicates parameter
+        validateReplicatesParam(constructor, params);
+        //if (!hasValidReplicatesParam(params)) return false;
 
         for (int i = 0; i < arguments.size(); i++) {
             Argument argument = arguments.get(i);
@@ -85,9 +86,18 @@ public class IID<T> implements GenerativeDistribution<T[]> {
         return true;
     }
 
-    private static boolean hasValidReplicatesParam(Map<String, Value> params) {
+    // validate if the argument "replicates" is assigned correctly
+    private static void validateReplicatesParam(Constructor constructor, Map<String, Value> params) {
         Value value = params.get(replicatesParamName);
-        return value != null && value.getType() == Integer.class;
+        if (value == null || value.getType() != Integer.class)
+            throw new IllegalArgumentException("The parameter '" + replicatesParamName +
+                    "' must be an integer in " + constructor.getDeclaringClass().getSimpleName() +
+                    " ! But it is " + (value == null ? value : value.value() + " (" + value.getType() + ")") );
+        else if (((Integer) value.value()) < 1){
+            throw new IllegalArgumentException("The parameter '" + replicatesParamName +
+                    "' must >= 1 in " + constructor.getDeclaringClass().getSimpleName() +
+                    " ! But it is " + value.value());
+        }
     }
 
     public int size() {

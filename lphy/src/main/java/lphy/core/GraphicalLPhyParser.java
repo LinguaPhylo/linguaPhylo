@@ -49,7 +49,7 @@ public class GraphicalLPhyParser implements LPhyParser {
     }
 
     @Override
-    public void parse(String code, Context context) throws SimulatorParsingException {
+    public void parse(String code, Context context) throws SimulatorParsingException,IllegalArgumentException {
         wrappedParser.parse(code, context);
         notifyListeners();
     }

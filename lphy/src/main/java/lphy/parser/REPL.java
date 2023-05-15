@@ -38,7 +38,7 @@ public class REPL implements LPhyParser {
             try {
                 String cmd = (new BufferedReader(new InputStreamReader(System.in))).readLine();
                 parse(cmd);
-            } catch (IOException e) {
+            } catch (IOException | SimulatorParsingException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }
@@ -74,7 +74,7 @@ public class REPL implements LPhyParser {
 
     ;
 
-    public void parse(String cmd, Context context) throws SimulatorParsingException {
+    public void parse(String cmd, Context context) throws SimulatorParsingException,IllegalArgumentException {
         if (cmd == null) {
             return;
         }
