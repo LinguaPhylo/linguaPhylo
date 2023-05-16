@@ -234,7 +234,6 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         preferences.putBoolean(SHOW_TOOLBAR, show);
         showToolbar = show;
         toolbar.setVisible(show);
-        System.out.println("Setting toolbar display to " + show);
         repaint();
 
     }
