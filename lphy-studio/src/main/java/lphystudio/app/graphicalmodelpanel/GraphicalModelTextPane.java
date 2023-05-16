@@ -10,6 +10,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * To display the history of LPhy scripts inputted into either the data or model console.
+ */
 public class GraphicalModelTextPane extends JTextPane {
 
     LPhyParser parser;
