@@ -95,7 +95,7 @@ public class IID<T> implements GenerativeDistribution<T[]> {
             throw new IllegalArgumentException("The parameter '" + replicatesParamName +
                     "' must be an integer in " + constructorName +
                     " ! But it is " + (value == null ? value : value.value() + " (" + value.getType() + ")") );
-        else if (((Integer) value.value()) < 1){
+        else if (((Integer) value.value()) < 1){ //TODO change to 0
             throw new IllegalArgumentException("The parameter '" + replicatesParamName +
                     "' must >= 1 in " + constructorName + " ! But it is " + value.value());
         }

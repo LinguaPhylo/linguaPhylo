@@ -35,9 +35,14 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
     static final int MAX_TRIES = 10000;
 
     public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Number> lambda,
-                   @ParameterInfo(name=offsetParamName, optional = true, description = "optional parameter to add a constant to the returned result. default is 0") Value<Integer> offset,
-                   @ParameterInfo(name=minParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be greater than or equal to this mininum") Value<Integer> min,
-                   @ParameterInfo(name=maxParamName, optional = true, description = "optional parameter to specify a condition that the number of events must be less than or equal to this maximum") Value<Integer> max) {
+                   @ParameterInfo(name=offsetParamName, optional = true,
+                           description = "optional parameter to add a constant to the returned result, default is 0") Value<Integer> offset,
+                   @ParameterInfo(name=minParamName, optional = true,
+                           description = "optional parameter to specify a condition that the number of events " +
+                                   "must be greater than or equal to this mininum, default is 0.") Value<Integer> min,
+                   @ParameterInfo(name=maxParamName, optional = true,
+                           description = "optional parameter to specify a condition that the number of events " +
+                                   "must be less than or equal to this maximum") Value<Integer> max) {
         super();
         this.lambda = lambda;
         this.min = min;
