@@ -1,5 +1,6 @@
 package lphystudio.core.awt;
 
+import lphystudio.app.LinguaPhyloStudio;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.layeredgraph.LayeredGNode;
@@ -82,6 +83,12 @@ public class PreferencesHelper {
         GraphicalModelComponent component = panel.getComponent();
         //CTRL/COMMAND + SHIFT
         int modifiers = MASK + KeyEvent.SHIFT_DOWN_MASK;
+
+        JCheckBox showToolbar = new JCheckBox("Show Toolbar", GraphicalModelComponent.getShowToolbar());
+        showToolbar.addActionListener(
+                e -> component.setShowToolbar(showToolbar.isSelected(), panel.getToolbar()));
+        checkBoxList.add(showToolbar);
+
 
         JCheckBox showArgumentLabels = new JCheckBox("Show Argument Names", GraphicalModelComponent.getShowArgumentLabels());
         showArgumentLabels.addActionListener(

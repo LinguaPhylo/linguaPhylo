@@ -48,6 +48,8 @@ public class GraphicalModelPanel extends JPanel {
 
     ViewerPane rightPane;
 
+    JToolBar toolbar;
+
     JLabel repsLabel = new JLabel("reps:");
     JTextField repsField = new TidyTextField("1", 4);
     JButton sampleButton = new JButton("Sample");
@@ -489,5 +491,13 @@ public class GraphicalModelPanel extends JPanel {
         modelInterpreter.clear();
         component.clear();
         rightPane.clear();
+    }
+
+    public JToolBar getToolbar() {
+        return toolbar;
+    }
+
+    public void setToolbar(JToolBar toolbar) {
+        this.toolbar = toolbar;
     }
 }

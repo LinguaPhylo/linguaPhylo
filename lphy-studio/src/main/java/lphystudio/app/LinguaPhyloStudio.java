@@ -6,6 +6,7 @@ import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphy.system.UserDir;
 import lphy.util.LoggerUtils;
 import lphy.util.RandomUtils;
+import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.app.narrative.HTMLNarrative;
@@ -137,8 +138,16 @@ public class LinguaPhyloStudio {
         // It will not close all new frames.
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        JToolBar toolBar = createToolbar(preferencesHelper);
-        frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+        JToolBar toolbar = createToolbar(preferencesHelper);
+        panel.setToolbar(toolbar);
+        frame.getContentPane().add(toolbar, BorderLayout.NORTH);
+
+        if (GraphicalModelComponent.getShowToolbar()) {
+            toolbar.setVisible(true);
+        } else {
+            toolbar.setVisible(false);
+        }
+
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
         final int MAX_WIDTH = 1600;

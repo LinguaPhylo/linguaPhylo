@@ -47,6 +47,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     private static boolean showArgumentLabels = preferences.getBoolean(SHOW_ARGUMENT_LABELS, false);
     private static boolean useStraightEdges = preferences.getBoolean(USE_STRAIGHT_EDGES, false);
 
+    private static final String SHOW_TOOLBAR = "showToolbar";
+
+    private static boolean showToolbar = preferences.getBoolean(SHOW_TOOLBAR, true);
+
     LayeredGraph layeredGraph = null;
     public ProperLayeredGraph properLayeredGraph = null;
     Layering layering = new Layering.LongestPathFromSinks();
@@ -70,6 +74,10 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
         setup();
         parser.addGraphicalModelChangeListener(this::setup);
+    }
+
+    public static boolean getShowToolbar() {
+        return showToolbar;
     }
 
     public static boolean getUseStraightEdges() {
@@ -219,6 +227,16 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         preferences.putBoolean(SHOW_ARGUMENT_LABELS, show);
         showArgumentLabels = show;
         repaint();
+    }
+
+
+    public void setShowToolbar(boolean show, JToolBar toolbar) {
+        preferences.putBoolean(SHOW_TOOLBAR, show);
+        showToolbar = show;
+        toolbar.setVisible(show);
+        System.out.println("Setting toolbar display to " + show);
+        repaint();
+
     }
 
     public void setUseStraightEdges(boolean useStraightEdges) {
