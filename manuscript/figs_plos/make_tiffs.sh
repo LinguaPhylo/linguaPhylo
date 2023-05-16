@@ -1,0 +1,2 @@
+convert Fig2.png -units PixelsPerInch -set density '%[fx:round(w/(15*0.3937))]' -compress LZW Fig2.tiff 
+convert Fig3.png -units PixelsPerInch -set density '%[fx:round(w/(15*0.3937))]' -compress LZW Fig3.tiff 
