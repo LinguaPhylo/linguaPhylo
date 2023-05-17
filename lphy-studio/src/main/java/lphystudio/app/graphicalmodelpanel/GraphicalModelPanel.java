@@ -44,6 +44,9 @@ public class GraphicalModelPanel extends JPanel {
     GraphicalModelInterpreter modelInterpreter;
     GraphicalModelInterpreter dataInterpreter;
 
+    // default interpreter for console is model tab
+    final String DEFAULT_INTERPRETER = GraphicalModel.Context.model.toString();
+
     JTabbedPane leftPane;
 
     ViewerPane rightPane;
@@ -54,7 +57,9 @@ public class GraphicalModelPanel extends JPanel {
     JTextField repsField = new TidyTextField("1", 4);
     JButton sampleButton = new JButton("Sample");
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
-    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()});
+    JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{
+            new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()
+    });
 
     //TODO https://github.com/LinguaPhylo/linguaPhylo/issues/307
     //    JCheckBox editValues = new JCheckBox("Edit values");
@@ -195,6 +200,13 @@ public class GraphicalModelPanel extends JPanel {
         JTabbedPane interpreterPane = new JTabbedPane();
         interpreterPane.add("data", dataInterpreter);
         interpreterPane.add("model", modelInterpreter);
+
+        // set default model or model interpreter
+        if (DEFAULT_INTERPRETER.equals(GraphicalModel.Context.model.toString())) {
+            interpreterPane.setSelectedComponent(modelInterpreter);
+        } else {
+            interpreterPane.setSelectedComponent(dataInterpreter);
+        }
 
         verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, horizSplitPane, interpreterPane);
         verticalSplitPane.setResizeWeight(0.75);
