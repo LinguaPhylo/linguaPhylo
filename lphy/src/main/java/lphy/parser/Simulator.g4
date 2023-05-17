@@ -85,12 +85,16 @@ distribution : NAME '(' expression_list ')' ;
 // with a name on the left side of an equals sign (=) and an expression on the right side.
 named_expression: NAME '=' expression ;
 
+// rule for array expression
+array_expression
+    : '[' unnamed_expression_list? ']'
+    ;
 
 expression
     : constant
     | NAME
     | '(' expression ')'
-    | '[' unnamed_expression_list ']'
+    | array_expression
     | expression '[' range_list ']'
     | methodCall
     | objectMethodCall

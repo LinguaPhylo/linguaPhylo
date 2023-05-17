@@ -110,6 +110,11 @@ distribution : NAME '(' expression_list ')' ;
 // a named_expression which consists of a variable name (NAME) followed by an equal sign and an expression.
 named_expression : NAME '=' expression ;
 
+// rule for array expression
+array_expression
+    : '[' unnamed_expression_list? ']'
+    ;
+
 // define an expression which can be a constant, variable name, a parenthesized expression,
 // a list of unnamed expressions enclosed in square brackets, a method call, an object method call,
 // an increment/decrement operation, a prefix operation, a binary operation, a ternary operation,
@@ -118,7 +123,7 @@ expression
     : constant
     | NAME
     | '(' expression ')'
-    | '[' unnamed_expression_list ']'
+    | array_expression
     | expression '[' range_list ']'
     | methodCall
     | objectMethodCall
