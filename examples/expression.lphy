@@ -1,4 +1,7 @@
 b ~ Exp(mean=1.0);
 c ~ Exp(mean=0.5);
 d ~ Exp(mean=0.33333);
-a = b + c * d;
+a = 1 / (b + c * d + 1.0);
+x ~ Poisson(lambda=a, min=1);
+y = 1:x*x;
+z = 1.0 + x + y;

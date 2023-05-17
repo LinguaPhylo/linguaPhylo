@@ -1,3 +1,0 @@
-a ~ Poisson(lambda=1.0);
-b = a + 1;
-y = 1:b*b;

@@ -1,7 +1,3 @@
-b ~ Exp(mean=1.0);
-c ~ Exp(mean=0.5);
-d ~ Exp(mean=0.33333);
-a = 1 / (b + c * d + 1.0);
-x ~ Exp(mean=a);
+x ~ Exp(mean=1.0);
 y ~ Exp(mean=0.2);
-z = 1.0 + x + y;
+point = [x,y];
