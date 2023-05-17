@@ -491,6 +491,11 @@ public class SimulatorListenerLightweightImpl extends AbstractLightweightBaseLis
         }
 
         @Override
+        public Object visitArray_expression(Array_expressionContext ctx) {
+            throw new UnsupportedOperationException("Lightweight parser is not supported ! " + ctx.getText());
+        }
+
+        @Override
         public Object visitMethodCall(MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();

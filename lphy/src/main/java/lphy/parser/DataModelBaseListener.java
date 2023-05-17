@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from lphy/parser/DataModel.g4 by ANTLR 4.12.0
 package lphy.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -120,30 +120,6 @@ public class DataModelBaseListener implements DataModelListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelation(DataModelParser.RelationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFor_loop(DataModelParser.For_loopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFor_loop(DataModelParser.For_loopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCounter(DataModelParser.CounterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCounter(DataModelParser.CounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -312,6 +288,18 @@ public class DataModelBaseListener implements DataModelListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNamed_expression(DataModelParser.Named_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArray_expression(DataModelParser.Array_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArray_expression(DataModelParser.Array_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

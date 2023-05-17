@@ -252,7 +252,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
 
         /**
          * @param ctx
-         * @return a Slice or ElementsAt function
+         * @return a Slice or ElementsAt function, e.g. x[0]
          */
         private Object visitIndexRange(SimulatorParser.ExpressionContext ctx) {
 
@@ -295,6 +295,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
 
+                // getChild(1) to parse the array index, e.g. x[0]
                 if (s.equals("[")) {
                     return visitIndexRange(ctx);
                 }
@@ -383,103 +384,8 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
                     Value f1 = (Value) visit(ctx.getChild(2));
                     expression = new ExpressionNode1Arg(ctx.getText(), ExpressionNode1Arg.not(), f1);
                     return expression;
-                } else if (s.equals("[")) {
-
-                    // get unnamed expression list
-                    Value[] var = (Value[]) visit(ctx.getChild(1));
-                    Class<?> type = ValueUtils.getType(var);
-
-                    // if all values null assume double array
-                    if (type == Double.class) {
-                        if (allConstants(var)) {
-                            Double[] value = new Double[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Double) var[i].value();
-                            }
-                            return new DoubleArrayValue(null, value);
-                        } else {
-                            DoubleArray doubleArray = new DoubleArray(var);
-                            return doubleArray.apply();
-                        }
-                    } else if (type == Double[].class) {
-                        Double[][] value = new Double[var.length][];
-                        for (int i = 0; i < value.length; i++) {
-                            if (var[i] != null) value[i] = (Double[]) var[i].value();
-                        }
-                        return new DoubleArray2DValue(null, value);
-                    } else if (type == Integer[].class) {
-                        Integer[][] value = new Integer[var.length][];
-                        for (int i = 0; i < value.length; i++) {
-                            if (var[i] != null) value[i] = (Integer[]) var[i].value();
-                        }
-                        return new IntegerArray2DValue(null, value);
-                    } else if (type == Integer.class) {
-                        if (allConstants(var)) {
-                            Integer[] value = new Integer[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Integer) var[i].value();
-                            }
-                            return new IntegerArrayValue(null, value);
-                        } else {
-                            IntegerArray intArray = new IntegerArray(var);
-                            return intArray.apply();
-                        }
-                    } else if (type == Boolean[].class) {
-                        Boolean[][] value = new Boolean[var.length][];
-                        for (int i = 0; i < value.length; i++) {
-                            if (var[i] != null) value[i] = (Boolean[]) var[i].value();
-                        }
-                        BooleanArray2DValue v = new BooleanArray2DValue(null, value);
-                        return v;
-                    } else if (type == Boolean.class) {
-                        if (allConstants(var)) {
-                            Boolean[] value = new Boolean[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Boolean) var[i].value();
-                            }
-                            BooleanArrayValue v = new BooleanArrayValue(null, value);
-                            return v;
-                        } else {
-                            BooleanArray booleanArray = new BooleanArray(var);
-                            return booleanArray.apply();
-                        }
-                    } else if (type == String[].class) {
-                        String[][] value = new String[var.length][];
-                        for (int i = 0; i < value.length; i++) {
-                            if (var[i] != null) value[i] = (String[]) var[i].value();
-                        }
-                        StringArray2DValue v = new StringArray2DValue(null, value);
-                        return v;
-                    } else if (type == String.class) {
-                        if (allConstants(var)) {
-                            String[] value = new String[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                value[i] = (String) var[i].value();
-                            }
-                            StringArrayValue v = new StringArrayValue(null, value);
-                            return v;
-                        } else {
-                            StringArray stringArray = new StringArray(var);
-                            return stringArray.apply();
-                        }
-                    } else if (type == Number.class) {
-                        if (allConstants(var)) {
-                            Number[] value = new Number[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                value[i] = (Number) var[i].value();
-                            }
-                            NumberArrayValue v = new NumberArrayValue(null, value);
-                            return v;
-                        } else {
-                            NumberArray numberArray = new NumberArray(var);
-                            return numberArray.apply();
-                        }
-                    } else {
-                        // handle generic value array construction
-                        ArrayFunction arrayFunction = new ArrayFunction(var);
-                        return arrayFunction.apply();
-                    }
                 }
+                // parsing array moves to visitArray_expression
             }
 
             return super.visitExpression(ctx);
@@ -574,40 +480,6 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
 
         }
 
-
-        @Override // for_loop: counter relations
-        public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
-            ParseTree counter = ctx.getChild(0);
-            // counter: FOR '(' NAME IN range_element ')'
-            String name = counter.getChild(2).getText();
-
-            // either an IntegerValue, an IntegerArrayValue or a Range function
-            GraphicalModelNode range = (GraphicalModelNode) visit(counter.getChild(4));
-            Object rangeValue = range.value();
-
-
-            Integer[] intRange;
-            if (rangeValue instanceof Integer[]) {
-                intRange = (Integer[]) rangeValue;
-            } else if (rangeValue instanceof Integer) {
-                intRange = new Integer[]{(Integer) rangeValue};
-            } else throw new SimulatorParsingException("Unexpected type of range element in for loop: " + rangeValue, ctx);
-
-
-            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[]) rangeValue);
-            for (Integer i : intRange) {
-
-                put(name, new IntegerValue(name, i, null));
-                ParseTree relations = ctx.getChild(1);
-                visit(relations);
-            }
-            return new Object() {
-                public String toString() {
-                    return forLoopName;
-                }
-            };
-        }
-
         /**
          * @param ctx
          * @return and array of ArgumentValue objects
@@ -639,6 +511,118 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
                 } else throw new SimulatorParsingException("Found a non-value, non-function in unnamed expression list: " + obj, ctx);
             }
             return list.toArray(new Value[]{});
+        }
+
+        /**
+         * @param ctx the array, e.g. [1,2,3]
+         * @return an array object depending on its type
+         */
+        @Override
+        public Object visitArray_expression(SimulatorParser.Array_expressionContext ctx) {
+            if (ctx.getChildCount() >= 2) {
+                String s = ctx.getChild(0).getText();
+                if (s.equals("[")) {
+                    // get unnamed expression list
+                    Value[] var = (Value[]) visit(ctx.getChild(1));
+                    if (var == null)
+                        return new DoubleArrayValue(null, new Double[0]);
+
+                    Class<?> type = ValueUtils.getType(var);
+
+                    // if all values null assume double array
+                    if (type == Double.class) {
+                        if (allConstants(var)) {
+                            Double[] value = new Double[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                if (var[i] != null) value[i] = (Double) var[i].value();
+                            }
+                            return new DoubleArrayValue(null, value);
+                        } else {
+                            DoubleArray doubleArray = new DoubleArray(var);
+                            return doubleArray.apply();
+                        }
+                    } else if (type == Double[].class) {
+                        Double[][] value = new Double[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            if (var[i] != null) value[i] = (Double[]) var[i].value();
+                        }
+                        return new DoubleArray2DValue(null, value);
+                    } else if (type == Integer[].class) {
+                        Integer[][] value = new Integer[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            if (var[i] != null) value[i] = (Integer[]) var[i].value();
+                        }
+                        return new IntegerArray2DValue(null, value);
+                    } else if (type == Integer.class) {
+                        if (allConstants(var)) {
+                            Integer[] value = new Integer[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                if (var[i] != null) value[i] = (Integer) var[i].value();
+                            }
+                            return new IntegerArrayValue(null, value);
+                        } else {
+                            IntegerArray intArray = new IntegerArray(var);
+                            return intArray.apply();
+                        }
+                    } else if (type == Boolean[].class) {
+                        Boolean[][] value = new Boolean[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            if (var[i] != null) value[i] = (Boolean[]) var[i].value();
+                        }
+                        BooleanArray2DValue v = new BooleanArray2DValue(null, value);
+                        return v;
+                    } else if (type == Boolean.class) {
+                        if (allConstants(var)) {
+                            Boolean[] value = new Boolean[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                if (var[i] != null) value[i] = (Boolean) var[i].value();
+                            }
+                            BooleanArrayValue v = new BooleanArrayValue(null, value);
+                            return v;
+                        } else {
+                            BooleanArray booleanArray = new BooleanArray(var);
+                            return booleanArray.apply();
+                        }
+                    } else if (type == String[].class) {
+                        String[][] value = new String[var.length][];
+                        for (int i = 0; i < value.length; i++) {
+                            if (var[i] != null) value[i] = (String[]) var[i].value();
+                        }
+                        StringArray2DValue v = new StringArray2DValue(null, value);
+                        return v;
+                    } else if (type == String.class) {
+                        if (allConstants(var)) {
+                            String[] value = new String[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (String) var[i].value();
+                            }
+                            StringArrayValue v = new StringArrayValue(null, value);
+                            return v;
+                        } else {
+                            StringArray stringArray = new StringArray(var);
+                            return stringArray.apply();
+                        }
+                    } else if (type == Number.class) {
+                        if (allConstants(var)) {
+                            Number[] value = new Number[var.length];
+                            for (int i = 0; i < value.length; i++) {
+                                value[i] = (Number) var[i].value();
+                            }
+                            NumberArrayValue v = new NumberArrayValue(null, value);
+                            return v;
+                        } else {
+                            NumberArray numberArray = new NumberArray(var);
+                            return numberArray.apply();
+                        }
+                    } else {
+                        // handle generic value array construction
+                        ArrayFunction arrayFunction = new ArrayFunction(var);
+                        return arrayFunction.apply();
+                    }
+                }
+                throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
+            }
+            return super.visitArray_expression(ctx);
         }
 
         /**
@@ -908,4 +892,38 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
             throw new IllegalArgumentException("Expected 1 argument: a file name");
         }
     }
+
+
+//        @Override // for_loop: counter relations
+//        public Object visitFor_loop(SimulatorParser.For_loopContext ctx) {
+//            ParseTree counter = ctx.getChild(0);
+//            // counter: FOR '(' NAME IN range_element ')'
+//            String name = counter.getChild(2).getText();
+//
+//            // either an IntegerValue, an IntegerArrayValue or a Range function
+//            GraphicalModelNode range = (GraphicalModelNode) visit(counter.getChild(4));
+//            Object rangeValue = range.value();
+//
+//
+//            Integer[] intRange;
+//            if (rangeValue instanceof Integer[]) {
+//                intRange = (Integer[]) rangeValue;
+//            } else if (rangeValue instanceof Integer) {
+//                intRange = new Integer[]{(Integer) rangeValue};
+//            } else throw new SimulatorParsingException("Unexpected type of range element in for loop: " + rangeValue, ctx);
+//
+//
+//            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[]) rangeValue);
+//            for (Integer i : intRange) {
+//
+//                put(name, new IntegerValue(name, i, null));
+//                ParseTree relations = ctx.getChild(1);
+//                visit(relations);
+//            }
+//            return new Object() {
+//                public String toString() {
+//                    return forLoopName;
+//                }
+//            };
+//        }
 }

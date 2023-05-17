@@ -3,6 +3,7 @@ package lphy.graphicalModel;
 import lphy.core.narrative.Narrative;
 import lphy.parser.functions.ExpressionNode;
 import lphy.parser.functions.ExpressionNodeWrapper;
+import lphy.util.LoggerUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -251,7 +252,7 @@ public interface GraphicalModel {
                         builder.append(valueNarrative);
                         if (valueNarrative.length() > 0) builder.append("\n");
                     } else {
-//                        LoggerUtils.log.info("No name count found for " + modelValue + " with name " + name);
+                        LoggerUtils.log.info("No name count found for " + modelValue + " with name " + name);
                     }
                 }
                 builder.append("\n");

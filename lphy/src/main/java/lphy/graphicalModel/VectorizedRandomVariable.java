@@ -26,9 +26,14 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
     }
 
     private static Object[] unwrapValues(List<RandomVariable> values) {
-        Object[] result = (Object[]) Array.newInstance(values.get(0).value().getClass(), values.size());
-        for (int i = 0; i < result.length; i++) {
-            result[i] = values.get(i).value();
+        Object[] result;
+        if (values.size() == 0)
+            result = new Object[0];
+        else{
+            result = (Object[]) Array.newInstance(values.get(0).value().getClass(), values.size());
+            for (int i = 0; i < result.length; i++) {
+                result[i] = values.get(i).value();
+            }
         }
         return result;
     }
@@ -57,6 +62,8 @@ public class VectorizedRandomVariable<T> extends RandomVariable<T[]> implements 
 
     @Override
     public RandomVariable<T> getComponentValue(int i) {
+//        if (componentVariables.size() == 0)
+//            return null;// new RandomVariable
         return componentVariables.get(i);
     }
 }

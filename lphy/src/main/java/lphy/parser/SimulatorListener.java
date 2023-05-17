@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from lphy/parser/Simulator.g4 by ANTLR 4.12.0
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -47,26 +47,6 @@ public interface SimulatorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelation(SimulatorParser.RelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimulatorParser#for_loop}.
-	 * @param ctx the parse tree
-	 */
-	void enterFor_loop(SimulatorParser.For_loopContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimulatorParser#for_loop}.
-	 * @param ctx the parse tree
-	 */
-	void exitFor_loop(SimulatorParser.For_loopContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimulatorParser#counter}.
-	 * @param ctx the parse tree
-	 */
-	void enterCounter(SimulatorParser.CounterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimulatorParser#counter}.
-	 * @param ctx the parse tree
-	 */
-	void exitCounter(SimulatorParser.CounterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimulatorParser#assignment}.
 	 * @param ctx the parse tree
@@ -207,6 +187,16 @@ public interface SimulatorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNamed_expression(SimulatorParser.Named_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimulatorParser#array_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray_expression(SimulatorParser.Array_expressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimulatorParser#array_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray_expression(SimulatorParser.Array_expressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimulatorParser#expression}.
 	 * @param ctx the parse tree

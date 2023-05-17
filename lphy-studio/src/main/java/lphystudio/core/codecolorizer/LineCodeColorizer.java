@@ -190,7 +190,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
                     element.add((TextElement) visit(ctx.getChild(ctx.getChildCount() - 1)));
                     return element;
                 } else if (s.equals("[")) {
-
+                    // getChild(1) to parse the array index, e.g. x[0]
                     TextElement e = (TextElement) visit(ctx.getChild(0));
                     e.add(new TextElement("[", punctuationStyle));
                     e.add((TextElement) visit(ctx.getChild(2)));
@@ -206,13 +206,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
                     element.add(ctx.getChild(0).getText(), punctuationStyle);
                     element.add((TextElement) visit(ctx.getChild(2)));
                     return element;
-                } else if (s.equals("[")) {
 
-                    TextElement e = new TextElement("[", punctuationStyle);
-                    e.add((TextElement) visit(ctx.getChild(1)));
-                    e.add("]", punctuationStyle);
-
-                    return e;
                 } else if (s.equals("(")) {
 
                     TextElement e = new TextElement("(", punctuationStyle);
@@ -221,6 +215,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
 
                     return e;
                 }
+                // parsing array moves to visitArray_expression
             }
 
             Object exp = super.visitExpression(ctx);
@@ -241,6 +236,31 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
             throw new RuntimeException(exp + " of type " + exp.getClass());
 
             //return new TextElement(ctx.getText(), Color.magenta);
+        }
+
+        /**
+         * @param ctx the array, e.g. [1,2,3]
+         * @return {@link TextElement} of an array, which can be an empty array.
+         */
+        @Override
+        public Object visitArray_expression(Array_expressionContext ctx) {
+            if (ctx.getChildCount() >= 2) {
+
+                String s = ctx.getChild(0).getText();
+
+                if (s.equals("[")) {
+
+                    TextElement e = new TextElement("[", punctuationStyle);
+                    TextElement textElement = (TextElement) visit(ctx.getChild(1));
+                    if (textElement != null)
+                        e.add(textElement);
+                    e.add("]", punctuationStyle);
+
+                    return e;
+                }
+            }
+
+            throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
         }
 
         @Override
@@ -293,7 +313,8 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
                     element.add(", ", punctuationStyle);
                 }
             }
-            return element;        }
+            return element;
+        }
 
         @Override
         public Object visitMethodCall(MethodCallContext ctx) {

@@ -95,9 +95,9 @@ public class IID<T> implements GenerativeDistribution<T[]> {
             throw new IllegalArgumentException("The parameter '" + replicatesParamName +
                     "' must be an integer in " + constructorName +
                     " ! But it is " + (value == null ? value : value.value() + " (" + value.getType() + ")") );
-        else if (((Integer) value.value()) < 1){ //TODO change to 0
+        else if (((Integer) value.value()) < 0){
             throw new IllegalArgumentException("The parameter '" + replicatesParamName +
-                    "' must >= 1 in " + constructorName + " ! But it is " + value.value());
+                    "' must >= 0 in " + constructorName + " ! But it is " + value.value());
         }
         return true;
     }
@@ -117,7 +117,12 @@ public class IID<T> implements GenerativeDistribution<T[]> {
             builder.append(narrative.product("i", "0", getReplicatesTo(narrative)));
 
             Generator generator = baseDistribution;
-            Value v = vrv.getComponentValue(0);
+
+            Value v;
+            if (vrv.size() < 1)
+                v = vrv;
+            else
+                v = vrv.getComponentValue(0);
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
@@ -139,19 +144,27 @@ public class IID<T> implements GenerativeDistribution<T[]> {
             StringBuilder builder = new StringBuilder();
 
             Generator generator = baseDistribution;
-            Value v = vrv.getComponentValue(0);
 
+            Value v;
+            if (vrv.size() < 1)
+                return ""; //TODO narrative for empty array
+            else
+                v = vrv.getComponentValue(0);
 
             String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
-            inferenceNarrative = inferenceNarrative.replace(narrative.subscript("0"), narrative.subscript("i"));
+
+            if (size() > 1)
+                inferenceNarrative = inferenceNarrative.replace(narrative.subscript("0"), narrative.subscript("i"));
             if (inferenceNarrative.endsWith(".")) {
                 inferenceNarrative = inferenceNarrative.substring(0, inferenceNarrative.lastIndexOf('.'));
             }
 
             builder.append(inferenceNarrative);
 
-            builder.append(getReplicatesNarrativeClause(narrative));
+            if (size() > 1)
+                builder.append(getReplicatesNarrativeClause(narrative));
 
+            builder.append(".");
             return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
@@ -170,9 +183,9 @@ public class IID<T> implements GenerativeDistribution<T[]> {
     }
 
     public String getReplicatesNarrativeClause(Narrative narrative) {
-        return ", for i in 0 to " + getReplicatesTo(narrative) + ".";
+        return ", for i in 0 to " + getReplicatesTo(narrative);
     }
-    
+
     /**
      * @param value
      * @return the narrative name for the given value, being a parameter of this generator.

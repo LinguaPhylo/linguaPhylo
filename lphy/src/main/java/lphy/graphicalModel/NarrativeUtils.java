@@ -107,11 +107,13 @@ public class NarrativeUtils {
     }
 
     public static boolean hasSingleGeneratorOutput(Value value) {
-        return value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator);
+        return value != null && value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator);
     }
 
 
     public static String getName(Value value) {
+        // empty array
+//        if (value == null) return "";
 
         String name;
 
@@ -138,6 +140,9 @@ public class NarrativeUtils {
     }
 
     public static String getValueClause(Value value, boolean unique, boolean lowercase, boolean plural, Generator generator, Narrative narrative) {
+        // empty array
+//        if (value == null) return "";
+
         StringBuilder builder = new StringBuilder();
 
         String name;

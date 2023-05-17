@@ -283,6 +283,7 @@ public class GraphicalModelPanel extends JPanel {
         // the code may be changed by GUI, such as squared rectangles.
         dataInterpreter.clear();
         modelInterpreter.clear();
+        // refresh data and model lines
         String text = codeBuilder.getCode(component.getParser());
         dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParser.Context.data);
         modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParser.Context.model);

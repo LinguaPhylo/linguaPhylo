@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from lphy/parser/Simulator.g4 by ANTLR 4.12.0
 package lphy.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -60,30 +60,6 @@ public class SimulatorBaseListener implements SimulatorListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelation(SimulatorParser.RelationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFor_loop(SimulatorParser.For_loopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFor_loop(SimulatorParser.For_loopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCounter(SimulatorParser.CounterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCounter(SimulatorParser.CounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -252,6 +228,18 @@ public class SimulatorBaseListener implements SimulatorListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNamed_expression(SimulatorParser.Named_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArray_expression(SimulatorParser.Array_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArray_expression(SimulatorParser.Array_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

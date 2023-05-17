@@ -1,6 +1,5 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from lphy/parser/DataModel.g4 by ANTLR 4.12.0
 package lphy.parser;
-
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -42,13 +41,13 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeterm_relations(DataModelParser.Determ_relationsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#relation_list()}.
+	 * Visit a parse tree produced by {@link DataModelParser#relation_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRelation_list(DataModelParser.Relation_listContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_list()}.
+	 * Visit a parse tree produced by {@link DataModelParser#determ_relation_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -65,18 +64,6 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRelation(DataModelParser.RelationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataModelParser#for_loop}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFor_loop(DataModelParser.For_loopContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DataModelParser#counter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCounter(DataModelParser.CounterContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DataModelParser#assignment}.
 	 * @param ctx the parse tree
@@ -162,7 +149,13 @@ public interface DataModelVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNamed_expression(DataModelParser.Named_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DataModelParser#expression()}.
+	 * Visit a parse tree produced by {@link DataModelParser#array_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray_expression(DataModelParser.Array_expressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DataModelParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

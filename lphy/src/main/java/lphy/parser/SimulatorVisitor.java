@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from lphy/parser/Simulator.g4 by ANTLR 4.12.0
 package lphy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -23,7 +23,7 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelations(SimulatorParser.RelationsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#relation_list()}.
+	 * Visit a parse tree produced by {@link SimulatorParser#relation_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -34,18 +34,6 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRelation(SimulatorParser.RelationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#for_loop}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFor_loop(SimulatorParser.For_loopContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#counter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCounter(SimulatorParser.CounterContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimulatorParser#assignment}.
 	 * @param ctx the parse tree
@@ -131,7 +119,13 @@ public interface SimulatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNamed_expression(SimulatorParser.Named_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimulatorParser#expression()}.
+	 * Visit a parse tree produced by {@link SimulatorParser#array_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray_expression(SimulatorParser.Array_expressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SimulatorParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

@@ -35,6 +35,8 @@ public class LaTeXUtils {
      * @return the id of the given value in an appropriate math mode format for insertion into a LaTeX document, or null if the value is anonymous
      */
     public static String getMathId(Value value, boolean inline, boolean useBoldSymbol) {
+        // empty array
+//        if (value == null) return "";
 
         String id = value.getId();
         if (value.isAnonymous() || id == null) return null;

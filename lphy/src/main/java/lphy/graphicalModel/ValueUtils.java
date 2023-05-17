@@ -176,7 +176,8 @@ public class ValueUtils {
 
     /**
      * @param var an array of values
-     * @return the type of the array if all values are the same type (or null), or Object if the types are different.
+     * @return the type of the array if all values are the same type (or null),
+     *         or Object if the types are different.
      */
     public static Class<?> getType(Value[] var) {
 
