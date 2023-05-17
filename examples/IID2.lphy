@@ -1,0 +1,5 @@
+// TODO require replicates = 0
+// replicates = 1, 2, 3, ...
+n ~ Poisson(lambda=1.0, min=1);
+pi ~ Dirichlet(conc=[1, 1, 1, 1], replicates=n);
+L = length(pi);
