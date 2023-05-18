@@ -1,5 +1,0 @@
-// empty array
-e = [];
-L = length(e);
-f = [[]];
-L1 = length(f);

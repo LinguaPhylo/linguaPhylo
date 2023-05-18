@@ -175,7 +175,7 @@ public class SimulatorListenerImpl extends SimulatorBaseListener implements LPhy
                 var.assign(value, null, context);
                 return value;
             } else {
-                LoggerUtils.log.severe("in visitDeterm_relation() expecting a function or a value!");
+                LoggerUtils.log.severe("in visitDeterm_relation() expecting a function or a value! " + expr);
 
             }
             return null;
