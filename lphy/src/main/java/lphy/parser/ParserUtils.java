@@ -49,6 +49,8 @@ public class ParserUtils {
         SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
 
+    private static final int MAX_UNNAMED_ARGS = 3;
+
     public static List<Generator> getMatchingFunctions(String name, Value[] argValues) {
         List<Generator> matches = new ArrayList<>();
         for (Class functionClass : getFunctionClasses(name)) {
@@ -148,7 +150,9 @@ public class ParserUtils {
         for (Constructor constructor : generatorClass.getConstructors()) {
             List<Argument> arguments = Generator.getArguments(constructor);
 
-            if (argValues.length == arguments.size() && (argValues.length == 1 || argValues.length == 2)) {
+            // unnamed args
+            if (argValues.length == arguments.size() &&
+                    (argValues.length > 0 && argValues.length <= MAX_UNNAMED_ARGS) ){
                 DeterministicFunction f = (DeterministicFunction) constructGenerator(name, constructor, arguments, argValues, null, false);
                 if (f != null) {
                     matches.add(f);
@@ -187,7 +191,7 @@ public class ParserUtils {
                 // do vector match
                 return vectorGenerator(constructor, arguments, initargs);
             } else {
-                throw new RuntimeException("ERROR! No match in " + name + " constructor arguments, including vector match! ");
+                throw new RuntimeException("ERROR! No match in '" + name + "' constructor arguments, including vector match! ");
             }
 
         } catch (InstantiationException|IllegalAccessException|InvocationTargetException e) {
