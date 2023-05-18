@@ -24,7 +24,7 @@ public class Sum extends DeterministicFunction<Number> {
             sum += x[i].doubleValue();
         }
 
-        if(x[0] instanceof Integer) {
+        if(x.length > 0 && x[0] instanceof Integer) {
             return new NumberValue<>(null, (int) sum, this);
         }
         return new NumberValue<>(null, sum, this);
