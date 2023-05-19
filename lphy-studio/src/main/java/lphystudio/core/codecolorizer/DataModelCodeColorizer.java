@@ -437,7 +437,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();
 
         // containing either or both a data and model block;
-        return LPhyParserAction.parse(CASentence, visitor, true);
+        return LPhyParserAction.parse(CASentence, visitor);
     }
 
 }

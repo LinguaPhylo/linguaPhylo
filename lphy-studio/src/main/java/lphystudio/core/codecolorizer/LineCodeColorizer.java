@@ -370,7 +370,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
 
         LPhyASTVisitor visitor = new LPhyASTVisitor();
         // no data and model blocks
-        return LPhyParserAction.parse(CASentence, visitor, false);
+        return LPhyParserAction.parse(CASentence, visitor);
     }
 
     private TextElement getIDElement(String key) {
