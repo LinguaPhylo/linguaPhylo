@@ -40,8 +40,7 @@ var: NAME | NAME '[' range_list ']';
 
 // a rule called range_list which specifies a comma-separated list of expressions.
 // (',' expression)* is a zero or more repetition of the pattern ", expression".
-// This means that after the first expression, any number of additional expressions can follow,
-// each separated by a comma.
+// This means to define the range of index for arrays, inlcuding array of arrays scenario.
 range_list : expression (',' expression)*  ;
 
 // a rule called determ_relation that matches a var followed by an assignment followed by an expression.
@@ -80,8 +79,8 @@ distribution : NAME '(' expression_list ')' ;
 // a named_expression which consists of a variable name (NAME) followed by an equal sign and an expression.
 named_expression : NAME ASSIGN expression ;
 
-// rule for array expression
-array_expression : '[' unnamed_expression_list? ']' ;
+// rule for array expression, empty array [] is not allowed
+array_expression : '[' unnamed_expression_list ']' ;
 
 // define an expression which can be a constant, variable name, a parenthesized expression,
 // a list of unnamed expressions enclosed in square brackets, a method call, an object method call,
@@ -96,25 +95,18 @@ expression
     | methodCall
     | objectMethodCall
     | expression postfix=('++' | '--')
-    | prefix=('+'|'-'|'++'|'--') expression
-//    | prefix=('~'|'!') expression
-//    | prefix=('!') expression
+    | prefix=('+'|'-'|'++'|'--'|'!') expression
     | expression bop=('**'|'*'|'/'|'%') expression
     | expression bop=('+'|'-') expression
     | expression ('<' '<' | '>' '>' '>' | '>' '>') expression
     | expression bop=('<=' | '>=' | '>' | '<') expression
     | expression bop=('==' | '!=') expression
-    | expression bop='&' expression
+    | expression bop=('&&' | '||') expression
+    | expression bop=('&' | '|') expression
     | expression bop='^' expression
-    | expression bop='|' expression
-    | expression bop='&&' expression
-    | expression bop='||' expression
     | expression bop=':' expression
+    | expression bop='?' expression ':' expression
     | mapFunction
-//    | expression bop='?' expression ':' expression
-//    | <assoc=right> expression
-//      bop=('=' | '+=' | '-=' | '*=' | '/=' | '&=' | '|=' | '^=' | '>>=' | '>>>=' | '<<=' | '%=')
-//	  expression
 ;
 
 // Identifiers
