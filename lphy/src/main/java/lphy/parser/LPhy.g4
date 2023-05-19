@@ -94,18 +94,20 @@ expression
     | expression '[' range_list ']'
     | methodCall
     | objectMethodCall
-    | expression postfix=('++' | '--')
-    | prefix=('+'|'-'|'++'|'--'|'!') expression
+    | prefix=('+'|'-'|'!') expression
+    // ** is power, % is mod
     | expression bop=('**'|'*'|'/'|'%') expression
     | expression bop=('+'|'-') expression
-    | expression ('<' '<' | '>' '>' '>' | '>' '>') expression
     | expression bop=('<=' | '>=' | '>' | '<') expression
     | expression bop=('==' | '!=') expression
     | expression bop=('&&' | '||') expression
-    | expression bop=('&' | '|') expression
-    | expression bop='^' expression
+    // create an array
     | expression bop=':' expression
-    | expression bop='?' expression ':' expression
+    // bitwise
+    | expression bop=('&' | '|') expression
+    // TODO Java code is commented out
+    | expression ('<' '<' | '>' '>' '>' | '>' '>' | '^') expression
+//    | expression bop='?' expression ':' expression // conflict with expression bop=':' expression
     | mapFunction
 ;
 
