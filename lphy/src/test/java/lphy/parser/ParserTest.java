@@ -42,7 +42,7 @@ public class ParserTest {
     private void parse(String cmd) {
         Object o = null;
         try {
-            SimulatorListenerImpl parser = new SimulatorListenerImpl(lPhyParser, LPhyParser.Context.model);
+            LPhyListenerImpl parser = new LPhyListenerImpl(lPhyParser, LPhyParser.Context.model);
             o = parser.parse(cmd);
         } catch (Exception e) {
             fail("CMD " + cmd + " failed to parse, Exception :\n" + e.getMessage());
