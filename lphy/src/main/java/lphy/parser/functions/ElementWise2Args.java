@@ -1,4 +1,4 @@
-package lphy.parser;
+package lphy.parser.functions;
 
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;

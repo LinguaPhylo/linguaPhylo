@@ -3,7 +3,6 @@ package lphy.parser.functions;
 
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
-import lphy.parser.ElementWise1Arg;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.LinkedHashMap;

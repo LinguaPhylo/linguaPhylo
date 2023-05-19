@@ -3,7 +3,6 @@ package lphy.parser.functions;
 import lphy.graphicalModel.GeneratorInfo;
 import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
-import lphy.parser.ElementWise2Args;
 import lphy.util.LoggerUtils;
 
 import java.util.LinkedHashMap;
