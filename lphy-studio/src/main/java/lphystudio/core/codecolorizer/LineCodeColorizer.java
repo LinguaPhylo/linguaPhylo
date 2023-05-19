@@ -4,8 +4,11 @@ package lphystudio.core.codecolorizer;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.parser.*;
-import lphy.parser.SimulatorParser.*;
+import lphy.parser.LPhyBaseListener;
+import lphy.parser.LPhyBaseVisitor;
+import lphy.parser.LPhyParser.*;
+import lphy.parser.LPhyParserAction;
+import lphy.parser.ParserUtils;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -14,9 +17,9 @@ import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 
 /**
- * Implement the listener for the parse tree colouring LPhy code produced by {@link SimulatorParser}.
+ * Implement the listener for the parse tree colouring LPhy code.
  */
-public class LineCodeColorizer extends SimulatorBaseListener implements CodeColorizer,LPhyParserAction {
+public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer, LPhyParserAction {
 
     // CURRENT MODEL STATE
 
@@ -67,9 +70,9 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
         return punctuationStyle;
     }
 
-    public class SimulatorASTVisitor extends SimulatorBaseVisitor<Object> {
+    public class LPhyASTVisitor extends LPhyBaseVisitor<Object> {
 
-        public SimulatorASTVisitor() { }
+        public LPhyASTVisitor() { }
 
         private void addTextElement(TextElement element) {
             StyledDocument doc = textPane.getStyledDocument();
@@ -365,7 +368,7 @@ public class LineCodeColorizer extends SimulatorBaseListener implements CodeColo
     public Object parse(String CASentence) {
         System.out.println("Parsing " + CASentence + " in code colouriser");
 
-        SimulatorASTVisitor visitor = new SimulatorASTVisitor();
+        LPhyASTVisitor visitor = new LPhyASTVisitor();
         // no data and model blocks
         return LPhyParserAction.parse(CASentence, visitor, false);
     }

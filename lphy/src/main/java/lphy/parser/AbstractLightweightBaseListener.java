@@ -17,7 +17,7 @@ import lphy.graphicalModel.Value;
 
 import java.util.*;
 
-public class AbstractLightweightBaseListener extends SimulatorBaseListener {
+public class AbstractLightweightBaseListener extends LPhyBaseListener {
 
     // CURRENT MODEL STATE
 

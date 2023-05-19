@@ -4,7 +4,11 @@ package lphystudio.core.codecolorizer;
 import lphy.core.LPhyParser;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.Value;
-import lphy.parser.*;
+import lphy.parser.LPhyBaseListener;
+import lphy.parser.LPhyBaseVisitor;
+import lphy.parser.LPhyParser.*;
+import lphy.parser.LPhyParserAction;
+import lphy.parser.ParserUtils;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -14,10 +18,10 @@ import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 
 /**
- * Implement the listener for the parse tree colouring LPhy code produced by {@link DataModelBaseListener}.
+ * Implement the listener for the parse tree colouring LPhy code.
  * TODO merge common code with {@link LineCodeColorizer}
  */
-public class DataModelCodeColorizer extends DataModelBaseListener implements CodeColorizer,LPhyParserAction {
+public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColorizer,LPhyParserAction {
 
     // CURRENT MODEL STATE
 
@@ -75,7 +79,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         return punctuationStyle;
     }
 
-    public class DataModelASTVisitor extends DataModelBaseVisitor<Object> {
+    public class DataModelASTVisitor extends LPhyBaseVisitor<Object> {
 
         public DataModelASTVisitor() {
         }
@@ -93,7 +97,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitDatablock(DataModelParser.DatablockContext ctx) {
+        public Object visitDatablock(DatablockContext ctx) {
 
             context = LPhyParser.Context.data;
 
@@ -109,7 +113,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitModelblock(DataModelParser.ModelblockContext ctx) {
+        public Object visitModelblock(ModelblockContext ctx) {
 
             context = LPhyParser.Context.model;
 
@@ -125,7 +129,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
 
-        public Object visitMapFunction(DataModelParser.MapFunctionContext ctx) {
+        public Object visitMapFunction(MapFunctionContext ctx) {
             TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
             element.add((TextElement)visit(ctx.getChild(1)));
             element.add(new TextElement("}", textPane.getStyle("punctuationStyle")));
@@ -133,13 +137,13 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitConstant(DataModelParser.ConstantContext ctx) {
+        public Object visitConstant(ConstantContext ctx) {
 
             return new TextElement(ctx.getText(), literalStyle);
         }
 
         @Override
-        public Object visitDeterm_relation(DataModelParser.Determ_relationContext ctx) {
+        public Object visitDeterm_relation(Determ_relationContext ctx) {
 
             TextElement element = new TextElement(indent, punctuationStyle);
 
@@ -158,7 +162,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitStoch_relation(DataModelParser.Stoch_relationContext ctx) {
+        public Object visitStoch_relation(Stoch_relationContext ctx) {
 
             TextElement varText = new TextElement(indent, punctuationStyle);
 
@@ -185,7 +189,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
          * @param ctx
          * @return a RangeList function.
          */
-        public Object visitRange_list(DataModelParser.Range_listContext ctx) {
+        public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
             for (int i = 1; i < ctx.getChildCount(); i++) {
@@ -199,7 +203,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public lphystudio.core.codecolorizer.Var visitVar(DataModelParser.VarContext ctx) {
+        public lphystudio.core.codecolorizer.Var visitVar(VarContext ctx) {
             String id = ctx.getChild(0).getText();
             TextElement rangeList = null;
             if (ctx.getChildCount() > 1) {
@@ -212,7 +216,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitExpression(DataModelParser.ExpressionContext ctx) {
+        public Object visitExpression(ExpressionContext ctx) {
 
             if (ctx.getChildCount() == 1) {
 
@@ -294,7 +298,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
          * @return {@link TextElement} of an array, which can be an empty array.
          */
         @Override
-        public Object visitArray_expression(DataModelParser.Array_expressionContext ctx) {
+        public Object visitArray_expression(Array_expressionContext ctx) {
             if (ctx.getChildCount() >= 2) {
 
                 String s = ctx.getChild(0).getText();
@@ -315,7 +319,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitNamed_expression(DataModelParser.Named_expressionContext ctx) {
+        public Object visitNamed_expression(Named_expressionContext ctx) {
             String name = ctx.getChild(0).getText();
             TextElement element = new TextElement(name + "=", argumentNameStyle);
             element.add((TextElement) visit(ctx.getChild(2)));
@@ -324,7 +328,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitDistribution(DataModelParser.DistributionContext ctx) {
+        public Object visitDistribution(DistributionContext ctx) {
 
             TextElement name = new TextElement(ctx.getChild(0).getText(), genDistStyle);
 
@@ -338,7 +342,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitExpression_list(DataModelParser.Expression_listContext ctx) {
+        public Object visitExpression_list(Expression_listContext ctx) {
 
             TextElement element = new TextElement();
 
@@ -352,7 +356,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitUnnamed_expression_list(DataModelParser.Unnamed_expression_listContext ctx) {
+        public Object visitUnnamed_expression_list(Unnamed_expression_listContext ctx) {
             TextElement element = new TextElement();
 
             for (int i = 0; i < ctx.getChildCount(); i += 2) {
@@ -365,7 +369,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
         }
 
         @Override
-        public Object visitMethodCall(DataModelParser.MethodCallContext ctx) {
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -385,7 +389,7 @@ public class DataModelCodeColorizer extends DataModelBaseListener implements Cod
             return e;
         }
 
-        public Object visitObjectMethodCall(DataModelParser.ObjectMethodCallContext ctx) {
+        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
 
 //            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
 //            TextElement e = var.getTextElement(parser, context);

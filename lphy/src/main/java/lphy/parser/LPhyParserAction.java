@@ -44,9 +44,9 @@ public interface LPhyParserAction {
         // Get our lexer
         Lexer lexer;
         if (hasDataModelBlock)
-            lexer = new DataModelLexer(CharStreams.fromString(CASentence));
+            lexer = new LPhyLexer(CharStreams.fromString(CASentence));
         else
-            lexer = new SimulatorLexer(CharStreams.fromString(CASentence));
+            lexer = new LPhyLexer(CharStreams.fromString(CASentence));
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
 
@@ -56,14 +56,14 @@ public interface LPhyParserAction {
         ParseTree parseTree;
         if (hasDataModelBlock) {
             // Pass the tokens containing either or both a data and model block to the parser
-            DataModelParser parser = new DataModelParser(tokens);
+            LPhyParser parser = new LPhyParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errorListener);
 // TODO simplify code to add Interface to extract input() ?
             parseTree = parser.input();
         } else {
             // Pass the tokens without data and model blocks to the parser.
-            SimulatorParser parser = new SimulatorParser(tokens);
+            LPhyParser parser = new LPhyParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errorListener);
 
