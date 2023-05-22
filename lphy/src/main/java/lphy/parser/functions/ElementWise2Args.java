@@ -35,58 +35,6 @@ public interface ElementWise2Args<R,S> {
 			}
 		};
 	}
-	
-	static ElementWise2Args<Value<Double>, Value<Double[][]>> elementWiseDD2() {
-		return (a,b,o) -> {
-			Double va = a.value();
-			Double[][] vb = b.value();
-			if (o.apply(va, vb[0][0]) instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-
-						r[i][j] = (Boolean) o.apply(va, vb[i][j]);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-
-						r[i][j] = (Double) o.apply(va, vb[i][j]);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}	
-	
-	static ElementWise2Args<Value<Double[][]>, Value<Double>> elementWiseD2D() {
-		return (a,b,o) -> {
-			Double[][] va = a.value();
-			Double vb = b.value();
-			if (o.apply(va[0][0], vb) instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-
-						r[i][j] = (Boolean) o.apply(va[i][j], vb);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-
-						r[i][j] = (Double) o.apply(va[i][j], vb);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}
 
 	static ElementWise2Args<Value<Integer[][]>, Value<Integer[][]>> elementWiseI2I2() {
 		return (a,b,o) -> {
@@ -113,154 +61,6 @@ public interface ElementWise2Args<R,S> {
 			}
 		};
 	}
-	
-	static ElementWise2Args<Value<Integer>, Value<Integer[][]>> elementWiseII2() {
-		return (a,b,o) -> {
-			Integer va =  a.value();
-			Integer[][] vb = b.value();
-			if (o.apply(va, vb[0][0]) instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-
-						r[i][j] = (Boolean) o.apply(va, vb[i][j]);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Integer[][] r = new Integer[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-
-						r[i][j] = (Integer) o.apply(va, vb[i][j]);
-					}
-				}
-				return new IntegerArray2DValue("", r);
-			}
-		};
-	}	
-	
-	static ElementWise2Args<Value<Integer[][]>, Value<Integer>> elementWiseI2I() {
-		return (a,b,o) -> {
-			Integer[][] va = a.value();
-			Integer vb = b.value();
-			if (o.apply(va[0][0], vb) instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-
-						r[i][j] = (Boolean) o.apply(va[i][j], vb);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Integer[][] r = new Integer[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-
-						r[i][j] = (Integer) o.apply(va[i][j], vb);
-					}
-				}
-				return new IntegerArray2DValue("", r);
-			}
-		};
-	}
-	
-	static ElementWise2Args<Value<Integer>, Value<Double[][]>> elementWiseID2() {
-		return (a,b,o) -> {
-			Integer va = a.value();
-			Double[][] vb = b.value();
-			if (o.apply(va, vb[0][0]) instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va, vb[i][j]);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Double) o.apply(va, vb[i][j]);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}	
-	
-	static ElementWise2Args<Value<Double[][]>, Value<Integer>> elementWiseD2I() {
-		return (a,b,o) -> {
-			Double[][] va = a.value();
-			Integer vb = b.value();
-			if (o.apply(va[0][0], vb) instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[i][j], vb);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Double) o.apply(va[i][j], vb);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}
-	
-	static ElementWise2Args<Value<Double>, Value<Integer[][]>> elementWiseDI2() {
-		return (a,b,o) -> {
-			Double va = a.value();
-			Integer[][] vb = b.value();
-			if (o.apply(va, vb[0][0]) instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va, vb[i][j]);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[vb.length][vb[0].length];
-				for (int i = 0; i < vb.length; i++) {
-					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Double) o.apply(va, vb[i][j]);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}	
-	
-	static ElementWise2Args<Value<Integer[][]>, Value<Double>> elementWiseI2D() {
-		return (a,b,o) -> {
-			Integer[][] va = a.value();
-			Double vb = b.value();
-			if (o.apply(va[0][0], vb) instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[i][j], vb);
-					}
-				}
-				return new BooleanArray2DValue("", r);
-			} else {
-				Double[][] r = new Double[va.length][va[0].length];
-				for (int i = 0; i < va.length; i++) {
-					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Double) o.apply(va[i][j], vb);
-					}
-				}
-				return new DoubleArray2DValue("", r);
-			}
-		};
-	}	
 
 	static ElementWise2Args<Value<Double[][]>, Value<Integer[][]>> elementWiseD2I2() {
 		return (a,b,o) -> {
@@ -448,7 +248,7 @@ public interface ElementWise2Args<R,S> {
 			Object[] va = a.value();
 			Object[] vb = b.value();
 			if (va.length != vb.length)
-				throw new IllegalArgumentException("The pair-wise operation in vectors requires " +
+				throw new IllegalArgumentException("The element-wise operation between 1d vectors requires " +
 						"both vectors have the same length ! " + va.length + " != " + vb.length);
 			// check types
 			Object result = o.apply(va[0], vb[0]);
@@ -595,6 +395,189 @@ public interface ElementWise2Args<R,S> {
 		};
 	}
 
+	/**
+	 * a[] vs b[][].
+	 * when performing element-wise addition between a 1D matrix (vector) and a 2D matrix,
+	 * the vector should be added row-wise to each row of the matrix.
+	 * This means each element in the vector is added to the corresponding element in each row of the matrix.
+	 * @return BooleanArray2DValue, DoubleArray2DValue, IntegerArray2DValue.
+	 *         If result is Number, both inputs have to be integer to return IntegerArray2DValue,
+	 *         else return DoubleArray2DValue.
+	 */
+	static ElementWise2Args<Value<Object[]>, Value<Object[][]>> elementWiseO1O2() {
+		return (a,b,o) -> {
+			Object[] va = a.value();
+			Object[][] vb = b.value();
+			if (va.length != vb.length)
+				throw new IllegalArgumentException("The element-wise operation " +
+						"between 1D vector and 2D requires the length of 1D vector must be same as " +
+						"the number of rows of 2D ! " + va.length + " != " + vb.length);
+			// check types
+			Object result = o.apply(va[0], vb[0][0]);
+			if (result instanceof Boolean) {
+				Boolean[][] r = new Boolean[vb.length][vb[0].length];
+				for (int i = 0; i < vb.length; i++) {
+					for (int j = 0; j < vb[i].length; j++) {
+						r[i][j] = (Boolean) o.apply(va[i], vb[i][j]);
+					}
+				}
+				return new BooleanArray2DValue("", r);
+			} else if (result instanceof Integer) {
+				Integer[][] r = new Integer[vb.length][vb[0].length];
+				for (int i = 0; i < vb.length; i++) {
+					for (int j = 0; j < vb[i].length; j++) {
+						r[i][j] = (Integer) o.apply(va[i], vb[i][j]);
+					}
+				}
+				return new IntegerArray2DValue("", r);
+			} else if (result instanceof Number) {
+				if ( va[0] instanceof Integer && vb[0][0] instanceof Integer ) {
+					// if result is Number, both inputs have to be integer to return IntegerValue
+					Integer[][] r = new Integer[vb.length][vb[0].length];
+					for (int i = 0; i < vb.length; i++) {
+						for (int j = 0; j < vb[i].length; j++) {
+							r[i][j] = ((Number) o.apply(va[i], vb[i][j])).intValue();
+						}
+					}
+					return new IntegerArray2DValue(null, r);
+				} else {
+					// default to double
+					Double[][] r = new Double[vb.length][vb[0].length];
+					for (int i = 0; i < vb.length; i++) {
+						for (int j = 0; j < vb[i].length; j++) {
+							r[i][j] = (Double) o.apply(va[i], vb[i][j]);
+						}
+					}
+					return new DoubleArray2DValue("", r);
+				}
+			} else {
+				throw new UnsupportedOperationException("Unsupported result type " +
+						result.getClass().getName());
+			}
+		};
+	}
+
+	/**
+	 * a[][] vs b[].
+	 * when performing element-wise addition between a 1D matrix (vector) and a 2D matrix,
+	 * the vector should be added row-wise to each row of the matrix.
+	 * This means each element in the vector is added to the corresponding element in each row of the matrix.
+	 * @return BooleanArray2DValue, DoubleArray2DValue, IntegerArray2DValue.
+	 *         If result is Number, both inputs have to be integer to return IntegerArray2DValue,
+	 *         else return DoubleArray2DValue.
+	 */
+	static ElementWise2Args<Value<Object[][]>, Value<Object[]>> elementWiseO2O1() {
+		return (a,b,o) -> {
+			Object[][] va = a.value();
+			Object[] vb = b.value();
+			if (va.length != vb.length)
+				throw new IllegalArgumentException("The element-wise operation " +
+						"between 1D vector and 2D requires the length of 1D vector must be same as " +
+						"the number of rows of 2D ! " + va.length + " != " + vb.length);
+			// check types
+			Object result = o.apply(va[0][0], vb[0]);
+			if (result instanceof Boolean) {
+				Boolean[][] r = new Boolean[va.length][va[0].length];
+				for (int i = 0; i < va.length; i++) {
+					for (int j = 0; j < va[i].length; j++) {
+						r[i][j] = (Boolean) o.apply(va[i][j], vb[i]);
+					}
+				}
+				return new BooleanArray2DValue("", r);
+			} else if (result instanceof Integer) {
+				Integer[][] r = new Integer[va.length][va[0].length];
+				for (int i = 0; i < va.length; i++) {
+					for (int j = 0; j < va[i].length; j++) {
+						r[i][j] = (Integer) o.apply(va[i][j], vb[i]);
+					}
+				}
+				return new IntegerArray2DValue("", r);
+			} else if (result instanceof Number) {
+				if ( va[0][0] instanceof Integer && vb[0] instanceof Integer ) {
+					// if result is Number, both inputs have to be integer to return IntegerValue
+					Integer[][] r = new Integer[va.length][va[0].length];
+					for (int i = 0; i < va.length; i++) {
+						for (int j = 0; j < va[i].length; j++) {
+							r[i][j] = ((Number) o.apply(va[i][j], vb[i])).intValue();
+						}
+					}
+					return new IntegerArray2DValue(null, r);
+				} else {
+					// default to double
+					Double[][] r = new Double[va.length][va[0].length];
+					for (int i = 0; i < va.length; i++) {
+						for (int j = 0; j < va[i].length; j++) {
+							r[i][j] = (Double) o.apply(va[i][j], vb[i]);
+						}
+					}
+					return new DoubleArray2DValue("", r);
+				}
+			} else {
+				throw new UnsupportedOperationException("Unsupported result type " +
+						result.getClass().getName());
+			}
+		};
+	}
+
+	/**
+	 * a[][] vs b[][].
+	 * @return BooleanArray2DValue, DoubleArray2DValue, IntegerArray2DValue.
+	 *         If result is Number, both inputs have to be integer to return IntegerArray2DValue,
+	 *         else return DoubleArray2DValue.
+	 */
+	static ElementWise2Args<Value<Object[][]>, Value<Object[][]>> elementWiseO2O2() {
+		return (a,b,o) -> {
+			Object[][] va = a.value();
+			Object[][] vb = b.value();
+			if (va.length != vb.length || va[0].length != vb[0].length)
+				throw new IllegalArgumentException("The element-wise operation " +
+						"between 2D vectors requires their dimensions must be same ! " +
+						va.length + " != " + vb.length + " or " + va[0].length + " != " + vb[0].length);
+			// check types
+			Object result = o.apply(va[0][0], vb[0][0]);
+			if (result instanceof Boolean) {
+				Boolean[][] r = new Boolean[va.length][va[0].length];
+				for (int i = 0; i < va.length; i++) {
+					for (int j = 0; j < va[i].length; j++) {
+						r[i][j] = (Boolean) o.apply(va[i][j], vb[i][j]);
+					}
+				}
+				return new BooleanArray2DValue("", r);
+			} else if (result instanceof Integer) {
+				Integer[][] r = new Integer[va.length][va[0].length];
+				for (int i = 0; i < va.length; i++) {
+					for (int j = 0; j < va[i].length; j++) {
+						r[i][j] = (Integer) o.apply(va[i][j], vb[i][j]);
+					}
+				}
+				return new IntegerArray2DValue("", r);
+			} else if (result instanceof Number) {
+				if ( va[0][0] instanceof Integer && vb[0][0] instanceof Integer ) {
+					// if result is Number, both inputs have to be integer to return IntegerValue
+					Integer[][] r = new Integer[va.length][va[0].length];
+					for (int i = 0; i < va.length; i++) {
+						for (int j = 0; j < va[i].length; j++) {
+							r[i][j] = ((Number) o.apply(va[i][j], vb[i][j])).intValue();
+						}
+					}
+					return new IntegerArray2DValue(null, r);
+				} else {
+					// default to double
+					Double[][] r = new Double[va.length][va[0].length];
+					for (int i = 0; i < va.length; i++) {
+						for (int j = 0; j < va[i].length; j++) {
+							r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
+						}
+					}
+					return new DoubleArray2DValue("", r);
+				}
+			} else {
+				throw new UnsupportedOperationException("Unsupported result type " +
+						result.getClass().getName());
+			}
+		};
+	}
+
 	static ElementWise2Args elementFactory(GraphicalModelNode[] values) {
 		if (values.length != 2) {
 			return null;
@@ -602,85 +585,6 @@ public interface ElementWise2Args<R,S> {
 		Object valA = values[0].value();
 		Object valB = values[1].value();
 
-		if (valA instanceof Double[][]) {
-			if (valB instanceof Double[][]) {
-				return elementWiseD2D2();
-			} else if (valB instanceof Double[]) {
-//			} else if (valB instanceof Double) {
-//				return elementWiseD2D();
-			} else if (valB instanceof Integer[][]) {
-				return elementWiseD2I2();
-			} else if (valB instanceof Integer[]) {
-//			} else if (valB instanceof Integer) {
-//				return elementWiseD2I();
-			}
-		} else if (valA instanceof Double[]) {
-			if (valB instanceof Double[][]) {
-//			} else if (values[1].value() instanceof Double[]) {
-//				return elementWiseDADA();
-//			} else if (values[1].value() instanceof Double) {
-//				return elementWiseDAD();
-			} else if (valB instanceof Integer[][]) {
-//			} else if (values[1].value() instanceof Integer[]) {
-//				return elementWiseDAIA();
-//			} else if (values[1].value() instanceof Integer) {
-//				return elementWiseDAI();
-			}
-//		} else if (valA instanceof Double) {
-//			if (valB instanceof Double[][]) {
-//				return elementWiseDD2();
-//			} else if (values[1].value() instanceof Double[]) {
-//				return elementWiseDDA();
-//			} else if (values[1].value() instanceof Double) {
-//				return elementWiseDD();
-//			} else if (valB instanceof Integer[][]) {
-//				return elementWiseDI2();
-//			} else if (values[1].value() instanceof Integer[]) {
-//				return elementWiseDIA();
-//			} else if (values[1].value() instanceof Integer) {
-//				return elementWiseDI();
-//			}
-		} else if (valA instanceof Integer[][]) {
-			if (valB instanceof Double[][]) {
-				return elementWiseI2D2();
-			} else if (valB instanceof Double[]) {
-//			} else if (valB instanceof Double) {
-//				return elementWiseI2D();
-			} else if (valB instanceof Integer[][]) {
-				return elementWiseI2I2();
-			} else if (valB instanceof Integer[]) {
-//			} else if (valB instanceof Integer) {
-//				return elementWiseI2I();
-			}
-		} else if (valA instanceof Integer[]) {
-			if (valB instanceof Double[][]) {
-//			} else if (values[1].value() instanceof Double[]) {
-//				return elementWiseIADA();
-//			} else if (values[1].value() instanceof Double) {
-//				return elementWiseIAD();
-			} else if (valB instanceof Integer[][]) {
-//			} else if (values[1].value() instanceof Integer[]) {
-//				return elementWiseIAIA();
-//			} else if (values[1].value() instanceof Integer) {
-//				return elementWiseIAI();
-			}
-//		} else if (valA instanceof Integer) {
-//			if (valB instanceof Double[][]) {
-//				return elementWiseID2();
-//			} else if (values[1].value() instanceof Double[]) {
-//				return elementWiseIDA();
-//			} else if (values[1].value() instanceof Double) {
-//				return elementWiseID();
-//			} else if (valB instanceof Integer[][]) {
-//				return elementWiseII2();
-//			} else if (values[1].value() instanceof Integer[]) {
-//				return elementWiseIIA();
-//			} else if (values[1].value() instanceof Integer) {
-//				return elementWiseII();
-//			}
-		}
-
-		// TODO more general
 		if (valA.getClass().isArray()) {
 			Class<?> compTypeA = valA.getClass().getComponentType();
 			// valA is 2D array
@@ -690,11 +594,11 @@ public interface ElementWise2Args<R,S> {
 					Class<?> compTypeB = valB.getClass().getComponentType();
 					// valB is 2D array
 					if (compTypeB.isArray()) {
-						//TODO Handle a[][] vs b[][]
-//						return elementWiseO2O2();
+						//Handle a[][] vs b[][]
+						return elementWiseO2O2();
 					} else {
-						// TODO Handle a[][] vs b[]
-//						return elementWiseO2O1();
+						// Handle a[][] vs b[]
+						return elementWiseO2O1();
 					}
 				} else // Handle a[][] vs b
 					return elementWiseO2O();
@@ -704,8 +608,8 @@ public interface ElementWise2Args<R,S> {
 					Class<?> compTypeB = valB.getClass().getComponentType();
 					// valB is 2D array
 					if (compTypeB.isArray()) {
-						//TODO Handle a[] vs b[][]
-//						return elementWiseO1O2();
+						// Handle a[] vs b[][]
+						return elementWiseO1O2();
 					} else {
 						// valB is 1D array. Handle a[] vs b[]
 						return elementWiseO1O1();
@@ -728,7 +632,7 @@ public interface ElementWise2Args<R,S> {
 			} else // a vs b
 			    return elementWiseOO();
 		}
-		return null;
+//		return null;
 	}
 
 }
