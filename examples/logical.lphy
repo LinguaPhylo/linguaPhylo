@@ -1,0 +1,3 @@
+x = 2.3 >= 1.9;
+y = false && true;
+z = ifelse(x||y, 1, 0);

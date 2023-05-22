@@ -7,17 +7,16 @@ import lphy.util.LoggerUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BinaryOperator;
+import java.util.function.BiFunction;
 
 /**
  * container holding a DeterministicFunction with 2 arguments.
- * TODO: this only handles BinaryOperator but not BiFunction.
  **/
 public class ExpressionNode2Args<T> extends ExpressionNode {
-    BinaryOperator func;
+    BiFunction func;
     ElementWise2Args elementWise;
 
-    public ExpressionNode2Args(String expression, BinaryOperator func, GraphicalModelNode... values) {
+    public ExpressionNode2Args(String expression, BiFunction func, GraphicalModelNode... values) {
         this.expression = expression;
         this.func = func;
         params = new LinkedHashMap<>();
@@ -68,67 +67,97 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
     }
 
     // binary operators
-    public static BinaryOperator<Number> plus() {
+    public static BiFunction<Number, Number, Number> plus() {
         return (a, b) -> a.doubleValue() + b.doubleValue();
     }
 
-    public static BinaryOperator<Number> minus() {
+    public static BiFunction<Number, Number, Number> minus() {
         return (a, b) -> a.doubleValue() - b.doubleValue();
     }
 
-    public static BinaryOperator<Number> times() {
+    public static BiFunction<Number, Number, Number> times() {
         return (a, b) -> a.doubleValue() * b.doubleValue();
     }
 
-    public static BinaryOperator<Number> divide() {
+    public static BiFunction<Number, Number, Number> divide() {
         return (a, b) -> a.doubleValue() / b.doubleValue();
     }
 
-    public static BinaryOperator<Number> and() {
-        return (a, b) -> a.doubleValue() != 0.0 && b.doubleValue() != 0.0 ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> or() {
-        return (a, b) -> a.doubleValue() != 0.0 || b.doubleValue() != 0.0 ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Integer> bitwiseand() {
-        return (a, b) -> (int) a.doubleValue() & (int) b.doubleValue();
-    }
-
-    public static BinaryOperator<Integer> bitwiseor() {
-        return (a, b) -> (int) a.doubleValue() | (int) b.doubleValue();
-    }
-
-    public static BinaryOperator<Number> le() {
-        return (a, b) -> a.doubleValue() <= b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> less() {
-        return (a, b) -> a.doubleValue() < b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> ge() {
-        return (a, b) -> a.doubleValue() >= b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> greater() {
-        return (a, b) -> a.doubleValue() > b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> equals() {
-        return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> ne() {
-        return (a, b) -> a.doubleValue() == b.doubleValue() ? 1.0 : 0.0;
-    }
-
-    public static BinaryOperator<Number> pow() {
+    public static BiFunction<Number, Number, Number> pow() {
         return (a, b) -> Math.pow(a.doubleValue(), b.doubleValue());
     }
 
-    public static BinaryOperator<Number> mod() {
+    public static BiFunction<Number, Number, Number> mod() {
         return (a, b) -> a.doubleValue() % b.doubleValue();
     }
+
+    //*** logical ***//
+
+    public static BiFunction<Boolean, Boolean, Boolean> and() {
+        return (a, b) -> a && b;
+    }
+
+    public static BiFunction<Boolean, Boolean, Boolean> or() {
+        return (a, b) -> a || b;
+    }
+
+    //*** the first two needs to consider all Comparable ***//
+
+    public static BiFunction<Object, Object, Boolean> equals() {
+        return (a, b) -> {
+            if (a instanceof Number aN && b instanceof Number bN) {
+                return aN.doubleValue() == bN.doubleValue() ;
+            } else
+                return a.equals(b);
+        };
+    }
+
+    public static BiFunction<Object, Object, Boolean> ne() {
+        return (a, b) -> {
+            if (a instanceof Number aN && b instanceof Number bN) {
+                return aN.doubleValue() != bN.doubleValue() ;
+            } else
+                return !a.equals(b);
+        };
+    }
+
+    public static BiFunction<Number, Number, Boolean> le() {
+        return (a, b) -> a.doubleValue() <= b.doubleValue() ;
+    }
+
+    public static BiFunction<Number, Number, Boolean> less() {
+        return (a, b) -> a.doubleValue() < b.doubleValue() ;
+    }
+
+    public static BiFunction<Number, Number, Boolean> ge() {
+        return (a, b) -> a.doubleValue() >= b.doubleValue() ;
+    }
+
+    public static BiFunction<Number, Number, Boolean> greater() {
+        return (a, b) -> a.doubleValue() > b.doubleValue() ;
+    }
+
+//TODO check
+    public static BiFunction<Integer, Integer, Integer> bitwiseand() {
+        return (a, b) -> (int) a.doubleValue() & (int) b.doubleValue();
+    }
+
+    public static BiFunction<Integer, Integer, Integer> bitwiseor() {
+        return (a, b) -> (int) a.doubleValue() | (int) b.doubleValue();
+    }
+
+    public static void main(String[] args) {
+
+        Object a = "b";
+        Object b = "b2";
+
+        if ((a instanceof Number) && (b instanceof Number)) {
+            System.out.println("a == b = " + (((Number)a).doubleValue() == ((Number)b).doubleValue()));
+
+        } else
+
+        System.out.println("a == b = " + a.equals(b));
+
+    }
+
 }
