@@ -629,9 +629,7 @@ public interface ElementWise2Args<R,S> {
 			if (result instanceof Boolean rB)
 				// the logical operators
 				return new BooleanValue(null, rB);
-			if (result instanceof Double rD)
-				return new DoubleValue(null, rD);
-			if (result instanceof Integer rI) {
+			else if (result instanceof Integer rI) {
 				return new IntegerValue(null, rI);
 			} else if (result instanceof Number) {
 				if ( a.value() instanceof Integer && b.value() instanceof Integer ) {
@@ -666,12 +664,6 @@ public interface ElementWise2Args<R,S> {
 					r[i] = (Boolean) o.apply(va, vb[i]);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Double) {
-				Double[] r = new Double[vb.length];
-				for (int i = 0; i < vb.length; i++) {
-					r[i] = (Double) o.apply(va, vb[i]);
-				}
-				return new DoubleArrayValue("", r);
 			} else if (result instanceof Integer) {
 				Integer[] r = new Integer[vb.length];
 				for (int i = 0; i < vb.length; i++) {
@@ -683,7 +675,7 @@ public interface ElementWise2Args<R,S> {
 					// if result is Number, both inputs have to be integer to return IntegerValue
 					Integer[] r = new Integer[vb.length];
 					for (int i = 0; i < vb.length; i++) {
-						r[i] = (Integer) o.apply(va, vb[i]);
+						r[i] = ((Number) o.apply(va, vb[i])).intValue();
 					}
 					return new IntegerArrayValue(null, r);
 				} else {
@@ -717,12 +709,6 @@ public interface ElementWise2Args<R,S> {
 					r[i] = (Boolean) o.apply(va[i], vb);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Double) {
-				Double[] r = new Double[va.length];
-				for (int i = 0; i < va.length; i++) {
-					r[i] = (Double) o.apply(va[i], vb);
-				}
-				return new DoubleArrayValue("", r);
 			} else if (result instanceof Integer) {
 				Integer[] r = new Integer[va.length];
 				for (int i = 0; i < va.length; i++) {
@@ -734,7 +720,7 @@ public interface ElementWise2Args<R,S> {
 					// if result is Number, both inputs have to be integer to return IntegerValue
 					Integer[] r = new Integer[va.length];
 					for (int i = 0; i < va.length; i++) {
-						r[i] = (Integer) o.apply(va[i], vb);
+						r[i] = ((Number) o.apply(va[i], vb)).intValue();
 					}
 					return new IntegerArrayValue(null, r);
 				} else {
@@ -771,12 +757,6 @@ public interface ElementWise2Args<R,S> {
 					r[i] = (Boolean) o.apply(va[i], vb[i]);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Double) {
-				Double[] r = new Double[va.length];
-				for (int i = 0; i < va.length; i++) {
-					r[i] = (Double) o.apply(va[i], vb[i]);
-				}
-				return new DoubleArrayValue("", r);
 			} else if (result instanceof Integer) {
 				Integer[] r = new Integer[va.length];
 				for (int i = 0; i < va.length; i++) {
@@ -788,7 +768,7 @@ public interface ElementWise2Args<R,S> {
 					// if result is Number, both inputs have to be integer to return IntegerValue
 					Integer[] r = new Integer[va.length];
 					for (int i = 0; i < va.length; i++) {
-						r[i] = (Integer) o.apply(va[i], vb[i]);
+						r[i] = ((Number) o.apply(va[i], vb[i])).intValue();
 					}
 					return new IntegerArrayValue(null, r);
 				} else {
