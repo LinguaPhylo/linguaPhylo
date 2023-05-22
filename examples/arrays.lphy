@@ -1,7 +1,23 @@
-a[0] = 1.0;
-a[1] = 2.0;
-a[2] = 3.0;
-b[0] = "foo";
-b[1] = "bar";
-c = [[1.1,2.2,3.3],[4.4,5.5,6.6]];
-z = [[1,2,3], [4,5,6]];
+// 1d
+a = 1:3; // integers, note: range returns an array
+b = [1.0,2.0,3.0]; // doubles
+c = ["foo", "bar"]; // strings
+// 2d
+d = [[1.1,2.2,3.3],[4.4,5.5,6.6]];
+e = [[1,2,3], [4,5,6]];
+// empty array
+doubleArray = rep(0.0, 0); // an empty array of doubles
+intArray = rep(0, 0); // an empty array of integers
+stringArray = rep("", 0); // an empty array of strings
+// length
+len1 = length(a); // 1d
+len2 = length(d); // 2d row
+len3 = length(d[0]); // 2d column
+len4 = length(doubleArray); // empty array
+
+// TODO vector should be immutable
+//a[0] = 1.0;
+//a[1] = 2.0;
+//a[2] = 3.0;
+//b[0] = "foo";
+//b[1] = "bar";
