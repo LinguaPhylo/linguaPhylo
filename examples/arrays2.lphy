@@ -6,7 +6,10 @@ a2 = rep(rep(0.0, 0), 0); // an empty 2d array
 b2 = rep(rep(0.0, 0), 0);
 c2 = a2 != b2;
 
-// vectorization
+// not sure true or false
+empty = a == a2;
+
+// vectorised
 x = [1.0,2.0,3.0];
 y = [1,2,3];
 z = x == y;
@@ -14,3 +17,9 @@ z = x == y;
 x2 = [[1.0,2.0,3.0], [4.0,5.0,6.0]];
 y2 = [[1,2,3], [4,5,6]];
 z2 = x2 != y2;
+
+// false
+compare1 = a == x;
+compare2 = a2 == x2;
+// vectorised
+compare3 = x == x2;
