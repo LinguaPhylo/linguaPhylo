@@ -486,6 +486,9 @@ public interface ElementWise2Args<R,S> {
 		Object valB = values[1].value();
 
 		if (valA.getClass().isArray()) {
+			if ( ((Object[]) valA).length < 1)
+				return elementWiseOO(); // empty array
+
 			Class<?> compTypeA = valA.getClass().getComponentType();
 			// valA is 2D array
 			if (compTypeA.isArray()) {
@@ -520,6 +523,9 @@ public interface ElementWise2Args<R,S> {
 		} else {
 			// valA is not an array.
 			if (valB.getClass().isArray()) {
+				if ( ((Object[]) valB).length < 1)
+					return elementWiseOO(); // empty array
+
 				Class<?> compTypeB = valB.getClass().getComponentType();
 				// valB is 2D array
 				if (compTypeB.isArray()) {

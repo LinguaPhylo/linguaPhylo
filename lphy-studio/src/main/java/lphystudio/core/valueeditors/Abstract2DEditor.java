@@ -18,17 +18,20 @@ public abstract class Abstract2DEditor extends JPanel {
         setOpaque(false);
 
         int rowCount = matrix.length;
-        int colCount = matrix[0].length;
+        int colCount = rowCount > 0 ? matrix[0].length : rowCount;
 
         textFields = new JTextField[rowCount][colCount];
         labels = new JLabel[rowCount][colCount];
 
-        GridLayout gridLayout = new GridLayout(rowCount, colCount);
-        gridLayout.setHgap(GAP);
-        gridLayout.setVgap(GAP);
-        setBorder(BorderFactory.createEmptyBorder(GAP, GAP - 1, GAP, GAP));
-        setLayout(gridLayout);
+        if (rowCount > 0 && colCount > 0) {
+            GridLayout gridLayout = new GridLayout(rowCount, colCount);
+            gridLayout.setHgap(GAP);
+            gridLayout.setVgap(GAP);
+            setLayout(gridLayout);
+        } else
+            setLayout(new BorderLayout());
 
+        setBorder(BorderFactory.createEmptyBorder(GAP, GAP - 1, GAP, GAP));
 
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {

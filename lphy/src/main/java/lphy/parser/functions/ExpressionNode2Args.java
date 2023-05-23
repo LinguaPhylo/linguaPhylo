@@ -5,6 +5,7 @@ import lphy.graphicalModel.GraphicalModelNode;
 import lphy.graphicalModel.Value;
 import lphy.util.LoggerUtils;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -105,18 +106,23 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
     public static BiFunction<Object, Object, Boolean> equals() {
         return (a, b) -> {
-            if (a instanceof Number aN && b instanceof Number bN) {
-                return aN.doubleValue() == bN.doubleValue() ;
-            } else
+            if (a instanceof Number aN && b instanceof Number bN)
+                return aN.doubleValue() == bN.doubleValue();
+            else if (a instanceof Object[] aA && b instanceof Object[] bA)
+                return Arrays.deepEquals(aA, bA);
+            else {
                 return a.equals(b);
+            }
         };
     }
 
     public static BiFunction<Object, Object, Boolean> ne() {
         return (a, b) -> {
-            if (a instanceof Number aN && b instanceof Number bN) {
+            if (a instanceof Number aN && b instanceof Number bN)
                 return aN.doubleValue() != bN.doubleValue() ;
-            } else
+            else if (a instanceof Object[] aA && b instanceof Object[] bA)
+                    return !Arrays.deepEquals(aA, bA);
+            else
                 return !a.equals(b);
         };
     }
@@ -148,15 +154,16 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
     public static void main(String[] args) {
 
-        Object a = "b";
-        Object b = "b2";
+        Object a = new Integer[]{1, 2, 3};
+        Object b = new Integer[]{1, 2, 3};
 
         if ((a instanceof Number) && (b instanceof Number)) {
-            System.out.println("a == b = " + (((Number)a).doubleValue() == ((Number)b).doubleValue()));
+            System.out.println("1. a == b = " + (((Number)a).doubleValue() == ((Number)b).doubleValue()));
 
+        } else if ((a instanceof Object[]) && (b instanceof Object[])) {
+            System.out.println("2. a == b = " + Arrays.equals((Object[])a, (Object[])b));
         } else
-
-        System.out.println("a == b = " + a.equals(b));
+            System.out.println(" a == b = " + a.equals(b));
 
     }
 
