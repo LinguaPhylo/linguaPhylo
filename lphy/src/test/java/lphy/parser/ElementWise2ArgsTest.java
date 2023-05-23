@@ -87,4 +87,25 @@ class ElementWise2ArgsTest {
     }
 
 
+    @Test
+    void test1DAndOr1D() {
+        // Boolean[] and Boolean[]
+        Object res = ParserTest.parse("boo = [true,false,true,false] && [true,true,false,false];");
+        assertTrue(res instanceof Value<?>, "Result = " + res);
+
+        Object rV = ((Value) res).value();
+        assertTrue(rV instanceof Boolean[], "Result value = " + rV);
+        final Boolean[] expect1 = {  true,false,false,false   };
+        assertTrue(Arrays.deepEquals((Boolean[]) rV, expect1), "Result value = " + rV);
+
+        // Boolean[] or Boolean[]
+        res = ParserTest.parse("boo = [true,false,true,false] || [true,true,false,false];");
+        assertTrue(res instanceof Value<?>, "Result = " + res);
+
+        rV = ((Value) res).value();
+        assertTrue(rV instanceof Boolean[], "Result value = " + rV);
+        final Boolean[] expect2 = {  true,true,true,false   };
+        assertTrue(Arrays.deepEquals((Boolean[]) rV, expect2), "Result value = " + rV);
+
+    }
 }
