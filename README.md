@@ -24,7 +24,7 @@ The LPhy language features are described at https://linguaphylo.github.io/featur
 
 ### ANTLR parse tree
 
-The parse tree to show how the above lphy script to be parsed by [ANTLR grammar](lphy/src/main/java/lphy/parser/Simulator.g4):
+The parse tree to show how the above lphy script to be parsed by [ANTLR grammar](lphy/src/main/java/lphy/parser/LPhy.g4):
 
 <a href="./parseTree.png"><img src="parseTree.png" width="600" ></a>
 
