@@ -1,7 +1,7 @@
 package lphystudio.app.simulator;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.Sampler;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.logger.AlignmentFileLogger;
@@ -101,7 +101,7 @@ public class SLPhy implements Callable<Integer> {
         }
         BufferedReader reader = new BufferedReader(fileReader);
 
-        LPhyParser parser = new REPL();
+        LPhyMetaParser parser = new REPL();
         try {
             parser.source(reader);
         } catch (IOException e) {

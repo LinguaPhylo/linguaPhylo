@@ -1,7 +1,7 @@
 package lphy.parser;
 
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.Script;
 import lphy.graphicalModel.Command;
 import lphy.graphicalModel.GraphicalModel;
@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * A simple Read-Eval-Print-Loop for the graphicalModelSimulator language
  **/
-public class REPL implements LPhyParser {
+public class REPL implements LPhyMetaParser {
 
     SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
     SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();
@@ -143,8 +143,8 @@ public class REPL implements LPhyParser {
     public void source(BufferedReader reader) throws IOException {
 
         Script script = Script.loadLPhyScript(reader);
-        parse(script.dataLines, LPhyParser.Context.data);
-        parse(script.modelLines, LPhyParser.Context.model);
+        parse(script.dataLines, LPhyMetaParser.Context.data);
+        parse(script.modelLines, LPhyMetaParser.Context.model);
         reader.close();
     }
 

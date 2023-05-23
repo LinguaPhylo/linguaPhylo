@@ -12,13 +12,13 @@ import java.util.Set;
  * A wrapper for any implementation of LPhyParser that will be used in the Studio.
  * @author Alexei Drummond
  */
-public class GraphicalLPhyParser implements LPhyParser {
+public class GraphicalLPhyParser implements LPhyMetaParser {
 
-    LPhyParser wrappedParser;
+    LPhyMetaParser wrappedParser;
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     String name = null;
 
-    public GraphicalLPhyParser(LPhyParser parser) {
+    public GraphicalLPhyParser(LPhyMetaParser parser) {
         wrappedParser = parser;
     }
 

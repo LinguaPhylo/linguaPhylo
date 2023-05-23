@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.GenerativeDistribution;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.GeneratorInfo;
@@ -104,7 +104,7 @@ public class NewRandomVariablePanel extends JPanel {
         generatorPanel = new GeneratorPanel(interpreter.parser);
 
         button.addActionListener(e -> {
-            interpreter.interpretInput(getCodeString(), LPhyParser.Context.model);
+            interpreter.interpretInput(getCodeString(), LPhyMetaParser.Context.model);
             name.setText(randomVarName(interpreter.parser));
         });
 
@@ -117,10 +117,10 @@ public class NewRandomVariablePanel extends JPanel {
         generateComponents();
     }
 
-    private static String randomVarName(LPhyParser parser) {
+    private static String randomVarName(LPhyMetaParser parser) {
         String randomVarName = "randomVar";
         int i = 0;
-        while (parser.hasValue(randomVarName, LPhyParser.Context.model)) {
+        while (parser.hasValue(randomVarName, LPhyMetaParser.Context.model)) {
             randomVarName = "randomVar" + i;
             i += 1;
         }
@@ -166,7 +166,7 @@ public class NewRandomVariablePanel extends JPanel {
                 if (i > 0) builder.append(", ");
 
                 builder.append(input.argument.name).append("=");
-                if (interpreter.parser.hasValue(value, LPhyParser.Context.model)) {
+                if (interpreter.parser.hasValue(value, LPhyMetaParser.Context.model)) {
                     builder.append(value);
                 } else {
                     builder.append(value);

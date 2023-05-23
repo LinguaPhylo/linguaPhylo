@@ -1,13 +1,13 @@
 package lphy.parser;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.Value;
 
 import java.util.Arrays;
 
 public class ParserSingleton {
-    private static lphy.core.LPhyParser PARSER = getInstance();
-    public synchronized static lphy.core.LPhyParser getInstance() {
+    private static LPhyMetaParser PARSER = getInstance();
+    public synchronized static LPhyMetaParser getInstance() {
         if (PARSER == null) {
             PARSER = new REPL();
         }
@@ -20,13 +20,13 @@ public class ParserSingleton {
 
     public static Object parseModelBlock(String cmd) {
         PARSER.clear();
-        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyParser.Context.model);
+        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyMetaParser.Context.model);
         return parser.parse(cmd);
     }
 
     public static Object parseDataBlock(String cmd) {
         PARSER.clear();
-        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyParser.Context.data);
+        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyMetaParser.Context.data);
         return parser.parse(cmd);
     }
 

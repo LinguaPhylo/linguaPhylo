@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.GraphicalModelListener;
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.GraphicalModel;
 
 import javax.swing.*;
@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class GraphicalModelTextPane extends JTextPane {
 
-    LPhyParser parser;
+    LPhyMetaParser parser;
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelTextPane(LPhyParser parser) {
+    public GraphicalModelTextPane(LPhyMetaParser parser) {
         this.parser = parser;
         setEditable(false);
 

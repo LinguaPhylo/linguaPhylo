@@ -1,7 +1,7 @@
 package lphystudio.core.codecolorizer;
 
 import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.code.CanonicalCodeBuilder;
 import lphystudio.app.Utils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
@@ -31,11 +31,11 @@ public class LineCodeColorizerTest {
     @BeforeEach
     public void setUp() {
         parser = Utils.createParser();
-        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, null);
-        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, null);
+        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, null);
+        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, null);
 
-        dataInterpreter.interpretInput(taxa, LPhyParser.Context.data);
-        modelInterpreter.interpretInput(coal, LPhyParser.Context.model);
+        dataInterpreter.interpretInput(taxa, LPhyMetaParser.Context.data);
+        modelInterpreter.interpretInput(coal, LPhyMetaParser.Context.model);
 
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         cmd = codeBuilder.getCode(parser);

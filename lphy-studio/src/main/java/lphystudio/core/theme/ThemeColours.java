@@ -1,6 +1,6 @@
 package lphystudio.core.theme;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.ValueUtils;
 
@@ -133,7 +133,7 @@ public class ThemeColours {
         return "#" + Integer.toHexString(color.getRGB()).substring(2);
     }
 
-    public static Color getFillColor(Value value, LPhyParser parser) {
+    public static Color getFillColor(Value value, LPhyMetaParser parser) {
 //        Color fillColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
         Color fillColor = getTransparentColor(getRandomVarColor());
 
@@ -150,7 +150,7 @@ public class ThemeColours {
         return fillColor;
     }
 
-    public static Color getBorderColor(Value value, LPhyParser parser) {
+    public static Color getBorderColor(Value value, LPhyMetaParser parser) {
 //        Color drawColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
         Color drawColor = getRandomVarColor();
         if (ValueUtils.isFixedValue(value)) {

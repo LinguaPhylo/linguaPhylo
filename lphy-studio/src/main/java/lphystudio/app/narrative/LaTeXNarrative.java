@@ -1,6 +1,6 @@
 package lphystudio.app.narrative;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
@@ -272,12 +272,12 @@ public class LaTeXNarrative implements Narrative {
         return "$$";
     }
 
-    public String posterior(LPhyParser parser) {
+    public String posterior(LPhyMetaParser parser) {
 
         return GraphicalModel.Utils.getInferenceStatement(parser, this);
     }
 
-    public String codeBlock(LPhyParser parser, int fontSize) {
+    public String codeBlock(LPhyMetaParser parser, int fontSize) {
 
         JTextPane dummyPane = new JTextPane();
 
@@ -297,7 +297,7 @@ public class LaTeXNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(LPhyParser parser, ProperLayeredGraph properLayeredGraph) {
+    public String graphicalModelBlock(LPhyMetaParser parser, ProperLayeredGraph properLayeredGraph) {
 
         StringBuilder builder = new StringBuilder();
         builder.append("\\begin{center}\n");
@@ -320,7 +320,7 @@ public class LaTeXNarrative implements Narrative {
         return builder.toString();
     }
 
-    public static String properLayeredGraphToTikz(LPhyParser parser, ProperLayeredGraph properLayeredGraph, double varHeight, double xScale, double yScale, boolean inline, String options) {
+    public static String properLayeredGraphToTikz(LPhyMetaParser parser, ProperLayeredGraph properLayeredGraph, double varHeight, double xScale, double yScale, boolean inline, String options) {
 
         StringBuilder nodes = new StringBuilder();
         StringBuilder factors = new StringBuilder();
@@ -386,7 +386,7 @@ public class LaTeXNarrative implements Narrative {
         return builder.toString();
     }
 
-    private static String generatorToTikz(LPhyParser parser, LayeredGNode gNode, Generator generator) {
+    private static String generatorToTikz(LPhyMetaParser parser, LayeredGNode gNode, Generator generator) {
 
         Value value = (Value)((LayeredGNode)gNode.getSuccessors().get(0)).value();
         String valueUniqueId = parser.getUniqueId(value);
@@ -429,7 +429,7 @@ public class LaTeXNarrative implements Narrative {
         return factorString + factorEdgeString;
     }
 
-    private static String valueToTikz(LPhyParser parser, LayeredGNode gNode, Value value, double xScale, double yScale) {
+    private static String valueToTikz(LPhyMetaParser parser, LayeredGNode gNode, Value value, double xScale, double yScale) {
 
         String type = "const";
         String style = "cstyle";
@@ -453,7 +453,7 @@ public class LaTeXNarrative implements Narrative {
         return "\\node[" + type + ((style != null) ? ", " + style : "") + "] at (" + latticePoint.x*xScale + ", -" + latticePoint.y*yScale + ") (" + uniqueId + ") {" + getTikzLabel(parser, gNode) + "};";
     }
 
-    private static String getTikzLabel(LPhyParser parser, LayeredGNode gNode) {
+    private static String getTikzLabel(LPhyMetaParser parser, LayeredGNode gNode) {
         Value value = (Value)gNode.value();
         String label = Symbols.getCanonical(gNode.getName(), "$\\", "$");
         if (!value.isAnonymous()) {

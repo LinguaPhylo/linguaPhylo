@@ -1,7 +1,5 @@
 package lphy.graphicalModel;
 
-import lphy.core.LPhyParser;
-
 public class ArgumentValue {
 
     public ArgumentValue(String name, Value value, GraphicalModel model, GraphicalModel.Context context) {

@@ -1,6 +1,6 @@
 package lphystudio.app.narrative;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.narrative.Narrative;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.GraphicalModel;
@@ -120,7 +120,7 @@ public class HTMLNarrative implements Narrative {
     }
 
 
-    public String codeBlock(LPhyParser parser, int fontSize) {
+    public String codeBlock(LPhyMetaParser parser, int fontSize) {
 
         JTextPane dummyPane = new JTextPane();
 
@@ -134,7 +134,7 @@ public class HTMLNarrative implements Narrative {
     }
 
     @Override
-    public String graphicalModelBlock(LPhyParser parser, ProperLayeredGraph properLayeredGraph) {
+    public String graphicalModelBlock(LPhyMetaParser parser, ProperLayeredGraph properLayeredGraph) {
         return "";
     }
 
@@ -148,7 +148,7 @@ public class HTMLNarrative implements Narrative {
         return latex;
     }
 
-    public String posterior(LPhyParser parser) {
+    public String posterior(LPhyMetaParser parser) {
 
         String latex = GraphicalModel.Utils.getInferenceStatement(parser, new LaTeXNarrative());
 

@@ -1,6 +1,6 @@
 package lphy.core.functions.alignment;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.logger.AlignmentFileLogger;
 import lphy.graphicalModel.logger.TreeFileLogger;
@@ -75,7 +75,7 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
         LoggerUtils.log.info("Simulate data from lphy script: " + filePath.getAbsolutePath() +
                 " using seed " + seed + ", output files to " + outDir.getAbsolutePath());
 
-        LPhyParser parser = new REPL();
+        LPhyMetaParser parser = new REPL();
         try {
             // this also samples values while parsing
             parser.source(filePath);

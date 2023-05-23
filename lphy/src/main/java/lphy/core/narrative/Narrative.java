@@ -1,9 +1,9 @@
 package lphy.core.narrative;
 
-import lphy.layeredgraph.ProperLayeredGraph;
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.Citation;
 import lphy.graphicalModel.Value;
+import lphy.layeredgraph.ProperLayeredGraph;
 
 import java.util.prefs.Preferences;
 
@@ -53,11 +53,11 @@ public interface Narrative {
 
     String endMathMode();
 
-    String codeBlock(LPhyParser parser, int fontSize);
+    String codeBlock(LPhyMetaParser parser, int fontSize);
 
-    String graphicalModelBlock(LPhyParser parser, ProperLayeredGraph properLayeredGraph);
+    String graphicalModelBlock(LPhyMetaParser parser, ProperLayeredGraph properLayeredGraph);
 
-    String posterior(LPhyParser parser);
+    String posterior(LPhyMetaParser parser);
 
     String product(String index, String start, String end);
 

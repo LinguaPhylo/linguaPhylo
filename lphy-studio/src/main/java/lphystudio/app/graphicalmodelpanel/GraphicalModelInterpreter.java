@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.Generator;
 import lphy.parser.ParserUtils;
 import lphy.parser.SimulatorParsingException;
@@ -32,13 +32,13 @@ public class GraphicalModelInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
 
-    LPhyParser parser;
+    LPhyMetaParser parser;
     GraphicalModelTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
     NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
-    LPhyParser.Context context;
+    LPhyMetaParser.Context context;
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -55,11 +55,11 @@ public class GraphicalModelInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public GraphicalModelInterpreter(LPhyParser parser, LPhyParser.Context context, UndoManagerHelper undoManagerHelper) {
+    public GraphicalModelInterpreter(LPhyMetaParser parser, LPhyMetaParser.Context context, UndoManagerHelper undoManagerHelper) {
         this.parser = parser;
         this.context = context;
 
-        includeNewRandomVariablePanel = (context != LPhyParser.Context.data);
+        includeNewRandomVariablePanel = (context != LPhyMetaParser.Context.data);
 
         textPane = new GraphicalModelTextPane(parser);
         textPane.setBorder(textBorder);
@@ -262,7 +262,7 @@ public class GraphicalModelInterpreter extends JPanel {
         return words[words.length - 1];
     }
 
-    public void interpretInput(String input, LPhyParser.Context context) {
+    public void interpretInput(String input, LPhyMetaParser.Context context) {
 
         try {
             parser.parse(input, context);

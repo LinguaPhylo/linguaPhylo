@@ -1,6 +1,6 @@
 package lphy.graphicalModel;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public interface Command {
 
     void execute(Map<String, Value<?>> params);
 
-    default void execute(String commandString, LPhyParser parser) {
+    default void execute(String commandString, LPhyMetaParser parser) {
         throw new UnsupportedOperationException("This class is deprecated!");
     }
 

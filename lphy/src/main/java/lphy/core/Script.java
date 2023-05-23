@@ -25,14 +25,14 @@ public class Script {
         int level = 0;
 
         String line = reader.readLine();
-        LPhyParser.Context context = LPhyParser.Context.model;
+        LPhyMetaParser.Context context = LPhyMetaParser.Context.model;
         while (line != null) {
             skip = false;
             if (line.matches("[ \\t]*data[ \\t]*\\{[ \\t]*")) {
-                context = LPhyParser.Context.data;
+                context = LPhyMetaParser.Context.data;
                 skip = true;
             } else if (line.matches("[ \\t]*model[ \\t]*\\{[ \\t]*")) {
-                context = LPhyParser.Context.model;
+                context = LPhyMetaParser.Context.model;
                 skip = true;
             } else if (line.matches("[ \\t]*}[ \\t]*")) {
                 // this line is just closing a data or model block.

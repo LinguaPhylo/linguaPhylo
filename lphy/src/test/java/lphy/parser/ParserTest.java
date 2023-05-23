@@ -1,6 +1,6 @@
 package lphy.parser;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.system.UserDir;
 import org.junit.jupiter.api.Test;
 
@@ -77,25 +77,25 @@ public class ParserTest {
                 break;
 
             UserDir.setUserDir(exampleDir.getPath());
-            LPhyParser lPhyParser = new REPL();
+            LPhyMetaParser lPhyMetaParser = new REPL();
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
                 BufferedReader fin = new BufferedReader(lphyFile);
-                lPhyParser.source(fin);
+                lPhyMetaParser.source(fin);
             } catch (Exception e) {
 //                    failedFiles.add(fileName);
                 System.err.println("Example " + fileName + " failed\n");
                 fail("Example " + fileName + " failed at Exception :\n" + e.getMessage());
             }
             // lines of code parsed
-            List<String> lines = lPhyParser.getLines();
+            List<String> lines = lPhyMetaParser.getLines();
             assertTrue(lines.size() > 0);
 
-            String cmd = String.join("", lPhyParser.getLines());
+            String cmd = String.join("", lPhyMetaParser.getLines());
             // check lines
             assertTrue(cmd.trim().length() > 3, "Script must contain more than 3 characters : \n" + cmd);
 
-            lPhyParser.clear();
+            lPhyMetaParser.clear();
             System.out.println("Done " + fileName + "\n");
         }
 //            if (failedFiles.size() > 0) {

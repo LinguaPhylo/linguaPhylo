@@ -1,7 +1,7 @@
 package lphy.parser;
 
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.functions.*;
 import lphy.graphicalModel.*;
 import lphy.graphicalModel.types.*;
@@ -25,12 +25,12 @@ import static lphy.parser.Var.getIndexedValue;
 public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserAction {
 
     // the current context during parsing, either data block or model block.
-    LPhyParser.Context context;
+    LPhyMetaParser.Context context;
 
     // the parser object that stores all parsed values.
-    LPhyParser parser;
+    LPhyMetaParser parser;
 
-    public LPhyListenerImpl(LPhyParser parser, LPhyParser.Context context) {
+    public LPhyListenerImpl(LPhyMetaParser parser, LPhyMetaParser.Context context) {
         this.parser = parser;
         this.context = context;
 
@@ -184,7 +184,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
          */
         public Value visitStoch_relation(Stoch_relationContext ctx) {
 
-            if (context == LPhyParser.Context.data) {
+            if (context == LPhyMetaParser.Context.data) {
                 throw new SimulatorParsingException("Generative distributions are not allowed in the data block! Use model block for Generative distributions. ", ctx);
             }
 
@@ -399,7 +399,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
                     throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
                 }
-                if (context == LPhyParser.Context.data) {
+                if (context == LPhyMetaParser.Context.data) {
                     parser.getDataValues().add(getValue());
                 } else {
                     parser.getModelValues().add(getValue());
@@ -871,7 +871,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
-            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL(), LPhyParser.Context.model);
+            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL(), LPhyMetaParser.Context.model);
             BufferedReader fin = new BufferedReader(new FileReader(args[0]));
             StringBuffer buf = new StringBuffer();
             String str = null;

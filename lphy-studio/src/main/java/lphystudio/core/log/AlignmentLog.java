@@ -1,6 +1,6 @@
 package lphystudio.core.log;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.RandomValueLogger;
 import lphy.graphicalModel.Value;
@@ -27,11 +27,11 @@ import java.util.List;
  */
 public class AlignmentLog extends JTextArea implements RandomValueLogger {
 
-    final LPhyParser parser;
+    final LPhyMetaParser parser;
 
     boolean logAlignment = false;
 
-    public AlignmentLog(LPhyParser parser) {
+    public AlignmentLog(LPhyMetaParser parser) {
         this.parser = parser;
     }
 

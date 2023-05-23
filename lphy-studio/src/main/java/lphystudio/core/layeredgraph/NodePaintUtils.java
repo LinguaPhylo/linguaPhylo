@@ -1,6 +1,6 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.core.distributions.IID;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.core.functions.VectorizedFunction;
@@ -29,7 +29,7 @@ public class NodePaintUtils {
     private static CellRendererPane crp = new CellRendererPane();
 
 
-    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component, LPhyParser parser) {
+    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component, LPhyMetaParser parser) {
         NodeWrapper nodeWrapper = (NodeWrapper) properNode;
 
         if (!nodeWrapper.isDummy()) {
@@ -43,7 +43,7 @@ public class NodePaintUtils {
         }
     }
 
-    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component, LPhyParser parser) {
+    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component, LPhyMetaParser parser) {
 
         Shape shape = null;
         if (value instanceof RandomVariable) {

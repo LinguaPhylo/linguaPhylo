@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public interface LPhyParser extends GraphicalModel {
+public interface LPhyMetaParser extends GraphicalModel {
 
     // the name of the code being parsed.
     String getName();
@@ -106,7 +106,7 @@ public interface LPhyParser extends GraphicalModel {
          * @param parser
          * @return
          */
-        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyParser parser) {
+        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyMetaParser parser) {
 
             String[] argumentStrings = splitArgumentString(argumentString);
 

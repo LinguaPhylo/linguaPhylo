@@ -76,8 +76,8 @@ public class GraphicalModelPanel extends JPanel {
 
     public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoManagerHelper) {
 
-        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.data, undoManagerHelper);
-        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyParser.Context.model, undoManagerHelper);
+        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, undoManagerHelper);
+        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, undoManagerHelper);
 
         component = new GraphicalModelComponent(parser);
 
@@ -235,8 +235,8 @@ public class GraphicalModelPanel extends JPanel {
 
         Script script = Script.loadLPhyScript(reader);
 
-        dataInterpreter.interpretInput(script.dataLines, LPhyParser.Context.data);
-        modelInterpreter.interpretInput(script.modelLines, LPhyParser.Context.model);
+        dataInterpreter.interpretInput(script.dataLines, LPhyMetaParser.Context.data);
+        modelInterpreter.interpretInput(script.modelLines, LPhyMetaParser.Context.model);
 
         repaint();
     }
@@ -285,8 +285,8 @@ public class GraphicalModelPanel extends JPanel {
         modelInterpreter.clear();
         // refresh data and model lines
         String text = codeBuilder.getCode(component.getParser());
-        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParser.Context.data);
-        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParser.Context.model);
+        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyMetaParser.Context.data);
+        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyMetaParser.Context.model);
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParser());
@@ -294,7 +294,7 @@ public class GraphicalModelPanel extends JPanel {
         this.sampler = sampler;
 
         if (id != null) {
-            Value<?> selectedValue = component.getParser().getValue(id, LPhyParser.Context.model);
+            Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaParser.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }

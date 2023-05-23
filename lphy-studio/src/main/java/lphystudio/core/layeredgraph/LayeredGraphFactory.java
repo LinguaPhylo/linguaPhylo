@@ -1,6 +1,6 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.LPhyParser;
+import lphy.core.LPhyMetaParser;
 import lphy.graphicalModel.Generator;
 import lphy.graphicalModel.Value;
 import lphy.layeredgraph.LayeredGraph;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class LayeredGraphFactory {
 
-    public static LayeredGraph createLayeredGraph(LPhyParser parser, boolean showAllNodes) {
+    public static LayeredGraph createLayeredGraph(LPhyMetaParser parser, boolean showAllNodes) {
         Map<Object, LayeredGNode> allNodes = new HashMap<>();
         for (Value value : parser.getModelSinks()) {
             createAndAddNode(parser, value, null, allNodes, showAllNodes);
@@ -40,7 +40,7 @@ public class LayeredGraphFactory {
      * @param allNodes
      * @return
      */
-    private static LayeredNode createAndAddNode(LPhyParser parser, Value value, LayeredGNode parentNode,
+    private static LayeredNode createAndAddNode(LPhyMetaParser parser, Value value, LayeredGNode parentNode,
                                                 Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
 
         LayeredGNode node = allNodes.get(value);
@@ -74,7 +74,7 @@ public class LayeredGraphFactory {
         return node;
     }
 
-    private static LayeredGNode createAndAddNode(LPhyParser parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredGNode createAndAddNode(LPhyMetaParser parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
             node = new LayeredGNode(g, parser);
