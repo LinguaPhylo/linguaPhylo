@@ -2,7 +2,6 @@ package lphy.parser;
 
 import lphy.core.LPhyParser;
 import lphy.system.UserDir;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -16,13 +15,6 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest {
-
-    LPhyParser lPhyParser;
-
-    @BeforeEach
-    public void setUp() {
-        lPhyParser = new REPL();
-    }
 
     @Test
     public void testAssingment() {
@@ -39,15 +31,20 @@ public class ParserTest {
         parse("a=2;b=a");
     }
 
-    private void parse(String cmd) {
+    /**
+     * Helper method
+     * @param cmd
+     * @return
+     */
+    public static Object parse(String cmd) {
         Object o = null;
         try {
-            LPhyListenerImpl parser = new LPhyListenerImpl(lPhyParser, LPhyParser.Context.model);
-            o = parser.parse(cmd);
+            o = ParserSingleton.parse(cmd);
         } catch (Exception e) {
             fail("CMD " + cmd + " failed to parse, Exception :\n" + e.getMessage());
         }
         assertNotNull(o);
+        return o;
     }
 
 
@@ -80,7 +77,7 @@ public class ParserTest {
                 break;
 
             UserDir.setUserDir(exampleDir.getPath());
-            lPhyParser = new REPL();
+            LPhyParser lPhyParser = new REPL();
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
                 BufferedReader fin = new BufferedReader(lphyFile);

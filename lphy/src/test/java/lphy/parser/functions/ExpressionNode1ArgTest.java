@@ -2,16 +2,26 @@ package lphy.parser.functions;
 
 import lphy.graphicalModel.Value;
 import lphy.graphicalModel.types.IntegerValue;
+import lphy.parser.ParserTest;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Walter Xie
  */
 class ExpressionNode1ArgTest {
+
+    @Test
+    void testRound() {
+        Object res = ParserTest.parse("x=round(10/3);");
+        assertTrue(res instanceof Value<?>, "Result = " + res);
+
+        Object rV = ((Value) res).value();
+        assertTrue(rV instanceof Integer, "Result value = " + rV);
+        assertEquals(3, ((Integer) rV).intValue(), "Result value = " + rV);
+    }
 
     @Test
     void testIdNull() {
@@ -28,7 +38,7 @@ class ExpressionNode1ArgTest {
 
     // https://en.wikipedia.org/wiki/Probit
     @Test
-    void probit() {
+    void testProbit() {
         // standard NormalDistribution, m = 0, sd = 1
         NormalDistribution normalDistribution = new NormalDistribution();
         double y = normalDistribution.cumulativeProbability(-1.96);

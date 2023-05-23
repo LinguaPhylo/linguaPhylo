@@ -1,20 +1,26 @@
 package lphy.parser;
 
+import lphy.graphicalModel.Value;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * @author Walter Xie
  */
 class ElementWise2ArgsTest {
 
-//    void testMultiply() {
-//        final String exprStr = "prod = [[1,2,3],[3,2,1]] * [[1,2,3],[3,2,1]];";
-//        Value[] values = new Value[]{new IntegerValue(null, 3)};
-//        ExpressionNode expr = new ExpressionNode2Args(exprStr, ExpressionNode2Args.times(), values);
-//
-//        assertNotNull(expr, "test expression " + exprStr);
-//        assertNotNull(expr.getParams(), "test expression " + exprStr);
-//        // key cannot be null
-//        expr.getParams().forEach((key, value) ->
-//                assertNotNull(key, "test key of " + expr.getName()));
-//    }
+    @Test
+    void test2DTimes2D() {
+        Object res = ParserTest.parse("prod = [[1,2,3],[3,2,1]] * [[1,2,3],[3,2,1]];");
+        assertTrue(res instanceof Value<?>, "Result = " + res);
+
+        Object rV = ((Value) res).value();
+        assertTrue(rV instanceof Integer[][], "Result value = " + rV);
+        Integer[][] expect = {  {1, 4, 9}, {9, 4, 1}  };
+        assertTrue(Arrays.deepEquals((Integer[][]) rV, expect), "Result value = " + rV);
+    }
 
 }
