@@ -1,0 +1,4 @@
+n ~ Poisson(lambda=1.0);
+scaleFactors ~ LogNormal(meanlog=-0.25, sdlog=0.5, replicates=n);
+//finalRate = 0.01 * product(scaleFactors);
+x = ifelse(length(scaleFactors) > 1, scaleFactors, 0);
