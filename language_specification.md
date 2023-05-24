@@ -26,9 +26,9 @@ __Escape Sequences__: In string literals, escape sequences can be used to includ
 
 ## Syntax
 
-__Structured Input__: LinguaPhylo consists of optional data and model blocks. If these blocks are not provided, the syntax can include free lines containing relations.
+__Structured Input__: LinguaPhylo consists of optional data and model blocks. If these blocks are not provided, the syntax can include free lines containing variable specifications.
 
-__Data block__: The data block, signified by the keyword DATA, can contain deterministic relations enclosed within '{' and '}' brackets. Alternatively, a data block can simply be a list of deterministic relations without the DATA keyword.
+__Data block__: The data block, signified by the keyword DATA, can contain deterministic variable relations enclosed within '{' and '}' brackets. Alternatively, a data block can simply be a list of deterministic relations without the DATA keyword.
 
 __Model block__: The model block, marked by the keyword MODEL, can hold relations, including stochastic and deterministic relations, enclosed within '{' and '}' brackets. Similar to the data block, a model block can also just be a list of relations without the MODEL keyword.
 
