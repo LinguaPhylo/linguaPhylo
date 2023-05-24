@@ -62,16 +62,16 @@ unnamed_expression_list : expression (',' expression)*  ;
 // Define a mapFunction which takes an expression_list as an argument and is enclosed in curly braces.
 mapFunction: '{' expression_list '}';
 
-// Defines a methodCall which consists of a method name (NAME)
+// Defines a function which consists of a method name (NAME)
 // followed by an optional expression_list enclosed in parentheses
 // or an optional unnamed_expression_list enclosed in parentheses.
-methodCall
+function
     : NAME '(' expression_list? ')'
     | NAME '(' unnamed_expression_list? ')'
     ;
 
-// a methodCall applied to an object (var) separated by a dot (.).
-objectMethodCall : var DOT NAME '(' unnamed_expression_list? ')';
+// a function applied to an object (var) separated by a dot (.).
+methodCall : var DOT NAME '(' unnamed_expression_list? ')';
 
 // a distribution function which takes an expression_list as an argument.
 distribution : NAME '(' expression_list ')' ;
@@ -92,8 +92,8 @@ expression
     | '(' expression ')'
     | array_expression
     | expression '[' range_list ']'
+    | function
     | methodCall
-    | objectMethodCall
     | prefix=('+'|'-'|'!') expression
     // ** is power, % is mod
     | expression bop=('**'|'*'|'/'|'%') expression
@@ -119,9 +119,6 @@ TILDE:              '~';
 DOT:                '.';
 
 NAME:               Letter LetterOrDigit*;
-
-LENGTH:             'length';
-DIM:                'dim';
 
 /*
  * Adapted from https://github.com/antlr/grammars-v4/blob/master/java/JavaLexer.g4
