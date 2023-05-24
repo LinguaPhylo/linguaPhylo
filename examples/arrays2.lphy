@@ -13,6 +13,6 @@ z2 = x2 != y2;
 
 // false
 compare1 = a == x;
-compare2 = a2 == x2;
+compare2 = a == x2;
 // vectorised
 compare3 = x == x2;
