@@ -1,13 +1,6 @@
-a = rep(0.0, 0); // an empty 1d array
+a = rep(0.0, 0); // an empty array of doubles
 b = rep(0.0, 0);
 c = a == b;
-
-a2 = rep(rep(0.0, 0), 0); // an empty 2d array
-b2 = rep(rep(0.0, 0), 0);
-c2 = a2 != b2;
-
-// not sure true or false
-empty = a == a2;
 
 // vectorised
 x = [1.0,2.0,3.0];
