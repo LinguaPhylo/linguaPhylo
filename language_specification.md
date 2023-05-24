@@ -118,7 +118,7 @@ Description of built-in functions or procedures, expected inputs, outputs, and s
 
 ## Standard Library: 
 
-If there's a standard library that comes with the language, describe its contents and how to use them.
+The standard library is described (https://linguaphylo.github.io/docs/)[https://linguaphylo.github.io/docs/]
 
 ## Examples
 
