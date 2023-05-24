@@ -38,6 +38,8 @@ __Expressions__: Expressions in LinguaPhylo are versatile and can include consta
 
 __Constants__: Constants can be any literal (floating point, decimal, hexadecimal, octal, binary, string, boolean) and may be preceded by a minus sign.
 
+__Distributions__: Distributions consist of a name followed by a (possibly empty) list of named arguments (expressions) enclosed in parentheses. Distributions can't appear in expressions and can only appear as the right operand of a stochastic specification line.
+
 __Functions__: Functions consist of a function name followed by an optional list of expressions enclosed in parentheses. The arguments can be unnamed (if less than or equal to 3 arguments) or named.
 
 __Method calls__: Method calls are functions applied to an object (denoted by variable). They are separated by a dot (.) operator and their arguments are always unnamed.
