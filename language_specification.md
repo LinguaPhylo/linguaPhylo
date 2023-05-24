@@ -20,7 +20,7 @@ __Operators__: LPhy includes several arithmetic, relational, logical, and bitwis
 
 __Braces and Brackets__: LPhy uses various types of braces and brackets, including round brackets '()' to enclose the arguments or functions and distributions, square brackets '[]' for array indexing and array literals, and curly braces '{}' for mapFunctions and blocks in data and model constructs.
 
-__Whitespace and Comments__: Whitespace (spaces, tabs, and newlines) is used to separate tokens, and comments can be defined using the '//' and '/.../' syntax.
+__Whitespace and Comments__: Whitespace (spaces, tabs, and newlines) is used to separate tokens, and comments can be defined using single line '//' or multi-line '/* ... */' syntax.
 
 __Escape Sequences__: In string literals, escape sequences can be used to include special characters, defined by the EscapeSequence fragment.
 
@@ -48,7 +48,7 @@ __Array Expressions__: An array expression consists of one or more comma-delimit
 
 __Identifiers__: LinguaPhylo allows standard Latin alphabet-based identifiers as well as Greek characters like θ (theta) and ρ (rho) for identifiers.
 
-__Comments__: Comments can be single-line comments (preceded by '//') or multiline comments (enclosed within '/' and '/'). Comments are ignored by the interpreter.
+__Comments__: Comments can be single-line comments (preceded by '//') or multiline comments (enclosed within '/*' and '*/'). Comments are ignored by the interpreter.
 
 __Whitespace__: Spaces, tabs, and newlines are used to separate tokens in the language.
 
