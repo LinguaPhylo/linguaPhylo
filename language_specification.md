@@ -118,7 +118,7 @@ Description of built-in functions or procedures, expected inputs, outputs, and s
 
 ## Standard Library: 
 
-The standard library is described (https://linguaphylo.github.io/docs/)[https://linguaphylo.github.io/docs/]
+The standard library is described here: https://linguaphylo.github.io/docs/
 
 ## Examples
 
