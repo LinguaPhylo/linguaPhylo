@@ -137,6 +137,7 @@ distributions {
             from("$rootDir") {
                 include("README.md")
                 include("LICENSE")
+                include("language_specification.md")
             }
             // include src jar
             into("src") {

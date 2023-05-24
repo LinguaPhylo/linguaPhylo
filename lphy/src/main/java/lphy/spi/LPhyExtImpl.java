@@ -105,10 +105,9 @@ public class LPhyExtImpl implements LPhyExtension {
             // Set Op
             Intersect.class,
             // Utils
-            ParseInt.class, ConcatArray.class, RepArray.class, Concat2Str.class, //ConcatStr.class,
-            Length.class, Unique.class, Range.class, Rep.class, Sort.class, IfElse.class,
-            Get.class, Select.class, Split.class, SliceDoubleArray.class);
-
+            Length.class, Unique.class, Range.class, Sort.class, IfElse.class, //ConcatStr.class,
+            Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
+            ConcatArray.class, Concat2Str.class, SliceDoubleArray.class);
 
     /**
      * Required by ServiceLoader.
