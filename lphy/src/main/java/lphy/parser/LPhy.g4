@@ -5,15 +5,25 @@ grammar LPhy;
 
 // This is the top-level rule that the parser will start with.
 input: structured_input | free_lines;
-// Define a rule called input that matches an optional data block and an optional model block.
+// LinguaPhylo consists of optional data and model blocks.
+// If these blocks are not provided, the syntax can include free lines containing relations.
 structured_input: datablock? modelblock?;
 // free lines without data and model blocks.
 free_lines: | relation_list ;
 
+// fundamental reserved keywords in LPhy language
+DATA:               'data';
+MODEL:              'model';
+ASSIGN:             '=';
+TILDE:              '~';
+DOT:                '.';
+//TODO replicates=INT
+
 
 // *** data block *** //
-// A rule defines data block that matches the keyword DATA and { } with an optional determ_relation_list in between,
-// or no keyword DATA and { }.
+// The data block, signified by the keyword DATA,
+// can contain deterministic relations enclosed within '{' and '}' brackets.
+// Alternatively, a data block can simply be a list of deterministic relations without the DATA keyword.
 datablock: DATA '{' determ_relation_list? '}' | determ_relation_list;
 
 // a rule called determ_relation_list that matches either a determ_relation_line or a determ_relation_list followed by a determ_relation_line.
@@ -23,15 +33,18 @@ determ_relation_list:	determ_relation_line | determ_relation_list determ_relatio
 determ_relation_line: determ_relation ';';
 
 // *** model block *** //
-// A rule defines model block that matches the keyword MODEL and { } with an optional relation_list in between,
-// or no keyword MODEL and { }.
+// The model block, marked by the keyword MODEL,
+// can hold relations, including stochastic and deterministic relations,
+// enclosed within '{' and '}' brackets. Similar to the data block,
+// a model block can also just be a list of relations without the MODEL keyword.
 modelblock: MODEL '{' relation_list? '}' | relation_list;
 
 // a rule called relation_list that matches either a relation or a relation_list followed by a relation.
 relation_list:	relation | relation_list relation;
 
-// a rule called relation that matches either a stoch_relation or a determ_relation,
-// each followed by a semicolon.
+// A relation can either be a stochastic or a deterministic relation.
+// A deterministic relation consists of a variable assignment (using the '=' operator) to an expression.
+// A stochastic relation is a variable that follows a given distribution (signified by the '~' operator).
 relation: stoch_relation ';' | determ_relation ';';
 
 // *** assign relations *** //
@@ -49,8 +62,8 @@ determ_relation: var ASSIGN expression ;
 // a rule called stoch_relation that matches a var followed by a tilde (~) followed by a distribution.
 stoch_relation:	var TILDE distribution ;
 
-// Define a constant which can be a variety of literals (e.g. floats, decimals, strings, booleans)
-// optionally preceded by a minus sign.
+// Constants can be any literal (floating point, decimal, hexadecimal, octal, binary, string, boolean)
+// and may be preceded by a minus sign.
 constant : '-'? (FLOAT_LITERAL|DECIMAL_LITERAL|OCT_LITERAL|HEX_LITERAL|HEX_FLOAT_LITERAL|STRING_LITERAL|'true'|'false');
 
 // An expression_list consists of one or more named_expressions separated by commas.
@@ -59,18 +72,18 @@ expression_list : named_expression (',' named_expression)*  ;
 // An unnamed_expression_list consists of one or more expressions separated by commas.
 unnamed_expression_list : expression (',' expression)*  ;
 
-// Define a mapFunction which takes an expression_list as an argument and is enclosed in curly braces.
+// MapFunctions take a list of named expressions as an argument and are enclosed in curly braces '{}'.
 mapFunction: '{' expression_list '}';
 
-// Defines a function which consists of a method name (NAME)
-// followed by an optional expression_list enclosed in parentheses
-// or an optional unnamed_expression_list enclosed in parentheses.
+// Functions consist of a function name followed by an optional list of expressions enclosed in parentheses.
+// The arguments can be unnamed (if less than or equal to 3 arguments) or named.
 function
     : NAME '(' expression_list? ')'
     | NAME '(' unnamed_expression_list? ')'
     ;
 
-// a function applied to an object (var) separated by a dot (.).
+// Method calls are functions applied to an object (denoted by variable).
+// They are separated by a dot (.) operator and their arguments are always unnamed.
 methodCall : var DOT NAME '(' unnamed_expression_list? ')';
 
 // a distribution function which takes an expression_list as an argument.
@@ -79,13 +92,13 @@ distribution : NAME '(' expression_list ')' ;
 // a named_expression which consists of a variable name (NAME) followed by an equal sign and an expression.
 named_expression : NAME ASSIGN expression ;
 
-// rule for array expression, empty array [] is not allowed
+// An array expression consists of one or more comma-delimited expressions enclosed in square brackets '[]'.
+// Note that an empty array is not allowed.
 array_expression : '[' unnamed_expression_list ']' ;
 
-// define an expression which can be a constant, variable name, a parenthesized expression,
-// a list of unnamed expressions enclosed in square brackets, a method call, an object method call,
-// an increment/decrement operation, a prefix operation, a binary operation, a ternary operation,
-// or a mapFunction.
+// Expressions in LinguaPhylo are versatile and can include constants,
+// variable names, parenthesized expressions, array expressions, method calls,
+// object method calls, unary and binary operations, ternary operations, and mapFunctions.
 expression
     : constant
     | NAME
@@ -111,14 +124,22 @@ expression
     | mapFunction
 ;
 
-// Identifiers
-DATA:               'data';
-MODEL:              'model';
-ASSIGN:             '=';
-TILDE:              '~';
-DOT:                '.';
-
+// Identifiers: LinguaPhylo allows standard Latin alphabet-based identifiers
+// as well as Greek characters like θ (theta) and ρ (rho) for identifiers.
+// TODO Greek characters are tranlated by Java class internally, not here.
 NAME:               Letter LetterOrDigit*;
+
+//TODO defined below but not used here ?
+// Whitespace: Spaces, tabs, and newlines are used to separate tokens in the language.
+WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
+//TODO defined below but not used here ?
+// Comments: Comments can be single-line comments (preceded by '//')
+// or multiline comments (enclosed within '/' and '/').
+// Comments are ignored by the interpreter.
+COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
+LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
+
+
 
 /*
  * Adapted from https://github.com/antlr/grammars-v4/blob/master/java/JavaLexer.g4
@@ -126,7 +147,6 @@ NAME:               Letter LetterOrDigit*;
  Copyright (c) 2013 Terence Parr, Sam Harwell
  Copyright (c) 2017 Ivan Kochurkin (upgrade to Java 8)
  All rights reserved.
-
 */
 
 // Literals
@@ -145,11 +165,6 @@ HEX_FLOAT_LITERAL:  '0' [xX] (HexDigits '.'? | HexDigits? '.' HexDigits) [pP] [+
 //CHAR_LITERAL:       '\'' (~['\\\r\n] | EscapeSequence) '\'';
 //STRING_LITERAL:     '"' (~["\\\r\n] | EscapeSequence)* '"';
 STRING_LITERAL:     '"' .*? '"';
-
-// Whitespace and comments
-WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
-COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
-LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
 
 // Fragment rules

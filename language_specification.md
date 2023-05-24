@@ -38,7 +38,7 @@ Description and motivation behind LinguaPhylo, including the key feature of impl
 
 *Constants*: Constants can be any literal (floating point, decimal, hexadecimal, octal, binary, string, boolean) and may be preceded by a minus sign.
 
-*Functions*: Functions consist of a function name followed by an optional list of expressions enclosed in parentheses. The arguments can be unnamed (if less than 3 arguments) or named.
+*Functions*: Functions consist of a function name followed by an optional list of expressions enclosed in parentheses. The arguments can be unnamed (if less than or equal to 3 arguments) or named.
 
 *Method calls*: Method calls are functions applied to an object (denoted by variable). They are separated by a dot (.) operator and their arguments are always unnamed.
 
