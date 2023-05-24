@@ -44,7 +44,7 @@ __Method calls__: Method calls are functions applied to an object (denoted by va
 
 __Maps__: Map literals take a list of named expressions as an argument and are enclosed in curly braces '{}'.
 
-__Array Expressions__: An array expression consists of one or more comma-delimited expressions enclosed in square brackets '[]'. Note that an empty array is not allowed.
+__Array Construction__: An array construction expression consists of one or more comma-delimited expressions enclosed in square brackets '[]'. Note that an empty array is not allowed.
 
 __Identifiers__: LinguaPhylo allows standard Latin alphabet-based identifiers as well as Greek characters like θ (theta) and ρ (rho) for identifiers.
 
