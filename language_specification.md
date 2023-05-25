@@ -110,7 +110,71 @@ This form of vectorization, called "Implicit Vectorization," allows the generati
 
 ## Operators and Expressions
 
-Description of the behavior of the built-in operators, especially when used with different data types. Discuss operator precedence and associativity.
+Expressions in LPhy form the basic building blocks of the language. They consist of constants, variables, operations, and function calls, and can be combined in various ways to create more complex expressions.
+
+__Constants__ in LPhy can be floating-point, decimal, hexadecimal, octal, binary literals, and string literals. They can also be boolean values represented as true and false.
+
+__Variables__ are identifiers that hold a specific value. The value of a variable can be any of the types defined in LPhy, including primitive types, arrays, and objects.
+
+LPhy supports a variety of operators that can be used in expressions:
+
+1. Arithmetic Operators:
+
+These include addition (+), subtraction (-), multiplication (*), division (/), exponentiation (**), and modulo (%). These operators can be used with integer and floating-point number literals and variables.
+
+2. Relational Operators:
+
+These include greater than (>), less than (<), greater than or equal to (>=), less than or equal to (<=), equal to (==), and not equal to (!=). Relational operators can be used to compare two expressions and return a boolean result.
+
+3. Logical Operators:
+
+Logical operators include logical AND (&&), logical OR (||). They can be used to combine boolean expressions.
+
+4. Specification Operators:
+
+The two specification operators are the assignment operator (=), and the tilde operator (~). The assignment operator is used to assign a deterministic value to a variable, while the tilde operator is used to define a variable as following a given distribution. 
+
+5. Dot Operator:
+
+The dot operator (.) is used to call methods on an object or to access its properties. The object is specified to the left of the dot operator, and the method name or property is specified to the right.
+
+### Operator Precedence and Associativity:
+
+Operator precedence in LPhy follows the standard order of operations, also known as BODMAS or PEMDAS, which stands for Brackets, Orders (exponents), Division and Multiplication, Addition and Subtraction. Operators of the same precedence level are evaluated from left to right, known as left-associativity. The only exception is exponentiation (**), which is right-associative.
+
+Here is the order of operations from highest to lowest precedence:
+
+1. Parentheses ()
+2. Exponentiation **
+3. Multiplication *, Division /, Modulo %
+4. Addition +, Subtraction -
+5. Relational operators: >, <, >=, <=, ==, !=
+6. Logical AND &&
+7. Logical OR ||
+8. Assignment =, Tilde ~, Dot .
+
+### Complex Expressions:
+
+Expressions can be nested, meaning that the result of one expression can be used as a part of another expression. This is particularly useful for defining complex mathematical operations or logic.
+
+Example:
+
+```lphy
+x = 5;
+y = 10;
+z = (x * y) + 5;
+```
+
+In this example, z is defined as the result of the expression (x * y) + 5, where x and y are variables.
+
+Expressions can also include function calls and method calls. Functions consist of a function name followed by a list of expressions enclosed in parentheses, while method calls are functions applied to an object, separated by a dot (.) operator.
+
+Example:
+
+```lphy
+a = sqrt(x);
+b = tree.rootAge();
+```
 
 ## Built-In Functions and Generative Distributions:
 
