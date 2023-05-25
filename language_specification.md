@@ -118,15 +118,15 @@ __Variables__ are identifiers that hold a specific value. The value of a variabl
 
 LPhy supports a variety of operators that can be used in expressions:
 
-1. __Arithmetic Operators__:
+1. __Arithmetic Operators__:  
     These include addition (+), subtraction (-), multiplication (*), division (/), exponentiation (**), and modulo (%). These operators can be used with integer and floating-point number literals and variables.
-2. __Relational Operators__:
+2. __Relational Operators__:  
     These include greater than (>), less than (<), greater than or equal to (>=), less than or equal to (<=), equal to (==), and not equal to (!=). Relational operators can be used to compare two expressions and return a boolean result.
-3. __Logical Operators__:
+3. __Logical Operators__:  
     Logical operators include logical AND (&&), logical OR (||). They can be used to combine boolean expressions.
-4. __Specification Operators__:
+4. __Specification Operators__:  
     The two specification operators are the assignment operator (=), and the tilde operator (~). The assignment operator is used to assign a deterministic value to a variable, while the tilde operator is used to define a variable as following a given distribution. 
-5. __Dot Operator__:
+5. __Dot Operator__:  
     The dot operator (.) is used to call methods on an object or to access its properties. The object is specified to the left of the dot operator, and the method name or property is specified to the right.
 
 ### Operator Precedence and Associativity:
