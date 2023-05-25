@@ -6,7 +6,7 @@ grammar LPhy;
 // This is the top-level rule that the parser will start with.
 input: structured_input | free_lines;
 // LinguaPhylo consists of optional data and model blocks.
-// If these blocks are not provided, the syntax can include free lines containing relations.
+// If these blocks are not provided, the syntax can include free lines containing variable specifications.
 structured_input: datablock? modelblock?;
 // free lines without data and model blocks.
 free_lines: | relation_list ;
@@ -14,15 +14,23 @@ free_lines: | relation_list ;
 // fundamental reserved keywords in LPhy language
 DATA:               'data';
 MODEL:              'model';
+// Specification Operators:
+// The two specification operators are the assignment operator (=), and the tilde operator (~).
+// The assignment operator is used to assign a deterministic value to a variable,
+// while the tilde operator is used to define a variable as following a given distribution.
 ASSIGN:             '=';
 TILDE:              '~';
+// Dot Operator:
+// The dot operator (.) is used to call methods on an object or to access its properties.
+// The object is specified to the left of the dot operator,
+// and the method name or property is specified to the right.
 DOT:                '.';
 //TODO replicates=INT
 
 
 // *** data block *** //
 // The data block, signified by the keyword DATA,
-// can contain deterministic relations enclosed within '{' and '}' brackets.
+// can contain deterministic variable relations enclosed within '{' and '}' brackets.
 // Alternatively, a data block can simply be a list of deterministic relations without the DATA keyword.
 datablock: DATA '{' determ_relation_list? '}' | determ_relation_list;
 
@@ -62,9 +70,12 @@ determ_relation: var ASSIGN expression ;
 // a rule called stoch_relation that matches a var followed by a tilde (~) followed by a distribution.
 stoch_relation:	var TILDE distribution ;
 
-// Constants can be any literal (floating point, decimal, hexadecimal, octal, binary, string, boolean)
-// and may be preceded by a minus sign.
-constant : '-'? (FLOAT_LITERAL|DECIMAL_LITERAL|OCT_LITERAL|HEX_LITERAL|HEX_FLOAT_LITERAL|STRING_LITERAL|'true'|'false');
+// literal in LPhy can be floating-point, decimal, hexadecimal, octal, binary literals,
+// and string literals. They can also be boolean values represented as true and false.
+literal :  floatingPointLiteral | integerLiteral | STRING_LITERAL | booleanLiteral;
+floatingPointLiteral : '-'? (FLOAT_LITERAL|HEX_FLOAT_LITERAL);
+integerLiteral : '-'? (DECIMAL_LITERAL|OCT_LITERAL|HEX_LITERAL);
+booleanLiteral: 'true'|'false';
 
 // An expression_list consists of one or more named_expressions separated by commas.
 expression_list : named_expression (',' named_expression)*  ;
@@ -92,49 +103,56 @@ distribution : NAME '(' expression_list ')' ;
 // a named_expression which consists of a variable name (NAME) followed by an equal sign and an expression.
 named_expression : NAME ASSIGN expression ;
 
-// An array expression consists of one or more comma-delimited expressions enclosed in square brackets '[]'.
-// Note that an empty array is not allowed.
-array_expression : '[' unnamed_expression_list ']' ;
+// An array construction expression consists of one or more comma-delimited expressions
+// enclosed in square brackets '[]'. Note that an empty array is not allowed.
+array_construction : '[' unnamed_expression_list ']' ;
 
-// Expressions in LinguaPhylo are versatile and can include constants,
-// variable names, parenthesized expressions, array expressions, method calls,
-// object method calls, unary and binary operations, ternary operations, and mapFunctions.
+// Expressions in LPhy form the basic building blocks of the language.
+// They consist of literals, variables, operations, and function calls,
+// and can be combined in various ways to create more complex expressions.
 expression
-    : constant
+    : literal
     | NAME
     | '(' expression ')'
-    | array_expression
+    | array_construction
     | expression '[' range_list ']'
     | function
     | methodCall
     | prefix=('+'|'-'|'!') expression
-    // ** is power, % is mod
-    | expression bop=('**'|'*'|'/'|'%') expression
-    | expression bop=('+'|'-') expression
+    // Arithmetic Operators:
+    // These include addition (+), subtraction (-), multiplication (*), division (/),
+    // exponentiation (**), and modulo (%). These operators can be used with integer
+    // and floating-point number literals and variables.
+    | expression bop=('**'|'*'|'/'|'+'|'-'|'%') expression
+    // Relational Operators:
+    // These include greater than (>), less than (<), greater than or equal to (>=),
+    // less than or equal to (<=), equal to (==), and not equal to (!=).
+    // Relational operators can be used to compare two expressions and return a boolean result.
     | expression bop=('<=' | '>=' | '>' | '<') expression
     | expression bop=('==' | '!=') expression
+    // Logical Operators:
+    // Logical operators include logical AND (&&), logical OR (||).
+    // They can be used to combine boolean expressions.
     | expression bop=('&&' | '||') expression
-    // create an array
-    | expression bop=':' expression
     // bitwise
     | expression bop=('&' | '|') expression
     // TODO Java code is commented out
     | expression ('<' '<' | '>' '>' '>' | '>' '>' | '^') expression
+    // Array creation operator:
+    // the `:` operator used primarily in slicing operations or creating an array
+    // should have lower precedence than bitwise operations.
+    | expression bop=':' expression
 //    | expression bop='?' expression ':' expression // conflict with expression bop=':' expression
     | mapFunction
 ;
 
 // Identifiers: LinguaPhylo allows standard Latin alphabet-based identifiers
 // as well as Greek characters like θ (theta) and ρ (rho) for identifiers.
-// TODO Greek characters are tranlated by Java class internally, not here.
 NAME:               Letter LetterOrDigit*;
 
-//TODO defined below but not used here ?
 // Whitespace: Spaces, tabs, and newlines are used to separate tokens in the language.
 WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
-//TODO defined below but not used here ?
-// Comments: Comments can be single-line comments (preceded by '//')
-// or multiline comments (enclosed within '/' and '/').
+// Comments can be single-line comments (preceded by '//') or multiline comments (enclosed within '/' and '/').
 // Comments are ignored by the interpreter.
 COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
 LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
