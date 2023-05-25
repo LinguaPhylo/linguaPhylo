@@ -119,24 +119,15 @@ __Variables__ are identifiers that hold a specific value. The value of a variabl
 LPhy supports a variety of operators that can be used in expressions:
 
 1. Arithmetic Operators:
-
-These include addition (+), subtraction (-), multiplication (*), division (/), exponentiation (**), and modulo (%). These operators can be used with integer and floating-point number literals and variables.
-
+  - These include addition (+), subtraction (-), multiplication (*), division (/), exponentiation (**), and modulo (%). These operators can be used with integer and floating-point number literals and variables.
 2. Relational Operators:
-
-These include greater than (>), less than (<), greater than or equal to (>=), less than or equal to (<=), equal to (==), and not equal to (!=). Relational operators can be used to compare two expressions and return a boolean result.
-
+  - These include greater than (>), less than (<), greater than or equal to (>=), less than or equal to (<=), equal to (==), and not equal to (!=). Relational operators can be used to compare two expressions and return a boolean result.
 3. Logical Operators:
-
-Logical operators include logical AND (&&), logical OR (||). They can be used to combine boolean expressions.
-
+  - Logical operators include logical AND (&&), logical OR (||). They can be used to combine boolean expressions.
 4. Specification Operators:
-
-The two specification operators are the assignment operator (=), and the tilde operator (~). The assignment operator is used to assign a deterministic value to a variable, while the tilde operator is used to define a variable as following a given distribution. 
-
+  - The two specification operators are the assignment operator (=), and the tilde operator (~). The assignment operator is used to assign a deterministic value to a variable, while the tilde operator is used to define a variable as following a given distribution. 
 5. Dot Operator:
-
-The dot operator (.) is used to call methods on an object or to access its properties. The object is specified to the left of the dot operator, and the method name or property is specified to the right.
+  - The dot operator (.) is used to call methods on an object or to access its properties. The object is specified to the left of the dot operator, and the method name or property is specified to the right.
 
 ### Operator Precedence and Associativity:
 
