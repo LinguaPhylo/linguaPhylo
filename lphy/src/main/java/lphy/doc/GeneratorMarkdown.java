@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * An util class to create lphy doc in markdown.
+ * A util class to create lphy doc in markdown.
  * @author Alexei Drummond
  * @author Walter Xie
  */

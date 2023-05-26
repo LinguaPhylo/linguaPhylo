@@ -23,9 +23,9 @@ import static lphy.graphicalModel.GeneratorCategory.*;
 
 /**
  * Delete everything under ???/lphy/doc, if it is not a minor change to docs.
- * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/lphy/doc,
+ * For LPhy core, set working directory: ~/WorkSpace/linguaPhylo/docs,
  * and args[0] = version.
- * For extension, set working directory: ~/WorkSpace/$REPO/lphy/doc,
+ * For extension, set working directory: ~/WorkSpace/$REPO/docs,
  * and args[0] = version, args[1] = extension name (no space),
  * args[2] = class name to implement LPhyExtension.
  *
@@ -75,8 +75,9 @@ public class GenerateDocs {
         final Path dir = Paths.get(System.getProperty("user.dir"));
         // out dir must be $project$/lphy/doc
         if (isLPhyDoc(extName)) {
-            if (!dir.endsWith("lphy" + File.separator + "doc"))
-                throw new IllegalArgumentException("The user.dir must set to $project$/lphy/doc !\n" + dir.toAbsolutePath());
+            if (! (dir.endsWith("lphy" + File.separator + "doc") ||
+                    dir.endsWith("docs"))  )
+                throw new IllegalArgumentException("The user.dir must set to either $project$/docs or $project$/lphy/doc !\n" + dir.toAbsolutePath());
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
