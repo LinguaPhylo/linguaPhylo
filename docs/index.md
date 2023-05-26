@@ -1,4 +1,4 @@
-LPhy Language Reference (version 1.4.1)
+LPhy Language Reference (version 1.4.2)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
@@ -107,6 +107,7 @@ Other functions
 - [concat2Str](functions/concat2Str.md)
 - [concatArray](functions/concatArray.md)
 - [get](functions/get.md)
+- [ifelse](functions/ifelse.md)
 - [intersect](functions/intersect.md)
 - [length](functions/length.md)
 - [nchar](functions/nchar.md)
@@ -122,6 +123,8 @@ Other functions
 - [split](functions/split.md)
 - [sum](functions/sum.md)
 - [hammingWeight](functions/hammingWeight.md)
+- [sumCols](functions/sumCols.md)
+- [sumRows](functions/sumRows.md)
 - [unique](functions/unique.md)
 
 Types
@@ -132,6 +135,7 @@ Types
 - [Number[]](types/Number[].md)
 - [Object[]](types/Object[].md)
 - [Double[][]](types/Double[][].md)
+- [Number[][]](types/Number[][].md)
 - [Boolean](types/Boolean.md)
 - [Double](types/Double.md)
 - [Integer](types/Integer.md)
