@@ -32,6 +32,8 @@ markdown: kramdown
 
 # Build settings
 theme: minima
+show_header: false
+
 # header_pages:
 #   - about.md
 #   - features.md
