@@ -34,7 +34,7 @@ markdown: kramdown
 theme: minima
 
 header_pages:
-#   - about.md
+   - about.md
 #   - features.md
 #   - setup.md
 #   - tutorials.md
