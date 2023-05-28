@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: ""
+title: "LPhy Docs"
 email: alexei.drummond@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   LinguaPhylo is a statistical model description language for Bayesian phylogenetics. 
@@ -34,7 +34,7 @@ markdown: kramdown
 theme: minima
 show_header: false
 
-# header_pages:
+header_pages:
 #   - about.md
 #   - features.md
 #   - setup.md
@@ -44,8 +44,8 @@ show_header: false
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-#   - jekyll-relative-links
-#   - jekyll-titles-from-headings
+  - jekyll-relative-links
+  - jekyll-titles-from-headings
 
 # titles_from_headings:
 #   enabled:     true
