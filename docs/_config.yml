@@ -22,7 +22,7 @@ title: ""
 email: alexei.drummond@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   LinguaPhylo is a statistical model description language for Bayesian phylogenetics. 
-baseurl: "docs" # the subpath of your site, e.g. /blog
+baseurl: "linguaPhylo" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: alexeidrummond
 github_username:  alexeid
@@ -32,7 +32,7 @@ markdown: kramdown
 
 # Build settings
 theme: minima
-header_pages:
+# header_pages:
 #   - about.md
 #   - features.md
 #   - setup.md
