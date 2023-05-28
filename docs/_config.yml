@@ -22,7 +22,7 @@ title: LinguaPhylo
 email: alexei.drummond@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   LinguaPhylo is a statistical model description language for Bayesian phylogenetics. 
-baseurl: "linguaPhylo" # the subpath of your site, e.g. /blog
+baseurl: "docs" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: alexeidrummond
 github_username:  alexeid
@@ -37,7 +37,7 @@ header_pages:
   - features.md
   - setup.md
   - tutorials.md
-  - docs.md
+#   - docs.md
   - developer.md
 plugins:
   - jekyll-feed
@@ -50,17 +50,17 @@ titles_from_headings:
   strip_title: true
   collections: false
   
-defaults:
-  -
-    scope:
-      path: "docs.md"
-    values:
-      strip_title: true
-  -
-    scope:
-      path: "docs"
-    values:
-      strip_title: true
+# defaults:
+#   -
+#     scope:
+#       path: "docs.md"
+#     values:
+#       strip_title: true
+#   -
+#     scope:
+#       path: "docs"
+#     values:
+#       strip_title: true
 
 # Google services
 google_analytics: G-FV6H1Z0KBL
