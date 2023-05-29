@@ -142,6 +142,10 @@ public class GenerateDocs {
         };
     }
 
+    private static String addHomepageURL(String text) {
+        return "<a href=\"https://linguaphylo.github.io\">" + text + "</a>";
+    }
+
     // output to dir
     private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
                                         List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
@@ -160,13 +164,17 @@ public class GenerateDocs {
          * Title
          */
         StringBuilder builder = new StringBuilder();
+        // add url link
+        if (LPHY_DOC_TITLE.equalsIgnoreCase(extName))
+            extName = addHomepageURL(extName);
         String h1 = extName + " Language Reference";
         if (version != null || !version.trim().isEmpty())
             h1 += " (version " + version + ")";
         builder.append(new Heading(h1, 1)).append("\n");
 
         builder.append(new Text("This an automatically generated language reference " +
-                "of the LinguaPhylo (LPhy) statistical phylogenetic modeling language."));
+                "of the " + addHomepageURL("LinguaPhylo") +
+                " (LPhy) statistical phylogenetic modeling language."));
         builder.append("\n\n");
 
         /**
