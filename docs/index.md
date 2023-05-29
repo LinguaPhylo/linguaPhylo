@@ -1,4 +1,4 @@
-LPhy Language Reference (version 1.4.2)
+<a href="https://linguaphylo.github.io">LPhy</a> Language Reference (version 1.4.2)
 =======================================
 This an automatically generated language reference of the LinguaPhylo (LPhy) statistical phylogenetic modeling language.
 
