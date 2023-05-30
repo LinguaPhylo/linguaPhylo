@@ -15,9 +15,10 @@ module lphy.base {
 
     exports lphy.base.distributions;
     exports lphy.base.functions;
+    exports lphy.base.functions.alignment;
+    exports lphy.base.functions.datatype;
     exports lphy.base.functions.taxa;
     exports lphy.base.functions.tree;
-    exports lphy.base.functions.alignment;
 
     // evolution
     exports lphy.base.evolution;
