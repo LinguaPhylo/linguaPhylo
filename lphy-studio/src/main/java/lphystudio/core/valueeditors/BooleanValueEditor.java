@@ -1,6 +1,6 @@
 package lphystudio.core.valueeditors;
 
-import lphy.graphicalModel.Value;
+import lphy.core.graphicalmodel.components.Value;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

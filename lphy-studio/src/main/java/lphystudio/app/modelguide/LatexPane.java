@@ -1,8 +1,8 @@
 package lphystudio.app.modelguide;
 
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GeneratorCategory;
-import lphy.graphicalModel.NarrativeUtils;
+import lphy.core.graphicalmodel.components.Citation;
+import lphy.core.graphicalmodel.components.GeneratorCategory;
+import lphy.core.narrative.NarrativeUtils;
 import lphystudio.app.narrative.LaTeXUtils;
 
 import javax.swing.*;

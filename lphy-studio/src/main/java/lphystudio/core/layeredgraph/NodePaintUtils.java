@@ -1,15 +1,15 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.LPhyMetaParser;
-import lphy.core.distributions.IID;
-import lphy.core.distributions.VectorizedDistribution;
-import lphy.core.functions.VectorizedFunction;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.ValueUtils;
-import lphy.layeredgraph.LayeredNode;
-import lphy.layeredgraph.NodeWrapper;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.RandomVariable;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.graphicalmodel.components.ValueUtils;
+import lphy.core.graphicalmodel.vectorization.IID;
+import lphy.core.graphicalmodel.vectorization.VectorizedDistribution;
+import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
+import lphy.core.layeredgraph.LayeredNode;
+import lphy.core.layeredgraph.NodeWrapper;
+import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;

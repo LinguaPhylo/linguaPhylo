@@ -1,7 +1,7 @@
 package lphystudio.app.narrative;
 
-import lphy.core.LPhyMetaParser;
-import lphy.parser.LPhyParserAction;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserAction;
 import lphystudio.core.codecolorizer.ColorizerStyles;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 import lphystudio.core.codecolorizer.TextElement;

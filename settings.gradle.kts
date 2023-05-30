@@ -6,6 +6,7 @@ rootProject.name = "LinguaPhylo"
 //include("platforms")
 //include("build-logic")
 include("lphy")
+include("lphy-base")
 include("lphy-studio")
 
 pluginManagement {

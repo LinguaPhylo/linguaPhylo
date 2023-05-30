@@ -1,13 +1,13 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.core.GraphicalModelListener;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.graphicalmodel.GraphicalModelListener;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.Section;
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.GraphicalModel;
-import lphy.graphicalModel.Value;
+import lphy.core.graphicalmodel.components.DeterministicFunction;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.graphicalmodel.GraphicalModel;
+import lphy.core.graphicalmodel.components.Value;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 
 import javax.swing.*;

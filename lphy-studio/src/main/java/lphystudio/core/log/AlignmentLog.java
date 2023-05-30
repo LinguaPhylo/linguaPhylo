@@ -1,12 +1,13 @@
 package lphystudio.core.log;
 
-import lphy.core.LPhyMetaParser;
-import lphy.evolution.alignment.SimpleAlignment;
-import lphy.graphicalModel.RandomValueLogger;
-import lphy.graphicalModel.Value;
-import lphy.nexus.NexusWriter;
-import lphy.system.UserDir;
-import lphy.util.LoggerUtils;
+import lphy.base.evolution.alignment.SimpleAlignment;
+import lphy.base.logger.AlignmentFileLogger;
+import lphy.base.parser.nexus.NexusWriter;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.logger.RandomValueLogger;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.system.UserDir;
+import lphy.core.util.LoggerUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Write each alignment to a file during sampling.
  * The viewer is {@link lphystudio.app.graphicalmodelpanel.AlignmentLogPanel}.
- * This is a duplicated version of {@link lphy.graphicalModel.logger.AlignmentFileLogger},
+ * This is a duplicated version of {@link AlignmentFileLogger},
  * but contains GUI code.
  * @author Walter Xie
  */

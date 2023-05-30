@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelcomponent.interactive;
 
-import lphy.layeredgraph.LatticePoint;
-import lphy.layeredgraph.LayeredNode;
+import lphy.core.layeredgraph.LatticePoint;
+import lphy.core.layeredgraph.LayeredNode;
 import lphystudio.app.graphicalmodelcomponent.Positioning;
 
 import javax.swing.*;

@@ -1,11 +1,11 @@
 package lphystudio.app;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.system.UserDir;
-import lphy.util.LoggerUtils;
-import lphy.util.RandomUtils;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.system.UserDir;
+import lphy.core.util.LoggerUtils;
+import lphy.core.util.RandomUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;

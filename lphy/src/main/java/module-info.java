@@ -1,7 +1,10 @@
+import lphy.core.spi.LPhyCoreImpl;
+import lphy.core.spi.LPhyExtension;
+
 /**
  * @author Walter Xie
  */
-module lphy {
+module lphy.core {
     requires transitive java.datatransfer;
     requires transitive java.desktop;
     requires transitive java.prefs;
@@ -14,58 +17,42 @@ module lphy {
 
     requires markdowngenerator;
 
-    // bmodel test
-    exports lphy.bmodeltest;
-
-    exports lphy.core;
-    exports lphy.core.distributions;
-    exports lphy.core.narrative;
-    exports lphy.core.functions;
-    exports lphy.core.functions.taxa;
-    exports lphy.core.functions.tree;
-    exports lphy.core.functions.alignment;
-    // doc
-    exports lphy.doc;
-
-    // evolution
-    exports lphy.evolution;
-    exports lphy.evolution.alignment;
-    exports lphy.evolution.birthdeath;
-    exports lphy.evolution.branchrates;
-    exports lphy.evolution.coalescent;
-    exports lphy.evolution.continuous;
-    exports lphy.evolution.datatype;
-    exports lphy.evolution.io;
-    exports lphy.evolution.likelihood;
-    exports lphy.evolution.sitemodel;
-    exports lphy.evolution.substitutionmodel;
-    exports lphy.evolution.traits;
-    exports lphy.evolution.tree;
+    exports lphy.core; // for lphy.core.LPhyExtensionFactory
 
     // graphical model
-    exports lphy.graphicalModel;
-    exports lphy.graphicalModel.code;
-    exports lphy.graphicalModel.types;
-    exports lphy.graphicalModel.logger;
-    exports lphy.layeredgraph;
-
-    exports lphy.nexus;
+    exports lphy.core.graphicalmodel;
+    exports lphy.core.codebuilder;
+    exports lphy.core.graphicalmodel.components;
+    exports lphy.core.graphicalmodel.types;
+    exports lphy.core.graphicalmodel.vectorization;
+    exports lphy.core.layeredgraph;
 
     // parser
-    exports lphy.parser;
-    exports lphy.parser.functions;
+    exports lphy.core.parser;
+    exports lphy.core.parser.antlr;
+    exports lphy.core.parser.functions;
+
+    // others
+    exports lphy.core.narrative;
+    exports lphy.core.exception;
+    exports lphy.core.logger;
 
     // utils
-    exports lphy.math;
-    exports lphy.reflection;
-    exports lphy.system;
-    exports lphy.util;
-    exports lphy; // for lphy.LPhyExtensionFactory
+    exports lphy.core.cmd;
+//    exports lphy.math;
+    exports lphy.core.reflection;
+    exports lphy.core.system;
+    exports lphy.core.util;
 
     // declare service provider interface (SPI)
-    exports lphy.spi;
-    uses lphy.spi.LPhyExtension;
+    exports lphy.core.spi;
 
+    uses LPhyExtension;
     // declare what service interface the provider intends to use
-    provides lphy.spi.LPhyExtension with lphy.spi.LPhyExtImpl;
+    provides lphy.core.spi.LPhyExtension with LPhyCoreImpl;
+
+
+    //TODO
+    exports lphy.core.lightweight;
+
 }

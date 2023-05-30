@@ -1,11 +1,11 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.LPhyMetaParser;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
-import lphy.layeredgraph.LayeredNode;
-import lphy.util.LoggerUtils;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.RandomVariable;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.layeredgraph.LayeredNode;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.util.LoggerUtils;
 import lphystudio.core.swing.*;
 import lphystudio.core.theme.ThemeColours;
 

@@ -1,9 +1,9 @@
 package lphystudio.spi;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.graphicalModel.Func;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.spi.LPhyExtension;
+import lphy.core.graphicalmodel.components.Func;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.spi.LPhyExtension;
 
 import java.util.ArrayList;
 import java.util.List;

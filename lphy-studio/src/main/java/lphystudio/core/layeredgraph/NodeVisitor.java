@@ -1,8 +1,8 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.Value;
+import lphy.core.graphicalmodel.components.DeterministicFunction;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.graphicalmodel.components.Value;
 
 import java.awt.geom.Point2D;
 

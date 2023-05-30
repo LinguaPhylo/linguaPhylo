@@ -1,6 +1,6 @@
 package lphystudio.app.treecomponent;
 
-import lphy.evolution.tree.TimeTree;
+import lphy.base.evolution.tree.TimeTree;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;

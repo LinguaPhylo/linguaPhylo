@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.util.LoggerUtils;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.util.LoggerUtils;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 
 import javax.swing.*;

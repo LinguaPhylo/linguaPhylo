@@ -1,8 +1,8 @@
 package lphystudio.core.codecolorizer;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyMetaParser;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.LPhyMetaParser;
 import lphystudio.app.Utils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
 import lphystudio.app.narrative.DataModelToHTML;

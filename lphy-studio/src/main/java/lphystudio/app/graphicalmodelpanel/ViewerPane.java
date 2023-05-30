@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.graphicalModel.RandomValueLogger;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.logger.RandomValueLogger;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.app.narrative.LaTeXNarrative;

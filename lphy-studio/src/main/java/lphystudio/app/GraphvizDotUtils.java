@@ -1,7 +1,7 @@
 package lphystudio.app;
 
-import lphy.core.LPhyMetaParser;
-import lphy.graphicalModel.*;
+import lphy.core.graphicalmodel.components.*;
+import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.theme.ThemeColours;
 
 import java.awt.*;

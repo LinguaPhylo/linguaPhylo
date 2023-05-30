@@ -1,7 +1,7 @@
 package lphystudio.app.manager;
 
-import lphy.LPhyExtensionFactory;
-import lphy.spi.LPhyExtension;
+import lphy.core.LPhyExtensionFactory;
+import lphy.core.spi.LPhyExtension;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

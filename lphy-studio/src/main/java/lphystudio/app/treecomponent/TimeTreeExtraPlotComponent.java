@@ -1,7 +1,7 @@
 package lphystudio.app.treecomponent;
 
-import lphy.evolution.tree.LTTUtils;
-import lphy.evolution.tree.TimeTree;
+import lphy.base.evolution.tree.LTTUtils;
+import lphy.base.evolution.tree.TimeTree;
 import lphystudio.app.FontUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;

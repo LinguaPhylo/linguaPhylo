@@ -1,6 +1,6 @@
 package lphystudio.app.treecomponent;
 
-import lphy.evolution.tree.TimeTreeNode;
+import lphy.base.evolution.tree.TimeTreeNode;
 
 /**
  * @author Alexei Drummond

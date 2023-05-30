@@ -1,8 +1,11 @@
+import lphy.core.spi.LPhyExtension;
+
 /**
  * @author Walter Xie
  */
 module lphystudio {
-    requires transitive lphy;
+    requires transitive lphy.core;
+    requires lphy.base;
 
     requires jlatexmath;
 //    requires org.json;
@@ -23,5 +26,5 @@ module lphystudio {
     exports lphystudio.core.theme;
 
     // declare what service interface the provider intends to use
-    provides lphy.spi.LPhyExtension with lphystudio.spi.LPhyStudioImpl;
+    provides LPhyExtension with lphystudio.spi.LPhyStudioImpl;
 }

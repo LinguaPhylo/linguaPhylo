@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.evolution.Taxa;
-import lphy.evolution.Taxon;
+import lphy.base.evolution.Taxa;
+import lphy.base.evolution.Taxon;
 
 import javax.swing.*;
 

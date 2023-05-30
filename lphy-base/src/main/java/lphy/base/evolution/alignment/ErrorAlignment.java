@@ -1,0 +1,19 @@
+package lphy.base.evolution.alignment;
+
+/**
+ * Created by Alexei Drummond on 2/02/20.
+ */
+public class ErrorAlignment extends SimpleAlignment {
+
+    Alignment parent;
+
+    public ErrorAlignment(int length, Alignment parent) {
+        super(length, parent); // copy source
+
+        this.parent = parent;
+    }
+
+    public boolean isError(int i, int j) {
+        return alignment[i][j] != parent.getState(i,j);
+    }
+}
