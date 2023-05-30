@@ -36,41 +36,13 @@ tasks.jar {
     }
 }
 
-//TODO Deprecated
-// this function is modified from Maksim Kostromin's example
-// https://gist.github.com/daggerok/4f5f63448f24d991c273165615baa39a
-// create a fat non-modular jar containing all dependencies of lphy.
-tasks.register("noModFatJar", Jar::class.java) {
-    archiveClassifier.set("all")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(
-            "Implementation-Title" to "LPhy",
-            "Implementation-Vendor" to "LPhy team",
-        )
-    }
-    // add jars
-    from(configurations.runtimeClasspath.get()
-        .onEach { println("add from dependencies: ${it.name}") }
-        .map { if (it.isDirectory) it else zipTree(it) }) {
-        exclude("**/module-info.*")
-    }
-    // add java
-    val sourcesMain = sourceSets.main.get()
-//    sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
-    from(sourcesMain.output) {
-        exclude("**/module-info.*")
-    }
-    destinationDirectory.set(file("${buildDir}/fatjar"))
-}
-
 publishing {
     publications {
         // project.name contains "lphy" substring
         create<MavenPublication>(project.name) {
             artifactId = project.base.archivesName.get()
             pom {
-                description.set("A probabilistic model specification language to concisely and precisely define phylogenetic models.")
+                description.set("The core of LPhy. LPhy is a probabilistic model specification language to concisely and precisely define phylogenetic models.")
                 developers {
                     developer {
                         name.set(developers)
