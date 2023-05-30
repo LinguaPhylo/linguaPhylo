@@ -1,4 +1,6 @@
 import lphy.base.spi.LPhyBaseImpl;
+import lphy.base.spi.SequenceTypeBaseImpl;
+import lphy.base.spi.SequenceTypeExtension;
 import lphy.core.spi.LPhyExtension;
 
 /**
@@ -39,7 +41,10 @@ module lphy.base {
     // declare service provider interface (SPI)
     exports lphy.base.spi;
     uses LPhyExtension;
-
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyBaseImpl;
+
+    uses SequenceTypeExtension;
+    // declare what service interface the provider intends to use
+    provides lphy.base.spi.SequenceTypeExtension with SequenceTypeBaseImpl;
 }

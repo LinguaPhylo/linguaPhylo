@@ -16,7 +16,7 @@ import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.datatype.Continuous;
 import lphy.base.evolution.datatype.DataType;
 import lphy.base.evolution.traits.CharSetBlock;
-import lphy.core.spi.SequenceTypeFactory;
+import lphy.base.spi.SequenceTypeLoader;
 import lphy.core.util.LoggerUtils;
 
 import java.awt.*;
@@ -385,7 +385,7 @@ public class NexusParser {
 
                         try {
                             // add new data type to this method
-                            sequenceType = SequenceTypeFactory.INSTANCE.getDataType(token3);
+                            sequenceType = SequenceTypeLoader.getInstance().getDataType(token3);
                         } catch (UnsupportedOperationException e) {
                             throw new ImportException.UnparsableDataException(e.getMessage());
                         }

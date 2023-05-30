@@ -1,12 +1,10 @@
 package lphy.core.parser;
 
-import jebl.evolution.sequences.SequenceType;
-import lphy.core.LPhyExtensionFactory;
 import lphy.core.graphicalmodel.components.*;
 import lphy.core.graphicalmodel.vectorization.IID;
 import lphy.core.graphicalmodel.vectorization.VectorizedDistribution;
 import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
-import lphy.core.spi.SequenceTypeFactory;
+import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
@@ -15,7 +13,7 @@ import java.util.*;
 
 import static lphy.core.graphicalmodel.vectorization.IID.REPLICATES_PARAM_NAME;
 
-public class ParserUtils {
+public class ParserLoader {
 
     static Map<String, Set<Class<?>>> genDistDictionary;
     static Map<String, Set<Class<?>>> functionDictionary;
@@ -29,11 +27,11 @@ public class ParserUtils {
     static {
         // registration process is moved to LPhyExtensionFactory
 
-        LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
-        genDistDictionary = factory.genDistDictionary;
-        functionDictionary = factory.functionDictionary;
+        LPhyLoader lphyLoader = LPhyLoader.getInstance();
+        genDistDictionary = lphyLoader.genDistDictionary;
+        functionDictionary = lphyLoader.functionDictionary;
 
-        types = factory.types;
+        types = lphyLoader.types;
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
@@ -45,8 +43,8 @@ public class ParserUtils {
         }
 
         // register data types
-        Map<String, SequenceType> dataTypeMap = factory.dataTypeMap;
-        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
+//        Map<String, SequenceType> dataTypeMap = lphyLoader.dataTypeMap;
+//        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
 
     private static final int MAX_UNNAMED_ARGS = 3;

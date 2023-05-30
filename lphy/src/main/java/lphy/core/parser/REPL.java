@@ -110,8 +110,8 @@ public class REPL implements LPhyMetaParser {
     public Map<String, Set<Class<?>>> getGeneratorClasses() {
         SortedMap<String, Set<Class<?>>> generatorClasses = new TreeMap<>();
 
-        generatorClasses.putAll(ParserUtils.genDistDictionary);
-        generatorClasses.putAll(ParserUtils.functionDictionary);
+        generatorClasses.putAll(ParserLoader.genDistDictionary);
+        generatorClasses.putAll(ParserLoader.functionDictionary);
 
         return generatorClasses;
     }

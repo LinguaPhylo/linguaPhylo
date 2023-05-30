@@ -17,7 +17,7 @@ module lphy.core {
 
     requires markdowngenerator;
 
-    exports lphy.core; // for lphy.core.LPhyExtensionFactory
+    exports lphy.core; // for lphy.core.spi.LPhyExtensionFactory
 
     // graphical model
     exports lphy.core.graphicalmodel;

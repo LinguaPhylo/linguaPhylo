@@ -296,7 +296,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                     return visitIndexRange(ctx);
                 }
 
-                if (ParserUtils.bivarOperators.contains(s)) {
+                if (ParserLoader.bivarOperators.contains(s)) {
 
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0)), ctx).getValue();
 
@@ -457,7 +457,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
 
             Generator generator;
-            List<Generator> matches = ParserUtils.getMatchingGenerativeDistributions(name, arguments);
+            List<Generator> matches = ParserLoader.getMatchingGenerativeDistributions(name, arguments);
             switch (matches.size()) {
                 case 0:
                     throw new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
@@ -711,7 +711,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 }
             }
 
-            if (ParserUtils.univarfunctions.contains(functionName)) {
+            if (ParserLoader.univarfunctions.contains(functionName)) {
                 ExpressionNode expression = null;
                 switch (functionName) {
                     case "abs":
@@ -811,7 +811,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 return expression;
             }
 
-            Set<Class<?>> functionClasses = ParserUtils.getFunctionClasses(functionName);
+            Set<Class<?>> functionClasses = ParserLoader.getFunctionClasses(functionName);
 
             if (functionClasses == null) {
                 throw new SimulatorParsingException("Found no implementation for function with name " + functionName, ctx);
@@ -827,9 +827,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             Generator generator;
             List<Generator> matches;
             if (argumentValues == null) {
-                matches = ParserUtils.getMatchingFunctions(functionName, f1);
+                matches = ParserLoader.getMatchingFunctions(functionName, f1);
             } else {
-                matches = ParserUtils.getMatchingFunctions(functionName, arguments);
+                matches = ParserLoader.getMatchingFunctions(functionName, arguments);
             }
             switch (matches.size()) {
                 case 0:

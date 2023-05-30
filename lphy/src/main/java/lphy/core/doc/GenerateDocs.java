@@ -1,10 +1,10 @@
 package lphy.core.doc;
 
-import lphy.core.LPhyExtensionFactory;
 import lphy.core.graphicalmodel.components.*;
 import lphy.core.lightweight.LGenerativeDistribution;
 import lphy.core.lightweight.LGenerator;
-import lphy.core.parser.ParserUtils;
+import lphy.core.parser.ParserLoader;
+import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -50,7 +50,7 @@ public class GenerateDocs {
         String version = "";
         if (args.length > 0)  version = args[0];
 
-        LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
+        LPhyLoader lphyLoader = LPhyLoader.getInstance();
 
         // Do not change default
         String extName = LPHY_DOC_TITLE;
@@ -61,14 +61,14 @@ public class GenerateDocs {
             extName = args[1];
             // class name with package that implements {@link LPhyExtension}
             String clsName = args[2];
-            factory.loadExtension(clsName);
+            lphyLoader.loadExtension(clsName);
         }
         System.out.println("Creating doc for " + extName + " ...\n");
 
-        List<Class<GenerativeDistribution>> generativeDistributions = ParserUtils.getGenerativeDistributions();
+        List<Class<GenerativeDistribution>> generativeDistributions = ParserLoader.getGenerativeDistributions();
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
-        List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
+        List<Class<DeterministicFunction>> functions = ParserLoader.getDeterministicFunctions();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
         // output dir
@@ -81,7 +81,7 @@ public class GenerateDocs {
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
-        String indexMD = generateIndex(generativeDistributions, functions, ParserUtils.types, dir, version, extName);
+        String indexMD = generateIndex(generativeDistributions, functions, ParserLoader.types, dir, version, extName);
 
         File f = new File(dir.toString(), "index.md");
         FileWriter writer = new FileWriter(f);

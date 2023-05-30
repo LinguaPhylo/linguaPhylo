@@ -1,6 +1,5 @@
 package lphy.core.spi;
 
-import jebl.evolution.sequences.SequenceType;
 import lphy.core.graphicalmodel.components.Func;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.parser.functions.Range;
@@ -9,8 +8,6 @@ import lphy.core.parser.functions.SliceDoubleArray;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The "Container" provider class that implements SPI
@@ -40,16 +37,4 @@ public class LPhyCoreImpl implements LPhyExtension {
         return functions;
     }
 
-    @Override
-    public Map<String, ? extends SequenceType> getSequenceTypes() {
-        Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
-        dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
-
-        dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
-        dataTypeMap.put("protein", SequenceType.AMINO_ACID);
-
-        return dataTypeMap;
-    }
 }

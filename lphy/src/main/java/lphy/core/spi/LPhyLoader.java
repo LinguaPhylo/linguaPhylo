@@ -1,13 +1,10 @@
-package lphy.core;
+package lphy.core.spi;
 
-import jebl.evolution.sequences.SequenceType;
 import lphy.core.graphicalmodel.components.Func;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.spi.LPhyExtension;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -17,21 +14,21 @@ import java.util.stream.Collectors;
  *
  * @author Walter Xie
  */
-public class LPhyExtensionFactory {
-    private static LPhyExtensionFactory factory;
+public class LPhyLoader {
+    private static LPhyLoader lphyLoader;
     final private ServiceLoader<LPhyExtension> loader;
 
-    private LPhyExtensionFactory() {
+    private LPhyLoader() {
         loader = ServiceLoader.load(LPhyExtension.class);
         // register all ext
         registerExtensions(loader, null);
     }
 
     // singleton
-    public static synchronized LPhyExtensionFactory getInstance() {
-        if (factory == null)
-            factory = new LPhyExtensionFactory();
-        return factory;
+    public static synchronized LPhyLoader getInstance() {
+        if (lphyLoader == null)
+            lphyLoader = new LPhyLoader();
+        return lphyLoader;
     }
 
     /**
@@ -46,10 +43,10 @@ public class LPhyExtensionFactory {
      * LPhy data types
      */
     public TreeSet<Class<?>> types;
-    /**
-     * LPhy sequence types {@link SequenceType}
-     */
-    public Map<String, SequenceType> dataTypeMap;
+//    /**
+//     * LPhy sequence types {@link SequenceType}
+//     */
+//    public Map<String, SequenceType> dataTypeMap;
 
     /**
      * for creating doc only.
@@ -78,7 +75,7 @@ public class LPhyExtensionFactory {
 
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
-        dataTypeMap = new ConcurrentHashMap<>();
+//        dataTypeMap = new ConcurrentHashMap<>();
         types = new TreeSet<>(Comparator.comparing(Class::getName));
 
         try {
@@ -126,10 +123,10 @@ public class LPhyExtensionFactory {
                     }
 
                     // sequence types
-                    Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
-                    if (newDataTypes != null)
-                        // TODO validate same sequence type?
-                        newDataTypes.forEach(dataTypeMap::putIfAbsent);
+//                    Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
+//                    if (newDataTypes != null)
+//                        // TODO validate same sequence type?
+//                        newDataTypes.forEach(dataTypeMap::putIfAbsent);
                 }
             }
 
@@ -141,7 +138,7 @@ public class LPhyExtensionFactory {
 
             TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
             System.out.println("LPhy data types : " + typeNames);
-            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
+//            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
 
         } catch (ServiceConfigurationError serviceError) {
             System.err.println(serviceError);

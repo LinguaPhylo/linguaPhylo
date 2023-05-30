@@ -1,6 +1,5 @@
 package lphy.base.spi;
 
-import jebl.evolution.sequences.SequenceType;
 import lphy.base.bmodeltest.BModelSetFunction;
 import lphy.base.bmodeltest.NucleotideModel;
 import lphy.base.bmodeltest.bSiteModelFunction;
@@ -16,8 +15,6 @@ import lphy.base.evolution.coalescent.StructuredCoalescent;
 import lphy.base.evolution.continuous.PhyloBrownian;
 import lphy.base.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.base.evolution.continuous.PhyloOU;
-import lphy.base.evolution.datatype.Binary;
-import lphy.base.evolution.datatype.Continuous;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.substitutionmodel.*;
@@ -38,17 +35,13 @@ import lphy.base.functions.tree.PruneTree;
 import lphy.core.graphicalmodel.components.Func;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
-import lphy.core.spi.SequenceTypeFactory;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The "Container" provider class that implements SPI
- * which include a list of {@link GenerativeDistribution}, {@link Func},
- * and {@link SequenceType} to extend.
+ * which include a list of {@link GenerativeDistribution}, {@link Func} to extend.
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
@@ -124,18 +117,4 @@ public class LPhyBaseImpl implements LPhyExtension {
         return functions;
     }
 
-    @Override
-    public Map<String, ? extends SequenceType> getSequenceTypes() {
-        Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
-//        dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
-//        dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
-//        dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
-//
-//        dataTypeMap.put(SequenceTypeFactory.sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
-//        dataTypeMap.put("protein", SequenceType.AMINO_ACID);
-
-        dataTypeMap.put(SequenceTypeFactory.sanitise(Binary.NAME), Binary.getInstance());
-        dataTypeMap.put(SequenceTypeFactory.sanitise(Continuous.NAME), Continuous.getInstance());
-        return dataTypeMap;
-    }
 }
