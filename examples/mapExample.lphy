@@ -1,4 +1,4 @@
 model {
-  m = {a=1, b=2, c="three", d=jukesCantor()};
+  m = {a=1, b=2, c="three", d=[[1.0,2.0],[3.0,4.0]]};
   n = {d=1, e="two", f=m};
 }
