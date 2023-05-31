@@ -1,4 +1,4 @@
-package lphy.core.lightweight;
+package lphy.base.lightweight;
 
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.Value;

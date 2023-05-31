@@ -3,8 +3,6 @@ package lphy.base.lightweight;
 import lphy.base.lightweight.distributions.*;
 import lphy.core.graphicalmodel.components.Argument;
 import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.core.lightweight.VectorizedGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;

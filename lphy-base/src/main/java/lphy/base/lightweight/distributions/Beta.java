@@ -1,8 +1,8 @@
 package lphy.base.lightweight.distributions;
 
+import lphy.base.lightweight.LGenerativeDistribution;
 import lphy.core.graphicalmodel.components.GeneratorInfo;
 import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.lightweight.LGenerativeDistribution;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
 /**

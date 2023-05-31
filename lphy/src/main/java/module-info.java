@@ -51,8 +51,4 @@ module lphy.core {
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyCoreImpl;
 
-
-    //TODO
-    exports lphy.core.lightweight;
-
 }
