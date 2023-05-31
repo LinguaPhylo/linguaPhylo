@@ -20,8 +20,8 @@ module lphy.core {
     exports lphy.core; // for lphy.core.spi.LPhyExtensionFactory
 
     // graphical model
-    exports lphy.core.graphicalmodel;
     exports lphy.core.codebuilder;
+    exports lphy.core.graphicalmodel;
     exports lphy.core.graphicalmodel.components;
     exports lphy.core.graphicalmodel.types;
     exports lphy.core.vectorization;
@@ -34,7 +34,6 @@ module lphy.core {
     // others
     exports lphy.core.narrative;
     exports lphy.core.exception;
-    exports lphy.core.logger;
 
     // utils
     exports lphy.core.cmd;

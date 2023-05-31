@@ -2,6 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.Sampler;
+import lphy.base.logger.RandomValueLogger;
 import lphy.core.Script;
 import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.graphicalmodel.GraphicalModel;
@@ -10,7 +11,6 @@ import lphy.core.graphicalmodel.components.DeterministicFunction;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.logger.RandomValueLogger;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;

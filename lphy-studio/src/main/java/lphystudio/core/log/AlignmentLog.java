@@ -2,9 +2,9 @@ package lphystudio.core.log;
 
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.logger.AlignmentFileLogger;
+import lphy.base.logger.RandomValueLogger;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.logger.RandomValueLogger;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.system.UserDir;
 import lphy.core.util.LoggerUtils;

@@ -2,9 +2,9 @@ package lphystudio.app.simulator;
 
 import lphy.base.Sampler;
 import lphy.base.logger.AlignmentFileLogger;
+import lphy.base.logger.RandomValueLogger;
 import lphy.base.logger.TreeFileLogger;
-import lphy.core.logger.RandomValueLogger;
-import lphy.core.logger.VarFileLogger;
+import lphy.base.logger.VarFileLogger;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;

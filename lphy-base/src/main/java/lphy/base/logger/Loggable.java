@@ -1,4 +1,4 @@
-package lphy.core.logger;
+package lphy.base.logger;
 
 import lphy.core.graphicalmodel.components.Value;
 

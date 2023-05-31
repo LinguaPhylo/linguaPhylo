@@ -1,8 +1,8 @@
 package lphystudio.core.log;
 
 import lphy.base.evolution.tree.TimeTree;
+import lphy.base.logger.RandomValueLogger;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.logger.RandomValueLogger;
 
 import javax.swing.*;
 import java.util.ArrayList;

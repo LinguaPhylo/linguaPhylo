@@ -3,7 +3,6 @@ package lphy.base.logger;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.logger.RandomValueLogger;
 
 import java.io.File;
 import java.io.IOException;
