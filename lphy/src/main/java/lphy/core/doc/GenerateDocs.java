@@ -1,8 +1,6 @@
 package lphy.core.doc;
 
 import lphy.core.graphicalmodel.components.*;
-import lphy.core.lightweight.LGenerativeDistribution;
-import lphy.core.lightweight.LGenerator;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
@@ -347,12 +345,12 @@ public class GenerateDocs {
 
         for (Class<?> c : classes) {
 
-            if (LGenerator.class.isAssignableFrom(c)) {
+//            if (LGenerator.class.isAssignableFrom(c)) {
                 //TODO not sure if LGenerativeDistribution is still required
-                builder.append(LGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LGenerator>)c)).append("\n\n");
-            } else {
+//                builder.append(LGenerativeDistribution.getLightweightGeneratorMarkdown((Class<LGenerator>)c)).append("\n\n");
+//            } else {
                 builder.append(GeneratorMarkdown.getGeneratorMarkdown((Class<Generator>)c, TYPES_DIR)).append("\n\n");
-            }
+//            }
         }
 
         writer.write(builder.toString());
