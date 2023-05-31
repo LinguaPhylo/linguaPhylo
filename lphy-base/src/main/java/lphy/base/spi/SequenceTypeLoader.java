@@ -19,11 +19,6 @@ public class SequenceTypeLoader {
      */
     private Map<String, SequenceType> dataTypeMap;
 
-
-    static {
-        SequenceTypeLoader.getInstance();
-    }
-
     private static SequenceTypeLoader sequenceTypeLoader;
     final private ServiceLoader<SequenceTypeExtension> loader;
 

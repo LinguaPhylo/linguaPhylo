@@ -47,6 +47,10 @@ import java.util.List;
  */
 public class LPhyBaseImpl implements LPhyExtension {
 
+    static {
+        SequenceTypeLoader.getInstance();
+    }
+
     List<Class<? extends GenerativeDistribution>> genDists = Arrays.asList(
             // probability distribution
             Bernoulli.class, BernoulliMulti.class, Beta.class, Cauchy.class, Dirichlet.class,
