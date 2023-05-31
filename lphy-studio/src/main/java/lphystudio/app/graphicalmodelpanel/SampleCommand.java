@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.Arguments;
-import lphy.graphicalModel.Command;
-import lphy.graphicalModel.RandomValueLogger;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.logger.AlignmentFileLogger;
-import lphy.graphicalModel.logger.TreeFileLogger;
-import lphy.graphicalModel.logger.VarFileLogger;
+import lphy.base.Arguments;
+import lphy.core.cmd.Command;
+import lphy.core.logger.RandomValueLogger;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.base.logger.AlignmentFileLogger;
+import lphy.base.logger.TreeFileLogger;
+import lphy.core.logger.VarFileLogger;
 
 import java.util.ArrayList;
 import java.util.List;

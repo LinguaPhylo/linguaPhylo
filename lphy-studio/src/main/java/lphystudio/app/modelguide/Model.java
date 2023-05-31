@@ -1,8 +1,8 @@
 package lphystudio.app.modelguide;
 
-import lphy.graphicalModel.*;
-import lphy.parser.functions.MethodCall;
-import lphy.util.LoggerUtils;
+import lphy.core.graphicalmodel.components.*;
+import lphy.core.parser.functions.MethodCall;
+import lphy.core.util.LoggerUtils;
 
 import java.util.TreeMap;
 

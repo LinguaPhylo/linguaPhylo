@@ -12,31 +12,15 @@ jobs:
           java-version: 17
           distribution: 'adopt'
           cache: 'gradle'
-      #- name: Java Gradle Cache
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: |
-      #      ./gradle/wrapper
-      #     ./build-cache
-      #    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-gradle-
 
+      # -x test
       - name: Run build and all unit tests
         run: ./gradlew build --no-daemon
-      #- name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-      #  run: |
-      #    ls ./gradle/
-      #    ls ./build-cache/
-      #    rm -f ./build-cache/*.lock
-      #    rm -f ./build-cache/gc.properties
 
-#      - name: Publish unit test results
-#        uses: EnricoMi/publish-unit-test-result-action@v2
-#        if: always()
-#        with:
-#          junit_files: |
-#            lphy/build/test-results/**/*.xml
-#            lphy-studio/build/test-results/**/*.xml
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: |
+            lphy/build/test-results/**/*.xml
+            lphy-studio/build/test-results/**/*.xml

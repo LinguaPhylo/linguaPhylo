@@ -14,6 +14,7 @@ plugins {
 dependencies {
 //    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
     implementation(project(":lphy"))
+    implementation(project(":lphy-base"))
 
     implementation("org.scilab.forge:jlatexmath:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")

@@ -1,14 +1,14 @@
 package lphystudio.app.alignmentcomponent;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.evolution.alignment.Alignment;
-import lphy.evolution.alignment.ErrorAlignment;
-import lphy.evolution.likelihood.AbstractPhyloCTMC;
-import lphy.evolution.likelihood.PhyloCTMC;
-import lphy.evolution.tree.TimeTree;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
+import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.alignment.ErrorAlignment;
+import lphy.base.evolution.likelihood.AbstractPhyloCTMC;
+import lphy.base.evolution.likelihood.PhyloCTMC;
+import lphy.base.evolution.tree.TimeTree;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.graphicalmodel.components.RandomVariable;
+import lphy.core.graphicalmodel.components.Value;
 import lphystudio.app.FontUtils;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 

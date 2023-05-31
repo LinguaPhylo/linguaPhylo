@@ -1,10 +1,10 @@
 package lphystudio.app;
 
-import lphy.core.GraphicalLPhyParser;
+import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.narrative.Section;
-import lphy.graphicalModel.GraphicalModel;
-import lphy.system.UserDir;
-import lphy.util.LoggerUtils;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.system.UserDir;
+import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.narrative.HTMLNarrative;

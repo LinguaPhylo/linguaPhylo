@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.graphicalModel.MethodInfo;
-import lphy.graphicalModel.Value;
-import lphy.util.LoggerUtils;
+import lphy.core.graphicalmodel.components.MethodInfo;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.util.LoggerUtils;
 
 import javax.swing.*;
 import java.awt.*;

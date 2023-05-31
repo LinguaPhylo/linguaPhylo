@@ -1,9 +1,9 @@
 package lphy.core.narrative;
 
-import lphy.core.LPhyMetaParser;
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.Value;
-import lphy.layeredgraph.ProperLayeredGraph;
+import lphy.core.graphicalmodel.components.Citation;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.layeredgraph.ProperLayeredGraph;
+import lphy.core.parser.LPhyMetaParser;
 
 import java.util.prefs.Preferences;
 

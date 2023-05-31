@@ -1,13 +1,15 @@
 package lphy.core.lightweight;
 
-import lphy.graphicalModel.Argument;
-import lphy.graphicalModel.*;
+import lphy.core.graphicalmodel.components.Argument;
+import lphy.core.graphicalmodel.components.ParameterInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A lightweight generator interface that involves only raw values for input and output and a beans style pattern for

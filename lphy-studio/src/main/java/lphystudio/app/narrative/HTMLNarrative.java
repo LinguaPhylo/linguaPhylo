@@ -1,12 +1,12 @@
 package lphystudio.app.narrative;
 
-import lphy.core.LPhyMetaParser;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.graphicalmodel.GraphicalModel;
+import lphy.core.graphicalmodel.components.Citation;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.layeredgraph.ProperLayeredGraph;
 import lphy.core.narrative.Narrative;
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.GraphicalModel;
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.layeredgraph.ProperLayeredGraph;
+import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.theme.ThemeColours;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static lphy.graphicalModel.NarrativeUtils.getURL;
-import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.narrative.NarrativeUtils.getURL;
 
 public class HTMLNarrative implements Narrative {
 

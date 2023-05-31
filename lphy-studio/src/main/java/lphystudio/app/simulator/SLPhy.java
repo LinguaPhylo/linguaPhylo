@@ -1,15 +1,15 @@
 package lphystudio.app.simulator;
 
-import lphy.core.GraphicalLPhyParser;
-import lphy.core.LPhyMetaParser;
-import lphy.core.Sampler;
-import lphy.graphicalModel.RandomValueLogger;
-import lphy.graphicalModel.logger.AlignmentFileLogger;
-import lphy.graphicalModel.logger.TreeFileLogger;
-import lphy.graphicalModel.logger.VarFileLogger;
-import lphy.parser.REPL;
-import lphy.system.UserDir;
-import lphy.util.LoggerUtils;
+import lphy.base.Sampler;
+import lphy.base.logger.AlignmentFileLogger;
+import lphy.base.logger.TreeFileLogger;
+import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.VarFileLogger;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.REPL;
+import lphy.core.system.UserDir;
+import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;

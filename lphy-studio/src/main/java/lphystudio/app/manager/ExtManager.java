@@ -1,7 +1,7 @@
 package lphystudio.app.manager;
 
-import lphy.LPhyExtensionFactory;
-import lphy.spi.LPhyExtension;
+import lphy.core.spi.LPhyExtension;
+import lphy.core.spi.LPhyLoader;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,9 +28,9 @@ public class ExtManager {
     Set<String> jarDirSet = new HashSet<>();
 
     public ExtManager()  {
-        LPhyExtensionFactory factory = LPhyExtensionFactory.getInstance();
+        LPhyLoader lphyLoader = LPhyLoader.getInstance();
 
-        extensions = factory.getExtensions();
+        extensions = lphyLoader.getExtensions();
         System.out.println(extensions);
     }
 

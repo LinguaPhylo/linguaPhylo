@@ -1,11 +1,11 @@
 package lphystudio.app.modelguide;
 
-import lphy.graphicalModel.DeterministicFunction;
-import lphy.graphicalModel.GenerativeDistribution;
-import lphy.graphicalModel.GeneratorCategory;
-import lphy.graphicalModel.MethodInfo;
-import lphy.parser.ParserUtils;
-import lphy.parser.functions.MethodCall;
+import lphy.core.graphicalmodel.components.DeterministicFunction;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.graphicalmodel.components.GeneratorCategory;
+import lphy.core.graphicalmodel.components.MethodInfo;
+import lphy.core.parser.ParserLoader;
+import lphy.core.parser.functions.MethodCall;
 
 import java.util.*;
 
@@ -25,14 +25,14 @@ public class ModelGuide {
 //    private Model currentModel;
 
     public ModelGuide() {
-        List<Class<GenerativeDistribution>> generativeDistributions = ParserUtils.getGenerativeDistributions();
+        List<Class<GenerativeDistribution>> generativeDistributions = ParserLoader.getGenerativeDistributions();
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
-        List<Class<DeterministicFunction>> functions = ParserUtils.getDeterministicFunctions();
+        List<Class<DeterministicFunction>> functions = ParserLoader.getDeterministicFunctions();
         functions.sort(Comparator.comparing(DeterministicFunction::getName));
 
 //        Set<Class<?>> types = Collections.unmodifiableSet();
-        List<Class<?>> types = new ArrayList<>(ParserUtils.types);
+        List<Class<?>> types = new ArrayList<>(ParserLoader.types);
         types.sort(Comparator.comparing(Class::getSimpleName));
 
         setAllModels(generativeDistributions, functions, types);

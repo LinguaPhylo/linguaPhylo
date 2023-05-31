@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelcomponent;
 
-import lphy.layeredgraph.LayeredGraph;
-import lphy.layeredgraph.LayeredNode;
+import lphy.core.layeredgraph.LayeredGraph;
+import lphy.core.layeredgraph.LayeredNode;
 import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;

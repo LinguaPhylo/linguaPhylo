@@ -1,11 +1,11 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.evolution.Taxon;
-import lphy.evolution.alignment.ContinuousCharacterData;
+import lphy.base.evolution.Taxon;
+import lphy.base.evolution.alignment.ContinuousCharacterData;
 
 import javax.swing.*;
 
-import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class ContinuousCharacterDataComponent extends JLabel {
 

@@ -1,17 +1,21 @@
 package lphystudio.app.narrative;
 
-import lphy.core.LPhyMetaParser;
-import lphy.core.distributions.IID;
-import lphy.core.distributions.VectorizedDistribution;
-import lphy.core.functions.VectorizedFunction;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.graphicalmodel.GraphicalModel;
+import lphy.core.graphicalmodel.components.Citation;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.RandomVariable;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.graphicalmodel.vectorization.IID;
+import lphy.core.graphicalmodel.vectorization.VectorizedDistribution;
+import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
+import lphy.core.layeredgraph.LatticePoint;
+import lphy.core.layeredgraph.LayeredNode;
+import lphy.core.layeredgraph.NodeWrapper;
+import lphy.core.layeredgraph.ProperLayeredGraph;
 import lphy.core.narrative.Narrative;
-import lphy.graphicalModel.*;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.layeredgraph.LatticePoint;
-import lphy.layeredgraph.LayeredNode;
-import lphy.layeredgraph.NodeWrapper;
-import lphy.layeredgraph.ProperLayeredGraph;
-import lphy.util.Symbols;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.util.Symbols;
 import lphystudio.core.layeredgraph.LayeredGNode;
 import lphystudio.core.theme.ThemeColours;
 
@@ -22,7 +26,7 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static lphy.graphicalModel.ValueUtils.isNumber;
+import static lphy.core.graphicalmodel.components.ValueUtils.isNumber;
 
 public class LaTeXNarrative implements Narrative {
 

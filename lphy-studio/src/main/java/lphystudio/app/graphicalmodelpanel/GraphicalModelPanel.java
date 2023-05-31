@@ -1,12 +1,22 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.*;
-import lphy.core.functions.VectorizedFunction;
-import lphy.graphicalModel.*;
-import lphy.graphicalModel.code.CanonicalCodeBuilder;
-import lphy.layeredgraph.Layering;
-import lphy.util.LoggerUtils;
+import lphy.base.Sampler;
+import lphy.core.Script;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.graphicalmodel.GraphicalModel;
+import lphy.core.graphicalmodel.GraphicalModelListener;
+import lphy.core.graphicalmodel.components.DeterministicFunction;
+import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
+import lphy.core.layeredgraph.Layering;
+import lphy.core.logger.RandomValueLogger;
+import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.REPL;
+import lphy.core.util.LoggerUtils;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.alignmentcomponent.SequenceTypePanel;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
@@ -224,7 +234,7 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     /**
-     * This is duplicated to {@link lphy.parser.REPL#source(BufferedReader)},
+     * This is duplicated to {@link REPL#source(BufferedReader)},
      * but has extra code using {@link LineCodeColorizer}
      * and panel function.
      *

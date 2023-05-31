@@ -1,9 +1,10 @@
 package lphy.core.lightweight;
 
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.Value;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.Value;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class GeneratorAdapter<T> implements Generator<T> {
 

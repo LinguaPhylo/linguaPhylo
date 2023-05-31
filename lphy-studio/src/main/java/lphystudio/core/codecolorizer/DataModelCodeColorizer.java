@@ -1,14 +1,14 @@
 package lphystudio.core.codecolorizer;
 
 
-import lphy.core.LPhyMetaParser;
-import lphy.graphicalModel.RandomVariable;
-import lphy.graphicalModel.Value;
-import lphy.parser.LPhyBaseListener;
-import lphy.parser.LPhyBaseVisitor;
-import lphy.parser.LPhyParser.*;
-import lphy.parser.LPhyParserAction;
-import lphy.parser.ParserUtils;
+import lphy.core.graphicalmodel.components.RandomVariable;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.ParserLoader;
+import lphy.core.parser.antlr.LPhyBaseListener;
+import lphy.core.parser.antlr.LPhyBaseVisitor;
+import lphy.core.parser.antlr.LPhyParser.*;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -235,7 +235,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (ParserUtils.bivarOperators.contains(s)) {
+                if (ParserLoader.bivarOperators.contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
                     element.add(s, punctuationStyle);

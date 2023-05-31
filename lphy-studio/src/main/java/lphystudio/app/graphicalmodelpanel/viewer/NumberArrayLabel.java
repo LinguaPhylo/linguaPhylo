@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.graphicalModel.Utils;
-import lphy.graphicalModel.Value;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.util.DecimalFormat;
 
 public class NumberArrayLabel extends ArrayLabel<Number> {
 
@@ -16,6 +16,6 @@ public class NumberArrayLabel extends ArrayLabel<Number> {
 
     @Override
     public String valueToString(Number rawValue) {
-        return Utils.FORMAT.format(rawValue.doubleValue());
+        return DecimalFormat.FORMAT.format(rawValue.doubleValue());
     }
 }

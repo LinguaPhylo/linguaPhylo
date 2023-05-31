@@ -1,9 +1,9 @@
 package lphy.core.lightweight;
 
-import lphy.graphicalModel.Argument;
-import lphy.graphicalModel.Citation;
-import lphy.graphicalModel.Generator;
-import lphy.graphicalModel.GeneratorInfo;
+import lphy.core.graphicalmodel.components.Argument;
+import lphy.core.graphicalmodel.components.Citation;
+import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.graphicalmodel.components.GeneratorInfo;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -13,8 +13,6 @@ import net.steppschuh.markdowngenerator.text.heading.Heading;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static lphy.graphicalModel.Generator.getGeneratorInfo;
 
 public interface LGenerativeDistribution<T> extends LGenerator<T> {
 
@@ -37,7 +35,7 @@ public interface LGenerativeDistribution<T> extends LGenerator<T> {
 
     static String getLightweightGeneratorMarkdown(Class<? extends LGenerator> generatorClass) {
 
-        GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
+        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
 
         List<Argument> arguments = LGenerator.getArguments(generatorClass,0);
 

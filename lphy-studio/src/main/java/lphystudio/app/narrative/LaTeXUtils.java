@@ -1,13 +1,13 @@
 package lphystudio.app.narrative;
 
-import lphy.graphicalModel.Value;
-import lphy.graphicalModel.ValueUtils;
-import lphy.graphicalModel.Vector;
-import lphy.util.Symbols;
+import lphy.core.graphicalmodel.components.Value;
+import lphy.core.graphicalmodel.components.ValueUtils;
+import lphy.core.graphicalmodel.types.Vector;
+import lphy.core.util.Symbols;
 
 import java.util.List;
 
-import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class LaTeXUtils {
 

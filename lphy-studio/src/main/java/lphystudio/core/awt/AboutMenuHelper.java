@@ -1,6 +1,6 @@
 package lphystudio.core.awt;
 
-import lphy.util.LoggerUtils;
+import lphy.core.util.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
