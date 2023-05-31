@@ -24,7 +24,7 @@ module lphy.core {
     exports lphy.core.codebuilder;
     exports lphy.core.graphicalmodel.components;
     exports lphy.core.graphicalmodel.types;
-    exports lphy.core.graphicalmodel.vectorization;
+    exports lphy.core.vectorization;
     exports lphy.core.layeredgraph;
 
     // parser

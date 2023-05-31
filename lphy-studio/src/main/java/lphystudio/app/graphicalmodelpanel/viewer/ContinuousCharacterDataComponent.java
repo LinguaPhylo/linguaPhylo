@@ -5,7 +5,7 @@ import lphy.base.evolution.alignment.ContinuousCharacterData;
 
 import javax.swing.*;
 
-import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class ContinuousCharacterDataComponent extends JLabel {
 

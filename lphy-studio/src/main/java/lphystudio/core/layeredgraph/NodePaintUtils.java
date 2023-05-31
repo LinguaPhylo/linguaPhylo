@@ -4,12 +4,12 @@ import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.graphicalmodel.components.ValueUtils;
-import lphy.core.graphicalmodel.vectorization.IID;
-import lphy.core.graphicalmodel.vectorization.VectorizedDistribution;
-import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
 import lphy.core.layeredgraph.LayeredNode;
 import lphy.core.layeredgraph.NodeWrapper;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.vectorization.IID;
+import lphy.core.vectorization.VectorizedDistribution;
+import lphy.core.vectorization.VectorizedFunction;
 import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;

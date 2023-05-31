@@ -1,4 +1,4 @@
-package lphy.core.graphicalmodel.vectorization;
+package lphy.core.vectorization;
 
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.graphicalmodel.types.Vector;

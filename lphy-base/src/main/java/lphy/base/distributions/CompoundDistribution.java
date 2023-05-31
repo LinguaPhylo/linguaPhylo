@@ -3,7 +3,7 @@ package lphy.base.distributions;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.vectorization.RangeElement;
+import lphy.core.vectorization.RangeElement;
 
 import java.util.Map;
 

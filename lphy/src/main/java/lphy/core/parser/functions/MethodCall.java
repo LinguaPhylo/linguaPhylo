@@ -2,10 +2,10 @@ package lphy.core.parser.functions;
 
 import lphy.core.graphicalmodel.components.*;
 import lphy.core.graphicalmodel.types.Vector;
-import lphy.core.graphicalmodel.vectorization.CompoundVectorValue;
-import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.vectorization.CompoundVectorValue;
+import lphy.core.vectorization.VectorizedFunction;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

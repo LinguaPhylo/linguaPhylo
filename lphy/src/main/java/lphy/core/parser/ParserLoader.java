@@ -1,17 +1,17 @@
 package lphy.core.parser;
 
 import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.vectorization.IID;
-import lphy.core.graphicalmodel.vectorization.VectorizedDistribution;
-import lphy.core.graphicalmodel.vectorization.VectorizedFunction;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
+import lphy.core.vectorization.IID;
+import lphy.core.vectorization.VectorizedDistribution;
+import lphy.core.vectorization.VectorizedFunction;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static lphy.core.graphicalmodel.vectorization.IID.REPLICATES_PARAM_NAME;
+import static lphy.core.vectorization.IID.REPLICATES_PARAM_NAME;
 
 public class ParserLoader {
 

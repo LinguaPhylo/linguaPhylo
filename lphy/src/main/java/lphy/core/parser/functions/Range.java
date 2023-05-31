@@ -4,7 +4,7 @@ import lphy.core.graphicalmodel.components.DeterministicFunction;
 import lphy.core.graphicalmodel.components.GeneratorInfo;
 import lphy.core.graphicalmodel.components.ParameterInfo;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.vectorization.RangeElement;
+import lphy.core.vectorization.RangeElement;
 
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 

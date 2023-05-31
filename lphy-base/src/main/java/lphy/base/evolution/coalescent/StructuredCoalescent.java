@@ -6,7 +6,7 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.graphicalmodel.components.*;
 import lphy.core.graphicalmodel.types.DoubleArray2DValue;
-import lphy.core.graphicalmodel.vectorization.VectorUtils;
+import lphy.core.vectorization.VectorUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.*;

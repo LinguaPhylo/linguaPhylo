@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.graphicalmodel.types.Vector;
-import lphy.core.graphicalmodel.vectorization.CompoundVectorValue;
+import lphy.core.vectorization.CompoundVectorValue;
 
 import javax.swing.*;
 import java.awt.*;

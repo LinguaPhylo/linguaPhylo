@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
 import static lphy.core.narrative.NarrativeUtils.getURL;
+import static lphy.core.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class HTMLNarrative implements Narrative {
 

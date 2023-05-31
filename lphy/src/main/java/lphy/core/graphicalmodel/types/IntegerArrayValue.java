@@ -1,8 +1,8 @@
 package lphy.core.graphicalmodel.types;
 
 import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.vectorization.RangeElement;
-import lphy.core.graphicalmodel.vectorization.VectorValue;
+import lphy.core.vectorization.RangeElement;
+import lphy.core.vectorization.VectorValue;
 
 import java.util.Arrays;
 public class IntegerArrayValue extends VectorValue<Integer> implements RangeElement {

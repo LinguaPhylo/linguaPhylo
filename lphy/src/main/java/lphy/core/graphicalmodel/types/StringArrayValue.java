@@ -1,7 +1,7 @@
 package lphy.core.graphicalmodel.types;
 
 import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.vectorization.VectorValue;
+import lphy.core.vectorization.VectorValue;
 
 import static lphy.core.graphicalmodel.components.ValueUtils.quotedString;
 

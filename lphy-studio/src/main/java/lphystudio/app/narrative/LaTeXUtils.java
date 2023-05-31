@@ -7,7 +7,7 @@ import lphy.core.util.Symbols;
 
 import java.util.List;
 
-import static lphy.core.graphicalmodel.vectorization.VectorUtils.INDEX_SEPARATOR;
+import static lphy.core.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class LaTeXUtils {
 

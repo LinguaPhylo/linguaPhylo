@@ -2,8 +2,8 @@ package lphy.core.logger;
 
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.vectorization.VectorUtils;
 import lphy.core.util.Symbols;
+import lphy.core.vectorization.VectorUtils;
 
 import java.io.File;
 import java.io.FileWriter;

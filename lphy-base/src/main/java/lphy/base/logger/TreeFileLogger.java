@@ -3,9 +3,9 @@ package lphy.base.logger;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.vectorization.VectorUtils;
 import lphy.core.logger.RandomValueLogger;
 import lphy.core.util.Symbols;
+import lphy.core.vectorization.VectorUtils;
 
 import java.io.File;
 import java.io.PrintStream;

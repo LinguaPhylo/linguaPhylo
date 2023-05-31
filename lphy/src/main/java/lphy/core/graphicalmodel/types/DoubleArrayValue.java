@@ -1,7 +1,7 @@
 package lphy.core.graphicalmodel.types;
 
 import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.vectorization.VectorValue;
+import lphy.core.vectorization.VectorValue;
 
 public class DoubleArrayValue extends VectorValue<Double> {
 

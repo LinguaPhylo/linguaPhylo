@@ -1,4 +1,4 @@
-package lphy.core.graphicalmodel.vectorization;
+package lphy.core.vectorization;
 
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.GraphicalModelNode;
