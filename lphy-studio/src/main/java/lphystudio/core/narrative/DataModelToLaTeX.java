@@ -1,4 +1,4 @@
-package lphystudio.app.narrative;
+package lphystudio.core.narrative;
 
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;

@@ -3,7 +3,7 @@ package lphystudio.app.modelguide;
 import lphy.core.graphicalmodel.components.Citation;
 import lphy.core.graphicalmodel.components.GeneratorCategory;
 import lphy.core.narrative.NarrativeUtils;
-import lphystudio.app.narrative.LaTeXUtils;
+import lphystudio.core.narrative.LaTeXUtils;
 
 import javax.swing.*;
 import java.text.Normalizer;

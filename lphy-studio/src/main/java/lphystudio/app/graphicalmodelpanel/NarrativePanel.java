@@ -1,14 +1,15 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.GraphicalModelListener;
-import lphy.core.narrative.Narrative;
-import lphy.core.narrative.Section;
 import lphy.core.graphicalmodel.components.DeterministicFunction;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.components.Value;
+import lphy.core.narrative.Narrative;
+import lphy.core.narrative.Section;
+import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.core.narrative.NarrativeLayeredGraph;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -33,7 +34,7 @@ public class NarrativePanel extends JComponent {
     GraphicalLPhyParser parser;
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
-    Narrative narrative;
+    NarrativeLayeredGraph narrative;
     JPanel narrativeInnerPanel;
     GraphicalModelComponent graphicalModelComponent;
 
@@ -43,12 +44,12 @@ public class NarrativePanel extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(NarrativePanel.class);
 
-    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, GraphicalModelComponent component) {
+    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component) {
         this(parser, narrative,  component,null);
     }
 
 
-    public NarrativePanel(GraphicalLPhyParser parser, Narrative narrative, GraphicalModelComponent component, EditorKit editorKit) {
+    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component, EditorKit editorKit) {
         this.parser = parser;
         this.narrative = narrative;
         this.graphicalModelComponent = component;

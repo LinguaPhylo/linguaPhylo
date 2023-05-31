@@ -1,9 +1,9 @@
 package lphystudio.app.graphicalmodelcomponent.interactive;
 
-import lphy.core.layeredgraph.LayeredNode;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.core.layeredgraph.LayeredNode;
 import lphystudio.core.layeredgraph.NodePaintUtils;
 
 import javax.swing.*;

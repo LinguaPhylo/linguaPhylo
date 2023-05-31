@@ -1,14 +1,14 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.logger.RandomValueLogger;
+import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.narrative.HTMLNarrative;
-import lphystudio.app.narrative.LaTeXNarrative;
 import lphystudio.core.log.AlignmentLog;
 import lphystudio.core.log.TreeLog;
 import lphystudio.core.log.VariableLog;
 import lphystudio.core.log.VariableSummary;
+import lphystudio.core.narrative.HTMLNarrative;
+import lphystudio.core.narrative.LaTeXNarrative;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;

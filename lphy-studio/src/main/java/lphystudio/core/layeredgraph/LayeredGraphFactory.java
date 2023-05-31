@@ -2,8 +2,6 @@ package lphystudio.core.layeredgraph;
 
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.layeredgraph.LayeredGraph;
-import lphy.core.layeredgraph.LayeredNode;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.util.ArrayList;

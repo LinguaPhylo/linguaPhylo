@@ -6,12 +6,9 @@ import lphy.core.graphicalmodel.components.DeterministicFunction;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.layeredgraph.*;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphystudio.app.narrative.LaTeXNarrative;
-import lphystudio.core.layeredgraph.LayeredGNode;
-import lphystudio.core.layeredgraph.LayeredGraphFactory;
-import lphystudio.core.layeredgraph.NodePaintUtils;
+import lphystudio.core.layeredgraph.*;
+import lphystudio.core.narrative.LaTeXNarrative;
 import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package lphystudio.app.narrative;
+package lphystudio.core.narrative;
 
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.graphicalmodel.components.ValueUtils;

@@ -2,7 +2,6 @@ package lphy.core.narrative;
 
 import lphy.core.graphicalmodel.components.Citation;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.layeredgraph.ProperLayeredGraph;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.util.prefs.Preferences;
@@ -54,8 +53,6 @@ public interface Narrative {
     String endMathMode();
 
     String codeBlock(LPhyMetaParser parser, int fontSize);
-
-    String graphicalModelBlock(LPhyMetaParser parser, ProperLayeredGraph properLayeredGraph);
 
     String posterior(LPhyMetaParser parser);
 

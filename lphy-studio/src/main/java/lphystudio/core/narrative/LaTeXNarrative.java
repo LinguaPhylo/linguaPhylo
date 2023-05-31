@@ -1,4 +1,4 @@
-package lphystudio.app.narrative;
+package lphystudio.core.narrative;
 
 import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.graphicalmodel.GraphicalModel;
@@ -6,17 +6,12 @@ import lphy.core.graphicalmodel.components.Citation;
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.layeredgraph.LatticePoint;
-import lphy.core.layeredgraph.LayeredNode;
-import lphy.core.layeredgraph.NodeWrapper;
-import lphy.core.layeredgraph.ProperLayeredGraph;
-import lphy.core.narrative.Narrative;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.util.Symbols;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
-import lphystudio.core.layeredgraph.LayeredGNode;
+import lphystudio.core.layeredgraph.*;
 import lphystudio.core.theme.ThemeColours;
 
 import javax.swing.*;
@@ -28,7 +23,7 @@ import java.util.prefs.Preferences;
 
 import static lphy.core.graphicalmodel.components.ValueUtils.isNumber;
 
-public class LaTeXNarrative implements Narrative {
+public class LaTeXNarrative implements NarrativeLayeredGraph {
 
     static Preferences preferences = Preferences.userNodeForPackage(LaTeXNarrative.class);
 

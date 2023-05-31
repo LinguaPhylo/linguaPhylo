@@ -9,11 +9,11 @@ import lphy.core.util.RandomUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
-import lphystudio.app.narrative.HTMLNarrative;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.log.AlignmentLog;
+import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.print.PrintServiceLookup;
 import javax.swing.*;

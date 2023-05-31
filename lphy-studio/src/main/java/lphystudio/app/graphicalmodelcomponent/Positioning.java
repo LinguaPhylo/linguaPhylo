@@ -1,9 +1,9 @@
 package lphystudio.app.graphicalmodelcomponent;
 
-import lphy.core.layeredgraph.LatticePoint;
-import lphy.core.layeredgraph.LayeredGraph;
-import lphy.core.layeredgraph.LayeredNode;
-import lphy.core.layeredgraph.ProperLayeredGraph;
+import lphystudio.core.layeredgraph.LatticePoint;
+import lphystudio.core.layeredgraph.LayeredGraph;
+import lphystudio.core.layeredgraph.LayeredNode;
+import lphystudio.core.layeredgraph.ProperLayeredGraph;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

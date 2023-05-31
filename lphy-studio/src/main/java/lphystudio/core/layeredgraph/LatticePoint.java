@@ -1,4 +1,4 @@
-package lphy.core.layeredgraph;
+package lphystudio.core.layeredgraph;
 
 public class LatticePoint {
 

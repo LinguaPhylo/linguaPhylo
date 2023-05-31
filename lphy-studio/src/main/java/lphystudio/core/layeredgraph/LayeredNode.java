@@ -1,4 +1,4 @@
-package lphy.core.layeredgraph;
+package lphystudio.core.layeredgraph;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

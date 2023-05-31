@@ -15,7 +15,7 @@ module lphystudio {
 //    exports lphystudio.app.simulator;
 
     exports lphystudio.app;
-    exports lphystudio.app.narrative;
+    exports lphystudio.core.narrative;
     exports lphystudio.app.manager;
 
     exports lphystudio.core.codecolorizer;

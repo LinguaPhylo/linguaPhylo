@@ -7,8 +7,8 @@ import lphy.core.system.UserDir;
 import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
-import lphystudio.app.narrative.HTMLNarrative;
-import lphystudio.app.narrative.LaTeXNarrative;
+import lphystudio.core.narrative.HTMLNarrative;
+import lphystudio.core.narrative.LaTeXNarrative;
 
 import java.io.File;
 import java.io.FileWriter;
