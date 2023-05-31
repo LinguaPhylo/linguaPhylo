@@ -25,8 +25,7 @@ public class ParserLoader {
     // data types are held in SequenceTypeFactory singleton
 
     static {
-        // registration process is moved to LPhyExtensionFactory
-
+        // registration process
         LPhyLoader lphyLoader = LPhyLoader.getInstance();
         genDistDictionary = lphyLoader.genDistDictionary;
         functionDictionary = lphyLoader.functionDictionary;
