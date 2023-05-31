@@ -4,8 +4,7 @@ import lphy.core.graphicalmodel.components.*;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
 import lphy.core.vectorization.IID;
-import lphy.core.vectorization.VectorizedDistribution;
-import lphy.core.vectorization.VectorizedFunction;
+import lphy.core.vectorization.VectorMatch;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -184,9 +183,9 @@ public class ParserLoader {
 //                    return (Generator) constructor.newInstance(initargs);
 //                } else
                     return iid;
-            } else if (vectorMatch(arguments, initargs) > 0) {
+            } else if (VectorMatch.vectorMatch(arguments, initargs) > 0) {
                 // do vector match
-                return vectorGenerator(constructor, arguments, initargs);
+                return VectorMatch.vectorGenerator(constructor, arguments, initargs);
             } else {
                 throw new RuntimeException("ERROR! No match in '" + name + "' constructor arguments, including vector match! ");
             }
@@ -196,37 +195,6 @@ public class ParserLoader {
             LoggerUtils.log.severe("Parsing generator " + name + " failed.");
         }
         return null;
-    }
-
-    public static int vectorMatch(List<Argument> arguments, Object[] initargs) {
-        int vectorMatches = 0;
-        for (int i = 0; i < arguments.size(); i++) {
-            Argument argument = arguments.get(i);
-            Value argValue = (Value) initargs[i];
-
-            if (argValue == null) {
-                if (!argument.optional) return 0;
-            } else {
-                if (argument.type.isAssignableFrom(argValue.value().getClass())) {
-                    // direct type match
-                } else if (argValue.value().getClass().isArray() && argument.type.isAssignableFrom(argValue.value().getClass().getComponentType())) {
-                    // vector match
-                    vectorMatches += 1;
-                }
-            }
-        }
-        return vectorMatches;
-    }
-
-    public static Generator vectorGenerator(Constructor constructor, List<Argument> arguments, Object[] vectorArgs) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-
-        if (GenerativeDistribution.class.isAssignableFrom(constructor.getDeclaringClass())) {
-            return new VectorizedDistribution(constructor, arguments, vectorArgs);
-        } else if (DeterministicFunction.class.isAssignableFrom(constructor.getDeclaringClass())) {
-            return new VectorizedFunction(constructor, arguments, vectorArgs);
-        } else
-            throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
-
     }
 
     private static Set<Class<?>> getGenerativeDistributionClasses(String name) {
