@@ -1,14 +1,11 @@
 package lphy.base.functions;
 
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.graphicalmodel.components.*;
 import lphy.core.vectorization.CompoundVectorValue;
 
 import java.util.*;
 
-public class Unique extends DeterministicFunction<CompoundVectorValue> {
+public class Unique<T> extends DeterministicFunction<T[]> {
 
     public static final String argParamName = "arg";
 
@@ -18,22 +15,25 @@ public class Unique extends DeterministicFunction<CompoundVectorValue> {
     }
 
     @GeneratorInfo(name="unique", verbClause = "provides", description = "the unique set of the array")
-    public CompoundVectorValue apply() {
+    public Value<T[]> apply() {
         Value<?> v = getParams().get(argParamName);
-        Set<Object> uniqObj = new LinkedHashSet<>();
-        List<Value<?>> uniqVal = new ArrayList<>();
+        Set<T> uniqObj = new LinkedHashSet<>();
+        List<Value> uniqVal = new ArrayList<>();
+
         if (v instanceof CompoundVectorValue) {
             CompoundVectorValue cvv = (CompoundVectorValue) v;
             for (int i = 0; i < cvv.size(); i++) {
                 Value val = cvv.getComponentValue(i);
-                Object obj = Objects.requireNonNull(val).value();
+                T obj = (T) Objects.requireNonNull(val).value();
                 if (!uniqObj.contains(obj)) {
                     uniqObj.add(obj);
                     uniqVal.add(val);
                 }
             }
-        } else
-            throw new UnsupportedOperationException("Input requires an array or vector !");
+            return new CompoundVectorValue<>(null, uniqVal, this);
+        } else {
+            return ValueUtils.createValue(uniqObj.toArray(), this);
+        }
 
 //        StringArray strArr = Objects.requireNonNull(v).value();
 //        Set<String> uniqArr;
@@ -43,6 +43,5 @@ public class Unique extends DeterministicFunction<CompoundVectorValue> {
 //        } else
 //            throw new IllegalArgumentException("Input requires a string array !");
 
-        return new CompoundVectorValue(null, uniqVal, this);
     }
 }

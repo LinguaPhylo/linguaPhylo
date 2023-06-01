@@ -93,6 +93,14 @@ public class ValueUtils {
         return new BooleanArrayValue(null, booleanArrayValue, generator);
     }
 
+    public static Value createValue(String strValue, DeterministicFunction generator) {
+        return new StringValue(null, strValue, generator);
+    }
+
+    public static Value createValue(String[] strArrayValue, DeterministicFunction generator) {
+        return new StringArrayValue(null, strArrayValue, generator);
+    }
+
     public static Value createValue(Object value, DeterministicFunction generator) {
         if (value instanceof Integer) return createValue((Integer) value, generator);
         if (value instanceof Integer[]) return createValue((Integer[]) value, generator);
@@ -100,6 +108,8 @@ public class ValueUtils {
         if (value instanceof Double[]) return createValue((Double[]) value, generator);
         if (value instanceof Boolean) return createValue((Boolean) value, generator);
         if (value instanceof Boolean[]) return createValue((Boolean[]) value, generator);
+        if (value instanceof String) return createValue((String) value, generator);
+        if (value instanceof String[]) return createValue((String[]) value, generator);
         return new Value(null, value, generator);
     }
 
