@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.base.logger.RandomValueLogger;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.io.logger.RandomValueLogger;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.log.AlignmentLog;
 import lphystudio.core.log.TreeLog;

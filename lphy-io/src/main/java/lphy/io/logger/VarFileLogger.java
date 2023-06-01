@@ -1,4 +1,4 @@
-package lphy.base.logger;
+package lphy.io.logger;
 
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;

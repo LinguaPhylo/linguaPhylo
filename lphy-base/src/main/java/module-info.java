@@ -39,7 +39,6 @@ module lphy.base {
     exports lphy.base.evolution.tree;
 
     exports lphy.base;
-    exports lphy.base.logger;
     exports lphy.base.system;
 
     // declare service provider interface (SPI)

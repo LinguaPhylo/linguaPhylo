@@ -4,16 +4,13 @@ import lphy.core.spi.LPhyExtension;
  * @author Walter Xie
  */
 module lphystudio {
-    requires transitive lphy.base;
+//    requires transitive lphy.base;
+    requires transitive lphy.io;
 
     requires jlatexmath;
 //    requires org.json;
     requires org.jfree.jfreechart;
-    requires info.picocli;
     requires markdowngenerator;
-
-    opens lphystudio.app.simulator;
-//    exports lphystudio.app.simulator;
 
     exports lphystudio.app;
     exports lphystudio.core.narrative;

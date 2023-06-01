@@ -15,16 +15,16 @@ dependencies {
 //    implementation(project(mapOf( "path" to ":lphy", "configuration" to "coreJars")))
     implementation(project(":lphy"))
     implementation(project(":lphy-base"))
+    implementation(project(":lphy-io"))
 
     implementation("org.scilab.forge:jlatexmath:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-greek:1.0.7")
 //    implementation("org.scilab.forge:jlatexmath-font-cyrillic:1.0.7")
 //    implementation("org.json:json:20210307")
     implementation("org.jfree:jfreechart:1.5.4")
-    // command line
-    implementation("info.picocli:picocli:4.7.1")
     // in maven
     implementation("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
+    implementation(project(mapOf("path" to ":lphy-io")))
 
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")

@@ -7,6 +7,7 @@ rootProject.name = "LinguaPhylo"
 //include("build-logic")
 include("lphy")
 include("lphy-base")
+include("lphy-io")
 include("lphy-studio")
 //include("lphy-lightweight")
 

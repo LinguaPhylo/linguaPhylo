@@ -1,16 +1,14 @@
-package lphystudio.app.simulator;
+package lphy.io.simulator;
 
-import lphy.base.Sampler;
-import lphy.base.logger.AlignmentFileLogger;
-import lphy.base.logger.RandomValueLogger;
-import lphy.base.logger.TreeFileLogger;
-import lphy.base.logger.VarFileLogger;
 import lphy.base.system.UserDir;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
 import lphy.core.util.LoggerUtils;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
+import lphy.io.logger.AlignmentFileLogger;
+import lphy.io.logger.RandomValueLogger;
+import lphy.io.logger.TreeFileLogger;
+import lphy.io.logger.VarFileLogger;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;
 
@@ -61,8 +59,6 @@ public class SLPhy implements Callable<Integer> {
     @CommandLine.Option(names = {"-af", "--alignmentFiles"}, defaultValue = "true", showDefaultValue = ALWAYS,
             description = "Whether to log simulated alignments to file")
     boolean writeAlignmentsToFile;
-
-    GraphicalModelPanel graphicalModelPanel;
 
     public SLPhy() {
     }

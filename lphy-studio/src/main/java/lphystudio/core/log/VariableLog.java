@@ -1,8 +1,8 @@
 package lphystudio.core.log;
 
-import lphy.base.logger.RandomNumberLogger;
-import lphy.base.logger.RandomValueLogger;
 import lphy.core.graphicalmodel.components.Value;
+import lphy.io.logger.RandomNumberLogger;
+import lphy.io.logger.RandomValueLogger;
 
 import javax.swing.*;
 import java.awt.*;

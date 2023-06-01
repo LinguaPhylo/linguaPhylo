@@ -1,8 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.base.Sampler;
-import lphy.base.logger.RandomValueLogger;
 import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.GraphicalModelListener;
 import lphy.core.graphicalmodel.components.DeterministicFunction;
@@ -15,6 +13,8 @@ import lphy.core.parser.REPL;
 import lphy.core.parser.Script;
 import lphy.core.util.LoggerUtils;
 import lphy.core.vectorization.VectorizedFunction;
+import lphy.io.logger.RandomValueLogger;
+import lphy.io.simulator.Sampler;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.alignmentcomponent.SequenceTypePanel;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;

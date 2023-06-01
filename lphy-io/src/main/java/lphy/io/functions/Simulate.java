@@ -1,9 +1,5 @@
-package lphy.base.functions.alignment;
+package lphy.io.functions;
 
-import lphy.base.logger.AlignmentFileLogger;
-import lphy.base.logger.RandomValueLogger;
-import lphy.base.logger.TreeFileLogger;
-import lphy.base.logger.VarFileLogger;
 import lphy.base.system.PathVariables;
 import lphy.base.system.UserDir;
 import lphy.core.graphicalmodel.components.DeterministicFunction;
@@ -15,6 +11,10 @@ import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
 import lphy.core.util.LoggerUtils;
 import lphy.core.util.RandomUtils;
+import lphy.io.logger.AlignmentFileLogger;
+import lphy.io.logger.RandomValueLogger;
+import lphy.io.logger.TreeFileLogger;
+import lphy.io.logger.VarFileLogger;
 
 import java.io.File;
 import java.io.IOException;

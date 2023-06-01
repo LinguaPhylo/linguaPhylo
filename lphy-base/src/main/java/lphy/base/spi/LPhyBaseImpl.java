@@ -22,7 +22,6 @@ import lphy.base.functions.*;
 import lphy.base.functions.alignment.NCharFunction;
 import lphy.base.functions.alignment.ReadFasta;
 import lphy.base.functions.alignment.ReadNexus;
-import lphy.base.functions.alignment.Simulate;
 import lphy.base.functions.datatype.AminoAcidsFunction;
 import lphy.base.functions.datatype.BinaryDatatypeFunction;
 import lphy.base.functions.datatype.NucleotidesFunction;
@@ -87,7 +86,7 @@ public class LPhyBaseImpl implements LPhyExtension {
             // Taxa
             CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
             // Alignment
-            SelectSitesByMissingFraction.class, Simulate.class,
+            SelectSitesByMissingFraction.class,
             VariableSites.class, InvariableSites.class, CopySites.class,
             // Tree
             LocalBranchRates.class, ExtantTree.class, PruneTree.class, //NodeCount.class, TreeLength.class,

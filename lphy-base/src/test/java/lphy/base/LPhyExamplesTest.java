@@ -39,6 +39,8 @@ public class LPhyExamplesTest {
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
         List<String> ignoreFiles = Arrays.asList("jcSimData2.lphy",
+                // simulate is in lphy-io
+                "jcCoal.lphy",
                 // TODO gradle test bug : SPI of SequenceType cannot be loaded
                 "covidDPG.lphy", "simpleSerialCoalescentNex.lphy", "twoPartitionCoalescentNex.lphy");
 //            String fileName = "hcv_coal_classic.lphy";

@@ -1,12 +1,12 @@
-package lphy.base;
+package lphy.io.simulator;
 
-import lphy.base.logger.RandomValueLogger;
 import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.RandomVariable;
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.util.LoggerUtils;
+import lphy.io.logger.RandomValueLogger;
 
 import java.util.*;
 

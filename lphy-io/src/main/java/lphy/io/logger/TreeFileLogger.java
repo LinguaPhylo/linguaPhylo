@@ -1,4 +1,4 @@
-package lphy.base.logger;
+package lphy.io.logger;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.parser.nexus.NexusWriter;
