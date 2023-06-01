@@ -15,8 +15,6 @@ module lphy.core {
     requires transitive commons.math3;
     requires transitive jebl;
 
-    requires markdowngenerator;
-
     exports lphy.core; // for lphy.core.spi.LPhyExtensionFactory
 
     // graphical model

@@ -1,4 +1,4 @@
-package lphy.core.doc;
+package lphystudio.app.docgenerator;
 
 import lphy.core.graphicalmodel.components.*;
 import net.steppschuh.markdowngenerator.link.Link;

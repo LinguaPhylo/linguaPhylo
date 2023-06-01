@@ -11,6 +11,8 @@ module lphystudio {
 //    requires org.json;
     requires org.jfree.jfreechart;
     requires info.picocli;
+    requires markdowngenerator;
+
     opens lphystudio.app.simulator;
 //    exports lphystudio.app.simulator;
 
