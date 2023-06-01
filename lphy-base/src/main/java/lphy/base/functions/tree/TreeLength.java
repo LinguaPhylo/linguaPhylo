@@ -1,8 +1,8 @@
 package lphy.base.functions.tree;
 
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.DoubleValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.DoubleValue;
 
 /**
  * use {@link TimeTree#treeLength()}

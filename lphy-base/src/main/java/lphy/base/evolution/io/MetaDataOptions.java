@@ -1,6 +1,6 @@
 package lphy.base.evolution.io;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package lphystudio.app;
 
 import lphy.base.system.UserDir;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.util.LoggerUtils;
 import lphy.core.util.RandomUtils;

@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.base.Arguments;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.parser.Command;
 import lphy.io.logger.AlignmentFileLogger;
 import lphy.io.logger.RandomValueLogger;

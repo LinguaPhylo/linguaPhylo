@@ -1,8 +1,8 @@
 package lphystudio.core.narrative;
 
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.components.Citation;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.components.Citation;
+import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.layeredgraph.ProperLayeredGraph;

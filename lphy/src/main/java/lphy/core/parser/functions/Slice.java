@@ -1,6 +1,6 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.lang.reflect.Array;
 

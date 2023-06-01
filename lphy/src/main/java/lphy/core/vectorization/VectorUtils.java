@@ -1,9 +1,9 @@
 package lphy.core.vectorization;
 
-import lphy.core.graphicalmodel.components.Argument;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.Vector;
+import lphy.core.model.components.Argument;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.Vector;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

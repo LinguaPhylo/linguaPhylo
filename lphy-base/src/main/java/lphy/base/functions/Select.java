@@ -1,6 +1,6 @@
 package lphy.base.functions;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 public class Select extends DeterministicFunction<Number> {
 

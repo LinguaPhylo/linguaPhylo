@@ -2,7 +2,7 @@ package lphy.base.functions.taxa;
 
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.lang.reflect.Array;
 

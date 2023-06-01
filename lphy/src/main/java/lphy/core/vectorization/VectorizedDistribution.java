@@ -1,6 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 

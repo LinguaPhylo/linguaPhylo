@@ -2,8 +2,8 @@ package lphy.base.lightweight.distributions;
 
 import lphy.base.lightweight.LGenerativeDistribution;
 import lphy.base.math.MathUtils;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.ParameterInfo;
 import lphy.core.util.RandomUtils;
 
 /**

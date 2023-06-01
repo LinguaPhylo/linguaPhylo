@@ -1,9 +1,9 @@
 package lphy.base.lightweight;
 
-import lphy.core.graphicalmodel.components.Argument;
-import lphy.core.graphicalmodel.components.Citation;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
+import lphy.core.model.components.Argument;
+import lphy.core.model.components.Citation;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.GeneratorInfo;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;

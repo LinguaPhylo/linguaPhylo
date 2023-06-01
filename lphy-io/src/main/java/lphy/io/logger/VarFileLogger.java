@@ -1,7 +1,7 @@
 package lphy.io.logger;
 
-import lphy.core.graphicalmodel.components.RandomVariable;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.util.Symbols;
 import lphy.core.vectorization.VectorUtils;
 

@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.model.components.Generator;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.ParserLoader;
 import lphy.core.util.LoggerUtils;

@@ -2,7 +2,7 @@ package lphy.base.evolution.alignment;
 
 import lphy.base.evolution.HasTaxa;
 import lphy.base.evolution.NChar;
-import lphy.core.graphicalmodel.components.MultiDimensional;
+import lphy.core.model.components.MultiDimensional;
 
 import java.lang.reflect.Array;
 

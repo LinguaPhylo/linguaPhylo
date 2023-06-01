@@ -1,6 +1,6 @@
 package lphy.core.parser;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
 import lphy.core.vectorization.IID;

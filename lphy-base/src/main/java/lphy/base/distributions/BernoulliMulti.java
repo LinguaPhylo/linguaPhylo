@@ -1,7 +1,7 @@
 package lphy.base.distributions;
 
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.IntegerValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.IntegerValue;
 import lphy.core.vectorization.IID;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

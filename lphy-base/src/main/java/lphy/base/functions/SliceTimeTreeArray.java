@@ -2,8 +2,8 @@ package lphy.base.functions;
 
 import lphy.base.ParameterNames;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
 import lphy.core.parser.functions.Slice;
 
 public class SliceTimeTreeArray extends Slice<TimeTree> {

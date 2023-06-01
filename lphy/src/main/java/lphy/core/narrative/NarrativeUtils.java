@@ -1,9 +1,9 @@
 package lphy.core.narrative;
 
-import lphy.core.graphicalmodel.components.Citation;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.components.ValueUtils;
+import lphy.core.model.components.Citation;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
+import lphy.core.model.components.ValueUtils;
 
 import java.util.ArrayList;
 import java.util.List;

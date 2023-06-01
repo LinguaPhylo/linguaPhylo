@@ -1,9 +1,9 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.IntegerArrayValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.IntegerArrayValue;
 
 public class IntegerArray extends DeterministicFunction<Integer[]> {
 

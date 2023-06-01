@@ -1,8 +1,8 @@
 package lphystudio.core.codecolorizer;
 
 
-import lphy.core.graphicalmodel.components.RandomVariable;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;
 import lphy.core.parser.ParserLoader;

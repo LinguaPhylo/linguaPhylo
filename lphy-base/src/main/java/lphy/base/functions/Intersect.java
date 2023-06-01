@@ -1,7 +1,7 @@
 package lphy.base.functions;
 
 import lphy.base.ParameterNames;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.util.Arrays;
 import java.util.List;

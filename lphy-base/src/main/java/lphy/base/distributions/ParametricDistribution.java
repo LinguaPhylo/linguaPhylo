@@ -1,8 +1,8 @@
 package lphy.base.distributions;
 
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
 import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 

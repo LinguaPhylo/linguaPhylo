@@ -1,8 +1,8 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.GraphicalModelNode;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.GraphicalModelNode;
+import lphy.core.model.components.Value;
 import lphy.core.util.LoggerUtils;
 
 import java.util.Arrays;

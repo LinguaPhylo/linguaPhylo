@@ -1,6 +1,6 @@
 package lphystudio.core.valueeditors;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 
 import javax.swing.*;

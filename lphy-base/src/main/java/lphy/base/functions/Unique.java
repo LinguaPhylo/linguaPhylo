@@ -1,6 +1,6 @@
 package lphy.base.functions;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.vectorization.CompoundVectorValue;
 
 import java.util.*;

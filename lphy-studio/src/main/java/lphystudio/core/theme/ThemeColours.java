@@ -1,7 +1,7 @@
 package lphystudio.core.theme;
 
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.components.ValueUtils;
+import lphy.core.model.components.Value;
+import lphy.core.model.components.ValueUtils;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.awt.*;

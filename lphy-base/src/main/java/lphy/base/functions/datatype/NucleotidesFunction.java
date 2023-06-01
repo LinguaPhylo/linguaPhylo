@@ -1,10 +1,10 @@
 package lphy.base.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorCategory;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.Value;
 
 public class NucleotidesFunction extends DeterministicFunction<SequenceType> {
 

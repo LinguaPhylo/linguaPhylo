@@ -1,6 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 
 /**
  * Created by Alexei Drummond on 18/12/19.

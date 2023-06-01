@@ -1,8 +1,8 @@
 package lphy.io.logger;
 
-import lphy.core.graphicalmodel.components.RandomVariable;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.components.ValueUtils;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
+import lphy.core.model.components.ValueUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

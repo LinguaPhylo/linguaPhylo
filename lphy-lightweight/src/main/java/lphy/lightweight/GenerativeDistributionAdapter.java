@@ -1,8 +1,8 @@
 package lphy.base.lightweight;
 
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.RandomVariable;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 
 import java.util.Map;
 

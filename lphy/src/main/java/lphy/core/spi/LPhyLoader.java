@@ -1,8 +1,8 @@
 package lphy.core.spi;
 
-import lphy.core.graphicalmodel.components.Func;
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.model.components.Func;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.Generator;
 
 import java.util.*;
 import java.util.stream.Collectors;

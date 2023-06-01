@@ -1,6 +1,6 @@
 package lphy.base.lightweight;
 
-import lphy.core.graphicalmodel.components.Argument;
+import lphy.core.model.components.Argument;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

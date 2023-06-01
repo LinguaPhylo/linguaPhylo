@@ -2,8 +2,8 @@ package lphy.core.parser;
 
 
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.components.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;

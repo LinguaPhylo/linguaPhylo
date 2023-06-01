@@ -1,6 +1,6 @@
 package lphy.io.logger;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 
 import java.util.List;
 

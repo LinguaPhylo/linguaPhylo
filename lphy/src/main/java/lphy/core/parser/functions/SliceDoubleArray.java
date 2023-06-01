@@ -1,7 +1,7 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
 
 public class SliceDoubleArray extends Slice<Double> {
     public SliceDoubleArray(@ParameterInfo(name = ParameterNames.StartParamName, description = "start index") Value<Integer> start,

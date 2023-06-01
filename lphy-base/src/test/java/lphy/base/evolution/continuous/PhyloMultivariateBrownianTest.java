@@ -6,7 +6,7 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.parser.newick.NewickASTVisitor;
 import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.util.RandomUtils;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;

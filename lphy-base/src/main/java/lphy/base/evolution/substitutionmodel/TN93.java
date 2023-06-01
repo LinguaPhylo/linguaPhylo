@@ -1,7 +1,7 @@
 package lphy.base.evolution.substitutionmodel;
 
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.DoubleArray2DValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.DoubleArray2DValue;
 
 /**
  * TN93: AC = AT = CG = GT, AG, CT, unequal base frequencies, k + 5 free parameters

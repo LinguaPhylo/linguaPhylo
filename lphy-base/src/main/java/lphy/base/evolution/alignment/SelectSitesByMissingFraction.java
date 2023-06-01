@@ -1,7 +1,7 @@
 package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.util.LoggerUtils;
 
 import java.util.ArrayList;

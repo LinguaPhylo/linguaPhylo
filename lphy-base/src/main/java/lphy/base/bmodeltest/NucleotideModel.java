@@ -1,8 +1,8 @@
 package lphy.base.bmodeltest;
 
 import lphy.base.evolution.substitutionmodel.RateMatrix;
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.DoubleArray2DValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.DoubleArray2DValue;
 
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package lphystudio.app.modelguide;
 
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.GeneratorCategory;
-import lphy.core.graphicalmodel.components.MethodInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.MethodInfo;
 import lphy.core.parser.ParserLoader;
 import lphy.core.parser.functions.MethodCall;
 

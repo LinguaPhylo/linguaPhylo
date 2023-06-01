@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.GraphicalModelListener;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.GraphicalModelListener;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;

@@ -4,8 +4,8 @@ import lphy.base.distributions.DistributionConstants;
 import lphy.base.evolution.EvolutionConstants;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.Value;
 import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 

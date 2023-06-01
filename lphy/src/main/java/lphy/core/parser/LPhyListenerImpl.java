@@ -1,8 +1,8 @@
 package lphy.core.parser;
 
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.*;
+import lphy.core.model.components.*;
+import lphy.core.model.types.*;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;

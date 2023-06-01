@@ -1,7 +1,7 @@
 package lphy.core.narrative;
 
-import lphy.core.graphicalmodel.components.Citation;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Citation;
+import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.util.prefs.Preferences;

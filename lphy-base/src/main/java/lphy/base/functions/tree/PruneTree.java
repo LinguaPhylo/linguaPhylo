@@ -2,7 +2,7 @@ package lphy.base.functions.tree;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import static lphy.base.evolution.EvolutionConstants.treeParamName;
 import static lphy.base.evolution.tree.TimeTreeUtils.*;

@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.util.DecimalFormat;
 
 public class DoubleArrayLabel extends ArrayLabel<Double> {

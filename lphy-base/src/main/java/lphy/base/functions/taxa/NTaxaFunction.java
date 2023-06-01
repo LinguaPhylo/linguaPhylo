@@ -1,11 +1,11 @@
 package lphy.base.functions.taxa;
 
 import lphy.base.evolution.Taxa;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.IntegerValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.IntegerValue;
 
 @Deprecated
 public class NTaxaFunction extends DeterministicFunction<Integer> {

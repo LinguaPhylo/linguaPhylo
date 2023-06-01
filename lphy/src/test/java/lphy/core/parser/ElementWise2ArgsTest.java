@@ -1,6 +1,6 @@
 package lphy.core.parser;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

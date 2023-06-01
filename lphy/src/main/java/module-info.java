@@ -14,9 +14,9 @@ module lphy.core {
     requires transitive commons.math3;
 
     // graphical model
-    exports lphy.core.graphicalmodel;
-    exports lphy.core.graphicalmodel.components;
-    exports lphy.core.graphicalmodel.types;
+    exports lphy.core.model;
+    exports lphy.core.model.components;
+    exports lphy.core.model.types;
 
     // parser
     exports lphy.core.parser;

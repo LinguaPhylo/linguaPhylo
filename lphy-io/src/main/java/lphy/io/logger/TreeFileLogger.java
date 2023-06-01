@@ -2,7 +2,7 @@ package lphy.io.logger;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.parser.nexus.NexusWriter;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import lphy.core.util.Symbols;
 import lphy.core.vectorization.VectorUtils;
 

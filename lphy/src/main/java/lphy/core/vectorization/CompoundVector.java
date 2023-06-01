@@ -1,7 +1,7 @@
 package lphy.core.vectorization;
 
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.Vector;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.Vector;
 
 public interface CompoundVector<T> extends Vector<T> {
 

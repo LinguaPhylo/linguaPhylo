@@ -1,6 +1,6 @@
 package lphystudio.app.docgenerator;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.util.LoggerUtils;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static lphy.core.graphicalmodel.components.GeneratorCategory.*;
+import static lphy.core.model.components.GeneratorCategory.*;
 
 /**
  * Delete everything under ???/lphy/doc, if it is not a minor change to docs.

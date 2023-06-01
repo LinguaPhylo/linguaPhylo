@@ -1,6 +1,6 @@
 package lphystudio.app.docgenerator;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;

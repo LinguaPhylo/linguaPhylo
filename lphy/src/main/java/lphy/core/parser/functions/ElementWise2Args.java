@@ -1,8 +1,8 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.GraphicalModelNode;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.*;
+import lphy.core.model.components.GraphicalModelNode;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.*;
 
 import java.util.function.BiFunction;
 

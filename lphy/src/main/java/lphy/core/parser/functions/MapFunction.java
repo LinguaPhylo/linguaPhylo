@@ -1,10 +1,10 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.ArgumentValue;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.MapValue;
+import lphy.core.model.components.ArgumentValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.MapValue;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 

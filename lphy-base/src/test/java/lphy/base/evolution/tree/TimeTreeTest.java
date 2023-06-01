@@ -1,7 +1,7 @@
 package lphy.base.evolution.tree;
 
 import lphy.base.evolution.coalescent.Coalescent;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

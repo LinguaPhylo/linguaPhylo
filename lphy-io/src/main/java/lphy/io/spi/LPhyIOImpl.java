@@ -1,7 +1,7 @@
 package lphy.io.spi;
 
-import lphy.core.graphicalmodel.components.Func;
-import lphy.core.graphicalmodel.components.GenerativeDistribution;
+import lphy.core.model.components.Func;
+import lphy.core.model.components.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
 import lphy.io.functions.Simulate;
 

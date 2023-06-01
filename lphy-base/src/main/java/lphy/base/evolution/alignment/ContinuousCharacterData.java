@@ -1,7 +1,7 @@
 package lphy.base.evolution.alignment;
 
 import lphy.base.evolution.Taxa;
-import lphy.core.graphicalmodel.components.TypeInfo;
+import lphy.core.model.components.TypeInfo;
 
 import java.util.Arrays;
 import java.util.Objects;

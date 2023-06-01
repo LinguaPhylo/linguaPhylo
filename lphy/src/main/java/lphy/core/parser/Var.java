@@ -1,12 +1,12 @@
 package lphy.core.parser;
 
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.BooleanArrayValue;
-import lphy.core.graphicalmodel.types.DoubleArrayValue;
-import lphy.core.graphicalmodel.types.IntegerArrayValue;
-import lphy.core.graphicalmodel.types.StringArrayValue;
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.BooleanArrayValue;
+import lphy.core.model.types.DoubleArrayValue;
+import lphy.core.model.types.IntegerArrayValue;
+import lphy.core.model.types.StringArrayValue;
 import lphy.core.parser.functions.ElementsAt;
 import lphy.core.parser.functions.Range;
 import lphy.core.parser.functions.RangeList;

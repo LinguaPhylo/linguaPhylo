@@ -1,7 +1,7 @@
 package lphy.core.parser.functions;
 
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.IntegerValue;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.IntegerValue;
 import lphy.core.parser.ParserTest;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.Test;

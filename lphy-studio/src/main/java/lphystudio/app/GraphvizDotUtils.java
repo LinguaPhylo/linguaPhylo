@@ -1,6 +1,6 @@
 package lphystudio.app;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.theme.ThemeColours;
 

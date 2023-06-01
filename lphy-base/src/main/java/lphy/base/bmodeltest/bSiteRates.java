@@ -1,7 +1,7 @@
 package lphy.base.bmodeltest;
 
 import lphy.base.distributions.DiscretizedGamma;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import static lphy.base.distributions.DistributionConstants.shapeParamName;
 import static lphy.base.evolution.likelihood.PhyloCTMC.LParamName;
-import static lphy.core.graphicalmodel.components.ValueUtils.doubleValue;
+import static lphy.core.model.components.ValueUtils.doubleValue;
 
 public class bSiteRates implements GenerativeDistribution<Double[]> {
 

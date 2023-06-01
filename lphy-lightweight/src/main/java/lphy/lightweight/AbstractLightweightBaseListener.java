@@ -11,8 +11,8 @@ import lphy.base.functions.tree.MigrationCount;
 import lphy.base.functions.tree.Newick;
 import lphy.base.functions.tree.NodeCount;
 import lphy.base.lightweight.distributions.*;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.functions.Range;
 

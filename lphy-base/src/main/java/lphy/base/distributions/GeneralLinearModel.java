@@ -1,7 +1,7 @@
 package lphy.base.distributions;
 
 import lphy.base.functions.GeneralLinearFunction;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

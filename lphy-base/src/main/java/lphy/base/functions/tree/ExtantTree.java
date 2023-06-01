@@ -2,7 +2,7 @@ package lphy.base.functions.tree;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.util.ArrayList;
 import java.util.List;

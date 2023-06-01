@@ -1,6 +1,6 @@
 package lphy.base.bmodeltest;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 public class BModelSetFunction extends DeterministicFunction<BModelSet> {
 

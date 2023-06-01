@@ -1,8 +1,8 @@
 package lphy.base.bmodeltest;
 
-import lphy.core.graphicalmodel.components.GeneratorCategory;
-import lphy.core.graphicalmodel.components.MethodInfo;
-import lphy.core.graphicalmodel.components.TypeInfo;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.MethodInfo;
+import lphy.core.model.components.TypeInfo;
 
 import java.util.*;
 

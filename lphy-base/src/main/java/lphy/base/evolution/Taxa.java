@@ -1,10 +1,10 @@
 package lphy.base.evolution;
 
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.graphicalmodel.components.GeneratorCategory;
-import lphy.core.graphicalmodel.components.MethodInfo;
-import lphy.core.graphicalmodel.components.MultiDimensional;
-import lphy.core.graphicalmodel.components.TypeInfo;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.MethodInfo;
+import lphy.core.model.components.MultiDimensional;
+import lphy.core.model.components.TypeInfo;
 
 import java.util.ArrayList;
 import java.util.List;

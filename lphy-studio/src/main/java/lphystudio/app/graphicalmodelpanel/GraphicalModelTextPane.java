@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.GraphicalModelListener;
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.GraphicalModelListener;
 import lphy.core.parser.LPhyMetaParser;
 
 import javax.swing.*;

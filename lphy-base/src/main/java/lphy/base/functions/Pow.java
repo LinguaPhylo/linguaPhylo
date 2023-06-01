@@ -1,11 +1,11 @@
 package lphy.base.functions;
 
 import lphy.base.ParameterNames;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.DoubleValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.DoubleValue;
 
 public class Pow extends DeterministicFunction<Double> {
 

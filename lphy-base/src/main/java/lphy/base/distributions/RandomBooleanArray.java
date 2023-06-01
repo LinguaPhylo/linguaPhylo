@@ -1,6 +1,6 @@
 package lphy.base.distributions;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import lphy.core.util.RandomUtils;
 
 import java.util.*;

@@ -1,10 +1,10 @@
 package lphy.base.functions;
 
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.StringValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.StringValue;
 
 public class Split extends DeterministicFunction<String> {
 

@@ -1,9 +1,9 @@
 package lphystudio.app.graphicalmodelpanel;
 
+import lphy.core.model.GraphicalModel;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.graphicalmodel.components.RandomVariable;
-import lphy.core.graphicalmodel.components.Value;
 import lphy.core.util.LoggerUtils;
 import lphystudio.core.valueeditors.Abstract2DEditor;
 

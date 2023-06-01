@@ -5,7 +5,7 @@ import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.functions.tree.PruneTree;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.util.Map;
 

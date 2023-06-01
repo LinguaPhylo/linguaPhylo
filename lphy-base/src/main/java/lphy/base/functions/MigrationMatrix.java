@@ -1,7 +1,7 @@
 package lphy.base.functions;
 
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.DoubleArray2DValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.DoubleArray2DValue;
 
 /**
  * Created by Alexei Drummond on 2/02/20.

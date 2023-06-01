@@ -6,7 +6,7 @@ import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.sitemodel.SiteModel;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.util.Objects;
 import java.util.SortedMap;

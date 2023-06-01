@@ -1,6 +1,6 @@
 package lphy.core.exception;
 
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.Value;
 
 import java.lang.reflect.Constructor;
 

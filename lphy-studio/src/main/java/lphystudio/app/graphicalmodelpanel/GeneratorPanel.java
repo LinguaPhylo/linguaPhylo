@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.graphicalmodel.components.Argument;
-import lphy.core.graphicalmodel.components.Generator;
+import lphy.core.model.components.Argument;
+import lphy.core.model.components.Generator;
 import lphy.core.parser.LPhyMetaParser;
 
 import javax.swing.*;

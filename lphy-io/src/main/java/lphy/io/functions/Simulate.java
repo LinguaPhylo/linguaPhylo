@@ -2,11 +2,11 @@ package lphy.io.functions;
 
 import lphy.base.system.PathVariables;
 import lphy.base.system.UserDir;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.ParameterInfo;
-import lphy.core.graphicalmodel.components.Value;
-import lphy.core.graphicalmodel.types.MapValue;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.components.Value;
+import lphy.core.model.types.MapValue;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
 import lphy.core.util.LoggerUtils;

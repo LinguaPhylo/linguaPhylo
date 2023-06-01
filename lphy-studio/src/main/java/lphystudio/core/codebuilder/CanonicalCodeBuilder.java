@@ -1,8 +1,8 @@
 package lphystudio.core.codebuilder;
 
-import lphy.core.graphicalmodel.GraphicalModelNodeVisitor;
-import lphy.core.graphicalmodel.components.Generator;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.GraphicalModelNodeVisitor;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.util.ArrayList;

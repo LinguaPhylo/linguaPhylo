@@ -1,6 +1,6 @@
 package lphy.base.distributions;
 
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

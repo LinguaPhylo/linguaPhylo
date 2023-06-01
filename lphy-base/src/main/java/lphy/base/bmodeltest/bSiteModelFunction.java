@@ -1,13 +1,13 @@
 package lphy.base.bmodeltest;
 
 import lphy.base.evolution.sitemodel.SiteModel;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 
 import java.util.Map;
 
 import static lphy.base.evolution.likelihood.PhyloCTMC.QParamName;
 import static lphy.base.evolution.likelihood.PhyloCTMC.siteRatesParamName;
-import static lphy.core.graphicalmodel.components.ValueUtils.doubleValue;
+import static lphy.core.model.components.ValueUtils.doubleValue;
 
 @Citation(
         value = "Bouckaert, R., Drummond, A. bModelTest: Bayesian phylogenetic site model averaging and model comparison. BMC Evol Biol 17, 42 (2017). https://doi.org/10.1186/s12862-017-0890-6",

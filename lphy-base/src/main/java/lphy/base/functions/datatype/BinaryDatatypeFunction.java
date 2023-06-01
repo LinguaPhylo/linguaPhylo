@@ -2,10 +2,10 @@ package lphy.base.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.datatype.Binary;
-import lphy.core.graphicalmodel.components.DeterministicFunction;
-import lphy.core.graphicalmodel.components.GeneratorCategory;
-import lphy.core.graphicalmodel.components.GeneratorInfo;
-import lphy.core.graphicalmodel.components.Value;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.components.Value;
 
 public class BinaryDatatypeFunction extends DeterministicFunction<SequenceType> {
 

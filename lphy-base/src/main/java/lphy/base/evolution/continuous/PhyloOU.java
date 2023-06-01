@@ -2,7 +2,7 @@ package lphy.base.evolution.continuous;
 
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.graphicalmodel.components.*;
+import lphy.core.model.components.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.SortedMap;

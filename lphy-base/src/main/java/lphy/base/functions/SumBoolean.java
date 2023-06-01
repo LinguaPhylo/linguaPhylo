@@ -1,8 +1,8 @@
 package lphy.base.functions;
 
 import lphy.base.ParameterNames;
-import lphy.core.graphicalmodel.components.*;
-import lphy.core.graphicalmodel.types.IntegerValue;
+import lphy.core.model.components.*;
+import lphy.core.model.types.IntegerValue;
 
 public class SumBoolean extends DeterministicFunction<Integer> {
 
