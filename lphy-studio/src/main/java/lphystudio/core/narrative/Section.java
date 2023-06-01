@@ -1,4 +1,4 @@
-package lphy.core.narrative;
+package lphystudio.core.narrative;
 
 /**
  * Sections in narrative

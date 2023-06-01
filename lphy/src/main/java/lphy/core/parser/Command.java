@@ -1,11 +1,9 @@
-package lphy.core.cmd;
+package lphy.core.parser;
 
 import lphy.core.graphicalmodel.components.Value;
-import lphy.core.parser.LPhyMetaParser;
 
 import java.util.Map;
 
-@Deprecated
 public interface Command {
 
     String getName();

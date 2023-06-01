@@ -8,10 +8,12 @@ import lphy.core.spi.LPhyExtension;
  */
 module lphy.base {
     requires transitive lphy.core;
+    requires transitive jebl;
+
+    requires transitive java.desktop;
 
     // bmodel test
     exports lphy.base.bmodeltest;
-
 
     exports lphy.base.distributions;
     exports lphy.base.functions;
@@ -38,6 +40,7 @@ module lphy.base {
 
     exports lphy.base;
     exports lphy.base.logger;
+    exports lphy.base.system;
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;

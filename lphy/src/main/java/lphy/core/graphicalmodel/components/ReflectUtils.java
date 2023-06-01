@@ -1,4 +1,4 @@
-package lphy.core.reflection;
+package lphy.core.graphicalmodel.components;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

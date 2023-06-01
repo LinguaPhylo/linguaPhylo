@@ -3,7 +3,6 @@ package lphy.core.graphicalmodel.components;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.functions.ExpressionNode;
-import lphy.core.reflection.ReflectUtils;
 import lphy.core.util.DecimalFormat;
 
 import java.lang.annotation.Annotation;
@@ -502,7 +501,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     static String getArgumentCodeString(String name, Value value) {
         String prefix = "";
-        if (!DecimalFormat.isInteger(name)) {
+        if (!DecimalFormat. isInteger(name)) {
             prefix = name + "=";
         }
 

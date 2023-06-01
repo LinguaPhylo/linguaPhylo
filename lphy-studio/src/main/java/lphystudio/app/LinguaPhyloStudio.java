@@ -1,9 +1,8 @@
 package lphystudio.app;
 
-import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.base.system.UserDir;
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.system.UserDir;
 import lphy.core.util.LoggerUtils;
 import lphy.core.util.RandomUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
@@ -11,6 +10,7 @@ import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
+import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.log.AlignmentLog;
 import lphystudio.core.narrative.HTMLNarrative;

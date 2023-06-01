@@ -1,14 +1,14 @@
 package lphystudio.app;
 
+import lphy.base.system.UserDir;
 import lphy.core.graphicalmodel.GraphicalModel;
-import lphy.core.narrative.Section;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.system.UserDir;
 import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
+import lphystudio.core.narrative.Section;
 
 import java.io.File;
 import java.io.FileWriter;

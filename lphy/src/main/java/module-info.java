@@ -6,38 +6,29 @@ import lphy.core.spi.LPhyExtension;
  */
 module lphy.core {
     requires transitive java.datatransfer;
-    requires transitive java.desktop;
     requires transitive java.prefs;
     requires transitive java.logging;
 
     requires transitive org.antlr.antlr4.runtime;
     requires transitive org.apache.commons.lang3;
     requires transitive commons.math3;
-    requires transitive jebl;
-
-    exports lphy.core; // for lphy.core.spi.LPhyExtensionFactory
 
     // graphical model
-    exports lphy.core.codebuilder;
     exports lphy.core.graphicalmodel;
     exports lphy.core.graphicalmodel.components;
     exports lphy.core.graphicalmodel.types;
-    exports lphy.core.vectorization;
 
     // parser
     exports lphy.core.parser;
     exports lphy.core.parser.antlr;
     exports lphy.core.parser.functions;
 
+    // vectorization
+    exports lphy.core.vectorization;
+
     // others
     exports lphy.core.narrative;
     exports lphy.core.exception;
-
-    // utils
-    exports lphy.core.cmd;
-//    exports lphy.math;
-    exports lphy.core.reflection;
-    exports lphy.core.system;
     exports lphy.core.util;
 
     // declare service provider interface (SPI)

@@ -5,8 +5,8 @@ import lphy.base.logger.AlignmentFileLogger;
 import lphy.base.logger.RandomValueLogger;
 import lphy.base.logger.TreeFileLogger;
 import lphy.base.logger.VarFileLogger;
-import lphy.core.cmd.Command;
 import lphy.core.graphicalmodel.components.Value;
+import lphy.core.parser.Command;
 
 import java.util.ArrayList;
 import java.util.List;

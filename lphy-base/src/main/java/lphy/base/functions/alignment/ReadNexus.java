@@ -4,8 +4,8 @@ import jebl.evolution.io.ImportException;
 import lphy.base.evolution.io.MetaDataAlignment;
 import lphy.base.evolution.io.MetaDataOptions;
 import lphy.base.evolution.io.NexusParser;
+import lphy.base.system.UserDir;
 import lphy.core.graphicalmodel.components.*;
-import lphy.core.system.UserDir;
 import lphy.core.util.LoggerUtils;
 
 import java.io.IOException;

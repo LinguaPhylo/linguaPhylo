@@ -1,8 +1,6 @@
 package lphy.core.parser;
 
 
-import lphy.core.Script;
-import lphy.core.cmd.Command;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.components.Value;
@@ -84,6 +82,7 @@ public class REPL implements LPhyMetaParser {
         final boolean[] found = new boolean[1];
         commands.forEach((key, command) -> {
             if (commandString.startsWith(key)) {
+                //TODO why throw UnsupportedOperationException ?
                 command.execute(commandString, this);
                 found[0] = true;
             }

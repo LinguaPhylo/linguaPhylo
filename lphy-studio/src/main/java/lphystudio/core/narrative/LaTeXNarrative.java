@@ -1,6 +1,5 @@
 package lphystudio.core.narrative;
 
-import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.components.Citation;
 import lphy.core.graphicalmodel.components.Generator;
@@ -11,6 +10,7 @@ import lphy.core.util.Symbols;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
+import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.layeredgraph.*;
 import lphystudio.core.theme.ThemeColours;
 

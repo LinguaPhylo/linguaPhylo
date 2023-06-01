@@ -1,6 +1,5 @@
 package lphy.core.parser;
 
-import lphy.core.cmd.Command;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.graphicalmodel.GraphicalModel;
 import lphy.core.graphicalmodel.components.Value;

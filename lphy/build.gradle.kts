@@ -14,8 +14,6 @@ dependencies {
     api("org.antlr:antlr4-runtime:4.11.1")
     api("org.apache.commons:commons-math3:3.6.1")
     api("org.apache.commons:commons-lang3:3.12.0")
-    // io.github.linguaphylo
-    api("io.github.linguaphylo:jebl:3.1.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }

@@ -1,4 +1,4 @@
-package lphy.core.codebuilder;
+package lphystudio.core.codebuilder;
 
 import lphy.core.graphicalmodel.components.Generator;
 import lphy.core.graphicalmodel.components.RandomVariable;

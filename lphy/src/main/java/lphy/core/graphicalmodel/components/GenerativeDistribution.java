@@ -1,7 +1,5 @@
 package lphy.core.graphicalmodel.components;
 
-import lphy.core.reflection.ReflectUtils;
-
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;

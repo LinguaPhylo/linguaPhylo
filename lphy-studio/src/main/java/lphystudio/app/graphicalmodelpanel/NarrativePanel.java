@@ -6,10 +6,10 @@ import lphy.core.graphicalmodel.components.DeterministicFunction;
 import lphy.core.graphicalmodel.components.GenerativeDistribution;
 import lphy.core.graphicalmodel.components.Value;
 import lphy.core.narrative.Narrative;
-import lphy.core.narrative.Section;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.narrative.NarrativeLayeredGraph;
+import lphystudio.core.narrative.Section;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
