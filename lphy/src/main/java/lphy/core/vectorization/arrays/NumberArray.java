@@ -1,15 +1,15 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.arrays;
 
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.Value;
-import lphy.core.model.types.IntegerArrayValue;
+import lphy.core.model.types.NumberArrayValue;
 
-public class IntegerArray extends DeterministicFunction<Integer[]> {
+public class NumberArray extends DeterministicFunction<Number[]> {
 
-    Value<Integer>[] x;
+    Value<Number>[] x;
 
-    public IntegerArray(Value<Integer>... x) {
+    public NumberArray(Value<Number>... x) {
 
         int length = x.length;
         this.x = x;
@@ -19,16 +19,16 @@ public class IntegerArray extends DeterministicFunction<Integer[]> {
         }
     }
 
-    @GeneratorInfo(name = "integerArray", description = "The constructor function for an array of integers.")
-    public Value<Integer[]> apply() {
+    @GeneratorInfo(name = "numberArray", description = "The constructor function for an array of numbers.")
+    public Value<Number[]> apply() {
 
-        Integer[] values = new Integer[x.length];
+        Number[] values = new Number[x.length];
 
         for (int i = 0; i < x.length; i++) {
             values[i] = x[i].value();
         }
 
-        return new IntegerArrayValue(null, values, this);
+        return new NumberArrayValue(null, values, this);
     }
 
     public void setParam(String param, Value value) {
@@ -49,7 +49,7 @@ public class IntegerArray extends DeterministicFunction<Integer[]> {
         return builder.toString();
     }
 
-    private String ref(Value<?> val) {
+    private String ref(Value<Number> val) {
         if (val.isAnonymous()) return val.codeString();
         return val.getId();
     }

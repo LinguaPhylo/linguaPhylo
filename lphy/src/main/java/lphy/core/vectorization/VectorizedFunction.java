@@ -3,6 +3,7 @@ package lphy.core.vectorization;
 import lphy.core.model.components.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.vectorization.operation.SliceValue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

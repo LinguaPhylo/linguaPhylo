@@ -1,4 +1,4 @@
-package lphy.core.vectorization;
+package lphy.core.vectorization.arrays;
 
 public interface RangeElement {
 

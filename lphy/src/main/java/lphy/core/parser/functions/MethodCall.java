@@ -6,6 +6,8 @@ import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.vectorization.CompoundVectorValue;
 import lphy.core.vectorization.VectorizedFunction;
+import lphy.core.vectorization.operation.ElementsAt;
+import lphy.core.vectorization.operation.Slice;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

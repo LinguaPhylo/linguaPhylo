@@ -2,8 +2,8 @@ package lphy.core.spi;
 
 import lphy.core.model.components.Func;
 import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.parser.functions.Range;
-import lphy.core.parser.functions.SliceDoubleArray;
+import lphy.core.vectorization.operation.Range;
+import lphy.core.vectorization.operation.SliceDoubleArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;

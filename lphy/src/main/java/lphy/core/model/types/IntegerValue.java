@@ -1,7 +1,7 @@
 package lphy.core.model.types;
 
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.vectorization.RangeElement;
+import lphy.core.vectorization.arrays.RangeElement;
 
 public class IntegerValue extends NumberValue<Integer> implements RangeElement {
 

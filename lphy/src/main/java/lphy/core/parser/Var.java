@@ -8,10 +8,10 @@ import lphy.core.model.types.BooleanArrayValue;
 import lphy.core.model.types.DoubleArrayValue;
 import lphy.core.model.types.IntegerArrayValue;
 import lphy.core.model.types.StringArrayValue;
-import lphy.core.parser.functions.ElementsAt;
-import lphy.core.parser.functions.Range;
-import lphy.core.parser.functions.RangeList;
-import lphy.core.parser.functions.SliceDoubleArray;
+import lphy.core.vectorization.operation.ElementsAt;
+import lphy.core.vectorization.operation.Range;
+import lphy.core.vectorization.operation.RangeList;
+import lphy.core.vectorization.operation.SliceDoubleArray;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

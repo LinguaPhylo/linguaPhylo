@@ -1,8 +1,8 @@
 package lphy.core.model.types;
 
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.vectorization.RangeElement;
 import lphy.core.vectorization.VectorValue;
+import lphy.core.vectorization.arrays.RangeElement;
 
 import java.util.Arrays;
 public class IntegerArrayValue extends VectorValue<Integer> implements RangeElement {

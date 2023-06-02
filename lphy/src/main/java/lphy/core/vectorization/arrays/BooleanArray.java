@@ -1,4 +1,4 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.arrays;
 
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;

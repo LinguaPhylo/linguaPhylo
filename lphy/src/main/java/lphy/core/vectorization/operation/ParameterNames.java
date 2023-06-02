@@ -1,4 +1,4 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.operation;
 
 public class ParameterNames {
 

@@ -1,6 +1,7 @@
-package lphy.core.vectorization;
+package lphy.core.vectorization.operation;
 
 import lphy.core.model.components.Value;
+import lphy.core.vectorization.VectorUtils;
 
 /**
  * Created by Alexei Drummond on 18/12/19.

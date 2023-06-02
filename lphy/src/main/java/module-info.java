@@ -25,6 +25,8 @@ module lphy.core {
 
     // vectorization
     exports lphy.core.vectorization;
+    exports lphy.core.vectorization.arrays;
+    exports lphy.core.vectorization.operation;
 
     // others
     exports lphy.core.narrative;

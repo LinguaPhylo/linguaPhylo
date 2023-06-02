@@ -1,15 +1,15 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.arrays;
 
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.Value;
-import lphy.core.model.types.DoubleArrayValue;
+import lphy.core.model.types.StringArrayValue;
 
-public class DoubleArray extends DeterministicFunction<Double[]> {
+public class StringArray extends DeterministicFunction<String[]> {
 
-    Value<Double>[] x;
+    Value<String>[] x;
 
-    public DoubleArray(Value<Double>... x) {
+    public StringArray(Value<String>... x) {
 
         int length = x.length;
         this.x = x;
@@ -19,26 +19,22 @@ public class DoubleArray extends DeterministicFunction<Double[]> {
         }
     }
 
-    @GeneratorInfo(name = "doubleArray", description = "The constructor function for an array of doubles.")
-    public Value<Double[]> apply() {
+    @GeneratorInfo(name = "stringArray", description = "The constructor function for an array of strings.")
+    public Value<String[]> apply() {
 
-        Double[] values = new Double[x.length];
+        String[] values = new String[x.length];
 
         for (int i = 0; i < x.length; i++) {
             values[i] = x[i].value();
         }
 
-        return new DoubleArrayValue(null, values, this);
+        return new StringArrayValue(null, values, this);
     }
 
     public void setParam(String param, Value value) {
         super.setParam(param, value);
         int i = Integer.parseInt(param);
         x[i] = value;
-    }
-
-    public Value<Double>[] getValues() {
-        return x;
     }
 
     public String codeString() {
@@ -53,7 +49,7 @@ public class DoubleArray extends DeterministicFunction<Double[]> {
         return builder.toString();
     }
 
-    private String ref(Value<Double> val) {
+    private String ref(Value<?> val) {
         if (val.isAnonymous()) return val.codeString();
         return val.getId();
     }

@@ -1,15 +1,14 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.arrays;
 
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.Value;
-import lphy.core.model.types.StringArrayValue;
 
-public class StringArray extends DeterministicFunction<String[]> {
+public class ArrayFunction extends DeterministicFunction<Object[]> {
 
-    Value<String>[] x;
+    Value<Object>[] x;
 
-    public StringArray(Value<String>... x) {
+    public ArrayFunction(Value<Object>... x) {
 
         int length = x.length;
         this.x = x;
@@ -19,16 +18,16 @@ public class StringArray extends DeterministicFunction<String[]> {
         }
     }
 
-    @GeneratorInfo(name = "stringArray", description = "The constructor function for an array of strings.")
-    public Value<String[]> apply() {
+    @GeneratorInfo(name = "array", description = "The constructor function for an array of values.")
+    public Value<Object[]> apply() {
 
-        String[] values = new String[x.length];
+        Object[] values = new Object[x.length];
 
         for (int i = 0; i < x.length; i++) {
             values[i] = x[i].value();
         }
 
-        return new StringArrayValue(null, values, this);
+        return new Value(null, values, this);
     }
 
     public void setParam(String param, Value value) {

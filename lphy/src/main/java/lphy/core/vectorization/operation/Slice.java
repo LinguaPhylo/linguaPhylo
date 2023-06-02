@@ -1,4 +1,4 @@
-package lphy.core.parser.functions;
+package lphy.core.vectorization.operation;
 
 import lphy.core.model.components.*;
 
@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 
 public class Slice<T> extends DeterministicFunction {
 
-    public Slice(@ParameterInfo(name=ParameterNames.StartParamName, description ="start index") Value<Integer> start,
+    public Slice(@ParameterInfo(name= ParameterNames.StartParamName, description ="start index") Value<Integer> start,
                  @ParameterInfo(name=ParameterNames.EndParamName, description ="end index") Value<Integer> end,
                  @ParameterInfo(name=ParameterNames.ArrayParamName, description ="array to retrieve element of") Value<T[]> array) {
 
