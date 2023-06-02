@@ -1,4 +1,4 @@
-package lphy.base.evolution.io;
+package lphy.base.io;
 
 
 import jebl.evolution.io.ImportException;
@@ -12,10 +12,11 @@ import jebl.evolution.taxa.Taxon;
 import jebl.util.Attributable;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.alignment.CharSetBlock;
 import lphy.base.evolution.alignment.ContinuousCharacterData;
+import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.evolution.datatype.Continuous;
 import lphy.base.evolution.datatype.DataType;
-import lphy.base.evolution.traits.CharSetBlock;
 import lphy.base.spi.SequenceTypeLoader;
 import lphy.core.exception.LoggerUtils;
 

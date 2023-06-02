@@ -1,5 +1,8 @@
-package lphy.base.evolution.alignment;
+package lphy.base.functions.alignment;
 
+import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.alignment.AlignmentUtils;
+import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 

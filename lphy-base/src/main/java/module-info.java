@@ -30,12 +30,11 @@ module lphy.base {
     exports lphy.base.evolution.coalescent;
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;
-    exports lphy.base.evolution.io;
+    exports lphy.base.io;
     exports lphy.base.evolution.likelihood;
     exports lphy.base.parser.nexus;
     exports lphy.base.evolution.sitemodel;
     exports lphy.base.evolution.substitutionmodel;
-    exports lphy.base.evolution.traits;
     exports lphy.base.evolution.tree;
 
     exports lphy.base;

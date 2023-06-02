@@ -1,5 +1,9 @@
-package lphy.base.evolution.alignment;
+package lphy.base.functions.alignment;
 
+import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.alignment.AlignmentUtils;
+import lphy.base.evolution.alignment.ErrorAlignment;
+import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.math.RandomUtils;
 import lphy.core.model.components.*;
 import org.apache.commons.math3.random.RandomGenerator;

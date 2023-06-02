@@ -1,5 +1,7 @@
-package lphy.base.evolution.alignment;
+package lphy.base.functions.alignment;
 
+import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.alignment.AlignmentUtils;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 
@@ -9,11 +11,11 @@ import java.util.List;
 /**
  * @author Walter Xie
  */
-public class VariableSites extends DeterministicFunction<Integer[]> {
+public class InvariableSites extends DeterministicFunction<Integer[]> {
 
-    public VariableSites(@ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
+    public InvariableSites(@ParameterInfo(name = AlignmentUtils.ALIGNMENT_PARAM_NAME,
             description = "the original alignment.") Value<Alignment> originalAlignment,
-                         @ParameterInfo(name = AlignmentUtils.IGNORE_UNKNOWN_PARAM_NAME,
+                           @ParameterInfo(name = AlignmentUtils.IGNORE_UNKNOWN_PARAM_NAME,
             description = "If true (as default), ignore the unknown state '?' (incl. gap '-'), when determine variable sites or constant sites.",
             optional=true) Value<Boolean> ignoreUnknownState  ) {
         Alignment origAlg = originalAlignment.value();
@@ -26,10 +28,10 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
     }
 
 
-    @GeneratorInfo(name = "variableSites",
+    @GeneratorInfo(name = "invariableSites",
             category = GeneratorCategory.TAXA_ALIGNMENT,
-            description = "Return the array of site indices (start from 0), at the given alignment, " +
-                    "which variable sites.")
+            description = "Return the array of site indices (start from 0) at the given alignment, " +
+                    "which are invariable sites.")
     public Value<Integer[]> apply() {
 
         Value<Alignment> originalAlignment = getAlignment();
@@ -42,12 +44,12 @@ public class VariableSites extends DeterministicFunction<Integer[]> {
             for (int i = 0; i < original.ntaxa(); i++) {
                 aSite[i] = original.getState(i, j);
             }
-            // var sites
-            if (!AlignmentUtils.isInvarSite(aSite, ignUnk == null || ignUnk.value(), original.getSequenceType()))
+            // const sites
+            if (AlignmentUtils.isInvarSite(aSite, ignUnk == null || ignUnk.value(), original.getSequenceType()))
                 selectedSiteIds.add(j);
         }
         Integer[] ids = selectedSiteIds.toArray(new Integer[0]);
-        LoggerUtils.log.info("Extract " + ids.length + " variable sites from " +
+        LoggerUtils.log.info("Extract " + ids.length + " invariable sites from " +
                 original.nchar() + " sites in alignment " + originalAlignment.getId());
 
         return new Value<>(null, ids, this);

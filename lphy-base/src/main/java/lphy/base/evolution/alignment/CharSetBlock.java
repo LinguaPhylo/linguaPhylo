@@ -1,4 +1,4 @@
-package lphy.base.evolution.traits;
+package lphy.base.evolution.alignment;
 
 import java.util.ArrayList;
 import java.util.List;

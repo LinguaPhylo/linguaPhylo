@@ -1,4 +1,4 @@
-package lphy.base.evolution.io;
+package lphy.base.functions.alignment;
 
 import lphy.core.model.components.Value;
 

@@ -1,12 +1,8 @@
-package lphy.base.evolution.io;
+package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.base.evolution.alignment.Alignment;
-import lphy.base.evolution.alignment.AlignmentUtils;
-import lphy.base.evolution.alignment.SimpleAlignment;
-import lphy.base.evolution.traits.CharSetBlock;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.GeneratorCategory;
 import lphy.core.model.components.MethodInfo;
@@ -24,7 +20,6 @@ import java.util.regex.Pattern;
 /**
  * The metadata parsed from a nexus file and stored in {@link Taxon},
  * and the charsets.
- * @see NexusParser
  * @author Walter Xie
  */
 @TypeInfo(description = "An alignment containing metadata and parsed from a nexus file.",

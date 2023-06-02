@@ -1,6 +1,7 @@
-package lphy.base.evolution.alignment;
+package lphy.base.functions.alignment;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.evolution.alignment.Alignment;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 

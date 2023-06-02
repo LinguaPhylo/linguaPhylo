@@ -1,7 +1,6 @@
 package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.base.evolution.traits.CharSetBlock;
 import lphy.core.exception.LoggerUtils;
 
 import java.util.*;
