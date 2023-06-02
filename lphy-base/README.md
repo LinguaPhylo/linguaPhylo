@@ -1,7 +1,7 @@
 # LPhy Standard Library
 
 The "lphy-base" [subproject](https://docs.gradle.org/current/userguide/multi_project_builds.html)
-is the standard library to make LPhy specify a Bayesian phylogenetic analysis or simulate data from the model.
+is the standard library containing relevant distributions to specify standard Bayesian phylogenetic analyses and allow simulation from those models.
 It should only contain the following implementations in Java:
 
 ## Java packages
