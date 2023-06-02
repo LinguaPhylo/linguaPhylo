@@ -1,0 +1,875 @@
+% Template for PLoS
+% Version 3.5 March 2018
+%
+% % % % % % % % % % % % % % % % % % % % % %
+%
+% -- IMPORTANT NOTE
+%
+% This template contains comments intended 
+% to minimize problems and delays during our production 
+% process. Please follow the template instructions
+% whenever possible.
+%
+% % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Once your paper is accepted for publication, 
+% PLEASE REMOVE ALL TRACKED CHANGES in this file 
+% and leave only the final text of your manuscript. 
+% PLOS recommends the use of latexdiff to track changes during review, as this will help to maintain a clean tex file.
+% Visit https://www.ctan.org/pkg/latexdiff?lang=en for info or contact us at latex@plos.org.
+%
+%
+% There are no restrictions on package use within the LaTeX files except that 
+% no packages listed in the template may be deleted.
+%
+% Please do not include colors or graphics in the text.
+%
+% The manuscript LaTeX source should be contained within a single file (do not use \input, \externaldocument, or similar commands).
+%
+% % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- FIGURES AND TABLES
+%
+% Please include tables/figure captions directly after the paragraph where they are first cited in the text.
+%
+% DO NOT INCLUDE GRAPHICS IN YOUR MANUSCRIPT
+% - Figures should be uploaded separately from your manuscript file. 
+% - Figures generated using LaTeX should be extracted and removed from the PDF before submission. 
+% - Figures containing multiple panels/subfigures must be combined into one image file before submission.
+% For figure citations, please use "Fig" instead of "Figure".
+% See http://journals.plos.org/plosone/s/figures for PLOS figure guidelines.
+%
+% Tables should be cell-based and may not contain:
+% - spacing/line breaks within cells to alter layout or alignment
+% - do not nest tabular environments (no tabular environments within tabular environments)
+% - no graphics or colored text (cell background color/shading OK)
+% See http://journals.plos.org/plosone/s/tables for table guidelines.
+%
+% For tables that exceed the width of the text column, use the adjustwidth environment as illustrated in the example table in text below.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- EQUATIONS, MATH SYMBOLS, SUBSCRIPTS, AND SUPERSCRIPTS
+%
+% IMPORTANT
+% Below are a few tips to help format your equations and other special characters according to our specifications. For more tips to help reduce the possibility of formatting errors during conversion, please see our LaTeX guidelines at http://journals.plos.org/plosone/s/latex
+%
+% For inline equations, please be sure to include all portions of an equation in the math environment.  For example, x$^2$ is incorrect; this should be formatted as $x^2$ (or $\mathrm{x}^2$ if the romanized font is desired).
+%
+% Do not include text that is not math in the math environment. For example, CO2 should be written as CO\textsubscript{2} instead of CO$_2$.
+%
+% Please add line breaks to long display equations when possible in order to fit size of the column. 
+%
+% For inline equations, please do not include punctuation (commas, etc) within the math environment unless this is part of the equation.
+%
+% When adding superscript or subscripts outside of brackets/braces, please group using {}.  For example, change "[U(D,E,\gamma)]^2" to "{[U(D,E,\gamma)]}^2". 
+%
+% Do not use \cal for caligraphic font.  Instead, use \mathcal{}
+%
+% % % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Please contact latex@plos.org with any questions.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
+
+\documentclass[10pt,letterpaper,table]{article}
+\usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
+
+\usepackage{setspace}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{bm}
+\usepackage{soul}
+\usetikzlibrary{bayesnet}
+
+\usepackage{tcolorbox} % for text box
+
+\newtcolorbox[auto counter]{mybox}[2][]{width=\textwidth, colback=gray!10, boxrule=0pt, title=Box~\thetcbcounter: #2, #1}
+
+
+\usepackage{alltt}
+
+% amsmath and amssymb packages, useful for mathematical formulas and symbols
+\usepackage{amsmath,amssymb}
+
+% Use adjustwidth environment to exceed column width (see example table in text)
+\usepackage{changepage}
+
+% Use Unicode characters when possible
+\usepackage[utf8x]{inputenc}
+
+% textcomp package and marvosym package for additional characters
+\usepackage{textcomp,marvosym}
+
+% cite package, to clean up citations in the main text. Do not remove.
+\usepackage{cite}
+
+% Use nameref to cite supporting information files (see Supporting Information section for more info)
+\usepackage{nameref,hyperref}
+
+% line numbers
+\usepackage[right]{lineno}
+
+% ligatures disabled
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+
+% array package and thick rules for tables
+\usepackage{array}
+
+% underline
+\usepackage{soul}
+
+% create "+" rule type for thick vertical lines
+\newcolumntype{+}{!{\vrule width 2pt}}
+
+% create \thickcline for thick horizontal lines of variable length
+\newlength\savedwidth
+\newcommand\thickcline[1]{%
+  \noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+  \cline{#1}%
+  \noalign{\vskip\arrayrulewidth}%
+  \noalign{\global\arrayrulewidth\savedwidth}%
+}
+
+% \thickhline command for thick horizontal lines that span the table
+\newcommand\thickhline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+\hline
+\noalign{\global\arrayrulewidth\savedwidth}}
+
+% for \paragraph
+\usepackage{titlesec}
+\titleformat{\paragraph}
+{\normalfont\normalsize\itshape}{\theparagraph}{}{}
+\titlespacing*{\paragraph}
+{0pt} {1ex} {0pt} % 0pt, space before, space after
+
+% Remove comment for double spacing
+%\usepackage{setspace} 
+%\doublespacing
+
+% Text layout
+\raggedright
+\setlength{\parindent}{0.5cm}
+\textwidth 5.25in 
+\textheight 8.75in
+
+% Bold the 'Figure #' in the caption and separate it from the title/caption with a period
+% Captions will be left justified
+\usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
+\renewcommand{\figurename}{Fig}
+
+% Use the PLoS provided BiBTeX style
+\bibliographystyle{plos2015}
+
+% Remove brackets from numbering in List of References
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+
+
+
+% Header and Footer with logo
+\usepackage{lastpage,fancyhdr,graphicx}
+\usepackage{epstopdf}
+
+%\pagestyle{myheadings}
+\pagestyle{fancy}
+\fancyhf{}
+%\setlength{\headheight}{27.023pt}
+%\lhead{\includegraphics[width=2.0in]{PLOS-submission.eps}}
+\rfoot{\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+\fancyheadoffset[L]{2.25in}
+\fancyfootoffset[L]{2.25in}
+\lfoot{\today}
+
+%% Include all macros below
+
+\newcommand{\lorem}{{\bf LOREM}}
+\newcommand{\ipsum}{{\bf IPSUM}}
+
+\newcommand{\alexei}[1]{\textcolor{teal}{{\bf ALEXEI}: {#1}}}
+
+% next 6 lines put a caption on \alltt float
+\usepackage{newfloat}
+\usepackage{caption}
+\DeclareFloatingEnvironment[fileext=frm,placement={!ht},name=Example]{example}
+\DeclareCaptionSubType*{example}
+
+\usepackage{listing}
+
+% graphical options
+\usepackage{tcolorbox}
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{environ}
+\makeatletter
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY
+}
+\makeatother\usetikzlibrary{bayesnet}
+
+% colors
+\definecolor{constant}{HTML}{D55E00} % vermillion 
+\definecolor{bluishgreen}{HTML}{009E73} % bluishgreen
+\definecolor{blue}{HTML}{0072B2} % blue
+\definecolor{generator}{HTML}{CC79A7} % reddishpurple
+\definecolor{orange}{HTML}{E69F00} % orange
+\definecolor{skyblue}{HTML}{56B4E9} % skyblue
+
+% link colors
+\hypersetup{
+    colorlinks=true, 
+    linkcolor=blue, 
+    filecolor=blue, 
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\usepackage{amsthm}
+
+\usepackage{enumitem}
+
+
+% examples
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[]
+
+
+%% END MACROS SECTION
+
+
+\begin{document}
+\vspace*{0.2in}
+
+\begin{flushleft}
+{\Large
+\textbf\newline{LinguaPhylo: a probabilistic model specification language for
+  reproducible phylogenetic analyses} 
+}
+\newline
+\\
+Alexei J. Drummond\textsuperscript{1,2,3}*,
+Kylie Chen\textsuperscript{1,2,3},
+F\'{a}bio K. Mendes\textsuperscript{1,4},
+Dong Xie\textsuperscript{1,2,3}
+\\
+\bigskip
+\textbf{1} Centre for Computational Evolution, University of Auckland, Auckland, New Zealand
+\\
+\textbf{2} School of Biological Sciences, University of Auckland, Auckland, New Zealand
+\\
+\textbf{3} School of Computer Science, University of Auckland, Auckland, New Zealand
+\\
+\textbf{4} Department of Biology, Washington University in St. Louis, St. Louis, United States
+\\
+\bigskip
+
+% Use the asterisk to denote corresponding authorship and provide email address in note below.
+* a.drummond@auckland.ac.nz
+
+\end{flushleft}
+
+\section*{Abstract}
+Phylogenetic models have become increasingly complex, and phylogenetic data sets have expanded in both size and richness. 
+However, current inference tools lack a model specification language that can concisely describe a complete phylogenetic analysis while remaining independent of implementation details. 
+We introduce a new lightweight and concise model specification language, `LPhy', which is designed to be both human and machine-readable. 
+A graphical user interface accompanies `LPhy', allowing users to build models, simulate data, and create natural language narratives describing the models. 
+These narratives can serve as the foundation for manuscript method sections. 
+Additionally, we present a command-line interface for converting LPhy-specified models into analysis specification files (in XML format) compatible with the BEAST2 software platform. 
+Collectively, these tools aim to enhance the clarity of descriptions and reporting of probabilistic models in phylogenetic studies, ultimately promoting reproducibility of results.
+
+\linenumbers
+
+\section{Introduction}
+Transparency is a scientific ideal, and replicability and
+reproducibility lie at the heart of the scientific endeavour
+\cite{nas19,munafo17}. 
+Metaresearch efforts have uncovered the so-called `reproducibility
+crisis' \cite{baker16} in many scientific domains \cite{baker16}. 
+In recent years, the growing number of computational biology software packages available has enabled greater choice in data analyses, 
+but at the cost of increased complexity in the data-preparation and analytical pipelines \cite{eren2021community}. 
+This increases the difficulty of accurately reporting and reproducing analyses. 
+These barriers have been recognised by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
+
+In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
+The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
+RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
+that can simultaneously reconstruct phylogenetic tree topology and divergence times, as well as estimate the related micro-evolutionary and macro-evolutionary parameters. 
+Phylogenetic analyses often combine multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21,zhang21}, 
+ancestral biogeographical ranges \cite{lemey10,landis18}, and epidemic dynamics \cite{faria21,douglas21}. 
+
+Reproducing, reusing and interpreting a phylogenetic model is not trivial, and requires an understanding of the input data, details of the model (i.e., its parameters and how they are related and their priors), and inference methodology. 
+The latter can include complex Markov chain Monte Carlo (MCMC) proposal distributions and sampling algorithms which are not part of the model.
+Currently, little research has been done on the readability, reproducibility and reusability of phylogenetic analyses employing phylogenetic models. 
+Our paper presents a tool that aims to: (i) facilitate concise and exact communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase reusability of phylogenetic models and their variations on new datasets. 
+
+Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by H\"{o}hna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
+Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}.
+The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
+Unfortunately, BEAST XMLs can be hard to read due to their XML-based, verbose syntax, which is unfamiliar to many users. The deeply nested structures and hierarchical organisation in BEAST XMLs make understanding model components and their relationships more challenging. In contrast, more general probabilistic programming languages such as found in JAGS, BUGS, and Stan employ more concise, linear structures that simplify comprehension and modification of models. Additionally, probabilistic programming languages are more accessible and widely applicable within the statistical modelling community, while BEAST XMLs are more domain-specific. 
+The Rev language \cite{revbayes} offers an alternative to XMLs, incorporating conventional notation from general probabilistic programming languages, making model specifications more recognizable and flexible for statistically literate users. 
+However, users still face challenges with verbose and extraneous implementation details, such as MCMC sampling settings, logging information, and proposal distributions. 
+Additionally, the task of accurately describing the Rev model in natural language for a manuscript's methods section can be error-prone, further complicating the process of model specification and communication.
+
+In this study, we present LinguaPhylo (LPhy, which we pronounce `el-fee'), an open-source model specification language designed to enhance the readability, reproducibility, and reusability of phylogenetic models. LPhy boasts a simple syntax that enables succinct specification of complex models, and is implemented within a framework that generates accurate textual descriptions and graphical diagrams of phylogenetic models based on user input.
+
+\section{Design and Implementation}
+The LPhy language is designed to enable the specification of phylogenetic models using a concise and readable syntax.  
+The reference implementation is built on top of the Java programming language and provides features for: 
+(i) concise formal specification of phylogenetic models on real or synthetic data, (ii) data simulation from phylogenetic models, (iii) integration with the BEAST 2 phylogenetic inference framework, and (iv) an extensibility mechanism for adding new functionality and data types to the LPhy language.
+
+\subsection{Language features}
+The LPhy language is described by an Extended Backus-Naur form grammar (EBNF) \cite{ebnf}. 
+We used ANTLR \cite{parr1995antlr,parr2013definitive} to generate an LPhy parser in Java. 
+This Java-based LPhy parser was used as the foundation for the development of LPhyStudio and LPhyBEAST software packages. 
+The ANTLR parser generator can also be targeted to other general programming languages like Python, C++ and Javascript. 
+This gives a relatively easy path to implementation of LPhy support in other phylogenetic software packages.
+
+The main components of the LPhy language grammar are variables, arrays of variables, and generators. 
+There are three classes of generators: (i) generative distributions which produce values for random variables, (ii) deterministic functions that produce the deterministic values given the same input values, and (iii) method calls.
+For deterministic functions and method calls, these generators produce deterministic nodes in the PGM.
+This is illustrated in Figure \ref{fig:jccoalPGM}, which shows a graphical representation of the model specified in Example \ref{lphy:jccoal}.
+Deterministic nodes are shown as diamonds (e.g., the `Q' matrix of the Jukes-Cantor model \cite{jc69}).
+Stochastic nodes are represented by circles (e.g., $\Theta$, the population size governing the coalescent times generated by the Coalescent process \cite{kingman82}), and constant nodes are represented by squares (e.g., the mean of the log-normal generative distribution underlying $\Theta$). 
+
+An LPhy script is a text file with the `.lphy' file extension and is case-sensitive. 
+In the reference implementation, syntax checking is performed during execution. 
+Control flow structures are not allowed in order to promote simplicity and readability, facilitating a lower barrier to entry and a gentler learning curve. 
+Instead of loop structures, we provide implicit vectorization similar to R \cite{ihaka1996r}. Allowing all arguments of distributions and functions to be vectorised results in more compact and expressive model specifications. 
+This can lead to clearer representations of the model's structure and relationships. Additionally an optional `replicates' argument allows users to generate vectors of independent and identically distributed (IID) random variables easily, further simplifying the model specification.
+When designing new generators, optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
+Two distinct code blocks are used to differentiate between the part of the script describing the data (the data block), and part describing the model (the model block). 
+The code block structure is inspired by the programming language Stan \cite{carpenter2017stan}. 
+The syntax for the specification of random variables is similar to probabilistic programming languages such as JAGS \cite{plummer2004jags}, BUGS \cite{lunn2009bugs, gilks1994language} and Stan \cite{carpenter2017stan}.
+Scripts can be loaded into LPhyStudio via the menu or the toolbar. 
+Additionally, we provide a console for executing LPhy commands line by line within LPhyStudio. 
+
+The LPhy language grammar does not specify any explicit types, nor does it specify any protected pre-defined generative distributions or functions, except for a very small number of mathematical functions that allow simple expressions. 
+Accompanying the LPhy language grammar is the LPhy reference implementation, a Java implementation offering standard statistical and phylogenetic distributions, as well as supporting functions with specified Java types.
+Implementers of the LPhy language in other systems should support the reference distributions, using equivalent types in their respective languages.
+
+In the reference Java implementation, variables can possess primitive or custom types. 
+Primitive types include doubles, integers, booleans, and strings, while custom types, such as alignments, trees, and discrete traits, are internally created as Java Objects by invoking the generator's constructor. 
+Variables can be vectorised into an array of elements using the `replicates' argument. 
+Java-style overloading supports function overloading, and type checking for generator arguments is performed during execution.
+
+
+\subsubsection{Syntax}
+In LPhy, each line's syntax consists of a variable declaration on the left-hand side, a specification operator, and a generator on the right-hand side, with lines ending with a semicolon character. 
+For instance:
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    \textcolor{bluishgreen}{\(b\)}  ~ \textcolor{blue}{Normal}(\textcolor{gray}{mean=} \textcolor{constant}{0.0}, \textcolor{gray}{sd=}\textcolor{constant}{1.0});
+    \end{alltt}    
+  \end{listing}
+}
+
+In this example, variable \textit{\textcolor{bluishgreen}{b}} is specified by the normal generative distribution \texttt{\textcolor{blue}{Normal}()} with two arguments: the mean \texttt{\textcolor{gray}{mean}} (0.0) and the standard deviation \texttt{\textcolor{gray}{sd}} (1.0).
+
+The left-hand side declares the name of a variable or an array of variables (case sensitive).
+The right-hand side specifies the values of the variable or array. 
+This can be a constant value, array of constant values, deterministic function or stochastic generative distribution.
+Deterministic functions and generative distributions are matched by method signatures from constructors of their corresponding Java class in the reference implementation. 
+See the LPhy reference implementation manual available from the homepage \url{https://linguaphylo.github.io/} for a complete list of functions and generative distributions. 
+Arguments inside functions or generative distributions follow the convention: 
+(\textit{argument name}) = (\textit{value}).
+
+\subsubsection{Specification operators}
+An equal sign = is used to specify deterministic or constant values for variables, such as: 
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    a = \textcolor{constant}{2.0};
+    \end{alltt}
+  \end{listing}
+}
+\noindent A tilde sign $\sim$ is a specification operator which denotes the relationship between a stochastic random variable and its generator. 
+In a Bayesian context, this is the prior distribution of the random variable. 
+Or when given observed data, this specifies the likelihood function. 
+For example, this specifies a prior for the variable $b$:  
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    \textcolor{bluishgreen}{\(b\)} ~ \textcolor{blue}{Normal}(\textcolor{gray}{mean=}\textcolor{constant}{0.0}, \textcolor{gray}{sd=}\textcolor{constant}{1.0});
+    \end{alltt}
+  \end{listing}
+}
+
+The type of a variable is inferred from the return type of its generator and does not need to be declared. 
+For arguments of functions or generative distributions, the types are defined in the LPhy reference implementation manual available from the homepage \url{https://linguaphylo.github.io/}. 
+
+\subsubsection{Arrays}
+Arrays can be defined using square brackets with elements delimited by comma separators. 
+For sequences of consecutive integers, we allow a more compact notation using the colon `:' to define a range.
+For example:  
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    c\, = \,[\textcolor{constant}{1}, \textcolor{constant}{2}, \textcolor{constant}{3}, \textcolor{constant}{4}, \textcolor{constant}{5}];
+    d\, = \,\textcolor{constant}{2}:\textcolor{constant}{10};
+    \end{alltt}
+  \end{listing}
+}
+\noindent The variable c has an array with values (1, 2, 3, 4, 5). 
+The variable d has an array with values 2 to 10.
+
+\subsubsection{Code blocks}
+The \textbf{data} and \textbf{model} keywords are reserved to specify code blocks inside curly brackets. 
+The data block is used to read in and store input data, which are used by the model. 
+Within the data block, we can read in alignment data via the NEXUS or FASTA parsers, specify constant values, and store metadata about the dataset.
+The model block is used to define the models and parameters in a Bayesian phylogenetic analysis. 
+\begin{example}
+{
+  \small
+    \begin{alltt}
+  data \{
+    L = \textcolor{constant}{200};
+    taxa = \textcolor{generator}{taxa}(\textcolor{gray}{names=}\textcolor{constant}{1}:\textcolor{constant}{10});
+  \}
+  model \{
+    \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+    \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
+    \textcolor{bluishgreen}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}\textcolor{generator}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+  \}
+    \end{alltt}
+    \caption{\small{An LPhy script defining a constant-size coalescent tree prior with log-normally distributed population sizes, a strict clock model, and a Jukes-Cantor model on 10 nucleotide sequences with 200 sites (base pairs).}}
+    \label{lphy:jccoal}
+}
+\end{example}
+
+\medskip{}
+
+Example \ref{lphy:jccoal} specifies a complete phylogenetic model using only five lines of code inside two blocks. 
+The first block specifies `200' nucleotide sites in `L' and ten taxa named from 1 to 10 in `taxa'. 
+Taxa can be declared as strings or as numbers. 
+In this example, the taxa names are numbered. 
+The second block declares stochastic nodes or random variables highlighted in bluishgreen, and their generative distributions highlighted in blue. 
+Constant nodes with fixed values are shown in vermillion.  
+
+Figure \ref{fig:jccoalPGM} shows this model specification represented as a probabilistic graphical model. 
+Stochastic nodes are shown as circles, deterministic functions are shown as diamonds, and constants are shown as squares.
+
+
+\begin{figure}
+   \includegraphics[width=0.8\textwidth]{figs_plos/Fig1.png}
+  \caption{The graphical representation of the probabilistic model defined in Example \ref{lphy:jccoal}.} 
+  \label{fig:jccoalPGM}
+\end{figure}
+
+\subsubsection{Variable vectorization}
+
+% revision changes
+Named variables can be scalars or vectors. 
+Any generator can be vectorized to produce a vector of IID random variables using the \texttt{replicates} keyword:
+
+{\small
+\begin{alltt}
+    \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{0.5}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}\textcolor{constant}{3});
+\end{alltt}
+}
+
+In the example above, $\kappa$ is a random vector of three log-normally distributed IID values.
+
+Vectorization can also be applied to a generative distribution that produces vectors. In this case, the output will be a matrix, as seen in the following example. 
+
+{\small
+\begin{alltt}
+      \textcolor{bluishgreen}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}], \textcolor{gray}{replicates=}\textcolor{constant}{3});
+\end{alltt}
+}
+Here, $\pi$ contains 3 vectors, where each vector represents nucleotide base frequencies. 
+So the resultant matrix will be 3 x 4 (major dimension of 3 and a minor dimension of 4). 
+
+A second mechanism for vectorization can be used by passing a vector of elements instead of a single element as an input argument of a generator:
+
+{\small
+\begin{alltt}
+    \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{0.5}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}\textcolor{constant}{3});
+    \textcolor{bluishgreen}{\(\pi\)} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}], \textcolor{gray}{replicates=}\textcolor{constant}{3});
+    \textcolor{black}{Q = }\textcolor{generator}{hky}(\textcolor{gray}{kappa=}\textcolor{bluishgreen}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)});
+\end{alltt} 
+}
+
+Here, $\kappa$ and $\pi$ are vectors, both with a major dimension of 3. 
+These are passed as arguments into the \texttt{hky} deterministic function, which returns a vector containing three instantaneous rate matrices stored in $Q$.
+
+\subsubsection{Extension mechanism}
+LPhy is designed to be modular and extensible to encourage integrative software development and adoption by method developers in the field. 
+LPhy core and its extensions are built using Java 17 with long-term support (LTS) and Gradle 4. 
+The LPhy extension mechanism is implemented using the Java Platform Module System (JPMS) and the Java Service Provider Interface (SPI).
+This modular extension framework allows developers greater flexibility in code development and software releases. 
+New functionality such as generative distributions, data types, and deterministic functions can be developed within LPhy extension modules. 
+Additionally, software releases can be done independently to core LPhy releases. 
+
+\subsubsection{Parametric distributions}
+The LPhy reference implementation comes with a series of parametric distributions commonly used in evolutionary models, including uniform, normal, log-normal, gamma, exponential, and dirichlet distributions. 
+Parametric distributions can be specified as generative distributions for model parameters by:
+
+{\small
+\begin{alltt}
+    \textcolor{bluishgreen}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.25});
+\end{alltt}}
+
+Each parametric distribution is characterized by its own parameters. 
+In the example above, the extinction rate parameter $\mu$ is drawn from a log-normal distribution with mean -5 and standard deviation 1.25 in log space.
+
+\subsubsection{Tree models}
+\label{sec:treeprior}
+Tree models are used to generate phylogenetic trees, and are central components in phylogenetic simulation and analysis. 
+We briefly describe some of the main tree models implemented in LPhy below. 
+This includes coalescent models and birth-death models.
+\newline 
+
+\textbf{Serially sampled coalescent model}
+
+The simplest coalescent model LPhy implements is the constant-population size coalescent, which can be extended to generate serially sampled (heterochronous) data \cite{Rodrigo1999SerialCoalescent}:
+{\small
+  \begin{alltt}
+    \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+    \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)}, \textcolor{gray}{taxa=}\textcolor{generator}{taxa}(\textcolor{gray}{names=}[\textcolor{constant}{"a"}, \textcolor{constant}{"b"}, \textcolor{constant}{"c"}, \textcolor{constant}{"d"}], 
+      \textcolor{gray}{ages=}[\textcolor{constant}{0.0}, \textcolor{constant}{1.0}, \textcolor{constant}{2.0}, \textcolor{constant}{3.0}]));
+  \end{alltt}
+}
+
+The script above specifies a serially sampled constant-population size coalescent (a generative distribution) for tree $\psi$ with four taxa, `a', `b', `c', `d' sampled at 0.0, 1.0, 2.0 and 3.0 time points, respectively. 
+Here, sample time is defined as the age of a sample, where 0.0 represents the present moment.
+\newline
+
+\textbf{Structured coalescent model}
+
+The structured coalescent \cite{hudson1990oxford, notohara1990coalescent} generalizes the constant-population size coalescent \cite{kingman82} by allowing multiple demes, each of which are characterized by a distinct population size. 
+In the simplest case this population size does not change through time.
+Demes exchange individuals according to migration rates $m$ specified in the off-diagonal elements of a migration matrix $M$, where the diagonal elements store the population sizes, $\theta$, of each deme.
+For $K$ demes, the population size parameter `theta' is a $K$-tuple, and $m$ is a $(K^2-K)$-tuple.
+
+{\small
+  \begin{alltt}
+    M = \textcolor{generator}{migrationMatrix}(\textcolor{gray}{theta}=[\textcolor{constant}{0.1}, \textcolor{constant}{0.1}], \textcolor{gray}{m}=[\textcolor{constant}{1.0}, \textcolor{constant}{1.0}]);
+    \textcolor{bluishgreen}{g} ~ \textcolor{blue}{StructuredCoalescent}(\textcolor{gray}{M}=M, \textcolor{gray}{n}=[\textcolor{constant}{15}, \textcolor{constant}{15}]);
+  \end{alltt}
+}
+
+In the example above, \texttt{migrationMatrix} is a deterministic function and \texttt{StructuredCoalescent} is a generative distribution. 
+A stochastic node `g' stores a gene tree sampled from a two-deme structured coalescent process.
+\newline
+
+\textbf{Skyline coalescent model}
+
+The skyline coalescent model \cite{drummond2005bayesian} is a coalescent process that models changes in population sizes.
+This model is characterized having a constant population size for each coalescent interval, with instantaneous changes in population size at some coalescent events.
+
+The following script specifies a Skyline coalescent model with 10 coalescent intervals (11 taxa), with four distinct population sizes.
+
+{\small
+  \begin{alltt}
+    \textcolor{bluishgreen}{g} ~ \textcolor{blue}{SkylineCoalescent}(\textcolor{gray}{theta}=[\textcolor{constant}{0.1}, \textcolor{constant}{0.2}, \textcolor{constant}{0.3}, \textcolor{constant}{0.4}], \textcolor{gray}{groupSizes}=[\textcolor{constant}{4},\textcolor{constant}{3},\textcolor{constant}{2},\textcolor{constant}{1}]);
+  \end{alltt}
+}
+
+Here, `g' is a stochastic node in the PGM, with its value sampled from the \texttt{SkylineCoalescent} generative distribution. Ten coalescent intervals are defined through the `groupSizes' argument: the first four coalescent intervals will be drawn assuming a `theta' of 0.1, the next three intervals with `theta' equal to 0.2, and so on.
+\newline
+
+\textbf{Birth-death models}
+
+Birth-death models are commonly used in macroevolution as sampling distributions for species trees. 
+Models that parameterize the fossilization process can be especially useful, as they allow users to leverage fossil ages as data. 
+When fossil morphological characters have also been scored, total-evidence dating can be carried out \cite{ogilvie21}. 
+One such tree model is the serially sampled birth-death process \cite{stadler2013dating}, whose parameters `psi' and `rho' below represent the rate of sampling extinct and extant lineages, respectively:
+
+{\small
+  \begin{alltt}
+    ages = [\textcolor{constant}{0.0}, \textcolor{constant}{1.0}, \textcolor{constant}{2.0}, \textcolor{constant}{3.0}, \textcolor{constant}{4.0}];
+    \textcolor{bluishgreen}{tree} ~ \textcolor{blue}{BirthDeathSerialSampling}(\textcolor{gray}{lambda}=1, \textcolor{gray}{mu}=\textcolor{constant}{0.5}, \textcolor{gray}{rho}=\textcolor{constant}{0.1},
+    \textcolor{gray}{psi}=\textcolor{constant}{1}, \textcolor{gray}{rootAge}=\textcolor{constant}{5}, \textcolor{gray}{ages}=ages);
+  \end{alltt}
+}
+
+Other tree models include the birth-death \cite{kendall1948generalized} and fossilized birth-death processes \cite{heath2014fossilized}, as well as the Yule process \cite{yule1925ii}. 
+
+\subsubsection{Substitution models}
+Substitution models consist of continuous-time Markov chains (CTMC) used to model the evolution of discrete characters, such as nucleotides and amino acid residues. 
+LPhy implements a general formulation of a phylogenetic CTMC, known as the GTR model \cite{gtr}, under which several nested models can be specified. 
+The first line below constructs the instantaneous rate matrix $Q$ for an HKY model \cite{hasegawa1985dating}, which is then used to in \texttt{PhyloCTMC}, the generative distribution for the sequence alignment data $D$:
+
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    taxa = \textcolor{generator}{taxa}(\textcolor{gray}{names=}\textcolor{constant}{1}:\textcolor{constant}{10});
+    Q = \textcolor{generator}{hky}(\textcolor{gray}{kappa}=\textcolor{constant}{2.0}, \textcolor{gray}{freq}=[\textcolor{constant}{0.2}, \textcolor{constant}{0.25}, \textcolor{constant}{0.3}, \textcolor{constant}{0.25}]);
+    \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+    \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)}, \textcolor{gray}{taxa=}taxa);
+    \textcolor{bluishgreen}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{constant}{200}, \textcolor{gray}{Q=}Q, \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+    \end{alltt}
+  \end{listing}
+}
+
+Other substitution models can be easily specified by passing different instantaneous transition rate matrices $Q$ to \texttt{PhyloCTMC}, e.g., the matrix of the Jukes-Cantor model \cite{jc69}:
+{
+  \small
+  \begin{listing}
+    \begin{alltt}
+    \textcolor{bluishgreen}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{constant}{200}, \textcolor{gray}{Q=}\textcolor{generator}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+    \end{alltt}
+  \end{listing}
+}
+
+For forward simulation \texttt{PhyloCTMC} is used as a generative distribution for a multiple sequence alignment, which is here represented by stochastic node `D'. When the model is employed for statistical inference, and data $D$ is known, the \texttt{PhyloCTMC} represents the phylogenetic likelihood. 
+More details are discussed in the Data clamping section.
+
+\subsubsection{Evolutionary clock models}
+\label{sec:clockmodels}
+
+Molecular clocks are used to model the rate of evolutionary change and how it varies over time. 
+The LPhy language supports strict clock \cite{zuckerkandl1965evolutionary, zuckerkandl1965molecules}, local clock \cite{drummond2010bayesian} and relaxed clock \cite{drummond2006relaxedconfidence} models. 
+Specifying a clock model is done by generating evolutionary rate values, one per phylogenetic tree branch, and then multiplying those rates by the length of the corresponding branch. 
+The branches of the tree are measured in units of time, effectively scaling the tree to the number of expected substitutions per site. 
+
+The simplest clock model is the strict clock, where the evolutionary rate remains constant over the entire tree. 
+Specifying a strict molecular clock can be done by specifying the `mu' parameter in the \texttt{PhyloCTMC} distribution.
+The default value for the clock rate `mu' is 1.0.
+{\small
+\begin{alltt}
+    \textcolor{bluishgreen}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+    \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{bluishgreen}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{constant}{16});
+    \textcolor{bluishgreen}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{constant}{200}, \textcolor{gray}{Q=}\textcolor{generator}{jukesCantor}(), \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)}, \textcolor{gray}{mu=}\textcolor{constant}{0.5});
+\end{alltt}
+}
+More realistic clock models like the uncorrelated relaxed clock model \cite{drummond2006relaxedconfidence} assume the rate for each branch is drawn according to a parametric distribution. 
+For example, a relaxed clock with rates drawn from a log-normal distribution can be constructed as follows:
+
+{
+\small
+\begin{alltt}
+  \textcolor{bluishgreen}{\(\lambda\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+  \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Yule}(\textcolor{gray}{lambda=}\textcolor{bluishgreen}{\(\lambda\)}, \textcolor{gray}{n=}\textcolor{constant}{16});
+  \textcolor{bluishgreen}{branchRates} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{constant}{0.5}, \textcolor{gray}{meanlog=}\textcolor{constant}{-0.25}, \textcolor{gray}{replicates=}\textcolor{bluishgreen}{\(\psi\)}.\textcolor{generator}{branchCount}());
+  \textcolor{bluishgreen}{D} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{constant}{200}, \textcolor{gray}{Q=}\textcolor{generator}{jukesCantor}(), \textcolor{gray}{branchRates=}\textcolor{bluishgreen}{branchRates}, \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+\end{alltt}
+}
+
+Here, 30 rates are drawn independently from a log-normal distribution, and then each is assigned to one of the 30 branches of tree $\psi$.
+
+\subsubsection{Inference and data clamping}
+\label{sec:dataclamping}
+In addition to simulation, LPhy allows users to use a specified model for inference. 
+We have developed LPhyBEAST which provides support for inference with the BEAST2 engine. 
+
+To set up an inferential analysis with LPhy `data clamping' is performed similar to the Rev language \cite{revbayes}.
+Data clamping involves associating an observed value with a random variable in the model, which is represented as a stochastic node in the probabilistic graphical model (PGM). 
+By clamping data to a node, the user is informing the inference engine that the value of that particular variable is known and will be conditioned on for the purpose of inference.
+
+In LPhy, data clamping can be accomplished using the `data block'. 
+This block allows the user to specify the observed values of certain variables in the model, effectively clamping these variables to their observed values during inference. 
+This is useful when working with real data, as it allows the user to incorporate the observed data into the analysis and improve the accuracy of the results.
+
+In LPhy, data clamping can be achieved using the `data block', for example:
+
+{
+  \small
+  \begin{example}
+    \begin{alltt}
+      data \{
+      \quad options = \{\textcolor{gray}{ageDirection=}\textcolor{constant}{"forward"}, \textcolor{gray}{ageRegex=}\textcolor{constant}{"s(\textbackslash{}d+)"}\};
+      \quad nexusFilePath = \textcolor{constant}{"tutorials/data/RSV2.nex"};
+      \quad D = \textcolor{generator}{readNexus}(\textcolor{gray}{file=}nexusFilePath, \textcolor{gray}{options=}options);
+      \quad codon = D.\textcolor{generator}{charset}([\textcolor{constant}{"3-629\textbackslash{}3"}, \textcolor{constant}{"1-629\textbackslash{}3"}, \textcolor{constant}{"2-629\textbackslash{}3"}]);
+      \quad n = \textcolor{constant}{3};
+      \quad L = [\textcolor{constant}{209}, \textcolor{constant}{210}, \textcolor{constant}{210}];
+      \quad taxa = D.\textcolor{generator}{taxa}();
+      \}
+      model \{
+      \quad \textcolor{bluishgreen}{\(\pi\)} \textasciitilde \textcolor{blue}{Dirichlet}(\textcolor{gray}{replicates=}n, \textcolor{gray}{conc=}[\textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}, \textcolor{constant}{2.0}]);
+      \quad \textcolor{bluishgreen}{\(\kappa\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{sdlog=}\textcolor{constant}{0.5}, \textcolor{gray}{meanlog=}\textcolor{constant}{1.0}, \textcolor{gray}{replicates=}n);
+      \quad \textcolor{bluishgreen}{r} ~ \textcolor{blue}{WeightedDirichlet}(\textcolor{gray}{conc=}\textcolor{generator}{rep}(\textcolor{gray}{element=}\textcolor{constant}{1.0}, \textcolor{gray}{times=}n), \textcolor{gray}{weights=}L);
+      \quad \textcolor{bluishgreen}{\(\mu\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{-5.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.25});
+      \quad \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{3.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{2.0});
+      \quad \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{taxa=}taxa, \textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)});
+      \quad Q = \textcolor{generator}{hky}(\textcolor{gray}{kappa=}\textcolor{bluishgreen}{\(\kappa\)}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)}, \textcolor{gray}{meanRate=}\textcolor{bluishgreen}{r});
+      \quad \textcolor{skyblue}{codon} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}L, \textcolor{gray}{Q=}Q, \textcolor{gray}{mu=}\textcolor{bluishgreen}{\(\mu\)}, \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+      \}
+    \end{alltt}
+    \caption{An LPhy script for phylodynamic analysis of a virus dataset containing Respiratory syncytial virus subgroup A (RSVA) genomic samples \cite{zlateva2004molecular, zlateva2005genetic}.
+    \newline}
+    \label{lphy:rsva}
+  \end{example}
+}
+
+In Example \ref{lphy:rsva}, we used a Respiratory syncytial virus subgroup A (RSVA) dataset \cite{zlateva2004molecular, zlateva2005genetic} containing 129 molecular sequences coding for the G protein collected between years 1956 and 2002. 
+We use three partitions corresponding to the codon position, an HKY substitution model \cite{hasegawa1985dating}, coalescent tree prior \cite{kingman82} and a strict molecular clock with a log-normal prior on the mean clock rate. 
+Within the \textit{data} block we clamp the value of `codon', a stochastic node that appears below inside the \textit{model} block. 
+This is achieved by specifying a data node of the same name (codon) in the data block. 
+In this example the data is vectorized into three codon positions to allow different site models for the different codon positions.
+
+\subsection{LPhyStudio} 
+\begin{figure}[!h]
+  \includegraphics[width=\textwidth]{figs_plos/Fig2.png}
+  \caption{A screenshot of LPhy Studio showing the probabilistic graphical model 
+  on the left panel (constants hidden), and the auto-generated text description of the data and phylogenetic model on the right panel.} 
+  \label{fig:lphystudio}
+\end{figure}
+Along with the language definition, we introduce LPhy Studio, a Graphical User Interface, GUI, intended for (i) model specification, (ii) PGM graphical and textual display, and (iii) visualization of simulated data.
+Figure \ref{fig:lphystudio} shows a screenshot of LPhyStudio after a simple phylogenetic model was specified. 
+LPhyStudio's features include a scripting console, syntax highlighting, generation of PGMs and natural language text narratives of models with citations, and optionally exporting these PGM and narratives as LaTeX documents. 
+LPhy scripts can be imported using the toolbar or file menu, or created using the scripting console. 
+
+\subsection{LPhy and BEAST2}
+\label{sec:lphybeast}
+To facilitate the application of specified models for evolutionary inference, the companion program `LPhyBEAST' was developed as an interface between LPhy and BEAST2.
+LPhyBEAST is a command-line tool that takes as input an LPhy script file specifying a model with simulated or observed data, and produces a BEAST2 XML file as output.
+
+\section{Results}
+We present key features of the LPhy software using the GT16 substitution and error models \cite{kozlov2022cellphy}. 
+Starting from an LPhy script, our software generates a text description of the model, a graphical representation of the model (i.e., a PGM), and multiple displays of the simulated data shown in Figure \ref{fig:phylonco_lphystudio}. 
+Additionally, we showcase how LPhy can be used to validate the correctness of the BEAST 2 implementation of GT16 \cite{chen2022accounting}.  
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figs_plos/Fig3.png }
+    \caption{A screenshot of LPhyStudio showing the GT16 substitution and error model \cite{kozlov2022cellphy, chen2022accounting}. 
+    The left panel shows the graphical model representation, the right panel shows the simulated tree and diploid nucleotide genotypes, and the bottom panel shows the LPhy script. }
+    \label{fig:phylonco_lphystudio}
+\end{figure}
+
+\subsubsection*{LPhy script}
+We start from an LPhy script shown in Example \ref{lphy:phylonco} which specifies a GT16 substitution and error model \cite{kozlov2022cellphy} for simulating single-cell diploid nucleotides with sequencing error (epsilon) and allelic dropout error (delta).
+The script defines that 16 sequences `A' are generated from a GT16 substitution model with rates and genotype frequencies drawn from dirichlet distributions, and a coalescent tree prior with a log-normally distributed theta.
+The observed noisy sequences `E' are generated by applying sequencing error (epsilon), and allelic dropout error (delta) which are drawn from beta distributions. 
+In the dirichlet generator, the argument `conc' represents the concentration parameter. 
+
+\begin{example}[!h]
+\small
+\begin{alltt}
+model \{
+  \textcolor{bluishgreen}{\(\pi\)}  ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0},
+  \quad \quad \quad \quad \quad \quad \quad \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, 
+  \quad \quad \quad \quad \quad \quad \quad \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, 
+  \quad \quad \quad \quad \quad \quad \quad \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}, \textcolor{constant}{3.0}]);
+  \textcolor{bluishgreen}{rates} ~ \textcolor{blue}{Dirichlet}(\textcolor{gray}{conc=}[\textcolor{constant}{1.0}, \textcolor{constant}{2.0}, \textcolor{constant}{1.0}, \textcolor{constant}{1.0}, \textcolor{constant}{2.0}, \textcolor{constant}{1.0}]);
+  Q = \textcolor{generator}{gt16}(\textcolor{gray}{rates=}\textcolor{bluishgreen}{rates}, \textcolor{gray}{freq=}\textcolor{bluishgreen}{\(\pi\)});
+  \textcolor{bluishgreen}{\(\Theta\)} ~ \textcolor{blue}{LogNormal}(\textcolor{gray}{meanlog=}\textcolor{constant}{-2.0}, \textcolor{gray}{sdlog=}\textcolor{constant}{1.0});
+  \textcolor{bluishgreen}{\(\psi\)} ~ \textcolor{blue}{Coalescent}(\textcolor{gray}{n=}\textcolor{constant}{16}, \textcolor{gray}{theta=}\textcolor{bluishgreen}{\(\Theta\)});
+  \textcolor{bluishgreen}{A} ~ \textcolor{blue}{PhyloCTMC}(\textcolor{gray}{L=}\textcolor{constant}{200}, \textcolor{gray}{Q=}Q, \textcolor{gray}{dataType=}\textcolor{generator}{phasedGenotype}(), \textcolor{gray}{tree=}\textcolor{bluishgreen}{\(\psi\)});
+  \textcolor{bluishgreen}{delta} ~ \textcolor{blue}{Beta}(\textcolor{gray}{alpha=}\textcolor{constant}{1.5}, \textcolor{gray}{beta=}\textcolor{constant}{4.5});
+  \textcolor{bluishgreen}{epsilon} ~ \textcolor{blue}{Beta}(\textcolor{gray}{alpha=}\textcolor{constant}{2}, \textcolor{gray}{beta=}\textcolor{constant}{18});
+  \textcolor{bluishgreen}{E} ~ \textcolor{blue}{GT16ErrorModel}(\textcolor{gray}{alignment=}\textcolor{bluishgreen}{A}, \textcolor{gray}{delta=}\textcolor{bluishgreen}{delta}, \textcolor{gray}{epsilon=}\textcolor{bluishgreen}{epsilon});
+\}
+\end{alltt}
+\caption{An Lphy script defining a GT16 substitution and error model for diploid single-cell nucleotide data.}
+\label{lphy:phylonco}
+\end{example}
+
+
+\subsubsection*{Natural language description}
+\noindent LPhyStudio can automatically generate a text description of the model as a narrative. The implementation of automated natural language descriptions for phylogenetic models is not new, and similar efforts (albeit for a different scope of phylogenetic methods) can be found in SplitsTree \cite{huson2006application} and MEGA4 \cite{tamura2007mega4}.
+The natural language narrative tool we have developed provides a precise starting point for the model description section in a research article that uses Bayesian phylogenetic inference.
+The LPhy script in Example \ref{lphy:phylonco} generates the following narrative. 
+
+\begin{quote} 
+The alignment, $\boldsymbol{E}$ has an error model \cite{kozlov2022cellphy} with  sequencing and amplification error probability, $\textrm{epsilon}$,  allelic dropout probability, $\textrm{delta}$ and  genotype alignment, $\boldsymbol{A}$.
+The genotype alignment, $\boldsymbol{A}$ is assumed to have evolved under a phylogenetic continuous time Markov process \cite{felsenstein1981} on  phylogenetic time tree, $\boldsymbol{\psi}$, with  instantaneous rate matrix, $\boldsymbol{Q}$, an alignment length of 200 and the data type used for simulations.
+The instantaneous rate matrix, $\boldsymbol{Q}$ is the general time-reversible rate matrix on phased genotypes \cite{kozlov2022cellphy} with relative rates, $\boldsymbol{\textbf{rates}}$ and base frequencies, $\boldsymbol{\pi}$.
+The base frequencies, $\boldsymbol{\pi}$ have a Dirichlet distribution prior with a concentration of [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0].
+The relative rates, $\boldsymbol{\textbf{rates}}$ have a Dirichlet distribution prior with a concentration of [1.0, 2.0, 1.0, 1.0, 2.0, 1.0].
+The data type used for simulations is the phased genotype data type.
+The phylogenetic time tree, $\boldsymbol{\psi}$ is assumed to come from a Kingman's coalescent tree prior \cite{Rodrigo1999SerialCoalescent} with  coalescent parameter, $\Theta$ and an n of 16.
+The coalescent parameter, $\Theta$ has a log-normal prior with a mean in log space of -2.0 and a standard deviation in log space of 1.0.
+The allelic dropout probability, $\textrm{delta}$ has a Beta distribution prior with an alpha of 1.5 and a beta of 4.5.
+The sequencing and amplification error probability, $\textrm{epsilon}$ has a Beta distribution prior with an alpha of 2 and a beta of 18.
+\end{quote}
+
+\subsubsection*{Model validation}
+\begin{figure}[!h]
+    \includegraphics{figs_plos/Fig4.pdf}
+    \caption{Model validation for the GT16 diploid nucleotide substitution model and GT16 error model. Each plot shows the 95\% highest posterior density for model parameters: allelic dropout error $\delta$, sequencing error $\epsilon$, equilibrium frequency for $\pi_{AA}$, relative rate $r_{AC}$, tree height, and tree length. }
+    \label{fig_validation}
+\end{figure}
+
+\noindent The LPhy framework can be used to verify implementation correctness of new models, in which case they are said to be well-calibrated.
+Bayesian model validation consists of a series of steps, the first of which is simulation of synthetic data (for recent examples within the BEAST 2 platform, see \cite{gaboriau20,chen2022accounting}). 
+By making it possible to simulate under complex models, LPhy greatly simplifies the validation procedure.
+Figure \ref{fig_validation} presents the validation results for the model described above, when model specification and simulation were performed using LPhy and LPhyBEAST \cite{chen2022accounting}.
+
+\section*{Availability and Future Directions}
+\href{https://github.com/LinguaPhylo/linguaPhylo}{LPhyStudio} and \href{https://github.com/LinguaPhylo/LPhyBeast}{LPhyBEAST} are available on github. 
+This suite of programs is accompanied by a user guide and extensive documentation available via the homepage \url{https://linguaphylo.github.io/}.
+A growing list of tutorials on the webpage covers common use cases and extension mechanisms. 
+LPhy is designed in a modular fashion, researchers interested in implementing new models within the LPhy language can do so by releasing extension modules that can extend the LPhy application post-deployment.
+
+Although there are many
+programming languages through which statistical 
+models can be succintly described (e.g., Stan
+\cite{carpenter2017stan}, JAGS \cite{plummer2003jags}, BUGS
+\cite{lunn2009bugs, gilks1994language}), these languages do not
+support the unique feature of phylogenetic models - the phylogenetic
+tree.
+Phylogenetic trees are complex high-dimensional objects, part
+discrete, part continuous.
+There is no bijection between tree space and Euclidean space, so these
+objects cannot be treated with standard statistical distributions \cite{gavryushkin2016space}.
+Hence, specialist software is commonly employed to perform inference
+involving phylogenetic trees
+\cite{hohna2016revbayes,bouckaert2019beastanalysis}.
+
+LinguaPhylo differs from existing specialist software in the way it handles model specification.
+By using vectorization, LinguaPhylo obviates the need for for-loop control flow to describe repetitive structural elements of a model.
+This feature lowers the risk of syntactic or programming logic mistakes when defining a model relative to a full programming language such as Rev \cite{revbayes}.
+In its declarative nature, LPhy's language resembles the XML specification adopted by BEAST 2 \cite{bouckaert2014beast}, but shares the central notion of probabilistic graphical models with the Rev language.
+
+LinguaPhylo provides for a form of array programming (vectorization), so that any function or
+generative distribution can be called with its arguments in
+vectorized form. In such situations the function or generative distribution is `broadcast' over each element of the array, which allows for very concise model descriptions.
+
+Future work on integration of LPhy with other popular Bayesian phylogenetic inference tools, such as RevBayes\cite{hohna2016revbayes}, BEAST \cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes} will increase the flexibility of the framework, and enable easy validation of and comparison between different Bayesian phylogenetic inference engines.
+
+\section*{Acknowledgments}
+AJD was supported by a James Cook Fellowship from the Royal Society of New Zealand (JCF-UOA1901). FKM was supported by Marsden grant 16-UOA-277 and by National Science Foundation grant DEB-2040347. We thank the New Zealand eScience Infrastructure (NeSI) for access to high-performance computation resources.
+
+\nolinenumbers
+
+% Either type in your references using
+% \begin{thebibliography}{}
+% \bibitem{}
+% Text
+% \end{thebibliography}
+
+\bibliography{linguaPhylo}
+
+\section*{Supplementary Information}
+
+The Supplementary PDF file includes a list of tables with distributions in the LPhy reference implementation: 
+
+\begin{enumerate}[label=\bf S\arabic*]
+\item Functions for substitution models and rate matrices in LPhy
+
+\item Coalescent tree generative distributions in LPhy
+
+\item Birth-death tree generative distributions in LPhy
+
+\item Phylogenetic likelihood distributions in LPhy
+
+\item Parametric distributions in LPhy
+
+\item Alignment data types in LPhy
+
+\item Bayesian phylogenetic site model averaging in LPhy
+\end{enumerate}
+
+\end{document}
+
