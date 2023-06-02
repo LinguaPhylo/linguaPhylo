@@ -1,18 +1,20 @@
 # LPhy Standard Library
 
 The "lphy-base" [subproject](https://docs.gradle.org/current/userguide/multi_project_builds.html)
-is the standard library containing relevant distributions to specify standard Bayesian phylogenetic analyses and allow simulation from those models.
+is the standard library containing relevant distributions to specify standard Bayesian phylogenetic analyses and allow
+simulation from those models.
 It should only contain the following implementations in Java:
 
 ## Java packages
 
-1. The extended GenerativeDistribution:
+1. The extended GenerativeDistribution: generative distributions produce values for random variables,
+   which include parametric distributions, phylogenetic tree models, PhyloCTMC and any processes involving random
+   sampling.
 
+2. The extended DeterministicFunction: deterministic functions produce the deterministic values given the same input
+   values. For example, `hky` function constructs the instantaneous rate matrix Q for an HKY model.
 
-2. The extended DeterministicFunction:
-
-
-3. The "evolution" package: It comprises Java objects that facilitate the implementation of fundamental concepts in
+3. The "evolution" package: it comprises Java objects that facilitate the implementation of fundamental concepts in
    Bayesian phylogenetics. For example, these objects include the Alignment and Tree classes, which represent essential
    elements of phylogenetic analysis. Additionally, the package also encompasses models such as Coalescent and
    Birth-death, which are integral to probabilistic modeling in phylogenetics.
