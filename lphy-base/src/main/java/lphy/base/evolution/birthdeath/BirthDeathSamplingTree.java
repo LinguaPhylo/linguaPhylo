@@ -1,8 +1,8 @@
 package lphy.base.evolution.birthdeath;
 
 import lphy.base.evolution.tree.TimeTree;
+import lphy.base.math.RandomUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;

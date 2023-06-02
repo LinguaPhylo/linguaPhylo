@@ -1,9 +1,9 @@
 package lphystudio.app.docgenerator;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
-import lphy.core.util.LoggerUtils;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;

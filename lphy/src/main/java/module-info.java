@@ -29,7 +29,6 @@ module lphy.core {
     // others
     exports lphy.core.narrative;
     exports lphy.core.exception;
-    exports lphy.core.util;
 
     // declare service provider interface (SPI)
     exports lphy.core.spi;

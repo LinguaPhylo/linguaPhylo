@@ -1,4 +1,4 @@
-package lphy.core.util;
+package lphy.core.exception;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

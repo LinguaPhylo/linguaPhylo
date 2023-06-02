@@ -1,5 +1,6 @@
 package lphy.core.parser;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.GraphicalModel;
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.Value;
@@ -11,7 +12,6 @@ import lphy.core.parser.functions.ElementsAt;
 import lphy.core.parser.functions.Range;
 import lphy.core.parser.functions.RangeList;
 import lphy.core.parser.functions.SliceDoubleArray;
-import lphy.core.util.LoggerUtils;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

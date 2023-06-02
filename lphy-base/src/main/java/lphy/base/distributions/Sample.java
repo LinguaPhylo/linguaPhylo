@@ -1,8 +1,8 @@
 package lphy.base.distributions;
 
 import lphy.base.ParameterNames;
+import lphy.base.math.RandomUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.RandomUtils;
 
 import java.util.*;
 

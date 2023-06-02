@@ -1,5 +1,6 @@
 package lphy.core.parser;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.components.*;
 import lphy.core.model.types.*;
@@ -7,7 +8,6 @@ import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
 import lphy.core.parser.functions.*;
-import lphy.core.util.LoggerUtils;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 

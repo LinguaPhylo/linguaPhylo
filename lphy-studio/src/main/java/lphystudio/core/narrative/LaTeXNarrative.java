@@ -1,12 +1,8 @@
 package lphystudio.core.narrative;
 
 import lphy.core.model.GraphicalModel;
-import lphy.core.model.components.Citation;
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.components.*;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.util.Symbols;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;

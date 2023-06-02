@@ -1,8 +1,8 @@
 package lphystudio.app.modelguide;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 import lphy.core.parser.functions.MethodCall;
-import lphy.core.util.LoggerUtils;
 
 import java.util.TreeMap;
 

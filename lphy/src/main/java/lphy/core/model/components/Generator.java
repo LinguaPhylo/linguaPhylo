@@ -3,7 +3,6 @@ package lphy.core.model.components;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.functions.ExpressionNode;
-import lphy.core.util.NumberUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

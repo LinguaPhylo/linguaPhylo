@@ -1,12 +1,12 @@
 package lphy.base.functions;
 
 import lphy.base.ParameterNames;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
 import lphy.core.model.types.NumberArrayValue;
-import lphy.core.util.LoggerUtils;
 
 public class Sum2dArray extends DeterministicFunction<Number[]> {
 

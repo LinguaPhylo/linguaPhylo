@@ -1,11 +1,11 @@
 package lphy.core.model;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.functions.ExpressionNode;
 import lphy.core.parser.functions.ExpressionNodeWrapper;
-import lphy.core.util.LoggerUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

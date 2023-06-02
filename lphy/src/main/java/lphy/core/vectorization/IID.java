@@ -1,9 +1,9 @@
 package lphy.core.vectorization;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
-import lphy.core.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

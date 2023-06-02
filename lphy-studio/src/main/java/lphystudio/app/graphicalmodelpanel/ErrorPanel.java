@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.util.LoggerUtils;
+import lphy.core.exception.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;

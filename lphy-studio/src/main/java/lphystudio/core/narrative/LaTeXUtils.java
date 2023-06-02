@@ -1,9 +1,9 @@
 package lphystudio.core.narrative;
 
+import lphy.core.model.components.Symbols;
 import lphy.core.model.components.Value;
 import lphy.core.model.components.ValueUtils;
 import lphy.core.model.types.Vector;
-import lphy.core.util.Symbols;
 
 import java.util.List;
 

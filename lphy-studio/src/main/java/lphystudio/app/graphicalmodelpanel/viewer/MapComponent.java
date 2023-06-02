@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.types.MapValue;
-import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelpanel.ViewerRegister;
 
 import javax.swing.*;

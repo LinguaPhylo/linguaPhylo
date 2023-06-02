@@ -3,7 +3,6 @@ package lphy.core.model.components;
 import lphy.core.model.GraphicalModelNodeVisitor;
 import lphy.core.model.types.DoubleValue;
 import lphy.core.narrative.Narrative;
-import lphy.core.util.Symbols;
 
 import java.util.ArrayList;
 import java.util.Collections;
