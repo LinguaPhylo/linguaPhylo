@@ -1,7 +1,7 @@
 package lphystudio.core.valueeditors;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.Value;
-import lphy.core.util.LoggerUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

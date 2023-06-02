@@ -1,10 +1,10 @@
 package lphystudio.core.layeredgraph;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.Generator;
 import lphy.core.model.components.RandomVariable;
 import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.util.LoggerUtils;
 import lphystudio.core.swing.*;
 import lphystudio.core.theme.ThemeColours;
 

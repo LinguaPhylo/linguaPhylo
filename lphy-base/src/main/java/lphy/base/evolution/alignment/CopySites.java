@@ -1,7 +1,7 @@
 package lphy.base.evolution.alignment;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.LoggerUtils;
 
 import static lphy.base.evolution.alignment.AlignmentUtils.ALIGNMENT_PARAM_NAME;
 

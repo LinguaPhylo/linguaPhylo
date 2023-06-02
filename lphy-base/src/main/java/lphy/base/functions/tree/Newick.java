@@ -7,8 +7,8 @@ import lphy.base.parser.newick.NewickASTVisitor;
 import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
 import lphy.base.parser.newick.TreeParsingException;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.LoggerUtils;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 

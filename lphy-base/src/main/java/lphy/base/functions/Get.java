@@ -1,10 +1,10 @@
 package lphy.base.functions;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
-import lphy.core.util.LoggerUtils;
 
 /**
  * @author Walter Xie

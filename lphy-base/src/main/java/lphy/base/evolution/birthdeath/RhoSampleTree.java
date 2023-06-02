@@ -4,8 +4,8 @@ import lphy.base.evolution.EvolutionConstants;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.evolution.tree.TimeTreeUtils;
+import lphy.base.math.RandomUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;

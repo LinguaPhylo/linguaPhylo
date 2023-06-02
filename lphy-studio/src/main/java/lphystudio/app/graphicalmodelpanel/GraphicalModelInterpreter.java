@@ -1,11 +1,11 @@
 package lphystudio.app.graphicalmodelpanel;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.components.Generator;
+import lphy.core.model.components.Symbols;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.ParserLoader;
-import lphy.core.util.LoggerUtils;
-import lphy.core.util.Symbols;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.swing.TextLineNumber;

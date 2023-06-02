@@ -1,6 +1,6 @@
 package lphystudio.app;
 
-import lphy.core.util.LoggerUtils;
+import lphy.core.exception.LoggerUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

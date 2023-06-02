@@ -1,8 +1,8 @@
 package lphy.base.mcmc.operators;
 
+import lphy.base.math.RandomUtils;
 import lphy.base.mcmc.Operator;
 import lphy.core.model.components.RandomVariable;
-import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Collections;

@@ -1,5 +1,6 @@
-package lphy.core.util;
+package lphy.base.math;
 
+import lphy.core.exception.LoggerUtils;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 

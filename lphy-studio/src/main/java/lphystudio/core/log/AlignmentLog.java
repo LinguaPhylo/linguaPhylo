@@ -3,9 +3,9 @@ package lphystudio.core.log;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.base.system.UserDir;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.util.LoggerUtils;
 import lphy.io.logger.AlignmentFileLogger;
 import lphy.io.logger.RandomValueLogger;
 

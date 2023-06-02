@@ -1,10 +1,10 @@
 package lphy.io.simulator;
 
 import lphy.base.system.UserDir;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
-import lphy.core.util.LoggerUtils;
 import lphy.io.logger.AlignmentFileLogger;
 import lphy.io.logger.RandomValueLogger;
 import lphy.io.logger.TreeFileLogger;

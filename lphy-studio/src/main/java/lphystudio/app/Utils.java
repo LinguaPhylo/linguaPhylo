@@ -1,9 +1,9 @@
 package lphystudio.app;
 
 import lphy.base.system.UserDir;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.REPL;
-import lphy.core.util.LoggerUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 

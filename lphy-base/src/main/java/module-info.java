@@ -40,6 +40,7 @@ module lphy.base {
 
     exports lphy.base;
     exports lphy.base.system;
+    exports lphy.base.math;
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;

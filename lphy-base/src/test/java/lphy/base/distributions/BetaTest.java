@@ -1,7 +1,7 @@
 package lphy.base.distributions;
 
+import lphy.base.math.RandomUtils;
 import lphy.core.model.components.Value;
-import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;

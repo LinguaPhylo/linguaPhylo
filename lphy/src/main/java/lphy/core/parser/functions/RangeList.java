@@ -1,10 +1,10 @@
 package lphy.core.parser.functions;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GraphicalModelNode;
 import lphy.core.model.components.Value;
 import lphy.core.model.types.IntegerArrayValue;
-import lphy.core.util.LoggerUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

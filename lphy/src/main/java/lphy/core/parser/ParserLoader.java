@@ -1,8 +1,8 @@
 package lphy.core.parser;
 
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
 import lphy.core.spi.LPhyLoader;
-import lphy.core.util.LoggerUtils;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorMatch;
 

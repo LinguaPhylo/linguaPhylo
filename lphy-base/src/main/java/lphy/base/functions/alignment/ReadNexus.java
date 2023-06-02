@@ -5,8 +5,8 @@ import lphy.base.evolution.io.MetaDataAlignment;
 import lphy.base.evolution.io.MetaDataOptions;
 import lphy.base.evolution.io.NexusParser;
 import lphy.base.system.UserDir;
+import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.*;
-import lphy.core.util.LoggerUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
