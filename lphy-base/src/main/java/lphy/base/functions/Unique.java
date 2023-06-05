@@ -1,6 +1,10 @@
 package lphy.base.functions;
 
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.Value;
+import lphy.core.model.components.ValueUtils;
 import lphy.core.vectorization.CompoundVectorValue;
 
 import java.util.*;

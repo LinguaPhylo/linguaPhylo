@@ -1,7 +1,11 @@
 package lphy.core.model;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.Citation;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.GraphicalModelNode;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.functions.ExpressionNode;

@@ -4,7 +4,11 @@ import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.AlignmentUtils;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.Value;
 
 import static lphy.base.evolution.alignment.AlignmentUtils.ALIGNMENT_PARAM_NAME;
 

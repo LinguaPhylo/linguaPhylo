@@ -1,6 +1,10 @@
 package lphy.base.distributions;
 
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.model.types.IntegerValue;
 import lphy.core.vectorization.IID;
 import org.apache.commons.math3.distribution.BinomialDistribution;

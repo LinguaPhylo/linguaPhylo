@@ -30,7 +30,6 @@ module lphy.base {
     exports lphy.base.evolution.coalescent;
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;
-    exports lphy.base.io;
     exports lphy.base.evolution.likelihood;
     exports lphy.base.parser.nexus;
     exports lphy.base.evolution.sitemodel;
@@ -43,6 +42,7 @@ module lphy.base {
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;
+    exports lphy.base.parser;
     uses LPhyExtension;
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyBaseImpl;

@@ -1,4 +1,4 @@
-package lphy.base;
+package lphy.core.vectorization.arrays;
 
 import java.util.Arrays;
 import java.util.Map;

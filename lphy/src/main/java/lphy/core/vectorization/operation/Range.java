@@ -1,8 +1,8 @@
 package lphy.core.vectorization.operation;
 
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
 import lphy.core.vectorization.arrays.RangeElement;
 

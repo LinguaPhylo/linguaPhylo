@@ -1,7 +1,12 @@
 package lphystudio.app.modelguide;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.MethodInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.GeneratorCategory;
 import lphy.core.parser.functions.MethodCall;
 
 import java.util.TreeMap;

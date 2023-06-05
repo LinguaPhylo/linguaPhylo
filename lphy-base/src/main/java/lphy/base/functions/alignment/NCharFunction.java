@@ -1,9 +1,9 @@
 package lphy.base.functions.alignment;
 
 import lphy.base.evolution.NChar;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
 import lphy.core.model.types.IntegerValue;
 @Deprecated

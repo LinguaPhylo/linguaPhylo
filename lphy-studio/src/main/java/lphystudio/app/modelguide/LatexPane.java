@@ -1,6 +1,6 @@
 package lphystudio.app.modelguide;
 
-import lphy.core.model.components.Citation;
+import lphy.core.model.annotation.Citation;
 import lphy.core.model.components.GeneratorCategory;
 import lphy.core.narrative.NarrativeUtils;
 import lphystudio.core.narrative.LaTeXUtils;

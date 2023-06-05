@@ -1,5 +1,7 @@
 package lphy.core.model.components;
 
+import lphy.core.model.annotation.ParameterInfo;
+
 public class Argument implements Comparable<Argument> {
 
     public final int index;

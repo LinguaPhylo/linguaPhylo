@@ -1,7 +1,7 @@
 package lphy.core.parser.functions;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.GeneratorInfo;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.components.GraphicalModelNode;
 import lphy.core.model.components.Value;
 

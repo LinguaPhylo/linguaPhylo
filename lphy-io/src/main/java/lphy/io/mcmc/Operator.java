@@ -1,4 +1,4 @@
-package lphy.base.mcmc;
+package lphy.io.mcmc;
 
 import lphy.core.model.components.RandomVariable;
 

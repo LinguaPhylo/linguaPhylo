@@ -1,7 +1,12 @@
 package lphy.base.distributions;
 
 import lphy.base.math.RandomUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 
 import java.util.*;
 

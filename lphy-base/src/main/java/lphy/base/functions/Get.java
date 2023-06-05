@@ -2,8 +2,8 @@ package lphy.base.functions;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.Value;
 
 /**

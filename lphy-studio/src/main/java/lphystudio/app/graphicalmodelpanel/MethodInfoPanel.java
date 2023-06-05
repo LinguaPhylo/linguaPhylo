@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.MethodInfo;
+import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.components.Value;
 
 import javax.swing.*;

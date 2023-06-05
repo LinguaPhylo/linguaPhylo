@@ -1,4 +1,4 @@
-package lphy.base;
+package lphystudio.app.cmd;
 
 import lphy.core.model.components.Value;
 

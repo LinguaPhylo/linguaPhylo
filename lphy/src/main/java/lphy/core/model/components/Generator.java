@@ -1,5 +1,8 @@
 package lphy.core.model.components;
 
+import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.functions.ExpressionNode;

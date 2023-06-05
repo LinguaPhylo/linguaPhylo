@@ -5,6 +5,8 @@ import lphy.base.evolution.alignment.AlignmentUtils;
 import lphy.base.evolution.alignment.ErrorAlignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.math.RandomUtils;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.*;
 import org.apache.commons.math3.random.RandomGenerator;
 

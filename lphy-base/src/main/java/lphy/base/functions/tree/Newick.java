@@ -8,7 +8,11 @@ import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
 import lphy.base.parser.newick.TreeParsingException;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.Value;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 

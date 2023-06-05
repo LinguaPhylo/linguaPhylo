@@ -1,9 +1,9 @@
 package lphy.base.functions.taxa;
 
 import lphy.base.evolution.Taxa;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
 
 // use CreateTaxa

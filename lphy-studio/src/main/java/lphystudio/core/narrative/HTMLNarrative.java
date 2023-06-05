@@ -1,7 +1,7 @@
 package lphystudio.core.narrative;
 
 import lphy.core.model.GraphicalModel;
-import lphy.core.model.components.Citation;
+import lphy.core.model.annotation.Citation;
 import lphy.core.model.components.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;

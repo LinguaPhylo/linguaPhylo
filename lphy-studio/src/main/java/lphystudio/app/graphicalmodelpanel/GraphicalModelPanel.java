@@ -273,11 +273,11 @@ public class GraphicalModelPanel extends JPanel {
         return reps;
     }
 
-    void sample(int reps) {
+    public void sample(int reps) {
         sample(reps, new LinkedList<>());
     }
 
-    void sample(int reps, List<RandomValueLogger> loggers) {
+    public void sample(int reps, List<RandomValueLogger> loggers) {
 
         long start = System.currentTimeMillis();
 

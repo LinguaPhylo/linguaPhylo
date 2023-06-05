@@ -1,7 +1,11 @@
 package lphy.base.bmodeltest;
 
 import lphy.base.evolution.substitutionmodel.RateMatrix;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.Value;
 import lphy.core.model.types.DoubleArray2DValue;
 
 import java.util.Map;

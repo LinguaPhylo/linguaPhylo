@@ -2,7 +2,7 @@ package lphy.base.functions;
 
 import lphy.base.ParameterNames;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.Value;
 import lphy.core.vectorization.operation.Slice;
 

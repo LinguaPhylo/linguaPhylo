@@ -1,7 +1,7 @@
 package lphy.base.distributions;
 
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.RandomVariable;
 import lphy.core.model.components.Value;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;

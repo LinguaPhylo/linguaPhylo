@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Replace path var to path
+ * The path variable that can be applied to a file path.
  * @author Walter Xie
  */
 public class PathVariables {

@@ -1,7 +1,11 @@
 package lphystudio.app.docgenerator;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.Generator;
+import lphy.core.model.components.GeneratorCategory;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
 import net.steppschuh.markdowngenerator.link.Link;

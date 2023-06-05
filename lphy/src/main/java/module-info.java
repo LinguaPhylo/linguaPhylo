@@ -34,6 +34,7 @@ module lphy.core {
 
     // declare service provider interface (SPI)
     exports lphy.core.spi;
+    exports lphy.core.model.annotation;
 
     uses LPhyExtension;
     // declare what service interface the provider intends to use

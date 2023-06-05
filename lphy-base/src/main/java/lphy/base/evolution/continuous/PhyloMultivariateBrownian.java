@@ -1,12 +1,17 @@
 package lphy.base.evolution.continuous;
 
-import lphy.base.StringDoubleArrayMap;
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.math.RandomUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.RandomVariable;
+import lphy.core.model.components.Value;
 import lphy.core.model.types.DoubleArrayValue;
+import lphy.core.vectorization.arrays.StringDoubleArrayMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

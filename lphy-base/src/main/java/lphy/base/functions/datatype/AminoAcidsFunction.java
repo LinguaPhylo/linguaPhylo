@@ -1,9 +1,9 @@
 package lphy.base.functions.datatype;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.components.DeterministicFunction;
 import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.GeneratorInfo;
 import lphy.core.model.components.Value;
 
 /**

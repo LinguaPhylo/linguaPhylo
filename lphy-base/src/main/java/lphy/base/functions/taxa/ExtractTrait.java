@@ -4,7 +4,11 @@ import lphy.base.evolution.ExtractStringMetaData;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.TaxaData;
 import lphy.base.evolution.alignment.Alignment;
-import lphy.core.model.components.*;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.components.DeterministicFunction;
+import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.components.Value;
 
 /**
  * {@code trait_D = extractTrait(taxa, "|", 2);}

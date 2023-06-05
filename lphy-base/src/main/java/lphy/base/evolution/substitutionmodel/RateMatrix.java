@@ -1,7 +1,7 @@
 package lphy.base.evolution.substitutionmodel;
 
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.ParameterInfo;
 import lphy.core.model.components.Value;
 
 import java.lang.reflect.Constructor;

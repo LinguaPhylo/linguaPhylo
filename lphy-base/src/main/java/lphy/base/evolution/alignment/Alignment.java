@@ -3,9 +3,9 @@ package lphy.base.evolution.alignment;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
 import lphy.base.evolution.Taxa;
+import lphy.core.model.annotation.MethodInfo;
+import lphy.core.model.annotation.TypeInfo;
 import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.MethodInfo;
-import lphy.core.model.components.TypeInfo;
 
 import java.util.List;
 import java.util.Objects;

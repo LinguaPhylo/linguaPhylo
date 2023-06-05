@@ -1,5 +1,7 @@
 package lphy.core.model.components;
 
+import lphy.core.model.annotation.GeneratorInfo;
+
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;

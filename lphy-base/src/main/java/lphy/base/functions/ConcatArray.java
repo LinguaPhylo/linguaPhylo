@@ -1,6 +1,8 @@
 package lphy.base.functions;
 
 import lphy.base.ParameterNames;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.components.*;
 
 import java.util.Arrays;

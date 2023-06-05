@@ -3,7 +3,7 @@ package lphy.base.evolution.alignment;
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.core.model.components.MethodInfo;
+import lphy.core.model.annotation.MethodInfo;
 
 import java.util.Arrays;
 import java.util.Map;

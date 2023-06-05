@@ -1,4 +1,4 @@
-package lphy.base.io;
+package lphy.base.parser;
 
 
 import jebl.evolution.io.ImportException;
