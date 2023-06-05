@@ -141,7 +141,7 @@ public interface LPhyMetaParser extends GraphicalModel {
 
             if (val != null) {
                 return val;
-            } else if (Command.CommandUtils.isLiteral(valueString)) {
+            } else if (ExpressionUtils.isLiteral(valueString)) {
                 return parseLiteralValue(null, valueString);
             }
 //            else if (isFunction(valueString)) {

@@ -5,6 +5,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.parser.ExpressionUtils;
 import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
@@ -503,7 +504,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     static String getArgumentCodeString(String name, Value value) {
         String prefix = "";
-        if (!NumberUtils.isInteger(name)) {
+        if (!ExpressionUtils.isInteger(name)) {
             prefix = name + "=";
         }
 
