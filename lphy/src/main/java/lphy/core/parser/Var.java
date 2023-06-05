@@ -2,12 +2,12 @@ package lphy.core.parser;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.GraphicalModel;
-import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.Value;
-import lphy.core.model.types.BooleanArrayValue;
-import lphy.core.model.types.DoubleArrayValue;
-import lphy.core.model.types.IntegerArrayValue;
-import lphy.core.model.types.StringArrayValue;
+import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.component.Value;
+import lphy.core.model.datatype.BooleanArrayValue;
+import lphy.core.model.datatype.DoubleArrayValue;
+import lphy.core.model.datatype.IntegerArrayValue;
+import lphy.core.model.datatype.StringArrayValue;
 import lphy.core.vectorization.operation.ElementsAt;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;

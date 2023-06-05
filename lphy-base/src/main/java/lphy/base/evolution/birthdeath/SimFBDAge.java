@@ -2,14 +2,14 @@ package lphy.base.evolution.birthdeath;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.base.functions.tree.PruneTree;
+import lphy.base.function.tree.PruneTree;
 import lphy.base.math.RandomUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;

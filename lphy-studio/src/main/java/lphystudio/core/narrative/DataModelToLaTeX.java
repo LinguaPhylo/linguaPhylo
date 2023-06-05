@@ -1,6 +1,6 @@
 package lphystudio.core.narrative;
 
-import lphy.core.model.components.Symbols;
+import lphy.core.model.component.Symbols;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;
 import lphystudio.core.codecolorizer.ColorizerStyles;

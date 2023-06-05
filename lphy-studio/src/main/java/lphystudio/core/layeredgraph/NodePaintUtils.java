@@ -1,9 +1,9 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
-import lphy.core.model.components.ValueUtils;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.ValueUtils;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;

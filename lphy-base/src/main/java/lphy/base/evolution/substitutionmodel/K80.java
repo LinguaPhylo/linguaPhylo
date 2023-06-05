@@ -3,9 +3,9 @@ package lphy.base.evolution.substitutionmodel;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.Value;
-import lphy.core.model.types.DoubleArray2DValue;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.Value;
+import lphy.core.model.datatype.DoubleArray2DValue;
 
 /**
  * K80: AC = AT = CG = GT, AG = CT, equal base frequencies, k + 1 free parameters

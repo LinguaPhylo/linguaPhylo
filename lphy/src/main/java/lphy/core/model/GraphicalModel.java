@@ -2,14 +2,14 @@ package lphy.core.model;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.annotation.Citation;
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.GraphicalModelNode;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.GraphicalModelNode;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
-import lphy.core.parser.functions.ExpressionNode;
-import lphy.core.parser.functions.ExpressionNodeWrapper;
+import lphy.core.parser.function.ExpressionNode;
+import lphy.core.parser.function.ExpressionNodeWrapper;
 
 import java.util.*;
 import java.util.stream.Collectors;

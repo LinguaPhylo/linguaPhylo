@@ -1,9 +1,9 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
-import lphy.core.vectorization.arrays.RangeElement;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.vectorization.array.RangeElement;
 
 import java.util.Map;
 

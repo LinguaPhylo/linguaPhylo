@@ -1,6 +1,6 @@
 package lphystudio.core.log;
 
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 import lphy.io.logger.RandomNumberLogger;
 import lphy.io.logger.RandomValueLogger;
 

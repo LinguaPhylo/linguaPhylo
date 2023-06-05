@@ -1,7 +1,7 @@
 package lphy.core.spi;
 
-import lphy.core.model.components.Func;
-import lphy.core.model.components.GenerativeDistribution;
+import lphy.core.model.component.Func;
+import lphy.core.model.component.GenerativeDistribution;
 
 import java.util.List;
 

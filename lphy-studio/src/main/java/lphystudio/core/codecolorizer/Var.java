@@ -1,8 +1,8 @@
 package lphystudio.core.codecolorizer;
 
 import lphy.core.model.GraphicalModel;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 
 class Var {
     CodeColorizer codeColorizer;

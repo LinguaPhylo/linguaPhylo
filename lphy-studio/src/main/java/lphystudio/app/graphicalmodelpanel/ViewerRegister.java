@@ -7,12 +7,12 @@ import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.Value;
-import lphy.core.model.types.MapValue;
+import lphy.core.model.component.Value;
+import lphy.core.model.datatype.MapValue;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.graphicalmodelpanel.viewer.*;
 import lphystudio.app.treecomponent.TimeTreeComponent;
-import lphystudio.core.valueeditors.*;
+import lphystudio.core.valueeditor.*;
 
 import javax.swing.*;
 import java.awt.*;

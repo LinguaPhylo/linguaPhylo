@@ -1,6 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.components.*;
+import lphy.core.model.component.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.vectorization.operation.SliceValue;

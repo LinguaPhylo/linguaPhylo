@@ -3,8 +3,8 @@ package lphy.base.evolution.coalescent;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

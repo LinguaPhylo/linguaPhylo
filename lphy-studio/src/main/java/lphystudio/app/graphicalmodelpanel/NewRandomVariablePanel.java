@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.model.components.Generator;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.Generator;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.swing.BoundsPopupMenuListener;

@@ -4,8 +4,8 @@ import lphy.base.evolution.HasTaxa;
 import lphy.base.evolution.Taxa;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.MultiDimensional;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.MultiDimensional;
 
 import java.util.*;
 import java.util.function.Predicate;

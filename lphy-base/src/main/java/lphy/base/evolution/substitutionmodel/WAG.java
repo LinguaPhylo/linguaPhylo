@@ -3,10 +3,10 @@ package lphy.base.evolution.substitutionmodel;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.GraphicalModelNode;
-import lphy.core.model.components.Value;
-import lphy.core.model.types.DoubleArray2DValue;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.GraphicalModelNode;
+import lphy.core.model.component.Value;
+import lphy.core.model.datatype.DoubleArray2DValue;
 
 import java.util.stream.Stream;
 

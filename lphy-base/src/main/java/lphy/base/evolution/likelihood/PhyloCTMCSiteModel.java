@@ -1,7 +1,7 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.base.distributions.Categorical;
+import lphy.base.distribution.Categorical;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.sitemodel.SiteModel;
@@ -9,10 +9,10 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
-import lphy.core.model.components.ValueUtils;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.ValueUtils;
 
 import java.util.Objects;
 import java.util.SortedMap;

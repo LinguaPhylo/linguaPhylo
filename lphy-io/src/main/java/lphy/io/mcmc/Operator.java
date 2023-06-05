@@ -1,6 +1,6 @@
 package lphy.io.mcmc;
 
-import lphy.core.model.components.RandomVariable;
+import lphy.core.model.component.RandomVariable;
 
 import java.util.List;
 

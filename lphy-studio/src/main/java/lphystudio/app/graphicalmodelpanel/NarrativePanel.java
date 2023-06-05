@@ -2,9 +2,9 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.GraphicalModel;
 import lphy.core.model.GraphicalModelListener;
-import lphy.core.model.components.DeterministicFunction;
-import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.Value;
 import lphy.core.narrative.Narrative;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;

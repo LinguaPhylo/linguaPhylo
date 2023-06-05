@@ -1,8 +1,8 @@
 package lphy.base.lightweight;
 
 import lphy.base.lightweight.distributions.*;
-import lphy.core.model.components.Argument;
-import lphy.core.model.components.Generator;
+import lphy.core.model.component.Argument;
+import lphy.core.model.component.Generator;
 
 import java.util.*;
 import java.util.stream.Collectors;

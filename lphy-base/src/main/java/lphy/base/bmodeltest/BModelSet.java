@@ -2,7 +2,7 @@ package lphy.base.bmodeltest;
 
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
-import lphy.core.model.components.GeneratorCategory;
+import lphy.core.model.component.GeneratorCategory;
 
 import java.util.*;
 

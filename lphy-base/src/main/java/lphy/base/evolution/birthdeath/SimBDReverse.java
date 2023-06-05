@@ -7,10 +7,10 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.math.MathUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
-import lphy.core.model.components.ValueUtils;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.ValueUtils;
 
 import java.util.List;
 import java.util.Map;

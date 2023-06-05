@@ -1,6 +1,6 @@
 package lphy.base.evolution.birthdeath;
 
-import lphy.base.distributions.DistributionConstants;
+import lphy.base.distribution.DistributionConstants;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
@@ -8,10 +8,10 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GeneratorCategory;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
-import lphy.core.model.components.ValueUtils;
+import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.ValueUtils;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;

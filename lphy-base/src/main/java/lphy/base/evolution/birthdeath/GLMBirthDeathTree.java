@@ -3,11 +3,11 @@ package lphy.base.evolution.birthdeath;
 import lphy.base.evolution.continuous.PhyloBrownian;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.base.functions.GeneralLinearFunction;
+import lphy.base.function.GeneralLinearFunction;
 import lphy.base.math.RandomUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.*;
+import lphy.core.model.component.*;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

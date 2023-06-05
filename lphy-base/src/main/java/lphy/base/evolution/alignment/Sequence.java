@@ -2,12 +2,12 @@ package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
-import lphy.base.distributions.DistributionConstants;
-import lphy.base.distributions.ParametricDistribution;
+import lphy.base.distribution.DistributionConstants;
+import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.Taxa;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;

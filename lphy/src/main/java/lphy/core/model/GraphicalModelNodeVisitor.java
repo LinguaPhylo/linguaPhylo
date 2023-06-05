@@ -1,7 +1,7 @@
 package lphy.core.model;
 
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
 
 /**
  * Created by Alexei Drummond on 24/01/20.

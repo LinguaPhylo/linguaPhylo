@@ -2,10 +2,10 @@ package lphystudio.core.narrative;
 
 import lphy.core.model.GraphicalModel;
 import lphy.core.model.annotation.Citation;
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Symbols;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Symbols;
+import lphy.core.model.component.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static lphy.core.model.components.ValueUtils.isNumber;
+import static lphy.core.model.component.ValueUtils.isNumber;
 
 public class LaTeXNarrative implements NarrativeLayeredGraph {
 

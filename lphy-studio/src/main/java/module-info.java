@@ -21,7 +21,7 @@ module lphystudio {
     exports lphystudio.core.layeredgraph;
     exports lphystudio.core.log;
     exports lphystudio.core.swing;
-    exports lphystudio.core.valueeditors;
+    exports lphystudio.core.valueeditor;
     exports lphystudio.core.theme;
 
     // declare what service interface the provider intends to use

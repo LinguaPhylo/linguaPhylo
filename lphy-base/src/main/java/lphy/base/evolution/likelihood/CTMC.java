@@ -1,9 +1,9 @@
 package lphy.base.evolution.likelihood;
 
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.GenerativeDistribution;
-import lphy.core.model.components.RandomVariable;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;

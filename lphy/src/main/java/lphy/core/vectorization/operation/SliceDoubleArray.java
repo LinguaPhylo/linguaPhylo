@@ -1,7 +1,7 @@
 package lphy.core.vectorization.operation;
 
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 
 public class SliceDoubleArray extends Slice<Double> {
     public SliceDoubleArray(@ParameterInfo(name = ParameterNames.StartParamName, description = "start index") Value<Integer> start,

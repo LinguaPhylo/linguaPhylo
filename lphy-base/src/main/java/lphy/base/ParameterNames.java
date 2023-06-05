@@ -1,7 +1,7 @@
 package lphy.base;
 
 /**
- * @see lphy.base.distributions.DistributionConstants
+ * @see lphy.base.distribution.DistributionConstants
  */
 public class ParameterNames {
 

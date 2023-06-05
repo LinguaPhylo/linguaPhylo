@@ -1,7 +1,7 @@
 package lphystudio.core.log;
 
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 import lphy.io.logger.RandomValueLogger;
 
 import javax.swing.*;

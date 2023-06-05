@@ -1,6 +1,6 @@
 package lphy.core.model;
 
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 
 //TODO not used?
 public class PlaceHolder<T> extends Value<T> {

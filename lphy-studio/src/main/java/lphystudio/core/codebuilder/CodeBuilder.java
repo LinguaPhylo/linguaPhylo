@@ -1,7 +1,7 @@
 package lphystudio.core.codebuilder;
 
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
 
 public interface CodeBuilder {
 

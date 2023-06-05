@@ -15,18 +15,18 @@ module lphy.base {
     // bmodel test
     exports lphy.base.bmodeltest;
 
-    exports lphy.base.distributions;
-    exports lphy.base.functions;
-    exports lphy.base.functions.alignment;
-    exports lphy.base.functions.datatype;
-    exports lphy.base.functions.taxa;
-    exports lphy.base.functions.tree;
+    exports lphy.base.distribution;
+    exports lphy.base.function;
+    exports lphy.base.function.alignment;
+    exports lphy.base.function.datatype;
+    exports lphy.base.function.taxa;
+    exports lphy.base.function.tree;
 
     // evolution
     exports lphy.base.evolution;
     exports lphy.base.evolution.alignment;
     exports lphy.base.evolution.birthdeath;
-    exports lphy.base.evolution.branchrates;
+    exports lphy.base.evolution.branchrate;
     exports lphy.base.evolution.coalescent;
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;

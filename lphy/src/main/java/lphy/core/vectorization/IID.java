@@ -1,7 +1,7 @@
 package lphy.core.vectorization;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.components.*;
+import lphy.core.model.component.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 

@@ -5,16 +5,16 @@ import lphy.base.evolution.substitutionmodel.GTR;
 import lphy.base.evolution.substitutionmodel.HKY;
 import lphy.base.evolution.substitutionmodel.JukesCantor;
 import lphy.base.evolution.substitutionmodel.K80;
-import lphy.base.functions.BinaryRateMatrix;
-import lphy.base.functions.MigrationMatrix;
-import lphy.base.functions.tree.MigrationCount;
-import lphy.base.functions.tree.Newick;
-import lphy.base.functions.tree.NodeCount;
+import lphy.base.function.BinaryRateMatrix;
+import lphy.base.function.MigrationMatrix;
+import lphy.base.function.tree.MigrationCount;
+import lphy.base.function.tree.Newick;
+import lphy.base.function.tree.NodeCount;
 import lphy.base.lightweight.distributions.*;
-import lphy.core.model.components.Generator;
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
 import lphy.core.parser.antlr.LPhyBaseListener;
-import lphy.core.parser.functions.Range;
+import lphy.core.parser.function.Range;
 
 import java.util.*;
 

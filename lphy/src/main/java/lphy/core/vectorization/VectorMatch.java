@@ -1,6 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.components.*;
+import lphy.core.model.component.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -2,13 +2,13 @@ package lphy.core.parser;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.model.components.*;
-import lphy.core.model.types.*;
+import lphy.core.model.component.*;
+import lphy.core.model.datatype.*;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
-import lphy.core.parser.functions.*;
-import lphy.core.vectorization.arrays.*;
+import lphy.core.parser.function.*;
+import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
 import org.antlr.v4.runtime.ParserRuleContext;

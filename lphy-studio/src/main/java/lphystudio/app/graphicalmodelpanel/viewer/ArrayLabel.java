@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 
 import javax.swing.*;
 

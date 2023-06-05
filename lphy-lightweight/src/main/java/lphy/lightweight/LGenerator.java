@@ -1,7 +1,7 @@
 package lphy.base.lightweight;
 
-import lphy.core.model.components.Argument;
-import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.component.Argument;
+import lphy.core.model.component.ParameterInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

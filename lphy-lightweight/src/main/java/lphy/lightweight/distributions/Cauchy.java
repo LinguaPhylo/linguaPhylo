@@ -1,8 +1,8 @@
 package lphy.base.lightweight.distributions;
 
 import lphy.base.lightweight.LGenerativeDistribution;
-import lphy.core.model.components.GeneratorInfo;
-import lphy.core.model.components.ParameterInfo;
+import lphy.core.model.component.GeneratorInfo;
+import lphy.core.model.component.ParameterInfo;
 import lphy.core.util.RandomUtils;
 import org.apache.commons.math3.distribution.CauchyDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

@@ -1,6 +1,6 @@
 package lphystudio.app.cmd;
 
-import lphy.core.model.components.Value;
+import lphy.core.model.component.Value;
 
 import java.util.Map;
 
