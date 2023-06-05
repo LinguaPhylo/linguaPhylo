@@ -1,4 +1,4 @@
-package lphy.core.parser;
+package lphy.core.model.component.argument;
 
 public class ExpressionUtils {
 

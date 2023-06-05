@@ -31,7 +31,7 @@ public class GeneratorMarkdown {
         GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
 
         List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
-        Class[] types = ArgumentUtils.getParameterTypes(generatorClass, 0);
+        Class[] types = Generator.getParameterTypes(generatorClass, 0);
 
         StringBuilder md = new StringBuilder();
 

@@ -1,9 +1,7 @@
 package lphy.core.model.component.argument;
 
-import lphy.core.model.component.Generator;
 import lphy.core.model.component.ReflectUtils;
 import lphy.core.model.component.Value;
-import lphy.core.parser.ExpressionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -35,15 +33,11 @@ public class ArgumentUtils {
         return pInfo;
     }
 
-    public static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
-        return getParameterTypes(c.getConstructors()[constructorIndex]);
-    }
-
     /**
      * @param constructor
      * @return an array of the generic types of arguments of the given constructor.
      */
-    static Class[] getParameterTypes(Constructor constructor) {
+    public static Class[] getParameterTypes(Constructor constructor) {
         Type[] generics = constructor.getGenericParameterTypes();
         Class[] types = new Class[generics.length];
         for (int i = 0; i < generics.length; i++) {

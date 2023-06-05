@@ -23,6 +23,7 @@ import java.util.Map;
  */
 public interface Generator<T> extends GraphicalModelNode<T> {
 
+
     String getName();
 
     /**
@@ -228,6 +229,10 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getParams().get(name).getType();
     }
 
+    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
+        return ArgumentUtils.getParameterTypes(c.getConstructors()[constructorIndex]);
+    }
+
     default GeneratorInfo getInfo() {
 
         Class<?> classElement = getClass();
@@ -299,7 +304,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
 
         List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
-        Class[] types = ArgumentUtils.getParameterTypes(generatorClass, 0);
+        Class[] types = getParameterTypes(generatorClass, 0);
 
         // parameters
         StringBuilder signature = new StringBuilder();

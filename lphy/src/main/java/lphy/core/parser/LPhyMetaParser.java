@@ -3,6 +3,7 @@ package lphy.core.parser;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.GraphicalModel;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ExpressionUtils;
 import lphy.core.model.datatype.DoubleValue;
 import lphy.core.model.datatype.IntegerValue;
 
