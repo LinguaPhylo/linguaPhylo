@@ -9,13 +9,14 @@ import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static lphy.core.model.component.GeneratorUtils.*;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -88,7 +89,8 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         String narrativeName = getNarrativeName();
 
         GeneratorInfo info = getGeneratorInfo(this.getClass());
-        String citationString = narrative.cite(getCitation());
+        Citation cite = getCitation(this.getClass());
+        String citationString = narrative.cite(cite);
 
         String verbClause = info != null ? info.verbClause() : "comes from";
         StringBuilder builder = new StringBuilder();
@@ -221,16 +223,8 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return ArgumentUtils.getParameterInfo(this.getClass(), constructorIndex);
     }
 
-    default Citation getCitation() {
-        return getCitation(getClass());
-    }
-
     default Class<?> getParamType(String name) {
         return getParams().get(name).getType();
-    }
-
-    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
-        return ArgumentUtils.getParameterTypes(c.getConstructors()[constructorIndex]);
     }
 
     default GeneratorInfo getInfo() {
@@ -273,7 +267,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             html.append("</ul></p>");
         }
 
-        Citation citation = getCitation();
+        Citation citation = getCitation(this.getClass());
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
@@ -287,18 +281,48 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return html.toString();
     }
 
-    static Citation getCitation(Class<?> c) {
-        Annotation[] annotations = c.getAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Citation) {
-                return (Citation) annotation;
-            }
-        }
-        return null;
+
+    /**
+     * @param value
+     * @return the narrative name for the given value, being a parameter of this generator.
+     */
+    default String getNarrativeName(Value value) {
+        return getNarrativeName(getParamName(value));
     }
 
+    /**
+     * @param paramName the parameter name
+     * @return the narrative name for the given parameter name.
+     */
+    default String getNarrativeName(String paramName) {
+        List<ParameterInfo> parameterInfos = getParameterInfo(0);
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            if (parameterInfo.name().equals(paramName)) {
+                if (parameterInfo.suppressNameInNarrative()) return "";
+                if (parameterInfo.narrativeName().length() > 0) {
+                    return parameterInfo.narrativeName();
+                }
+            }
+        }
+        return paramName;
+    }
 
-    // getGeneratorMarkdown(...) is moved to lphy.doc.GeneratorMarkdown
+    /**
+     * @return the narrative name of this generator.
+     */
+    default String getNarrativeName() {
+        GeneratorInfo generatorInfo = getGeneratorInfo(this.getClass());
+        if (generatorInfo != null) {
+            if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
+        }
+        return getName();
+    }
+
+    // all other static methods mv to GeneratorUtils
+
+    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
+        return ArgumentUtils.getParameterTypes(c.getConstructors()[constructorIndex]);
+    }
 
     static String getGeneratorHtml(Class<? extends Generator> generatorClass) {
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
@@ -308,7 +332,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
         // parameters
         StringBuilder signature = new StringBuilder();
-        signature.append(Generator.getGeneratorName(generatorClass)).append("(");
+        signature.append(getGeneratorName(generatorClass)).append("(");
 
         int count = 0;
         for (int i = 0; i < pInfo.size(); i++) {
@@ -369,7 +393,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                 html.append("&nbsp;<a href=\"").append(url).append("\">").append(url).append("</a><br>");
         }
 
-        String[] examples = Generator.getGeneratorExamples(generatorClass);
+        String[] examples = getGeneratorExamples(generatorClass);
         if (examples.length > 0) {
             html.append("<h3>Examples</h3>");
             for (int i = 0; i < examples.length; i++) {
@@ -387,125 +411,4 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return html.toString();
     }
 
-    static List<ParameterInfo> getAllParameterInfo(Class c) {
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-        for (Constructor constructor : c.getConstructors()) {
-            pInfo.addAll(ArgumentUtils.getParameterInfo(constructor));
-        }
-        return pInfo;
-    }
-
-    static String getSignature(Class<?> aClass) {
-
-        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(aClass, 0);
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(getGeneratorName(aClass));
-        builder.append("(");
-        if (pInfo.size() > 0) {
-            builder.append(pInfo.get(0).name());
-            for (int i = 1; i < pInfo.size(); i++) {
-                builder.append(", ");
-                builder.append(pInfo.get(i).name());
-            }
-        }
-        builder.append(")");
-        return builder.toString();
-    }
-
-    static String getGeneratorName(Class<?> c) {
-        GeneratorInfo ginfo = getGeneratorInfo(c);
-        if (ginfo != null) return ginfo.name();
-        return c.getSimpleName();
-    }
-
-    static String[] getGeneratorExamples(Class<?> c) {
-        GeneratorInfo ginfo = getGeneratorInfo(c);
-        if (ginfo != null) return ginfo.examples();
-        return new String[]{};
-    }
-
-    static String getGeneratorDescription(Class<?> c) {
-        GeneratorInfo ginfo = getGeneratorInfo(c);
-        if (ginfo != null) return ginfo.description();
-        return "";
-    }
-
-    static GeneratorInfo getGeneratorInfo(Class<?> c) {
-
-        Method[] methods = c.getMethods();
-        for (Method method : methods) {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (annotation instanceof GeneratorInfo) {
-                    return (GeneratorInfo) annotation;
-                }
-            }
-        }
-        return null;
-    }
-
-    static Class<?> getReturnType(Class<?> genClass) {
-        Method[] methods = genClass.getMethods();
-
-        for (Method method : methods) {
-            GeneratorInfo generatorInfo = method.getAnnotation(GeneratorInfo.class);
-            if (generatorInfo != null) {
-                return ReflectUtils.getGenericReturnType(method);
-            }
-        }
-        if (GenerativeDistribution.class.isAssignableFrom(genClass)) {
-            try {
-                Method method = genClass.getMethod("sample");
-                return ReflectUtils.getGenericReturnType(method);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        } else if (DeterministicFunction.class.isAssignableFrom(genClass)) {
-            {
-                try {
-                    Method method = genClass.getMethod("apply");
-                    return ReflectUtils.getGenericReturnType(method);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return Object.class;
-    }
-
-    /**
-     * @param value
-     * @return the narrative name for the given value, being a parameter of this generator.
-     */
-    default String getNarrativeName(Value value) {
-        return getNarrativeName(getParamName(value));
-    }
-
-    /**
-     * @param paramName the parameter name
-     * @return the narrative name for the given parameter name.
-     */
-    default String getNarrativeName(String paramName) {
-        List<ParameterInfo> parameterInfos = getParameterInfo(0);
-        for (ParameterInfo parameterInfo : parameterInfos) {
-            if (parameterInfo.name().equals(paramName)) {
-                if (parameterInfo.suppressNameInNarrative()) return "";
-                if (parameterInfo.narrativeName().length() > 0) {
-                    return parameterInfo.narrativeName();
-                }
-            }
-        }
-        return paramName;
-    }
-
-    /**
-     * @return the narrative name of this generator.
-     */
-    default String getNarrativeName() {
-        GeneratorInfo generatorInfo = getGeneratorInfo(this.getClass());
-        if (generatorInfo != null) {
-            if (generatorInfo.narrativeName().length() > 0) return generatorInfo.narrativeName();
-        }
-        return getName();
-    }
 }

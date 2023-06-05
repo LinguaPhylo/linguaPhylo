@@ -7,6 +7,7 @@ import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Generator;
 import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.GeneratorUtils;
 import lphy.core.parser.function.MethodCall;
 
 import java.util.TreeMap;
@@ -31,7 +32,7 @@ public class Model {
 
     public Model(Class<?> cls) {
         if (Generator.class.isAssignableFrom(cls)) {
-             GeneratorInfo generatorInfo = Generator.getGeneratorInfo(cls);
+             GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(cls);
             // GeneratorInfo must be compulsory
             if (generatorInfo == null) {
                 LoggerUtils.log.severe("Cannot create model from class "+ cls +
@@ -60,7 +61,7 @@ public class Model {
 
         }
         // can be null
-        citation = Generator.getCitation(cls);
+        citation = GeneratorUtils.getCitation(cls);
 
     }
 

@@ -14,6 +14,8 @@ import lphy.core.parser.function.ExpressionNodeWrapper;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static lphy.core.model.component.GeneratorUtils.getCitation;
+
 public interface GraphicalModel {
 
     enum Context {
@@ -278,7 +280,7 @@ public interface GraphicalModel {
                     }
 
                     public void visitGenerator(Generator generator) {
-                        Citation citation = generator.getCitation();
+                        Citation citation = getCitation(generator.getClass());
                         if (citation != null && !refs.contains(citation)) {
                             refs.add(citation);
                         }

@@ -1,9 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
+import lphy.core.model.component.*;
 import lphy.core.model.component.argument.Argument;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
@@ -226,7 +223,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
     public String getTypeName() {
         if (componentDistributions.size() > 1)
             return "vector of " + NarrativeUtils.pluralize(componentDistributions.get(0).getTypeName());
-        return Generator.getReturnType(this.getClass()).getSimpleName();
+        return GeneratorUtils.getReturnType(this.getClass()).getSimpleName();
     }
 
     @Override

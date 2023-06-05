@@ -1,9 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Func;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
+import lphy.core.model.component.*;
 import lphy.core.model.component.argument.Argument;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
@@ -102,7 +99,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     public String getTypeName() {
         if (componentFunctions.size() > 1)
             return "vector of " + NarrativeUtils.pluralize(componentFunctions.get(0).getTypeName());
-        return Generator.getReturnType(this.getClass()).getSimpleName();
+        return GeneratorUtils.getReturnType(this.getClass()).getSimpleName();
     }
 
 

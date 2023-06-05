@@ -2,10 +2,7 @@ package lphystudio.app.docgenerator;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.GeneratorCategory;
+import lphy.core.model.component.*;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
 import net.steppschuh.markdowngenerator.link.Link;
@@ -109,7 +106,7 @@ public class GenerateDocs {
 //    }
 
     private static String getDistDir(Class<GenerativeDistribution> genDist) {
-        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(genDist);
+        GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(genDist);
         GeneratorCategory category = null;
         if (generatorInfo != null) {
             category = generatorInfo.category();
@@ -126,7 +123,7 @@ public class GenerateDocs {
     }
 
     private static String getFuncDir(Class<DeterministicFunction> func) {
-        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(func);
+        GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(func);
         GeneratorCategory category = null;
         if (generatorInfo != null) {
             category = generatorInfo.category();
@@ -189,7 +186,7 @@ public class GenerateDocs {
         Set<String> names = new TreeSet<>();
 
         for (Class<GenerativeDistribution> genDist : generativeDistributions) {
-            String name = Generator.getGeneratorName(genDist);
+            String name = GeneratorUtils.getGeneratorName(genDist);
             String subDir = getDistDir(genDist);
             // based on where index.md is
             String fileURL = subDir + "/" + name + ".md";
@@ -211,7 +208,7 @@ public class GenerateDocs {
                 names.add(name);
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
-                generateGenerativeDistributions(writer, name, generativeDistributions.stream().filter(o -> Generator.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
+                generateGenerativeDistributions(writer, name, generativeDistributions.stream().filter(o -> GeneratorUtils.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
                 writer.close();
             }
         }
@@ -242,7 +239,7 @@ public class GenerateDocs {
         Set<String> funcNames = new TreeSet<>();
 
         for (Class<DeterministicFunction> function : functions) {
-            String name = Generator.getGeneratorName(function);
+            String name = GeneratorUtils.getGeneratorName(function);
             String subDir = getFuncDir(function);
             // based on where index.md is
             String fileURL = subDir + "/" + name + ".md";
@@ -271,7 +268,7 @@ public class GenerateDocs {
 
                 FileWriter writer = new FileWriter(new File(dir.toString(), fileURL));
 
-                generateFunctions(writer, name, functions.stream().filter(o -> Generator.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
+                generateFunctions(writer, name, functions.stream().filter(o -> GeneratorUtils.getGeneratorName(o).equals(name)).collect(Collectors.toList()));
                 writer.close();
             }
         }

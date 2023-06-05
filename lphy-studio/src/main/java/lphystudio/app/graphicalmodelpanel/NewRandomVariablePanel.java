@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
+import lphy.core.model.component.GeneratorUtils;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.swing.BoundsPopupMenuListener;
@@ -132,7 +132,7 @@ public class NewRandomVariablePanel extends JPanel {
     }
 
     private String generatorName(Class c) {
-        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(c);
+        GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(c);
 
         if (generatorInfo != null) {
            return generatorInfo.name();

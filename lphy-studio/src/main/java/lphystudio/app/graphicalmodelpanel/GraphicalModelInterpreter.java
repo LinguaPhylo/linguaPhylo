@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.model.component.Generator;
+import lphy.core.model.component.GeneratorUtils;
 import lphy.core.model.component.Symbols;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.ParserLoader;
@@ -87,7 +87,7 @@ public class GraphicalModelInterpreter extends JPanel {
 
             StringBuilder builder = new StringBuilder();
             for (Class c : classes) {
-                builder.append(Generator.getSignature((Class) iterator.next()));
+                builder.append(GeneratorUtils.getSignature((Class) iterator.next()));
                 builder.append("; ");
             }
             final String message = builder.toString();

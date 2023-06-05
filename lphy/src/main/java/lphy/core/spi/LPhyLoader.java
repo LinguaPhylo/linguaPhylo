@@ -3,6 +3,7 @@ package lphy.core.spi;
 import lphy.core.model.component.Func;
 import lphy.core.model.component.GenerativeDistribution;
 import lphy.core.model.component.Generator;
+import lphy.core.model.component.GeneratorUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -93,14 +94,14 @@ public class LPhyLoader {
                     List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
 
                     for (Class<? extends GenerativeDistribution> genClass : genDist) {
-                        String name = Generator.getGeneratorName(genClass);
+                        String name = GeneratorUtils.getGeneratorName(genClass);
 
                         Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
                         genDistSet.add(genClass);
                         // collect LPhy data types from GenerativeDistribution
                         types.add(GenerativeDistribution.getReturnType(genClass));
                         Collections.addAll(types, Generator.getParameterTypes(genClass, 0));
-                        Collections.addAll(types, Generator.getReturnType(genClass));
+                        Collections.addAll(types, GeneratorUtils.getReturnType(genClass));
                     }
 //        for (Class<?> genClass : lightWeightGenClasses) {
 //            String name = Generator.getGeneratorName(genClass);
@@ -113,13 +114,13 @@ public class LPhyLoader {
                     List<Class<? extends Func>> funcs = lPhyExt.getFunctions();
 
                     for (Class<? extends Func> functionClass : funcs) {
-                        String name = Generator.getGeneratorName(functionClass);
+                        String name = GeneratorUtils.getGeneratorName(functionClass);
 
                         Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
                         funcSet.add(functionClass);
                         // collect LPhy data types from Func
                         Collections.addAll(types, Generator.getParameterTypes(functionClass, 0));
-                        Collections.addAll(types, Generator.getReturnType(functionClass));
+                        Collections.addAll(types, GeneratorUtils.getReturnType(functionClass));
                     }
 
                     // sequence types

@@ -5,6 +5,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
 import lphy.core.model.component.Generator;
+import lphy.core.model.component.GeneratorUtils;
 import lphy.core.model.component.argument.ArgumentUtils;
 import lphy.core.model.component.argument.ParameterInfo;
 import net.steppschuh.markdowngenerator.link.Link;
@@ -28,7 +29,7 @@ public class GeneratorMarkdown {
 
     static String getGeneratorMarkdown(Class<? extends Generator> generatorClass, final String typesDir) {
 
-        GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
+        GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(generatorClass);
 
         List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
         Class[] types = Generator.getParameterTypes(generatorClass, 0);
@@ -37,7 +38,7 @@ public class GeneratorMarkdown {
 
         StringBuilder signature = new StringBuilder();
 
-        signature.append(Generator.getGeneratorName(generatorClass)).append("(");
+        signature.append(GeneratorUtils.getGeneratorName(generatorClass)).append("(");
 
         int count = 0;
         for (int i = 0; i < pInfo.size(); i++) {
@@ -70,7 +71,7 @@ public class GeneratorMarkdown {
 
         md.append(new Heading("Return type", 3)).append("\n\n");
 
-        String returnTypeName = Generator.getReturnType(generatorClass).getSimpleName();
+        String returnTypeName = GeneratorUtils.getReturnType(generatorClass).getSimpleName();
         Link returnTypeLink = new Link(returnTypeName,getTypeURL(typesDir, returnTypeName));
         md.append(returnTypeLink).append("\n\n");
 
@@ -82,7 +83,7 @@ public class GeneratorMarkdown {
             }
         }
 
-        Citation citation = Generator.getCitation(generatorClass);
+        Citation citation = GeneratorUtils.getCitation(generatorClass);
         if (citation != null) {
             md.append(new Heading("Reference", 3)).append("\n\n");
             md.append(citation.value());

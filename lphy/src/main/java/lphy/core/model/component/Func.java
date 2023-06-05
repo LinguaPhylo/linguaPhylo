@@ -24,7 +24,7 @@ public abstract class Func implements Generator {
 
     public String getDescription() {
         if (description == null) {
-            GeneratorInfo fInfo = Generator.getGeneratorInfo(getClass());
+            GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(getClass());
             if (fInfo != null) {
                 description = fInfo.name();
             } else description = getClass().getSimpleName();
@@ -52,7 +52,7 @@ public abstract class Func implements Generator {
     }
 
     public static String getName(Class<? extends Func> funcClass) {
-        GeneratorInfo fInfo = Generator.getGeneratorInfo(funcClass);
+        GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(funcClass);
         if (fInfo != null) {
             return fInfo.name();
         } else return funcClass.getSimpleName();
