@@ -2,8 +2,8 @@ package lphy.base.evolution.birthdeath;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.*;
+import lphy.core.model.component.argument.ParameterInfo;
 
 import java.util.Map;
 import java.util.TreeMap;

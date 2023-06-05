@@ -1,10 +1,10 @@
 package lphy.base.bmodeltest;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.GeneratorCategory;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 
 public class BModelSetFunction extends DeterministicFunction<BModelSet> {
 

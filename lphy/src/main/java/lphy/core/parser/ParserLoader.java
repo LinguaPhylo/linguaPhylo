@@ -1,10 +1,15 @@
 package lphy.core.parser;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.component.*;
+import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.Argument;
+import lphy.core.model.component.argument.ArgumentUtils;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.vectorization.IID;
-import lphy.core.vectorization.VectorMatch;
+import lphy.core.vectorization.VectorMatchUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -83,7 +88,7 @@ public class ParserLoader {
         List<Generator> matches = new ArrayList<>();
 
         for (Constructor constructor : generatorClass.getConstructors()) {
-            List<Argument> argumentInfo = Generator.getArguments(constructor);
+            List<Argument> argumentInfo = ArgumentUtils.getArguments(constructor);
             List<Object> initargs = new ArrayList<>();
 
             if (match(arguments, argumentInfo)) {
@@ -144,7 +149,7 @@ public class ParserLoader {
 
         List<DeterministicFunction> matches = new ArrayList<>();
         for (Constructor constructor : generatorClass.getConstructors()) {
-            List<Argument> arguments = Generator.getArguments(constructor);
+            List<Argument> arguments = ArgumentUtils.getArguments(constructor);
 
             // unnamed args
             if (argValues.length == arguments.size() &&
@@ -174,7 +179,7 @@ public class ParserLoader {
      */
     private static Generator constructGenerator(String name, Constructor constructor, List<Argument> arguments, Object[] initargs, Map<String, Value> params, boolean lightweight) {
         try {
-            if (Generator.matchingParameterTypes(arguments, initargs, params, lightweight)) {
+            if (ArgumentUtils.matchingParameterTypes(arguments, initargs, params, lightweight)) {
                 return (Generator) constructor.newInstance(initargs);
             } else if (IID.match(constructor, arguments, initargs, params)) {
                 IID iid = new IID(constructor, initargs, params);
@@ -183,9 +188,9 @@ public class ParserLoader {
 //                    return (Generator) constructor.newInstance(initargs);
 //                } else
                     return iid;
-            } else if (VectorMatch.vectorMatch(arguments, initargs) > 0) {
+            } else if (VectorMatchUtils.vectorMatch(arguments, initargs) > 0) {
                 // do vector match
-                return VectorMatch.vectorGenerator(constructor, arguments, initargs);
+                return VectorMatchUtils.vectorGenerator(constructor, arguments, initargs);
             } else {
                 throw new RuntimeException("ERROR! No match in '" + name + "' constructor arguments, including vector match! ");
             }

@@ -1,6 +1,10 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.*;
+import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.component.Func;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.Argument;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.vectorization.operation.SliceValue;
@@ -25,7 +29,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
     public VectorizedFunction(Constructor baseDistributionConstructor, List<Argument> argInfo, Object[] vectorArgs) {
 
-        params = Generator.convertArgumentsToParameterMap(argInfo, vectorArgs);
+        params = VectorMatchUtils.convertArgumentsToParameterMap(argInfo, vectorArgs);
 
         try {
             int size = VectorUtils.getVectorSize(argInfo, vectorArgs);

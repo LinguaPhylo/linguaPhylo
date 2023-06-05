@@ -1,6 +1,7 @@
 package lphy.core.model.component;
 
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.component.argument.ArgumentUtils;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -67,10 +68,10 @@ public interface GenerativeDistribution<T> extends Generator<T> {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(getName()).append("(").append(Generator.getArgumentCodeString(entry));
+        builder.append(getName()).append("(").append(ArgumentUtils.getArgumentCodeString(entry));
         while (iterator.hasNext()) {
             entry = iterator.next();
-            builder.append(", ").append(Generator.getArgumentCodeString(entry));
+            builder.append(", ").append(ArgumentUtils.getArgumentCodeString(entry));
         }
         builder.append(");");
         return builder.toString();

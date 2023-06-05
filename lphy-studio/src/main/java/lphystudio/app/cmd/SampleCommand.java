@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * TODO : this should not depend on GUI class GraphicalModelPanel
  * Created by adru001 on 10/03/20.
  */
 public class SampleCommand implements Command {

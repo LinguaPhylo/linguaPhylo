@@ -2,18 +2,20 @@ package lphy.core.model.component;
 
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
-import lphy.core.parser.ExpressionUtils;
 import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -215,7 +217,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
-        return getParameterInfo(this.getClass(), constructorIndex);
+        return ArgumentUtils.getParameterInfo(this.getClass(), constructorIndex);
     }
 
     default Citation getCitation() {
@@ -280,10 +282,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return html.toString();
     }
 
-    static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
-        return getParameterInfo(c.getConstructors()[constructorIndex]);
-    }
-
     static Citation getCitation(Class<?> c) {
         Annotation[] annotations = c.getAnnotations();
         for (Annotation annotation : annotations) {
@@ -295,70 +293,13 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
 
-    static List<ParameterInfo> getParameterInfo(Constructor constructor) {
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation[] annotations1 = annotations[i];
-            for (Annotation annotation : annotations1) {
-                if (annotation instanceof ParameterInfo) {
-                    pInfo.add((ParameterInfo) annotation);
-                }
-            }
-        }
-
-        return pInfo;
-    }
-
-
-    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
-        return getParameterTypes(c.getConstructors()[constructorIndex]);
-    }
-
-    /**
-     * @param constructor
-     * @return an array of the generic types of arguments of the given constructor.
-     */
-    static Class[] getParameterTypes(Constructor constructor) {
-        Type[] generics = constructor.getGenericParameterTypes();
-        Class[] types = new Class[generics.length];
-        for (int i = 0; i < generics.length; i++) {
-            types[i] = ReflectUtils.getClass(generics[i]);
-        }
-        return types;
-    }
-
-    static List<Argument> getArguments(Class<?> c, int constructorIndex) {
-        return getArguments(c.getConstructors()[constructorIndex]);
-    }
-
-    static List<Argument> getArguments(Constructor constructor) {
-
-        List<Argument> arguments = new ArrayList<>();
-
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        Class<?>[] parameterTypes = getParameterTypes(constructor);
-
-        // top for loop
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation[] annotations1 = annotations[i];
-            for (Annotation annotation : annotations1) {
-                if (annotation instanceof ParameterInfo) {
-                    arguments.add(new Argument(i, (ParameterInfo) annotation, parameterTypes[i]));
-                }
-            }
-        }
-        return arguments;
-    }
-
     // getGeneratorMarkdown(...) is moved to lphy.doc.GeneratorMarkdown
 
     static String getGeneratorHtml(Class<? extends Generator> generatorClass) {
         GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
 
-        List<ParameterInfo> pInfo = getParameterInfo(generatorClass, 0);
-        Class[] types = getParameterTypes(generatorClass, 0);
+        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
+        Class[] types = ArgumentUtils.getParameterTypes(generatorClass, 0);
 
         // parameters
         StringBuilder signature = new StringBuilder();
@@ -444,14 +385,14 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     static List<ParameterInfo> getAllParameterInfo(Class c) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
         for (Constructor constructor : c.getConstructors()) {
-            pInfo.addAll(getParameterInfo(constructor));
+            pInfo.addAll(ArgumentUtils.getParameterInfo(constructor));
         }
         return pInfo;
     }
 
     static String getSignature(Class<?> aClass) {
 
-        List<ParameterInfo> pInfo = Generator.getParameterInfo(aClass, 0);
+        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(aClass, 0);
 
         StringBuilder builder = new StringBuilder();
         builder.append(getGeneratorName(aClass));
@@ -496,64 +437,6 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             }
         }
         return null;
-    }
-
-    static String getArgumentCodeString(Map.Entry<String, Value> entry) {
-        return getArgumentCodeString(entry.getKey(), entry.getValue());
-    }
-
-    static String getArgumentCodeString(String name, Value value) {
-        String prefix = "";
-        if (!ExpressionUtils.isInteger(name)) {
-            prefix = name + "=";
-        }
-
-        if (value == null) {
-            throw new RuntimeException("Value of " + name + " is null!");
-        }
-
-        if (value.isAnonymous()) return prefix + value.codeString();
-        return prefix + value.getId();
-    }
-
-    /**
-     * @param arguments the arguments of the Generator
-     * @param initArgs the parallel array of initial arguments that match the arguments of the generator - may contain nulls where no name match
-     * @param params the map of all params, may be more than non-null in initial arguments
-     * @param lightweight
-     * @return
-     */
-    static boolean matchingParameterTypes(List<Argument> arguments, Object[] initArgs, Map<String, Value> params, boolean lightweight) {
-
-        int count = 0;
-        for (int i = 0; i < arguments.size(); i++) {
-            Argument argumentInfo = arguments.get(i);
-            Object arg = initArgs[i];
-
-            if (arg != null) {
-                Class parameterType = argumentInfo.type;
-                Class valueType = lightweight ? arg.getClass() : ((Value) arg).value().getClass();
-
-                if (!parameterType.isAssignableFrom(valueType))
-                    return false;
-                count += 1;
-            } else {
-                if (!argumentInfo.optional)
-                    return false;
-            }
-        }
-        return params == null || count == params.size();
-    }
-
-    static Map<String, Value> convertArgumentsToParameterMap(List<Argument> argumentInfos, Object[] initArgs) {
-        Map<String, Value> params = new TreeMap<>();
-        for (int i = 0; i < argumentInfos.size(); i++) {
-            Argument argumentInfo = argumentInfos.get(i);
-            Value value = (Value) initArgs[i];
-
-            if (value != null) params.put(argumentInfo.name, value);
-        }
-        return params;
     }
 
     static Class<?> getReturnType(Class<?> genClass) {

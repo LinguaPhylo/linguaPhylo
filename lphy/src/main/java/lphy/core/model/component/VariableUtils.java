@@ -22,4 +22,7 @@ public class VariableUtils {
         return new RandomVariable<>( name, list2Arr.toArray(), generator);
     }
 
+    public static boolean isRandomVariable(Value value) {
+        return value instanceof RandomVariable;
+    }
 }

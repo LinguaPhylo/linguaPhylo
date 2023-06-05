@@ -3,9 +3,9 @@ package lphy.base.function;
 import lphy.base.ParameterNames;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.datatype.NumberArrayValue;
 
 public class Sum2dArray extends DeterministicFunction<Number[]> {

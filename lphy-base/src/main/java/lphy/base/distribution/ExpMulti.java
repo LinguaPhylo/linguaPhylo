@@ -2,10 +2,10 @@ package lphy.base.distribution;
 
 import lphy.base.math.RandomUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.GenerativeDistribution;
 import lphy.core.model.component.RandomVariable;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

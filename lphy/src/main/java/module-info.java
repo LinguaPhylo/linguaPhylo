@@ -15,7 +15,9 @@ module lphy.core {
 
     // graphical model
     exports lphy.core.model;
+    exports lphy.core.model.annotation;
     exports lphy.core.model.component;
+    exports lphy.core.model.component.argument;
     exports lphy.core.model.datatype;
 
     // parser
@@ -34,7 +36,6 @@ module lphy.core {
 
     // declare service provider interface (SPI)
     exports lphy.core.spi;
-    exports lphy.core.model.annotation;
 
     uses LPhyExtension;
     // declare what service interface the provider intends to use

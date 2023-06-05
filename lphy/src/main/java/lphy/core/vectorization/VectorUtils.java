@@ -1,8 +1,8 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.Argument;
 import lphy.core.model.component.Generator;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.Argument;
 import lphy.core.model.datatype.Vector;
 
 import java.lang.reflect.Array;

@@ -3,6 +3,7 @@ package lphy.core.parser;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.component.*;
+import lphy.core.model.component.argument.ArgumentValue;
 import lphy.core.model.datatype.*;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;

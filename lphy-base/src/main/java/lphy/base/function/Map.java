@@ -1,9 +1,9 @@
 package lphy.base.function;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 //lphy.parser.functions.MapValue
 @Deprecated
 public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {

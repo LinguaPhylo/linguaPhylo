@@ -1,7 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.model.component.Argument;
 import lphy.core.model.component.Generator;
+import lphy.core.model.component.argument.Argument;
+import lphy.core.model.component.argument.ArgumentUtils;
 import lphy.core.parser.LPhyMetaParser;
 
 import javax.swing.*;
@@ -43,7 +44,7 @@ public class GeneratorPanel extends JPanel {
         argumentInputs.clear();
 
         int arg = 0;
-        for (Argument argument : Generator.getArguments(generatorClass, 0)) {
+        for (Argument argument : ArgumentUtils.getArguments(generatorClass, 0)) {
             if (arg > 0) {
                 JLabel label = new JLabel(", ");
                 label.setForeground(Color.gray);

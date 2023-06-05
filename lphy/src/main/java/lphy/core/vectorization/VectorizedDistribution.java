@@ -1,6 +1,10 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.*;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.RandomVariable;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.Argument;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.vectorization.operation.SliceValue;
@@ -25,7 +29,7 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
 
     public VectorizedDistribution(Constructor baseDistributionConstructor, List<Argument> arguments, Object[] vectorArgs) {
 
-        params = Generator.convertArgumentsToParameterMap(arguments, vectorArgs);
+        params = VectorMatchUtils.convertArgumentsToParameterMap(arguments, vectorArgs);
 
         try {
             int size = VectorUtils.getVectorSize(arguments, vectorArgs);

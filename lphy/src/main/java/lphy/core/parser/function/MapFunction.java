@@ -1,9 +1,9 @@
 package lphy.core.parser.function;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.ArgumentValue;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ArgumentValue;
 import lphy.core.model.datatype.MapValue;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;

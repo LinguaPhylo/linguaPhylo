@@ -6,8 +6,8 @@ import lphy.base.evolution.alignment.ErrorAlignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.math.RandomUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.*;
+import lphy.core.model.component.argument.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.SortedMap;

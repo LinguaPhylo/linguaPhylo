@@ -1,6 +1,4 @@
-package lphy.core.model.component;
-
-import lphy.core.model.annotation.ParameterInfo;
+package lphy.core.model.component.argument;
 
 public class Argument implements Comparable<Argument> {
 

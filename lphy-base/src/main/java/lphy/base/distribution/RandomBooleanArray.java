@@ -2,11 +2,11 @@ package lphy.base.distribution;
 
 import lphy.base.math.RandomUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.GenerativeDistribution;
 import lphy.core.model.component.GeneratorCategory;
 import lphy.core.model.component.RandomVariable;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 
 import java.util.*;
 

@@ -9,15 +9,11 @@ import java.util.Map;
 public class ValueUtils {
 
     public static boolean isValueOfDeterministicFunction(Value value) {
-        return !isRandomVariable(value) && value.getGenerator() != null;
+        return !VariableUtils.isRandomVariable(value) && value.getGenerator() != null;
     }
 
     public static boolean isFixedValue(Value value) {
         return value.getGenerator() == null && !(value instanceof RandomVariable);
-    }
-
-    public static boolean isRandomVariable(Value value) {
-        return value instanceof RandomVariable;
     }
 
     public static boolean isNumberOrNumberArray(Value value) {
@@ -37,18 +33,12 @@ public class ValueUtils {
         return val instanceof Number;
     }
 
+    // static boolean isInteger(String s) is moved to ExpressionUtils
+
     public static boolean isMultiDimensional(Object v) {
         return (v instanceof MultiDimensional || v instanceof Map || v.getClass().isArray() || v instanceof List<?>);
     }
 
-    public static boolean isInteger(String s) {
-        try {
-            int i = Integer.parseInt(s);
-            return true;
-        } catch (RuntimeException e) {
-            return false;
-        }
-    }
 
     /**
      * useful function to get a number value as a double;

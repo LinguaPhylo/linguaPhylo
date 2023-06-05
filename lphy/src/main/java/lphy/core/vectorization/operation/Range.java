@@ -1,9 +1,9 @@
 package lphy.core.vectorization.operation;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.vectorization.array.RangeElement;
 
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {

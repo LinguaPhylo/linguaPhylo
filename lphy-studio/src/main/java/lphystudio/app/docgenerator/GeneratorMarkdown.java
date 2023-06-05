@@ -1,7 +1,12 @@
 package lphystudio.app.docgenerator;
 
-import lphy.core.model.annotation.*;
+import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.MethodInfo;
+import lphy.core.model.annotation.TypeInfo;
 import lphy.core.model.component.Generator;
+import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.model.component.argument.ParameterInfo;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -25,8 +30,8 @@ public class GeneratorMarkdown {
 
         GeneratorInfo generatorInfo = Generator.getGeneratorInfo(generatorClass);
 
-        List<ParameterInfo> pInfo = Generator.getParameterInfo(generatorClass, 0);
-        Class[] types = Generator.getParameterTypes(generatorClass, 0);
+        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
+        Class[] types = ArgumentUtils.getParameterTypes(generatorClass, 0);
 
         StringBuilder md = new StringBuilder();
 

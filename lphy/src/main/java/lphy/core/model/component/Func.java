@@ -1,7 +1,8 @@
 package lphy.core.model.component;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.model.component.argument.ParameterInfo;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
@@ -68,7 +69,7 @@ public abstract class Func implements Generator {
         Constructor[] constructors = funcClass.getConstructors();
 
         if (constructors.length == 1) {
-            List<ParameterInfo> parameterInfoList = Generator.getParameterInfo(funcClass,0);
+            List<ParameterInfo> parameterInfoList = ArgumentUtils.getParameterInfo(funcClass,0);
             if (parameterInfoList.size() > 0) {
                 int paramCount = 0;
 
@@ -77,7 +78,7 @@ public abstract class Func implements Generator {
                 if (parameterInfoList.get(0).optional() && map.get(name) == null) {
                     // DO NOTHING - this is an optional parameter with no value
                 } else {
-                    builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                    builder.append(ArgumentUtils.getArgumentCodeString(name, map.get(name)));
 
                     paramCount += 1;
                 }
@@ -87,7 +88,7 @@ public abstract class Func implements Generator {
                         // DO NOTHING - this is an optional parameter with no value
                     } else {
                         if (paramCount > 0) builder.append(", ");
-                        builder.append(Generator.getArgumentCodeString(name, map.get(name)));
+                        builder.append(ArgumentUtils.getArgumentCodeString(name, map.get(name)));
                         paramCount += 1;
                     }
                 }
@@ -97,11 +98,11 @@ public abstract class Func implements Generator {
             if (iterator.hasNext()) {
                 Map.Entry<String, Value> entry = iterator.next();
 
-                builder.append(Generator.getArgumentCodeString(entry));
+                builder.append(ArgumentUtils.getArgumentCodeString(entry));
                 while (iterator.hasNext()) {
                     entry = iterator.next();
                     builder.append(", ");
-                    builder.append(Generator.getArgumentCodeString(entry));
+                    builder.append(ArgumentUtils.getArgumentCodeString(entry));
                 }
 //            }
             }

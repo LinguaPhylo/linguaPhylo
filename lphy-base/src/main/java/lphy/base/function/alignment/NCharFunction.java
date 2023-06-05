@@ -2,9 +2,9 @@ package lphy.base.function.alignment;
 
 import lphy.base.evolution.NChar;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.datatype.IntegerValue;
 @Deprecated
 public class NCharFunction extends DeterministicFunction<Integer> {

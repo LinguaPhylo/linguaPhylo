@@ -9,7 +9,7 @@ import lphy.base.parser.newick.NewickParser;
 import lphy.base.parser.newick.TreeParsingException;
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.component.DeterministicFunction;
 import lphy.core.model.component.GeneratorCategory;
 import lphy.core.model.component.Value;

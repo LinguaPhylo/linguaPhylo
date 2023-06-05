@@ -2,10 +2,10 @@ package lphy.base.evolution.substitutionmodel;
 
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.component.GeneratorCategory;
 import lphy.core.model.component.Value;
 import lphy.core.model.component.ValueUtils;
+import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;
 
 import java.util.Map;

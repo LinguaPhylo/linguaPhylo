@@ -1,4 +1,4 @@
-package lphy.core.model.annotation;
+package lphy.core.model.component.argument;
 
 
 import java.lang.annotation.ElementType;

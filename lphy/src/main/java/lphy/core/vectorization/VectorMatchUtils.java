@@ -1,15 +1,21 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.*;
+import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.component.Generator;
+import lphy.core.model.component.Value;
+import lphy.core.model.component.argument.Argument;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Vectorization for arrays
  */
-public class VectorMatch {
+public class VectorMatchUtils {
 
     public static int vectorMatch(List<Argument> arguments, Object[] initargs) {
         int vectorMatches = 0;
@@ -41,5 +47,22 @@ public class VectorMatch {
         } else
             throw new IllegalArgumentException("Unexpected Generator class! Expecting a GenerativeDistribution or a DeterministicFunction");
 
+    }
+
+    /**
+     * @param argumentInfos  the list of {@link Argument}
+     * @param vectorArgs
+     * @return   the sorted map whose key is the argument name
+     *           and value is the {@link Value} of that argument.
+     */
+    public static Map<String, Value> convertArgumentsToParameterMap(List<Argument> argumentInfos, Object[] vectorArgs) {
+        Map<String, Value> params = new TreeMap<>();
+        for (int i = 0; i < argumentInfos.size(); i++) {
+            Argument argumentInfo = argumentInfos.get(i);
+            Value value = (Value) vectorArgs[i];
+
+            if (value != null) params.put(argumentInfo.name, value);
+        }
+        return params;
     }
 }
