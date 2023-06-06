@@ -49,24 +49,6 @@ public class ArgumentUtils {
         return arguments;
     }
 
-    public static String getArgumentCodeString(Map.Entry<String, Value> entry) {
-        return getArgumentCodeString(entry.getKey(), entry.getValue());
-    }
-
-    public static String getArgumentCodeString(String name, Value value) {
-        String prefix = "";
-        if (!ExpressionUtils.isInteger(name)) {
-            prefix = name + "=";
-        }
-
-        if (value == null) {
-            throw new RuntimeException("Value of " + name + " is null!");
-        }
-
-        if (value.isAnonymous()) return prefix + value.codeString();
-        return prefix + value.getId();
-    }
-
     /**
      * @param arguments the arguments of the Generator
      * @param initArgs the parallel array of initial arguments that match the arguments of the generator - may contain nulls where no name match

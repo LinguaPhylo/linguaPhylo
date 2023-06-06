@@ -1,7 +1,6 @@
 package lphy.core.model;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ArgumentUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -67,10 +66,10 @@ public interface GenerativeDistribution<T> extends Generator<T> {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(getName()).append("(").append(ArgumentUtils.getArgumentCodeString(entry));
+        builder.append(getName()).append("(").append(CodeStringUtils.getArgumentCodeString(entry));
         while (iterator.hasNext()) {
             entry = iterator.next();
-            builder.append(", ").append(ArgumentUtils.getArgumentCodeString(entry));
+            builder.append(", ").append(CodeStringUtils.getArgumentCodeString(entry));
         }
         builder.append(");");
         return builder.toString();

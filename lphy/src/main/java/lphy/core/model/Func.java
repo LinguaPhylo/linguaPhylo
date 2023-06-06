@@ -10,9 +10,16 @@ public abstract class Func implements Generator {
     private String name = null;
     private String description = null;
 
+    public static String getName(Class<? extends Func> funcClass) {
+        GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(funcClass);
+        if (fInfo != null) {
+            return fInfo.name();
+        } else return funcClass.getSimpleName();
+    }
+
     public String getName() {
         if (name == null) {
-            return(FuncUtils.getName(getClass()));
+            return(getName(getClass()));
         }
         return name;
     }
@@ -38,7 +45,7 @@ public abstract class Func implements Generator {
     }
 
     public String codeString() {
-        return FuncUtils.codeString(this,getParams());
+        return CodeStringUtils.codeString(this,getParams());
     }
 
     @Override

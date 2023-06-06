@@ -109,7 +109,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     }
 
     public String codeString() {
-        return FuncUtils.codeString(componentFunctions.get(0), getParams());
+        return CodeStringUtils.codeString(componentFunctions.get(0), getParams());
     }
 
     public Value getReplicatesValue() {
