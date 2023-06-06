@@ -1,10 +1,10 @@
 package lphy.base.function.datatype;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
 
 /**
  * Note: the {@link jebl.evolution.sequences.AminoAcids} creates 22 amino acids.

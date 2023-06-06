@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.GraphicalModelListener;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Value;
 import lphy.core.narrative.Narrative;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelListener;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.narrative.NarrativeLayeredGraph;
 import lphystudio.core.narrative.Section;
@@ -364,10 +364,10 @@ public class NarrativePanel extends JComponent {
 
             switch (section) {
                 case Data:
-                    text += GraphicalModel.Utils.getNarrative(parser, narrative, true, false);
+                    text += GraphicalModelUtils.getNarrative(parser, narrative, true, false);
                     break;
                 case Model:
-                    text += GraphicalModel.Utils.getNarrative(parser, narrative, false, true);
+                    text += GraphicalModelUtils.getNarrative(parser, narrative, false, true);
                     break;
                 case Code:
                     text += narrative.section("Code");

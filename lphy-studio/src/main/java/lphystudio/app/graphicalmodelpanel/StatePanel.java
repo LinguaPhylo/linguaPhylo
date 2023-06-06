@@ -1,10 +1,10 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.core.valueeditor.Abstract2DEditor;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class StatePanel extends JPanel {
         editors.clear();
         removeAll();
 
-        for (Value value : GraphicalModel.Utils.getAllValuesFromSinks(parser)) {
+        for (Value value : GraphicalModelUtils.getAllValuesFromSinks(parser)) {
             if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);

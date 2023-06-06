@@ -1,10 +1,10 @@
 package lphy.core.parser.function;
 
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.MethodInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.ValueUtils;
 import lphy.core.model.datatype.Vector;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;

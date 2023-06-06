@@ -1,9 +1,9 @@
 package lphy.base.evolution.sitemodel;
 
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.MultiDimensional;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.MultiDimensional;
 
 @TypeInfo(description = "A composited model containing instantaneous rate matrix, " +
         "rate per site before accounting for proportion invariable, and the proportion of invariable sites.",

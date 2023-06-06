@@ -1,8 +1,8 @@
 package lphystudio.app.modelguide;
 
+import lphy.core.model.GeneratorCategory;
 import lphy.core.model.annotation.Citation;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.narrative.NarrativeUtils;
+import lphy.core.narrative.CitationUtils;
 import lphystudio.core.narrative.LaTeXUtils;
 
 import javax.swing.*;
@@ -65,7 +65,7 @@ public class LatexPane extends JTextPane {
             Citation citation = model.getCitation();
             if (citation == null) key = "";
             else {
-                key = NarrativeUtils.getCitationKey(citation, "et. al.");
+                key = CitationUtils.getCitationKey(citation, "et. al.");
                 refMap.put(key, citation);
             }
             // Latex table rows here

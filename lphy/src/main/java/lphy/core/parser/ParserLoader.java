@@ -1,12 +1,12 @@
 package lphy.core.parser;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.Argument;
-import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
+import lphy.core.parser.argument.Argument;
+import lphy.core.parser.argument.ArgumentUtils;
 import lphy.core.spi.LPhyLoader;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorMatchUtils;

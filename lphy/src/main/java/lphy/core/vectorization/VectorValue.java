@@ -1,7 +1,7 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Value;
 import lphy.core.model.datatype.Vector;
 
 import java.util.Arrays;

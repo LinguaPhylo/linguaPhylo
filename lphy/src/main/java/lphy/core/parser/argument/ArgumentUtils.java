@@ -1,7 +1,7 @@
-package lphy.core.model.component.argument;
+package lphy.core.parser.argument;
 
-import lphy.core.model.component.ReflectUtils;
-import lphy.core.model.component.Value;
+import lphy.core.model.GeneratorUtils;
+import lphy.core.model.Value;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -41,7 +41,7 @@ public class ArgumentUtils {
         Type[] generics = constructor.getGenericParameterTypes();
         Class[] types = new Class[generics.length];
         for (int i = 0; i < generics.length; i++) {
-            types[i] = ReflectUtils.getClass(generics[i]);
+            types[i] = GeneratorUtils.getClass(generics[i]);
         }
         return types;
     }
@@ -116,4 +116,11 @@ public class ArgumentUtils {
         return params == null || count == params.size();
     }
 
+    public static List<ParameterInfo> getAllParameterInfo(Class c) {
+        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+        for (Constructor constructor : c.getConstructors()) {
+            pInfo.addAll(getParameterInfo(constructor));
+        }
+        return pInfo;
+    }
 }

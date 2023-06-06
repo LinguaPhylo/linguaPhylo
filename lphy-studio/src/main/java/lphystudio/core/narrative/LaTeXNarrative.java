@@ -1,12 +1,12 @@
 package lphystudio.core.narrative;
 
-import lphy.core.model.GraphicalModel;
+import lphy.core.model.Generator;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Symbols;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Symbols;
-import lphy.core.model.component.Value;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import static lphy.core.model.component.ValueUtils.isNumber;
+import static lphy.core.model.ValueUtils.isNumber;
 
 public class LaTeXNarrative implements NarrativeLayeredGraph {
 
@@ -273,7 +273,7 @@ public class LaTeXNarrative implements NarrativeLayeredGraph {
 
     public String posterior(LPhyMetaParser parser) {
 
-        return GraphicalModel.Utils.getInferenceStatement(parser, this);
+        return GraphicalModelUtils.getInferenceStatement(parser, this);
     }
 
     public String codeBlock(LPhyMetaParser parser, int fontSize) {

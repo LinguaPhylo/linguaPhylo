@@ -2,8 +2,8 @@ package lphy.core.parser;
 
 
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class REPL implements LPhyMetaParser {
                 lines.add(cmd);
 
                 // wrap the ExpressionNodes before returning from parse
-                GraphicalModel.Utils.wrapExpressionNodes(this);
+                GraphicalModelUtils.wrapExpressionNodes(this);
             } else throw new RuntimeException();
         }
     }

@@ -1,8 +1,8 @@
 package lphy.base.evolution;
 
+import lphy.core.model.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
-import lphy.core.model.component.GeneratorCategory;
 
 /**
  * An interface that site-dimensioned objects can implement, such as Alignment.

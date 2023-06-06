@@ -1,6 +1,6 @@
 package lphy.core.model.datatype;
 
-import lphy.core.model.component.DeterministicFunction;
+import lphy.core.model.DeterministicFunction;
 import lphy.core.vectorization.VectorValue;
 
 public class BooleanArrayValue extends VectorValue<Boolean> {

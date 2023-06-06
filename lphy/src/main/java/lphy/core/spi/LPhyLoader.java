@@ -1,9 +1,9 @@
 package lphy.core.spi;
 
-import lphy.core.model.component.Func;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.GeneratorUtils;
+import lphy.core.model.Func;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.GeneratorUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -99,7 +99,7 @@ public class LPhyLoader {
                         Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
                         genDistSet.add(genClass);
                         // collect LPhy data types from GenerativeDistribution
-                        types.add(GenerativeDistribution.getReturnType(genClass));
+                        types.add(GeneratorUtils.getReturnType(genClass));
                         Collections.addAll(types, Generator.getParameterTypes(genClass, 0));
                         Collections.addAll(types, GeneratorUtils.getReturnType(genClass));
                     }

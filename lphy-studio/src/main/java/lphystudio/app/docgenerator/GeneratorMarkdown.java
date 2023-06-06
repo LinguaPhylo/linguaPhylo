@@ -1,13 +1,14 @@
 package lphystudio.app.docgenerator;
 
+import lphy.core.model.Generator;
+import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.GeneratorUtils;
-import lphy.core.model.component.argument.ArgumentUtils;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.narrative.CitationUtils;
+import lphy.core.parser.argument.ArgumentUtils;
+import lphy.core.parser.argument.ParameterInfo;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -83,7 +84,7 @@ public class GeneratorMarkdown {
             }
         }
 
-        Citation citation = GeneratorUtils.getCitation(generatorClass);
+        Citation citation = CitationUtils.getCitation(generatorClass);
         if (citation != null) {
             md.append(new Heading("Reference", 3)).append("\n\n");
             md.append(citation.value());

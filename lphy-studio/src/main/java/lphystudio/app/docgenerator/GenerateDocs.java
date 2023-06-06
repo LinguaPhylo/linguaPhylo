@@ -1,8 +1,8 @@
 package lphystudio.app.docgenerator;
 
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.*;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.*;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
 import net.steppschuh.markdowngenerator.link.Link;
@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static lphy.core.model.component.GeneratorCategory.*;
+import static lphy.core.model.GeneratorCategory.*;
 
 /**
  * Delete everything under ???/lphy/doc, if it is not a minor change to docs.

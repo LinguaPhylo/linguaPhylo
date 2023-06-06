@@ -2,11 +2,11 @@ package lphy.base.function.datatype;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.datatype.Standard;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * Created by Alexei Drummond on 2/02/20.

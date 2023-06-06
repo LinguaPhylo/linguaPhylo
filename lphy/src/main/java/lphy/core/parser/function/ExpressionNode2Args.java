@@ -1,9 +1,9 @@
 package lphy.core.parser.function;
 
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.GraphicalModelNode;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.GraphicalModelNode;
-import lphy.core.model.component.Value;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

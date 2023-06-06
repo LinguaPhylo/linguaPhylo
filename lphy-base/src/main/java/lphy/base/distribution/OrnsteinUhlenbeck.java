@@ -1,8 +1,8 @@
 package lphy.base.distribution;
 
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
+import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

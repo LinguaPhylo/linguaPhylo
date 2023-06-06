@@ -1,6 +1,6 @@
 package lphystudio.app.cmd;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 import lphy.core.parser.Command;
 import lphy.io.logger.AlignmentFileLogger;
 import lphy.io.logger.RandomValueLogger;

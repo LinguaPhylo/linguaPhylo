@@ -6,9 +6,9 @@ import lphy.base.evolution.alignment.ErrorAlignment;
 import lphy.base.evolution.likelihood.AbstractPhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphystudio.app.FontUtils;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 

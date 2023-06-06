@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.GraphicalModelListener;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelListener;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -41,7 +41,7 @@ public class GraphicalModelTextPane extends JTextPane {
         }
 
         if (!line.equals("")) {
-            if (GraphicalModel.Utils.isRandomVariableLine(line)) {
+            if (GraphicalModelUtils.isRandomVariableLine(line)) {
                 String[] parts = line.split("~");
                 String genDist = parts[1].substring(0, parts[1].indexOf('('));
                 String rest = parts[1].substring(parts[1].indexOf('('));

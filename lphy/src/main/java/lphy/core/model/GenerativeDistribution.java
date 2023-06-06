@@ -1,9 +1,8 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.parser.argument.ArgumentUtils;
 
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -90,13 +89,14 @@ public interface GenerativeDistribution<T> extends Generator<T> {
         throw new UnsupportedOperationException();
     }
 
-    static Class<?> getReturnType(Class<? extends GenerativeDistribution> genClass) {
-        try {
-            Method method = genClass.getMethod("sample");
-            Class returnType = ReflectUtils.getGenericReturnType(method);
-            return returnType;
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("GenerativeDistribution has no sample method?!");
-        }
-    }
+    //duplicate to GeneratorUtils.getReturnType(genClass)
+//    static Class<?> getReturnType(Class<? extends GenerativeDistribution> genClass) {
+//        try {
+//            Method method = genClass.getMethod("sample");
+//            Class returnType = GeneratorUtils.getGenericReturnType(method);
+//            return returnType;
+//        } catch (NoSuchMethodException e) {
+//            throw new RuntimeException("GenerativeDistribution has no sample method?!");
+//        }
+//    }
 }

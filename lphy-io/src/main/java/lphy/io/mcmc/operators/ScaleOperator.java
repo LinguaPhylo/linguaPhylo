@@ -1,7 +1,7 @@
 package lphy.io.mcmc.operators;
 
 import lphy.base.math.RandomUtils;
-import lphy.core.model.component.RandomVariable;
+import lphy.core.model.RandomVariable;
 import lphy.io.mcmc.Operator;
 import org.apache.commons.math3.random.RandomGenerator;
 

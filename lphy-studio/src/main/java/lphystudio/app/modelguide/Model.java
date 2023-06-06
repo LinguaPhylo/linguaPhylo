@@ -1,13 +1,14 @@
 package lphystudio.app.modelguide;
 
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Generator;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.MethodInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.GeneratorUtils;
+import lphy.core.narrative.CitationUtils;
 import lphy.core.parser.function.MethodCall;
 
 import java.util.TreeMap;
@@ -61,7 +62,7 @@ public class Model {
 
         }
         // can be null
-        citation = GeneratorUtils.getCitation(cls);
+        citation = CitationUtils.getCitation(cls);
 
     }
 

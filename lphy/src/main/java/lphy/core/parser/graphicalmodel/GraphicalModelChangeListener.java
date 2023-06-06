@@ -1,4 +1,4 @@
-package lphy.core.model;
+package lphy.core.parser.graphicalmodel;
 
 public interface GraphicalModelChangeListener {
 

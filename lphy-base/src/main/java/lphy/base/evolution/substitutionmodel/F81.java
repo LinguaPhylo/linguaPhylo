@@ -1,11 +1,11 @@
 package lphy.base.evolution.substitutionmodel;
 
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;
+import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * F81: AC = AG = AT = CG = CT = GT, unequal base frequencies, k + 3 free parameters

@@ -1,7 +1,7 @@
 package lphy.base.distribution;
 
 import lphy.base.math.RandomUtils;
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static lphy.core.model.component.ValueUtils.doubleValue;
+import static lphy.core.model.ValueUtils.doubleValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;

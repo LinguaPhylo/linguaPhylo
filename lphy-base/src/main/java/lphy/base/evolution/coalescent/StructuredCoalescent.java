@@ -4,13 +4,13 @@ import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;
+import lphy.core.parser.argument.ParameterInfo;
 import lphy.core.vectorization.VectorUtils;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 

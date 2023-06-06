@@ -1,6 +1,6 @@
 package lphy.core.parser;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
 import java.util.Map;
 

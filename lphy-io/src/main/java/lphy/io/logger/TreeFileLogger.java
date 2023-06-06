@@ -2,8 +2,8 @@ package lphy.io.logger;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.parser.nexus.NexusWriter;
-import lphy.core.model.component.Symbols;
-import lphy.core.model.component.Value;
+import lphy.core.model.Symbols;
+import lphy.core.model.Value;
 import lphy.core.vectorization.VectorUtils;
 
 import java.io.File;

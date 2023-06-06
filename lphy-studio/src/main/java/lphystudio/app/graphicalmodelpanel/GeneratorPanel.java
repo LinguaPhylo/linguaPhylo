@@ -1,9 +1,9 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.argument.Argument;
-import lphy.core.model.component.argument.ArgumentUtils;
+import lphy.core.model.Generator;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.argument.Argument;
+import lphy.core.parser.argument.ArgumentUtils;
 
 import javax.swing.*;
 import java.awt.*;

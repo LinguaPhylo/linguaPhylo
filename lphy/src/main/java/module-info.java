@@ -16,18 +16,19 @@ module lphy.core {
     // graphical model
     exports lphy.core.model;
     exports lphy.core.model.annotation;
-    exports lphy.core.model.component;
-    exports lphy.core.model.component.argument;
+//    exports lphy.core.model.component;
+    exports lphy.core.parser.argument;
     exports lphy.core.model.datatype;
 
     // parser
     exports lphy.core.parser;
     exports lphy.core.parser.antlr;
     exports lphy.core.parser.function;
+    exports lphy.core.parser.graphicalmodel;
 
     // vectorization
     exports lphy.core.vectorization;
-    exports lphy.core.vectorization.array;
+//    exports lphy.core.vectorization.array;
     exports lphy.core.vectorization.operation;
 
     // others

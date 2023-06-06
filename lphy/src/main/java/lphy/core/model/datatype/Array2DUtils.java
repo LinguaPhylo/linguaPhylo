@@ -1,6 +1,6 @@
 package lphy.core.model.datatype;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
 public class Array2DUtils {
 

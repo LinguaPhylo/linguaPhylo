@@ -4,7 +4,7 @@ import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.base.system.UserDir;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.io.logger.AlignmentFileLogger;
 import lphy.io.logger.RandomValueLogger;

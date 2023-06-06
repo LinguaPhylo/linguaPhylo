@@ -2,7 +2,7 @@ package lphy.io.logger;
 
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.parser.nexus.NexusWriter;
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
 import java.io.File;
 import java.io.IOException;

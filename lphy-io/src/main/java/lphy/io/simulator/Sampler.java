@@ -1,11 +1,11 @@
 package lphy.io.simulator;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
+import lphy.core.model.Generator;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.io.logger.RandomValueLogger;
 
 import java.util.*;
@@ -49,7 +49,7 @@ public class Sampler {
             }
 
             if (loggers != null) {
-                List<Value<?>> values = GraphicalModel.Utils.getAllValuesFromSinks(parser);
+                List<Value<?>> values = GraphicalModelUtils.getAllValuesFromSinks(parser);
                 valuesMap.put(i, values);
                 for (RandomValueLogger logger : loggers) {
                     logger.log(i, values);

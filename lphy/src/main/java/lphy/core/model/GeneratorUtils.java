@@ -1,37 +1,17 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
-import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ArgumentUtils;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ArgumentUtils;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class GeneratorUtils {
 
     // getGeneratorMarkdown(...) is moved to lphy.doc.GeneratorMarkdown
-
-    public static Citation getCitation(Class<?> c) {
-        Annotation[] annotations = c.getAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Citation) {
-                return (Citation) annotation;
-            }
-        }
-        return null;
-    }
-
-    public static List<ParameterInfo> getAllParameterInfo(Class c) {
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-        for (Constructor constructor : c.getConstructors()) {
-            pInfo.addAll(ArgumentUtils.getParameterInfo(constructor));
-        }
-        return pInfo;
-    }
 
     public static String getSignature(Class<?> aClass) {
 
@@ -88,13 +68,13 @@ public class GeneratorUtils {
         for (Method method : methods) {
             GeneratorInfo generatorInfo = method.getAnnotation(GeneratorInfo.class);
             if (generatorInfo != null) {
-                return ReflectUtils.getGenericReturnType(method);
+                return getGenericReturnType(method);
             }
         }
         if (GenerativeDistribution.class.isAssignableFrom(genClass)) {
             try {
                 Method method = genClass.getMethod("sample");
-                return ReflectUtils.getGenericReturnType(method);
+                return getGenericReturnType(method);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -102,12 +82,47 @@ public class GeneratorUtils {
             {
                 try {
                     Method method = genClass.getMethod("apply");
-                    return ReflectUtils.getGenericReturnType(method);
+                    return getGenericReturnType(method);
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }
             }
         }
         return Object.class;
+    }
+
+    public static Class getGenericReturnType(Method method) {
+        return getClass(method.getGenericReturnType());
+    }
+
+    /**
+     * @param type the type signature for a return value or parameter
+     * @return the generic class. e.g. if type is {@code lphy.graphicalModel.Value<java.lang.Number>} then this will return java.lang.Number.class
+     */
+    public static Class getClass(Type type) {
+        Class typeClass;
+        String name = type.getTypeName();
+
+        if (name.indexOf('<') >= 0) {
+
+            String typeClassString = name.substring(name.indexOf('<') + 1, name.lastIndexOf('>'));
+
+            if (typeClassString.endsWith("[]")) {
+                typeClassString = "L" + typeClassString;
+
+                while (typeClassString.endsWith("[]")) {
+                    typeClassString = "[" + typeClassString.substring(0, typeClassString.lastIndexOf('['));
+                }
+                typeClassString = typeClassString + ";";
+            }
+
+            try {
+                typeClass = Class.forName(typeClassString);
+            } catch (ClassNotFoundException e) {
+                // TODO need to understand these cases better!
+                typeClass = Object.class;
+            }
+        } else typeClass = Object.class;
+        return typeClass;
     }
 }

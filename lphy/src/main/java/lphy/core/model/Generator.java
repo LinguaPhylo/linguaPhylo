@@ -1,11 +1,12 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ArgumentUtils;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.narrative.CitationUtils;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.parser.argument.ArgumentUtils;
+import lphy.core.parser.argument.ParameterInfo;
 import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
@@ -16,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static lphy.core.model.component.GeneratorUtils.*;
+import static lphy.core.model.GeneratorUtils.*;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -89,7 +90,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         String narrativeName = getNarrativeName();
 
         GeneratorInfo info = getGeneratorInfo(this.getClass());
-        Citation cite = getCitation(this.getClass());
+        Citation cite = CitationUtils.getCitation(this.getClass());
         String citationString = narrative.cite(cite);
 
         String verbClause = info != null ? info.verbClause() : "comes from";
@@ -267,7 +268,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             html.append("</ul></p>");
         }
 
-        Citation citation = getCitation(this.getClass());
+        Citation citation = CitationUtils.getCitation(this.getClass());
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
@@ -383,7 +384,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
             html.append("</ul>");
         }
 
-        Citation citation = getCitation(generatorClass);
+        Citation citation = CitationUtils.getCitation(generatorClass);
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());

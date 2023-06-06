@@ -1,7 +1,7 @@
 package lphy.core.spi;
 
-import lphy.core.model.component.Func;
-import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.Func;
+import lphy.core.model.GenerativeDistribution;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.SliceDoubleArray;
 

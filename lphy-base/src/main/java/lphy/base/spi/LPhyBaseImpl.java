@@ -30,8 +30,8 @@ import lphy.base.function.tree.ExtantTree;
 import lphy.base.function.tree.MigrationCount;
 import lphy.base.function.tree.Newick;
 import lphy.base.function.tree.PruneTree;
-import lphy.core.model.component.Func;
-import lphy.core.model.component.GenerativeDistribution;
+import lphy.core.model.Func;
+import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
 
 import java.util.Arrays;

@@ -1,11 +1,11 @@
 package lphy.core.parser;
 
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ExpressionUtils;
+import lphy.core.model.Value;
 import lphy.core.model.datatype.DoubleValue;
 import lphy.core.model.datatype.IntegerValue;
+import lphy.core.parser.argument.ExpressionUtils;
+import lphy.core.parser.graphicalmodel.GraphicalModel;
 
 import java.io.BufferedReader;
 import java.io.File;

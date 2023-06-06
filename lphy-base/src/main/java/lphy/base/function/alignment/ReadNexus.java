@@ -5,11 +5,11 @@ import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.parser.NexusParser;
 import lphy.base.system.UserDir;
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -1,6 +1,6 @@
 package lphy.core.parser.function;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 import lphy.core.model.datatype.IntegerValue;
 import lphy.core.parser.ParserTest;
 import org.apache.commons.math3.distribution.NormalDistribution;

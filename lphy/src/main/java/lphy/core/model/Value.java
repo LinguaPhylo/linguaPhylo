@@ -1,8 +1,8 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
-import lphy.core.model.GraphicalModelNodeVisitor;
 import lphy.core.model.datatype.DoubleValue;
 import lphy.core.narrative.Narrative;
+import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
 
 import java.util.ArrayList;
 import java.util.Collections;

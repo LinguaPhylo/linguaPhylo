@@ -1,9 +1,9 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.*;
-import lphy.core.model.component.argument.Argument;
+import lphy.core.model.*;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.parser.argument.Argument;
 import lphy.core.vectorization.operation.SliceValue;
 
 import java.lang.reflect.Constructor;
@@ -109,7 +109,7 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
     }
 
     public String codeString() {
-        return Func.codeString(componentFunctions.get(0), getParams());
+        return FuncUtils.codeString(componentFunctions.get(0), getParams());
     }
 
     public Value getReplicatesValue() {

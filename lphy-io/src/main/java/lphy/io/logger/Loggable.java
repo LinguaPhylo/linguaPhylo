@@ -1,6 +1,6 @@
 package lphy.io.logger;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
 public interface Loggable<U> {
 

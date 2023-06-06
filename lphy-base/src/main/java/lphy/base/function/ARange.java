@@ -1,9 +1,9 @@
 package lphy.base.function;
 
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ParameterInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Value;
+import lphy.core.parser.argument.ParameterInfo;
 
 public class ARange extends DeterministicFunction<Double[]> {
 

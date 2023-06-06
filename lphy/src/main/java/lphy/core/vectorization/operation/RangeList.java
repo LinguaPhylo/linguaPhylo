@@ -1,9 +1,9 @@
 package lphy.core.vectorization.operation;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GraphicalModelNode;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GraphicalModelNode;
+import lphy.core.model.Value;
 import lphy.core.model.datatype.IntegerArrayValue;
 
 import java.util.ArrayList;

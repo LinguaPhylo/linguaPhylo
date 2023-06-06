@@ -1,7 +1,7 @@
 package lphystudio.core.layeredgraph;
 
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
 
 import java.util.ArrayList;

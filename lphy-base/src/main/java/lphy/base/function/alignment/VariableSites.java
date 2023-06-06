@@ -3,11 +3,11 @@ package lphy.base.function.alignment;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.AlignmentUtils;
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.util.ArrayList;
 import java.util.List;

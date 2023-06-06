@@ -1,9 +1,9 @@
 package lphystudio.core.narrative;
 
-import lphy.core.model.GraphicalModel;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
-import lphy.core.model.component.Value;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.layeredgraph.ProperLayeredGraph;
 import lphystudio.core.theme.ThemeColours;
@@ -149,7 +149,7 @@ public class HTMLNarrative implements NarrativeLayeredGraph {
 
     public String posterior(LPhyMetaParser parser) {
 
-        String latex = GraphicalModel.Utils.getInferenceStatement(parser, new LaTeXNarrative());
+        String latex = GraphicalModelUtils.getInferenceStatement(parser, new LaTeXNarrative());
 
         // remove begin equation and end equation if they exist
         latex = rmLatexEquation(latex);
@@ -165,7 +165,7 @@ public class HTMLNarrative implements NarrativeLayeredGraph {
             return builder.toString();
 
         } catch (IOException ex) {
-            String html = GraphicalModel.Utils.getInferenceStatement(parser, this);
+            String html = GraphicalModelUtils.getInferenceStatement(parser, this);
             return html;
         }
     }

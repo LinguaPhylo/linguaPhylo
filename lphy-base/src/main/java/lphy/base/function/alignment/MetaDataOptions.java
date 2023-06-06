@@ -1,6 +1,6 @@
 package lphy.base.function.alignment;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
 import java.util.Map;
 

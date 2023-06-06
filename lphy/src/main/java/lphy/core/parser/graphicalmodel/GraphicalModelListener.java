@@ -1,8 +1,8 @@
-package lphy.core.model;
+package lphy.core.parser.graphicalmodel;
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Value;
 
 public interface GraphicalModelListener {
 

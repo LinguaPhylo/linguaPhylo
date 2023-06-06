@@ -1,12 +1,12 @@
 package lphy.core.parser.function;
 
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ArgumentValue;
 import lphy.core.model.datatype.MapValue;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.parser.argument.ArgumentValue;
 
 import java.util.HashMap;
 import java.util.Map;

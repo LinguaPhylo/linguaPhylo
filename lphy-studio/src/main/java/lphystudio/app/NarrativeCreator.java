@@ -2,8 +2,8 @@ package lphystudio.app;
 
 import lphy.base.system.UserDir;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.GraphicalModel;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.narrative.HTMLNarrative;
@@ -126,7 +126,7 @@ public class NarrativeCreator {
                 }
                 // move Data, Model, Posterior to the bottom of webpage
                 case Data -> {
-                    String dataSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, true, false);
+                    String dataSec = GraphicalModelUtils.getNarrative(parser, htmlNarrative, true, false);
 //                    narrative.append("\n<details>\n");
 //                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
                     narrative.append("\n" + DIV_BOX_BACKGR_COLOUR + "\n");
@@ -134,13 +134,13 @@ public class NarrativeCreator {
                     narrative.append("\n");
                 }
                 case Model -> {
-                    String modelSec = GraphicalModel.Utils.getNarrative(parser, htmlNarrative, false, true);
+                    String modelSec = GraphicalModelUtils.getNarrative(parser, htmlNarrative, false, true);
                     narrative.append(modelSec);
                     narrative.append("\n");
                 }
                 case Posterior -> {
                     narrative.append(htmlNarrative.section("Posterior"));
-                    String pos = GraphicalModel.Utils.getInferenceStatement(parser, latexNarrative);
+                    String pos = GraphicalModelUtils.getInferenceStatement(parser, latexNarrative);
                     pos = htmlNarrative.rmLatexEquation(pos);
                     // replace equation to $$ ... $$
                     narrative.append("$$\n").append(pos).append("\n$$\n\n");

@@ -5,11 +5,11 @@ import lphy.base.distribution.Exp;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.util.Arrays;
 import java.util.List;

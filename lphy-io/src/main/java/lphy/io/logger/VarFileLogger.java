@@ -1,8 +1,8 @@
 package lphy.io.logger;
 
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Symbols;
-import lphy.core.model.component.Value;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Symbols;
+import lphy.core.model.Value;
 import lphy.core.vectorization.VectorUtils;
 
 import java.io.File;

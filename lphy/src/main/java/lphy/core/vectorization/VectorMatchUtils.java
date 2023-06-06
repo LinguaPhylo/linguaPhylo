@@ -1,10 +1,10 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.Argument;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
+import lphy.core.parser.argument.Argument;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

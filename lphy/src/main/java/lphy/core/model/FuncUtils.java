@@ -1,56 +1,15 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ArgumentUtils;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ArgumentUtils;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-public abstract class Func implements Generator {
-
-    private String name = null;
-    private String description = null;
-
-    public String getName() {
-        if (name == null) {
-            return(getName(getClass()));
-        }
-        return name;
-    }
-
-    public String getDescription() {
-        if (description == null) {
-            GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(getClass());
-            if (fInfo != null) {
-                description = fInfo.name();
-            } else description = getClass().getSimpleName();
-        }
-        return description;
-    }
-
-    protected TreeMap<String, Value> paramMap = new TreeMap<>();
-
-    public Map<String, Value> getParams() {
-        return paramMap;
-    }
-
-    public void setParam(String paramName, Value value) {
-        paramMap.put(paramName, value);
-    }
-
-    public String codeString() {
-        return codeString(this,getParams());
-    }
-
-    @Override
-    public char generatorCodeChar() {
-        return '=';
-    }
-
+public class FuncUtils {
     public static String getName(Class<? extends Func> funcClass) {
         GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(funcClass);
         if (fInfo != null) {
@@ -69,7 +28,7 @@ public abstract class Func implements Generator {
         Constructor[] constructors = funcClass.getConstructors();
 
         if (constructors.length == 1) {
-            List<ParameterInfo> parameterInfoList = ArgumentUtils.getParameterInfo(funcClass,0);
+            List<ParameterInfo> parameterInfoList = ArgumentUtils.getParameterInfo(funcClass, 0);
             if (parameterInfoList.size() > 0) {
                 int paramCount = 0;
 

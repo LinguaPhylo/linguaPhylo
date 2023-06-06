@@ -2,8 +2,8 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
-import lphy.core.model.component.GeneratorUtils;
-import lphy.core.model.component.Symbols;
+import lphy.core.model.GeneratorUtils;
+import lphy.core.model.Symbols;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.ParserLoader;
 import lphystudio.core.codecolorizer.LineCodeColorizer;

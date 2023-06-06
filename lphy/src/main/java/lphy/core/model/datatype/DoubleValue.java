@@ -1,7 +1,7 @@
 package lphy.core.model.datatype;
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Value;
 
 public class DoubleValue extends NumberValue<Double> {
 

@@ -1,8 +1,8 @@
 package lphy.core.vectorization;
 
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.GraphicalModelNode;
-import lphy.core.model.component.RandomVariable;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.GraphicalModelNode;
+import lphy.core.model.RandomVariable;
 import lphy.core.vectorization.array.RangeElement;
 
 import java.lang.reflect.Array;

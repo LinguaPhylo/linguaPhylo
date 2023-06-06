@@ -1,8 +1,8 @@
 package lphystudio.core.codebuilder;
 
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
+import lphy.core.model.Generator;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 
 public class LaTexCodeBuilder implements CodeBuilder {
 

@@ -2,13 +2,13 @@ package lphy.base.evolution.birthdeath;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.math.RandomUtils;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;

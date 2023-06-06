@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
 
-import static lphy.core.model.component.ValueUtils.quotedString;
+import static lphy.core.model.ValueUtils.quotedString;
 
 public class StringArrayLabel extends ArrayLabel<String> {
 

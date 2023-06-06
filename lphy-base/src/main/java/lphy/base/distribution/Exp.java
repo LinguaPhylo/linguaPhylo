@@ -1,8 +1,8 @@
 package lphy.base.distribution;
 
+import lphy.core.model.*;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.*;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

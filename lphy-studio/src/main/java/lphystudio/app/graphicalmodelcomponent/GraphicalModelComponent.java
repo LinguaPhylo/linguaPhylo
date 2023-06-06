@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelcomponent;
 
-import lphy.core.model.GraphicalModelChangeListener;
-import lphy.core.model.GraphicalModelListener;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
+import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphystudio.core.layeredgraph.*;
 import lphystudio.core.narrative.LaTeXNarrative;
 import lphystudio.core.theme.ThemeColours;

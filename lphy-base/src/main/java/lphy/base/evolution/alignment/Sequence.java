@@ -5,9 +5,9 @@ import jebl.evolution.sequences.State;
 import lphy.base.distribution.DistributionConstants;
 import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.Taxa;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
+import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;

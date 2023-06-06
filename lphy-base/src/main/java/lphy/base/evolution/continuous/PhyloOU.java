@@ -2,11 +2,11 @@ package lphy.base.evolution.continuous;
 
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.SortedMap;

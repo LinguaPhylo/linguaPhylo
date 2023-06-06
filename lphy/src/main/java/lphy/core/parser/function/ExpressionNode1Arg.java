@@ -1,9 +1,9 @@
 package lphy.core.parser.function;
 
 
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GraphicalModelNode;
-import lphy.core.model.component.Value;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GraphicalModelNode;
+import lphy.core.model.Value;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.LinkedHashMap;

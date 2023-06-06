@@ -1,9 +1,9 @@
 package lphy.base.distribution;
 
 import lphy.base.math.RandomUtils;
-import lphy.core.model.component.GenerativeDistribution;
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**

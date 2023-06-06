@@ -1,7 +1,7 @@
-package lphy.core.model;
+package lphy.core.parser.graphicalmodel;
 
-import lphy.core.model.component.Generator;
-import lphy.core.model.component.Value;
+import lphy.core.model.Generator;
+import lphy.core.model.Value;
 
 /**
  * Created by Alexei Drummond on 24/01/20.

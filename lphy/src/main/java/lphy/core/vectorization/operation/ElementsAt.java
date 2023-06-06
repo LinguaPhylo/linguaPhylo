@@ -1,10 +1,10 @@
 package lphy.core.vectorization.operation;
 
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.ValueUtils;
-import lphy.core.model.component.argument.ParameterInfo;
+import lphy.core.parser.argument.ParameterInfo;
 
 import java.lang.reflect.Array;
 

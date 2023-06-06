@@ -1,12 +1,12 @@
 package lphy.base.function.tree;
 
 import lphy.base.evolution.tree.TimeTree;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GeneratorCategory;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.component.argument.ParameterInfo;
-import lphy.core.model.component.DeterministicFunction;
-import lphy.core.model.component.GeneratorCategory;
-import lphy.core.model.component.Value;
 import lphy.core.model.datatype.DoubleValue;
+import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * use {@link TimeTree#treeLength()}

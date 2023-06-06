@@ -1,4 +1,4 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
 package lphy.io.mcmc;
 
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.RandomVariable;
-import lphy.core.model.component.Value;
-import lphy.core.model.component.ValueListener;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
+import lphy.core.model.ValueListener;
+import lphy.core.parser.graphicalmodel.GraphicalModel;
 
 import java.util.HashMap;
 import java.util.Map;

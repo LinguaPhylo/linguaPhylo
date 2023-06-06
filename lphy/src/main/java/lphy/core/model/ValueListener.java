@@ -1,4 +1,4 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 public interface ValueListener<T> {
 

@@ -1,4 +1,4 @@
-package lphy.core.model.component;
+package lphy.core.model;
 
 /**
  * Define the 1-d distribution.

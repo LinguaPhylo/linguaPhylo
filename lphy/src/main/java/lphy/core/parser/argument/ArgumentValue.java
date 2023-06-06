@@ -1,7 +1,7 @@
-package lphy.core.model.component.argument;
+package lphy.core.parser.argument;
 
-import lphy.core.model.GraphicalModel;
-import lphy.core.model.component.Value;
+import lphy.core.model.Value;
+import lphy.core.parser.graphicalmodel.GraphicalModel;
 
 public class ArgumentValue {
 

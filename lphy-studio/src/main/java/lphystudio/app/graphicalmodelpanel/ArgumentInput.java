@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.model.component.Value;
-import lphy.core.model.component.argument.Argument;
+import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.argument.Argument;
 import lphystudio.core.swing.BoundsPopupMenuListener;
 import lphystudio.core.valueeditor.FieldComboBoxEditor;
 
