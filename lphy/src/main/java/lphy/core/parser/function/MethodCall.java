@@ -8,6 +8,7 @@ import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.datatype.Vector;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
+import lphy.core.narrative.TypeNameUtils;
 import lphy.core.vectorization.CompoundVectorValue;
 import lphy.core.vectorization.VectorizedFunction;
 import lphy.core.vectorization.operation.ElementsAt;
@@ -411,7 +412,7 @@ public class MethodCall extends DeterministicFunction {
             int argumentIndex = Integer.parseInt(paramName.substring(argParamName.length()));
             return "argument " + argumentIndex;
         }
-        if (paramName.equals(objectParamName)) return NarrativeUtils.getTypeName(value);
+        if (paramName.equals(objectParamName)) return TypeNameUtils.getTypeName(value);
         throw new RuntimeException("Expected either " + argParamName + "[0-9] or " + objectParamName + ", but got " + paramName);
     }
 

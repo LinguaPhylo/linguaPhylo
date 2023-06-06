@@ -1,12 +1,13 @@
 package lphy.core.model;
 
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ArgumentUtils;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorUtils {
@@ -15,7 +16,7 @@ public class GeneratorUtils {
 
     public static String getSignature(Class<?> aClass) {
 
-        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(aClass, 0);
+        List<ParameterInfo> pInfo = getParameterInfo(aClass, 0);
 
         StringBuilder builder = new StringBuilder();
         builder.append(getGeneratorName(aClass));
@@ -124,5 +125,29 @@ public class GeneratorUtils {
             }
         } else typeClass = Object.class;
         return typeClass;
+    }
+
+    public static boolean hasSingleGeneratorOutput(Value value) {
+        return value != null && value.getOutputs().size() == 1 && (value.getOutputs().get(0) instanceof Generator);
+    }
+
+    public static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
+        return getParameterInfo(c.getConstructors()[constructorIndex]);
+    }
+
+    public static List<ParameterInfo> getParameterInfo(Constructor constructor) {
+        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
+
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (int i = 0; i < annotations.length; i++) {
+            Annotation[] annotations1 = annotations[i];
+            for (Annotation annotation : annotations1) {
+                if (annotation instanceof ParameterInfo) {
+                    pInfo.add((ParameterInfo) annotation);
+                }
+            }
+        }
+
+        return pInfo;
     }
 }

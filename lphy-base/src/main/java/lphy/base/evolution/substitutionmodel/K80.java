@@ -4,8 +4,8 @@ import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;
-import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * K80: AC = AT = CG = GT, AG = CT, equal base frequencies, k + 1 free parameters

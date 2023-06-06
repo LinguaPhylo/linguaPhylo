@@ -5,8 +5,8 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
+import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
@@ -273,7 +273,7 @@ public class LaTeXNarrative implements NarrativeLayeredGraph {
 
     public String posterior(LPhyMetaParser parser) {
 
-        return GraphicalModelUtils.getInferenceStatement(parser, this);
+        return NarrativeUtils.getInferenceStatement(parser, this);
     }
 
     public String codeBlock(LPhyMetaParser parser, int fontSize) {

@@ -5,8 +5,8 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleValue;
-import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * use {@link TimeTree#treeLength()}

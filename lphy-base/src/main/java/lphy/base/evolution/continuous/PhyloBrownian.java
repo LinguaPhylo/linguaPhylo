@@ -11,8 +11,8 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleValue;
-import lphy.core.parser.argument.ParameterInfo;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

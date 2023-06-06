@@ -2,11 +2,11 @@ package lphy.base.function.tree;
 
 import lphy.base.evolution.coalescent.StructuredCoalescent;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.IntegerValue;
 
 public class MigrationCount extends DeterministicFunction<Integer> {

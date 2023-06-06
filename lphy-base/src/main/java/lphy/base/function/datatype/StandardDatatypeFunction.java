@@ -6,7 +6,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 
 /**
  * Created by Alexei Drummond on 2/02/20.

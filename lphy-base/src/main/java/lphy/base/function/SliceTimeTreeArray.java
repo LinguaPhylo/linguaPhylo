@@ -3,7 +3,7 @@ package lphy.base.function;
 import lphy.base.ParameterNames;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.Value;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.vectorization.operation.Slice;
 
 public class SliceTimeTreeArray extends Slice<TimeTree> {

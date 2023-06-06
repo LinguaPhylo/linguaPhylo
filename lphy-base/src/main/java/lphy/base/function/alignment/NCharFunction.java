@@ -4,8 +4,8 @@ import lphy.base.evolution.NChar;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.IntegerValue;
-import lphy.core.parser.argument.ParameterInfo;
 @Deprecated
 public class NCharFunction extends DeterministicFunction<Integer> {
 

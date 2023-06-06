@@ -9,6 +9,7 @@ import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.narrative.CitationUtils;
+import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.function.MethodCall;
 
 import java.util.TreeMap;
@@ -49,7 +50,7 @@ public class Model {
 
             this.isDeterFunc = cls.isAssignableFrom(DeterministicFunction.class);
             // cls is Generator
-            htmlDoc = Generator.getGeneratorHtml((Class<? extends Generator>) cls);
+            htmlDoc = NarrativeUtils.getGeneratorHtml((Class<? extends Generator>) cls);
 
         } else { // MethodInfo
 

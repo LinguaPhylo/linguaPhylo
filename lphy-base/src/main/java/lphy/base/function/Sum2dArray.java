@@ -5,8 +5,8 @@ import lphy.core.exception.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.NumberArrayValue;
-import lphy.core.parser.argument.ParameterInfo;
 
 public class Sum2dArray extends DeterministicFunction<Number[]> {
 

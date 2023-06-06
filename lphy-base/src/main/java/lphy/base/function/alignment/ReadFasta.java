@@ -16,7 +16,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 
 import java.io.IOException;
 import java.io.Reader;

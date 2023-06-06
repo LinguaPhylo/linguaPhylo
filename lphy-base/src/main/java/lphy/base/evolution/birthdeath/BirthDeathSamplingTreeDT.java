@@ -4,7 +4,7 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.*;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.Map;
 import java.util.TreeMap;

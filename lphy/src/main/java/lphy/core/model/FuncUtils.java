@@ -1,8 +1,8 @@
 package lphy.core.model;
 
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.parser.argument.ArgumentUtils;
-import lphy.core.parser.argument.ParameterInfo;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
@@ -28,7 +28,7 @@ public class FuncUtils {
         Constructor[] constructors = funcClass.getConstructors();
 
         if (constructors.length == 1) {
-            List<ParameterInfo> parameterInfoList = ArgumentUtils.getParameterInfo(funcClass, 0);
+            List<ParameterInfo> parameterInfoList = GeneratorUtils.getParameterInfo(funcClass, 0);
             if (parameterInfoList.size() > 0) {
                 int paramCount = 0;
 

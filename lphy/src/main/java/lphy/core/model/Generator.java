@@ -2,22 +2,21 @@ package lphy.core.model;
 
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.narrative.CitationUtils;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
-import lphy.core.parser.argument.ArgumentUtils;
-import lphy.core.parser.argument.ParameterInfo;
 import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static lphy.core.model.GeneratorUtils.*;
+import static lphy.core.model.GeneratorUtils.getGeneratorInfo;
+import static lphy.core.model.GeneratorUtils.getReturnType;
 
 /**
  * A generator generates values, either deterministically (DeterministicFunction) or stochastically (GenerativeDistribution).
@@ -49,40 +48,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
 
     default String getInferenceStatement(Value value, Narrative narrative) {
 
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("P(");
-
-        String name = narrative.getId(value, false);
-
-        builder.append(name);
-        Map<String, Value> params = getParams();
-
-        List<ParameterInfo> parameterInfos = getParameterInfo(0);
-        int count = 0;
-        for (ParameterInfo parameterInfo : parameterInfos) {
-            Value v = params.get(parameterInfo.name());
-            if (v != null && v.isRandom()) {
-
-                if (count == 0) {
-                    builder.append(" | ");
-                } else {
-                    builder.append(", ");
-                }
-
-                if (v.isAnonymous()) {
-                    builder.append(parameterInfo.name());
-                } else {
-
-                    name = narrative.getId(v, false);
-                    builder.append(name);
-                }
-                count += 1;
-            }
-        }
-        builder.append(")");
-
-        return builder.toString();
+        return NarrativeUtils.getGeneratorInferenceStatement(this, value, narrative);
     }
 
     default String getInferenceNarrative(Value value, boolean unique, Narrative narrative) {
@@ -221,7 +187,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
     default List<ParameterInfo> getParameterInfo(int constructorIndex) {
-        return ArgumentUtils.getParameterInfo(this.getClass(), constructorIndex);
+        return GeneratorUtils.getParameterInfo(this.getClass(), constructorIndex);
     }
 
     default Class<?> getParamType(String name) {
@@ -272,7 +238,7 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         if (citation != null) {
             html.append("<h3>Reference</h3>");
             html.append(citation.value());
-            String url = NarrativeUtils.getURL(citation);
+            String url = CitationUtils.getURL(citation);
             if (url.length() > 0) {
                 html.append("<br><a href=\"" + url + "\">" + url + "</a><br>");
             }
@@ -320,96 +286,5 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
     // all other static methods mv to GeneratorUtils
-
-    static Class<?>[] getParameterTypes(Class<? extends Generator> c, int constructorIndex) {
-        return ArgumentUtils.getParameterTypes(c.getConstructors()[constructorIndex]);
-    }
-
-    static String getGeneratorHtml(Class<? extends Generator> generatorClass) {
-        GeneratorInfo generatorInfo = getGeneratorInfo(generatorClass);
-
-        List<ParameterInfo> pInfo = ArgumentUtils.getParameterInfo(generatorClass, 0);
-        Class[] types = getParameterTypes(generatorClass, 0);
-
-        // parameters
-        StringBuilder signature = new StringBuilder();
-        signature.append(getGeneratorName(generatorClass)).append("(");
-
-        int count = 0;
-        for (int i = 0; i < pInfo.size(); i++) {
-            ParameterInfo pi = pInfo.get(i);
-            if (count > 0) signature.append(", ");
-            signature //.append(types[i].getSimpleName()).append(" ")
-                    .append("<i>").append(pi.name()).append("</i>");
-            count += 1;
-        }
-        signature.append(")");
-
-        // main content
-        StringBuilder html = new StringBuilder("<html><h2>");
-        // check if deprecated
-        Annotation a = generatorClass.getAnnotation(Deprecated.class);
-        if (a != null) html.append("<s>");
-        html.append(signature);
-        if (a != null) html.append("</s>").append("<font color=\"#ff0000\">")
-                .append(" @Deprecated").append("</font>");
-        html.append("</h2>");
-
-        if (generatorInfo != null) html.append("<p>").append(generatorInfo.description()).append("</p>");
-
-        if (pInfo.size() > 0) {
-            html.append("<h3>Parameters:</h3>").append("<ul>");
-//            int count = 0;
-            for (int i = 0; i < pInfo.size(); i++) {
-                ParameterInfo pi = pInfo.get(i);
-                html.append("<li>").append(types[i].getSimpleName()).
-                        append(" <b>").append(pi.name()).append("</b>")
-                        .append(" - <font color=\"#808080\">")
-                        .append(pi.description()).append("</font></li>");
-
-//                if (count > 0) signature.append(", ");
-//                signature.append(new Text(types[i].getSimpleName())).append(" ").append(new BoldText(pi.name()));
-//                count += 1;
-            }
-//            signature.append(")");
-//            html.append(new Heading(signature.toString(), 2)).append("\n\n");
-            html.append("</ul>");
-        }
-
-        List<String> returnType = Collections.singletonList(getReturnType(generatorClass).getSimpleName());
-        if (returnType.size() > 0) {
-            html.append("<h3>Return type:</h3>").append("<ul>");
-            for (String itm : returnType)
-                html.append("<li>").append(itm).append("</li>");
-            html.append("</ul>");
-        }
-
-        Citation citation = CitationUtils.getCitation(generatorClass);
-        if (citation != null) {
-            html.append("<h3>Reference</h3>");
-            html.append(citation.value());
-            if (!citation.value().endsWith(".")) html.append(".");
-            String url = NarrativeUtils.getURL(citation);
-            if (url.length() > 0)
-                html.append("&nbsp;<a href=\"").append(url).append("\">").append(url).append("</a><br>");
-        }
-
-        String[] examples = getGeneratorExamples(generatorClass);
-        if (examples.length > 0) {
-            html.append("<h3>Examples</h3>");
-            for (int i = 0; i < examples.length; i++) {
-                String ex = examples[i];
-                // add hyperlink
-                if (ex.startsWith("http"))
-                    ex = "&nbsp;<a href=\"" + ex + "\">" + ex + "</a>";
-                html.append(ex);
-                if (i < examples.length - 1)
-                    html.append(", ");
-            }
-        }
-
-        html.append("</html>");
-        return html.toString();
-    }
 
 }

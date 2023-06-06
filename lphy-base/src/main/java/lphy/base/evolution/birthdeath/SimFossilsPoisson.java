@@ -6,7 +6,7 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.math.RandomUtils;
 import lphy.core.model.*;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

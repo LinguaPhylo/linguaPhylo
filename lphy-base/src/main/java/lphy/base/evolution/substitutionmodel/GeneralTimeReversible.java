@@ -3,8 +3,8 @@ package lphy.base.evolution.substitutionmodel;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;
-import lphy.core.parser.argument.ParameterInfo;
 
 /**
  * Created by Alexei Drummond on 2/02/20.

@@ -3,7 +3,7 @@ package lphy.base.function;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 //lphy.parser.functions.MapValue
 @Deprecated
 public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {

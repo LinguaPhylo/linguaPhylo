@@ -1,11 +1,11 @@
 package lphy.base.function.taxa;
 
 import lphy.base.evolution.Taxa;
-import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.ArrayList;
 import java.util.List;

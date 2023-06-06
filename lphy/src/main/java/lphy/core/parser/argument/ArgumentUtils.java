@@ -2,6 +2,7 @@ package lphy.core.parser.argument;
 
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.ParameterInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -11,27 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ArgumentUtils {
-
-
-    public static List<ParameterInfo> getParameterInfo(Class<?> c, int constructorIndex) {
-        return getParameterInfo(c.getConstructors()[constructorIndex]);
-    }
-
-    public static List<ParameterInfo> getParameterInfo(Constructor constructor) {
-        ArrayList<ParameterInfo> pInfo = new ArrayList<>();
-
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation[] annotations1 = annotations[i];
-            for (Annotation annotation : annotations1) {
-                if (annotation instanceof ParameterInfo) {
-                    pInfo.add((ParameterInfo) annotation);
-                }
-            }
-        }
-
-        return pInfo;
-    }
 
     /**
      * @param constructor
@@ -119,7 +99,7 @@ public class ArgumentUtils {
     public static List<ParameterInfo> getAllParameterInfo(Class c) {
         ArrayList<ParameterInfo> pInfo = new ArrayList<>();
         for (Constructor constructor : c.getConstructors()) {
-            pInfo.addAll(getParameterInfo(constructor));
+            pInfo.addAll(GeneratorUtils.getParameterInfo(constructor));
         }
         return pInfo;
     }

@@ -2,8 +2,8 @@ package lphy.core.spi;
 
 import lphy.core.model.Func;
 import lphy.core.model.GenerativeDistribution;
-import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
+import lphy.core.narrative.NarrativeUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,7 +100,7 @@ public class LPhyLoader {
                         genDistSet.add(genClass);
                         // collect LPhy data types from GenerativeDistribution
                         types.add(GeneratorUtils.getReturnType(genClass));
-                        Collections.addAll(types, Generator.getParameterTypes(genClass, 0));
+                        Collections.addAll(types, NarrativeUtils.getParameterTypes(genClass, 0));
                         Collections.addAll(types, GeneratorUtils.getReturnType(genClass));
                     }
 //        for (Class<?> genClass : lightWeightGenClasses) {
@@ -119,7 +119,7 @@ public class LPhyLoader {
                         Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
                         funcSet.add(functionClass);
                         // collect LPhy data types from Func
-                        Collections.addAll(types, Generator.getParameterTypes(functionClass, 0));
+                        Collections.addAll(types, NarrativeUtils.getParameterTypes(functionClass, 0));
                         Collections.addAll(types, GeneratorUtils.getReturnType(functionClass));
                     }
 

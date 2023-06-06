@@ -7,7 +7,7 @@ import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.Taxa;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.argument.ParameterInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
