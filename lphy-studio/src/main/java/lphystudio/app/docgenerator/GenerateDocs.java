@@ -1,7 +1,11 @@
 package lphystudio.app.docgenerator;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.*;
+import lphy.core.model.DeterministicFunction;
+import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.Generator;
+import lphy.core.model.GeneratorUtils;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.parser.ParserLoader;
 import lphy.core.spi.LPhyLoader;
@@ -18,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static lphy.core.model.GeneratorCategory.*;
+import static lphy.core.model.annotation.GeneratorCategory.*;
 
 /**
  * Delete everything under ???/lphy/doc, if it is not a minor change to docs.

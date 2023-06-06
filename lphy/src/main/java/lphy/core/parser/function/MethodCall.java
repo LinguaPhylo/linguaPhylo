@@ -1,14 +1,14 @@
 package lphy.core.parser.function;
 
 import lphy.core.model.DeterministicFunction;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.datatype.Vector;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
 import lphy.core.narrative.TypeNameUtils;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 import lphy.core.vectorization.CompoundVectorValue;
 import lphy.core.vectorization.VectorizedFunction;
 import lphy.core.vectorization.operation.ElementsAt;
@@ -259,7 +259,7 @@ public class MethodCall extends DeterministicFunction {
 
                 List<Value> resultValues = new ArrayList<>();
                 for (int i = 0; i < size; i++) {
-                    resultValues.add(ValueUtils.createValue(method.invoke(((Vector)value).getComponent(i), args), this));
+                    resultValues.add(ValueCreator.createValue(method.invoke(((Vector)value).getComponent(i), args), this));
                 }
                 return new CompoundVectorValue(null, resultValues, this);
             }
@@ -275,7 +275,7 @@ public class MethodCall extends DeterministicFunction {
             if (obj instanceof Value) {
                 obj = ((Value) obj).value();
             }
-            return ValueUtils.createValue(obj, this);
+            return ValueCreator.createValue(obj, this);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -300,7 +300,7 @@ public class MethodCall extends DeterministicFunction {
                     callArgs[j] = args[j];
                 }
             }
-            returnValues.add(ValueUtils.createValue(method.invoke(value.value(), callArgs), this));
+            returnValues.add(ValueCreator.createValue(method.invoke(value.value(), callArgs), this));
         }
 
         return new CompoundVectorValue<>(null,returnValues, this);

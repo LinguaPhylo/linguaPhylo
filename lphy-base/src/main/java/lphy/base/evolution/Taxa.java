@@ -1,8 +1,8 @@
 package lphy.base.evolution;
 
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.MultiDimensional;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
 

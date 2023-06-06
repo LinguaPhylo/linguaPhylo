@@ -3,7 +3,7 @@ package lphy.core.vectorization;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.RandomVariable;
-import lphy.core.vectorization.array.RangeElement;
+import lphy.core.model.datatype.RangeElement;
 
 import java.lang.reflect.Array;
 import java.util.*;

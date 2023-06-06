@@ -1,9 +1,9 @@
 package lphy.base.function;
 
 import lphy.core.model.DeterministicFunction;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;

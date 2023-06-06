@@ -1,6 +1,10 @@
 package lphy.base.distribution;
 
-import lphy.core.model.*;
+import lphy.core.model.GenerativeDistribution1D;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.LogNormalDistribution;

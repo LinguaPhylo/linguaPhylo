@@ -1,10 +1,14 @@
 package lphy.core.narrative;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.*;
+import lphy.core.model.Generator;
+import lphy.core.model.GeneratorUtils;
+import lphy.core.model.RandomVariable;
+import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.datatype.ArrayUtils;
 import lphy.core.parser.argument.ArgumentUtils;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
@@ -101,7 +105,7 @@ public class NarrativeUtils {
         }
         if (value.getGenerator() == null && !value.isRandom()) {
             builder.append(" of ");
-            builder.append(narrative.text(ValueUtils.valueToString(value.value())));
+            builder.append(narrative.text(ArrayUtils.valueToString(value.value())));
         }
         return builder.toString();
     }

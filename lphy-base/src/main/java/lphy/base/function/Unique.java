@@ -2,9 +2,9 @@ package lphy.base.function;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 import lphy.core.vectorization.CompoundVectorValue;
 
 import java.util.*;
@@ -36,7 +36,7 @@ public class Unique<T> extends DeterministicFunction<T[]> {
             }
             return new CompoundVectorValue<>(null, uniqVal, this);
         } else {
-            return ValueUtils.createValue(uniqObj.toArray(), this);
+            return ValueCreator.createValue(uniqObj.toArray(), this);
         }
 
 //        StringArray strArr = Objects.requireNonNull(v).value();

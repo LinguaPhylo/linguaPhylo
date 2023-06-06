@@ -1,4 +1,7 @@
-package lphy.core.model;
+package lphy.core.model.annotation;
+
+import lphy.core.model.Func;
+import lphy.core.model.GenerativeDistribution;
 
 /**
  * The group of {@link GenerativeDistribution} or {@link Func}

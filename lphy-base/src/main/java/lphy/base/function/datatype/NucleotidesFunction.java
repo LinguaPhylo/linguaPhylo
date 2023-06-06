@@ -2,8 +2,8 @@ package lphy.base.function.datatype;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.model.DeterministicFunction;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 
 public class NucleotidesFunction extends DeterministicFunction<SequenceType> {

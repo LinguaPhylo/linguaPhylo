@@ -1,7 +1,7 @@
 package lphystudio.app.modelguide;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphystudio.core.swing.SpringUtilities;
 import lphystudio.core.swing.TableColumnAdjuster;
 

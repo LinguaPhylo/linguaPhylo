@@ -4,7 +4,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.vectorization.array.RangeElement;
+import lphy.core.model.datatype.RangeElement;
 
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 

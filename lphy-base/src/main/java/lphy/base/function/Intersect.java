@@ -3,9 +3,9 @@ package lphy.base.function;
 import lphy.base.ParameterNames;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +48,6 @@ public class Intersect<T> extends DeterministicFunction<T[]> {
         System.out.println("Intersect a vector "+ paramMap.get(ParameterNames.NoParamName0).getCanonicalId() +
                 " (" + a.length + ") with " + paramMap.get(ParameterNames.NoParamName1).getCanonicalId() +
                 " (" + b.length + "), the result length = " + intersect.size());
-        return ValueUtils.createValue(intersect, this);
+        return ValueCreator.createValue(intersect, this);
     }
 }

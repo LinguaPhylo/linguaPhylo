@@ -1,7 +1,6 @@
 package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
-import lphy.core.vectorization.VectorValue;
 
 public class DoubleArrayValue extends VectorValue<Double> {
 

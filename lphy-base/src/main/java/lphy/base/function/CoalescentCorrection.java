@@ -2,8 +2,8 @@ package lphy.base.function;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.DeterministicFunction;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 

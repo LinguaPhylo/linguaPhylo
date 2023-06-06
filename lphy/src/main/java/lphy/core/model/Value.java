@@ -1,6 +1,6 @@
 package lphy.core.model;
 
-import lphy.core.model.datatype.DoubleValue;
+import lphy.core.model.datatype.ArrayUtils;
 import lphy.core.narrative.Narrative;
 import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class Value<T> implements GraphicalModelNode<T> {
 
-    T value;
+    protected T value;
     private String id;
     List<ValueListener> listeners = new ArrayList<>();
     List<GraphicalModelNode> outputs = new ArrayList<>();
@@ -97,7 +97,7 @@ public class Value<T> implements GraphicalModelNode<T> {
 
     public String valueToString() {
 
-        return ValueUtils.valueToString(value);
+        return ArrayUtils.valueToString(value);
     }
 
     public void setValue(T value) {
@@ -205,5 +205,4 @@ public class Value<T> implements GraphicalModelNode<T> {
         isClamped = clamped;
     }
 
-    public static final Value<Double> Double_1 = new DoubleValue(null, 1.0, null);
 }

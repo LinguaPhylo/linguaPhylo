@@ -2,9 +2,9 @@ package lphy.core.vectorization.operation;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.lang.reflect.Array;
 
@@ -33,9 +33,9 @@ public class Slice<T> extends DeterministicFunction {
             for (int i = start; i <= end; i++) {
                 newArray[i] = array.value()[i];
             }
-            return ValueUtils.createValue(newArray, this);
+            return ValueCreator.createValue(newArray, this);
         } else {
-            return ValueUtils.createValue(array.value()[start], this);
+            return ValueCreator.createValue(array.value()[start], this);
         }
     }
 

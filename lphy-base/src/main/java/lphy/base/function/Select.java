@@ -2,9 +2,9 @@ package lphy.base.function;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 public class Select extends DeterministicFunction<Number> {
 
@@ -25,7 +25,7 @@ public class Select extends DeterministicFunction<Number> {
         Value<Number> x = getX();
         Boolean indicator = getIndicator().value();
 
-        return ValueUtils.createValue(indicator ? x.value() : 0.0, this);
+        return ValueCreator.createValue(indicator ? x.value() : 0.0, this);
     }
 
     public Value<Number> getX() {

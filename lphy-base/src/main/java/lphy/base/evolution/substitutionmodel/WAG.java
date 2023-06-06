@@ -1,9 +1,9 @@
 package lphy.base.evolution.substitutionmodel;
 
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleArray2DValue;

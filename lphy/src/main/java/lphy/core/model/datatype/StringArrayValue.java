@@ -1,9 +1,8 @@
 package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
-import lphy.core.vectorization.VectorValue;
 
-import static lphy.core.model.ValueUtils.quotedString;
+import static lphy.core.model.datatype.ArrayUtils.quotedString;
 
 public class StringArrayValue extends VectorValue<String> {
 

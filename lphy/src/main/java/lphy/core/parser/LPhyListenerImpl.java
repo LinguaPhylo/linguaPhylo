@@ -9,6 +9,7 @@ import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
 import lphy.core.parser.argument.ArgumentValue;
 import lphy.core.parser.function.*;
+import lphy.core.parser.graphicalmodel.ArrayCreator;
 import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
@@ -525,7 +526,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                     // get unnamed expression list
                     Value[] var = (Value[]) visit(ctx.getChild(1));
 
-                    Class<?> type = ValueUtils.getType(var);
+                    Class<?> type = ArrayCreator.getType(var);
 
                     // if all values null assume double array
                     if (type == Double.class) {

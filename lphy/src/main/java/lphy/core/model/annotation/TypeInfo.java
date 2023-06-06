@@ -1,7 +1,5 @@
 package lphy.core.model.annotation;
 
-import lphy.core.model.GeneratorCategory;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

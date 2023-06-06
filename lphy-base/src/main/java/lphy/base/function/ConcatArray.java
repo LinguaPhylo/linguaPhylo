@@ -3,9 +3,9 @@ package lphy.base.function;
 import lphy.base.ParameterNames;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.util.Arrays;
 
@@ -41,7 +41,7 @@ public class ConcatArray<T> extends DeterministicFunction<T[]> {
 
         System.out.println("Concatenate two vectors sized at " + a.length + " and " + b.length +
                 " into one, final length = " + array.length);
-        return ValueUtils.createValue(array, this);
+        return ValueCreator.createValue(array, this);
     }
 
 }

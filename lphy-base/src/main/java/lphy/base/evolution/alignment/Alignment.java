@@ -3,7 +3,7 @@ package lphy.base.evolution.alignment;
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
 import lphy.base.evolution.Taxa;
-import lphy.core.model.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
 

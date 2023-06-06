@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel.viewer;
 
 import lphy.core.model.Value;
 
-import static lphy.core.model.ValueUtils.quotedString;
+import static lphy.core.model.datatype.ArrayUtils.quotedString;
 
 public class StringArrayLabel extends ArrayLabel<String> {
 

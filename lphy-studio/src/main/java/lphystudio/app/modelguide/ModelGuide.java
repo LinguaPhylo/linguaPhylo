@@ -3,7 +3,7 @@ package lphystudio.app.modelguide;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.FuncUtils;
 import lphy.core.model.GenerativeDistribution;
-import lphy.core.model.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.parser.ParserLoader;
 import lphy.core.parser.function.MethodCall;

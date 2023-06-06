@@ -4,7 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
 import lphy.core.narrative.NarrativeName;

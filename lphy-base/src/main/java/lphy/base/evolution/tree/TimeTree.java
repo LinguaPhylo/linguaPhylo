@@ -2,8 +2,8 @@ package lphy.base.evolution.tree;
 
 import lphy.base.evolution.HasTaxa;
 import lphy.base.evolution.Taxa;
-import lphy.core.model.GeneratorCategory;
 import lphy.core.model.MultiDimensional;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.annotation.TypeInfo;
 
