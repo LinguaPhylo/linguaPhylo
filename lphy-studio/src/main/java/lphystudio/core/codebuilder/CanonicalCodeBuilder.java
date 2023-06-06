@@ -4,6 +4,7 @@ import lphy.core.model.Generator;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +38,7 @@ public class CanonicalCodeBuilder implements CodeBuilder {
         StringBuilder builder = new StringBuilder();
         for (Value value : parser.getModelSinks()) {
 
-            Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+            ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
                 public void visitValue(Value value) {
 

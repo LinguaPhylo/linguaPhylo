@@ -5,6 +5,7 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class CitationUtils {
         List<Citation> refs = new ArrayList<>();
         for (Value value : model.getModelSinks()) {
 
-            Value.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+            ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
                 public void visitValue(Value value) {
                 }

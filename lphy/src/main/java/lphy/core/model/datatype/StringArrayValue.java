@@ -2,8 +2,6 @@ package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
 
-import static lphy.core.model.datatype.ArrayUtils.quotedString;
-
 public class StringArrayValue extends VectorValue<String> {
 
     public StringArrayValue(String id, String[] value) {
@@ -12,6 +10,10 @@ public class StringArrayValue extends VectorValue<String> {
 
     public StringArrayValue(String id, String[] value, DeterministicFunction function) {
         super(id, value, function);
+    }
+
+    public static String quotedString(String str) {
+        return "\"" + str + "\"";
     }
 
     public String valueToString() {

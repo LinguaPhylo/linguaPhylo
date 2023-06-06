@@ -1,10 +1,12 @@
 package lphy.core.parser.graphicalmodel;
 
 import lphy.core.model.DeterministicFunction;
+import lphy.core.model.Generator;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class ValueCreator {
 
@@ -70,5 +72,25 @@ public class ValueCreator {
         else if (arr2List.get(0) instanceof Boolean)
             return createValue(arr2List.toArray(Boolean[]::new), generator);
         return createValue(arr2List.toArray(), generator);
+    }
+
+    public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitValue(value);
+
+        if (value.getGenerator() != null) {
+            traverseGraphicalModel(value.getGenerator(), visitor, post);
+        }
+        if (post) visitor.visitValue(value);
+    }
+
+    private static void traverseGraphicalModel(Generator generator, GraphicalModelNodeVisitor visitor, boolean post) {
+        if (!post) visitor.visitGenerator(generator);
+
+        Map<String, Value> map = generator.getParams();
+
+        for (Map.Entry<String, Value> e : map.entrySet()) {
+            traverseGraphicalModel(e.getValue(), visitor, post);
+        }
+        if (post) visitor.visitGenerator(generator);
     }
 }

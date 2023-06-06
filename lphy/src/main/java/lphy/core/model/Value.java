@@ -1,13 +1,8 @@
 package lphy.core.model;
 
-import lphy.core.model.datatype.ArrayUtils;
-import lphy.core.narrative.Narrative;
-import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Alexei Drummond on 18/12/19.
@@ -81,14 +76,14 @@ public class Value<T> implements GraphicalModelNode<T> {
         return builder.toString();
     }
 
-    public String getNarrative(boolean unique, Narrative narrative) {
-        if (getGenerator() != null) {
-            return getGenerator().getInferenceNarrative(this, unique, narrative);
-        } else {
-            if (!isAnonymous()) return toString();
-            return "";
-        }
-    }
+//    public String getNarrative(boolean unique, Narrative narrative) {
+//        if (getGenerator() != null) {
+//            return getGenerator().getInferenceNarrative(this, unique, narrative);
+//        } else {
+//            if (!isAnonymous()) return toString();
+//            return "";
+//        }
+//    }
 
     public String toString() {
         if (isAnonymous()) return valueToString();
@@ -97,7 +92,7 @@ public class Value<T> implements GraphicalModelNode<T> {
 
     public String valueToString() {
 
-        return ArrayUtils.valueToString(value);
+        return ValueUtils.valueToString(value);
     }
 
     public void setValue(T value) {
@@ -145,26 +140,6 @@ public class Value<T> implements GraphicalModelNode<T> {
 
     public void addValueListener(ValueListener listener) {
         listeners.add(listener);
-    }
-
-    public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor, boolean post) {
-        if (!post) visitor.visitValue(value);
-
-        if (value.getGenerator() != null) {
-            traverseGraphicalModel(value.getGenerator(), visitor, post);
-        }
-        if (post) visitor.visitValue(value);
-    }
-
-    private static void traverseGraphicalModel(Generator generator, GraphicalModelNodeVisitor visitor, boolean post) {
-        if (!post) visitor.visitGenerator(generator);
-
-        Map<String, Value> map = generator.getParams();
-
-        for (Map.Entry<String, Value> e : map.entrySet()) {
-            traverseGraphicalModel(e.getValue(), visitor, post);
-        }
-        if (post) visitor.visitGenerator(generator);
     }
 
     public void addOutput(Generator p) {
