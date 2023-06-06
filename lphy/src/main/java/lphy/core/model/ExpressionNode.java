@@ -1,25 +1,18 @@
-package lphy.core.parser.function;
-
-import lphy.core.model.DeterministicFunction;
-import lphy.core.model.Generator;
-import lphy.core.model.GraphicalModelNode;
-import lphy.core.model.Value;
+package lphy.core.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-abstract public class ExpressionNode<T> extends DeterministicFunction<T> implements Generator {
+public abstract class ExpressionNode<T> extends DeterministicFunction<T> implements Generator {
 
-	String expression;
-	Map<String, Value> params;
-	GraphicalModelNode[] inputValues;
+	protected String expression;
+//	Map<String, Value> params;
+    protected GraphicalModelNode[] inputValues;
 	boolean isAnonymous = false;
 
-	ExpressionNode() {
-		
-	}
+	public ExpressionNode() { }
 
 	protected void addValue2Params(Value value) {
 		String key = null;
@@ -34,7 +27,7 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 			// use value instead of func, look pretty inside red diamond button in GUI
 			if ( value.getGenerator() != null && key.equals(value.getGenerator().codeString()) )
 				key = value.toString();
-			params.put(key, value);
+			paramMap.put(key, value);
 		}
 		value.addOutput(this);
 	}
@@ -46,13 +39,25 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 
 	@Override
 	public Map<String, Value> getParams() {
-		return new LinkedHashMap<>(params);
+		return new LinkedHashMap<>(paramMap);
 	}
 
 	@Override
 	public void setParam(String paramName, Value value) {
 		//((Value) params.get(paramName)).setValue(value);
-		params.put(paramName, value);
+		paramMap.put(paramName, value);
+	}
+
+	public String getExpression() {
+		return expression;
+	}
+
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}
+
+	public GraphicalModelNode[] getInputValues() {
+		return inputValues;
 	}
 
 	@Override
@@ -62,7 +67,7 @@ abstract public class ExpressionNode<T> extends DeterministicFunction<T> impleme
 
 	@Override
 	public List<GraphicalModelNode> getInputs() {
-		return new ArrayList<>(params.values());
+		return new ArrayList<>(paramMap.values());
 	}
 
 	public boolean isAnonymous() {

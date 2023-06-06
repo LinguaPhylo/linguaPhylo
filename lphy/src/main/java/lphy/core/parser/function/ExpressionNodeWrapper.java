@@ -1,9 +1,6 @@
 package lphy.core.parser.function;
 
-import lphy.core.model.DeterministicFunction;
-import lphy.core.model.Generator;
-import lphy.core.model.GraphicalModelNode;
-import lphy.core.model.Value;
+import lphy.core.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -90,7 +87,7 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
         if (expressionNode.getParams().containsKey(paramName)) {
             expressionNode.setParam(paramName, value);
         } else {
-            for (GraphicalModelNode childNode : expressionNode.inputValues) {
+            for (GraphicalModelNode childNode : expressionNode.getInputValues()) {
                 if (childNode instanceof Value) {
                     Value v = (Value) childNode;
                     if (v.getGenerator() instanceof ExpressionNode) {
@@ -114,9 +111,9 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
 
     private Value applyRecursively(ExpressionNode expressionNode) {
 
-        for (int i = 0; i < expressionNode.inputValues.length; i++) {
-            if (expressionNode.inputValues[i] instanceof Value) {
-                Value v = (Value) expressionNode.inputValues[i];
+        for (int i = 0; i < expressionNode.getInputValues().length; i++) {
+            if (expressionNode.getInputValues()[i] instanceof Value) {
+                Value v = (Value) expressionNode.getInputValues()[i];
                 if (v.getGenerator() instanceof ExpressionNode) {
                     ExpressionNode childExpressionNode = (ExpressionNode) v.getGenerator();
 
@@ -125,7 +122,7 @@ public class ExpressionNodeWrapper extends DeterministicFunction {
                         newValue.setId(v.getId());
                         paramMap.put(v.getId(), newValue);
                     }
-                    expressionNode.inputValues[i] = newValue;
+                    expressionNode.getInputValues()[i] = newValue;
                 }
             } else throw new RuntimeException("This code assumes all inputs are values!");
         }

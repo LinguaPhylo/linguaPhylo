@@ -1,6 +1,7 @@
 package lphy.core.parser.function;
 
 import lphy.core.exception.LoggerUtils;
+import lphy.core.model.ExpressionNode;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
@@ -20,7 +21,7 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
     public ExpressionNode2Args(String expression, BiFunction func, GraphicalModelNode... values) {
         this.expression = expression;
         this.func = func;
-        params = new LinkedHashMap<>();
+        this.paramMap = new LinkedHashMap<>();
 
         for (GraphicalModelNode node : values) {
             if (node instanceof ExpressionNode) {
@@ -41,11 +42,11 @@ public class ExpressionNode2Args<T> extends ExpressionNode {
 
     @GeneratorInfo(name="expression", verbClause = "is calculated by", description = "expression")
     public Map<String, Value> getParams() {
-        return params;
+        return paramMap;
     }
 
     public void setParam(String paramName, Value value) {
-        params.put(paramName, value);
+        paramMap.put(paramName, value);
 
         for (int i = 0; i < inputValues.length; i++) {
         	Value v = (Value)inputValues[i];

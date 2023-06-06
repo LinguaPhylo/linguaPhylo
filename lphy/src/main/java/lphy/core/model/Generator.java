@@ -6,7 +6,6 @@ import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.narrative.CitationUtils;
 import lphy.core.narrative.Narrative;
 import lphy.core.narrative.NarrativeUtils;
-import lphy.core.parser.function.ExpressionNode;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

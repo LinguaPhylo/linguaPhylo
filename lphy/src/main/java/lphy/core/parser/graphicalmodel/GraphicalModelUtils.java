@@ -1,9 +1,9 @@
 package lphy.core.parser.graphicalmodel;
 
+import lphy.core.model.ExpressionNode;
 import lphy.core.model.Generator;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
-import lphy.core.parser.function.ExpressionNode;
 import lphy.core.parser.function.ExpressionNodeWrapper;
 
 import java.util.ArrayList;

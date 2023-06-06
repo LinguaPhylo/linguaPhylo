@@ -2,6 +2,7 @@ package lphy.core.parser.function;
 
 
 import lphy.core.model.DeterministicFunction;
+import lphy.core.model.ExpressionNode;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -21,13 +22,13 @@ public class ExpressionNode1Arg<T> extends ExpressionNode {
     public ExpressionNode1Arg(String expression, Function func, GraphicalModelNode... values) {
         this.expression = expression;
         this.func = func;
-        params = new LinkedHashMap<>();
+        this.paramMap = new LinkedHashMap<>();
         for (GraphicalModelNode node : values) {
-            if (node instanceof ExpressionNode) {
-                for (Object o : ((ExpressionNode) node).getInputs()) {
+            if (node instanceof ExpressionNode expressionNode) {
+                for (Object o : expressionNode.getInputs()) {
                     Value value2 = (Value) o;
                     value2.addOutput(this);
-                    params.put(value2.getId(), value2);
+                    paramMap.put(value2.getId(), value2);
                 }
             } else if (node instanceof Value val) {
                 addValue2Params(val);

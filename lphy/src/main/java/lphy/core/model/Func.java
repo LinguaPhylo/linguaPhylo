@@ -34,7 +34,7 @@ public abstract class Func implements Generator {
         return description;
     }
 
-    protected TreeMap<String, Value> paramMap = new TreeMap<>();
+    protected Map<String, Value> paramMap = new TreeMap<>();
 
     public Map<String, Value> getParams() {
         return paramMap;
