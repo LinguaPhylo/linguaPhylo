@@ -195,18 +195,18 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             Var var = (Var)visit(ctx.getChild(0));
             RandomVariable variable = null;
 
-            if (genDist instanceof VectorizedDistribution<?> vectDist) {
+            if (genDist instanceof VectorizedDistribution<?> vectDist &&
+                    DataClampingUtils.isDataClamping(var, parser)) {
                 // when the generator is VectorizedDistribution,
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
-                if (var.getId() != null && parser.getDataDictionary().containsKey(var.getId())) {
-                    Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
-                    if (array.getClass().isArray()) {
-                        variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
-                        LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
-                                " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
-                  }
-                 }
+                Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
+                if (array.getClass().isArray()) {
+                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
+                    LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
+                            " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
+                }
+
             } else {
                 variable = genDist.sample(var.getId());
             }

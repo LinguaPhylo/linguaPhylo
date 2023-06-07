@@ -1,5 +1,6 @@
 package lphy.parser;
 
+import lphy.core.LPhyMetaParser;
 import lphy.core.distributions.VectorizedDistribution;
 import lphy.graphicalModel.RandomVariable;
 import lphy.graphicalModel.VectorUtils;
@@ -10,6 +11,9 @@ import java.util.List;
 
 public class DataClampingUtils {
 
+    public static boolean isDataClamping(Var var, LPhyMetaParser parser) {
+        return var.getId() != null && parser.getDataDictionary().containsKey(var.getId());
+    }
 
     /**
      * @param id            id of VectorizedRandomVariable
