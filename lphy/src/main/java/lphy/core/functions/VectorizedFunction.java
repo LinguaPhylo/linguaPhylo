@@ -12,7 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.*;
 
-import static lphy.graphicalModel.VectorUtils.*;
+import static lphy.graphicalModel.VectorUtils.getComponentGenerator;
+import static lphy.graphicalModel.VectorUtils.getVectorSize;
 
 public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
 
@@ -176,8 +177,9 @@ public class VectorizedFunction<T> extends DeterministicFunction<T[]> {
             Value v = vrv.getComponentValue(0);
 
             String inferenceNarrative = generator.getInferenceNarrative(v, unique, narrative);
-            inferenceNarrative = inferenceNarrative.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
-            inferenceNarrative = inferenceNarrative.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+            // replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            // replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+            inferenceNarrative = inferenceNarrative.replace( narrative.subscript("0"), narrative.subscript("i"));
 
             builder.append(inferenceNarrative);
             return builder.toString();

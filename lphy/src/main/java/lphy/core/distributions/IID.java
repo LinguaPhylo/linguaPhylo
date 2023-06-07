@@ -9,8 +9,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static lphy.graphicalModel.VectorUtils.INDEX_SEPARATOR;
-
 public class IID<T> implements GenerativeDistribution<T[]> {
 
     // the parameters
@@ -126,8 +124,9 @@ public class IID<T> implements GenerativeDistribution<T[]> {
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
-            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
-            componentStatement = componentStatement.replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+// replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+// replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+            componentStatement = componentStatement.replace( narrative.subscript("0"), narrative.subscript("i"));
 
             builder.append(componentStatement);
 
