@@ -478,7 +478,7 @@ public class LaTeXNarrative implements NarrativeLayeredGraph {
 
     @Override
     public String subscript(String index) {
-        return "_" + index;
+        return "_{" + index + "}";
     }
 
 

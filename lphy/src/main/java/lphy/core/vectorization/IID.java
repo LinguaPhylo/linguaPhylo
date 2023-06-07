@@ -123,8 +123,9 @@ public class IID<T> implements GenerativeDistribution<T[]> {
 
             String componentStatement = generator.getInferenceStatement(v, narrative);
 
-            componentStatement = componentStatement.replaceAll(VectorUtils.INDEX_SEPARATOR + "0", narrative.subscript("i"));
-            componentStatement = componentStatement.replaceAll(VectorUtils.INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+            // replaceAll(INDEX_SEPARATOR + "0", narrative.subscript("i"));
+            // replaceAll(INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
+            componentStatement = componentStatement.replace( narrative.subscript("0"), narrative.subscript("i"));
 
             builder.append(componentStatement);
 
