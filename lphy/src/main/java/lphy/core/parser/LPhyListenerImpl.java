@@ -8,8 +8,12 @@ import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
 import lphy.core.parser.argument.ArgumentValue;
-import lphy.core.parser.function.*;
+import lphy.core.parser.function.ExpressionNode1Arg;
+import lphy.core.parser.function.ExpressionNode2Args;
+import lphy.core.parser.function.MapFunction;
+import lphy.core.parser.function.MethodCall;
 import lphy.core.parser.graphicalmodel.ArrayCreator;
+import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
@@ -196,19 +200,26 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
 
             Var var = (Var)visit(ctx.getChild(0));
-            RandomVariable variable;
-            // clamping
-            if (var.getId() != null && parser.getDataDictionary().containsKey(var.getId())) {
-                Object valueVal = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
-                variable = new RandomVariable(var.getId(), valueVal, genDist);
-                variable.setClamped(true);
-                LoggerUtils.log.info("Data clamp: the value of " + var.getId() +
-                        " in the model block is replaced by the value of " + var.getId() + " in the data block .");
+            RandomVariable variable = null;
+
+            if (genDist instanceof VectorizedDistribution<?> vectDist) {
+                // when the generator is VectorizedDistribution,
+                // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
+                // so that the equation and narrative can be generated properly
+                if (var.getId() != null && parser.getDataDictionary().containsKey(var.getId())) {
+                    Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
+                    if (array.getClass().isArray()) {
+                        variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
+                        LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
+                                " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
+                    }
+                }
             } else {
                 variable = genDist.sample(var.getId());
             }
 
-            if (!var.isRangedVar()) {
+            if (variable != null && !var.isRangedVar()) {
+                    put(variable.getId(), variable);
                 put(variable.getId(), variable);
                 return variable;
             } else {

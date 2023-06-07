@@ -65,23 +65,6 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             builder.append(componentStatement);
 
             return builder.toString();
-
-        } else if (value instanceof RandomVariable && value.value().getClass().isArray()) {
-            Object[] arr = (Object[]) value.value();
-
-            Generator generator = componentDistributions.get(0);
-            Value v = new Value(null, arr[0]);
-
-            builder.append(narrative.product("i", "0", Integer.toString((arr.length - 1))));
-
-            String componentStatement = generator.getInferenceStatement(v, narrative);
-
-            componentStatement = componentStatement.replaceAll(VectorUtils.INDEX_SEPARATOR + "0", narrative.subscript("i"));
-            componentStatement = componentStatement.replaceAll(VectorUtils.INDEX_SEPARATOR + "\\{0}", narrative.subscript("i"));
-
-            builder.append(componentStatement);
-
-            return builder.toString();
         }
         throw new RuntimeException("Expected VectorizedRandomVariable!");
     }
@@ -132,8 +115,8 @@ public class VectorizedDistribution<T> implements GenerativeDistribution<T[]> {
             builder.append(inferenceNarrative);
 
             return builder.toString();
-//        } else if (value.getGenerator() != null && value.getGenerator() instanceof VectorizedDistribution vectorizedDistribution) {
-        } else if (value instanceof RandomVariable && value.value().getClass().isArray()) {
+        } else if (value.getGenerator() != null && value.getGenerator() instanceof VectorizedDistribution ) {
+
             Object[] arr = (Object[]) value.value();
             Generator generator = componentDistributions.get(0);
             Value v = new Value(null, arr[0]);
