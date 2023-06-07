@@ -10,6 +10,10 @@ import java.util.List;
 
 public class DataClampingUtils {
 
+    public static boolean isDataClamping(Var var, LPhyMetaParser parser) {
+        return var.getId() != null && parser.getDataDictionary().containsKey(var.getId());
+    }
+
     /**
      * @param id            id of VectorizedRandomVariable
      * @param vectDist      the generator

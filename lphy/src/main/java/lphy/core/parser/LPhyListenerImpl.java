@@ -198,39 +198,37 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
             GenerativeDistribution genDist = (GenerativeDistribution) visit(ctx.getChild(2));
 
-
             Var var = (Var)visit(ctx.getChild(0));
             RandomVariable variable = null;
 
-            if (genDist instanceof VectorizedDistribution<?> vectDist) {
+            if (genDist instanceof VectorizedDistribution<?> vectDist &&
+                    DataClampingUtils.isDataClamping(var, parser)) {
                 // when the generator is VectorizedDistribution,
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
-                if (var.getId() != null && parser.getDataDictionary().containsKey(var.getId())) {
-                    Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
-                    if (array.getClass().isArray()) {
-                        variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
-                        LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
-                                " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
-                    }
+                Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
+                if (array.getClass().isArray()) {
+                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
+                    LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
+                            " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
                 }
+
             } else {
                 variable = genDist.sample(var.getId());
             }
 
             if (variable != null && !var.isRangedVar()) {
-                    put(variable.getId(), variable);
                 put(variable.getId(), variable);
                 return variable;
             } else {
-                throw new SimulatorParsingException("Ranged variables are not currently handled!", ctx);
+                throw new SimulatorParsingException("Data clamping requires to data as array object !", ctx);
 //                // if already exists
 //                if (get(rv.id) != null) {
 //                    addElementToVariable(rv.id, rv.range, variable);
 //                } else {
 //                    RandomVariable parentVariable = new RandomVariable(rv.id, )
 //                }
-            } 
+            }
         }
 
         @Override
@@ -665,7 +663,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             } else {
                 value = getIndexedValue(get(var.id), var.rangeList).apply();
             }
-            
+
             if (value == null) {
                 throw new SimulatorParsingException("Value " + ctx.children.get(0).getText() + " not found for method call " + methodName, ctx);
             }
