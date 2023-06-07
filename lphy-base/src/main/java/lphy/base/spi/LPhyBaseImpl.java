@@ -30,7 +30,7 @@ import lphy.base.function.tree.ExtantTree;
 import lphy.base.function.tree.MigrationCount;
 import lphy.base.function.tree.Newick;
 import lphy.base.function.tree.PruneTree;
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
 
@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * The "Container" provider class that implements SPI
- * which include a list of {@link GenerativeDistribution}, {@link Func} to extend.
+ * which include a list of {@link GenerativeDistribution}, {@link BasicFunction} to extend.
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
@@ -71,7 +71,7 @@ public class LPhyBaseImpl implements LPhyExtension {
             PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
             PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
 
-    List<Class<? extends Func>> functions = Arrays.asList(ARange.class, ArgI.class,
+    List<Class<? extends BasicFunction>> functions = Arrays.asList(ARange.class, ArgI.class,
             // Substitution models
             JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
             GeneralTimeReversible.class, LewisMK.class,
@@ -115,7 +115,7 @@ public class LPhyBaseImpl implements LPhyExtension {
     }
 
     @Override
-    public List<Class<? extends Func>> getFunctions() {
+    public List<Class<? extends BasicFunction>> getFunctions() {
         return functions;
     }
 

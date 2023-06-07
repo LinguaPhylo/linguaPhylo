@@ -2,8 +2,6 @@ package lphy.core.vectorization;
 
 import lphy.core.exception.LoggerUtils;
 import lphy.core.model.*;
-import lphy.core.narrative.Narrative;
-import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.argument.Argument;
 
 import java.lang.reflect.Constructor;

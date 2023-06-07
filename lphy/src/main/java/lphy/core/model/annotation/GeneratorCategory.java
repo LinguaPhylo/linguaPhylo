@@ -1,10 +1,10 @@
 package lphy.core.model.annotation;
 
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 
 /**
- * The group of {@link GenerativeDistribution} or {@link Func}
+ * The group of {@link GenerativeDistribution} or {@link BasicFunction}
  * play the same or similar roles in the Bayesian phylogenetic frame.
  * @author Walter Xie
  */

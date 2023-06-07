@@ -1,6 +1,6 @@
 package lphy.core.spi;
 
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * The service interface defined for SPI.
  * Implement this interface to create one "Container" provider class
  * for each module of LPhy or its extensions,
- * which should include {@link GenerativeDistribution}, {@link Func}.
+ * which should include {@link GenerativeDistribution}, {@link BasicFunction}.
  *
  * @author Walter Xie
  */
@@ -21,8 +21,8 @@ public interface LPhyExtension {
     List<Class<? extends GenerativeDistribution>> getDistributions();
 
     /**
-     * @return the list of new {@link Func} implemented in the LPhy extension.
+     * @return the list of new {@link BasicFunction} implemented in the LPhy extension.
      */
-    List<Class<? extends Func>> getFunctions();
+    List<Class<? extends BasicFunction>> getFunctions();
 
 }

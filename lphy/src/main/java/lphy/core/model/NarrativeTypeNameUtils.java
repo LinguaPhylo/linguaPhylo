@@ -1,10 +1,8 @@
-package lphy.core.narrative;
-
-import lphy.core.model.Value;
+package lphy.core.model;
 
 import java.util.Map;
 
-public class TypeNameUtils {
+public class NarrativeTypeNameUtils {
     static final Map<String, String> TYPE_MAP = Map.of(
             "Alignment[]", "Alignments",
             "Double[]", "Vector",

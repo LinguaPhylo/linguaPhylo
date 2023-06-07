@@ -1,6 +1,5 @@
-package lphy.core.narrative;
+package lphy.core.model;
 
-import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.parser.LPhyMetaParser;
 

@@ -4,12 +4,8 @@ import lphy.core.exception.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
-import lphy.core.model.annotation.Citation;
-import lphy.core.model.annotation.GeneratorCategory;
-import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.annotation.MethodInfo;
-import lphy.core.narrative.CitationUtils;
-import lphy.core.narrative.NarrativeUtils;
+import lphy.core.model.NarrativeUtils;
+import lphy.core.model.annotation.*;
 import lphy.core.parser.function.MethodCall;
 
 import java.util.TreeMap;

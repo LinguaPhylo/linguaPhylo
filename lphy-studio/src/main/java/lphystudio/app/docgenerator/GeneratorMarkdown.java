@@ -2,9 +2,8 @@ package lphystudio.app.docgenerator;
 
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
+import lphy.core.model.NarrativeUtils;
 import lphy.core.model.annotation.*;
-import lphy.core.narrative.CitationUtils;
-import lphy.core.narrative.NarrativeUtils;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;

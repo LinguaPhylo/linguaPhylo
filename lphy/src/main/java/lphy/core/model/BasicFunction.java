@@ -5,12 +5,12 @@ import lphy.core.model.annotation.GeneratorInfo;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class Func implements Generator {
+public abstract class BasicFunction implements Generator {
 
     private String name = null;
     private String description = null;
 
-    public static String getName(Class<? extends Func> funcClass) {
+    public static String getName(Class<? extends BasicFunction> funcClass) {
         GeneratorInfo fInfo = GeneratorUtils.getGeneratorInfo(funcClass);
         if (fInfo != null) {
             return fInfo.name();

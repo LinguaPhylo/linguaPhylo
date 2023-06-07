@@ -1,7 +1,7 @@
 package lphystudio.app.modelguide;
 
+import lphy.core.model.BasicFunction;
 import lphy.core.model.DeterministicFunction;
-import lphy.core.model.Func;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
@@ -30,7 +30,7 @@ public class ModelGuide {
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
         List<Class<DeterministicFunction>> functions = ParserLoader.getDeterministicFunctions();
-        functions.sort(Comparator.comparing(Func::getName));
+        functions.sort(Comparator.comparing(BasicFunction::getName));
 
 //        Set<Class<?>> types = Collections.unmodifiableSet();
         List<Class<?>> types = new ArrayList<>(ParserLoader.types);

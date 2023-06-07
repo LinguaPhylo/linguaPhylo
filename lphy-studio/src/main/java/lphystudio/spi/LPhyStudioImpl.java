@@ -1,6 +1,6 @@
 package lphystudio.spi;
 
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
 
@@ -25,7 +25,7 @@ public class LPhyStudioImpl implements LPhyExtension {
     }
 
     @Override
-    public List<Class<? extends Func>> getFunctions() {
+    public List<Class<? extends BasicFunction>> getFunctions() {
         return new ArrayList<>();
     }
 

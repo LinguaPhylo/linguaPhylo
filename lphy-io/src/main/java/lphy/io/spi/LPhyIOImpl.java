@@ -1,6 +1,6 @@
 package lphy.io.spi;
 
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
 import lphy.io.function.Simulate;
@@ -11,13 +11,13 @@ import java.util.List;
 
 /**
  * The "Container" provider class that implements SPI
- * which include a list of {@link GenerativeDistribution}, {@link Func} to extend.
+ * which include a list of {@link GenerativeDistribution}, {@link BasicFunction} to extend.
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
 public class LPhyIOImpl implements LPhyExtension {
 
-    List<Class<? extends Func>> functions = Arrays.asList(Simulate.class);
+    List<Class<? extends BasicFunction>> functions = Arrays.asList(Simulate.class);
 
     /**
      * Required by ServiceLoader.
@@ -32,7 +32,7 @@ public class LPhyIOImpl implements LPhyExtension {
     }
 
     @Override
-    public List<Class<? extends Func>> getFunctions() {
+    public List<Class<? extends BasicFunction>> getFunctions() {
         return functions;
     }
 

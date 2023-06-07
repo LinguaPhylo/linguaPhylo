@@ -1,6 +1,6 @@
 package lphy.core.model;
 
-public abstract class DeterministicFunction<T> extends Func {
+public abstract class DeterministicFunction<T> extends BasicFunction {
 
     public abstract Value<T> apply();
 

@@ -1,8 +1,8 @@
 package lphystudio.core.narrative;
 
+import lphy.core.model.NarrativeUtils;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
-import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.layeredgraph.ProperLayeredGraph;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import static lphy.core.narrative.CitationUtils.getURL;
+import static lphy.core.model.annotation.CitationUtils.getURL;
 import static lphy.core.vectorization.VectorUtils.INDEX_SEPARATOR;
 
 public class HTMLNarrative implements NarrativeLayeredGraph {

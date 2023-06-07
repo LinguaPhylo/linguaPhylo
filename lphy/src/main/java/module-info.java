@@ -32,7 +32,7 @@ module lphy.core {
     exports lphy.core.vectorization.operation;
 
     // others
-    exports lphy.core.narrative;
+//    exports lphy.core.narrative;
     exports lphy.core.exception;
 
     // declare service provider interface (SPI)

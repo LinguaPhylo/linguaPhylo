@@ -1,9 +1,9 @@
 package lphy.core.spi;
 
-import lphy.core.model.Func;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GeneratorUtils;
-import lphy.core.narrative.NarrativeUtils;
+import lphy.core.model.NarrativeUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ public class LPhyLoader {
      */
     public Map<String, Set<Class<?>>> genDistDictionary;
     /**
-     * {@link Func}
+     * {@link BasicFunction}
      */
     public Map<String, Set<Class<?>>> functionDictionary;
     /**
@@ -111,9 +111,9 @@ public class LPhyLoader {
 //            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 //        }
                     // Func
-                    List<Class<? extends Func>> funcs = lPhyExt.getFunctions();
+                    List<Class<? extends BasicFunction>> funcs = lPhyExt.getFunctions();
 
-                    for (Class<? extends Func> functionClass : funcs) {
+                    for (Class<? extends BasicFunction> functionClass : funcs) {
                         String name = GeneratorUtils.getGeneratorName(functionClass);
 
                         Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());

@@ -1,11 +1,7 @@
 package lphystudio.core.narrative;
 
-import lphy.core.model.Generator;
-import lphy.core.model.RandomVariable;
-import lphy.core.model.Symbols;
-import lphy.core.model.Value;
+import lphy.core.model.*;
 import lphy.core.model.annotation.Citation;
-import lphy.core.narrative.NarrativeUtils;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;

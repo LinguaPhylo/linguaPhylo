@@ -1,8 +1,8 @@
-package lphy.core.narrative;
+package lphy.core.model;
 
 import lphy.core.exception.LoggerUtils;
-import lphy.core.model.*;
 import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.CitationUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.parser.argument.ArgumentUtils;
@@ -20,11 +20,11 @@ public class NarrativeUtils {
 
     private static int wrapLength = 80;
 
-    public static String getArticle(Value value, boolean unique) {
+    private static String getArticle(Value value, boolean unique) {
         return getArticle(value, getName(value), unique, false);
     }
 
-    public static String getArticle(Value value, String name, boolean unique, boolean lowercase) {
+    private static String getArticle(Value value, String name, boolean unique, boolean lowercase) {
 
         //String article = lowercase ? "the" : "The";
         String article = lowercase ? "" : "The";
@@ -33,7 +33,7 @@ public class NarrativeUtils {
     }
 
 
-    public static String getName(Value value) {
+    private static String getName(Value value) {
         // empty array
 //        if (value == null) return "";
 
@@ -45,11 +45,11 @@ public class NarrativeUtils {
             if (name == null || name.equals("")) {
                 if (value.value() != null && value.value() instanceof NarrativeName val) {
                     name = val.getNarrativeName();
-                } else name = TypeNameUtils.getTypeName(value);
+                } else name = NarrativeTypeNameUtils.getTypeName(value);
             }
         } else if (value.value() != null && value.value() instanceof NarrativeName val) {
             name = val.getNarrativeName();
-        } else name = TypeNameUtils.getTypeName(value);
+        } else name = NarrativeTypeNameUtils.getTypeName(value);
         return name;
     }
 
@@ -427,5 +427,27 @@ public class NarrativeUtils {
 
         html.append("</html>");
         return html.toString();
+    }
+
+    public static String getReferences(GraphicalModel model, Narrative narrative) {
+
+        List<Citation> refs = new ArrayList<>();
+        for (Value value : model.getModelSinks()) {
+
+            ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
+                @Override
+                public void visitValue(Value value) {
+                }
+
+                public void visitGenerator(Generator generator) {
+                    Citation citation = CitationUtils.getCitation(generator.getClass());
+                    if (citation != null && !refs.contains(citation)) {
+                        refs.add(citation);
+                    }
+                }
+            }, false);
+        }
+
+        return narrative.referenceSection();
     }
 }

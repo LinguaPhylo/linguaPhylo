@@ -1,15 +1,6 @@
-package lphy.core.narrative;
-
-import lphy.core.model.Generator;
-import lphy.core.model.Value;
-import lphy.core.model.annotation.Citation;
-import lphy.core.parser.graphicalmodel.GraphicalModel;
-import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
-import lphy.core.parser.graphicalmodel.ValueCreator;
+package lphy.core.model.annotation;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CitationUtils {
 
@@ -69,25 +60,4 @@ public class CitationUtils {
         return "";
     }
 
-    public static String getReferences(GraphicalModel model, Narrative narrative) {
-
-        List<Citation> refs = new ArrayList<>();
-        for (Value value : model.getModelSinks()) {
-
-            ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
-                @Override
-                public void visitValue(Value value) {
-                }
-
-                public void visitGenerator(Generator generator) {
-                    Citation citation = getCitation(generator.getClass());
-                    if (citation != null && !refs.contains(citation)) {
-                        refs.add(citation);
-                    }
-                }
-            }, false);
-        }
-
-        return narrative.referenceSection();
-    }
 }

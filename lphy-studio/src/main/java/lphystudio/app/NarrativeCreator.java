@@ -2,7 +2,7 @@ package lphystudio.app;
 
 import lphy.base.system.UserDir;
 import lphy.core.exception.LoggerUtils;
-import lphy.core.narrative.NarrativeUtils;
+import lphy.core.model.NarrativeUtils;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;

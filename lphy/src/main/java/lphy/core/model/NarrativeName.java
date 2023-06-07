@@ -1,4 +1,4 @@
-package lphy.core.narrative;
+package lphy.core.model;
 
 /**
  * Provide a pretty name for narrative

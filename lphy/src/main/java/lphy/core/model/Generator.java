@@ -1,11 +1,9 @@
 package lphy.core.model;
 
 import lphy.core.model.annotation.Citation;
+import lphy.core.model.annotation.CitationUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.narrative.CitationUtils;
-import lphy.core.narrative.Narrative;
-import lphy.core.narrative.NarrativeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

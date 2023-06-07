@@ -1,6 +1,6 @@
 package lphystudio.core.narrative;
 
-import lphy.core.narrative.Narrative;
+import lphy.core.model.Narrative;
 import lphy.core.parser.LPhyMetaParser;
 import lphystudio.core.layeredgraph.ProperLayeredGraph;
 

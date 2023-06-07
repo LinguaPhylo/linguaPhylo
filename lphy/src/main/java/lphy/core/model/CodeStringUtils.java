@@ -28,7 +28,7 @@ public class CodeStringUtils {
         return prefix + value.getId();
     }
 
-    public static String codeString(Func function, Map<String, Value> params) {
+    public static String codeString(BasicFunction function, Map<String, Value> params) {
         Map<String, Value> map = params;
         Class<?> funcClass = function.getClass();
 
