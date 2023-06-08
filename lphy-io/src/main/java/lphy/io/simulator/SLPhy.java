@@ -12,9 +12,6 @@ import lphy.io.logger.VarFileLogger;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -89,22 +86,16 @@ public class SLPhy implements Callable<Integer> {
             loggers.add(new AlignmentFileLogger(name));
         }
         //*** Parse LPhy file ***//
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(infile.toFile());
-        } catch (FileNotFoundException e) {
-            throw new PicocliException("Cannot read LPhy script file ! " + infile.toAbsolutePath());
-        }
-        BufferedReader reader = new BufferedReader(fileReader);
-
         LPhyMetaParser parser = new REPL();
         try {
-            parser.source(reader);
+            parser.source(infile.toFile());
         } catch (IOException e) {
             throw new PicocliException("Cannot parse LPhy script file ! " + infile.toAbsolutePath());
         }
 
+        // wrap REPL
         GraphicalLPhyParser gparser = new GraphicalLPhyParser(parser);
+        // Sampler requires GraphicalLPhyParser
         Sampler sampler = new Sampler(gparser);
         sampler.sample(reps, loggers);
 

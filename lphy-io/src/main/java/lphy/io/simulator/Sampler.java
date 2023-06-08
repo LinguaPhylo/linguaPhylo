@@ -10,6 +10,10 @@ import lphy.io.logger.RandomValueLogger;
 
 import java.util.*;
 
+/**
+ * TODO this does not use any GraphicalModelChangeListener,
+ * so it should use REPL instead
+ */
 public class Sampler {
 
     GraphicalLPhyParser parser;
