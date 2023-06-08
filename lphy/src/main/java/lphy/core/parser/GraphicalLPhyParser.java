@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A wrapper for any implementation of LPhyParser that will be used in the Studio.
+ * A wrapper for any implementation of LPhyParser that will be used in the Studio,
+ * the current difference with {@link REPL} is adding {@link GraphicalModelChangeListener}.
  * @author Alexei Drummond
  */
 public class GraphicalLPhyParser implements LPhyMetaParser {

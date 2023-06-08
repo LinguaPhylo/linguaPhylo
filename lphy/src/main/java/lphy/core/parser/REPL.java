@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * A simple Read-Eval-Print-Loop for the graphicalModelSimulator language
+ * A simple Read-Eval-Print-Loop for the LPhy language
  **/
 public class REPL implements LPhyMetaParser {
 
