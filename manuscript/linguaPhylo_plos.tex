@@ -803,7 +803,8 @@ The sequencing and amplification error probability, $\textrm{epsilon}$ has a Bet
 \end{figure}
 
 \noindent The LPhy framework can be used to verify implementation correctness of new models, in which case they are said to be well-calibrated.
-Bayesian model validation consists of a series of steps, the first of which is simulation of synthetic data. Recent examples within the BEAST 2 platform are \cite{gaboriau20,chen2022accounting}. 
+Bayesian model validation consists of a series of steps, the first of which is simulation of synthetic data. 
+Recent examples that employ well-calibrated simulation studies within the BEAST2 platform include models for single-cell sequencing errors \cite{chen2022accounting} and correlated continuous traits \cite{gaboriau20}. 
 By making it possible to simulate complex models and connect to an inference engine (e.g., BEAST 2), LPhy and LPhyBEAST can greatly simplify the validation procedure.
 Fig \ref{fig_validation} presents the validation results for the model described above, when model specification and simulation were performed using LPhy, LPhyBEAST and Phylonco.
 
