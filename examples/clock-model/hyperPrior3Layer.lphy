@@ -12,7 +12,7 @@ model {
 
   // multiplier in log space : 1.124022  2.300000  3.475978
   // real space :              3.077205  9.974182 32.329444
-  multiplierLg ~ LogNormal(meanlog=2.3, sdlog=0.6);
+  multiplierLg ~ Normal(mean=2.3, sd=0.6);
   // hyperMean * multiplier
   hyperLgMean2 = hyperLgMean + multiplierLg;
 
