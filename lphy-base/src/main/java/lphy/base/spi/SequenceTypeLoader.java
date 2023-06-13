@@ -1,6 +1,7 @@
 package lphy.base.spi;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.core.spi.LPhyLoader;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Walter Xie
  */
-public class SequenceTypeLoader {
+public class SequenceTypeLoader implements LPhyLoader {
 
     /**
      * LPhy sequence types {@link SequenceType}
@@ -25,7 +26,7 @@ public class SequenceTypeLoader {
     private SequenceTypeLoader() {
         loader = ServiceLoader.load(SequenceTypeExtension.class);
         // register all ext
-        registerExtensions(loader, null);
+        registerExtensions(null);
     }
 
     // singleton
@@ -38,28 +39,18 @@ public class SequenceTypeLoader {
 
     /**
      * for creating doc only.
-     * @param fullClsName  the full name with package of the class
+     * @param extClsName  the full name with package of the class
      *                 to implement {@link SequenceTypeExtension},
      *                 such as lphy.spi.LPhyExtImpl
      */
-    public void loadExtension(String fullClsName) {
+    @Override
+    public void loadExtension(String extClsName) {
         loader.reload();
-        registerExtensions(loader, fullClsName);
+        registerExtensions(extClsName);
     }
 
-    /**
-     * for extension manager.
-     * @return   a list of detected {@link SequenceTypeExtension}.
-     */
-    public List<SequenceTypeExtension> getExtensions() {
-        loader.reload();
-        Iterator<SequenceTypeExtension> extensions = loader.iterator();
-        List<SequenceTypeExtension> extList = new ArrayList<>();
-        extensions.forEachRemaining(extList::add);
-        return extList;
-    }
-
-    private void registerExtensions(ServiceLoader<SequenceTypeExtension> loader, String clsName) {
+    @Override
+    public void registerExtensions(String extClsName) {
 
         dataTypeMap = new ConcurrentHashMap<>();
 
@@ -70,8 +61,8 @@ public class SequenceTypeLoader {
 
                 //*** LPhyExtensionImpl must have a public no-args constructor ***//
                 SequenceTypeExtension sequenceTypeExtension = extensions.next();
-                // clsName == null then register all
-                if (clsName == null || sequenceTypeExtension.getClass().getName().equalsIgnoreCase(clsName)) {
+                // extClsName == null then register all
+                if (extClsName == null || sequenceTypeExtension.getClass().getName().equalsIgnoreCase(extClsName)) {
                     System.out.println("Registering extension from " + sequenceTypeExtension.getClass().getName());
 
                     // sequence types
@@ -90,6 +81,20 @@ public class SequenceTypeLoader {
         }
 
     }
+
+    /**
+     * for extension manager.
+     * @return   a list of detected {@link SequenceTypeExtension}.
+     */
+    @Override
+    public List<SequenceTypeExtension> getExtensions() {
+        loader.reload();
+        Iterator<SequenceTypeExtension> extensions = loader.iterator();
+        List<SequenceTypeExtension> extList = new ArrayList<>();
+        extensions.forEachRemaining(extList::add);
+        return extList;
+    }
+
 
     public Set<SequenceType> getAllDataTypes() {
         return new HashSet<>(dataTypeMap.values());

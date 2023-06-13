@@ -471,7 +471,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
 
             Generator generator;
-            List<Generator> matches = ParserLoader.getMatchingGenerativeDistributions(name, arguments);
+            List<Generator> matches = ParserUtils.getMatchingGenerativeDistributions(name, arguments);
             switch (matches.size()) {
                 case 0:
                     throw new SimulatorParsingException("No generative distribution named " + name + " found matching arguments " + arguments, ctx);
@@ -841,9 +841,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             Generator generator;
             List<Generator> matches;
             if (argumentValues == null) {
-                matches = ParserLoader.getMatchingFunctions(functionName, f1);
+                matches = ParserUtils.getMatchingFunctions(functionName, f1);
             } else {
-                matches = ParserLoader.getMatchingFunctions(functionName, arguments);
+                matches = ParserUtils.getMatchingFunctions(functionName, arguments);
             }
             switch (matches.size()) {
                 case 0:

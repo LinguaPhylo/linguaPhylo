@@ -8,7 +8,7 @@ import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.parser.ParserLoader;
-import lphy.core.spi.LPhyLoader;
+import lphy.core.spi.LPhyCoreLoader;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -53,7 +53,7 @@ public class GenerateDocs {
         String version = "";
         if (args.length > 0)  version = args[0];
 
-        LPhyLoader lphyLoader = LPhyLoader.getInstance();
+        LPhyCoreLoader lphyCoreLoader = LPhyCoreLoader.getInstance();
 
         // Do not change default
         String extName = LPHY_DOC_TITLE;
@@ -64,7 +64,7 @@ public class GenerateDocs {
             extName = args[1];
             // class name with package that implements {@link LPhyExtension}
             String clsName = args[2];
-            lphyLoader.loadExtension(clsName);
+            lphyCoreLoader.loadExtension(clsName);
         }
         System.out.println("Creating doc for " + extName + " ...\n");
 
