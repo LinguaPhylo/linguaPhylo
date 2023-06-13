@@ -24,8 +24,6 @@ dependencies {
     implementation("org.jfree:jfreechart:1.5.4")
     // in maven
     implementation("net.steppschuh.markdowngenerator:markdowngenerator:1.3.1.1")
-    implementation(project(mapOf("path" to ":lphy-io")))
-
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 

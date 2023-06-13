@@ -13,13 +13,13 @@ module lphystudio {
     requires markdowngenerator;
 
     exports lphystudio.app;
-    exports lphystudio.core.narrative;
     exports lphystudio.app.manager;
 
     exports lphystudio.core.codebuilder;
     exports lphystudio.core.codecolorizer;
     exports lphystudio.core.layeredgraph;
     exports lphystudio.core.log;
+    exports lphystudio.core.narrative;
     exports lphystudio.core.swing;
     exports lphystudio.core.valueeditor;
     exports lphystudio.core.theme;

@@ -276,7 +276,9 @@ public class NarrativeUtils {
 
             int currentLineLength = 0;
 
-            List<RandomVariable> randomVariables = modelVisited.stream().filter(value -> value instanceof RandomVariable).map(value -> (RandomVariable) value).collect(Collectors.toList());
+            List<RandomVariable> randomVariables = modelVisited.stream().
+                    filter(value -> value instanceof RandomVariable).
+                    map(value -> (RandomVariable) value).collect(Collectors.toList());
 
             for (int i = 0; i < randomVariables.size(); i++) {
                 RandomVariable modelVariable = randomVariables.get(i);
