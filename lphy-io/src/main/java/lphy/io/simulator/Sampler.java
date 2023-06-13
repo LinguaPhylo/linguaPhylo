@@ -6,6 +6,7 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
+import lphy.core.vectorization.CompoundVectorValue;
 import lphy.io.logger.RandomValueLogger;
 
 import java.util.*;
@@ -97,6 +98,15 @@ public class Sampler {
                     // needs to be sampled
                     Value nv = sampleAll(val, val.getGenerator(), sampled);
                     nv.setId(val.getId());
+                    if (val instanceof CompoundVectorValue<?> oldCVV && nv instanceof CompoundVectorValue<?> newCVV) {
+                        // Must setId to the newly sampled component values inside CompoundVectorValue,
+                        // otherwise narratives will be broken because of null id.
+                        for (int i = 0; i < oldCVV.size(); i++) {
+                            newCVV.getComponentValue(i).setId(oldCVV.getComponentValue(i).getId());
+                        }
+                    } else if (val instanceof CompoundVectorValue<?> || nv instanceof CompoundVectorValue<?>)
+                        throw new IllegalArgumentException("sampleAll should return a CompoundVectorValue when given a CompoundVectorValue ! ");
+
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToModelDictionary(nv);
                     if (!val.isAnonymous()) sampled.add(val.getId());
