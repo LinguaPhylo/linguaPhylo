@@ -120,7 +120,7 @@ public class LPhyBaseImpl implements LPhyExtension {
     }
 
     @Override
-    public String getName() {
+    public String getExtensionName() {
         return "LPhy standard library";
     }
 }

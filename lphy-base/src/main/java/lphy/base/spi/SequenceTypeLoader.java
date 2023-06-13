@@ -26,7 +26,7 @@ public class SequenceTypeLoader implements LPhyLoader {
     private SequenceTypeLoader() {
         loader = ServiceLoader.load(SequenceTypeExtension.class);
         // register all ext
-        registerExtensions(null);
+        loadAllExtensions();
     }
 
     // singleton
@@ -37,20 +37,14 @@ public class SequenceTypeLoader implements LPhyLoader {
     }
 
 
-    /**
-     * for creating doc only.
-     * @param extClsName  the full name with package of the class
-     *                 to implement {@link SequenceTypeExtension},
-     *                 such as lphy.spi.LPhyExtImpl
-     */
     @Override
-    public void loadExtension(String extClsName) {
-        loader.reload();
-        registerExtensions(extClsName);
+    public void loadAllExtensions() {
+        registerExtensions(null);
     }
 
-    @Override
-    public void registerExtensions(String extClsName) {
+    // if extClsName is null, then load all classes,
+    // otherwise load classes in a given extension.
+    private void registerExtensions(String extClsName) {
 
         dataTypeMap = new ConcurrentHashMap<>();
 
@@ -80,6 +74,19 @@ public class SequenceTypeLoader implements LPhyLoader {
             serviceError.printStackTrace();
         }
 
+    }
+
+
+    /**
+     * for creating doc only.
+     * @param extClsName  the full name with package of the class
+     *                 to implement {@link SequenceTypeExtension},
+     *                 such as lphy.base.spi.SequenceTypeBaseImpl
+     */
+    @Override
+    public void loadExtension(String extClsName) {
+        loader.reload();
+        registerExtensions(extClsName);
     }
 
     /**

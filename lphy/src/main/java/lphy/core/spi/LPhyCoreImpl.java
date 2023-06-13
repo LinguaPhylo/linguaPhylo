@@ -38,7 +38,7 @@ public class LPhyCoreImpl implements LPhyExtension {
     }
 
     @Override
-    public String getName() {
+    public String getExtensionName() {
         return "LPhy core";
     }
 }

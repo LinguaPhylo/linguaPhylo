@@ -36,4 +36,9 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         dataTypeMap.put(SequenceTypeLoader.sanitise(Continuous.NAME), Continuous.getInstance());
         return dataTypeMap;
     }
+
+    @Override
+    public String getExtensionName() {
+        return "LPhy base";
+    }
 }

@@ -22,7 +22,7 @@ public class LPhyCoreLoader implements LPhyLoader {
     private LPhyCoreLoader() {
         loader = ServiceLoader.load(LPhyExtension.class);
         // register all ext
-        registerExtensions(null);
+        loadAllExtensions();
     }
 
     // singleton
@@ -44,25 +44,16 @@ public class LPhyCoreLoader implements LPhyLoader {
      * LPhy data types
      */
     public TreeSet<Class<?>> types;
-//    /**
-//     * LPhy sequence types {@link SequenceType}
-//     */
-//    public Map<String, SequenceType> dataTypeMap;
 
-    /**
-     * for creating doc only.
-     * @param extClsName  the full name with package of the class
-     *                 to implement {@link LPhyExtension},
-     *                 such as lphy.spi.LPhyExtImpl
-     */
+
     @Override
-    public void loadExtension(String extClsName) {
-        loader.reload();
-        registerExtensions(extClsName);
+    public void loadAllExtensions() {
+        registerExtensions(null);
     }
 
-    @Override
-    public void registerExtensions(String extClsName) {
+    // if extClsName is null, then load all classes,
+    // otherwise load classes in a given extension.
+    private void registerExtensions(String extClsName) {
 
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
@@ -138,6 +129,17 @@ public class LPhyCoreLoader implements LPhyLoader {
 
     }
 
+    /**
+     * for creating doc only.
+     * @param extClsName  the full name with package of the class
+     *                 to implement {@link LPhyExtension},
+     *                 such as lphy.spi.LPhyExtImpl
+     */
+    @Override
+    public void loadExtension(String extClsName) {
+        loader.reload();
+        registerExtensions(extClsName);
+    }
 
     /**
      * for extension manager.
