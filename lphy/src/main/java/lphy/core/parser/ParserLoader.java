@@ -15,11 +15,14 @@ public class ParserLoader {
 
     public static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
+    private static LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
+
     // data types are held in SequenceTypeFactory singleton
 
     static {
         // registration process
-        LPhyCoreLoader lphyCoreLoader = LPhyCoreLoader.getInstance();
+        lphyCoreLoader.loadAllExtensions();
+
         genDistDictionary = lphyCoreLoader.genDistDictionary;
         functionDictionary = lphyCoreLoader.functionDictionary;
 
@@ -38,6 +41,60 @@ public class ParserLoader {
 //        Map<String, SequenceType> dataTypeMap = lphyLoader.dataTypeMap;
 //        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
+
+    public ParserLoader() {}
+
+    public static LPhyCoreLoader getLphyCoreLoader() {
+        return lphyCoreLoader;
+    }
+
+    //    private static List<LPhyLoader> lPhyLoaders = new ArrayList<>();
+//
+//    static void loadAllLoaders() {
+//        try {
+//            ServiceLoader<LPhyLoader> serviceLoader = ServiceLoader.load(LPhyLoader.class);
+//            for (LPhyLoader service : serviceLoader) {
+//                System.out.println("Load " + service.getClass().getName());
+//
+//                service.loadAllExtensions();
+//                lPhyLoaders.add(service);
+//            }
+//
+//        } catch (ServiceConfigurationError serviceError) {
+//            System.err.println(serviceError);
+//            serviceError.printStackTrace();
+//        }
+//    }
+//
+//    private static ParserLoader parserLoader;
+//    private ParserLoader() {
+//
+//    }
+//
+//    // singleton
+//    public static ParserLoader getInstance() {
+//        if (parserLoader == null)
+//            parserLoader = new ParserLoader();
+//        return parserLoader;
+//    }
+//
+//    public LPhyLoader getALoader(Class<? extends LPhyLoader> loaderClass) {
+//        for (LPhyLoader lPhyLoader : lPhyLoaders) {
+//            if (lPhyLoader.getClass().isAssignableFrom(loaderClass))
+//                return lPhyLoader;
+//        }
+//        throw new RuntimeException("Cannot find the loader class ! " + loaderClass.getName());
+////        return null;
+//    }
+//
+//    private static LPhyCoreLoader getLPhyCoreLoader() {
+//        for (LPhyLoader lPhyLoader : lPhyLoaders) {
+//            if (lPhyLoader instanceof LPhyCoreLoader lPhyCoreLoader)
+//                return lPhyCoreLoader;
+//        }
+//        throw new RuntimeException("Cannot find the loader class ! " + LPhyCoreLoader.class.getName());
+////        return null;
+//    }
 
 
     public static Set<Class<?>> getGenerativeDistributionClasses(String name) {
@@ -69,4 +126,5 @@ public class ParserLoader {
         }
         return functions;
     }
+
 }

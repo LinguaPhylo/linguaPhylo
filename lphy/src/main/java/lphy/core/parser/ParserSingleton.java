@@ -5,28 +5,29 @@ import lphy.core.model.Value;
 import java.util.Arrays;
 
 public class ParserSingleton {
-    private static LPhyMetaParser PARSER = getInstance();
-    public synchronized static LPhyMetaParser getInstance() {
-        if (PARSER == null) {
-            PARSER = new REPL();
-        }
-        return PARSER;
-    }
+//    private static LPhyMetaParser PARSER = getInstance();
+//    public synchronized static LPhyMetaParser getInstance() {
+//        if (PARSER == null) {
+//            PARSER = new REPL();
+//        }
+//        return PARSER;
+//    }
+
+    private static LPhyListenerImpl dataParser = new LPhyListenerImpl(new REPL(), LPhyMetaParser.Context.data);
+    private static LPhyListenerImpl modelParser = new LPhyListenerImpl(new REPL(), LPhyMetaParser.Context.model);
 
     public static Object parse(String cmd) {
         return parseModelBlock(cmd);
     }
 
     public static Object parseModelBlock(String cmd) {
-        PARSER.clear();
-        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyMetaParser.Context.model);
-        return parser.parse(cmd);
+        modelParser.clear();
+        return modelParser.parse(cmd);
     }
 
     public static Object parseDataBlock(String cmd) {
-        PARSER.clear();
-        LPhyListenerImpl parser = new LPhyListenerImpl(PARSER, LPhyMetaParser.Context.data);
-        return parser.parse(cmd);
+        dataParser.clear();
+        return dataParser.parse(cmd);
     }
 
     public static void main(String[] args) {

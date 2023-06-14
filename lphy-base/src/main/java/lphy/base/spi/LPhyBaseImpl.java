@@ -46,7 +46,8 @@ import java.util.List;
 public class LPhyBaseImpl implements LPhyExtension {
 
     static {
-        SequenceTypeLoader.getInstance();
+        SequenceTypeLoader sequenceTypeLoader = new SequenceTypeLoader();
+        sequenceTypeLoader.loadAllExtensions();
     }
 
     List<Class<? extends GenerativeDistribution>> genDists = Arrays.asList(

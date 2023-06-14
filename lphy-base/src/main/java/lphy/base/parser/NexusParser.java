@@ -386,7 +386,10 @@ public class NexusParser {
 
                         try {
                             // add new data type to this method
-                            sequenceType = SequenceTypeLoader.getInstance().getDataType(token3);
+                            sequenceType = SequenceTypeLoader.getDataType(token3);
+                            if (sequenceType == null)
+                                throw new RuntimeException("Cannot find the sequence type in SequenceTypeLoader ! " + token3);
+
                         } catch (UnsupportedOperationException e) {
                             throw new ImportException.UnparsableDataException(e.getMessage());
                         }

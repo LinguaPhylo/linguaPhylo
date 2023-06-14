@@ -16,21 +16,10 @@ import java.util.stream.Collectors;
  * @author Walter Xie
  */
 public class LPhyCoreLoader implements LPhyLoader {
-    private static LPhyCoreLoader lphyCoreLoader;
-    final private ServiceLoader<LPhyExtension> loader;
+    private ServiceLoader<LPhyExtension> loader;
 
-    private LPhyCoreLoader() {
-        loader = ServiceLoader.load(LPhyExtension.class);
-        // register all ext
-        loadAllExtensions();
-    }
-
-    // singleton
-    public static LPhyCoreLoader getInstance() {
-        if (lphyCoreLoader == null)
-            lphyCoreLoader = new LPhyCoreLoader();
-        return lphyCoreLoader;
-    }
+    // Required by ServiceLoader
+    public LPhyCoreLoader() { }
 
     /**
      * {@link GenerativeDistribution}
@@ -46,8 +35,12 @@ public class LPhyCoreLoader implements LPhyLoader {
     public TreeSet<Class<?>> types;
 
 
+    // register all LPhyExtension
     @Override
     public void loadAllExtensions() {
+        if (loader == null)
+            loader = ServiceLoader.load(LPhyExtension.class);
+
         registerExtensions(null);
     }
 
@@ -61,12 +54,8 @@ public class LPhyCoreLoader implements LPhyLoader {
         types = new TreeSet<>(Comparator.comparing(Class::getName));
 
         try {
-            Iterator<LPhyExtension> extensions = loader.iterator();
-
-            while (extensions.hasNext()) { // TODO validation if add same name
-
-                //*** LPhyExtensionImpl must have a public no-args constructor ***//
-                LPhyExtension lPhyExt = extensions.next();
+            //*** LPhyExtensionImpl must have a public no-args constructor ***//
+            for (LPhyExtension lPhyExt : loader) {
                 // extClsName == null then register all
                 if (extClsName == null || lPhyExt.getClass().getName().equalsIgnoreCase(extClsName)) {
                     System.out.println("Registering extension from " + lPhyExt.getClass().getName());
@@ -137,7 +126,10 @@ public class LPhyCoreLoader implements LPhyLoader {
      */
     @Override
     public void loadExtension(String extClsName) {
-        loader.reload();
+        if (loader == null)
+            loader = ServiceLoader.load(LPhyExtension.class);
+        else
+            loader.reload();
         registerExtensions(extClsName);
     }
 
@@ -147,7 +139,10 @@ public class LPhyCoreLoader implements LPhyLoader {
      */
     @Override
     public List<LPhyExtension> getExtensions() {
-        loader.reload();
+        if (loader == null)
+            loader = ServiceLoader.load(LPhyExtension.class);
+        else
+            loader.reload();
         Iterator<LPhyExtension> extensions = loader.iterator();
         List<LPhyExtension> extList = new ArrayList<>();
         extensions.forEachRemaining(extList::add);

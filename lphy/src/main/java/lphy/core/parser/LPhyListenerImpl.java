@@ -32,6 +32,10 @@ import static lphy.core.parser.Var.getIndexedValue;
  */
 public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserAction {
 
+//    static {
+//        ParserLoader.getInstance();
+//    }
+
     // the current context during parsing, either data block or model block.
     LPhyMetaParser.Context context;
 
@@ -42,6 +46,10 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         this.parser = parser;
         this.context = context;
 
+    }
+
+    public void clear() {
+        this.parser.clear();
     }
 
     /**

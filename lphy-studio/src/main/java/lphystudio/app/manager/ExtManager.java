@@ -28,7 +28,9 @@ public class ExtManager {
     Set<String> jarDirSet = new HashSet<>();
 
     public ExtManager()  {
-        LPhyCoreLoader lphyCoreLoader = LPhyCoreLoader.getInstance();
+        //TODO other loaders ?
+        LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
+        lphyCoreLoader.loadAllExtensions();
 
         extensions = lphyCoreLoader.getExtensions();
         System.out.println(extensions);
