@@ -29,7 +29,6 @@ public class LPhyStudioImpl implements LPhyExtension {
         return new ArrayList<>();
     }
 
-    @Override
     public String getExtensionName() {
         return "LPhy studio";
     }

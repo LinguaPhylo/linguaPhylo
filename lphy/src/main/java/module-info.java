@@ -38,11 +38,6 @@ module lphy.core {
     // declare service provider interface (SPI)
     exports lphy.core.spi;
 
-    // Loaders
-//    uses LPhyLoader;
-    // declare what service interface the provider intends to use
-//    provides lphy.core.spi.LPhyLoader with LPhyCoreLoader;
-
     // LPhy extensions
     uses LPhyExtension;
     // declare what service interface the provider intends to use

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author Walter Xie
  */
-public class LPhyCoreLoader implements LPhyLoader {
+public class LPhyCoreLoader {
     private ServiceLoader<LPhyExtension> loader;
 
     // Required by ServiceLoader
@@ -35,8 +35,9 @@ public class LPhyCoreLoader implements LPhyLoader {
     public TreeSet<Class<?>> types;
 
 
-    // register all LPhyExtension
-    @Override
+    /**
+     * The method to load all classes registered by SPI mechanism.
+     */
     public void loadAllExtensions() {
         if (loader == null)
             loader = ServiceLoader.load(LPhyExtension.class);
@@ -119,12 +120,12 @@ public class LPhyCoreLoader implements LPhyLoader {
     }
 
     /**
-     * for creating doc only.
-     * @param extClsName  the full name with package of the class
-     *                 to implement {@link LPhyExtension},
-     *                 such as lphy.spi.LPhyExtImpl
+     * The method to load classes in a given extension registered by SPI mechanism.
+     * @param extClsName The fully qualified class name of the class that implements
+     *                   {@link LPhyExtension}, such as lphy.spi.LPhyCoreImpl,
+     *                   and contains all classes registered for SPI mechanism,
+     *                   such as BasicFunction or GenerativeDistribution.
      */
-    @Override
     public void loadExtension(String extClsName) {
         if (loader == null)
             loader = ServiceLoader.load(LPhyExtension.class);
@@ -137,7 +138,6 @@ public class LPhyCoreLoader implements LPhyLoader {
      * for extension manager.
      * @return   a list of detected {@link LPhyExtension}.
      */
-    @Override
     public List<LPhyExtension> getExtensions() {
         if (loader == null)
             loader = ServiceLoader.load(LPhyExtension.class);

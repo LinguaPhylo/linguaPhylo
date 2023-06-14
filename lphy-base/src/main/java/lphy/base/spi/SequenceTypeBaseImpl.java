@@ -37,7 +37,6 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         return dataTypeMap;
     }
 
-    @Override
     public String getExtensionName() {
         return "LPhy base";
     }

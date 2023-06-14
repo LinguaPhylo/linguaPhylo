@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Walter Xie
  */
-public interface LPhyExtension extends Extension {
+public interface LPhyExtension {
 
     /**
      * @return the list of new {@link GenerativeDistribution} implemented in the LPhy extension.

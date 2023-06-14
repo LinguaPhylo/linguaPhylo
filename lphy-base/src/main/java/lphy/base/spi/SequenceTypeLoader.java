@@ -1,7 +1,6 @@
 package lphy.base.spi;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.spi.LPhyLoader;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Walter Xie
  */
-public class SequenceTypeLoader implements LPhyLoader {
+public class SequenceTypeLoader {
 
     private ServiceLoader<SequenceTypeExtension> loader;
 
@@ -22,7 +21,6 @@ public class SequenceTypeLoader implements LPhyLoader {
     }
 
     // register all SequenceType ext
-    @Override
     public void loadAllExtensions() {
         if (loader == null)
             loader = ServiceLoader.load(SequenceTypeExtension.class);
@@ -65,7 +63,6 @@ public class SequenceTypeLoader implements LPhyLoader {
      *                 to implement {@link SequenceTypeExtension},
      *                 such as lphy.base.spi.SequenceTypeBaseImpl
      */
-    @Override
     public void loadExtension(String extClsName) {
         if (loader == null)
             loader = ServiceLoader.load(SequenceTypeExtension.class);
@@ -78,7 +75,6 @@ public class SequenceTypeLoader implements LPhyLoader {
      * for extension manager.
      * @return   a list of detected {@link SequenceTypeExtension}.
      */
-    @Override
     public List<SequenceTypeExtension> getExtensions() {
         if (loader == null)
             loader = ServiceLoader.load(SequenceTypeExtension.class);

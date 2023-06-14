@@ -1,7 +1,6 @@
 package lphy.base.spi;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.spi.Extension;
 
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import java.util.Map;
  *
  * @author Walter Xie
  */
-public interface SequenceTypeExtension extends Extension {
+public interface SequenceTypeExtension {
 
     /**
      * @return the map of new {@link SequenceType} implemented in the LPhy extension.

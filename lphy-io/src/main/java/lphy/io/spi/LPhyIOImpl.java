@@ -36,7 +36,6 @@ public class LPhyIOImpl implements LPhyExtension {
         return functions;
     }
 
-    @Override
     public String getExtensionName() {
         return "LPhy IO library";
     }
