@@ -303,8 +303,8 @@ This increases the difficulty of accurately reporting and reproducing analyses.
 These barriers have been recognised by the wider genomics research community \cite{eren2021community} as well as within evolutionary biology \cite{oakley2014osiris}. 
 
 In evolutionary biology, phylogenetics has become a highly technical discipline \cite{oakley2014osiris}. 
-The most general phylogenetic tools are Bayesian methods (e.g., BEAST, BEAST 2, MrBayes and
-RevBayes; \cite{beast,beast2,revbayes,mrbayes}) 
+The most general phylogenetic tools are Bayesian methods include BEAST \cite{beast}, BEAST 2 \cite{bouckaert2014beastanalysis,beast2}, MrBayes \cite{mrbayes} and
+RevBayes \cite{revbayes} 
 that can simultaneously reconstruct phylogenetic tree topology and divergence times, as well as estimate the related micro-evolutionary and macro-evolutionary parameters. 
 Phylogenetic analyses often combine multiple models within a complex pipeline to answer questions in evolutionary biology such as species evolution \cite{gavryushkina17,ogilvie21}, 
 ancestral biogeographical ranges \cite{lemey10,landis18}, and epidemic dynamics \cite{faria21,douglas21}. 
@@ -315,9 +315,11 @@ Currently, little research has been done on the readability, reproducibility and
 Our paper presents a tool that aims to: (i) facilitate concise and exact communication of phylogenetic models, (ii) improve reproducibility, and (iii) increase reusability of phylogenetic models and their variations on new datasets. 
 
 Probabilistic graphical models (PGM) have previously been introduced to phylogenetic inference by H\"{o}hna et al. \cite{revbayes}, where they are described in the Rev language of RevBayes \cite{revbayes}. 
-Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}.
+Previous attempts to address model specification of Bayesian phylogenetic analyses include BEAST-style XMLs (eXtensible Markup Language) developed for the BEAST software \cite{beast,bouckaert2014beastanalysis,beast2}, the Nexus-based language of MrBayes \cite{mrbayes} and the aforementioned Rev programming language used in RevBayes \cite{revbayes}.
 The extensibility of XMLs provides flexibility to developers allowing them to create new descriptive tags for specifying new models.
-Unfortunately, BEAST XMLs can be hard to read due to their XML-based, verbose syntax, which is unfamiliar to many users. The deeply nested structures and hierarchical organisation in BEAST XMLs make understanding model components and their relationships more challenging. In contrast, more general probabilistic programming languages such as found in JAGS, BUGS, and Stan employ more concise, linear structures that simplify comprehension and modification of models. Additionally, probabilistic programming languages are more accessible and widely applicable within the statistical modelling community, while BEAST XMLs are more domain-specific. 
+Unfortunately, BEAST XMLs can be hard to read due to their XML-based, verbose syntax, which is unfamiliar to many users. The deeply nested structures and hierarchical organisation in BEAST XMLs make understanding model components and their relationships more challenging. 
+In contrast, more general probabilistic programming languages such as found in JAGS \cite{plummer2003jags}, BUGS \cite{lunn2009bugs, gilks1994language} and Stan \cite{carpenter2017stan} employ more concise, linear structures that simplify comprehension and modification of models. 
+Additionally, probabilistic programming languages are more accessible and widely applicable within the statistical modelling community, while BEAST XMLs are more domain-specific. 
 The Rev language \cite{revbayes} offers an alternative to XMLs, incorporating conventional notation from general probabilistic programming languages, making model specifications more recognizable and flexible for statistically literate users. 
 However, users still face challenges with verbose and extraneous implementation details, such as MCMC sampling settings, logging information, and proposal distributions. 
 Additionally, the task of accurately describing the Rev model in natural language for a manuscript's methods section can be error-prone, further complicating the process of model specification and communication.
@@ -351,7 +353,7 @@ This can lead to clearer representations of the model's structure and relationsh
 When designing new generators, optional arguments in functions and generative distributions are allowed, these arguments may or may not have default values. 
 Two distinct code blocks are used to differentiate between the part of the script describing the data (the data block), and part describing the model (the model block). 
 The code block structure is inspired by the programming language Stan \cite{carpenter2017stan}. 
-The syntax for the specification of random variables is similar to probabilistic programming languages such as JAGS \cite{plummer2004jags}, BUGS \cite{lunn2009bugs, gilks1994language} and Stan \cite{carpenter2017stan}.
+The syntax for the specification of random variables is similar to probabilistic programming languages such as JAGS \cite{plummer2003jags}, BUGS \cite{lunn2009bugs, gilks1994language} and Stan \cite{carpenter2017stan}.
 Scripts can be loaded into LPhyStudio via the menu or the toolbar. 
 Additionally, we provide a console for executing LPhy commands line by line within LPhyStudio. 
 
@@ -827,18 +829,18 @@ There is no bijection between tree space and Euclidean space, so these
 objects cannot be treated with standard statistical distributions \cite{gavryushkin2016space}.
 Hence, specialist software is commonly employed to perform inference
 involving phylogenetic trees
-\cite{hohna2016revbayes,bouckaert2019beastanalysis}.
+\cite{revbayes,mrbayes,beast,bouckaert2014beastanalysis,beast2}. 
 
 LinguaPhylo differs from existing specialist software in the way it handles model specification.
 By using vectorization, LinguaPhylo obviates the need for for-loop control flow to describe repetitive structural elements of a model.
 This feature lowers the risk of syntactic or programming logic mistakes when defining a model relative to a full programming language such as Rev \cite{revbayes}.
-In its declarative nature, LPhy's language resembles the XML specification adopted by BEAST 2 \cite{bouckaert2014beast}, but shares the central notion of probabilistic graphical models with the Rev language.
+In its declarative nature, LPhy's language resembles the XML specification adopted by BEAST 2 \cite{bouckaert2014beastanalysis,beast2}, but shares the central notion of probabilistic graphical models with the Rev language.
 
 LinguaPhylo provides for a form of array programming (vectorization), so that any function or
 generative distribution can be called with its arguments in
 vectorized form. In such situations the function or generative distribution is `broadcast' over each element of the array, which allows for very concise model descriptions.
 
-Future work on integration of LPhy with other popular Bayesian phylogenetic inference tools, such as RevBayes\cite{hohna2016revbayes}, BEAST \cite{suchard2018bayesian}, MrBayes\cite{ronquist2012mrbayes} will increase the flexibility of the framework, and enable easy validation of and comparison between different Bayesian phylogenetic inference engines.
+Future work on integration of LPhy with other popular Bayesian phylogenetic inference tools, such as RevBayes\cite{revbayes}, BEAST \cite{beast}, MrBayes\cite{mrbayes} will increase the flexibility of the framework, and enable easy validation of and comparison between different Bayesian phylogenetic inference engines.
 
 \section*{Acknowledgments}
 We thank the New Zealand eScience Infrastructure (NeSI) for access to high-performance computation resources.
@@ -850,6 +852,7 @@ We thank the New Zealand eScience Infrastructure (NeSI) for access to high-perfo
 % \bibitem{}
 % Text
 % \end{thebibliography}
+
 \begin{thebibliography}{10}
 
 \bibitem{nas19}
@@ -884,6 +887,12 @@ Drummond AJ, Rambaut A.
 \newblock {BEAST: B}ayesian evolutionary analysis by sampling trees.
 \newblock {BMC Evolutionary Biology}. 2007;7:214.
 
+\bibitem{bouckaert2014beastanalysis}
+Bouckaert R, Heled J, K{\"u}hnert D, Vaughan T, Wu C, Xie D, et~al.
+\newblock BEAST 2: A Software Platform for Bayesian Evolutionary Analysis.
+\newblock PLoS computational biology. 2014;10(e1003537).
+\newblock doi:{10.1371/journal.pcbi.1003537}.
+
 \bibitem{beast2}
 Bouckaert R, Vaughan TG, Barido-Sottani J, Duch\^{e}ne S, Fourment M,
   Gavryushkina A, et~al.
@@ -891,18 +900,18 @@ Bouckaert R, Vaughan TG, Barido-Sottani J, Duch\^{e}ne S, Fourment M,
   analysis}.
 \newblock PLoS computational biology. 2019;15:e1006650.
 
-\bibitem{revbayes}
-H\"{o}hna S, Landis MJ, Heath TA, Boussau B, Lartillot N, Moore BR, et~al.
-\newblock {RevBayes: B}ayesian phylogenetic inference using graphical models
-  and an interactive model-specification languages.
-\newblock {Systematic biology}. 2016;65:726--736.
-
 \bibitem{mrbayes}
 Ronquist F, Teslenko M, {van der Mark} P, Ayres DL, Darling A, H\"{o}hna S,
   et~al.
 \newblock {MrBayes} 3.2: efficient {B}ayesian phylogenetic inference and model
   selection across a large model space.
 \newblock {Systematic biology}. 2012;61:539--542.
+
+\bibitem{revbayes}
+H\"{o}hna S, Landis MJ, Heath TA, Boussau B, Lartillot N, Moore BR, et~al.
+\newblock {RevBayes: B}ayesian phylogenetic inference using graphical models
+  and an interactive model-specification languages.
+\newblock {Systematic biology}. 2016;65:726--736.
 
 \bibitem{gavryushkina17}
 Gavryushkina A, Heath TA, Ksepka DT, Stadler T, Welch D, Drummond AJ.
@@ -941,6 +950,29 @@ Douglas J, Mendes FK, Bouckaert R, Xie D, Jim{\'e}nez-Silva CL, Swanepoel C,
   controlling the first wave of COVID-19 in four island nations.
 \newblock Virus evolution. 2021;7(2):veab052.
 
+\bibitem{plummer2003jags}
+Plummer M, et~al.
+\newblock JAGS: A program for analysis of Bayesian graphical models using Gibbs
+  sampling.
+\newblock In: Proceedings of the 3rd international workshop on distributed
+  statistical computing. vol. 124. Vienna, Austria; 2003. p. 1--10.
+
+\bibitem{lunn2009bugs}
+Lunn D, Spiegelhalter D, Thomas A, Best N.
+\newblock The BUGS project: Evolution, critique and future directions.
+\newblock Statistics in medicine. 2009;28(25):3049--3067.
+
+\bibitem{gilks1994language}
+Gilks WR, Thomas A, Spiegelhalter DJ.
+\newblock A language and program for complex Bayesian modelling.
+\newblock Journal of the Royal Statistical Society: Series D (The
+  Statistician). 1994;43(1):169--177.
+
+\bibitem{carpenter2017stan}
+Carpenter B, Gelman A, Hoffman MD, Lee D, Goodrich B, Betancourt M, et~al.
+\newblock Stan: A probabilistic programming language.
+\newblock Journal of statistical software. 2017;76(1).
+
 \bibitem{ebnf}
 {ISO Central Secretary}. Information technology -- Syntactic metalanguage --
   Extended BNF (Standard ISO/IEC 14977:1996); 1996.
@@ -972,25 +1004,12 @@ Ihaka R, Gentleman R.
 \newblock Journal of computational and graphical statistics.
   1996;5(3):299--314.
 
-\bibitem{carpenter2017stan}
-Carpenter B, Gelman A, Hoffman MD, Lee D, Goodrich B, Betancourt M, et~al.
-\newblock Stan: A probabilistic programming language.
-\newblock Journal of statistical software. 2017;76(1).
-
-\bibitem{plummer2004jags}
-Plummer M.
-\newblock JAGS: Just another Gibbs sampler. 2004;.
-
-\bibitem{lunn2009bugs}
-Lunn D, Spiegelhalter D, Thomas A, Best N.
-\newblock The BUGS project: Evolution, critique and future directions.
-\newblock Statistics in medicine. 2009;28(25):3049--3067.
-
-\bibitem{gilks1994language}
-Gilks WR, Thomas A, Spiegelhalter DJ.
-\newblock A language and program for complex Bayesian modelling.
-\newblock Journal of the Royal Statistical Society: Series D (The
-  Statistician). 1994;43(1):169--177.
+\bibitem{chen2022accounting}
+Chen K, Moravec JC, Gavryushkin A, Welch D, Drummond AJ.
+\newblock {Accounting for errors in data improves divergence time estimates in
+  single-cell cancer evolution}.
+\newblock Molecular biology and evolution. 2022;39(8).
+\newblock doi:{10.1093/molbev/msac143}.
 
 \bibitem{Rodrigo1999SerialCoalescent}
 Rodrigo AG, Felsenstein J.
@@ -1035,11 +1054,11 @@ Heath TA, Huelsenbeck JP, Stadler T.
   2014;111(29):E2957--E2966.
 
 \bibitem{yule1925ii}
-Yule GU.
-\newblock II.---A mathematical theory of evolution, based on the conclusions of
-  Dr. JC Willis, FR S.
-\newblock Philosophical transactions of the Royal Society of London Series B,
-  containing papers of a biological character. 1925;213(402-410):21--87.
+Udny~Yule G.
+\newblock A mathematical theory of evolution, based on the conclusions of Dr.
+  JC Willis, FRS.
+\newblock Philosophical Transactions of the Royal Society of London Series B.
+  1925;213:21--87.
 
 \bibitem{gtr}
 Tavar{\'e} S, et~al.
@@ -1087,12 +1106,6 @@ Zlateva KT, Lemey P, Mo{\"e}s E, Vandamme AM, Van~Ranst M.
   syncytial virus subgroup B attachment G protein.
 \newblock Journal of virology. 2005;79(14):9157--9167.
 
-\bibitem{chen2022accounting}
-Chen K, Moravec JC, Gavryushkin A, Welch D, Drummond AJ.
-\newblock {Accounting for errors in data improves divergence time estimates in single-cell cancer evolution}.
-\newblock Molecular biology and evolution. 2022;39(8).
-\newblock doi:{10.1093/molbev/msac143}.
-
 \bibitem{kozlov2022cellphy}
 Kozlov A, Alves JM, Stamatakis A, Posada D.
 \newblock CellPhy: accurate and fast probabilistic inference of single-cell
@@ -1122,52 +1135,13 @@ Gaboriau T, Mendes FK, Joly S, Silvestro D, Salamin N.
   trait evolution.
 \newblock {Methods in Ecology and Evolution}. 2020;11:1439--1447.
 
-\bibitem{plummer2003jags}
-Plummer M, et~al.
-\newblock JAGS: A program for analysis of Bayesian graphical models using Gibbs
-  sampling.
-\newblock In: Proceedings of the 3rd international workshop on distributed
-  statistical computing. vol. 124. Vienna, Austria; 2003. p. 1--10.
-
 \bibitem{gavryushkin2016space}
 Gavryushkin A, Drummond AJ.
 \newblock The space of ultrametric phylogenetic trees.
 \newblock Journal of theoretical biology. 2016;403:197--208.
 
-\bibitem{hohna2016revbayes}
-H{\"o}hna S, Landis MJ, Heath TA, Boussau B, Lartillot N, Moore BR, et~al.
-\newblock RevBayes: Bayesian phylogenetic inference using graphical models and
-  an interactive model-specification language.
-\newblock {Systematic biology}. 2016;65(4):726--736.
-
-\bibitem{bouckaert2019beastanalysis}
-Bouckaert R, Vaughan TG, Barido-Sottani J, Duch{\^e}ne S, Fourment M,
-  Gavryushkina A, et~al.
-\newblock {BEAST 2.5}: an advanced software platform for {B}ayesian
-  evolutionary analysis.
-\newblock PLoS computational biology. 2019;15(4):e1006650.
-\newblock doi:{10.1371/journal.pcbi.1006650}.
-
-\bibitem{bouckaert2014beast}
-Bouckaert R, Heled J, K{\"u}hnert D, Vaughan T, Wu CH, Xie D, et~al.
-\newblock BEAST 2: a software platform for Bayesian evolutionary analysis.
-\newblock PLoS computational biology. 2014;10(4):e1003537.
-
-\bibitem{suchard2018bayesian}
-Suchard MA, Lemey P, Baele G, Ayres DL, Drummond AJ, Rambaut A.
-\newblock Bayesian phylogenetic and phylodynamic data integration using BEAST
-  1.10.
-\newblock Virus Evol. 2018;4(1):vey016.
-\newblock doi:{10.1093/ve/vey016}.
-
-\bibitem{ronquist2012mrbayes}
-Ronquist F, Teslenko M, Van Der~Mark P, Ayres DL, Darling A, H{\"o}hna S,
-  et~al.
-\newblock MrBayes 3.2: efficient Bayesian phylogenetic inference and model
-  choice across a large model space.
-\newblock Systematic biology. 2012;61(3):539--542.
-
 \end{thebibliography}
+
 
 \section*{Supplementary Information}
 
