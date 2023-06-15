@@ -1,8 +1,7 @@
 package lphy.core;
 
-import lphy.evolution.alignment.SimpleAlignment;
 import lphy.graphicalModel.*;
-import lphy.graphicalModel.logger.AlignmentFileLogger;
+import lphy.graphicalModel.types.CompoundVectorValue;
 import lphy.util.LoggerUtils;
 
 import java.util.*;
@@ -90,6 +89,16 @@ public class Sampler {
                     // needs to be sampled
                     Value nv = sampleAll(val, val.getGenerator(), sampled);
                     nv.setId(val.getId());
+
+                    if (val instanceof CompoundVectorValue<?> oldCVV && nv instanceof CompoundVectorValue<?> newCVV) {
+                        // Must setId to the newly sampled component values inside CompoundVectorValue,
+                        // otherwise narratives will be broken because of null id.
+                        for (int i = 0; i < oldCVV.size(); i++) {
+                            newCVV.getComponentValue(i).setId(oldCVV.getComponentValue(i).getId());
+                        }
+                    } else if (val instanceof CompoundVectorValue<?> || nv instanceof CompoundVectorValue<?>)
+                        throw new IllegalArgumentException("sampleAll should return a CompoundVectorValue when given a CompoundVectorValue ! ");
+
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToModelDictionary(nv);
                     if (!val.isAnonymous()) sampled.add(val.getId());
