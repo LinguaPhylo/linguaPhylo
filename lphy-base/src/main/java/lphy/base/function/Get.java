@@ -1,6 +1,6 @@
 package lphy.base.function;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;

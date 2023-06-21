@@ -1,6 +1,6 @@
 package lphystudio.app.manager;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

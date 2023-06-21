@@ -1,6 +1,6 @@
 package lphy.core.parser.function;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.ExpressionNode;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;

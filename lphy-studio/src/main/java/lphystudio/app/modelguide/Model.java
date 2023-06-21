@@ -1,6 +1,6 @@
 package lphystudio.app.modelguide;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;

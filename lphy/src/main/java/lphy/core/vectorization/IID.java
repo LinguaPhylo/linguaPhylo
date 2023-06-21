@@ -1,6 +1,6 @@
 package lphy.core.vectorization;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.parser.argument.Argument;
 

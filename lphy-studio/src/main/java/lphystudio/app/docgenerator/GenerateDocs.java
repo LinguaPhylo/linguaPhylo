@@ -1,13 +1,13 @@
 package lphystudio.app.docgenerator;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.ParserLoader;
+import lphy.core.spi.LoaderManager;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -66,14 +66,14 @@ public class GenerateDocs {
             // class name with package that implements {@link LPhyExtension}
             String clsName = args[2];
             // require init ParserLoader
-            ParserLoader.getLphyCoreLoader().loadExtension(clsName);
+            LoaderManager.getLphyCoreLoader().loadExtension(clsName);
         }
         System.out.println("Creating doc for " + extName + " ...\n");
 
-        List<Class<GenerativeDistribution>> generativeDistributions = ParserLoader.getGenerativeDistributions();
+        List<Class<GenerativeDistribution>> generativeDistributions = LoaderManager.getAllGenerativeDistributionClasses();
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
-        List<Class<DeterministicFunction>> functions = ParserLoader.getDeterministicFunctions();
+        List<Class<DeterministicFunction>> functions = LoaderManager.getAllFunctionsClasses();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
         // output dir
@@ -86,7 +86,8 @@ public class GenerateDocs {
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
-        String indexMD = generateIndex(generativeDistributions, functions, ParserLoader.types, dir, version, extName);
+        String indexMD = generateIndex(generativeDistributions, functions,
+                LoaderManager.getTypes(), dir, version, extName);
 
         File f = new File(dir.toString(), "index.md");
         FileWriter writer = new FileWriter(f);

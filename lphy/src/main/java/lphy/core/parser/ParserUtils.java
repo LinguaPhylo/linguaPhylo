@@ -1,11 +1,12 @@
 package lphy.core.parser;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
 import lphy.core.parser.argument.Argument;
 import lphy.core.parser.argument.ArgumentUtils;
+import lphy.core.spi.LoaderManager;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorMatchUtils;
 
@@ -24,7 +25,7 @@ public class ParserUtils {
 
     public static List<Generator> getMatchingFunctions(String name, Value[] argValues) {
         List<Generator> matches = new ArrayList<>();
-        for (Class functionClass : ParserLoader.getFunctionClasses(name)) {
+        for (Class functionClass : LoaderManager.getFunctionClasses(name)) {
             matches.addAll(getFunctionByArguments(name, argValues, functionClass));
         }
         return matches;
@@ -32,7 +33,7 @@ public class ParserUtils {
 
     public static List<Generator> getMatchingFunctions(String name, Map<String, Value> arguments) {
         List<Generator> matches = new ArrayList<>();
-        for (Class functionClass : ParserLoader.getFunctionClasses(name)) {
+        for (Class functionClass : LoaderManager.getFunctionClasses(name)) {
             matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
         }
         return matches;
@@ -41,10 +42,10 @@ public class ParserUtils {
     public static List<Generator> getMatchingGenerativeDistributions(String name, Map<String, Value> arguments) {
         List<Generator> matches = new ArrayList<>();
 
-        Set<Class<?>> generators = ParserLoader.getGenerativeDistributionClasses(name);
+        Set<Class<?>> generators = LoaderManager.getAllGenerativeDistributionClasses(name);
 
         if (generators != null) {
-            for (Class genClass : ParserLoader.getGenerativeDistributionClasses(name)) {
+            for (Class genClass : LoaderManager.getAllGenerativeDistributionClasses(name)) {
                 matches.addAll(getGeneratorByArguments(name, arguments, genClass));
             }
         } else {

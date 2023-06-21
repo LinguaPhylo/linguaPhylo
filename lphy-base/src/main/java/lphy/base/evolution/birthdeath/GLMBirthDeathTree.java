@@ -4,7 +4,6 @@ import lphy.base.evolution.continuous.PhyloBrownian;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.function.GeneralLinearFunction;
-import lphy.base.math.RandomUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -12,6 +11,7 @@ import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.system.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

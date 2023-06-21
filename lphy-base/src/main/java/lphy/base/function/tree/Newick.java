@@ -7,7 +7,7 @@ import lphy.base.parser.newick.NewickASTVisitor;
 import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
 import lphy.base.parser.newick.TreeParsingException;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;

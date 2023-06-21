@@ -4,6 +4,7 @@ package lphy.core.parser;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.Value;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
+import lphy.core.spi.LoaderManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -109,8 +110,8 @@ public class REPL implements LPhyMetaParser {
     public Map<String, Set<Class<?>>> getGeneratorClasses() {
         SortedMap<String, Set<Class<?>>> generatorClasses = new TreeMap<>();
 
-        generatorClasses.putAll(ParserLoader.genDistDictionary);
-        generatorClasses.putAll(ParserLoader.functionDictionary);
+        generatorClasses.putAll(LoaderManager.getGenDistDictionary());
+        generatorClasses.putAll(LoaderManager.getFunctionDictionary());
 
         return generatorClasses;
     }

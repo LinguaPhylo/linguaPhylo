@@ -4,8 +4,8 @@ import lphy.core.spi.LPhyExtension;
  * @author Walter Xie
  */
 module lphystudio {
-//    requires transitive lphy.base;
-    requires transitive lphy.io;
+    requires transitive lphy.base;
+//    requires transitive lphy.io;
 
     requires jlatexmath;
 //    requires org.json;
@@ -18,7 +18,7 @@ module lphystudio {
     exports lphystudio.core.codebuilder;
     exports lphystudio.core.codecolorizer;
     exports lphystudio.core.layeredgraph;
-    exports lphystudio.core.log;
+    exports lphystudio.core.logger;
     exports lphystudio.core.narrative;
     exports lphystudio.core.swing;
     exports lphystudio.core.valueeditor;

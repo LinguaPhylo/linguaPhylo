@@ -1,14 +1,11 @@
 package lphystudio.app.cmd;
 
+import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.Value;
 import lphy.core.parser.Command;
-import lphy.io.logger.AlignmentFileLogger;
-import lphy.io.logger.RandomValueLogger;
-import lphy.io.logger.TreeFileLogger;
-import lphy.io.logger.VarFileLogger;
+import lphy.core.spi.LoaderManager;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,14 +70,16 @@ public class SampleCommand implements Command {
         boolean writeAlignmentsToFile = args.getBoolean(arguments[3], defaults[3]);
         String name = args.getString(arguments[4], defaults[4]);
 
-        List<RandomValueLogger> loggers = new ArrayList<>();
+        List<RandomValueLogger> loggers = LoaderManager.getSimulationLoggers();
 
-        if (writeVarsToFile) {
-            System.out.println("writing to file!");
-            loggers.add(new VarFileLogger(name, true, true));
-        }
-        if (writeTreesToFile) loggers.add(new TreeFileLogger(name));
-        if (writeAlignmentsToFile) loggers.add(new AlignmentFileLogger(name));
+        //TODO
+
+//        if (writeVarsToFile) {
+//            System.out.println("writing to file!");
+//            loggers.add(new VarFileLogger(name, true, true));
+//        }
+//        if (writeTreesToFile) loggers.add(new TreeFileLogger(name));
+//        if (writeAlignmentsToFile) loggers.add(new AlignmentFileLogger(name));
 
         graphicalModelPanel.sample(n, loggers);
     }

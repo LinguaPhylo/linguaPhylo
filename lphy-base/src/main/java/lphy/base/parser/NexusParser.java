@@ -18,7 +18,7 @@ import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.evolution.datatype.Continuous;
 import lphy.base.evolution.datatype.DataType;
 import lphy.base.spi.SequenceTypeLoader;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 
 import java.awt.*;
 import java.io.EOFException;

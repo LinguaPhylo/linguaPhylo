@@ -1,6 +1,6 @@
 package lphy.core.vectorization.operation;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;

@@ -3,7 +3,7 @@ package lphy.base.evolution.alignment;
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.NarrativeName;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;

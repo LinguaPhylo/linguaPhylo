@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;

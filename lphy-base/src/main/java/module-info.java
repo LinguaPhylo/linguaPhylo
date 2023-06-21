@@ -12,6 +12,8 @@ module lphy.base {
 
     requires transitive java.desktop;
 
+    requires info.picocli;
+
     // bmodel test
     exports lphy.base.bmodeltest;
 
@@ -31,18 +33,22 @@ module lphy.base {
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;
     exports lphy.base.evolution.likelihood;
-    exports lphy.base.parser.nexus;
     exports lphy.base.evolution.sitemodel;
     exports lphy.base.evolution.substitutionmodel;
     exports lphy.base.evolution.tree;
 
+    exports lphy.base.logger;
+
     exports lphy.base;
-    exports lphy.base.system;
+//    exports lphy.base.system;
     exports lphy.base.math;
+    exports lphy.base.simulator;
+
+    exports lphy.base.parser;
+    exports lphy.base.parser.nexus;
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;
-    exports lphy.base.parser;
 
     // LPhy extensions
     uses LPhyExtension;

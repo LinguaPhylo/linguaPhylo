@@ -1,7 +1,7 @@
 package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;

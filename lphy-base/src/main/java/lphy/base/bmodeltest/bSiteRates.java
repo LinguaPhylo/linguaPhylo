@@ -1,13 +1,13 @@
 package lphy.base.bmodeltest;
 
 import lphy.base.distribution.DiscretizedGamma;
-import lphy.base.math.RandomUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.system.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Arrays;

@@ -1,5 +1,5 @@
 import lphy.core.spi.LPhyCoreImpl;
-import lphy.core.spi.LPhyExtension;
+import lphy.core.spi.LPhyCoreSimLoggerImpl;
 
 /**
  * @author Walter Xie
@@ -13,16 +13,18 @@ module lphy.core {
     requires transitive org.apache.commons.lang3;
     requires transitive commons.math3;
 
+    exports lphy.core.logger;
+
     // graphical model
     exports lphy.core.model;
     exports lphy.core.model.annotation;
 //    exports lphy.core.model.component;
-    exports lphy.core.parser.argument;
     exports lphy.core.model.datatype;
 
     // parser
     exports lphy.core.parser;
     exports lphy.core.parser.antlr;
+    exports lphy.core.parser.argument;
     exports lphy.core.parser.function;
     exports lphy.core.parser.graphicalmodel;
 
@@ -34,13 +36,17 @@ module lphy.core {
     // others
 //    exports lphy.core.narrative;
     exports lphy.core.exception;
+    exports lphy.core.system;
 
     // declare service provider interface (SPI)
     exports lphy.core.spi;
+    exports lphy.core.simulator;
 
     // LPhy extensions
-    uses LPhyExtension;
+    uses lphy.core.spi.LPhyExtension;
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyCoreImpl;
 
+    uses lphy.core.spi.LPhySimLogger;
+    provides lphy.core.spi.LPhySimLogger with LPhyCoreSimLoggerImpl;
 }

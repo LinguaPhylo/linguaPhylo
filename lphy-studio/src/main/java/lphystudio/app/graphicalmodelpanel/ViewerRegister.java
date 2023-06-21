@@ -6,7 +6,7 @@ import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.MapValue;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;

@@ -1,7 +1,7 @@
 package lphy.core.parser;
 
-import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.model.datatype.*;
 import lphy.core.parser.antlr.LPhyBaseListener;
@@ -13,6 +13,7 @@ import lphy.core.parser.function.ExpressionNode2Args;
 import lphy.core.parser.function.MapFunction;
 import lphy.core.parser.function.MethodCall;
 import lphy.core.parser.graphicalmodel.ArrayCreator;
+import lphy.core.spi.LoaderManager;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
@@ -318,7 +319,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                     return visitIndexRange(ctx);
                 }
 
-                if (ParserLoader.bivarOperators.contains(s)) {
+                if (LoaderManager.getBivarOperators().contains(s)) {
 
                     Value f1 = new ValueOrFunction(visit(ctx.getChild(0)), ctx).getValue();
 
@@ -733,7 +734,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 }
             }
 
-            if (ParserLoader.univarfunctions.contains(functionName)) {
+            if (LoaderManager.getUnivarfunctions().contains(functionName)) {
                 ExpressionNode expression = null;
                 switch (functionName) {
                     case "abs":
@@ -833,7 +834,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 return expression;
             }
 
-            Set<Class<?>> functionClasses = ParserLoader.getFunctionClasses(functionName);
+            Set<Class<?>> functionClasses = LoaderManager.getFunctionClasses(functionName);
 
             if (functionClasses == null) {
                 throw new SimulatorParsingException("Found no implementation for function with name " + functionName, ctx);

@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel.viewer;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.datatype.MapValue;
 import lphystudio.app.graphicalmodelpanel.ViewerRegister;
 

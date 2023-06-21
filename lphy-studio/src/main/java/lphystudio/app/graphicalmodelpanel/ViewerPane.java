@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelpanel;
 
+import lphy.core.logger.RandomValueLogger;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphy.io.logger.RandomValueLogger;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.core.log.AlignmentLog;
-import lphystudio.core.log.TreeLog;
-import lphystudio.core.log.VariableLog;
-import lphystudio.core.log.VariableSummary;
+import lphystudio.core.logger.AlignmentLog;
+import lphystudio.core.logger.TreeLog;
+import lphystudio.core.logger.VariableLog;
+import lphystudio.core.logger.VariableSummary;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
 

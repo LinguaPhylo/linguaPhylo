@@ -1,6 +1,6 @@
 package lphystudio.core.valueeditor;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 
 import javax.swing.*;

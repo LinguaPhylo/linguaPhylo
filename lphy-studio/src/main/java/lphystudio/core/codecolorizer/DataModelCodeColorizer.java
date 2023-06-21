@@ -5,10 +5,10 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;
-import lphy.core.parser.ParserLoader;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
+import lphy.core.spi.LoaderManager;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -235,7 +235,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             }
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(1).getText();
-                if (ParserLoader.bivarOperators.contains(s)) {
+                if (LoaderManager.getBivarOperators().contains(s)) {
                     TextElement element = (TextElement) visit(ctx.getChild(0));
 
                     element.add(s, punctuationStyle);

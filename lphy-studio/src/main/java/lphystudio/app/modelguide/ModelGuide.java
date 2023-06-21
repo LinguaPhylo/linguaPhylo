@@ -5,8 +5,8 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
-import lphy.core.parser.ParserLoader;
 import lphy.core.parser.function.MethodCall;
+import lphy.core.spi.LoaderManager;
 
 import java.util.*;
 
@@ -26,14 +26,14 @@ public class ModelGuide {
 //    private Model currentModel;
 
     public ModelGuide() {
-        List<Class<GenerativeDistribution>> generativeDistributions = ParserLoader.getGenerativeDistributions();
+        List<Class<GenerativeDistribution>> generativeDistributions = LoaderManager.getAllGenerativeDistributionClasses();
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
 
-        List<Class<DeterministicFunction>> functions = ParserLoader.getDeterministicFunctions();
+        List<Class<DeterministicFunction>> functions = LoaderManager.getAllFunctionsClasses();
         functions.sort(Comparator.comparing(BasicFunction::getName));
 
 //        Set<Class<?>> types = Collections.unmodifiableSet();
-        List<Class<?>> types = new ArrayList<>(ParserLoader.types);
+        List<Class<?>> types = new ArrayList<>(LoaderManager.getTypes());
         types.sort(Comparator.comparing(Class::getSimpleName));
 
         setAllModels(generativeDistributions, functions, types);

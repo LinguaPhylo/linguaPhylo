@@ -1,6 +1,6 @@
 package lphy.core.model;
 
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.CitationUtils;
 import lphy.core.model.annotation.GeneratorInfo;

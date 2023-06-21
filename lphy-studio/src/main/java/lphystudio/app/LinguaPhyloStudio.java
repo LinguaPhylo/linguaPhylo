@@ -1,10 +1,10 @@
 package lphystudio.app;
 
-import lphy.base.math.RandomUtils;
-import lphy.base.system.UserDir;
-import lphy.core.exception.LoggerUtils;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.system.RandomUtils;
+import lphy.core.system.UserDir;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
@@ -12,7 +12,7 @@ import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.editor.UndoManagerHelper;
-import lphystudio.core.log.AlignmentLog;
+import lphystudio.core.logger.AlignmentLog;
 import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.print.PrintServiceLookup;

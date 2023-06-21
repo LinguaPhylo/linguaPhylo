@@ -1,11 +1,11 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.exception.LoggerUtils;
 import lphy.core.exception.SimulatorParsingException;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Symbols;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.parser.ParserLoader;
+import lphy.core.spi.LoaderManager;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.swing.TextLineNumber;
@@ -73,7 +73,7 @@ public class GraphicalModelInterpreter extends JPanel {
         interpreterField.setBorder(textBorder);
         interpreterField.setFocusTraversalKeysEnabled(false);
 
-        if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, ParserLoader.getGenerativeDistributions());
+        if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, LoaderManager.getAllGenerativeDistributionClasses());
 
         List<String> keywords = parser.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.symbolCodes));
