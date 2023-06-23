@@ -7,7 +7,7 @@ import lphy.base.parser.newick.NewickASTVisitor;
 import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
 import lphy.core.model.Value;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
