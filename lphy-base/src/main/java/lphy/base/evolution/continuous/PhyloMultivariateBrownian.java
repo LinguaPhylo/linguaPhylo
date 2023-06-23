@@ -11,7 +11,7 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleArrayValue;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;

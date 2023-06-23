@@ -1,4 +1,4 @@
-package lphy.core.system;
+package lphy.core.simulator;
 
 import lphy.core.logger.LoggerUtils;
 import org.apache.commons.math3.random.MersenneTwister;

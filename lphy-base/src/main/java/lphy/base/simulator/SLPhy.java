@@ -1,21 +1,16 @@
 package lphy.base.simulator;
 
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueLogger;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
-import lphy.core.parser.REPL;
 import lphy.core.simulator.Sampler;
-import lphy.core.spi.LoaderManager;
-import lphy.core.system.UserDir;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import static lphy.core.simulator.SimulateUtils.simulateLPhyScriptOutToFile;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 /**
@@ -44,16 +39,17 @@ public class SLPhy implements Callable<Integer> {
     @CommandLine.Option(names = {"-r", "--replicates"}, defaultValue = "1", showDefaultValue = ALWAYS,
             description = "the number of simulations to run given one LPhy script, " +
             "usually to create data for well-calibrated study.") int reps = 1;
+    @CommandLine.Option(names = {"-seed", "--seed"}, description = "the seed.") Long seed;
 
-    @CommandLine.Option(names = {"-lf", "--logFile"}, defaultValue = "true", showDefaultValue = ALWAYS,
-            description = "Whether to log random values to file")
-    boolean writeVarsToFile;
-    @CommandLine.Option(names = {"-tf", "--treeFiles"},  defaultValue = "true", showDefaultValue = ALWAYS,
-            description = "Whether to log simulated trees to file")
-    boolean writeTreesToFile;
-    @CommandLine.Option(names = {"-af", "--alignmentFiles"}, defaultValue = "true", showDefaultValue = ALWAYS,
-            description = "Whether to log simulated alignments to file")
-    boolean writeAlignmentsToFile;
+//    @CommandLine.Option(names = {"-lf", "--logFile"}, defaultValue = "true", showDefaultValue = ALWAYS,
+//            description = "Whether to log random values to file")
+//    boolean writeVarsToFile;
+//    @CommandLine.Option(names = {"-tf", "--treeFiles"},  defaultValue = "true", showDefaultValue = ALWAYS,
+//            description = "Whether to log simulated trees to file")
+//    boolean writeTreesToFile;
+//    @CommandLine.Option(names = {"-af", "--alignmentFiles"}, defaultValue = "true", showDefaultValue = ALWAYS,
+//            description = "Whether to log simulated alignments to file")
+//    boolean writeAlignmentsToFile;
 
     public SLPhy() {
     }
@@ -63,44 +59,16 @@ public class SLPhy implements Callable<Integer> {
 
         long start = System.currentTimeMillis();
 
-        if (infile == null || !infile.toFile().exists())
-            throw new PicocliException("Cannot find LPhy script file ! " + (infile != null ? infile.toAbsolutePath() : null));
-        String fileName = infile.getFileName().toString();
-        if (!fileName.endsWith(".lphy"))
-            throw new PicocliException("Invalid LPhy file: the file name extension has to be '.lphy'");
-        String name = fileName.substring(0, fileName.indexOf(".lphy"));
+        File outDir = null; // so it will be assigned to input file dir as default
 
-        List<RandomValueLogger> loggers = LoaderManager.getSimulationLoggers();
-
-//TODO
-
-//        if (writeVarsToFile) {
-//            VarFileLogger logger = new VarFileLogger(name, true, true);
-//            loggers.add(logger);
-//            System.out.println("Log all sampled random values to the file : " + logger.createFileName() );
-//        }
-//        if (writeTreesToFile) {
-//            loggers.add(new TreeFileLogger(name));
-//        }
-//        if (writeAlignmentsToFile) {
-//            loggers.add(new AlignmentFileLogger(name));
-//        }
-        //*** Parse LPhy file ***//
-        LPhyMetaParser parser = new REPL();
         try {
-            parser.source(infile.toFile());
+            Sampler sampler = simulateLPhyScriptOutToFile(infile.toFile(), reps, seed, outDir);
         } catch (IOException e) {
-            throw new PicocliException("Cannot parse LPhy script file ! " + infile.toAbsolutePath());
+            throw new PicocliException(e.getMessage(), e);
         }
 
-        // wrap REPL
-        GraphicalLPhyParser gparser = new GraphicalLPhyParser(parser);
-        // Sampler requires GraphicalLPhyParser
-        Sampler sampler = new Sampler(gparser);
-        sampler.sample(reps, loggers);
-
         long end = System.currentTimeMillis();
-        LoggerUtils.log.info("Write all files to " + UserDir.getUserDir().toAbsolutePath());
+        LoggerUtils.log.info("Write all files to " + outDir);
         LoggerUtils.log.info("Sampled " + infile + " " + reps + (reps>1?" times":" time") +
                 ", taking " + (end - start) + " ms.");
         return 0;

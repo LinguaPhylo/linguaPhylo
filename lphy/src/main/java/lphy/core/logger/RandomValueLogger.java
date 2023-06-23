@@ -26,4 +26,13 @@ public interface RandomValueLogger {
      */
     void stop();
 
+    default String getModuleName() {
+        Module module = getClass().getModule();
+        return module.getName();
+    }
+
+    default String getLoggerName() {
+        return getModuleName() + "." + getClass().getSimpleName();
+    }
+
 }

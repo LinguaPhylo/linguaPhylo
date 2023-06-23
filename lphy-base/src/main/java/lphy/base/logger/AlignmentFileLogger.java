@@ -30,6 +30,13 @@ public class AlignmentFileLogger implements FileLogger {
 //        this.dir = dir;
 //    }
 
+
+    @Override
+    public void init(File outputDir, String fileStem) {
+        this.dir = outputDir;
+        this.fileStem = fileStem;
+    }
+
     @Override
     public void start(List<Value<?>> randomValues) {
     }
@@ -75,18 +82,6 @@ public class AlignmentFileLogger implements FileLogger {
         else file = new File(fileName);
         return file;
     }
-
-    @Override
-    public void setDir(File dir) {
-        this.dir = dir;
-    }
-
-
-    @Override
-    public void setFileStem(String fileStem) {
-        this.fileStem = fileStem;
-    }
-
 
     // if rep >=0, add postfix, e.g. _0.nexus
     private void writeAlignment(int rep, Value<SimpleAlignment> alignment) throws IOException {

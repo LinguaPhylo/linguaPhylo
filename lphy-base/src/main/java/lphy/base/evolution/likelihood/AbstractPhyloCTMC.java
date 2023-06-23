@@ -7,7 +7,7 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealVector;

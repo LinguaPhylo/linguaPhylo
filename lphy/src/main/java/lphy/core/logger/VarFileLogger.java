@@ -164,6 +164,12 @@ public class VarFileLogger implements FileLogger {
     }
 
     @Override
+    public void init(File outputDir, String fileStem) {
+        this.dir = outputDir;
+        this.fileStem = fileStem;
+    }
+
+    @Override
     public void start(List<Value<?>> randomValues) {
         // start with titles
         builder.append("sample");
@@ -223,16 +229,6 @@ public class VarFileLogger implements FileLogger {
             file = new File(dir + File.separator + fileName);
         else file = new File(fileName);
         return file;
-    }
-
-    @Override
-    public void setDir(File dir) {
-        this.dir = dir;
-    }
-
-    @Override
-    public void setFileStem(String fileStem) {
-        this.fileStem = fileStem;
     }
 
 }

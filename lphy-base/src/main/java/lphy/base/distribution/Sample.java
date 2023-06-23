@@ -7,7 +7,7 @@ import lphy.core.model.Value;
 import lphy.core.model.VariableUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 
 import java.util.*;
 

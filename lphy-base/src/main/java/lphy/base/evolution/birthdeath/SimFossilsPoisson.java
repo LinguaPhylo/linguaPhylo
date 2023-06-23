@@ -10,7 +10,7 @@ import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 

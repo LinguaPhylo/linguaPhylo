@@ -31,6 +31,12 @@ public class TreeFileLogger implements FileLogger {
 //    }
 
     @Override
+    public void init(File outputDir, String fileStem) {
+        this.dir = outputDir;
+        this.fileStem = fileStem;
+    }
+
+    @Override
     public void start(List<Value<?>> randomValues) {
 
     }
@@ -71,18 +77,6 @@ public class TreeFileLogger implements FileLogger {
         else file = new File(fileName);
         return file;
     }
-
-    @Override
-    public void setDir(File dir) {
-        this.dir = dir;
-    }
-
-
-    @Override
-    public void setFileStem(String fileStem) {
-        this.fileStem = fileStem;
-    }
-
 
     private String fileName;
 

@@ -3,7 +3,7 @@ package lphystudio.app;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import lphy.core.system.UserDir;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
@@ -288,12 +288,12 @@ public class LinguaPhyloStudio {
         saveAlignmentAsMenuItem.addActionListener(e -> {
             File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
             // set alignment directory
-            if (selectedDir != null && selectedDir.isDirectory() && panel.getSampler() != null && panel.getSampler().getValuesMap() != null) {
+            if (selectedDir != null && selectedDir.isDirectory() && panel.getSampler() != null && panel.getSampler().getValuesAllRepsMap() != null) {
                 Path dir = selectedDir.toPath();
                 UserDir.setAlignmentDir(dir.toString());
                 LoggerUtils.log.info("Alignments saved to: " + dir);
                 // save all sampled alignments
-                Map<Integer, List<Value<?>>> valuesMap = panel.getSampler().getValuesMap();
+                Map<Integer, List<Value<?>>> valuesMap = panel.getSampler().getValuesAllRepsMap();
                 AlignmentLog alignmentLogger = new AlignmentLog(parser);
                 alignmentLogger.setLogAlignment(true);
                 for (int i: valuesMap.keySet()) {

@@ -5,40 +5,51 @@ import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.CompoundVectorValue;
 
 import java.util.*;
 
 /**
- * TODO this does not use any GraphicalModelChangeListener,
- * so it should use REPL instead
+ * Sampling values for {@link RandomVariable}.
  */
 public class Sampler {
 
-    GraphicalLPhyParser parser;
+    public static final int REP_START = 0;
 
-    Map<Integer, List<Value<?>>> valuesMap;
+    LPhyMetaParser parser;
 
-    public Sampler(GraphicalLPhyParser parser) {
+    /**
+     * Key is the index of replicates, value is the result of each replicate.
+     */
+    protected Map<Integer, List<Value<?>>> valuesAllRepsMap;
+
+    public Sampler() {
+        this.valuesAllRepsMap = new TreeMap<>();
+    }
+
+    public Sampler(LPhyMetaParser parser) {
         this.parser = parser;
-        this.valuesMap = new TreeMap<>();
-        this.valuesMap.clear();
+        this.valuesAllRepsMap = new TreeMap<>();
     }
 
     /**
      * Sample the current model
      *
-     * @param reps    the number of times to sample
-     * @param loggers the loggers to log to
+     * @param numReplicates    the number of times to sample
+     * @param loggers the loggers to log to, cannot be null
      */
-    public void sample(int reps, List<RandomValueLogger> loggers) {
-        for (int i = 0; i < reps; i++) {
+    public void sample(int numReplicates, List<? extends RandomValueLogger> loggers) {
+        Objects.requireNonNull(loggers, "Simulation result loggers must not be null !");
+        // clean the previous set of simulation results
+        valuesAllRepsMap.clear();
+
+        for (int i = REP_START; i < numReplicates; i++) {
             Set<String> sampled = new TreeSet<>();
-            List<Value<?>> sinks = parser.getModelSinks();
-            for (RandomVariable<?> var : parser.getAllVariablesFromSinks()) {
-                parser.getModelDictionary().remove(var.getId());
+            List<Value<?>> sinks = getParser().getModelSinks();
+            for (RandomVariable<?> var : getParser().getAllVariablesFromSinks()) {
+                getParser().getModelDictionary().remove(var.getId());
             }
 
             for (Value<?> value : sinks) {
@@ -53,26 +64,36 @@ public class Sampler {
                 }
             }
 
-            if (loggers != null) {
-                List<Value<?>> values = GraphicalModelUtils.getAllValuesFromSinks(parser);
-                valuesMap.put(i, values);
-                for (RandomValueLogger logger : loggers) {
-                    logger.log(i, values);
-                }
+            List<Value<?>> values = GraphicalModelUtils.getAllValuesFromSinks(parser);
+            valuesAllRepsMap.put(i, values);
+
+            // Logging must be right after sampling each rep
+            if (i == REP_START) {
+                // header
+                for (RandomValueLogger logger : loggers)
+                    logger.start(values);
             }
-        }
-        if (loggers != null) {
+            // log
             for (RandomValueLogger logger : loggers) {
-                logger.stop();
+                logger.log(i, values);
             }
         }
-        parser.notifyListeners();
+        // end
+        for (RandomValueLogger logger : loggers) {
+            logger.stop();
+        }
+//        parser.notifyListeners();
     }
 
-    public Map<Integer, List<Value<?>>> getValuesMap() {
-        return this.valuesMap;
+    public void log(int reps, List<RandomValueLogger> loggers) {
+
     }
 
+    public Map<Integer, List<Value<?>>> getValuesAllRepsMap() {
+        return this.valuesAllRepsMap;
+    }
+
+    // sample all from the generator, but keep the id from old values.
     private Value sampleAll(Value oldValue, Generator generator, Set<String> sampled) {
 
         for (Map.Entry<String, Value> e : getNewlySampledParams(generator, sampled).entrySet()) {
@@ -80,7 +101,20 @@ public class Sampler {
             if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
         }
 
-        return generator.generate();
+        Value newVal = generator.generate();
+        newVal.setId(oldValue.getId());
+
+        //TODO merge to vect class
+        if (oldValue instanceof CompoundVectorValue<?> oldCVV && newVal instanceof CompoundVectorValue<?> newCVV) {
+            // Must setId to the newly sampled component values inside CompoundVectorValue,
+            // otherwise narratives will be broken because of null id.
+            for (int i = 0; i < oldCVV.size(); i++) {
+                newCVV.getComponentValue(i).setId(oldCVV.getComponentValue(i).getId());
+            }
+        } else if (oldValue instanceof CompoundVectorValue<?> || newVal instanceof CompoundVectorValue<?>)
+            throw new IllegalArgumentException("sampleAll should return a CompoundVectorValue when given a CompoundVectorValue ! ");
+
+        return newVal;
     }
 
     private Map<String, Value> getNewlySampledParams(Generator generator, Set<String> sampled) {
@@ -97,15 +131,6 @@ public class Sampler {
                 if (val.isAnonymous() || !sampled.contains(val.getId())) {
                     // needs to be sampled
                     Value nv = sampleAll(val, val.getGenerator(), sampled);
-                    nv.setId(val.getId());
-                    if (val instanceof CompoundVectorValue<?> oldCVV && nv instanceof CompoundVectorValue<?> newCVV) {
-                        // Must setId to the newly sampled component values inside CompoundVectorValue,
-                        // otherwise narratives will be broken because of null id.
-                        for (int i = 0; i < oldCVV.size(); i++) {
-                            newCVV.getComponentValue(i).setId(oldCVV.getComponentValue(i).getId());
-                        }
-                    } else if (val instanceof CompoundVectorValue<?> || nv instanceof CompoundVectorValue<?>)
-                        throw new IllegalArgumentException("sampleAll should return a CompoundVectorValue when given a CompoundVectorValue ! ");
 
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToModelDictionary(nv);
@@ -114,7 +139,7 @@ public class Sampler {
                 } else {
                     // already been sampled
                     String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), parser.getModelDictionary().get(id));
+                    newlySampledParams.put(e.getKey(), getParser().getModelDictionary().get(id));
                 }
             }
         }
@@ -128,7 +153,11 @@ public class Sampler {
     private void addValueToModelDictionary(Value value) {
         if (!value.isAnonymous()) {
             String id = value.getId();
-            parser.getModelDictionary().put(id, value);
+            getParser().getModelDictionary().put(id, value);
         }
+    }
+
+    public LPhyMetaParser getParser() {
+        return parser;
     }
 }

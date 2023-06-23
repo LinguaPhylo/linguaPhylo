@@ -1,5 +1,6 @@
 package lphy.core.spi;
 
+import lphy.core.logger.FileLogger;
 import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
@@ -131,6 +132,13 @@ public class LoaderManager {
                 }).collect(Collectors.toList());
 
         return instances;
+    }
+
+    public static List<FileLogger> getFileLoggers() {
+        return getSimulationLoggers().stream()
+                .filter(FileLogger.class::isInstance)
+                .map(FileLogger.class::cast)
+                .collect(Collectors.toList());
     }
 
     public static Map<String, Set<Class<?>>> getGenDistDictionary() {

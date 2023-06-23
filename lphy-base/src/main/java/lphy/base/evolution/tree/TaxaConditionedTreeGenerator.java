@@ -6,7 +6,7 @@ import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
-import lphy.core.system.RandomUtils;
+import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
