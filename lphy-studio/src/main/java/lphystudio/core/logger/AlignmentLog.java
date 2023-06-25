@@ -50,8 +50,8 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         //TODO
     }
 
-    public void log(int rep, List<Value<?>> values) {
-        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(values);
+    public void log(int rep, List<Value<?>> randomValues) {
+        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(randomValues);
 
         if (rep == 0) {
             setText("sample");
@@ -75,6 +75,10 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
     @Override
     public void stop() {
 
+    }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the alignments generated from simulations into GUI.";
     }
 
     private List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> variables) {

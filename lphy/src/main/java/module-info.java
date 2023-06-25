@@ -13,6 +13,8 @@ module lphy.core {
     requires transitive org.apache.commons.lang3;
     requires transitive commons.math3;
 
+    requires info.picocli;
+
     exports lphy.core.logger;
 
     // graphical model
@@ -41,6 +43,7 @@ module lphy.core {
     // declare service provider interface (SPI)
     exports lphy.core.spi;
     exports lphy.core.simulator;
+    opens lphy.core.simulator;
 
     // LPhy extensions
     uses lphy.core.spi.LPhyExtension;

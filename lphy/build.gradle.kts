@@ -15,6 +15,9 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
     api("org.apache.commons:commons-lang3:3.12.0")
 
+    // command line
+    implementation("info.picocli:picocli:4.7.1")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }
 

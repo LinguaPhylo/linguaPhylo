@@ -27,8 +27,8 @@ public class TreeLog extends JTextArea implements RandomValueLogger {
     }
 
     @Override
-    public void log(int rep, List<Value<?>> values) {
-        List<Value<TimeTree>> treeVariables = getTreeValues(values);
+    public void log(int rep, List<Value<?>> randomValues) {
+        List<Value<TimeTree>> treeVariables = getTreeValues(randomValues);
 
         if (rep == 0) {
             setText("sample");
@@ -47,6 +47,10 @@ public class TreeLog extends JTextArea implements RandomValueLogger {
 
     @Override
     public void stop() {
+    }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the trees generated from simulations into GUI.";
     }
 
     private List<Value<TimeTree>> getTreeValues(List<Value<?>> variables) {

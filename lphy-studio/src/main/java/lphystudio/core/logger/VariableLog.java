@@ -1,5 +1,6 @@
 package lphystudio.core.logger;
 
+import lphy.core.logger.RandomNumberLogger;
 import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.Value;
 
@@ -10,22 +11,22 @@ import java.util.List;
 
 public class VariableLog extends JTextArea implements RandomValueLogger {
 
-    boolean logVariables;
-    boolean logStatistics;
+//    boolean logVariables;
+//    boolean logStatistics;
 
     RandomNumberLogger randomNumberLogger;
 
     Font loggerFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
-    public VariableLog(boolean logStatistics, boolean logVariables) {
+    public VariableLog() {//boolean logStatistics, boolean logVariables
 
         setTabSize(4);
         setEditable(false);
         setFont(loggerFont);
 
-        this.logStatistics = logStatistics;
-        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberLogger(logVariables, logStatistics);
+//        this.logStatistics = logStatistics;
+//        this.logVariables = logVariables;
+        randomNumberLogger = new RandomNumberLogger(); // logVariables, logStatistics
     }
 
     public void clear() {
@@ -95,5 +96,10 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
         }
 
         setText(builder.toString());
+    }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the values of random variables " +
+                "generated from simulations into GUI.";
     }
 }

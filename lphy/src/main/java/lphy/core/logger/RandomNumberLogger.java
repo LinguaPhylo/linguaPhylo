@@ -1,9 +1,5 @@
-package lphystudio.core.logger;
+package lphy.core.logger;
 
-import lphy.core.logger.Loggable;
-import lphy.core.logger.RandomValueLogger;
-import lphy.core.logger.VarFileLogger;
-import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
 
@@ -16,17 +12,17 @@ public class RandomNumberLogger implements RandomValueLogger {
 
     public Map<Class, Loggable> loggableMap;
 
-    boolean logVariables;
-    boolean logStatistics;
+//    boolean logVariables;
+//    boolean logStatistics;
 
     public Map<String, List<Double[]>> variableValues = new HashMap<>();
 
     public List<Value> firstValues = new ArrayList<>();
     int sampleCount;
 
-    public RandomNumberLogger(boolean logVariables, boolean logStatistics) {
-        this.logVariables = logVariables;
-        this.logStatistics = logStatistics;
+    public RandomNumberLogger() {
+//        this.logVariables = logVariables;
+//        this.logStatistics = logStatistics;
 
         loggableMap = VarFileLogger.loggableMap;
     }
@@ -72,8 +68,7 @@ public class RandomNumberLogger implements RandomValueLogger {
     }
 
     public boolean isLogged(Value randomValue) {
-        boolean random = (randomValue instanceof RandomVariable && logVariables) ||
-                (!(randomValue instanceof RandomVariable) && randomValue.isRandom() && logStatistics);
+        boolean random = ValueLoggerUtils.isValueLoggable(randomValue);
         boolean number = ValueUtils.isNumberOrNumberArray(randomValue) ||
                 ValueUtils.is2DNumberArray(randomValue) ||
                 randomValue.value() instanceof Boolean;
@@ -88,4 +83,10 @@ public class RandomNumberLogger implements RandomValueLogger {
     public void stop() {
 
     }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the values of random variables " +
+                "generated from each simulation.";
+    }
+
 }

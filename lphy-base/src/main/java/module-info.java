@@ -12,8 +12,6 @@ module lphy.base {
 
     requires transitive java.desktop;
 
-    requires info.picocli;
-
     // bmodel test
     exports lphy.base.bmodeltest;
 
@@ -38,7 +36,7 @@ module lphy.base {
     exports lphy.base.evolution.tree;
 
     exports lphy.base.logger;
-    opens lphy.base.simulator;
+//    opens lphy.base.simulator;
 //    exports lphy.base.simulator;
 
     exports lphy.base;

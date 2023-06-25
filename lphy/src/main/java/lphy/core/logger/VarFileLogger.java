@@ -1,6 +1,5 @@
 package lphy.core.logger;
 
-import lphy.core.model.RandomVariable;
 import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 import lphy.core.vectorization.VectorUtils;
@@ -174,7 +173,7 @@ public class VarFileLogger implements FileLogger {
         // start with titles
         builder.append("sample");
         for (Value randomValue : randomValues) {
-            if (isValueLoggable(randomValue)) {
+            if (ValueLoggerUtils.isValueLoggable(randomValue)) {
                 Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
                 if (loggable != null) {
                     for (String title : loggable.getLogTitles(randomValue)) {
@@ -191,7 +190,7 @@ public class VarFileLogger implements FileLogger {
     public void log(int rep, List<Value<?>> randomValues) {
         builder.append(rep);
         for (Value randomValue : randomValues) {
-            if (isValueLoggable(randomValue)) {
+            if (ValueLoggerUtils.isValueLoggable(randomValue)) {
                 Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
                 if (loggable != null) {
                     for (Object logValue : loggable.getLogValues(randomValue)) {
@@ -216,12 +215,6 @@ public class VarFileLogger implements FileLogger {
         }
     }
 
-    private boolean isValueLoggable(Value randomValue) {
-        return randomValue instanceof RandomVariable ||
-                // random value but no anonymous
-                (randomValue.isRandom() && !randomValue.isAnonymous());
-    }
-
     @Override
     public File getFile(String fileName) {
         File file;
@@ -231,4 +224,8 @@ public class VarFileLogger implements FileLogger {
         return file;
     }
 
+    public String getDescription() {
+        return getLoggerName() + " writes the values of random variables generated from " +
+                "simulations into a file employed by a command-line application.";
+    }
 }

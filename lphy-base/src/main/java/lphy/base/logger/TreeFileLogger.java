@@ -41,8 +41,8 @@ public class TreeFileLogger implements FileLogger {
 
     }
 
-    public void log(int rep, List<Value<?>> values) {
-        List<Value<TimeTree>> treeVariables = getTreeValues(values);
+    public void log(int rep, List<Value<?>> randomValues) {
+        List<Value<TimeTree>> treeVariables = getTreeValues(randomValues);
 
         if (rep == 0) {
             trees = new TreeMap<>();
@@ -76,6 +76,11 @@ public class TreeFileLogger implements FileLogger {
             file = new File(dir + File.separator + fileName);
         else file = new File(fileName);
         return file;
+    }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the trees generated from simulations into a file " +
+                "employed by a command-line application.";
     }
 
     private String fileName;

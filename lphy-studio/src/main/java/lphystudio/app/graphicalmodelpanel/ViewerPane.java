@@ -36,8 +36,8 @@ public class ViewerPane extends JTabbedPane {
 
     ErrorPanel errorPanel;
 
-    VariableSummary variableSummary = new VariableSummary(true, true);
-    VariableLog variableLog = new VariableLog(true, true);
+    VariableSummary variableSummary = new VariableSummary();//true, true
+    VariableLog variableLog = new VariableLog();//true, true
     TreeLog treeLog = new TreeLog();
     AlignmentLog alignmentLog;
 

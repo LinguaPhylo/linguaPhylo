@@ -1,5 +1,6 @@
 package lphystudio.core.logger;
 
+import lphy.core.logger.RandomNumberLogger;
 import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.Value;
 
@@ -10,8 +11,8 @@ import java.util.List;
 
 public class VariableSummary extends JTable implements RandomValueLogger {
 
-    boolean logVariables;
-    boolean logStatistics;
+//    boolean logVariables;
+//    boolean logStatistics;
 
     List<ValueRow> valueRows = new ArrayList<>();
 
@@ -19,11 +20,11 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
     AbstractTableModel tableModel;
 
-    public VariableSummary(boolean logStatistics, boolean logVariables) {
+    public VariableSummary() { // boolean logStatistics, boolean logVariables
 
-        this.logStatistics = logStatistics;
-        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberLogger(logVariables, logStatistics);
+//        this.logStatistics = logStatistics;
+//        this.logVariables = logVariables;
+        randomNumberLogger = new RandomNumberLogger();//logVariables, logStatistics
 
         tableModel = new AbstractTableModel() {
             @Override
@@ -161,5 +162,10 @@ public class VariableSummary extends JTable implements RandomValueLogger {
         }
 
         tableModel.fireTableDataChanged();
+    }
+
+    public String getDescription() {
+        return getLoggerName() + " writes the statistical summary of random variables " +
+                "from simulations into a table format for GUI.";
     }
 }

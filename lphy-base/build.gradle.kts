@@ -15,9 +15,6 @@ dependencies {
     // io.github.linguaphylo
     api("io.github.linguaphylo:jebl:3.1.0")
 
-    // command line
-    implementation("info.picocli:picocli:4.7.1")
-
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }
 

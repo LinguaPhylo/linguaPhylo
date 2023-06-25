@@ -42,9 +42,9 @@ public class AlignmentFileLogger implements FileLogger {
     }
 
     @Override
-    public void log(int rep, List<Value<?>> values) {
+    public void log(int rep, List<Value<?>> randomValues) {
 
-        for (Value<SimpleAlignment> v : getAlignmentValues(values)) {
+        for (Value<SimpleAlignment> v : getAlignmentValues(randomValues)) {
             try {
                 writeAlignment(rep, v);
             } catch (IOException e) {
@@ -81,6 +81,12 @@ public class AlignmentFileLogger implements FileLogger {
             file = new File(dir + File.separator + fileName);
         else file = new File(fileName);
         return file;
+    }
+
+    @Override
+    public String getDescription() {
+        return getLoggerName() + " writes the alignment generated from each simulation into a file " +
+                "employed by a command-line application.";
     }
 
     // if rep >=0, add postfix, e.g. _0.nexus

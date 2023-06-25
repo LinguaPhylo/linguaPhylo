@@ -1,13 +1,15 @@
-package lphy.base.simulator;
+package lphy.core.simulator;
 
+import lphy.core.logger.FileLogger;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.simulator.Sampler;
+import lphy.core.spi.LoaderManager;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static lphy.core.simulator.SimulateUtils.simulateLPhyScriptOutToFile;
@@ -41,15 +43,11 @@ public class SLPhy implements Callable<Integer> {
             "usually to create data for well-calibrated study.") int reps = 1;
     @CommandLine.Option(names = {"-seed", "--seed"}, description = "the seed.") Long seed;
 
-//    @CommandLine.Option(names = {"-lf", "--logFile"}, defaultValue = "true", showDefaultValue = ALWAYS,
-//            description = "Whether to log random values to file")
-//    boolean writeVarsToFile;
-//    @CommandLine.Option(names = {"-tf", "--treeFiles"},  defaultValue = "true", showDefaultValue = ALWAYS,
-//            description = "Whether to log simulated trees to file")
-//    boolean writeTreesToFile;
-//    @CommandLine.Option(names = {"-af", "--alignmentFiles"}, defaultValue = "true", showDefaultValue = ALWAYS,
-//            description = "Whether to log simulated alignments to file")
-//    boolean writeAlignmentsToFile;
+    enum SPI { loggers } //TODO  functions, gendists
+    // arity = "0" not working
+    @CommandLine.Option(names = {"-ls", "--list"},
+            description = "List the services (e.g., ${COMPLETION-CANDIDATES}) that have been loaded by SPI")
+    SPI list;
 
     public SLPhy() {
     }
@@ -59,8 +57,18 @@ public class SLPhy implements Callable<Integer> {
 
         long start = System.currentTimeMillis();
 
-        File outDir = null; // so it will be assigned to input file dir as default
+        if (SPI.loggers == list) {
+            List<FileLogger> loggers = LoaderManager.getFileLoggers();
+            System.out.println("\nList the loaded loggers : ");
+            // print output files
+            for (FileLogger fileLogger : loggers) {
+                System.out.println(fileLogger.getDescription());
+            }
+            System.out.println();
+            return 0;
+        }
 
+        File outDir = null; // If outDir = null, it will be assigned to the input file directory by default.
         try {
             Sampler sampler = simulateLPhyScriptOutToFile(infile.toFile(), reps, seed, outDir);
         } catch (IOException e) {
@@ -68,8 +76,8 @@ public class SLPhy implements Callable<Integer> {
         }
 
         long end = System.currentTimeMillis();
-        LoggerUtils.log.info("Write all files to " + outDir);
-        LoggerUtils.log.info("Sampled " + infile + " " + reps + (reps>1?" times":" time") +
+        System.out.println("Write all files to " + outDir);
+        System.out.println("Sampled " + infile + " " + reps + (reps>1?" times":" time") +
                 ", taking " + (end - start) + " ms.");
         return 0;
     }
