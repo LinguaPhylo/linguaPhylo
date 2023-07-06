@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RandomNumberLogger implements RandomValueLogger {
+@Deprecated
+public class RandomNumberFormatter implements RandomValueFormatter {
 
-    public Map<Class, Loggable> loggableMap;
-
+//    public Map<Class<?>, Loggable<?>> loggableMap;
 //    boolean logVariables;
 //    boolean logStatistics;
 
@@ -20,35 +20,53 @@ public class RandomNumberLogger implements RandomValueLogger {
     public List<Value> firstValues = new ArrayList<>();
     int sampleCount;
 
-    public RandomNumberLogger() {
+    List<Value<?>> loggableValues;
+
+    public RandomNumberFormatter() {
 //        this.logVariables = logVariables;
 //        this.logStatistics = logStatistics;
 
-        loggableMap = VarFileLogger.loggableMap;
+//        loggableMap = LoggableImpl.getLoggableMap();
     }
 
     public int getSampleCount() {
         return sampleCount;
     }
 
-
     @Override
-    public void start(List<Value<?>> randomValues) {
-        //TODO
+    public void setSelectedItems(List<Value<?>> randomValues) {
+        this.loggableValues = new ArrayList<>();
+        for (Value<?> randomValue : randomValues) {
+            if (isLogged(randomValue)) {
+                Loggable<?> loggable = LoggableImpl.getLoggable(randomValue.value().getClass());
+                if (loggable != null)
+                    this.loggableValues.add(randomValue);
+            }
+        }
     }
 
     @Override
-    public void log(int rep, List<Value<?>> randomValues) {
-        if (rep == 0) {
+    public List<Value<?>> getSelectedItems() {
+        return this.loggableValues;
+    }
+
+    @Override
+    public String getHeaderFromValues() {
+        return null;
+    }
+
+    @Override
+    public String getRowFromValues(int rowIndex) {
+        if (rowIndex == 0) {
             firstValues.clear();
             variableValues.clear();
-            firstValues.addAll(randomValues);
+            firstValues.addAll(getSelectedItems());
         }
 
-        for (Value randomValue : randomValues) {
+        for (Value randomValue : getSelectedItems()) {
 
             if (isLogged(randomValue)) {
-                Loggable loggable = loggableMap.get(randomValue.value().getClass());
+                Loggable loggable = LoggableImpl.getLoggable(randomValue.value().getClass());
                 if (loggable != null) {
                     Object[] logValues = loggable.getLogValues(randomValue);
                     Double[] values = new Double[logValues.length];
@@ -64,13 +82,15 @@ public class RandomNumberLogger implements RandomValueLogger {
                 }
             }
         }
-        sampleCount = rep + 1;
+        sampleCount = rowIndex + 1;
+        throw new UnsupportedOperationException();
     }
 
     public boolean isLogged(Value randomValue) {
-        boolean random = ValueLoggerUtils.isValueLoggable(randomValue);
+        boolean random = ValueLoggerListener.isValueLoggable(randomValue);
         boolean number = ValueUtils.isNumberOrNumberArray(randomValue) ||
                 ValueUtils.is2DNumberArray(randomValue) ||
+                // 0|1
                 randomValue.value() instanceof Boolean;
 
         return random && number && !randomValue.isAnonymous();
@@ -80,12 +100,12 @@ public class RandomNumberLogger implements RandomValueLogger {
      * Called once all replicates have been logged.
      */
     @Override
-    public void stop() {
-
+    public String getFooterFromValues() {
+        return null;
     }
 
-    public String getDescription() {
-        return getLoggerName() + " writes the values of random variables " +
+    public String getFormatterDescription() {
+        return getFormatterName() + " writes the values of random variables " +
                 "generated from each simulation.";
     }
 

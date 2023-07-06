@@ -4,18 +4,21 @@ import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 import lphy.core.vectorization.VectorUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by Alexei Drummond on 10/03/20.
- */
-public class VarFileLogger implements FileLogger {
+@Deprecated
+public class LoggableImpl {
 
-    public static Map<Class, Loggable> loggableMap = new HashMap<>();
+    private static Map<Class<?>, Loggable<?>> loggableMap = new HashMap<>();
+
+    public static Map<Class<?>, Loggable<?>> getLoggableMap() {
+        return loggableMap;
+    }
+
+    @Deprecated
+    public static Loggable<?> getLoggable(Class<?> cls) {
+        return loggableMap.get(cls);
+    }
 
     static {
         loggableMap.put(Integer.class, new Loggable<Integer>() {
@@ -137,95 +140,4 @@ public class VarFileLogger implements FileLogger {
 
     } // static { } finishes here
 
-    File dir = null;
-    String fileStem;
-
-    private StringBuilder builder = new StringBuilder();
-
-//    boolean logVariables;
-//    boolean logStatistics;
-
-//    public VarFileLogger(String fileStem, boolean logStatistics, boolean logVariables) {
-//        this.fileStem = fileStem;
-//        this.logStatistics = logStatistics;
-//        this.logVariables = logVariables;
-//    }
-
-//    public VarFileLogger(String fileStem, File dir, boolean logStatistics, boolean logVariables) {
-//        this(fileStem, logStatistics, logVariables);
-//        this.dir = dir;
-//    }
-
-    /**
-     * used by SPI, then use getter setter to config files and paths.
-     */
-    public VarFileLogger() {
-    }
-
-    @Override
-    public void init(File outputDir, String fileStem) {
-        this.dir = outputDir;
-        this.fileStem = fileStem;
-    }
-
-    @Override
-    public void start(List<Value<?>> randomValues) {
-        // start with titles
-        builder.append("sample");
-        for (Value randomValue : randomValues) {
-            if (ValueLoggerUtils.isValueLoggable(randomValue)) {
-                Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
-                if (loggable != null) {
-                    for (String title : loggable.getLogTitles(randomValue)) {
-                        builder.append("\t");
-                        builder.append(title);
-                    }
-                }
-            }
-        }
-        builder.append("\n");
-    }
-
-    @Override
-    public void log(int rep, List<Value<?>> randomValues) {
-        builder.append(rep);
-        for (Value randomValue : randomValues) {
-            if (ValueLoggerUtils.isValueLoggable(randomValue)) {
-                Loggable loggable = VarFileLogger.loggableMap.get(randomValue.value().getClass());
-                if (loggable != null) {
-                    for (Object logValue : loggable.getLogValues(randomValue)) {
-                        builder.append("\t");
-                        builder.append(logValue);
-                    }
-                }
-            }
-        }
-        builder.append("\n");
-    }
-
-    @Override
-    public void stop() {
-        String fileName = createFileName(fileStem, "", ".log");
-        File file = getFile(fileName);
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.append(builder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public File getFile(String fileName) {
-        File file;
-        if (dir != null)
-            file = new File(dir + File.separator + fileName);
-        else file = new File(fileName);
-        return file;
-    }
-
-    public String getDescription() {
-        return getLoggerName() + " writes the values of random variables generated from " +
-                "simulations into a file employed by a command-line application.";
-    }
 }

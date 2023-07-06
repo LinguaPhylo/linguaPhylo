@@ -1,13 +1,12 @@
 package lphystudio.core.logger;
 
 import lphy.base.evolution.alignment.SimpleAlignment;
-import lphy.base.logger.AlignmentFileLogger;
 import lphy.base.parser.nexus.NexusWriter;
+import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
-import lphy.core.system.UserDir;
 
 import javax.swing.*;
 import java.io.File;
@@ -22,11 +21,11 @@ import java.util.List;
 /**
  * Write each alignment to a file during sampling.
  * The viewer is {@link lphystudio.app.graphicalmodelpanel.AlignmentLogPanel}.
- * This is a duplicated version of {@link AlignmentFileLogger},
+ * This is a duplicated version of
  * but contains GUI code.
  * @author Walter Xie
  */
-public class AlignmentLog extends JTextArea implements RandomValueLogger {
+public class AlignmentLog extends JTextArea implements RandomValueFormatter {
 
     final LPhyMetaParser parser;
 
@@ -45,15 +44,28 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
         this.logAlignment = bool;
     }
 
+    List<Value<SimpleAlignment>> alignmentVariables;
+
     @Override
-    public void start(List<Value<?>> randomValues) {
-        //TODO
+    public void setSelectedItems(List<Value<?>> randomValues) {
+        alignmentVariables = getAlignmentValues(randomValues);
     }
 
-    public void log(int rep, List<Value<?>> randomValues) {
-        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(randomValues);
+    @Override
+    public List<?> getSelectedItems() {
+        return null;
+    }
 
-        if (rep == 0) {
+    @Override
+    public String getHeaderFromValues() {
+        //TODO
+        return "";
+    }
+
+    public String getRowFromValues(int rowIndex) {
+//        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(randomValues);
+
+        if (rowIndex == 0) {
             setText("sample");
             for (Value<SimpleAlignment> al : alignmentVariables) {
                 String colNm = parser.isClampedVariable(al) ? al.getId() + "-clamped" : al.getId();
@@ -62,23 +74,24 @@ public class AlignmentLog extends JTextArea implements RandomValueLogger {
             append("\n");
         }
 
-        append(rep+"");
+        append(rowIndex +"");
         for (Value<SimpleAlignment> al : alignmentVariables) {
             append("\t" + al.value().toString());
             if (logAlignment) {
-                logAlignment(al, rep);
+                logAlignment(al, rowIndex);
             }
         }
         append("\n");
+        return "";
     }
 
     @Override
-    public void stop() {
-
+    public String getFooterFromValues() {
+return "";
     }
 
-    public String getDescription() {
-        return getLoggerName() + " writes the alignments generated from simulations into GUI.";
+    public String getFormatterDescription() {
+        return getFormatterName() + " writes the alignments generated from simulations into GUI.";
     }
 
     private List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> variables) {

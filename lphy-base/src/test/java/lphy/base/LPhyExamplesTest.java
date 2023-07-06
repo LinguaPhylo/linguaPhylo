@@ -1,8 +1,8 @@
 package lphy.base;
 
+import lphy.core.io.UserDir;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
-import lphy.core.system.UserDir;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;

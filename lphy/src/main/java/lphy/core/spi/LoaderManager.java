@@ -1,12 +1,11 @@
 package lphy.core.spi;
 
-import lphy.core.logger.FileLogger;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.ValueFormatResolver;
+import lphy.core.logger.ValueFormatter;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Load all loaders here
@@ -20,11 +19,16 @@ public class LoaderManager {
 
     private static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
-    private static Map<String, Set<Class<?>>> simulationLoggers;
+//    private static Map<String, Set<Class<?>>> valueFormatters;
+
+//    private static Map<String, Set<Class<?>>> simulatorListeners;
 
     private static LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
 
-    private static LPhyLoggerLoader lphyLoggerLoader = new LPhyLoggerLoader();
+//    private static ValueFormatterLoader lphyValueFormatterLoader = new ValueFormatterLoader();
+// TODO handle resolve strategies here?
+public static ValueFormatResolver valueFormatResolver;
+
 
     // data types are held in SequenceTypeFactory singleton
 
@@ -37,8 +41,13 @@ public class LoaderManager {
 
         types = lphyCoreLoader.types;
 
-        lphyLoggerLoader.loadAllExtensions();
-        simulationLoggers = lphyLoggerLoader.simulationLoggers;
+        ValueFormatterLoader lphyValueFormatterLoader = new ValueFormatterLoader();
+        lphyValueFormatterLoader.loadAllExtensions();
+        Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
+                lphyValueFormatterLoader.getValueFormattersClasses();
+//        simulatorListeners = lphyVauleFormatterLoader.getSimulatorListeners();
+
+        valueFormatResolver = new ValueFormatResolver(valueFormatters);
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
@@ -56,13 +65,23 @@ public class LoaderManager {
 
     public LoaderManager() {}
 
+    public static <T> void registerClasses(List<Class<? extends T>> clsInExtension,
+                                           Map<String, Set<Class<?>>> clsDictionary) {
+        for (Class<? extends T> cls : clsInExtension) {
+            String name = cls.getSimpleName();
+
+            Set<Class<?>> clsSet = clsDictionary.computeIfAbsent(name, k -> new HashSet<>());
+            clsSet.add(cls);
+        }
+    }
+
     public static LPhyCoreLoader getLphyCoreLoader() {
         return lphyCoreLoader;
     }
 
-    public static LPhyLoggerLoader getLPhyLoggerLoader() {
-        return lphyLoggerLoader;
-    }
+//    public static ValueFormatterLoader getLPhyLoggerLoader() {
+//        return lphyValueFormatterLoader;
+//    }
 
     public static Set<Class<?>> getAllGenerativeDistributionClasses(String name) {
         return genDistDictionary.get(name);
@@ -102,44 +121,16 @@ public class LoaderManager {
         return functions;
     }
 
-    /**
-     * @return  a list of {@link RandomValueLogger} flattened
-     *          from a map of sets in {@link #simulationLoggers}
-     */
-    public static List<Class<RandomValueLogger>> getAllSimulationLoggerClasses() {
-        List<Class<RandomValueLogger>> loggers = new ArrayList<>();
 
-        for (Set<Class<?>> classes : simulationLoggers.values()) {
-            for (Class<?> c : classes) {
-                loggers.add((Class<RandomValueLogger>) c);
-            }
-        }
-        return loggers;
-    }
 
-    public static List<RandomValueLogger> getSimulationLoggers() {
 
-        List<Class<RandomValueLogger>> classList = getAllSimulationLoggerClasses();
 
-        List<RandomValueLogger> instances = classList.stream()
-                .map(cls -> {
-                    try {
-                        return cls.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                        return null; // or handle the exception as needed
-                    }
-                }).collect(Collectors.toList());
-
-        return instances;
-    }
-
-    public static List<FileLogger> getFileLoggers() {
-        return getSimulationLoggers().stream()
-                .filter(FileLogger.class::isInstance)
-                .map(FileLogger.class::cast)
-                .collect(Collectors.toList());
-    }
+//    public static List<CLIFormatter> getFileLoggers() {
+//        return createSimulationLoggerInstances().stream()
+//                .filter(CLIFormatter.class::isInstance)
+//                .map(CLIFormatter.class::cast)
+//                .collect(Collectors.toList());
+//    }
 
     public static Map<String, Set<Class<?>>> getGenDistDictionary() {
         return genDistDictionary;

@@ -1,29 +1,31 @@
 package lphy.core.simulator;
 
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.CompoundVectorValue;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
- * Sampling values for {@link RandomVariable}.
+ * Sampling values from a LPhy script.
  */
 public class Sampler {
-
-    public static final int REP_START = 0;
 
     LPhyMetaParser parser;
 
     /**
      * Key is the index of replicates, value is the result of each replicate.
      */
-    protected Map<Integer, List<Value<?>>> valuesAllRepsMap;
+    @Deprecated
+    protected Map<Integer, List<Value>> valuesAllRepsMap;
 
     public Sampler() {
         this.valuesAllRepsMap = new TreeMap<>();
@@ -35,61 +37,107 @@ public class Sampler {
     }
 
     /**
+     * @param lphyFile  a File containing LPhy script
+     * @return  Sampler
+     * @throws IOException
+     */
+    public static Sampler createSampler(File lphyFile) throws IOException {
+        //*** Parse LPhy file ***//
+        LPhyMetaParser parser = new REPL();
+        parser.source(lphyFile);
+
+        // Sampler requires GraphicalLPhyParser
+        Sampler sampler = new Sampler(parser);
+        return sampler;
+    }
+
+    /**
+     * @param lphyScript   String containing LPhy script,
+     *                     which must use \n to split lines.
+     * @return Sampler
+     */
+    public static Sampler createSampler(String lphyScript) {
+        //*** Parse LPhy script in string ***//
+        LPhyMetaParser parser = new REPL();
+        //TODO this passes all into Context.model
+        parser.parse(lphyScript);
+
+        // Sampler requires GraphicalLPhyParser
+        Sampler sampler = new Sampler(parser);
+        return sampler;
+    }
+
+    /**
+     * Sample the current model stored in the {@link LPhyMetaParser}.
+     * @return the list {@link Value} from one simulation.
+     */
+    public List<Value> sample(Long seed) {
+        if (seed != null)
+            RandomUtils.setSeed(seed);
+
+        Set<String> sampled = new TreeSet<>();
+        List<Value<?>> sinks = getParser().getModelSinks();
+        for (RandomVariable<?> var : getParser().getAllVariablesFromSinks()) {
+            getParser().getModelDictionary().remove(var.getId());
+        }
+
+        for (Value<?> value : sinks) {
+            if (value.isRandom()) {
+                Value randomValue;
+                if (value.getGenerator() != null) {
+                    randomValue = sampleAll(value, value.getGenerator(), sampled);
+                } else throw new RuntimeException();
+                randomValue.setId(value.getId());
+
+                addValueToModelDictionary(randomValue);
+            }
+        }
+
+        return GraphicalModelUtils.getAllValuesFromSinks(getParser());
+    }
+
+
+    /**
      * Sample the current model
      *
      * @param numReplicates    the number of times to sample
      * @param loggers the loggers to log to, cannot be null
      */
-    public void sample(int numReplicates, List<? extends RandomValueLogger> loggers) {
+    @Deprecated
+    public void sample(int numReplicates, List<? extends RandomValueFormatter> loggers) {
         Objects.requireNonNull(loggers, "Simulation result loggers must not be null !");
         // clean the previous set of simulation results
         valuesAllRepsMap.clear();
 
-        for (int i = REP_START; i < numReplicates; i++) {
-            Set<String> sampled = new TreeSet<>();
-            List<Value<?>> sinks = getParser().getModelSinks();
-            for (RandomVariable<?> var : getParser().getAllVariablesFromSinks()) {
-                getParser().getModelDictionary().remove(var.getId());
-            }
+        for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
 
-            for (Value<?> value : sinks) {
-                if (value.isRandom()) {
-                    Value randomValue;
-                    if (value.getGenerator() != null) {
-                        randomValue = sampleAll(value, value.getGenerator(), sampled);
-                    } else throw new RuntimeException();
-                    randomValue.setId(value.getId());
-
-                    addValueToModelDictionary(randomValue);
-                }
-            }
-
-            List<Value<?>> values = GraphicalModelUtils.getAllValuesFromSinks(parser);
+            List<Value> values = sample(null);
             valuesAllRepsMap.put(i, values);
 
             // Logging must be right after sampling each rep
-            if (i == REP_START) {
+            if (i == SimulatorListener.REPLICATES_START_INDEX) {
                 // header
-                for (RandomValueLogger logger : loggers)
-                    logger.start(values);
+                for (RandomValueFormatter logger : loggers)
+                    logger.getHeaderFromValues();
             }
             // log
-            for (RandomValueLogger logger : loggers) {
-                logger.log(i, values);
+            for (RandomValueFormatter logger : loggers) {
+                logger.getRowFromValues(i);
             }
         }
         // end
-        for (RandomValueLogger logger : loggers) {
-            logger.stop();
+        for (RandomValueFormatter logger : loggers) {
+            logger.getFooterFromValues();
         }
 //        parser.notifyListeners();
     }
 
-    public void log(int reps, List<RandomValueLogger> loggers) {
+    @Deprecated
+    public void log(int reps, List<RandomValueFormatter> loggers) {
 
     }
 
-    public Map<Integer, List<Value<?>>> getValuesAllRepsMap() {
+    public Map<Integer, List<Value>> getValuesAllRepsMap() {
         return this.valuesAllRepsMap;
     }
 

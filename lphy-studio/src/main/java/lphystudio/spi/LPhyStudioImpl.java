@@ -1,6 +1,6 @@
 package lphystudio.spi;
 
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
@@ -30,7 +30,7 @@ public class LPhyStudioImpl implements LPhyExtension {
         return new ArrayList<>();
     }
 
-    public List<Class<? extends RandomValueLogger>> getSimulationLoggers() {
+    public List<Class<? extends RandomValueFormatter>> getSimulationLoggers() {
         return new ArrayList<>();
     }
 

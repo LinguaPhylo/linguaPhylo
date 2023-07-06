@@ -1,7 +1,8 @@
 package lphystudio.core.logger;
 
-import lphy.core.logger.RandomNumberLogger;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.LoggableImpl;
+import lphy.core.logger.RandomNumberFormatter;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 
 import javax.swing.*;
@@ -9,14 +10,14 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableSummary extends JTable implements RandomValueLogger {
+public class VariableSummary extends JTable implements RandomValueFormatter {
 
 //    boolean logVariables;
 //    boolean logStatistics;
 
     List<ValueRow> valueRows = new ArrayList<>();
 
-    RandomNumberLogger randomNumberLogger;
+    final RandomNumberFormatter randomNumberLogger;
 
     AbstractTableModel tableModel;
 
@@ -24,7 +25,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
 
 //        this.logStatistics = logStatistics;
 //        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberLogger();//logVariables, logStatistics
+        randomNumberLogger = new RandomNumberFormatter();//logVariables, logStatistics
 
         tableModel = new AbstractTableModel() {
             @Override
@@ -128,20 +129,32 @@ public class VariableSummary extends JTable implements RandomValueLogger {
     }
 
     @Override
-    public void start(List<Value<?>> randomValues) {
+    public void setSelectedItems(List<Value<?>> randomValues) {
+
+    }
+
+    @Override
+    public List<?> getSelectedItems() {
+        return null;
+    }
+
+    @Override
+    public String getHeaderFromValues() {
         //TODO
+        return "";
     }
 
     @Override
-    public void log(int rep, List<Value<?>> randomValues) {
+    public String getRowFromValues(int rowIndex) {
 
-        if (rep == 0) valueRows.clear();
+        if (rowIndex == 0) valueRows.clear();
 
-        randomNumberLogger.log(rep, randomValues);
+        randomNumberLogger.getRowFromValues(rowIndex);
+        return "";
     }
 
     @Override
-    public void stop() {
+    public String getFooterFromValues() {
 
         for (Value value : randomNumberLogger.firstValues) {
             if (randomNumberLogger.isLogged(value)) {
@@ -153,7 +166,7 @@ public class VariableSummary extends JTable implements RandomValueLogger {
                 if (summary.isLengthSummary) {
                     valueRows.add(new ValueRow("length(" + id + ")", summary, 0));
                 } else {
-                    String[] titles = randomNumberLogger.loggableMap.get(value.value().getClass()).getLogTitles(value);
+                    String[] titles = LoggableImpl.getLoggable(value.value().getClass()).getLogTitles(value);
                     for (int i = 0; i < summary.getRowCount(); i++) {
                         valueRows.add(new ValueRow(titles[i], summary, i));
                     }
@@ -162,10 +175,11 @@ public class VariableSummary extends JTable implements RandomValueLogger {
         }
 
         tableModel.fireTableDataChanged();
+        return "";
     }
 
-    public String getDescription() {
-        return getLoggerName() + " writes the statistical summary of random variables " +
+    public String getFormatterDescription() {
+        return getFormatterName() + " writes the statistical summary of random variables " +
                 "from simulations into a table format for GUI.";
     }
 }

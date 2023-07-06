@@ -5,35 +5,40 @@ import lphy.core.model.Value;
 import java.util.List;
 
 /**
- * The logger interface has no side effect.
+ * The logger formatter interface has no side effect.
  */
-public interface RandomValueLogger {
+@Deprecated
+public interface RandomValueFormatter {
+
+    void setSelectedItems(List<Value<?>> randomValues);
+
+    List<?> getSelectedItems();
 
     /**
      * Called once for all replicates, e.g., build the header.
      */
-    void start(List<Value<?>> randomValues);
+    String getHeaderFromValues();
 
     /**
      * Build the string of contents should be logged per replicate.
-     * @param rep           the index of a replicate
-     * @param randomValues  all available {@link Value}
+     *
+     * @param rowIndex the index of a row, e.g., a replicate of simulations.
      */
-    void log(int rep, List<Value<?>> randomValues);
+    String getRowFromValues(int rowIndex);
 
     /**
      * Called once, all replicates have been logged.
      */
-    void stop();
+    String getFooterFromValues();
 
-    String getDescription();
+    String getFormatterDescription();
 
     default String getModuleName() {
         Module module = getClass().getModule();
         return module.getName();
     }
 
-    default String getLoggerName() {
+    default String getFormatterName() {
         return getModuleName() + "." + getClass().getSimpleName();
     }
 

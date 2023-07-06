@@ -1,7 +1,7 @@
 package lphystudio.core.logger;
 
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 
 import javax.swing.*;
@@ -10,9 +10,11 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by adru001 on 10/03/20.
+ * Log tree to GUI,
  */
-public class TreeLog extends JTextArea implements RandomValueLogger {
+public class TreeLog extends JTextArea implements RandomValueFormatter {
+
+//    final TreeFileLogger treeFileLogger;
 
     public TreeLog() { }
 
@@ -20,17 +22,30 @@ public class TreeLog extends JTextArea implements RandomValueLogger {
         setText("");
     }
 
+    List<Value<TimeTree>> treeVariables;
+
 
     @Override
-    public void start(List<Value<?>> randomValues) {
-        //TODO
+    public void setSelectedItems(List<Value<?>> randomValues) {
+        treeVariables = getTreeValues(randomValues);
     }
 
     @Override
-    public void log(int rep, List<Value<?>> randomValues) {
-        List<Value<TimeTree>> treeVariables = getTreeValues(randomValues);
+    public List<?> getSelectedItems() {
+        return null;
+    }
 
-        if (rep == 0) {
+    @Override
+    public String getHeaderFromValues() {
+        //TODO
+        return "";
+    }
+
+    @Override
+    public String getRowFromValues(int rowIndex) {
+//        List<Value<TimeTree>> treeVariables = getTreeValues(randomValues);
+
+        if (rowIndex == 0) {
             setText("sample");
             for (Value<TimeTree> tv : treeVariables) {
                 append("\t" + tv.getId());
@@ -38,19 +53,21 @@ public class TreeLog extends JTextArea implements RandomValueLogger {
             append("\n");
         }
 
-        append(rep+"");
+        append(rowIndex +"");
         for (Value<TimeTree> v : treeVariables) {
             append("\t" + v.value().toNewick(false));
         }
         append("\n");
+        return "";
     }
 
     @Override
-    public void stop() {
+    public String getFooterFromValues() {
+        return "";
     }
 
-    public String getDescription() {
-        return getLoggerName() + " writes the trees generated from simulations into GUI.";
+    public String getFormatterDescription() {
+        return getFormatterName() + " writes the trees generated from simulations into GUI.";
     }
 
     private List<Value<TimeTree>> getTreeValues(List<Value<?>> variables) {

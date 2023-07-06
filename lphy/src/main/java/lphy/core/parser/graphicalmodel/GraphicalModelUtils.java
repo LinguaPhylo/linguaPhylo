@@ -63,15 +63,15 @@ public class GraphicalModelUtils {
         return false;
     }
 
-    public static List<Value<?>> getAllValuesFromSinks(GraphicalModel model) {
-        List<Value<?>> values = new ArrayList<>();
+    public static List<Value> getAllValuesFromSinks(GraphicalModel model) {
+        List<Value> values = new ArrayList<>();
         for (Value<?> v : model.getModelSinks()) {
             getAllValues(v, values);
         }
         return values;
     }
 
-    private static void getAllValues(GraphicalModelNode<?> node, List<Value<?>> values) {
+    private static void getAllValues(GraphicalModelNode<?> node, List<Value> values) {
         if (node instanceof Value && !values.contains(node)) {
             values.add((Value<?>) node);
         }

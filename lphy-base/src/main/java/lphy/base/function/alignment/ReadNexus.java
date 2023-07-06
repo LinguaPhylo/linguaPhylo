@@ -3,13 +3,13 @@ package lphy.base.function.alignment;
 import jebl.evolution.io.ImportException;
 import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.parser.NexusParser;
+import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.system.UserDir;
 
 import java.io.IOException;
 import java.nio.file.Path;

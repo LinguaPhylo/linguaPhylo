@@ -30,6 +30,7 @@ import java.util.List;
  * 
  * @author Tim Vaughan &lt;tgvaughan@gmail.com&gt;
  */
+@Deprecated
 public class NexusWriter {
     
     /**

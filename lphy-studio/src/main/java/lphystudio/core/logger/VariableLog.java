@@ -1,7 +1,8 @@
 package lphystudio.core.logger;
 
-import lphy.core.logger.RandomNumberLogger;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.LoggableImpl;
+import lphy.core.logger.RandomNumberFormatter;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 
 import javax.swing.*;
@@ -9,12 +10,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableLog extends JTextArea implements RandomValueLogger {
+public class VariableLog extends JTextArea implements RandomValueFormatter {
 
 //    boolean logVariables;
 //    boolean logStatistics;
 
-    RandomNumberLogger randomNumberLogger;
+    RandomNumberFormatter randomNumberLogger;
 
     Font loggerFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
@@ -26,7 +27,7 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
 
 //        this.logStatistics = logStatistics;
 //        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberLogger(); // logVariables, logStatistics
+        randomNumberLogger = new RandomNumberFormatter(); // logVariables, logStatistics
     }
 
     public void clear() {
@@ -35,17 +36,28 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
 
 
     @Override
-    public void start(List<Value<?>> randomValues) {
+    public void setSelectedItems(List<Value<?>> randomValues) {
+
+    }
+
+    @Override
+    public List<?> getSelectedItems() {
+        return null;
+    }
+
+    @Override
+    public String getHeaderFromValues() {
         //TODO
+        return "";
     }
 
     @Override
-    public void log(int rep, List<Value<?>> randomValues) {
-        randomNumberLogger.log(rep, randomValues);
+    public String getRowFromValues(int rowIndex) {
+        return randomNumberLogger.getRowFromValues(rowIndex);
     }
 
     @Override
-    public void stop() {
+    public String getFooterFromValues() {
 
         clear();
 
@@ -69,7 +81,7 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
             if (lengthSummary.get(j)) {
                 builder.append("\t" + value.getId() + ".length");
             } else {
-                String[] titles = randomNumberLogger.loggableMap.get(value.value().getClass()).getLogTitles(value);
+                String[] titles = LoggableImpl.getLoggable(value.value().getClass()).getLogTitles(value);
                 for (String title : titles) {
                     builder.append("\t");
                     builder.append(title);
@@ -96,10 +108,11 @@ public class VariableLog extends JTextArea implements RandomValueLogger {
         }
 
         setText(builder.toString());
+        return "";
     }
 
-    public String getDescription() {
-        return getLoggerName() + " writes the values of random variables " +
+    public String getFormatterDescription() {
+        return getFormatterName() + " writes the values of random variables " +
                 "generated from simulations into GUI.";
     }
 }

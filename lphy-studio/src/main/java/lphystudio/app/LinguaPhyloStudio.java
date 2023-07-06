@@ -1,10 +1,10 @@
 package lphystudio.app;
 
+import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.simulator.RandomUtils;
-import lphy.core.system.UserDir;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
@@ -293,11 +293,11 @@ public class LinguaPhyloStudio {
                 UserDir.setAlignmentDir(dir.toString());
                 LoggerUtils.log.info("Alignments saved to: " + dir);
                 // save all sampled alignments
-                Map<Integer, List<Value<?>>> valuesMap = panel.getSampler().getValuesAllRepsMap();
+                Map<Integer, List<Value>> valuesMap = panel.getSampler().getValuesAllRepsMap();
                 AlignmentLog alignmentLogger = new AlignmentLog(parser);
                 alignmentLogger.setLogAlignment(true);
                 for (int i: valuesMap.keySet()) {
-                    alignmentLogger.log(i, valuesMap.get(i));
+                    alignmentLogger.getRowFromValues(i);
                 }
 
             } else {

@@ -1,5 +1,6 @@
 import lphy.core.spi.LPhyCoreImpl;
-import lphy.core.spi.LPhyCoreSimLoggerImpl;
+import lphy.core.spi.LPhyCoreValueFormatterImpl;
+import lphy.core.spi.LPhyValueFormatter;
 
 /**
  * @author Walter Xie
@@ -38,7 +39,7 @@ module lphy.core {
     // others
 //    exports lphy.core.narrative;
     exports lphy.core.exception;
-    exports lphy.core.system;
+    exports lphy.core.io;
 
     // declare service provider interface (SPI)
     exports lphy.core.spi;
@@ -50,6 +51,6 @@ module lphy.core {
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyCoreImpl;
 
-    uses lphy.core.spi.LPhySimLogger;
-    provides lphy.core.spi.LPhySimLogger with LPhyCoreSimLoggerImpl;
+    uses LPhyValueFormatter;
+    provides LPhyValueFormatter with LPhyCoreValueFormatterImpl;
 }

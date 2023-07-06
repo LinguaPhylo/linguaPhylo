@@ -30,9 +30,6 @@ import lphy.base.function.tree.ExtantTree;
 import lphy.base.function.tree.MigrationCount;
 import lphy.base.function.tree.Newick;
 import lphy.base.function.tree.PruneTree;
-import lphy.base.logger.AlignmentFileLogger;
-import lphy.base.logger.TreeFileLogger;
-import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyExtension;
@@ -106,9 +103,6 @@ public class LPhyBaseImpl implements LPhyExtension {
             Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
             ConcatArray.class, Concat2Str.class);
 
-    List<Class<? extends RandomValueLogger>> simulationLoggers = Arrays.asList(
-            AlignmentFileLogger.class, TreeFileLogger.class);
-
     /**
      * Required by ServiceLoader.
      */
@@ -124,10 +118,6 @@ public class LPhyBaseImpl implements LPhyExtension {
     @Override
     public List<Class<? extends BasicFunction>> getFunctions() {
         return functions;
-    }
-
-    public List<Class<? extends RandomValueLogger>> getSimulationLoggers() {
-        return simulationLoggers;
     }
 
     public String getExtensionName() {

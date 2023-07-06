@@ -1,7 +1,8 @@
 import lphy.base.spi.LPhyBaseImpl;
-import lphy.base.spi.LPhyBaseSimLoggerImpl;
+import lphy.base.spi.LPhyBaseValueFormatterImpl;
 import lphy.base.spi.SequenceTypeBaseImpl;
 import lphy.base.spi.SequenceTypeExtension;
+import lphy.core.spi.LPhyValueFormatter;
 
 /**
  * @author Walter Xie
@@ -35,7 +36,7 @@ module lphy.base {
     exports lphy.base.evolution.substitutionmodel;
     exports lphy.base.evolution.tree;
 
-    exports lphy.base.logger;
+//    exports lphy.base.logger;
 //    opens lphy.base.simulator;
 //    exports lphy.base.simulator;
 
@@ -48,14 +49,15 @@ module lphy.base {
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;
+    exports lphy.base.logger;
 
     // LPhy extensions
     uses lphy.core.spi.LPhyExtension;
     // declare what service interface the provider intends to use
     provides lphy.core.spi.LPhyExtension with LPhyBaseImpl;
 
-    uses lphy.core.spi.LPhySimLogger;
-    provides lphy.core.spi.LPhySimLogger with LPhyBaseSimLoggerImpl;
+    uses LPhyValueFormatter;
+    provides LPhyValueFormatter with LPhyBaseValueFormatterImpl;
 
     uses SequenceTypeExtension;
     // declare what service interface the provider intends to use

@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.logger.AlignmentLog;
@@ -138,7 +138,7 @@ public class ViewerPane extends JTabbedPane {
         }
     }
 
-    public List<RandomValueLogger> getRandomValueLoggers() {
+    public List<RandomValueFormatter> getRandomValueLoggers() {
         return List.of(variableLog, treeLog, variableSummary, alignmentLog);
     }
 

@@ -1,12 +1,9 @@
 package lphystudio.app.cmd;
 
-import lphy.core.logger.RandomValueLogger;
 import lphy.core.model.Value;
 import lphy.core.parser.Command;
-import lphy.core.spi.LoaderManager;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,7 +67,7 @@ public class SampleCommand implements Command {
         boolean writeAlignmentsToFile = args.getBoolean(arguments[3], defaults[3]);
         String name = args.getString(arguments[4], defaults[4]);
 
-        List<RandomValueLogger> loggers = LoaderManager.getSimulationLoggers();
+//        List<SimulatorListener> loggers = LoaderManager.createSimulationLoggerInstances();
 
         //TODO
 
@@ -81,6 +78,7 @@ public class SampleCommand implements Command {
 //        if (writeTreesToFile) loggers.add(new TreeFileLogger(name));
 //        if (writeAlignmentsToFile) loggers.add(new AlignmentFileLogger(name));
 
-        graphicalModelPanel.sample(n, loggers);
+//        graphicalModelPanel.sample(n, loggers);
+        throw new UnsupportedOperationException("in dev");
     }
 }

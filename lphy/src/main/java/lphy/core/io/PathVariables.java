@@ -1,4 +1,4 @@
-package lphy.core.system;
+package lphy.core.io;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

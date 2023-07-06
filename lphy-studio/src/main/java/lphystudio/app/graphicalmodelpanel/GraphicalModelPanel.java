@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueLogger;
+import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
@@ -277,7 +277,7 @@ public class GraphicalModelPanel extends JPanel {
         sample(reps, new LinkedList<>());
     }
 
-    public void sample(int reps, List<RandomValueLogger> loggers) {
+    public void sample(int reps, List<RandomValueFormatter> loggers) {
 
         long start = System.currentTimeMillis();
 
