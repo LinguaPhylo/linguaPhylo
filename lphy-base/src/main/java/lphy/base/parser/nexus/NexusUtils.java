@@ -15,29 +15,29 @@ public class NexusUtils {
         StringBuilder builder = new StringBuilder();
         builder.append(KEY_WORD).append("\n\n");
 
-        String taxaBlock = getTaxaBlock(hasTaxa);
+        String taxaBlock = getTaxaBlock(Objects.requireNonNull(hasTaxa));
         builder.append(taxaBlock).append("\n");
 
         NexusBlock nexusBlock = createNexusBlock(hasTaxa);
-        builder.append("begin ").append(nexusBlock.getBlockName()).append(";\n");
-
+        builder.append("begin ").append(nexusBlock.getBlockName()).append(";");
+        // use println, so not require \n in the last
         return builder.toString();
     }
 
     public static String buildBody(SimpleAlignment simpleAlignment) {
         StringBuilder builder = new StringBuilder();
 
-        NexusBlock nexusBlock = createNexusBlock(simpleAlignment);
+        NexusBlock nexusBlock = createNexusBlock(Objects.requireNonNull(simpleAlignment));
         for (String line : nexusBlock.getBlockLines())
-            builder.append(line).append(";\n");
+            builder.append("\t").append(line).append(";\n");
 
         return builder.toString();
     }
 
     public static String buildBody(TimeTree tree) {
-        String newick = tree.toString();
-        if (newick.endsWith(";")) {
-            newick = newick.substring(0, newick.length() - 1);
+        String newick = Objects.requireNonNull(tree).toString();
+        if (! newick.endsWith(";")) {
+            newick += ";";
         }
         return newick;
     }
@@ -46,7 +46,7 @@ public class NexusUtils {
         return "end;\n";
     }
 
-    public static NexusBlock createNexusBlock(HasTaxa hasTaxa) {
+    private static NexusBlock createNexusBlock(HasTaxa hasTaxa) {
         NexusBlock nexusBlock;
         if (hasTaxa instanceof SimpleAlignment alignment) {
             nexusBlock = new CharactersBlock(alignment);

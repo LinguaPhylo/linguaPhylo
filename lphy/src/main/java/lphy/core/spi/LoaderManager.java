@@ -19,9 +19,6 @@ public class LoaderManager {
 
     private static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
-//    private static Map<String, Set<Class<?>>> valueFormatters;
-
-//    private static Map<String, Set<Class<?>>> simulatorListeners;
 
     private static LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
 
@@ -45,8 +42,7 @@ public static ValueFormatResolver valueFormatResolver;
         lphyValueFormatterLoader.loadAllExtensions();
         Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
                 lphyValueFormatterLoader.getValueFormattersClasses();
-//        simulatorListeners = lphyVauleFormatterLoader.getSimulatorListeners();
-
+        // pass all ValueFormatter classes to the Resolver
         valueFormatResolver = new ValueFormatResolver(valueFormatters);
 
         bivarOperators = new HashSet<>();
@@ -79,9 +75,6 @@ public static ValueFormatResolver valueFormatResolver;
         return lphyCoreLoader;
     }
 
-//    public static ValueFormatterLoader getLPhyLoggerLoader() {
-//        return lphyValueFormatterLoader;
-//    }
 
     public static Set<Class<?>> getAllGenerativeDistributionClasses(String name) {
         return genDistDictionary.get(name);
@@ -121,16 +114,6 @@ public static ValueFormatResolver valueFormatResolver;
         return functions;
     }
 
-
-
-
-
-//    public static List<CLIFormatter> getFileLoggers() {
-//        return createSimulationLoggerInstances().stream()
-//                .filter(CLIFormatter.class::isInstance)
-//                .map(CLIFormatter.class::cast)
-//                .collect(Collectors.toList());
-//    }
 
     public static Map<String, Set<Class<?>>> getGenDistDictionary() {
         return genDistDictionary;

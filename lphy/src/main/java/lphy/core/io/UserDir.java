@@ -44,7 +44,7 @@ public class UserDir {
     public static void setUserDir(String wdStr) {
         if (wdStr != null) {
             System.setProperty(USER_DIR, wdStr);
-            System.out.println("Set " + USER_DIR + " = " + wdStr);
+            System.out.println("Set working dir to " + wdStr);
         }
     }
 

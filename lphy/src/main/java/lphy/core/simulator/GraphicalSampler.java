@@ -1,6 +1,7 @@
 package lphy.core.simulator;
 
 import lphy.core.logger.RandomValueFormatter;
+import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
@@ -19,8 +20,13 @@ public class GraphicalSampler extends Sampler {
         this.parser = parser;
     }
 
-
     @Override
+    public List<Value> sample(Long seed) {
+        parser.notifyListeners();
+        return super.sample(seed);
+    }
+
+    @Deprecated
     public void sample(int numReplicates, List<? extends RandomValueFormatter> loggers) {
         super.sample(numReplicates, loggers);
         parser.notifyListeners();

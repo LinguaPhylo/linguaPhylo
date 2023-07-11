@@ -87,7 +87,7 @@ public class RandomNumberFormatter implements RandomValueFormatter {
     }
 
     public boolean isLogged(Value randomValue) {
-        boolean random = ValueLoggerListener.isValueLoggable(randomValue);
+        boolean random = ValueLoggerListener.isNamedRandomValue(randomValue);
         boolean number = ValueUtils.isNumberOrNumberArray(randomValue) ||
                 ValueUtils.is2DNumberArray(randomValue) ||
                 // 0|1

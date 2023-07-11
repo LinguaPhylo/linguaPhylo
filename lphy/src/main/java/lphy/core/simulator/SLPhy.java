@@ -54,9 +54,10 @@ public class SLPhy implements Callable<Integer> {
 
     @Override
     public Integer call() throws PicocliException {
-        // If outDir = null, use preference, otherwise assign to the input file directory by default.
-        File outDir = infile.getParent().toFile();
+        // must use absolute path, otherwise parent could be null for relative path
+        File outDir = infile.toAbsolutePath().getParent().toFile();
         try {
+            // If outDir = null, use preference, otherwise assign to the input file directory by default.
             FileConfig fileConfig = FileConfig.Utils
                     .createSimulationFileConfig(infile.toFile(), outDir, numReps, seed);
 

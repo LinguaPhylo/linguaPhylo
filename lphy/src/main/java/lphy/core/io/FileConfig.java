@@ -37,7 +37,7 @@ public class FileConfig {
 //    }
 
     public String getOutFileName(String valueId, int index, String fileExtension) {
-        String postfix = "_" + valueId + (numReplicates > 1 ? "_" + index : "");
+        String postfix = (numReplicates > 1 ? "_r" + index : "") + "_" + valueId;
         return OutputSystem.getOutputFileName(filePrefix, postfix, fileExtension);
     }
 
@@ -69,6 +69,11 @@ public class FileConfig {
 
         public static FileConfig createSimulationFileConfig(File lphyFile, File outDir, int numReplicates,
                                                              Long seed ) throws IOException {
+            // if user.dir is not the parent folder of lphyFile, then set to it
+            if (! UserDir.getUserDir().toAbsolutePath().equals(lphyFile.getParentFile())) {
+                UserDir.setUserDir(lphyFile.getParentFile().getAbsolutePath());
+            }
+
             if (seed != null)
                 RandomUtils.setSeed(seed);
 

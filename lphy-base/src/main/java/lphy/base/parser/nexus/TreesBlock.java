@@ -95,7 +95,7 @@ public class TreesBlock extends NexusBlock {
         return "trees";
     }
 
-    @Override
+    @Deprecated
     public List<String> getBlockLines() {
         List<String> lines = new ArrayList<>();
         

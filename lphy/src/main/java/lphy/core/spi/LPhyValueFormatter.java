@@ -1,10 +1,7 @@
 package lphy.core.spi;
 
 import lphy.core.logger.ValueFormatter;
-import lphy.core.simulator.SimulatorListener;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,9 +15,9 @@ import java.util.Set;
 public interface LPhyValueFormatter extends Extension {
 
 
-    Map<Class<?>, Set<Class<? extends ValueFormatter>>> getValueFormatterMap();
+    Set<Class<? extends ValueFormatter>> getValueFormatters();
 
-    List<Class<? extends SimulatorListener>> getSimulatorListenerClasses();
+//    List<Class<? extends SimulatorListener>> getSimulatorListenerClasses();
 
 
 

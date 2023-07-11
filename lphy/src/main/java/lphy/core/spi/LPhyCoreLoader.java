@@ -22,10 +22,12 @@ public class LPhyCoreLoader {
     public LPhyCoreLoader() { }
 
     /**
+     * Key is the class name, values are (overloading) classes using this name.
      * {@link GenerativeDistribution}
      */
     public Map<String, Set<Class<?>>> genDistDictionary;
     /**
+     * Key is the class name, values are (overloading) classes using this name.
      * {@link BasicFunction}
      */
     public Map<String, Set<Class<?>>> functionDictionary;

@@ -3,14 +3,19 @@ package lphy.base.logger;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.parser.nexus.NexusUtils;
 import lphy.core.logger.ValueFormatter;
-import lphy.core.model.Value;
+import lphy.core.model.Symbols;
 
-import java.util.Arrays;
+public class NexusTreeFormatter implements ValueFormatter<TimeTree> {
 
-public class NexusTreeFormatter implements ValueFormatter {
+    String valueID;
+    TimeTree tree;
 
+//    public NexusTreeFormatter() {
+//    }
 
-    public NexusTreeFormatter() {
+    public NexusTreeFormatter(String valueID, TimeTree tree) {
+        this.valueID = Symbols.getCanonical(valueID);
+        this.tree = tree;
     }
 
     @Override
@@ -24,44 +29,47 @@ public class NexusTreeFormatter implements ValueFormatter {
     }
 
     @Override
-    public String[] header(Value<?> value) {
-        if (value.value() instanceof TimeTree ||
-                value.value() instanceof TimeTree[] ||
-                value.value() instanceof TimeTree[][]) {
+    public Class<TimeTree> getDataTypeClass() {
+        return TimeTree.class;
+    }
 
-            return Arrays.stream(getValues(value))
-                    .map(TimeTree.class::cast)
-                    .map(NexusUtils::buildHeader)
-                    .toArray(String[]::new);
-        }
-        return ValueFormatter.super.header(value);
+    /**
+     * @return  the header, which will be shared by the replicates of this tree during simulation.
+     */
+    @Override
+    public String header() {
+//        if (this.valueID == null)
+//            setValueID(id);
+        return NexusUtils.buildHeader(tree);
     }
 
     @Override
-    public String[] format(Value<?> value) {
-        if (value.value() instanceof TimeTree ||
-                value.value() instanceof TimeTree[] ||
-                value.value() instanceof TimeTree[][]) {
-
-            return Arrays.stream(getValues(value))
-                    .map(TimeTree.class::cast)
-                    .map(NexusUtils::buildBody)// do not use buildBody
-                    .toArray(String[]::new);
-        }
-        return ValueFormatter.super.format(value);
+    public String getValueID() {
+        return valueID;
     }
 
+    /**
+     * @param tree  {@link TimeTree}
+     * @return  the Newick representation of the provided {@link TimeTree} as a string,
+     *          which will be one line per replicate of this tree during simulation.
+     */
     @Override
-    public String[] footer(Value<?> value) {
-        if (value.value() instanceof TimeTree ||
-                value.value() instanceof TimeTree[] ||
-                value.value() instanceof TimeTree[][]) {
-
-            return new String[]{NexusUtils.buildFooter()};
-        }
-        return ValueFormatter.super.footer(value);
+    public String format(TimeTree tree) {
+        return NexusUtils.buildBody(tree);
     }
 
+    /**
+     * @return  the footer, which will be shared by the replicates of this tree during simulation.
+     */
+    @Override
+    public String footer() {
+        return NexusUtils.buildFooter();
+    }
+
+    /**
+     * @param rowId  also replicate index
+     * @return       the prefix of trees in nexus, such as "tree TREE_0= [&R] ...".
+     */
     @Override
     public String getRowName(int rowId) {
         return "\ttree TREE_" + rowId + "= [&R] ";

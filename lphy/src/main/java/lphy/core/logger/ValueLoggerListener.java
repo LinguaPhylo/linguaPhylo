@@ -14,38 +14,20 @@ import java.util.TreeMap;
 
 public class ValueLoggerListener implements SimulatorListener {
 
-//    Map<ValueFormatter, Mode> modeMap;
-
-    //TODO where and how to init Mode
-//    public LPhySimulatorLoggerListener(Map<ValueFormatter, Mode> modeMap) {
-//        this.modeMap = modeMap;
-//    }
-
-//    @Override
-//    public void setFormatterMode(ValueFormatter valueFormatter, Mode mode) {
-//        modeMap.put(valueFormatter, mode);
-//    }
-//
-//    @Override
-//    public Mode getFormatterMode(ValueFormatter valueFormatter) {
-//        return modeMap.get(valueFormatter);
-//    }
-
-//    @Override
-//    public Map<ValueFormatter, Mode> getModeMap() {
-//        return modeMap;
-//    }
-
     /**
      * For ValuePerLine, the key represents the value id and is used for the file name.
      * Each list of values is logged into a separate file, with each value on its own line.
      */
-    Map<String, List<Value>> valuesById;
+    Map<String, String[]> metadataById;
+    Map<String, List<String>> linesById;
+
     /**
      * For ValuePerCell, the key represents the index of replicates.
      * All lists of values are logged into one file, with each list occupying one row.
      */
-    Map<Integer, List<Value>> valuesByReplicates;
+//    Map<Integer, List<String>> valuesByReplicates;
+    StringBuilder valuesByRepColNamesBuilder;
+    StringBuilder valuesByRepBuilder;
 
     // numReplicates, filePrefix
     FileConfig fileConfig;
@@ -53,10 +35,16 @@ public class ValueLoggerListener implements SimulatorListener {
     private static final ValueFormatResolver valueFormatResolver = LoaderManager.valueFormatResolver;
 
 
-    public static boolean isValueLoggable(Value randomValue) {
-        return randomValue instanceof RandomVariable ||
+    public static boolean isNamedRandomValue(Value value) {
+        return value instanceof RandomVariable ||
                 // random value but no anonymous
-                (randomValue.isRandom() && !randomValue.isAnonymous());
+                (value.isRandom() && !value.isAnonymous());
+    }
+
+    public static List<Value> getNamedRandomValues(List<Value> values) {
+        return values.stream()
+                .filter(ValueLoggerListener::isNamedRandomValue)
+                .toList();
     }
 
 
@@ -81,55 +69,86 @@ public class ValueLoggerListener implements SimulatorListener {
         }
     }
 
+
     @Override
     public void replicate(int index, List<Value> values) {
-        if (valuesById == null)
-            valuesById = new TreeMap<>(); // sort by value id
+        if (metadataById == null)
+            metadataById = new TreeMap<>(); // sort by value id
         else if (index < 1) // index starts from 0
-            valuesById.clear();
+            metadataById.clear();
 
-        if (valuesByReplicates == null)
-            valuesByReplicates = new TreeMap<>(); // sort by index
+        if (linesById == null)
+            linesById = new TreeMap<>(); // sort by index
         else if (index < 1) // index starts from 0
-            valuesByReplicates.clear();
+            linesById.clear();
+
+        if (index < 1) {
+            valuesByRepBuilder = new StringBuilder();
+            valuesByRepColNamesBuilder = new StringBuilder();
+        }
 
         validate(index, fileConfig.numReplicates);
 
         // filter to RandomValue
-        List<Value> loggableValues = values.stream()
-                .filter(ValueLoggerListener::isValueLoggable)
-                .toList();
+        List<Value> namedRandomValueList = getNamedRandomValues(values);
 
-        ValueFormatter formatter;
-        for (Value value : loggableValues) {
-            formatter = valueFormatResolver.getFormatter(value);
+        // for Mode.VALUE_PER_CELL
+        boolean firstColValuePerCell = true;
 
-            if (formatter == null) {
-                LoggerUtils.log.warning("Cannot find formatter for " + value.getId() + ", type is " + value.getType());
-            } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE)
-                // e.g. Alignments
-                ValueFormatHandler.ValuePerFile.exportValuePerFile(index, value, formatter, fileConfig);
-            else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_LINE)
-                // e.g. Trees
-                ValueFormatHandler.ValuePerLine.populateValues(value, valuesById);
-            else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) // e.g. parameters
-                ValueFormatHandler.ValuePerCell.populateValues(index, value, valuesByReplicates);
-            else
-                throw new RuntimeException("Unrecognised formatter mode : " + formatter.getMode() + " !");
-        }
+        for (int i = 0; i < namedRandomValueList.size(); i++) {
 
+            Value value = namedRandomValueList.get(i);
+            List<ValueFormatter> formatters = valueFormatResolver.getFormatter(value);
+
+            // if it is array, then one ValueFormatter for one element
+            for (int j = 0; j < formatters.size(); j++) {
+                ValueFormatter formatter = formatters.get(j);
+
+                if (formatter == null) {
+                    LoggerUtils.log.warning("Cannot find formatter for " + value.getId() +
+                            ", type is " + value.getType());
+
+                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE) {
+                    // e.g. Alignment
+                    ValueFormatHandler.ValuePerFile
+                            .createFile(index, formatter, fileConfig);
+
+                    ValueFormatHandler.ValuePerFile
+                            .exportValuePerFile(index, value, formatter);
+
+                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_LINE) {
+                    // process meta data given 1st value
+                    if (index == 0)
+                        ValueFormatHandler.ValuePerLine.processHeaderFooter(formatter,
+                                metadataById, fileConfig);
+
+                    // e.g. Trees
+                    ValueFormatHandler.ValuePerLine.populateValues(index, value, formatter, linesById);
+
+                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) {
+                    // add col names and parameters values
+                    ValueFormatHandler.ValuePerCell.addColumnNamesAndLines(index, firstColValuePerCell,
+                            value, formatter, valuesByRepColNamesBuilder, valuesByRepBuilder);
+                    firstColValuePerCell = false;
+
+                } else
+                    throw new RuntimeException("Unrecognised formatter mode : " + formatter.getMode() + " !");
+            } // end for j
+        } // end for i
+        // ValuePerCell each line finish here
+        valuesByRepBuilder.append("\n");
     }
 
     @Override
     public void complete() {
 
-        if (valuesById != null)
-            ValueFormatHandler.ValuePerLine
-                .exportValuePerLine(valuesById, fileConfig, valueFormatResolver);
+        if (linesById != null)
+            ValueFormatHandler.ValuePerLine.exportValuePerLine(linesById, metadataById);
 
-        if (valuesByReplicates != null)
-            ValueFormatHandler.ValuePerCell
-                .exportAllValues(valuesByReplicates, fileConfig, valueFormatResolver);
+        if (valuesByRepBuilder.length() > 0)
+            // e.g. .log
+            ValueFormatHandler.ValuePerCell.export(valuesByRepColNamesBuilder, valuesByRepBuilder,
+                    ".log", fileConfig);
 
     }
 
@@ -139,5 +158,30 @@ public class ValueLoggerListener implements SimulatorListener {
                     "must be smaller than number of Replicates " + numReplicates);
     }
 
+
+//    private void validateIDs(int index, String[] ids, String[] valueIDs) {
+//        boolean allMatch = true;
+//
+//        if (ids.length != valueIDs.length) {
+//            allMatch = false;
+//        } else {
+//            for (int i = 0; i < ids.length; i++) {
+//                if (!ids[i].equals(valueIDs[i])) {
+//                    // Elements at index i don't match
+//                    allMatch = false;
+//                    break;
+//                }
+//            }
+//        }
+//        if (!allMatch)
+//            throw new RuntimeException("The values id cannot be different between two replicates : index = " +
+//                    index + ", ids = " + Arrays.toString(ids) + ", ids2 =  " + Arrays.toString(valueIDs));
+//    }
+//
+//    private void validateIdValLen(int index, List<String> ids, List<Object> valueVals) {
+//        if (ids.size() != valueVals.size())
+//            throw new RuntimeException("The replication " + index + " Value IDs are not matching values size " +
+//                    valueVals.size() + ", IDs = " + ids);
+//    }
 
 }

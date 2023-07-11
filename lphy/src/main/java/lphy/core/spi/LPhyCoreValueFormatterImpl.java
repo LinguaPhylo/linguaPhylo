@@ -1,9 +1,9 @@
 package lphy.core.spi;
 
 import lphy.core.logger.ValueFormatter;
-import lphy.core.simulator.SimulatorListener;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The "Container" provider class that implements SPI
@@ -19,14 +19,11 @@ public class LPhyCoreValueFormatterImpl implements LPhyValueFormatter {
     public LPhyCoreValueFormatterImpl() { }
 
     @Override
-    public Map<Class<?>, Set<Class<? extends ValueFormatter>>> getValueFormatterMap() {
-        return new HashMap<>();
+    public Set<Class<? extends ValueFormatter>> getValueFormatters() {
+//        return Set.of(ValueFormatter.Base.class);
+        return new HashSet<>();
     }
 
-    @Override
-    public List<Class<? extends SimulatorListener>> getSimulatorListenerClasses() {
-        return new ArrayList<>();
-    }
 
     public String getExtensionName() {
         return "LPhy core loggers";

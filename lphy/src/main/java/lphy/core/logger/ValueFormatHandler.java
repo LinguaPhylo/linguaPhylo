@@ -3,144 +3,145 @@ package lphy.core.logger;
 import lphy.core.io.FileConfig;
 import lphy.core.io.OutputSystem;
 import lphy.core.model.Value;
-import lphy.core.vectorization.VectorUtils;
-import lphy.core.vectorization.VectorizedRandomVariable;
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ValueFormatHandler {
 
     public static final CharSequence DELIMITER = "\t";
 
+
+    private static void createFile(String fileName) {
+        try {
+            OutputSystem.setOut(fileName);
+        } catch (FileNotFoundException e) {
+            LoggerUtils.log.severe("Cannot find file " + fileName + " !");
+            e.printStackTrace();
+        }
+
+        System.out.println("Create file : " + fileName +
+                " in the directory " + OutputSystem.getOutputDirectory());
+    }
+
+
+    final static int HEADER_ID = 0;
+    final static int FOOTER_ID = 1;
+    final static int FILE_NAME_ID = 2;
+
     public static class ValuePerFile {
 
-        public static void exportValuePerFile(int index, Value value, ValueFormatter formatter,
-                                              FileConfig fileConfig) {
-
-            String[] ids = formatter.getValueID(value);
-            String[] headers = formatter.header(value);
-            String[] bodies = formatter.format(value);
-            String[] footers = formatter.footer(value);
-            assert ids.length == bodies.length;
+        public static void createFile(int index, ValueFormatter formatter, FileConfig fileConfig) {
 
             String fileExtension = formatter.getExtension();
-            // 1 alignment per file
-            for (int i = 0; i < bodies.length; i++) {
-                // if maxId > 0, add postfix, e.g. _0.nexus
-                String fileName = fileConfig.getOutFileName(ids[i], index, fileExtension);
-                try {
-                    OutputSystem.setOut(fileName);
-                } catch (FileNotFoundException e) {
-                    LoggerUtils.log.severe("Cannot find file " + fileName + " !");
-                    e.printStackTrace();
-                }
+            // If value is array, the id will be appended with index
+            String id = formatter.getValueID();
+            // e.g. 1 alignment per file
+            // if maxId > 0, add postfix, e.g. _0.nexus
+            String fileName = fileConfig.getOutFileName(id, index, fileExtension);
 
-                // in case 1 header for multiple bodies
-                String header = headers.length == 1 ? headers[0] : headers[i];
+            ValueFormatHandler.createFile(fileName);
+        }
+
+
+        public static void exportValuePerFile(int index, Value value, ValueFormatter formatter) {
+
+            // here require the original id if value is array
+            String header = formatter.header();
+            // in case 1 header for multiple bodies
+            if (header != null || !header.trim().isEmpty())
                 OutputSystem.out.println(header);
 
-                // overwrite to get indents
-                String indent = formatter.getRowName(i);
-                OutputSystem.out.println(indent + bodies[i]);
+            // overwrite to get indents
+            String indent = formatter.getRowName(index);
+            // here require the original value if value is array,
+            // but return the formatted string at ith element
+            String body = formatter.format(value.value());
+            OutputSystem.out.println(indent + body);
 
-                String footer = footers.length == 1 ? footers[0] : footers[i];
+            String footer = formatter.footer();
+            if (footer != null || !footer.trim().isEmpty())
                 OutputSystem.out.println(footer);
 
-                System.out.println("Output " + value.getId() + " to the file : " + fileName +
-                        " in the directory " + OutputSystem.getOutputDirectory());
+            OutputSystem.out.close();
 
-                OutputSystem.out.close();
-            }
         }
 
     }
 
     public static class ValuePerLine {
 
-        public static void populateValues(Value value, Map<String, List<Value>> valuesById) {
+        // suppose call once per file
+        public static void processHeaderFooter( ValueFormatter formatter,
+                                          Map<String, String[]> metadataByValueID, FileConfig fileConfig) {
+            // here require the original id if value is array
+            String header = formatter.header();
+            // If value is array, the id will be appended with index
+            String id = formatter.getValueID();
 
-            if (value instanceof VectorizedRandomVariable vectRandVar) {
-                // VectorizedRandomVariable
-                for (int i = 0; i < vectRandVar.size(); i++) {
-                    // make sure to populate the vectorized values into different List<Value>
-                    String id = vectRandVar.getId() + VectorUtils.INDEX_SEPARATOR + i;
-                    List<Value> values = valuesById.computeIfAbsent(id, k -> new ArrayList<>());
-                    values.add(vectRandVar.getComponentValue(i));
-                }
-            } else if (value.getType().isArray()) {
-                throw new RuntimeException("To use ValuePerLine, Vectorization must result to VectorizedRandomVariable ! " + value.getClass());
-            } else {
-                List<Value> values = valuesById.computeIfAbsent(value.getId(), k -> new ArrayList<>());
-                values.add(value);
-            }
+            final int len = 3;
+            String[] metadata = metadataByValueID.computeIfAbsent(id, k -> new String[len]);
+            // here require the original id if value is array
+            metadata[HEADER_ID] = header;
+            // print footers once per file
+            metadata[FOOTER_ID] = formatter.footer();
+
+            String fileExtension = formatter.getExtension();
+            // file name, e.g. _psi.trees
+            metadata[FILE_NAME_ID] = fileConfig.getOutFileName(id, fileExtension);
+        }
+
+        public static void populateValues(int index, Value value, ValueFormatter formatter,
+                                          Map<String, List<String>> formattedLinesByValueID) {
+
+            // If value is array, the id will be appended with index
+            String id = formatter.getValueID();
+
+            // here require the original value if value is array,
+            // but return the formatted string at ith element
+            String body = formatter.format(value.value());
+            // overwrite for trees
+            String rowName = formatter.getRowName(index);
+
+            // for a value, one replicate per line,
+            String line = rowName + body;
+            List<String> formattedLines = formattedLinesByValueID
+                    .computeIfAbsent(id, k -> new ArrayList<>());
+            formattedLines.add(line);
 
         }
 
 
-        public static void exportValuePerLine(Map<String, List<Value>> valuesById, FileConfig fileConfig,
-                                              ValueFormatResolver valueFormatResolver) {
-            Objects.requireNonNull(valuesById).forEach((valId, valueList) -> {
+        public static void exportValuePerLine(Map<String, List<String>> formattedLinesByValueID,
+                                              Map<String, String[]> metadataByValueID) {
+            Objects.requireNonNull(formattedLinesByValueID).forEach((formattedValueId, formattedLines) -> {
 
-                Value firstVal = valueList.get(0);
-                if ( ! valId.contains(firstVal.getId()) )
-                    throw new RuntimeException("Value id " + firstVal.getId() + " in the value list in ValuePerLine " +
-                            "is not matching its key in the map " + valId);
-
-                // all Values in the list should be the same type
-                ValueFormatter formatter = valueFormatResolver.getFormatter(firstVal);
-
-                String fileExtension = formatter.getExtension();
+                String[] metadata = metadataByValueID.get(formattedValueId);
                 // e.g. _psi.trees
-                String fileName = fileConfig.getOutFileName(valId, fileExtension);
-                try {
-                    OutputSystem.setOut(fileName);
-                } catch (FileNotFoundException e) {
-                    LoggerUtils.log.severe("Cannot find file " + fileName + " !");
-                    e.printStackTrace();
-                }
+                String fileName = metadata[FILE_NAME_ID];
 
-                // print header once per file
-                String[] headers = formatter.header(firstVal);
-                Arrays.stream(headers)
-                        .filter(str -> str != null && !str.isEmpty())
-                        .forEach(OutputSystem.out::println);
+                createFile(fileName);
 
-                // 1 Value Id per file, but each replicate (tree) per line in a file
-                // the i should match the index of replicates
-                for (int i = 0; i < valueList.size(); i++) {
-                    Value value = valueList.get(i);
+                // use same header per value
+                String header = metadata[HEADER_ID];
+                if (header != null || !header.trim().isEmpty())
+                    OutputSystem.out.println(header);
 
-                    if ( ! firstVal.getClass().equals(value.getClass()) )
-                        throw new RuntimeException("all values in the list for ValuePerLine should be the same type " +
-                                firstVal.getClass() + " ! But find " + value.getClass());
-                    else if ( ! firstVal.getId().equals(value.getId()) )
-                        throw new RuntimeException("Value id " + value.getId() + " in the value list in ValuePerLine " +
-                                "should be same as " + firstVal.getId());
-                    else {
-                        // should no vectorized values in this stage
-                        // print body pre line
-                        String[] bodies = formatter.format(value);
-                        // overwrite for trees
-                        String rowName = formatter.getRowName(i);
-                        // paste same rowName to multiple bodies for one value,
-                        // 1 body per line
-                        Arrays.stream(bodies)
-                                .filter(line -> line != null && !line.isEmpty())
-                                .forEach(line -> OutputSystem.out.println(rowName + line));
-                    }
-               } // end for i
+                // paste rowName and body in one line
+                formattedLines.stream()
+                        .filter(line -> line != null && !line.isEmpty())
+                        .forEach(line -> OutputSystem.out.println(line));
 
-                // print footers once per file
-                String[] footers = formatter.footer(firstVal);
-                Arrays.stream(footers)
-                        .filter(str -> str != null && !str.isEmpty())
-                        .forEach(OutputSystem.out::println);
+                // use same footer per value
+                String footer = metadata[FOOTER_ID];
+                if (footer != null || !footer.trim().isEmpty())
+                    OutputSystem.out.println(footer);
 
                 OutputSystem.out.close();
 
-                System.out.println("Output " + valId + " to the file : " + fileName +
-                        " in the directory " + OutputSystem.getOutputDirectory());
             });
 
         }
@@ -149,102 +150,46 @@ public class ValueFormatHandler {
 
     public static class ValuePerCell {
 
-        public static void populateValues(int index, Value value, Map<Integer, List<Value>> valuesByReplicates) {
-            List<Value> rowValues = valuesByReplicates.computeIfAbsent(index, k -> new ArrayList<>());
+        public static void addColumnNamesAndLines(int repId, boolean firstColValuePerCell, Value value,
+                                    ValueFormatter formatter, StringBuilder valuesByRepColNamesBuilder,
+                                    StringBuilder valuesByRepBuilder) {
+            // add col names
+            if (repId == 0) {
+                if (firstColValuePerCell)
+                    valuesByRepColNamesBuilder.append("Sample");
+                // here require the original id if value is array
+                String header = formatter.header();
 
-            if (value instanceof VectorizedRandomVariable vectRandVar) {
-                // VectorizedRandomVariable
-                for (int i = 0; i < vectRandVar.size(); i++) {
-                    // make sure to populate the vectorized values into different List<Value>
-                    rowValues.add(vectRandVar.getComponentValue(i));
-                }
-//            } else if (value.getType().isArray()) {
-//                throw new RuntimeException("To use ValuePerCell, Vectorization must result to VectorizedRandomVariable ! " + value.getClass());
-            } else {
-                rowValues.add(value);
+                valuesByRepColNamesBuilder.append(DELIMITER).append(header);
             }
+
+
+            if (firstColValuePerCell) {
+                // TODO first column has to add a row name
+                String rowName = formatter.getRowName(repId);
+                valuesByRepBuilder.append(rowName);
+            }
+
+            // here require the original value if value is array,
+            // but return the formatted string at ith element
+            String body = formatter.format(value.value());
+            valuesByRepBuilder.append(DELIMITER).append(body);
         }
 
 
-        public static int exportAllValues(Map<Integer, List<Value>> valuesByReplicates, FileConfig fileConfig,
-                                          ValueFormatResolver valueFormatResolver) {
+        public static void export(StringBuilder valuesByRepColNamesBuilder, StringBuilder valuesByRepBuilder,
+                                  String fileExtension, FileConfig fileConfig ) {
 
-            List<Value> firstVals = Objects.requireNonNull(valuesByReplicates).values()
-                    .stream().findFirst().orElse(null);
-            if (firstVals == null || firstVals.size() < 1)
-                throw new RuntimeException("The map valuesByReplicates is empty in ValuePerCell!");
-            ValueFormatter formatter = valueFormatResolver.getFormatter(firstVals.get(0));
-
-            // they should be same, e.g. .log
-            String fileExtension = formatter.getExtension();
+//            String fileExtension = formatter.getExtension();
             String fileName = fileConfig.getOutFileName(fileExtension);
-            try {
-                OutputSystem.setOut(fileName);
-            } catch (FileNotFoundException e) {
-                LoggerUtils.log.severe("Cannot find file " + fileName + " !");
-                e.printStackTrace();
-            }
+            ValueFormatHandler.createFile(fileName);
 
-            // Start at 1st Value id, if 1d or 2d array,
-            // then the id is composed into an array of id with index
-            List<String> ids = new ArrayList<>(Arrays.asList(formatter.getValueID(firstVals.get(0))));
-            // Build column names
-            for (int i = 1; i < firstVals.size(); i++) {
-                Value firstVal = firstVals.get(i);
-                // all Values in the list should be the same type
-                formatter = valueFormatResolver.getFormatter(firstVal);
-                ids.addAll(Arrays.stream(formatter.getValueID(firstVal)).toList());
-            }
-            // an additional column name
-            ids.add(0, "Sample");
-            // write col names
-            OutputSystem.out.println(String.join(DELIMITER, ids));
-
-            // Build bodies line by line
-            int sampleCount = 0;
-            List<Value> lastValueList = null;
-            for (Map.Entry<Integer, List<Value>> col : valuesByReplicates.entrySet()) {
-                int index = col.getKey();
-                if ( index != sampleCount )
-                    throw new RuntimeException("The row index " + sampleCount + " in ValuePerCell " +
-                            "is not matching its key in the map " + index);
-                final List<Value> valueList = col.getValue();
-//                System.out.println("Key: " + valId + ", Value: " + valueList);
-
-                //TODO ignore header, footer at the moment
-
-                StringBuilder lineBuilder = new StringBuilder();
-                // write each row
-                for (int i = 0; i < valueList.size(); i++) {
-                    Value currentVal = valueList.get(i);
-                    // all Values in the list should be the same type
-                    formatter = valueFormatResolver.getFormatter(currentVal);
-
-                    String[] bodies =  formatter.format(currentVal);
-                    if (lastValueList != null &&
-                            !currentVal.getId().equals(lastValueList.get(i).getId()))
-                        throw new RuntimeException("");
-
-                    if (i == 0) {
-                        // TODO first column has to add a row name
-                        String rowName = String.valueOf(sampleCount);
-                        lineBuilder.append(rowName);
-                    }
-                    for (String b : bodies)
-                        lineBuilder.append(DELIMITER).append(b);
-
-                } // end for i
-
-                OutputSystem.out.println(lineBuilder);
-                lastValueList = new ArrayList<>(valueList);
-                sampleCount++;
-            }
+            OutputSystem.out.println(valuesByRepColNamesBuilder);
+            OutputSystem.out.println(valuesByRepBuilder);
+//TODO ignore footer at the moment
 
             OutputSystem.out.close();
-            System.out.println("Output values to the file : " + fileName +
-                    " in the directory " + OutputSystem.getOutputDirectory());
 
-            return sampleCount;
         }
 
     }

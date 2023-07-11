@@ -1,16 +1,10 @@
 package lphy.base.spi;
 
-import lphy.base.evolution.alignment.SimpleAlignment;
-import lphy.base.evolution.tree.TimeTree;
 import lphy.base.logger.NexusAlignmentFormatter;
 import lphy.base.logger.NexusTreeFormatter;
 import lphy.core.logger.ValueFormatter;
-import lphy.core.simulator.SimulatorListener;
 import lphy.core.spi.LPhyValueFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,15 +22,14 @@ public class LPhyBaseValueFormatterImpl implements LPhyValueFormatter {
     }
 
     @Override
-    public Map<Class<?>, Set<Class<? extends ValueFormatter>>> getValueFormatterMap() {
-        return Map.of( SimpleAlignment.class, Set.of(NexusAlignmentFormatter.class),
-                TimeTree.class, Set.of(NexusTreeFormatter.class) );
+    public Set<Class<? extends ValueFormatter>> getValueFormatters() {
+        return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class);
     }
+//    public Map<Class<?>, Set<Class<? extends ValueFormatter>>> getValueFormatterMap() {
+//        return Map.of( SimpleAlignment.class, Set.of(NexusAlignmentFormatter.class),
+//                TimeTree.class, Set.of(NexusTreeFormatter.class) );
+//    }
 
-    @Override
-    public List<Class<? extends SimulatorListener>> getSimulatorListenerClasses() {
-        return new ArrayList<>();
-    }
 
     public String getExtensionName() {
         return "LPhy base loggers";
