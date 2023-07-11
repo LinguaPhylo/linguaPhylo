@@ -15,9 +15,13 @@ public interface ValueFormatter<T> {
         VALUE_PER_CELL
     }
 
-    String getExtension();
+    default String getExtension() {
+        return ".log";
+    }
 
-    Mode getMode();
+    default Mode getMode() {
+        return Mode.VALUE_PER_CELL;
+    }
 
     Class<T> getDataTypeClass();
 
@@ -62,27 +66,10 @@ public interface ValueFormatter<T> {
         }
 
         @Override
-        public String getExtension() {
-            return ".log";
-        }
-
-        @Override
-        public Mode getMode() {
-            return Mode.VALUE_PER_CELL;
-        }
-
-        @Override
         public Class<T> getDataTypeClass() {
             // getTypeParameters()[0] retrieves the type T
             return (Class<T>) getClass().getTypeParameters()[0].getClass();
         }
-
-//        @Override
-//        public String header() {
-//            if (this.valueID == null)
-//                setValueID(id);
-//            return getValueID();
-//        }
 
         @Override
         public String getValueID() {
