@@ -15,15 +15,22 @@ import java.util.TreeMap;
 public class ValueLoggerListener implements SimulatorListener {
 
     /**
+     * For ValuePerFile, the logging is processed in {@link #replicate(int, List)} in runtime,
+     * so no values are required to store.
+     */
+
+    /**
      * For ValuePerLine, the key represents the value id and is used for the file name.
-     * Each list of values is logged into a separate file, with each value on its own line.
+     * Each list of value ids is logged into a separate file, with each value on its own line.
      */
     Map<String, String[]> metadataById;
     Map<String, List<String>> linesById;
 
     /**
-     * For ValuePerCell, the key represents the index of replicates.
-     * All lists of values are logged into one file, with each list occupying one row.
+     * For ValuePerCell, the column names are constructed in valuesByRepColNamesBuilder,
+     * all values from each replicate of the simulation are constructed into valuesByRepBuilder,
+     * with each replicate occupying one line where values are seperated by tab as default.
+     * These two StringBuilder will log into one file.
      */
 //    Map<Integer, List<String>> valuesByReplicates;
     StringBuilder valuesByRepColNamesBuilder;
