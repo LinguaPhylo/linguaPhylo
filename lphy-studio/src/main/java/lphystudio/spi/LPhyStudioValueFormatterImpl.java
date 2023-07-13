@@ -1,6 +1,5 @@
 package lphystudio.spi;
 
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.spi.LPhyValueFormatter;
 
@@ -9,7 +8,7 @@ import java.util.Set;
 
 /**
  * The "Container" provider class that implements SPI
- * which include a list of {@link RandomValueFormatter} required in the core.
+ * which include a list of {@link ValueFormatter} required in the core.
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
