@@ -4,9 +4,9 @@ import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.parser.nexus.NexusWriter;
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
+import lphy.core.simulator.SimulatorListener;
 
 import javax.swing.*;
 import java.io.File;
@@ -25,7 +25,7 @@ import java.util.List;
  * but contains GUI code.
  * @author Walter Xie
  */
-public class AlignmentLog extends JTextArea implements RandomValueFormatter {
+public class AlignmentLog extends JTextArea implements SimulatorListener {
 
     final LPhyMetaParser parser;
 
@@ -40,32 +40,24 @@ public class AlignmentLog extends JTextArea implements RandomValueFormatter {
         setEditable(false);
     }
 
+    // TODO use ValueFileLoggerListener instead to write to a file
+    @Deprecated
     public void setLogAlignment(boolean bool) {
         this.logAlignment = bool;
     }
 
-    List<Value<SimpleAlignment>> alignmentVariables;
+//    List<Value<SimpleAlignment>> alignmentVariables;
 
     @Override
-    public void setSelectedItems(List<Value<?>> randomValues) {
-        alignmentVariables = getAlignmentValues(randomValues);
+    public void start(List<Object> configs) {
+
     }
 
     @Override
-    public List<?> getSelectedItems() {
-        return null;
-    }
+    public void replicate(int index, List<Value> values) {
+        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(values);
 
-    @Override
-    public String getHeaderFromValues() {
-        //TODO
-        return "";
-    }
-
-    public String getRowFromValues(int rowIndex) {
-//        List<Value<SimpleAlignment>> alignmentVariables = getAlignmentValues(randomValues);
-
-        if (rowIndex == 0) {
+        if (index == 0) {
             setText("sample");
             for (Value<SimpleAlignment> al : alignmentVariables) {
                 String colNm = parser.isClampedVariable(al) ? al.getId() + "-clamped" : al.getId();
@@ -74,27 +66,22 @@ public class AlignmentLog extends JTextArea implements RandomValueFormatter {
             append("\n");
         }
 
-        append(rowIndex +"");
+        append(index+"");
         for (Value<SimpleAlignment> al : alignmentVariables) {
             append("\t" + al.value().toString());
             if (logAlignment) {
-                logAlignment(al, rowIndex);
+                logAlignment(al, index);
             }
         }
         append("\n");
-        return "";
     }
 
     @Override
-    public String getFooterFromValues() {
-return "";
+    public void complete() {
+
     }
 
-    public String getFormatterDescription() {
-        return getFormatterName() + " writes the alignments generated from simulations into GUI.";
-    }
-
-    private List<Value<SimpleAlignment>> getAlignmentValues(List<Value<?>> variables) {
+    private List<Value<SimpleAlignment>> getAlignmentValues(List<Value> variables) {
         List<Value<SimpleAlignment>> values = new ArrayList<>();
         for (Value<?> v : variables) {
             if (v.value() instanceof SimpleAlignment)
@@ -113,6 +100,9 @@ return "";
         return values;
     }
 
+
+    //TODO use ValueFileLoggerListener
+    @Deprecated
     private void logAlignment(Value<SimpleAlignment> alignment, int rep) {
         Path dir = UserDir.getAlignmentDir();
         String fileName = alignment.getCanonicalId() + "_" + rep + ".nexus";

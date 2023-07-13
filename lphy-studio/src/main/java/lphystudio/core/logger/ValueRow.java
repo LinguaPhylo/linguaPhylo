@@ -1,14 +1,16 @@
 package lphystudio.core.logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 public class ValueRow {
 
     public final String title;
-    public final Summary summary;
+    public final DescriptiveStatistics stats;
     public final int row;
 
-    public ValueRow(String title, Summary summary, int row) {
+    public ValueRow(String title, int row, DescriptiveStatistics stats) {
         this.title = title;
-        this.summary = summary;
+        this.stats = stats;
         this.row = row;
     }
 }

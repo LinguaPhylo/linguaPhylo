@@ -1,7 +1,7 @@
 package lphy.core.simulator;
 
 import lphy.core.io.FileConfig;
-import lphy.core.logger.ValueLoggerListener;
+import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class Simulator {
     Sampler sampler;
 
     public Simulator() {
-        simulatorListener = new ValueLoggerListener();
+        simulatorListener = new ValueFileLoggerListener();
     }
 
     public Map<Integer, List<Value>> simulateAndSaveResults(File lphyFile, int numReplicates, Long seed) throws IOException {
@@ -36,7 +36,7 @@ public class Simulator {
     }
 
     private Map<Integer, List<Value>> simulate(File lphyFile, int numReplicates, Long seed) throws IOException {
-        // TODO duplicate to maps in ValueLoggerListener
+        // TODO duplicate to maps in ValueFileLoggerListener
         Map<Integer, List<Value>> simResMap = new HashMap<>();
 
         // create Sampler given a lphy script file

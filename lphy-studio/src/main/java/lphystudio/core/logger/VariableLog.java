@@ -1,21 +1,20 @@
 package lphystudio.core.logger;
 
-import lphy.core.logger.LoggableImpl;
-import lphy.core.logger.RandomNumberFormatter;
-import lphy.core.logger.RandomValueFormatter;
+import lphy.core.logger.RandomNumberLoggerListener;
 import lphy.core.model.Value;
+import lphy.core.simulator.SimulatorListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class VariableLog extends JTextArea implements RandomValueFormatter {
+public class VariableLog extends JTextArea implements SimulatorListener {
 
 //    boolean logVariables;
 //    boolean logStatistics;
 
-    RandomNumberFormatter randomNumberLogger;
+    RandomNumberLoggerListener randomNumberLogger;
 
     Font loggerFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
@@ -25,9 +24,7 @@ public class VariableLog extends JTextArea implements RandomValueFormatter {
         setEditable(false);
         setFont(loggerFont);
 
-//        this.logStatistics = logStatistics;
-//        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberFormatter(); // logVariables, logStatistics
+        randomNumberLogger = new RandomNumberLoggerListener(); // logVariables, logStatistics
     }
 
     public void clear() {
@@ -36,83 +33,65 @@ public class VariableLog extends JTextArea implements RandomValueFormatter {
 
 
     @Override
-    public void setSelectedItems(List<Value<?>> randomValues) {
+    public void start(List<Object> configs) {
 
     }
 
     @Override
-    public List<?> getSelectedItems() {
-        return null;
+    public void replicate(int index, List<Value> values) {
+        randomNumberLogger.replicate(index, values);
     }
 
     @Override
-    public String getHeaderFromValues() {
-        //TODO
-        return "";
-    }
-
-    @Override
-    public String getRowFromValues(int rowIndex) {
-        return randomNumberLogger.getRowFromValues(rowIndex);
-    }
-
-    @Override
-    public String getFooterFromValues() {
-
+    public void complete() {
         clear();
 
-        List<Value> loggedFirstValues = new ArrayList<>();
-        List<Boolean> lengthSummary = new ArrayList<>();
-        for (Value value : randomNumberLogger.firstValues) {
-            if (randomNumberLogger.isLogged(value)) {
-                loggedFirstValues.add(value);
-                String id = value.getId();
-                if (id == null) {
-                    throw new RuntimeException("Not expecting null id in variable summary!");
-                }
-                lengthSummary.add(!Summary.allSameLength(randomNumberLogger.variableValues.get(id)));
-            }
-        }
+        List<String> headers = randomNumberLogger.getHeaders();
+        Map<String, List<Double>> formattedValuesById = randomNumberLogger.getFormattedValuesById();
+        List<String> rowNames = randomNumberLogger.getRowNames();
+        final int sampleCount = randomNumberLogger.getSampleCount();
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("sample");
-        for (int j = 0; j < loggedFirstValues.size(); j++) {
-            Value value = loggedFirstValues.get(j);
-            if (lengthSummary.get(j)) {
-                builder.append("\t" + value.getId() + ".length");
-            } else {
-                String[] titles = LoggableImpl.getLoggable(value.value().getClass()).getLogTitles(value);
-                for (String title : titles) {
-                    builder.append("\t");
-                    builder.append(title);
+        if ( formattedValuesById.size() > 0 ) {
+
+            boolean allSameLen = true;
+            for (Map.Entry<String, List<Double>> entry : formattedValuesById.entrySet()) {
+                if (entry.getValue().size() != rowNames.size() ||
+                        entry.getValue().size() != sampleCount) {
+                    allSameLen = false;
+                    break;
                 }
             }
-        }
-        builder.append("\n");
-        for (int sample = 0; sample < randomNumberLogger.getSampleCount(); sample++) {
-            builder.append(sample+"");
-            for (int j = 0; j < loggedFirstValues.size(); j++) {
-                Value value = loggedFirstValues.get(j);
-                Double[] values = randomNumberLogger.variableValues.get(value.getId()).get(sample);
-                if (lengthSummary.get(j)) {
-                    builder.append("\t");
-                    builder.append(values.length);
-                } else {
-                    for (Object val : values) {
-                        builder.append("\t");
-                        builder.append(val.toString());
-                    }
-                }
+
+            if (!allSameLen || headers.size() != formattedValuesById.size() ||
+                    rowNames.size() != randomNumberLogger.getSampleCount()) {
+                throw new RuntimeException("The lists of random number values cannot have different size ! ");
+            }
+
+            StringBuilder builder = new StringBuilder();
+            // Sample
+            builder.append(RandomNumberLoggerListener.COL_NAME_OF_INDEX);
+            // col names
+            for (String colName : headers) {
+                builder.append("\t").append(colName);
             }
             builder.append("\n");
+
+            for (int sample = 0; sample < sampleCount; sample++) {
+//            builder.append(sample+"");
+                builder.append(rowNames.get(sample));
+
+                for (String valId : formattedValuesById.keySet()) {
+
+                    List<Double> formattedValues = formattedValuesById.get(valId);
+
+                    builder.append("\t").append(formattedValues.get(sample));
+                }
+                builder.append("\n");
+            }
+
+            setText(builder.toString());
         }
 
-        setText(builder.toString());
-        return "";
     }
 
-    public String getFormatterDescription() {
-        return getFormatterName() + " writes the values of random variables " +
-                "generated from simulations into GUI.";
-    }
 }

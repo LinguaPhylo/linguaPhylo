@@ -288,16 +288,17 @@ public class LinguaPhyloStudio {
         saveAlignmentAsMenuItem.addActionListener(e -> {
             File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
             // set alignment directory
-            if (selectedDir != null && selectedDir.isDirectory() && panel.getSampler() != null && panel.getSampler().getValuesAllRepsMap() != null) {
+            if (selectedDir != null && selectedDir.isDirectory() && panel.getValuesAllRepsMap() != null) {
                 Path dir = selectedDir.toPath();
                 UserDir.setAlignmentDir(dir.toString());
                 LoggerUtils.log.info("Alignments saved to: " + dir);
                 // save all sampled alignments
-                Map<Integer, List<Value>> valuesMap = panel.getSampler().getValuesAllRepsMap();
+                Map<Integer, List<Value>> valuesMap = panel.getValuesAllRepsMap();
                 AlignmentLog alignmentLogger = new AlignmentLog(parser);
+                // TODO use ValueFileLoggerListener instead to write to a file
                 alignmentLogger.setLogAlignment(true);
-                for (int i: valuesMap.keySet()) {
-                    alignmentLogger.getRowFromValues(i);
+                for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
+                    alignmentLogger.replicate(entry.getKey(), entry.getValue());
                 }
 
             } else {

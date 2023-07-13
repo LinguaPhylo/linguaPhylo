@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class LPhyStudioValueFormatterImpl implements LPhyValueFormatter {
 //    List<Class<? extends ValueFormatter>> valueFormatters = Arrays.asList(
-//            AlignmentLog.class, TreeLog.class, VariableLog.class, VariableSummary.class);
+//            AlignmentLog.class, TreeLog.class, VariableLog.class, VariableSummaryLog.class);
     /**
      * Required by ServiceLoader.
      */

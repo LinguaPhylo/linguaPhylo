@@ -2,7 +2,6 @@ package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
@@ -14,6 +13,7 @@ import lphy.core.parser.Script;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.simulator.Sampler;
+import lphy.core.simulator.SimulatorListener;
 import lphy.core.vectorization.VectorizedFunction;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
 import lphystudio.app.alignmentcomponent.SequenceTypePanel;
@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main panel to include prob graphical model,
@@ -79,7 +80,7 @@ public class GraphicalModelPanel extends JPanel {
 
     Object displayedElement;
 
-    Sampler sampler;
+//    Sampler sampler;
 
     CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
@@ -229,9 +230,9 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
-    public Sampler getSampler() {
-        return this.sampler;
-    }
+//    public Sampler getSampler() {
+//        return this.sampler;
+//    }
 
     /**
      * This is duplicated to {@link REPL#source(BufferedReader)},
@@ -273,11 +274,17 @@ public class GraphicalModelPanel extends JPanel {
         return reps;
     }
 
+    Map<Integer, List<Value>> valuesAllRepsMap;
+
+    public Map<Integer, List<Value>> getValuesAllRepsMap() {
+        return valuesAllRepsMap;
+    }
+
     public void sample(int reps) {
         sample(reps, new LinkedList<>());
     }
 
-    public void sample(int reps, List<RandomValueFormatter> loggers) {
+    public void sample(int reps, List<SimulatorListener> loggers) {
 
         long start = System.currentTimeMillis();
 
@@ -287,7 +294,7 @@ public class GraphicalModelPanel extends JPanel {
         }
 
         // add Loggers here, to trigger after click Sample button
-        loggers.addAll(rightPane.getRandomValueLoggers());
+        loggers.addAll(rightPane.getGUISimulatorListener());
 
         // These sync the consoles with GraphicalModelComponent containing the lphy code
         // the code may be changed by GUI, such as squared rectangles.
@@ -300,8 +307,9 @@ public class GraphicalModelPanel extends JPanel {
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParser());
-        sampler.sample(reps, loggers);
-        this.sampler = sampler;
+        // if null then use a random seed
+        valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
+//        this.sampler = sampler;
 
         if (id != null) {
             Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaParser.Context.model);

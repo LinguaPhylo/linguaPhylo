@@ -2,6 +2,7 @@ package lphystudio.core.logger;
 
 import java.util.List;
 
+@Deprecated
 public class Summary {
 
     public double[] mean;

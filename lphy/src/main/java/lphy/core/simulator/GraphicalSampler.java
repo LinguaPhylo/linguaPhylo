@@ -1,12 +1,12 @@
 package lphy.core.simulator;
 
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Sampler for graphical model, which notifies {@link GraphicalModelChangeListener}
@@ -26,10 +26,11 @@ public class GraphicalSampler extends Sampler {
         return super.sample(seed);
     }
 
-    @Deprecated
-    public void sample(int numReplicates, List<? extends RandomValueFormatter> loggers) {
-        super.sample(numReplicates, loggers);
+    @Override
+    public Map<Integer, List<Value>> sampleAll(int numReplicates,
+                                               List<? extends SimulatorListener> loggers, Long seed) {
         parser.notifyListeners();
+        return super.sampleAll(numReplicates, loggers, seed);
     }
 
     @Override

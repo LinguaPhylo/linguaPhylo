@@ -48,6 +48,7 @@ public interface ValueFormatter<T> {
 
     String getValueID();
 
+
     // Factory method
     default ValueFormatter<T> create(Value<T> value) {
         return new ValueFormatter.Base<>(value.getId(), value.value());
@@ -57,9 +58,8 @@ public interface ValueFormatter<T> {
 
         T value;
         String valueID;
-//        public Base() { // for getDeclaredConstructor().newInstance()
-//        }
 
+        // required to create instance
         public Base(String valueID, T value) {
             this.valueID = Symbols.getCanonical(valueID);
             this.value = value;
@@ -72,19 +72,31 @@ public interface ValueFormatter<T> {
         }
 
         @Override
+        public String format(T value) {
+            this.value = value;
+            return ValueFormatter.super.format(value);
+        }
+
+        @Override
         public String getValueID() {
             return valueID;
         }
 
+        public T getValue() {
+            return value;
+        }
     }
 
-//    class IntegerValueFormatter extends ValueFormatter.Base {
-//        public IntegerValueFormatter() {
+    //TODO this feature requires to return Number not String, perhaps it should be in parser
+//    class BooleanValueFormatter extends ValueFormatter.Base<Boolean> {
+//
+//        public BooleanValueFormatter(String valueID, Boolean value) {
+//            super(valueID, value);
 //        }
 //
 //        @Override
-//        public Class<?> getDataTypeClass() {
-//            return Integer.class;
+//        public String format(Boolean value) {
+//            return value ? "1.0" : "0.0";
 //        }
 //    }
 

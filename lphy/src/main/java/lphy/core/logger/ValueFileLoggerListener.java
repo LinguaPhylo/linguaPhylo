@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ValueLoggerListener implements SimulatorListener {
+public class ValueFileLoggerListener implements SimulatorListener {
 
     /**
      * For ValuePerFile, the logging is processed in {@link #replicate(int, List)} in runtime,
@@ -21,7 +21,8 @@ public class ValueLoggerListener implements SimulatorListener {
 
     /**
      * For ValuePerLine, the key represents the value id and is used for the file name.
-     * Each list of value ids is logged into a separate file, with each value on its own line.
+     * Each list of formatted value in string with the same value id is logged into a separate file,
+     * with each formatted value on its own line.
      */
     Map<String, String[]> metadataById;
     Map<String, List<String>> linesById;
@@ -32,7 +33,7 @@ public class ValueLoggerListener implements SimulatorListener {
      * with each replicate occupying one line where values are seperated by tab as default.
      * These two StringBuilder will log into one file.
      */
-//    Map<Integer, List<String>> valuesByReplicates;
+//TODO    use RandomNumberLoggerListener
     StringBuilder valuesByRepColNamesBuilder;
     StringBuilder valuesByRepBuilder;
 
@@ -50,7 +51,7 @@ public class ValueLoggerListener implements SimulatorListener {
 
     public static List<Value> getNamedRandomValues(List<Value> values) {
         return values.stream()
-                .filter(ValueLoggerListener::isNamedRandomValue)
+                .filter(ValueFileLoggerListener::isNamedRandomValue)
                 .toList();
     }
 

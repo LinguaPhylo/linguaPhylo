@@ -1,8 +1,8 @@
 package lphystudio.core.logger;
 
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Value;
+import lphy.core.simulator.SimulatorListener;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -12,9 +12,8 @@ import java.util.List;
 /**
  * Log tree to GUI,
  */
-public class TreeLog extends JTextArea implements RandomValueFormatter {
+public class TreeLog extends JTextArea implements SimulatorListener {
 
-//    final TreeFileLogger treeFileLogger;
 
     public TreeLog() { }
 
@@ -22,30 +21,18 @@ public class TreeLog extends JTextArea implements RandomValueFormatter {
         setText("");
     }
 
-    List<Value<TimeTree>> treeVariables;
-
+//    List<Value<TimeTree>> treeVariables;
 
     @Override
-    public void setSelectedItems(List<Value<?>> randomValues) {
-        treeVariables = getTreeValues(randomValues);
+    public void start(List<Object> configs) {
+
     }
 
     @Override
-    public List<?> getSelectedItems() {
-        return null;
-    }
+    public void replicate(int index, List<Value> values) {
+        List<Value<TimeTree>> treeVariables = getTreeValues(values);
 
-    @Override
-    public String getHeaderFromValues() {
-        //TODO
-        return "";
-    }
-
-    @Override
-    public String getRowFromValues(int rowIndex) {
-//        List<Value<TimeTree>> treeVariables = getTreeValues(randomValues);
-
-        if (rowIndex == 0) {
+        if (index == 0) {
             setText("sample");
             for (Value<TimeTree> tv : treeVariables) {
                 append("\t" + tv.getId());
@@ -53,24 +40,19 @@ public class TreeLog extends JTextArea implements RandomValueFormatter {
             append("\n");
         }
 
-        append(rowIndex +"");
+        append(index+"");
         for (Value<TimeTree> v : treeVariables) {
             append("\t" + v.value().toNewick(false));
         }
         append("\n");
-        return "";
     }
 
     @Override
-    public String getFooterFromValues() {
-        return "";
+    public void complete() {
+
     }
 
-    public String getFormatterDescription() {
-        return getFormatterName() + " writes the trees generated from simulations into GUI.";
-    }
-
-    private List<Value<TimeTree>> getTreeValues(List<Value<?>> variables) {
+    private List<Value<TimeTree>> getTreeValues(List<Value> variables) {
         List<Value<TimeTree>> trees = new ArrayList<>();
         for (Value v : variables) {
             if (v.value() instanceof TimeTree) {
@@ -80,4 +62,5 @@ public class TreeLog extends JTextArea implements RandomValueFormatter {
         trees.sort(Comparator.comparing(Value::getId));
         return trees;
     }
+
 }

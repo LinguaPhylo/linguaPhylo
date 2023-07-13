@@ -1,31 +1,32 @@
 package lphystudio.core.logger;
 
-import lphy.core.logger.LoggableImpl;
-import lphy.core.logger.RandomNumberFormatter;
-import lphy.core.logger.RandomValueFormatter;
+import lphy.core.logger.RandomNumberLoggerListener;
 import lphy.core.model.Value;
+import lphy.core.simulator.SimulatorListener;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableSummary extends JTable implements RandomValueFormatter {
+public class VariableSummaryLog extends JTable implements SimulatorListener {
 
 //    boolean logVariables;
 //    boolean logStatistics;
 
     List<ValueRow> valueRows = new ArrayList<>();
 
-    final RandomNumberFormatter randomNumberLogger;
+    final RandomNumberLoggerListener randomNumberLogger;
 
     AbstractTableModel tableModel;
 
-    public VariableSummary() { // boolean logStatistics, boolean logVariables
+    public VariableSummaryLog() { // boolean logStatistics, boolean logVariables
 
 //        this.logStatistics = logStatistics;
 //        this.logVariables = logVariables;
-        randomNumberLogger = new RandomNumberFormatter();//logVariables, logStatistics
+        randomNumberLogger = new RandomNumberLoggerListener();//logVariables, logStatistics
 
         tableModel = new AbstractTableModel() {
             @Override
@@ -92,31 +93,32 @@ public class VariableSummary extends JTable implements RandomValueFormatter {
                         } else return "";
                     case 1:
                         if (valueRow != null) {
-                            return valueRow.summary.mean[valueRow.row];
+                            return valueRow.stats.getMean();
                         } else {
                             return Double.NaN;
                         }
                     case 2:
                         if (valueRow != null) {
-                            return valueRow.summary.stdev[valueRow.row];
+                            return valueRow.stats.getStandardDeviation();
                         } else {
                             return Double.NaN;
                         }
                     case 3:
                         if (valueRow != null) {
-                            return valueRow.summary.stderr[valueRow.row];
+                            // standard err of the mean
+                            return valueRow.stats.getStandardDeviation() / Math.sqrt(valueRow.stats.getN());
                         } else {
                             return Double.NaN;
                         }
                     case 4:
                         if (valueRow != null) {
-                            return valueRow.summary.min[valueRow.row];
+                            return valueRow.stats.getMin();
                         } else {
                             return Double.NaN;
                         }
                     case 5:
                         if (valueRow != null) {
-                            return valueRow.summary.max[valueRow.row];
+                            return valueRow.stats.getMax();
                         } else {
                             return Double.NaN;
                         }
@@ -129,57 +131,41 @@ public class VariableSummary extends JTable implements RandomValueFormatter {
     }
 
     @Override
-    public void setSelectedItems(List<Value<?>> randomValues) {
+    public void start(List<Object> configs) {
 
     }
 
     @Override
-    public List<?> getSelectedItems() {
-        return null;
+    public void replicate(int index, List<Value> values) {
+        if (index == 0) valueRows.clear();
+
+        randomNumberLogger.replicate(index, values);
     }
 
     @Override
-    public String getHeaderFromValues() {
-        //TODO
-        return "";
-    }
+    public void complete() {
 
-    @Override
-    public String getRowFromValues(int rowIndex) {
-
-        if (rowIndex == 0) valueRows.clear();
-
-        randomNumberLogger.getRowFromValues(rowIndex);
-        return "";
-    }
-
-    @Override
-    public String getFooterFromValues() {
-
-        for (Value value : randomNumberLogger.firstValues) {
-            if (randomNumberLogger.isLogged(value)) {
-                String id = value.getId();
-                if (id == null) {
-                    throw new RuntimeException("Not expecting null id in variable summary!");
-                }
-                Summary summary = new Summary(randomNumberLogger.variableValues.get(id));
-                if (summary.isLengthSummary) {
-                    valueRows.add(new ValueRow("length(" + id + ")", summary, 0));
-                } else {
-                    String[] titles = LoggableImpl.getLoggable(value.value().getClass()).getLogTitles(value);
-                    for (int i = 0; i < summary.getRowCount(); i++) {
-                        valueRows.add(new ValueRow(titles[i], summary, i));
-                    }
-                }
+        List<String> headers = randomNumberLogger.getHeaders();
+        for (int i = 0; i < headers.size(); i++) {
+            String id = headers.get(i);
+            if (id == null) {
+                throw new RuntimeException("Not expecting null id in variable summary!");
             }
+            List<Double> randomNumbers = randomNumberLogger.getFormattedValuesById().get(id);
+
+            //TODO use Apache
+            DescriptiveStatistics stats = new SynchronizedDescriptiveStatistics();
+            // Add the data
+            for (int j = 0; j < randomNumbers.size(); j++) {
+                stats.addValue(randomNumbers.get(j));
+            }
+
+            valueRows.add(new ValueRow(id, i, stats));
+
         }
 
         tableModel.fireTableDataChanged();
-        return "";
     }
 
-    public String getFormatterDescription() {
-        return getFormatterName() + " writes the statistical summary of random variables " +
-                "from simulations into a table format for GUI.";
-    }
+
 }

@@ -1,7 +1,6 @@
 package lphy.core.simulator;
 
 import lphy.core.logger.LoggerUtils;
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -21,19 +20,12 @@ public class Sampler {
 
     LPhyMetaParser parser;
 
-    /**
-     * Key is the index of replicates, value is the result of each replicate.
-     */
-    @Deprecated
-    protected Map<Integer, List<Value>> valuesAllRepsMap;
-
     public Sampler() {
-        this.valuesAllRepsMap = new TreeMap<>();
+
     }
 
     public Sampler(LPhyMetaParser parser) {
         this.parser = parser;
-        this.valuesAllRepsMap = new TreeMap<>();
     }
 
     /**
@@ -68,7 +60,8 @@ public class Sampler {
     }
 
     /**
-     * Sample the current model stored in the {@link LPhyMetaParser}.
+     * Sample the current model stored in the {@link LPhyMetaParser} at once.
+     * @param seed  the seed value, if null then use a random number.
      * @return the list {@link Value} from one simulation.
      */
     public List<Value> sample(Long seed) {
@@ -85,7 +78,7 @@ public class Sampler {
             if (value.isRandom()) {
                 Value randomValue;
                 if (value.getGenerator() != null) {
-                    randomValue = sampleAll(value, value.getGenerator(), sampled);
+                    randomValue = sample(value, value.getGenerator(), sampled);
                 } else throw new RuntimeException();
                 randomValue.setId(value.getId());
 
@@ -98,51 +91,44 @@ public class Sampler {
 
 
     /**
-     * Sample the current model
+     * Sample add replicates, and call the given listeners.
+     * Such as, it can be used by GUI with GUI log listeners.
      *
      * @param numReplicates    the number of times to sample
      * @param loggers the loggers to log to, cannot be null
+     * @param seed  the seed value, if null then use a random number.
+     * @return  a map whose key is the index of replicates, value is the result of each replicate.
      */
-    @Deprecated
-    public void sample(int numReplicates, List<? extends RandomValueFormatter> loggers) {
+    public Map<Integer, List<Value>> sampleAll(int numReplicates,
+                                               List<? extends SimulatorListener> loggers, Long seed) {
         Objects.requireNonNull(loggers, "Simulation result loggers must not be null !");
-        // clean the previous set of simulation results
-        valuesAllRepsMap.clear();
+
+        Map<Integer, List<Value>> valuesAllRepsMap = new TreeMap<>();
+        // start
+        for (SimulatorListener logger : loggers)
+            logger.start(new ArrayList<>());
 
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
 
-            List<Value> values = sample(null);
+            List<Value> values = sample(seed);
             valuesAllRepsMap.put(i, values);
 
-            // Logging must be right after sampling each rep
-            if (i == SimulatorListener.REPLICATES_START_INDEX) {
-                // header
-                for (RandomValueFormatter logger : loggers)
-                    logger.getHeaderFromValues();
-            }
             // log
-            for (RandomValueFormatter logger : loggers) {
-                logger.getRowFromValues(i);
+            for (SimulatorListener logger : loggers) {
+                logger.replicate(i, values);
             }
         }
         // end
-        for (RandomValueFormatter logger : loggers) {
-            logger.getFooterFromValues();
-        }
+        for (SimulatorListener logger : loggers)
+            logger.complete();
+
 //        parser.notifyListeners();
+        return valuesAllRepsMap;
     }
 
-    @Deprecated
-    public void log(int reps, List<RandomValueFormatter> loggers) {
-
-    }
-
-    public Map<Integer, List<Value>> getValuesAllRepsMap() {
-        return this.valuesAllRepsMap;
-    }
 
     // sample all from the generator, but keep the id from old values.
-    private Value sampleAll(Value oldValue, Generator generator, Set<String> sampled) {
+    private Value sample(Value oldValue, Generator generator, Set<String> sampled) {
 
         for (Map.Entry<String, Value> e : getNewlySampledParams(generator, sampled).entrySet()) {
             generator.setInput(e.getKey(), e.getValue());
@@ -178,7 +164,7 @@ public class Sampler {
             if (val.isRandom()) {
                 if (val.isAnonymous() || !sampled.contains(val.getId())) {
                     // needs to be sampled
-                    Value nv = sampleAll(val, val.getGenerator(), sampled);
+                    Value nv = sample(val, val.getGenerator(), sampled);
 
                     newlySampledParams.put(e.getKey(), nv);
                     addValueToModelDictionary(nv);

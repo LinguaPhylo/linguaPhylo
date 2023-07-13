@@ -19,13 +19,10 @@ public class LoaderManager {
 
     private static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
-
     private static LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
 
-//    private static ValueFormatterLoader lphyValueFormatterLoader = new ValueFormatterLoader();
-// TODO handle resolve strategies here?
-public static ValueFormatResolver valueFormatResolver;
-
+    // TODO handle resolve strategies here?
+    public static ValueFormatResolver valueFormatResolver;
 
     // data types are held in SequenceTypeFactory singleton
 
@@ -59,7 +56,8 @@ public static ValueFormatResolver valueFormatResolver;
 //        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
 
-    public LoaderManager() {}
+    public LoaderManager() {
+    }
 
     public static <T> void registerClasses(List<Class<? extends T>> clsInExtension,
                                            Map<String, Set<Class<?>>> clsDictionary) {
@@ -85,8 +83,8 @@ public static ValueFormatResolver valueFormatResolver;
     }
 
     /**
-     * @return  a list of {@link GenerativeDistribution} flattened
-     *          from a map of sets in {@link #genDistDictionary}
+     * @return a list of {@link GenerativeDistribution} flattened
+     * from a map of sets in {@link #genDistDictionary}
      */
     public static List<Class<GenerativeDistribution>> getAllGenerativeDistributionClasses() {
         List<Class<GenerativeDistribution>> genDists = new ArrayList<>();
@@ -100,8 +98,8 @@ public static ValueFormatResolver valueFormatResolver;
     }
 
     /**
-     * @return  a list of {@link DeterministicFunction} flattened
-     *          from a map of sets in {@link #functionDictionary}
+     * @return a list of {@link DeterministicFunction} flattened
+     * from a map of sets in {@link #functionDictionary}
      */
     public static List<Class<DeterministicFunction>> getAllFunctionsClasses() {
         List<Class<DeterministicFunction>> functions = new ArrayList<>();

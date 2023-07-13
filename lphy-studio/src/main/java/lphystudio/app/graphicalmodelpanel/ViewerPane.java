@@ -1,12 +1,12 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.logger.RandomValueFormatter;
 import lphy.core.parser.GraphicalLPhyParser;
+import lphy.core.simulator.SimulatorListener;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.logger.AlignmentLog;
 import lphystudio.core.logger.TreeLog;
 import lphystudio.core.logger.VariableLog;
-import lphystudio.core.logger.VariableSummary;
+import lphystudio.core.logger.VariableSummaryLog;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
 
@@ -36,7 +36,7 @@ public class ViewerPane extends JTabbedPane {
 
     ErrorPanel errorPanel;
 
-    VariableSummary variableSummary = new VariableSummary();//true, true
+    VariableSummaryLog variableSummary = new VariableSummaryLog();//true, true
     VariableLog variableLog = new VariableLog();//true, true
     TreeLog treeLog = new TreeLog();
     AlignmentLog alignmentLog;
@@ -138,7 +138,7 @@ public class ViewerPane extends JTabbedPane {
         }
     }
 
-    public List<RandomValueFormatter> getRandomValueLoggers() {
+    public List<SimulatorListener> getGUISimulatorListener() {
         return List.of(variableLog, treeLog, variableSummary, alignmentLog);
     }
 
