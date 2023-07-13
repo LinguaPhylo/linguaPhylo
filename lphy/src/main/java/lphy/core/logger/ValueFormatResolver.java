@@ -41,7 +41,7 @@ public class ValueFormatResolver {
             for (int i = 0; i < arr.length; i++) {
                 for (int j = 0; j < arr[i].length; j++) {
                     Class elementCls = arr[i][j].getClass();
-                    String elementValueId = Array2DValueFormatter.getElementValueId(value.getId(), i, j);
+                    String elementValueId = Array2DElementFormatter.getElementValueId(value.getId(), i, j);
                     ValueFormatter elementValueFormatter =
                             // must use array element value Id here
                             createInstanceFromSingleton(elementCls, elementValueId, arr[i]);
@@ -49,21 +49,21 @@ public class ValueFormatResolver {
                         throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
                                 ", where value = " + value.value());
                     // must use array value id here
-                    arrVFList.add(new Array2DValueFormatter(value.getId(), elementValueFormatter, i, j));
+                    arrVFList.add(new Array2DElementFormatter(value.getId(), elementValueFormatter, i, j));
                 }
             }
 
         } else if (value.value() instanceof Object[] arr) {
             for (int i = 0; i < arr.length; i++) {
                 Class elementCls = arr[i].getClass();
-                String elementValueId = ArrayValueFormatter.getElementValueId(value.getId(), i);
+                String elementValueId = ArrayElementFormatter.getElementValueId(value.getId(), i);
                 ValueFormatter elementValueFormatter =
                         // must use array element value Id here
                         createInstanceFromSingleton(elementCls, elementValueId, arr[i]);
                 if (elementValueFormatter == null)
                     throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
                             ", where value = " + value.value());
-                arrVFList.add(new ArrayValueFormatter(value.getId(), elementValueFormatter, i));
+                arrVFList.add(new ArrayElementFormatter(value.getId(), elementValueFormatter, i));
             }
         }
         return arrVFList;

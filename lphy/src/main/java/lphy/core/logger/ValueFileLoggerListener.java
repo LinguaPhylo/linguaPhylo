@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Log the values of all named random variables into a or multiple file,
+ * which is determined by the mode.
+ */
 public class ValueFileLoggerListener implements SimulatorListener {
 
     /**

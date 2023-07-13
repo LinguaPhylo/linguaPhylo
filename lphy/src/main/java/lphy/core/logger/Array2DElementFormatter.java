@@ -5,7 +5,12 @@ import lphy.core.vectorization.VectorUtils;
 
 import java.util.Objects;
 
-public class Array2DValueFormatter<T> implements ValueFormatter<T[][]> {
+/**
+ * The 2d array case for the implementation of ValueFormatter.
+ *
+ * @param <T>
+ */
+public class Array2DElementFormatter<T> implements ValueFormatter<T[][]> {
 
     final String elementValueId; // it is the original array value ID before decomposition
     final ValueFormatter<T> valueFormatter;
@@ -13,9 +18,18 @@ public class Array2DValueFormatter<T> implements ValueFormatter<T[][]> {
     final int rowIndex;
     final int colIndex;
 
-    //TODO incomplete
-    public Array2DValueFormatter(String arrayValueID, ValueFormatter<T> valueFormatter,
-                                 int rowIndex, int colIndex) {
+    /**
+     * Decompose array into elements before this, and use this constructor to wrap
+     * the ValueFormatter of the single element. Therefore, the implementation of
+     * ValueFormatter will stay in the business to process single element only.
+     * @param arrayValueID     the original id of array value.
+     * @param valueFormatter   created from the ith-jth element decomposed from the 2d array,
+     *                         which should contain the value of the element.
+     * @param rowIndex         the row index of 2d array for this element.
+     * @param colIndex         the column index of 2d array for this element.
+     */
+    public Array2DElementFormatter(String arrayValueID, ValueFormatter<T> valueFormatter,
+                                   int rowIndex, int colIndex) {
         this.elementValueId = getElementValueId(arrayValueID, rowIndex, colIndex);
         this.valueFormatter = valueFormatter;
         this.rowIndex = rowIndex;
@@ -54,6 +68,10 @@ public class Array2DValueFormatter<T> implements ValueFormatter<T[][]> {
         return elementValueId;
     }
 
+    /**
+     * @param value  It is a 2d array from {@link lphy.core.model.Value#value()}
+     * @return   the formatted string of the ith-jth element in the given array value.
+     */
     @Override
     public String format(T[][] value) {
         if (rowIndex >= value.length || colIndex >= value[0].length)

@@ -3,14 +3,29 @@ package lphy.core.logger;
 import lphy.core.model.Symbols;
 import lphy.core.vectorization.VectorUtils;
 
-public class ArrayValueFormatter<T> implements ValueFormatter<T[]> {
+/**
+ * The 1d array case for the implementation of ValueFormatter.
+ *
+ * @param <T>
+ */
+public class ArrayElementFormatter<T> implements ValueFormatter<T[]> {
 
     final String elementValueId; // it is the original array value ID before decomposition
     final ValueFormatter<T> valueFormatter;
     final int arrayIndex;
 
-    //TODO incomplete
-    public ArrayValueFormatter(String arrayValueID, ValueFormatter<T> valueFormatter, int i) {
+    //TODO better structure ?
+
+    /**
+     * Decompose array into elements before this, and use this constructor to wrap
+     * the ValueFormatter of the single element. Therefore, the implementation of
+     * ValueFormatter will stay in the business to process single element only.
+     * @param arrayValueID     the original id of array value.
+     * @param valueFormatter   created from the ith element decomposed from the array,
+     *                         which should contain the value of the element.
+     * @param i                the element index of array.
+     */
+    public ArrayElementFormatter(String arrayValueID, ValueFormatter<T> valueFormatter, int i) {
         this.elementValueId = getElementValueId(arrayValueID, i);
         this.valueFormatter = valueFormatter;
         arrayIndex = i;
@@ -48,6 +63,10 @@ public class ArrayValueFormatter<T> implements ValueFormatter<T[]> {
         return elementValueId;
     }
 
+    /**
+     * @param value  It is a 1d array from {@link lphy.core.model.Value#value()}
+     * @return   the formatted string of the ith element in the given array value.
+     */
     @Override
     public String format(T[] value) {
         if (arrayIndex >= value.length)

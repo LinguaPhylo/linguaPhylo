@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Particularly used to log the number values of a named random variable,
+ * boolean is converted to 1.0 or 0.0.
+ */
 public class RandomNumberLoggerListener implements SimulatorListener {
 
     private static final ValueFormatResolver valueFormatResolver = LoaderManager.valueFormatResolver;
@@ -23,6 +27,7 @@ public class RandomNumberLoggerListener implements SimulatorListener {
     private Map<String, List<Double>> formattedValuesById = new HashMap<>();
 
     private List<String> headers = new ArrayList<>();
+    //TODO no footer?
 //    public List<String> footers = new ArrayList<>();
 
     /**

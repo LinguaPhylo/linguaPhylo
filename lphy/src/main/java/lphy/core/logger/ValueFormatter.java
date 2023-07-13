@@ -3,6 +3,14 @@ package lphy.core.logger;
 import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 
+/**
+ * The formatter to parse the {@link Value#value()} into String.
+ * It aims to process single element only.
+ * The array like data structure needs to decompose into elements.
+ * @see ArrayElementFormatter
+ * @see Array2DElementFormatter
+ * @param <T>  the type that is same as T in {@link Value<T>}.
+ */
 public interface ValueFormatter<T> {
 
     enum Mode {
@@ -54,6 +62,11 @@ public interface ValueFormatter<T> {
         return new ValueFormatter.Base<>(value.getId(), value.value());
     }
 
+    /**
+     * The instance is created in {@link ValueFormatResolver#createInstanceFromSingleton(Class, String, Object)}.
+     * The array case will be handled in {@link ValueFormatResolver#getFormatter(Value)}.
+     * @param <T>
+     */
     class Base<T> implements ValueFormatter<T> {
 
         T value;
@@ -87,7 +100,8 @@ public interface ValueFormatter<T> {
         }
     }
 
-    //TODO this feature requires to return Number not String, perhaps it should be in parser
+    //TODO this feature requires to return Number not String, perhaps it should be in parser.
+    // Currently it is implemented in RandomNumberLoggerListener
 //    class BooleanValueFormatter extends ValueFormatter.Base<Boolean> {
 //
 //        public BooleanValueFormatter(String valueID, Boolean value) {
