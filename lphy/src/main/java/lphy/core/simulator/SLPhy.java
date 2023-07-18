@@ -50,7 +50,7 @@ public class SLPhy implements Callable<Integer> {
     public SLPhy() {
     }
 
-    Simulator simulator;
+    NamedRandomValueSimulator simulator;
 
     @Override
     public Integer call() throws PicocliException {
@@ -61,7 +61,7 @@ public class SLPhy implements Callable<Integer> {
             FileConfig fileConfig = FileConfig.Utils
                     .createSimulationFileConfig(infile.toFile(), outDir, numReps, seed);
 
-            simulator = new Simulator();
+            simulator = new NamedRandomValueSimulator();
             simulator.simulateAndSaveResults(fileConfig);
 
         } catch (IOException e) {

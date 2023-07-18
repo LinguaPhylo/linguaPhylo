@@ -1,7 +1,7 @@
 package lphystudio.app;
 
-import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
+import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.simulator.RandomUtils;
@@ -287,28 +287,31 @@ public class LinguaPhyloStudio {
         fileMenu.add(saveAlignmentAsMenuItem);
         saveAlignmentAsMenuItem.addActionListener(e -> {
             File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
-            // set alignment directory
-            if (selectedDir != null && selectedDir.isDirectory() && panel.getValuesAllRepsMap() != null) {
 
-                // TODO use ValueFileLoggerListener instead to write to a file
-                // TODO set dir to Preferences
+            if (selectedDir != null && selectedDir.isDirectory()) {
 
-                Path dir = selectedDir.toPath();
-                UserDir.setAlignmentDir(dir.toString());
-                LoggerUtils.log.info("Alignments saved to: " + dir);
-                // save all sampled alignments
-                Map<Integer, List<Value>> valuesMap = panel.getValuesAllRepsMap();
-                AlignmentLog alignmentLogger = new AlignmentLog(parser);
+                if (panel.getValuesAllRepsMap() != null) {
+                    // retrieve all simulated alignments stored in the map
+                    Map<Integer, List<Value>> valuesMap = panel.getValuesAllRepsMap();
 
-                alignmentLogger.setLogAlignment(true);
-                alignmentLogger.start(new ArrayList<>());
-                for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
-                    alignmentLogger.replicate(entry.getKey(), entry.getValue());
+                    ValueFileLoggerListener fileLoggerListener = new ValueFileLoggerListener();
+                    // set alignment directory
+                    fileLoggerListener.setOutputDir(selectedDir.getAbsolutePath());
+                    LoggerUtils.log.info("Save the alignments to: " + selectedDir.getAbsolutePath());
+
+                    // Key is the replicate index
+                    fileLoggerListener.start(List.of(valuesMap.size(), parser.getName()));
+                    for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
+                        List<Value> alignmentValuePerRep = AlignmentLog.getSimulatedAlignmentValues(entry.getValue(), parser);
+                        //TODO could do this same to trees
+                        fileLoggerListener.replicate(entry.getKey(), alignmentValuePerRep);
+                    }
+                    fileLoggerListener.complete();
+
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Cannot find the simulated alignments ! " +
+                            "Please click Sample button, and try again. ");
                 }
-                alignmentLogger.complete();
-
-            } else {
-                throw new IllegalArgumentException("Should select directory rather than file for saving alignments.");
             }
         });
 

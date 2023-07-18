@@ -46,8 +46,12 @@ public class ValueFormatResolver {
     public List<ValueFormatter> getFormatter(Value value) {
         Class valType = value.getType();
         // if data type is registered in SPI, including special ValueFormatter for T[] or T[][]
-        if (resolvedFormatterClasses.containsKey(valType)) {
-            Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
+
+        Class<? extends ValueFormatter> valueFormatterCls = getFormatterClass(valType, resolvedFormatterClasses);
+
+        if (valueFormatterCls != null) {
+//        if (resolvedFormatterClasses.containsKey(valType)) {
+//            Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
             //TODO T[][] cannot go here
             return List.of( createInstanceFrom(valueFormatterCls,
                     value.getId(), value.value()) );
@@ -56,14 +60,14 @@ public class ValueFormatResolver {
             if (value.value() instanceof Object[][] arr) {
                 valType = arr[0][0].getClass();
                 if (resolvedFormatterClasses.containsKey(valType)) {
-                    Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
-                    return createFormatter(valueFormatterCls, value);
+                    Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
+                    return createFormatter(vfCls, value);
                 }
             } else if (value.value() instanceof Object[] arr) {
                 valType = arr[0].getClass();
                 if (resolvedFormatterClasses.containsKey(valType)) {
-                    Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
-                    return createFormatter(valueFormatterCls, value);
+                    Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
+                    return createFormatter(vfCls, value);
                 }
             }
         }
@@ -71,6 +75,19 @@ public class ValueFormatResolver {
                 ", where type = " + value.getType() + ", value = " + value.value() + " !");
     }
 
+    public Class<? extends ValueFormatter> getFormatterClass(Class<?> valueType, Map<Class<?>, Class<? extends ValueFormatter>> resolvedFormatterClasses) {
+        if (resolvedFormatterClasses.containsKey(valueType))
+            return resolvedFormatterClasses.get(valueType);
+        else {
+            Class<? extends ValueFormatter> formatterClass = resolvedFormatterClasses.entrySet().stream()
+                    .filter(entry -> entry.getKey().isAssignableFrom(valueType))
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .orElse(null);
+            return formatterClass;
+        }
+//        return null;
+    }
 
     /**
      * @param valFmtCls  The class of {@link ValueFormatter}

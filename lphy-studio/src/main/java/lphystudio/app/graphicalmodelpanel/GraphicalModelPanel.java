@@ -274,6 +274,7 @@ public class GraphicalModelPanel extends JPanel {
         return reps;
     }
 
+    // Key is the replicate index, value is the result of each replicate.
     Map<Integer, List<Value>> valuesAllRepsMap;
 
     public Map<Integer, List<Value>> getValuesAllRepsMap() {

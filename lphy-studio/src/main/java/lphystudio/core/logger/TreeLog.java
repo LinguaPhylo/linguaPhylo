@@ -1,6 +1,8 @@
 package lphystudio.core.logger;
 
 import lphy.base.evolution.tree.TimeTree;
+import lphy.core.logger.ValueFormatResolver;
+import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Value;
 import lphy.core.simulator.SimulatorListener;
 
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public class TreeLog extends JTextArea implements SimulatorListener {
 
+    int numReplicates = 1000;
 
     public TreeLog() { }
 
@@ -25,24 +28,33 @@ public class TreeLog extends JTextArea implements SimulatorListener {
 
     @Override
     public void start(List<Object> configs) {
-
+        if (configs.size() > 0 && configs.get(0) instanceof Integer numReplicates)
+            this.numReplicates = numReplicates;
     }
 
     @Override
     public void replicate(int index, List<Value> values) {
-        List<Value<TimeTree>> treeVariables = getTreeValues(values);
+        List<Value> treeValuePerRep = getTreeValues(values);
 
         if (index == 0) {
             setText("sample");
-            for (Value<TimeTree> tv : treeVariables) {
-                append("\t" + tv.getId());
+            for (Value treV : treeValuePerRep) {
+                List<ValueFormatter> valueFormatterList = ValueFormatResolver
+                        .createFormatter(TreeTextFormatter.class, treV);
+                for (ValueFormatter valueFormatter : valueFormatterList) {
+                    append("\t" + valueFormatter.header());
+                }
             }
             append("\n");
         }
 
         append(index+"");
-        for (Value<TimeTree> v : treeVariables) {
-            append("\t" + v.value().toNewick(false));
+        for (Value treV : treeValuePerRep) {
+            List<ValueFormatter> valueFormatterList = ValueFormatResolver
+                    .createFormatter(TreeTextFormatter.class, treV);
+            for (ValueFormatter valueFormatter : valueFormatterList) {
+                append("\t" + valueFormatter.format(treV.value()));
+            }
         }
         append("\n");
     }
@@ -52,15 +64,16 @@ public class TreeLog extends JTextArea implements SimulatorListener {
 
     }
 
-    private List<Value<TimeTree>> getTreeValues(List<Value> variables) {
-        List<Value<TimeTree>> trees = new ArrayList<>();
+    // can be TimeTree or SimpleATimeTreelignment[]
+    private List<Value> getTreeValues(List<Value> variables) {
+        List<Value> values = new ArrayList<>();
         for (Value v : variables) {
-            if (v.value() instanceof TimeTree) {
-                trees.add((Value<TimeTree>)v);
+            if (v.value() instanceof TimeTree || v.value() instanceof TimeTree[]) {
+                values.add(v);
             }
         }
-        trees.sort(Comparator.comparing(Value::getId));
-        return trees;
+        values.sort(Comparator.comparing(Value::getId));
+        return values;
     }
 
 }

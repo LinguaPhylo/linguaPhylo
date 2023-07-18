@@ -2,6 +2,7 @@ package lphy.core.logger;
 
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
+import lphy.core.simulator.NamedRandomValueSimulator;
 import lphy.core.simulator.SimulatorListener;
 import lphy.core.spi.LoaderManager;
 
@@ -121,7 +122,7 @@ public class RandomNumberLoggerListener implements SimulatorListener {
     }
 
     public boolean isNamedRandomNumber(Value randomValue) {
-        boolean random = ValueFileLoggerListener.isNamedRandomValue(randomValue);
+        boolean random = NamedRandomValueSimulator.isNamedRandomValue(randomValue);
         boolean number = ValueUtils.isNumberOrNumberArray(randomValue) ||
                 ValueUtils.is2DNumberArray(randomValue) ||
                 // 0|1

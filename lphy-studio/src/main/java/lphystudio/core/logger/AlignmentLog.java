@@ -1,18 +1,15 @@
 package lphystudio.core.logger;
 
 import lphy.base.evolution.alignment.SimpleAlignment;
-import lphy.core.io.FileConfig;
-import lphy.core.io.OutputSystem;
-import lphy.core.logger.ValueFormatHandler;
 import lphy.core.logger.ValueFormatResolver;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.simulator.SimulatorListener;
-import lphy.core.spi.LoaderManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -27,6 +24,8 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     final LPhyMetaParser parser;
 
 //    final Preferences preferences = Preferences.userNodeForPackage(AlignmentLog.class);
+//    static final String ALIGNMENT_DIR = "alignment_dir";
+
     static final String STUDIO_LOG_ALIGNMENT = "studio_log_alignment";
 
     boolean logAlignment = false;
@@ -55,14 +54,6 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
 //        return preferences.getBoolean(STUDIO_LOG_ALIGNMENT, false);
     }
 
-    public void setOutputDir(String dir) {
-        OutputSystem.setOutputDirectory(dir);
-    }
-
-    public String getOutputDir() {
-        return OutputSystem.getOutputDirectory().getAbsolutePath();
-    }
-
 
     @Override
     public void start(List<Object> configs) {
@@ -75,7 +66,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     public void replicate(int index, List<Value> values) {
         // can be SimpleAlignment or SimpleAlignment[]
         // exclude clamped alignment
-        List<Value> alignmentValuePerRep = getSimulatedAlignmentValues(values);
+        List<Value> alignmentValuePerRep = getSimulatedAlignmentValues(values, parser);
 
         if (index == 0) {
 //            allAlgValues.clear();
@@ -101,9 +92,9 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
             for (ValueFormatter valueFormatter : valueFormatterList) {
                 append("\t" + valueFormatter.format(alV.value()));
 
-                if (toLogAlignment()) {
-                    writeAlignment(index, alV);
-                }
+//                if (toLogAlignment()) {
+//                    writeAlignment(index, alV);
+//                }
             }
         }
         append("\n");
@@ -118,7 +109,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     }
 
     // can be SimpleAlignment or SimpleAlignment[]
-    private List<Value> getSimulatedAlignmentValues(List<Value> variables) {
+    public static List<Value> getSimulatedAlignmentValues(List<Value> variables, final LPhyMetaParser parser) {
         List<Value> values = new ArrayList<>();
         for (Value<?> v : variables) {
             if (v.value() instanceof SimpleAlignment || v.value() instanceof SimpleAlignment[]) {
@@ -127,35 +118,40 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
                     values.add(v);
             }
         }
+        values.sort(Comparator.comparing(Value::getId));
         return values;
     }
 
-    private void writeAlignment(int index, Value<SimpleAlignment> alignmentValue) {
+//    private void writeAlignment(int index, Value<SimpleAlignment> alignmentValue) {
+//
+//        ValueFormatter formatter = LoaderManager.valueFormatResolver.getDefaultFormatter(alignmentValue);
+//
+//        if (formatter != null) {
+//
+//            String filePrefix = parser.getName();
+//            String fileExtension = formatter.getExtension();
+//            // If value is array, the id will be appended with index
+//            String id = formatter.getValueID();
+//
+//            // e.g. 1 alignment per file
+//            // if maxId > 0, add postfix, e.g. _0.nexus
+//            String fileName = FileConfig
+//                    .getOutFileName(id, index, numReplicates, filePrefix, fileExtension);
+//
+//            ValueFormatHandler.createFile(fileName);
+//
+//            ValueFormatHandler.ValuePerFile
+//                    .exportValuePerFile(index, alignmentValue, formatter);
+//
+//        } else
+//            JOptionPane.showMessageDialog(this,
+//                    "Cannot find the default formatter to write alignment " + alignmentValue.getId() + " !");
+//
+//    }
 
-        ValueFormatter formatter = LoaderManager.valueFormatResolver.getDefaultFormatter(alignmentValue);
 
-        if (formatter != null) {
 
-            String filePrefix = parser.getName();
-            String fileExtension = formatter.getExtension();
-            // If value is array, the id will be appended with index
-            String id = formatter.getValueID();
 
-            // e.g. 1 alignment per file
-            // if maxId > 0, add postfix, e.g. _0.nexus
-            String fileName = FileConfig
-                    .getOutFileName(id, index, numReplicates, filePrefix, fileExtension);
-
-            ValueFormatHandler.createFile(fileName);
-
-            ValueFormatHandler.ValuePerFile
-                    .exportValuePerFile(index, alignmentValue, formatter);
-
-        } else
-            JOptionPane.showMessageDialog(this,
-                    "Cannot find the default formatter to write alignment " + alignmentValue.getId() + " !");
-
-    }
 //    private void logAlignment(Value<SimpleAlignment> alignment, int rep) {
 //        Path dir = UserDir.getAlignmentDir();
 //        String fileName = alignment.getCanonicalId() + "_" + rep + ".nexus";

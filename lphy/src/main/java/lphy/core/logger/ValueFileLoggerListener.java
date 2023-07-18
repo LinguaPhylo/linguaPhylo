@@ -1,7 +1,7 @@
 package lphy.core.logger;
 
 import lphy.core.io.FileConfig;
-import lphy.core.model.RandomVariable;
+import lphy.core.io.OutputSystem;
 import lphy.core.model.Value;
 import lphy.core.simulator.SimulatorListener;
 import lphy.core.spi.LoaderManager;
@@ -16,7 +16,7 @@ import java.util.TreeMap;
  * Log the values of all named random variables into a or multiple file,
  * which is determined by the mode.
  */
-public class ValueFileLoggerListener implements SimulatorListener {
+public class  ValueFileLoggerListener implements SimulatorListener {
 
     /**
      * For ValuePerFile, the logging is processed in {@link #replicate(int, List)} in runtime,
@@ -46,34 +46,35 @@ public class ValueFileLoggerListener implements SimulatorListener {
 
     private static final ValueFormatResolver valueFormatResolver = LoaderManager.valueFormatResolver;
 
-
-    public static boolean isNamedRandomValue(Value value) {
-        return value instanceof RandomVariable ||
-                // random value but no anonymous
-                (value.isRandom() && !value.isAnonymous());
+    public void setOutputDir(String dir) {
+        OutputSystem.setOutputDirectory(dir);
     }
 
-    public static List<Value> getNamedRandomValues(List<Value> values) {
-        return values.stream()
-                .filter(ValueFileLoggerListener::isNamedRandomValue)
-                .toList();
+    public String getOutputDir() {
+        return OutputSystem.getOutputDirectory().getAbsolutePath();
     }
-
 
     /**
-     * @param configs Two options: 1) only contain {@link FileConfig};
+     * @param configs Options: 1) only contain {@link FileConfig};
      *                2) the 1st element is Integer numReplicates,
-     *                and the 2nd is File lphyFile.
+     *                and the 2nd is String filePrefix;
+     *                3) the 1st element is Integer numReplicates,
+     *                the 2nd is String filePrefix, 3rd is Long seed;
+     * @see FileConfig
      */
     @Override
     public void start(List<Object> configs) {
-        if (configs.get(0) instanceof FileConfig fileConfig) {
+        if (configs.size() == 1 && configs.get(0) instanceof FileConfig fileConfig) {
             this.fileConfig = fileConfig;
-        } else if (configs.get(0) instanceof Integer numReplicates &&
-                configs.get(1) instanceof File lphyFile) {
-            // store numReplicates, lphyFile
+        } else if (configs.size() == 2 && configs.get(0) instanceof Integer numReplicates &&
+                configs.get(1) instanceof String filePrefix) {
+            // store numReplicates, filePrefix
+            fileConfig = new FileConfig(numReplicates, filePrefix);
+        } else if (configs.size() == 3 && configs.get(0) instanceof Integer numReplicates &&
+                configs.get(1) instanceof File lphyFile &&
+                configs.get(2) instanceof Long seed ) {
             try {
-                fileConfig = new FileConfig(numReplicates, lphyFile);
+                fileConfig = new FileConfig(numReplicates, lphyFile, seed);
             } catch (IOException e) {
                 LoggerUtils.log.severe(e.getMessage());
                 throw new RuntimeException(e);
@@ -82,6 +83,12 @@ public class ValueFileLoggerListener implements SimulatorListener {
     }
 
 
+    /**
+     * Must apply filter to the list of values before this.
+     * @param index   the index of each replicates of a simulation,
+     *                which starts from 0.
+     * @param values  the list of {@link Value} from one replicate of the simulation.
+     */
     @Override
     public void replicate(int index, List<Value> values) {
         if (metadataById == null)
@@ -101,15 +108,12 @@ public class ValueFileLoggerListener implements SimulatorListener {
 
         validate(index, fileConfig.numReplicates);
 
-        // filter to RandomValue
-        List<Value> namedRandomValueList = getNamedRandomValues(values);
-
         // for Mode.VALUE_PER_CELL
         boolean firstColValuePerCell = true;
 
-        for (int i = 0; i < namedRandomValueList.size(); i++) {
+        for (int i = 0; i < values.size(); i++) {
 
-            Value value = namedRandomValueList.get(i);
+            Value value = values.get(i);
             List<ValueFormatter> formatters = valueFormatResolver.getFormatter(value);
 
             // if it is array, then one ValueFormatter for one element
@@ -157,11 +161,18 @@ public class ValueFileLoggerListener implements SimulatorListener {
         if (linesById != null)
             ValueFormatHandler.ValuePerLine.exportValuePerLine(linesById, metadataById);
 
-        if (valuesByRepBuilder.length() > 0)
+        if (! isStringBuilderEmpty(valuesByRepBuilder))
             // e.g. .log
             ValueFormatHandler.ValuePerCell.export(valuesByRepColNamesBuilder, valuesByRepBuilder,
                     ".log", fileConfig.getFilePrefix());
 
+    }
+
+    public static boolean isStringBuilderEmpty(StringBuilder stringBuilder) {
+        String string = stringBuilder.toString();
+        // Remove white spaces and newline characters
+        String trimmedString = string.replaceAll("\\s", "");
+        return trimmedString.isEmpty();
     }
 
     private void validate(int index, int numReplicates) {

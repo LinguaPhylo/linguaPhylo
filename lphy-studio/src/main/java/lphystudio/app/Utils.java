@@ -62,6 +62,9 @@ public class Utils {
 
         jfc.setMultiSelectionEnabled(false);
         jfc.setFileSelectionMode(fileSelectionMode);
+        if (JFileChooser.DIRECTORIES_ONLY == fileSelectionMode)
+            jfc.setDialogTitle("Select a directory");
+
         if (filter != null) jfc.setFileFilter(filter);
 
         int returnValue = openFile ? jfc.showOpenDialog(parent) : jfc.showSaveDialog(parent);

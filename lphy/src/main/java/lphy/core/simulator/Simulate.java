@@ -32,7 +32,7 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
 
     private Map<String, Object> simResMap;
 
-    private static Simulator simulator = new Simulator();
+    private static NamedRandomValueSimulator simulator = new NamedRandomValueSimulator();
 
     public Simulate(@ParameterInfo(name = lphyScriptParamName,
             description = "the file path of the lphy script to simulate data.")

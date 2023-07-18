@@ -18,6 +18,13 @@ public class FileConfig {
 
     public final Long seed; // if null, then random
 
+    /**
+     * Complex version to keep the input lphy script file.
+     * @param numReplicates
+     * @param lphyInputFile
+     * @param seed
+     * @throws IOException
+     */
     public FileConfig(int numReplicates, File lphyInputFile, Long seed) throws IOException {
         this.lphyInputFile = lphyInputFile;
         this.numReplicates = numReplicates;
@@ -25,8 +32,19 @@ public class FileConfig {
         this.filePrefix = getLPhyFilePrefix(lphyInputFile);
     }
 
-    public FileConfig(int numReplicates, File lphyInputFile) throws IOException {
-        this(numReplicates, lphyInputFile, null);
+    /**
+     * Simple version, not retaining the input file
+     * @param numReplicates
+     * @param filePrefix
+     * @throws IOException
+     */
+    public FileConfig(int numReplicates, String filePrefix) {
+        this.lphyInputFile = null;
+        this.numReplicates = numReplicates;
+        this.seed = null;
+        if (filePrefix.endsWith(LPHY_EXTETION))
+            filePrefix = filePrefix.substring(0, filePrefix.indexOf(LPHY_EXTETION));
+        this.filePrefix = filePrefix;
     }
 
 

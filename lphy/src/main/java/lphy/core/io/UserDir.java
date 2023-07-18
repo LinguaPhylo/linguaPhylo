@@ -11,8 +11,6 @@ public class UserDir {
 
     public static final String USER_DIR = "user.dir";
 
-    public static final String ALIGNMENT_DIR = "alignment.dir";
-
     /**
      * @see #getUserPath(Path)
      */
@@ -56,29 +54,6 @@ public class UserDir {
         if (wd != null)
             return Paths.get(wd);
         return Paths.get("");
-    }
-
-    /**
-     * set alignment output directory to given string
-     * @param dir directory path
-     */
-    public static void setAlignmentDir(String dir) {
-        if (dir != null) {
-            System.setProperty(ALIGNMENT_DIR, dir);
-            System.out.println("Set " + ALIGNMENT_DIR + " = " + dir);
-        }
-    }
-
-    /**
-     * @return alignment output path (defaults to working directory user.dir)
-     */
-    public static Path getAlignmentDir() {
-        String dir = System.getProperty(ALIGNMENT_DIR);
-        if (dir != null) {
-            return Paths.get(dir);
-        } else {
-            return getUserDir();
-        }
     }
 
 }

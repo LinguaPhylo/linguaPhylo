@@ -2,6 +2,7 @@ package lphy.core.simulator;
 
 import lphy.core.io.FileConfig;
 import lphy.core.logger.ValueFileLoggerListener;
+import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 
 import java.io.File;
@@ -10,13 +11,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Simulator {
+/**
+ * Simulate lphy file, and return a list of named random Value.
+ */
+public class NamedRandomValueSimulator {
 
     SimulatorListener simulatorListener;
 
     Sampler sampler;
 
-    public Simulator() {
+    public NamedRandomValueSimulator() {
         simulatorListener = new ValueFileLoggerListener();
     }
 
@@ -46,10 +50,12 @@ public class Simulator {
 
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
             List<Value> values = sampler.sample(seed);
+            // filter to RandomValue
+            List<Value> namedRandomValueList = getNamedRandomValues(values);
 
-            simulatorListener.replicate(i, values);
+            simulatorListener.replicate(i, namedRandomValueList);
 
-            simResMap.put(i, values);
+            simResMap.put(i, namedRandomValueList);
         }
         simulatorListener.complete();
 
@@ -60,5 +66,17 @@ public class Simulator {
         return simResMap;
     }
 
+
+    public static boolean isNamedRandomValue(Value value) {
+        return value instanceof RandomVariable ||
+                // random value but no anonymous
+                (value.isRandom() && !value.isAnonymous());
+    }
+
+    public static List<Value> getNamedRandomValues(List<Value> values) {
+        return values.stream()
+                .filter(NamedRandomValueSimulator::isNamedRandomValue)
+                .toList();
+    }
 
 }

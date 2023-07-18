@@ -37,12 +37,6 @@ public class AlignmentTextFormatter implements ValueFormatter<SimpleAlignment> {
     }
 
     @Override
-    public String header() {
-        return getValueID();
-//        return isClamped ? getValueID() + "-clamped" : getValueID();
-    }
-
-    @Override
     public String getValueID() {
         return valueID;
     }
@@ -51,7 +45,6 @@ public class AlignmentTextFormatter implements ValueFormatter<SimpleAlignment> {
     public String format(SimpleAlignment simpleAlignment) {
         return simpleAlignment.toString();
     }
-
 
 
 }
