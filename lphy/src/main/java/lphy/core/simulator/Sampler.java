@@ -106,7 +106,8 @@ public class Sampler {
         Map<Integer, List<Value>> valuesAllRepsMap = new TreeMap<>();
         // start
         for (SimulatorListener logger : loggers)
-            logger.start(new ArrayList<>());
+            // pass numReplicates to loggers
+            logger.start(List.of(numReplicates));
 
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
 

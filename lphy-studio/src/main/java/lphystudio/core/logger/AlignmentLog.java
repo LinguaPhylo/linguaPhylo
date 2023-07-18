@@ -34,6 +34,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     // index should match the replicate index
 //    List<List<Value>> allAlgValues = new ArrayList<>();
 
+    int numReplicates = 1000;
 
     public AlignmentLog(LPhyMetaParser parser) {
         this.parser = parser;
@@ -66,6 +67,8 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     @Override
     public void start(List<Object> configs) {
 //        allAlgValues.clear();
+        if (configs.size() > 0 && configs.get(0) instanceof Integer numReplicates)
+            this.numReplicates = numReplicates;
     }
 
     @Override
@@ -99,7 +102,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
                 append("\t" + valueFormatter.format(alV.value()));
 
                 if (toLogAlignment()) {
-                    logAlignment(index, alV);
+                    writeAlignment(index, alV);
                 }
             }
         }
@@ -127,7 +130,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
         return values;
     }
 
-    private void logAlignment(int index, Value<SimpleAlignment> alignmentValue) {
+    private void writeAlignment(int index, Value<SimpleAlignment> alignmentValue) {
 
         ValueFormatter formatter = LoaderManager.valueFormatResolver.getDefaultFormatter(alignmentValue);
 
@@ -138,11 +141,10 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
             // If value is array, the id will be appended with index
             String id = formatter.getValueID();
 
-            //TODO how to pass numReplicates from TextField to here
             // e.g. 1 alignment per file
             // if maxId > 0, add postfix, e.g. _0.nexus
             String fileName = FileConfig
-                    .getOutFileName(id, index, 1000, filePrefix, fileExtension);
+                    .getOutFileName(id, index, numReplicates, filePrefix, fileExtension);
 
             ValueFormatHandler.createFile(fileName);
 
