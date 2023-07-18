@@ -27,9 +27,11 @@ public class TreeLog extends JTextArea implements SimulatorListener {
 //    List<Value<TimeTree>> treeVariables;
 
     @Override
-    public void start(List<Object> configs) {
-        if (configs.size() > 0 && configs.get(0) instanceof Integer numReplicates)
-            this.numReplicates = numReplicates;
+    public void start(Object... configs) {
+        for (int i = 0; i < configs.length; i++) {
+            if (configs[0] instanceof Integer numReplicates)
+                this.numReplicates = numReplicates;
+        }
     }
 
     @Override

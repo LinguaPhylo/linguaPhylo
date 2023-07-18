@@ -8,6 +8,7 @@ import lphy.core.spi.LoaderManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,23 +64,26 @@ public class  ValueFileLoggerListener implements SimulatorListener {
      * @see FileConfig
      */
     @Override
-    public void start(List<Object> configs) {
-        if (configs.size() == 1 && configs.get(0) instanceof FileConfig fileConfig) {
+    public void start(Object... configs) {
+        //TODO better code
+        if (configs.length == 1 && configs[0] instanceof FileConfig fileConfig) {
             this.fileConfig = fileConfig;
-        } else if (configs.size() == 2 && configs.get(0) instanceof Integer numReplicates &&
-                configs.get(1) instanceof String filePrefix) {
+        } else if (configs.length == 2 && configs[0] instanceof Integer numReplicates &&
+                configs[1] instanceof String filePrefix) {
             // store numReplicates, filePrefix
             fileConfig = new FileConfig(numReplicates, filePrefix);
-        } else if (configs.size() == 3 && configs.get(0) instanceof Integer numReplicates &&
-                configs.get(1) instanceof File lphyFile &&
-                configs.get(2) instanceof Long seed ) {
+        } else if (configs.length == 3 && configs[0] instanceof Integer numReplicates &&
+                configs[1] instanceof File lphyFile &&
+                configs[2] instanceof Long seed ) {
             try {
                 fileConfig = new FileConfig(numReplicates, lphyFile, seed);
             } catch (IOException e) {
                 LoggerUtils.log.severe(e.getMessage());
                 throw new RuntimeException(e);
             }
-        }
+        } else
+            throw new UnsupportedOperationException("Unsupported configs to start " +
+                    "in ValueFileLoggerListener : " + Arrays.toString(configs) + " !");
     }
 
 

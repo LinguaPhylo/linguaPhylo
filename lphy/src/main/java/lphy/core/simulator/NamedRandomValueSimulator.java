@@ -25,12 +25,12 @@ public class NamedRandomValueSimulator {
     }
 
     public Map<Integer, List<Value>> simulateAndSaveResults(File lphyFile, int numReplicates, Long seed) throws IOException {
-        simulatorListener.start(List.of(numReplicates, lphyFile));
+        simulatorListener.start(numReplicates, lphyFile);
         return simulate(lphyFile, numReplicates, seed);
     }
 
     public Map<Integer, List<Value>> simulateAndSaveResults(FileConfig fileConfig) throws IOException {
-        simulatorListener.start(List.of(fileConfig));
+        simulatorListener.start(fileConfig);
 
         File lphyFile = fileConfig.lphyInputFile;
         int numReplicates = fileConfig.numReplicates;

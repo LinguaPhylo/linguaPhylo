@@ -56,10 +56,12 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
 
 
     @Override
-    public void start(List<Object> configs) {
+    public void start(Object... configs) {
 //        allAlgValues.clear();
-        if (configs.size() > 0 && configs.get(0) instanceof Integer numReplicates)
-            this.numReplicates = numReplicates;
+        for (int i = 0; i < configs.length; i++) {
+            if (configs[0] instanceof Integer numReplicates)
+                this.numReplicates = numReplicates;
+        }
     }
 
     @Override

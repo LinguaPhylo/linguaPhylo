@@ -33,7 +33,7 @@ public class VariableLog extends JTextArea implements SimulatorListener {
 
 
     @Override
-    public void start(List<Object> configs) {
+    public void start(Object... configs) {
 
     }
 

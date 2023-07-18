@@ -29,8 +29,8 @@ public class Sampler {
     }
 
     /**
-     * @param lphyFile  a File containing LPhy script
-     * @return  Sampler
+     * @param lphyFile  a File containing LPhy script.
+     * @return          a Sampler created by the given LPhy script.
      * @throws IOException
      */
     public static Sampler createSampler(File lphyFile) throws IOException {
@@ -107,11 +107,13 @@ public class Sampler {
         // start
         for (SimulatorListener logger : loggers)
             // pass numReplicates to loggers
-            logger.start(List.of(numReplicates));
+            logger.start(numReplicates);
 
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
 
+            // sampling at seed
             List<Value> values = sample(seed);
+            // store result
             valuesAllRepsMap.put(i, values);
 
             // log

@@ -13,7 +13,7 @@ public interface SimulatorListener {
     //TODO share this with logger pkg
     int REPLICATES_START_INDEX = 0;
 
-    void start(List<Object> configs);
+    void start(Object... configs);
 
     /**
      *

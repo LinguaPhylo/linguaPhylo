@@ -300,7 +300,7 @@ public class LinguaPhyloStudio {
                     LoggerUtils.log.info("Save the alignments to: " + selectedDir.getAbsolutePath());
 
                     // Key is the replicate index
-                    fileLoggerListener.start(List.of(valuesMap.size(), parser.getName()));
+                    fileLoggerListener.start(valuesMap.size(), parser.getName());
                     for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
                         List<Value> alignmentValuePerRep = AlignmentLog.getSimulatedAlignmentValues(entry.getValue(), parser);
                         //TODO could do this same to trees
