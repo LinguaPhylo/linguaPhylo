@@ -2,6 +2,7 @@ package lphy.core.logger;
 
 import lphy.core.model.Value;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -21,85 +22,206 @@ public class ValueFormatResolver {
         resolveFormatters(valueFormatterClasses);
     }
 
+    //TODO in dev
+    public ValueFormatter getDefaultFormatter(Value value) {
+        List<ValueFormatter> formatters = getFormatter(value);
+        if (formatters.size() < 1)
+            return null;
+        return formatters.get(DEFAULT_FORMATTER);
+    }
+
+
+
+
     /**
+     * Only allow the single T in Value, or CompoundVectorValue for T[] or T[][]
      * @param value {@link Value}
-     * @return      the ValueFormatter mapped to a data type.
-     *              If the data type of {@link Value} is an array,
-     *              the key used for matching with the ValueFormatter is determined
-     *              based on the data type of the first element in the array.
+     * @return      The list of ValueFormatters, which is mapped to data types
+     *              and loaded using the SPI mechanism.
+     *              If the data type of the {@link Value} is an array,
+     *              the key for matching with the ValueFormatter is
+     *              determined based on the data type of the first element in the array.
+     * @see #createInstanceFrom(Class, Object...)
      */
     public List<ValueFormatter> getFormatter(Value value) {
-        ValueFormatter valueFormatter = createInstanceFromSingleton(value.getType(), value.getId(), value.value());
-        if (valueFormatter != null)
-            return List.of(valueFormatter);
+        Class valType = value.getType();
+        // if data type is registered in SPI, including special ValueFormatter for T[] or T[][]
+        if (resolvedFormatterClasses.containsKey(valType)) {
+            Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
+            //TODO T[][] cannot go here
+            return List.of( createInstanceFrom(valueFormatterCls,
+                    value.getId(), value.value()) );
+        } else {
+            // else check array
+            if (value.value() instanceof Object[][] arr) {
+                valType = arr[0][0].getClass();
+                if (resolvedFormatterClasses.containsKey(valType)) {
+                    Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
+                    return createFormatter(valueFormatterCls, value);
+                }
+            } else if (value.value() instanceof Object[] arr) {
+                valType = arr[0].getClass();
+                if (resolvedFormatterClasses.containsKey(valType)) {
+                    Class<? extends ValueFormatter> valueFormatterCls = resolvedFormatterClasses.get(valType);
+                    return createFormatter(valueFormatterCls, value);
+                }
+            }
+        }
+        throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
+                ", where type = " + value.getType() + ", value = " + value.value() + " !");
+    }
 
-        // else decompose arrays into singleton,
+
+    /**
+     * @param valFmtCls  The class of {@link ValueFormatter}
+     * @param value      {@link Value}
+     * @param extraArgs  array of objects to be passed as extra arguments to the constructor call,
+     *                   besides valueId and value at the base constructor
+     *                   {@link ValueFormatter.Base(String, Object)}.
+     *                   E.g. boolean to check if the data is clamped.
+     * @return    If the given {@link Value} is an array,
+     *            return a list of {@link ArrayElementFormatter} or
+     *            {@link Array2DElementFormatter} instances created from the given class,
+     *            where each element of the array corresponds to a ValueFormatter.
+     *            Otherwise, return a single {@link ValueFormatter} instance created
+     *            from the given class, with the data type matching the type of {@link Value}.
+     */
+    public static List<ValueFormatter> createFormatter(Class<? extends ValueFormatter> valFmtCls,
+                                                       Value value, Object... extraArgs) {
+
         List<ValueFormatter> arrVFList = new ArrayList<>();
-        // then use the singleton data type as key
+        // decompose arrays into singleton,
         if (value.value() instanceof Object[][] arr) {
             // flatten 2d to 1d
             for (int i = 0; i < arr.length; i++) {
                 for (int j = 0; j < arr[i].length; j++) {
-                    Class elementCls = arr[i][j].getClass();
+//                    Class elementCls = arr[i][j].getClass();
                     String elementValueId = Array2DElementFormatter.getElementValueId(value.getId(), i, j);
-                    ValueFormatter elementValueFormatter =
+
+                    ValueFormatter  elementVF = createInstanceFrom(valFmtCls,
                             // must use array element value Id here
-                            createInstanceFromSingleton(elementCls, elementValueId, arr[i]);
-                    if (elementValueFormatter == null)
-                        throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
-                                ", where value = " + value.value());
+                            elementValueId, arr[i][j], extraArgs);
                     // must use array value id here
-                    arrVFList.add(new Array2DElementFormatter(value.getId(), elementValueFormatter, i, j));
+                    arrVFList.add(new Array2DElementFormatter(value.getId(), elementVF, i, j));
                 }
             }
 
         } else if (value.value() instanceof Object[] arr) {
             for (int i = 0; i < arr.length; i++) {
-                Class elementCls = arr[i].getClass();
+//                Class elementCls = arr[i].getClass();
                 String elementValueId = ArrayElementFormatter.getElementValueId(value.getId(), i);
-                ValueFormatter elementValueFormatter =
+                ValueFormatter elementVF = createInstanceFrom(valFmtCls,
                         // must use array element value Id here
-                        createInstanceFromSingleton(elementCls, elementValueId, arr[i]);
-                if (elementValueFormatter == null)
-                    throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
-                            ", where value = " + value.value());
-                arrVFList.add(new ArrayElementFormatter(value.getId(), elementValueFormatter, i));
+                        elementValueId, arr[i], extraArgs);
+                // must use array value id here
+                arrVFList.add(new ArrayElementFormatter(value.getId(), elementVF, i));
             }
+        } else {
+            // else use the singleton data type as key
+            ValueFormatter valueFormatter = createInstanceFrom(valFmtCls,
+                    value.getId(), value.value(), extraArgs);
+
+            arrVFList.add(valueFormatter);
         }
         return arrVFList;
     }
 
-    public <T> ValueFormatter<T> createInstanceFromSingleton(Class valType, String valId, T valValue) {
-
-//        Class cls = value.getType();
-        // if data type is declared in the map, e.g. special ValueFormatter for T[] or T[][]
-        if (resolvedFormatterClasses.containsKey(valType)) {
-
-            Class<? extends ValueFormatter> clsVF = resolvedFormatterClasses.get(valType);
-
-            Constructor<?> constructor;
-            try {
-                // valType is T of Value<T>, so it must have a constructor ValueFormatterImpl(String, T)
-                constructor = clsVF.getDeclaredConstructor(String.class, valType);
-            } catch (NoSuchMethodException e) {
-                try {
-                    constructor = clsVF.getDeclaredConstructor(String.class, Object.class);
-                } catch (NoSuchMethodException ex) {
-                    throw new RuntimeException("ValueFormatter implementation must have a constructor " +
-                            "ValueFormatterImpl(String, T), where T is the type of Value<T> !\n\n" + e);
-                }
-            }
-
-            ValueFormatter valueFormatter = null;
-            try {
-                valueFormatter = (ValueFormatter) constructor.newInstance(valId, valValue);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-            return valueFormatter;
+    public static <T> T createInstanceFrom(Class<T> valFmtCls, Object... initArgs) {
+        // merge the extra args
+        List<Object> mergedArgs = new ArrayList<>();
+        if ( ! (initArgs.length == 2 || initArgs.length == 3) ) {
+            throw new IllegalArgumentException(valFmtCls.getName() + " args have to contain " +
+                    "at least ID and Value, or some extra args ! " + Arrays.toString(initArgs));
         }
-        return null;
+        mergedArgs.add(initArgs[0]);
+        mergedArgs.add(initArgs[1]);
+        // Object... extraArgs
+        if (initArgs.length == 3 && initArgs[2].getClass().isArray()) {
+            int length = Array.getLength(initArgs[2]);
+            for (int i = 0; i < length; i++) {
+                Object element = Array.get(initArgs[2], i);
+                // add each element
+                mergedArgs.add(element);
+            }
+        }
+        // Get the appropriate constructor based on the initialization objects
+        Class<?>[] parameterTypes = mergedArgs.stream()
+                .map(Object::getClass)
+                .toArray(Class<?>[]::new);
+
+        Constructor<T> constructor = null;
+        try {
+            constructor = valFmtCls.getConstructor(parameterTypes);
+        } catch (NoSuchMethodException e) {
+            // ValueFormatter.Base(String valueID, T value) will go here
+            // try the 1st Constructor
+            Constructor[] publicConstructors = valFmtCls.getConstructors();
+            if (publicConstructors.length != 1) {
+                throw new RuntimeException(valFmtCls.getName() + " do not have a constructor " +
+                        "to handle the parameter types : " + Arrays.toString(parameterTypes) +
+                        "!\n\n" + e);
+            }
+            constructor = publicConstructors[0];
+        }
+
+        try {// Create a new instance using the constructor and initialization objects
+            return Objects.requireNonNull(constructor).newInstance(mergedArgs.toArray());
+        } catch (InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(valFmtCls.getName() + " cannot create an instance " +
+                    "from : " + mergedArgs + "!\n\n" + e);
+        }
     }
+
+
+
+
+
+
+
+//    public static <T> ValueFormatter<T> createInstanceOfSingleton(Class<? extends ValueFormatter> valueFormatterCls,
+//                                                           Class valueType, String valId, T valValue) {
+//
+//            Constructor<?> constructor;
+//            try {
+//                // valueType is T of Value<T>, so it must have a constructor ValueFormatterImpl(String, T)
+//                constructor = getConstructor(valueFormatterCls, String.class, valueType);
+//            } catch (RuntimeException e) {
+//                //
+//                constructor = getConstructor(valueFormatterCls, String.class, Object.class);
+//
+//            }
+//
+//            return createInstanceFrom(constructor, valId, valValue);
+//
+//    }
+//
+//
+//    public static Constructor<?> getConstructor(Class<? extends ValueFormatter> valueFormatterCls,
+//                                                Class<?>... parameterTypes) {
+//        Constructor<?> constructor;
+//        try {
+//            // e.g. constructor ValueFormatterImpl(String, T)
+//            constructor = valueFormatterCls.getDeclaredConstructor(parameterTypes);
+//        } catch (NoSuchMethodException e) {
+//            throw new RuntimeException(valueFormatterCls.getName() + " do not have a constructor " +
+//                    "to handle the parameter types : " + Arrays.toString(parameterTypes) +
+//                    "!\n\n" + e);
+//        }
+//        return constructor;
+//    }
+//
+//    public static ValueFormatter createInstanceFrom(Constructor<?> constructor, Object ... initargs) {
+//        ValueFormatter valueFormatter = null;
+//        try {
+//            valueFormatter = (ValueFormatter) Objects.requireNonNull(constructor).newInstance(initargs);
+//        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return valueFormatter;
+//    }
+//
+
 
 
     //TODO add strategies

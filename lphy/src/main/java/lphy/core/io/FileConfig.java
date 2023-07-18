@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class FileConfig {
 
-    public final File lphyFile; // can be null
+    public final File lphyInputFile; // the input lphy script file, which can be null
 
     // filePrefix is lphy script file base name as default,
     // used for output file prefix
@@ -18,16 +18,17 @@ public class FileConfig {
 
     public final Long seed; // if null, then random
 
-    public FileConfig(int numReplicates, File lphyFile, Long seed) throws IOException {
-        this.lphyFile = lphyFile;
+    public FileConfig(int numReplicates, File lphyInputFile, Long seed) throws IOException {
+        this.lphyInputFile = lphyInputFile;
         this.numReplicates = numReplicates;
         this.seed = seed;
-        this.filePrefix = getLPhyFilePrefix(lphyFile);
+        this.filePrefix = getLPhyFilePrefix(lphyInputFile);
     }
 
-    public FileConfig(int numReplicates, File lphyFile) throws IOException {
-        this(numReplicates, lphyFile, null);
+    public FileConfig(int numReplicates, File lphyInputFile) throws IOException {
+        this(numReplicates, lphyInputFile, null);
     }
+
 
 //    public FileConfig(int numReplicates, String filePrefix, Long seed) {
 //        this.filePrefix = filePrefix;
@@ -36,20 +37,43 @@ public class FileConfig {
 //        this.lphyFile = null;
 //    }
 
-    public String getOutFileName(String valueId, int index, String fileExtension) {
+    public static String getOutFileName(String valueId, int index, int numReplicates,
+                                 String filePrefix, String fileExtension) {
         String postfix = (numReplicates > 1 ? "_r" + index : "") + "_" + valueId;
         return OutputSystem.getOutputFileName(filePrefix, postfix, fileExtension);
     }
 
-    public String getOutFileName(String valueId, String fileExtension) {
+    public static String getOutFileName(String valueId, String filePrefix, String fileExtension) {
         // convert greek symbols to English
         String postfix = "_" + Symbols.getCanonical(valueId);
         return OutputSystem.getOutputFileName(filePrefix, postfix, fileExtension);
     }
 
-    public String getOutFileName(String fileExtension) {
+    public static String getOutFileName(String filePrefix, String fileExtension) {
         return OutputSystem.getOutputFileName(filePrefix, "", fileExtension);
     }
+
+    public String getFilePrefix() {
+        return filePrefix;
+    }
+
+    public int getNumReplicates() {
+        return numReplicates;
+    }
+
+    //    public String getOutFileName(String valueId, int index, String fileExtension) {
+//        return getOutFileName(valueId, index, numReplicates, filePrefix, fileExtension);
+//    }
+//
+//    public String getOutFileName(String valueId, String fileExtension) {
+//        // convert greek symbols to English
+//        String postfix = "_" + Symbols.getCanonical(valueId);
+//        return OutputSystem.getOutputFileName(filePrefix, postfix, fileExtension);
+//    }
+//
+//    public String getOutFileName(String fileExtension) {
+//        return OutputSystem.getOutputFileName(filePrefix, "", fileExtension);
+//    }
 
     private static final String LPHY_EXTETION = ".lphy";
 

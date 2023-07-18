@@ -55,15 +55,14 @@ public class VariableLog extends JTextArea implements SimulatorListener {
 
             boolean allSameLen = true;
             for (Map.Entry<String, List<Double>> entry : formattedValuesById.entrySet()) {
-                if (entry.getValue().size() != rowNames.size() ||
-                        entry.getValue().size() != sampleCount) {
+                if (entry.getValue().size() != sampleCount) {
                     allSameLen = false;
                     break;
                 }
             }
 
             if (!allSameLen || headers.size() != formattedValuesById.size() ||
-                    rowNames.size() != randomNumberLogger.getSampleCount()) {
+                    rowNames.size() != sampleCount) {
                 throw new RuntimeException("The lists of random number values cannot have different size ! ");
             }
 

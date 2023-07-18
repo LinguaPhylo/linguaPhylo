@@ -122,8 +122,8 @@ public class ValueFileLoggerListener implements SimulatorListener {
 
                 } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE) {
                     // e.g. Alignment
-                    ValueFormatHandler.ValuePerFile
-                            .createFile(index, formatter, fileConfig);
+                    ValueFormatHandler.ValuePerFile.createFile(index, formatter,
+                            fileConfig.getFilePrefix(), fileConfig.getNumReplicates());
 
                     ValueFormatHandler.ValuePerFile
                             .exportValuePerFile(index, value, formatter);
@@ -132,7 +132,7 @@ public class ValueFileLoggerListener implements SimulatorListener {
                     // process meta data given 1st value
                     if (index == 0)
                         ValueFormatHandler.ValuePerLine.processHeaderFooter(formatter,
-                                metadataById, fileConfig);
+                                metadataById, fileConfig.getFilePrefix());
 
                     // e.g. Trees
                     ValueFormatHandler.ValuePerLine.populateValues(index, value, formatter, linesById);
@@ -160,7 +160,7 @@ public class ValueFileLoggerListener implements SimulatorListener {
         if (valuesByRepBuilder.length() > 0)
             // e.g. .log
             ValueFormatHandler.ValuePerCell.export(valuesByRepColNamesBuilder, valuesByRepBuilder,
-                    ".log", fileConfig);
+                    ".log", fileConfig.getFilePrefix());
 
     }
 

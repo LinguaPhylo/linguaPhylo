@@ -15,7 +15,7 @@ public class ValueFormatHandler {
     public static final CharSequence DELIMITER = "\t";
 
 
-    private static void createFile(String fileName) {
+    public static void createFile(String fileName) {
         try {
             OutputSystem.setOut(fileName);
         } catch (FileNotFoundException e) {
@@ -34,14 +34,16 @@ public class ValueFormatHandler {
 
     public static class ValuePerFile {
 
-        public static void createFile(int index, ValueFormatter formatter, FileConfig fileConfig) {
+        public static void createFile(int index, ValueFormatter formatter,
+                                      String filePrefix, int numReplicates) {
 
             String fileExtension = formatter.getExtension();
             // If value is array, the id will be appended with index
             String id = formatter.getValueID();
             // e.g. 1 alignment per file
             // if maxId > 0, add postfix, e.g. _0.nexus
-            String fileName = fileConfig.getOutFileName(id, index, fileExtension);
+            String fileName = FileConfig
+                    .getOutFileName(id, index, numReplicates, filePrefix, fileExtension);
 
             ValueFormatHandler.createFile(fileName);
         }
@@ -76,7 +78,7 @@ public class ValueFormatHandler {
 
         // suppose call once per file
         public static void processHeaderFooter( ValueFormatter formatter,
-                                          Map<String, String[]> metadataByValueID, FileConfig fileConfig) {
+                                          Map<String, String[]> metadataByValueID, String filePrefix) {
             // here require the original id if value is array
             String header = formatter.header();
             // If value is array, the id will be appended with index
@@ -91,7 +93,8 @@ public class ValueFormatHandler {
 
             String fileExtension = formatter.getExtension();
             // file name, e.g. _psi.trees
-            metadata[FILE_NAME_ID] = fileConfig.getOutFileName(id, fileExtension);
+            metadata[FILE_NAME_ID] = FileConfig
+                    .getOutFileName(id, filePrefix, fileExtension);
         }
 
         public static void populateValues(int index, Value value, ValueFormatter formatter,
@@ -178,10 +181,10 @@ public class ValueFormatHandler {
 
 
         public static void export(StringBuilder valuesByRepColNamesBuilder, StringBuilder valuesByRepBuilder,
-                                  String fileExtension, FileConfig fileConfig ) {
+                                  String fileExtension, String filePrefix ) {
 
 //            String fileExtension = formatter.getExtension();
-            String fileName = fileConfig.getOutFileName(fileExtension);
+            String fileName = FileConfig.getOutFileName(filePrefix, fileExtension);
             ValueFormatHandler.createFile(fileName);
 
             OutputSystem.out.println(valuesByRepColNamesBuilder);

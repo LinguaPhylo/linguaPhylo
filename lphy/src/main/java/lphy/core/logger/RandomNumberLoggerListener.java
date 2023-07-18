@@ -31,7 +31,7 @@ public class RandomNumberLoggerListener implements SimulatorListener {
 //    public List<String> footers = new ArrayList<>();
 
     /**
-     * the list of row names.
+     * the list of row names, size = sampleCount.
      */
     private List<String> rowNames = new ArrayList<>();
 
@@ -55,6 +55,7 @@ public class RandomNumberLoggerListener implements SimulatorListener {
             formattedValuesById.clear();
         }
 
+        boolean isFirstValue = true;
         for (Value value : values) {
 
             if (isNamedRandomNumber(value)) {
@@ -76,7 +77,10 @@ public class RandomNumberLoggerListener implements SimulatorListener {
 
                         // row names
                         String rowName = formatter.getRowName(index);
-                        rowNames.add(rowName);
+                        if (isFirstValue) {
+                            rowNames.add(rowName);
+                            isFirstValue = false;
+                        }
 
                         // formatted value in string
                         List<Double> formattedValues = formattedValuesById
@@ -106,6 +110,9 @@ public class RandomNumberLoggerListener implements SimulatorListener {
             } // end if isNamedRandomNumber
         }
         sampleCount = index + 1;
+        if (sampleCount != rowNames.size())
+            throw new IllegalArgumentException("Row names " + rowNames.size() +
+                    " must be same to the sample count " + sampleCount + " !");
     }
 
     @Override

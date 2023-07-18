@@ -63,7 +63,7 @@ public interface ValueFormatter<T> {
     }
 
     /**
-     * The instance is created in {@link ValueFormatResolver#createInstanceFromSingleton(Class, String, Object)}.
+     * The instance is created in {@link ValueFormatResolver#createInstanceFrom(Class, Object...)}
      * The array case will be handled in {@link ValueFormatResolver#getFormatter(Value)}.
      * @param <T>
      */

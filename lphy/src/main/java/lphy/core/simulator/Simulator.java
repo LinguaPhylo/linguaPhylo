@@ -28,7 +28,7 @@ public class Simulator {
     public Map<Integer, List<Value>> simulateAndSaveResults(FileConfig fileConfig) throws IOException {
         simulatorListener.start(List.of(fileConfig));
 
-        File lphyFile = fileConfig.lphyFile;
+        File lphyFile = fileConfig.lphyInputFile;
         int numReplicates = fileConfig.numReplicates;
         Long seed = fileConfig.seed;
 
