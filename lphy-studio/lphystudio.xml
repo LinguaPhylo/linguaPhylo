@@ -1,7 +1,7 @@
 <project>
     <shortName>lphystudio</shortName>
     <fullName>LPhyStudio</fullName>
-    <version>1.5.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <readmeFile>${build_project_directory}/../README.md</readmeFile>
     <licenseFile>${build_project_directory}/../LICENSE</licenseFile>
     <componentList>
@@ -147,7 +147,7 @@
     <postInstallationActionList>
         <addEnvironmentVariable>
             <explanation>Adding environmental path</explanation>
-            <name>LPHY_PATH</name>
+            <name>LPHY_LIB</name>
             <scope>system</scope>
             <value>${installdir}</value>
         </addEnvironmentVariable>
@@ -164,7 +164,6 @@
                     <classpath></classpath>
                     <jarFile></jarFile>
                     <mainClass></mainClass>
-                    <osxApplicationBundleIcon>${installdir}/src/lphy.icns</osxApplicationBundleIcon>
                     <preferredJavaBinary></preferredJavaBinary>
                     <runInBackground>0</runInBackground>
                     <runInConsole>0</runInConsole>
@@ -186,26 +185,69 @@
             </javaLauncherList>
         </createJavaLaunchers>
     </postInstallationActionList>
+
+    <!--  mac OS  -->
+
     <createOsxBundleDmg>1</createOsxBundleDmg>
     <enableRollback>0</enableRollback>
     <enableTimestamp>1</enableTimestamp>
     <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
+
+    <!-- TODO invalid .icns file?   
+    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy.icns</osxApplicationBundleIcon>-->
+
     <osxDmgTitle>LPhyStudio DMG</osxDmgTitle>
     <osxSigningIdentity>Developer ID Application: Walter Xie</osxSigningIdentity>
+
     <vendor>LPhy Development Team</vendor>
+
+    <!--  windows  -->
+
+    <windowsExecutableIcon>/lphy-studio-${product_version}/lphy.ico</windowsExecutableIcon>
     <parameterList>
         <directoryParameter>
             <name>installdir</name>
-            <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <description>Installation Directory</description>
+            <explanation>Please specify the directory where ${project.fullName} will be installed. For compatibility with LPhyBeast, it must be installed inside the BEAST 2 directory (e.g., BEAST 2.7.5).</explanation>
             <value></value>
-            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+            <default>${platform_install_prefix}/BEAST 2.7.5/${product_shortname}-${product_version}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>30</width>
+<!--  TODO  ${installdir} can be refreshed  -->
+<!--            <validationActionList>-->
+<!--                <throwError>-->
+<!--                    <text>-->
+<!--                        Please replace "x" in the folder to the version numbers : ${installdir} !-->
+<!--                    </text>-->
+<!--                    <ruleList>-->
+<!--                        <compareText>-->
+<!--                            <logic>does_not_contain</logic>-->
+<!--                            <nocase>1</nocase>-->
+<!--                            <text>BEAST 2.x.x</text>-->
+<!--                            <value>${installdir}</value>-->
+<!--                        </compareText>-->
+<!--                    </ruleList>-->
+<!--                </throwError>-->
+<!--                <throwError>-->
+<!--                    <text>-->
+<!--                        To use LPhy with LPhyBEAST, LPhy Studio must be installed inside the BEAST 2.x.x folder (e.g., BEAST 2.7.5).-->
+<!--                        But it is set to be installed in ${installdir} !-->
+<!--                        Please read the User Manual https://linguaphylo.github.io/setup/.-->
+<!--                    </text>-->
+<!--                    <ruleList>-->
+<!--                        <compareText>-->
+<!--                            <logic>contains</logic>-->
+<!--                            <nocase>1</nocase>-->
+<!--                            <text>BEAST</text>-->
+<!--                            <value>${installdir}</value>-->
+<!--                        </compareText>-->
+<!--                    </ruleList>-->
+<!--                </throwError>-->
+<!--            </validationActionList>-->
         </directoryParameter>
     </parameterList>
 </project>
