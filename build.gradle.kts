@@ -41,7 +41,7 @@ tasks.build {enabled = false}
 // Configures the sub-projects of this project.
 subprojects {
     group = "io.github.linguaphylo"
-    version = "1.4.4-SNAPSHOT" //-SNAPSHOT
+    version = "1.4.4" //-SNAPSHOT
     val webSteam = "github.com/LinguaPhylo/linguaPhylo"
     val web = "https://${webSteam}"
     val homepage = "https://linguaphylo.github.io/"

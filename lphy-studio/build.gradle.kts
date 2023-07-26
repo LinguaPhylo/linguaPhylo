@@ -148,7 +148,7 @@ distributions {
                 // icon
                 from("src/main/resources") {
                     include("lphy48x48.png")
-                    include("lphy.icns")
+                    include("lphy512x512.icns")
                     include("lphy.ico")
                 }
             }
