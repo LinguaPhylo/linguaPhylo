@@ -147,6 +147,7 @@
     <postInstallationActionList>
         <addEnvironmentVariable>
             <explanation>Adding environmental path</explanation>
+<!-- Important to launch lphybeast  -->
             <name>LPHY_LIB</name>
             <scope>system</scope>
             <value>${installdir}</value>
@@ -167,11 +168,13 @@
                     <preferredJavaBinary></preferredJavaBinary>
                     <runInBackground>0</runInBackground>
                     <runInConsole>0</runInConsole>
+                    <!-- TODO not working -->
                     <useLauncherDirectoryAsWorkingDirectory>1</useLauncherDirectoryAsWorkingDirectory>
                     <usePropertiesFile>0</usePropertiesFile>
                     <vmParameters>-Xms256m -Xmx4g -Dfile.encoding=UTF-8 -p lib -m lphystudio</vmParameters>
-                    <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
+                    <!-- TODO have to keep this otherwise launcher failed, but cannot mv it to diff dir -->
                     <workingDirectory>${installdir}</workingDirectory>
+
                     <validVersionList>
                         <validVersion>
                             <bitness></bitness>
@@ -186,37 +189,41 @@
         </createJavaLaunchers>
     </postInstallationActionList>
 
-    <!--  mac OS  -->
-
+    <!--  mac OS Dmg -->
     <createOsxBundleDmg>1</createOsxBundleDmg>
     <enableRollback>0</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
-
-    <!-- TODO invalid .icns file?   
-    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy.icns</osxApplicationBundleIcon>-->
-
     <osxDmgTitle>LPhyStudio DMG</osxDmgTitle>
+    <!-- mac OS Signing -->
     <osxSigningIdentity>Developer ID Application: Walter Xie</osxSigningIdentity>
+
+    <!--  mac OS Bundle -->
+    <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
+    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>-->
+
+    <!--  windows  -->
+    <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
+    <windowsExecutableIcon>${installdir}/src/lphy.ico</windowsExecutableIcon>
 
     <vendor>LPhy Development Team</vendor>
 
-    <!--  windows  -->
-
-    <windowsExecutableIcon>/lphy-studio-${product_version}/lphy.ico</windowsExecutableIcon>
     <parameterList>
         <directoryParameter>
             <name>installdir</name>
             <description>Installation Directory</description>
-            <explanation>Please specify the directory where ${project.fullName} will be installed. For compatibility with LPhyBeast, it must be installed inside the BEAST 2 directory (e.g., BEAST 2.7.5).</explanation>
+            <explanation>Please specify the directory where ${project.fullName} will be installed. This directory will be the parent directory of the LPhy library path, $LPHY_LIB, required by LPhyBEAST.</explanation>
             <value></value>
-            <default>${platform_install_prefix}/BEAST 2.7.5/${product_shortname}-${product_version}</default>
+            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>30</width>
+            <postShowPageActionList>
+                <!-- This will skip the readytoinstall page -->
+                <setInstallerVariable name="next_page" value="installation" />
+            </postShowPageActionList>
 <!--  TODO  ${installdir} can be refreshed  -->
 <!--            <validationActionList>-->
 <!--                <throwError>-->
