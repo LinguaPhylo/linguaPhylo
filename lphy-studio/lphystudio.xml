@@ -199,7 +199,8 @@
 
     <!--  mac OS Bundle -->
     <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
-    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>-->
+    <!--TODO still invalid ? -->
+<!--    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>&ndash;&gt;-->
 
     <!--  windows  -->
     <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
