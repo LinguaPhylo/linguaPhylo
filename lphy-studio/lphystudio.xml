@@ -145,13 +145,14 @@
         </autodetectJava>
     </preInstallationActionList>
     <postInstallationActionList>
-        <addEnvironmentVariable>
-            <explanation>Adding environmental path</explanation>
-<!-- Important to launch lphybeast  -->
-            <name>LPHY_LIB</name>
-            <scope>system</scope>
-            <value>${installdir}</value>
-        </addEnvironmentVariable>
+        <!-- TODO bug 1 to append not replace; bug 2 both ~/.bash_profile and ~/.zshrc are changed  -->
+<!--        <addEnvironmentVariable>-->
+<!--            <explanation>Adding environmental path</explanation>-->
+<!--&lt;!&ndash; Important to launch lphybeast  &ndash;&gt;-->
+<!--            <name>LPHY_LIB</name>-->
+<!--            <scope>system</scope>-->
+<!--            <value>${installdir}</value>-->
+<!--        </addEnvironmentVariable>-->
         <createJavaLaunchers>
             <destination>${installdir}</destination>
             <explanation>Creating launcher</explanation>
