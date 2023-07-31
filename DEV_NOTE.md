@@ -197,7 +197,7 @@ For releases, check https://s01.oss.sonatype.org/content/repositories/releases/i
 
 - After final release, it is a good behavior to instantly update your versions
   in the build files into the next version with the postfix "SNAPSHOT".
-- After release, the version will immediately appear in https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/,
+- After release, the version will immediately appear in the s01.oss,
   but it will take one/two days to synchronise to [Maven Central Repository](https://central.sonatype.com).
   For example, https://repo.maven.apache.org/maven2/io/github/linguaphylo/.
 
