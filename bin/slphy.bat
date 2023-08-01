@@ -52,7 +52,7 @@ goto fail
 
 :findJavaFromJavaHome
 set JAVA_HOME=%JAVA_HOME:"=%
-set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+set JAVA_EXE=%JAVA_HOME%\bin\java.exe
 
 if exist "%JAVA_EXE%" goto setLPHYLIB
 
@@ -65,7 +65,7 @@ echo location of your Java installation.
 goto fail
 
 :setLPHYLIB
-set LPHY_LIB=%APP_HOME%/../lib/
+set LPHY_LIB=%APP_HOME%\..\lib\
 echo set the LPHY_LIB to "%LPHY_LIB%"
 
 :execute
