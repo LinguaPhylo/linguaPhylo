@@ -65,24 +65,26 @@ echo location of your Java installation.
 goto fail
 
 :setLPHYLIB
-set LPHY_LIB=%APP_HOME%\..\lib\
+set LPHY_LIB=%APP_HOME%..\lib
 echo set the LPHY_LIB to "%LPHY_LIB%"
 
 :execute
 @rem Setup the command line
 @rem Execute 
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% -p %LPHY_LIB% -m lphystudio/lphystudio.app.simulator.SLPhy %*
+set CMD="%JAVA_EXE%" %DEFAULT_JVM_OPTS% -p "%LPHY_LIB%" -m lphystudio/lphystudio.app.simulator.SLPhy %*
+%CMD%
 
 :end
 @rem End local scope for the variables with windows NT shell
 if "%ERRORLEVEL%"=="0" goto mainEnd
 
 :fail
-echo ERROR: fail to run 
-echo "%JAVA_EXE%" %DEFAULT_JVM_OPTS% -p %LPHY_LIB% -m lphystudio/lphystudio.app.simulator.SLPhy %*
-
+echo.
+echo ERROR: fail to run the command
+echo %CMD%
+echo.
+echo Get help from https://linguaphylo.github.io/setup
 
 :mainEnd
 if "%OS%"=="Windows_NT" endlocal
 
-:omega
