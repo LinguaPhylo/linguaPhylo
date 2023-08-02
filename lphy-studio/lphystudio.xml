@@ -1,7 +1,7 @@
 <project>
     <shortName>lphystudio</shortName>
     <fullName>LPhyStudio</fullName>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
     <readmeFile>${build_project_directory}/../README.md</readmeFile>
     <licenseFile>${build_project_directory}/../LICENSE</licenseFile>
     <componentList>
@@ -145,12 +145,14 @@
         </autodetectJava>
     </preInstallationActionList>
     <postInstallationActionList>
-        <addEnvironmentVariable>
-            <explanation>Adding environmental path</explanation>
-            <name>LPHY_PATH</name>
-            <scope>system</scope>
-            <value>${installdir}</value>
-        </addEnvironmentVariable>
+        <!-- TODO bug 1 to append not replace; bug 2 both ~/.bash_profile and ~/.zshrc are changed  -->
+<!--        <addEnvironmentVariable>-->
+<!--            <explanation>Adding environmental path</explanation>-->
+<!--&lt;!&ndash; Important to launch lphybeast  &ndash;&gt;-->
+<!--            <name>LPHY_LIB</name>-->
+<!--            <scope>system</scope>-->
+<!--            <value>${installdir}</value>-->
+<!--        </addEnvironmentVariable>-->
         <createJavaLaunchers>
             <destination>${installdir}</destination>
             <explanation>Creating launcher</explanation>
@@ -164,15 +166,16 @@
                     <classpath></classpath>
                     <jarFile></jarFile>
                     <mainClass></mainClass>
-                    <osxApplicationBundleIcon>${installdir}/src/lphy.icns</osxApplicationBundleIcon>
                     <preferredJavaBinary></preferredJavaBinary>
                     <runInBackground>0</runInBackground>
                     <runInConsole>0</runInConsole>
+                    <!-- TODO not working -->
                     <useLauncherDirectoryAsWorkingDirectory>1</useLauncherDirectoryAsWorkingDirectory>
                     <usePropertiesFile>0</usePropertiesFile>
                     <vmParameters>-Xms256m -Xmx4g -Dfile.encoding=UTF-8 -p lib -m lphystudio</vmParameters>
-                    <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
+                    <!-- TODO have to keep this otherwise launcher failed, but cannot mv it to diff dir -->
                     <workingDirectory>${installdir}</workingDirectory>
+
                     <validVersionList>
                         <validVersion>
                             <bitness></bitness>
@@ -186,18 +189,31 @@
             </javaLauncherList>
         </createJavaLaunchers>
     </postInstallationActionList>
+
+    <!--  mac OS Dmg -->
     <createOsxBundleDmg>1</createOsxBundleDmg>
     <enableRollback>0</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
     <osxDmgTitle>LPhyStudio DMG</osxDmgTitle>
+    <!-- mac OS Signing -->
     <osxSigningIdentity>Developer ID Application: Walter Xie</osxSigningIdentity>
+
+    <!--  mac OS Bundle -->
+    <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
+    <!--TODO still invalid ? -->
+<!--    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>&ndash;&gt;-->
+
+    <!--  windows  -->
+    <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
+    <windowsExecutableIcon>${installdir}/src/lphy.ico</windowsExecutableIcon>
+
     <vendor>LPhy Development Team</vendor>
+
     <parameterList>
         <directoryParameter>
             <name>installdir</name>
-            <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <description>Installation Directory</description>
+            <explanation>Please specify the directory where ${project.fullName} will be installed. This directory will be the parent directory of the LPhy library path, $LPHY_LIB, required by LPhyBEAST.</explanation>
             <value></value>
             <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
             <allowEmptyValue>0</allowEmptyValue>
@@ -206,6 +222,41 @@
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>30</width>
+            <postShowPageActionList>
+                <!-- This will skip the readytoinstall page -->
+                <setInstallerVariable name="next_page" value="installation" />
+            </postShowPageActionList>
+<!--  TODO  ${installdir} can be refreshed  -->
+<!--            <validationActionList>-->
+<!--                <throwError>-->
+<!--                    <text>-->
+<!--                        Please replace "x" in the folder to the version numbers : ${installdir} !-->
+<!--                    </text>-->
+<!--                    <ruleList>-->
+<!--                        <compareText>-->
+<!--                            <logic>does_not_contain</logic>-->
+<!--                            <nocase>1</nocase>-->
+<!--                            <text>BEAST 2.x.x</text>-->
+<!--                            <value>${installdir}</value>-->
+<!--                        </compareText>-->
+<!--                    </ruleList>-->
+<!--                </throwError>-->
+<!--                <throwError>-->
+<!--                    <text>-->
+<!--                        To use LPhy with LPhyBEAST, LPhy Studio must be installed inside the BEAST 2.x.x folder (e.g., BEAST 2.7.5).-->
+<!--                        But it is set to be installed in ${installdir} !-->
+<!--                        Please read the User Manual https://linguaphylo.github.io/setup/.-->
+<!--                    </text>-->
+<!--                    <ruleList>-->
+<!--                        <compareText>-->
+<!--                            <logic>contains</logic>-->
+<!--                            <nocase>1</nocase>-->
+<!--                            <text>BEAST</text>-->
+<!--                            <value>${installdir}</value>-->
+<!--                        </compareText>-->
+<!--                    </ruleList>-->
+<!--                </throwError>-->
+<!--            </validationActionList>-->
         </directoryParameter>
     </parameterList>
 </project>
