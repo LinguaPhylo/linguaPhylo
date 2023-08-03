@@ -201,11 +201,11 @@
     <!--  mac OS Bundle -->
     <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
     <!--TODO still invalid ? -->
-<!--    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>&ndash;&gt;-->
+<!--    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon> -->
 
     <!--  windows  -->
     <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
-    <windowsExecutableIcon>${installdir}/src/lphy.ico</windowsExecutableIcon>
+    <windowsExecutableIcon>/lphy-studio-${product_version}/src/lphy.ico</windowsExecutableIcon>
 
     <vendor>LPhy Development Team</vendor>
 
