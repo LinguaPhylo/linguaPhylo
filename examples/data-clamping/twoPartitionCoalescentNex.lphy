@@ -3,12 +3,15 @@ data {
   taxa = D.taxa();
   coding = D.charset("coding");
   noncoding = D.charset("noncoding");
+  // cannot have a method call to itself inside the model block when data clamping
+  codingL = coding.nchar();
+  noncodingL = noncoding.nchar();
 }
 model {
   Θ ~ LogNormal(meanlog=3, sdlog=1);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   π ~ Dirichlet(conc=[2.0,2.0,2.0,2.0]);
-  coding ~ PhyloCTMC(tree=ψ, L=coding.nchar(), Q=f81(freq=π));
-  noncoding ~ PhyloCTMC(tree=ψ, L=noncoding.nchar(), Q=f81(freq=π));
+  coding ~ PhyloCTMC(tree=ψ, L=codingL, Q=f81(freq=π));
+  noncoding ~ PhyloCTMC(tree=ψ, L=noncodingL, Q=f81(freq=π));
 }
 

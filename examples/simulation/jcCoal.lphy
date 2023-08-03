@@ -4,6 +4,8 @@ data {
   D = simulate(lphy="jcSimData.lphy", seed=777);
   V = get(key="V", map=D);
   C = get(key="C", map=D);
+  VL = V.nchar();
+  CL = C.nchar();
   taxa = V.taxa();
   // True tree from jcSimData.lphy
   T = get(key="ψ", map=D);
@@ -17,6 +19,6 @@ model {
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   Q = jukesCantor();
   // clamped to the simulated data
-  V ~ PhyloCTMC(tree=ψ, L=V.nchar(), Q=Q);
-  C ~ PhyloCTMC(tree=ψ, L=C.nchar(), Q=Q);
+  V ~ PhyloCTMC(tree=ψ, L=VL, Q=Q);
+  C ~ PhyloCTMC(tree=ψ, L=CL, Q=Q);
 }
