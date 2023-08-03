@@ -1,7 +1,7 @@
 <project>
     <shortName>lphystudio</shortName>
     <fullName>LPhyStudio</fullName>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
     <readmeFile>${build_project_directory}/../README.md</readmeFile>
     <licenseFile>${build_project_directory}/../LICENSE</licenseFile>
     <componentList>
