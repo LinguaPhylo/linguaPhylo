@@ -9,6 +9,8 @@ data {
   // 5 locations : Guangdong,HongKong,Hunan,Guangxi,Fujian
   K = D_trait.canonicalStateCount();
   dim = K*(K-1)/2;
+  // cannot have a method call to itself inside the model block when data clamping
+  dataType = D_trait.dataType();
 }
 model {
   κ ~ LogNormal(meanlog=1.0, sdlog=1.25);
@@ -35,5 +37,5 @@ model {
   // construct the GTR instantaneous rate matrix
   Q_trait = generalTimeReversible(freq=π_trait, rates=select(x=R_trait, indicator=I));
   // use the data type of trait alignment extracted from taxa names
-  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType=D_trait.dataType());
+  D_trait ~ PhyloCTMC(L=1, Q=Q_trait, mu=μ_trait, tree=ψ, dataType=dataType);
 }

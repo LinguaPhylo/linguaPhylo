@@ -319,7 +319,13 @@ public class GraphicalModelPanel extends JPanel {
             }
         } else {
             List<Value<?>> sinks = component.getParser().getModelSinks();
-            if (sinks.size() > 0) showValue(sinks.get(0), false);
+            // TODO should not move to tab for all sinks?
+//            if (sinks.size() > 0) showValue(sinks.get(0), false);
+            for (Value value : sinks) {
+                if (value instanceof RandomVariable<?>) {
+                    showValue(value, false);
+                }
+            }
         }
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
