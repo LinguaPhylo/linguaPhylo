@@ -2,10 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.model.DeterministicFunction;
-import lphy.core.model.GenerativeDistribution;
-import lphy.core.model.Generator;
-import lphy.core.model.Value;
+import lphy.core.model.*;
 import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.REPL;
