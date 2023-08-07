@@ -25,4 +25,4 @@ if [ -z "$LPHY" ]; then
 fi
 
 LPHY_LIB=$LPHY/lib
-java -Xms64m -Xmx5g -p $LPHY_LIB -m lphystudio $*
+java -Xms64m -Xmx5g -Duser.dir="$LPHY" -p $LPHY_LIB -m lphystudio $*
