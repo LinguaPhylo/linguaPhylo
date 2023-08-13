@@ -501,7 +501,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
         /**
          * @param ctx
-         * @return and array of ArgumentValue objects
+         * @return an array of ArgumentValue objects
          */
         public Object visitExpression_list(Expression_listContext ctx) {
             List<ArgumentValue> list = new ArrayList<>();
