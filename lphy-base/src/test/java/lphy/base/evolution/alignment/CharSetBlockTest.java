@@ -1,4 +1,4 @@
-package lphy.evolution.traits;
+package lphy.base.evolution.alignment;
 
 import org.junit.jupiter.api.Test;
 
