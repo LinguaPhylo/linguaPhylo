@@ -45,7 +45,8 @@ public class CharSetBlock {
 
     public static class Utils {
         // 1 458-659 3-629\3 662-.\3
-        private final static String CHARSET_REGX = "^([0-9]+)$|^([0-9]+)\\-([0-9]+)(\\\\[0-9]+)*$|^([0-9]+)\\-(\\.)(\\\\[0-9]+)*$";
+        private final static String CHARSET_REGX =
+                "^([0-9]+|[0-9]+\\-[0-9]+|[0-9]+\\-[0-9]+\\\\[0-9]+|[0-9]+\\-\\.\\\\[0-9]+)( ([0-9]+|[0-9]+\\-[0-9]+|[0-9]+\\-[0-9]+\\\\[0-9]+|[0-9]+\\-\\.\\\\[0-9]+))*$";
 
         public static boolean isValid(String str) {
             return Pattern.matches(CHARSET_REGX, str);
