@@ -46,6 +46,7 @@ module lphy.base {
 
     exports lphy.base.parser;
     exports lphy.base.parser.nexus;
+    exports lphy.base.parser.newick;
 
     // declare service provider interface (SPI)
     exports lphy.base.spi;
