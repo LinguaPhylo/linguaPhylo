@@ -656,7 +656,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             return generator;
         }
 
-        /**
+        /**TODO have renamed to visitMethodCall
          * @param ctx
          * @return a Value or an Expression.
          */
@@ -705,7 +705,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
         }
 
-        /**
+        /**TODO have renamed to visitFunction
          * @param ctx
          * @return a Value or an Expression.
          */
