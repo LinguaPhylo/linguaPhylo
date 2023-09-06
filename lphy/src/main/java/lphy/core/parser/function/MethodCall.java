@@ -6,6 +6,7 @@ import lphy.core.model.annotation.MethodInfo;
 import lphy.core.model.datatype.Vector;
 import lphy.core.parser.graphicalmodel.ValueCreator;
 import lphy.core.vectorization.CompoundVectorValue;
+import lphy.core.vectorization.VectorMatchUtils;
 import lphy.core.vectorization.VectorizedFunction;
 import lphy.core.vectorization.operation.ElementsAt;
 import lphy.core.vectorization.operation.Slice;
@@ -14,8 +15,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-
-import static org.apache.commons.lang3.BooleanUtils.or;
 
 /**
  * This class handles all method calls, including "vectorization by calling object" and "vectorization by arguments".
@@ -81,7 +80,7 @@ public class MethodCall extends DeterministicFunction {
                     vectorizedObject = true;
                 } catch (NoSuchMethodException nsme2) {
                     // check for doubly vectorized
-                    method = getVectorMatch(methodName, componentClass, paramTypes);
+                    method = VectorMatchUtils.getVectorMatch(methodName, componentClass, paramTypes);
                     if (method != null) {
                         vectorizedObject = true;
                         vectorizedArguments = true;
@@ -92,7 +91,7 @@ public class MethodCall extends DeterministicFunction {
             // if unsuccessful so far
             if (method == null) {
                 // check for vectorized argument match
-                method = getVectorMatch(methodName, value, arguments);
+                method = VectorMatchUtils.getVectorMatch(methodName, value, arguments);
                 if (method != null) vectorizedArguments = true;
             }
 
@@ -124,83 +123,6 @@ public class MethodCall extends DeterministicFunction {
 
         // TODO should we check super classes here?
         return null;
-    }
-
-    /**
-     * @param methodName the method name
-     * @param c the class of object on which the method is sought
-     * @param paramTypes the param types that are vectorized version of actual parameter types
-     * @return the first matching method, or null if none.
-     */
-    public Method getVectorMatch(String methodName, Class c, Class[] paramTypes) {
-        // check for vectorized arguments match
-        for (Method method : c.getMethods()) {
-            if (method.getName().equals(methodName)) {
-                if (or(isVectorMatch(method, paramTypes))) {
-                    return method;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param methodName the method that is a vector match for the given arguments, or null if no match found.
-     * @param value the value for which a method call is attempted.
-     * @param arguments the arguments of the method call.
-     * @return
-     */
-    public Method getVectorMatch(String methodName, Value<?> value, Value<?>[] arguments) {
-        Class<?>[] paramTypes = new Class[arguments.length];
-
-        for (int i = 0; i < paramTypes.length; i++) {
-            paramTypes[i] = arguments[i].value().getClass();
-        }
-
-        Class c = value.value().getClass();
-
-        try {
-            // check for exact match
-            Method method = c.getMethod(methodName, paramTypes);
-        } catch (NoSuchMethodException nsme) {
-            // check for vectorized match
-            for (Method method : c.getMethods()) {
-                if (method.getName().equals(methodName)) {
-                    if (or(isVectorMatch(method, paramTypes))) {
-                        return method;
-                    }
-                }
-            }
-            return null;
-        }
-        return null;
-    }
-
-    /**
-     * @param method the method to check
-     * @param paramTypes the param types to check for a vector match
-     * @return a boolean array of length equal to paramTypes array, with true of each vector match, false otherwise.
-     */
-    private static boolean[] isVectorMatch(Method method, Class<?>[] paramTypes) {
-        Class<?>[] methodParamTypes = method.getParameterTypes();
-
-        if (methodParamTypes.length == paramTypes.length) {
-            boolean[] vectorMatch = new boolean[paramTypes.length];
-            for (int i = 0; i < methodParamTypes.length; i++) {
-                vectorMatch[i] = isVectorMatch(methodParamTypes[i],paramTypes[i]);
-            }
-            return vectorMatch;
-        }
-        throw new IllegalArgumentException("paramTypes array must be same length as method param types array!");
-    }
-
-    /**
-     * @param methodParamType the class of a method argument
-     * @param paramType the class of a potential vector match
-     * @return true if paramType is a vector match for methodParamType (i.e. paramType is an array and has components of a class assignable to methodParamType.
-     */
-    private static boolean isVectorMatch(Class<?> methodParamType, Class<?> paramType) {
-        return (paramType.isArray() && methodParamType.isAssignableFrom(paramType.getComponentType()));
     }
 
     @Override
@@ -281,7 +203,7 @@ public class MethodCall extends DeterministicFunction {
     private Value<?> vectorApply(Object[] args) throws IllegalAccessException, InvocationTargetException {
         int vectorSize = getVectorSize(args);
 
-        boolean[] isVector = isVectorMatch(method, Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new));
+        boolean[] isVector = VectorMatchUtils.isVectorMatch(method, Arrays.stream(args).map(Object::getClass).toArray(Class<?>[]::new));
 
         List<Value> returnValues = new ArrayList<>();
 
