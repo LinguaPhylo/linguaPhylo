@@ -124,8 +124,8 @@ distributions {
                 }
             }
             from("$rootDir/examples") {
-                include("**/*.lphy", "**/*.nex")
-                exclude("todo", "**/*covid*")
+                include("**/*.lphy", "**/*.nex", "**/*.fasta")
+                exclude("todo")
                 into("examples")
             }
             from("$rootDir/tutorials") {
