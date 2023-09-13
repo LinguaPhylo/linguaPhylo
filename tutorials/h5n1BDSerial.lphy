@@ -1,0 +1,14 @@
+data {
+  options = {ageDirection="forward", ageRegex="_(\d+)$"};
+  D = readNexus(file="data/H5N1.nex", options=options);
+  taxa = D.taxa();
+  //TODO change priors
+  λ = 1;
+  deathRate = 0.5;
+  tmrca = 10;
+}
+model {
+  ψ ~ BirthDeathSerialSampling(lambda=λ, mu=deathRate, rho=0.1, psi=1.0, rootAge=tmrca, taxa=taxa);
+  TL = ψ.treeLength();
+  rootAge = ψ.rootAge();
+}
