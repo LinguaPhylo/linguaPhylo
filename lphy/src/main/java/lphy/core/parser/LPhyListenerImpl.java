@@ -137,6 +137,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                    (o == null ? "null" : o.getClass().getName()), ctx);
 //        }
 
+        //TODO replaced by visitLiteral
         @Override
         public Value visitConstant(ConstantContext ctx) {
 
@@ -533,6 +534,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
 
         /**
+         * TODO rename to visitArray_construction
          * @param ctx the array, e.g. [1,2,3]
          * @return an array object depending on its type
          */
