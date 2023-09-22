@@ -1,0 +1,17 @@
+data {
+  options = {ageDirection="forward", ageRegex="_(\d+)$"};
+  D = readNexus(file="data/H5N1.nex", options=options);
+  taxa = D.taxa();
+  L = D.nchar();
+  //TODO change priors
+  λ = 1;
+  deathRate = 0.5;
+}
+model {
+  // TODO change priors
+  tmrca ~ Uniform(lower=1, upper=100);
+  ψ ~ BirthDeathSerialSampling(lambda=λ, mu=deathRate, rho=0.1, psi=1.0, rootAge=tmrca, taxa=taxa);
+  TL = ψ.treeLength();
+  rootAge = ψ.rootAge();
+  D ~ PhyloCTMC(L=L, Q=jukesCantor(), tree=ψ);
+}

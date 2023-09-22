@@ -6,6 +6,7 @@ data {
   //TODO change priors
   λ = 1;
   deathRate = 0.5;
+  // fix root age
   tmrca = 10;
 }
 model {
