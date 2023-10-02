@@ -10,11 +10,11 @@ import lphy.core.model.annotation.ParameterInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Species extends DeterministicFunction<Taxa> {
+public class SpeciesTaxa extends DeterministicFunction<Taxa> {
 
     final String paramName;
 
-    public Species(@ParameterInfo(name = "0", description = "the taxa object from which to extract the species from.") Value<Taxa> taxa) {
+    public SpeciesTaxa(@ParameterInfo(name = "0", description = "the taxa object from which to extract the species from.") Value<Taxa> taxa) {
         paramName = getParamName(0);
         setParam(paramName, taxa);
     }
@@ -64,6 +64,7 @@ public class Species extends DeterministicFunction<Taxa> {
                 return speciesTaxaNames.length;
             }
 
+            @Override
             public String[] getTaxaNames() {
                 return speciesTaxaNames;
             }

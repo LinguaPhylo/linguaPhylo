@@ -1,7 +1,10 @@
-model {
+data {
   taxa = taxa(names=["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"], species=["A", "A", "B", "B", "C", "C", "D", "D"]);
+  // create new taxa from species
   species = species(taxa);
   speciesPopCount = species.nodeCount();
+}
+model {
   Θ ~ LogNormal(meanlog=-3.0, sdlog=0.5, replicates=speciesPopCount);
   λ ~ LogNormal(meanlog=0.0, sdlog=1.0);
   sp ~ Yule(lambda=λ, taxa=species);

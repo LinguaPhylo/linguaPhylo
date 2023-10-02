@@ -31,6 +31,11 @@ public interface Taxa extends MultiDimensional {
         return getAges();
     }
 
+    @MethodInfo(description = "gets the species of these taxa as an array of strings.")
+    default String[] species() {
+        return getSpecies();
+    }
+
     @MethodInfo(description = "gets the number of taxa.")
     default int length() {
         return ntaxa();

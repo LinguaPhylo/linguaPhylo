@@ -76,8 +76,9 @@ public class MetaDataAlignment extends SimpleAlignment implements NarrativeName 
         if (vals == null) {// if it is date uuuu-MM-dd
             assert AgeDirection.forward.equals(ageDirection) || AgeDirection.dates.equals(ageDirection);
             // only forward in time using dates
-            //TODO hard code to unit year, require to compute the value based on months, days.
-            vals = convertDateToAge(datesStr, ChronoUnit.YEARS);
+            //TODO this method is hard coded to get years only.
+            // For other units, it requires conversion after this method.
+            vals = convertDateToAge(datesStr, chronoUnit);
         }
         // find min max for forward or backward
         maxAge = vals[0];
@@ -311,12 +312,13 @@ public class MetaDataAlignment extends SimpleAlignment implements NarrativeName 
         return vals;
     }
 
-    // convert uuuu-MM-dd to the unit of years in decimal
+    // convert uuuu-MM-dd to the unit of years in decimal currently
     private double[] convertDateToAge(final String[] datesStr, ChronoUnit unit) {
         final String formatter = "uuuu-MM-dd";
         DateTimeFormatter f = DateTimeFormatter.ofPattern(formatter);
         if (!unit.equals(ChronoUnit.YEARS))
-            throw new UnsupportedOperationException("Only support year as unit for parsing a date '" + formatter + "' !");
+            throw new UnsupportedOperationException("Only support year as unit for parsing a date '" + formatter +
+                    "', but the current unit is " + unit + " !");
 
         double[] vals = new double[Objects.requireNonNull(datesStr).length];
         for (int i = 0; i < datesStr.length; i++) {

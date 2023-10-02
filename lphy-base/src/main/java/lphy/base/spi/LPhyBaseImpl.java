@@ -93,7 +93,7 @@ public class LPhyBaseImpl implements LPhyExtension {
             // Matrix
             BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
             // IO
-            Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, Species.class,
+            Newick.class, ReadNexus.class, ReadFasta.class, ExtractTrait.class, SpeciesTaxa.class,
             // Math
             SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
             // Set Op
