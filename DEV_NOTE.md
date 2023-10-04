@@ -1,4 +1,4 @@
-# Developer Note for LPhy
+# Developer Documentation for LPhy
 
 ## Gradle
 
