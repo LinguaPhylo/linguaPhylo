@@ -1,5 +1,6 @@
 package lphy.core.spi;
 
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GeneratorUtils;
@@ -56,26 +57,35 @@ public class LPhyCoreLoader {
 //        dataTypeMap = new ConcurrentHashMap<>();
         types = new TreeSet<>(Comparator.comparing(Class::getName));
 
-        try {
-            //*** LPhyExtensionImpl must have a public no-args constructor ***//
-            for (LPhyExtension lPhyExt : loader) {
-                // extClsName == null then register all
-                if (extClsName == null || lPhyExt.getClass().getName().equalsIgnoreCase(extClsName)) {
-                    System.out.println("Registering extension from " + lPhyExt.getClass().getName());
 
-                    // GenerativeDistribution
-                    List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
+        //*** LPhyExtensionImpl must have a public no-args constructor ***//
+        Iterator<LPhyExtension> extensions = loader.iterator();
 
-                    for (Class<? extends GenerativeDistribution> genClass : genDist) {
-                        String name = GeneratorUtils.getGeneratorName(genClass);
+        while (extensions.hasNext()) {
+            LPhyExtension lPhyExt = null;
+            try {
+                //*** LPhyExtensionImpl must have a public no-args constructor ***//
+                lPhyExt = extensions.next();
+            } catch (ServiceConfigurationError serviceError) {
+                System.err.println(serviceError.getMessage());
+            }
+            // extClsName == null then register all
+            if (lPhyExt != null && (extClsName == null || lPhyExt.getClass().getName().equalsIgnoreCase(extClsName))) {
+                System.out.println("Registering extension from " + lPhyExt.getClass().getName());
 
-                        Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
-                        genDistSet.add(genClass);
-                        // collect LPhy data types from GenerativeDistribution
-                        types.add(GeneratorUtils.getReturnType(genClass));
-                        Collections.addAll(types, NarrativeUtils.getParameterTypes(genClass, 0));
-                        Collections.addAll(types, GeneratorUtils.getReturnType(genClass));
-                    }
+                // GenerativeDistribution
+                List<Class<? extends GenerativeDistribution>> genDist = lPhyExt.getDistributions();
+
+                for (Class<? extends GenerativeDistribution> genClass : genDist) {
+                    String name = GeneratorUtils.getGeneratorName(genClass);
+
+                    Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
+                    genDistSet.add(genClass);
+                    // collect LPhy data types from GenerativeDistribution
+                    types.add(GeneratorUtils.getReturnType(genClass));
+                    Collections.addAll(types, NarrativeUtils.getParameterTypes(genClass, 0));
+                    Collections.addAll(types, GeneratorUtils.getReturnType(genClass));
+                }
 //        for (Class<?> genClass : lightWeightGenClasses) {
 //            String name = Generator.getGeneratorName(genClass);
 //
@@ -83,41 +93,36 @@ public class LPhyCoreLoader {
 //            genDistSet.add(genClass);
 //            types.add(LGenerator.getReturnType((Class<LGenerator>)genClass));
 //        }
-                    // Func
-                    List<Class<? extends BasicFunction>> funcs = lPhyExt.getFunctions();
+                // Func
+                List<Class<? extends BasicFunction>> funcs = lPhyExt.getFunctions();
 
-                    for (Class<? extends BasicFunction> functionClass : funcs) {
-                        String name = GeneratorUtils.getGeneratorName(functionClass);
+                for (Class<? extends BasicFunction> functionClass : funcs) {
+                    String name = GeneratorUtils.getGeneratorName(functionClass);
 
-                        Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
-                        funcSet.add(functionClass);
-                        // collect LPhy data types from Func
-                        Collections.addAll(types, NarrativeUtils.getParameterTypes(functionClass, 0));
-                        Collections.addAll(types, GeneratorUtils.getReturnType(functionClass));
-                    }
+                    Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
+                    funcSet.add(functionClass);
+                    // collect LPhy data types from Func
+                    Collections.addAll(types, NarrativeUtils.getParameterTypes(functionClass, 0));
+                    Collections.addAll(types, GeneratorUtils.getReturnType(functionClass));
+                }
 
-                    // sequence types
+                // sequence types
 //                    Map<String, ? extends SequenceType> newDataTypes = lPhyExt.getSequenceTypes();
 //                    if (newDataTypes != null)
 //                        // TODO validate same sequence type?
 //                        newDataTypes.forEach(dataTypeMap::putIfAbsent);
-                }
             }
-
-            System.out.println("\nGenerativeDistribution : " + Arrays.toString(genDistDictionary.keySet().toArray()));
-            System.out.println("Functions : " + Arrays.toString(functionDictionary.keySet().toArray()));
-            // for non-module release
-            if (genDistDictionary.size() < 1 || functionDictionary.size() < 1)
-                throw new RuntimeException("LPhy core did not load properly using SPI mechanism !");
-
-            TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
-            System.out.println("LPhy data types : " + typeNames);
-//            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
-
-        } catch (ServiceConfigurationError serviceError) {
-            System.err.println(serviceError);
-            serviceError.printStackTrace();
         }
+
+        System.out.println("\nGenerativeDistribution : " + Arrays.toString(genDistDictionary.keySet().toArray()));
+        System.out.println("Functions : " + Arrays.toString(functionDictionary.keySet().toArray()));
+        // for non-module release
+        if (genDistDictionary.size() < 1 || functionDictionary.size() < 1)
+            LoggerUtils.log.warning("LPhy base or equivalent lib was not loaded ! ");
+
+        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
+        System.out.println("LPhy data types : " + typeNames);
+//            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
 
     }
 
