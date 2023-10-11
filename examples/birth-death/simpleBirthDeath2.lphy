@@ -1,0 +1,3 @@
+diversification ~ Exp(mean=10.0);
+turnover ~ Beta(alpha=2.0, beta=2.0);
+T ~ BirthDeathSampling(diversification=diversification, turnover=turnover, rho=0.2, rootAge=65.092);
