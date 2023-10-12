@@ -189,6 +189,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));

@@ -49,6 +49,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
     }
 
+    public Object parse(String CASentence) {
+        LPhyASTVisitor visitor = new LPhyASTVisitor();
+        // no data and model blocks
+        return LPhyParserAction.parse(CASentence, visitor);
+    }
+
     public void clear() {
         this.parser.clear();
     }
@@ -86,10 +92,95 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         public LPhyASTVisitor() {
         }
 
+        @Override
+        public Object visitDatablock(DatablockContext ctx) {
+            //TODO
+            return super.visitDatablock(ctx);
+        }
+
+        @Override
+        public Object visitModelblock(ModelblockContext ctx) {
+            //TODO
+            return super.visitModelblock(ctx);
+        }
+
+        /**
+         * parse the string with double quotes first,
+         * if not, then go to {@link #visitFloatingPointLiteral(FloatingPointLiteralContext)},
+         * {@link #visitIntegerLiteral(IntegerLiteralContext)},
+         * and {@link #visitBooleanLiteral(BooleanLiteralContext)}, according to grammar.
+         * @param ctx the Literals
+         * @return  a LPhy {@link Value}
+         */
+        @Override
+        public Value visitLiteral(LiteralContext ctx) {
+            String stringWithQuotes = ctx.getText();
+            // only support ", not ', see grammar
+            if (stringWithQuotes.startsWith("\"")) {
+                if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
+                    String text = stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
+                    return new StringValue(null, text);
+                } else
+                    throw new RuntimeException("Attempted to strip quotes, " +
+                            "but the string was not quoted by double quotes !");
+            }
+            // not currently allowed by grammar
+//            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
+//                return new CharacterValue(null, text.charAt(1));
+//            }
+//            try {
+//                long aLong = Long.parseLong(text);
+//                // TODO: should be a LongValue?
+//                return new IntegerValue(null, (int) aLong);
+//            } catch (NumberFormatException e) {
+//                try {
+//                    double d = Double.parseDouble(text);
+//                    return new DoubleValue(null, d);
+//                } catch (NumberFormatException e2) {
+//                    boolean bool = Boolean.parseBoolean(text);
+//                    return new BooleanValue(null, bool);
+//                }
+//            }
+            // go to other visitor if not string with quotes
+            return (Value) super.visitLiteral(ctx);
+        }
+
+        @Override
+        public Object visitFloatingPointLiteral(FloatingPointLiteralContext ctx) {
+            String text = ctx.getText();
+//            try {
+            double d = Double.parseDouble(text);
+            return new DoubleValue(null, d);
+//            } catch (NumberFormatException e) {
+                //TODO better Exception?
+//            }
+        }
+
+        @Override
+        public Object visitIntegerLiteral(IntegerLiteralContext ctx) {
+            String text = ctx.getText();
+//            try {
+//                long aLong = Long.parseLong(text);
+            // TODO: should be a LongValue?
+            int i = Integer.parseInt(text);
+            return new IntegerValue(null, i); // (int) aLong
+//            } catch (NumberFormatException e) {
+               //TODO better Exception?
+//            }
+        }
+
+        @Override
+        public Object visitBooleanLiteral(BooleanLiteralContext ctx) {
+            String text = ctx.getText();
+            boolean bool = Boolean.parseBoolean(text);
+            return new BooleanValue(null, bool);
+        }
+
         /**
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             List<GraphicalModelNode> nodes = new ArrayList<>();
@@ -136,40 +227,6 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //            throw new SimulatorParsingException("Expected integer value, or range, but don't know how to handle " +
 //                    (o == null ? "null" : o.getClass().getName()), ctx);
 //        }
-
-        //TODO separate code into visitFloatingPointLiteral ...
-        @Override
-        public Value visitLiteral(LiteralContext ctx) {
-
-            String text = ctx.getText();
-            if (text.startsWith("\"")) {
-                return new StringValue(null, stripQuotes(text));
-            }
-
-            // not currently allowed by grammar
-//            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
-//                return new CharacterValue(null, text.charAt(1));
-//            }
-            try {
-                long aLong = Long.parseLong(text);
-                // TODO: should be a LongValue?
-                return new IntegerValue(null, (int) aLong);
-            } catch (NumberFormatException e) {
-                try {
-                    double d = Double.parseDouble(text);
-                    return new DoubleValue(null, d);
-                } catch (NumberFormatException e2) {
-                    boolean bool = Boolean.parseBoolean(text);
-                    return new BooleanValue(null, bool);
-                }
-            }
-        }
-
-        private String stripQuotes(String stringWithQuotes) {
-            if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
-                return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
-            } else throw new RuntimeException("Attempted to strip quotes, but the string was not quoted.");
-        }
 
         @Override
         public Value visitDeterm_relation(Determ_relationContext ctx) {
@@ -888,13 +945,6 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
         return true;
     }
-
-    public Object parse(String CASentence) {
-        LPhyASTVisitor visitor = new LPhyASTVisitor();
-        // no data and model blocks
-        return LPhyParserAction.parse(CASentence, visitor);
-    }
-
 
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {

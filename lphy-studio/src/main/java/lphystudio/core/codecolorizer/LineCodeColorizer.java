@@ -91,6 +91,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
@@ -123,6 +124,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
             return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
         }
 
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
             element.add((TextElement)visit(ctx.getChild(1)));
