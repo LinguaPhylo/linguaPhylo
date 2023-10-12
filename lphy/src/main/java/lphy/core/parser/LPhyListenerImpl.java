@@ -137,9 +137,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                    (o == null ? "null" : o.getClass().getName()), ctx);
 //        }
 
-        //TODO replaced by visitLiteral
+        //TODO separate code into visitFloatingPointLiteral ...
         @Override
-        public Value visitConstant(ConstantContext ctx) {
+        public Value visitLiteral(LiteralContext ctx) {
 
             String text = ctx.getText();
             if (text.startsWith("\"")) {
@@ -253,6 +253,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
          * @param ctx the VarContext
          * @return var
          */
+        @Override
         public Var visitVar(VarContext ctx) {
 
             String id = ctx.getChild(0).getText();
@@ -534,12 +535,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
 
         /**
-         * TODO rename to visitArray_construction
          * @param ctx the array, e.g. [1,2,3]
          * @return an array object depending on its type
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(0).getText();
                 if (s.equals("[")) {
@@ -641,13 +641,14 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 }
                 throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
             }
-            return super.visitArray_expression(ctx);
+            return super.visitArray_construction(ctx);
         }
 
         /**
          * @param ctx
          * @return A map function of the name=value pairs contained in this map expression
          */
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             // handle special map function!
             ParseTree ctx1 = ctx.getChild(1);
@@ -658,11 +659,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             return generator;
         }
 
-        /**TODO have renamed to visitMethodCall
+        /**
          * @param ctx
          * @return a Value or an Expression.
          */
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        @Override
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             Var var = (Var)visit(ctx.children.get(0));
             String methodName = ctx.children.get(2).getText();
@@ -707,11 +709,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
         }
 
-        /**TODO have renamed to visitFunction
+        /**
          * @param ctx
          * @return a Value or an Expression.
          */
-        public Object visitMethodCall(MethodCallContext ctx) {
+        @Override
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
@@ -912,37 +915,4 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
     }
 
-
-//        @Override // for_loop: counter relations
-//        public Object visitFor_loop(For_loopContext ctx) {
-//            ParseTree counter = ctx.getChild(0);
-//            // counter: FOR '(' NAME IN range_element ')'
-//            String name = counter.getChild(2).getText();
-//
-//            // either an IntegerValue, an IntegerArrayValue or a Range function
-//            GraphicalModelNode range = (GraphicalModelNode) visit(counter.getChild(4));
-//            Object rangeValue = range.value();
-//
-//
-//            Integer[] intRange;
-//            if (rangeValue instanceof Integer[]) {
-//                intRange = (Integer[]) rangeValue;
-//            } else if (rangeValue instanceof Integer) {
-//                intRange = new Integer[]{(Integer) rangeValue};
-//            } else throw new SimulatorParsingException("Unexpected type of range element in for loop: " + rangeValue, ctx);
-//
-//
-//            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[]) rangeValue);
-//            for (Integer i : intRange) {
-//
-//                put(name, new IntegerValue(name, i, null));
-//                ParseTree relations = ctx.getChild(1);
-//                visit(relations);
-//            }
-//            return new Object() {
-//                public String toString() {
-//                    return forLoopName;
-//                }
-//            };
-//        }
 }

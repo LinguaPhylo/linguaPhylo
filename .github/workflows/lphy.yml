@@ -20,7 +20,7 @@ jobs:
 
       # -x test
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v2

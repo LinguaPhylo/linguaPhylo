@@ -1,4 +1,4 @@
-// Generated from java/lphy/parser/LPhy.g4 by ANTLR 4.12.0
+// Generated from ~/WorkSpace/linguaPhylo/lphy/src/main/java/lphy/core/parser/antlr/LPhy.g4 by ANTLR 4.13.1
 package lphy.core.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -89,11 +89,29 @@ public interface LPhyVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStoch_relation(LPhyParser.Stoch_relationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LPhyParser#constant}.
+	 * Visit a parse tree produced by {@link LPhyParser#literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstant(LPhyParser.ConstantContext ctx);
+	T visitLiteral(LPhyParser.LiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LPhyParser#floatingPointLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LPhyParser#integerLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntegerLiteral(LPhyParser.IntegerLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LPhyParser#booleanLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanLiteral(LPhyParser.BooleanLiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LPhyParser#expression_list}.
 	 * @param ctx the parse tree
@@ -113,17 +131,17 @@ public interface LPhyVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMapFunction(LPhyParser.MapFunctionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LPhyParser#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction(LPhyParser.FunctionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LPhyParser#methodCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMethodCall(LPhyParser.MethodCallContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LPhyParser#objectMethodCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LPhyParser#distribution}.
 	 * @param ctx the parse tree
@@ -137,11 +155,11 @@ public interface LPhyVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNamed_expression(LPhyParser.Named_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LPhyParser#array_expression}.
+	 * Visit a parse tree produced by {@link LPhyParser#array_construction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArray_expression(LPhyParser.Array_expressionContext ctx);
+	T visitArray_construction(LPhyParser.Array_constructionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LPhyParser#expression}.
 	 * @param ctx the parse tree

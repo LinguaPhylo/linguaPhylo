@@ -1,4 +1,4 @@
-// Generated from java/lphy/parser/LPhy.g4 by ANTLR 4.12.0
+// Generated from ~/WorkSpace/linguaPhylo/lphy/src/main/java/lphy/core/parser/antlr/LPhy.g4 by ANTLR 4.13.1
 package lphy.core.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -173,13 +173,49 @@ public class LPhyBaseListener implements LPhyListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstant(LPhyParser.ConstantContext ctx) { }
+	@Override public void enterLiteral(LPhyParser.LiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConstant(LPhyParser.ConstantContext ctx) { }
+	@Override public void exitLiteral(LPhyParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntegerLiteral(LPhyParser.IntegerLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntegerLiteral(LPhyParser.IntegerLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBooleanLiteral(LPhyParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBooleanLiteral(LPhyParser.BooleanLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -221,6 +257,18 @@ public class LPhyBaseListener implements LPhyListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFunction(LPhyParser.FunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunction(LPhyParser.FunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMethodCall(LPhyParser.MethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -228,18 +276,6 @@ public class LPhyBaseListener implements LPhyListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodCall(LPhyParser.MethodCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -269,13 +305,13 @@ public class LPhyBaseListener implements LPhyListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArray_expression(LPhyParser.Array_expressionContext ctx) { }
+	@Override public void enterArray_construction(LPhyParser.Array_constructionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArray_expression(LPhyParser.Array_expressionContext ctx) { }
+	@Override public void exitArray_construction(LPhyParser.Array_constructionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

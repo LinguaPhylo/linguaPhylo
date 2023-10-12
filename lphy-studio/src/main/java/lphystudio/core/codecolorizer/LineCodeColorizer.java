@@ -119,7 +119,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
 
 
         @Override
-        public Object visitConstant(ConstantContext ctx) {
+        public Object visitLiteral(LiteralContext ctx) {
             return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
         }
 
@@ -246,7 +246,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
          * @return {@link TextElement} of an array, which can be an empty array.
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
 
                 String s = ctx.getChild(0).getText();
@@ -320,7 +320,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
         }
 
         @Override
-        public Object visitMethodCall(MethodCallContext ctx) {
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -341,7 +341,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
         }
 
         @Override
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             String objectName = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();

@@ -128,7 +128,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             return children;
         }
 
-
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
             element.add((TextElement)visit(ctx.getChild(1)));
@@ -137,7 +137,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         }
 
         @Override
-        public Object visitConstant(ConstantContext ctx) {
+        public Object visitLiteral(LiteralContext ctx) {
 
             return new TextElement(ctx.getText(), literalStyle);
         }
@@ -298,7 +298,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
          * @return {@link TextElement} of an array, which can be an empty array.
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
 
                 String s = ctx.getChild(0).getText();
@@ -369,7 +369,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         }
 
         @Override
-        public Object visitMethodCall(MethodCallContext ctx) {
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -389,7 +389,8 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             return e;
         }
 
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        @Override
+        public Object visitMethodCall(MethodCallContext ctx) {
 
 //            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
 //            TextElement e = var.getTextElement(parser, context);
