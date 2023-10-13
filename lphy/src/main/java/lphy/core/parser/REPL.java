@@ -23,7 +23,7 @@ public class REPL implements LPhyMetaData {
     Set<Value> dataValues = new HashSet<>();
 
     String name = null;
-
+//TODO merge commands and lines, and may have data lines + model lines
     SortedMap<String, Command> commands = new TreeMap<>();
 
     private List<String> lines = new ArrayList<>();
