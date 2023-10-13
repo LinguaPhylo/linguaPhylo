@@ -32,7 +32,7 @@ public class StudioConsoleInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
 
-    GraphicalModelContainer parser;
+    GraphicalModelContainer container;
     StudioConsoleTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
@@ -55,13 +55,13 @@ public class StudioConsoleInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public StudioConsoleInterpreter(GraphicalModelContainer parser, LPhyMetaData.Context context, UndoManagerHelper undoManagerHelper) {
-        this.parser = parser;
+    public StudioConsoleInterpreter(GraphicalModelContainer container, LPhyMetaData.Context context, UndoManagerHelper undoManagerHelper) {
+        this.container = container;
         this.context = context;
 
         includeNewRandomVariablePanel = (context != LPhyMetaData.Context.data);
 
-        textPane = new StudioConsoleTextPane(parser);
+        textPane = new StudioConsoleTextPane(container);
         textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
@@ -75,12 +75,12 @@ public class StudioConsoleInterpreter extends JPanel {
 
         if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, LoaderManager.getAllGenerativeDistributionClasses());
 
-        List<String> keywords = parser.getKeywords();
+        List<String> keywords = container.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.symbolCodes));
 
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Set<Class<?>>> entry : parser.getGeneratorClasses().entrySet()) {
+        for (Map.Entry<String, Set<Class<?>>> entry : container.getGeneratorClasses().entrySet()) {
 
             Set<Class<?>> classes = entry.getValue();
             Iterator iterator = classes.iterator();
@@ -265,10 +265,10 @@ public class StudioConsoleInterpreter extends JPanel {
     public void interpretInput(String input, LPhyMetaData.Context context) {
 
         try {
-            parser.parseConsoleCMD(input, context);
+            container.parseConsoleCMD(input, context);
 
             try {
-                LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);
+                LineCodeColorizer codeColorizer = new LineCodeColorizer(container, context, textPane);
                 // if no data{}, input is empty
                 codeColorizer.parse(input);
             } catch (Exception e) {

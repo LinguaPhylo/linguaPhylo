@@ -41,19 +41,19 @@ public class NewRandomVariablePanel extends JPanel {
 
         sim.setFont(sim.getFont().deriveFont(Font.BOLD));
 
-        name = new JTextField(randomVarName(interpreter.parser)) {
+        name = new JTextField(randomVarName(interpreter.container)) {
 
             @Override
             public boolean isValidateRoot() {
                 return false;
             }
         };
-        name.setText(randomVarName(interpreter.parser));
+        name.setText(randomVarName(interpreter.container));
         name.setOpaque(false);
         name.setFont(StudioConsoleInterpreter.interpreterFont);
         name.setForeground(Color.green.darker());
 
-        ((GraphicalModelContainer)interpreter.parser).addGraphicalModelChangeListener(() -> generateComponents());
+        ((GraphicalModelContainer)interpreter.container).addGraphicalModelChangeListener(() -> generateComponents());
 
 
         name.getDocument().addDocumentListener(new DocumentListener() {
@@ -100,11 +100,11 @@ public class NewRandomVariablePanel extends JPanel {
             generateComponents();
         });
 
-        generatorPanel = new GeneratorPanel(interpreter.parser);
+        generatorPanel = new GeneratorPanel(interpreter.container);
 
         button.addActionListener(e -> {
             interpreter.interpretInput(getCodeString(), LPhyMetaData.Context.model);
-            name.setText(randomVarName(interpreter.parser));
+            name.setText(randomVarName(interpreter.container));
         });
 
         button.setEnabled(true);
@@ -165,7 +165,7 @@ public class NewRandomVariablePanel extends JPanel {
                 if (i > 0) builder.append(", ");
 
                 builder.append(input.argument.name).append("=");
-                if (interpreter.parser.hasValue(value, LPhyMetaData.Context.model)) {
+                if (interpreter.container.hasValue(value, LPhyMetaData.Context.model)) {
                     builder.append(value);
                 } else {
                     builder.append(value);

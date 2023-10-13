@@ -59,9 +59,10 @@ public class GraphicalModelContainer implements LPhyMetaData {
     }
 
     @Override
-    public void parseConsoleCMD(String consoleCMD, Context context) {
-        wrappedMetaData.parseConsoleCMD(consoleCMD, context);
+    public Object parseConsoleCMD(String consoleCMD, Context context) {
+        Object o = wrappedMetaData.parseConsoleCMD(consoleCMD, context);
         notifyListeners();
+        return o;
     }
 
     public void setName(String name) {

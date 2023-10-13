@@ -5,7 +5,6 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.REPL;
-import lphy.core.parser.Script;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.simulator.Sampler;
@@ -240,10 +239,8 @@ public class GraphicalModelPanel extends JPanel {
      */
     public void source(BufferedReader reader) throws IOException {
 
-        Script script = Script.loadLPhyScript(reader);
-
-        dataInterpreter.interpretInput(script.dataLines, LPhyMetaData.Context.data);
-        modelInterpreter.interpretInput(script.modelLines, LPhyMetaData.Context.model);
+        LPhyMetaData metaData = component.getGraphicalModelContainer();
+        metaData.source(reader);
 
         repaint();
     }
@@ -298,23 +295,23 @@ public class GraphicalModelPanel extends JPanel {
         dataInterpreter.clear();
         modelInterpreter.clear();
         // refresh data and model lines
-        String text = codeBuilder.getCode(component.getParser());
+        String text = codeBuilder.getCode(component.getGraphicalModelContainer());
         dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyMetaData.Context.data);
         modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyMetaData.Context.model);
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
-        Sampler sampler = new Sampler(component.getParser());
+        Sampler sampler = new Sampler(component.getGraphicalModelContainer());
         // if null then use a random seed
         valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
 //        this.sampler = sampler;
 
         if (id != null) {
-            Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaData.Context.model);
+            Value<?> selectedValue = component.getGraphicalModelContainer().getValue(id, LPhyMetaData.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }
         } else {
-            List<Value<?>> sinks = component.getParser().getModelSinks();
+            List<Value<?>> sinks = component.getGraphicalModelContainer().getModelSinks();
             // TODO should not move to tab for all sinks?
 //            if (sinks.size() > 0) showValue(sinks.get(0), false);
             for (Value value : sinks) {
@@ -502,7 +499,7 @@ public class GraphicalModelPanel extends JPanel {
     }
 
     public GraphicalModelContainer getParser() {
-        return component.getParser();
+        return component.getGraphicalModelContainer();
     }
 
     public ViewerPane getRightPane() {

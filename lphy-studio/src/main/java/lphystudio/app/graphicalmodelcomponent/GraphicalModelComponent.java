@@ -27,7 +27,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public static Preferences preferences = Preferences.userNodeForPackage(GraphicalModelComponent.class);
 
-    GraphicalModelContainer parser;
+    GraphicalModelContainer container;
 
     float STROKE_SIZE = 1.0f;
 
@@ -57,8 +57,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public Insets insets = new Insets((int) LayeredGNode.VAR_HEIGHT / 2 + BORDER,
             (int) LayeredGNode.VAR_WIDTH / 2 + BORDER, (int) LayeredGNode.VAR_HEIGHT / 2 + BORDER, (int) LayeredGNode.VAR_WIDTH / 2 + BORDER);
 
-    public GraphicalModelComponent(GraphicalModelContainer parser) {
-        this.parser = parser;
+    public GraphicalModelComponent(GraphicalModelContainer container) {
+        this.container = container;
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -70,7 +70,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         });
 
         setup();
-        parser.addGraphicalModelChangeListener(this::setup);
+        container.addGraphicalModelChangeListener(this::setup);
     }
 
     public static boolean getShowToolbar() {
@@ -88,14 +88,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     /**
      * @return  GraphicalModelContainer
      */
-    public GraphicalModelContainer getParser() {
-        return parser;
+    public GraphicalModelContainer getGraphicalModelContainer() {
+        return container;
     }
 
     private void setup() {
 
         removeAll();
-        layeredGraph = LayeredGraphFactory.createLayeredGraph(parser, getShowConstantNodes());
+        layeredGraph = LayeredGraphFactory.createLayeredGraph(container, getShowConstantNodes());
 
         for (LayeredNode lnode : layeredGraph.getNodes()) {
 
@@ -167,7 +167,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz(boolean inline) {
 
-        return LaTeXNarrative.properLayeredGraphToTikz(parser, properLayeredGraph, LayeredGNode.VAR_HEIGHT, 1.0, 1.0, inline,"");
+        return LaTeXNarrative.properLayeredGraphToTikz(container, properLayeredGraph, LayeredGNode.VAR_HEIGHT, 1.0, 1.0, inline,"");
     }
 
     public String toTikz() {
@@ -191,7 +191,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     public void clear() {
-        parser.clear();
+        container.clear();
     }
 
     @Override

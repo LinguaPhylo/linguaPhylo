@@ -6,7 +6,6 @@ import lphy.core.model.Value;
 import lphy.core.model.datatype.DoubleValue;
 import lphy.core.model.datatype.IntegerValue;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
-import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +14,16 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The interface to guide the classes storing the LPhy objects
+ * parsed by ANTRL parser, or lPhy code lines.
+ * There are two 'parse' methods:
+ * the 1st is used for scripts loaded from files,
+ * which uses data/model keywords to define the block.
+ * The 2nd method is used for studio console,
+ * where the data/model block is determined by buttons in GUI.
+ * @see REPL
+ */
 public interface LPhyMetaData extends GraphicalModel {
 
     // the name of the code being parsed.
@@ -51,17 +60,15 @@ public interface LPhyMetaData extends GraphicalModel {
      */
     void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
 
-    default void parseConsoleCMD(String lphyCode, LPhyMetaData.Context context) {
+    default Object parseConsoleCMD(String lphyCode, LPhyMetaData.Context context) {
         if (lphyCode == null || lphyCode.trim().isEmpty()) {
             // ignore empty lines
+            return null;
         } else if (!lphyCode.startsWith("?")) {
             // either 1 lphyCode each line, or all cmds in 1 line
             LPhyListenerImpl parser = new LPhyListenerImpl(this);
             // set context
-            Object o = parser.parse(lphyCode, context);
-
-            // wrap the ExpressionNodes before returning from parse
-            GraphicalModelUtils.wrapExpressionNodes(this);
+            return parser.parse(lphyCode, context);
         } else throw new RuntimeException();
     }
 
