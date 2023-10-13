@@ -3,8 +3,7 @@ package lphystudio.app.graphicalmodelpanel;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.REPL;
 import lphy.core.parser.Script;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
@@ -44,13 +43,13 @@ import java.util.Map;
 
 /**
  * The main panel to include prob graphical model,
- * views {@link ViewerPane}, and command line console {@link GraphicalModelInterpreter}.
+ * views {@link ViewerPane}, and command line console {@link StudioConsoleInterpreter}.
  */
 public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
-    GraphicalModelInterpreter modelInterpreter;
-    GraphicalModelInterpreter dataInterpreter;
+    StudioConsoleInterpreter modelInterpreter;
+    StudioConsoleInterpreter dataInterpreter;
 
     // default interpreter for console is model tab
     final String DEFAULT_INTERPRETER = GraphicalModel.Context.model.toString();
@@ -82,10 +81,10 @@ public class GraphicalModelPanel extends JPanel {
     CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
 
-    public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoManagerHelper) {
+    public GraphicalModelPanel(GraphicalModelContainer parser, UndoManagerHelper undoManagerHelper) {
 
-        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, undoManagerHelper);
-        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, undoManagerHelper);
+        dataInterpreter = new StudioConsoleInterpreter(parser, LPhyMetaData.Context.data, undoManagerHelper);
+        modelInterpreter = new StudioConsoleInterpreter(parser, LPhyMetaData.Context.model, undoManagerHelper);
 
         component = new GraphicalModelComponent(parser);
 
@@ -243,8 +242,8 @@ public class GraphicalModelPanel extends JPanel {
 
         Script script = Script.loadLPhyScript(reader);
 
-        dataInterpreter.interpretInput(script.dataLines, LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(script.modelLines, LPhyMetaParser.Context.model);
+        dataInterpreter.interpretInput(script.dataLines, LPhyMetaData.Context.data);
+        modelInterpreter.interpretInput(script.modelLines, LPhyMetaData.Context.model);
 
         repaint();
     }
@@ -300,8 +299,8 @@ public class GraphicalModelPanel extends JPanel {
         modelInterpreter.clear();
         // refresh data and model lines
         String text = codeBuilder.getCode(component.getParser());
-        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyMetaParser.Context.model);
+        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyMetaData.Context.data);
+        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyMetaData.Context.model);
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParser());
@@ -310,7 +309,7 @@ public class GraphicalModelPanel extends JPanel {
 //        this.sampler = sampler;
 
         if (id != null) {
-            Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaParser.Context.model);
+            Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaData.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }
@@ -502,7 +501,7 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
-    public GraphicalLPhyParser getParser() {
+    public GraphicalModelContainer getParser() {
         return component.getParser();
     }
 

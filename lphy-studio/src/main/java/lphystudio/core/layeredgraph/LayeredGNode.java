@@ -4,7 +4,7 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphystudio.core.swing.*;
 import lphystudio.core.theme.ThemeColours;
 
@@ -26,11 +26,11 @@ public class LayeredGNode extends LayeredNode.Default {
     public static final double FACTOR_SIZE = 7;
     public static final double FACTOR_LABEL_GAP = 5;
 
-    LPhyMetaParser parser;
+    LPhyMetaData parser;
 
     private static boolean showValue = getShowValueInNode();
 
-    public LayeredGNode(Object value, LPhyMetaParser parser) {
+    public LayeredGNode(Object value, LPhyMetaData parser) {
         super(0, 0);
 
         this.value = value;
@@ -78,7 +78,7 @@ public class LayeredGNode extends LayeredNode.Default {
         Color backgroundColor = ThemeColours.getFillColor(value, parser);
         Color borderColor = ThemeColours.getBorderColor(value, parser);
 
-        if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyMetaParser.Context.model) != value) {
+        if (!value.isAnonymous() && parser.getValue(value.getId(), LPhyMetaData.Context.model) != value) {
             backgroundColor = backgroundColor.darker();
             borderColor = Color.red;
         }
@@ -127,7 +127,7 @@ public class LayeredGNode extends LayeredNode.Default {
 
     private boolean inData(Value value) {
         if (!value.isAnonymous()) {
-            return parser.hasValue(value.getId(), LPhyMetaParser.Context.data);
+            return parser.hasValue(value.getId(), LPhyMetaData.Context.data);
         }
         return false;
     }

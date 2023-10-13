@@ -2,7 +2,7 @@ package lphystudio.core.codebuilder;
 
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.graphicalmodel.GraphicalModelNodeVisitor;
 import lphy.core.parser.graphicalmodel.ValueCreator;
 
@@ -30,7 +30,7 @@ public class CanonicalCodeBuilder implements CodeBuilder {
      *            NOTE: the code (e.g. constants) may be changed from GUI,
      *            then call this to produce the new code.
      */
-    public String getCode(LPhyMetaParser parser) {
+    public String getCode(LPhyMetaData parser) {
         Set<Value> visited = new HashSet<>();
         dataLines.clear();
         modelLines.clear();
@@ -86,7 +86,7 @@ public class CanonicalCodeBuilder implements CodeBuilder {
     }
 
     /**
-     * @return  data lines after calling {@link #getCode(LPhyMetaParser)}
+     * @return  data lines after calling {@link #getCode(LPhyMetaData)}
      */
     public String getDataLines() {
         StringBuilder builder = new StringBuilder();
@@ -99,7 +99,7 @@ public class CanonicalCodeBuilder implements CodeBuilder {
     }
 
     /**
-     * @return  model lines after calling {@link #getCode(LPhyMetaParser)}
+     * @return  model lines after calling {@link #getCode(LPhyMetaData)}
      */
     public String getModelLines() {
         StringBuilder builder = new StringBuilder();

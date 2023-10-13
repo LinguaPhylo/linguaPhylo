@@ -4,7 +4,7 @@ import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.core.logger.ValueFormatResolver;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.simulator.SimulatorListener;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class AlignmentLog extends JTextArea implements SimulatorListener {
 
-    final LPhyMetaParser parser;
+    final LPhyMetaData parser;
 
 //    final Preferences preferences = Preferences.userNodeForPackage(AlignmentLog.class);
 //    static final String ALIGNMENT_DIR = "alignment_dir";
@@ -35,7 +35,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
 
     int numReplicates = 1000;
 
-    public AlignmentLog(LPhyMetaParser parser) {
+    public AlignmentLog(LPhyMetaData parser) {
         this.parser = parser;
     }
 
@@ -111,7 +111,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
     }
 
     // can be SimpleAlignment or SimpleAlignment[]
-    public static List<Value> getSimulatedAlignmentValues(List<Value> variables, final LPhyMetaParser parser) {
+    public static List<Value> getSimulatedAlignmentValues(List<Value> variables, final LPhyMetaData parser) {
         List<Value> values = new ArrayList<>();
         for (Value<?> v : variables) {
             if (v.value() instanceof SimpleAlignment || v.value() instanceof SimpleAlignment[]) {

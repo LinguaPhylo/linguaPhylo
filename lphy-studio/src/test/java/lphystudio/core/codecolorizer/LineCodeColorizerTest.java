@@ -1,9 +1,9 @@
 package lphystudio.core.codecolorizer;
 
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphystudio.app.Utils;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
+import lphystudio.app.graphicalmodelpanel.StudioConsoleInterpreter;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.narrative.DataModelToHTML;
 import lphystudio.core.narrative.DataModelToLaTeX;
@@ -25,17 +25,17 @@ public class LineCodeColorizerTest {
 
     final String coal = "Θ ~ LogNormal(meanlog=3.0, sdlog=1.0); ψ ~ Coalescent(theta=Θ, taxa=taxa);";
 
-    GraphicalLPhyParser parser;
+    GraphicalModelContainer parser;
     String cmd;
 
     @BeforeEach
     public void setUp() {
         parser = Utils.createParser();
-        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, null);
-        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, null);
+        StudioConsoleInterpreter dataInterpreter = new StudioConsoleInterpreter(parser, LPhyMetaData.Context.data, null);
+        StudioConsoleInterpreter modelInterpreter = new StudioConsoleInterpreter(parser, LPhyMetaData.Context.model, null);
 
-        dataInterpreter.interpretInput(taxa, LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(coal, LPhyMetaParser.Context.model);
+        dataInterpreter.interpretInput(taxa, LPhyMetaData.Context.data);
+        modelInterpreter.interpretInput(coal, LPhyMetaData.Context.model);
 
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         cmd = codeBuilder.getCode(parser);

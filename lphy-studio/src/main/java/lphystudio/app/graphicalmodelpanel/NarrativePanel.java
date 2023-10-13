@@ -1,7 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.*;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.narrative.NarrativeLayeredGraph;
@@ -27,7 +26,7 @@ import java.util.prefs.Preferences;
 
 
 public class NarrativePanel extends JComponent {
-    GraphicalLPhyParser parser;
+    GraphicalModelContainer parser;
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
     NarrativeLayeredGraph narrative;
@@ -40,12 +39,12 @@ public class NarrativePanel extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(NarrativePanel.class);
 
-    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component) {
+    public NarrativePanel(GraphicalModelContainer parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component) {
         this(parser, narrative,  component,null);
     }
 
 
-    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component, EditorKit editorKit) {
+    public NarrativePanel(GraphicalModelContainer parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component, EditorKit editorKit) {
         this.parser = parser;
         this.narrative = narrative;
         this.graphicalModelComponent = component;

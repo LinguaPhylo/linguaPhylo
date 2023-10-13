@@ -6,6 +6,7 @@ import lphy.core.model.Value;
 import lphy.core.model.datatype.DoubleValue;
 import lphy.core.model.datatype.IntegerValue;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public interface LPhyMetaParser extends GraphicalModel {
+public interface LPhyMetaData extends GraphicalModel {
 
     // the name of the code being parsed.
     String getName();
@@ -40,11 +41,29 @@ public interface LPhyMetaParser extends GraphicalModel {
         return keywords;
     }
 
-    default void parse(String code) {
-        parse(code, Context.model);
-    }
+    /**
+     * This is only used to parse the lphy code loaded from a file,
+     * the studio console cmd is parsed by a different method,
+     * because its cmd does not keep the data and model keywords.
+     * @param lphyCode
+     * @throws SimulatorParsingException
+     * @throws IllegalArgumentException
+     */
+    void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
 
-    void parse(String code, Context context) throws SimulatorParsingException,IllegalArgumentException;
+    default void parseConsoleCMD(String lphyCode, LPhyMetaData.Context context) {
+        if (lphyCode == null || lphyCode.trim().isEmpty()) {
+            // ignore empty lines
+        } else if (!lphyCode.startsWith("?")) {
+            // either 1 lphyCode each line, or all cmds in 1 line
+            LPhyListenerImpl parser = new LPhyListenerImpl(this);
+            // set context
+            Object o = parser.parse(lphyCode, context);
+
+            // wrap the ExpressionNodes before returning from parse
+            GraphicalModelUtils.wrapExpressionNodes(this);
+        } else throw new RuntimeException();
+    }
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy
@@ -81,7 +100,7 @@ public interface LPhyMetaParser extends GraphicalModel {
             line = bufferedReader.readLine();
         }
         bufferedReader.close();
-        parse(builder.toString());
+        parseScript(builder.toString());
     }
 
     /**
@@ -106,7 +125,7 @@ public interface LPhyMetaParser extends GraphicalModel {
          * @param parser
          * @return
          */
-        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyMetaParser parser) {
+        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyMetaData parser) {
 
             String[] argumentStrings = splitArgumentString(argumentString);
 

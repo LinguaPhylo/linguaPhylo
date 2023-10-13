@@ -4,7 +4,7 @@ import lphy.core.exception.SimulatorParsingException;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Symbols;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.spi.LoaderManager;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
@@ -28,17 +28,17 @@ import java.util.logging.LogRecord;
 /**
  * Command console for either data or model.
  */
-public class GraphicalModelInterpreter extends JPanel {
+public class StudioConsoleInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
 
-    LPhyMetaParser parser;
-    GraphicalModelTextPane textPane;
+    GraphicalModelContainer parser;
+    StudioConsoleTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
     NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
-    LPhyMetaParser.Context context;
+    LPhyMetaData.Context context;
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -55,13 +55,13 @@ public class GraphicalModelInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public GraphicalModelInterpreter(LPhyMetaParser parser, LPhyMetaParser.Context context, UndoManagerHelper undoManagerHelper) {
+    public StudioConsoleInterpreter(GraphicalModelContainer parser, LPhyMetaData.Context context, UndoManagerHelper undoManagerHelper) {
         this.parser = parser;
         this.context = context;
 
-        includeNewRandomVariablePanel = (context != LPhyMetaParser.Context.data);
+        includeNewRandomVariablePanel = (context != LPhyMetaData.Context.data);
 
-        textPane = new GraphicalModelTextPane(parser);
+        textPane = new StudioConsoleTextPane(parser);
         textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
@@ -262,10 +262,10 @@ public class GraphicalModelInterpreter extends JPanel {
         return words[words.length - 1];
     }
 
-    public void interpretInput(String input, LPhyMetaParser.Context context) {
+    public void interpretInput(String input, LPhyMetaData.Context context) {
 
         try {
-            parser.parse(input, context);
+            parser.parseConsoleCMD(input, context);
 
             try {
                 LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);

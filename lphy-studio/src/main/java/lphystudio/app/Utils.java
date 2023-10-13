@@ -2,9 +2,9 @@ package lphystudio.app;
 
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.REPL;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
 import javax.imageio.ImageIO;
@@ -159,9 +159,9 @@ public class Utils {
     }
 
 
-    public static GraphicalLPhyParser createParser() {
+    public static GraphicalModelContainer createParser() {
 
-        GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
+        GraphicalModelContainer parser = new GraphicalModelContainer(new REPL());
         return parser;
 
     }

@@ -4,9 +4,9 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
 import lphystudio.core.layeredgraph.*;
 import lphystudio.core.narrative.LaTeXNarrative;
 import lphystudio.core.theme.ThemeColours;
@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 /**
- * JComponent to paint graphical models from {@link GraphicalLPhyParser}
+ * JComponent to paint graphical models from {@link GraphicalModelContainer}
  */
 public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
 
     public static Preferences preferences = Preferences.userNodeForPackage(GraphicalModelComponent.class);
 
-    GraphicalLPhyParser parser;
+    GraphicalModelContainer parser;
 
     float STROKE_SIZE = 1.0f;
 
@@ -57,7 +57,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public Insets insets = new Insets((int) LayeredGNode.VAR_HEIGHT / 2 + BORDER,
             (int) LayeredGNode.VAR_WIDTH / 2 + BORDER, (int) LayeredGNode.VAR_HEIGHT / 2 + BORDER, (int) LayeredGNode.VAR_WIDTH / 2 + BORDER);
 
-    public GraphicalModelComponent(GraphicalLPhyParser parser) {
+    public GraphicalModelComponent(GraphicalModelContainer parser) {
         this.parser = parser;
 
         addComponentListener(new ComponentAdapter() {
@@ -86,9 +86,9 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     /**
-     * @return  GraphicalLPhyParser
+     * @return  GraphicalModelContainer
      */
-    public GraphicalLPhyParser getParser() {
+    public GraphicalModelContainer getParser() {
         return parser;
     }
 

@@ -3,9 +3,9 @@ package lphystudio.app;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.simulator.RandomUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.core.awt.AboutMenuHelper;
@@ -64,7 +64,7 @@ public class LinguaPhyloStudio {
     private final String PRINT_PREVIEW = "Show Print Preview";
     private boolean showPrintPreview = preferences.getBoolean(PRINT_PREVIEW, true);
 
-    GraphicalLPhyParser parser = Utils.createParser();
+    GraphicalModelContainer parser = Utils.createParser();
     GraphicalModelPanel panel;
     JFrame frame;
 

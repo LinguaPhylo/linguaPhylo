@@ -3,6 +3,11 @@ package lphy.core.parser;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * This class was used to recognise the data and model block,
+ * which has been moved to the grammar now.
+ */
+@Deprecated
 public class Script {
 
     public String dataLines;
@@ -14,6 +19,7 @@ public class Script {
 
     }
 
+    @Deprecated
     public static Script loadLPhyScript(BufferedReader reader) throws IOException {
 
         StringBuilder dataLines = new StringBuilder();
@@ -25,14 +31,14 @@ public class Script {
         int level = 0;
 
         String line = reader.readLine();
-        LPhyMetaParser.Context context = LPhyMetaParser.Context.model;
+        LPhyMetaData.Context context = LPhyMetaData.Context.model;
         while (line != null) {
             skip = false;
             if (line.matches("[ \\t]*data[ \\t]*\\{[ \\t]*")) {
-                context = LPhyMetaParser.Context.data;
+                context = LPhyMetaData.Context.data;
                 skip = true;
             } else if (line.matches("[ \\t]*model[ \\t]*\\{[ \\t]*")) {
-                context = LPhyMetaParser.Context.model;
+                context = LPhyMetaData.Context.model;
                 skip = true;
             } else if (line.matches("[ \\t]*}[ \\t]*")) {
                 // this line is just closing a data or model block.

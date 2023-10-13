@@ -1,9 +1,10 @@
-package lphy.core.simulator;
+package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
+import lphy.core.simulator.Sampler;
+import lphy.core.simulator.SimulatorListener;
 
 import java.util.List;
 import java.util.Map;
@@ -11,11 +12,11 @@ import java.util.Map;
 /**
  * Sampler for graphical model, which notifies {@link GraphicalModelChangeListener}
  */
-public class GraphicalSampler extends Sampler {
+public class GraphicalModelSampler extends Sampler {
 
-    GraphicalLPhyParser parser;
+    GraphicalModelContainer parser;
 
-    public GraphicalSampler(GraphicalLPhyParser parser) {
+    public GraphicalModelSampler(GraphicalModelContainer parser) {
         super();
         this.parser = parser;
     }
@@ -34,7 +35,7 @@ public class GraphicalSampler extends Sampler {
     }
 
     @Override
-    public LPhyMetaParser getParser() {
+    public LPhyMetaData getParser() {
         return this.parser;
     }
 }

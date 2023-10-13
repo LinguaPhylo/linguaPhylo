@@ -1,6 +1,5 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.simulator.SimulatorListener;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.logger.AlignmentLog;
@@ -78,7 +77,7 @@ public class ViewerPane extends JTabbedPane {
     }
 
 
-    public ViewerPane(GraphicalLPhyParser parser, GraphicalModelComponent component) {
+    public ViewerPane(GraphicalModelContainer parser, GraphicalModelComponent component) {
 
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

@@ -4,7 +4,7 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.CompoundVectorValue;
@@ -18,13 +18,13 @@ import java.util.*;
  */
 public class Sampler {
 
-    LPhyMetaParser parser;
+    LPhyMetaData parser;
 
     public Sampler() {
 
     }
 
-    public Sampler(LPhyMetaParser parser) {
+    public Sampler(LPhyMetaData parser) {
         this.parser = parser;
     }
 
@@ -35,7 +35,7 @@ public class Sampler {
      */
     public static Sampler createSampler(File lphyFile) throws IOException {
         //*** Parse LPhy file ***//
-        LPhyMetaParser parser = new REPL();
+        LPhyMetaData parser = new REPL();
         parser.source(lphyFile);
 
         // Sampler requires GraphicalLPhyParser
@@ -50,9 +50,8 @@ public class Sampler {
      */
     public static Sampler createSampler(String lphyScript) {
         //*** Parse LPhy script in string ***//
-        LPhyMetaParser parser = new REPL();
-        //TODO this passes all into Context.model
-        parser.parse(lphyScript);
+        LPhyMetaData parser = new REPL();
+        parser.parseScript(lphyScript);
 
         // Sampler requires GraphicalLPhyParser
         Sampler sampler = new Sampler(parser);
@@ -60,7 +59,7 @@ public class Sampler {
     }
 
     /**
-     * Sample the current model stored in the {@link LPhyMetaParser} at once.
+     * Sample the current model stored in the {@link LPhyMetaData} at once.
      * @param seed  the seed value, if null then use a random number.
      * @return the list {@link Value} from one simulation.
      */
@@ -194,7 +193,7 @@ public class Sampler {
         }
     }
 
-    public LPhyMetaParser getParser() {
+    public LPhyMetaData getParser() {
         return parser;
     }
 }

@@ -3,7 +3,6 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.core.valueeditor.Abstract2DEditor;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class StatePanel extends JPanel {
 
-    GraphicalLPhyParser parser;
+    GraphicalModelContainer parser;
 
     List<JLabel> labels = new ArrayList<>();
     List<JComponent> editors = new ArrayList<>();
@@ -23,7 +22,7 @@ public class StatePanel extends JPanel {
     boolean includeRandomValues;
     boolean includeFixedValues;
 
-    public StatePanel(GraphicalLPhyParser parser, boolean includeFixedValues, boolean includeRandomValues) {
+    public StatePanel(GraphicalModelContainer parser, boolean includeFixedValues, boolean includeRandomValues) {
         this.parser = parser;
 
         this.includeFixedValues = includeFixedValues;

@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * A simple Read-Eval-Print-Loop for the LPhy language
  **/
-public class REPL implements LPhyMetaParser {
+public class REPL implements LPhyMetaData {
 
     SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
     SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();
@@ -36,7 +36,7 @@ public class REPL implements LPhyMetaParser {
             System.out.print(">");
             try {
                 String cmd = (new BufferedReader(new InputStreamReader(System.in))).readLine();
-                parse(cmd);
+                parseScript(cmd);
             } catch (IOException | SimulatorParsingException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
@@ -65,21 +65,17 @@ public class REPL implements LPhyMetaParser {
         return modelValues;
     }
 
-    ;
-
     public Set<Value> getDataValues() {
         return dataValues;
     }
 
-    ;
-
-    public void parse(String cmd, Context context) throws SimulatorParsingException,IllegalArgumentException {
-        if (cmd == null) {
+    public void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException {
+        if (lphyCode == null) {
             return;
         }
 
-        final String commandString = cmd;
-
+        //TODO: review the code about commands, SortedMap is always empty
+        final String commandString = lphyCode;
         final boolean[] found = new boolean[1];
         commands.forEach((key, command) -> {
             if (commandString.startsWith(key)) {
@@ -90,21 +86,23 @@ public class REPL implements LPhyMetaParser {
         });
 
         if (!found[0]) {
-            if (cmd.trim().length() == 0) {
+            if (lphyCode.trim().length() == 0) {
                 // ignore empty lines
                 return;
-            } else if (!cmd.startsWith("?")) {
-                // either 1 cmd each line, or all cmds in 1 line
-                LPhyListenerImpl parser = new LPhyListenerImpl(this, context);
-                Object o = parser.parse(cmd);
-                //parser.parse(cmd);
-                lines.add(cmd);
+            } else if (!lphyCode.startsWith("?")) {
+                // either 1 lphyCode each line, or all cmds in 1 line
+                LPhyListenerImpl parser = new LPhyListenerImpl(this);
+                Object o = parser.parse(lphyCode);
+                //parser.parse(lphyCode);
+                lines.add(lphyCode);
 
                 // wrap the ExpressionNodes before returning from parse
                 GraphicalModelUtils.wrapExpressionNodes(this);
             } else throw new RuntimeException();
         }
     }
+
+
 
     @Override
     public Map<String, Set<Class<?>>> getGeneratorClasses() {
@@ -128,24 +126,6 @@ public class REPL implements LPhyMetaParser {
         lines.clear();
         dataValues.clear();
         modelValues.clear();
-    }
-
-    //*** to identify data{} and model{} ***//
-
-    /**
-     * TODO multiple CMDs in 1 line
-     * parse string line by line.
-     *
-     * @param reader assume 1 cmd each line
-     * @throws IOException
-     */
-    @Override
-    public void source(BufferedReader reader) throws IOException {
-
-        Script script = Script.loadLPhyScript(reader);
-        parse(script.dataLines, LPhyMetaParser.Context.data);
-        parse(script.modelLines, LPhyMetaParser.Context.model);
-        reader.close();
     }
 
     public static void main(String[] args) {

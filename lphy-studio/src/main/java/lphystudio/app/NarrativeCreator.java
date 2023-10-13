@@ -3,8 +3,8 @@ package lphystudio.app;
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.NarrativeUtils;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
@@ -49,7 +49,7 @@ public class NarrativeCreator {
             throw new IOException("Cannot find lphy script at " + lphyPath);
 
         try {
-            GraphicalLPhyParser parser = Utils.createParser();
+            GraphicalModelContainer parser = Utils.createParser();
             GraphicalModelPanel panel = new GraphicalModelPanel(parser, null);
             panel.getComponent().setShowConstantNodes(false);
 
@@ -74,7 +74,7 @@ public class NarrativeCreator {
     }
 
 
-//    private GraphicalLPhyParser getParser(String lphyFileName) throws IOException {
+//    private GraphicalModelContainer getParser(String lphyFileName) throws IOException {
 //        if (!lphyFileName.endsWith(".lphy"))
 //            throw new IllegalArgumentException("Invalid LPhy file name " + lphyFileName + " !");
 //
@@ -88,7 +88,7 @@ public class NarrativeCreator {
 //        parser.source(reader);
 //
 //        // A wrapper for any implementation of LPhyParser that will be used in the Studio
-//        return new GraphicalLPhyParser(parser);
+//        return new GraphicalModelContainer(parser);
 //    }
 
     private void createImage(File imgFile, GraphicalModelComponent component) throws IOException {
@@ -97,7 +97,7 @@ public class NarrativeCreator {
     }
 
     // exclude creating image
-    private void createNarrativeExclImg(GraphicalLPhyParser parser, final Path imgFile) {
+    private void createNarrativeExclImg(GraphicalModelContainer parser, final Path imgFile) {
         // assume Data, Model, Posterior stay together with this order,
         // so wrap them with <div id="auto-generated"> for a box with diff background colour.
         for (Section section : Section.values()) {

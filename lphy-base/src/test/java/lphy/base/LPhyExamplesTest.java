@@ -1,7 +1,7 @@
 package lphy.base;
 
 import lphy.core.io.UserDir;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.REPL;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ public class LPhyExamplesTest {
             }
 
             UserDir.setUserDir(exampleDir.getPath());
-            LPhyMetaParser lPhyMetaParser = new REPL();
+            LPhyMetaData lPhyMetaParser = new REPL();
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
                 BufferedReader fin = new BufferedReader(lphyFile);

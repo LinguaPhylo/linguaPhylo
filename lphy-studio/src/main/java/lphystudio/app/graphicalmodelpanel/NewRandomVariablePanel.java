@@ -3,8 +3,7 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphystudio.core.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
@@ -28,13 +27,13 @@ public class NewRandomVariablePanel extends JPanel {
 
     Map<String,List<Class<GenerativeDistribution>>> distributionClasses = new TreeMap<>();
 
-    GraphicalModelInterpreter interpreter;
+    StudioConsoleInterpreter interpreter;
 
     GeneratorPanel generatorPanel;
 
     JButton button = new JButton("Add to Model");
 
-    public NewRandomVariablePanel(GraphicalModelInterpreter interpreter, List<Class<GenerativeDistribution>> distributionClasses) {
+    public NewRandomVariablePanel(StudioConsoleInterpreter interpreter, List<Class<GenerativeDistribution>> distributionClasses) {
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -51,10 +50,10 @@ public class NewRandomVariablePanel extends JPanel {
         };
         name.setText(randomVarName(interpreter.parser));
         name.setOpaque(false);
-        name.setFont(GraphicalModelInterpreter.interpreterFont);
+        name.setFont(StudioConsoleInterpreter.interpreterFont);
         name.setForeground(Color.green.darker());
 
-        ((GraphicalLPhyParser)interpreter.parser).addGraphicalModelChangeListener(() -> generateComponents());
+        ((GraphicalModelContainer)interpreter.parser).addGraphicalModelChangeListener(() -> generateComponents());
 
 
         name.getDocument().addDocumentListener(new DocumentListener() {
@@ -93,7 +92,7 @@ public class NewRandomVariablePanel extends JPanel {
         distributionNameComboBox = new JComboBox<>(names);
         distributionNameComboBox.addPopupMenuListener(boundsPopupMenuListener);
         distributionNameComboBox.setPrototypeDisplayValue((String) distributionNameComboBox.getSelectedItem());
-        distributionNameComboBox.setFont(GraphicalModelInterpreter.interpreterFont.deriveFont(Font.BOLD));
+        distributionNameComboBox.setFont(StudioConsoleInterpreter.interpreterFont.deriveFont(Font.BOLD));
         distributionNameComboBox.setForeground(Color.blue);
 
         distributionNameComboBox.addActionListener(e -> {
@@ -104,7 +103,7 @@ public class NewRandomVariablePanel extends JPanel {
         generatorPanel = new GeneratorPanel(interpreter.parser);
 
         button.addActionListener(e -> {
-            interpreter.interpretInput(getCodeString(), LPhyMetaParser.Context.model);
+            interpreter.interpretInput(getCodeString(), LPhyMetaData.Context.model);
             name.setText(randomVarName(interpreter.parser));
         });
 
@@ -117,10 +116,10 @@ public class NewRandomVariablePanel extends JPanel {
         generateComponents();
     }
 
-    private static String randomVarName(LPhyMetaParser parser) {
+    private static String randomVarName(LPhyMetaData parser) {
         String randomVarName = "randomVar";
         int i = 0;
-        while (parser.hasValue(randomVarName, LPhyMetaParser.Context.model)) {
+        while (parser.hasValue(randomVarName, LPhyMetaData.Context.model)) {
             randomVarName = "randomVar" + i;
             i += 1;
         }
@@ -166,7 +165,7 @@ public class NewRandomVariablePanel extends JPanel {
                 if (i > 0) builder.append(", ");
 
                 builder.append(input.argument.name).append("=");
-                if (interpreter.parser.hasValue(value, LPhyMetaParser.Context.model)) {
+                if (interpreter.parser.hasValue(value, LPhyMetaData.Context.model)) {
                     builder.append(value);
                 } else {
                     builder.append(value);
@@ -191,7 +190,7 @@ public class NewRandomVariablePanel extends JPanel {
         if (classes.size() > 1) {
             Vector<String> parameterizations = IntStream.range(0, classes.size()).mapToObj(i -> "#" + (i + 1)).collect(Collectors.toCollection(Vector::new));
             parameterizationComboBox = new JComboBox<>(parameterizations);
-            parameterizationComboBox.setFont(GraphicalModelInterpreter.smallInterpreterFont);
+            parameterizationComboBox.setFont(StudioConsoleInterpreter.smallInterpreterFont);
             add(parameterizationComboBox);
             parameterizationComboBox.addActionListener(e -> {
                 generatorPanel.setGeneratorClass(getSelectedClass());

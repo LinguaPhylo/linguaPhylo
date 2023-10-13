@@ -1,7 +1,9 @@
-package lphy.core.parser;
+package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.model.Value;
+import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
 
 import java.util.ArrayList;
@@ -14,45 +16,51 @@ import java.util.Set;
  * the current difference with {@link REPL} is adding {@link GraphicalModelChangeListener}.
  * @author Alexei Drummond
  */
-public class GraphicalLPhyParser implements LPhyMetaParser {
+public class GraphicalModelContainer implements LPhyMetaData {
 
-    LPhyMetaParser wrappedParser;
+    protected LPhyMetaData wrappedMetaData;
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
     String name = null;
 
-    public GraphicalLPhyParser(LPhyMetaParser parser) {
-        wrappedParser = parser;
+    public GraphicalModelContainer(LPhyMetaData metaData) {
+        wrappedMetaData = metaData;
     }
 
     @Override
     public Map<String, Value<?>> getDataDictionary() {
-        return wrappedParser.getDataDictionary();
+        return wrappedMetaData.getDataDictionary();
     }
 
     @Override
     public Map<String, Value<?>> getModelDictionary() {
-        return wrappedParser.getModelDictionary();
+        return wrappedMetaData.getModelDictionary();
     }
 
     @Override
     public Set<Value> getDataValues() {
-        return wrappedParser.getDataValues();
+        return wrappedMetaData.getDataValues();
     }
 
     @Override
     public Set<Value> getModelValues() {
-        return wrappedParser.getModelValues();
+        return wrappedMetaData.getModelValues();
     }
 
 
     @Override
     public Value<?> getValue(String id, Context context) {
-        return wrappedParser.getValue(id, context);
+        return wrappedMetaData.getValue(id, context);
     }
 
     @Override
-    public void parse(String code, Context context) throws SimulatorParsingException,IllegalArgumentException {
-        wrappedParser.parse(code, context);
+    public void parseScript(String code) throws SimulatorParsingException,IllegalArgumentException {
+        wrappedMetaData.parseScript(code);
+        notifyListeners();
+    }
+
+    @Override
+    public void parseConsoleCMD(String consoleCMD, Context context) {
+        wrappedMetaData.parseConsoleCMD(consoleCMD, context);
         notifyListeners();
     }
 
@@ -66,17 +74,17 @@ public class GraphicalLPhyParser implements LPhyMetaParser {
 
     @Override
     public Map<String, Set<Class<?>>> getGeneratorClasses() {
-        return wrappedParser.getGeneratorClasses();
+        return wrappedMetaData.getGeneratorClasses();
     }
 
     @Override
     public List<String> getLines() {
-        return wrappedParser.getLines();
+        return wrappedMetaData.getLines();
     }
 
     @Override
     public void clear() {
-        wrappedParser.clear();
+        wrappedMetaData.clear();
         notifyListeners();
     }
 

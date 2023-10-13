@@ -37,26 +37,37 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //        ParserLoader.getInstance();
 //    }
 
-    // the current context during parsing, either data block or model block.
-    LPhyMetaParser.Context context;
+    // default to parse as the model block.
+    LPhyMetaData.Context context = LPhyMetaData.Context.model;
 
     // the parser object that stores all parsed values.
-    LPhyMetaParser parser;
+    LPhyMetaData parser;
 
-    public LPhyListenerImpl(LPhyMetaParser parser, LPhyMetaParser.Context context) {
+    public LPhyListenerImpl(LPhyMetaData parser) {
         this.parser = parser;
-        this.context = context;
-
     }
 
     public Object parse(String CASentence) {
         LPhyASTVisitor visitor = new LPhyASTVisitor();
-        // no data and model blocks
         return LPhyParserAction.parse(CASentence, visitor);
+    }
+
+    // for studio console cmd
+    public Object parse(String CASentence, LPhyMetaData.Context context) {
+        if (CASentence.matches("data\\s*\\{") || CASentence.matches("model\\s*\\{")) {
+            throw new IllegalArgumentException("Do not input data or model keywords into the studio console !" +
+                    "\n" + CASentence);
+        }
+        // set context
+        this.context = context;
+        // no data and model blocks
+        return this.parse(CASentence);
     }
 
     public void clear() {
         this.parser.clear();
+        // back to default
+        context = LPhyMetaData.Context.model;
     }
 
     /**
@@ -94,14 +105,23 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
         @Override
         public Object visitDatablock(DatablockContext ctx) {
-            //TODO
+            // set context to data
+            context = LPhyMetaData.Context.data;
             return super.visitDatablock(ctx);
         }
 
         @Override
         public Object visitModelblock(ModelblockContext ctx) {
-            //TODO
+            // set context to model
+            context = LPhyMetaData.Context.model;
             return super.visitModelblock(ctx);
+        }
+
+        @Override
+        public Object visitFree_lines(Free_linesContext ctx) {
+            // no data/model keywords, set context to model
+            context = LPhyMetaData.Context.model;
+            return super.visitFree_lines(ctx);
         }
 
         /**
@@ -128,19 +148,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
 //                return new CharacterValue(null, text.charAt(1));
 //            }
-//            try {
-//                long aLong = Long.parseLong(text);
-//                // TODO: should be a LongValue?
-//                return new IntegerValue(null, (int) aLong);
-//            } catch (NumberFormatException e) {
-//                try {
-//                    double d = Double.parseDouble(text);
-//                    return new DoubleValue(null, d);
-//                } catch (NumberFormatException e2) {
-//                    boolean bool = Boolean.parseBoolean(text);
-//                    return new BooleanValue(null, bool);
-//                }
-//            }
+
             // go to other visitor if not string with quotes
             return (Value) super.visitLiteral(ctx);
         }
@@ -259,7 +267,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
          */
         public Value visitStoch_relation(Stoch_relationContext ctx) {
 
-            if (context == LPhyMetaParser.Context.data) {
+            if (context == LPhyMetaData.Context.data) {
                 throw new SimulatorParsingException("Generative distributions are not allowed in the data block! Use model block for Generative distributions. ", ctx);
             }
 
@@ -480,7 +488,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
                     throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
                 }
-                if (context == LPhyMetaParser.Context.data) {
+                if (context == LPhyMetaData.Context.data) {
                     parser.getDataValues().add(getValue());
                 } else {
                     parser.getModelValues().add(getValue());
@@ -948,7 +956,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
-            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL(), LPhyMetaParser.Context.model);
+            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL());
             BufferedReader fin = new BufferedReader(new FileReader(args[0]));
             StringBuffer buf = new StringBuffer();
             String str = null;

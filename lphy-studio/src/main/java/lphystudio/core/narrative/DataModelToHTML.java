@@ -1,6 +1,6 @@
 package lphystudio.core.narrative;
 
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.LPhyParserAction;
 import lphystudio.core.codecolorizer.ColorizerStyles;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
@@ -29,7 +29,7 @@ public class DataModelToHTML extends DataModelCodeColorizer {
     private final String fontSize;
 
     // allow to set font size to html <span style ...
-    public DataModelToHTML(LPhyMetaParser parser, JTextPane pane, String fontSize) {
+    public DataModelToHTML(LPhyMetaData parser, JTextPane pane, String fontSize) {
         super(parser, pane);
         this.fontSize = fontSize;
     }
