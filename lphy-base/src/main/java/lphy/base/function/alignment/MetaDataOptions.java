@@ -1,5 +1,7 @@
 package lphy.base.function.alignment;
 
+import lphy.base.function.io.ReadFasta;
+import lphy.base.function.io.ReadNexus;
 import lphy.core.model.Value;
 
 import java.util.Map;
@@ -7,8 +9,8 @@ import java.util.Map;
 /**
  * For example, {@link #AGE_DIRECTION} and {@link #AGE_REGEX}.
  * @author Walter Xie
- * @see lphy.base.function.alignment.ReadNexus
- * @see lphy.base.function.alignment.ReadFasta
+ * @see ReadNexus
+ * @see ReadFasta
  */
 public final class MetaDataOptions {
 

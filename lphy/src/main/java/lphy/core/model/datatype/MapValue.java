@@ -5,6 +5,9 @@ import lphy.core.model.Value;
 
 import java.util.Map;
 
+/**
+ * Used by {@link lphy.core.simulator.Simulate}
+ */
 public class MapValue extends Value<Map<String, Object>> {
 
     public MapValue(String id, Map<String, Object> value) {
