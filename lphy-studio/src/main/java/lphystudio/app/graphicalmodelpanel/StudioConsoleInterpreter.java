@@ -265,7 +265,13 @@ public class StudioConsoleInterpreter extends JPanel {
     public void interpretInput(String input, LPhyParserDictionary.Context context) {
 
         try {
-            parserDictionary.parseConsoleCMD(input, context);
+            // if set to data block from studio using button,
+            // then wrapper code with data { }, else wrapper code with model { }.
+            if (context == LPhyParserDictionary.Context.data)
+                input = "data {\n" + input + "}";
+            else
+                input = "model {\n" + input + "}";
+            parserDictionary.parse(input);
 
             try {
                 LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);

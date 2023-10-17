@@ -16,16 +16,9 @@ public class GraphicalModelParserDictionary extends REPL {
     List<GraphicalModelChangeListener> listeners = new ArrayList<>();
 
     @Override
-    public void parseScript(String code) throws SimulatorParsingException,IllegalArgumentException {
-        super.parseScript(code);
+    public void parse(String code) throws SimulatorParsingException,IllegalArgumentException {
+        super.parse(code);
         notifyListeners();
-    }
-
-    @Override
-    public Object parseConsoleCMD(String consoleCMD, Context context) {
-        Object o = super.parseConsoleCMD(consoleCMD, context);
-        notifyListeners();
-        return o;
     }
 
     @Override

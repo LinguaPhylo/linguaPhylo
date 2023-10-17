@@ -12,7 +12,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * A simple Read-Eval-Print-Loop for the LPhy language
+ * A simple Read-Eval-Print-Loop for the LPhy language.
+ * It is an implementation of the interactive parser interface.
+ * The {@link #parse(String)} allows to add the value into data/model dictionary on real-time.
  **/
 public class REPL implements LPhyParserDictionary {
 
@@ -36,7 +38,7 @@ public class REPL implements LPhyParserDictionary {
             System.out.print(">");
             try {
                 String cmd = (new BufferedReader(new InputStreamReader(System.in))).readLine();
-                parseScript(cmd);
+                parse(cmd);
             } catch (IOException | SimulatorParsingException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
@@ -69,7 +71,7 @@ public class REPL implements LPhyParserDictionary {
         return dataValues;
     }
 
-    public void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException {
+    public void parse(String lphyCode) throws SimulatorParsingException,IllegalArgumentException {
         if (lphyCode == null) {
             return;
         }

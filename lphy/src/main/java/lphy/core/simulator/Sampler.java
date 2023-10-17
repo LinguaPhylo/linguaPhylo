@@ -51,7 +51,7 @@ public class Sampler {
     public static Sampler createSampler(String lphyScript) {
         //*** Parse LPhy script in string ***//
         LPhyParserDictionary parser = new REPL();
-        parser.parseScript(lphyScript);
+        parser.parse(lphyScript);
 
         // Sampler requires GraphicalLPhyParser
         Sampler sampler = new Sampler(parser);

@@ -15,13 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * The interface to guide the classes storing the LPhy objects
- * parsed by ANTRL parser, or lPhy code lines.
- * There are two 'parse' methods:
- * the 1st is used for scripts loaded from files,
- * which uses data/model keywords to define the block.
- * The 2nd method is used for studio console,
- * where the data/model block is determined by buttons in GUI.
+ * The interactive parser interface.
  * @see REPL
  */
 public interface LPhyParserDictionary extends GraphicalModel {
@@ -51,26 +45,24 @@ public interface LPhyParserDictionary extends GraphicalModel {
     }
 
     /**
-     * This is only used to parse the lphy code loaded from a file,
-     * the studio console cmd is parsed by a different method,
-     * because its cmd does not keep the data and model keywords.
+     * interactive parsing method, which allows to add the value into data/model dictionary on real-time.
      * @param lphyCode
      * @throws SimulatorParsingException
      * @throws IllegalArgumentException
      */
-    void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
+    void parse(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
 
-    default Object parseConsoleCMD(String lphyCode, LPhyParserDictionary.Context context) {
-        if (lphyCode == null || lphyCode.trim().isEmpty()) {
-            // ignore empty lines
-            return null;
-        } else if (!lphyCode.startsWith("?")) {
-            // either 1 lphyCode each line, or all cmds in 1 line
-            LPhyListenerImpl parser = new LPhyListenerImpl(this);
-            // set context
-            return parser.parse(lphyCode, context);
-        } else throw new RuntimeException();
-    }
+//    default Object parse(String lphyCode) {
+//        if (lphyCode == null || lphyCode.trim().isEmpty()) {
+//            // ignore empty lines
+//            return null;
+//        } else if (!lphyCode.startsWith("?")) {
+//            // either 1 lphyCode each line, or all cmds in 1 line
+//            LPhyListenerImpl parser = new LPhyListenerImpl(this);
+//            // set context
+//            return parser.parse(lphyCode);
+//        } else throw new RuntimeException();
+//    }
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy
@@ -107,7 +99,7 @@ public interface LPhyParserDictionary extends GraphicalModel {
             line = bufferedReader.readLine();
         }
         bufferedReader.close();
-        parseScript(builder.toString());
+        parse(builder.toString());
     }
 
     /**

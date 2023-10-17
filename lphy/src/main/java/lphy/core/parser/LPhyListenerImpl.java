@@ -41,10 +41,10 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
     LPhyParserDictionary.Context context = LPhyParserDictionary.Context.model;
 
     // the parser object that stores all parsed values.
-    LPhyParserDictionary parser;
+    LPhyParserDictionary parserDictionary;
 
-    public LPhyListenerImpl(LPhyParserDictionary parser) {
-        this.parser = parser;
+    public LPhyListenerImpl(LPhyParserDictionary parserDictionary) {
+        this.parserDictionary = parserDictionary;
     }
 
     public Object parse(String CASentence) {
@@ -53,19 +53,19 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
     }
 
     // for studio console cmd
-    public Object parse(String CASentence, LPhyParserDictionary.Context context) {
-        if (CASentence.matches("data\\s*\\{") || CASentence.matches("model\\s*\\{")) {
-            throw new IllegalArgumentException("Do not input data or model keywords into the studio console !" +
-                    "\n" + CASentence);
-        }
-        // set context
-        this.context = context;
-        // no data and model blocks
-        return this.parse(CASentence);
-    }
+//    public Object parse(String CASentence, LPhyParserDictionary.Context context) {
+//        if (CASentence.matches("data\\s*\\{") || CASentence.matches("model\\s*\\{")) {
+//            throw new IllegalArgumentException("Do not input data or model keywords into the studio console !" +
+//                    "\n" + CASentence);
+//        }
+//        // set context
+//        this.context = context;
+//        // no data and model blocks
+//        return this.parse(CASentence);
+//    }
 
     public void clear() {
-        this.parser.clear();
+        this.parserDictionary.clear();
         // back to default
         context = LPhyParserDictionary.Context.model;
     }
@@ -79,22 +79,22 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
     private void put(String id, Value val) {
         switch (context) {
             case data:
-                parser.getDataDictionary().put(id, val);
-                parser.getDataValues().add(val);
+                parserDictionary.getDataDictionary().put(id, val);
+                parserDictionary.getDataValues().add(val);
                 break;
             case model:
             default:
-                parser.getModelDictionary().put(id, val);
-                parser.getModelValues().add(val);
+                parserDictionary.getModelDictionary().put(id, val);
+                parserDictionary.getModelValues().add(val);
         }
     }
 
     private Value<?> get(String id) {
-        return parser.getValue(id, context);
+        return parserDictionary.getValue(id, context);
     }
 
     private boolean containsKey(String id) {
-        return parser.hasValue(id, context);
+        return parserDictionary.hasValue(id, context);
     }
 
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
@@ -277,11 +277,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             RandomVariable variable = null;
 
             if (genDist instanceof VectorizedDistribution<?> vectDist &&
-                    DataClampingUtils.isDataClamping(var, parser)) {
+                    DataClampingUtils.isDataClamping(var, parserDictionary)) {
                 // when the generator is VectorizedDistribution,
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
-                Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
+                Object array = Objects.requireNonNull(parserDictionary.getDataDictionary().get(var.getId())).value();
                 if (array.getClass().isArray()) {
                     variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
                     LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
@@ -326,14 +326,14 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 // variable of the form NAME '[' range ']'
                 Object o = visit(ctx.getChild(2));
                 if (o instanceof RangeList) {
-                    return new Var(id, (RangeList) o, parser);
+                    return new Var(id, (RangeList) o, parserDictionary);
                 } else {
                     throw new SimulatorParsingException("Expected variable id, or id and range list", ctx);
                 }
             }
 
 
-            return new Var(id, parser);
+            return new Var(id, parserDictionary);
         }
 
         /**
@@ -489,9 +489,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                     throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
                 }
                 if (context == LPhyParserDictionary.Context.data) {
-                    parser.getDataValues().add(getValue());
+                    parserDictionary.getDataValues().add(getValue());
                 } else {
-                    parser.getModelValues().add(getValue());
+                    parserDictionary.getModelValues().add(getValue());
                 }
             }
 
@@ -515,13 +515,13 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();
                 value.setFunction(((DeterministicFunction) obj));
-                ArgumentValue v = new ArgumentValue(name, value, parser, context);
+                ArgumentValue v = new ArgumentValue(name, value, parserDictionary, context);
                 return v;
             }
 
             if (obj instanceof Value) {
                 Value value = (Value) obj;
-                ArgumentValue v = new ArgumentValue(name, value, parser, context);
+                ArgumentValue v = new ArgumentValue(name, value, parserDictionary, context);
                 return v;
             }
             return obj;
