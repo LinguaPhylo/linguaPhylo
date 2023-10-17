@@ -3,8 +3,8 @@ package lphystudio.core.codecolorizer;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
@@ -25,8 +25,8 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
 
     private JTextPane textPane;
 
-    LPhyMetaData parser;
-    LPhyMetaData.Context context;
+    LPhyParserDictionary parser;
+    LPhyParserDictionary.Context context;
 
     Style punctuationStyle;
     Style randomStyle;
@@ -37,7 +37,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
     Style valueStyle;
     Style clampedStyle;
 
-    public LineCodeColorizer(LPhyMetaData parser, LPhyMetaData.Context context, JTextPane pane) {
+    public LineCodeColorizer(LPhyParserDictionary parser, LPhyParserDictionary.Context context, JTextPane pane) {
 
         this.parser = parser;
         this.context = context;

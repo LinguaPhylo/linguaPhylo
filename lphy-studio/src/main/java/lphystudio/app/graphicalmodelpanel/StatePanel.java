@@ -13,7 +13,7 @@ import java.util.List;
 
 public class StatePanel extends JPanel {
 
-    GraphicalModelContainer parser;
+    GraphicalModelParserDictionary parserDictionary;
 
     List<JLabel> labels = new ArrayList<>();
     List<JComponent> editors = new ArrayList<>();
@@ -22,8 +22,8 @@ public class StatePanel extends JPanel {
     boolean includeRandomValues;
     boolean includeFixedValues;
 
-    public StatePanel(GraphicalModelContainer parser, boolean includeFixedValues, boolean includeRandomValues) {
-        this.parser = parser;
+    public StatePanel(GraphicalModelParserDictionary parserDictionary, boolean includeFixedValues, boolean includeRandomValues) {
+        this.parserDictionary = parserDictionary;
 
         this.includeFixedValues = includeFixedValues;
         this.includeRandomValues = includeRandomValues;
@@ -32,7 +32,7 @@ public class StatePanel extends JPanel {
 
         generateComponents();
 
-        parser.addGraphicalModelChangeListener(this::generateComponents);
+        parserDictionary.addGraphicalModelChangeListener(this::generateComponents);
     }
 
     @Deprecated
@@ -50,7 +50,7 @@ public class StatePanel extends JPanel {
         editors.clear();
         removeAll();
 
-        for (Value value : GraphicalModelUtils.getAllValuesFromSinks(parser)) {
+        for (Value value : GraphicalModelUtils.getAllValuesFromSinks(parserDictionary)) {
             if ((value.isRandom() && includeRandomValues) || (!value.isRandom() && includeFixedValues)) {
                 JLabel label = new JLabel(value.getLabel()+":");
                 label.setForeground(Color.gray);

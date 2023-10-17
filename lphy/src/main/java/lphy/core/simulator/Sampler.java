@@ -4,7 +4,7 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.vectorization.CompoundVectorValue;
@@ -18,13 +18,13 @@ import java.util.*;
  */
 public class Sampler {
 
-    LPhyMetaData parser;
+    LPhyParserDictionary parser;
 
     public Sampler() {
 
     }
 
-    public Sampler(LPhyMetaData parser) {
+    public Sampler(LPhyParserDictionary parser) {
         this.parser = parser;
     }
 
@@ -35,7 +35,7 @@ public class Sampler {
      */
     public static Sampler createSampler(File lphyFile) throws IOException {
         //*** Parse LPhy file ***//
-        LPhyMetaData parser = new REPL();
+        LPhyParserDictionary parser = new REPL();
         parser.source(lphyFile);
 
         // Sampler requires GraphicalLPhyParser
@@ -50,7 +50,7 @@ public class Sampler {
      */
     public static Sampler createSampler(String lphyScript) {
         //*** Parse LPhy script in string ***//
-        LPhyMetaData parser = new REPL();
+        LPhyParserDictionary parser = new REPL();
         parser.parseScript(lphyScript);
 
         // Sampler requires GraphicalLPhyParser
@@ -59,7 +59,7 @@ public class Sampler {
     }
 
     /**
-     * Sample the current model stored in the {@link LPhyMetaData} at once.
+     * Sample the current model stored in the {@link LPhyParserDictionary} at once.
      * @param seed  the seed value, if null then use a random number.
      * @return the list {@link Value} from one simulation.
      */
@@ -68,9 +68,9 @@ public class Sampler {
             RandomUtils.setSeed(seed);
 
         Set<String> sampled = new TreeSet<>();
-        List<Value<?>> sinks = getParser().getModelSinks();
-        for (RandomVariable<?> var : getParser().getAllVariablesFromSinks()) {
-            getParser().getModelDictionary().remove(var.getId());
+        List<Value<?>> sinks = getParserDictionary().getModelSinks();
+        for (RandomVariable<?> var : getParserDictionary().getAllVariablesFromSinks()) {
+            getParserDictionary().getModelDictionary().remove(var.getId());
         }
 
         for (Value<?> value : sinks) {
@@ -85,7 +85,7 @@ public class Sampler {
             }
         }
 
-        return GraphicalModelUtils.getAllValuesFromSinks(getParser());
+        return GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
     }
 
 
@@ -175,7 +175,7 @@ public class Sampler {
                 } else {
                     // already been sampled
                     String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), getParser().getModelDictionary().get(id));
+                    newlySampledParams.put(e.getKey(), getParserDictionary().getModelDictionary().get(id));
                 }
             }
         }
@@ -189,11 +189,11 @@ public class Sampler {
     private void addValueToModelDictionary(Value value) {
         if (!value.isAnonymous()) {
             String id = value.getId();
-            getParser().getModelDictionary().put(id, value);
+            getParserDictionary().getModelDictionary().put(id, value);
         }
     }
 
-    public LPhyMetaData getParser() {
+    public LPhyParserDictionary getParserDictionary() {
         return parser;
     }
 }

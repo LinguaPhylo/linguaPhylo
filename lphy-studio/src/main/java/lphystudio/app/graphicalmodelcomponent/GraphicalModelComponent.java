@@ -6,7 +6,7 @@ import lphy.core.model.Generator;
 import lphy.core.model.Value;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
 import lphystudio.core.layeredgraph.*;
 import lphystudio.core.narrative.LaTeXNarrative;
 import lphystudio.core.theme.ThemeColours;
@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 /**
- * JComponent to paint graphical models from {@link GraphicalModelContainer}
+ * JComponent to paint graphical models from {@link GraphicalModelParserDictionary}
  */
 public class GraphicalModelComponent extends JComponent implements GraphicalModelChangeListener {
 
     public static Preferences preferences = Preferences.userNodeForPackage(GraphicalModelComponent.class);
 
-    GraphicalModelContainer container;
+    GraphicalModelParserDictionary parserDictionary;
 
     float STROKE_SIZE = 1.0f;
 
@@ -57,8 +57,8 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     public Insets insets = new Insets((int) LayeredGNode.VAR_HEIGHT / 2 + BORDER,
             (int) LayeredGNode.VAR_WIDTH / 2 + BORDER, (int) LayeredGNode.VAR_HEIGHT / 2 + BORDER, (int) LayeredGNode.VAR_WIDTH / 2 + BORDER);
 
-    public GraphicalModelComponent(GraphicalModelContainer container) {
-        this.container = container;
+    public GraphicalModelComponent(GraphicalModelParserDictionary parserDictionary) {
+        this.parserDictionary = parserDictionary;
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -70,7 +70,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         });
 
         setup();
-        container.addGraphicalModelChangeListener(this::setup);
+        parserDictionary.addGraphicalModelChangeListener(this::setup);
     }
 
     public static boolean getShowToolbar() {
@@ -88,14 +88,14 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     /**
      * @return  GraphicalModelContainer
      */
-    public GraphicalModelContainer getGraphicalModelContainer() {
-        return container;
+    public GraphicalModelParserDictionary getParserDictionary() {
+        return parserDictionary;
     }
 
     private void setup() {
 
         removeAll();
-        layeredGraph = LayeredGraphFactory.createLayeredGraph(container, getShowConstantNodes());
+        layeredGraph = LayeredGraphFactory.createLayeredGraph(parserDictionary, getShowConstantNodes());
 
         for (LayeredNode lnode : layeredGraph.getNodes()) {
 
@@ -167,7 +167,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
 
     public String toTikz(boolean inline) {
 
-        return LaTeXNarrative.properLayeredGraphToTikz(container, properLayeredGraph, LayeredGNode.VAR_HEIGHT, 1.0, 1.0, inline,"");
+        return LaTeXNarrative.properLayeredGraphToTikz(parserDictionary, properLayeredGraph, LayeredGNode.VAR_HEIGHT, 1.0, 1.0, inline,"");
     }
 
     public String toTikz() {
@@ -191,7 +191,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
     }
 
     public void clear() {
-        container.clear();
+        parserDictionary.clear();
     }
 
     @Override

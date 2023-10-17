@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.graphicalmodel.GraphicalModelChangeListener;
 import lphy.core.simulator.Sampler;
 import lphy.core.simulator.SimulatorListener;
@@ -14,28 +14,28 @@ import java.util.Map;
  */
 public class GraphicalModelSampler extends Sampler {
 
-    GraphicalModelContainer parser;
+    GraphicalModelParserDictionary parserDictionary;
 
-    public GraphicalModelSampler(GraphicalModelContainer parser) {
+    public GraphicalModelSampler(GraphicalModelParserDictionary parserDictionary) {
         super();
-        this.parser = parser;
+        this.parserDictionary = parserDictionary;
     }
 
     @Override
     public List<Value> sample(Long seed) {
-        parser.notifyListeners();
+        parserDictionary.notifyListeners();
         return super.sample(seed);
     }
 
     @Override
     public Map<Integer, List<Value>> sampleAll(int numReplicates,
                                                List<? extends SimulatorListener> loggers, Long seed) {
-        parser.notifyListeners();
+        parserDictionary.notifyListeners();
         return super.sampleAll(numReplicates, loggers, seed);
     }
 
     @Override
-    public LPhyMetaData getParser() {
-        return this.parser;
+    public LPhyParserDictionary getParserDictionary() {
+        return this.parserDictionary;
     }
 }

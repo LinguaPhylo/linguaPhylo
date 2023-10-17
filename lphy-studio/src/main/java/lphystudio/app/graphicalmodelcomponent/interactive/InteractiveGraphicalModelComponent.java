@@ -1,8 +1,8 @@
 package lphystudio.app.graphicalmodelcomponent.interactive;
 
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
 import lphystudio.core.layeredgraph.LayeredNode;
 import lphystudio.core.layeredgraph.NodePaintUtils;
 
@@ -21,7 +21,7 @@ public class InteractiveGraphicalModelComponent extends JComponent {
     public static Preferences preferences = Preferences.userNodeForPackage(InteractiveGraphicalModelComponent.class);
 
 
-    LPhyMetaData parser;
+    LPhyParserDictionary parser;
     NodeLattice lattice;
 
     int nodeSize = 20;
@@ -30,7 +30,7 @@ public class InteractiveGraphicalModelComponent extends JComponent {
 
     GraphicalModelComponent component = null;
 
-    public InteractiveGraphicalModelComponent(GraphicalModelContainer parser, GraphicalModelComponent component) {
+    public InteractiveGraphicalModelComponent(GraphicalModelParserDictionary parser, GraphicalModelComponent component) {
 
         this.parser = parser;
         this.component = component;

@@ -1,7 +1,7 @@
 package lphystudio.core.valueeditor;
 
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 public class FieldComboBoxEditor implements ComboBoxEditor {
 
-    LPhyMetaData parser;
+    LPhyParserDictionary parser;
     Class type;
 
     JTextField editor = new JTextField() {
@@ -25,7 +25,7 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
     Value currentValue;
 
 
-    public FieldComboBoxEditor(LPhyMetaData parser, Class type) {
+    public FieldComboBoxEditor(LPhyParserDictionary parser, Class type) {
         this.parser = parser;
         this.type = type;
         editor.getDocument().addDocumentListener(new DocumentListener() {
@@ -52,7 +52,7 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
     }
 
     private void handleEdit() {
-        Value value = parser.getValue(editor.getText(), LPhyMetaData.Context.model);
+        Value value = parser.getValue(editor.getText(), LPhyParserDictionary.Context.model);
         isEdited = value == null;
         if (!isEdited) {
             currentValue = value;
@@ -65,8 +65,8 @@ public class FieldComboBoxEditor implements ComboBoxEditor {
         if (anObject instanceof String) {
 
             String str = (String) anObject;
-            if (parser.hasValue(str, LPhyMetaData.Context.model)) {
-                Value value = parser.getValue(str, LPhyMetaData.Context.model);
+            if (parser.hasValue(str, LPhyParserDictionary.Context.model)) {
+                Value value = parser.getValue(str, LPhyParserDictionary.Context.model);
 
                 Class c = value.value().getClass();
 

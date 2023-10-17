@@ -1,8 +1,8 @@
 package lphystudio.core.narrative;
 
 import lphy.core.model.Symbols;
-import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.core.codecolorizer.ColorizerStyles;
 import lphystudio.core.codecolorizer.DataModelCodeColorizer;
 import lphystudio.core.codecolorizer.TextElement;
@@ -30,7 +30,7 @@ public class DataModelToLaTeX extends DataModelCodeColorizer {
 
     LaTeXNarrative narrative = new LaTeXNarrative();
 
-    public DataModelToLaTeX(LPhyMetaData parser, JTextPane pane) {
+    public DataModelToLaTeX(LPhyParserDictionary parser, JTextPane pane) {
         super(parser, pane);
     }
 

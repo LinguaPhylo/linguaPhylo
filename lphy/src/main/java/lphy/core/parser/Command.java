@@ -12,7 +12,7 @@ public interface Command {
 
     void execute(Map<String, Value<?>> params);
 
-    default void execute(String commandString, LPhyMetaData parser) {
+    default void execute(String commandString, LPhyParserDictionary parser) {
         throw new UnsupportedOperationException("This class is deprecated!");
     }
 

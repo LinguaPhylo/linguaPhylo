@@ -2,7 +2,7 @@ package lphystudio.core.theme;
 
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 
 import java.awt.*;
 
@@ -133,7 +133,7 @@ public class ThemeColours {
         return "#" + Integer.toHexString(color.getRGB()).substring(2);
     }
 
-    public static Color getFillColor(Value value, LPhyMetaData parser) {
+    public static Color getFillColor(Value value, LPhyParserDictionary parser) {
 //        Color fillColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
         Color fillColor = getTransparentColor(getRandomVarColor());
 
@@ -150,7 +150,7 @@ public class ThemeColours {
         return fillColor;
     }
 
-    public static Color getBorderColor(Value value, LPhyMetaData parser) {
+    public static Color getBorderColor(Value value, LPhyParserDictionary parser) {
 //        Color drawColor = new Color(0.0f, 0.75f, 0.0f, 1.0f);
         Color drawColor = getRandomVarColor();
         if (ValueUtils.isFixedValue(value)) {

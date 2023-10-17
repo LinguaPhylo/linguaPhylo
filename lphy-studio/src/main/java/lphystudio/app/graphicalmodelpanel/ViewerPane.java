@@ -77,26 +77,26 @@ public class ViewerPane extends JTabbedPane {
     }
 
 
-    public ViewerPane(GraphicalModelContainer parser, GraphicalModelComponent component) {
+    public ViewerPane(GraphicalModelParserDictionary parserDictionary, GraphicalModelComponent component) {
 
         currentSelectionContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         currentSelectionContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        valueScrollPane = new JScrollPane(new StatePanel(parser, true, false));
+        valueScrollPane = new JScrollPane(new StatePanel(parserDictionary, true, false));
         valueScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        variablesScrollPane = new JScrollPane(new StatePanel(parser, false, true));
+        variablesScrollPane = new JScrollPane(new StatePanel(parserDictionary, false, true));
         variablesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        canonicalModelPanel = new CanonicalModelPanel(parser);
-        narrativePanel = new NarrativePanel(parser, new HTMLNarrative(), component, new HTMLEditorKit());
-        latexPanel = new NarrativePanel(parser, new LaTeXNarrative(), component);
+        canonicalModelPanel = new CanonicalModelPanel(parserDictionary);
+        narrativePanel = new NarrativePanel(parserDictionary, new HTMLNarrative(), component, new HTMLEditorKit());
+        latexPanel = new NarrativePanel(parserDictionary, new LaTeXNarrative(), component);
 
         variableSummaryScrollPane = new JScrollPane(variableSummary);
         variableLogScrollPane = new JScrollPane(variableLog);
         treeLogScrollPane = new JScrollPane(treeLog);
 
-        alignmentLog = new AlignmentLog(parser);
+        alignmentLog = new AlignmentLog(parserDictionary);
         alignmentLogPanel = new AlignmentLogPanel(alignmentLog);
 
         errorPanel = new ErrorPanel();

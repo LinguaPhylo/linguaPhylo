@@ -3,7 +3,7 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.core.swing.BoundsPopupMenuListener;
 
 import javax.swing.*;
@@ -41,19 +41,19 @@ public class NewRandomVariablePanel extends JPanel {
 
         sim.setFont(sim.getFont().deriveFont(Font.BOLD));
 
-        name = new JTextField(randomVarName(interpreter.container)) {
+        name = new JTextField(randomVarName(interpreter.parserDictionary)) {
 
             @Override
             public boolean isValidateRoot() {
                 return false;
             }
         };
-        name.setText(randomVarName(interpreter.container));
+        name.setText(randomVarName(interpreter.parserDictionary));
         name.setOpaque(false);
         name.setFont(StudioConsoleInterpreter.interpreterFont);
         name.setForeground(Color.green.darker());
 
-        ((GraphicalModelContainer)interpreter.container).addGraphicalModelChangeListener(() -> generateComponents());
+        ((GraphicalModelParserDictionary)interpreter.parserDictionary).addGraphicalModelChangeListener(() -> generateComponents());
 
 
         name.getDocument().addDocumentListener(new DocumentListener() {
@@ -100,11 +100,11 @@ public class NewRandomVariablePanel extends JPanel {
             generateComponents();
         });
 
-        generatorPanel = new GeneratorPanel(interpreter.container);
+        generatorPanel = new GeneratorPanel(interpreter.parserDictionary);
 
         button.addActionListener(e -> {
-            interpreter.interpretInput(getCodeString(), LPhyMetaData.Context.model);
-            name.setText(randomVarName(interpreter.container));
+            interpreter.interpretInput(getCodeString(), LPhyParserDictionary.Context.model);
+            name.setText(randomVarName(interpreter.parserDictionary));
         });
 
         button.setEnabled(true);
@@ -116,10 +116,10 @@ public class NewRandomVariablePanel extends JPanel {
         generateComponents();
     }
 
-    private static String randomVarName(LPhyMetaData parser) {
+    private static String randomVarName(LPhyParserDictionary parser) {
         String randomVarName = "randomVar";
         int i = 0;
-        while (parser.hasValue(randomVarName, LPhyMetaData.Context.model)) {
+        while (parser.hasValue(randomVarName, LPhyParserDictionary.Context.model)) {
             randomVarName = "randomVar" + i;
             i += 1;
         }
@@ -165,7 +165,7 @@ public class NewRandomVariablePanel extends JPanel {
                 if (i > 0) builder.append(", ");
 
                 builder.append(input.argument.name).append("=");
-                if (interpreter.container.hasValue(value, LPhyMetaData.Context.model)) {
+                if (interpreter.parserDictionary.hasValue(value, LPhyParserDictionary.Context.model)) {
                     builder.append(value);
                 } else {
                     builder.append(value);

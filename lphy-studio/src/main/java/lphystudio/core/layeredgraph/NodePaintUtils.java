@@ -4,7 +4,7 @@ import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
@@ -27,7 +27,7 @@ public class NodePaintUtils {
     private static CellRendererPane crp = new CellRendererPane();
 
 
-    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component, LPhyMetaData parser) {
+    public static void paintNode(LayeredNode properNode, Graphics2D g2d, JComponent component, LPhyParserDictionary parser) {
         NodeWrapper nodeWrapper = (NodeWrapper) properNode;
 
         if (!nodeWrapper.isDummy()) {
@@ -41,7 +41,7 @@ public class NodePaintUtils {
         }
     }
 
-    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component, LPhyMetaData parser) {
+    private static void paintValueNode(Value value, LayeredGNode gNode, Graphics2D g2d, JComponent component, LPhyParserDictionary parser) {
 
         Shape shape = null;
         if (value instanceof RandomVariable) {

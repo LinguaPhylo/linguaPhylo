@@ -31,14 +31,14 @@ public class Script {
         int level = 0;
 
         String line = reader.readLine();
-        LPhyMetaData.Context context = LPhyMetaData.Context.model;
+        LPhyParserDictionary.Context context = LPhyParserDictionary.Context.model;
         while (line != null) {
             skip = false;
             if (line.matches("[ \\t]*data[ \\t]*\\{[ \\t]*")) {
-                context = LPhyMetaData.Context.data;
+                context = LPhyParserDictionary.Context.data;
                 skip = true;
             } else if (line.matches("[ \\t]*model[ \\t]*\\{[ \\t]*")) {
-                context = LPhyMetaData.Context.model;
+                context = LPhyParserDictionary.Context.model;
                 skip = true;
             } else if (line.matches("[ \\t]*}[ \\t]*")) {
                 // this line is just closing a data or model block.

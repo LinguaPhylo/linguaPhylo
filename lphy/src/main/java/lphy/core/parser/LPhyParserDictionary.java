@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * where the data/model block is determined by buttons in GUI.
  * @see REPL
  */
-public interface LPhyMetaData extends GraphicalModel {
+public interface LPhyParserDictionary extends GraphicalModel {
 
     // the name of the code being parsed.
     String getName();
@@ -60,7 +60,7 @@ public interface LPhyMetaData extends GraphicalModel {
      */
     void parseScript(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
 
-    default Object parseConsoleCMD(String lphyCode, LPhyMetaData.Context context) {
+    default Object parseConsoleCMD(String lphyCode, LPhyParserDictionary.Context context) {
         if (lphyCode == null || lphyCode.trim().isEmpty()) {
             // ignore empty lines
             return null;
@@ -132,7 +132,7 @@ public interface LPhyMetaData extends GraphicalModel {
          * @param parser
          * @return
          */
-        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyMetaData parser) {
+        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyParserDictionary parser) {
 
             String[] argumentStrings = splitArgumentString(argumentString);
 

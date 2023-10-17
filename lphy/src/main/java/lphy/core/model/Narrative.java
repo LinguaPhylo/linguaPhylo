@@ -1,7 +1,7 @@
 package lphy.core.model;
 
 import lphy.core.model.annotation.Citation;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 
 import java.util.prefs.Preferences;
 
@@ -51,9 +51,9 @@ public interface Narrative {
 
     String endMathMode();
 
-    String codeBlock(LPhyMetaData parser, int fontSize);
+    String codeBlock(LPhyParserDictionary parser, int fontSize);
 
-    String posterior(LPhyMetaData parser);
+    String posterior(LPhyParserDictionary parser);
 
     String product(String index, String start, String end);
 

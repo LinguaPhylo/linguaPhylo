@@ -4,8 +4,8 @@ import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.NarrativeUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelContainer;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
 import lphystudio.core.narrative.Section;
@@ -49,14 +49,14 @@ public class NarrativeCreator {
             throw new IOException("Cannot find lphy script at " + lphyPath);
 
         try {
-            GraphicalModelContainer parser = Utils.createParser();
+            GraphicalModelParserDictionary parser = new GraphicalModelParserDictionary();
             GraphicalModelPanel panel = new GraphicalModelPanel(parser, null);
             panel.getComponent().setShowConstantNodes(false);
 
             // parse and paint
             Utils.readFile(lphyPath.toFile(), panel);
 
-            createNarrativeExclImg(panel.getParser(), imgFile);
+            createNarrativeExclImg(panel.getParserDictionary(), imgFile);
             LoggerUtils.log.warning("Image " + imgFile.getFileName() + " needs to be created separately !");
 
             // TODO The quality of PNG is too low LinguaPhylo/linguaPhylo#130
@@ -97,7 +97,7 @@ public class NarrativeCreator {
     }
 
     // exclude creating image
-    private void createNarrativeExclImg(GraphicalModelContainer parser, final Path imgFile) {
+    private void createNarrativeExclImg(GraphicalModelParserDictionary parserDictionary, final Path imgFile) {
         // assume Data, Model, Posterior stay together with this order,
         // so wrap them with <div id="auto-generated"> for a box with diff background colour.
         for (Section section : Section.values()) {
@@ -105,7 +105,7 @@ public class NarrativeCreator {
             switch (section) {
                 case Code -> {
                     code.append(section("Code"));
-                    code.append(htmlNarrative.codeBlock(parser, 11));
+                    code.append(htmlNarrative.codeBlock(parserDictionary, 11));
                     code.append("\n");
                 }
                 case GraphicalModel -> {
@@ -126,7 +126,7 @@ public class NarrativeCreator {
                 }
                 // move Data, Model, Posterior to the bottom of webpage
                 case Data -> {
-                    String dataSec = NarrativeUtils.getNarrative(parser, htmlNarrative, true, false);
+                    String dataSec = NarrativeUtils.getNarrative(parserDictionary, htmlNarrative, true, false);
 //                    narrative.append("\n<details>\n");
 //                    narrative.append("<summary>Click to expand the auto-generated narrative from LPhyStudio ...</summary>\n");
                     narrative.append("\n" + DIV_BOX_BACKGR_COLOUR + "\n");
@@ -134,13 +134,13 @@ public class NarrativeCreator {
                     narrative.append("\n");
                 }
                 case Model -> {
-                    String modelSec = NarrativeUtils.getNarrative(parser, htmlNarrative, false, true);
+                    String modelSec = NarrativeUtils.getNarrative(parserDictionary, htmlNarrative, false, true);
                     narrative.append(modelSec);
                     narrative.append("\n");
                 }
                 case Posterior -> {
                     narrative.append(htmlNarrative.section("Posterior"));
-                    String pos = NarrativeUtils.getInferenceStatement(parser, latexNarrative);
+                    String pos = NarrativeUtils.getInferenceStatement(parserDictionary, latexNarrative);
                     pos = htmlNarrative.rmLatexEquation(pos);
                     // replace equation to $$ ... $$
                     narrative.append("$$\n").append(pos).append("\n$$\n\n");

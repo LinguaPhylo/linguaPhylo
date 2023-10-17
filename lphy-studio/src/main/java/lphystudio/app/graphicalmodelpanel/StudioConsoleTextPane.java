@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class StudioConsoleTextPane extends JTextPane {
 
-    LPhyMetaData parser;
+    LPhyParserDictionary parser;
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public StudioConsoleTextPane(LPhyMetaData parser) {
+    public StudioConsoleTextPane(LPhyParserDictionary parser) {
         this.parser = parser;
         setEditable(false);
 

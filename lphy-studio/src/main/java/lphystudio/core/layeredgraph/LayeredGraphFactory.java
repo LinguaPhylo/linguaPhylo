@@ -2,7 +2,7 @@ package lphystudio.core.layeredgraph;
 
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class LayeredGraphFactory {
 
-    public static LayeredGraph createLayeredGraph(LPhyMetaData parser, boolean showAllNodes) {
+    public static LayeredGraph createLayeredGraph(LPhyParserDictionary parser, boolean showAllNodes) {
         Map<Object, LayeredGNode> allNodes = new HashMap<>();
         for (Value value : parser.getModelSinks()) {
             createAndAddNode(parser, value, null, allNodes, showAllNodes);
@@ -38,7 +38,7 @@ public class LayeredGraphFactory {
      * @param allNodes
      * @return
      */
-    private static LayeredNode createAndAddNode(LPhyMetaData parser, Value value, LayeredGNode parentNode,
+    private static LayeredNode createAndAddNode(LPhyParserDictionary parser, Value value, LayeredGNode parentNode,
                                                 Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
 
         LayeredGNode node = allNodes.get(value);
@@ -72,7 +72,7 @@ public class LayeredGraphFactory {
         return node;
     }
 
-    private static LayeredGNode createAndAddNode(LPhyMetaData parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
+    private static LayeredGNode createAndAddNode(LPhyParserDictionary parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
             node = new LayeredGNode(g, parser);

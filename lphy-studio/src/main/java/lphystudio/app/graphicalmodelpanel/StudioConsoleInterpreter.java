@@ -4,7 +4,7 @@ import lphy.core.exception.SimulatorParsingException;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Symbols;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.spi.LoaderManager;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
@@ -32,13 +32,13 @@ public class StudioConsoleInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
 
-    GraphicalModelContainer container;
+    GraphicalModelParserDictionary parserDictionary;
     StudioConsoleTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
     NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
-    LPhyMetaData.Context context;
+    LPhyParserDictionary.Context context;
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -55,13 +55,13 @@ public class StudioConsoleInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public StudioConsoleInterpreter(GraphicalModelContainer container, LPhyMetaData.Context context, UndoManagerHelper undoManagerHelper) {
-        this.container = container;
+    public StudioConsoleInterpreter(GraphicalModelParserDictionary parserDictionary, LPhyParserDictionary.Context context, UndoManagerHelper undoManagerHelper) {
+        this.parserDictionary = parserDictionary;
         this.context = context;
 
-        includeNewRandomVariablePanel = (context != LPhyMetaData.Context.data);
+        includeNewRandomVariablePanel = (context != LPhyParserDictionary.Context.data);
 
-        textPane = new StudioConsoleTextPane(container);
+        textPane = new StudioConsoleTextPane(parserDictionary);
         textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
@@ -75,12 +75,12 @@ public class StudioConsoleInterpreter extends JPanel {
 
         if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, LoaderManager.getAllGenerativeDistributionClasses());
 
-        List<String> keywords = container.getKeywords();
+        List<String> keywords = parserDictionary.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.symbolCodes));
 
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Set<Class<?>>> entry : container.getGeneratorClasses().entrySet()) {
+        for (Map.Entry<String, Set<Class<?>>> entry : parserDictionary.getGeneratorClasses().entrySet()) {
 
             Set<Class<?>> classes = entry.getValue();
             Iterator iterator = classes.iterator();
@@ -262,13 +262,13 @@ public class StudioConsoleInterpreter extends JPanel {
         return words[words.length - 1];
     }
 
-    public void interpretInput(String input, LPhyMetaData.Context context) {
+    public void interpretInput(String input, LPhyParserDictionary.Context context) {
 
         try {
-            container.parseConsoleCMD(input, context);
+            parserDictionary.parseConsoleCMD(input, context);
 
             try {
-                LineCodeColorizer codeColorizer = new LineCodeColorizer(container, context, textPane);
+                LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);
                 // if no data{}, input is empty
                 codeColorizer.parse(input);
             } catch (Exception e) {

@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * A simple Read-Eval-Print-Loop for the LPhy language
  **/
-public class REPL implements LPhyMetaData {
+public class REPL implements LPhyParserDictionary {
 
     SortedMap<String, Value<?>> modelDictionary = new TreeMap<>();
     SortedMap<String, Value<?>> dataDictionary = new TreeMap<>();

@@ -3,8 +3,8 @@ package lphystudio.core.codecolorizer;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
 import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
@@ -38,14 +38,14 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
     Style keywordStyle;
     Style clampedStyle;
 
-    LPhyMetaData parser;
+    LPhyParserDictionary parser;
 
-    LPhyMetaData.Context context = LPhyMetaData.Context.model;
+    LPhyParserDictionary.Context context = LPhyParserDictionary.Context.model;
 
     // the indent within a block
     protected String indent = "  ";
 
-    public DataModelCodeColorizer(LPhyMetaData parser, JTextPane pane) {
+    public DataModelCodeColorizer(LPhyParserDictionary parser, JTextPane pane) {
 
         this.parser = parser;
         textPane = pane;
@@ -99,7 +99,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         @Override
         public Object visitDatablock(DatablockContext ctx) {
 
-            context = LPhyMetaData.Context.data;
+            context = LPhyParserDictionary.Context.data;
 
             TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 
@@ -115,7 +115,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         @Override
         public Object visitModelblock(ModelblockContext ctx) {
 
-            context = LPhyMetaData.Context.model;
+            context = LPhyParserDictionary.Context.model;
 
             TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 

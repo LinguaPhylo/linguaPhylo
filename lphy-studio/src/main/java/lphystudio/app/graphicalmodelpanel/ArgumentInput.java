@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaData;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.argument.Argument;
 import lphystudio.core.swing.BoundsPopupMenuListener;
 import lphystudio.core.valueeditor.FieldComboBoxEditor;
@@ -17,7 +17,7 @@ public class ArgumentInput extends JPanel {
 
     JComboBox<String> valueComboBox;
 
-    public ArgumentInput(Argument argument, LPhyMetaData parser) {
+    public ArgumentInput(Argument argument, LPhyParserDictionary parser) {
         this.argument = argument;
 
         List<String> names = parser.getNamedValuesByType(argument.type).stream().map(Value::getId).collect(Collectors.toList());
