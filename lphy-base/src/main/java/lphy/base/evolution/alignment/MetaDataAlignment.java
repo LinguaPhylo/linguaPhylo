@@ -169,7 +169,7 @@ public class MetaDataAlignment extends SimpleAlignment implements NarrativeName 
             "If the string doesn't match charset's syntax, then check if the string matches " +
             "a defined name in the nexus file. Otherwise it is an error. " +
             "The string is referred to one partition at a call, but can be multiple blocks, " +
-            "such as d.charset(\"2-457\\3 660-896\\3\").",
+            "such as a dummy example: d.charset([\"2-457\\3\", \"660-896\\3\", \"1-.\\3\"]).",
             narrativeName = "character set",
             category = GeneratorCategory.TAXA_ALIGNMENT,
             examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})

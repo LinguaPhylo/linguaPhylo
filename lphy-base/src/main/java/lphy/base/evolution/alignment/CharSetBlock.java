@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 /**
  * Parse charset, especially codon position expressions.
+ * It should follow the Nexus Format (Maddison et al. 1997).
+ * <a href="https://doi.org/10.1093/sysbio/46.4.590"/>
  */
 public class CharSetBlock {
 
