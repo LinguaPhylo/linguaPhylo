@@ -1,7 +1,8 @@
-package lphy.base.function.alignment;
+package lphy.base.function.io;
 
 import jebl.evolution.io.ImportException;
 import lphy.base.evolution.alignment.MetaDataAlignment;
+import lphy.base.function.alignment.MetaDataOptions;
 import lphy.base.parser.NexusParser;
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
@@ -26,29 +27,26 @@ import java.util.TreeMap;
  */
 public class ReadNexus extends DeterministicFunction<MetaDataAlignment> {
 
-    private final String fileParamName = "file";
-    private final String optionsParamName = "options";
-
-    Value<String> fileName;
+    Value<String> filePath;
     Value<Map<String, String>> options;
 
-    public ReadNexus(@ParameterInfo(name = fileParamName, narrativeName = "file name", description = "the name of Nexus file.") Value<String> fileName,
-                     @ParameterInfo(name = optionsParamName, description = "the map containing optional arguments and their values for reuse.",
+    public ReadNexus(@ParameterInfo(name = ReaderConst.FILE, narrativeName = "file name", description = "the name of Nexus file including path.") Value<String> filePath,
+                     @ParameterInfo(name = ReaderConst.OPTIONS, description = "the map containing optional arguments and their values for reuse.",
                              optional=true) Value<Map<String, String>> options ) {
-        this.fileName = fileName;
+        this.filePath = filePath;
         this.options = options;
     }
 
     public SortedMap<String, Value> getParams() {
         SortedMap<String, Value> map = new TreeMap<>();
-        map.put(fileParamName, fileName);
-        if (options != null) map.put(optionsParamName, options);
+        map.put(ReaderConst.FILE, filePath);
+        if (options != null) map.put(ReaderConst.OPTIONS, options);
         return map;
     }
 
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(fileParamName)) fileName = value;
-        else if (paramName.equals(optionsParamName)) options = value;
+        if (paramName.equals(ReaderConst.FILE)) filePath = value;
+        else if (paramName.equals(ReaderConst.OPTIONS)) options = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
     }
 
@@ -59,7 +57,7 @@ public class ReadNexus extends DeterministicFunction<MetaDataAlignment> {
             description = "A function that parses an alignment from a Nexus file.")
     public Value<MetaDataAlignment> apply() {
 
-        Path nexPath = UserDir.getUserPath(fileName.value());
+        Path nexPath = UserDir.getUserPath(filePath.value());
 
         //*** parsing ***//
         NexusParser nexusParser = new NexusParser(nexPath.toString());

@@ -1,4 +1,4 @@
-// Generated from java/lphy/parser/LPhy.g4 by ANTLR 4.12.0
+// Generated from ~/WorkSpace/linguaPhylo/lphy/src/main/java/lphy/core/parser/antlr/LPhy.g4 by ANTLR 4.13.1
 package lphy.core.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -138,15 +138,45 @@ public interface LPhyListener extends ParseTreeListener {
 	 */
 	void exitStoch_relation(LPhyParser.Stoch_relationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LPhyParser#constant}.
+	 * Enter a parse tree produced by {@link LPhyParser#literal}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstant(LPhyParser.ConstantContext ctx);
+	void enterLiteral(LPhyParser.LiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LPhyParser#constant}.
+	 * Exit a parse tree produced by {@link LPhyParser#literal}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstant(LPhyParser.ConstantContext ctx);
+	void exitLiteral(LPhyParser.LiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LPhyParser#floatingPointLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LPhyParser#floatingPointLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LPhyParser#integerLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerLiteral(LPhyParser.IntegerLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LPhyParser#integerLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerLiteral(LPhyParser.IntegerLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LPhyParser#booleanLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanLiteral(LPhyParser.BooleanLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LPhyParser#booleanLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanLiteral(LPhyParser.BooleanLiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LPhyParser#expression_list}.
 	 * @param ctx the parse tree
@@ -178,6 +208,16 @@ public interface LPhyListener extends ParseTreeListener {
 	 */
 	void exitMapFunction(LPhyParser.MapFunctionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LPhyParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction(LPhyParser.FunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LPhyParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction(LPhyParser.FunctionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LPhyParser#methodCall}.
 	 * @param ctx the parse tree
 	 */
@@ -187,16 +227,6 @@ public interface LPhyListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodCall(LPhyParser.MethodCallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LPhyParser#objectMethodCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LPhyParser#objectMethodCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LPhyParser#distribution}.
 	 * @param ctx the parse tree
@@ -218,15 +248,15 @@ public interface LPhyListener extends ParseTreeListener {
 	 */
 	void exitNamed_expression(LPhyParser.Named_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LPhyParser#array_expression}.
+	 * Enter a parse tree produced by {@link LPhyParser#array_construction}.
 	 * @param ctx the parse tree
 	 */
-	void enterArray_expression(LPhyParser.Array_expressionContext ctx);
+	void enterArray_construction(LPhyParser.Array_constructionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LPhyParser#array_expression}.
+	 * Exit a parse tree produced by {@link LPhyParser#array_construction}.
 	 * @param ctx the parse tree
 	 */
-	void exitArray_expression(LPhyParser.Array_expressionContext ctx);
+	void exitArray_construction(LPhyParser.Array_constructionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LPhyParser#expression}.
 	 * @param ctx the parse tree

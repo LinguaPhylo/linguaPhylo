@@ -3,8 +3,8 @@ package lphystudio.core.codecolorizer;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
@@ -25,8 +25,8 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
 
     private JTextPane textPane;
 
-    LPhyMetaParser parser;
-    LPhyMetaParser.Context context;
+    LPhyParserDictionary parser;
+    LPhyParserDictionary.Context context;
 
     Style punctuationStyle;
     Style randomStyle;
@@ -37,7 +37,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
     Style valueStyle;
     Style clampedStyle;
 
-    public LineCodeColorizer(LPhyMetaParser parser, LPhyMetaParser.Context context, JTextPane pane) {
+    public LineCodeColorizer(LPhyParserDictionary parser, LPhyParserDictionary.Context context, JTextPane pane) {
 
         this.parser = parser;
         this.context = context;
@@ -91,6 +91,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
@@ -119,10 +120,11 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
 
 
         @Override
-        public Object visitConstant(ConstantContext ctx) {
+        public Object visitLiteral(LiteralContext ctx) {
             return new TextElement(ctx.getText(), textPane.getStyle("constantStyle"));
         }
 
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
             element.add((TextElement)visit(ctx.getChild(1)));
@@ -246,7 +248,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
          * @return {@link TextElement} of an array, which can be an empty array.
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
 
                 String s = ctx.getChild(0).getText();
@@ -320,7 +322,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
         }
 
         @Override
-        public Object visitMethodCall(MethodCallContext ctx) {
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -341,7 +343,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
         }
 
         @Override
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             String objectName = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();

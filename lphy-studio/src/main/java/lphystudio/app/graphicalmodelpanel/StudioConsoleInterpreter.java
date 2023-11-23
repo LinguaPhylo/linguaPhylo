@@ -4,7 +4,7 @@ import lphy.core.exception.SimulatorParsingException;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Symbols;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.spi.LoaderManager;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
@@ -28,17 +28,17 @@ import java.util.logging.LogRecord;
 /**
  * Command console for either data or model.
  */
-public class GraphicalModelInterpreter extends JPanel {
+public class StudioConsoleInterpreter extends JPanel {
 
     boolean includeNewRandomVariablePanel = false;
 
-    LPhyMetaParser parser;
-    GraphicalModelTextPane textPane;
+    GraphicalModelParserDictionary parserDictionary;
+    StudioConsoleTextPane textPane;
     JPanel activeLine = new JPanel();
     JTextField interpreterField;
     NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
-    LPhyMetaParser.Context context;
+    LPhyParserDictionary.Context context;
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -55,13 +55,13 @@ public class GraphicalModelInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public GraphicalModelInterpreter(LPhyMetaParser parser, LPhyMetaParser.Context context, UndoManagerHelper undoManagerHelper) {
-        this.parser = parser;
+    public StudioConsoleInterpreter(GraphicalModelParserDictionary parserDictionary, LPhyParserDictionary.Context context, UndoManagerHelper undoManagerHelper) {
+        this.parserDictionary = parserDictionary;
         this.context = context;
 
-        includeNewRandomVariablePanel = (context != LPhyMetaParser.Context.data);
+        includeNewRandomVariablePanel = (context != LPhyParserDictionary.Context.data);
 
-        textPane = new GraphicalModelTextPane(parser);
+        textPane = new StudioConsoleTextPane(parserDictionary);
         textPane.setBorder(textBorder);
         textPane.setFont(interpreterFont);
         JScrollPane scrollPane = new JScrollPane(textPane);
@@ -75,12 +75,12 @@ public class GraphicalModelInterpreter extends JPanel {
 
         if (includeNewRandomVariablePanel) newRandomVariablePanel = new NewRandomVariablePanel(this, LoaderManager.getAllGenerativeDistributionClasses());
 
-        List<String> keywords = parser.getKeywords();
+        List<String> keywords = parserDictionary.getKeywords();
         keywords.addAll(Arrays.asList(Symbols.symbolCodes));
 
         Autocomplete autoComplete = new Autocomplete(interpreterField, keywords);
 
-        for (Map.Entry<String, Set<Class<?>>> entry : parser.getGeneratorClasses().entrySet()) {
+        for (Map.Entry<String, Set<Class<?>>> entry : parserDictionary.getGeneratorClasses().entrySet()) {
 
             Set<Class<?>> classes = entry.getValue();
             Iterator iterator = classes.iterator();
@@ -262,13 +262,19 @@ public class GraphicalModelInterpreter extends JPanel {
         return words[words.length - 1];
     }
 
-    public void interpretInput(String input, LPhyMetaParser.Context context) {
+    public void interpretInput(String input, LPhyParserDictionary.Context context) {
 
         try {
-            parser.parse(input, context);
+            // if set to data block from studio using button,
+            // then wrapper code with data { }, else wrapper code with model { }.
+            if (context == LPhyParserDictionary.Context.data)
+                input = "data {\n" + input + "}";
+            else
+                input = "model {\n" + input + "}";
+            parserDictionary.parse(input);
 
             try {
-                LineCodeColorizer codeColorizer = new LineCodeColorizer(parser, context, textPane);
+                LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);
                 // if no data{}, input is empty
                 codeColorizer.parse(input);
             } catch (Exception e) {

@@ -2,8 +2,6 @@ package lphystudio.app;
 
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.REPL;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
@@ -126,7 +124,7 @@ public class Utils {
         BufferedReader reader;
         reader = new BufferedReader(new FileReader(lphyFile));
         panel.clear();
-        panel.getParser().setName(lphyFile.getName());
+        panel.getParserDictionary().setName(lphyFile.getName());
         panel.source(reader);
     }
 
@@ -158,11 +156,4 @@ public class Utils {
             throw new IOException("Failed to save graphical model to " + imgFile);
     }
 
-
-    public static GraphicalLPhyParser createParser() {
-
-        GraphicalLPhyParser parser = new GraphicalLPhyParser(new REPL());
-        return parser;
-
-    }
 }

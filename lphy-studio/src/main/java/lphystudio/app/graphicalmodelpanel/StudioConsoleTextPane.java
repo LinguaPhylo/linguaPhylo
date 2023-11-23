@@ -1,6 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * To display the history of LPhy scripts inputted into either the data or model console.
  */
-public class GraphicalModelTextPane extends JTextPane {
+public class StudioConsoleTextPane extends JTextPane {
 
-    LPhyMetaParser parser;
+    LPhyParserDictionary parser;
     List<GraphicalModelListener> listeners = new ArrayList<>();
 
-    public GraphicalModelTextPane(LPhyMetaParser parser) {
+    public StudioConsoleTextPane(LPhyParserDictionary parser) {
         this.parser = parser;
         setEditable(false);
 
@@ -46,11 +46,11 @@ public class GraphicalModelTextPane extends JTextPane {
                 String genDist = parts[1].substring(0, parts[1].indexOf('('));
                 String rest = parts[1].substring(parts[1].indexOf('('));
 
-                addColoredTextLine(GraphicalModelTextPane.this,
+                addColoredTextLine(StudioConsoleTextPane.this,
                         new String[]{parts[0], "~", genDist, rest},
                         new Color[]{Color.green, Color.black, Color.blue, Color.black}, true);
             } else {
-                addColoredTextLine(GraphicalModelTextPane.this,
+                addColoredTextLine(StudioConsoleTextPane.this,
                         new String[]{line},
                         new Color[]{Color.black}, true);
             }
@@ -58,7 +58,7 @@ public class GraphicalModelTextPane extends JTextPane {
         setCaretPosition(getDocument().getLength());
         if (comment != null) {
             System.out.println("Found comment after " + line);
-            addColoredTextLine(GraphicalModelTextPane.this,
+            addColoredTextLine(StudioConsoleTextPane.this,
                     new String[]{"//"+comment},
                     new Color[]{Color.gray},line.equals(""));
         }

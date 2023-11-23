@@ -37,20 +37,37 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //        ParserLoader.getInstance();
 //    }
 
-    // the current context during parsing, either data block or model block.
-    LPhyMetaParser.Context context;
+    // default to parse as the model block.
+    LPhyParserDictionary.Context context = LPhyParserDictionary.Context.model;
 
     // the parser object that stores all parsed values.
-    LPhyMetaParser parser;
+    LPhyParserDictionary parserDictionary;
 
-    public LPhyListenerImpl(LPhyMetaParser parser, LPhyMetaParser.Context context) {
-        this.parser = parser;
-        this.context = context;
-
+    public LPhyListenerImpl(LPhyParserDictionary parserDictionary) {
+        this.parserDictionary = parserDictionary;
     }
 
+    public Object parse(String CASentence) {
+        LPhyASTVisitor visitor = new LPhyASTVisitor();
+        return LPhyParserAction.parse(CASentence, visitor);
+    }
+
+    // for studio console cmd
+//    public Object parse(String CASentence, LPhyParserDictionary.Context context) {
+//        if (CASentence.matches("data\\s*\\{") || CASentence.matches("model\\s*\\{")) {
+//            throw new IllegalArgumentException("Do not input data or model keywords into the studio console !" +
+//                    "\n" + CASentence);
+//        }
+//        // set context
+//        this.context = context;
+//        // no data and model blocks
+//        return this.parse(CASentence);
+//    }
+
     public void clear() {
-        this.parser.clear();
+        this.parserDictionary.clear();
+        // back to default
+        context = LPhyParserDictionary.Context.model;
     }
 
     /**
@@ -62,22 +79,22 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
     private void put(String id, Value val) {
         switch (context) {
             case data:
-                parser.getDataDictionary().put(id, val);
-                parser.getDataValues().add(val);
+                parserDictionary.getDataDictionary().put(id, val);
+                parserDictionary.getDataValues().add(val);
                 break;
             case model:
             default:
-                parser.getModelDictionary().put(id, val);
-                parser.getModelValues().add(val);
+                parserDictionary.getModelDictionary().put(id, val);
+                parserDictionary.getModelValues().add(val);
         }
     }
 
     private Value<?> get(String id) {
-        return parser.getValue(id, context);
+        return parserDictionary.getValue(id, context);
     }
 
     private boolean containsKey(String id) {
-        return parser.hasValue(id, context);
+        return parserDictionary.hasValue(id, context);
     }
 
     // we want to return JFunction and JFunction[] -- so make it a visitor of Object and cast to expected type
@@ -86,10 +103,92 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         public LPhyASTVisitor() {
         }
 
+        @Override
+        public Object visitDatablock(DatablockContext ctx) {
+            // set context to data
+            context = LPhyParserDictionary.Context.data;
+            return super.visitDatablock(ctx);
+        }
+
+        @Override
+        public Object visitModelblock(ModelblockContext ctx) {
+            // set context to model
+            context = LPhyParserDictionary.Context.model;
+            return super.visitModelblock(ctx);
+        }
+
+        @Override
+        public Object visitFree_lines(Free_linesContext ctx) {
+            // no data/model keywords, set context to model
+            context = LPhyParserDictionary.Context.model;
+            return super.visitFree_lines(ctx);
+        }
+
+        /**
+         * parse the string with double quotes first,
+         * if not, then go to {@link #visitFloatingPointLiteral(FloatingPointLiteralContext)},
+         * {@link #visitIntegerLiteral(IntegerLiteralContext)},
+         * and {@link #visitBooleanLiteral(BooleanLiteralContext)}, according to grammar.
+         * @param ctx the Literals
+         * @return  a LPhy {@link Value}
+         */
+        @Override
+        public Value visitLiteral(LiteralContext ctx) {
+            String stringWithQuotes = ctx.getText();
+            // only support ", not ', see grammar
+            if (stringWithQuotes.startsWith("\"")) {
+                if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
+                    String text = stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
+                    return new StringValue(null, text);
+                } else
+                    throw new RuntimeException("Attempted to strip quotes, " +
+                            "but the string was not quoted by double quotes !");
+            }
+            // not currently allowed by grammar
+//            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
+//                return new CharacterValue(null, text.charAt(1));
+//            }
+
+            // go to other visitor if not string with quotes
+            return (Value) super.visitLiteral(ctx);
+        }
+
+        @Override
+        public Object visitFloatingPointLiteral(FloatingPointLiteralContext ctx) {
+            String text = ctx.getText();
+//            try {
+            double d = Double.parseDouble(text);
+            return new DoubleValue(null, d);
+//            } catch (NumberFormatException e) {
+                //TODO better Exception?
+//            }
+        }
+
+        @Override
+        public Object visitIntegerLiteral(IntegerLiteralContext ctx) {
+            String text = ctx.getText();
+//            try {
+//                long aLong = Long.parseLong(text);
+            // TODO: should be a LongValue?
+            int i = Integer.parseInt(text);
+            return new IntegerValue(null, i); // (int) aLong
+//            } catch (NumberFormatException e) {
+               //TODO better Exception?
+//            }
+        }
+
+        @Override
+        public Object visitBooleanLiteral(BooleanLiteralContext ctx) {
+            String text = ctx.getText();
+            boolean bool = Boolean.parseBoolean(text);
+            return new BooleanValue(null, bool);
+        }
+
         /**
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             List<GraphicalModelNode> nodes = new ArrayList<>();
@@ -137,40 +236,6 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                    (o == null ? "null" : o.getClass().getName()), ctx);
 //        }
 
-        //TODO replaced by visitLiteral
-        @Override
-        public Value visitConstant(ConstantContext ctx) {
-
-            String text = ctx.getText();
-            if (text.startsWith("\"")) {
-                return new StringValue(null, stripQuotes(text));
-            }
-
-            // not currently allowed by grammar
-//            if (text.startsWith("'") && text.endsWith("'") && text.length() == 3) {
-//                return new CharacterValue(null, text.charAt(1));
-//            }
-            try {
-                long aLong = Long.parseLong(text);
-                // TODO: should be a LongValue?
-                return new IntegerValue(null, (int) aLong);
-            } catch (NumberFormatException e) {
-                try {
-                    double d = Double.parseDouble(text);
-                    return new DoubleValue(null, d);
-                } catch (NumberFormatException e2) {
-                    boolean bool = Boolean.parseBoolean(text);
-                    return new BooleanValue(null, bool);
-                }
-            }
-        }
-
-        private String stripQuotes(String stringWithQuotes) {
-            if (stringWithQuotes.startsWith("\"") && stringWithQuotes.endsWith("\"")) {
-                return stringWithQuotes.substring(1, stringWithQuotes.length() - 1);
-            } else throw new RuntimeException("Attempted to strip quotes, but the string was not quoted.");
-        }
-
         @Override
         public Value visitDeterm_relation(Determ_relationContext ctx) {
             // TODO: why not Func -- Func has no apply()?
@@ -202,7 +267,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
          */
         public Value visitStoch_relation(Stoch_relationContext ctx) {
 
-            if (context == LPhyMetaParser.Context.data) {
+            if (context == LPhyParserDictionary.Context.data) {
                 throw new SimulatorParsingException("Generative distributions are not allowed in the data block! Use model block for Generative distributions. ", ctx);
             }
 
@@ -212,11 +277,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             RandomVariable variable = null;
 
             if (genDist instanceof VectorizedDistribution<?> vectDist &&
-                    DataClampingUtils.isDataClamping(var, parser)) {
+                    DataClampingUtils.isDataClamping(var, parserDictionary)) {
                 // when the generator is VectorizedDistribution,
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
-                Object array = Objects.requireNonNull(parser.getDataDictionary().get(var.getId())).value();
+                Object array = Objects.requireNonNull(parserDictionary.getDataDictionary().get(var.getId())).value();
                 if (array.getClass().isArray()) {
                     variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
                     LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
@@ -253,6 +318,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
          * @param ctx the VarContext
          * @return var
          */
+        @Override
         public Var visitVar(VarContext ctx) {
 
             String id = ctx.getChild(0).getText();
@@ -260,14 +326,14 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 // variable of the form NAME '[' range ']'
                 Object o = visit(ctx.getChild(2));
                 if (o instanceof RangeList) {
-                    return new Var(id, (RangeList) o, parser);
+                    return new Var(id, (RangeList) o, parserDictionary);
                 } else {
                     throw new SimulatorParsingException("Expected variable id, or id and range list", ctx);
                 }
             }
 
 
-            return new Var(id, parser);
+            return new Var(id, parserDictionary);
         }
 
         /**
@@ -422,10 +488,10 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 if (!(obj instanceof Value) && !(obj instanceof DeterministicFunction)) {
                     throw new SimulatorParsingException("Expected value or function but got " + obj + (obj != null ? (" of class " + obj.getClass().getName()) : ""), ctx);
                 }
-                if (context == LPhyMetaParser.Context.data) {
-                    parser.getDataValues().add(getValue());
+                if (context == LPhyParserDictionary.Context.data) {
+                    parserDictionary.getDataValues().add(getValue());
                 } else {
-                    parser.getModelValues().add(getValue());
+                    parserDictionary.getModelValues().add(getValue());
                 }
             }
 
@@ -449,13 +515,13 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             if (obj instanceof DeterministicFunction) {
                 Value value = ((DeterministicFunction) obj).apply();
                 value.setFunction(((DeterministicFunction) obj));
-                ArgumentValue v = new ArgumentValue(name, value, parser, context);
+                ArgumentValue v = new ArgumentValue(name, value, parserDictionary, context);
                 return v;
             }
 
             if (obj instanceof Value) {
                 Value value = (Value) obj;
-                ArgumentValue v = new ArgumentValue(name, value, parser, context);
+                ArgumentValue v = new ArgumentValue(name, value, parserDictionary, context);
                 return v;
             }
             return obj;
@@ -534,12 +600,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
 
         /**
-         * TODO rename to visitArray_construction
          * @param ctx the array, e.g. [1,2,3]
          * @return an array object depending on its type
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
                 String s = ctx.getChild(0).getText();
                 if (s.equals("[")) {
@@ -641,13 +706,14 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 }
                 throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
             }
-            return super.visitArray_expression(ctx);
+            return super.visitArray_construction(ctx);
         }
 
         /**
          * @param ctx
          * @return A map function of the name=value pairs contained in this map expression
          */
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             // handle special map function!
             ParseTree ctx1 = ctx.getChild(1);
@@ -658,11 +724,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             return generator;
         }
 
-        /**TODO have renamed to visitMethodCall
+        /**
          * @param ctx
          * @return a Value or an Expression.
          */
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        @Override
+        public Object visitMethodCall(MethodCallContext ctx) {
 
             Var var = (Var)visit(ctx.children.get(0));
             String methodName = ctx.children.get(2).getText();
@@ -707,11 +774,12 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
         }
 
-        /**TODO have renamed to visitFunction
+        /**
          * @param ctx
          * @return a Value or an Expression.
          */
-        public Object visitMethodCall(MethodCallContext ctx) {
+        @Override
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
             ParseTree ctx2 = ctx.getChild(2);
@@ -886,16 +954,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         return true;
     }
 
-    public Object parse(String CASentence) {
-        LPhyASTVisitor visitor = new LPhyASTVisitor();
-        // no data and model blocks
-        return LPhyParserAction.parse(CASentence, visitor);
-    }
-
-
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
-            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL(), LPhyMetaParser.Context.model);
+            LPhyListenerImpl parser = new LPhyListenerImpl(new REPL());
             BufferedReader fin = new BufferedReader(new FileReader(args[0]));
             StringBuffer buf = new StringBuffer();
             String str = null;
@@ -912,37 +973,4 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         }
     }
 
-
-//        @Override // for_loop: counter relations
-//        public Object visitFor_loop(For_loopContext ctx) {
-//            ParseTree counter = ctx.getChild(0);
-//            // counter: FOR '(' NAME IN range_element ')'
-//            String name = counter.getChild(2).getText();
-//
-//            // either an IntegerValue, an IntegerArrayValue or a Range function
-//            GraphicalModelNode range = (GraphicalModelNode) visit(counter.getChild(4));
-//            Object rangeValue = range.value();
-//
-//
-//            Integer[] intRange;
-//            if (rangeValue instanceof Integer[]) {
-//                intRange = (Integer[]) rangeValue;
-//            } else if (rangeValue instanceof Integer) {
-//                intRange = new Integer[]{(Integer) rangeValue};
-//            } else throw new SimulatorParsingException("Unexpected type of range element in for loop: " + rangeValue, ctx);
-//
-//
-//            final String forLoopName = "for " + name + " in " + Arrays.toString((Integer[]) rangeValue);
-//            for (Integer i : intRange) {
-//
-//                put(name, new IntegerValue(name, i, null));
-//                ParseTree relations = ctx.getChild(1);
-//                visit(relations);
-//            }
-//            return new Object() {
-//                public String toString() {
-//                    return forLoopName;
-//                }
-//            };
-//        }
 }

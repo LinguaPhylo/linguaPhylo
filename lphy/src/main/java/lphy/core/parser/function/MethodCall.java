@@ -17,7 +17,13 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * This class handles all method calls, including "vectorization by calling object" and "vectorization by arguments".
+ * This class handles all method calls, including "vectorization by calling object"
+ * and "vectorization by arguments".
+ *
+ * <b>Note:</b> all method calls must keep the immutable rule in LPhy,
+ * so any setter or similar method is not allowed.
+ * The implementation must be a function to create a new Value from the old one,
+ * if the value change is proposed.
  */
 public class MethodCall extends DeterministicFunction {
 

@@ -1,7 +1,7 @@
 package lphystudio.app;
 
 import lphy.core.model.*;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.core.theme.ThemeColours;
 
 import java.awt.*;
@@ -17,7 +17,7 @@ public class GraphvizDotUtils {
 
     static boolean clusters = true;
 
-    public static String toGraphvizDot(Collection<GraphicalModelNode> nodes, LPhyMetaParser parser) {
+    public static String toGraphvizDot(Collection<GraphicalModelNode> nodes, LPhyParserDictionary parser) {
 
         Set<GraphicalModelNode> done = new HashSet<>();
         List<String> dataNodes = new ArrayList<>();
@@ -63,7 +63,7 @@ public class GraphvizDotUtils {
         builder.append("\n");
     }
 
-    private static void toGraphvizDot(GraphicalModelNode node, Set<GraphicalModelNode> done, List<String> dataNodes, List<String> modelNodes, List<String> edges, LPhyMetaParser parser, boolean isData) {
+    private static void toGraphvizDot(GraphicalModelNode node, Set<GraphicalModelNode> done, List<String> dataNodes, List<String> modelNodes, List<String> edges, LPhyParserDictionary parser, boolean isData) {
         if (done.contains(node)) {
             // DO NOTHING
         } else {
@@ -182,17 +182,17 @@ public class GraphvizDotUtils {
         return name;
     }
 
-    private static boolean isDataNode(GraphicalModelNode node, LPhyMetaParser parser) {
+    private static boolean isDataNode(GraphicalModelNode node, LPhyParserDictionary parser) {
         if (node instanceof Value && !(node instanceof RandomVariable)) {
             Value value = (Value)node;
             if (!value.isAnonymous()) {
-                return (parser.hasValue(value.getId(), LPhyMetaParser.Context.data));
+                return (parser.hasValue(value.getId(), LPhyParserDictionary.Context.data));
             }
         }
         return false;
     }
 
-    private static String getUniqueId(GraphicalModelNode node, LPhyMetaParser parser) {
+    private static String getUniqueId(GraphicalModelNode node, LPhyParserDictionary parser) {
         String name = node.getUniqueId();
         if (node instanceof Value && !((Value)node).isAnonymous() && parser.isClamped(((Value) node).getId())) {
             name = node.hashCode()+"";

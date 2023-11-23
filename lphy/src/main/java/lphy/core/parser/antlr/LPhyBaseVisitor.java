@@ -1,4 +1,4 @@
-// Generated from java/lphy/parser/LPhy.g4 by ANTLR 4.12.0
+// Generated from ~/WorkSpace/linguaPhylo/lphy/src/main/java/lphy/core/parser/antlr/LPhy.g4 by ANTLR 4.13.1
 package lphy.core.parser.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -109,7 +109,28 @@ public class LPhyBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitConstant(LPhyParser.ConstantContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLiteral(LPhyParser.LiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFloatingPointLiteral(LPhyParser.FloatingPointLiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitIntegerLiteral(LPhyParser.IntegerLiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitBooleanLiteral(LPhyParser.BooleanLiteralContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -137,14 +158,14 @@ public class LPhyBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMethodCall(LPhyParser.MethodCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunction(LPhyParser.FunctionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectMethodCall(LPhyParser.ObjectMethodCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMethodCall(LPhyParser.MethodCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -165,7 +186,7 @@ public class LPhyBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArray_expression(LPhyParser.Array_expressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArray_construction(LPhyParser.Array_constructionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

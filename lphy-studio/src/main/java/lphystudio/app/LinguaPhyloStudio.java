@@ -3,10 +3,10 @@ package lphystudio.app;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.simulator.RandomUtils;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
@@ -64,7 +64,7 @@ public class LinguaPhyloStudio {
     private final String PRINT_PREVIEW = "Show Print Preview";
     private boolean showPrintPreview = preferences.getBoolean(PRINT_PREVIEW, true);
 
-    GraphicalLPhyParser parser = Utils.createParser();
+    GraphicalModelParserDictionary parserDictionary = new GraphicalModelParserDictionary();
     GraphicalModelPanel panel;
     JFrame frame;
 
@@ -79,7 +79,7 @@ public class LinguaPhyloStudio {
         // use MANIFEST.MF to store version in jar, or use system property in development,
         // otherwise VERSION = "DEVELOPMENT"
         VERSION = DependencyUtils.getVersion(LinguaPhyloStudio.class, "lphy.studio.version");
-        panel = new GraphicalModelPanel(parser, undoManagerHelper);
+        panel = new GraphicalModelPanel(parserDictionary, undoManagerHelper);
 
         //Create the menu bar.
         JMenuBar menuBar = new JMenuBar();
@@ -263,7 +263,7 @@ public class LinguaPhyloStudio {
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, MASK));
         fileMenu.add(saveAsMenuItem);
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parser), frame));
+        saveAsMenuItem.addActionListener(e -> Utils.saveToFile(codeBuilder.getCode(parserDictionary), frame));
 
         JMenuItem saveModelToHTML = new JMenuItem("Save Model to HTML...");
         fileMenu.add(saveModelToHTML);
@@ -300,9 +300,9 @@ public class LinguaPhyloStudio {
                     LoggerUtils.log.info("Save the alignments to: " + selectedDir.getAbsolutePath());
 
                     // Key is the replicate index
-                    fileLoggerListener.start(valuesMap.size(), parser.getName());
+                    fileLoggerListener.start(valuesMap.size(), parserDictionary.getName());
                     for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
-                        List<Value> alignmentValuePerRep = AlignmentLog.getSimulatedAlignmentValues(entry.getValue(), parser);
+                        List<Value> alignmentValuePerRep = AlignmentLog.getSimulatedAlignmentValues(entry.getValue(), parserDictionary);
                         //TODO could do this same to trees
                         fileLoggerListener.replicate(entry.getKey(), alignmentValuePerRep);
                     }
@@ -329,7 +329,7 @@ public class LinguaPhyloStudio {
         exportGraphvizMenuItem.setMnemonic(KeyEvent.VK_G);
         fileMenu.add(exportGraphvizMenuItem);
         exportGraphvizMenuItem.addActionListener(e -> Utils.saveToFile(
-                GraphvizDotUtils.toGraphvizDot(new ArrayList<>(parser.getModelSinks()), parser), frame));
+                GraphvizDotUtils.toGraphvizDot(new ArrayList<>(parserDictionary.getModelSinks()), parserDictionary), frame));
 
         JMenuItem exportTikzMenuItem = new JMenuItem("Export to TikZ file...");
 //        exportTikzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, MASK));
@@ -441,7 +441,7 @@ public class LinguaPhyloStudio {
 
         if (pane.getDocument().getLength() > 0) {
             HTMLNarrative htmlNarrative = new HTMLNarrative();
-            String html = htmlNarrative.codeBlock(parser, 11);
+            String html = htmlNarrative.codeBlock(parserDictionary, 11);
 
             try{
                 File tempFile = File.createTempFile("tmp-lphy-", ".html");
@@ -626,7 +626,7 @@ public class LinguaPhyloStudio {
 
         if (pane.getDocument().getLength() > 0) {
             HTMLNarrative htmlNarrative = new HTMLNarrative();
-            String html = htmlNarrative.codeBlock(parser, 11);
+            String html = htmlNarrative.codeBlock(parserDictionary, 11);
 
             Utils.saveToFile(html, frame);
         }

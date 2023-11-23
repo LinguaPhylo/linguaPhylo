@@ -1,7 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.Generator;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.argument.Argument;
 import lphy.core.parser.argument.ArgumentUtils;
 
@@ -15,15 +15,15 @@ public class GeneratorPanel extends JPanel {
     List<ArgumentButton> argButtons = new ArrayList<>();
     List<ArgumentInput> argumentInputs = new ArrayList<>();
 
-    LPhyMetaParser parser;
+    LPhyParserDictionary parser;
 
     Class<? extends Generator> generatorClass = null;
 
-    public GeneratorPanel(LPhyMetaParser parser) {
+    public GeneratorPanel(LPhyParserDictionary parser) {
         this(parser, null);
     }
 
-    public GeneratorPanel(LPhyMetaParser parser, Class<? extends Generator> generatorClass) {
+    public GeneratorPanel(LPhyParserDictionary parser, Class<? extends Generator> generatorClass) {
         this.parser = parser;
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setHgap(0);
@@ -72,7 +72,7 @@ public class GeneratorPanel extends JPanel {
             setSelected(!input.argument.optional);
             input.setVisible(!input.argument.optional);
             setEnabled(input.argument.optional);
-            setFont(GraphicalModelInterpreter.smallInterpreterFont);
+            setFont(StudioConsoleInterpreter.smallInterpreterFont);
 
             updateText();
 

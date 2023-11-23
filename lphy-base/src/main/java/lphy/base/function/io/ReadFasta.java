@@ -1,4 +1,4 @@
-package lphy.base.function.alignment;
+package lphy.base.function.io;
 
 import jebl.evolution.io.FastaImporter;
 import jebl.evolution.io.ImportException;
@@ -10,6 +10,7 @@ import lphy.base.evolution.Taxon;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
+import lphy.base.function.alignment.MetaDataOptions;
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
@@ -34,18 +35,15 @@ import java.util.Objects;
  */
 public class ReadFasta extends DeterministicFunction<Alignment> {
 
-    private final String fileParamName = "file";
-    private final String optionsParamName = "options";
-
-    public ReadFasta(@ParameterInfo(name = fileParamName, description = "the name of fasta file.") Value<String> fileName,
-                     @ParameterInfo(name = optionsParamName, description = "the map containing optional arguments and their values for reuse.",
+    public ReadFasta(@ParameterInfo(name = ReaderConst.FILE, description = "the name of fasta file including path.") Value<String> filePath,
+                     @ParameterInfo(name = ReaderConst.OPTIONS, description = "the map containing optional arguments and their values for reuse.",
                              optional=true) Value<Map<String, String>> options ) {
 
 
-        if (fileName == null) throw new IllegalArgumentException("The file name can't be null!");
-        setParam(fileParamName, fileName);
+        if (filePath == null) throw new IllegalArgumentException("The file name can't be null!");
+        setParam(ReaderConst.FILE, filePath);
 
-        if (options != null) setParam(optionsParamName, options);
+        if (options != null) setParam(ReaderConst.OPTIONS, options);
     }
 
 
@@ -54,9 +52,9 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             description = "A function that parses an alignment from a fasta file.")
     public Value<Alignment> apply() {
 
-        String fileName = ((Value<String>) getParams().get(fileParamName)).value();
+        String filePath = ((Value<String>) getParams().get(ReaderConst.FILE)).value();
 
-        Value<Map<String, String>> optionsVal = getParams().get(optionsParamName);
+        Value<Map<String, String>> optionsVal = getParams().get(ReaderConst.OPTIONS);
         String ageDirectionStr = MetaDataOptions.getAgeDirectionStr(optionsVal);
         String ageRegxStr = MetaDataOptions.getAgeRegxStr(optionsVal);
         String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
@@ -64,7 +62,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         //*** parsing ***//
         SequenceType sequenceType = SequenceType.NUCLEOTIDE;
 
-        Path nexPath = UserDir.getUserPath(fileName);
+        Path nexPath = UserDir.getUserPath(filePath);
 
         Reader reader = getReader(nexPath.toString());
 

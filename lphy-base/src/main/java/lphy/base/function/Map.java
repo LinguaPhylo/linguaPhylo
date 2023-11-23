@@ -5,6 +5,7 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 //lphy.parser.functions.MapValue
+//replaced by lphy.core.parser.function.MapFunction
 @Deprecated
 public class Map<K,V> extends DeterministicFunction<java.util.Map<K, V>> {
 

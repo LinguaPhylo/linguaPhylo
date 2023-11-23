@@ -1,9 +1,8 @@
 package lphystudio.core.codecolorizer;
 
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
-import lphystudio.app.Utils;
-import lphystudio.app.graphicalmodelpanel.GraphicalModelInterpreter;
+import lphy.core.parser.LPhyParserDictionary;
+import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
+import lphystudio.app.graphicalmodelpanel.StudioConsoleInterpreter;
 import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.narrative.DataModelToHTML;
 import lphystudio.core.narrative.DataModelToLaTeX;
@@ -25,20 +24,20 @@ public class LineCodeColorizerTest {
 
     final String coal = "Θ ~ LogNormal(meanlog=3.0, sdlog=1.0); ψ ~ Coalescent(theta=Θ, taxa=taxa);";
 
-    GraphicalLPhyParser parser;
+    GraphicalModelParserDictionary parserDictionary;
     String cmd;
 
     @BeforeEach
     public void setUp() {
-        parser = Utils.createParser();
-        GraphicalModelInterpreter dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, null);
-        GraphicalModelInterpreter modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, null);
+        parserDictionary = new GraphicalModelParserDictionary();
+        StudioConsoleInterpreter dataInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.data, null);
+        StudioConsoleInterpreter modelInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.model, null);
 
-        dataInterpreter.interpretInput(taxa, LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(coal, LPhyMetaParser.Context.model);
+        dataInterpreter.interpretInput(taxa, LPhyParserDictionary.Context.data);
+        modelInterpreter.interpretInput(coal, LPhyParserDictionary.Context.model);
 
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
-        cmd = codeBuilder.getCode(parser);
+        cmd = codeBuilder.getCode(parserDictionary);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class LineCodeColorizerTest {
         String paneText = null;
         try {
             JTextPane textPane = new JTextPane();
-            DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parser, textPane);
+            DataModelCodeColorizer codeColorizer = new DataModelCodeColorizer(parserDictionary, textPane);
             codeColorizer.parse(cmd);
 
             paneText = textPane.getDocument().getText(0, textPane.getDocument().getLength());
@@ -71,7 +70,7 @@ public class LineCodeColorizerTest {
     private void parseDataModelToHTML() {
         String html = null;
         try {
-            DataModelToHTML dataModelToHTML = new DataModelToHTML(parser, new JTextPane(), "11pt");
+            DataModelToHTML dataModelToHTML = new DataModelToHTML(parserDictionary, new JTextPane(), "11pt");
             // somehow return null
             dataModelToHTML.parse(cmd);
 
@@ -89,7 +88,7 @@ public class LineCodeColorizerTest {
     private void parseDataModelToLaTeX() {
         String latex = null;
         try {
-            DataModelToLaTeX dataModelToLaTeX = new DataModelToLaTeX(parser, new JTextPane());
+            DataModelToLaTeX dataModelToLaTeX = new DataModelToLaTeX(parserDictionary, new JTextPane());
             // somehow return null
             dataModelToLaTeX.parse(cmd);
 

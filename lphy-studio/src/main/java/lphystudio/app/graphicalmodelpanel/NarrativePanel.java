@@ -1,7 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.model.*;
-import lphy.core.parser.GraphicalLPhyParser;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.core.narrative.NarrativeLayeredGraph;
@@ -27,7 +26,7 @@ import java.util.prefs.Preferences;
 
 
 public class NarrativePanel extends JComponent {
-    GraphicalLPhyParser parser;
+    GraphicalModelParserDictionary parserDictionary;
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
     NarrativeLayeredGraph narrative;
@@ -40,13 +39,13 @@ public class NarrativePanel extends JComponent {
 
     static Preferences preferences = Preferences.userNodeForPackage(NarrativePanel.class);
 
-    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component) {
-        this(parser, narrative,  component,null);
+    public NarrativePanel(GraphicalModelParserDictionary parserDictionary, NarrativeLayeredGraph narrative, GraphicalModelComponent component) {
+        this(parserDictionary, narrative,  component,null);
     }
 
 
-    public NarrativePanel(GraphicalLPhyParser parser, NarrativeLayeredGraph narrative, GraphicalModelComponent component, EditorKit editorKit) {
-        this.parser = parser;
+    public NarrativePanel(GraphicalModelParserDictionary parserDictionary, NarrativeLayeredGraph narrative, GraphicalModelComponent component, EditorKit editorKit) {
+        this.parserDictionary = parserDictionary;
         this.narrative = narrative;
         this.graphicalModelComponent = component;
 
@@ -106,7 +105,7 @@ public class NarrativePanel extends JComponent {
 
         add(scrollPane, BorderLayout.CENTER);
 
-        parser.addGraphicalModelChangeListener(this::setText);
+        parserDictionary.addGraphicalModelChangeListener(this::setText);
 
         component.addGraphicalModelListener(new GraphicalModelListener() {
             @Override
@@ -130,7 +129,7 @@ public class NarrativePanel extends JComponent {
             }
         });
 
-        parser.addGraphicalModelChangeListener(() -> {
+        parserDictionary.addGraphicalModelChangeListener(() -> {
             popupMenu = new JPopupMenu();
             setupPreferencesMenu(narrative);
             pane.setComponentPopupMenu(popupMenu);
@@ -341,7 +340,7 @@ public class NarrativePanel extends JComponent {
             e.printStackTrace();
         }
 
-        String text = narrative.beginDocument(parser.getName());
+        String text = narrative.beginDocument(parserDictionary.getName());
 
         for (int i = 0; i < include.getModel().getSize(); i++) {
             String item = include.getModel().getElementAt(i);
@@ -360,18 +359,18 @@ public class NarrativePanel extends JComponent {
 
             switch (section) {
                 case Data:
-                    text += NarrativeUtils.getNarrative(parser, narrative, true, false);
+                    text += NarrativeUtils.getNarrative(parserDictionary, narrative, true, false);
                     break;
                 case Model:
-                    text += NarrativeUtils.getNarrative(parser, narrative, false, true);
+                    text += NarrativeUtils.getNarrative(parserDictionary, narrative, false, true);
                     break;
                 case Code:
                     text += narrative.section("Code");
-                    text += narrative.codeBlock(parser, 11);
+                    text += narrative.codeBlock(parserDictionary, 11);
                     break;
                 case Posterior:
                     text += narrative.section("Posterior");
-                    text += narrative.posterior(parser);
+                    text += narrative.posterior(parserDictionary);
                     break;
                 case References:
                     text += narrative.referenceSection();
@@ -379,7 +378,7 @@ public class NarrativePanel extends JComponent {
                 case GraphicalModel:
                     text += narrative.section("Graphical Model");
                     if (graphicalModelComponent.properLayeredGraph != null)
-                        text += narrative.graphicalModelBlock(parser, graphicalModelComponent.properLayeredGraph);
+                        text += narrative.graphicalModelBlock(parserDictionary, graphicalModelComponent.properLayeredGraph);
                     break;
             }
         }

@@ -3,8 +3,8 @@ package lphystudio.core.codecolorizer;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.LPhyMetaParser;
 import lphy.core.parser.LPhyParserAction;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.antlr.LPhyBaseListener;
 import lphy.core.parser.antlr.LPhyBaseVisitor;
 import lphy.core.parser.antlr.LPhyParser.*;
@@ -38,14 +38,14 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
     Style keywordStyle;
     Style clampedStyle;
 
-    LPhyMetaParser parser;
+    LPhyParserDictionary parser;
 
-    LPhyMetaParser.Context context = LPhyMetaParser.Context.model;
+    LPhyParserDictionary.Context context = LPhyParserDictionary.Context.model;
 
     // the indent within a block
     protected String indent = "  ";
 
-    public DataModelCodeColorizer(LPhyMetaParser parser, JTextPane pane) {
+    public DataModelCodeColorizer(LPhyParserDictionary parser, JTextPane pane) {
 
         this.parser = parser;
         textPane = pane;
@@ -99,7 +99,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         @Override
         public Object visitDatablock(DatablockContext ctx) {
 
-            context = LPhyMetaParser.Context.data;
+            context = LPhyParserDictionary.Context.data;
 
             TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 
@@ -115,7 +115,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         @Override
         public Object visitModelblock(ModelblockContext ctx) {
 
-            context = LPhyMetaParser.Context.model;
+            context = LPhyParserDictionary.Context.model;
 
             TextElement element = new TextElement(ctx.getChild(0).getText() + " {\n", keywordStyle);
 
@@ -128,7 +128,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             return children;
         }
 
-
+        @Override
         public Object visitMapFunction(MapFunctionContext ctx) {
             TextElement element = new TextElement("{", textPane.getStyle("punctuationStyle"));
             element.add((TextElement)visit(ctx.getChild(1)));
@@ -137,7 +137,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         }
 
         @Override
-        public Object visitConstant(ConstantContext ctx) {
+        public Object visitLiteral(LiteralContext ctx) {
 
             return new TextElement(ctx.getText(), literalStyle);
         }
@@ -189,6 +189,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
          * @param ctx
          * @return a RangeList function.
          */
+        @Override
         public Object visitRange_list(Range_listContext ctx) {
 
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
@@ -298,7 +299,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
          * @return {@link TextElement} of an array, which can be an empty array.
          */
         @Override
-        public Object visitArray_expression(Array_expressionContext ctx) {
+        public Object visitArray_construction(Array_constructionContext ctx) {
             if (ctx.getChildCount() >= 2) {
 
                 String s = ctx.getChild(0).getText();
@@ -369,7 +370,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         }
 
         @Override
-        public Object visitMethodCall(MethodCallContext ctx) {
+        public Object visitFunction(FunctionContext ctx) {
 
             String functionName = ctx.children.get(0).getText();
 
@@ -389,7 +390,8 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             return e;
         }
 
-        public Object visitObjectMethodCall(ObjectMethodCallContext ctx) {
+        @Override
+        public Object visitMethodCall(MethodCallContext ctx) {
 
 //            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
 //            TextElement e = var.getTextElement(parser, context);

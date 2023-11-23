@@ -14,7 +14,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public interface LPhyMetaParser extends GraphicalModel {
+/**
+ * The interactive parser interface.
+ * @see REPL
+ */
+public interface LPhyParserDictionary extends GraphicalModel {
 
     // the name of the code being parsed.
     String getName();
@@ -40,11 +44,25 @@ public interface LPhyMetaParser extends GraphicalModel {
         return keywords;
     }
 
-    default void parse(String code) {
-        parse(code, Context.model);
-    }
+    /**
+     * interactive parsing method, which allows to add the value into data/model dictionary on real-time.
+     * @param lphyCode
+     * @throws SimulatorParsingException
+     * @throws IllegalArgumentException
+     */
+    void parse(String lphyCode) throws SimulatorParsingException,IllegalArgumentException;
 
-    void parse(String code, Context context) throws SimulatorParsingException,IllegalArgumentException;
+//    default Object parse(String lphyCode) {
+//        if (lphyCode == null || lphyCode.trim().isEmpty()) {
+//            // ignore empty lines
+//            return null;
+//        } else if (!lphyCode.startsWith("?")) {
+//            // either 1 lphyCode each line, or all cmds in 1 line
+//            LPhyListenerImpl parser = new LPhyListenerImpl(this);
+//            // set context
+//            return parser.parse(lphyCode);
+//        } else throw new RuntimeException();
+//    }
 
     /**
      * @return the classes of generative distributions recognised by this parser, keyed by their name in lphy
@@ -106,7 +124,7 @@ public interface LPhyMetaParser extends GraphicalModel {
          * @param parser
          * @return
          */
-        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyMetaParser parser) {
+        private static Map<String, Value<?>> parseArguments(String argumentString, LPhyParserDictionary parser) {
 
             String[] argumentStrings = splitArgumentString(argumentString);
 

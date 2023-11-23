@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DataClampingUtils {
 
-    public static boolean isDataClamping(Var var, LPhyMetaParser parser) {
+    public static boolean isDataClamping(Var var, LPhyParserDictionary parser) {
         return var.getId() != null && parser.getDataDictionary().containsKey(var.getId());
     }
 

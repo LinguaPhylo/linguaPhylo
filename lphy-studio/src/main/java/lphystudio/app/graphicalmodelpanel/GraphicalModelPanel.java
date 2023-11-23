@@ -3,10 +3,8 @@ package lphystudio.app.graphicalmodelpanel;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
-import lphy.core.parser.GraphicalLPhyParser;
-import lphy.core.parser.LPhyMetaParser;
+import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
-import lphy.core.parser.Script;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.simulator.Sampler;
@@ -44,13 +42,13 @@ import java.util.Map;
 
 /**
  * The main panel to include prob graphical model,
- * views {@link ViewerPane}, and command line console {@link GraphicalModelInterpreter}.
+ * views {@link ViewerPane}, and command line console {@link StudioConsoleInterpreter}.
  */
 public class GraphicalModelPanel extends JPanel {
 
     GraphicalModelComponent component;
-    GraphicalModelInterpreter modelInterpreter;
-    GraphicalModelInterpreter dataInterpreter;
+    StudioConsoleInterpreter modelInterpreter;
+    StudioConsoleInterpreter dataInterpreter;
 
     // default interpreter for console is model tab
     final String DEFAULT_INTERPRETER = GraphicalModel.Context.model.toString();
@@ -82,10 +80,10 @@ public class GraphicalModelPanel extends JPanel {
     CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
 
-    public GraphicalModelPanel(GraphicalLPhyParser parser, UndoManagerHelper undoManagerHelper) {
+    public GraphicalModelPanel(GraphicalModelParserDictionary parser, UndoManagerHelper undoManagerHelper) {
 
-        dataInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.data, undoManagerHelper);
-        modelInterpreter = new GraphicalModelInterpreter(parser, LPhyMetaParser.Context.model, undoManagerHelper);
+        dataInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.data, undoManagerHelper);
+        modelInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.model, undoManagerHelper);
 
         component = new GraphicalModelComponent(parser);
 
@@ -241,10 +239,8 @@ public class GraphicalModelPanel extends JPanel {
      */
     public void source(BufferedReader reader) throws IOException {
 
-        Script script = Script.loadLPhyScript(reader);
-
-        dataInterpreter.interpretInput(script.dataLines, LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(script.modelLines, LPhyMetaParser.Context.model);
+        LPhyParserDictionary metaData = component.getParserDictionary();
+        metaData.source(reader);
 
         repaint();
     }
@@ -299,23 +295,23 @@ public class GraphicalModelPanel extends JPanel {
         dataInterpreter.clear();
         modelInterpreter.clear();
         // refresh data and model lines
-        String text = codeBuilder.getCode(component.getParser());
-        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyMetaParser.Context.data);
-        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyMetaParser.Context.model);
+        String text = codeBuilder.getCode(component.getParserDictionary());
+        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParserDictionary.Context.data);
+        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParserDictionary.Context.model);
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
-        Sampler sampler = new Sampler(component.getParser());
+        Sampler sampler = new Sampler(component.getParserDictionary());
         // if null then use a random seed
         valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
 //        this.sampler = sampler;
 
         if (id != null) {
-            Value<?> selectedValue = component.getParser().getValue(id, LPhyMetaParser.Context.model);
+            Value<?> selectedValue = component.getParserDictionary().getValue(id, LPhyParserDictionary.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }
         } else {
-            List<Value<?>> sinks = component.getParser().getModelSinks();
+            List<Value<?>> sinks = component.getParserDictionary().getModelSinks();
             // TODO should not move to tab for all sinks?
 //            if (sinks.size() > 0) showValue(sinks.get(0), false);
             for (Value value : sinks) {
@@ -502,8 +498,8 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
-    public GraphicalLPhyParser getParser() {
-        return component.getParser();
+    public GraphicalModelParserDictionary getParserDictionary() {
+        return component.getParserDictionary();
     }
 
     public ViewerPane getRightPane() {

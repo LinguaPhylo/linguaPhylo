@@ -20,6 +20,7 @@ module lphy.base {
     exports lphy.base.function;
     exports lphy.base.function.alignment;
     exports lphy.base.function.datatype;
+    exports lphy.base.function.io;
     exports lphy.base.function.taxa;
     exports lphy.base.function.tree;
 
