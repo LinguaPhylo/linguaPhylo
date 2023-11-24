@@ -2,6 +2,10 @@ data {
   table = readDelim(file="data/bears_taxa.tsv", sep="\t");
   colNames = table.getColumnNames();
   taxonNames = table.getColumn(0);
-  minAges = table.getColumn(1);
-  manAges = table.getColumn(2);
+  // cast doubles
+  minAges = toDouble(table.getColumn(1));
+  // otherwise it will be string
+  maxAges = table.getColumn(2);
+  // ages must be a double array
+  taxa = taxa(names = taxonNames, ages = minAges);
 }

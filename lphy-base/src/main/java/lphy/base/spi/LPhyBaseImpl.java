@@ -101,6 +101,8 @@ public class LPhyBaseImpl implements LPhyExtension {
             SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
             // Set Op
             Intersect.class,
+            // cast
+            ToDouble.class,
             // Utils
             Length.class, Unique.class, Sort.class, IfElse.class, //ConcatStr.class,
             Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
