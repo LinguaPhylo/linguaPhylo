@@ -3,15 +3,12 @@ package lphy.core.model.datatype;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Used by ReadDelim
  */
-public class TableValue extends Value<Map<String, List>> {
+public class TableValue extends Value<Table> {
 
-    public TableValue(String id, Map<String, List> value) {
+    public TableValue(String id, Table value) {
 
         super(id, value);
     }
@@ -21,22 +18,23 @@ public class TableValue extends Value<Map<String, List>> {
      *
      * @param value
      */
-    public TableValue(Map<String, List> value) {
+    public TableValue(Table value) {
 
         super(null, value);
     }
 
 
-    public TableValue(String id, Map<String, List> value, DeterministicFunction<Map<String, List>> function) {
+    public TableValue(String id, Table value, DeterministicFunction<Table> function) {
 
         super(id, value, function);
     }
 
 
-    public TableValue(Map<String, List> value, DeterministicFunction<Map<String, List>> function) {
+    public TableValue(Table value, DeterministicFunction<Table> function) {
 
         super(null, value, function);
     }
+
 
     @Override
     public String toString() {
