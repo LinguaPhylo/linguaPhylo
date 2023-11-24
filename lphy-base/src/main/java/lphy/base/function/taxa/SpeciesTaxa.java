@@ -1,6 +1,7 @@
 package lphy.base.function.taxa;
 
 import lphy.base.evolution.Taxa;
+import lphy.base.evolution.Taxon;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
@@ -30,53 +31,58 @@ public class SpeciesTaxa extends DeterministicFunction<Taxa> {
         String[] species = tA.getSpecies();
         Double[] ages = tA.getAges();
 
-        List<String> spTaxa = new ArrayList<>();
-        List<Double> spAges = new ArrayList<>();
+        if (species.length != ages.length)
+            throw new IllegalArgumentException("Species length must equal to ages in taxa " + taxa.getId());
+
+        // cannot only use names and ages, must create Taxon object, otherwise view will be broken in studio
+        List<Taxon> spTaxList = new ArrayList<>();
 
         for (int i = 0; i < species.length; i++) {
-            if (!spTaxa.contains(species[i])) {
-                spTaxa.add(species[i]);
-                spAges.add(ages[i]);
+            List<String> spFromSpTaxa = spTaxList.stream().map(Taxon::getName).toList();
+            if (!spFromSpTaxa.contains(species[i])) {
+                Taxon spTa = new Taxon(species[i], ages[i]);
+                spTaxList.add(spTa);
             } else {
-                int index = spTaxa.indexOf(species[i]);
+                List<Double> spAges = spTaxList.stream().map(Taxon::getAge).toList();
+                int index = spFromSpTaxa.indexOf(species[i]);
+                // take the max age
                 if (spAges.get(index) > ages[i]) {
-                    spAges.set(index, ages[i]);
+                    spTaxList.get(index).setAge(ages[i]);
                 }
             }
         }
 
-        String[] speciesTaxaNames = spTaxa.toArray(new String[0]);
-        Double[] speciesAges = spAges.toArray(new Double[0]);
 
         Taxa speciesTaxa = new Taxa() {
+
+            @Override
+            public Taxon getTaxon(int i) {
+                return spTaxList.get(i);
+            }
+
+            @Override
+            public Taxon[] getTaxonArray() {
+                return spTaxList.toArray(Taxon[]::new);
+            }
+
             @Override
             public int getDimension() {
                 return ntaxa();
             }
 
             @Override
-            public Double[] getAges() {
-                return speciesAges;
-            }
-
-            @Override
             public int ntaxa() {
-                return speciesTaxaNames.length;
-            }
-
-            @Override
-            public String[] getTaxaNames() {
-                return speciesTaxaNames;
+                return spTaxList.size();
             }
 
             public String toString() {
                 StringBuilder builder = new StringBuilder();
                 builder.append("{");
-                for (int i = 0; i < speciesTaxaNames.length; i++) {
+                for (int i = 0; i < spTaxList.size(); i++) {
                     if (i != 0) builder.append(", ");
-                    builder.append(speciesTaxaNames[i]);
+                    builder.append(spTaxList.get(i).getName());
                     builder.append("=");
-                    builder.append(speciesAges[i]);
+                    builder.append(spTaxList.get(i).getAge());
                 }
                 builder.append("};");
                 return builder.toString();

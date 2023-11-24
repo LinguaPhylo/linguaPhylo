@@ -16,7 +16,7 @@ public class CreateTaxa extends DeterministicFunction<Taxa> {
     public static final String speciesParamName = "species";
     public static final String agesParamName = "ages";
 
-    public CreateTaxa(@ParameterInfo(name = taxaParamName, description = "an array of objects representing taxa names") Value taxaNames,
+    public CreateTaxa(@ParameterInfo(name = taxaParamName, description = "an array of objects representing taxa names") Value<Object[]> taxaNames,
                       @ParameterInfo(name = speciesParamName, description = "an array of objects representing species names", optional=true) Value<Object[]> species,
                       @ParameterInfo(name = agesParamName, description = "the ages of the taxa", optional=true) Value<Double[]> ages) {
         setParam(taxaParamName, taxaNames);
