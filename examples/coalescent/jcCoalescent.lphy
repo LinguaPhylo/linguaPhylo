@@ -6,4 +6,5 @@ model {
   Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
   ψ ~ Coalescent(theta=Θ, taxa=taxa);
   D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+  E = rmTaxa(names=1:3, alignment=D);
 }
