@@ -4,7 +4,6 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.parser.LPhyParserDictionary;
-import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.parser.graphicalmodel.GraphicalModelListener;
 import lphy.core.simulator.Sampler;
@@ -230,7 +229,7 @@ public class GraphicalModelPanel extends JPanel {
 //    }
 
     /**
-     * This is duplicated to {@link REPL#source(BufferedReader)},
+     * This is duplicated to {@link LPhyParserDictionary#source(BufferedReader, String[])},
      * but has extra code using {@link LineCodeColorizer}
      * and panel function.
      *
@@ -240,7 +239,7 @@ public class GraphicalModelPanel extends JPanel {
     public void source(BufferedReader reader) throws IOException {
 
         LPhyParserDictionary metaData = component.getParserDictionary();
-        metaData.source(reader);
+        metaData.source(reader, null);
 
         repaint();
     }

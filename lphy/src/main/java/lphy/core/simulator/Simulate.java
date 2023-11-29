@@ -78,8 +78,9 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
             FileConfig fileConfig = FileConfig.Utils
                     .createSimulationFileConfig(infile, outDir, SimulatorListener.REPLICATES_START_INDEX, seed);
 
-            values = simulator.simulateAndSaveResults(fileConfig)
-                    .get(SimulatorListener.REPLICATES_START_INDEX);
+            Map<Integer, List<Value>> allReps = simulator.simulate(fileConfig, null);
+            // only take the last replicate
+            values = allReps.get(SimulatorListener.REPLICATES_START_INDEX);
 
         } catch (IOException e) {
             LoggerUtils.log.severe("Cannot parse LPhy script file ! " + infile.getAbsolutePath());

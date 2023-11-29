@@ -56,7 +56,7 @@ public class LPhyExamplesTest {
             try {
                 FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
                 BufferedReader fin = new BufferedReader(lphyFile);
-                lPhyMetaParser.source(fin);
+                lPhyMetaParser.source(fin, null);
             } catch (Exception e) {
 //                    failedFiles.add(fileName);
                 System.err.println("Example " + fileName + " failed\n");

@@ -1,3 +1,5 @@
+// It only shows the default when using studio,
+// but macro value can be replaced by SLPhy (command line application).
 data {
   L = {{L = 100}};
   taxa = taxa(names=1:{{n = 10}});

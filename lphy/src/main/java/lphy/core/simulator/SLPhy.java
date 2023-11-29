@@ -41,6 +41,11 @@ public class SLPhy implements Callable<Integer> {
             "usually to create data for well-calibrated study.") int numReps = 1;
     @CommandLine.Option(names = {"-seed", "--seed"}, description = "the seed.") Long seed;
 
+    @CommandLine.Option(names = {"-D", "--data"}, split = ";",
+            description = "Replace the constant value in the lphy script, multiple constants can be split by ';', " +
+                    "but no ';' at the last: e.g. -D \"n=12;L=100\" or -D n=20")
+    String[] lphyConst = null;
+
 //    enum SPI { loggers } //TODO  functions, gendists
 //    // arity = "0" not working
 //    @CommandLine.Option(names = {"-ls", "--list"},
@@ -62,8 +67,9 @@ public class SLPhy implements Callable<Integer> {
                     .createSimulationFileConfig(infile.toFile(), outDir, numReps, seed);
 
             simulator = new NamedRandomValueSimulator();
-            simulator.simulateAndSaveResults(fileConfig);
-
+            // must provide File lphyFile, int numReplicates, Long seed
+            simulator.simulate(fileConfig, lphyConst);
+            // TODO save Map<Integer, List<Value>> simResMap ?
         } catch (IOException e) {
             throw new PicocliException(e.getMessage(), e);
         }

@@ -24,27 +24,19 @@ public class NamedRandomValueSimulator {
         simulatorListener = new ValueFileLoggerListener();
     }
 
-    public Map<Integer, List<Value>> simulateAndSaveResults(File lphyFile, int numReplicates, Long seed) throws IOException {
-        simulatorListener.start(numReplicates, lphyFile);
-        return simulate(lphyFile, numReplicates, seed);
-    }
-
-    public Map<Integer, List<Value>> simulateAndSaveResults(FileConfig fileConfig) throws IOException {
+    // must have File lphyFile, int numReplicates, Long seed
+    public Map<Integer, List<Value>> simulate(FileConfig fileConfig, String[] constants) throws IOException {
         simulatorListener.start(fileConfig);
 
         File lphyFile = fileConfig.lphyInputFile;
         int numReplicates = fileConfig.numReplicates;
         Long seed = fileConfig.seed;
 
-        return simulate(lphyFile, numReplicates, seed);
-    }
-
-    private Map<Integer, List<Value>> simulate(File lphyFile, int numReplicates, Long seed) throws IOException {
         // TODO duplicate to maps in ValueFileLoggerListener
         Map<Integer, List<Value>> simResMap = new HashMap<>();
 
         // create Sampler given a lphy script file
-        sampler = Sampler.createSampler(lphyFile);
+        sampler = Sampler.createSampler(lphyFile, constants);
 
         long start = System.currentTimeMillis();
 

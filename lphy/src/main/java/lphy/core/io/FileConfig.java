@@ -111,9 +111,11 @@ public class FileConfig {
 
         public static FileConfig createSimulationFileConfig(File lphyFile, File outDir, int numReplicates,
                                                              Long seed ) throws IOException {
+
+            String currentDir = lphyFile.getAbsoluteFile().getParent();
             // if user.dir is not the parent folder of lphyFile, then set to it
-            if (! UserDir.getUserDir().toAbsolutePath().equals(lphyFile.getParentFile())) {
-                UserDir.setUserDir(lphyFile.getParentFile().getAbsolutePath());
+            if (! UserDir.getUserDir().toAbsolutePath().equals(currentDir)) {
+                UserDir.setUserDir(currentDir);
             }
 
             if (seed != null)

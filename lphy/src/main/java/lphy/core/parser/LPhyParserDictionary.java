@@ -79,11 +79,12 @@ public interface LPhyParserDictionary extends GraphicalModel {
 
     /**
      * @param sourceFile the lphy source file
+     * @param constants      constants inputted by user using macro
      */
-    default void source(File sourceFile) throws IOException {
+    default void source(File sourceFile, String[] constants) throws IOException {
         FileReader reader = new FileReader(sourceFile);
         BufferedReader bufferedReader = new BufferedReader(reader);
-        source(bufferedReader);
+        source(bufferedReader, constants);
         reader.close();
     }
 
@@ -92,16 +93,23 @@ public interface LPhyParserDictionary extends GraphicalModel {
      * Before {@link #parse(String)}, the line will be preprocessed by
      * {@link MacroProcessor}, so that the marco templating language
      * will be replaced by the actual values.
+     *
      * @param bufferedReader the lphy source
+     * @param constants      constants inputted by user (e.g. command line arguments),
+     *                       where each string element looks like n=10.
+     *                       Null, if no user input.
      */
-    default void source(BufferedReader bufferedReader) throws IOException {
+    default void source(BufferedReader bufferedReader, String[] constants) throws IOException {
+        // init processor by use input if there is any
+        MacroProcessor macroProcessor = new MacroProcessor(constants);
+
         StringBuilder builder = new StringBuilder();
 
         String lineProcessed;
         String line = bufferedReader.readLine();
         while (line != null) {
             // process macro here
-            lineProcessed = MacroProcessor.process(line);
+            lineProcessed = macroProcessor.process(line);
             builder.append(lineProcessed);
             builder.append("\n");
 

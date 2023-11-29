@@ -30,13 +30,14 @@ public class Sampler {
 
     /**
      * @param lphyFile  a File containing LPhy script.
+     * @param constants      constants inputted by user using macro
      * @return          a Sampler created by the given LPhy script.
      * @throws IOException
      */
-    public static Sampler createSampler(File lphyFile) throws IOException {
+    public static Sampler createSampler(File lphyFile, String[] constants) throws IOException {
         //*** Parse LPhy file ***//
         LPhyParserDictionary parser = new REPL();
-        parser.source(lphyFile);
+        parser.source(lphyFile, constants);
 
         // Sampler requires GraphicalLPhyParser
         Sampler sampler = new Sampler(parser);
