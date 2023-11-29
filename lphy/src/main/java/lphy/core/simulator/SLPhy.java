@@ -42,8 +42,8 @@ public class SLPhy implements Callable<Integer> {
     @CommandLine.Option(names = {"-seed", "--seed"}, description = "the seed.") Long seed;
 
     @CommandLine.Option(names = {"-D", "--data"}, split = ";",
-            description = "Replace the constant value in the lphy script, multiple constants can be split by ';', " +
-                    "but no ';' at the last: e.g. -D \"n=12;L=100\" or -D n=20")
+            description = "Replace the constant value in the lphy script, multiple constants must be quoted " +
+                    "and split by ';', but no ';' at the last: e.g. -D \"n=12;L=100\" or -D n=20")
     String[] lphyConst = null;
 
 //    enum SPI { loggers } //TODO  functions, gendists
