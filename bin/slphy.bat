@@ -71,7 +71,7 @@ echo set the LPHY_LIB to "%LPHY_LIB%"
 :execute
 @rem Setup the command line
 @rem Execute 
-set CMD="%JAVA_EXE%" %DEFAULT_JVM_OPTS% -p "%LPHY_LIB%" -m lphystudio/lphystudio.app.simulator.SLPhy %*
+set CMD="%JAVA_EXE%" %DEFAULT_JVM_OPTS% -p "%LPHY_LIB%" -m lphy.core/lphy.core.simulator.SLPhy %*
 %CMD%
 
 :end

@@ -27,4 +27,4 @@ fi
 echo "LPHY path = $LPHY"
 
 LPHY_LIB="$LPHY/lib"
-java -Xms64m -Xmx5g -p "$LPHY_LIB" -m lphystudio/lphystudio.app.simulator.SLPhy $*
+java -Xms64m -Xmx5g -p "$LPHY_LIB" -m lphy.core/lphy.core.simulator.SLPhy $*
