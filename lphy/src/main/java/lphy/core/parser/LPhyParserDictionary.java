@@ -1,6 +1,7 @@
 package lphy.core.parser;
 
 import lphy.core.exception.SimulatorParsingException;
+import lphy.core.io.MacroProcessor;
 import lphy.core.model.ExpressionUtils;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.DoubleValue;
@@ -92,13 +93,18 @@ public interface LPhyParserDictionary extends GraphicalModel {
     default void source(BufferedReader bufferedReader) throws IOException {
         StringBuilder builder = new StringBuilder();
 
+        String lineProcessed;
         String line = bufferedReader.readLine();
         while (line != null) {
-            builder.append(line);
+            // process macro here
+            lineProcessed = MacroProcessor.process(line);
+            builder.append(lineProcessed);
             builder.append("\n");
+
             line = bufferedReader.readLine();
         }
         bufferedReader.close();
+        // after macro processed
         parse(builder.toString());
     }
 

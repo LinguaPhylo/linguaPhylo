@@ -1,0 +1,8 @@
+data {
+  L = {{L = 100}};
+  taxa = taxa(names=1:{{n = 10}});
+}
+model {
+  ψ ~ Coalescent(theta=10, taxa=taxa);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=jukesCantor());
+}
