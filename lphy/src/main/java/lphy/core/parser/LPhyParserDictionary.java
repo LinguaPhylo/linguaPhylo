@@ -88,6 +88,10 @@ public interface LPhyParserDictionary extends GraphicalModel {
     }
 
     /**
+     * This should be the method used by any application to parse lphy.
+     * Before {@link #parse(String)}, the line will be preprocessed by
+     * {@link MacroProcessor}, so that the marco templating language
+     * will be replaced by the actual values.
      * @param bufferedReader the lphy source
      */
     default void source(BufferedReader bufferedReader) throws IOException {
