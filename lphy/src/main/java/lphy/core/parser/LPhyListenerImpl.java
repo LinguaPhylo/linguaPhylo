@@ -535,7 +535,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
             String name = ctx.getChild(0).getText();
             ArgumentValue[] f = (ArgumentValue[]) visit(ctx.getChild(2));
-            Map<String, Value> arguments = new HashMap<>();
+            Map<String, Value> arguments = new LinkedHashMap<>(); // cannot use HashMap<>(); issue 423
 
             for (int i = 0; i < f.length; i++) {
                 ArgumentValue v = f[i];
@@ -910,7 +910,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 throw new SimulatorParsingException("Found no implementation for function with name " + functionName, ctx);
             }
 
-            Map<String, Value> arguments = new HashMap<>();
+            Map<String, Value> arguments = new LinkedHashMap<>(); // cannot use HashMap<>(); issue 423
             if (argumentValues != null) {
                 for (ArgumentValue v : argumentValues) {
                     arguments.put(v.getName(), v.getValue());
