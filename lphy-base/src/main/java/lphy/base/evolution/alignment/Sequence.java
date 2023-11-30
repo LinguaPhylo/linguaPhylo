@@ -7,6 +7,8 @@ import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.Taxa;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -46,6 +48,8 @@ public class Sequence extends ParametricDistribution<SimpleAlignment> {
 
     }
 
+    @GeneratorInfo(name="Sequence", category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"rootSeq.lphy"},
+            description="Create one sequence given the length and the probability distribution over each state.")
     public RandomVariable<SimpleAlignment> sample() {
         Taxa t = Taxa.createTaxa(1);
         SimpleAlignment alignment = new SimpleAlignment(t, nchar.value(), sequenceType.value());

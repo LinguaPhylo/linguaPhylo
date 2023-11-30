@@ -2,6 +2,8 @@ package lphy.base.distribution;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -22,6 +24,8 @@ public class Categorical extends ParametricDistribution<Integer> {
     @Override
     protected void constructDistribution(RandomGenerator random) { }
 
+    @GeneratorInfo(name = "Categorical", verbClause = "has", narrativeName = "Categorical distribution prior",
+            category = GeneratorCategory.PRIOR, description = "The categorical distribution.")
     public RandomVariable<Integer> sample() {
         int i = sample(probs.value(), random);
         return new RandomVariable<>("X", i, this);
