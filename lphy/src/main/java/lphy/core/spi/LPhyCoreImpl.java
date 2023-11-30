@@ -2,7 +2,11 @@ package lphy.core.spi;
 
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
+import lphy.core.parser.function.MapFunction;
+import lphy.core.simulator.Simulate;
+import lphy.core.vectorization.operation.ElementsAt;
 import lphy.core.vectorization.operation.Range;
+import lphy.core.vectorization.operation.Slice;
 import lphy.core.vectorization.operation.SliceDoubleArray;
 
 import java.util.ArrayList;
@@ -18,7 +22,8 @@ import java.util.List;
 public class LPhyCoreImpl implements LPhyExtension {
 
     List<Class<? extends BasicFunction>> functions = Arrays.asList(
-            Range.class, SliceDoubleArray.class);
+            Range.class, Slice.class, SliceDoubleArray.class, ElementsAt.class,
+            Simulate.class, MapFunction.class);
 
     /**
      * Required by ServiceLoader.
