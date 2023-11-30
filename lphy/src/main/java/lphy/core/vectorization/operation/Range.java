@@ -42,6 +42,17 @@ public class Range extends DeterministicFunction<Integer[]> implements RangeElem
     }
 
     public String codeString() {
-        return start().codeString() + ":" + end().codeString();
+        // issue 421 : taxa(names=1:n) is incorrectly rendered to  taxa(names=1:n = 10)
+        String str;
+        Value<Integer> start = start();
+        if (start.isAnonymous())
+            str = start.codeString();
+        else str = start.getId();
+        str += ":";
+        Value<Integer> end = end();
+        if (end.isAnonymous())
+            str += end.codeString();
+        else str += end.getId();
+        return str;
     }
 }
