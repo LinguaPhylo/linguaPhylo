@@ -38,11 +38,11 @@ public class LPhyExamplesTest {
         System.out.println("\nTest that Examples parse in " + exampleDir.getAbsolutePath());
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
-        List<String> ignoreFiles = Arrays.asList("jcSimData2.lphy",
-                // simulate is in lphy-io
+        List<String> ignoreFiles = Arrays.asList(
+                //TODO Found no implementation for function simulate(lphy= ...
                 "jcCoal.lphy",
-                // TODO gradle test bug : SPI of SequenceType cannot be loaded
-                "covidDPG.lphy", "simpleSerialCoalescentNex.lphy", "twoPartitionCoalescentNex.lphy");
+                // TODO gradle test bug : Cannot find the sequence type in SequenceTypeLoader ! DNA
+                "covidDPG.lphy");
 //            String fileName = "hcv_coal_classic.lphy";
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
             System.out.println("Processing " + fileName + " in " + exampleDir);
