@@ -173,6 +173,7 @@ public class  ValueFileLoggerListener implements SimulatorListener {
     }
 
     public static boolean isStringBuilderEmpty(StringBuilder stringBuilder) {
+        if (stringBuilder == null) return true;
         String string = stringBuilder.toString();
         // Remove white spaces and newline characters
         String trimmedString = string.replaceAll("\\s", "");

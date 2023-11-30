@@ -76,7 +76,7 @@ public class Simulate extends DeterministicFunction<Map<String, Object>> {
         try {
             // only sample 1 time
             FileConfig fileConfig = FileConfig.Utils
-                    .createSimulationFileConfig(infile, outDir, SimulatorListener.REPLICATES_START_INDEX, seed);
+                    .createSimulationFileConfig(infile, outDir, 1, seed);
 
             Map<Integer, List<Value>> allReps = simulator.simulate(fileConfig, null);
             // only take the last replicate
