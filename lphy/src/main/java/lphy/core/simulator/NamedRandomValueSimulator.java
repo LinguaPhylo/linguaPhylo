@@ -11,8 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static lphy.core.io.FileConfig.getLPhyFilePrefix;
+
 /**
  * Simulate lphy file, and return a list of named random Value.
+ * It also includes some preprocessing, such as initiating {@link SimulatorListener},
+ * creating {@link Sampler}.
  */
 public class NamedRandomValueSimulator {
 
@@ -24,13 +28,23 @@ public class NamedRandomValueSimulator {
         simulatorListener = new ValueFileLoggerListener();
     }
 
-    // must have File lphyFile, int numReplicates, Long seed
-    public Map<Integer, List<Value>> simulate(FileConfig fileConfig, String[] constants) throws IOException {
-        simulatorListener.start(fileConfig);
 
-        File lphyFile = fileConfig.lphyInputFile;
-        int numReplicates = fileConfig.numReplicates;
-        Long seed = fileConfig.seed;
+    /**
+     * Simulate using the model defined by a lphy file, which may contain Macro.
+     * It also includes some preprocessing, such as initiating {@link SimulatorListener},
+     * creating {@link Sampler}.
+     * @param lphyFile         input file
+     * @param numReplicates    number of replicates of simulations
+     * @param constants    constants inputted by user using macro
+     * @param seed         the seed value, if null then use a random seed.
+     * @return             All simulation results in a map, key is the index of replicates.
+     * @throws IOException
+     */
+    public Map<Integer, List<Value>> simulate(File lphyFile, int numReplicates,
+                                              String[] constants, Long seed) throws IOException {
+        // ValueFileLoggerListener start() requires
+        String filePrefix = getLPhyFilePrefix(lphyFile);
+        simulatorListener.start(numReplicates, filePrefix);
 
         // TODO duplicate to maps in ValueFileLoggerListener
         Map<Integer, List<Value>> simResMap = new HashMap<>();
@@ -56,6 +70,24 @@ public class NamedRandomValueSimulator {
                 " which takes " + (end - start) + " ms.");
 
         return simResMap;
+    }
+
+    /**
+     * this does not have a clear view for the requirement,
+     * and should be replaced by {@link #simulate(File, int, String[], Long)}
+     * @param fileConfig   require lphyInputFile, numReplicates, and seed
+     * @param constants    constants inputted by user using macro
+     * @return             All simulation results in a map, key is the index of replicates.
+     * @throws IOException
+     */
+    @Deprecated
+    public Map<Integer, List<Value>> simulate(FileConfig fileConfig, String[] constants) throws IOException {
+
+        File lphyFile = fileConfig.lphyInputFile;
+        int numReplicates = fileConfig.numReplicates;
+        Long seed = fileConfig.seed; // if null then random seed
+
+        return simulate(lphyFile, numReplicates, constants, seed);
     }
 
 

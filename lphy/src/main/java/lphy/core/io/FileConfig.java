@@ -7,6 +7,9 @@ import lphy.core.simulator.RandomUtils;
 import java.io.File;
 import java.io.IOException;
 
+//TODO this design to store all config in 1 class seems worse.
+// The user class's methods do not have a clear view what configurations are required.
+// Perhaps, turn it to a utils class, just keep the logics.
 public class FileConfig {
 
     public final File lphyInputFile; // the input lphy script file, which can be null
@@ -95,7 +98,7 @@ public class FileConfig {
 
     private static final String LPHY_EXTETION = ".lphy";
 
-    private static String getLPhyFilePrefix(File lphyFile) throws IOException {
+    public static String getLPhyFilePrefix(File lphyFile) throws IOException {
         if (lphyFile == null || !lphyFile.exists())
             throw new IOException("Cannot find LPhy script file ! " +
                     (lphyFile != null ? lphyFile.getAbsolutePath() : null));
@@ -109,6 +112,7 @@ public class FileConfig {
 
     public static class Utils {
 
+        @Deprecated
         public static FileConfig createSimulationFileConfig(File lphyFile, File outDir, int numReplicates,
                                                              Long seed ) throws IOException {
 
@@ -131,5 +135,20 @@ public class FileConfig {
             return new FileConfig( numReplicates, lphyFile, seed );
         }
 
+        public static void validate(File lphyFile, File outDir) {
+
+            String currentDir = lphyFile.getAbsoluteFile().getParent();
+            // if user.dir is not the parent folder of lphyFile, then set to it
+            if (! UserDir.getUserDir().toAbsolutePath().equals(currentDir)) {
+                UserDir.setUserDir(currentDir);
+            }
+
+            if (outDir != null)
+                OutputSystem.setOutputDirectory(outDir.getAbsolutePath());
+
+            LoggerUtils.log.info("Simulate data from LPhy script: " + lphyFile.getAbsolutePath() +
+                    ".\nOutput files to " + OutputSystem.getOutputDirectory().getAbsolutePath());
+
+        }
     }
 }

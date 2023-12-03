@@ -24,11 +24,16 @@ public class Sampler {
 
     }
 
+    /**
+     * Class to sample values from a parser dictionary.
+     * @param parser  The parser dictionary created from a lphy script
+     */
     public Sampler(LPhyParserDictionary parser) {
         this.parser = parser;
     }
 
     /**
+     * This will create a parser dictionary internally and then return a {@link Sampler}
      * @param lphyFile  a File containing LPhy script.
      * @param constants      constants inputted by user using macro
      * @return          a Sampler created by the given LPhy script.
@@ -61,12 +66,14 @@ public class Sampler {
 
     /**
      * Sample the current model stored in the {@link LPhyParserDictionary} at once.
-     * @param seed  the seed value, if null then use a random number.
+     * @param seed  the seed value, if null then use a random seed.
      * @return the list {@link Value} from one simulation.
      */
     public List<Value> sample(Long seed) {
-        if (seed != null)
+        if (seed != null) {
             RandomUtils.setSeed(seed);
+            LoggerUtils.log.info("Set seed = " + seed );
+        }
 
         Set<String> sampled = new TreeSet<>();
         List<Value<?>> sinks = getParserDictionary().getModelSinks();
@@ -91,6 +98,7 @@ public class Sampler {
 
 
     /**
+     * This is used by studio sample button.
      * Sample add replicates, and call the given listeners.
      * Such as, it can be used by GUI with GUI log listeners.
      *

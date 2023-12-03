@@ -63,12 +63,11 @@ public class SLPhy implements Callable<Integer> {
         File outDir = infile.toAbsolutePath().getParent().toFile();
         try {
             // If outDir = null, use preference, otherwise assign to the input file directory by default.
-            FileConfig fileConfig = FileConfig.Utils
-                    .createSimulationFileConfig(infile.toFile(), outDir, numReps, seed);
+            FileConfig.Utils.validate(infile.toFile(), outDir);
 
             simulator = new NamedRandomValueSimulator();
             // must provide File lphyFile, int numReplicates, Long seed
-            simulator.simulate(fileConfig, lphyConst);
+            simulator.simulate(infile.toFile(), numReps, lphyConst, seed);
             // TODO save Map<Integer, List<Value>> simResMap ?
         } catch (IOException e) {
             throw new PicocliException(e.getMessage(), e);
