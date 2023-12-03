@@ -1,6 +1,7 @@
 package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.parser.LPhyParserDictionary;
@@ -15,7 +16,6 @@ import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelcomponent.interactive.InteractiveGraphicalModelComponent;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.app.treecomponent.TimeTreeExtraPlotComponent;
-import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.codecolorizer.LineCodeColorizer;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.layeredgraph.Layering;

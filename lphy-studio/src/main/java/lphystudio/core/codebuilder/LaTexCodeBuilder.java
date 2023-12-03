@@ -1,5 +1,6 @@
 package lphystudio.core.codebuilder;
 
+import lphy.core.codebuilder.CodeBuilder;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;

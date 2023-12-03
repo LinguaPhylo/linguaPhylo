@@ -1,12 +1,12 @@
 package lphystudio.core.narrative;
 
+import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.model.*;
 import lphy.core.model.annotation.Citation;
 import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.VectorizedFunction;
-import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.layeredgraph.*;
 import lphystudio.core.theme.ThemeColours;
 

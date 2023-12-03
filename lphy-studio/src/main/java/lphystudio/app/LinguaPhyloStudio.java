@@ -1,5 +1,6 @@
 package lphystudio.app;
 
+import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
@@ -10,7 +11,6 @@ import lphystudio.app.graphicalmodelpanel.GraphicalModelParserDictionary;
 import lphystudio.app.manager.DependencyUtils;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
-import lphystudio.core.codebuilder.CanonicalCodeBuilder;
 import lphystudio.core.editor.UndoManagerHelper;
 import lphystudio.core.logger.AlignmentLog;
 import lphystudio.core.narrative.HTMLNarrative;

@@ -16,8 +16,6 @@ module lphy.core {
 
     requires info.picocli;
 
-    exports lphy.core.logger;
-
     // graphical model
     exports lphy.core.model;
     exports lphy.core.model.annotation;
@@ -37,7 +35,9 @@ module lphy.core {
     exports lphy.core.vectorization.operation;
 
     // others
-//    exports lphy.core.narrative;
+    exports lphy.core.codebuilder;
+    exports lphy.core.logger;
+    //    exports lphy.core.narrative;
     exports lphy.core.exception;
     exports lphy.core.io;
 

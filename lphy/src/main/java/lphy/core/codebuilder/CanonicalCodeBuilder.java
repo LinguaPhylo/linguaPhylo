@@ -1,4 +1,4 @@
-package lphystudio.core.codebuilder;
+package lphy.core.codebuilder;
 
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
