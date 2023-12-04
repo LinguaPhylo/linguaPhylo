@@ -46,62 +46,66 @@ public class ValueFormatterLoader {
 
 //        simulatorListeners = new HashMap<>();
 
-        try {
-            for (LPhyValueFormatter valueFormatterSPI : loader) {
+        //*** SequenceTypeExtensionImpl must have a public no-args constructor ***//
+        Iterator<LPhyValueFormatter> extensions = loader.iterator();
 
-                if (extClsName == null || valueFormatterSPI.getClass().getName().equalsIgnoreCase(extClsName)) {
-                    System.out.println("Registering extension from " + valueFormatterSPI.getClass().getName());
-                    // ValueFormatter
-                    Set<Class<? extends ValueFormatter>> formatterSet = valueFormatterSPI.getValueFormatters();
+        while (extensions.hasNext()) {
+            LPhyValueFormatter valueFormatterSPI = null;
+            try {
+                //*** LPhyExtensionImpl must have a public no-args constructor ***//
+                valueFormatterSPI = extensions.next();
+            } catch (ServiceConfigurationError serviceError) {
+                System.err.println(serviceError.getMessage());
+                serviceError.printStackTrace();
+            }
 
-                    //TODO better code ?
+//            for (LPhyValueFormatter valueFormatterSPI : loader) {
+            // extClsName == null then register all
+            if (extClsName == null || valueFormatterSPI.getClass().getName().equalsIgnoreCase(extClsName)) {
+                System.out.println("Registering extension from " + valueFormatterSPI.getClass().getName());
+                // ValueFormatter
+                Set<Class<? extends ValueFormatter>> formatterSet = valueFormatterSPI.getValueFormatters();
+
+                //TODO better code ?
 //                    for (Map.Entry<Class<?>, Set<Class<? extends ValueFormatter>>> entry : formatterMap.entrySet()) {
-                    for (Class<? extends ValueFormatter> vFCls : formatterSet) {
-                        // get the data type
+                for (Class<? extends ValueFormatter> vFCls : formatterSet) {
+                    // get the data type
 //                        Class<?> typeCls = vFCls.getTypeParameters()[0].getClass();
-                        Class<?> typeCls = null;
-                        try {
-                            Method method = vFCls.getMethod("getDataTypeClass");
-                            typeCls = GeneratorUtils.getGenericReturnType(method);
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
-                        if (typeCls == null)
-                            LoggerUtils.log.severe("Extension " + valueFormatterSPI.getExtensionName() +
-                                    " : ValueFormatter '" + vFCls.getName() + "' cannot find data type !");
+                    Class<?> typeCls = null;
+                    try {
+                        Method method = vFCls.getMethod("getDataTypeClass");
+                        typeCls = GeneratorUtils.getGenericReturnType(method);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                    if (typeCls == null)
+                        LoggerUtils.log.severe("Extension " + valueFormatterSPI.getExtensionName() +
+                                " : ValueFormatter '" + vFCls.getName() + "' cannot find data type !");
 
-                        Set<Class<? extends ValueFormatter>> valFormSet = valueFormatterClasses
-                                .computeIfAbsent(typeCls, k -> new HashSet<>());
+                    Set<Class<? extends ValueFormatter>> valFormSet = valueFormatterClasses
+                            .computeIfAbsent(typeCls, k -> new HashSet<>());
 //                        Set<Class<? extends ValueFormatter>> newValFormSet = entry.getValue();
 
-                        // warning, if the same ValueFormatter exists for the same Class in valueFormatterClasses map
+                    // warning, if the same ValueFormatter exists for the same Class in valueFormatterClasses map
 //                        newValFormSet.forEach(dataType -> {
-                            if (valFormSet.contains(vFCls))
-                                LoggerUtils.log.warning("Extension " + valueFormatterSPI.getExtensionName() +
-                                        " : ValueFormatter '" + vFCls.getName() + "' already exists in ValueFormatter map !");
-                            valFormSet.add(vFCls);
+                    if (valFormSet.contains(vFCls))
+                        LoggerUtils.log.warning("Extension " + valueFormatterSPI.getExtensionName() +
+                                " : ValueFormatter '" + vFCls.getName() + "' already exists in ValueFormatter map !");
+                    valFormSet.add(vFCls);
 //                        });
 
-                    }
-                    // SimulatorListener
+                }
+                // SimulatorListener
 //                List<Class<? extends SimulatorListener>> listeners = valueFormatterSPI.getSimulatorListenerClasses();
 //                LoaderManager.registerClasses(listeners, simulatorListeners);
-                }
-            }
+            } // end if
+        } // end while
 
         System.out.println("Register value formatter for : " +
                 Arrays.toString(valueFormatterClasses.keySet().stream()
                         // sorted SimpleName of Classes
                         .map(Class::getSimpleName).sorted().toArray() ));
-
 //        System.out.println("LPhy simulator listener : " + Arrays.toString(simulatorListeners.keySet().toArray()));
-
-
-        } catch (ServiceConfigurationError serviceError) {
-            System.err.println(serviceError);
-            serviceError.printStackTrace();
-        }
-
     }
 
     public static Class<?> getReturnType(Class<?> genClass) {

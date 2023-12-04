@@ -33,28 +33,33 @@ public class SequenceTypeLoader {
 
         dataTypeMap = new ConcurrentHashMap<>();
 
-        try {
-            //*** SequenceTypeExtensionImpl must have a public no-args constructor ***//
-            for (SequenceTypeExtension sequenceTypeExtension : loader) {
-                // extClsName == null then register all
-                if (extClsName == null || sequenceTypeExtension.getClass().getName().equalsIgnoreCase(extClsName)) {
-                    System.out.println("Registering extension from " + sequenceTypeExtension.getClass().getName());
+        //*** SequenceTypeExtensionImpl must have a public no-args constructor ***//
+        Iterator<SequenceTypeExtension> extensions = loader.iterator();
 
-                    // sequence types
-                    Map<String, ? extends SequenceType> newDataTypes = sequenceTypeExtension.getSequenceTypes();
-                    if (newDataTypes != null)
-                        // TODO validate same sequence type?
-                        newDataTypes.forEach(dataTypeMap::putIfAbsent);
-                }
+        while (extensions.hasNext()) {
+            SequenceTypeExtension sequenceTypeExtension = null;
+            try {
+                //*** LPhyExtensionImpl must have a public no-args constructor ***//
+                sequenceTypeExtension = extensions.next();
+            } catch (ServiceConfigurationError serviceError) {
+                System.err.println(serviceError.getMessage());
+                serviceError.printStackTrace();
             }
 
-            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
+//            for (SequenceTypeExtension sequenceTypeExtension : loader) {
+            // extClsName == null then register all
+            if (extClsName == null || sequenceTypeExtension.getClass().getName().equalsIgnoreCase(extClsName)) {
+                System.out.println("Registering extension from " + sequenceTypeExtension.getClass().getName());
 
-        } catch (ServiceConfigurationError serviceError) {
-            System.err.println(serviceError);
-            serviceError.printStackTrace();
-        }
+                // sequence types
+                Map<String, ? extends SequenceType> newDataTypes = sequenceTypeExtension.getSequenceTypes();
+                if (newDataTypes != null)
+                    // TODO validate same sequence type?
+                    newDataTypes.forEach(dataTypeMap::putIfAbsent);
+            }
+        } // end while
 
+        System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
     }
 
     /**
