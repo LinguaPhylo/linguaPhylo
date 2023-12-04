@@ -1,14 +1,14 @@
 package lphy.core.simulator;
 
-import lphy.core.io.FileConfig;
-import lphy.core.io.OutputSystem;
 import lphy.core.logger.LoggerUtils;
+import lphy.core.model.Value;
 import picocli.CommandLine;
 import picocli.CommandLine.PicocliException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
@@ -59,21 +59,17 @@ public class SLPhy implements Callable<Integer> {
 
     @Override
     public Integer call() throws PicocliException {
-        // must use absolute path, otherwise parent could be null for relative path
-        File outDir = infile.toAbsolutePath().getParent().toFile();
-        try {
-            // If outDir = null, use preference, otherwise assign to the input file directory by default.
-            FileConfig.Utils.validate(infile.toFile(), outDir);
 
+        try {
             simulator = new NamedRandomValueSimulator();
             // must provide File lphyFile, int numReplicates, Long seed
-            simulator.simulate(infile.toFile(), numReps, lphyConst, seed);
+            Map<Integer, List<Value>> allReps = simulator.simulateAndLog(infile.toFile(), null,
+                    numReps, lphyConst, seed);
             // TODO save Map<Integer, List<Value>> simResMap ?
         } catch (IOException e) {
             throw new PicocliException(e.getMessage(), e);
         }
 
-        System.out.println("Write all files to " + (outDir !=null ? outDir : OutputSystem.getOutputDirectory()));
         return 0;
     }
 
