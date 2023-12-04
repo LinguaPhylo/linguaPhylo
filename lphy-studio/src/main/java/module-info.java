@@ -1,5 +1,3 @@
-import lphy.core.spi.LPhyExtension;
-
 /**
  * @author Walter Xie
  */
@@ -25,5 +23,5 @@ module lphystudio {
     exports lphystudio.core.theme;
 
     // declare what service interface the provider intends to use
-    provides LPhyExtension with lphystudio.spi.LPhyStudioImpl;
+    provides lphy.core.spi.LPhyExtension with lphystudio.spi.LPhyStudioImpl;
 }
