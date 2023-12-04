@@ -5,6 +5,7 @@ import lphy.core.io.OutputSystem;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.parser.LPhyParserDictionary;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,12 +23,17 @@ import static lphy.core.io.FileConfig.getLPhyFilePrefix;
  */
 public class NamedRandomValueSimulator {
 
-    SimulatorListener simulatorListener;
+    protected SimulatorListener simulatorListener;
 
-    Sampler sampler;
+    protected Sampler sampler;
 
     public NamedRandomValueSimulator() {
         simulatorListener = new ValueFileLoggerListener();
+    }
+
+    public LPhyParserDictionary getParserDictionary() {
+        if (sampler == null) return null;
+        return sampler.getParserDictionary();
     }
 
     /**
