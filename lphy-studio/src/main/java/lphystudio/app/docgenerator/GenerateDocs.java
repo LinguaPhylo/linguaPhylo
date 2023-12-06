@@ -66,7 +66,7 @@ public class GenerateDocs {
             // class name with package that implements {@link LPhyExtension}
             String clsName = args[2];
             // require init ParserLoader
-            LoaderManager.getLphyCoreLoader().loadExtension(clsName);
+            LoaderManager.getLphyCoreLoader().loadExtensions(); //TODO broken
         }
         System.out.println("Creating doc for " + extName + " ...\n");
 

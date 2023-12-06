@@ -35,7 +35,7 @@ import lphy.base.function.tree.Newick;
 import lphy.base.function.tree.PruneTree;
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
-import lphy.core.spi.LPhyExtension;
+import lphy.core.spi.LPhyCoreImpl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,67 +46,73 @@ import java.util.List;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
-public class LPhyBaseImpl implements LPhyExtension {
+public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
 
     static {
         SequenceTypeLoader sequenceTypeLoader = new SequenceTypeLoader();
         sequenceTypeLoader.loadAllExtensions();
     }
 
-    List<Class<? extends GenerativeDistribution>> genDists = Arrays.asList(
-            // probability distribution
-            Bernoulli.class, BernoulliMulti.class, Beta.class, Categorical.class, Cauchy.class, Dirichlet.class,
-            DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class, InverseGamma.class, LogNormal.class,
-            NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
-            Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
-            // tree distribution
-            Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
-            BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
-            RhoSampleTree.class, FossilBirthDeathTree.class,
-            SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
-            SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
-            // skyline
-            SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
-            // alignment
-            Sequence.class, ErrorModel.class, MissingSites.class,
-            // others
-            RandomBooleanArray.class, Sample.class,
-            // phylogenetic distribution
-            PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
-            PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
+    @Override
+    public List<Class<? extends GenerativeDistribution>> declareDistributions() {
+        return Arrays.asList(
+                // probability distribution
+                Bernoulli.class, BernoulliMulti.class, Beta.class, Categorical.class, Cauchy.class, Dirichlet.class,
+                DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class, InverseGamma.class, LogNormal.class,
+                NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
+                Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
+                // tree distribution
+                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
+                BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
+                RhoSampleTree.class, FossilBirthDeathTree.class,
+                SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
+                SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
+                // skyline
+                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
+                // alignment
+                Sequence.class, ErrorModel.class, MissingSites.class,
+                // others
+                RandomBooleanArray.class, Sample.class,
+                // phylogenetic distribution
+                PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
+                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
+    }
 
-    List<Class<? extends BasicFunction>> functions = Arrays.asList(ARange.class, ArgI.class,
-            // Substitution models
-            JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
-            GeneralTimeReversible.class, LewisMK.class,
-            NucleotideModel.class,
-            BModelSetFunction.class,
-            bSiteModelFunction.class,
+    @Override
+    public List<Class<? extends BasicFunction>> declareFunctions() {
+        return Arrays.asList(ARange.class, ArgI.class,
+                // Substitution models
+                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                GeneralTimeReversible.class, LewisMK.class,
+                NucleotideModel.class,
+                BModelSetFunction.class,
+                bSiteModelFunction.class,
 
-            // Data types
-            BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
-            AminoAcidsFunction.class,
-            // Taxa
-            CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
-            // Alignment
-            SelectSitesByMissingFraction.class, RemoveTaxa.class,
-            VariableSites.class, InvariableSites.class, CopySites.class,
-            // Tree
-            LocalBranchRates.class, ExtantTree.class, PruneTree.class, //NodeCount.class, TreeLength.class,
-            // Matrix
-            BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
-            // IO
-            Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, ExtractTrait.class, SpeciesTaxa.class,
-            // Math
-            SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
-            // Set Op
-            Intersect.class,
-            // cast
-            ToDouble.class,
-            // Utils
-            Length.class, Unique.class, Sort.class, IfElse.class, //ConcatStr.class,
-            Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
-            ConcatArray.class, Concat2Str.class);
+                // Data types
+                BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,
+                AminoAcidsFunction.class,
+                // Taxa
+                CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
+                // Alignment
+                SelectSitesByMissingFraction.class, RemoveTaxa.class,
+                VariableSites.class, InvariableSites.class, CopySites.class,
+                // Tree
+                LocalBranchRates.class, ExtantTree.class, PruneTree.class, //NodeCount.class, TreeLength.class,
+                // Matrix
+                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
+                // IO
+                Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, ExtractTrait.class, SpeciesTaxa.class,
+                // Math
+                SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
+                // Set Op
+                Intersect.class,
+                // cast
+                ToDouble.class,
+                // Utils
+                Length.class, Unique.class, Sort.class, IfElse.class, //ConcatStr.class,
+                Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
+                ConcatArray.class, Concat2Str.class);
+    }
 
     /**
      * Required by ServiceLoader.
@@ -115,15 +121,26 @@ public class LPhyBaseImpl implements LPhyExtension {
         //TODO do something here, e.g. print package or classes info ?
     }
 
-    @Override
-    public List<Class<? extends GenerativeDistribution>> getDistributions() {
-        return genDists;
-    }
 
-    @Override
-    public List<Class<? extends BasicFunction>> getFunctions() {
-        return functions;
-    }
+//    @Override
+//    public void register() {
+//
+//    }
+//
+//    @Override
+//    public Map<String, Set<Class<?>>> getDistributions() {
+//        return null;
+//    }
+//
+//    @Override
+//    public Map<String, Set<Class<?>>> getFunctions() {
+//        return null;
+//    }
+//
+//    @Override
+//    public TreeSet<Class<?>> getTypes() {
+//        return null;
+//    }
 
     public String getExtensionName() {
         return "LPhy standard library";

@@ -14,6 +14,7 @@ import java.util.*;
  *
  * @author Walter Xie
  */
+@Deprecated
 public class ValueFormatterLoader {
     private ServiceLoader<LPhyValueFormatter> loader;
 
@@ -46,7 +47,7 @@ public class ValueFormatterLoader {
 
 //        simulatorListeners = new HashMap<>();
 
-        //*** SequenceTypeExtensionImpl must have a public no-args constructor ***//
+        //*** LPhyValueFormatterCoreImpl must have a public no-args constructor ***//
         Iterator<LPhyValueFormatter> extensions = loader.iterator();
 
         while (extensions.hasNext()) {
@@ -64,7 +65,7 @@ public class ValueFormatterLoader {
             if (extClsName == null || valueFormatterSPI.getClass().getName().equalsIgnoreCase(extClsName)) {
                 System.out.println("Registering extension from " + valueFormatterSPI.getClass().getName());
                 // ValueFormatter
-                Set<Class<? extends ValueFormatter>> formatterSet = valueFormatterSPI.getValueFormatters();
+                Set<Class<? extends ValueFormatter>> formatterSet = valueFormatterSPI.declareValueFormatters();
 
                 //TODO better code ?
 //                    for (Map.Entry<Class<?>, Set<Class<? extends ValueFormatter>>> entry : formatterMap.entrySet()) {

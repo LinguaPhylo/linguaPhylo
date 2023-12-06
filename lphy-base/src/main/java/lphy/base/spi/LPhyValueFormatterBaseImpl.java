@@ -3,7 +3,7 @@ package lphy.base.spi;
 import lphy.base.logger.NexusAlignmentFormatter;
 import lphy.base.logger.NexusTreeFormatter;
 import lphy.core.logger.ValueFormatter;
-import lphy.core.spi.LPhyValueFormatter;
+import lphy.core.spi.LPhyValueFormatterCoreImpl;
 
 import java.util.Set;
 
@@ -13,23 +13,19 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
-public class LPhyBaseValueFormatterImpl implements LPhyValueFormatter {
+public class LPhyValueFormatterBaseImpl extends LPhyValueFormatterCoreImpl {//implements LPhyValueFormatter {
+
+
+    @Override
+    public Set<Class<? extends ValueFormatter>> declareValueFormatters() {
+        return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class);
+    }
 
     /**
      * Required by ServiceLoader.
      */
-    public LPhyBaseValueFormatterImpl() {
+    public LPhyValueFormatterBaseImpl() {
     }
-
-    @Override
-    public Set<Class<? extends ValueFormatter>> getValueFormatters() {
-        return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class);
-    }
-//    public Map<Class<?>, Set<Class<? extends ValueFormatter>>> getValueFormatterMap() {
-//        return Map.of( SimpleAlignment.class, Set.of(NexusAlignmentFormatter.class),
-//                TimeTree.class, Set.of(NexusTreeFormatter.class) );
-//    }
-
 
     public String getExtensionName() {
         return "LPhy base loggers";

@@ -1,7 +1,6 @@
 package lphystudio.app.manager;
 
 import lphy.core.spi.LPhyCoreLoader;
-import lphy.core.spi.LPhyExtension;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,15 +23,15 @@ public class ExtManager {
     // pin lphy on the top of the list
     public final static String LPHY_ID = "lphy";
 
-    final List<LPhyExtension> extensions;
+    final List<lphy.core.spi.Extension> extensions;
     Set<String> jarDirSet = new HashSet<>();
 
     public ExtManager()  {
         //TODO other loaders ?
         LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
-        lphyCoreLoader.loadAllExtensions();
+        lphyCoreLoader.loadExtensions();
 
-        extensions = lphyCoreLoader.getExtensions();
+        extensions = lphyCoreLoader.getExtensionMap().values().stream().toList();
         System.out.println(extensions);
     }
 
@@ -44,7 +43,7 @@ public class ExtManager {
         List<Extension> extList = new ArrayList<>();
 
         // find all loaded lphy exts
-        for (LPhyExtension ext : extensions) {
+        for (lphy.core.spi.Extension ext : extensions) {
             Class<?> cls = ext.getClass();
 //            String pkgNm = "/" + cls.getPackageName().replace(".", "/");
             // include jar name

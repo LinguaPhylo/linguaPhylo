@@ -1,23 +1,25 @@
 package lphy.core.spi;
 
+import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.ValueFormatResolver;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Load all loaders here
  */
 public class LoaderManager {
 
-    private static Map<String, Set<Class<?>>> genDistDictionary;
-    private static Map<String, Set<Class<?>>> functionDictionary;
+    private static Map<String, Set<Class<?>>> genDistDictionary = new TreeMap<>();
+    private static Map<String, Set<Class<?>>> functionDictionary = new TreeMap<>();
+    private static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+
     private static Set<String> bivarOperators;
     private static Set<String> univarfunctions;
-
-    private static TreeSet<Class<?>> types;// = new TreeSet<>(Comparator.comparing(Class::getName));
 
     private static LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
 
@@ -28,19 +30,33 @@ public class LoaderManager {
 
     static {
         // registration process
-        lphyCoreLoader.loadAllExtensions();
+        lphyCoreLoader.loadExtensions();
 
-        genDistDictionary = lphyCoreLoader.genDistDictionary;
-        functionDictionary = lphyCoreLoader.functionDictionary;
+        collectAllRegisteredClasses();
+        report();
+    }
 
-        types = lphyCoreLoader.types;
+    static void collectAllRegisteredClasses() {
 
-        ValueFormatterLoader lphyValueFormatterLoader = new ValueFormatterLoader();
-        lphyValueFormatterLoader.loadAllExtensions();
-        Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
-                lphyValueFormatterLoader.getValueFormattersClasses();
-        // pass all ValueFormatter classes to the Resolver
-        valueFormatResolver = new ValueFormatResolver(valueFormatters);
+        Map<String, Extension> extMap = lphyCoreLoader.getExtensionMap();
+        // loop through all extesions
+        for (Map.Entry<String, Extension> entry : extMap.entrySet()) {
+            Extension extension = entry.getValue();
+            if (LPhyExtension.class.isAssignableFrom(extension.getClass())) {
+                // {@link GenerativeDistribution}, {@link BasicFunction}.
+                genDistDictionary.putAll(((LPhyExtension) extension).getDistributions());
+                functionDictionary.putAll(((LPhyExtension) extension).getFunctions());
+                types.addAll(((LPhyExtension) extension).getTypes());
+            } else if (LPhyValueFormatter.class.isAssignableFrom(extension.getClass())) {
+                //
+                Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
+                        ((LPhyValueFormatter) extension).getValueFormatters();
+                // pass all ValueFormatter classes to the Resolver
+                valueFormatResolver = new ValueFormatResolver(valueFormatters);
+            } else {
+                System.out.println("Unsovled extension : " + extension.getExtensionName());
+            }
+        }
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
@@ -51,10 +67,20 @@ public class LoaderManager {
             univarfunctions.add(s);
         }
 
-        // register data types
-//        Map<String, SequenceType> dataTypeMap = lphyLoader.dataTypeMap;
-//        SequenceTypeFactory.INSTANCE.setDataTypeMap(dataTypeMap);
     }
+
+    static void report() {
+        System.out.println("\nGenerativeDistribution : " + Arrays.toString(genDistDictionary.keySet().toArray()));
+        System.out.println("Functions : " + Arrays.toString(functionDictionary.keySet().toArray()));
+        // for non-module release
+        if (genDistDictionary.size() < 1 || functionDictionary.size() < 1)
+            LoggerUtils.log.warning("LPhy base or equivalent lib was not loaded ! ");
+
+        TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
+        System.out.println("LPhy data types : " + typeNames);
+//            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
+    }
+
 
     public LoaderManager() {
     }

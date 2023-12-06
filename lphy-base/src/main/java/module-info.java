@@ -1,5 +1,5 @@
 import lphy.base.spi.LPhyBaseImpl;
-import lphy.base.spi.LPhyBaseValueFormatterImpl;
+import lphy.base.spi.LPhyValueFormatterBaseImpl;
 import lphy.base.spi.SequenceTypeBaseImpl;
 
 /**
@@ -52,12 +52,9 @@ module lphy.base {
     exports lphy.base.logger;
 
     // LPhy extensions
-    uses lphy.core.spi.LPhyExtension;
+    uses lphy.core.spi.Extension;
     // declare what service interface the provider intends to use
-    provides lphy.core.spi.LPhyExtension with LPhyBaseImpl;
-
-    uses lphy.core.spi.LPhyValueFormatter;
-    provides lphy.core.spi.LPhyValueFormatter with LPhyBaseValueFormatterImpl;
+    provides lphy.core.spi.Extension with LPhyBaseImpl, LPhyValueFormatterBaseImpl;
 
     uses lphy.base.spi.SequenceTypeExtension;
     // declare what service interface the provider intends to use

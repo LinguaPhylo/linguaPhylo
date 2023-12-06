@@ -23,7 +23,7 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
     }
 
     @Override
-    public Map<String, ? extends SequenceType> getSequenceTypes() {
+    public Map<String, ? extends SequenceType> declareSequenceTypes() {
         Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
         dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
         dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
@@ -35,6 +35,11 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         dataTypeMap.put(SequenceTypeLoader.sanitise(Binary.NAME), Binary.getInstance());
         dataTypeMap.put(SequenceTypeLoader.sanitise(Continuous.NAME), Continuous.getInstance());
         return dataTypeMap;
+    }
+
+    @Override
+    public void register() {
+
     }
 
     public String getExtensionName() {

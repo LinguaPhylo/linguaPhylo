@@ -20,6 +20,6 @@ public interface SequenceTypeExtension extends Extension {
      *         The string key is a keyword to represent this SequenceType.
      *         The keyword can be used to identify and initialise the corresponding sequence type.
      */
-    Map<String, ? extends SequenceType> getSequenceTypes();
+    Map<String, ? extends SequenceType> declareSequenceTypes();
 
 }

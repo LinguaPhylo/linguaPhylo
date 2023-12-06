@@ -52,7 +52,7 @@ public class SequenceTypeLoader {
                 System.out.println("Registering extension from " + sequenceTypeExtension.getClass().getName());
 
                 // sequence types
-                Map<String, ? extends SequenceType> newDataTypes = sequenceTypeExtension.getSequenceTypes();
+                Map<String, ? extends SequenceType> newDataTypes = sequenceTypeExtension.declareSequenceTypes();
                 if (newDataTypes != null)
                     // TODO validate same sequence type?
                     newDataTypes.forEach(dataTypeMap::putIfAbsent);
