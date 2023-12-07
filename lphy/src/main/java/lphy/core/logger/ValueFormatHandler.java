@@ -4,7 +4,6 @@ import lphy.core.io.FileConfig;
 import lphy.core.io.OutputSystem;
 import lphy.core.model.Value;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,15 +15,10 @@ public class ValueFormatHandler {
 
 
     public static void createFile(String fileName) {
-        try {
-            OutputSystem.setOut(fileName);
-        } catch (FileNotFoundException e) {
-            LoggerUtils.log.severe("Cannot find file " + fileName + " !");
-            e.printStackTrace();
-        }
+        OutputSystem.setOut(fileName);
 
         System.out.println("Create file : " + fileName +
-                " in the directory " + OutputSystem.getOutputDirectory());
+                " in the directory " + OutputSystem.getOrCreateOutputDirectory());
     }
 
 
