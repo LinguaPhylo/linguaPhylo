@@ -51,7 +51,7 @@ public class LPhyCoreLoader {
                         " has been loaded, but another same extension is requiring to register again ! " +
                         Arrays.toString(extensionMap.keySet().toArray()));
 
-            System.out.println("Registering extension from " + ext.getClass().getName());
+            System.out.println("Registering extension : " + ext.getClass().getName());
 
             ext.register(); // fill in the dictionary or collect all types here
             extensionMap.put(fullName, ext);

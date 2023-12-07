@@ -3,7 +3,7 @@ package lphy.base.spi;
 import lphy.base.logger.NexusAlignmentFormatter;
 import lphy.base.logger.NexusTreeFormatter;
 import lphy.core.logger.ValueFormatter;
-import lphy.core.spi.LPhyValueFormatterCoreImpl;
+import lphy.core.spi.ValueFormatterCoreImpl;
 
 import java.util.Set;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
-public class LPhyValueFormatterBaseImpl extends LPhyValueFormatterCoreImpl {//implements LPhyValueFormatter {
+public class ValueFormatterBaseImpl extends ValueFormatterCoreImpl {//implements ValueFormatterExtension {
 
 
     @Override
@@ -24,7 +24,7 @@ public class LPhyValueFormatterBaseImpl extends LPhyValueFormatterCoreImpl {//im
     /**
      * Required by ServiceLoader.
      */
-    public LPhyValueFormatterBaseImpl() {
+    public ValueFormatterBaseImpl() {
     }
 
     public String getExtensionName() {

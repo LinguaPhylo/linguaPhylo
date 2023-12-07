@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Walter Xie
  */
+@Deprecated
 public class SequenceTypeLoader {
 
     private ServiceLoader<SequenceTypeExtension> loader;
@@ -122,12 +123,6 @@ public class SequenceTypeLoader {
 
 
 
-//    /**
-//     * @param sequenceType
-//     * @return true if it is {@link Standard} data type. Ignore case
-//     */
-//    public boolean isStandardDataType(SequenceType sequenceType) {
-//        return sequenceType != null && sequenceType.getName().equalsIgnoreCase(Standard.NAME);
-//    }
+
 
 }

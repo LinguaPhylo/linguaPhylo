@@ -57,8 +57,6 @@ public class LPhyCoreImpl implements LPhyExtension {
 
     @Override
     public void register() {
-        System.out.println("Registering extension : " + this.getClass().getName());
-
         genDistDictionary = new TreeMap<>();
         functionDictionary = new TreeMap<>();
 //        dataTypeMap = new ConcurrentHashMap<>();

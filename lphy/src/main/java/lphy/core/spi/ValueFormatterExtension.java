@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Walter Xie
  */
-public interface LPhyValueFormatter extends Extension {
+public interface ValueFormatterExtension extends Extension {
 
 
     Set<Class<? extends ValueFormatter>> declareValueFormatters();

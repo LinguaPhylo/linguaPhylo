@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Deprecated
 public class ValueFormatterLoader {
-    private ServiceLoader<LPhyValueFormatter> loader;
+    private ServiceLoader<ValueFormatterExtension> loader;
 
     // Required by ServiceLoader
     public ValueFormatterLoader() { }
@@ -33,7 +33,7 @@ public class ValueFormatterLoader {
      */
     public void loadAllExtensions() {
         if (loader == null)
-            loader = ServiceLoader.load(LPhyValueFormatter.class);
+            loader = ServiceLoader.load(ValueFormatterExtension.class);
 
         registerExtensions(null);
     }
@@ -47,11 +47,11 @@ public class ValueFormatterLoader {
 
 //        simulatorListeners = new HashMap<>();
 
-        //*** LPhyValueFormatterCoreImpl must have a public no-args constructor ***//
-        Iterator<LPhyValueFormatter> extensions = loader.iterator();
+        //*** ValueFormatterCoreImpl must have a public no-args constructor ***//
+        Iterator<ValueFormatterExtension> extensions = loader.iterator();
 
         while (extensions.hasNext()) {
-            LPhyValueFormatter valueFormatterSPI = null;
+            ValueFormatterExtension valueFormatterSPI = null;
             try {
                 //*** LPhyExtensionImpl must have a public no-args constructor ***//
                 valueFormatterSPI = extensions.next();
@@ -60,7 +60,7 @@ public class ValueFormatterLoader {
                 serviceError.printStackTrace();
             }
 
-//            for (LPhyValueFormatter valueFormatterSPI : loader) {
+//            for (ValueFormatterExtension valueFormatterSPI : loader) {
             // extClsName == null then register all
             if (extClsName == null || valueFormatterSPI.getClass().getName().equalsIgnoreCase(extClsName)) {
                 System.out.println("Registering extension from " + valueFormatterSPI.getClass().getName());

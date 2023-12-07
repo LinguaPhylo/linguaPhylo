@@ -1,5 +1,5 @@
 import lphy.core.spi.LPhyCoreImpl;
-import lphy.core.spi.LPhyValueFormatterCoreImpl;
+import lphy.core.spi.ValueFormatterCoreImpl;
 
 /**
  * @author Walter Xie
@@ -48,5 +48,5 @@ module lphy.core {
     // LPhy extensions
     uses lphy.core.spi.Extension;
     // declare what service interface the provider intends to use
-    provides lphy.core.spi.Extension with LPhyCoreImpl, LPhyValueFormatterCoreImpl;
+    provides lphy.core.spi.Extension with LPhyCoreImpl, ValueFormatterCoreImpl;
 }

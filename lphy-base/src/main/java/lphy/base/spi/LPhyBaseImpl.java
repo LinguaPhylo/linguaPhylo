@@ -48,11 +48,6 @@ import java.util.List;
  */
 public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
 
-    static {
-        SequenceTypeLoader sequenceTypeLoader = new SequenceTypeLoader();
-        sequenceTypeLoader.loadAllExtensions();
-    }
-
     @Override
     public List<Class<? extends GenerativeDistribution>> declareDistributions() {
         return Arrays.asList(

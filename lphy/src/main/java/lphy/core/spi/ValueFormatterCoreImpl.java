@@ -16,7 +16,7 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
-public class LPhyValueFormatterCoreImpl implements LPhyValueFormatter {
+public class ValueFormatterCoreImpl implements ValueFormatterExtension {
 
     @Override
     public Set<Class<? extends ValueFormatter>> declareValueFormatters() {
@@ -27,7 +27,7 @@ public class LPhyValueFormatterCoreImpl implements LPhyValueFormatter {
     /**
      * Required by ServiceLoader.
      */
-    public LPhyValueFormatterCoreImpl() { }
+    public ValueFormatterCoreImpl() { }
 
     /**
      * Key is data type, e.g. Integer.class, value is the Set of ValueFormatter assigned to this type.
@@ -37,8 +37,6 @@ public class LPhyValueFormatterCoreImpl implements LPhyValueFormatter {
 
     @Override
     public void register() {
-        System.out.println("Registering extension : " + this.getClass().getName());
-
         valueFormatterClasses = new HashMap<>();
 
         // ValueFormatter

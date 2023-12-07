@@ -47,14 +47,15 @@ public class LoaderManager {
                 genDistDictionary.putAll(((LPhyExtension) extension).getDistributions());
                 functionDictionary.putAll(((LPhyExtension) extension).getFunctions());
                 types.addAll(((LPhyExtension) extension).getTypes());
-            } else if (LPhyValueFormatter.class.isAssignableFrom(extension.getClass())) {
+            } else if (ValueFormatterExtension.class.isAssignableFrom(extension.getClass())) {
                 //
                 Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
-                        ((LPhyValueFormatter) extension).getValueFormatters();
+                        ((ValueFormatterExtension) extension).getValueFormatters();
                 // pass all ValueFormatter classes to the Resolver
                 valueFormatResolver = new ValueFormatResolver(valueFormatters);
             } else {
-                System.out.println("Unsovled extension : " + extension.getExtensionName());
+                LoggerUtils.log.fine("Unsolved extension from core : " + extension.getExtensionName()
+                        + ", which may be registered in " + extension.getModuleName());
             }
         }
 
