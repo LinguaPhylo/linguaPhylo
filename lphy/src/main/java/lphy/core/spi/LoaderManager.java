@@ -37,6 +37,7 @@ public class LoaderManager {
     }
 
     static void collectAllRegisteredClasses() {
+        Map<Class<?>, Set<Class<? extends ValueFormatter>>> allValueFormatters = new LinkedHashMap<>();
 
         Map<String, Extension> extMap = lphyCoreLoader.getExtensionMap();
         // loop through all extesions
@@ -48,16 +49,15 @@ public class LoaderManager {
                 functionDictionary.putAll(((LPhyExtension) extension).getFunctions());
                 types.addAll(((LPhyExtension) extension).getTypes());
             } else if (ValueFormatterExtension.class.isAssignableFrom(extension.getClass())) {
-                //
-                Map<Class<?>, Set<Class<? extends ValueFormatter>>> valueFormatters =
-                        ((ValueFormatterExtension) extension).getValueFormatters();
-                // pass all ValueFormatter classes to the Resolver
-                valueFormatResolver = new ValueFormatResolver(valueFormatters);
+                // TODO will this overwrite ?
+                allValueFormatters.putAll(((ValueFormatterExtension) extension).getValueFormatters());
             } else {
                 LoggerUtils.log.fine("Unsolved extension from core : " + extension.getExtensionName()
                         + ", which may be registered in " + extension.getModuleName());
             }
         }
+        // pass all ValueFormatter classes to the Resolver
+        valueFormatResolver = new ValueFormatResolver(allValueFormatters);
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
@@ -80,6 +80,11 @@ public class LoaderManager {
         TreeSet<String> typeNames = types.stream().map(Class::getSimpleName).collect(Collectors.toCollection(TreeSet::new));
         System.out.println("LPhy data types : " + typeNames);
 //            System.out.println("LPhy sequence types : " + Arrays.toString(dataTypeMap.values().toArray(new SequenceType[0])));
+
+        System.out.println("Value formatter for : " +
+                Arrays.toString(valueFormatResolver.getResolvedFormatterClasses().keySet().stream()
+                        // sorted SimpleName of Classes
+                        .map(Class::getSimpleName).sorted().toArray() ));
     }
 
 
