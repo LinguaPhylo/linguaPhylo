@@ -144,6 +144,7 @@ distributions {
             into("src") {
                 from(tasks.sourcesJar)
                 from(project(":lphy").tasks.sourcesJar)
+                from(project(":lphy-base").tasks.sourcesJar)
                 // icon
                 from("src/main/resources") {
                     include("lphy48x48.png")
