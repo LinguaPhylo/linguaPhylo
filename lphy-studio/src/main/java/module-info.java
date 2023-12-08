@@ -21,7 +21,7 @@ module lphystudio {
     exports lphystudio.core.valueeditor;
     exports lphystudio.core.theme;
 
-    // Both are empty now, but must be declared in order to show studio ext in the Extension Manager.
+    // Both are empty now, but must be declared in order to show studio ext in the LPhyExtension Manager.
     // LPhy extensions
     uses lphy.core.spi.Extension;
     // declare what service interface the provider intends to use

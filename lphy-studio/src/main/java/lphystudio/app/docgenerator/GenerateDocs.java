@@ -59,7 +59,7 @@ public class GenerateDocs {
         // Do not change default
         String extName = LPHY_DOC_TITLE;
         // for extension only, e.g.
-        // args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
+        // args = 0.0.5 "LPhy LPhyExtension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
             extName = args[1];

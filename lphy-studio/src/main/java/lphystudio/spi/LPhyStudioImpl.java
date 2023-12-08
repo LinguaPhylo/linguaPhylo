@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * TODO: it is unused now, overwrite the register() when any new classes being to add.
- * Empty class to show studio ext in the Extension Manager.
+ * Empty class to show studio ext in the LPhyExtension Manager.
  * @author Walter Xie
  */
 public class LPhyStudioImpl extends LPhyCoreImpl { //} implements LPhyExtension {

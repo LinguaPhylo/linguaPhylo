@@ -6,7 +6,7 @@ import java.util.Objects;
  * Data class maps to pom.xml {@code <dependency>}.
  * @author Walter Xie
  */
-public class Dependency {
+public class Dependency implements Comparable<Dependency> {
 
     private String groupId;
     private String artifactId;
@@ -50,6 +50,26 @@ public class Dependency {
     public String toString() {
         return groupId + ':' + artifactId + ':' + version;
     }
+
+    @Override
+    public int compareTo(Dependency other) {
+        // Handle null cases to avoid NullPointerException
+        if (other == null) {
+            return 1; // Consider non-null greater than null
+        }
+
+        // Concatenate the fields for comparison
+        String thisKey = getDependencyId().toLowerCase();
+        String otherKey = other.getDependencyId().toLowerCase();
+
+        // Compare the concatenated strings
+        return thisKey.compareTo(otherKey);
+    }
+
+    public String getDependencyId() {
+        return groupId + artifactId + version;
+    }
+
 
     //    public String getScope() {
 //        return scope;

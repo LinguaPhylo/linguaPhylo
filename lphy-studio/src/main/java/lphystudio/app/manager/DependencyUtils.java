@@ -65,7 +65,7 @@ public final class DependencyUtils {
             // if not, then try pom.xml
             if (version == null) {
                 try {
-                    Extension lphyExt = getExtensionFrom(module);
+                    LPhyExtension lphyExt = getExtensionFrom(module);
                     if (lphyExt != null) {
                         version = lphyExt.getVersion();
                     }
@@ -89,10 +89,12 @@ public final class DependencyUtils {
     }
 
     /**
-     * @param module  the Java {@link Module} contains the classes of the {@link Extension}.
-     * @return  an {@link Extension} created from pom.xml, or from MANIFEST.MF, or from source
+     * This could extract the same LPhyExtension multiple times,
+     * because the Extension SPI can be multiple in the same LPhyExtension.
+     * @param module  the Java {@link Module} contains the classes of the {@link LPhyExtension}.
+     * @return  an {@link LPhyExtension} created from pom.xml, or from MANIFEST.MF, or from source
      */
-    public static Extension getExtensionFrom(Module module)
+    public static LPhyExtension getExtensionFrom(Module module)
             throws IOException, ParserConfigurationException, SAXException {
         // 1. first look for pom.xml in jar
         InputStream in = module.getResourceAsStream(POM_XML_LOCATION);
@@ -110,7 +112,7 @@ public final class DependencyUtils {
                 String version = attr.getValue("Implementation-Version");
                 System.out.println(", extract meta-data from MANIFEST.MF");
 
-                return new Extension("", name, version);
+                return new LPhyExtension("", name, version);
             }
         }
 
@@ -141,7 +143,7 @@ public final class DependencyUtils {
         // 4. unknown
         if (in == null) {
             System.err.println("Warning : cannot find extension information from module " + module.getName() + " !");
-            return new Extension("", module.getName(), "unknown");
+            return new LPhyExtension("", module.getName(), "unknown");
         }
 //               String pom = new String(in.readAllBytes(), StandardCharsets.UTF_8);
 //               System.out.println(pom);

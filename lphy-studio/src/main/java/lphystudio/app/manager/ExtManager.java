@@ -37,10 +37,10 @@ public class ExtManager {
 
     /**
      * Find loaded LPhy extensions from loaded modular jars.
-     * @return  a list of {@link Extension}
+     * @return  a list of {@link LPhyExtension}
      */
-    public List<Extension> getLoadedLPhyExts() {
-        List<Extension> extList = new ArrayList<>();
+    public List<LPhyExtension> getLPhyExtensions() {
+        Set<LPhyExtension> extSet = new TreeSet<>();
 
         // find all loaded lphy exts
         for (lphy.core.spi.Extension ext : extensions) {
@@ -57,26 +57,25 @@ public class ExtManager {
             // use module path
             if (module != null) {
                 try {
-                    Extension lphyExt = DependencyUtils.getExtensionFrom(module);
-                    extList.add(lphyExt);
+                    LPhyExtension lphyExt = DependencyUtils.getExtensionFrom(module);
+                    extSet.add(lphyExt);
                 } catch (ParserConfigurationException | SAXException | IOException e) {
                     e.printStackTrace();
                 }
             } else { // use class path
 //                URL jarURL = cls.getResource(pkgNm);
 //                jarURL = cls.getResource(pkgNm);
-//                Extension lphyExt = new Extension(jarURL);
+//                LPhyExtension lphyExt = new LPhyExtension(jarURL);
 //                extList.add(lphyExt);
                 throw new UnsupportedOperationException("Do not support class path ! Please use module path.");
             }
 
         }
 
-        // sort by ext artifactId
-        extList.sort(Comparator.comparing(Extension::getArtifactId));
+        List<LPhyExtension> extList = new ArrayList<>(extSet);
         // pin lphy on the top
         for (int i = 0; i < extList.size(); i++) {
-            Extension ext = extList.get(i);
+            LPhyExtension ext = extList.get(i);
             if (LPHY_ID.equalsIgnoreCase(ext.getArtifactId())) {
                 extList.add(0, extList.remove(i));
             }

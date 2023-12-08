@@ -11,7 +11,7 @@ import javax.swing.*;
  */
 public class ExtManagerApp extends JFrame {
 
-    public static final String APP_NAME = "Extension Manager";
+    public static final String APP_NAME = "LPhyExtension Manager";
     static {
         LPhyAppConfig.setupEcoSys(APP_NAME);
     }
