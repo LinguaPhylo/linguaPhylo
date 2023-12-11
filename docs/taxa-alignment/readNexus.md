@@ -7,7 +7,7 @@ A function that parses an alignment from a Nexus file.
 
 ### Parameters
 
-- [String](../types/String.md) **file** - the name of Nexus file.
+- [String](../types/String.md) **file** - the name of Nexus file including path.
 - [Object](../types/Object.md) **options** - the map containing optional arguments and their values for reuse.
 
 ### Return type

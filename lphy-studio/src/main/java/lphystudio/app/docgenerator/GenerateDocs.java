@@ -7,6 +7,8 @@ import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.spi.Extension;
+import lphy.core.spi.LPhyCoreLoader;
 import lphy.core.spi.LoaderManager;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
@@ -46,28 +48,30 @@ public class GenerateDocs {
     public static final String TYPES_DIR = "types";
     // No white space
     static final String LPHY_DOC_TITLE = "LPhy";
+    static final String LPHY_DOC_ClASS_NAME = "lphy.core.spi.Extension"; // TODO should be Impl
 
     public static void main(String[] args) throws IOException {
 
         String version = "";
         if (args.length > 0)  version = args[0];
 
-//        LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
-        // trigger all loaders
-//        ParserLoader parserLoader = new ParserLoader();
-
         // Do not change default
         String extName = LPHY_DOC_TITLE;
+        String clsName = LPHY_DOC_ClASS_NAME; // TODO wrong
+
         // for extension only, e.g.
         // args = 0.0.5 "LPhy LPhyExtension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
             extName = args[1];
             // class name with package that implements {@link LPhyExtension}
-            String clsName = args[2];
-            // require init ParserLoader
-            LoaderManager.getLphyCoreLoader().loadExtensions(); //TODO broken
+            clsName = args[2];
         }
+        // cached, everything should be loaded already
+        LPhyCoreLoader lphyCoreLoader = LoaderManager.getLphyCoreLoader();
+        //TODO handle multiple classes
+        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(List.of(clsName));
+
         System.out.println("Creating doc for " + extName + " ...\n");
 
         List<Class<GenerativeDistribution>> generativeDistributions = LoaderManager.getAllGenerativeDistributionClasses();

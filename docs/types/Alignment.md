@@ -19,6 +19,8 @@ An alignment of discrete character states, where states are integers.
   - The number of characters/sites.
 - **nodeCount**
   - the total number of nodes (left + internal) in a binary tree with these taxa.
+- **species**
+  - gets the species of these taxa as an array of strings.
 - **stateCount**
   - the number of possible states including ambiguous states in the alignment.
 - **states**
