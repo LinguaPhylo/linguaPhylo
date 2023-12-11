@@ -91,15 +91,15 @@ public class LoaderManager {
     public LoaderManager() {
     }
 
-    public static <T> void registerClasses(List<Class<? extends T>> clsInExtension,
-                                           Map<String, Set<Class<?>>> clsDictionary) {
-        for (Class<? extends T> cls : clsInExtension) {
-            String name = cls.getSimpleName();
-
-            Set<Class<?>> clsSet = clsDictionary.computeIfAbsent(name, k -> new HashSet<>());
-            clsSet.add(cls);
-        }
-    }
+//    public static <T> void registerClasses(List<Class<? extends T>> clsInExtension,
+//                                           Map<String, Set<Class<?>>> clsDictionary) {
+//        for (Class<? extends T> cls : clsInExtension) {
+//            String name = cls.getSimpleName();
+//
+//            Set<Class<?>> clsSet = clsDictionary.computeIfAbsent(name, k -> new HashSet<>());
+//            clsSet.add(cls);
+//        }
+//    }
 
     public static LPhyCoreLoader getLphyCoreLoader() {
         return lphyCoreLoader;
@@ -114,19 +114,26 @@ public class LoaderManager {
         return functionDictionary.get(name);
     }
 
+    public static <T> List<Class<T>> getAllClassesOfType(Map<String, Set<Class<?>>> clsMap, Class<T> type) {
+        List<Class<T>> clsList = new ArrayList<>();
+
+        for (Set<Class<?>> classes : clsMap.values()) {
+            for (Class<?> c : classes) {
+                if (type.isAssignableFrom(c)) {
+                    clsList.add((Class<T>) c);
+                }
+            }
+        }
+        clsList.sort(Comparator.comparing(Class::getSimpleName));
+        return clsList;
+    }
+
     /**
      * @return a list of {@link GenerativeDistribution} flattened
      * from a map of sets in {@link #genDistDictionary}
      */
     public static List<Class<GenerativeDistribution>> getAllGenerativeDistributionClasses() {
-        List<Class<GenerativeDistribution>> genDists = new ArrayList<>();
-
-        for (Set<Class<?>> classes : genDistDictionary.values()) {
-            for (Class<?> c : classes) {
-                genDists.add((Class<GenerativeDistribution>) c);
-            }
-        }
-        return genDists;
+        return getAllClassesOfType(genDistDictionary, GenerativeDistribution.class);
     }
 
     /**
@@ -134,14 +141,7 @@ public class LoaderManager {
      * from a map of sets in {@link #functionDictionary}
      */
     public static List<Class<DeterministicFunction>> getAllFunctionsClasses() {
-        List<Class<DeterministicFunction>> functions = new ArrayList<>();
-
-        for (Set<Class<?>> classes : functionDictionary.values()) {
-            for (Class<?> c : classes) {
-                functions.add((Class<DeterministicFunction>) c);
-            }
-        }
-        return functions;
+        return getAllClassesOfType(functionDictionary, DeterministicFunction.class);
     }
 
 

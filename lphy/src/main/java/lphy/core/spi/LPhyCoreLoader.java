@@ -71,10 +71,14 @@ public class LPhyCoreLoader {
      * @return  The only extensions requested by the list of their class names.
      */
     public Map<String, Extension> getExtensionMap(List<String> extClsNameList) {
-        Map<String, Extension> copy = new TreeMap<> (extensionMap);
-        // Retains only the elements in this set that are contained in the specified collection
-        copy.keySet().retainAll(extClsNameList);
-        return copy;
+        Map<String, Extension> extMap = new TreeMap<> ();
+        for (Map.Entry<String, Extension> entry : extensionMap.entrySet()) {
+            String extClsName = entry.getValue().getClass().getName();
+            if (extClsNameList.contains(extClsName)) {
+                extMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return extMap;
     }
 
     /**

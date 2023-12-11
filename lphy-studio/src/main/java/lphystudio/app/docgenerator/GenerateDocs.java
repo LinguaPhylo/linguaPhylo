@@ -1,15 +1,13 @@
 package lphystudio.app.docgenerator;
 
 import lphy.core.logger.LoggerUtils;
-import lphy.core.model.DeterministicFunction;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.spi.Extension;
-import lphy.core.spi.LPhyCoreLoader;
-import lphy.core.spi.LoaderManager;
+import lphy.core.spi.*;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -18,6 +16,7 @@ import net.steppschuh.markdowngenerator.text.heading.Heading;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -48,7 +47,7 @@ public class GenerateDocs {
     public static final String TYPES_DIR = "types";
     // No white space
     static final String LPHY_DOC_TITLE = "LPhy";
-    static final String LPHY_DOC_ClASS_NAME = "lphy.core.spi.Extension"; // TODO should be Impl
+    static List<String> BASIC_EXT_NAMES = List.of("lphy.core.spi.LPhyCoreImpl", "lphy.base.spi.LPhyBaseImpl");
 
     public static void main(String[] args) throws IOException {
 
@@ -57,27 +56,30 @@ public class GenerateDocs {
 
         // Do not change default
         String extName = LPHY_DOC_TITLE;
-        String clsName = LPHY_DOC_ClASS_NAME; // TODO wrong
 
         // for extension only, e.g.
         // args = 0.0.5 "LPhy LPhyExtension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
-            extName = args[1];
+            throw new UnsupportedEncodingException("TODO !");
+//            extName = args[1];
             // class name with package that implements {@link LPhyExtension}
-            clsName = args[2];
+//            clsName = args[2]; //TODO split by ; ?
         }
+        System.out.println("Creating doc for " + extName + " version " + version + " ...\n");
+
         // cached, everything should be loaded already
         LPhyCoreLoader lphyCoreLoader = LoaderManager.getLphyCoreLoader();
-        //TODO handle multiple classes
-        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(List.of(clsName));
+        //TODO how to make args[2] to parse to a list of extension class names, similar to BASIC_EXT_NAMES
+        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(BASIC_EXT_NAMES);
+        // TODO check the size
+//        if (args.length > 2)
+//        if (extensionMap.size() < 1)
+//            throw new IllegalArgumentException("");
 
-        System.out.println("Creating doc for " + extName + " ...\n");
-
-        List<Class<GenerativeDistribution>> generativeDistributions = LoaderManager.getAllGenerativeDistributionClasses();
+        fillInAllClassesOfExtension(extensionMap, LPhyExtension.class);
+        // sort functions
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
-
-        List<Class<DeterministicFunction>> functions = LoaderManager.getAllFunctionsClasses();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
         // output dir
@@ -90,8 +92,8 @@ public class GenerateDocs {
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
-        String indexMD = generateIndex(generativeDistributions, functions,
-                LoaderManager.getTypes(), dir, version, extName);
+        String indexMD = generateIndex(generativeDistributions, functions, types,
+                dir, version, extName);
 
         File f = new File(dir.toString(), "index.md");
         FileWriter writer = new FileWriter(f);
@@ -99,6 +101,31 @@ public class GenerateDocs {
         writer.close();
 
     }
+
+    private static List<Class<GenerativeDistribution>> generativeDistributions = new ArrayList<>();
+    private static List<Class<BasicFunction>> functions = new ArrayList<>();
+    private static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+
+    private static void fillInAllClassesOfExtension(Map<String, Extension> extensionMap, Class<? extends Extension> extCls) {
+        // loop through all extesions
+        for (Map.Entry<String, Extension> entry : extensionMap.entrySet()) {
+            Extension extension = entry.getValue();
+            if (extCls.isAssignableFrom(extension.getClass())) {
+                // {@link GenerativeDistribution}, {@link BasicFunction}.
+                Map<String, Set<Class<?>>> distMap = ((LPhyExtension) extension).getDistributions();
+                generativeDistributions.addAll(LoaderManager.getAllClassesOfType(distMap, GenerativeDistribution.class));
+                Map<String, Set<Class<?>>> funcMap = ((LPhyExtension) extension).getFunctions();
+                functions.addAll(LoaderManager.getAllClassesOfType(funcMap, BasicFunction.class));
+                types.addAll(((LPhyExtension) extension).getTypes());
+            } else if (ValueFormatterExtension.class.isAssignableFrom(extension.getClass())) {
+                // TODO
+            } else {
+                LoggerUtils.log.fine("Unsolved extension from core : " + extension.getExtensionName()
+                        + ", which may be registered in " + extension.getModuleName());
+            }
+        }
+    }
+
 
     private static boolean isLPhyDoc(String extName) {
         return LPHY_DOC_TITLE.equalsIgnoreCase(extName.trim());
@@ -133,7 +160,7 @@ public class GenerateDocs {
         };
     }
 
-    private static String getFuncDir(Class<DeterministicFunction> func) {
+    private static String getFuncDir(Class<BasicFunction> func) {
         GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(func);
         GeneratorCategory category = null;
         if (generatorInfo != null) {
@@ -158,7 +185,7 @@ public class GenerateDocs {
 
     // output to dir
     private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
-                                        List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
+                                        List<Class<BasicFunction>> functions, Set<Class<?>> types,
                                         Path dir, String version, String extName) throws IOException {
         File otherDistDir = new File(dir.toString(),OTHER_DIST_DIR);
         File paramDir = new File(dir.toString(),PARAM_DIR);
@@ -239,7 +266,7 @@ public class GenerateDocs {
 
 
         /**
-         * classify DeterministicFunction
+         * classify BasicFunction
          */
         List<Link> seqTypeLinks = new ArrayList<>();
         List<Link> taxaAligLinks = new ArrayList<>();
@@ -249,7 +276,7 @@ public class GenerateDocs {
 
         Set<String> funcNames = new TreeSet<>();
 
-        for (Class<DeterministicFunction> function : functions) {
+        for (Class<BasicFunction> function : functions) {
             String name = GeneratorUtils.getGeneratorName(function);
             String subDir = getFuncDir(function);
             // based on where index.md is
@@ -368,13 +395,13 @@ public class GenerateDocs {
         writer.write(builder.toString());
     }
 
-    private static void generateFunctions(FileWriter writer, String name, List<Class<DeterministicFunction>> classes) throws IOException {
+    private static void generateFunctions(FileWriter writer, String name, List<Class<BasicFunction>> classes) throws IOException {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append(new Heading(name + " function",1)).append("\n");
 
-        for (Class<DeterministicFunction> c : classes) {
+        for (Class<BasicFunction> c : classes) {
             builder.append(GeneratorMarkdown.getGeneratorMarkdown(c, TYPES_DIR)).append("\n\n");
         }
 
