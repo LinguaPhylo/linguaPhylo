@@ -16,7 +16,6 @@ import net.steppschuh.markdowngenerator.text.heading.Heading;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -47,6 +46,7 @@ public class GenerateDocs {
     public static final String TYPES_DIR = "types";
     // No white space
     static final String LPHY_DOC_TITLE = "LPhy";
+    // Core and base
     static List<String> BASIC_EXT_NAMES = List.of("lphy.core.spi.LPhyCoreImpl", "lphy.base.spi.LPhyBaseImpl");
 
     public static void main(String[] args) throws IOException {
@@ -56,26 +56,29 @@ public class GenerateDocs {
 
         // Do not change default
         String extName = LPHY_DOC_TITLE;
-
+        List<String> extClsNameList;
         // for extension only, e.g.
         // args = 0.0.5 "LPhy LPhyExtension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
-            throw new UnsupportedEncodingException("TODO !");
-//            extName = args[1];
+            extName = args[1];
             // class name with package that implements {@link LPhyExtension}
-//            clsName = args[2]; //TODO split by ; ?
-        }
+            String[] clsNames = args[2].trim().split(";"); // split by ;
+
+            if (clsNames.length < 1 || clsNames[0].trim().isEmpty())
+                throw new IllegalArgumentException("The extension name is incorrect ! " + Arrays.toString(clsNames));
+            extClsNameList = Arrays.stream(clsNames).toList();
+        } else
+            extClsNameList = BASIC_EXT_NAMES;
         System.out.println("Creating doc for " + extName + " version " + version + " ...\n");
 
         // cached, everything should be loaded already
         LPhyCoreLoader lphyCoreLoader = LoaderManager.getLphyCoreLoader();
-        //TODO how to make args[2] to parse to a list of extension class names, similar to BASIC_EXT_NAMES
-        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(BASIC_EXT_NAMES);
-        // TODO check the size
-//        if (args.length > 2)
-//        if (extensionMap.size() < 1)
-//            throw new IllegalArgumentException("");
+        // get extensions given their class names
+        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(extClsNameList);
+        // check the size
+        if (extensionMap.isEmpty())
+            throw new IllegalArgumentException("Cannot find the extensions defined by the classes : " + extClsNameList);
 
         fillInAllClassesOfExtension(extensionMap, LPhyExtension.class);
         // sort functions
