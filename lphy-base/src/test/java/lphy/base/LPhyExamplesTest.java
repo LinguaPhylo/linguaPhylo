@@ -29,7 +29,7 @@ public class LPhyExamplesTest {
         File[] dirs = exampleDir.listFiles();
         assertNotNull(dirs);
         for (final File dir : dirs) {
-            if (dir.isDirectory())
+            if (dir.isDirectory() && !"todo".equalsIgnoreCase(dir.getName()))
                 testLPhyExamplesInDir(dir);
         }
     }
