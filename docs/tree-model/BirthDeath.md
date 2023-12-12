@@ -9,8 +9,8 @@ A tree of only extant species, which is conceptually embedded<br>in a full speci
 
 - [Number](../types/Number.md) **lambda** - per-lineage birth rate.
 - [Number](../types/Number.md) **mu** - per-lineage death rate.
-- [Integer](../types/Integer.md) **n** - the number of taxa. optional.
-- [Object](../types/Object.md) **taxa** - a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.
+- [Integer](../types/Integer.md) **n** - (optional) the number of taxa. optional.
+- [Object](../types/Object.md) **taxa** - (optional) a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.
 - [Number](../types/Number.md) **rootAge** - the age of the root.
 
 ### Return type

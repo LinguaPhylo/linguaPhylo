@@ -9,7 +9,7 @@ The sample function uniformly sample the subset of a given size from an array of
 
 - [Object](../types/Object.md) **array** - 1d-array to be sampled.
 - [Integer](../types/Integer.md) **size** - the number of elements to choose.
-- [Boolean](../types/Boolean.md) **replace** - If replace is true, the same element can be sampled multiple times, if false (as default), it can only appear once in the result.
+- [Boolean](../types/Boolean.md) **replace** - (optional) If replace is true, the same element can be sampled multiple times, if false (as default), it can only appear once in the result.
 
 ### Return type
 

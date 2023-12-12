@@ -9,8 +9,8 @@ A birth-death tree with both extant and extinct species.<br>Conditioned on age o
 
 - [Number](../types/Number.md) **lambda** - per-lineage birth rate.
 - [Number](../types/Number.md) **mu** - per-lineage death rate.
-- [Number](../types/Number.md) **rootAge** - the age of the root of the tree (only one of rootAge and originAge may be specified).
-- [Number](../types/Number.md) **originAge** - the age of the origin of the tree  (only one of rootAge and originAge may be specified).
+- [Number](../types/Number.md) **rootAge** - (optional) the age of the root of the tree (only one of rootAge and originAge may be specified).
+- [Number](../types/Number.md) **originAge** - (optional) the age of the origin of the tree  (only one of rootAge and originAge may be specified).
 
 ### Return type
 

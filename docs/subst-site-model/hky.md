@@ -9,7 +9,7 @@ The HKY instantaneous rate matrix. Takes a kappa and base frequencies (and optio
 
 - [Number](../types/Number.md) **kappa** - the kappa of the HKY process.
 - [Double[]](../types/Double[].md) **freq** - the base frequencies.
-- [Number](../types/Number.md) **meanRate** - the total rate of substitution per unit time. Default 1.0.
+- [Number](../types/Number.md) **meanRate** - (optional) the total rate of substitution per unit time. Default 1.0.
 
 ### Return type
 

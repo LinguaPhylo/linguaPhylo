@@ -8,9 +8,9 @@ The Yule tree distribution over tip-labelled time trees. Will be conditional on 
 ### Parameters
 
 - [Number](../types/Number.md) **lambda** - per-lineage birth rate, possibly scaled to mutations or calendar units.
-- [Integer](../types/Integer.md) **n** - the number of taxa.
-- [Object](../types/Object.md) **taxa** - a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)
-- [Number](../types/Number.md) **rootAge** - the root age to be conditioned on. optional.
+- [Integer](../types/Integer.md) **n** - (optional) the number of taxa.
+- [Object](../types/Object.md) **taxa** - (optional) a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)
+- [Number](../types/Number.md) **rootAge** - (optional) the root age to be conditioned on. optional.
 
 ### Return type
 

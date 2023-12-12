@@ -59,7 +59,9 @@ public class GeneratorMarkdown {
                 ParameterInfo pi = pInfo.get(i);
                 String typeName = types[i].getSimpleName();
                 Link typeLink = new Link(typeName,getTypeURL(typesDir, typeName));
-                paramText.add(new Text(typeLink + " " + new BoldText(pi.name()) + " - " + pi.description()));
+                boolean isOptional = pi.optional();
+                paramText.add(new Text(typeLink + " " + new BoldText(pi.name()) + " - " +
+                        (isOptional ? "(optional) " : "") + pi.description()));
             }
             md.append(new UnorderedList<>(paramText));
         }

@@ -95,7 +95,7 @@ public class GenerateDocs {
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
-        String indexMD = generateIndex(generativeDistributions, functions, types,
+        String indexMD = generateMarkdown(generativeDistributions, functions, types,
                 dir, version, extName);
 
         File f = new File(dir.toString(), "index.md");
@@ -187,9 +187,9 @@ public class GenerateDocs {
     }
 
     // output to dir
-    private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
-                                        List<Class<BasicFunction>> functions, Set<Class<?>> types,
-                                        Path dir, String version, String extName) throws IOException {
+    private static String generateMarkdown(List<Class<GenerativeDistribution>> generativeDistributions,
+                                           List<Class<BasicFunction>> functions, Set<Class<?>> types,
+                                           Path dir, String version, String extName) throws IOException {
         File otherDistDir = new File(dir.toString(),OTHER_DIST_DIR);
         File paramDir = new File(dir.toString(),PARAM_DIR);
         File treeModelDir = new File(dir.toString(),TREE_MODEL_DIR);
@@ -203,19 +203,19 @@ public class GenerateDocs {
         /**
          * Title
          */
-        StringBuilder builder = new StringBuilder();
+        StringBuilder indexPageBuilder = new StringBuilder();
         // add url link
         if (LPHY_DOC_TITLE.equalsIgnoreCase(extName))
             extName = addHomepageURL(extName);
         String h1 = extName + " Language Reference";
         if (version != null || !version.trim().isEmpty())
             h1 += " (version " + version + ")";
-        builder.append(new Heading(h1, 1)).append("\n");
+        indexPageBuilder.append(new Heading(h1, 1)).append("\n");
 
-        builder.append(new Text("This an automatically generated language reference " +
+        indexPageBuilder.append(new Text("This an automatically generated language reference " +
                 "of the " + addHomepageURL("LinguaPhylo") +
                 " (LPhy) statistical phylogenetic modeling language."));
-        builder.append("\n\n");
+        indexPageBuilder.append("\n\n");
 
         /**
          * classify GenerativeDistribution
@@ -255,16 +255,16 @@ public class GenerateDocs {
         }
 
         if (paramDistLinks.size() > 0) {
-            builder.append(new Heading(PRIOR.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(paramDistLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(PRIOR.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(paramDistLinks)).append("\n\n");
         }
         if (treeModelLinks.size() > 0) {
-            builder.append(new Heading("Tree models", 2)).append("\n");
-            builder.append(new UnorderedList<>(treeModelLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Tree models", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(treeModelLinks)).append("\n\n");
         }
         if (otherDistLinks.size() > 0) {
-            builder.append(new Heading("Other generative distributions", 2)).append("\n");
-            builder.append(new UnorderedList<>(otherDistLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Other generative distributions", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(otherDistLinks)).append("\n\n");
         }
 
 
@@ -315,24 +315,24 @@ public class GenerateDocs {
         }
 
         if (seqTypeLinks.size() > 0) {
-            builder.append(new Heading(SEQU_TYPE.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(seqTypeLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(SEQU_TYPE.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(seqTypeLinks)).append("\n\n");
         }
         if (taxaAligLinks.size() > 0) {
-            builder.append(new Heading("Taxa & alignment", 2)).append("\n");
-            builder.append(new UnorderedList<>(taxaAligLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Taxa & alignment", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(taxaAligLinks)).append("\n\n");
         }
         if (substSiteLinks.size() > 0) {
-            builder.append(new Heading("Substitution and site models", 2)).append("\n");
-            builder.append(new UnorderedList<>(substSiteLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Substitution and site models", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(substSiteLinks)).append("\n\n");
         }
         if (treeFuncLinks.size() > 0) {
-            builder.append(new Heading(TREE.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(treeFuncLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(TREE.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(treeFuncLinks)).append("\n\n");
         }
         if (otherFuncLinks.size() > 0) {
-            builder.append(new Heading("Other functions", 2)).append("\n");
-            builder.append(new UnorderedList<>(otherFuncLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Other functions", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(otherFuncLinks)).append("\n\n");
         }
 
         /**
@@ -361,8 +361,8 @@ public class GenerateDocs {
             }
         }
         if (typeLinks.size() > 0) {
-            builder.append(new Heading("Types", 2)).append("\n");
-            builder.append(new UnorderedList<>(typeLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Types", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(typeLinks)).append("\n\n");
         }
 
         /**
@@ -372,11 +372,11 @@ public class GenerateDocs {
             List<Link> builtin = List.of(new Link("binary operators functions","built-in-binary-operators.md"),
                     new Link("math functions","built-in-math.md"),
                     new Link("trigonometric functions","built-in-trigonometry.md") );
-            builder.append(new Heading("Built-in", 2)).append("\n");
-            builder.append(new UnorderedList<>(builtin)).append("\n\n");
+            indexPageBuilder.append(new Heading("Built-in", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(builtin)).append("\n\n");
         }
 
-        return builder.toString();
+        return indexPageBuilder.toString();
     }
 
     private static void generateGenerativeDistributions(FileWriter writer, String name, List<Class<?>> classes) throws IOException {

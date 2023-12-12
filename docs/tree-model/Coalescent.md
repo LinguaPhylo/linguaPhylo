@@ -8,9 +8,9 @@ The Kingman coalescent with serially sampled data. (Rodrigo and Felsenstein, 199
 ### Parameters
 
 - [Number](../types/Number.md) **theta** - effective population size, possibly scaled to mutations or calendar units.
-- [Integer](../types/Integer.md) **n** - number of taxa.
-- [Taxa](../types/Taxa.md) **taxa** - Taxa object, (e.g. Taxa or TimeTree or Object[])
-- [Double[]](../types/Double[].md) **ages** - an array of leaf node ages.
+- [Integer](../types/Integer.md) **n** - (optional) number of taxa.
+- [Taxa](../types/Taxa.md) **taxa** - (optional) Taxa object, (e.g. Taxa or TimeTree or Object[])
+- [Double[]](../types/Double[].md) **ages** - (optional) an array of leaf node ages.
 
 ### Return type
 

@@ -8,7 +8,7 @@ The LewisMK Q matrix construction function. Takes a mean rate and a number of st
 ### Parameters
 
 - [Integer](../types/Integer.md) **numStates** - the number of states
-- [Number](../types/Number.md) **meanRate** - the mean rate of the LewisMK process. Default value is 1.0.
+- [Number](../types/Number.md) **meanRate** - (optional) the mean rate of the LewisMK process. Default value is 1.0.
 
 ### Return type
 
