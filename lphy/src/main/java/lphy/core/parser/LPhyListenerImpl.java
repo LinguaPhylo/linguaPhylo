@@ -276,17 +276,23 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             Var var = (Var)visit(ctx.getChild(0));
             RandomVariable variable = null;
 
-            if (genDist instanceof VectorizedDistribution<?> vectDist &&
-                    DataClampingUtils.isDataClamping(var, parserDictionary)) {
+            if (DataClampingUtils.isDataClamping(var, parserDictionary)) {
+                // data clamping
+                Object valueVal = Objects.requireNonNull(parserDictionary.getDataDictionary().get(var.getId())).value();
+
                 // when the generator is VectorizedDistribution,
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
-                Object array = Objects.requireNonNull(parserDictionary.getDataDictionary().get(var.getId())).value();
-                if (array.getClass().isArray()) {
-                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(var.getId(), vectDist, (Object[]) array);
-                    LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
-                            " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
+                if (genDist instanceof VectorizedDistribution<?> vectDist && valueVal.getClass().isArray()) {
+                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(
+                            var.getId(), vectDist, (Object[]) valueVal);
+                } else {
+                    // singe var
+                    variable = new RandomVariable(var.getId(), valueVal, genDist);
+                    variable.setClamped(true);
                 }
+                LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
+                        " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");
 
             } else {
                 variable = genDist.sample(var.getId());
