@@ -7,7 +7,7 @@ The Jukes-Cantor Q matrix construction function. Takes a mean rate and produces 
 
 ### Parameters
 
-- [Number](../types/Number.md) **meanRate** - the rate of the Jukes-Cantor process. Default value is 1.0.
+- [Number](../types/Number.md) **meanRate** - (optional) the rate of the Jukes-Cantor process. Default value is 1.0.
 
 ### Return type
 

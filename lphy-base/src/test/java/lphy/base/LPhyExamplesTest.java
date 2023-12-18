@@ -29,7 +29,7 @@ public class LPhyExamplesTest {
         File[] dirs = exampleDir.listFiles();
         assertNotNull(dirs);
         for (final File dir : dirs) {
-            if (dir.isDirectory())
+            if (dir.isDirectory() && !"todo".equalsIgnoreCase(dir.getName()))
                 testLPhyExamplesInDir(dir);
         }
     }
@@ -41,7 +41,7 @@ public class LPhyExamplesTest {
         List<String> ignoreFiles = Arrays.asList(
                 //TODO Found no implementation for function simulate(lphy= ...
                 "jcCoal.lphy",
-                // TODO gradle test bug : Cannot find the sequence type in SequenceTypeLoader ! DNA
+                // TODO gradle test bug : Cannot find the sequence type  ! DNA
                 "covidDPG.lphy");
 //            String fileName = "hcv_coal_classic.lphy";
         for (String fileName : Objects.requireNonNull(exampleFiles)) {

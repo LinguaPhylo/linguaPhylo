@@ -2,16 +2,27 @@ package lphystudio.spi;
 
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
-import lphy.core.spi.LPhyExtension;
+import lphy.core.spi.LPhyCoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Empty class to show studio ext in the Extension Manager.
+ * TODO: it is unused now, overwrite the register() when any new classes being to add.
+ * Empty class to show studio ext in the LPhyExtension Manager.
  * @author Walter Xie
  */
-public class LPhyStudioImpl implements LPhyExtension {
+public class LPhyStudioImpl extends LPhyCoreImpl { //} implements LPhyExtension {
+
+    @Override
+    public List<Class<? extends GenerativeDistribution>> declareDistributions() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Class<? extends BasicFunction>> declareFunctions() {
+        return new ArrayList<>();
+    }
 
     /**
      * Required by ServiceLoader.
@@ -19,15 +30,6 @@ public class LPhyStudioImpl implements LPhyExtension {
     public LPhyStudioImpl() {
     }
 
-    @Override
-    public List<Class<? extends GenerativeDistribution>> getDistributions() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Class<? extends BasicFunction>> getFunctions() {
-        return new ArrayList<>();
-    }
 
     public String getExtensionName() {
         return "LPhy studio";

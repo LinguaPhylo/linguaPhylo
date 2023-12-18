@@ -30,7 +30,7 @@ The Bernoulli process for n iid trials. The success (true) probability is p. Pro
 
 - [Double](../types/Double.md) **p** - the probability of success.
 - [Integer](../types/Integer.md) **replicates** - the number of bernoulli trials.
-- [Integer](../types/Integer.md) **minSuccesses** - Optional condition: the minimum number of ones in the boolean array.
+- [Integer](../types/Integer.md) **minSuccesses** - (optional) Optional condition: the minimum number of ones in the boolean array.
 
 ### Return type
 

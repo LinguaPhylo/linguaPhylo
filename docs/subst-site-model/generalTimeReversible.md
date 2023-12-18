@@ -9,7 +9,7 @@ The general time reversible instantaneous rate matrix. Takes relative rates and 
 
 - [Double[]](../types/Double[].md) **rates** - the relative rates of the GTR process.
 - [Double[]](../types/Double[].md) **freq** - the base frequencies.
-- [Number](../types/Number.md) **meanRate** - the base frequencies.
+- [Number](../types/Number.md) **meanRate** - (optional) the base frequencies.
 
 ### Return type
 

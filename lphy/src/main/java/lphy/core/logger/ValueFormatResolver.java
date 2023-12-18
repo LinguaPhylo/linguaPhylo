@@ -30,8 +30,9 @@ public class ValueFormatResolver {
         return formatters.get(DEFAULT_FORMATTER);
     }
 
-
-
+    public Map<Class<?>, Class<? extends ValueFormatter>> getResolvedFormatterClasses() {
+        return resolvedFormatterClasses;
+    }
 
     /**
      * Only allow the single T in Value, or CompoundVectorValue for T[] or T[][]

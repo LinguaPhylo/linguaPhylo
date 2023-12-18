@@ -8,10 +8,10 @@ The structured coalescent distribution over tip-labelled time trees.
 ### Parameters
 
 - [Double[][]](../types/Double[][].md) **M** - The population process rate matrix which contains the effective population sizes and migration rates. Off-diagonal migration rates are in units of expected migrants per *generation* backwards in time.
-- [Integer[]](../types/Integer[].md) **k** - the number of taxa in each population. provide either this or a demes argument.
-- [Taxa](../types/Taxa.md) **taxa** - the taxa.
-- [Object[]](../types/Object[].md) **demes** - the deme array, which runs parallel to the taxonArray in the taxa object.
-- [Boolean](../types/Boolean.md) **sort** - whether to sort the deme array, before mapping them to the indices of the effective population sizes and migration rates. If not, as default, the pop size indices are determined by the natural order of the deme array, if true, then the indices are the order of sorted deme array.
+- [Integer[]](../types/Integer[].md) **k** - (optional) the number of taxa in each population. provide either this or a demes argument.
+- [Taxa](../types/Taxa.md) **taxa** - (optional) the taxa.
+- [Object[]](../types/Object[].md) **demes** - (optional) the deme array, which runs parallel to the taxonArray in the taxa object.
+- [Boolean](../types/Boolean.md) **sort** - (optional) whether to sort the deme array, before mapping them to the indices of the effective population sizes and migration rates. If not, as default, the pop size indices are determined by the natural order of the deme array, if true, then the indices are the order of sorted deme array.
 
 ### Return type
 

@@ -8,14 +8,14 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 ### Parameters
 
 - [TimeTree](../types/TimeTree.md) **tree** - the time tree.
-- [Number](../types/Number.md) **mu** - the clock rate. Default value is 1.0.
-- [Double[]](../types/Double[].md) **freq** - the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
+- [Number](../types/Number.md) **mu** - (optional) the clock rate. Default value is 1.0.
+- [Double[]](../types/Double[].md) **freq** - (optional) the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
 - [Double[][]](../types/Double[][].md) **Q** - the instantaneous rate matrix.
-- [Double[]](../types/Double[].md) **siteRates** - a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.
-- [Double[]](../types/Double[].md) **branchRates** - a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
-- [Integer](../types/Integer.md) **L** - length of the alignment
-- [SequenceType](../types/SequenceType.md) **dataType** - the data type used for simulations, default to nucleotide
-- [SimpleAlignment](../types/SimpleAlignment.md) **root** - root sequence, defaults to root sequence generated from equilibrium frequencies.
+- [Double[]](../types/Double[].md) **siteRates** - (optional) a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.
+- [Double[]](../types/Double[].md) **branchRates** - (optional) a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
+- [Integer](../types/Integer.md) **L** - (optional) length of the alignment
+- [SequenceType](../types/SequenceType.md) **dataType** - (optional) the data type used for simulations, default to nucleotide
+- [SimpleAlignment](../types/SimpleAlignment.md) **root** - (optional) root sequence, defaults to root sequence generated from equilibrium frequencies.
 
 ### Return type
 
@@ -39,12 +39,12 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 ### Parameters
 
 - [TimeTree](../types/TimeTree.md) **tree** - the time tree.
-- [Number](../types/Number.md) **mu** - the clock rate. Default value is 1.0.
-- [Double[]](../types/Double[].md) **freq** - the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
+- [Number](../types/Number.md) **mu** - (optional) the clock rate. Default value is 1.0.
+- [Double[]](../types/Double[].md) **freq** - (optional) the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
 - [SiteModel](../types/SiteModel.md) **siteModel** - the site model
-- [Double[]](../types/Double[].md) **branchRates** - a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
-- [Integer](../types/Integer.md) **L** - length of the alignment
-- [SequenceType](../types/SequenceType.md) **dataType** - the data type used for simulations, default to nucleotide
+- [Double[]](../types/Double[].md) **branchRates** - (optional) a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
+- [Integer](../types/Integer.md) **L** - (optional) length of the alignment
+- [SequenceType](../types/SequenceType.md) **dataType** - (optional) the data type used for simulations, default to nucleotide
 
 ### Return type
 

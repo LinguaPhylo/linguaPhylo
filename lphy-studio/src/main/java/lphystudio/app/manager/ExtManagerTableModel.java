@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class ExtManagerTableModel extends EasyTableModel {
 
-    public ExtManagerTableModel(List<Extension> extList) {
+    public ExtManagerTableModel(List<LPhyExtension> extList) {
         super(new String[]{"ID", "GroupID", "Installed", "Dependencies", "Description"}, extList);
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-        Extension ext = (Extension) dataList.get(row);
+        LPhyExtension ext = (LPhyExtension) dataList.get(row);
         return switch (col) {
             case 0 -> ext.getArtifactId();
             case 1 -> ext.getGroupId();

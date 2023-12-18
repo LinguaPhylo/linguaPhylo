@@ -4,7 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.datatype.Binary;
 import lphy.base.evolution.datatype.Continuous;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -15,6 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SequenceTypeBaseImpl implements SequenceTypeExtension {
 
+    @Override
+    public Map<String, ? extends SequenceType> declareSequenceTypes() {
+        Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
+        dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
+        dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
+        dataTypeMap.put(sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
+
+        dataTypeMap.put(sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
+        dataTypeMap.put("protein", SequenceType.AMINO_ACID);
+
+        dataTypeMap.put(sanitise(Binary.NAME), Binary.getInstance());
+        dataTypeMap.put(sanitise(Continuous.NAME), Continuous.getInstance());
+        return dataTypeMap;
+    }
+
     /**
      * Required by ServiceLoader.
      */
@@ -22,22 +37,61 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         //TODO do something here, e.g. print package or classes info ?
     }
 
+    /**
+     * LPhy sequence types {@link SequenceType}
+     */
+    private static Map<String, SequenceType> dataTypeMap;
+
+    /**
+     * @param dataTypeName
+     * @return   a registered data type, but not Standard data type.
+    //     * @see Standard
+     */
+    public static SequenceType getDataType(String dataTypeName) {
+        if (dataTypeMap == null) return null;
+        return dataTypeMap.get(sanitise(dataTypeName));
+    }
+
+    public static List<SequenceType> getDataTypeList() {
+        if (dataTypeMap == null) return new ArrayList<>();
+        return dataTypeMap.values().stream().toList();
+    }
+
+    /**
+     * @param name
+     * @return  trimmed lower case
+     */
+    public static String sanitise(String name) {
+        return name.trim().toLowerCase();
+    }
+
     @Override
-    public Map<String, ? extends SequenceType> getSequenceTypes() {
-        Map<String, SequenceType> dataTypeMap = new ConcurrentHashMap<>();
-        dataTypeMap.put("rna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put("dna", SequenceType.NUCLEOTIDE);
-        dataTypeMap.put(SequenceTypeLoader.sanitise(SequenceType.NUCLEOTIDE.getName()), SequenceType.NUCLEOTIDE); // nucleotide
+    public Set<SequenceType> getSequenceTypes() {
+        return new HashSet<>(dataTypeMap.values());
+    }
 
-        dataTypeMap.put(SequenceTypeLoader.sanitise(SequenceType.AMINO_ACID.getName()), SequenceType.AMINO_ACID); // aminoacid
-        dataTypeMap.put("protein", SequenceType.AMINO_ACID);
+    @Override
+    public void register() {
+        dataTypeMap = new ConcurrentHashMap<>();
 
-        dataTypeMap.put(SequenceTypeLoader.sanitise(Binary.NAME), Binary.getInstance());
-        dataTypeMap.put(SequenceTypeLoader.sanitise(Continuous.NAME), Continuous.getInstance());
-        return dataTypeMap;
+        // sequence types
+        Map<String, ? extends SequenceType> newDataTypes = declareSequenceTypes();
+        if (newDataTypes != null)
+            // TODO validate same sequence type?
+            newDataTypes.forEach(dataTypeMap::putIfAbsent);
+
+        System.out.println("LPhy standard sequence types : " + Arrays.toString(getSequenceTypes().toArray(new SequenceType[0])));
     }
 
     public String getExtensionName() {
-        return "LPhy base";
+        return "LPhy standard sequence types";
     }
+
+    //    /**
+//     * @param sequenceType
+//     * @return true if it is {@link Standard} data type. Ignore case
+//     */
+//    public boolean isStandardDataType(SequenceType sequenceType) {
+//        return sequenceType != null && sequenceType.getName().equalsIgnoreCase(Standard.NAME);
+//    }
 }

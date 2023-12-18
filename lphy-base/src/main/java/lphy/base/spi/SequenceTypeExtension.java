@@ -4,6 +4,7 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.core.spi.Extension;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The service interface defined for SPI.
@@ -20,6 +21,8 @@ public interface SequenceTypeExtension extends Extension {
      *         The string key is a keyword to represent this SequenceType.
      *         The keyword can be used to identify and initialise the corresponding sequence type.
      */
-    Map<String, ? extends SequenceType> getSequenceTypes();
+    Map<String, ? extends SequenceType> declareSequenceTypes();
+
+    Set<SequenceType> getSequenceTypes();
 
 }

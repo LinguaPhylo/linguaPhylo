@@ -20,7 +20,7 @@ public class POMXMLHandler extends DefaultHandler {
     public static final String DEPD_LIST = "dependencies";
     public static final String SCOPE = "scope";
 
-    private Extension extension;
+    private LPhyExtension extension;
     private StringBuffer currVal = new StringBuffer();
 
     // same tags (e.g. groupId, artifactId) in dependencies
@@ -30,14 +30,14 @@ public class POMXMLHandler extends DefaultHandler {
     private Dependency currDepd;
 
 
-    public Extension getExtension() {
+    public LPhyExtension getExtension() {
 //        System.out.println(extension.getArtifactId());
         return extension;
     }
 
     @Override
     public void startDocument() {
-        extension = new Extension();
+        extension = new LPhyExtension();
         // extension artifactId in the beginning of XML
         isDependency = false;
         dependencies = new ArrayList<>();

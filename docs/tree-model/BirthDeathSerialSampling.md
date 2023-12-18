@@ -11,9 +11,9 @@ A tree of extant species and those sampled through time, which is conceptually e
 - [Number](../types/Number.md) **mu** - per-lineage death rate.
 - [Number](../types/Number.md) **rho** - proportion of extant taxa sampled.
 - [Number](../types/Number.md) **psi** - per-lineage sampling-through-time rate.
-- [Integer](../types/Integer.md) **n** - the number of taxa. optional.
-- [Taxa](../types/Taxa.md) **taxa** - Taxa object
-- [Double[]](../types/Double[].md) **ages** - an array of leaf node ages.
+- [Integer](../types/Integer.md) **n** - (optional) the number of taxa. optional.
+- [Taxa](../types/Taxa.md) **taxa** - (optional) Taxa object
+- [Double[]](../types/Double[].md) **ages** - (optional) an array of leaf node ages.
 - [Number](../types/Number.md) **rootAge** - the age of the root.
 
 ### Return type

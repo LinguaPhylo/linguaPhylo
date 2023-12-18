@@ -3,7 +3,6 @@
  */
 module lphystudio {
     requires transitive lphy.base;
-//    requires transitive lphy.io;
 
     requires jlatexmath;
 //    requires org.json;
@@ -22,6 +21,9 @@ module lphystudio {
     exports lphystudio.core.valueeditor;
     exports lphystudio.core.theme;
 
+    // Both are empty now, but must be declared in order to show studio ext in the LPhyExtension Manager.
+    // LPhy extensions
+    uses lphy.core.spi.Extension;
     // declare what service interface the provider intends to use
-    provides lphy.core.spi.LPhyExtension with lphystudio.spi.LPhyStudioImpl;
+    provides lphy.core.spi.Extension with lphystudio.spi.LPhyStudioImpl, lphystudio.spi.ValueFormatterStudioImpl;
 }

@@ -52,7 +52,7 @@ public class  ValueFileLoggerListener implements SimulatorListener {
     }
 
     public String getOutputDir() {
-        return OutputSystem.getOutputDirectory().getAbsolutePath();
+        return OutputSystem.getOrCreateOutputDirectory().getAbsolutePath();
     }
 
     /**

@@ -130,7 +130,7 @@ public class FileConfig {
 
             LoggerUtils.log.info("Simulate data from LPhy script: " + lphyFile.getAbsolutePath() +
                     (seed != null ? " using seed " + seed : "") +
-                    ".\nOutput files to " + OutputSystem.getOutputDirectory().getAbsolutePath());
+                    ".\nOutput files to " + OutputSystem.getOrCreateOutputDirectory().getAbsolutePath());
 
             return new FileConfig( numReplicates, lphyFile, seed );
         }
@@ -147,7 +147,7 @@ public class FileConfig {
                 OutputSystem.setOutputDirectory(outDir.getAbsolutePath());
 
             LoggerUtils.log.info("Simulate data from LPhy script: " + lphyFile.getAbsolutePath() +
-                    ".\nOutput files to " + OutputSystem.getOutputDirectory().getAbsolutePath());
+                    ".\nOutput files to " + OutputSystem.getOrCreateOutputDirectory().getAbsolutePath());
 
         }
     }

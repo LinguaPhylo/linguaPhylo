@@ -1,15 +1,15 @@
 taxa function
 =============
-taxa([Object](../types/Object.md) **names**, [Object[]](../types/Object[].md) **species**, [Double[]](../types/Double[].md) **ages**)
--------------------------------------------------------------------------------------------------------------------------------------
+taxa([Object[]](../types/Object[].md) **names**, [Object[]](../types/Object[].md) **species**, [Double[]](../types/Double[].md) **ages**)
+-----------------------------------------------------------------------------------------------------------------------------------------
 
 A set of taxa with species and ages defined in parallel arrays.
 
 ### Parameters
 
-- [Object](../types/Object.md) **names** - an array of objects representing taxa names
-- [Object[]](../types/Object[].md) **species** - an array of objects representing species names
-- [Double[]](../types/Double[].md) **ages** - the ages of the taxa
+- [Object[]](../types/Object[].md) **names** - an array of objects representing taxa names
+- [Object[]](../types/Object[].md) **species** - (optional) an array of objects representing species names
+- [Double[]](../types/Double[].md) **ages** - (optional) the ages of the taxa
 
 ### Return type
 

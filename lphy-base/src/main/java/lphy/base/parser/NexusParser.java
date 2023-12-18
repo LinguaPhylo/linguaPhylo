@@ -17,7 +17,7 @@ import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.alignment.MetaDataAlignment;
 import lphy.base.evolution.datatype.Continuous;
 import lphy.base.evolution.datatype.DataType;
-import lphy.base.spi.SequenceTypeLoader;
+import lphy.base.spi.SequenceTypeBaseImpl;
 import lphy.core.logger.LoggerUtils;
 
 import java.awt.*;
@@ -386,9 +386,10 @@ public class NexusParser {
 
                         try {
                             // add new data type to this method
-                            sequenceType = SequenceTypeLoader.getDataType(token3);
+                            sequenceType = SequenceTypeBaseImpl.getDataType(token3);
                             if (sequenceType == null)
-                                throw new RuntimeException("Cannot find the sequence type in SequenceTypeLoader ! " + token3);
+                                throw new RuntimeException("Cannot find the sequence type ! " + token3 +
+                                        " does not exist in " + SequenceTypeBaseImpl.getDataTypeList());
 
                         } catch (UnsupportedOperationException e) {
                             throw new ImportException.UnparsableDataException(e.getMessage());

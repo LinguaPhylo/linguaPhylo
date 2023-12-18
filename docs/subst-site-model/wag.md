@@ -7,8 +7,8 @@ The WAG instantaneous rate matrix for amino acid.
 
 ### Parameters
 
-- [Double[]](../types/Double[].md) **freq** - the base frequencies.
-- [Number](../types/Number.md) **meanRate** - the mean rate of the process. default 1.0
+- [Double[]](../types/Double[].md) **freq** - (optional) the base frequencies.
+- [Number](../types/Number.md) **meanRate** - (optional) the mean rate of the process. default 1.0
 
 ### Return type
 

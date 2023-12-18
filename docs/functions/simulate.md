@@ -9,7 +9,7 @@ The function to simulate data from a given lphy script.
 
 - [String](../types/String.md) **lphy** - the file path of the lphy script to simulate data.
 - [Integer](../types/Integer.md) **seed** - the seed (integer).
-- [String](../types/String.md) **outDir** - the directory to output the 'true' values. Default to the parent directory of the given lphy script.
+- [String](../types/String.md) **outDir** - (optional) the directory to output the simulated values. Default to the parent directory of the given lphy script.
 
 ### Return type
 

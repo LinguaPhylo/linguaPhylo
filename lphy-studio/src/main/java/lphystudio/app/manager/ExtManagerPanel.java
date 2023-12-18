@@ -16,7 +16,7 @@ public class ExtManagerPanel extends JPanel {
     public ExtManagerPanel(ExtManager manager) {
         this.manager = manager;
 
-        final List<Extension> extList = manager.getLoadedLPhyExts();
+        final List<LPhyExtension> extList = manager.getLPhyExtensions();
         String dirStr = manager.getJarDirStr();
         if (dirStr.trim().isEmpty())
             System.err.println("Warning: no directory is found to store lphy extensions " + dirStr);

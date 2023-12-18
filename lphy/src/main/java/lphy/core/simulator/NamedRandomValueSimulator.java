@@ -57,7 +57,7 @@ public class NamedRandomValueSimulator {
         // must provide File lphyFile, int numReplicates, Long seed
         Map<Integer, List<Value>> allReps = simulate(lphyFile, outputFilePrefix,
                     numReplicates, constants, seed);
-        System.out.println("Write all files to " + (outDir !=null ? outDir : OutputSystem.getOutputDirectory()));
+        System.out.println("Write all files to " + (outDir !=null ? outDir : OutputSystem.getOrCreateOutputDirectory()));
         return allReps;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
  * metadata only for the extension.
  * @author Walter Xie
  */
-public class Extension extends Dependency {
+public class LPhyExtension extends Dependency {
 
     private String name; // may be diff to artifactId
     private String desc;
@@ -17,11 +17,11 @@ public class Extension extends Dependency {
 
     private List<Dependency> dependencies = new ArrayList<>();
 
-    public Extension() {
+    public LPhyExtension() {
         super();
     }
 
-    public Extension(String groupId, String artifactId, String version) {
+    public LPhyExtension(String groupId, String artifactId, String version) {
         super(groupId, artifactId, version);
 
     }
@@ -67,7 +67,7 @@ public class Extension extends Dependency {
      //     * @param jarURL
      * @throws FileNotFoundException
      @Deprecated
-     public Extension(URL jarURL) throws FileNotFoundException {
+     public LPhyExtension(URL jarURL) throws FileNotFoundException {
      String jarLoc = Objects.requireNonNull(jarURL).toString();
 
      if (!jarLoc.startsWith("jar:file:") || !jarLoc.contains(".jar"))

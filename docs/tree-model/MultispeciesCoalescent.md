@@ -8,8 +8,8 @@ The Kingman coalescent distribution within each branch of species tree gives ris
 ### Parameters
 
 - [Double[]](../types/Double[].md) **theta** - effective population sizes, one for each species (both extant and ancestral).
-- [Integer[]](../types/Integer[].md) **n** - the number of sampled taxa in the gene tree for each extant species.
-- [Taxa](../types/Taxa.md) **taxa** - the taxa for the gene tree, with species to define the mapping.
+- [Integer[]](../types/Integer[].md) **n** - (optional) the number of sampled taxa in the gene tree for each extant species.
+- [Taxa](../types/Taxa.md) **taxa** - (optional) the taxa for the gene tree, with species to define the mapping.
 - [TimeTree](../types/TimeTree.md) **S** - the species tree. 
 
 ### Return type

@@ -8,9 +8,9 @@ The probability distribution of the number of events when the expected number of
 ### Parameters
 
 - [Number](../types/Number.md) **lambda** - the expected number of events.
-- [Integer](../types/Integer.md) **offset** - optional parameter to add a constant to the returned result, default is 0
-- [Integer](../types/Integer.md) **min** - optional parameter to specify a condition that the number of events must be greater than or equal to this mininum, default is 0.
-- [Integer](../types/Integer.md) **max** - optional parameter to specify a condition that the number of events must be less than or equal to this maximum
+- [Integer](../types/Integer.md) **offset** - (optional) optional parameter to add a constant to the returned result, default is 0
+- [Integer](../types/Integer.md) **min** - (optional) optional parameter to specify a condition that the number of events must be greater than or equal to this mininum, default is 0.
+- [Integer](../types/Integer.md) **max** - (optional) optional parameter to specify a condition that the number of events must be less than or equal to this maximum
 
 ### Return type
 

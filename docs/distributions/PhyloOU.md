@@ -9,10 +9,10 @@ The phylogenetic Ornstein-Ulhenbeck distribution. A continous trait is simulated
 
 - [TimeTree](../types/TimeTree.md) **tree** - the time tree.
 - [Double](../types/Double.md) **diffRate** - the variance of the underlying Brownian process. This is not the equilibrium variance of the OU process.
-- [Double](../types/Double.md) **theta** - the 'optimal' value that the long-term process is centered around.
+- [Double](../types/Double.md) **theta** - (optional) the 'optimal' value that the long-term process is centered around.
 - [Double](../types/Double.md) **alpha** - the drift term that determines the rate of drift towards the optimal value.
 - [Double](../types/Double.md) **y0** - the value of continuous trait at the root.
-- [Double[]](../types/Double[].md) **branchThetas** - the 'optimal' value for each branch in the tree.
+- [Double[]](../types/Double[].md) **branchThetas** - (optional) the 'optimal' value for each branch in the tree.
 
 ### Return type
 

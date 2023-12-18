@@ -7,8 +7,8 @@ A function that parses an alignment from a fasta file.
 
 ### Parameters
 
-- [String](../types/String.md) **file** - the name of fasta file.
-- [Object](../types/Object.md) **options** - the map containing optional arguments and their values for reuse.
+- [String](../types/String.md) **file** - the name of fasta file including path.
+- [Object](../types/Object.md) **options** - (optional) the map containing optional arguments and their values for reuse.
 
 ### Return type
 

@@ -1,11 +1,12 @@
-<a href="https://linguaphylo.github.io">LPhy</a> Language Reference (version 1.4.3)
-=======================================
+<a href="https://linguaphylo.github.io">LPhy</a> Language Reference (version 1.5.0)
+===================================================================================
 This an automatically generated language reference of the <a href="https://linguaphylo.github.io">LinguaPhylo</a> (LPhy) statistical phylogenetic modeling language.
 
 Parametric distribution
 -----------------------
 - [Bernoulli](parametric/Bernoulli.md)
 - [Beta](parametric/Beta.md)
+- [Categorical](parametric/Categorical.md)
 - [Cauchy](parametric/Cauchy.md)
 - [Dirichlet](parametric/Dirichlet.md)
 - [DiscretizeGamma](parametric/DiscretizeGamma.md)
@@ -45,7 +46,6 @@ Tree models
 
 Other generative distributions
 ------------------------------
-- [Categorical](distributions/Categorical.md)
 - [ErrorModel](distributions/ErrorModel.md)
 - [MissingSites](distributions/MissingSites.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
@@ -70,8 +70,10 @@ Taxa & alignment
 - [extantTaxa](taxa-alignment/extantTaxa.md)
 - [extractTrait](taxa-alignment/extractTrait.md)
 - [invariableSites](taxa-alignment/invariableSites.md)
+- [readDelim](taxa-alignment/readDelim.md)
 - [readFasta](taxa-alignment/readFasta.md)
 - [readNexus](taxa-alignment/readNexus.md)
+- [rmTaxa](taxa-alignment/rmTaxa.md)
 - [selectSites](taxa-alignment/selectSites.md)
 - [species](taxa-alignment/species.md)
 - [variableSites](taxa-alignment/variableSites.md)
@@ -89,6 +91,7 @@ Substitution and site models
 - [lewisMK](subst-site-model/lewisMK.md)
 - [migrationMatrix](subst-site-model/migrationMatrix.md)
 - [nucleotideModel](subst-site-model/nucleotideModel.md)
+- [toDouble](subst-site-model/toDouble.md)
 - [wag](subst-site-model/wag.md)
 - [bSiteModel](subst-site-model/bSiteModel.md)
 
@@ -106,10 +109,12 @@ Other functions
 - [argi](functions/argi.md)
 - [concat2Str](functions/concat2Str.md)
 - [concatArray](functions/concatArray.md)
+- [elementsAt](functions/elementsAt.md)
 - [get](functions/get.md)
 - [ifelse](functions/ifelse.md)
 - [intersect](functions/intersect.md)
 - [length](functions/length.md)
+- [map](functions/map.md)
 - [nchar](functions/nchar.md)
 - [ntaxa](functions/ntaxa.md)
 - [parseInt](functions/parseInt.md)
@@ -148,14 +153,9 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
-- [SimpleAlignment](types/SimpleAlignment.md)
 - [MetaDataAlignment](types/MetaDataAlignment.md)
+- [SimpleAlignment](types/SimpleAlignment.md)
 - [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)
-
-Built-in
---------
-- [binary operators functions](built-in-binary-operators.md)
-- [math functions](built-in-math.md)
-- [trigonometric functions](built-in-trigonometry.md)
+- [Table](types/Table.md)
 

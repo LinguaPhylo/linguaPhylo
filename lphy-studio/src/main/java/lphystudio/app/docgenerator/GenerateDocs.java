@@ -1,13 +1,13 @@
 package lphystudio.app.docgenerator;
 
 import lphy.core.logger.LoggerUtils;
-import lphy.core.model.DeterministicFunction;
+import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Generator;
 import lphy.core.model.GeneratorUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.spi.LoaderManager;
+import lphy.core.spi.*;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.list.UnorderedList;
 import net.steppschuh.markdowngenerator.text.Text;
@@ -46,34 +46,43 @@ public class GenerateDocs {
     public static final String TYPES_DIR = "types";
     // No white space
     static final String LPHY_DOC_TITLE = "LPhy";
+    // Core and base
+    static List<String> BASIC_EXT_NAMES = List.of("lphy.core.spi.LPhyCoreImpl", "lphy.base.spi.LPhyBaseImpl");
 
     public static void main(String[] args) throws IOException {
 
         String version = "";
         if (args.length > 0)  version = args[0];
 
-//        LPhyCoreLoader lphyCoreLoader = new LPhyCoreLoader();
-        // trigger all loaders
-//        ParserLoader parserLoader = new ParserLoader();
-
         // Do not change default
         String extName = LPHY_DOC_TITLE;
+        List<String> extClsNameList;
         // for extension only, e.g.
-        // args = 0.0.5 "LPhy Extension Phylonco" phylonco.lphy.spi.Phylonco
+        // args = 0.0.5 "LPhy LPhyExtension Phylonco" phylonco.lphy.spi.Phylonco
         // set WD = ~/WorkSpace/beast-phylonco/PhyloncoL/doc
         if (args.length > 2)  {
             extName = args[1];
             // class name with package that implements {@link LPhyExtension}
-            String clsName = args[2];
-            // require init ParserLoader
-            LoaderManager.getLphyCoreLoader().loadExtension(clsName);
-        }
-        System.out.println("Creating doc for " + extName + " ...\n");
+            String[] clsNames = args[2].trim().split(";"); // split by ;
 
-        List<Class<GenerativeDistribution>> generativeDistributions = LoaderManager.getAllGenerativeDistributionClasses();
+            if (clsNames.length < 1 || clsNames[0].trim().isEmpty())
+                throw new IllegalArgumentException("The extension name is incorrect ! " + Arrays.toString(clsNames));
+            extClsNameList = Arrays.stream(clsNames).toList();
+        } else
+            extClsNameList = BASIC_EXT_NAMES;
+        System.out.println("Creating doc for " + extName + " version " + version + " ...\n");
+
+        // cached, everything should be loaded already
+        LPhyCoreLoader lphyCoreLoader = LoaderManager.getLphyCoreLoader();
+        // get extensions given their class names
+        Map<String, Extension> extensionMap = lphyCoreLoader.getExtensionMap(extClsNameList);
+        // check the size
+        if (extensionMap.isEmpty())
+            throw new IllegalArgumentException("Cannot find the extensions defined by the classes : " + extClsNameList);
+
+        fillInAllClassesOfExtension(extensionMap, LPhyExtension.class);
+        // sort functions
         generativeDistributions.sort(Comparator.comparing(Class::getSimpleName));
-
-        List<Class<DeterministicFunction>> functions = LoaderManager.getAllFunctionsClasses();
         functions.sort(Comparator.comparing(Class::getSimpleName));
 
         // output dir
@@ -86,8 +95,8 @@ public class GenerateDocs {
         }
         System.out.println("Creating " + extName + " docs to " + dir.toAbsolutePath() + "\n");
 
-        String indexMD = generateIndex(generativeDistributions, functions,
-                LoaderManager.getTypes(), dir, version, extName);
+        String indexMD = generateMarkdown(generativeDistributions, functions, types,
+                dir, version, extName);
 
         File f = new File(dir.toString(), "index.md");
         FileWriter writer = new FileWriter(f);
@@ -95,6 +104,31 @@ public class GenerateDocs {
         writer.close();
 
     }
+
+    private static List<Class<GenerativeDistribution>> generativeDistributions = new ArrayList<>();
+    private static List<Class<BasicFunction>> functions = new ArrayList<>();
+    private static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+
+    private static void fillInAllClassesOfExtension(Map<String, Extension> extensionMap, Class<? extends Extension> extCls) {
+        // loop through all extesions
+        for (Map.Entry<String, Extension> entry : extensionMap.entrySet()) {
+            Extension extension = entry.getValue();
+            if (extCls.isAssignableFrom(extension.getClass())) {
+                // {@link GenerativeDistribution}, {@link BasicFunction}.
+                Map<String, Set<Class<?>>> distMap = ((LPhyExtension) extension).getDistributions();
+                generativeDistributions.addAll(LoaderManager.getAllClassesOfType(distMap, GenerativeDistribution.class));
+                Map<String, Set<Class<?>>> funcMap = ((LPhyExtension) extension).getFunctions();
+                functions.addAll(LoaderManager.getAllClassesOfType(funcMap, BasicFunction.class));
+                types.addAll(((LPhyExtension) extension).getTypes());
+            } else if (ValueFormatterExtension.class.isAssignableFrom(extension.getClass())) {
+                // TODO
+            } else {
+                LoggerUtils.log.fine("Unsolved extension from core : " + extension.getExtensionName()
+                        + ", which may be registered in " + extension.getModuleName());
+            }
+        }
+    }
+
 
     private static boolean isLPhyDoc(String extName) {
         return LPHY_DOC_TITLE.equalsIgnoreCase(extName.trim());
@@ -129,7 +163,7 @@ public class GenerateDocs {
         };
     }
 
-    private static String getFuncDir(Class<DeterministicFunction> func) {
+    private static String getFuncDir(Class<BasicFunction> func) {
         GeneratorInfo generatorInfo = GeneratorUtils.getGeneratorInfo(func);
         GeneratorCategory category = null;
         if (generatorInfo != null) {
@@ -153,9 +187,9 @@ public class GenerateDocs {
     }
 
     // output to dir
-    private static String generateIndex(List<Class<GenerativeDistribution>> generativeDistributions,
-                                        List<Class<DeterministicFunction>> functions, Set<Class<?>> types,
-                                        Path dir, String version, String extName) throws IOException {
+    private static String generateMarkdown(List<Class<GenerativeDistribution>> generativeDistributions,
+                                           List<Class<BasicFunction>> functions, Set<Class<?>> types,
+                                           Path dir, String version, String extName) throws IOException {
         File otherDistDir = new File(dir.toString(),OTHER_DIST_DIR);
         File paramDir = new File(dir.toString(),PARAM_DIR);
         File treeModelDir = new File(dir.toString(),TREE_MODEL_DIR);
@@ -169,19 +203,19 @@ public class GenerateDocs {
         /**
          * Title
          */
-        StringBuilder builder = new StringBuilder();
+        StringBuilder indexPageBuilder = new StringBuilder();
         // add url link
         if (LPHY_DOC_TITLE.equalsIgnoreCase(extName))
             extName = addHomepageURL(extName);
         String h1 = extName + " Language Reference";
         if (version != null || !version.trim().isEmpty())
             h1 += " (version " + version + ")";
-        builder.append(new Heading(h1, 1)).append("\n");
+        indexPageBuilder.append(new Heading(h1, 1)).append("\n");
 
-        builder.append(new Text("This an automatically generated language reference " +
+        indexPageBuilder.append(new Text("This an automatically generated language reference " +
                 "of the " + addHomepageURL("LinguaPhylo") +
                 " (LPhy) statistical phylogenetic modeling language."));
-        builder.append("\n\n");
+        indexPageBuilder.append("\n\n");
 
         /**
          * classify GenerativeDistribution
@@ -221,21 +255,21 @@ public class GenerateDocs {
         }
 
         if (paramDistLinks.size() > 0) {
-            builder.append(new Heading(PRIOR.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(paramDistLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(PRIOR.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(paramDistLinks)).append("\n\n");
         }
         if (treeModelLinks.size() > 0) {
-            builder.append(new Heading("Tree models", 2)).append("\n");
-            builder.append(new UnorderedList<>(treeModelLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Tree models", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(treeModelLinks)).append("\n\n");
         }
         if (otherDistLinks.size() > 0) {
-            builder.append(new Heading("Other generative distributions", 2)).append("\n");
-            builder.append(new UnorderedList<>(otherDistLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Other generative distributions", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(otherDistLinks)).append("\n\n");
         }
 
 
         /**
-         * classify DeterministicFunction
+         * classify BasicFunction
          */
         List<Link> seqTypeLinks = new ArrayList<>();
         List<Link> taxaAligLinks = new ArrayList<>();
@@ -245,7 +279,7 @@ public class GenerateDocs {
 
         Set<String> funcNames = new TreeSet<>();
 
-        for (Class<DeterministicFunction> function : functions) {
+        for (Class<BasicFunction> function : functions) {
             String name = GeneratorUtils.getGeneratorName(function);
             String subDir = getFuncDir(function);
             // based on where index.md is
@@ -281,24 +315,24 @@ public class GenerateDocs {
         }
 
         if (seqTypeLinks.size() > 0) {
-            builder.append(new Heading(SEQU_TYPE.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(seqTypeLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(SEQU_TYPE.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(seqTypeLinks)).append("\n\n");
         }
         if (taxaAligLinks.size() > 0) {
-            builder.append(new Heading("Taxa & alignment", 2)).append("\n");
-            builder.append(new UnorderedList<>(taxaAligLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Taxa & alignment", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(taxaAligLinks)).append("\n\n");
         }
         if (substSiteLinks.size() > 0) {
-            builder.append(new Heading("Substitution and site models", 2)).append("\n");
-            builder.append(new UnorderedList<>(substSiteLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Substitution and site models", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(substSiteLinks)).append("\n\n");
         }
         if (treeFuncLinks.size() > 0) {
-            builder.append(new Heading(TREE.getName(), 2)).append("\n");
-            builder.append(new UnorderedList<>(treeFuncLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading(TREE.getName(), 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(treeFuncLinks)).append("\n\n");
         }
         if (otherFuncLinks.size() > 0) {
-            builder.append(new Heading("Other functions", 2)).append("\n");
-            builder.append(new UnorderedList<>(otherFuncLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Other functions", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(otherFuncLinks)).append("\n\n");
         }
 
         /**
@@ -327,8 +361,8 @@ public class GenerateDocs {
             }
         }
         if (typeLinks.size() > 0) {
-            builder.append(new Heading("Types", 2)).append("\n");
-            builder.append(new UnorderedList<>(typeLinks)).append("\n\n");
+            indexPageBuilder.append(new Heading("Types", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(typeLinks)).append("\n\n");
         }
 
         /**
@@ -338,11 +372,11 @@ public class GenerateDocs {
             List<Link> builtin = List.of(new Link("binary operators functions","built-in-binary-operators.md"),
                     new Link("math functions","built-in-math.md"),
                     new Link("trigonometric functions","built-in-trigonometry.md") );
-            builder.append(new Heading("Built-in", 2)).append("\n");
-            builder.append(new UnorderedList<>(builtin)).append("\n\n");
+            indexPageBuilder.append(new Heading("Built-in", 2)).append("\n");
+            indexPageBuilder.append(new UnorderedList<>(builtin)).append("\n\n");
         }
 
-        return builder.toString();
+        return indexPageBuilder.toString();
     }
 
     private static void generateGenerativeDistributions(FileWriter writer, String name, List<Class<?>> classes) throws IOException {
@@ -364,13 +398,13 @@ public class GenerateDocs {
         writer.write(builder.toString());
     }
 
-    private static void generateFunctions(FileWriter writer, String name, List<Class<DeterministicFunction>> classes) throws IOException {
+    private static void generateFunctions(FileWriter writer, String name, List<Class<BasicFunction>> classes) throws IOException {
 
         StringBuilder builder = new StringBuilder();
 
         builder.append(new Heading(name + " function",1)).append("\n");
 
-        for (Class<DeterministicFunction> c : classes) {
+        for (Class<BasicFunction> c : classes) {
             builder.append(GeneratorMarkdown.getGeneratorMarkdown(c, TYPES_DIR)).append("\n\n");
         }
 

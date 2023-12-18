@@ -36,7 +36,7 @@ publishing {
         create<MavenPublication>(project.name) {
             artifactId = project.base.archivesName.get()
             pom {
-                description.set("The base library of LPhy. LPhy is a probabilistic model specification language to concisely and precisely define phylogenetic models.")
+                description.set("The standard library of LPhy, which contains the required generative distributions and basic functions.")
                 developers {
                     developer {
                         name.set(developers)

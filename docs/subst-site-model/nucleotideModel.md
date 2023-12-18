@@ -11,7 +11,7 @@ The instantaneous rate matrix. Takes relative rates and base frequencies and pro
 - [Integer](../types/Integer.md) **modelIndicator** - the index of the model to be employed
 - [Double[]](../types/Double[].md) **rates** - the relative rates of the GTR process.
 - [Double[]](../types/Double[].md) **freq** - the base frequencies.
-- [Number](../types/Number.md) **meanRate** - the rate of substitution.
+- [Number](../types/Number.md) **meanRate** - (optional) the rate of substitution.
 
 ### Return type
 
