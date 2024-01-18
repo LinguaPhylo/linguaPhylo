@@ -294,6 +294,8 @@ public class LinguaPhyloStudio {
                     // retrieve all simulated alignments stored in the map
                     Map<Integer, List<Value>> valuesMap = panel.getValuesAllRepsMap();
 
+                    // TODO: Cannot specify to call which formatter in the core, as Nexus formatter is in the base,
+                    // so call ValueFileLoggerListener instead, however the alignment will be simulated again.
                     ValueFileLoggerListener fileLoggerListener = new ValueFileLoggerListener();
                     // set alignment directory
                     fileLoggerListener.setOutputDir(selectedDir.getAbsolutePath());
