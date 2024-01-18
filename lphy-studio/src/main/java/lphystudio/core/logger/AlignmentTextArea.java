@@ -19,7 +19,7 @@ import java.util.List;
  * but contains GUI code.
  * @author Walter Xie
  */
-public class AlignmentLog extends JTextArea implements SimulatorListener {
+public class AlignmentTextArea extends JTextArea implements SimulatorListener {
 
     final LPhyParserDictionary parser;
 
@@ -35,7 +35,7 @@ public class AlignmentLog extends JTextArea implements SimulatorListener {
 
     int numReplicates = 1000;
 
-    public AlignmentLog(LPhyParserDictionary parser) {
+    public AlignmentTextArea(LPhyParserDictionary parser) {
         this.parser = parser;
     }
 

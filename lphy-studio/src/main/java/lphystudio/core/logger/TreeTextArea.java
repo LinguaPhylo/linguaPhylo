@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Log tree to GUI,
  */
-public class TreeLog extends JTextArea implements SimulatorListener {
+public class TreeTextArea extends JTextArea implements SimulatorListener {
 
     int numReplicates = 1000;
 
-    public TreeLog() { }
+    public TreeTextArea() { }
 
     public void clear() {
         setText("");

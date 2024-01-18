@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-public class VariableLog extends JTextArea implements SimulatorListener {
+public class VariableTextArea extends JTextArea implements SimulatorListener {
 
 //    boolean logVariables;
 //    boolean logStatistics;
@@ -18,7 +18,7 @@ public class VariableLog extends JTextArea implements SimulatorListener {
 
     Font loggerFont = new Font(Font.MONOSPACED, Font.PLAIN, 10);
 
-    public VariableLog() {//boolean logStatistics, boolean logVariables
+    public VariableTextArea() {//boolean logStatistics, boolean logVariables
 
         setTabSize(4);
         setEditable(false);

@@ -2,10 +2,10 @@ package lphystudio.app.graphicalmodelpanel;
 
 import lphy.core.simulator.SimulatorListener;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
-import lphystudio.core.logger.AlignmentLog;
-import lphystudio.core.logger.TreeLog;
-import lphystudio.core.logger.VariableLog;
-import lphystudio.core.logger.VariableSummaryLog;
+import lphystudio.core.logger.AlignmentTextArea;
+import lphystudio.core.logger.TreeTextArea;
+import lphystudio.core.logger.VariableSummaryTable;
+import lphystudio.core.logger.VariableTextArea;
 import lphystudio.core.narrative.HTMLNarrative;
 import lphystudio.core.narrative.LaTeXNarrative;
 
@@ -35,10 +35,10 @@ public class ViewerPane extends JTabbedPane {
 
     ErrorPanel errorPanel;
 
-    VariableSummaryLog variableSummary = new VariableSummaryLog();//true, true
-    VariableLog variableLog = new VariableLog();//true, true
-    TreeLog treeLog = new TreeLog();
-    AlignmentLog alignmentLog;
+    VariableSummaryTable variableSummary = new VariableSummaryTable();//true, true
+    VariableTextArea variableTextArea = new VariableTextArea();//true, true
+    TreeTextArea treeTextArea = new TreeTextArea();
+    AlignmentTextArea alignmentTextArea;
 
     JComponent[] viewerComponent = new JComponent[Viewer.values().length];
 
@@ -47,9 +47,9 @@ public class ViewerPane extends JTabbedPane {
     public void clear() {
         currentSelectionContainer.setViewport(null);
         currentSelectionContainer.setBorder(null);
-        treeLog.clear();
-        variableLog.clear();
-        alignmentLog.clear();
+        treeTextArea.clear();
+        variableTextArea.clear();
+        alignmentTextArea.clear();
     }
 
     enum Viewer {
@@ -93,11 +93,11 @@ public class ViewerPane extends JTabbedPane {
         latexPanel = new NarrativePanel(parserDictionary, new LaTeXNarrative(), component);
 
         variableSummaryScrollPane = new JScrollPane(variableSummary);
-        variableLogScrollPane = new JScrollPane(variableLog);
-        treeLogScrollPane = new JScrollPane(treeLog);
+        variableLogScrollPane = new JScrollPane(variableTextArea);
+        treeLogScrollPane = new JScrollPane(treeTextArea);
 
-        alignmentLog = new AlignmentLog(parserDictionary);
-        alignmentLogPanel = new AlignmentLogPanel(alignmentLog);
+        alignmentTextArea = new AlignmentTextArea(parserDictionary);
+        alignmentLogPanel = new AlignmentLogPanel(alignmentTextArea);
 
         errorPanel = new ErrorPanel();
 
@@ -138,7 +138,7 @@ public class ViewerPane extends JTabbedPane {
     }
 
     public List<SimulatorListener> getGUISimulatorListener() {
-        return List.of(variableLog, treeLog, variableSummary, alignmentLog);
+        return List.of(variableTextArea, treeTextArea, variableSummary, alignmentTextArea);
     }
 
     @Deprecated
@@ -146,16 +146,16 @@ public class ViewerPane extends JTabbedPane {
         return (StatePanel) valueScrollPane.getViewport().getView();
     }
 
-    public VariableLog getVariableLog() {
-        return variableLog;
+    public VariableTextArea getVariableLog() {
+        return variableTextArea;
     }
 
-    public TreeLog getTreeLog() {
-        return treeLog;
+    public TreeTextArea getTreeLog() {
+        return treeTextArea;
     }
 
-    public AlignmentLog getAlignmentLog() {
-        return alignmentLog;
+    public AlignmentTextArea getAlignmentLog() {
+        return alignmentTextArea;
     }
 
     public JMenu getMenu() {
