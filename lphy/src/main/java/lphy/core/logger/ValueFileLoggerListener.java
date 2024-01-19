@@ -117,6 +117,10 @@ public class  ValueFileLoggerListener implements SimulatorListener {
         // for Mode.VALUE_PER_CELL
         boolean firstColValuePerCell = true;
 
+        // Write all values using default ValueFormatter,
+        // but if the value type is implementing TextFileFormatted,
+        // then TextFileFormatted will be used, not its ValueFormatter.
+
         for (int i = 0; i < values.size(); i++) {
 
             Value value = values.get(i);

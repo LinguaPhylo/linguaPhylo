@@ -13,6 +13,7 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
+@Deprecated
 public class ValueFormatterStudioImpl extends ValueFormatterCoreImpl {//implements ValueFormatterExtension {
 //    List<Class<? extends ValueFormatter>> valueFormatters = Arrays.asList(
 //            AlignmentLog.class, TreeLog.class, VariableLog.class, VariableSummaryLog.class);
