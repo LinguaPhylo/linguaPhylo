@@ -30,7 +30,7 @@ public class FastaAlignment extends SimpleAlignment implements TextFileFormatted
         for (int i=0; i < ntaxa(); i++) {
             try {
                 String taxonName = getTaxaNames()[i];
-                lines.add(taxonName);
+                lines.add(">" + taxonName);
                 String sequence = getSequence(i);
                 lines.add(sequence);
             } catch (Exception ex) {

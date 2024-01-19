@@ -142,6 +142,8 @@ public class  ValueFileLoggerListener implements SimulatorListener {
                     LoggerUtils.log.severe("Cannot write " + canonicalId + " to file : " +
                             outputFile.getAbsolutePath() +  " !");
                 }
+                System.out.println("Create file : " + fileName +
+                        " in the directory " + OutputSystem.getOrCreateOutputDirectory());
 
             } else { // default, ValueFormatter not accessible to lphy extension developer
 
