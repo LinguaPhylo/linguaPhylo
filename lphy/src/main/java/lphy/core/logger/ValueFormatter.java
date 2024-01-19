@@ -4,6 +4,8 @@ import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 
 /**
+ * Note: this cannot be extended by lphy extension developers,
+ *       please use {@link TextFileFormatted}.
  * The formatter to parse the {@link Value#value()} into String.
  * It aims to process single element only.
  * The array like data structure needs to decompose into elements.

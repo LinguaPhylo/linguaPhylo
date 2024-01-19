@@ -8,6 +8,8 @@ import lphy.core.spi.LoaderManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -118,42 +120,69 @@ public class  ValueFileLoggerListener implements SimulatorListener {
         for (int i = 0; i < values.size(); i++) {
 
             Value value = values.get(i);
-            List<ValueFormatter> formatters = valueFormatResolver.getFormatter(value);
+            Class type = value.getType();
 
-            // if it is array, then one ValueFormatter for one element
-            for (int j = 0; j < formatters.size(); j++) {
-                ValueFormatter formatter = formatters.get(j);
+            // TextFileFormatted is the interface for lphy extension developers
+            // to define the type that can be written to a file
+            if (TextFileFormatted.class.isAssignableFrom(type)) {
 
-                if (formatter == null) {
-                    LoggerUtils.log.warning("Cannot find formatter for " + value.getId() +
-                            ", type is " + value.getType());
+                TextFileFormatted fileFormatted = (TextFileFormatted) value.value();
 
-                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE) {
-                    // e.g. Alignment
-                    ValueFormatHandler.ValuePerFile.createFile(index, formatter,
-                            fileConfig.getFilePrefix(), fileConfig.getNumReplicates());
+                String fileExtension = fileFormatted.getFileType();
+                String canonicalId = value.getCanonicalId();
 
-                    ValueFormatHandler.ValuePerFile
-                            .exportValuePerFile(index, value, formatter);
+                String fileName = FileConfig.getOutFileName(canonicalId, index,
+                        fileConfig.getNumReplicates(), fileConfig.getFilePrefix(), fileExtension);
+                File outputFile = OutputSystem.getOutputFile(fileName);
 
-                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_LINE) {
-                    // process meta data given 1st value
-                    if (index == 0)
-                        ValueFormatHandler.ValuePerLine.processHeaderFooter(formatter,
-                                metadataById, fileConfig.getFilePrefix());
+                List<String> lines = fileFormatted.getTextForFile();
+                try {
+                    Files.write(outputFile.toPath(), lines, StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                    LoggerUtils.log.severe("Cannot write " + canonicalId + " to file : " +
+                            outputFile.getAbsolutePath() +  " !");
+                }
 
-                    // e.g. Trees
-                    ValueFormatHandler.ValuePerLine.populateValues(index, value, formatter, linesById);
+            } else { // default, ValueFormatter not accessible to lphy extension developer
 
-                } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) {
-                    // add col names and parameters values
-                    ValueFormatHandler.ValuePerCell.addColumnNamesAndLines(index, firstColValuePerCell,
-                            value, formatter, valuesByRepColNamesBuilder, valuesByRepBuilder);
-                    firstColValuePerCell = false;
+                List<ValueFormatter> formatters = valueFormatResolver.getFormatter(value);
 
-                } else
-                    throw new RuntimeException("Unrecognised formatter mode : " + formatter.getMode() + " !");
-            } // end for j
+                // if it is array, then one ValueFormatter for one element
+                for (int j = 0; j < formatters.size(); j++) {
+                    ValueFormatter formatter = formatters.get(j);
+
+                    if (formatter == null) {
+                        LoggerUtils.log.warning("Cannot find formatter for " + value.getId() +
+                                ", type is " + value.getType());
+
+                    } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE) {
+                        // e.g. Alignment
+                        ValueFormatHandler.ValuePerFile.createFile(index, formatter,
+                                fileConfig.getFilePrefix(), fileConfig.getNumReplicates());
+
+                        ValueFormatHandler.ValuePerFile
+                                .exportValuePerFile(index, value, formatter);
+
+                    } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_LINE) {
+                        // process meta data given 1st value
+                        if (index == 0)
+                            ValueFormatHandler.ValuePerLine.processHeaderFooter(formatter,
+                                    metadataById, fileConfig.getFilePrefix());
+
+                        // e.g. Trees
+                        ValueFormatHandler.ValuePerLine.populateValues(index, value, formatter, linesById);
+
+                    } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) {
+                        // add col names and parameters values
+                        ValueFormatHandler.ValuePerCell.addColumnNamesAndLines(index, firstColValuePerCell,
+                                value, formatter, valuesByRepColNamesBuilder, valuesByRepBuilder);
+                        firstColValuePerCell = false;
+
+                    } else
+                        throw new RuntimeException("Unrecognised formatter mode : " + formatter.getMode() + " !");
+                } // end for j
+
+            } // end if else
         } // end for i
         // ValuePerCell each line finish here
         valuesByRepBuilder.append("\n");

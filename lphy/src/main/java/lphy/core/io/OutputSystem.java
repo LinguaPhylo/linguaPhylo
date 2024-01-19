@@ -80,7 +80,7 @@ public class OutputSystem {
 
     // consider outputFileName could be the absolute path, or relative, or only file name.
     // also check if the preferred output dir
-    private static File getOutputFile(String outputFileName) {
+    public static File getOutputFile(String outputFileName) {
         File outDir = getOrCreateOutputDirectory();
         Path child = Paths.get(outputFileName);
 
