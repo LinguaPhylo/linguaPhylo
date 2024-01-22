@@ -9,6 +9,7 @@ import lphy.core.parser.LPhyParserDictionary;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +51,13 @@ public class NamedRandomValueSimulator {
      * @throws IOException
      */
     public Map<Integer, List<Value>> simulateAndLog(File lphyFile, String outputFilePrefix, int numReplicates,
-                                              String[] constants, Long seed) throws IOException {
+                                              String[] constants, String[] varNotLog, Long seed) throws IOException {
         // must use absolute path, otherwise parent could be null for relative path
         File outDir = lphyFile.getAbsoluteFile().getParentFile();
         FileConfig.Utils.validate(lphyFile, outDir);
         // must provide File lphyFile, int numReplicates, Long seed
         Map<Integer, List<Value>> allReps = simulate(lphyFile, outputFilePrefix,
-                    numReplicates, constants, seed);
+                    numReplicates, constants, varNotLog, seed);
         System.out.println("Write all files to " + (outDir !=null ? outDir : OutputSystem.getOrCreateOutputDirectory()));
         return allReps;
     }
@@ -74,7 +75,7 @@ public class NamedRandomValueSimulator {
      * @throws IOException
      */
     public Map<Integer, List<Value>> simulate(File lphyFile, String outputFilePrefix, int numReplicates,
-                                              String[] constants, Long seed) throws IOException {
+                                              String[] constants, String[] varNotLog, Long seed) throws IOException {
         // ValueFileLoggerListener start() requires
         if (outputFilePrefix == null)
             outputFilePrefix = getLPhyFilePrefix(lphyFile);
@@ -91,7 +92,7 @@ public class NamedRandomValueSimulator {
         for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
             List<Value> values = sampler.sample(seed);
             // filter to RandomValue
-            List<Value> namedRandomValueList = getNamedRandomValues(values);
+            List<Value> namedRandomValueList = getNamedRandomValues(values, varNotLog);
 
             simulatorListener.replicate(i, namedRandomValueList);
 
@@ -107,20 +108,21 @@ public class NamedRandomValueSimulator {
 
     /**
      * this does not have a clear view for the requirement,
-     * and should be replaced by {@link #simulate(File, String, int, String[], Long)}
+     * and should be replaced by {@link #simulate(File, String, int, String[], String[], Long)}
      * @param fileConfig   require lphyInputFile, numReplicates, and seed
      * @param constants    constants inputted by user using macro
      * @return             All simulation results in a map, key is the index of replicates.
      * @throws IOException
      */
     @Deprecated
-    public Map<Integer, List<Value>> simulate(FileConfig fileConfig, String[] constants) throws IOException {
+    public Map<Integer, List<Value>> simulate(FileConfig fileConfig, String[] constants,
+                                              String[] varNotLog) throws IOException {
 
         File lphyFile = fileConfig.lphyInputFile;
         int numReplicates = fileConfig.numReplicates;
         Long seed = fileConfig.seed; // if null then random seed
 
-        return simulate(lphyFile, null, numReplicates, constants, seed);
+        return simulate(lphyFile, null, numReplicates, constants, varNotLog, seed);
     }
 
 
@@ -130,10 +132,32 @@ public class NamedRandomValueSimulator {
                 (value.isRandom() && !value.isAnonymous());
     }
 
-    public static List<Value> getNamedRandomValues(List<Value> values) {
-        return values.stream()
+    // String[] varNotLog marks the random variables that will not be logged.
+    // String is id or Canonical Id
+    public static List<Value> getNamedRandomValues(List<Value> values, String[] varNotLog) {
+        List<Value> namedRV = values.stream()
                 .filter(NamedRandomValueSimulator::isNamedRandomValue)
                 .toList();
+
+        if (varNotLog == null || varNotLog.length < 1)
+            return namedRV;
+        else {
+            List<Value> loggableRV = new ArrayList<>();
+
+            for (Value val : namedRV) {
+                boolean add = true;
+                for (String id : varNotLog) {
+                    if (id.equals(val.getId()) || id.equals(val.getCanonicalId())) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add)
+                    loggableRV.add(val);
+            }
+
+            return loggableRV;
+        }
     }
 
 }

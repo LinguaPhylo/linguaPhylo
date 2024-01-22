@@ -11,7 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableSummaryLog extends JTable implements SimulatorListener {
+public class VariableSummaryTable extends JTable implements SimulatorListener {
 
 //    boolean logVariables;
 //    boolean logStatistics;
@@ -22,7 +22,7 @@ public class VariableSummaryLog extends JTable implements SimulatorListener {
 
     AbstractTableModel tableModel;
 
-    public VariableSummaryLog() { // boolean logStatistics, boolean logVariables
+    public VariableSummaryTable() { // boolean logStatistics, boolean logVariables
 
 //        this.logStatistics = logStatistics;
 //        this.logVariables = logVariables;

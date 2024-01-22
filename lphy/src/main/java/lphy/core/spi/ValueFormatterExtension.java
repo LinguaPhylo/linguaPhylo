@@ -13,6 +13,7 @@ import java.util.Set;
  *
  * @author Walter Xie
  */
+@Deprecated
 public interface ValueFormatterExtension extends Extension {
 
 

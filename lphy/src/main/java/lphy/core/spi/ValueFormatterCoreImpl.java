@@ -16,6 +16,7 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
+@Deprecated
 public class ValueFormatterCoreImpl implements ValueFormatterExtension {
 
     @Override

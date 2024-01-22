@@ -12,7 +12,7 @@ import lphystudio.app.manager.DependencyUtils;
 import lphystudio.core.awt.AboutMenuHelper;
 import lphystudio.core.awt.PreferencesHelper;
 import lphystudio.core.editor.UndoManagerHelper;
-import lphystudio.core.logger.AlignmentLog;
+import lphystudio.core.logger.AlignmentTextArea;
 import lphystudio.core.narrative.HTMLNarrative;
 
 import javax.print.PrintServiceLookup;
@@ -294,6 +294,8 @@ public class LinguaPhyloStudio {
                     // retrieve all simulated alignments stored in the map
                     Map<Integer, List<Value>> valuesMap = panel.getValuesAllRepsMap();
 
+                    // TODO: Cannot specify to call which formatter in the core, as Nexus formatter is in the base,
+                    // so call ValueFileLoggerListener instead, however the alignment will be simulated again.
                     ValueFileLoggerListener fileLoggerListener = new ValueFileLoggerListener();
                     // set alignment directory
                     fileLoggerListener.setOutputDir(selectedDir.getAbsolutePath());
@@ -302,7 +304,7 @@ public class LinguaPhyloStudio {
                     // Key is the replicate index
                     fileLoggerListener.start(valuesMap.size(), parserDictionary.getName());
                     for (Map.Entry<Integer, List<Value>> entry : valuesMap.entrySet()) {
-                        List<Value> alignmentValuePerRep = AlignmentLog.getSimulatedAlignmentValues(entry.getValue(), parserDictionary);
+                        List<Value> alignmentValuePerRep = AlignmentTextArea.getSimulatedAlignmentValues(entry.getValue(), parserDictionary);
                         //TODO could do this same to trees
                         fileLoggerListener.replicate(entry.getKey(), alignmentValuePerRep);
                     }

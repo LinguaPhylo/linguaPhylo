@@ -3,6 +3,7 @@ package lphy.base.spi;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.spi.Extension;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,5 +25,21 @@ public interface SequenceTypeExtension extends Extension {
     Map<String, ? extends SequenceType> declareSequenceTypes();
 
     Set<SequenceType> getSequenceTypes();
+
+    /**
+     * Add new types from {@link #declareSequenceTypes()} into sequenceTypeMap.
+     * @param newTypes         new types defined by {@link #declareSequenceTypes()}.
+     * @param sequenceTypeMap  the map to store all SequenceType for this extension.
+     * @param message          information message.
+     */
+    default void addSequenceTypes(Map<String, ? extends SequenceType> newTypes,
+                                  Map<String, SequenceType> sequenceTypeMap,
+                                  String message) {
+        if (newTypes != null)
+            // TODO validate same sequence type?
+            newTypes.forEach(sequenceTypeMap::putIfAbsent);
+
+        System.out.println(message + Arrays.toString(getSequenceTypes().toArray(new SequenceType[0])));
+    }
 
 }

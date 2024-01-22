@@ -46,6 +46,12 @@ public class SLPhy implements Callable<Integer> {
                     "and split by ';', but no ';' at the last: e.g. -D \"n=12;L=100\" or -D n=20")
     String[] lphyConst = null;
 
+    @CommandLine.Option(names = {"-No", "--notlog"}, split = ";",
+            description = "Ignoring the logging ability for the given lphy random variables (id or its canonical version), " +
+                    "multiple id must be quoted and split by ';', but no ';' at the last: e.g. -No \"D;psi\" or -No D. " +
+                    "The last means the alignment D defined in the lphy script will not be logged.")
+    String[] varNotLog = null;
+
 //    enum SPI { loggers } //TODO  functions, gendists
 //    // arity = "0" not working
 //    @CommandLine.Option(names = {"-ls", "--list"},
@@ -64,7 +70,7 @@ public class SLPhy implements Callable<Integer> {
             simulator = new NamedRandomValueSimulator();
             // must provide File lphyFile, int numReplicates, Long seed
             Map<Integer, List<Value>> allReps = simulator.simulateAndLog(infile.toFile(), null,
-                    numReps, lphyConst, seed);
+                    numReps, lphyConst, varNotLog, seed);
             // TODO save Map<Integer, List<Value>> simResMap ?
         } catch (IOException e) {
             throw new PicocliException(e.getMessage(), e);

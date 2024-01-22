@@ -13,9 +13,11 @@ import java.util.Set;
  * It requires a public no-args constructor.
  * @author Walter Xie
  */
+@Deprecated
 public class ValueFormatterBaseImpl extends ValueFormatterCoreImpl {//implements ValueFormatterExtension {
 
-
+    //TODO NexusAlignmentFormatter.class, NexusTreeFormatter.class will be used inside lphy only.
+    // extension mechanism is implemented in TextFileFormatted now.
     @Override
     public Set<Class<? extends ValueFormatter>> declareValueFormatters() {
         return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class);
