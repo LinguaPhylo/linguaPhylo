@@ -31,16 +31,16 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
     }
 
     /**
-     * Required by ServiceLoader.
-     */
-    public SequenceTypeBaseImpl() {
-        //TODO do something here, e.g. print package or classes info ?
-    }
-
-    /**
      * LPhy sequence types {@link SequenceType}
      */
     private static Map<String, SequenceType> dataTypeMap;
+
+    /**
+     * Required by ServiceLoader.
+     */
+    public SequenceTypeBaseImpl() {
+        dataTypeMap = new ConcurrentHashMap<>();
+    }
 
     /**
      * @param dataTypeName
@@ -72,15 +72,10 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
 
     @Override
     public void register() {
-        dataTypeMap = new ConcurrentHashMap<>();
-
         // sequence types
-        Map<String, ? extends SequenceType> newDataTypes = declareSequenceTypes();
-        if (newDataTypes != null)
-            // TODO validate same sequence type?
-            newDataTypes.forEach(dataTypeMap::putIfAbsent);
+        Map<String, ? extends SequenceType> newTypes = declareSequenceTypes();
 
-        System.out.println("LPhy standard sequence types : " + Arrays.toString(getSequenceTypes().toArray(new SequenceType[0])));
+        addSequenceTypes(newTypes, dataTypeMap, "LPhy standard sequence types : ");
     }
 
     public String getExtensionName() {
