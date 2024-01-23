@@ -137,7 +137,7 @@ public class  ValueFileLoggerListener implements SimulatorListener {
 
                 String fileName = FileConfig.getOutFileName(canonicalId, index,
                         fileConfig.getNumReplicates(), fileConfig.getFilePrefix(), fileExtension);
-                File outputFile = OutputSystem.getOutputFile(fileName);
+                File outputFile = OutputSystem.getOutputFile(fileName, true);
 
                 List<String> lines = fileFormatted.getTextForFile();
                 try {

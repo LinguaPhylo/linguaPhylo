@@ -61,7 +61,7 @@ public class OutputSystem {
 //        boolean useSystemOut = getUseSystemOut();
         // if outputFileName == null to System.out
         if (outputFileName != null) {
-            File outputFile = getOutputFile(outputFileName);
+            File outputFile = getOutputFile(outputFileName, true);
             // FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             try {
                 out = new PrintStream(outputFile);
@@ -80,28 +80,22 @@ public class OutputSystem {
 
     // consider outputFileName could be the absolute path, or relative, or only file name.
     // also check if the preferred output dir
-    public static File getOutputFile(String outputFileName) {
+    public static File getOutputFile(String outputFileName, boolean usePreferredOutDir) {
         File outDir = getOrCreateOutputDirectory();
         Path child = Paths.get(outputFileName);
 
-        File outputFile;
-        // Check if the directory is a parent of the file
-        if (outDir.isDirectory() && child.isAbsolute()) {
-            Path parent = outDir.toPath().toAbsolutePath();
-            // handle all possible cases
-            if (child.startsWith(parent)) {
-                // The outDir is the parent, return the absolute file
-                outputFile = child.toFile();
-            } else {
-                // If not, such as outputFileName may be relative path,
-                // construct the file using the outDir
-                outputFile = new File(outDir, outputFileName);
-            }
-        } else {
-            // If directory is not a directory or file is not absolute, construct the file using the outDir
-            outputFile = new File(outDir, outputFileName);
+        if (child.isAbsolute()) {
+            // ignore outDir if outputFileName is absolute path
+            return child.toFile();
+
+        } else if (usePreferredOutDir && outDir.isDirectory()) {
+            // Check if outDir is directory
+            // construct the file by concatenating outDir with outputFileName
+            return new File(outDir, outputFileName);
         }
-        return outputFile;
+
+        // default to simply construct the file from outputFileName
+        return new File(outputFileName);
     }
 
 }

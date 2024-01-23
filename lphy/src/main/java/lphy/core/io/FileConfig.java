@@ -6,6 +6,7 @@ import lphy.core.simulator.RandomUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 //TODO this design to store all config in 1 class seems worse.
 // The user class's methods do not have a clear view what configurations are required.
@@ -136,11 +137,12 @@ public class FileConfig {
         }
 
         public static void validate(File lphyFile, File outDir) {
-
-            String currentDir = lphyFile.getAbsoluteFile().getParent();
+            // convert to absolute path
+            Path currentDir = lphyFile.getAbsoluteFile().getParentFile().toPath();
+            Path usrDir = UserDir.getUserDir().toAbsolutePath();
             // if user.dir is not the parent folder of lphyFile, then set to it
-            if (! UserDir.getUserDir().toAbsolutePath().equals(currentDir)) {
-                UserDir.setUserDir(currentDir);
+            if (! usrDir.equals(currentDir)) {
+                UserDir.setUserDir(currentDir.toString());
             }
 
             if (outDir != null)
