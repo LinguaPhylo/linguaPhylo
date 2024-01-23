@@ -1,7 +1,6 @@
 package lphy.core.simulator;
 
 import lphy.core.io.FileConfig;
-import lphy.core.io.OutputSystem;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -58,7 +57,7 @@ public class NamedRandomValueSimulator {
         // must provide File lphyFile, int numReplicates, Long seed
         Map<Integer, List<Value>> allReps = simulate(lphyFile, outputFilePrefix,
                     numReplicates, constants, varNotLog, seed);
-        System.out.println("Write all files to " + (outDir !=null ? outDir : OutputSystem.getOrCreateOutputDirectory()));
+
         return allReps;
     }
 

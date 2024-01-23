@@ -17,8 +17,7 @@ public class ValueFormatHandler {
     public static void createFile(String fileName) {
         OutputSystem.setOut(fileName);
 
-        System.out.println("Create file : " + fileName +
-                " in the directory " + OutputSystem.getOrCreateOutputDirectory());
+        System.out.println("Create file : " + fileName);
     }
 
 

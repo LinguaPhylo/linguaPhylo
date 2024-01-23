@@ -1,6 +1,5 @@
 package lphy.core.io;
 
-import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Symbols;
 import lphy.core.simulator.RandomUtils;
 
@@ -117,21 +116,10 @@ public class FileConfig {
         public static FileConfig createSimulationFileConfig(File lphyFile, File outDir, int numReplicates,
                                                              Long seed ) throws IOException {
 
-            String currentDir = lphyFile.getAbsoluteFile().getParent();
-            // if user.dir is not the parent folder of lphyFile, then set to it
-            if (! UserDir.getUserDir().toAbsolutePath().equals(currentDir)) {
-                UserDir.setUserDir(currentDir);
-            }
-
             if (seed != null)
                 RandomUtils.setSeed(seed);
 
-            if (outDir != null)
-                OutputSystem.setOutputDirectory(outDir.getAbsolutePath());
-
-            LoggerUtils.log.info("Simulate data from LPhy script: " + lphyFile.getAbsolutePath() +
-                    (seed != null ? " using seed " + seed : "") +
-                    ".\nOutput files to " + OutputSystem.getOrCreateOutputDirectory().getAbsolutePath());
+            validate(lphyFile, outDir);
 
             return new FileConfig( numReplicates, lphyFile, seed );
         }
@@ -148,9 +136,7 @@ public class FileConfig {
             if (outDir != null)
                 OutputSystem.setOutputDirectory(outDir.getAbsolutePath());
 
-            LoggerUtils.log.info("Simulate data from LPhy script: " + lphyFile.getAbsolutePath() +
-                    ".\nOutput files to " + OutputSystem.getOrCreateOutputDirectory().getAbsolutePath());
-
+            // already too many messages about lphyFile and outDir in other classes
         }
     }
 }

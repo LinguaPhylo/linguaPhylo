@@ -147,7 +147,7 @@ public class  ValueFileLoggerListener implements SimulatorListener {
                             outputFile.getAbsolutePath() +  " !");
                 }
                 System.out.println("Create file : " + fileName +
-                        " in the directory " + OutputSystem.getOrCreateOutputDirectory());
+                        " in the directory " + outputFile.getParentFile().getAbsolutePath());
 
             } else { // default, ValueFormatter not accessible to lphy extension developer
 
