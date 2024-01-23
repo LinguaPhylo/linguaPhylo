@@ -14,6 +14,7 @@ import lphy.core.parser.function.MapFunction;
 import lphy.core.parser.function.MethodCall;
 import lphy.core.parser.graphicalmodel.ArrayCreator;
 import lphy.core.spi.LoaderManager;
+import lphy.core.vectorization.IID;
 import lphy.core.vectorization.VectorizedDistribution;
 import lphy.core.vectorization.array.*;
 import lphy.core.vectorization.operation.Range;
@@ -286,6 +287,9 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 if (genDist instanceof VectorizedDistribution<?> vectDist && valueVal.getClass().isArray()) {
                     variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(
                             var.getId(), vectDist, (Object[]) valueVal);
+                } else if (genDist instanceof IID<?> iid && valueVal.getClass().isArray()) {
+                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(
+                            var.getId(), iid, (Object[]) valueVal);
                 } else {
                     // singe var
                     variable = new RandomVariable(var.getId(), valueVal, genDist);
