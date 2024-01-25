@@ -77,6 +77,7 @@ Taxa & alignment
 - [selectSites](taxa-alignment/selectSites.md)
 - [species](taxa-alignment/species.md)
 - [variableSites](taxa-alignment/variableSites.md)
+- [fasta](taxa-alignment/fasta.md)
 
 Substitution and site models
 ----------------------------
@@ -153,6 +154,7 @@ Types
 - [Taxa](types/Taxa.md)
 - [Alignment](types/Alignment.md)
 - [ContinuousCharacterData](types/ContinuousCharacterData.md)
+- [FastaAlignment](types/FastaAlignment.md)
 - [MetaDataAlignment](types/MetaDataAlignment.md)
 - [SimpleAlignment](types/SimpleAlignment.md)
 - [SiteModel](types/SiteModel.md)
