@@ -21,9 +21,10 @@ public class WriteFasta extends DeterministicFunction<FastaAlignment> {
     }
 
 
-    @GeneratorInfo(name="fasta", verbClause = "is read from", narrativeName = "fasta file",
-            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"covidDPG.lphy"},
-            description = "A function that parses an alignment from a fasta file.")
+    @GeneratorInfo(name="fasta", verbClause = "can be saved as a fasta format into", narrativeName = "file",
+            category = GeneratorCategory.TAXA_ALIGNMENT, examples = {"jcc2Fasta.lphy"},
+            description = "A function that returns an alignment which can be saved as a fasta file later " +
+                    "using lphy studio or slphy.")
     public Value<FastaAlignment> apply() {
 
         Alignment alignment = ((Value<Alignment>) getParams().get(ReaderConst.ALIGNMENT)).value();

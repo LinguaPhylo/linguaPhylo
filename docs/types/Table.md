@@ -3,7 +3,7 @@ Table
 ### Methods
 
 - **getColumn**
-  - Return the array of values given a column name.
+  - Return the array of ith column values, where i starts from 0.
 - **getColumnName**
   - Return ith column name, where i starts from 0.
 - **getColumnNames**

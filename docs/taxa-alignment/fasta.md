@@ -3,7 +3,7 @@ fasta function
 fasta([Alignment](../types/Alignment.md) **alignment**)
 -------------------------------------------------------
 
-A function that parses an alignment from a fasta file.
+A function that returns an alignment which can be saved as a fasta file later using lphy studio or slphy.
 
 ### Parameters
 
@@ -16,7 +16,7 @@ A function that parses an alignment from a fasta file.
 
 ### Examples
 
-- covidDPG.lphy
+- jcc2Fasta.lphy
 
 
 
