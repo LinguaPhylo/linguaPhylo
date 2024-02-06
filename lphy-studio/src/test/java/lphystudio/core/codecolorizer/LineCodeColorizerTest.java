@@ -30,8 +30,8 @@ public class LineCodeColorizerTest {
     @BeforeEach
     public void setUp() {
         parserDictionary = new GraphicalModelParserDictionary();
-        StudioConsoleInterpreter dataInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.data, null);
-        StudioConsoleInterpreter modelInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.model, null);
+        StudioConsoleInterpreter dataInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.data, null,null);
+        StudioConsoleInterpreter modelInterpreter = new StudioConsoleInterpreter(parserDictionary, LPhyParserDictionary.Context.model,null, null);
 
         dataInterpreter.interpretInput(taxa, LPhyParserDictionary.Context.data);
         modelInterpreter.interpretInput(coal, LPhyParserDictionary.Context.model);

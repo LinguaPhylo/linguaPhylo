@@ -1,5 +1,6 @@
 package lphystudio.app.graphicalmodelpanel;
 
+import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.exception.SimulatorParsingException;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GeneratorUtils;
@@ -38,7 +39,12 @@ public class StudioConsoleInterpreter extends JPanel {
     JTextField interpreterField;
     NewRandomVariablePanel newRandomVariablePanel;
     JLabel infoLine = new JLabel("  ", SwingConstants.LEFT);
-    LPhyParserDictionary.Context context;
+    final LPhyParserDictionary.Context context;
+    // issue 66 and 183 : Re-run model block code if data block updated
+    // this is to store model interpreter in data interpreter.
+    // if null, then not store.
+    final StudioConsoleInterpreter modelInterpreter;
+    CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
     private static final String COMMIT_ACTION = "commit";
 
@@ -55,9 +61,11 @@ public class StudioConsoleInterpreter extends JPanel {
     private List<String> commandsHistory = new ArrayList<>();
     private int currCMD = -1;
 
-    public StudioConsoleInterpreter(GraphicalModelParserDictionary parserDictionary, LPhyParserDictionary.Context context, UndoManagerHelper undoManagerHelper) {
+    public StudioConsoleInterpreter(GraphicalModelParserDictionary parserDictionary, LPhyParserDictionary.Context context,
+                                    final StudioConsoleInterpreter modelInterpreter, UndoManagerHelper undoManagerHelper) {
         this.parserDictionary = parserDictionary;
         this.context = context;
+        this.modelInterpreter = modelInterpreter;
 
         includeNewRandomVariablePanel = (context != LPhyParserDictionary.Context.data);
 
@@ -272,6 +280,18 @@ public class StudioConsoleInterpreter extends JPanel {
             else
                 input = "model {\n" + input + "}";
             parserDictionary.parse(input);
+
+            // issue 66 and 183 : Re-run model block code if data block updated
+            if (context == LPhyParserDictionary.Context.data && modelInterpreter != null) {
+                // re-fill in model lines inside CanonicalCodeBuilder
+                String text = codeBuilder.getCode(parserDictionary);
+                // model lines with the model keywords
+                String model = codeBuilder.getModelLines();
+                if (!model.isEmpty()) {
+                    // re-sample models
+                    parserDictionary.parse("model {\n" + model + "\n}");
+                }
+            }
 
             try {
                 LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);

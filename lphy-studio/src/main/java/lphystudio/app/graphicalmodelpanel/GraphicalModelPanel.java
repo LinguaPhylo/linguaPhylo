@@ -81,8 +81,8 @@ public class GraphicalModelPanel extends JPanel {
 
     public GraphicalModelPanel(GraphicalModelParserDictionary parser, UndoManagerHelper undoManagerHelper) {
 
-        dataInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.data, undoManagerHelper);
-        modelInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.model, undoManagerHelper);
+        modelInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.model, null, undoManagerHelper);
+        dataInterpreter = new StudioConsoleInterpreter(parser, LPhyParserDictionary.Context.data, modelInterpreter, undoManagerHelper);
 
         component = new GraphicalModelComponent(parser);
 

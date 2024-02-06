@@ -94,6 +94,9 @@ public class REPL implements LPhyParserDictionary {
             } else if (!lphyCode.startsWith("?")) {
                 // either 1 lphyCode each line, or all cmds in 1 line
                 LPhyListenerImpl parser = new LPhyListenerImpl(this);
+                // during parsing, the parsed value will store into the map
+                // modelDictionary or dataDictionary using put,
+                // so the multiple values with the same id will be replaced to the last one.
                 Object o = parser.parse(lphyCode);
                 //parser.parse(lphyCode);
                 lines.add(lphyCode);
