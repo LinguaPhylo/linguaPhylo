@@ -38,7 +38,7 @@ public class NamedRandomValueSimulator {
 
     /**
      * Simulate using the model defined by a lphy file, which may contain Macro.
-     * Call {@link #simulate(File, String, int, String[], Long) },
+     * Call {@link #simulate(File, String, int, String[], String[], Long)},
      * after the preprocessing is done.
      * It should consider this method first, unless there is some customised process.
      * @param lphyFile         input file
