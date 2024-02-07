@@ -79,10 +79,8 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
         return Arrays.asList(ARange.class, ArgI.class,
                 // Substitution models
                 JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
-                GeneralTimeReversible.class, LewisMK.class,
-                NucleotideModel.class,
-                BModelSetFunction.class,
-                bSiteModelFunction.class,
+                GeneralTimeReversible.class, LewisMK.class, BinaryCovarion.class,
+                BModelSetFunction.class, bSiteModelFunction.class, NucleotideModel.class,
 
                 // Data types
                 BinaryDatatypeFunction.class, NucleotidesFunction.class, StandardDatatypeFunction.class,

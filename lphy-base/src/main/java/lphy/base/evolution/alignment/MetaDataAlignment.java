@@ -189,6 +189,24 @@ public class MetaDataAlignment extends SimpleAlignment implements NarrativeName 
         return AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
     }
 
+    @MethodInfo(description="return an alignment array defined by charsets, which could be pre-defined in the nexus file.",
+            narrativeName = "character set",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"cpacific.lphy"})
+    public Alignment[] charsets() {
+        if (hasCharsets(charsetMap)) {
+            List<Alignment> partitions = new ArrayList<>();
+            for (Map.Entry<String, List<CharSetBlock>> entry : charsetMap.entrySet()) {
+                List<CharSetBlock> charSetBlocks = entry.getValue();
+                SimpleAlignment alg = AlignmentUtils.getCharSetAlignment(charSetBlocks, this);
+                // TODO how to set id ?
+                partitions.add(alg);
+            }
+            return partitions.toArray(new Alignment[0]);
+        }
+        throw new IllegalArgumentException("Not charset is found !");
+    }
+
 //    @MethodInfo(description="return a trait alignment, which contains the set of traits<br>" +
 //            "extracted from taxa names in this alignment.<br>" +
 //            "The <i>sepStr</i> is the substring to split the taxa names,<br>" +
