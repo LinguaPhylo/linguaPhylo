@@ -23,7 +23,7 @@ public class TN93 extends RateMatrix {
 
     public static final String kappa1ParamName = "kappa1";
     public static final String kappa2ParamName = "kappa2";
-    public static final String freqParamName = "freq";
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
     public TN93(@ParameterInfo(name = kappa1ParamName, description = "the rate of A<->G transition in the TN93 process.") Value<Double> kappa1,
                 @ParameterInfo(name = kappa2ParamName, description = "the rate of C<->T transition in the TN93 process.") Value<Double> kappa2,

@@ -17,7 +17,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
-import static lphy.base.evolution.coalescent.CoalescentConstants.thetaParamName;
+import static lphy.base.evolution.coalescent.CoalParamNames.thetaParamName;
 
 /**
  * A Kingman coalescent tree generative distribution conditional on a species tree with a specified population size on each species branch.

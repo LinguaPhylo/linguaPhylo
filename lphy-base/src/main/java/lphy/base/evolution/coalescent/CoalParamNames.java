@@ -1,6 +1,6 @@
 package lphy.base.evolution.coalescent;
 
-public class CoalescentConstants {
+public class CoalParamNames {
 
     public static final String thetaParamName = "theta";
 }

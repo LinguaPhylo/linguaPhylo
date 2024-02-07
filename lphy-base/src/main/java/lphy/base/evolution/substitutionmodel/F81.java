@@ -18,7 +18,7 @@ import lphy.core.model.datatype.DoubleArray2DValue;
         DOI="https://doi.org/10.1007/BF01734359")
 public class F81 extends RateMatrix {
 
-    public static final String freqParamName = "freq";
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
     public F81(@ParameterInfo(name = freqParamName, description = "the base frequencies.") Value<Double[]> freq,
                @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default = 1.0", optional = true) Value<Number> meanRate) {

@@ -11,8 +11,8 @@ import lphy.core.model.datatype.DoubleArray2DValue;
  */
 public class GeneralTimeReversible extends RateMatrix {
 
-    public static final String ratesParamName = "rates";
-    public static final String freqParamName = "freq";
+    protected final String ratesParamName = SubstModelParamNames.RatesParamName;
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
     int numStates;
     int ratesDim;

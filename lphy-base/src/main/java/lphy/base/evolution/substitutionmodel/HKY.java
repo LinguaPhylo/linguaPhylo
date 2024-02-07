@@ -25,7 +25,7 @@ import java.util.Map;
 public class HKY extends RateMatrix {
 
     public static final String kappaParamName = "kappa";
-    public static final String freqParamName =  "freq";
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
 
     public HKY(@ParameterInfo(name = kappaParamName, narrativeName = "transition bias parameter", description = "the kappa of the HKY process.") Value<Number> kappa,

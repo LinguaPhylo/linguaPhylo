@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static lphy.base.evolution.coalescent.CoalescentConstants.thetaParamName;
+import static lphy.base.evolution.coalescent.CoalParamNames.thetaParamName;
 
 /**
  * A Kingman coalescent tree generative distribution for serially sampled data

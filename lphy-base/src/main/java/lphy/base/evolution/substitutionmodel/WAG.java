@@ -25,7 +25,7 @@ import java.util.stream.Stream;
         DOI="https://doi.org/10.1093/oxfordjournals.molbev.a003851")
 public class WAG extends RateMatrix {
 
-    public static final String freqParamName = "freq";
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
     public WAG(@ParameterInfo(name = freqParamName, description = "the base frequencies.", optional=true) Value<Double[]> freq,
                @ParameterInfo(name = RateMatrix.meanRateParamName, description = "the mean rate of the process. default 1.0", optional=true) Value<Number> meanRate) {

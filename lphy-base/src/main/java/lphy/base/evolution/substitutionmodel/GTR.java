@@ -25,8 +25,8 @@ import lphy.core.model.datatype.DoubleArray2DValue;
 //)
 public class GTR extends RateMatrix {
 
-    public static final String ratesParamName = "rates";
-    public static final String freqParamName = "freq";
+    protected final String ratesParamName = SubstModelParamNames.RatesParamName;
+    protected final String freqParamName = SubstModelParamNames.FreqParamName;
 
     public GTR(@ParameterInfo(name = ratesParamName, narrativeName = "relative rates", description = "the relative rates of the GTR process.") Value<Double[]> rates,
                @ParameterInfo(name = freqParamName, narrativeName = "base frequencies", description = "the base frequencies.") Value<Double[]> freq,
