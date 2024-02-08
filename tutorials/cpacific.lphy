@@ -4,10 +4,9 @@ data {
   belly = "31-41 236-246 458-468 752-762 873-883 919-929 998-1008 1083-1093 1118-1128 1166-1176 1192-1202 1340-1350 151-162 965-976 1024-1035 1263-1274 637-649 836-848 930-942 943-955 1287-1299 444-457 1104-1117 277-291 1177-1191";
   D = readNexus(file="data/cpacific.nex");
   taxa = D.taxa();
-  partitions = D.charset([bird, and, belly]); // TODO [b, a] cannot connect to b,a
-  // partitions = D.charsets(); // TODO returns Align[], but this cannot trigger vect
-  // L = nchar(partitions); // if cannot trigger vect, here will return 1 value, also nchar() is deprecated
+  partitions = D.charset([bird, and, belly]);
   L = partitions.nchar();
+  // TODO check
   rootAge = 100;
 }
 model {
@@ -17,9 +16,9 @@ model {
 
   λ ~ Exp(mean=0.01);
   mu ~ Exp(mean=0.01);
-  rho ~ Beta(alpha=22.0, beta=25.0);
+  //rho ~ Beta(alpha=22.0, beta=25.0);
 
   ψ ~ BirthDeath(lambda=λ, mu=mu, taxa=taxa, rootAge=rootAge);
 
-  D ~ PhyloCTMC(tree=ψ, L=L, Q=Q);
+  partitions ~ PhyloCTMC(tree=ψ, L=L, Q=Q);
 }
