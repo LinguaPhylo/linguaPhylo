@@ -1,22 +1,16 @@
 package lphy.core.vectorization.array;
 
-import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.BooleanArrayValue;
 
-public class BooleanArray extends DeterministicFunction<Boolean[]> {
+public class BooleanArray extends ArrayFunction<Boolean[]> {
 
     Value<Boolean>[] x;
 
     public BooleanArray(Value<Boolean>... x) {
-
-        int length = x.length;
         this.x = x;
-
-        for (int i = 0; i < length; i++) {
-            setInput(i + "", x[i]);
-        }
+        super.setInput(x);
     }
 
     @GeneratorInfo(name = "booleanArray", description = "The constructor function for an array of booleans.")
@@ -32,26 +26,13 @@ public class BooleanArray extends DeterministicFunction<Boolean[]> {
         return new BooleanArrayValue(null, values, this);
     }
 
-    public void setParam(String param, Value value) {
-        super.setParam(param, value);
-        int i = Integer.parseInt(param);
+    @Override
+    public void setElement(Value value, int i) {
         x[i] = value;
     }
 
-    public String codeString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(ref(x[0]));
-        for (int i = 1; i < x.length; i++) {
-            builder.append(", ");
-            builder.append(ref(x[i]));
-        }
-        builder.append("]");
-        return builder.toString();
-    }
-
-    private String ref(Value<?> val) {
-        if (val.isAnonymous()) return val.codeString();
-        return val.getId();
+    @Override
+    public Value<Boolean>[] getValues() {
+        return x;
     }
 }

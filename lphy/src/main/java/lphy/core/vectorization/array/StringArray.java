@@ -1,22 +1,16 @@
 package lphy.core.vectorization.array;
 
-import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.StringArrayValue;
 
-public class StringArray extends DeterministicFunction<String[]> {
+public class StringArray extends ArrayFunction<String[]> {
 
     Value<String>[] x;
 
     public StringArray(Value<String>... x) {
-
-        int length = x.length;
         this.x = x;
-
-        for (int i = 0; i < length; i++) {
-            setInput(i + "", x[i]);
-        }
+        super.setInput(x);
     }
 
     @GeneratorInfo(name = "stringArray", description = "The constructor function for an array of strings.")
@@ -32,26 +26,14 @@ public class StringArray extends DeterministicFunction<String[]> {
         return new StringArrayValue(null, values, this);
     }
 
-    public void setParam(String param, Value value) {
-        super.setParam(param, value);
-        int i = Integer.parseInt(param);
+    @Override
+    public void setElement(Value value, int i) {
         x[i] = value;
     }
 
-    public String codeString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(ref(x[0]));
-        for (int i = 1; i < x.length; i++) {
-            builder.append(", ");
-            builder.append(ref(x[i]));
-        }
-        builder.append("]");
-        return builder.toString();
-    }
 
-    private String ref(Value<?> val) {
-        if (val.isAnonymous()) return val.codeString();
-        return val.getId();
+    @Override
+    public Value<String>[] getValues() {
+        return x;
     }
 }

@@ -2,53 +2,48 @@ package lphy.core.vectorization.array;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-import lphy.core.model.annotation.GeneratorInfo;
 
-public class ArrayFunction extends DeterministicFunction<Object[]> {
+/**
+ * Common code to share
+ * @param <T> it should be array, e.g. Double[].
+ */
+public abstract class ArrayFunction<T> extends DeterministicFunction<T> {
 
-    Value<Object>[] x;
+    // get x, for example, which could be Value<Double>[] x
+    abstract public Value<?>[] getValues();
 
-    public ArrayFunction(Value<Object>... x) {
+    // x[i] = value;
+    abstract public void setElement(Value<?> value, int i);
 
+
+    // used in constructor
+    protected void setInput(Value<?>... x) {
         int length = x.length;
-        this.x = x;
 
         for (int i = 0; i < length; i++) {
             setInput(i + "", x[i]);
         }
     }
 
-    @GeneratorInfo(name = "array", description = "The constructor function for an array of values.")
-    public Value<Object[]> apply() {
-
-        Object[] values = new Object[x.length];
-
-        for (int i = 0; i < x.length; i++) {
-            values[i] = x[i].value();
-        }
-
-        return new Value(null, values, this);
-    }
-
     public void setParam(String param, Value value) {
         super.setParam(param, value);
         int i = Integer.parseInt(param);
-        x[i] = value;
+        setElement(value, i);
     }
 
     public String codeString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        builder.append(ref(x[0]));
-        for (int i = 1; i < x.length; i++) {
+        builder.append( ref( getValues()[0] ) );
+        for (int i = 1; i < getValues().length; i++) {
             builder.append(", ");
-            builder.append(ref(x[i]));
+            builder.append( ref( getValues()[i] ) );
         }
         builder.append("]");
         return builder.toString();
     }
 
-    private String ref(Value<?> val) {
+    protected String ref(Value<?> val) {
         if (val.isAnonymous()) return val.codeString();
         return val.getId();
     }
