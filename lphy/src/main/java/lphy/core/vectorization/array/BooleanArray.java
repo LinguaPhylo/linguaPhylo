@@ -25,7 +25,8 @@ public class BooleanArray extends DeterministicFunction<Boolean[]> {
         Boolean[] values = new Boolean[x.length];
 
         for (int i = 0; i < x.length; i++) {
-            values[i] = x[i].value();
+            if (x[i] != null) // handle null
+                values[i] = x[i].value();
         }
 
         return new BooleanArrayValue(null, values, this);

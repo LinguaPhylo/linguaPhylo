@@ -625,39 +625,45 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     // if all values null assume double array
                     if (type == Double.class) {
-                        if (allConstants(var)) {
-                            Double[] value = new Double[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Double) var[i].value();
-                            }
-                            return new DoubleArrayValue(null, value);
-                        } else {
+                        // The commented code is the incorrect way to handle var[i] == null.
+                        // it is against the principle to create new Value, which could lose
+                        // their generator. Handle it in DoubleArray apply()
+
+//                        if (allConstants(var)) {
+//                            Double[] value = new Double[var.length];
+//                            for (int i = 0; i < value.length; i++) {
+//                                if (var[i] != null) value[i] = (Double) var[i].value();
+//                            }
+//                            return new DoubleArrayValue(null, value);
+//                        } else {
                             DoubleArray doubleArray = new DoubleArray(var);
                             return doubleArray.apply();
-                        }
+//                        }
                     } else if (type == Double[].class) {
                         Double[][] value = new Double[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (Double[]) var[i].value();
                         }
+                        // TODO DoubleArray2D func
                         return new DoubleArray2DValue(null, value);
                     } else if (type == Integer[].class) {
                         Integer[][] value = new Integer[var.length][];
                         for (int i = 0; i < value.length; i++) {
                             if (var[i] != null) value[i] = (Integer[]) var[i].value();
                         }
+                        // TODO IntegerArray2D func
                         return new IntegerArray2DValue(null, value);
                     } else if (type == Integer.class) {
-                        if (allConstants(var)) {
-                            Integer[] value = new Integer[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Integer) var[i].value();
-                            }
-                            return new IntegerArrayValue(null, value);
-                        } else {
+//                        if (allConstants(var)) {
+//                            Integer[] value = new Integer[var.length];
+//                            for (int i = 0; i < value.length; i++) {
+//                                if (var[i] != null) value[i] = (Integer) var[i].value();
+//                            }
+//                            return new IntegerArrayValue(null, value);
+//                        } else {
                             IntegerArray intArray = new IntegerArray(var);
                             return intArray.apply();
-                        }
+//                        }
                     } else if (type == Boolean[].class) {
                         Boolean[][] value = new Boolean[var.length][];
                         for (int i = 0; i < value.length; i++) {
@@ -666,17 +672,17 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                         BooleanArray2DValue v = new BooleanArray2DValue(null, value);
                         return v;
                     } else if (type == Boolean.class) {
-                        if (allConstants(var)) {
-                            Boolean[] value = new Boolean[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                if (var[i] != null) value[i] = (Boolean) var[i].value();
-                            }
-                            BooleanArrayValue v = new BooleanArrayValue(null, value);
-                            return v;
-                        } else {
+//                        if (allConstants(var)) {
+//                            Boolean[] value = new Boolean[var.length];
+//                            for (int i = 0; i < value.length; i++) {
+//                                if (var[i] != null) value[i] = (Boolean) var[i].value();
+//                            }
+//                            BooleanArrayValue v = new BooleanArrayValue(null, value);
+//                            return v;
+//                        } else {
                             BooleanArray booleanArray = new BooleanArray(var);
                             return booleanArray.apply();
-                        }
+//                        }
                     } else if (type == String[].class) {
                         String[][] value = new String[var.length][];
                         for (int i = 0; i < value.length; i++) {
@@ -685,29 +691,29 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                         StringArray2DValue v = new StringArray2DValue(null, value);
                         return v;
                     } else if (type == String.class) {
-                        if (allConstants(var)) {
-                            String[] value = new String[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                value[i] = (String) var[i].value();
-                            }
-                            StringArrayValue v = new StringArrayValue(null, value);
-                            return v;
-                        } else {
+//                        if (allConstants(var)) {
+//                            String[] value = new String[var.length];
+//                            for (int i = 0; i < value.length; i++) {
+//                                value[i] = (String) var[i].value();
+//                            }
+//                            StringArrayValue v = new StringArrayValue(null, value);
+//                            return v;
+//                        } else {
                             StringArray stringArray = new StringArray(var);
                             return stringArray.apply();
-                        }
+//                        }
                     } else if (type == Number.class) {
-                        if (allConstants(var)) {
-                            Number[] value = new Number[var.length];
-                            for (int i = 0; i < value.length; i++) {
-                                value[i] = (Number) var[i].value();
-                            }
-                            NumberArrayValue v = new NumberArrayValue(null, value);
-                            return v;
-                        } else {
+//                        if (allConstants(var)) {
+//                            Number[] value = new Number[var.length];
+//                            for (int i = 0; i < value.length; i++) {
+//                                value[i] = (Number) var[i].value();
+//                            }
+//                            NumberArrayValue v = new NumberArrayValue(null, value);
+//                            return v;
+//                        } else {
                             NumberArray numberArray = new NumberArray(var);
                             return numberArray.apply();
-                        }
+//                        }
                     } else {
                         // handle generic value array construction
                         ArrayFunction arrayFunction = new ArrayFunction(var);

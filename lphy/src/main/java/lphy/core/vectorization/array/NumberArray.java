@@ -25,7 +25,8 @@ public class NumberArray extends DeterministicFunction<Number[]> {
         Number[] values = new Number[x.length];
 
         for (int i = 0; i < x.length; i++) {
-            values[i] = x[i].value();
+            if (x[i] != null) // handle null
+                values[i] = x[i].value();
         }
 
         return new NumberArrayValue(null, values, this);

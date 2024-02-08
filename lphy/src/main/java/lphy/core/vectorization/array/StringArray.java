@@ -25,7 +25,8 @@ public class StringArray extends DeterministicFunction<String[]> {
         String[] values = new String[x.length];
 
         for (int i = 0; i < x.length; i++) {
-            values[i] = x[i].value();
+            if (x[i] != null) // handle nul
+                values[i] = x[i].value();
         }
 
         return new StringArrayValue(null, values, this);

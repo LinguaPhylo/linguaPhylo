@@ -25,7 +25,8 @@ public class DoubleArray extends DeterministicFunction<Double[]> {
         Double[] values = new Double[x.length];
 
         for (int i = 0; i < x.length; i++) {
-            values[i] = x[i].value();
+            if (x[i] != null) // handle null
+                values[i] = x[i].value();
         }
 
         return new DoubleArrayValue(null, values, this);
