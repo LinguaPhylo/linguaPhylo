@@ -30,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class BinaryCovarionTest {
 
-    RandomVariable<TimeTree> tree;
-
     Value<Number> alpha = new Value<>("alpha", 0.01);
     Value<Number> s = new Value<>("switchRate", 0.1);
+
+    RandomVariable<TimeTree> tree;
 
     @BeforeEach
     void setUp() {
@@ -61,7 +61,28 @@ class BinaryCovarionTest {
         // test freqs
         Double[] freqs = binaryCovarion.getFrequencies(ValueUtils.doubleArrayValue(vfreq),
                 ValueUtils.doubleArrayValue(hfreq));
-        assertArrayEquals(new double[]{0.1, 0.4, 0.1, 0.4}, ArrayUtils.toPrimitive(freqs));
+        assertArrayEquals(new double[]{0.1, 0.4, 0.1, 0.4}, ArrayUtils.toPrimitive(freqs), 1e-10);
+
+    }
+
+    @Test
+    void testQAndFreqs2() {
+        Value<Number[]> vfreq = new Value<>("fVisibleStates", new Number[]{0.2, 0.8});
+        Value<Number[]> hfreq = new Value<>("fHiddenStates", new Number[]{0.1, 0.9});
+
+        BinaryCovarion binaryCovarion = new BinaryCovarion(alpha, s, vfreq, hfreq,
+                new Value<>("meanRate", 1.0));
+        Value<Double[][]> Q = binaryCovarion.apply();
+        System.out.println("Q matrix: " + Arrays.deepToString(Q.value()));
+
+        // 1st row of Q matrix
+        assertArrayEquals(new double[]{-0.3745, 0.0277, 0.3468, 0.0},
+                ArrayUtils.toPrimitive(Q.value()[0]), 1e-3);
+
+        // test freqs
+        Double[] freqs = binaryCovarion.getFrequencies(ValueUtils.doubleArrayValue(vfreq),
+                ValueUtils.doubleArrayValue(hfreq));
+        assertArrayEquals(new double[]{0.02, 0.08, 0.18, 0.72}, ArrayUtils.toPrimitive(freqs), 1e-10);
     }
 
 
@@ -82,14 +103,14 @@ class BinaryCovarionTest {
         phyloCTMC.setup();
 
         double[][] p = new double[4][4];
-        // branchLength = 1000
+        // branchLength = 100
         phyloCTMC.getTransitionProbabilities(100, p);
         System.out.println("Actual: " + Arrays.deepToString(p));
 
         // freqs
         Double[] freqs = binaryCovarion.getFrequencies(ValueUtils.doubleArrayValue(vfreq),
                 ValueUtils.doubleArrayValue(hfreq));
-        System.out.println("Expected: " + Arrays.toString(freqs));
+        System.out.println("Expected 1st row : " + Arrays.toString(freqs));
 
         // 1st row of p matrix
         for (int j = 0; j < 4; j++) {
@@ -98,39 +119,34 @@ class BinaryCovarionTest {
 
     }
 
-//TODO not working
-//    @Test
-//    void testTransProbWithUnEqualHFreqs() {
-//        double d = 0.05 + RandomUtils.getRandom().nextDouble() * 0.9;
-//        Value<Number[]> vfreq = new Value<>("fVisibleStates", new Number[]{d, 1.0 - d});
-//        d = 0.05 + RandomUtils.getRandom().nextDouble() * 0.9;
-//        Value<Number[]> hfreq = new Value<>("fHiddenStates", new Number[]{d, 1.0 - d});
-//
-//        BinaryCovarion binaryCovarion = new BinaryCovarion(alpha, s, vfreq, hfreq,
-//                new Value<>("meanRate", 1.0));
-//        Value<Double[][]> Q = binaryCovarion.apply();
-//        System.out.println("Q matrix: " + Arrays.deepToString(Q.value()));
-//
-//        PhyloCTMC phyloCTMC = new PhyloCTMC(tree, null, null, Q,
-//                null, null, new Value<>("L", 100), null, null);
-//        // not simulate sequences, so ignore sample(), then tree stats and L should not affect the result
-//        phyloCTMC.setup();
-//
-//        double[][] p = new double[4][4];
-//        // branchLength = 1000
-//        phyloCTMC.getTransitionProbabilities(100, p);
-//        System.out.println("Actual: " + Arrays.deepToString(p));
-//
-//        // freqs
-//        Double[] freqs = binaryCovarion.getFrequencies(ValueUtils.doubleArrayValue(vfreq),
-//                ValueUtils.doubleArrayValue(hfreq));
-//        System.out.println("Expected: " + Arrays.toString(freqs));
-//
-//        // 1st row of p matrix
-//        for (int j = 0; j < 4; j++) {
-//            assertEquals(freqs[j], p[0][j], 1e-3);
-//        }
-//
-//    }
+    // have to fix vf and hf
+    @Test
+    void testTransProbWithUnEqualHFreqs() {
+        Value<Number[]> vfreq = new Value<>("fVisibleStates", new Number[]{0.2, 0.8});
+        Value<Number[]> hfreq = new Value<>("fHiddenStates", new Number[]{0.1, 0.9});
+
+        BinaryCovarion binaryCovarion = new BinaryCovarion(alpha, s, vfreq, hfreq,
+                new Value<>("meanRate", 1.0));
+        Value<Double[][]> Q = binaryCovarion.apply();
+        System.out.println("Q matrix: " + Arrays.deepToString(Q.value()));
+
+        PhyloCTMC phyloCTMC = new PhyloCTMC(tree, null, null, Q,
+                null, null, new Value<>("L", 100), null, null);
+        // not simulate sequences, so ignore sample(), then tree stats and L should not affect the result
+        phyloCTMC.setup();
+
+        double[][] p = new double[4][4];
+        // branchLength = 1000 TODO why 1000 for this unequ but 100 for equ?
+        phyloCTMC.getTransitionProbabilities(1000, p);
+        System.out.println("Actual: " + Arrays.deepToString(p));
+
+        double[] expectedP = new double[]{0.1, 0.4, 0.1, 0.4};
+        System.out.println("Expected 1st row : " + Arrays.toString(expectedP));
+        // 1st row of p matrix
+        for (int j = 0; j < 4; j++) {
+            assertEquals(expectedP[j], p[0][j], 1e-3);
+        }
+
+    }
 
 }
