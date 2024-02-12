@@ -1,0 +1,15 @@
+// TODO better parameter values
+data {
+  L = 100;
+  n = 10;
+  birthRate = 10;
+}
+model {
+  alpha ~ Uniform(lower=1.0E-4, upper=1.0);
+  switchRate ~ Gamma(shape=0.05, scale=10.0);
+  // vfreq is the frequencies of the visible states, hfreq is the frequencies of the hidden states.
+  Q = binaryCovarion(alpha=alpha, s=switchRate, vfreq=[0.2, 0.8], hfreq=[0.5, 0.5]);
+
+  ψ ~ Yule(lambda=birthRate, n=n);
+  D ~ PhyloCTMC(tree=ψ, L=L, Q=Q, dataType=binaryDataType());
+}

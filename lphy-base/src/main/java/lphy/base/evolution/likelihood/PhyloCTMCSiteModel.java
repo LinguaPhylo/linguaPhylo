@@ -110,7 +110,7 @@ public class PhyloCTMCSiteModel extends AbstractPhyloCTMC {
         }
     }
 
-    protected void setup() {
+    public void setup() {
 
         siteCount = getSiteCount();
 

@@ -52,29 +52,13 @@ public class BinaryCovarion extends RateMatrix {
         double[] vfreq = ValueUtils.doubleArrayValue(getParams().get(vfreqParamName));
         double[] hfreq = ValueUtils.doubleArrayValue(getParams().get(hfreqParamName));
 
-        Double[][] unnormalizedQ = setupUnnormalizedQMatrix(alpha, switchRate, vfreq, hfreq);
+        Double[][] Q = setupUnnormalizedQMatrix(alpha, switchRate, vfreq, hfreq);
         Double[] freqs = getFrequencies(vfreq, hfreq);
 
-        Double[][] Q = binaryCovarion(unnormalizedQ, freqs);
-
-        return new DoubleArray2DValue(Q, this);
-    }
-
-    private Double[][] binaryCovarion(Double[][] Q, Double[] freqs) {
-
-        // set up diagonal
-        for (int i = 0; i < NumOfStates; i++) {
-            double sum = 0.0;
-            for (int j = 0; j < NumOfStates; j++) {
-                if (i != j)
-                    sum += Q[i][j];
-            }
-            Q[i][i] = -sum;
-        }
         // normalise rate matrix to one expected substitution per unit time
         normalize(freqs, Q);
 
-        return Q;
+        return new DoubleArray2DValue(Q, this);
     }
 
     private Double[][] setupUnnormalizedQMatrix(double a, double s, double[] vf, double[] hf) {
@@ -103,6 +87,16 @@ public class BinaryCovarion extends RateMatrix {
         unnormalizedQ[3][0] = 0.0;
         unnormalizedQ[3][1] = s;
         unnormalizedQ[3][2] = p0;
+
+        // set up diagonal
+        for (int i = 0; i < NumOfStates; i++) {
+            double sum = 0.0;
+            for (int j = 0; j < NumOfStates; j++) {
+                if (i != j)
+                    sum += unnormalizedQ[i][j];
+            }
+            unnormalizedQ[i][i] = -sum;
+        }
 
         return unnormalizedQ;
     }
@@ -138,7 +132,7 @@ public class BinaryCovarion extends RateMatrix {
         }
     }
 
-    private Double[] getFrequencies(double[] vf, double[] hf) {
+    public Double[] getFrequencies(double[] vf, double[] hf) {
         Double[] freqs = new Double[NumOfStates];
         freqs[0] = vf[0] * hf[0];
         freqs[1] = vf[1] * hf[0];

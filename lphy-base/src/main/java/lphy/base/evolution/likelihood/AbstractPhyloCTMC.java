@@ -79,12 +79,6 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     // return Q matrix
     protected abstract Double[][] getQ();
 
-    // setup() before sample()
-    protected void setup() {
-        // overwrite the default if more setup
-        computePAndRootFreqs();
-    }
-
     // shared code in setup()
     protected void computePAndRootFreqs() {
         idMap.clear();
@@ -150,7 +144,13 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         }
     }
 
-    //+++ getter +++//
+    //+++ public and getter +++//
+
+    // setup() before sample()
+    public void setup() {
+        // overwrite the default if more setup
+        computePAndRootFreqs();
+    }
 
     public Value<Double[]> getBranchRates() {
         return branchRates;
@@ -167,6 +167,33 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     public SequenceType getDataType() {
         if (dataType == null) return SequenceType.NUCLEOTIDE;
         return dataType.value();
+    }
+
+    // for unit test
+    public void getTransitionProbabilities(double branchLength, double[][] transProbs) {
+
+        int i, j, k;
+        double temp;
+
+        final int numStates = transProbs.length; // getQ().length ?
+        // inverse Eigen vectors
+        // Eigen values
+        for (i = 0; i < numStates; i++) {
+            temp = FastMath.exp(branchLength * Eval[i]);
+            for (j = 0; j < numStates; j++) {
+                iexp[i][j] = Ievc[i][j] * temp;
+            }
+        }
+
+        for (i = 0; i < numStates; i++) {
+            for (j = 0; j < numStates; j++) {
+                temp = 0.0;
+                for (k = 0; k < numStates; k++) {
+                    temp += Evec[i][k] * iexp[k][j];
+                }
+                transProbs[i][j] = FastMath.abs(temp);
+            }
+        }
     }
 
     //+++ private methods +++//
@@ -219,31 +246,6 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         throw new RuntimeException("p vector should add to 1.0 but adds to " + totalP +  " instead.");
     }
 
-    private void getTransitionProbabilities(double branchLength, double[][] transProbs) {
-
-        int i, j, k;
-        double temp;
-
-        final int numStates = transProbs.length; // getQ().length ?
-        // inverse Eigen vectors
-        // Eigen values
-        for (i = 0; i < numStates; i++) {
-            temp = FastMath.exp(branchLength * Eval[i]);
-            for (j = 0; j < numStates; j++) {
-                iexp[i][j] = Ievc[i][j] * temp;
-            }
-        }
-
-        for (i = 0; i < numStates; i++) {
-            for (j = 0; j < numStates; j++) {
-                temp = 0.0;
-                for (k = 0; k < numStates; k++) {
-                    temp += Evec[i][k] * iexp[k][j];
-                }
-                transProbs[i][j] = FastMath.abs(temp);
-            }
-        }
-    }
 
     private static double EPSILON = 2.220446049250313E-16;
 
