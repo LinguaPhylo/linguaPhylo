@@ -59,6 +59,17 @@ public class ValueUtils {
         return values;
     }
 
+    public static double[][] double2DArrayValue(Value<Number[][]> value) {
+        Number[][] num = value.value();
+        double[][] values = new double[num.length][num[0].length];
+        for (int i = 0; i < num.length; i++) {
+            for (int j = 0; j < num[0].length; j++) {
+                values[i][j] = num[i][j].doubleValue();
+            }
+        }
+        return values;
+    }
+
     public static String valueToString(Object value) {
 
         if (value.getClass().isArray()) {

@@ -169,7 +169,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         return dataType.value();
     }
 
-    // for unit test
+    // make public for unit test
     public void getTransitionProbabilities(double branchLength, double[][] transProbs) {
 
         int i, j, k;
