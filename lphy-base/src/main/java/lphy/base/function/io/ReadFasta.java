@@ -66,6 +66,24 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
 
         Reader reader = getReader(nexPath.toString());
 
+        Alignment faData = getAlignment(reader, sequenceType, ageRegxStr, ageDirectionStr, spRegxStr);
+
+        return new Value<>(null, faData, this);
+
+    }
+
+    /**
+     * The utility method to import an alignment in a fasta format from reader.
+     * If both ageRegxStr and spRegxStr are null, then create a {@link SimpleAlignment}.
+     * @param reader           it can be created from either a file or string.
+     * @param sequenceType     it must be consistent with the data in reader.
+     * @param ageRegxStr       Java regular expression to extract dates from taxa names.
+     * @param ageDirectionStr  {@link MetaDataAlignment.AgeDirection}.
+     * @param spRegxStr        Java regular expression to extract species from taxa names.
+     * @return  {@link Alignment} imported from a fasta format.
+     */
+    public static Alignment getAlignment(Reader reader, SequenceType sequenceType,
+                                          String ageRegxStr, String ageDirectionStr, String spRegxStr) {
         List<Sequence> sequenceList = new ArrayList<>();
         try {
             FastaImporter fastaImporter = new FastaImporter(reader, sequenceType);
@@ -86,7 +104,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         }
 
         Alignment faData;
-        if (optionsVal != null) {
+        if ( !(ageRegxStr == null && spRegxStr == null) ) {
             faData = new MetaDataAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
 
             // set age to Taxon
@@ -110,9 +128,7 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
                 faData.setState(i, s, stateNum);
             }
         }
-
-        return new Value<>(null, faData, this);
-
+        return faData;
     }
 
     private Reader getReader(String fileName) {
