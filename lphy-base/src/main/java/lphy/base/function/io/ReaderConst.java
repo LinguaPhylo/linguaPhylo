@@ -9,6 +9,8 @@ public final class ReaderConst {
     public static final String DELIMITER = "sep";
     public static final String HEADER = "header";
 
+    public static final String COMMENT = "comment";
+
     public static final String ALIGNMENT = "alignment";
 
 }

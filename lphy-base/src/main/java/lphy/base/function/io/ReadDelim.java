@@ -33,7 +33,10 @@ public class ReadDelim extends DeterministicFunction<Table> {
                      @ParameterInfo(name = ReaderConst.HEADER, description = "If 'header' is true, as default, " +
                              "then use the 1st row as the map keys, otherwise it will create keys and load the values " +
                              "from the 1st row.", optional=true)
-                     Value<Boolean> header) {
+                     Value<Boolean> header,
+                     @ParameterInfo(name = ReaderConst.COMMENT, description = "The comment character to " +
+                             "ignore everything after it in one line. The default is #.", optional=true)
+                     Value<String> commentChar) {
 
 
         if (filePath == null) throw new IllegalArgumentException("The file name can't be null!");
@@ -44,6 +47,10 @@ public class ReadDelim extends DeterministicFunction<Table> {
         if (header != null)
             setParam(ReaderConst.HEADER, header);
         else setParam(ReaderConst.HEADER, new Value<>(null, true));
+        // default to #
+        if (commentChar != null)
+            setParam(ReaderConst.COMMENT, commentChar);
+        else setParam(ReaderConst.COMMENT, new Value<>(null, "#"));
     }
 
 
