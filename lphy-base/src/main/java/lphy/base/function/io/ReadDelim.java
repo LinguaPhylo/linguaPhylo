@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * @see MetaDataAlignment
  */
 public class ReadDelim extends DeterministicFunction<Table> {
-
+//TODO provide column types ?
     public ReadDelim(@ParameterInfo(name = ReaderConst.FILE, description = "the file name including path.")
                      Value<String> filePath,
                      @ParameterInfo(name = ReaderConst.DELIMITER,
@@ -62,7 +63,6 @@ public class ReadDelim extends DeterministicFunction<Table> {
         String filePath = ((Value<String>) getParams().get(ReaderConst.FILE)).value();
         String delimiter = ((Value<String>) getParams().get(ReaderConst.DELIMITER)).value();
         Boolean header = ((Value<Boolean>) getParams().get(ReaderConst.HEADER)).value();
-
 
         Table map = readDelim(filePath, delimiter, header);
         return new TableValue(null, map, this);
@@ -105,8 +105,10 @@ public class ReadDelim extends DeterministicFunction<Table> {
 
                     if (values.length == keyCount) {
                         for (int i = 0; i < keyCount; i++) {
+                            // Convert String into guessed type
+                            Object obj = Table.getValueGuessType(values[i]);
                             // strings only currently
-                            dataMap.get(keys[i]).add(values[i]);
+                            dataMap.get(keys[i]).add(obj);
                         }
                     } else {
                         LoggerUtils.log.warning("Not match the number columns, skipping line : " + line);
@@ -115,7 +117,7 @@ public class ReadDelim extends DeterministicFunction<Table> {
             } else {
                 LoggerUtils.log.severe("File is empty !");
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | NoSuchFileException e) {
             LoggerUtils.log.severe("File " + Path.of(filePath).toAbsolutePath() + " is not found !\n" +
                     "The current working dir = " + UserDir.getUserDir());
         } catch (IOException e) {

@@ -25,10 +25,7 @@ import lphy.base.function.datatype.AminoAcidsFunction;
 import lphy.base.function.datatype.BinaryDatatypeFunction;
 import lphy.base.function.datatype.NucleotidesFunction;
 import lphy.base.function.datatype.StandardDatatypeFunction;
-import lphy.base.function.io.ReadDelim;
-import lphy.base.function.io.ReadFasta;
-import lphy.base.function.io.ReadNexus;
-import lphy.base.function.io.WriteFasta;
+import lphy.base.function.io.*;
 import lphy.base.function.taxa.*;
 import lphy.base.function.tree.ExtantTree;
 import lphy.base.function.tree.MigrationCount;
@@ -96,7 +93,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
                 // IO
                 Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, WriteFasta.class,
-                ExtractTrait.class, SpeciesTaxa.class,
+                ReadTrees.class, ExtractTrait.class, SpeciesTaxa.class,
                 // Math
                 SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
                 // Set Op

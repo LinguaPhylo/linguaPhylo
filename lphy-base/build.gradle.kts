@@ -13,7 +13,7 @@ dependencies {
     // required in test
     implementation(project(":lphy"))
     // io.github.linguaphylo
-    api("io.github.linguaphylo:jebl:3.1.0")
+    api("io.github.linguaphylo:jebl:3.1.1-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 }
