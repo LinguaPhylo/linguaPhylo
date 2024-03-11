@@ -18,6 +18,10 @@ jobs:
         with:
           gradle-version: 7.6
 
+      # clean
+      - name: Clean
+        run: ./gradlew clean
+
       # -x test
       - name: Execute Gradle build
         run: ./gradlew build
@@ -28,4 +32,5 @@ jobs:
         with:
           junit_files: |
             lphy/build/test-results/**/*.xml
+            lphy-base/build/test-results/**/*.xml
             lphy-studio/build/test-results/**/*.xml
