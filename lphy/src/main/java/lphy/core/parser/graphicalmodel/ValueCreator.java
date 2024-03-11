@@ -54,6 +54,8 @@ public class ValueCreator {
         if (value instanceof Boolean[]) return createValue((Boolean[]) value, generator);
         if (value instanceof String) return createValue((String) value, generator);
         if (value instanceof String[]) return createValue((String[]) value, generator);
+        // this will allow method call to return a List<T>
+        if (value instanceof List) return createValue((List) value, generator);
         return new Value(null, value, generator);
     }
 
@@ -71,6 +73,8 @@ public class ValueCreator {
             return createValue(arr2List.toArray(Double[]::new), generator);
         else if (arr2List.get(0) instanceof Boolean)
             return createValue(arr2List.toArray(Boolean[]::new), generator);
+        else if (arr2List.get(0) instanceof String)
+            return createValue(arr2List.toArray(String[]::new), generator);
         return createValue(arr2List.toArray(), generator);
     }
 
