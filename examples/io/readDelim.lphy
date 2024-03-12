@@ -1,0 +1,4 @@
+table = readDelim(file="data/RSV2_11_samples.log", sep="\t");
+Θ = table.getColumn("Theta");
+// get column by index starting from 0
+samples = table.getColumn(0);

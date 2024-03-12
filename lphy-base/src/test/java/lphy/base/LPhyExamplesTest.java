@@ -39,8 +39,6 @@ public class LPhyExamplesTest {
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
         List<String> ignoreFiles = Arrays.asList(
-                //TDOO keep failing in github, but passed in local
-                "readDelim.lphy",
                 //TODO Found no implementation for function simulate(lphy= ...
                 "jcCoal.lphy",
                 // TODO gradle test bug : Cannot find the sequence type  ! DNA

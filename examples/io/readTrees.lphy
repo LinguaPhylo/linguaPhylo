@@ -1,0 +1,3 @@
+// default to Nexus reader
+trees = readTrees(file="data/RSV2_11_samples.trees");
+taxa = trees[0].taxa();
