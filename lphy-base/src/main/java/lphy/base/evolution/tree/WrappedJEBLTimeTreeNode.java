@@ -6,6 +6,9 @@ import jebl.evolution.trees.RootedTree;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * To help convert JEBL tree into lphy TimeTree
+ */
 public class WrappedJEBLTimeTreeNode extends TimeTreeNode {
 
     protected jebl.evolution.graphs.Node jeblNode;
@@ -20,8 +23,12 @@ public class WrappedJEBLTimeTreeNode extends TimeTreeNode {
 
     }
 
-
-
+    /**
+     * Copy the information from JEBL node to this TimeTreeNode,
+     * and to create children nodes.
+     * @param jeblNode
+     * @param rootedTree
+     */
     public void deepCopyJEBL(Node jeblNode, RootedTree rootedTree) {
 
         // length or height ?
@@ -33,6 +40,7 @@ public class WrappedJEBLTimeTreeNode extends TimeTreeNode {
             this.setMetaData(entry.getKey(), entry.getValue());
         }
 
+        // recursive to all children
         if (rootedTree.isExternal(jeblNode)) {
             String name = rootedTree.getTaxon(jeblNode).getName();
             this.setId(name);
@@ -46,7 +54,7 @@ public class WrappedJEBLTimeTreeNode extends TimeTreeNode {
                 this.addChild(timeTreeChildNode);
             }
         }
-//        return this;
+
     }
 
 

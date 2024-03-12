@@ -96,10 +96,9 @@ public class ReadTrees extends DeterministicFunction<TimeTree[]> {
             Set<Taxon> jeblTaxa = rootedTree.getTaxa();
             Taxa taxa = Taxa.createTaxa(jeblTaxa.toArray());
 
+            // init TimeTree
             TimeTree timeTree = new TimeTree(taxa);
-
-//TODO where is id in jebl nodes?
-
+            // start from root and recursively create all children nodes.
             TimeTreeNode root = new WrappedJEBLTimeTreeNode(rootedTree.getRootNode(), rootedTree, timeTree);
             timeTree.setRoot(root);
 
