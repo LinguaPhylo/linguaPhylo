@@ -1,0 +1,14 @@
+// simulation from posterior predictive distribution
+data {
+  table = readDelim(file="../io/data/RSV2_11_samples.log", sep="\t");
+  Θ = table.getColumn("Theta");
+  // 129 taxa
+  n = 129;
+  // if you want to use the same taxa names
+  // trees = readTrees(file="../io/data/RSV2_11_samples.trees");
+  // taxa = trees[0].taxa();
+}
+model {
+  // ψ is simulated from the Θ in the log file
+  ψ ~ Coalescent(n=n, theta=Θ);
+}
