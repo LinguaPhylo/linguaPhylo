@@ -60,7 +60,8 @@ public class LPhyExamplesTest {
             } catch (Exception e) {
 //                    failedFiles.add(fileName);
                 System.err.println("Example " + fileName + " failed\n");
-                fail("Example " + fileName + " failed at Exception :\n" + e.getMessage());
+                fail("Example " + fileName + " failed at Exception :\n" + e.getMessage() + "\n\n" +
+                        String.join("\n", lPhyMetaParser.getLines()));
             }
             // lines of code parsed
             List<String> lines = lPhyMetaParser.getLines();
