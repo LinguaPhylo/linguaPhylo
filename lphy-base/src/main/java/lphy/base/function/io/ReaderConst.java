@@ -13,4 +13,6 @@ public final class ReaderConst {
 
     public static final String ALIGNMENT = "alignment";
 
+    public static final String SEQUENCE_TYPE = "sequenceType";
+
 }

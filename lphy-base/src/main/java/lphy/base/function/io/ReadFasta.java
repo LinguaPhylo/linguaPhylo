@@ -37,13 +37,17 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
 
     public ReadFasta(@ParameterInfo(name = ReaderConst.FILE, description = "the name of fasta file including path.") Value<String> filePath,
                      @ParameterInfo(name = ReaderConst.OPTIONS, description = "the map containing optional arguments and their values for reuse.",
-                             optional=true) Value<Map<String, String>> options ) {
+                             optional=true) Value<Map<String, String>> options,
+                     @ParameterInfo(name = ReaderConst.SEQUENCE_TYPE, description = "the sequence type for sequences in the fasta format, " +
+                             "default to guess the type between Nucleotide and Amino Acid.",
+                             narrativeName = "sequence type", optional = true) Value<SequenceType> sequenceType ) {
 
 
         if (filePath == null) throw new IllegalArgumentException("The file name can't be null!");
         setParam(ReaderConst.FILE, filePath);
 
         if (options != null) setParam(ReaderConst.OPTIONS, options);
+        if (sequenceType != null) setParam(ReaderConst.SEQUENCE_TYPE, sequenceType);
     }
 
 
@@ -60,12 +64,14 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
         String spRegxStr = MetaDataOptions.getSpecieseRegex(optionsVal);
 
         //*** parsing ***//
-        SequenceType sequenceType = SequenceType.NUCLEOTIDE;
 
         Path nexPath = UserDir.getUserPath(filePath);
 
         Reader reader = getReader(nexPath.toString());
 
+        Value<SequenceType> sequenceTypeVal = getParams().get(ReaderConst.SEQUENCE_TYPE);
+        SequenceType sequenceType = sequenceTypeVal != null ? sequenceTypeVal.value() : null;
+        // if null, then guess the sequence type
         Alignment faData = getAlignment(reader, sequenceType, ageRegxStr, ageDirectionStr, spRegxStr);
 
         return new Value<>(null, faData, this);
@@ -76,23 +82,26 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
      * The utility method to import an alignment in a fasta format from reader.
      * If both ageRegxStr and spRegxStr are null, then create a {@link SimpleAlignment}.
      * @param reader           it can be created from either a file or string.
-     * @param sequenceType     it must be consistent with the data in reader.
+     * @param sequenceTypeToGuess   {@link SequenceType}. If null, then guess the sequence type between Nucleotide and Amino Acid.
      * @param ageRegxStr       Java regular expression to extract dates from taxa names.
      * @param ageDirectionStr  {@link MetaDataAlignment.AgeDirection}.
      * @param spRegxStr        Java regular expression to extract species from taxa names.
      * @return  {@link Alignment} imported from a fasta format.
      */
-    public static Alignment getAlignment(Reader reader, SequenceType sequenceType,
+    public static Alignment getAlignment(Reader reader, SequenceType sequenceTypeToGuess,
                                           String ageRegxStr, String ageDirectionStr, String spRegxStr) {
         List<Sequence> sequenceList = new ArrayList<>();
         try {
-            FastaImporter fastaImporter = new FastaImporter(reader, sequenceType);
+            FastaImporter fastaImporter = new FastaImporter(reader, sequenceTypeToGuess);
             sequenceList = fastaImporter.importSequences();
         } catch (IOException | ImportException e) {
             LoggerUtils.logStackTrace(e);
         }
         if (sequenceList.size() < 1)
             throw new IllegalArgumentException("Fasta file has no sequence !");
+
+        // actual sequence type after guessing
+        SequenceType sequenceType = sequenceList.get(0).getSequenceType();
 
         Taxon[] taxons = new Taxon[sequenceList.size()];
         int siteCount = Objects.requireNonNull(sequenceList.get(0)).getLength();
