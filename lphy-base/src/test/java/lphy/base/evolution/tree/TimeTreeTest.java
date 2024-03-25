@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,4 +60,29 @@ class TimeTreeTest {
         assertEquals(rootAge, nodes.get(nodes.size()-1).getAge(), "root age vs. the last element age");
     }
 
+    // the node should be the oldest with the age
+    @Test
+    void getOldestNode() {
+        List<TimeTreeNode> nodes = tree.getInternalNodes();
+        Double[] ages = new Double[nodes.size()];
+        for (int i = 0; i<nodes.size();i++){
+            TimeTreeNode node = nodes.get(i);
+            double age = node.getAge();
+            ages[i] = age;
+        }
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(ages.length);
+        double randomAge = ages[randomIndex];
+
+        TimeTreeNode observe = tree.getOldestNode(randomAge);
+
+        double expected = 0;
+        for (int i = 0; i<ages.length; i++){
+            if (ages[i] <= randomAge && ages[i] > expected){
+                expected = ages[i];
+            }
+        }
+        assertEquals(expected, observe.getAge());
+    }
 }
