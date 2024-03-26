@@ -285,11 +285,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
                 if (genDist instanceof VectorizedDistribution<?> vectDist && valueVal.getClass().isArray()) {
-                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(
-                            var.getId(), vectDist, (Object[]) valueVal);
+                    variable = DataClampingUtils.clampDataToVectorizedRandomVariable(
+                            (Object[]) valueVal, var.getId(), vectDist);
                 } else if (genDist instanceof IID<?> iid && valueVal.getClass().isArray()) {
-                    variable = DataClampingUtils.getDataClampedVectorizedRandomVariable(
-                            var.getId(), iid, (Object[]) valueVal);
+                    variable = DataClampingUtils.clampDataToVectorizedRandomVariable(
+                            (Object[]) valueVal, var.getId(), iid);
                 } else {
                     // singe var
                     variable = new RandomVariable(var.getId(), valueVal, genDist);

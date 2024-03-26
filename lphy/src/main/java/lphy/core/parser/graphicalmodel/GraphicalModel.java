@@ -2,6 +2,7 @@ package lphy.core.parser.graphicalmodel;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.parser.DataClampingUtils;
 
 import java.util.*;
 
@@ -52,11 +53,14 @@ public interface GraphicalModel {
      * and the model block and the model id is a random variable.
      */
     default boolean isClamped(String id) {
-        return (id != null && getDataDictionary().containsKey(id) &&
-                getModelDictionary().containsKey(id) &&
-                getModelDictionary().get(id) instanceof RandomVariable);
+        return DataClampingUtils.isClamped(id, this);
     }
 
+    /**
+     * @param value  given a {@link Value}
+     * @return  true if value is {@link RandomVariable}, which should be in model block,
+     *          and it is clamped.
+     */
     default boolean isClampedVariable(Value value) {
         return value instanceof RandomVariable && isClamped(value.getId());
     }
