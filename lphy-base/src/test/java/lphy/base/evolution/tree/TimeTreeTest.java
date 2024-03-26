@@ -1,16 +1,17 @@
 package lphy.base.evolution.tree;
 
+import lphy.base.evolution.Taxa;
 import lphy.base.evolution.coalescent.Coalescent;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Walter Xie
@@ -63,7 +64,7 @@ class TimeTreeTest {
     // the node should be the oldest with the age
     @Test
     void getOldestNode() {
-        List<TimeTreeNode> nodes = tree.getInternalNodes();
+        List<TimeTreeNode> nodes = tree.getNodes();
         Double[] ages = new Double[nodes.size()];
         for (int i = 0; i<nodes.size();i++){
             TimeTreeNode node = nodes.get(i);
@@ -84,5 +85,20 @@ class TimeTreeTest {
             }
         }
         assertEquals(expected, observe.getAge());
+    }
+
+    // the difference in name arrays be complete
+    @Test
+    void getDifferentTaxaNames() {
+        String[] allNames = tree.getTaxaNames();
+        String[] sampledNames = Arrays.copyOf(allNames, allNames.length - 1);
+
+        Taxa allTaxa = Taxa.createTaxa(allNames);
+        Taxa sampledTaxa = Taxa.createTaxa(sampledNames);
+
+        String[] expected = {allNames[allNames.length - 1]};
+        String[] observed = tree.getDifferentTaxaNames(allTaxa, sampledTaxa);
+
+        assertArrayEquals(expected,observed);
     }
 }

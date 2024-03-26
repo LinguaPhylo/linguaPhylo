@@ -315,7 +315,8 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         Set<String> differenceSet = new HashSet<>(allSet);;
         // get difference of two sets
         differenceSet.removeAll(givenSet);
-        return new String[]{differenceSet.toString()};
+
+        return differenceSet.toArray(new String[0]);
     }
 
     @MethodInfo(description = "get the oldest node with the given maximum age.")

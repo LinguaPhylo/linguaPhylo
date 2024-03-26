@@ -49,7 +49,7 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         Value<TimeTree> tree = getParams().get(treeParamName);
         Value<String[]> taxaName = getParams().get(taxaParamName);
         Value<Double[]> sampleFraction = getParams().get(sampleFractionPara);
-        TimeTree treeValue = tree.value();
+        TimeTree originalTree = tree.value();
 
         // obtain tumour and normal taxa names
         String[] tumourName = new String[]{taxaName.value()[0]};
@@ -63,51 +63,60 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         String[] sampledTumour = getSampleResult(tumourFraction, tumourName);
         String[] sampledNormal = getSampleResult(normalFraction, normalName);
 
-        // construct taxa for both tumour and normal cells
-        Taxa sampledTumourTaxa = constructTaxa(treeValue, sampledTumour);
-        Taxa sampledNormalTaxa = constructTaxa(treeValue,sampledNormal);
+        // merge the name arrays
+        String[] sampledNames = combineTwoArray(sampledTumour, sampledNormal);
+        List<String> sampledNamesList = Arrays.asList(sampledNames);
 
-        // combine them to one taxon
-        Taxa newTaxa = combineTwoTaxa(sampledTumourTaxa, sampledNormalTaxa);
+        // make a deep copy of original tree
+        TimeTree newTree = new TimeTree(originalTree);
 
-        // create the tree
-        TimeTree newTree = new TimeTree(newTaxa);
+        // obtain all the taxa
+        Taxa[] allTaxa = new Taxa[]{newTree.getTaxa()};
+
+        // check each node
+        while (newTree.getTaxa().getTaxaNames().length != sampledNamesList.size()){
+            for (int i = 0; i< newTree.getNodeCount(); i++){
+                TimeTreeNode parentNode = newTree.getNodes().get(i);
+                // only deal with nodes with two taxa
+                if (parentNode.getChildCount() == 2){
+                    // give each child taxa names
+                    TimeTreeNode child1 = parentNode.getLeft();
+                    TimeTreeNode child2 = parentNode.getRight();
+                    // only deal with tips
+                    removeTaxa(child1, sampledNamesList, parentNode, child2);
+                    removeTaxa(child2, sampledNamesList, parentNode, child1);
+                }
+            }
+        }
 
         return new RandomVariable<>(null, newTree, this);
     }
 
-    private static Taxa combineTwoTaxa(Taxa taxa1, Taxa taxa2) {
-        // calculate combined number
-        int totalLength = taxa1.ntaxa() + taxa2.ntaxa();
 
-        // create a new taxon array to store the new taxon
-        Taxa[] mergedTaxa = new Taxa[totalLength];
-
-        // do copying
-        for (int i = 0; i < taxa1.ntaxa(); i++) {
-            mergedTaxa[i] = (Taxa) taxa1.getTaxon(i);
-        }
-
-        for (int i = 0; i < taxa2.ntaxa(); i++) {
-            mergedTaxa[i + taxa1.ntaxa()] = (Taxa) taxa2.getTaxon(i);
-        }
-        return Taxa.createTaxa(mergedTaxa);
-    }
-
-    private static Taxa constructTaxa(TimeTree treeValue, String[] sampledNames) {
-        // construct taxa
-        Taxa allTaxa = Taxa.createTaxa(new Taxa[]{treeValue.getTaxa()});
-        Taxon[] sampledCellsList = new Taxon[sampledNames.length];
-        for (int i = 0; i < sampledNames.length; i++){
-            for (int j = 0; j < allTaxa.length(); j++){
-                if (sampledNames[i] == allTaxa.getTaxaNames()[j]){
-                    sampledCellsList[i] = new Taxon(sampledNames[i], allTaxa.getAges()[j]);
+    // public methods for unit test
+    public static void removeTaxa(TimeTreeNode child1, List<String> sampledNamesList, TimeTreeNode parentNode, TimeTreeNode child2) {
+        if (child1.isLeaf()){
+            boolean nameExists = sampledNamesList.contains(child1.getId());
+            // if the taxa is not what we want, then remove it and set sibling's parent nodes
+            if (!nameExists){
+                // remove the taxa
+                parentNode.removeChild(child1);
+                if (parentNode.getChildCount() == 1) {
+                    // set sibling's parent node to grandparent node
+                    child2.setParent(parentNode.getParent());
                 }
             }
         }
-        // create taxa for sampled tumour cells
-        Taxa sampledTaxa = Taxa.createTaxa(sampledNames);
-        return sampledTaxa;
+    }
+
+    public static String[] combineTwoArray(String[] array1, String[] array2) {
+        String[] sampledNames = new String[array1.length + array2.length];
+
+        // do copying
+        System.arraycopy(array1, 0, sampledNames, 0, array1.length);
+        System.arraycopy(array2, 0, sampledNames, array1.length, array2.length);
+
+        return sampledNames;
     }
 
     // public for unit test
