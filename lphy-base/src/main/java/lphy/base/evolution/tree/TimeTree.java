@@ -300,7 +300,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
 
     @MethodInfo(description = "the taxa clade names of the given node")
     public String[] getCladeTaxaNames(TimeTreeNode node){
-        return node.tree.getTaxaNames();
+        return new String[]{node.getId()};
     }
 
     @MethodInfo(description = "the extra part of clade taxa names in the whole tree with the given part of clade taxa names (" +

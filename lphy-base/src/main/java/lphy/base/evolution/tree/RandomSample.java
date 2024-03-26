@@ -55,13 +55,17 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         String[] tumourName = new String[]{taxaName.value()[0]};
         String[] normalName = new String[]{taxaName.value()[1]};
 
+        // get the leaf names
+        String[] tumourLeafList = getLeafList(originalTree, tumourName);
+        String[] normalLeafList = getLeafList(originalTree, normalName);
+
         // obtain tumour and normal sample fractions
         double tumourFraction = sampleFraction.value()[0];
         double normalFraction = sampleFraction.value()[1];
 
         // randomly pick the taxa names
-        String[] sampledTumour = getSampleResult(tumourFraction, tumourName);
-        String[] sampledNormal = getSampleResult(normalFraction, normalName);
+        String[] sampledTumour = getSampleResult(tumourFraction, tumourLeafList);
+        String[] sampledNormal = getSampleResult(normalFraction, normalLeafList);
 
         // merge the name arrays
         String[] sampledNames = combineTwoArray(sampledTumour, sampledNormal);
@@ -74,6 +78,25 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         Taxa[] allTaxa = new Taxa[]{newTree.getTaxa()};
 
         // check each node
+        getSampledTree(newTree, sampledNamesList);
+
+        return new RandomVariable<>(null, newTree, this);
+    }
+
+    public static String[] getLeafList(TimeTree originalTree, String[] tumourName) {
+        List<String> tumourLeafList = new ArrayList<>();
+        TimeTreeNode[] allNodes = originalTree.getNodes().toArray(new TimeTreeNode[0]);
+        // check which is a leaf
+        for (int i = 0; i<allNodes.length; i++){
+            // if the node is tumour node, and the node is a leaf, add to the list
+            if (Arrays.asList(tumourName).contains(allNodes[i].getId()) && allNodes[i].isLeaf()){
+                tumourLeafList.add(allNodes[i].getId());
+            }
+        }
+        return tumourLeafList.toArray(new String[0]);
+    }
+
+    public static void getSampledTree(TimeTree newTree, List<String> sampledNamesList) {
         while (newTree.getTaxa().getTaxaNames().length != sampledNamesList.size()){
             for (int i = 0; i< newTree.getNodeCount(); i++){
                 TimeTreeNode parentNode = newTree.getNodes().get(i);
@@ -84,26 +107,31 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
                     TimeTreeNode child2 = parentNode.getRight();
                     // only deal with tips
                     removeTaxa(child1, sampledNamesList, parentNode, child2);
+                    // reset the root if child1 is removed when parent node is origin
+                    if (parentNode.isOrigin() && parentNode.getChildCount() == 1){
+                        newTree.setRoot(child2);
+                    }
                     removeTaxa(child2, sampledNamesList, parentNode, child1);
+                    if (parentNode.isOrigin() && parentNode.getChildCount() == 1){
+                        newTree.setRoot(child1);
+                    }
                 }
             }
         }
-
-        return new RandomVariable<>(null, newTree, this);
     }
 
-
-    // public methods for unit test
     public static void removeTaxa(TimeTreeNode child1, List<String> sampledNamesList, TimeTreeNode parentNode, TimeTreeNode child2) {
         if (child1.isLeaf()){
             boolean nameExists = sampledNamesList.contains(child1.getId());
             // if the taxa is not what we want, then remove it and set sibling's parent nodes
-            if (!nameExists){
+            if (!nameExists && parentNode != null) {
                 // remove the taxa
                 parentNode.removeChild(child1);
-                if (parentNode.getChildCount() == 1) {
+                if (parentNode.getChildCount() == 1 && !parentNode.isOrigin()) {
                     // set sibling's parent node to grandparent node
+                    TimeTreeNode tempParent = parentNode;
                     child2.setParent(parentNode.getParent());
+                    parentNode.removeChild(tempParent);
                 }
             }
         }
@@ -119,7 +147,6 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         return sampledNames;
     }
 
-    // public for unit test
     public String[] getSampleResult(double fraction, String[] name) {
         // calculate the num of taxa names to get
         int sampleNumber = (int)Math.round(fraction * name.length);
