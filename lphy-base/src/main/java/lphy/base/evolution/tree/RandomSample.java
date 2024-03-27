@@ -69,16 +69,12 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
 
         // merge the name arrays
         String[] sampledNames = combineTwoArray(sampledTumour, sampledNormal);
-        List<String> sampledNamesList = Arrays.asList(sampledNames);
 
         // make a deep copy of original tree
         TimeTree newTree = new TimeTree(originalTree);
 
-        // obtain all the taxa
-        Taxa[] allTaxa = new Taxa[]{newTree.getTaxa()};
-
-        // check each node
-        getSampledTree(newTree, sampledNamesList);
+        // remove unsampled taxa and reset parents
+        getSampledTree(newTree, sampledNames);
 
         return new RandomVariable<>(null, newTree, this);
     }
@@ -96,44 +92,42 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
         return tumourLeafList.toArray(new String[0]);
     }
 
-    public static void getSampledTree(TimeTree newTree, List<String> sampledNamesList) {
-        while (newTree.getTaxa().getTaxaNames().length != sampledNamesList.size()){
-            for (int i = 0; i< newTree.getNodeCount(); i++){
-                TimeTreeNode parentNode = newTree.getNodes().get(i);
-                // only deal with nodes with two taxa
-                if (parentNode.getChildCount() == 2){
-                    // give each child taxa names
-                    TimeTreeNode child1 = parentNode.getLeft();
-                    TimeTreeNode child2 = parentNode.getRight();
-                    // only deal with tips
-                    removeTaxa(child1, sampledNamesList, parentNode, child2);
-                    // reset the root if child1 is removed when parent node is origin
-                    if (parentNode.isOrigin() && parentNode.getChildCount() == 1){
-                        newTree.setRoot(child2);
+    public static void getSampledTree(TimeTree newTree, String[] sampledNames) {
+        List<String> sampledNamesList = Arrays.asList(sampledNames);
+        TimeTreeNode rootNode = newTree.getRoot();
+        List<TimeTreeNode> leafNodes = rootNode.getAllLeafNodes();
+        for (TimeTreeNode node: leafNodes) {
+            TimeTreeNode parentNode = node.getParent();
+            if (!sampledNamesList.contains(node.getId())){
+                String nodeName = node.getId();
+                TimeTreeNode child1 = parentNode.getLeft();
+                TimeTreeNode child2 = parentNode.getRight();
+                parentNode.removeChild(node);
+                if (parentNode.getChildCount() == 1 && !parentNode.isOrigin()){
+                    if (Objects.equals(child1.getId(), nodeName)){
+                        TimeTreeNode grandparentNode = parentNode.getParent();
+                        child2.setParent(grandparentNode);
+                        grandparentNode.removeChild(parentNode);
+                        grandparentNode.addChild(child2);
+                    } else {
+                        TimeTreeNode grandparentNode = parentNode.getParent();
+                        child1.setParent(grandparentNode);
+                        grandparentNode.removeChild(parentNode);
+                        grandparentNode.addChild(child1);
                     }
-                    removeTaxa(child2, sampledNamesList, parentNode, child1);
-                    if (parentNode.isOrigin() && parentNode.getChildCount() == 1){
+                } else if (parentNode.getChildCount() == 1 && parentNode.isOrigin()) {
+                    if (child1.getId() == nodeName){
+                        newTree.setRoot(child2);
+                    } else {
                         newTree.setRoot(child1);
                     }
                 }
             }
         }
-    }
-
-    public static void removeTaxa(TimeTreeNode child1, List<String> sampledNamesList, TimeTreeNode parentNode, TimeTreeNode child2) {
-        if (child1.isLeaf()){
-            boolean nameExists = sampledNamesList.contains(child1.getId());
-            // if the taxa is not what we want, then remove it and set sibling's parent nodes
-            if (!nameExists && parentNode != null) {
-                // remove the taxa
-                parentNode.removeChild(child1);
-                if (parentNode.getChildCount() == 1 && !parentNode.isOrigin()) {
-                    // set sibling's parent node to grandparent node
-                    TimeTreeNode tempParent = parentNode;
-                    child2.setParent(parentNode.getParent());
-                    parentNode.removeChild(tempParent);
-                }
-            }
+        // set the indices for all nodes
+        TimeTreeNode[] allNodes = newTree.getNodes().toArray(new TimeTreeNode[0]);
+        for (int i = 0; i<allNodes.length;i++){
+            allNodes[i].setIndex(i);
         }
     }
 
