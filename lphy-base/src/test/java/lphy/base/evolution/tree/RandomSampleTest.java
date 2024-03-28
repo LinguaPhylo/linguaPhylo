@@ -88,6 +88,19 @@ public class RandomSampleTest {
         }
 
         assertEquals(sampledNames.length, observedNames.length);
+    }
 
+    @Test
+    void getLeafList() {
+        int expect = tree.getRoot().getAllLeafNodes().size();
+
+        TimeTreeNode[] nodes = tree.getNodes().toArray(new TimeTreeNode[0]);
+        String[] names = new String[nodes.length];
+        for (int i = 0; i<nodes.length; i++){
+            names[i] = nodes[i].getId();
+        }
+
+        int observe = RandomSample.getLeafList(tree, names).length;
+        assertEquals(expect,observe);
     }
 }

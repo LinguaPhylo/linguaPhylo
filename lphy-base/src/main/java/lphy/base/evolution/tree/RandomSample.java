@@ -2,8 +2,6 @@ package lphy.base.evolution.tree;
 
 import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.EvolutionConstants;
-import lphy.base.evolution.Taxa;
-import lphy.base.evolution.Taxon;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
