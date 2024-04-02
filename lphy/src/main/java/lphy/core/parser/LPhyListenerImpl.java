@@ -346,7 +346,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             return new Var(id, parserDictionary);
         }
 
-        /**
+        /** TODO 2d-array indexing? #365
          * @param ctx
          * @return a Slice or ElementsAt function, e.g. x[0]
          */
