@@ -3,7 +3,6 @@ package lphy.base.spi;
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.spi.Extension;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +38,7 @@ public interface SequenceTypeExtension extends Extension {
             // TODO validate same sequence type?
             newTypes.forEach(sequenceTypeMap::putIfAbsent);
 
-        System.out.println(message + Arrays.toString(getSequenceTypes().toArray(new SequenceType[0])));
+        System.out.println(message + getSequenceTypes().stream().map(SequenceType::getName).toList());
     }
 
 }

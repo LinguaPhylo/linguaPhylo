@@ -25,5 +25,5 @@ module lphystudio {
     // LPhy extensions
     uses lphy.core.spi.Extension;
     // declare what service interface the provider intends to use
-    provides lphy.core.spi.Extension with lphystudio.spi.LPhyStudioImpl, lphystudio.spi.ValueFormatterStudioImpl;
+    provides lphy.core.spi.Extension with lphystudio.spi.StudioViewerImpl, lphystudio.spi.LPhyStudioImpl;
 }

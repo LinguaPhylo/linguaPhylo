@@ -30,7 +30,7 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         return dataTypeMap;
     }
 
-    /**
+    /**TODO private or protected?
      * LPhy sequence types {@link SequenceType}
      */
     private static Map<String, SequenceType> dataTypeMap;

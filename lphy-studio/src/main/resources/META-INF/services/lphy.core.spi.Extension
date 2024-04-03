@@ -1,0 +1,7 @@
+# This is important for deploying service providers on the class path
+# https://docs.oracle.com/en/java/javase/20/docs/api/java.base/java/util/ServiceLoader.html
+# META-INF/services must be under src for Intellij
+# Class requires a public no-args constructor
+
+lphystudio.spi.LPhyStudioImpl
+lphystudio.spi.StudioViewerImpl
