@@ -212,7 +212,7 @@ public class ViewerRegister {
 
         @Override
         public String toString() {
-            return "Integer array Viewer";
+            return "Integer value Viewer";
         }
     };
 
@@ -274,7 +274,7 @@ public class ViewerRegister {
 
         @Override
         public String toString() {
-            return "Boolean array Viewer";
+            return "Boolean 2d array Viewer";
         }
     };
 
@@ -304,7 +304,7 @@ public class ViewerRegister {
 
         @Override
         public String toString() {
-            return "String Value Viewer";
+            return "String value Viewer";
         }
     };
 
@@ -331,7 +331,7 @@ public class ViewerRegister {
 
         @Override
         public String toString() {
-            return "Boolean Value Viewer";
+            return "Boolean value Viewer";
         }
     };
 
