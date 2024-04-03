@@ -21,13 +21,13 @@ public class StudioViewerImpl implements ViewerExtension {
     /**TODO protected ?
      * LPhy studio {@link Viewer}
      */
-    private static List<Viewer> viewerList;
+    protected static List<Viewer> viewerList;
 
     /**
      * Required by ServiceLoader.
      */
     public StudioViewerImpl() {
-        viewerList = new ArrayList<>();
+        if (viewerList == null) viewerList = new ArrayList<>();
     }
 
 
