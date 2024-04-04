@@ -161,7 +161,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             double d = Double.parseDouble(text);
             return new DoubleValue(null, d);
 //            } catch (NumberFormatException e) {
-                //TODO better Exception?
+            //TODO better Exception?
 //            }
         }
 
@@ -174,7 +174,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             int i = Integer.parseInt(text);
             return new IntegerValue(null, i); // (int) aLong
 //            } catch (NumberFormatException e) {
-               //TODO better Exception?
+            //TODO better Exception?
 //            }
         }
 
@@ -346,7 +346,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             return new Var(id, parserDictionary);
         }
 
-        /**
+        /** TODO 2d-array indexing? #365
          * @param ctx
          * @return a Slice or ElementsAt function, e.g. x[0]
          */
@@ -623,6 +623,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     Class<?> type = ArrayCreator.getType(var);
 
+                    Value res;
                     // if all values null assume double array
                     if (type == Double.class) {
                         // The commented code below is the incorrect way to handle var[i] == null.
@@ -636,10 +637,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                            }
 //                            return new DoubleArrayValue(null, value);
 //                        } else {
-                            DoubleArray doubleArray = new DoubleArray(var);
-                            return doubleArray.apply();
+                        DoubleArray doubleArray = new DoubleArray(var);
+                        res = doubleArray.apply();
 //                        }
                     } else if (type == Double[].class) {
+                        //TODO not sure how to do properly for 2d ?
                         DoubleArray2D doubleArray2D = new DoubleArray2D(var);
                         return doubleArray2D.apply();
 
@@ -649,7 +651,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     } else if (type == Integer.class) {
                         IntegerArray intArray = new IntegerArray(var);
-                        return intArray.apply();
+                        res = intArray.apply();
 
                     } else if (type == Boolean[].class) {
                         BooleanArray2D booleanArray2D = new BooleanArray2D(var);
@@ -657,7 +659,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     } else if (type == Boolean.class) {
                         BooleanArray booleanArray = new BooleanArray(var);
-                        return booleanArray.apply();
+                        res = booleanArray.apply();
 
                     } else if (type == String[].class) {
                         StringArray2D stringArray2D = new StringArray2D(var);
@@ -665,7 +667,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     } else if (type == String.class) {
                         StringArray stringArray = new StringArray(var);
-                        return stringArray.apply();
+                        res = stringArray.apply();
 
                     } else if (type == Number[].class) {
                         NumberArray2D numberArray2D = new NumberArray2D(var);
@@ -673,7 +675,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 
                     } else if (type == Number.class) {
                         NumberArray numberArray = new NumberArray(var);
-                        return numberArray.apply();
+                        res = numberArray.apply();
 
                     } else if (type == Object[].class) {
                         ObjectArray2D objectArray2D = new ObjectArray2D(var);
@@ -682,13 +684,31 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                     } else {
                         // handle generic value array construction
                         ObjectArray objectArray = new ObjectArray(var);
-                        return objectArray.apply();
+                        res = objectArray.apply();
                     }
+
+                    // It is necessary here to set generator to null, in order to avoid break constant array into pieces,
+                    // because doubleArray function will display in the graphical model.
+                    if (allConstants(var))
+                        res.setFunction(null);
+                    return res;
                 }
                 throw new IllegalArgumentException("[ ] are required ! " + ctx.getText());
             }
             return super.visitArray_construction(ctx);
         }
+
+        /**
+         * @param var
+         * @return true if all values are null or constant.
+         */
+        private boolean allConstants(Value[] var) {
+            for (Value v : var) {
+                if (v != null && !v.isConstant()) return false;
+            }
+            return true;
+        }
+
 
         /**
          * @param ctx
@@ -922,17 +942,6 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             }
 
         }
-    }
-
-    /**
-     * @param var
-     * @return true if all values are null or constant.
-     */
-    private boolean allConstants(Value[] var) {
-        for (Value v : var) {
-            if (v != null && !v.isConstant()) return false;
-        }
-        return true;
     }
 
     public static void main(String[] args) throws IOException {
