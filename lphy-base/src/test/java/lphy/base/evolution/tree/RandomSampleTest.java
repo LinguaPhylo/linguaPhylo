@@ -53,7 +53,11 @@ public class RandomSampleTest {
         Value<TimeTree> tree = new Value<>("timeTree", this.tree);
         Value<Double[]> fractionValue = new Value<>("fraction",fractionList);
         Value<String[]> nameList = new Value<>("nameList", this.tree.getTaxaNames());
-        RandomSample instance = new RandomSample(tree, nameList, fractionValue);
+        String[][] nameListValue = new String[2][nameList.value().length];
+        nameListValue[0] = nameList.value();
+        nameListValue[1] = nameList.value();
+        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        RandomSample instance = new RandomSample(tree, nameListArray, fractionValue);
 
         String[] observe = instance.getSampleResult(fraction, name);
         assertEquals(0.5, (double) observe.length /name.length, 0.01);
@@ -80,7 +84,6 @@ public class RandomSampleTest {
         }
         RandomSample.getSampledTree(observe, sampledNames);
 
-//        RandomSample.getSampledTree(observe,sampledNames);
         String[] observedNames = new String[observe.getRoot().getAllLeafNodes().size()];
         for (int i = 0; i<observedNames.length; i++){
             TimeTreeNode node = observe.getRoot().getAllLeafNodes().get(i);
@@ -88,6 +91,7 @@ public class RandomSampleTest {
         }
 
         assertEquals(sampledNames.length, observedNames.length);
+        assertEquals(sampledNames.length, observe.getRoot().getAllLeafNodes().size());
     }
 
     @Test
