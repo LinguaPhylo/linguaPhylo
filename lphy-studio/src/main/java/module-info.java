@@ -32,4 +32,7 @@ module lphystudio {
     // the core uses hard core to register all internal Viewers,
     // but extensions need to declare what service interface the provider intends to use for new Viewers.
 //    provides lphystudio.app.graphicalmodelpanel.viewer.Viewer with lphystudio.app.graphicalmodelpanel.viewer.???Viewer, ...;
+
+    // Note: to adapt with the system not using Java module but using class path,
+    // they need to be declared inside META-INF/services/lphystudio.app.graphicalmodelpanel.viewer.Viewer as well.
 }
