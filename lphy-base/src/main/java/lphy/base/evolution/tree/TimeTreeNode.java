@@ -1,6 +1,7 @@
 package lphy.base.evolution.tree;
 
 import lphy.base.evolution.Taxon;
+import lphy.core.model.annotation.MethodInfo;
 
 import java.util.*;
 
@@ -86,6 +87,7 @@ public class TimeTreeNode {
         return children == null || children.size() == 0;
     }
 
+    @MethodInfo(description="Age of the node.")
     public final double getAge() {
         return age;
     }
@@ -292,3 +294,4 @@ public class TimeTreeNode {
         return isLeaf() && age == 0.0;
     }
 }
+

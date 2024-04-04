@@ -179,6 +179,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return rootNode;
     }
 
+    @MethodInfo(description = "get all taxa names")
     public String[] getTaxaNames() {
         return taxa.getTaxaNames();
     }
@@ -300,23 +301,23 @@ public class TimeTree implements HasTaxa, MultiDimensional {
 
     @MethodInfo(description = "the taxa clade names of the given node")
     public String[] getCladeTaxaNames(TimeTreeNode node){
-        return new String[]{node.getId()};
+        return node.getAllLeafNodes().stream().map(TimeTreeNode::getId).toArray(String[]::new);
     }
 
     @MethodInfo(description = "the extra part of clade taxa names in the whole tree with the given part of clade taxa names (" +
             "the first parameter is whole tree taxa, the second parameter is the given clade taxa.")
-    public String[] getDifferentTaxaNames(Taxa allTaxa, Taxa givenTaxa){
-        String[] allTaxaNames = allTaxa.getTaxaNames();
+    public String[] getDifferentTaxaNames(String[] allTaxaNames, String[] givenTaxaNames){
         Set<String> allSet = new HashSet<>(Arrays.asList(allTaxaNames));
 
-        String[] givenTaxaNames = givenTaxa.getTaxaNames();
         Set<String> givenSet = new HashSet<>(Arrays.asList(givenTaxaNames));
 
         Set<String> differenceSet = new HashSet<>(allSet);;
         // get difference of two sets
         differenceSet.removeAll(givenSet);
 
-        return differenceSet.toArray(new String[0]);
+        String[] array = new String[differenceSet.size()];
+
+        return differenceSet.toArray(array);
     }
 
     @MethodInfo(description = "get the oldest node with the given maximum age.")

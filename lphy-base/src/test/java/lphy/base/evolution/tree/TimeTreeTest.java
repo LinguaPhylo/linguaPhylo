@@ -93,11 +93,8 @@ class TimeTreeTest {
         String[] allNames = tree.getTaxaNames();
         String[] sampledNames = Arrays.copyOf(allNames, allNames.length - 1);
 
-        Taxa allTaxa = Taxa.createTaxa(allNames);
-        Taxa sampledTaxa = Taxa.createTaxa(sampledNames);
-
         String[] expected = {allNames[allNames.length - 1]};
-        String[] observed = tree.getDifferentTaxaNames(allTaxa, sampledTaxa);
+        String[] observed = tree.getDifferentTaxaNames(allNames, sampledNames);
 
         assertArrayEquals(expected,observed);
     }
