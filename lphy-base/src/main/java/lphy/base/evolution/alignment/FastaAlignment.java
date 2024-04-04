@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The lphy data type implements {@link TextFileFormatted},
+ * which will trigger logging as a fasta format to file.
+ */
 public class FastaAlignment extends SimpleAlignment implements TextFileFormatted {
 
     public FastaAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
