@@ -3,6 +3,7 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.Vector;
 import lphy.core.vectorization.CompoundVectorValue;
+import lphystudio.spi.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;

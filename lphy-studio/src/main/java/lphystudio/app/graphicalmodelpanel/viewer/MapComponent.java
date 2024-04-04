@@ -2,7 +2,7 @@ package lphystudio.app.graphicalmodelpanel.viewer;
 
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.datatype.MapValue;
-import lphystudio.app.graphicalmodelpanel.ViewerRegister;
+import lphystudio.spi.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;

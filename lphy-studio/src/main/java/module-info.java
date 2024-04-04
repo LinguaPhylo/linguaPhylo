@@ -27,9 +27,9 @@ module lphystudio {
     exports lphystudio.app.graphicalmodelpanel.viewer;
     exports lphystudio.spi;
 
-    // Both are empty now, but must be declared in order to show studio ext in the LPhyExtension Manager.
-    // LPhy extensions
-    uses lphy.core.spi.Extension;
-    // declare what service interface the provider intends to use
-    provides lphy.core.spi.Extension with lphystudio.spi.StudioViewerImpl, lphystudio.spi.LPhyStudioImpl;
+    // ViewerRegister loads all Viewers
+    uses lphystudio.app.graphicalmodelpanel.viewer.Viewer;
+    // the core uses hard core to register all internal Viewers,
+    // but extensions need to declare what service interface the provider intends to use for new Viewers.
+//    provides lphystudio.app.graphicalmodelpanel.viewer.Viewer with lphystudio.app.graphicalmodelpanel.viewer.???Viewer, ...;
 }

@@ -5,6 +5,7 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphystudio.core.valueeditor.Abstract2DEditor;
+import lphystudio.spi.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;
