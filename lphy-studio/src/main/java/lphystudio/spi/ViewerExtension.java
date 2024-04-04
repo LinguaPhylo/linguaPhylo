@@ -17,9 +17,8 @@ import java.util.List;
 public interface ViewerExtension extends Extension {
 
     /**
-     * @return the map of new {@link Viewer} implemented in the LPhy extension.
-     *         The string key is a keyword to represent this Viewer.
-     *         The keyword can be used to identify and initialise the corresponding Viewer.
+     * @return the list of new {@link Viewer} implemented in the LPhy extension,
+     *         which have been initialised as static class instances.
      */
     List<Viewer> getViewers();
 

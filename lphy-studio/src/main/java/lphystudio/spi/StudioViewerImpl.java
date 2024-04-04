@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class StudioViewerImpl implements ViewerExtension {
 
-    /**TODO protected ?
+    /**TODO this should be Map<T, Viewer> where T is the class, e.g. Alignment, Double, ...
      * LPhy studio {@link Viewer}
      */
     protected static List<Viewer> viewerList;
@@ -33,22 +33,29 @@ public class StudioViewerImpl implements ViewerExtension {
 
     /**
      * Check {@link ViewerRegister} how to create the viewers.
-     * @return a list viewers to register
+     * @return a list viewers to register in this extension
      */
     @Override
     public List<Viewer> getViewers() {
         return Arrays.stream(ViewerRegister.viewers).toList();
     }
 
+    /**
+     * this must be overwritten in each lphy extension.
+     */
     @Override
     public void register() {
-
-//        Map<String, ? extends Viewer> newTypes = declareViewers();
-
+        // TODO add should check if viewer for a type already exists, after getViewers() changes to Map<T, Viewer>.
         addViewers(getViewers(), viewerList, "LPhy studio viewers : ");
     }
 
+    /**
+     * Call this in the panel to show the corresponding viewer given a value.
+     * @param object  a value
+     * @return        the corresponding viewer
+     */
     public static JComponent getJComponentForValue(Object object) {
+        // loop through all viewers.
         for (Viewer viewer : viewerList) {
             if (viewer.match(object)) return viewer.getViewer(object);
         }
