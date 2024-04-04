@@ -4,4 +4,3 @@
 # Class requires a public no-args constructor
 
 lphystudio.spi.LPhyStudioImpl
-lphystudio.spi.StudioViewerImpl
