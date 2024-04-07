@@ -3,4 +3,6 @@
 # META-INF/services must be under src for Intellij
 # Class requires a public no-args constructor
 
-lphystudio.spi.LPhyStudioImpl
+# the core uses hard core to register all internal Viewers,
+# but extensions need to declare what service interface the provider intends to use for new Viewers.
+# for example,  lphystudio.app.graphicalmodelpanel.viewer.???Viewer

@@ -22,6 +22,7 @@ import lphystudio.core.layeredgraph.Layering;
 import lphystudio.core.swing.TidyComboBox;
 import lphystudio.core.swing.TidyTextField;
 import lphystudio.core.valueeditor.Abstract2DEditor;
+import lphystudio.spi.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;

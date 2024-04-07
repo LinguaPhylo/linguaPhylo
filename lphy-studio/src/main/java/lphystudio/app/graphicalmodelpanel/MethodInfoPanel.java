@@ -3,6 +3,7 @@ package lphystudio.app.graphicalmodelpanel;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.MethodInfo;
+import lphystudio.spi.ViewerRegister;
 
 import javax.swing.*;
 import java.awt.*;

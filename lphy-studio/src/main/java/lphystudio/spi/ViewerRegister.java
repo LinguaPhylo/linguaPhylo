@@ -1,4 +1,4 @@
-package lphystudio.app.graphicalmodelpanel;
+package lphystudio.spi;
 
 import jebl.evolution.sequences.SequenceType;
 import jebl.evolution.sequences.State;
@@ -6,23 +6,37 @@ import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.ContinuousCharacterData;
 import lphy.base.evolution.tree.TimeTree;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.MapValue;
 import lphystudio.app.alignmentcomponent.AlignmentComponent;
+import lphystudio.app.graphicalmodelpanel.MethodInfoPanel;
+import lphystudio.app.graphicalmodelpanel.VectorValueViewer;
 import lphystudio.app.graphicalmodelpanel.viewer.*;
 import lphystudio.app.treecomponent.TimeTreeComponent;
 import lphystudio.core.valueeditor.*;
-import lphystudio.spi.StudioViewerImpl;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class registers viewers for different classes of values
- * @see StudioViewerImpl
  */
 public class ViewerRegister {
+
+    static ServiceLoader loader;
+
+    /**
+     * the list of {@link Viewer}, containing those loaded by SPI from other lphy extensions.
+     */
+    static List<Viewer> viewerList = new ArrayList<>();
+
+
+    /**
+     * declare all viewers below
+     */
 
     private static Viewer methodInfoViewer = new Viewer() {
         @Override
@@ -489,20 +503,51 @@ public class ViewerRegister {
 //            return null;
 //        }
 
-    public static JComponent getJComponentForValue(Object object) {
-//            for (Viewer viewer : viewers) {
-//                if (viewer.match(object)) return viewer.getViewer(object);
-//            }
-////            LoggerUtils.log.severe("Found no viewer for " + object);
-//            String label;
-//            if (object instanceof Value) {
-//                label = ((Value) object).getLabel();
-//            } else {
-//                label = object.toString();
-//            }
-//            JLabel jLabel = new JLabel(label);
-//            jLabel.setForeground(Color.red);
-//            return jLabel;
-        return StudioViewerImpl.getJComponentForValue(object);
+    static {
+        loader = ServiceLoader.load(Viewer.class);
+
+        // register all viewers in studio core
+        viewerList.addAll(Arrays.stream(viewers).toList());
+
+        //*** Viewer must have a public no-args constructor ***//
+        Iterator<Viewer> viewerIterator = loader.iterator();
+
+        while (viewerIterator.hasNext()) {
+            Viewer viewer = null;
+            try {
+                //*** Viewer must have a public no-args constructor ***//
+                viewer = viewerIterator.next();
+            } catch (ServiceConfigurationError serviceError) {
+                LoggerUtils.log.severe(serviceError.getMessage());
+                serviceError.printStackTrace();
+            }
+
+            // TODO validation here?
+            viewerList.add(viewer);
+        }
+
     }
+
+    /**
+     * Call this in the panel to show the corresponding viewer given a value.
+     * @param object  a value
+     * @return        the corresponding viewer
+     */
+    public static JComponent getJComponentForValue(Object object) {
+        // loop through all viewers.
+        for (Viewer viewer : viewerList) {
+            if (viewer.match(object)) return viewer.getViewer(object);
+        }
+//            LoggerUtils.log.severe("Found no viewer for " + object);
+        String label;
+        if (object instanceof Value) {
+            label = ((Value) object).getLabel();
+        } else {
+            label = object.toString();
+        }
+        JLabel jLabel = new JLabel(label);
+        jLabel.setForeground(Color.red);
+        return jLabel;
+    }
+
 }

@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * Particularly used to log the number values of a named random variable,
  * boolean is converted to 1.0 or 0.0.
+ * At the moment, it is only used by GUI studio.
  */
 public class RandomNumberLoggerListener implements SimulatorListener {
 
