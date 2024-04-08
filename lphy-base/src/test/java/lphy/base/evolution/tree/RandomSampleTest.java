@@ -4,6 +4,7 @@ import lphy.base.evolution.coalescent.Coalescent;
 import lphy.base.parser.newick.NewickASTVisitor;
 import lphy.base.parser.newick.NewickLexer;
 import lphy.base.parser.newick.NewickParser;
+import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -106,5 +107,28 @@ public class RandomSampleTest {
 
         int observe = RandomSample.getLeafList(tree, names).length;
         assertEquals(expect,observe);
+    }
+
+    @Test
+    void RandomSample() {
+        String[] tumourNames = {"2","3","4", "6"};
+        String[] normalNames = {"1","5","14","17","15"};
+
+        double tumourFraction = 0.5;
+        double normalFraction = 0.4;
+        Double[] fractionList = {tumourFraction, normalFraction};
+
+        Value<TimeTree> tree = new Value<>("timeTree", this.tree);
+        Value<Double[]> fractionValue = new Value<>("fraction",fractionList);
+        Value<String[]> tumourNameList = new Value<>("tumourList", tumourNames);
+        Value<String[]> normalNameList = new Value<>("normalList",normalNames);
+        String[][] nameListValue = new String[2][tumourNameList.value().length+normalNameList.value().length];
+        nameListValue[0] = tumourNameList.value();
+        nameListValue[1] = normalNameList.value();
+        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        RandomSample observe = new RandomSample(tree,nameListArray, fractionValue);
+        RandomVariable<TimeTree> observedTree = observe.sample();
+
+        assertEquals(tumourNames.length*tumourFraction + normalNames.length*normalFraction , observedTree.value().getRoot().getAllLeafNodes().size() );
     }
 }
