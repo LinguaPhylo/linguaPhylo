@@ -56,24 +56,28 @@ public class ValueFormatResolver {
             //TODO T[][] cannot go here
             return List.of( createInstanceFrom(valueFormatterCls,
                     value.getId(), value.value()) );
-        } else {
-            // else check array
-            if (value.value() instanceof Object[][] arr) {
-                valType = arr[0][0].getClass();
-                if (resolvedFormatterClasses.containsKey(valType)) {
-                    Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
-                    return createFormatter(vfCls, value);
-                }
-            } else if (value.value() instanceof Object[] arr) {
-                valType = arr[0].getClass();
-                if (resolvedFormatterClasses.containsKey(valType)) {
-                    Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
-                    return createFormatter(vfCls, value);
-                }
+
+        } else if (value.value() instanceof Object[][] arr) { // else check array
+            valType = arr[0][0].getClass();
+            if (resolvedFormatterClasses.containsKey(valType)) {
+                Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
+                return createFormatter(vfCls, value);
             }
+
+        } else if (value.value() instanceof Object[] arr) { // else check array
+            valType = arr[0].getClass();
+            if (resolvedFormatterClasses.containsKey(valType)) {
+                Class<? extends ValueFormatter> vfCls = resolvedFormatterClasses.get(valType);
+                return createFormatter(vfCls, value);
+            }
+
         }
-        throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
-                ", where type = " + value.getType() + ", value = " + value.value() + " !");
+
+        ValueFormatter defaultVF = new ValueFormatter.Base<>(value.getId(), value.value());
+        return List.of(defaultVF);
+
+//        throw new RuntimeException("Cannot resolve formatter for " + value.getId() +
+//                ", where type = " + value.getType() + ", value = " + value.value() + " !");
     }
 
     public Class<? extends ValueFormatter> getFormatterClass(Class<?> valueType, Map<Class<?>, Class<? extends ValueFormatter>> resolvedFormatterClasses) {
@@ -267,7 +271,7 @@ public class ValueFormatResolver {
             // TODO
             Class<? extends ValueFormatter> f = null;
 //            try {
-                f = resolveFormatter(cls, fmClsSet);
+            f = resolveFormatter(cls, fmClsSet);
 //            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
 //                     IllegalAccessException | IllegalArgumentException e) {
 //                throw new RuntimeException(e);
@@ -285,7 +289,7 @@ public class ValueFormatResolver {
         if (formatterClasses.size() < 1)
             //TODO inherited data type, such as a different Alignment
 //            return new ValueFormatter<T>() { };
-          throw new IllegalArgumentException("Cannot find the formatter for " + cls.getName());
+            throw new IllegalArgumentException("Cannot find the formatter for " + cls.getName());
 
         List<Class<? extends ValueFormatter>> vFClsist = new ArrayList<>(formatterClasses);
 
