@@ -299,28 +299,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getRoot().isOrigin();
     }
 
-    @MethodInfo(description = "the taxa clade names of the given node")
-    public String[] getCladeTaxaNames(TimeTreeNode node){
-        return node.getAllLeafNodes().stream().map(TimeTreeNode::getId).toArray(String[]::new);
-    }
-
-    @MethodInfo(description = "the extra part of clade taxa names in the whole tree with the given part of clade taxa names (" +
-            "the first parameter is whole tree taxa, the second parameter is the given clade taxa.")
-    public String[] getDifferentTaxaNames(String[] allTaxaNames, String[] givenTaxaNames){
-        Set<String> allSet = new HashSet<>(Arrays.asList(allTaxaNames));
-
-        Set<String> givenSet = new HashSet<>(Arrays.asList(givenTaxaNames));
-
-        Set<String> differenceSet = new HashSet<>(allSet);;
-        // get difference of two sets
-        differenceSet.removeAll(givenSet);
-
-        String[] array = new String[differenceSet.size()];
-
-        return differenceSet.toArray(array);
-    }
-
-    @MethodInfo(description = "get the oldest node with the given maximum age.")
+    @MethodInfo(description = "get the oldest node under the given maximum age.")
     public TimeTreeNode getOldestNode(Double maxAge) {
         double temp = 0;
         TimeTreeNode tempNode = null;

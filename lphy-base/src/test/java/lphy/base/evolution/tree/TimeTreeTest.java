@@ -86,16 +86,4 @@ class TimeTreeTest {
         }
         assertEquals(expected, observe.getAge());
     }
-
-    // the difference in name arrays be complete
-    @Test
-    void getDifferentTaxaNames() {
-        String[] allNames = tree.getTaxaNames();
-        String[] sampledNames = Arrays.copyOf(allNames, allNames.length - 1);
-
-        String[] expected = {allNames[allNames.length - 1]};
-        String[] observed = tree.getDifferentTaxaNames(allNames, sampledNames);
-
-        assertArrayEquals(expected,observed);
-    }
 }

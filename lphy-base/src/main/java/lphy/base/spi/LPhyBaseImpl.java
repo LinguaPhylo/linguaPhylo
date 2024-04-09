@@ -19,7 +19,7 @@ import lphy.base.evolution.continuous.PhyloOU;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.substitutionmodel.*;
-import lphy.base.evolution.tree.RandomSample;
+import lphy.base.evolution.tree.SubsampledTree;
 import lphy.base.function.*;
 import lphy.base.function.alignment.*;
 import lphy.base.function.datatype.AminoAcidsFunction;
@@ -61,7 +61,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 RhoSampleTree.class, FossilBirthDeathTree.class,
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
                 SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
-                RandomSample.class,
+                SubsampledTree.class,
                 // skyline
                 SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
                 // alignment
@@ -97,7 +97,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, WriteFasta.class,
                 ReadTrees.class, ExtractTrait.class, SpeciesTaxa.class,
                 // Math
-                SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class,// Product.class,
+                SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class, Difference.class,// Product.class,
                 // Set Op
                 Intersect.class,
                 // cast

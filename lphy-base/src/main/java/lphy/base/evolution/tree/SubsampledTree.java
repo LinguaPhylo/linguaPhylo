@@ -12,7 +12,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.*;
 
 
-public class RandomSample extends ParametricDistribution<TimeTree> {
+public class SubsampledTree extends ParametricDistribution<TimeTree> {
     Value<TimeTree> tree;
     Value<String[][]> taxaName;
     Value<Double[]> sampleFraction;
@@ -23,12 +23,10 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
     public static final String sampleFractionPara = "sampleFraction";
     public static final String treeParamName = "tree";
 
-    public RandomSample(
+    public SubsampledTree(
             @ParameterInfo(name = treeParamName, narrativeName = "full tree", description = "the full tree to extract taxa from.") Value<TimeTree> tree,
             @ParameterInfo(name = taxaParamName, narrativeName = "taxa names", description = "the two taxa names that the function would sample") Value<String[][]> taxaName,
             @ParameterInfo(name = sampleFractionPara, narrativeName = "fraction of sampling", description = "the two fractions that the function sample in the taxa") Value<Double[]> sampleFraction){
-
-        System.out.println("RandomSample constructor!!!");
         if (tree == null) throw new IllegalArgumentException("The original tree cannot be null");
         setParam(treeParamName, tree);
         setParam(taxaParamName, taxaName);
@@ -43,16 +41,13 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
-    @GeneratorInfo(name = "RandomSample", description = "Generate the randomly sampled tree with given two sample fractions" +
-            "and two clade taxa names within the given tree.")
+    @GeneratorInfo(name = "SubsampledTree", description = "Generate the randomly sampled tree with given two sample fractions and two clade taxa name arrays within the given tree. The order of sample fractions are respectively matching the name arrays.")
     @Override
     public RandomVariable<TimeTree> sample() {
         Value<TimeTree> tree = getParams().get(treeParamName);
         Value<String[][]> taxaName = getParams().get(taxaParamName);
         Value<Double[]> sampleFraction = getParams().get(sampleFractionPara);
         TimeTree originalTree = tree.value();
-
-        System.out.println("RandomSample sample()");
 
         // obtain tumour and normal taxa names
         String[] tumourName = taxaName.value()[0];
@@ -130,8 +125,6 @@ public class RandomSample extends ParametricDistribution<TimeTree> {
 
         newTree.setRoot(newTree.getRoot(), true);
 
-        String newick = newTree.toNewick(true);
-        System.out.println("newTree newick: " + newick);
         // set the indices for all nodes
         TimeTreeNode[] allNodes = newTree.getNodes().toArray(new TimeTreeNode[0]);
         for (int i = 0; i<allNodes.length;i++){

@@ -1,15 +1,8 @@
 package lphy.base.evolution.tree;
 
 import lphy.base.evolution.coalescent.Coalescent;
-import lphy.base.parser.newick.NewickASTVisitor;
-import lphy.base.parser.newick.NewickLexer;
-import lphy.base.parser.newick.NewickParser;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +12,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RandomSampleTest {
+public class SubsampledTreeTest {
     final int nTaxa = 16;
     TimeTree tree;
 
@@ -58,7 +51,7 @@ public class RandomSampleTest {
         nameListValue[0] = nameList.value();
         nameListValue[1] = nameList.value();
         Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
-        RandomSample instance = new RandomSample(tree, nameListArray, fractionValue);
+        SubsampledTree instance = new SubsampledTree(tree, nameListArray, fractionValue);
 
         String[] observe = instance.getSampleResult(fraction, name);
         assertEquals(0.5, (double) observe.length /name.length, 0.01);
@@ -68,7 +61,7 @@ public class RandomSampleTest {
     void combineTwoArray() {
         String[] array1 = {"1", "2"};
         String[] array2 = {"3", "4"};
-        String[] observe = RandomSample.combineTwoArray(array1, array2);
+        String[] observe = SubsampledTree.combineTwoArray(array1, array2);
         String[] expect = {"1", "2", "3", "4"};
         assertArrayEquals(expect, observe);
     }
@@ -83,7 +76,7 @@ public class RandomSampleTest {
             TimeTreeNode node = observe.getRoot().getAllLeafNodes().get(j);
             newTreeLeafNodeNames[j] = node.getId();
         }
-        RandomSample.getSampledTree(observe, sampledNames);
+        SubsampledTree.getSampledTree(observe, sampledNames);
 
         String[] observedNames = new String[observe.getRoot().getAllLeafNodes().size()];
         for (int i = 0; i<observedNames.length; i++){
@@ -105,12 +98,12 @@ public class RandomSampleTest {
             names[i] = nodes[i].getId();
         }
 
-        int observe = RandomSample.getLeafList(tree, names).length;
+        int observe = SubsampledTree.getLeafList(tree, names).length;
         assertEquals(expect,observe);
     }
 
     @Test
-    void RandomSample() {
+    void SubsampledTree() {
         String[] tumourNames = {"2","3","4", "6"};
         String[] normalNames = {"1","5","14","17","15"};
 
@@ -126,7 +119,7 @@ public class RandomSampleTest {
         nameListValue[0] = tumourNameList.value();
         nameListValue[1] = normalNameList.value();
         Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
-        RandomSample observe = new RandomSample(tree,nameListArray, fractionValue);
+        SubsampledTree observe = new SubsampledTree(tree,nameListArray, fractionValue);
         RandomVariable<TimeTree> observedTree = observe.sample();
 
         assertEquals(tumourNames.length*tumourFraction + normalNames.length*normalFraction , observedTree.value().getRoot().getAllLeafNodes().size() );
