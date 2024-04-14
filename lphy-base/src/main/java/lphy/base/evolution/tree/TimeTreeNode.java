@@ -1,6 +1,7 @@
 package lphy.base.evolution.tree;
 
 import lphy.base.evolution.Taxon;
+import lphy.core.model.annotation.MethodInfo;
 
 import java.util.*;
 
@@ -86,6 +87,7 @@ public class TimeTreeNode {
         return children == null || children.size() == 0;
     }
 
+    @MethodInfo(description="Age of the node.")
     public final double getAge() {
         return age;
     }
@@ -204,6 +206,21 @@ public class TimeTreeNode {
     }
 
     /**
+     * get all leaf node names under this node, if this node is leaf then list.size() = 0.
+     * @return array of all the leaf node names
+     */
+    @MethodInfo(description = "get all leaf node names under the node.")
+    public String[] getAllLeafNodeNames(){
+        final List<TimeTreeNode> leafNodes = new ArrayList<>();
+        if (!this.isLeaf()) getAllLeafNodes(leafNodes);
+        final String[] nodeNames = new String[leafNodes.size()];
+        for (int i = 0 ; i<leafNodes.size(); i++){
+            nodeNames[i] = leafNodes.get(i).getId();
+        }
+        return nodeNames;
+    }
+
+    /**
      * sorts nodes in children according to lowest numbered label in subtree
      */
     public void sort() {
@@ -292,3 +309,4 @@ public class TimeTreeNode {
         return isLeaf() && age == 0.0;
     }
 }
+
