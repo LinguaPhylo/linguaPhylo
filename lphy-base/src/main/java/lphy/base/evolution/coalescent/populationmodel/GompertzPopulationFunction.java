@@ -12,8 +12,8 @@ import static lphy.base.evolution.coalescent.populationmodel.GompertzPopulation.
 public class GompertzPopulationFunction extends DeterministicFunction<PopulationFunction> {
     public GompertzPopulationFunction(//@ParameterInfo(name = T50ParamName, description = "Time when population is half of carrying capacity.") Value<Double> t50,
                                   @ParameterInfo(name = F0ParamName, description = "Time when population is half of carrying capacity.") Value<Double> f0,
-                                  @ParameterInfo(name = BParamName, description = "Initial growth rate of tumor growth.") Value<Double> b,
-                                  @ParameterInfo(name = NINFINITYParamName, description = "Limiting population size (carrying capacity).") Value<Double> NInfinity) {
+                                  @ParameterInfo(name = BParamName, description = "Initial growth rate of tumor growth.") Value<Number> b,
+                                  @ParameterInfo(name = NINFINITYParamName, description = "Limiting population size (carrying capacity).") Value<Number> NInfinity) {
         //setParam(T50ParamName, t50);
         setParam(F0ParamName, f0);
         setParam(BParamName, b);
@@ -37,6 +37,18 @@ public class GompertzPopulationFunction extends DeterministicFunction<Population
         PopulationFunction gompertzPopulation = new GompertzPopulation(f0, b, NInfinity);
 
         return new Value<>( gompertzPopulation, this);
+    }
+
+    public Value<Double> getF0() {
+        return getParams().get(F0ParamName);
+    }
+
+    public Value<Number> getB() {
+        return getParams().get(BParamName);
+    }
+
+    public Value<Number> getNInfinity() {
+        return getParams().get(NINFINITYParamName);
     }
 
 
