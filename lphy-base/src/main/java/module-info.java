@@ -28,6 +28,7 @@ module lphy.base {
     exports lphy.base.evolution.birthdeath;
     exports lphy.base.evolution.branchrate;
     exports lphy.base.evolution.coalescent;
+    exports lphy.base.evolution.coalescent.populationmodel;
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;
     exports lphy.base.evolution.likelihood;
