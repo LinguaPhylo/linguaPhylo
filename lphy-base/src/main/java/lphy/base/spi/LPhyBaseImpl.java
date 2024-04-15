@@ -9,10 +9,8 @@ import lphy.base.evolution.alignment.ErrorModel;
 import lphy.base.evolution.alignment.Sequence;
 import lphy.base.evolution.birthdeath.*;
 import lphy.base.evolution.branchrate.LocalBranchRates;
-import lphy.base.evolution.coalescent.MultispeciesCoalescent;
-import lphy.base.evolution.coalescent.SerialCoalescent;
-import lphy.base.evolution.coalescent.SkylineCoalescent;
-import lphy.base.evolution.coalescent.StructuredCoalescent;
+import lphy.base.evolution.coalescent.*;
+import lphy.base.evolution.coalescent.populationmodel.GompertzPopulationFunction;
 import lphy.base.evolution.continuous.PhyloBrownian;
 import lphy.base.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.base.evolution.continuous.PhyloOU;
@@ -61,7 +59,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 RhoSampleTree.class, FossilBirthDeathTree.class,
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
                 SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
-                SubsampledTree.class,
+                SubsampledTree.class, PopulationFunctionCoalescent.class,
                 // skyline
                 SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
                 // alignment
@@ -105,7 +103,12 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // Utils
                 Length.class, Unique.class, Sort.class, IfElse.class, //ConcatStr.class,
                 Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
-                ConcatArray.class, Concat2Str.class);
+                ConcatArray.class, Concat2Str.class,
+                // Population function
+                GompertzPopulationFunction.class
+
+        );
+
     }
 
     /**
