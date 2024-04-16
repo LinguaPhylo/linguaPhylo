@@ -306,7 +306,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         for (TimeTreeNode node : getNodes()) {
             if (node.getAge() <= maxAge) {
                 double nodeAge = node.getAge();
-                if (nodeAge > temp) {
+                if (nodeAge > temp) { // if every nodeAge after the 1st "if" are 0s, then this will be always false
                     temp = nodeAge;
                     tempNode = node;
                 }

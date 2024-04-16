@@ -1,17 +1,16 @@
 package lphy.base.evolution.tree;
 
-import lphy.base.evolution.Taxa;
 import lphy.base.evolution.coalescent.Coalescent;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Walter Xie
@@ -77,6 +76,12 @@ class TimeTreeTest {
         double randomAge = ages[randomIndex];
 
         TimeTreeNode observe = tree.getOldestNode(randomAge);
+
+        if (observe == null) {
+            // for debug
+            System.err.println("max age to set for getOldestNode = " + randomAge);
+            System.err.println("ages: " + tree.getNodes().stream().map( node -> node.getAge() ).toList());
+        }
 
         double expected = 0;
         for (int i = 0; i<ages.length; i++){
