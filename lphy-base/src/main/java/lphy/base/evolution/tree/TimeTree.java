@@ -299,19 +299,23 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getRoot().isOrigin();
     }
 
-    @MethodInfo(description = "get the oldest node under the given maximum age.")
-    public TimeTreeNode getOldestNode(Double maxAge) {
+    @MethodInfo(description = "get the oldest internal node under the given maximum age.")
+    public TimeTreeNode getOldestInternalNode(Double maxAge) {
         double temp = 0;
         TimeTreeNode tempNode = null;
-        for (TimeTreeNode node : getNodes()) {
-            if (node.getAge() <= maxAge) {
-                double nodeAge = node.getAge();
+        for (TimeTreeNode node : getInternalNodes()) {
+            double nodeAge = node.getAge();
+            if (nodeAge <= maxAge) {
                 if (nodeAge > temp) { // if every nodeAge after the 1st "if" are 0s, then this will be always false
                     temp = nodeAge;
                     tempNode = node;
                 }
             }
         }
-        return tempNode;
+        if ( tempNode == null) {
+            throw new IllegalArgumentException("The input age should be older than the lowest ancestor, maxAge = " + maxAge);
+        } else {
+            return tempNode;
+        }
     }
 }

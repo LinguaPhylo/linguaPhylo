@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * @author Walter Xie
@@ -63,7 +63,8 @@ class TimeTreeTest {
     // the node should be the oldest with the age
     @Test
     void getOldestNode() {
-        List<TimeTreeNode> nodes = tree.getNodes();
+        // for internal nodes, cherries throw the exception, others then generate the oldest node
+        List<TimeTreeNode> nodes = tree.getInternalNodes();
         Double[] ages = new Double[nodes.size()];
         for (int i = 0; i<nodes.size();i++){
             TimeTreeNode node = nodes.get(i);
@@ -74,21 +75,32 @@ class TimeTreeTest {
         Random random = new Random();
         int randomIndex = random.nextInt(ages.length);
         double randomAge = ages[randomIndex];
+        TimeTreeNode randomNode = nodes.get(randomIndex);
 
-        TimeTreeNode observe = tree.getOldestNode(randomAge);
-
-        if (observe == null) {
-            // for debug
-            System.err.println("max age to set for getOldestNode = " + randomAge);
-            System.err.println("ages: " + tree.getNodes().stream().map( node -> node.getAge() ).toList());
-        }
+        TimeTreeNode observe = tree.getOldestInternalNode(randomAge);
 
         double expected = 0;
         for (int i = 0; i<ages.length; i++){
             if (ages[i] <= randomAge && ages[i] > expected){
                 expected = ages[i];
+            } else if (randomNode.getLeft().getChildCount() == 0 && randomNode.getRight().getChildCount() == 0) {
+                String expectedErrorMessage = "The input age should be older than the lowest ancestor, maxAge = " + randomAge;
+                try {
+                    tree.getOldestInternalNode(randomAge);
+                    throw new IllegalArgumentException(expectedErrorMessage);
+                } catch (Exception e) {
+                    assertEquals(expectedErrorMessage, e.getMessage());
+                }
             }
         }
         assertEquals(expected, observe.getAge());
+
+
+        // test for Exception
+        IllegalArgumentException thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> tree.getOldestInternalNode(0.0),
+                "Expected IllegalArgumentException not thrown!"
+        );
     }
 }
