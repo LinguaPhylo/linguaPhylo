@@ -35,4 +35,18 @@ public class LogisticPopulationFunction extends DeterministicFunction<Population
 
         return new Value<>(logisticPopulation, this);
     }
+    public Value<Double> getT50() {
+        return (Value<Double>) getParams().get(T50_PARAM_NAME);
+    }
+
+
+    public Value<Double> getNCarryingCapacity() {
+        return (Value<Double>) getParams().get(N_CARRYING_CAPACITY_PARAM_NAME);
+    }
+
+
+    public Value<Double> getB() {
+        return (Value<Double>) getParams().get(B_PARAM_NAME);
+    }
 }
+

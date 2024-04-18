@@ -4,6 +4,10 @@ import lphy.base.evolution.coalescent.PopulationFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.math3.analysis.integration.RombergIntegrator;
+import org.apache.commons.math3.analysis.solvers.BrentSolver;
+import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
+import org.apache.commons.math3.exception.NoBracketingException;
+import org.apache.commons.math3.exception.TooManyEvaluationsException;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -233,11 +237,22 @@ public class GompertzPopulation implements PopulationFunction {
         while (intensity < targetIntensity) {
             time += deltaTime;
             intensity = getIntensity(time);
-
         }
 
+        double lowerBound = Math.max(0, time - deltaTime);
+        double upperBound = time;
+        UnivariateFunction function = t -> getIntensity(t) - x;
+        UnivariateSolver solver = new BrentSolver(1e-9, 1e-9);
+        try {
+            return solver.solve(100, function, lowerBound, upperBound);
+        } catch (NoBracketingException | TooManyEvaluationsException e) {
+            System.err.println("Solver failed: " + e.getMessage());
+            return Double.NaN;
+        }
+
+
         // return time;
-        return Math.max(time, 0);
+        //return Math.max(time, 0);
     }
 
 

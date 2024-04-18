@@ -19,9 +19,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class PopulationFunctionCoalescent extends TaxaConditionedTreeGenerator {
-    private Value<PopulationFunction> popFunc;
+    public Value<PopulationFunction> popFunc;
 
-    private final String popFuncParamName = "popFunc";
+    public final String popFuncParamName = "popFunc";
 
     /**
      * Constructs a coalescent model with specified population function, number of taxa, taxa object, and leaf node ages.

@@ -32,5 +32,14 @@ public class ExponentialPopulationFunction extends DeterministicFunction<Populat
         return new Value<>(exponentialPopulation, this);
     }
 
+    public Value<Double> getGrowthRate() {
+        return (Value<Double>) getParams().get(GROWTH_RATE_PARAM_NAME);
+    }
+
+
+    public Value<Double> getN0() {
+        return (Value<Double>) getParams().get(N0_PARAM_NAME);
+    }
+
 
 }
