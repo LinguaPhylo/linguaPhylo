@@ -78,16 +78,17 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
      * @param val
      */
     private void put(String id, Value val) {
-        switch (context) {
-            case data:
-                parserDictionary.getDataDictionary().put(id, val);
-                parserDictionary.getDataValues().add(val);
-                break;
-            case model:
-            default:
-                parserDictionary.getModelDictionary().put(id, val);
-                parserDictionary.getModelValues().add(val);
-        }
+        parserDictionary.put(id, val, context);
+//        switch (context) {
+//            case data:
+//                parserDictionary.getDataDictionary().put(id, val);
+//                parserDictionary.getDataValues().add(val);
+//                break;
+//            case model:
+//            default:
+//                parserDictionary.getModelDictionary().put(id, val);
+//                parserDictionary.getModelValues().add(val);
+//        }
     }
 
     private Value<?> get(String id) {
