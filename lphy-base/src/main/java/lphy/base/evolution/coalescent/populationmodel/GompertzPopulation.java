@@ -216,10 +216,10 @@ public class GompertzPopulation implements PopulationFunction {
     @Override
     public double getInverseIntensity(double x) {
         double targetIntensity = x;
-        //double targetIntensity = 1000;
 
         double proportionForT1 = 0.01;
         double proportionForT50 = 0.5;
+        double time = 0;
 
         double t1 = getTimeForGivenProportion(proportionForT1);
         double t50 = getTimeForGivenProportion(proportionForT50);
@@ -230,7 +230,7 @@ public class GompertzPopulation implements PopulationFunction {
 
         double deltaTime = growthPhaseTime / 100;
 
-        double time = Math.max(t1,0);
+        //double time = Math.max(t1,0);
         double intensity = getIntensity(time);
         System.out.println("t1 = " + t1);
 
@@ -249,12 +249,7 @@ public class GompertzPopulation implements PopulationFunction {
             System.err.println("Solver failed: " + e.getMessage());
             return Double.NaN;
         }
-
-
-        // return time;
-        //return Math.max(time, 0);
     }
-
 
 
 
