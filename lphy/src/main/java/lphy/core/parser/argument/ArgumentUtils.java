@@ -70,8 +70,8 @@ public class ArgumentUtils {
 
                 // this code only checks whether types are matching, the cast has to be inside the function or distribution.
                 // check if the type is an array, e.g. TimeTreeNode[].
-                if (valueType.isArray()) {
-                    if (!parameterType.isArray())
+                if (parameterType.isArray()) {
+                    if (!valueType.isArray())
                         return false; // invalid, if given type is array, but required parameter type is not array
 
                     Object[] arr = lightweight ? (Object[]) arg : (Object[]) ((Value) arg).value();
