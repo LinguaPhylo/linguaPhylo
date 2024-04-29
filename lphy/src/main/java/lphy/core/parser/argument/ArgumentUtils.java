@@ -54,7 +54,8 @@ public class ArgumentUtils {
      * @param initArgs the parallel array of initial arguments that match the arguments of the generator - may contain nulls where no name match
      * @param params the map of all params, may be more than non-null in initial arguments
      * @param lightweight
-     * @return
+     * @return       if the types of values parsed from lphy script are matching
+     *               the required types from the implemented function or distribution.
      */
     public static boolean matchingParameterTypes(List<Argument> arguments, Object[] initArgs, Map<String, Value> params, boolean lightweight) {
 
@@ -67,9 +68,27 @@ public class ArgumentUtils {
                 Class parameterType = argumentInfo.type;
                 Class valueType = lightweight ? arg.getClass() : ((Value) arg).value().getClass();
 
-                if (!parameterType.isAssignableFrom(valueType))
+                // this code only checks whether types are matching, the cast has to be inside the function or distribution.
+                // check if the type is an array, e.g. TimeTreeNode[].
+                if (valueType.isArray()) {
+                    if (!parameterType.isArray())
+                        return false; // invalid, if given type is array, but required parameter type is not array
+
+                    Object[] arr = lightweight ? (Object[]) arg : (Object[]) ((Value) arg).value();
+                    Class paramCompType = parameterType.getComponentType();
+                    for (Object o : arr) {
+                        // this make "Value<Object[]> clades" works, when the given value type is TimeTreeNode[].
+                        if (! paramCompType.isAssignableFrom(o.getClass()) ) {
+                            return false; // check if each component type matches
+                        }
+                    }
+                } else if (!parameterType.isAssignableFrom(valueType)) {
                     return false;
+                }
+
+                // if the value type is matched to one argument, then plus 1
                 count += 1;
+
             } else {
                 if (!argumentInfo.optional)
                     return false;
