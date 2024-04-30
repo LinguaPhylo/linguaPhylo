@@ -8,6 +8,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class LocalClock extends DeterministicFunction<Double[]> {
     public static final String treeName = "tree";
@@ -17,14 +18,15 @@ public class LocalClock extends DeterministicFunction<Double[]> {
 
     public static final String includeStemName = "includeStem";
 
-    // TODO: default is to include stem, add option for includeStem=false
+    public static final boolean DEFAULT_INCLUDE_STEM = true;
+
+    // TODO: add option for includeStem=[false]
     public LocalClock(
             @ParameterInfo(name = treeName, description = "the tree used to calculate branch rates" ) Value<TimeTree> tree,
-            @ParameterInfo(name = cladeArrayName, description = "the array of the node names") Value<TimeTreeNode[]> clades,
+            @ParameterInfo(name = cladeArrayName, description = "the array of the node names") Value<Object[]> clades,
             @ParameterInfo(name = cladeRateArrayName, description = "the array of clade rates") Value<Double[]> cladeRates,
             @ParameterInfo(name = rootRateName, description = "the root rate of the tree") Value<Double> rootRate,
-            @ParameterInfo(name = includeStemName, description = "whether to include stem of clades, defaults to true", optional = true) Value<Boolean> includeStem
-            ){
+            @ParameterInfo(name = includeStemName, description = "whether to include stem of clades, defaults to true", optional = true) Value<Boolean> includeStem){
         if (tree == null) throw new IllegalArgumentException("The tree can't be null!");
         if (clades == null) throw new IllegalArgumentException("The clades can't be null!");
         if (cladeRates == null) throw new IllegalArgumentException("The clade rates can't be null!");
@@ -33,7 +35,18 @@ public class LocalClock extends DeterministicFunction<Double[]> {
         setParam(cladeArrayName, clades);
         setParam(cladeRateArrayName, cladeRates);
         setParam(rootRateName, rootRate);
-        setParam(includeStemName, includeStem);
+        if (clades.value() != null) {
+            for (Object clade : clades.value()) {
+                if (!(clade instanceof TimeTreeNode)) {
+                    throw new IllegalArgumentException("The clades array should be nodes!");
+                }
+            }
+        }
+        if (includeStem == null) {
+            setParam(includeStemName, new Value<Boolean>("", DEFAULT_INCLUDE_STEM));
+        } else {
+            setParam(includeStemName, includeStem);
+        }
     }
 
     @GeneratorInfo(name = "localClock", description = "Apply local clock in a phylogenetic tree to generate the " +
@@ -41,17 +54,19 @@ public class LocalClock extends DeterministicFunction<Double[]> {
             " should not be overlapped with each other.")
     @Override
     public Value<Double[]> apply() {
-        Value<TimeTree> tree = getParams().get(treeName);
-        Value<TimeTreeNode[]> clades = getParams().get(cladeArrayName);
-        Value<Double[]> cladeRates = getParams().get(cladeRateArrayName);
-        Value<Double> rootRate = getParams().get(rootRateName);
-        Value<Boolean> includeStem = getParams().get(includeStemName);
+        Map<String, Value> params = getParams();
+        // get parameters
+        TimeTree tree = ((Value<TimeTree>)params.get(treeName)).value();
+        Object[] clades = ((Value<Object[]>)params.get(cladeArrayName)).value();
+        Double[] cladeRates = ((Value<Double[]>)params.get(cladeRateArrayName)).value();
+        Double rootRate = ((Value<Double>)params.get(rootRateName)).value();
+        Boolean includeStem = ((Value<Boolean>)params.get(includeStemName)).value();
 
         // set the rates within specified clades
-        for (int i = 0; i < clades.value().length; i++){
-            TimeTreeNode clade = clades.value()[i];
-            double rate = cladeRates.value()[i];
-            if (includeStem == null || includeStem.value()) {
+        for (int i = 0; i < clades.length; i++){
+            TimeTreeNode clade = (TimeTreeNode) clades[i];
+            double rate = cladeRates[i];
+            if (includeStem == null || includeStem) {
                 setRate(clade, rate, true);
             } else {
                 setRate(clade, rate, false);
@@ -59,23 +74,21 @@ public class LocalClock extends DeterministicFunction<Double[]> {
         }
 
         // initialise the branch rate array
-        Double[] branchRates = new Double[tree.value().branchCount()];
+        Double[] branchRates = new Double[tree.branchCount()];
 
-        for (TimeTreeNode node : tree.value().getNodes()){
-            // set the branch rate for rest of the tree
-            if (! Arrays.asList(cladeRates.value()).contains(node.getBranchRate())){
-                node.setBranchRate(rootRate.value());
+        for (TimeTreeNode node : tree.getNodes()){ // set the branch rate for rest of the tree
+            if (! Arrays.asList(cladeRates).contains(node.getBranchRate())){
+                node.setBranchRate(rootRate);
             }
 
-            if (! node.isRoot()) {
-                // write the branch rate into the array
+            if (! node.isRoot()) { // write the branch rate into the array
                 int cladeNumber = node.getIndex();
                 branchRates[cladeNumber] = node.getBranchRate();
             }
         }
 
         // return to the branch rate list
-        return new Value<>(null, branchRates, this);
+        return new Value<>(branchRates, this);
     }
 
     // public for unit test
@@ -97,12 +110,23 @@ public class LocalClock extends DeterministicFunction<Double[]> {
         }
     }
 
-    public static Double getCladeRate(TimeTreeNode clade, Value<TimeTreeNode[]> clades, Value<Double[]> cladeRates) {
-        for (int i = 0; i< clades.value().length; i++){
-            if (clade == clades.value()[i]){
-                return cladeRates.value()[i];
-            }
-        }
-        return null;
+    public Value<TimeTree> getTree() {
+        return getParams().get(treeName);
+    }
+
+    public Value<Object[]> getClades() {
+        return getParams().get(cladeArrayName);
+    }
+
+    public Value<Double[]> getCladeRates() {
+        return getParams().get(cladeRateArrayName);
+    }
+
+    public Value<Double> getRootRate() {
+        return getParams().get(rootRateName);
+    }
+
+    public Value<Boolean> getIncludeStem() {
+        return getParams().get(includeStemName);
     }
 }

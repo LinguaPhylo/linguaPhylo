@@ -9,6 +9,7 @@ import lphy.base.evolution.alignment.ErrorModel;
 import lphy.base.evolution.alignment.Sequence;
 import lphy.base.evolution.birthdeath.*;
 import lphy.base.evolution.branchrate.LocalBranchRates;
+import lphy.base.evolution.branchrate.LocalClock;
 import lphy.base.evolution.coalescent.*;
 import lphy.base.evolution.coalescent.populationmodel.GompertzPopulationFunction;
 import lphy.base.evolution.continuous.PhyloBrownian;
@@ -89,7 +90,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 SelectSitesByMissingFraction.class, RemoveTaxa.class,
                 VariableSites.class, InvariableSites.class, CopySites.class,
                 // Tree
-                LocalBranchRates.class, ExtantTree.class, PruneTree.class, //NodeCount.class, TreeLength.class,
+                LocalBranchRates.class, ExtantTree.class, PruneTree.class, LocalClock.class, //NodeCount.class, TreeLength.class,
                 // Matrix
                 BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
                 // IO

@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LocalClockTest {
-    final int nTaxa = 16;
     TimeTree tree;
 
     @BeforeEach
@@ -36,22 +35,6 @@ public class LocalClockTest {
     }
 
     @Test
-    void getCladeRate() {
-        TimeTreeNode[] clades = {tree.getNodes().get(4), tree.getNodes().get(5)};
-        Double[] cladeRates = {0.4, 0.6};
-
-        Value<TimeTree> treeValue = new Value<>("tree", tree);
-        Value<TimeTreeNode[]> cladesValue = new Value<>("clades", clades);
-        Value<Double[]> cladeRatesValue = new Value<>("cladeRates", cladeRates);
-        Value<Double> rootRate = new Value<>("rootRate" , 0.2);
-
-        LocalClock instance = new LocalClock(treeValue, cladesValue, cladeRatesValue, rootRate, null);
-
-        double observe = instance.getCladeRate(tree.getNodes().get(4), cladesValue, cladeRatesValue);
-        assertEquals(0.4, observe);
-    }
-
-    @Test
     void setRate() {
         TimeTreeNode node = tree.getNodes().get(4);
         TimeTreeNode[] clades = {node};
@@ -59,7 +42,7 @@ public class LocalClockTest {
         double rootRate = 0.2;
 
         Value<TimeTree> treeValue = new Value<>("tree", tree);
-        Value<TimeTreeNode[]> cladesValue = new Value<>("clades", clades);
+        Value<Object[]> cladesValue = new Value<>("clades", clades);
         Value<Double[]> cladeRatesValue = new Value<>("cladeRates", cladeRates);
         Value<Double> rootRateValue = new Value<>("rootRate" , rootRate);
 
@@ -74,12 +57,13 @@ public class LocalClockTest {
     @Test
     void apply() {
         TimeTreeNode node = tree.getNodes().get(4);
-        TimeTreeNode[] clades = {node};
-        Double[] cladeRates = {0.4};
+        TimeTreeNode node2 = tree.getNodes().get(3);
+        TimeTreeNode[] clades = {node, node2};
+        Double[] cladeRates = {0.4,0.3};
         double rootRate = 0.2;
 
         Value<TimeTree> treeValue = new Value<>("tree", tree);
-        Value<TimeTreeNode[]> cladesValue = new Value<>("clades", clades);
+        Value<Object[]> cladesValue = new Value<>("clades", clades);
         Value<Double[]> cladeRatesValue = new Value<>("cladeRates", cladeRates);
         Value<Double> rootRateValue = new Value<>("rootRate" , rootRate);
         Value<Boolean> includeStemValue = new Value<>("includeStem" , Boolean.TRUE);
@@ -87,7 +71,7 @@ public class LocalClockTest {
         LocalClock instance = new LocalClock(treeValue, cladesValue, cladeRatesValue, rootRateValue, includeStemValue);
         Value<Double[]> observe = instance.apply();
 
-        Double[] expect = {0.4, 0.4, rootRate, rootRate, 0.4, rootRate};
+        Double[] expect = {0.4, 0.4, rootRate, 0.3, 0.4, rootRate};
         Value<Double[]> expectValue = new Value<>(null, expect);
         for (int i = 0; i<expect.length; i++){
             assertEquals(expectValue.value()[i], observe.value()[i]);
@@ -103,7 +87,7 @@ public class LocalClockTest {
         double rootRate = 0.2;
 
         Value<TimeTree> treeValue = new Value<>("tree", tree);
-        Value<TimeTreeNode[]> cladesValue = new Value<>("clades", clades);
+        Value<Object[]> cladesValue = new Value<>("clades", clades);
         Value<Double[]> cladeRatesValue = new Value<>("cladeRates", cladeRates);
         Value<Double> rootRateValue = new Value<>("rootRate" , rootRate);
         Value<Boolean> includeStemValue = new Value<>("includeStem" , Boolean.FALSE);
