@@ -22,6 +22,20 @@ public class DifferenceTest {
     }
 
     @Test
+    void SecondSetHasOtherElements() {
+        String[] set1 = {"1","2","3"};
+        String[] set2 = {"1","4"};
+        Value<String[]> wholeSet = new Value<>("wholeSet", set1);
+        Value<String[]> subSet = new Value<>("subSet", set2);
+
+        Difference instance = new Difference(wholeSet, subSet);
+        Value<String[]> observe = instance.apply();
+        String[] observeValue = observe.value();
+        String[] expect = {"2","3"};
+        assertArrayEquals(expect , observeValue);
+    }
+
+    @Test
     void DifferenceInteger() {
         Integer[] set1 = {1,2,3};
         Integer[] set2 = {1,2};
