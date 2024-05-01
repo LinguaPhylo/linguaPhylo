@@ -25,9 +25,10 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
 
     public SubsampledTree(
             @ParameterInfo(name = treeParamName, narrativeName = "full tree", description = "the full tree to extract taxa from.") Value<TimeTree> tree,
-            @ParameterInfo(name = taxaParamName, narrativeName = "taxa names", description = "the two taxa names that the function would sample") Value<String[][]> taxaName,
-            @ParameterInfo(name = sampleFractionPara, narrativeName = "fraction of sampling", description = "the two fractions that the function sample in the taxa") Value<Double[]> sampleFraction){
+            @ParameterInfo(name = taxaParamName, narrativeName = "taxa names", description = "the taxa name arrays that the function would sample") Value<String[][]> taxaName,
+            @ParameterInfo(name = sampleFractionPara, narrativeName = "fraction of sampling", description = "the fractions that the function sample in the taxa") Value<Double[]> sampleFraction){
         if (tree == null) throw new IllegalArgumentException("The original tree cannot be null");
+        if (taxaName.value().length != sampleFraction.value().length) throw new IllegalArgumentException("The sample fraction number should be same as the number of taxa name arrays!");
         setParam(treeParamName, tree);
         setParam(taxaParamName, taxaName);
         setParam(sampleFractionPara, sampleFraction);
@@ -41,7 +42,7 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
-    @GeneratorInfo(name = "SubsampledTree", description = "Generate the randomly sampled tree with given two sample fractions and two clade taxa name arrays within the given tree. The order of sample fractions are respectively matching the name arrays.")
+    @GeneratorInfo(name = "SubsampledTree", description = "Generate the randomly sampled tree with given sample fractions and clade taxa name arrays within the given tree. The order of sample fractions are respectively matching the name arrays.")
     @Override
     public RandomVariable<TimeTree> sample() {
         Value<TimeTree> tree = getParams().get(treeParamName);
@@ -49,24 +50,31 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
         Value<Double[]> sampleFraction = getParams().get(sampleFractionPara);
         TimeTree originalTree = tree.value();
 
-        // obtain tumour and normal taxa names
-        String[] tumourName = taxaName.value()[0];
-        String[] normalName = taxaName.value()[1];
+        int sampleNumber = 0;
+        // calculate the sampled names number
+        for (int i = 0; i<taxaName.value().length; i++){
+            sampleNumber += (int) Math.round(sampleFraction.value()[i] * taxaName.value()[i].length);
+        }
 
-        // get the leaf names
-        String[] tumourLeafList = getLeafList(originalTree, tumourName);
-        String[] normalLeafList = getLeafList(originalTree, normalName);
+        // initialise the sampledNames array
+        String[] sampledNames = new String[sampleNumber];
+        // let temp remember the index of last time sampledNames writing
+        int temp = 0;
 
-        // obtain tumour and normal sample fractions
-        double tumourFraction = sampleFraction.value()[0];
-        double normalFraction = sampleFraction.value()[1];
-
-        // randomly pick the taxa names
-        String[] sampledTumour = getSampleResult(tumourFraction, tumourLeafList);
-        String[] sampledNormal = getSampleResult(normalFraction, normalLeafList);
-
-        // merge the name arrays
-        String[] sampledNames = combineTwoArray(sampledTumour, sampledNormal);
+        // obtain the names for each taxaName array
+        for (int i = 0; i<taxaName.value().length; i++){
+            // get the leaf names
+            String[] leafList = getLeafList(originalTree, taxaName.value()[i]);
+            // obtain corresponding sample fraction
+            double fraction = sampleFraction.value()[i];
+            // randomly pick the taxa names
+            String[] sample = getSampleResult(fraction, leafList);
+            // write the result in the sampledNames array
+            for(int j = 0; j < sample.length; j++){
+                sampledNames[temp] = sample[j];
+                temp ++;
+            }
+        }
 
         // make a deep copy of original tree
         TimeTree newTree = new TimeTree(originalTree);
@@ -95,34 +103,46 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
         TimeTreeNode rootNode = newTree.getRoot();
         List<TimeTreeNode> leafNodes = rootNode.getAllLeafNodes();
         for (TimeTreeNode node: leafNodes) {
+            // get parent node for this leaf node
             TimeTreeNode parentNode = node.getParent();
+            // if this node is not sampled
             if (!sampledNamesList.contains(node.getId())){
+                // get the node name
                 String nodeName = node.getId();
+                // get the two children
                 TimeTreeNode child1 = parentNode.getLeft();
                 TimeTreeNode child2 = parentNode.getRight();
+                // remove the non-sampled node
                 parentNode.removeChild(node);
+                // if only one child left and parent is not root
                 if (parentNode.getChildCount() == 1 && !parentNode.isRoot()){
+                    // if left child is removed, then set the right child's parent
                     if (Objects.equals(child1.getId(), nodeName)){
                         TimeTreeNode grandparentNode = parentNode.getParent();
                         child2.setParent(grandparentNode);
                         grandparentNode.removeChild(parentNode);
                         grandparentNode.addChild(child2);
                     } else {
+                        // if right child is removed, then set the left child's parent
                         TimeTreeNode grandparentNode = parentNode.getParent();
                         child1.setParent(grandparentNode);
                         grandparentNode.removeChild(parentNode);
                         grandparentNode.addChild(child1);
                     }
                 } else if (parentNode.getChildCount() == 1 && parentNode.isRoot()) {
+                    // if only one child left and parent is root
+                    // if left child is removed, then set the right child as root
                     if (Objects.equals(child1.getId(), nodeName)){
                         newTree.setRoot(child2, true);
                     } else {
+                        //if right child is removed, then set the left child as root
                         newTree.setRoot(child1, true);
                     }
                 }
             }
         }
 
+        // set the root anyway
         newTree.setRoot(newTree.getRoot(), true);
 
         // set the indices for all nodes
@@ -132,19 +152,9 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
         }
     }
 
-    public static String[] combineTwoArray(String[] array1, String[] array2) {
-        String[] sampledNames = new String[array1.length + array2.length];
-
-        // do copying
-        System.arraycopy(array1, 0, sampledNames, 0, array1.length);
-        System.arraycopy(array2, 0, sampledNames, array1.length, array2.length);
-
-        return sampledNames;
-    }
-
     public String[] getSampleResult(double fraction, String[] name) {
         // calculate the num of taxa names to get
-        int sampleNumber = (int)Math.round(fraction * name.length);
+        int sampleNumber = (int) Math.round(fraction * name.length);
         // create a list to write result in
         List<String> sampleResult = new ArrayList<>();
         while (sampleResult.size() < sampleNumber){
@@ -155,7 +165,6 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
 
             sampleResult.add(name[index]); // add the name to the result list
         }
-
         return sampleResult.toArray(new String[0]);
     }
 

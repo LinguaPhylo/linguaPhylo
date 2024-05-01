@@ -6,10 +6,8 @@ import lphy.core.model.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubsampledTreeTest {
@@ -20,22 +18,6 @@ public class SubsampledTreeTest {
     void setUp() {
         Coalescent simulator = new Coalescent(new Value<>("Θ", 10.0), new Value<>("n", nTaxa), null);
         tree = Objects.requireNonNull(simulator.sample()).value();
-        // antlr convoluted stuff (oof...)
-//        String trNewick = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
-//        String trNewick = "(\"5\":12.847126431848253,(\"2\":3.6311734886498632,(\"4\":1.2502720441864856,(\"3\":1.065983209110808,\"1\":1.065983209110808):0.18428883507567773):2.380901444463378):9.215952943198388):0.0;";
-//        CharStream charStream = CharStreams.fromString(trNewick);
-//        NewickLexer lexer = new NewickLexer(charStream);
-//        CommonTokenStream tokens = new CommonTokenStream(lexer);
-//        NewickParser parser = new NewickParser(tokens);
-//        ParseTree parseTree = parser.tree();
-//        NewickASTVisitor visitor = new NewickASTVisitor();
-//
-//        // lphy
-//        TimeTreeNode root = visitor.visit(parseTree);
-//        this.tree = new TimeTree();
-//        this.tree.setRoot(root);
-//        System.out.println(this.tree.toNewick(true));
-
     }
 
     @Test
@@ -55,15 +37,6 @@ public class SubsampledTreeTest {
 
         String[] observe = instance.getSampleResult(fraction, name);
         assertEquals(0.5, (double) observe.length /name.length, 0.01);
-    }
-
-    @Test
-    void combineTwoArray() {
-        String[] array1 = {"1", "2"};
-        String[] array2 = {"3", "4"};
-        String[] observe = SubsampledTree.combineTwoArray(array1, array2);
-        String[] expect = {"1", "2", "3", "4"};
-        assertArrayEquals(expect, observe);
     }
 
     @Test
