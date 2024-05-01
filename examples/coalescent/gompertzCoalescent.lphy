@@ -1,17 +1,14 @@
-
 data {
-  L = 200;
+  L = 500;
 }
-
 model {
 
-  f0 ~ Beta(alpha=20, beta=7);
+     N0 ~ LogNormal(meanlog=3,sdlog=0.5);
+     b ~ LogNormal(meanlog=-0.9, sdlog=0.05);
+     NInfinity ~ LogNormal(meanlog=28, sdlog=0.5);
+     gompertzPopFunc = gompertz(N0=N0, b=b, NInfinity=NInfinity);
 
-  b ~ LogNormal(meanlog=-0.3, sdlog=0.05);
-  NInfinity ~ LogNormal(meanlog=35, sdlog=0.5);
-  gompertzPopFunc = gompertz(f0=f0, b=b, NInfinity=NInfinity);
-
-  tree ~ CoalescentPopFunc(popFunc=gompertzPopFunc, n=16);
-  rootAge = tree.rootAge();
-  D ~ PhyloCTMC(tree=tree, L=L, Q=jukesCantor(), mu=1e-2);
+     tree ~ CoalescentPopFunc(popFunc=gompertzPopFunc, n=16);
+     // rootAge = tree.rootAge();
+     D ~ PhyloCTMC(tree=tree, L=L, Q=jukesCantor(), mu=1e-9);
 }

@@ -22,6 +22,10 @@ public class GompertzPopulation implements PopulationFunction {
     public static final String T50ParamName = "t50";
     public static final String F0ParamName = "f0";
 
+    public static final String N0ParamName = "N0";
+
+
+
     private double N0;  // Initial population size
     private double b;   // Initial growth rate of tumor growth
     private double NInfinity; // Carrying capacity
@@ -95,22 +99,23 @@ public class GompertzPopulation implements PopulationFunction {
 //        this.N0 = NInfinity * Math.pow(2, -Math.exp(-b * this.t50));
 //    }
 
-    public GompertzPopulation(double f0, double b, double NInfinity) {    //(this is for f0 )
-        this.f0 = f0;
+//    public GompertzPopulation(double f0, double b, double NInfinity) {    //(this is for f0 )
+//        this.f0 = f0;
+//        this.b = b;
+//        this.NInfinity = NInfinity;
+//        this.N0  = NInfinity * this .f0;
+//    }
+
+    public GompertzPopulation(double N0, double b, double NInfinity) {
+        // this.f0 = f0;
         this.b = b;
         this.NInfinity = NInfinity;
-        this.N0  = NInfinity * this .f0;
+        this.N0 = N0;
+        //this.N0 = NInfinity * this.f0;
     }
 
 
 
-    /**
-     * Implement the Gompertz function to calculate theta at time t
-     * Assuming theta is proportional to population size for simplicity
-     *
-     * @param t time, where t > 0 is time in the past
-     * @return N0 * Math.exp(Math.log(NInfinity / N0) * (1 - Math.exp(b * t)))
-     */
 //    @Override  //(this is for t50 )
 //    public double getTheta(double t) {
 //        // the sign of b * t is such that t = 0 is present time and t > 0 is time in the past
