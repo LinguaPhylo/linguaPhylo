@@ -1,6 +1,7 @@
 package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.evolution.Taxon;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.TextFileFormatted;
 
@@ -25,9 +26,9 @@ public class FastaAlignment implements Alignment, TextFileFormatted {
 
         for (int i=0; i < ntaxa(); i++) {
             try {
-                String taxonName = getTaxaNames()[i];
+                String taxonName = this.getTaxonName(i);
                 lines.add(">" + taxonName);
-                String sequence = getSequence(i);
+                String sequence = this.getSequence(i);
                 lines.add(sequence);
             } catch (Exception ex) {
                 LoggerUtils.log.severe("Error at " + i + " taxa (" + getTaxaNames()[i] + ") in " +
@@ -62,6 +63,15 @@ public class FastaAlignment implements Alignment, TextFileFormatted {
     @Override
     public String getTaxonName(int taxonIndex) {
         return alignment.getTaxonName(taxonIndex);
+    }
+
+    /**
+     * core method to keep the name correct.
+     * @return Taxon[]
+     */
+    @Override
+    public Taxon[] getTaxonArray() {
+        return alignment.getTaxonArray();
     }
 
     @Override

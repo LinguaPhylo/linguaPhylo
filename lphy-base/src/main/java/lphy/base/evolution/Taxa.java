@@ -65,6 +65,8 @@ public interface Taxa extends MultiDimensional {
     }
 
     /**
+     * This must be written in any wrapper class,
+     * when the code has different treatments for taxon attributes or names.
      * @return all Taxon objects in an array
      */
     default Taxon[] getTaxonArray() {
