@@ -1,30 +1,22 @@
 package lphy.base.evolution.alignment;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.base.evolution.Taxa;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.TextFileFormatted;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The lphy data type implements {@link TextFileFormatted},
  * which will trigger logging as a fasta format to file.
  */
-public class FastaAlignment extends SimpleAlignment implements TextFileFormatted {
+public class FastaAlignment implements Alignment, TextFileFormatted {
 
-    public FastaAlignment(Map<String, Integer> idMap, int nchar, SequenceType sequenceType) {
-        super(idMap, nchar, sequenceType);
-    }
+    final Alignment alignment;
 
-    public FastaAlignment(Taxa taxa, int nchar, SequenceType sequenceType) {
-        super(taxa, nchar, sequenceType);
-    }
-
-    public FastaAlignment(int nchar, Alignment source) {
-        super(nchar, source);
+    public FastaAlignment(Alignment source) {
+        alignment = source;
     }
 
     @Override
@@ -52,4 +44,38 @@ public class FastaAlignment extends SimpleAlignment implements TextFileFormatted
     }
 
 
+    @Override
+    public void setState(int taxon, int position, int state) {
+        throw new UnsupportedOperationException("Unsupported for FastaAlignment !");
+    }
+
+    @Override
+    public int getState(int taxon, int position) {
+        return alignment.getState(taxon, position);
+    }
+
+    @Override
+    public SequenceType getSequenceType() {
+        return alignment.getSequenceType();
+    }
+
+    @Override
+    public String getTaxonName(int taxonIndex) {
+        return alignment.getTaxonName(taxonIndex);
+    }
+
+    @Override
+    public String toJSON() {
+        return alignment.toJSON();
+    }
+
+    @Override
+    public Integer nchar() {
+        return alignment.nchar();
+    }
+
+    @Override
+    public int ntaxa() {
+        return alignment.ntaxa();
+    }
 }

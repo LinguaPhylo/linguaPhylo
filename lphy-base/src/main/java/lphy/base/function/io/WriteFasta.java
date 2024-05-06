@@ -30,14 +30,7 @@ public class WriteFasta extends DeterministicFunction<FastaAlignment> {
         Alignment alignment = ((Value<Alignment>) getParams().get(ReaderConst.ALIGNMENT)).value();
 
         // this only creates taxa and nchar
-        FastaAlignment faData = new FastaAlignment(alignment.nchar(), alignment);
-
-        // fill in states
-        for (int i=0; i < alignment.ntaxa(); i++) {
-            for (int j = 0; j < alignment.nchar(); j++) {
-                faData.setState(i, j, alignment.getState(i, j));
-            }
-        }
+        FastaAlignment faData = new FastaAlignment(alignment);
 
         return new Value<>(null, faData, this);
 
