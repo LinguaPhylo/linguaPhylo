@@ -22,10 +22,6 @@ public class GompertzPopulation implements PopulationFunction {
     public static final String T50ParamName = "t50";
     public static final String F0ParamName = "f0";
 
-    public static final String N0ParamName = "N0";
-
-
-
     private double N0;  // Initial population size
     private double b;   // Initial growth rate of tumor growth
     private double NInfinity; // Carrying capacity
@@ -41,9 +37,9 @@ public class GompertzPopulation implements PopulationFunction {
         }
         double ratio = NInfinity / N0;
         double proportion = 0.5;
-//        if (proportion <= 0 || proportion >= 1) {
-//            throw new IllegalArgumentException("Proportion must be between 0 and 1.");
-//        }
+        //        if (proportion <= 0 || proportion >= 1) {
+        //            throw new IllegalArgumentException("Proportion must be between 0 and 1.");
+        //        }
         double t50 = Math.log(1 - Math.log(proportion) / Math.log(ratio)) / b;
         return t50;
     }
@@ -89,38 +85,37 @@ public class GompertzPopulation implements PopulationFunction {
      * @param b
      * @param NInfinity
      */
-//    public GompertzPopulation(double t50, double b, double NInfinity) {   //(this is for t50 )
-//        this.b = b;
-//        this.t50 = t50;
-//        this.NInfinity = NInfinity;
-//        // Calculate N0 based on t50, b, and NInfinity
-//        // N(t50) = NInfinity / 2
-//        // t50 is a time location given by the user, t50 < 0 means it is in the early exponential phase
-//        this.N0 = NInfinity * Math.pow(2, -Math.exp(-b * this.t50));
-//    }
+    //    public GompertzPopulation(double t50, double b, double NInfinity) {   //(this is for t50 )
+    //        this.b = b;
+    //        this.t50 = t50;
+    //        this.NInfinity = NInfinity;
+    //        // Calculate N0 based on t50, b, and NInfinity
+    //        // N(t50) = NInfinity / 2
+    //        // t50 is a time location given by the user, t50 < 0 means it is in the early exponential phase
+    //        this.N0 = NInfinity * Math.pow(2, -Math.exp(-b * this.t50));
+    //    }
 
-//    public GompertzPopulation(double f0, double b, double NInfinity) {    //(this is for f0 )
-//        this.f0 = f0;
-//        this.b = b;
-//        this.NInfinity = NInfinity;
-//        this.N0  = NInfinity * this .f0;
-//    }
-
-    public GompertzPopulation(double N0, double b, double NInfinity) {
-        // this.f0 = f0;
+    public GompertzPopulation(double f0, double b, double NInfinity) {    //(this is for f0 )
+        this.f0 = f0;
         this.b = b;
         this.NInfinity = NInfinity;
-        this.N0 = N0;
-        //this.N0 = NInfinity * this.f0;
+        this.N0  = NInfinity * this .f0;
     }
 
 
 
-//    @Override  //(this is for t50 )
-//    public double getTheta(double t) {
-//        // the sign of b * t is such that t = 0 is present time and t > 0 is time in the past
-//        return N0 * Math.exp(Math.log(NInfinity / N0) * (1 - Math.exp(b * t)));
-//    }
+    /**
+     * Implement the Gompertz function to calculate theta at time t
+     * Assuming theta is proportional to population size for simplicity
+     *
+     * @param t time, where t > 0 is time in the past
+     * @return N0 * Math.exp(Math.log(NInfinity / N0) * (1 - Math.exp(b * t)))
+     */
+    //    @Override  //(this is for t50 )
+    //    public double getTheta(double t) {
+    //        // the sign of b * t is such that t = 0 is present time and t > 0 is time in the past
+    //        return N0 * Math.exp(Math.log(NInfinity / N0) * (1 - Math.exp(b * t)));
+    //    }
 
     @Override  //(this is for f0 )
     public double getTheta(double t) {
@@ -137,13 +132,13 @@ public class GompertzPopulation implements PopulationFunction {
         UnivariateFunction function = time -> 1 / getTheta(time);
 
         //  Use the separate method to create the integrator
-//    return legrandeIntegrator(function, t);
+        //    return legrandeIntegrator(function, t);
         IterativeLegendreGaussIntegrator integrator = createIntegrator();
         return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
     }
 
-//    return rombergIntegrator(function, t);
-//}
+    //    return rombergIntegrator(function, t);
+    //}
 
     private double legrandeIntegrator(UnivariateFunction function, double t) {
         IterativeLegendreGaussIntegrator integrator = createIntegrator();
@@ -153,7 +148,7 @@ public class GompertzPopulation implements PopulationFunction {
     private double rombergIntegrator(UnivariateFunction function, double t) {
 
         int maxBound = Integer.MAX_VALUE;
-//    int maxBound = 100000;
+        //    int maxBound = 100000;
 
         RombergIntegrator integrator = new RombergIntegrator();
         double absoluteAccuracy = 1e-6;
@@ -161,11 +156,11 @@ public class GompertzPopulation implements PopulationFunction {
                 absoluteAccuracy, RombergIntegrator.DEFAULT_MIN_ITERATIONS_COUNT,
                 RombergIntegrator.ROMBERG_MAX_ITERATIONS_COUNT);
 
-//    try {
-//        System.out.println("Absolute accuracy = " + integrator.getAbsoluteAccuracy());
-//        System.out.println("Relative accuracy = " + integrator.getRelativeAccuracy());
+        //    try {
+        //        System.out.println("Absolute accuracy = " + integrator.getAbsoluteAccuracy());
+        //        System.out.println("Relative accuracy = " + integrator.getRelativeAccuracy());
         return integrator.integrate(maxBound, function, 0, t);
-//    }
+        //    }
     }
 
 
@@ -173,48 +168,48 @@ public class GompertzPopulation implements PopulationFunction {
 
 
 
-//    @Override
-//    public double getIntensity(double t) {
-//
-//        if (t == 0) return 0;
-//
-//        if (getTheta(t) < NInfinity/resolution_magic_number) {
-//            throw new RuntimeException("Theta too small to calculate intensity!");
-//        }
-//
-//        UnivariateFunction function = time -> 1.0 / getTheta(time);
-//        UnivariateIntegrator integrator = new TrapezoidIntegrator();
-//        // The number 10000 here represents a very high number of iterations for accuracy.
-//        return integrator.integrate(100000, function, 0, t);
-//    }
-//
+    //    @Override
+    //    public double getIntensity(double t) {
+    //
+    //        if (t == 0) return 0;
+    //
+    //        if (getTheta(t) < NInfinity/resolution_magic_number) {
+    //            throw new RuntimeException("Theta too small to calculate intensity!");
+    //        }
+    //
+    //        UnivariateFunction function = time -> 1.0 / getTheta(time);
+    //        UnivariateIntegrator integrator = new TrapezoidIntegrator();
+    //        // The number 10000 here represents a very high number of iterations for accuracy.
+    //        return integrator.integrate(100000, function, 0, t);
+    //    }
+    //
 
 
     // passes unit test without magic number
-// Error when running LPhy script that signs at interval endpoints are not different
-//    @Override
-//    public double getInverseIntensity(double x) {
-////
-////
-////    UnivariateFunction thetaFunction = time -> getTheta(time) - NInfinity / resolution_magic_number;
-////    UnivariateSolver thetaSolver = new BrentSolver();
-////    double startValue = thetaFunction.value(0);
-////    double endValue = thetaFunction.value(1000);
-////
-////    System.out.println("Function value at start of the interval (0): " + startValue);
-////    System.out.println("Function value at end of the interval (1000): " + endValue);
-////    double maxTime = thetaSolver.solve(100, thetaFunction, 1e-6, t50 * 10);
-////    System.out.println("maxTime = " + maxTime);
-////
-////    UnivariateFunction function = time -> getIntensity(time) - x;
-////    UnivariateSolver solver = new BrentSolver();
-////    // The range [0, 100] might need to be adjusted depending on the growth model and expected time range.
-//////        return solver.solve(100, function, 0, 100);
-////    return solver.solve(100, function, 0.001, maxTime);
-////
-////}
-//
-//
+    // Error when running LPhy script that signs at interval endpoints are not different
+    //    @Override
+    //    public double getInverseIntensity(double x) {
+    ////
+    ////
+    ////    UnivariateFunction thetaFunction = time -> getTheta(time) - NInfinity / resolution_magic_number;
+    ////    UnivariateSolver thetaSolver = new BrentSolver();
+    ////    double startValue = thetaFunction.value(0);
+    ////    double endValue = thetaFunction.value(1000);
+    ////
+    ////    System.out.println("Function value at start of the interval (0): " + startValue);
+    ////    System.out.println("Function value at end of the interval (1000): " + endValue);
+    ////    double maxTime = thetaSolver.solve(100, thetaFunction, 1e-6, t50 * 10);
+    ////    System.out.println("maxTime = " + maxTime);
+    ////
+    ////    UnivariateFunction function = time -> getIntensity(time) - x;
+    ////    UnivariateSolver solver = new BrentSolver();
+    ////    // The range [0, 100] might need to be adjusted depending on the growth model and expected time range.
+    //////        return solver.solve(100, function, 0, 100);
+    ////    return solver.solve(100, function, 0.001, maxTime);
+    ////
+    ////}
+    //
+    //
 
 
 
@@ -296,7 +291,3 @@ public class GompertzPopulation implements PopulationFunction {
 
 
 }
-
-
-
-
