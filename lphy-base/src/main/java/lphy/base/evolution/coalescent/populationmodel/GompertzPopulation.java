@@ -19,33 +19,23 @@ public class GompertzPopulation implements PopulationFunction {
 
     public static final String BParamName = "b";
     public static final String NINFINITYParamName = "NInfinity";
-    public static final String T50ParamName = "t50";
     public static final String F0ParamName = "f0";
+    public static final String N0ParamName = "N0";
 
     private double N0;  // Initial population size
     private double b;   // Initial growth rate of tumor growth
     private double NInfinity; // Carrying capacity
-    private double t50; // time when population is half of carrying capacity
     private double f0;        // Initial proportion of the carrying capacity
 
-    private double resolution_magic_number = 1e4;
-
     public static double computeT50(double NInfinity, double N0, double b) {
-
         if (N0 >= NInfinity || b <= 0) {
             throw new IllegalArgumentException("N0 must be less than NInfinity and b must be greater than 0.");
         }
         double ratio = NInfinity / N0;
         double proportion = 0.5;
-        //        if (proportion <= 0 || proportion >= 1) {
-        //            throw new IllegalArgumentException("Proportion must be between 0 and 1.");
-        //        }
         double t50 = Math.log(1 - Math.log(proportion) / Math.log(ratio)) / b;
         return t50;
     }
-
-
-
 
     public double getTimeForGivenProportion(double k) {
         // Ensure b is not 0 to avoid division by zero
@@ -69,8 +59,6 @@ public class GompertzPopulation implements PopulationFunction {
         return this.N0;
     }
 
-
-
     private IterativeLegendreGaussIntegrator createIntegrator() {
         int numberOfPoints = 5; // Legendre-Gauss points
         double relativeAccuracy = 1.0e-10; // relative precision
@@ -83,23 +71,20 @@ public class GompertzPopulation implements PopulationFunction {
     /**
      * @param
      * @param b
-     * @param NInfinity
+     * @param
      */
-    //    public GompertzPopulation(double t50, double b, double NInfinity) {   //(this is for t50 )
+    //    public GompertzPopulation(double N0, double b, double NInfinity) {
+    //        // this.f0 = f0;
     //        this.b = b;
-    //        this.t50 = t50;
     //        this.NInfinity = NInfinity;
-    //        // Calculate N0 based on t50, b, and NInfinity
-    //        // N(t50) = NInfinity / 2
-    //        // t50 is a time location given by the user, t50 < 0 means it is in the early exponential phase
-    //        this.N0 = NInfinity * Math.pow(2, -Math.exp(-b * this.t50));
+    //        this.N0 = N0;
+    //        //this.N0 = NInfinity * this.f0;
     //    }
-
-    public GompertzPopulation(double f0, double b, double NInfinity) {    //(this is for f0 )
-        this.f0 = f0;
+    public GompertzPopulation(double N0, double f0, double b) {
+        this.N0 = N0;
         this.b = b;
-        this.NInfinity = NInfinity;
-        this.N0  = NInfinity * this .f0;
+        this.f0 = f0;
+        this.NInfinity = N0 / f0;  // Calculate NInfinity based on N0 and f0
     }
 
 
