@@ -50,8 +50,8 @@ public class GompertzPopulationFunction extends DeterministicFunction<Population
         return getParams().get(BParamName);
     }
 
-    public Value<Number> getNInfinity() {
-        return getParams().get(NINFINITYParamName);
+    public Value<Number> getN0() {
+        return getParams().get(N0ParamName);
     }
 
 
