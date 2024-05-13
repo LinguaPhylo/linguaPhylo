@@ -8,7 +8,6 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class LocalClock extends DeterministicFunction<Double[]> {
     public static final String treeName = "tree";
@@ -54,13 +53,12 @@ public class LocalClock extends DeterministicFunction<Double[]> {
             " should not be overlapped with each other.")
     @Override
     public Value<Double[]> apply() {
-        Map<String, Value> params = getParams();
         // get parameters
-        TimeTree tree = ((Value<TimeTree>)params.get(treeName)).value();
-        Object[] clades = ((Value<Object[]>)params.get(cladeArrayName)).value();
-        Double[] cladeRates = ((Value<Double[]>)params.get(cladeRateArrayName)).value();
-        Double rootRate = ((Value<Double>)params.get(rootRateName)).value();
-        Boolean includeStem = ((Value<Boolean>)params.get(includeStemName)).value();
+        TimeTree tree = getTree().value();
+        Object[] clades = getClades().value();
+        Double[] cladeRates = getCladeRates().value();
+        Double rootRate = getRootRate().value();
+        Boolean includeStem = getIncludeStem().value();
 
         // set the rates within specified clades
         for (int i = 0; i < clades.length; i++){
