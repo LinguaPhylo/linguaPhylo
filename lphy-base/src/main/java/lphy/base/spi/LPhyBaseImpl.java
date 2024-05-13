@@ -11,7 +11,9 @@ import lphy.base.evolution.birthdeath.*;
 import lphy.base.evolution.branchrate.LocalBranchRates;
 import lphy.base.evolution.branchrate.LocalClock;
 import lphy.base.evolution.coalescent.*;
+import lphy.base.evolution.coalescent.populationmodel.ExponentialPopulationFunction;
 import lphy.base.evolution.coalescent.populationmodel.GompertzPopulationFunction;
+import lphy.base.evolution.coalescent.populationmodel.LogisticPopulationFunction;
 import lphy.base.evolution.continuous.PhyloBrownian;
 import lphy.base.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.base.evolution.continuous.PhyloOU;
@@ -107,7 +109,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
                 ConcatArray.class, Concat2Str.class,
                 // Population function
-                GompertzPopulationFunction.class
+                GompertzPopulationFunction.class, ExponentialPopulationFunction.class, LogisticPopulationFunction.class
 
         );
 
