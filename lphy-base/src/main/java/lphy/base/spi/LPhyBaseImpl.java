@@ -20,6 +20,7 @@ import lphy.base.evolution.continuous.PhyloOU;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.substitutionmodel.*;
+import lphy.base.evolution.tree.SampleBranch;
 import lphy.base.evolution.tree.SubsampledTree;
 import lphy.base.function.*;
 import lphy.base.function.alignment.*;
@@ -64,6 +65,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
                 SerialCoalescent.class, StructuredCoalescent.class, MultispeciesCoalescent.class,
                 SubsampledTree.class, PopulationFunctionCoalescent.class,
+                SampleBranch.class,
                 // skyline
                 SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
                 // alignment
