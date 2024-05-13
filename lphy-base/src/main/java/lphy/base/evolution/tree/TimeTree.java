@@ -21,7 +21,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     TimeTreeNode rootNode;
 
     private List<TimeTreeNode> nodes;
-
+    private List<TimeTreeBranch> branches;
     Taxa taxa = null;
     boolean constructedWithTaxa = false;
 
@@ -47,6 +47,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         rootNode.setParent(null);
         rootNode.tree = this;
         nodes = new ArrayList<>();
+        branches = new ArrayList<>();
 
         fillNodeList(rootNode, reindexLeaves);
         indexNodes(rootNode, new int[]{n});
@@ -54,6 +55,8 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
 
         if (!constructedWithTaxa) taxa = Taxa.createTaxa(root);
+
+        buildBranches(rootNode);
     }
 
     public void setRoot(TimeTreeNode root) {
@@ -112,6 +115,22 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         }
 
         return nodes.size();
+    }
+
+    private void buildBranches(TimeTreeNode node) {
+        if (node.isRoot()) {
+            branches.clear();
+        }
+
+        if (!node.isLeaf()) {
+            for (TimeTreeNode child : node.getChildren()) {
+                // create the branch object
+                TimeTreeBranch branch = new TimeTreeBranch(node, child);
+                // add branch to the list
+                branches.add(branch);
+                buildBranches(child);
+            }
+        }
     }
 
     public int n() {
@@ -245,7 +264,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
 
     @MethodInfo(description = "the age of the root of the tree.",
             category = GeneratorCategory.TREE,
-            examples = {"simFossilsCompact.lphy","simpleBirthDeathSerial.lphy","simpleCalibratedYule.lphy"})
+            examples = {"simFossilsCompact.lphy", "simpleBirthDeathSerial.lphy", "simpleCalibratedYule.lphy"})
     public Double rootAge() {
 
         return getRoot().age;
@@ -256,10 +275,15 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     public Integer nodeCount() {
         return getNodeCount();
     }
-    
+
     @MethodInfo(description = "the total number of branches in the tree (returns nodeCount() - 1)")
     public Integer branchCount() {
-        return getNodeCount()-1;
+        return getNodeCount() - 1;
+    }
+
+    @MethodInfo(description = "get all the branches in the tree.")
+    public List<TimeTreeBranch> getBranches(){
+        return branches;
     }
 
     @MethodInfo(description = "the total number of extant leaves in the tree (leaf nodes with age 0.0).")
@@ -312,7 +336,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
                 }
             }
         }
-        if ( tempNode == null) {
+        if (tempNode == null) {
             throw new IllegalArgumentException("The input age should be older than the lowest ancestor, maxAge = " + maxAge);
         } else {
             return tempNode;

@@ -103,4 +103,12 @@ class TimeTreeTest {
                 "Expected IllegalArgumentException not thrown!"
         );
     }
+
+    @Test
+    void getBranches() {
+        List<TimeTreeNode> nodes = tree.getNodes();
+        List<TimeTreeBranch> branches = tree.getBranches();
+        System.out.println(nodes);
+        System.out.println(branches);
+    }
 }
