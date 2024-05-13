@@ -79,15 +79,18 @@ public class AlignmentComponent extends JComponent {
         preferences.addPreferenceChangeListener(evt -> computeMinMaxSize());
     }
 
+    private int visibleNChar() {
+        return Math.min(1000, alignment.nchar());
+    }
     private void computeMinMaxSize() {
-        int maximumWidth = FontUtils.getMaxWidthWithinScreen(alignment.nchar());
+        int maximumWidth = FontUtils.getMaxWidthWithinScreen(visibleNChar());
         int maximumHeight = FontUtils.getMaxHeightWithinScreen(alignment.ntaxa());
         int minimumHeight = FontUtils.MIN_FONT_SIZE * alignment.ntaxa();
 
         maxTaxaWidth = getMaxStringWidth(alignment.getTaxa().getTaxaNames(), getFontMetrics(taxaMinFont));
         if (maxTaxaWidth < 50) maxTaxaWidth = 50;
 
-        int minimumWidth = maxTaxaWidth + Math.max(alignment.nchar(), FontUtils.MIN_FONT_SIZE);
+        int minimumWidth = maxTaxaWidth + Math.max(visibleNChar(), FontUtils.MIN_FONT_SIZE);
 
         if (isShowingTree()) minimumWidth += maxTaxaWidth;
 
@@ -171,7 +174,7 @@ public class AlignmentComponent extends JComponent {
             if (sWidth[i] > maxWidth) maxWidth = sWidth[i];
         }
 
-        double w = (width - maxWidth - spacer) / (double) alignment.nchar();
+        double w = (width - maxWidth - spacer) / (double) visibleNChar();
 
         int ascent = g.getFontMetrics().getAscent();
         double ydelta = (h - ascent) / 2.0 + ascent;
@@ -186,7 +189,7 @@ public class AlignmentComponent extends JComponent {
                 g.drawString(taxa2Draw[i], maxWidth-sWidth[i]+xdelta,(int)Math.round(y+ydelta));
             }
 
-            for (int j = 0; j < alignment.nchar(); j++) {
+            for (int j = 0; j < visibleNChar(); j++) {
                 // need to adjust id according to what taxa order is used.
                 int adjustedId = algTaxaNames.indexOf(taxa2Draw[i]);
 
