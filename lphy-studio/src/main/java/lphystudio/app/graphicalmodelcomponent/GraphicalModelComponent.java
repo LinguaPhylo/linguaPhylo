@@ -92,7 +92,7 @@ public class GraphicalModelComponent extends JComponent implements GraphicalMode
         return parserDictionary;
     }
 
-    private void setup() {
+    public void setup() {
 
         removeAll();
         layeredGraph = LayeredGraphFactory.createLayeredGraph(parserDictionary, getShowConstantNodes());

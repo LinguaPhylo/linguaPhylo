@@ -68,7 +68,7 @@ public interface GraphicalModel {
     /**
      * @return all sinks of the graphical model, including in the data block.
      */
-    default List<Value<?>> getModelSinks() {
+    default List<Value<?>> getDataModelSinks() {
         List<Value<?>> nonArguments = new ArrayList<>();
         getDataDictionary().values().forEach((val) -> {
             if (!val.isAnonymous() && val.getOutputs().size() == 0) nonArguments.add(val);

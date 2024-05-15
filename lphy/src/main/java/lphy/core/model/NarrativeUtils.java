@@ -138,7 +138,7 @@ public class NarrativeUtils {
         List<Value> modelVisited = new ArrayList<>();
 
         StringBuilder builder = new StringBuilder();
-        for (Value value : model.getModelSinks()) {
+        for (Value value : model.getDataModelSinks()) {
 
             ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
@@ -223,7 +223,7 @@ public class NarrativeUtils {
         List<Value> dataValues = new ArrayList<>();
 
         StringBuilder builder = new StringBuilder();
-        for (Value value : model.getModelSinks()) {
+        for (Value value : model.getDataModelSinks()) {
 
             ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override
@@ -434,7 +434,7 @@ public class NarrativeUtils {
     public static String getReferences(GraphicalModel model, Narrative narrative) {
 
         List<Citation> refs = new ArrayList<>();
-        for (Value value : model.getModelSinks()) {
+        for (Value value : model.getDataModelSinks()) {
 
             ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override

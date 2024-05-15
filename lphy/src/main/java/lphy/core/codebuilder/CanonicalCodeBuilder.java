@@ -36,7 +36,7 @@ public class CanonicalCodeBuilder implements CodeBuilder {
         modelLines.clear();
 
         StringBuilder builder = new StringBuilder();
-        for (Value value : parser.getModelSinks()) {
+        for (Value value : parser.getDataModelSinks()) {
 
             ValueCreator.traverseGraphicalModel(value, new GraphicalModelNodeVisitor() {
                 @Override

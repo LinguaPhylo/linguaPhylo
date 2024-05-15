@@ -30,7 +30,7 @@ public class GraphicalModelUtils {
         int wrappedExpressionNodeCount = 0;
         boolean found = false;
         do {
-            for (Value value : model.getModelSinks()) {
+            for (Value value : model.getDataModelSinks()) {
                 found = wrapExpressionNodes(value);
                 if (found) wrappedExpressionNodeCount += 1;
             }
@@ -65,7 +65,7 @@ public class GraphicalModelUtils {
 
     public static List<Value> getAllValuesFromSinks(GraphicalModel model) {
         List<Value> values = new ArrayList<>();
-        for (Value<?> v : model.getModelSinks()) {
+        for (Value<?> v : model.getDataModelSinks()) {
             getAllValues(v, values);
         }
         return values;

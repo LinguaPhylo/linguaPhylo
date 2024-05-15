@@ -220,8 +220,8 @@ public class GraphicalModelPanel extends JPanel {
         verticalSplitPane.setContinuousLayout(true);
         add(verticalSplitPane, BorderLayout.CENTER);
 
-        if (parser.getModelSinks().size() > 0) {
-            showValue(parser.getModelSinks().iterator().next());
+        if (parser.getDataModelSinks().size() > 0) {
+            showValue(parser.getDataModelSinks().iterator().next());
         }
     }
 
@@ -290,14 +290,17 @@ public class GraphicalModelPanel extends JPanel {
         // add Loggers here, to trigger after click Sample button
         loggers.addAll(rightPane.getGUISimulatorListener());
 
+
         // These sync the consoles with GraphicalModelComponent containing the lphy code
         // the code may be changed by GUI, such as squared rectangles.
-        dataInterpreter.clear();
-        modelInterpreter.clear();
-        // refresh data and model lines
-        String text = codeBuilder.getCode(component.getParserDictionary());
-        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParserDictionary.Context.data);
-        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParserDictionary.Context.model);
+//        dataInterpreter.clear();
+//        modelInterpreter.clear();
+//        // refresh data and model lines
+//        String text = codeBuilder.getCode(component.getParserDictionary());
+//        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParserDictionary.Context.data);
+//        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParserDictionary.Context.model);
+
+//TODO sync constants in square, but the above code is wrong
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParserDictionary());
@@ -305,13 +308,18 @@ public class GraphicalModelPanel extends JPanel {
         valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
 //        this.sampler = sampler;
 
+        // refresh graphical nodes
+        component.setup();
+        component.repaint();
+
+        // show current selected value
         if (id != null) {
             Value<?> selectedValue = component.getParserDictionary().getValue(id, LPhyParserDictionary.Context.model);
             if (selectedValue != null) {
                 showValue(selectedValue, false);
             }
         } else {
-            List<Value<?>> sinks = component.getParserDictionary().getModelSinks();
+            List<Value<?>> sinks = component.getParserDictionary().getDataModelSinks();
             // TODO should not move to tab for all sinks?
 //            if (sinks.size() > 0) showValue(sinks.get(0), false);
             for (Value value : sinks) {
@@ -325,6 +333,7 @@ public class GraphicalModelPanel extends JPanel {
 
         rightPane.variableSummary.repaint();
         rightPane.repaint();
+
     }
 
     void showValue(Value value) {
