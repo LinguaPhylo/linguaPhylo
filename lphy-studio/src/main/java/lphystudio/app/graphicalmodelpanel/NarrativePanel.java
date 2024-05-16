@@ -107,6 +107,7 @@ public class NarrativePanel extends JComponent {
 
         parserDictionary.addGraphicalModelChangeListener(this::setText);
 
+        // TODO is this necessary?
         component.addGraphicalModelListener(new GraphicalModelListener() {
             @Override
             public void valueSelected(Value value) {

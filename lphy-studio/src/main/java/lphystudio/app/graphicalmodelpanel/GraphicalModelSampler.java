@@ -23,15 +23,17 @@ public class GraphicalModelSampler extends Sampler {
 
     @Override
     public List<Value> sample(Long seed) {
+        List<Value> res = super.sample(seed);
         parserDictionary.notifyListeners();
-        return super.sample(seed);
+        return res;
     }
 
     @Override
     public Map<Integer, List<Value>> sampleAll(int numReplicates,
                                                List<? extends SimulatorListener> loggers, Long seed) {
+        Map<Integer, List<Value>> res = super.sampleAll(numReplicates, loggers, seed);
         parserDictionary.notifyListeners();
-        return super.sampleAll(numReplicates, loggers, seed);
+        return res;
     }
 
     @Override

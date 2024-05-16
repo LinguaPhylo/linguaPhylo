@@ -290,10 +290,9 @@ public class GraphicalModelPanel extends JPanel {
         // add Loggers here, to trigger after click Sample button
         loggers.addAll(rightPane.getGUISimulatorListener());
 
-//TODO sync constants in square in GUI
-
-        // Sample using the lphy code in component.getParser(), and output results to loggers
-        Sampler sampler = new Sampler(component.getParserDictionary());
+        // GraphicalModelSampler notifies listeners in ParserDictionary
+        Sampler sampler = new GraphicalModelSampler(component.getParserDictionary());
+        // Sampler use the lphy code in component.getParser(), and output results to loggers
         // if null then use a random seed
         valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
 //        this.sampler = sampler;
@@ -322,9 +321,6 @@ public class GraphicalModelPanel extends JPanel {
 
         // refresh all viewerComponent
         rightPane.refresh();
-
-//        rightPane.variableSummary.repaint();
-//        rightPane.repaint();
     }
 
     void showValue(Value value) {
