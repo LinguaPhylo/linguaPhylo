@@ -12,6 +12,13 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Two panels in one, one shows all constants,
+ * the other shows all variables.
+ * Controlled by flag : boolean includeFixedValues and boolean includeRandomValues.
+ * @see ViewerPane.Viewer#Constants
+ * @see ViewerPane.Viewer#Variables
+ */
 public class StatePanel extends JPanel {
 
     GraphicalModelParserDictionary parserDictionary;

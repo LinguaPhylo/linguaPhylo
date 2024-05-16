@@ -26,7 +26,7 @@ public class LayeredGNode extends LayeredNode.Default {
     public static final double FACTOR_SIZE = 7;
     public static final double FACTOR_LABEL_GAP = 5;
 
-    LPhyParserDictionary parser;
+    LPhyParserDictionary parser; //TODO store GraphicalModelComponent, so it can call modelChanged() ?
 
     private static boolean showValue = getShowValueInNode();
 

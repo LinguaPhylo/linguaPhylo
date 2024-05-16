@@ -196,8 +196,14 @@ public class Sampler {
 
             Value val = e.getValue();
 
-            if (val.isRandom()) {
-                if (val.isAnonymous() || !sampled.contains(val.getId())) {
+            // Here, it should not only re-generate its value when Value is isRandom(),
+            // but also re-generate its value for the deterministic functions,
+            // when its parameter value is changed.
+
+//            if (val.isRandom()) {
+            if (val.isAnonymous() || !sampled.contains(val.getId())) {
+                // until the constants who have no generator
+                if (val.getGenerator() != null) {
                     // needs to be sampled
                     Value nv = resample(val, val.getGenerator(), sampled);
 
@@ -205,13 +211,13 @@ public class Sampler {
                     // add new Value back to Model Map, as the old values are removed before this method
                     addValueToModelDictionary(nv);
                     if (!val.isAnonymous()) sampled.add(val.getId());
-
-                } else {
-                    // already been sampled
-                    String id = e.getValue().getId();
-                    newlySampledParams.put(e.getKey(), getParserDictionary().getModelDictionary().get(id));
                 }
+            } else {
+                // already been sampled
+                String id = e.getValue().getId();
+                newlySampledParams.put(e.getKey(), getParserDictionary().getModelDictionary().get(id));
             }
+//            }
         }
         return newlySampledParams;
     }
@@ -235,9 +241,9 @@ public class Sampler {
 //    private void replaceValueInModelValueSet(Value oldValue, Value newValue) {
 //        Set<Value> vS = getParserDictionary().getModelValues();
 //        int size = vS.size();
-          //TODO replace the value() not the object Value,
-          //TODO or after GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
-          //TODO which links all nodes
+    //TODO replace the value() not the object Value,
+    //TODO or after GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
+    //TODO which links all nodes
 //        vS.remove(oldValue);
 //        vS.add(newValue);
 //

@@ -137,6 +137,20 @@ public class ViewerPane extends JTabbedPane {
         }
     }
 
+    public void refresh() {
+        for (JComponent vC: viewerComponent) {
+//            if (vC instanceof JScrollPane scrollPane)
+//                else
+            vC.repaint();
+        }
+        //TODO valueScrollPane .. canonicalModelPanel not refresh
+//        ((StatePanel) valueScrollPane.getViewport().getView()).editors.forEach(Component::repaint);
+//        ((StatePanel) variablesScrollPane.getViewport().getView()).editors.forEach(Component::repaint);
+//        canonicalModelPanel.pane.repaint();
+//        narrativePanel.repaint();
+        repaint();
+    }
+
     public List<SimulatorListener> getGUISimulatorListener() {
         return List.of(variableTextArea, treeTextArea, variableSummary, alignmentTextArea);
     }

@@ -290,17 +290,7 @@ public class GraphicalModelPanel extends JPanel {
         // add Loggers here, to trigger after click Sample button
         loggers.addAll(rightPane.getGUISimulatorListener());
 
-
-        // These sync the consoles with GraphicalModelComponent containing the lphy code
-        // the code may be changed by GUI, such as squared rectangles.
-//        dataInterpreter.clear();
-//        modelInterpreter.clear();
-//        // refresh data and model lines
-//        String text = codeBuilder.getCode(component.getParserDictionary());
-//        dataInterpreter.interpretInput(codeBuilder.getDataLines(), LPhyParserDictionary.Context.data);
-//        modelInterpreter.interpretInput(codeBuilder.getModelLines(), LPhyParserDictionary.Context.model);
-
-//TODO sync constants in square, but the above code is wrong
+//TODO sync constants in square in GUI
 
         // Sample using the lphy code in component.getParser(), and output results to loggers
         Sampler sampler = new Sampler(component.getParserDictionary());
@@ -309,8 +299,7 @@ public class GraphicalModelPanel extends JPanel {
 //        this.sampler = sampler;
 
         // refresh graphical nodes
-        component.setup();
-        component.repaint();
+        component.modelChanged();
 
         // show current selected value
         if (id != null) {
@@ -331,9 +320,11 @@ public class GraphicalModelPanel extends JPanel {
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
 
-        rightPane.variableSummary.repaint();
-        rightPane.repaint();
+        // refresh all viewerComponent
+        rightPane.refresh();
 
+//        rightPane.variableSummary.repaint();
+//        rightPane.repaint();
     }
 
     void showValue(Value value) {
