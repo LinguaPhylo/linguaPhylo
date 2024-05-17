@@ -13,14 +13,14 @@ import lphy.core.model.datatype.DoubleValue;
  */
 public class ToDouble extends DeterministicFunction<Double> {
 
-    public ToDouble(@ParameterInfo(name = ParameterNames.NoParamName0, description = "given an object.") Value<Object> obj) {
+    public ToDouble(@ParameterInfo(name = ParameterNames.NoParamName0, description = "given a string.") Value<String> str) {
         // When there is no arg name (e.g. "0"), it requires setInput (not setParam)
-        setInput(ParameterNames.NoParamName0, obj);
+        setInput(ParameterNames.NoParamName0, str);
     }
 
-    @GeneratorInfo(name = "toDouble",
+    @GeneratorInfo(name = "strToDouble",
             category = GeneratorCategory.RATE_MATRIX, examples = {"readDelim.lphy"},
-            description = "Apply toString() to the given object and cast the string to double.")
+            description = "Cast string to double.")
     public Value<Double> apply() {
         String s = String.valueOf(getParams().get(ParameterNames.NoParamName0).value());
         double d = Double.parseDouble(s);
