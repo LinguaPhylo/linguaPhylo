@@ -1,0 +1,8 @@
+table = readDelim(file="data/bears_taxa.tsv", sep="\t");
+colNames = table.getColumnNames();
+taxonNames = table.getColumn(0);
+// doubles
+minAges = table.getColumn(1);
+maxAges = table.getColumn(2);
+// ages must be a double array
+taxa = taxa(names = taxonNames, ages = minAges);

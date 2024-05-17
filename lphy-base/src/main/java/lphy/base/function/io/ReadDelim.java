@@ -100,19 +100,36 @@ public class ReadDelim extends DeterministicFunction<Table> {
                     dataMap.put(key, new ArrayList<>());
                 }
 
+                int l = 1;
+                Class[] dataTypes = new Class[keyCount];
                 while ((line = reader.readLine()) != null) {
                     String[] values = line.split(delimiter);
 
                     if (values.length == keyCount) {
+
                         for (int i = 0; i < keyCount; i++) {
                             // Convert String into guessed type
                             Object obj = Table.getValueGuessType(values[i]);
-                            // strings only currently
+                            // record class type for the 1st row
+                            if (l==1)
+                                dataTypes[i] = obj.getClass();
+                            else if (!obj.getClass().equals(dataTypes[i])) {
+                                LoggerUtils.log.warning("The column " + i + " in line " + l +
+                                        " has a different data type with the 1st row ! Cast " + obj +
+                                        " to " + dataTypes[i]);
+                                obj = castType(obj, dataTypes[i]);
+                            }
+
+                            // obj type is guessed, but if it is diff to the 1st one,
+                            // then cast to the same type of 1st row.
                             dataMap.get(keys[i]).add(obj);
                         }
+
+
                     } else {
                         LoggerUtils.log.warning("Not match the number columns, skipping line : " + line);
                     }
+                    l++;
                 }
             } else {
                 LoggerUtils.log.severe("File is empty !");
@@ -125,6 +142,28 @@ public class ReadDelim extends DeterministicFunction<Table> {
         }
 
         return dataMap;
+    }
+
+    public static Object castType(Object obj, Class<?> dataType) {
+        Class<?> objClass = obj.getClass();
+
+        // If the object is already of the desired type, return it directly
+        if (objClass.equals(dataType))
+            return obj;
+
+        if (obj instanceof Number) {
+            if (dataType.equals(Double.class)) // Handling Integer to Double conversion
+                return ((Number) obj).doubleValue();
+            else if (dataType.equals(Integer.class)) // Handling Double to Integer conversion
+                return ((Number) obj).intValue();
+        }
+
+        // General case: Attempt to cast to the desired type
+        try {
+            return dataType.cast(obj);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("The object " + obj + " cannot be cast to " + dataType, e);
+        }
     }
 
 }
