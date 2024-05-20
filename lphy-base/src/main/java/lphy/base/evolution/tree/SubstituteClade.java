@@ -44,7 +44,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         this.nodeLabel = nodeLabel;
     }
 
-    @GeneratorInfo(name = "mergeTrees", description = "Substitute a clade in a tree with a given branch and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
+    @GeneratorInfo(name = "substituteClade", description = "Substitute a clade in a tree with a given branch and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
     @Override
     public Value<TimeTree> apply() {
         // get parameters
