@@ -126,6 +126,8 @@ public class TimeTreeBranch {
         }
         childNode = newChild;
     }
+
+    @MethodInfo(description = "get the child under the branch")
     public final TimeTreeNode getChildNode(){
         if (childNode == null) {
             throw new IllegalStateException("Child node is not set.");

@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Difference<T> extends DeterministicFunction {
+public class Difference<T> extends DeterministicFunction<T[]> {
     public static final String firstSetName = "wholeSet";
     public static final String secondSetName = "subSet";
 

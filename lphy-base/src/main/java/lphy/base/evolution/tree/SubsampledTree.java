@@ -107,37 +107,18 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
             TimeTreeNode parentNode = node.getParent();
             // if this node is not sampled
             if (!sampledNamesList.contains(node.getId())){
-                // get the node name
-                String nodeName = node.getId();
-                // get the two children
-                TimeTreeNode child1 = parentNode.getLeft();
-                TimeTreeNode child2 = parentNode.getRight();
                 // remove the non-sampled node
                 parentNode.removeChild(node);
                 // if only one child left and parent is not root
                 if (parentNode.getChildCount() == 1 && !parentNode.isRoot()){
                     // if left child is removed, then set the right child's parent
-                    if (Objects.equals(child1.getId(), nodeName)){
-                        TimeTreeNode grandparentNode = parentNode.getParent();
-                        child2.setParent(grandparentNode);
-                        grandparentNode.removeChild(parentNode);
-                        grandparentNode.addChild(child2);
-                    } else {
-                        // if right child is removed, then set the left child's parent
-                        TimeTreeNode grandparentNode = parentNode.getParent();
-                        child1.setParent(grandparentNode);
-                        grandparentNode.removeChild(parentNode);
-                        grandparentNode.addChild(child1);
-                    }
+                    TimeTreeNode grandparentNode = parentNode.getParent();
+                    parentNode.getChild(0).setParent(grandparentNode);
+                    grandparentNode.removeChild(parentNode);
+                    grandparentNode.addChild(parentNode.getChild(0));
                 } else if (parentNode.getChildCount() == 1 && parentNode.isRoot()) {
                     // if only one child left and parent is root
-                    // if left child is removed, then set the right child as root
-                    if (Objects.equals(child1.getId(), nodeName)){
-                        newTree.setRoot(child2, true);
-                    } else {
-                        //if right child is removed, then set the left child as root
-                        newTree.setRoot(child1, true);
-                    }
+                    newTree.setRoot(parentNode.getChild(0), true);
                 }
             }
         }
