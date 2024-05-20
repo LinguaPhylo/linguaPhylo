@@ -4,6 +4,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -11,11 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Difference<T> extends DeterministicFunction {
-    public static final String firstSetName = "whole set";
-    public static final String secondSetName = "sub set";
+    public static final String firstSetName = "wholeSet";
+    public static final String secondSetName = "subSet";
 
     public Difference(
-            @ParameterInfo(name = firstSetName, description = "the whole set contains all the elements ") Value<T[]> wholeSet,
+            @ParameterInfo(name = firstSetName, description = "the whole set contains all the elements") Value<T[]> wholeSet,
             @ParameterInfo(name = secondSetName, description = "the subset that we want to subtract from the whole set") Value<T[]> subSet){
         if (wholeSet == null || subSet == null) throw new IllegalArgumentException("The sets can't be null!");
         setParam(firstSetName, wholeSet);
@@ -39,6 +40,6 @@ public class Difference<T> extends DeterministicFunction {
         T[] differenceSet = (T[]) Array.newInstance(((Value<T[]>) getParams().get(firstSetName)).value().getClass().getComponentType(), difference.size());
         difference.toArray(differenceSet);
 
-        return new Value<>(null, differenceSet);
+        return ValueCreator.createValue(differenceSet,this);
     }
 }
