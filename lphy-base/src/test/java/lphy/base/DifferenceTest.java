@@ -4,7 +4,13 @@ import lphy.base.function.Difference;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.Test;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DifferenceTest {
     @Test
@@ -63,4 +69,39 @@ public class DifferenceTest {
         assertArrayEquals(expect , observeValue);
     }
 
+    @Test
+    void sameSet() {
+        Double[] set1 = {1.1, 2.2, 3.3};
+        Double[] set2 = {1.1, 2.2, 3.3};
+        Value<Double[]> mainSet = new Value<>("mainSet", set1);
+        Value<Double[]> excludeSet = new Value<>("excludeSet", set2);
+
+        // Capture logs
+        Logger logger = Logger.getLogger(Difference.class.getName());
+        TestLogHandler handler = new TestLogHandler();
+        logger.addHandler(handler);
+
+        new Difference<>(mainSet, excludeSet).apply();
+
+        // Check log message
+        assertEquals("The difference set is empty because the main set is equal to the exclude set.", handler.getMessage());
+
+        logger.removeHandler(handler);
+    }
+
+    private static class TestLogHandler extends StreamHandler {
+        private String message;
+
+        @Override
+        public void publish(LogRecord record) {
+            if (record.getLevel().equals(Level.WARNING)) {
+                message = record.getMessage();
+            }
+            super.publish(record);
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }
