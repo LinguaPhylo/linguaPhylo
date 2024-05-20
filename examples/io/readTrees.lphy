@@ -1,3 +1,9 @@
 // default to Nexus reader
-trees = readTrees(file="data/RSV2_11_samples.trees");
-taxa = trees[0].taxa();
+data{
+    trees = readTrees(file="data/RSV2_11_samples.trees");
+    ψ = trees[0];
+    taxa = ψ.taxa();
+}
+model{
+    A ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ);
+}

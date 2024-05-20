@@ -4,12 +4,8 @@ import jebl.evolution.io.ImportException;
 import jebl.evolution.io.NewickImporter;
 import jebl.evolution.io.NexusImporter;
 import jebl.evolution.io.TreeImporter;
-import jebl.evolution.taxa.Taxon;
-import jebl.evolution.trees.SimpleRootedTree;
 import jebl.evolution.trees.Tree;
-import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.evolution.tree.WrappedJEBLTimeTreeNode;
 import lphy.core.io.UserDir;
 import lphy.core.logger.LoggerUtils;
@@ -26,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Newick or Nexus
@@ -75,7 +70,7 @@ public class ReadTrees extends DeterministicFunction<TimeTree[]> {
             timeTrees = new TimeTree[treeList.size()];
             for (int i = 0; i < treeList.size(); i++) {
                 Tree jeblTree = treeList.get(i);
-                timeTrees[i] = convert(jeblTree);
+                timeTrees[i] = WrappedJEBLTimeTreeNode.Utils.convert(jeblTree);
             }
 
         } catch (FileNotFoundException e) {
@@ -86,25 +81,6 @@ public class ReadTrees extends DeterministicFunction<TimeTree[]> {
         }
 
         return new Value<>(null, timeTrees, this);
-
-    }
-
-    private TimeTree convert(Tree jeblTree) {
-
-        if (jeblTree instanceof SimpleRootedTree rootedTree) {
-
-            Set<Taxon> jeblTaxa = rootedTree.getTaxa();
-            Taxa taxa = Taxa.createTaxa(jeblTaxa.toArray());
-
-            // init TimeTree
-            TimeTree timeTree = new TimeTree(taxa);
-            // start from root and recursively create all children nodes.
-            TimeTreeNode root = new WrappedJEBLTimeTreeNode(rootedTree.getRootNode(), rootedTree, timeTree);
-            timeTree.setRoot(root);
-
-            return timeTree;
-
-        } else throw new IllegalArgumentException("LPhy requires the rooted tree !");
 
     }
 

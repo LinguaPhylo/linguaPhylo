@@ -82,6 +82,8 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     // shared code in setup()
     protected void computePAndRootFreqs() {
         idMap.clear();
+        // if internal nodes have id, then simulate sequences,
+        // otherwise only sequences on tips.
         fillIdMap(tree.value().getRoot(), idMap);
 
         Double[][] Qm = getQ();
@@ -215,6 +217,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     }
 
     private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
+        // if internal nodes have id, then simulate sequences, otherwise only sequences on tips.
         if (node.isLeaf() || node.getId() != null) {
             Integer i = idMap.get(node.getId());
             if (i == null) {
