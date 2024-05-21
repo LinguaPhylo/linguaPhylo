@@ -11,7 +11,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
-public class SampleBranch extends ParametricDistribution<TimeTreeBranch> {
+public class SampleBranch extends ParametricDistribution<TimeTreeNode> {
     Value<TimeTree> tree;
     Value<Double> age;
     public static final String treeParamName = "tree";
@@ -33,52 +33,53 @@ public class SampleBranch extends ParametricDistribution<TimeTreeBranch> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
-    @GeneratorInfo(name = "SampleBranch", description = "Randomly sample a branch among the branches at a given age in the given tree. The function would be deterministic when there is only one branch at the given age.")
+    @GeneratorInfo(name = "SampleBranch", description = "Randomly sample a branch among the branches at a given age in the given tree, representing by the node attached to this branch. The function would be deterministic when there is only one branch at the given age. The branch is represented by the node under it.")
     @Override
-    public RandomVariable<TimeTreeBranch> sample() {
+    public RandomVariable<TimeTreeNode> sample() {
         // get parameters
         TimeTree tree = getTree().value();
         Double age = getAge().value();
 
-        // get all the branches
-        List<TimeTreeBranch> branches = tree.getBranches();
+        // get all the nodes
+        List<TimeTreeNode> nodes = tree.getNodes();
 
-        // initialise a list to store branches with list
-        List<TimeTreeBranch> filteredBranches = new ArrayList<>();
+        // initialise a list to store nodes with list
+        List<TimeTreeNode> filteredNodes = new ArrayList<>();
 
-        // get the branches at age
-        for (TimeTreeBranch branch : branches){
-            double parentAge = branch.getParentNode().getAge();
-            double childAge = branch.getChildNode().getAge();
-            if (childAge >= age && age <= parentAge){
-                filteredBranches.add(branch);
+        // get the nodes at age
+        for (TimeTreeNode node : nodes){
+            if (!node.isRoot()) {
+                double nodeAge = node.getAge();
+                double parentAge = node.getParent().getAge();
+                if (nodeAge >= age && age <= parentAge) {
+                    filteredNodes.add(node);
+                }
             }
         }
 
-        if (filteredBranches.isEmpty()){
+        if (filteredNodes.isEmpty()){
             throw new RuntimeException("There is no branches at age "+ age +  " !");
         } else {
             // randomly choose a branch in the list
-            TimeTreeBranch sampledBranch = getSampledBranch(filteredBranches);
-            return new RandomVariable<>(null, sampledBranch, this);
+            TimeTreeNode sampledNode = getSampledNode(filteredNodes);
+            return new RandomVariable<>(null, sampledNode, this);
         }
     }
 
-    private static TimeTreeBranch getSampledBranch(List<TimeTreeBranch> filteredBranches) {
+    private static TimeTreeNode getSampledNode(List<TimeTreeNode> filteredNodes) {
         // convert the list to array
-        TimeTreeBranch[] branches = filteredBranches.toArray(new TimeTreeBranch[0]);
+        TimeTreeNode[] nodes = filteredNodes.toArray(new TimeTreeNode[0]);
 
         // get the Value<Integer> for the lower and upper boundary
         Value<Integer> lower = new Value<>("id", 0);
-        Value<Integer> upper = new Value<>("id", branches.length-1);
+        Value<Integer> upper = new Value<>("id", nodes.length-1);
 
         // get the random index for the integer in the array
         UniformDiscrete uniformDiscrete = new UniformDiscrete(lower, upper);
         RandomVariable<Integer> randomIndex = uniformDiscrete.sample();
 
         // get the sampled branch
-        TimeTreeBranch sampledBranch = branches[randomIndex.value()];
-        return sampledBranch;
+        return nodes[randomIndex.value()];
     }
 
     @Override

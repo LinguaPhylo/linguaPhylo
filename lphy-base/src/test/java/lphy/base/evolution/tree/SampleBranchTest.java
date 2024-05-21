@@ -41,16 +41,16 @@ public class SampleBranchTest {
         Value<Double> ageValue = new Value<>("age", age);
         Value<TimeTree> treeValue = new Value<>("tree", tree);
         SampleBranch instance = new SampleBranch(treeValue, ageValue);
-        List<TimeTreeBranch> branches = tree.getBranches();
+        List<TimeTreeNode> nodes = tree.getNodes();
 
         int right = 0;
         int left = 0;
 
         for (int i = 0; i<10000; i++) {
-            Value<TimeTreeBranch> branch = instance.sample();
-            if (branch.value() == branches.get(4)){
+            Value<TimeTreeNode> node = instance.sample();
+            if (node.value() == nodes.get(4)){
                 left ++;
-            } else if (branch.value() == branches.get(5)){
+            } else if (node.value() == nodes.get(5)){
                 right ++;
             }
         }
