@@ -51,17 +51,17 @@ public class SubstituteCladeTest {
 
     @Test
     void applyTest() {
-        TimeTreeBranch branch = new TimeTreeBranch(baseTree.getRoot(), baseTree.getNodeByIndex(3));
+        TimeTreeNode node = baseTree.getNodeByIndex(3);
         Double time = 4.0;
         String nodeLabel = "tumourNode";
 
         Value<TimeTree> baseTreeValue = new Value<>("baseTree", baseTree);
         Value<TimeTree> cladeTreeValue = new Value<>("cladeTree", cladeTree);
-        Value<TimeTreeBranch> branchValue = new Value<>("branch", branch);
+        Value<TimeTreeNode> nodeValue = new Value<>("node", node);
         Value<Double> timeValue = new Value<>("time", time);
         Value<String> nodeLabelValue = new Value<>("nodeLabel", nodeLabel);
 
-        SubstituteClade instance = new SubstituteClade(baseTreeValue, cladeTreeValue, branchValue, timeValue, nodeLabelValue);
+        SubstituteClade instance = new SubstituteClade(baseTreeValue, cladeTreeValue, nodeValue, timeValue, nodeLabelValue);
         Value<TimeTree> observe = instance.apply();
 
         // check num of leaf nodes
@@ -86,10 +86,9 @@ public class SubstituteCladeTest {
 
         // check the label of tumour root
         // find the tumour root
-        TimeTreeNode tumourRoot = null;
-        for (TimeTreeNode node : nodes){
-            if (Objects.equals(node.getId(), nodeLabel)){
-                assertEquals(4.0, node.getAge());
+        for (TimeTreeNode sample : nodes){
+            if (Objects.equals(sample.getId(), nodeLabel)){
+                assertEquals(4.0, sample.getAge());
             }
         }
     }

@@ -21,7 +21,6 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     TimeTreeNode rootNode;
 
     private List<TimeTreeNode> nodes;
-    private List<TimeTreeBranch> branches;
     Taxa taxa = null;
     boolean constructedWithTaxa = false;
 
@@ -47,7 +46,6 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         rootNode.setParent(null);
         rootNode.tree = this;
         nodes = new ArrayList<>();
-        branches = new ArrayList<>();
 
         fillNodeList(rootNode, reindexLeaves);
         indexNodes(rootNode, new int[]{n});
@@ -55,8 +53,6 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         nodes.sort(Comparator.comparingInt(TimeTreeNode::getIndex));
 
         if (!constructedWithTaxa) taxa = Taxa.createTaxa(root);
-
-        buildBranches(rootNode);
     }
 
     public void setRoot(TimeTreeNode root) {
@@ -115,22 +111,6 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         }
 
         return nodes.size();
-    }
-
-    private void buildBranches(TimeTreeNode node) {
-        if (node.isRoot()) {
-            branches.clear();
-        }
-
-        if (!node.isLeaf()) {
-            for (TimeTreeNode child : node.getChildren()) {
-                // create the branch object
-                TimeTreeBranch branch = new TimeTreeBranch(node, child);
-                // add branch to the list
-                branches.add(branch);
-                buildBranches(child);
-            }
-        }
     }
 
     public int n() {
@@ -281,11 +261,6 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getNodeCount() - 1;
     }
 
-    @MethodInfo(description = "get all the branches in the tree.")
-    public List<TimeTreeBranch> getBranches(){
-        return branches;
-    }
-
     @MethodInfo(description = "the total number of extant leaves in the tree (leaf nodes with age 0.0).")
     public Integer extantCount() {
         int count = 0;
@@ -341,5 +316,16 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         } else {
             return tempNode;
         }
+    }
+
+    @MethodInfo(description = "get the node by given label.")
+    public TimeTreeNode getNodeById(String id) {
+        List<TimeTreeNode> nodes = getNodes();
+        for (TimeTreeNode node : nodes) {
+            if (Objects.equals(node.getId(), id)) {
+                return node;
+            }
+        }
+        return null;
     }
 }

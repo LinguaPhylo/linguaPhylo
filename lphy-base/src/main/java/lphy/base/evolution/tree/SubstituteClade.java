@@ -80,11 +80,11 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         Double branchDuration = node.getBranchDuration();
 
         // how long the branch should be from parent node to the time
-        Double fraction = (time - node.getParent().getAge())/(node.getAge() - node.getParent().getAge()); // kept branch length in whole branch length
-        Double keptBranchDuration = fraction * branchDuration;
+        Double fraction = (time - node.getParent().getAge())/(node.getAge() - node.getParent().getAge()); // kept branch duration in full branch duration
+        double keptBranchDuration = fraction * branchDuration;
 
         // set age and label for clade root
-        cladeRoot.getParent().setAge(keptBranchDuration + cladeRoot.getAge());
+        cladeRoot.setAge(keptBranchDuration + cladeRoot.getAge());
         cladeRoot.setId(nodeLabel);
 
         // reset the index in the new tree
