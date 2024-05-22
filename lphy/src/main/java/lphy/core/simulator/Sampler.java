@@ -69,7 +69,8 @@ public class Sampler {
     }
 
     /**
-     * Sample the current model stored in the {@link LPhyParserDictionary} at once.
+     * The <b>only main</b> method to re-sample values stored in {@link LPhyParserDictionary}.
+     * This will not use parser.
      * @param seed  the seed value, if null then use a random seed.
      * @return the list {@link Value} from one simulation.
      */
@@ -195,6 +196,7 @@ public class Sampler {
             Value val = e.getValue();
             // must setInput so that Values all know their outputs
             generator.setInput(e.getKey(), val);
+            // Cannot add constants, which have no id
             if (!val.isAnonymous())
                 sampled.add(val.getId());
         }
@@ -239,7 +241,9 @@ public class Sampler {
                     // add new Value back to Model Map, as the old values are removed before this method
 //                    addValueToModelDictionary(nv);
                     addValueToModelDict(nv, sampled);
-
+                } else {
+                    // do not know which constant is changed, so add it anyway to setInput again
+                    newlySampledParams.put(e.getKey(), val);
                 }
             } else {
                 // already been sampled
@@ -250,6 +254,7 @@ public class Sampler {
         }
         return newlySampledParams;
     }
+
 
     /**
      * Change to {@link #addValueToModelDict(Value, Set)}

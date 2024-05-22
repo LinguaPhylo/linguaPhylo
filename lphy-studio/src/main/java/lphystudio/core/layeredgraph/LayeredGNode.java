@@ -106,22 +106,13 @@ public class LayeredGNode extends LayeredNode.Default {
         }
         button.setSize((int) VAR_WIDTH, (int) VAR_HEIGHT);
 
-        Class type = value.getType();
+//        Class type = value.getType();
         // keep button string up to date.
         value.addValueListener((oldValue, newValue) -> {
-            Value<?> v;
-            if (newValue instanceof Value<?>)
-                v = (Value<?>) newValue;
-            else if ((newValue instanceof Number || newValue instanceof String)
-                    // this condition will keep warnings to input string in numbers
-                    && type.isAssignableFrom(newValue.getClass()))
-                v = new Value<>(name, newValue);
-            else {
-                String err = "Illegal new value is given ! " + name + " = " + newValue;
-                LoggerUtils.log.severe(err);
-                throw new IllegalArgumentException(err);
-            }
-            button.setText(NodePaintUtils.getNodeString(LayeredGNode.this, v, showValue));
+            button.setText(NodePaintUtils.getNodeString(LayeredGNode.this, value, showValue));
+            // Note this only updates the GUI and value,
+            // but its generator requires to call setInput() after this,
+            // in order to make sample() or apply() working.
         });
     }
 

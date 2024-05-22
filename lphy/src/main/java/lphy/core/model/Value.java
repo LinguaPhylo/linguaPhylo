@@ -20,6 +20,12 @@ public class Value<T> implements GraphicalModelNode<T> {
     // for UI
     boolean isClamped = false;
 
+    /**
+     * Detect if the value has been changed, especially in GUI.
+     * Reset to false, after {@link lphy.core.simulator.Sampler#sample(Long)} done.
+     */
+    private boolean isDirty = false; //TODO to dev
+
     public Value(String id, T value) {
         this.id = id;
         this.value = value;
@@ -180,4 +186,11 @@ public class Value<T> implements GraphicalModelNode<T> {
         isClamped = clamped;
     }
 
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        isDirty = dirty;
+    }
 }
