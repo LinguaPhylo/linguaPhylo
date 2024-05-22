@@ -6,7 +6,6 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
@@ -17,7 +16,7 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
     Value<String[][]> taxaName;
     Value<Double[]> sampleFraction;
     // use the random generator in this class
-    protected RandomGenerator random;
+//    protected RandomGenerator random;
 
     public static final String taxaParamName = EvolutionConstants.taxaParamName;
     public static final String sampleFractionPara = "sampleFraction";
@@ -29,13 +28,13 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
             @ParameterInfo(name = sampleFractionPara, narrativeName = "fraction of sampling", description = "the fractions that the function sample in the taxa") Value<Double[]> sampleFraction){
         if (tree == null) throw new IllegalArgumentException("The original tree cannot be null");
         if (taxaName.value().length != sampleFraction.value().length) throw new IllegalArgumentException("The sample fraction number should be same as the number of taxa name arrays!");
-        setParam(treeParamName, tree);
-        setParam(taxaParamName, taxaName);
-        setParam(sampleFractionPara, sampleFraction);
+//        setParam(treeParamName, tree);
+//        setParam(taxaParamName, taxaName);
+//        setParam(sampleFractionPara, sampleFraction);
         this.sampleFraction = sampleFraction;
         this.tree = tree;
         this.taxaName = taxaName;
-        this.random = RandomUtils.getRandom();
+//        this.random = RandomUtils.getRandom();
     }
 
     @Override
@@ -151,10 +150,18 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
 
     @Override
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        if (sampleFraction != null) map.put(sampleFractionPara, sampleFraction);
-        if (tree != null) map.put(treeParamName, tree);
-        if (taxaName != null) map.put(taxaParamName, taxaName);
-        return map;
+        return new TreeMap<>() {{
+            put(sampleFractionPara, sampleFraction);
+            put(treeParamName, tree);
+            put(taxaParamName, taxaName);
+        }};
     }
+
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(sampleFractionPara)) sampleFraction = value;
+        else if (paramName.equals(treeParamName)) tree = value;
+        else if (paramName.equals(taxaParamName)) taxaName = value;
+        else super.setParam(paramName, value);
+    }
+
 }
