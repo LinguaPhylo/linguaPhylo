@@ -89,6 +89,7 @@ public class SubstituteCladeTest {
         for (TimeTreeNode sample : nodes){
             if (Objects.equals(sample.getId(), nodeLabel)){
                 assertEquals(4.0, sample.getAge());
+                assertEquals(sample, observe.value().getNodeById(nodeLabel));
             }
         }
     }

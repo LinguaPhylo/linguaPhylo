@@ -322,7 +322,8 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     public TimeTreeNode getNodeById(String id) {
         List<TimeTreeNode> nodes = getNodes();
         for (TimeTreeNode node : nodes) {
-            if (Objects.equals(node.getId(), id)) {
+            String nodeId = node.getId();
+            if (nodeId != null && nodeId.equals(id)) {
                 return node;
             }
         }

@@ -5,7 +5,6 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -77,23 +76,11 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         newParentNode.addChild(cladeRoot);
         cladeRoot.setParent(newParentNode);
 
-        Double branchDuration = node.getBranchDuration();
-
-        // how long the branch should be from parent node to the time
-        Double fraction = (time - node.getParent().getAge())/(node.getAge() - node.getParent().getAge()); // kept branch duration in full branch duration
-        double keptBranchDuration = fraction * branchDuration;
-
         // set age and label for clade root
-        cladeRoot.setAge(keptBranchDuration + cladeRoot.getAge());
+        cladeRoot.setAge(cladeRoot.getAge());
         cladeRoot.setId(nodeLabel);
 
-        // reset the index in the new tree
-        List<TimeTreeNode> allNodes = newTree.getNodes();
-        for(int i = 0; i < allNodes.size(); i++){
-            allNodes.get(i).setIndex(i);
-        }
-
-        return new Value<>(newTree, this);
+        return new Value<>(null, newTree, this);
     }
 
     @Override
