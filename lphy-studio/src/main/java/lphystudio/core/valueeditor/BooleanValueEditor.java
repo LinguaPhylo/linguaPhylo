@@ -2,51 +2,19 @@ package lphystudio.core.valueeditor;
 
 import lphy.core.model.Value;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-public class BooleanValueEditor extends JTextField {
-
-    private Value<Boolean> value;
+public class BooleanValueEditor extends AbstractValueEditor<Boolean> {
 
     public BooleanValueEditor(Value<Boolean> value)  {
+        super(value);
+    }
 
-        this.value = value;
+    @Override
+    protected Boolean parseValue(String text) {
+        return Boolean.parseBoolean(text);
+    }
 
-        setText(value.value().toString());
-        setColumns(12);
-
-
-        getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                setValue(getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                setValue(getText());
-
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                setValue(getText());
-            }
-
-            void setValue(String text) {
-                try {
-                    Boolean n = Boolean.parseBoolean(getText());
-                    value.setValue(n);
-                    //message.setText("");
-                } catch (NumberFormatException ne) {
-                    //message.setText("'" + textField.getText() + "' is not a double.");
-                }
-
-            }
-        });
-
-        //add(message);
+    @Override
+    protected Class getType() {
+        return Boolean.class;
     }
 }

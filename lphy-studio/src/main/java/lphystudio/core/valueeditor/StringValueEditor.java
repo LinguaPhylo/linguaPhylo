@@ -2,41 +2,19 @@ package lphystudio.core.valueeditor;
 
 import lphy.core.model.Value;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-public class StringValueEditor extends JTextField {
-
-    private Value<String> value;
+public class StringValueEditor extends AbstractValueEditor<String> {
 
     public StringValueEditor(Value<String> value)  {
+        super(value);
+    }
 
-        this.value = value;
+    @Override
+    protected String parseValue(String text) {
+        return text;
+    }
 
-        setText(value.value());
-        setColumns(20);
-
-        getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                setValue(getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                setValue(getText());
-
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                setValue(getText());
-            }
-
-            void setValue(String text) {
-                value.setValue(text);
-            }
-        });
+    @Override
+    protected Class<String> getType() {
+        return String.class;
     }
 }
