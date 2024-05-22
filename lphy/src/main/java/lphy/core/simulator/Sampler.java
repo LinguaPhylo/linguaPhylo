@@ -2,7 +2,6 @@ package lphy.core.simulator;
 
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Generator;
-import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
@@ -80,21 +79,30 @@ public class Sampler {
             LoggerUtils.log.info("Set seed = " + seed );
         }
 
+        LPhyParserDictionary parserDict = getParserDictionary();
         // store all values
-        List<Value<?>> sinks = getParserDictionary().getDataModelSinks();
+        List<Value<?>> sinks = parserDict.getDataModelSinks();
+
+//        List<RandomVariable<?>> variables = parserDict.getAllVariablesFromSinks();
+//        for (RandomVariable<?> var : variables) {
+//            parserDict.getModelDictionary().remove(var.getId());
+//        }
 
         // remove all variables from sinks before resampling,
-        // but these are not necessary, as ModelDictionary is a Map.
-        List<RandomVariable<?>> variables = getParserDictionary().getAllVariablesFromSinks();
-        for (RandomVariable<?> var : variables) {
-            getParserDictionary().getModelDictionary().remove(var.getId());
-        }
+        // record the value are removed before re-sampling
+        Set<String> removed = parserDict.getModelDictionary().keySet();
+        int nValSet = parserDict.getModelValues().size();
+        // clean old values both in Map and Set
+        parserDict.getModelValues().removeAll(parserDict.getModelDictionary().values());
+        parserDict.getModelDictionary().clear();
 
         // store the value id which is newly sampled.
         Set<String> sampled = new TreeSet<>();
         for (Value value : sinks) {
-            // a random variable, or the function of a random value.
+            // a random variable, or the value from a deterministic function taking a random value.
             if (value.isRandom()) {
+
+                //  re-sampling
                 Value randomValue;
                 if (value.getGenerator() != null) {
                     // resample from generator
@@ -102,15 +110,31 @@ public class Sampler {
                 } else throw new RuntimeException();
                 randomValue.setId(value.getId());
 
+                addValueToModelDict(randomValue, sampled);
+
                 // add new Value back to Model Map
-                addValueToModelDictionary(randomValue);
-                //TODO replace the Model Value Set?
-//                replaceValueInModelValueSet(value, randomValue);
+//                addValueToModelDictionary(randomValue);
             }
         }
 
+        if (!removed.equals(sampled))
+            throw new RuntimeException("The removed values are not sampled in model dictionary !\n" +
+                    "removed = " + removed + "; sampled = " + sampled);
+        if (parserDict.getModelValues().size() != nValSet)
+            throw new RuntimeException("The number of stored values are not correct !\n" +
+                    "It should be " + nValSet + "; but get " + parserDict.getModelValues().size());
+
         // to fix the links among all nodes
-        return GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
+        return GraphicalModelUtils.getAllValuesFromSinks(parserDict);
+    }
+
+    private void addValueToModelDict(Value value, Set<String> sampled) {
+        if (!value.isAnonymous()) {
+            String id = value.getId();
+            getParserDictionary().getModelDictionary().put(value.getId(), value);
+            sampled.add(id);
+            getParserDictionary().getModelValues().add(value);
+        }
     }
 
     /**
@@ -164,10 +188,15 @@ public class Sampler {
      */
     private Value resample(Value oldValue, Generator generator, Set<String> sampled) {
         // getNewlySampledParams assumes all old values in Model Dictionary have been removed.
+        // It only gets the newly sampled params Values
         Map<String, Value> newlySampledParams = getNewlySampledParams(generator, sampled);
+        // setParam and update the outputs
         for (Map.Entry<String, Value> e : newlySampledParams.entrySet()) {
-            generator.setInput(e.getKey(), e.getValue());
-            if (!e.getValue().isAnonymous()) sampled.add(e.getValue().getId());
+            Value val = e.getValue();
+            // must setInput so that Values all know their outputs
+            generator.setInput(e.getKey(), val);
+            if (!val.isAnonymous())
+                sampled.add(val.getId());
         }
 
         Value newVal = generator.generate();
@@ -193,7 +222,6 @@ public class Sampler {
 
         Map<String, Value> newlySampledParams = new TreeMap<>();
         for (Map.Entry<String, Value> e : params.entrySet()) {
-
             Value val = e.getValue();
 
             // Here, it should not only re-generate its value when Value is isRandom(),
@@ -209,8 +237,9 @@ public class Sampler {
 
                     newlySampledParams.put(e.getKey(), nv);
                     // add new Value back to Model Map, as the old values are removed before this method
-                    addValueToModelDictionary(nv);
-                    if (!val.isAnonymous()) sampled.add(val.getId());
+//                    addValueToModelDictionary(nv);
+                    addValueToModelDict(nv, sampled);
+
                 }
             } else {
                 // already been sampled
@@ -223,9 +252,11 @@ public class Sampler {
     }
 
     /**
+     * Change to {@link #addValueToModelDict(Value, Set)}
      * Be careful, this is called frequently.
      * @param value the value to add to the model dictionary.
      */
+    @Deprecated
     private void addValueToModelDictionary(Value value) {
         if (!value.isAnonymous()) {
             String id = value.getId();
@@ -237,17 +268,4 @@ public class Sampler {
         return parser;
     }
 
-
-//    private void replaceValueInModelValueSet(Value oldValue, Value newValue) {
-//        Set<Value> vS = getParserDictionary().getModelValues();
-//        int size = vS.size();
-    //TODO replace the value() not the object Value,
-    //TODO or after GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
-    //TODO which links all nodes
-//        vS.remove(oldValue);
-//        vS.add(newValue);
-//
-//        if (vS.size() != size)
-//            throw new IllegalArgumentException("Err");
-//    }
 }

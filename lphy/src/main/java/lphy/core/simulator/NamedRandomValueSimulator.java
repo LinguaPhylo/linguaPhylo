@@ -5,6 +5,7 @@ import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserDictionary;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,17 +95,28 @@ public class NamedRandomValueSimulator {
     public Map<Integer, List<Value>> simulate(File lphyFile, int numReplicates, String[] constants,
                                               String[] varNotLog, Long seed) throws IOException {
 
-        Map<Integer, List<Value>> simResMap = new HashMap<>();
+        if (numReplicates < 1)
+            throw new IllegalArgumentException("The replicate must be at least 1 time ! " +
+                    "But numReplicates = " + numReplicates);
 
-        // create Sampler given a lphy script file
-        sampler = Sampler.createSampler(lphyFile, constants);
+        Map<Integer, List<Value>> simResMap = new HashMap<>();
 
         long start = System.currentTimeMillis();
 
-        for (int i = SimulatorListener.REPLICATES_START_INDEX; i < numReplicates; i++) {
-            List<Value> values = sampler.sample(seed);
+        // create Sampler by parsing a lphy script file,
+        // during parsing, the values are simulated.
+        sampler = Sampler.createSampler(lphyFile, constants);
+        // take the values already simulated from parsing
+        List<Value> values = GraphicalModelUtils.getAllValuesFromSinks(getParserDictionary());
+        List<Value> namedRandomValueList = getNamedRandomValues(values, varNotLog);
+        simResMap.put(SimulatorListener.REPLICATES_START_INDEX, namedRandomValueList);
+
+        // start from 2nd replicate
+        for (int i = SimulatorListener.REPLICATES_START_INDEX + 1; i < numReplicates; i++) {
+            // sample() does not parse the script again
+            values = sampler.sample(seed);
             // filter to RandomValue
-            List<Value> namedRandomValueList = getNamedRandomValues(values, varNotLog);
+            namedRandomValueList = getNamedRandomValues(values, varNotLog);
 
             simResMap.put(i, namedRandomValueList);
         }
