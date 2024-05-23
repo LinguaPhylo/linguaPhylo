@@ -13,6 +13,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.*;
+
 /**
  * Normal-gamma distribution
  */
@@ -28,8 +30,8 @@ public class NormalGamma extends ParametricDistribution<Double[]> {
 
     static final String precisionParamName = "precision";
 
-    public NormalGamma(@ParameterInfo(name = DistributionConstants.shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
-                       @ParameterInfo(name = DistributionConstants.scaleParamName, description = "the scale of the distribution.") Value<Number> scale,
+    public NormalGamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
+                       @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale,
                        @ParameterInfo(name = DistributionConstants.meanParamName, description = "the mean of the distribution.") Value<Number> mean,
                        @ParameterInfo(name = precisionParamName, narrativeName = "precision", description = "the standard deviation of the distribution.") Value<Number> precision) {
         super();
@@ -75,11 +77,22 @@ public class NormalGamma extends ParametricDistribution<Double[]> {
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(DistributionConstants.shapeParamName, shape);
-            put(DistributionConstants.scaleParamName, scale);
-            put(DistributionConstants.meanParamName, mean);
+            put(shapeParamName, shape);
+            put(scaleParamName, scale);
+            put(meanParamName, mean);
             put(precisionParamName, precision);
         }};
+    }
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(shapeParamName)) shape = value;
+        else if (paramName.equals(scaleParamName)) scale = value;
+        else if (paramName.equals(meanParamName)) mean = value;
+        else if (paramName.equals(precisionParamName)) precision = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number> getMean() {

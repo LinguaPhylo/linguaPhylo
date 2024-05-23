@@ -12,6 +12,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.medianParamName;
+import static lphy.base.distribution.DistributionConstants.scaleParamName;
+
 /**
  * Cauchy distribution.
  * @see CauchyDistribution
@@ -26,7 +29,7 @@ public class Cauchy extends ParametricDistribution<Double> {
     CauchyDistribution cauchyDistribution;
 
     public Cauchy(@ParameterInfo(name = DistributionConstants.medianParamName, description = "the median of the Cauchy distribution.") Value<Number> median,
-                  @ParameterInfo(name = DistributionConstants.scaleParamName, description = "the scale of the Cauchy distribution.") Value<Number> scale) {
+                  @ParameterInfo(name = scaleParamName, description = "the scale of the Cauchy distribution.") Value<Number> scale) {
         super();
         this.median = median;
         this.scale = scale;
@@ -58,8 +61,16 @@ public class Cauchy extends ParametricDistribution<Double> {
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(DistributionConstants.medianParamName, median);
-            put(DistributionConstants.scaleParamName, scale);
+            put(scaleParamName, scale);
         }};
     }
 
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(medianParamName)) median = value;
+        else if (paramName.equals(scaleParamName)) scale = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
+    }
 }

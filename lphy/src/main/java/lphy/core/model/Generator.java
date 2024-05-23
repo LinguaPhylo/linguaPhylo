@@ -1,5 +1,6 @@
 package lphy.core.model;
 
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.CitationUtils;
 import lphy.core.model.annotation.GeneratorInfo;
@@ -112,8 +113,20 @@ public interface Generator<T> extends GraphicalModelNode<T> {
         return getReturnType(this.getClass()).getSimpleName();
     }
 
+    /**
+     * The method updates parameter values, which are the arguments of lphy generators.
+     * Therefore, the implemented {@link GenerativeDistribution} or {@link DeterministicFunction}
+     * can use the updated values during sample() or apply() method.
+     * This default code is to find whether any setter methods exist,
+     * then it would not need to be overwritten,
+     * otherwise this method must be overwritten to set the values by argument names.
+     * @param paramName   parameter (argument) name
+     * @param value       {@link Value}
+     */
     default void setParam(String paramName, Value<?> value) {
-
+        // such as, public void setLambda(double p) {
+        //        this.lambda.setValue(p);
+        //        constructDistribution(random); }
         String methodName = "set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1);
 
         try {
@@ -128,13 +141,17 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                     try {
                         method.invoke(this, value.value());
                         break;
+                    } catch (IllegalArgumentException mismatch) {
+                        //TODO Cannot handle inheritance, such as Number, but value.getType() is Double
+                        LoggerUtils.log.severe(mismatch.getMessage() + ", where " + methodName +
+                                "(" + method.getGenericParameterTypes()[0] + ") does not match the value type " +
+                                value.getType() + "!\nPlease overwrite setParam() instead of using setters !");
                     } catch (InvocationTargetException | IllegalAccessException ignored) {
+                        LoggerUtils.log.severe(methodName + " err : " + ignored.getMessage());
                     }
                 }
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

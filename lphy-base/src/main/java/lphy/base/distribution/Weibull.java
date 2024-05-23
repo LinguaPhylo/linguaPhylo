@@ -12,6 +12,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.alphaParamName;
+import static lphy.base.distribution.DistributionConstants.betaParamName;
+
 /**
  * The Weibull distribution.
  * @author Alexei Drummond
@@ -26,7 +29,7 @@ public class Weibull extends ParametricDistribution<Double> {
     WeibullDistribution weibullDistribution;
 
     public Weibull(@ParameterInfo(name = DistributionConstants.alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Number> alpha,
-                   @ParameterInfo(name = DistributionConstants.betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Number> beta) {
+                   @ParameterInfo(name = betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Number> beta) {
         super();
         this.alpha = alpha;
         this.beta = beta;
@@ -56,9 +59,17 @@ public class Weibull extends ParametricDistribution<Double> {
     @Override
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(DistributionConstants.alphaParamName, alpha);
-            put(DistributionConstants.betaParamName, beta);
+            put(alphaParamName, alpha);
+            put(betaParamName, beta);
         }};
     }
 
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(alphaParamName)) alpha = value;
+        else if (paramName.equals(betaParamName)) beta = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
+    }
 }

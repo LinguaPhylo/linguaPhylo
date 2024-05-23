@@ -22,7 +22,8 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
 
     private Value<Number[]> concentration;
 
-    public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration", description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration) {
+    public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration",
+            description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration) {
         super();
         this.concentration = concentration;
     }
@@ -58,6 +59,14 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
     @Override
     public Map<String,Value> getParams() {
         return Collections.singletonMap(concParamName, concentration);
+    }
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(concParamName)) concentration = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number[]> getConcentration() {

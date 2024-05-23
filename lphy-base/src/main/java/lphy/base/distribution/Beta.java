@@ -68,6 +68,19 @@ public class Beta extends ParametricDistribution<Double> implements GenerativeDi
         }};
     }
 
+    /**
+     * Cannot use setters because of Number
+     */
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(alphaParamName)) alpha = value;
+        else if (paramName.equals(betaParamName)) beta = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
+    }
+
     private static final Double[] domainBounds = {0.0, 1.0};
 
     public Double[] getDomainBounds() {
