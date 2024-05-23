@@ -5,6 +5,9 @@ import lphy.core.model.annotation.GeneratorInfo;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * TODO why we need this ? Merge with DeterministicFunction
+ */
 public abstract class BasicFunction implements Generator {
 
     private String name = null;

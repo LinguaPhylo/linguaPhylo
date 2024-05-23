@@ -5,12 +5,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ExpressionNode<T> extends DeterministicFunction<T> implements Generator {
+/**
+ * For some operators equivalent to {@link DeterministicFunction}, such as ln(), e, or, + - * /, ...
+ */
+public abstract class ExpressionNode<T> extends DeterministicFunction<T> {
 
 	protected String expression;
 //	Map<String, Value> params;
     protected GraphicalModelNode[] inputValues;
-	boolean isAnonymous = false;
+	boolean isAnonymous = false; //TODO where to use ? Also why not use ID instead, or in DeterministicFunction ?
 
 	public ExpressionNode() { }
 

@@ -5,16 +5,33 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Alexei Drummond on 18/12/19.
+ * The basic concept of LPhy.
+ * It wraps the value to enable dynamic typing in the LPhy language.
+ * The value is generated from a generator, but it can be null,
+ * such as constants.
+ * The input is its generator. The output(s) will be the place(s) where it is used,
+ * e.g. argument value of other generators.
+ *
+ * @see RandomVariable
+ * @see Generator
  */
 public class Value<T> implements GraphicalModelNode<T> {
 
     protected T value;
+    /**
+     * it will be anonymous, if id is null or empty string. {@link #isAnonymous()}
+     */
     private String id;
     List<ValueListener> listeners = new ArrayList<>();
+    /**
+     * the place(s) where it is used, e.g. argument value of other generators.
+     */
     List<GraphicalModelNode> outputs = new ArrayList<>();
-
-    // the function that produced this value, or null if this value was initialized another way;
+    /**
+     * the function (generator) that produced this value,
+     * or null if this value was initialized another way.
+     * It is also the input.
+     */
     DeterministicFunction<T> function = null;
 
     // for UI
