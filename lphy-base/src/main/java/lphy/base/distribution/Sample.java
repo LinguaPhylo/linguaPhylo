@@ -87,7 +87,7 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
         return new TreeMap<>() {{
             put(ParameterNames.ArrayParamName, x);
             put(ParameterNames.SizeParamName, size);
-            put(replParamName, replace);
+            if (replace != null) put(replParamName, replace); // optional
         }};
     }
 
