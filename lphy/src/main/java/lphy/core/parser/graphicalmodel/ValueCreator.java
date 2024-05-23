@@ -78,12 +78,15 @@ public class ValueCreator {
     }
 
     public static void traverseGraphicalModel(Value value, GraphicalModelNodeVisitor visitor, boolean post) {
-        if (!post) visitor.visitValue(value);
+        if (value != null) {
+            if (!post) visitor.visitValue(value);
 
-        if (value.getGenerator() != null) {
-            traverseGraphicalModel(value.getGenerator(), visitor, post);
+            // value can be null for optional args
+            if (value.getGenerator() != null) {
+                traverseGraphicalModel(value.getGenerator(), visitor, post);
+            }
+            if (post) visitor.visitValue(value);
         }
-        if (post) visitor.visitValue(value);
     }
 
     private static void traverseGraphicalModel(Generator generator, GraphicalModelNodeVisitor visitor, boolean post) {

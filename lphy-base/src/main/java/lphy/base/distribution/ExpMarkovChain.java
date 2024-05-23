@@ -12,6 +12,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.nParamName;
+
 /**
  * A smoothing prior in which each element has an exponential prior with a mean of
  * the previous element in the chain.
@@ -24,9 +26,15 @@ public class ExpMarkovChain extends ParametricDistribution<Double[]> {
     private Value<Double> firstValue;
     private Value<Integer> n;
 
-    public ExpMarkovChain(@ParameterInfo(name = initialMeanParamName, narrativeName = "initial mean", description = "This is the mean of the exponential from which the first value of the chain is drawn.", optional = true) Value<Double> initialMean,
-                          @ParameterInfo(name = firstValueParamName, description = "This is the value of the 1st element of the chain (X[0]).", optional = true) Value<Double> firstValue,
-                          @ParameterInfo(name = DistributionConstants.nParamName, narrativeName = "number of steps", description = "the dimension of the return. Use either X[0] ~ Exp(mean=initialMean); or X[0] ~ LogNormal(meanlog, sdlog); Then X[i+1] ~ Exp(mean=X[i])") Value<Integer> n) {
+    public ExpMarkovChain(@ParameterInfo(name = initialMeanParamName, narrativeName = "initial mean",
+                                  description = "This is the mean of the exponential from which the first value of the chain is drawn.",
+                                  optional = true) Value<Double> initialMean,
+                          @ParameterInfo(name = firstValueParamName,
+                                  description = "This is the value of the 1st element of the chain (X[0]).",
+                                  optional = true) Value<Double> firstValue,
+                          @ParameterInfo(name = nParamName, narrativeName = "number of steps",
+                                  description = "the dimension of the return. Use either X[0] ~ Exp(mean=initialMean); " +
+                                          "or X[0] ~ LogNormal(meanlog, sdlog); Then X[i+1] ~ Exp(mean=X[i])") Value<Integer> n) {
         super();
         if ( (initialMean == null && firstValue == null) || (initialMean != null && firstValue != null) ) {
             throw new IllegalArgumentException("Require either " + initialMeanParamName + " or " + firstValueParamName);
@@ -91,12 +99,12 @@ public class ExpMarkovChain extends ParametricDistribution<Double[]> {
         if (firstValue != null) {
             return new TreeMap<>() {{
                 put(firstValueParamName, firstValue);
-                put(DistributionConstants.nParamName, n);
+                put(nParamName, n);
             }};
         } else {
             return new TreeMap<>() {{
                 put(initialMeanParamName, initialMean);
-                put(DistributionConstants.nParamName, n);
+                put(nParamName, n);
             }};
         }
     }

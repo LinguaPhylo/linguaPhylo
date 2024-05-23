@@ -77,7 +77,7 @@ public class LogNormal extends ParametricDistribution<Double> implements Generat
         return new TreeMap<>() {{
             put(meanLogParamName, M);
             put(sdLogParamName, S);
-            put(offsetParamName, offset);
+            if (offset != null) put(offsetParamName, offset); // optional
         }};
     }
 

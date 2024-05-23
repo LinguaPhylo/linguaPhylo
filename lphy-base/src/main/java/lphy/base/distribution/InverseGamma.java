@@ -30,7 +30,7 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
     GammaDistribution gammaDistribution;
 
     public InverseGamma(@ParameterInfo(name = alphaParamName, description = "the alpha parameter of inverse gamma.") Value<Number> alpha,
-                        @ParameterInfo(name = DistributionConstants.betaParamName, description = "the beta parameter of inverse gamma.") Value<Number> beta) {
+                        @ParameterInfo(name = betaParamName, description = "the beta parameter of inverse gamma.") Value<Number> beta) {
         super();
         this.alpha = alpha;
         this.beta = beta;
@@ -66,7 +66,7 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
             put(alphaParamName, alpha);
-            put(DistributionConstants.betaParamName, beta);
+            put(betaParamName, beta);
         }};
     }
 

@@ -12,6 +12,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
+import static lphy.base.distribution.DistributionConstants.pParamName;
+
 /**
  * The discrete probability distribution of the number of failures
  * before the first success given a fixed probability of success p.
@@ -25,7 +27,7 @@ public class Geometric extends ParametricDistribution<Integer> implements Genera
 
     GeometricDistribution geom;
 
-    public Geometric(@ParameterInfo(name= DistributionConstants.pParamName, description="the probability of success.") Value<Double> p) {
+    public Geometric(@ParameterInfo(name= pParamName, description="the probability of success.") Value<Double> p) {
         super();
         this.p = p;
 
@@ -49,7 +51,7 @@ public class Geometric extends ParametricDistribution<Integer> implements Genera
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(DistributionConstants.pParamName, p);
+        return Collections.singletonMap(pParamName, p);
     }
 
     public void setP(Value<Double> p) {

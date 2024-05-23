@@ -11,6 +11,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.nParamName;
 import static lphy.base.distribution.LogNormal.meanLogParamName;
 import static lphy.base.distribution.LogNormal.sdLogParamName;
 
@@ -29,7 +30,7 @@ public class LogNormalMulti extends ParametricDistribution<Double[]> {
 
     public LogNormalMulti(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
                           @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
-                          @ParameterInfo(name = DistributionConstants.nParamName, narrativeName = "dimension", description = "the dimension of the return.") Value<Integer> n) {
+                          @ParameterInfo(name = nParamName, narrativeName = "dimension", description = "the dimension of the return.") Value<Integer> n) {
         super();
         this.M = M;
         this.S = S;
@@ -66,7 +67,7 @@ public class LogNormalMulti extends ParametricDistribution<Double[]> {
         return new TreeMap<>() {{
             put(meanLogParamName, M);
             put(sdLogParamName, S);
-            put(DistributionConstants.nParamName, n);
+            put(nParamName, n);
         }};
     }
 
@@ -79,7 +80,7 @@ public class LogNormalMulti extends ParametricDistribution<Double[]> {
             case sdLogParamName:
                 S = value;
                 break;
-            case DistributionConstants.nParamName:
+            case nParamName:
                 n = value;
                 break;
             default:

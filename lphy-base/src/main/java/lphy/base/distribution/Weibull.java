@@ -28,7 +28,7 @@ public class Weibull extends ParametricDistribution<Double> {
 
     WeibullDistribution weibullDistribution;
 
-    public Weibull(@ParameterInfo(name = DistributionConstants.alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Number> alpha,
+    public Weibull(@ParameterInfo(name = alphaParamName, description = "the first shape parameter of the Weibull distribution.") Value<Number> alpha,
                    @ParameterInfo(name = betaParamName, description = "the second shape parameter of the Weibull distribution.") Value<Number> beta) {
         super();
         this.alpha = alpha;

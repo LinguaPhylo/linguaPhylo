@@ -32,7 +32,7 @@ public class NormalGamma extends ParametricDistribution<Double[]> {
 
     public NormalGamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
                        @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale,
-                       @ParameterInfo(name = DistributionConstants.meanParamName, description = "the mean of the distribution.") Value<Number> mean,
+                       @ParameterInfo(name = meanParamName, description = "the mean of the distribution.") Value<Number> mean,
                        @ParameterInfo(name = precisionParamName, narrativeName = "precision", description = "the standard deviation of the distribution.") Value<Number> precision) {
         super();
         this.shape = shape;

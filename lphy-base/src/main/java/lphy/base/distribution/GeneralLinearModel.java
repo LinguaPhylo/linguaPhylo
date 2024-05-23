@@ -1,6 +1,5 @@
 package lphy.base.distribution;
 
-import lphy.base.function.GeneralLinearFunction;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
@@ -13,7 +12,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.betaParamName;
 import static lphy.base.distribution.DistributionConstants.sdParamName;
+import static lphy.base.function.GeneralLinearFunction.xParamName;
 
 /**
  * General Linear Model.
@@ -29,8 +30,8 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
 
     private Value<Number> sd;
 
-    public GeneralLinearModel(@ParameterInfo(name = GeneralLinearFunction.betaParamName, narrativeName = "beta", description = "the coefficients of the general linear model.") Value<Number[]> beta,
-                              @ParameterInfo(name = GeneralLinearFunction.xParamName, narrativeName = "x", description = "the explanatory variables of the general linear model.") Value<Number[]> x,
+    public GeneralLinearModel(@ParameterInfo(name = betaParamName, narrativeName = "beta", description = "the coefficients of the general linear model.") Value<Number[]> beta,
+                              @ParameterInfo(name = xParamName, narrativeName = "x", description = "the explanatory variables of the general linear model.") Value<Number[]> x,
                               @ParameterInfo(name = sdParamName, narrativeName = "stdev", description = "the standard deviation of the general linear model.") Value<Number> sd) {
         super();
         this.beta = beta;
@@ -43,8 +44,7 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
     }
 
     @GeneratorInfo(name = "GLM", verbClause = "have", narrativeName = "General linear model",
-            category = GeneratorCategory.ALL,
-            description = "The general linear model.")
+            category = GeneratorCategory.ALL, description = "The general linear model.")
     public RandomVariable<Double> sample() {
 
         double mean = 0.0;
@@ -69,15 +69,15 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
     @Override
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(GeneralLinearFunction.betaParamName, beta);
-            put(GeneralLinearFunction.xParamName, x);
+            put(betaParamName, beta);
+            put(xParamName, x);
             put(sdParamName, sd);
         }};
     }
 
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(GeneralLinearFunction.betaParamName)) beta = value;
-        else if (paramName.equals(GeneralLinearFunction.xParamName)) x = value;
+        if (paramName.equals(betaParamName)) beta = value;
+        else if (paramName.equals(xParamName)) x = value;
         else if (paramName.equals(sdParamName)) sd = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 

@@ -119,7 +119,7 @@ public class BernoulliMulti extends ParametricDistribution<Boolean[]> {
         return new TreeMap<>() {{
             put(pParamName, p);
             put(repParamName, n);
-            if (minSuccesses != null) put(minSuccessesParamName, minSuccesses);
+            if (minSuccesses != null) put(minSuccessesParamName, minSuccesses); // optional
         }};
     }
 
