@@ -12,6 +12,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.lowerParamName;
+import static lphy.base.distribution.DistributionConstants.upperParamName;
+
 /**
  * Created by Alexei Drummond on 18/12/19.
  */
@@ -62,12 +65,13 @@ public class Uniform extends ParametricDistribution<Double> implements Generativ
         }};
     }
 
-    public void setLower(Value<Number> lower) {
-        this.lower = lower;
-    }
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(lowerParamName)) lower = value;
+        else if (paramName.equals(upperParamName)) upper = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setUpper(Value<Number> upper) {
-        this.upper = upper;
+        super.setParam(paramName, value); // constructDistribution
     }
 
     private static final Double[] domainBounds = {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY};

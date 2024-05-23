@@ -14,6 +14,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.offsetParamName;
+
 /**
  * The discrete probability distribution of
  * the number of events when the expected number of events is lambda.
@@ -36,7 +38,7 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
     static final int MAX_TRIES = 10000;
 
     public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Number> lambda,
-                   @ParameterInfo(name= DistributionConstants.offsetParamName, optional = true,
+                   @ParameterInfo(name= offsetParamName, optional = true,
                            description = "optional parameter to add a constant to the returned result, default is 0") Value<Integer> offset,
                    @ParameterInfo(name=minParamName, optional = true,
                            description = "optional parameter to specify a condition that the number of events " +
@@ -113,29 +115,24 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
             put(lambdaParamName, lambda);
             if (min != null) put(minParamName, min);
             if (max != null) put(maxParamName, max);
-            if (offset != null) put(DistributionConstants.offsetParamName, offset);
+            if (offset != null) put(offsetParamName, offset);
         }};    }
 
-    public void setLambda(double p) {
-        this.lambda.setValue(p);
-        constructDistribution(random);
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(lambdaParamName)) lambda = value;
+        else if (paramName.equals(minParamName)) min = value;
+        else if (paramName.equals(maxParamName)) max = value;
+        else if (paramName.equals(offsetParamName)) offset = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
-    public void setLambda(Value<Number> lambda) {
-        this.lambda = lambda;
-    }
-
-    public void setMin(Value<Integer> min) {
-        this.min = min;
-    }
-
-    public void setMax(Value<Integer> max) {
-        this.max = max;
-    }
-
-    public void setOffset(Value<Integer> offset) {
-        this.offset = offset;
-    }
+//    public void setLambda(double p) {
+//        this.lambda.setValue(p);
+//        constructDistribution(random);
+//    }
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
     public Integer[] getDomainBounds() {

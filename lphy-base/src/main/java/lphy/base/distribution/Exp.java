@@ -13,6 +13,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Collections;
 import java.util.Map;
 
+import static lphy.base.distribution.DistributionConstants.meanParamName;
+
 /**
  * Exponential distribution prior.
  * @see ExponentialDistribution
@@ -25,7 +27,7 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
 
     ExponentialDistribution exp;
 
-    public Exp(@ParameterInfo(name= DistributionConstants.meanParamName,
+    public Exp(@ParameterInfo(name= meanParamName,
             description="the mean of an exponential distribution.") Value<Number> mean) {
         super();
         this.mean = mean;
@@ -56,7 +58,15 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
 
     @Override
     public Map<String,Value> getParams() {
-        return Collections.singletonMap(DistributionConstants.meanParamName, mean);
+        return Collections.singletonMap(meanParamName, mean);
+    }
+
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(meanParamName)) mean = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     @Override
@@ -69,9 +79,10 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
         return 1.0;
     }
 
-    public void setMean(double mean) {
-        this.mean.setValue(mean);
-        constructDistribution(random);
-    }
+    //TODO this works strangely. When Value<Number> mean = 1, the mean.value is double 1.0
+//    public void setMean(double mean) {
+//        this.mean.setValue(mean);
+//        constructDistribution(random);
+//    }
 
 }

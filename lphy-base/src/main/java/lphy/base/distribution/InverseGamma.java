@@ -13,6 +13,9 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.alphaParamName;
+import static lphy.base.distribution.DistributionConstants.betaParamName;
+
 /**
  * Inverse-gamma distribution.
  * @see GammaDistribution
@@ -26,7 +29,7 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
 
     GammaDistribution gammaDistribution;
 
-    public InverseGamma(@ParameterInfo(name = DistributionConstants.alphaParamName, description = "the alpha parameter of inverse gamma.") Value<Number> alpha,
+    public InverseGamma(@ParameterInfo(name = alphaParamName, description = "the alpha parameter of inverse gamma.") Value<Number> alpha,
                         @ParameterInfo(name = DistributionConstants.betaParamName, description = "the beta parameter of inverse gamma.") Value<Number> beta) {
         super();
         this.alpha = alpha;
@@ -37,7 +40,7 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        if (alpha == null) throw new IllegalArgumentException("The " + DistributionConstants.alphaParamName + " value can't be null!");
+        if (alpha == null) throw new IllegalArgumentException("The " + alphaParamName + " value can't be null!");
         if (beta == null) throw new IllegalArgumentException("The " + DistributionConstants.betaParamName + " value can't be null!");
 
         double a = ValueUtils.doubleValue(alpha);
@@ -62,17 +65,18 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
 
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(DistributionConstants.alphaParamName, alpha);
+            put(alphaParamName, alpha);
             put(DistributionConstants.betaParamName, beta);
         }};
     }
 
-    public void setAlpha(Value<Number> alpha) {
-        this.alpha = alpha;
-    }
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(alphaParamName)) alpha = value;
+        else if (paramName.equals(betaParamName)) beta = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setBeta(Value<Number> beta) {
-        this.beta = beta;
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number> getBeta() {

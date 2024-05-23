@@ -71,12 +71,13 @@ public class Gamma extends ParametricDistribution<Double> implements GenerativeD
         }};
     }
 
-    public void setShape(Value<Number> shape) {
-        this.shape = shape;
-    }
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(shapeParamName)) shape = value;
+        else if (paramName.equals(scaleParamName)) scale = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setScale(Value<Number> scale) {
-        this.scale = scale;
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number> getScale() {

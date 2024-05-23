@@ -47,8 +47,15 @@ public class Bernoulli extends ParametricDistribution<Boolean> {
         return Collections.singletonMap(pParamName, p);
     }
 
-    public void setP(Double p) {
-        this.p.setValue(p);
-    }
+    /**
+     * Cannot use setters because of Number
+     */
 
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(pParamName)) p = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
+    }
 }

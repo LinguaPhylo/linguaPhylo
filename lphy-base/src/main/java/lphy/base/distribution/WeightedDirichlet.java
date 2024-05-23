@@ -11,6 +11,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static lphy.base.distribution.DistributionConstants.concParamName;
+
 /**
  * The scaled dirichlet probability distribution.
  * @see Dirichlet
@@ -70,19 +72,19 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
     @Override
     public Map<String, Value> getParams() {
         return new TreeMap<>() {{
-            put(DistributionConstants.concParamName, concentration);
+            put(concParamName, concentration);
             put(weightsParamName, weights);
         }};
     }
 
-    public void setConcentration(Value<Number[]> concentration) {
-        this.concentration = concentration;
-    }
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(concParamName)) concentration = value;
+        else if (paramName.equals(weightsParamName)) weights = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setWeights(Value<Integer[]> weights) {
-        this.weights = weights;
+        super.setParam(paramName, value); // constructDistribution
     }
-
     public Value<Number[]> getConcentration() {
         return concentration;
     }

@@ -71,16 +71,13 @@ public class DiscretizedGamma extends ParametricDistribution<Double> {
         }};
     }
 
-    public void setShape(Value<Number> shape) {
-        this.shape = shape;
-    }
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(shapeParamName)) shape = value;
+        else if (paramName.equals(ncatParamName)) ncat = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
-    public void setNcat(Value<Integer> ncat) {
-        this.ncat = ncat;
-    }
-
-    public void setRates(double[] rates) {
-        this.rates = rates;
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number> getShape() {
