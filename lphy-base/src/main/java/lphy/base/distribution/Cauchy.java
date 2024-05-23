@@ -62,4 +62,11 @@ public class Cauchy extends ParametricDistribution<Double> {
         }};
     }
 
+    public void setMedian(Value<Number> median) {
+        this.median = median;
+    }
+
+    public void setScale(Value<Number> scale) {
+        this.scale = scale;
+    }
 }

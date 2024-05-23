@@ -60,6 +60,14 @@ public class UniformDiscrete extends ParametricDistribution<Integer> {
         }};
     }
 
+    public void setLower(Value<Integer> lower) {
+        this.lower = lower;
+    }
+
+    public void setUpper(Value<Integer> upper) {
+        this.upper = upper;
+    }
+
     public Value<Integer> getLower() {
         return lower;
     }

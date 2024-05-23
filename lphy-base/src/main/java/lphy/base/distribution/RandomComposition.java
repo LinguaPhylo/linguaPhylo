@@ -59,4 +59,11 @@ public class RandomComposition extends ParametricDistribution<Integer[]> {
         }};
     }
 
+    public void setN(Value<Integer> n) {
+        this.n = n;
+    }
+
+    public void setK(Value<Integer> k) {
+        this.k = k;
+    }
 }

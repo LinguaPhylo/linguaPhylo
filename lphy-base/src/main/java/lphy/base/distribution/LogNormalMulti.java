@@ -1,12 +1,12 @@
 package lphy.base.distribution;
 
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,7 +19,7 @@ import static lphy.base.distribution.LogNormal.sdLogParamName;
  */
 
 @Deprecated()
-public class LogNormalMulti implements GenerativeDistribution<Double[]> {
+public class LogNormalMulti extends ParametricDistribution<Double[]> {
 
     private Value<Number> M;
     private Value<Number> S;
@@ -30,22 +30,27 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
     public LogNormalMulti(@ParameterInfo(name = meanLogParamName, narrativeName = "mean in log space", description = "the mean of the distribution on the log scale.") Value<Number> M,
                           @ParameterInfo(name = sdLogParamName, narrativeName = "standard deviation in log space", description = "the standard deviation of the distribution on the log scale.") Value<Number> S,
                           @ParameterInfo(name = DistributionConstants.nParamName, narrativeName = "dimension", description = "the dimension of the return.") Value<Integer> n) {
-
+        super();
         this.M = M;
         this.S = S;
         this.n = n;
+
+        constructDistribution(random);
     }
 
     @GeneratorInfo(name = "LogNormal", narrativeName = "i.i.d. log-normal prior", description = "The log-normal probability distribution.")
     public RandomVariable<Double[]> sample() {
-
-        logNormalDistribution = new LogNormalDistribution(ValueUtils.doubleValue(M), ValueUtils.doubleValue(S));
         Double[] result = new Double[n.value()];
         for (int i = 0; i < result.length; i++) {
             result[i] = logNormalDistribution.sample();
         }
 
         return new RandomVariable<>(null, result, this);
+    }
+
+    @Override
+    protected void constructDistribution(RandomGenerator random) {
+        logNormalDistribution = new LogNormalDistribution(random, ValueUtils.doubleValue(M), ValueUtils.doubleValue(S));
     }
 
     public double logDensity(Double[] x) {
@@ -80,6 +85,8 @@ public class LogNormalMulti implements GenerativeDistribution<Double[]> {
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public String toString() {

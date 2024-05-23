@@ -78,4 +78,11 @@ public class MVN extends ParametricDistribution<Double[]> {
         }};
     }
 
+    public void setMean(Value<Double[]> mean) {
+        this.mean = mean;
+    }
+
+    public void setCovariances(Value<Double[][]> covariances) {
+        this.covariances = covariances;
+    }
 }

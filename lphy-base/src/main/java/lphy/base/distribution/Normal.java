@@ -72,7 +72,9 @@ public class Normal extends ParametricDistribution<Double> implements Generative
     public void setParam(String paramName, Value value) {
         if (paramName.equals(meanParamName)) mean = value;
         else if (paramName.equals(sdParamName)) sd = value;
-        else super.setParam(paramName, value);
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 
     public Value<Number> getMean() {

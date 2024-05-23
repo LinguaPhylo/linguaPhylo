@@ -84,4 +84,23 @@ public class OrnsteinUhlenbeck extends ParametricDistribution<Double> {
         }};
     }
 
+    public void setY0(Value<Double> y0) {
+        this.y0 = y0;
+    }
+
+    public void setTime(Value<Double> time) {
+        this.time = time;
+    }
+
+    public void setDiffRate(Value<Double> diffRate) {
+        this.diffRate = diffRate;
+    }
+
+    public void setTheta(Value<Double> theta) {
+        this.theta = theta;
+    }
+
+    public void setAlpha(Value<Double> alpha) {
+        this.alpha = alpha;
+    }
 }

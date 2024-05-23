@@ -48,4 +48,8 @@ public class Categorical extends ParametricDistribution<Integer> {
     public Map<String,Value> getParams() {
         return Collections.singletonMap(DistributionConstants.pParamName, probs);
     }
+
+    public void setProbs(Value<Double[]> probs) {
+        this.probs = probs;
+    }
 }

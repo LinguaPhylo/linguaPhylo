@@ -68,6 +68,18 @@ public class Beta extends ParametricDistribution<Double> implements GenerativeDi
         }};
     }
 
+    /**
+     * Either create a setter or overwrite {@link lphy.core.model.Generator#setParam(String, Value)}
+     */
+
+    public void setAlpha(Value<Number> alpha) {
+        this.alpha = alpha;
+    }
+
+    public void setBeta(Value<Number> beta) {
+        this.beta = beta;
+    }
+
     private static final Double[] domainBounds = {0.0, 1.0};
 
     public Double[] getDomainBounds() {

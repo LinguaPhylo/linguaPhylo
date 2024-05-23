@@ -61,4 +61,11 @@ public class Weibull extends ParametricDistribution<Double> {
         }};
     }
 
+    public void setAlpha(Value<Number> alpha) {
+        this.alpha = alpha;
+    }
+
+    public void setBeta(Value<Number> beta) {
+        this.beta = beta;
+    }
 }

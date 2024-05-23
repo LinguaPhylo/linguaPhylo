@@ -52,8 +52,8 @@ public class Geometric extends ParametricDistribution<Integer> implements Genera
         return Collections.singletonMap(DistributionConstants.pParamName, p);
     }
 
-    public void setSuccessProbability(double p) {
-        this.p.setValue(p);
+    public void setP(Value<Double> p) {
+        this.p = p;
     }
 
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};

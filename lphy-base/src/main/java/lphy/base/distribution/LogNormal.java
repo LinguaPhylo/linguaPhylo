@@ -78,6 +78,18 @@ public class LogNormal extends ParametricDistribution<Double> implements Generat
         }};
     }
 
+    public void setM(Value<Number> m) {
+        M = m;
+    }
+
+    public void setS(Value<Number> s) {
+        S = s;
+    }
+
+    public void setOffset(Value<Number> offset) {
+        this.offset = offset;
+    }
+
     public Value<Number> getMeanLog() {
         return M;
     }

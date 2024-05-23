@@ -60,4 +60,12 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
             put(hammingWeightParamName, hammingWeight);
         }};
     }
+
+    public void setLength(Value<Integer> length) {
+        this.length = length;
+    }
+
+    public void setHammingWeight(Value<Integer> hammingWeight) {
+        this.hammingWeight = hammingWeight;
+    }
 }

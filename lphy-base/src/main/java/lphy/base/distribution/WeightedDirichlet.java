@@ -75,6 +75,14 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
         }};
     }
 
+    public void setConcentration(Value<Number[]> concentration) {
+        this.concentration = concentration;
+    }
+
+    public void setWeights(Value<Integer[]> weights) {
+        this.weights = weights;
+    }
+
     public Value<Number[]> getConcentration() {
         return concentration;
     }

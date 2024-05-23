@@ -71,6 +71,18 @@ public class DiscretizedGamma extends ParametricDistribution<Double> {
         }};
     }
 
+    public void setShape(Value<Number> shape) {
+        this.shape = shape;
+    }
+
+    public void setNcat(Value<Integer> ncat) {
+        this.ncat = ncat;
+    }
+
+    public void setRates(double[] rates) {
+        this.rates = rates;
+    }
+
     public Value<Number> getShape() {
         return shape;
     }

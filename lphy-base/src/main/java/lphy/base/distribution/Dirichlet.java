@@ -60,6 +60,10 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
         return Collections.singletonMap(concParamName, concentration);
     }
 
+    public void setConcentration(Value<Number[]> concentration) {
+        this.concentration = concentration;
+    }
+
     public Value<Number[]> getConcentration() {
         return concentration;
     }

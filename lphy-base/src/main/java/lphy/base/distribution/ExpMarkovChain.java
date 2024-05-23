@@ -101,6 +101,18 @@ public class ExpMarkovChain extends ParametricDistribution<Double[]> {
         }
     }
 
+    public void setInitialMean(Value<Double> initialMean) {
+        this.initialMean = initialMean;
+    }
+
+    public void setFirstValue(Value<Double> firstValue) {
+        this.firstValue = firstValue;
+    }
+
+    public void setN(Value<Integer> n) {
+        this.n = n;
+    }
+
     public Value<Double> getInitialMean() {
         return initialMean;
     }

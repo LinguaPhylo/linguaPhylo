@@ -121,6 +121,22 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
         constructDistribution(random);
     }
 
+    public void setLambda(Value<Number> lambda) {
+        this.lambda = lambda;
+    }
+
+    public void setMin(Value<Integer> min) {
+        this.min = min;
+    }
+
+    public void setMax(Value<Integer> max) {
+        this.max = max;
+    }
+
+    public void setOffset(Value<Integer> offset) {
+        this.offset = offset;
+    }
+
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
     public Integer[] getDomainBounds() {
         return domainBounds;

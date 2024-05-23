@@ -62,6 +62,14 @@ public class Uniform extends ParametricDistribution<Double> implements Generativ
         }};
     }
 
+    public void setLower(Value<Number> lower) {
+        this.lower = lower;
+    }
+
+    public void setUpper(Value<Number> upper) {
+        this.upper = upper;
+    }
+
     private static final Double[] domainBounds = {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY};
     @Override
     public Double[] getDomainBounds() {

@@ -79,6 +79,8 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
         if (paramName.equals(GeneralLinearFunction.betaParamName)) beta = value;
         else if (paramName.equals(GeneralLinearFunction.xParamName)) x = value;
         else if (paramName.equals(sdParamName)) sd = value;
-        else super.setParam(paramName, value);
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
 }

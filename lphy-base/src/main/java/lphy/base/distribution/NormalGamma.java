@@ -82,6 +82,22 @@ public class NormalGamma extends ParametricDistribution<Double[]> {
         }};
     }
 
+    public void setShape(Value<Number> shape) {
+        this.shape = shape;
+    }
+
+    public void setScale(Value<Number> scale) {
+        this.scale = scale;
+    }
+
+    public void setMean(Value<Number> mean) {
+        this.mean = mean;
+    }
+
+    public void setPrecision(Value<Number> precision) {
+        this.precision = precision;
+    }
+
     public Value<Number> getMean() {
         return mean;
     }

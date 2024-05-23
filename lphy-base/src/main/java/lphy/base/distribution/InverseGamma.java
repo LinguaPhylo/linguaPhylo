@@ -67,6 +67,14 @@ public class InverseGamma extends ParametricDistribution<Double> implements Gene
         }};
     }
 
+    public void setAlpha(Value<Number> alpha) {
+        this.alpha = alpha;
+    }
+
+    public void setBeta(Value<Number> beta) {
+        this.beta = beta;
+    }
+
     public Value<Number> getBeta() {
         return beta;
     }

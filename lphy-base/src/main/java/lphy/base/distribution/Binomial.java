@@ -56,6 +56,14 @@ public class Binomial extends ParametricDistribution<Integer> implements Generat
         }};
     }
 
+    public void setP(Value<Double> p) {
+        this.p = p;
+    }
+
+    public void setN(Value<Integer> n) {
+        this.n = n;
+    }
+
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
     public Integer[] getDomainBounds() {
         return domainBounds;

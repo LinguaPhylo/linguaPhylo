@@ -71,6 +71,14 @@ public class Gamma extends ParametricDistribution<Double> implements GenerativeD
         }};
     }
 
+    public void setShape(Value<Number> shape) {
+        this.shape = shape;
+    }
+
+    public void setScale(Value<Number> scale) {
+        this.scale = scale;
+    }
+
     public Value<Number> getScale() {
         return scale;
     }

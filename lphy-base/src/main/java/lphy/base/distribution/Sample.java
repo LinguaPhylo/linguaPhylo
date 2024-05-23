@@ -90,4 +90,16 @@ public class Sample<T> implements GenerativeDistribution<T[]> {
             put(replParamName, replace);
         }};
     }
+
+    public void setX(Value<T[]> x) {
+        this.x = x;
+    }
+
+    public void setSize(Value<Integer> size) {
+        this.size = size;
+    }
+
+    public void setReplace(Value<Boolean> replace) {
+        this.replace = replace;
+    }
 }

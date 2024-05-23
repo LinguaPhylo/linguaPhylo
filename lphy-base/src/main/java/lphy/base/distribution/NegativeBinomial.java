@@ -59,6 +59,14 @@ public class NegativeBinomial extends ParametricDistribution<Integer> implements
         }};
     }
 
+    public void setP(Value<Double> p) {
+        this.p = p;
+    }
+
+    public void setR(Value<Integer> r) {
+        this.r = r;
+    }
+
     private static final Integer[] domainBounds = {0, Integer.MAX_VALUE};
     public Integer[] getDomainBounds() {
         return domainBounds;

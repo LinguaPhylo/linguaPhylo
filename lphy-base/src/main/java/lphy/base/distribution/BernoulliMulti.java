@@ -123,9 +123,19 @@ public class BernoulliMulti extends ParametricDistribution<Boolean[]> {
         }};
     }
 
-    public void setSuccessProbability(double p) {
-        this.p.setValue(p);
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(pParamName)) p = value;
+        else if (paramName.equals(repParamName)) n = value;
+        else if (paramName.equals(minSuccessesParamName)) minSuccesses = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
     }
+
+//    public void setSuccessProbability(double p) {
+//        this.p.setValue(p);
+//    }
 
     public Value<Double> getP() {
         return getParams().get(pParamName);
