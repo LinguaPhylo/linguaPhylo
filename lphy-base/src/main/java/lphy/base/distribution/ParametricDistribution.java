@@ -38,8 +38,10 @@ public abstract class ParametricDistribution<T> implements GenerativeDistributio
 
     /**
      * Call {@link Generator#setParam(String, Value)}
-     * to set all parameters automatically, and call {@link #constructDistribution(RandomGenerator)}.
-     * So the implemented prior does not require to implement this method.
+     * to set parameters automatically if there are setter,
+     * and call {@link #constructDistribution(RandomGenerator)}.
+     * Note: if overwrite this, it must have <code>super.setParam(paramName, value);</code> in the end.
+     *
      * @param paramName   parameter name
      * @param value       {@link Value} contains parameter value.
      */
