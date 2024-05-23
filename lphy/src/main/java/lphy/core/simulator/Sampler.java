@@ -14,10 +14,12 @@ import java.util.*;
 
 /**
  * Re-sampling values from a {@link LPhyParserDictionary}.
+ *
  * During parsing the lphy script, the values will be generated.
- * But this can be used for resampling, such as multiple simulations,
+ * But this can be used for resampling without calling parser, such as multiple simulations,
  * which simulates the new values from their generators directly,
  * instead of calling parsers.
+ * {@link #sample(Long)} is the main method to process simulations in lphy.
  */
 public class Sampler {
 
@@ -119,16 +121,17 @@ public class Sampler {
         }
 
         if (!removed.equals(sampled))
-            throw new RuntimeException("The removed values are not sampled in model dictionary !\n" +
+            throw new RuntimeException("The values in the model dictionary do not match before and after resampling !\n" +
                     "removed = " + removed + "; sampled = " + sampled);
         if (parserDict.getModelValues().size() != nValSet)
-            throw new RuntimeException("The number of stored values are not correct !\n" +
+            throw new RuntimeException("The number of stored values are not correct in parser dictionary during resampling !\n" +
                     "It should be " + nValSet + "; but get " + parserDict.getModelValues().size());
 
         // to fix the links among all nodes
         return GraphicalModelUtils.getAllValuesFromSinks(parserDict);
     }
 
+    // add the value to both Value map and set, if it has an ID
     private void addValueToModelDict(Value value, Set<String> sampled) {
         if (!value.isAnonymous()) {
             String id = value.getId();
