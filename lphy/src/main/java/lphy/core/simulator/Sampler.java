@@ -127,7 +127,9 @@ public class Sampler {
             throw new RuntimeException("The number of stored values are not correct in parser dictionary during resampling !\n" +
                     "It should be " + nValSet + "; but get " + parserDict.getModelValues().size());
 
-        // to fix the links among all nodes
+        // get the values from traversing the graphical model,
+        // if the setInput() not be called after value changes, or setParam() not implemented,
+        // this list of values could be wrong.
         return GraphicalModelUtils.getAllValuesFromSinks(parserDict);
     }
 
