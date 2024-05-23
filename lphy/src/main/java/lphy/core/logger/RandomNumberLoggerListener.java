@@ -33,10 +33,13 @@ public class RandomNumberLoggerListener implements SimulatorListener {
 //    public List<String> footers = new ArrayList<>();
 
     /**
-     * the list of row names, size = sampleCount.
+     * the list of row names, which are added before the 1st value each row.
+     * its size must == sampleCount.
      */
     private List<String> rowNames = new ArrayList<>();
-
+    /**
+     * sampleCount + 1 after each replicate.
+     */
     int sampleCount;
 
     public RandomNumberLoggerListener() {
@@ -112,9 +115,11 @@ public class RandomNumberLoggerListener implements SimulatorListener {
             } // end if isNamedRandomNumber
         }
         sampleCount = index + 1;
+        // row name is added before the 1st value each row, sampleCount + 1 after each replicate,
+        // they should be same, otherwise there is a problem during simulations.
         if (sampleCount != rowNames.size())
             throw new IllegalArgumentException("Row names " + rowNames.size() +
-                    " must be same to the sample count " + sampleCount + " !");
+                    " must be same to the sample count " + sampleCount + " during logging !");
     }
 
     @Override
