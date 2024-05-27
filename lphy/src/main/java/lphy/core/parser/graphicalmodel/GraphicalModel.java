@@ -122,17 +122,31 @@ public interface GraphicalModel {
         return logPosterior;
     }
 
+    /**
+     * The main method to store the Value into parser dictionary.
+     * @param id       var id  //TODO this can be removed if always setID before this method
+     * @param value    {@link Value}
+     * @param context  data block or model block
+     */
     default void put(String id, Value value, Context context) {
         switch (context) {
             case data:
-                getDataDictionary().put(id, value);
-                getDataValues().add(value);
+                replaceDict(id, value, getDataDictionary(), getDataValues());
                 break;
             case model:
             default:
-                getModelDictionary().put(id, value);
-                getModelValues().add(value);
+                replaceDict(id, value, getModelDictionary(), getModelValues());
         }
+    }
+
+    // avoid to add different values with same id.
+    default void replaceDict(String id, Value value, Map<String, Value<?>> parserDict, Set<Value> valSet) {
+        Value oldValue = parserDict.get(id);
+        parserDict.put(id, value);
+        if (oldValue != null) {
+            valSet.remove(oldValue);
+        }
+        valSet.add(value);
     }
 
 }
