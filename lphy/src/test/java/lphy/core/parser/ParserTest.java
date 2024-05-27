@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ParserTest {
 
     @Test
-    public void testAssingment() {
+    public void testAssignment() {
         parse("a=3;");
         parse("a=2;b=a;");
         parse("a=3.0;b=3.0*a;");

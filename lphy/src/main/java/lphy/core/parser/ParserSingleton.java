@@ -20,7 +20,15 @@ public class ParserSingleton {
         return parser.parse(cmd);
     }
 
-//    public static Object parseModelBlock(String cmd) {
+    public static REPL getParser() {
+        return (REPL) parser.parserDictionary;
+    }
+
+    public static void clear() {
+        parser.clear();
+    }
+
+    //    public static Object parseModelBlock(String cmd) {
 //        modelParser.clear();
 //        return modelParser.parse(cmd);
 //    }
