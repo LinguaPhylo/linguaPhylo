@@ -60,6 +60,7 @@ public class RandomNumberLoggerListener implements SimulatorListener {
             formattedValuesById.clear();
         }
 
+        int n = 0;
         boolean isFirstValue = true;
         for (Value value : values) {
 
@@ -68,10 +69,10 @@ public class RandomNumberLoggerListener implements SimulatorListener {
 
                 // if it is array, then one ValueFormatter for one element
                 for (int j = 0; j < formatters.size(); j++) {
-                    ValueFormatter f = formatters.get(j);
+                    ValueFormatter formatter = formatters.get(j);
 
                     // this covers f != null
-                    if (f instanceof ValueFormatter.Base formatter) {
+                    if (formatter != null) {
                         // If value is array, the id will be appended with index
                         String id = formatter.getValueID();
 
@@ -108,16 +109,20 @@ public class RandomNumberLoggerListener implements SimulatorListener {
                                throw new RuntimeException("Number is required, but " + body);
                         }
                         formattedValues.add(num);
-
-                    } // end if
+                    } else
+                        throw new IllegalArgumentException("ValueFormatter cannot be null ! " +
+                                "Default ValueFormatter is not loaded properly !"); // end if
                 } // end for j
-
+                n++;
             } // end if isNamedRandomNumber
         }
+        if (n < 1)
+            LoggerUtils.log.warning("Named random number should > 0 when requesting logging at replicate " +
+                            index + " ! value size = " + values.size());
         sampleCount = index + 1;
         // row name is added before the 1st value each row, sampleCount + 1 after each replicate,
         // they should be same, otherwise there is a problem during simulations.
-        if (sampleCount != rowNames.size())
+        if (n > 0 && sampleCount != rowNames.size())
             throw new IllegalArgumentException("Row names " + rowNames.size() +
                     " must be same to the sample count " + sampleCount + " during logging !");
     }
