@@ -24,11 +24,10 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
     public SubstituteClade(@ParameterInfo(name = baseTreeName, description = "the tree that we are going to add another tree onto.") Value<TimeTree> baseTree,
                            @ParameterInfo(name = cladeTreeName, description = "the tree that we are going to add it on the base tree") Value<TimeTree> cladeTree,
                            @ParameterInfo(name = nodeName, description = "the node with the branch that the branch tree would be add on to.") Value<TimeTreeNode> node,
-                           @ParameterInfo(name = mutationHappenTimeName, description = "the mutation happen time that the branch tree would be add onto the base tree") Value<Double> time,
+                           @ParameterInfo(name = mutationHappenTimeName, description = "the mutation happen time that the branch tree would be add onto the base tree", optional = true) Value<Double> time,
                            @ParameterInfo(name = nodeLabelName, description = "the name of added branch node.") Value<String> nodeLabel) {
         if (baseTree == null) throw new IllegalArgumentException("The base tree cannot be null!");
         if (cladeTree == null) throw new IllegalArgumentException("The clade tree cannot be null!");
-        if (time == null) throw new IllegalArgumentException("The happening time cannot be null!");
         if (node == null) throw new IllegalArgumentException("Please specify the node!");
         if (nodeLabel == null) throw new IllegalArgumentException("Please label the root of cladeTree!");
         setParam(baseTreeName, baseTree);
@@ -39,8 +38,8 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         this.baseTree = baseTree;
         this.cladeTree = cladeTree;
         this.node = node;
-        this.time = time;
         this.nodeLabel = nodeLabel;
+        this.time = time;
     }
 
     @GeneratorInfo(name = "substituteClade", description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
@@ -50,7 +49,6 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         TimeTree baseTree = getBaseTree().value();
         TimeTree cladeTree = getCladeTree().value();
         TimeTreeNode node = getNode().value();
-        Double time = getMutationHappenTimeName().value();
         String nodeLabel = getNodeLabel().value();
 
         // make deep copy of trees
@@ -74,11 +72,30 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         // add branch tree as clade
         TimeTreeNode cladeRoot = newClade.getRoot();
         newParentNode.addChild(cladeRoot);
-        cladeRoot.setParent(newParentNode);
+
+        if (newParentNode.getChildCount() == 1 && !newParentNode.isRoot()){
+            cladeRoot.setParent(newParentNode.getParent());
+            newParentNode.getParent().removeChild(newParentNode);
+            newParentNode.getParent().addChild(cladeRoot);
+        } else if (newParentNode.getChildCount() == 2 && !newParentNode.isRoot()) {
+            cladeRoot.setParent(newParentNode);
+            newParentNode.addChild(cladeRoot);
+        } else if (newParentNode.getChildCount() == 1 && newParentNode.isRoot()){
+            newTree.setRoot(cladeRoot);
+        }
+
+        // fill the node list and reindex the nodes
+        newTree.setRoot(newTree.getRoot(),true);
 
         // set age and label for clade root
-        cladeRoot.setAge(cladeRoot.getAge());
-        cladeRoot.setId(nodeLabel);
+        if (time == null) {
+            cladeRoot.setAge(cladeRoot.getAge());
+        } else {
+            Double time = getMutationHappenTime().value();
+            double newAge = time - (time - cladeRoot.age);
+            cladeRoot.setAge(newAge);
+        }
+        cladeRoot.setMetaData("label", nodeLabel);
 
         return new Value<>(null, newTree, this);
     }
@@ -102,7 +119,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
     public Value<TimeTreeNode> getNode(){
         return getParams().get(nodeName);
     }
-    public Value<Double> getMutationHappenTimeName() {
+    public Value<Double> getMutationHappenTime(){
         return getParams().get(mutationHappenTimeName);
     }
     public Value<String> getNodeLabel(){

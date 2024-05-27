@@ -319,11 +319,10 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     }
 
     @MethodInfo(description = "get the node by given label.")
-    public TimeTreeNode getNodeById(String id) {
+    public TimeTreeNode getLabeledNode(String label) {
         List<TimeTreeNode> nodes = getNodes();
         for (TimeTreeNode node : nodes) {
-            String nodeId = node.getId();
-            if (nodeId != null && nodeId.equals(id)) {
+            if (node.getMetaData("label") != null && node.getMetaData("label").equals(label)) {
                 return node;
             }
         }

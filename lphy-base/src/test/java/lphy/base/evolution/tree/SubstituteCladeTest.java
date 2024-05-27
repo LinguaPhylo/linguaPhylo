@@ -12,14 +12,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubstituteCladeTest {
     TimeTree baseTree;
     TimeTree cladeTree;
+//    final int nTaxa = 4;
 
+//    @BeforeEach
+//    void setUp() {
+//        Coalescent simulator = new Coalescent(new Value<>("Θ", 10.0), new Value<>("n", nTaxa), null);
+//        baseTree = Objects.requireNonNull(simulator.sample()).value();
+//        cladeTree = Objects.requireNonNull(simulator.sample()).value();
+//    }
     @BeforeEach
     void setUp() {
         String cladeTreeNewick = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
@@ -47,34 +53,31 @@ public class SubstituteCladeTest {
         TimeTreeNode base_root = base_visitor.visit(base_parseTree);
         this.baseTree = new TimeTree();
         this.baseTree.setRoot(base_root);
+
+        System.out.println("Original tree: " + baseTreeNewick);
+        System.out.println("Parsed Tree: " + this.baseTree.toNewick(true));
     }
 
     @Test
     void applyTest() {
         TimeTreeNode node = baseTree.getNodeByIndex(3);
-        Double time = 4.0;
         String nodeLabel = "tumourNode";
 
         Value<TimeTree> baseTreeValue = new Value<>("baseTree", baseTree);
         Value<TimeTree> cladeTreeValue = new Value<>("cladeTree", cladeTree);
         Value<TimeTreeNode> nodeValue = new Value<>("node", node);
-        Value<Double> timeValue = new Value<>("time", time);
         Value<String> nodeLabelValue = new Value<>("nodeLabel", nodeLabel);
 
-        SubstituteClade instance = new SubstituteClade(baseTreeValue, cladeTreeValue, nodeValue, timeValue, nodeLabelValue);
+        SubstituteClade instance = new SubstituteClade(baseTreeValue, cladeTreeValue, nodeValue, null, nodeLabelValue);
         Value<TimeTree> observe = instance.apply();
 
-        // check num of leaf nodes
-        assertEquals(7, observe.value().getRoot().getAllLeafNodes().size());
-
-        List<TimeTreeNode> nodes = observe.value().getNodes();
-        // check index of nodes
-        for (int i = 0; i< nodes.size(); i++){
-            int index = observe.value().getNodes().get(i).getIndex();
-            assertEquals(i , index);
-        }
-
         List<TimeTreeNode> leafNodes = observe.value().getRoot().getAllLeafNodes();
+
+        // check num of nodes
+        assertEquals(7, leafNodes.size());
+        assertEquals(7 + 6, observe.value().getNodeCount());
+        assertEquals(observe.value().getNodeCount(), observe.value().getNodes().size());
+
         // check each name of leaf nodes
         assertEquals("2", leafNodes.get(0).getId());
         assertEquals("3", leafNodes.get(1).getId());
@@ -84,12 +87,41 @@ public class SubstituteCladeTest {
         assertEquals("clade_1", leafNodes.get(5).getId());
         assertEquals("clade_4", leafNodes.get(6).getId());
 
-        // check the label of tumour root
-        // find the tumour root
-        for (TimeTreeNode sample : nodes){
-            if (Objects.equals(sample.getId(), nodeLabel)){
-                assertEquals(4.0, sample.getAge());
-                assertEquals(sample, observe.value().getNodeById(nodeLabel));
+        for (TimeTreeNode anyNode: observe.value().getNodes()){
+            String metaData = (String) anyNode.getMetaData("label");
+            if (nodeLabel.equals(metaData)){
+                assertEquals(4.0, anyNode.age);
+                assertEquals(4.0, observe.value().getLabeledNode(nodeLabel).age);
+            }
+        }
+    }
+
+    @Test
+    void timeTest() {
+        TimeTreeNode node = baseTree.getNodeByIndex(3);
+        String nodeLabel = "tumourNode";
+        Double time = 5.0;
+
+        Value<TimeTree> baseTreeValue = new Value<>("baseTree", baseTree);
+        Value<TimeTree> cladeTreeValue = new Value<>("cladeTree", cladeTree);
+        Value<TimeTreeNode> nodeValue = new Value<>("node", node);
+        Value<String> nodeLabelValue = new Value<>("nodeLabel", nodeLabel);
+        Value<Double> timeValue = new Value<>("time", time);
+
+        SubstituteClade instance = new SubstituteClade(baseTreeValue, cladeTreeValue, nodeValue, timeValue, nodeLabelValue);
+        Value<TimeTree> observe = instance.apply();
+
+        List<TimeTreeNode> leafNodes = observe.value().getRoot().getAllLeafNodes();
+
+        // check num of nodes
+        assertEquals(7, leafNodes.size());
+        assertEquals(7 + 6, observe.value().getNodeCount());
+        assertEquals(observe.value().getNodeCount(), observe.value().getNodes().size());
+        for (TimeTreeNode anyNode: observe.value().getNodes()){
+            String metaData = (String) anyNode.getMetaData("label");
+            if (nodeLabel.equals(metaData)){
+                assertEquals(4.0, anyNode.age);
+                assertEquals(4.0, observe.value().getLabeledNode(nodeLabel).age);
             }
         }
     }
