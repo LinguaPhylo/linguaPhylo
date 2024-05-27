@@ -2,13 +2,12 @@ package lphy.core.parser;
 
 import lphy.core.model.Value;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
+import lphy.core.simulator.Sampler;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Set;
 
-import static lphy.core.parser.ParserSingleton.getParser;
-import static lphy.core.parser.ParserTest.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -19,9 +18,11 @@ public class ParserDictTest {
 
     @Test
     public void testData() {
-        parse("a=1;");
+        LPhyListenerImpl parser = new LPhyListenerImpl(new REPL());
+        parser.parse("a=1;");
 
-        LPhyParserDictionary parserDictionary = getParser();
+        LPhyParserDictionary parserDictionary = parser.parserDictionary;
+
         Map<String, Value<?>> dataDict = parserDictionary.getDataDictionary();
         Set<Value> dataValueSet = parserDictionary.getDataValues();
         Map<String, Value<?>> modelDict = parserDictionary.getModelDictionary();
@@ -34,8 +35,8 @@ public class ParserDictTest {
         // 1 sink
         assertEquals(1, parserDictionary.getDataModelSinks().size());
 
-
-        parse("a=3;b=2;");
+        //*** new CMD ***//
+        parser.parse("a=3;b=2;");
 
         dataDict = parserDictionary.getDataDictionary();
         dataValueSet = parserDictionary.getDataValues();
@@ -53,9 +54,11 @@ public class ParserDictTest {
 
     @Test
     public void testModel() {
-        parse("model {\n  a=1; \n}");
+        LPhyListenerImpl parser = new LPhyListenerImpl(new REPL());
+        parser.parse("model {\n  a=1; \n}");
 
-        LPhyParserDictionary parserDictionary = getParser();
+        LPhyParserDictionary parserDictionary = parser.parserDictionary;
+
         Map<String, Value<?>> dataDict = parserDictionary.getDataDictionary();
         Set<Value> dataValueSet = parserDictionary.getDataValues();
         Map<String, Value<?>> modelDict = parserDictionary.getModelDictionary();
@@ -68,8 +71,19 @@ public class ParserDictTest {
         // 1 sink
         assertEquals(1, parserDictionary.getDataModelSinks().size());
 
+        //*** resample ***//
+        Sampler sampler = new Sampler(parserDictionary);
+        sampler.sample(777L);
 
-        parse("model {\n a=3;\nb=2; \n}");
+        modelDict = parserDictionary.getModelDictionary();
+        modelValueSet = parserDictionary.getModelValues();
+
+        assertEquals(1, modelDict.get("a").value(), "model dict after resampling : ");
+        // they should be the same instance
+        assertEquals(modelDict.get("a"), modelValueSet.stream().toList().get(0));
+
+        //*** new CMD ***//
+        parser.parse("model {\n  a=3;\nb=2; \n}");
 
         dataDict = parserDictionary.getDataDictionary();
         dataValueSet = parserDictionary.getDataValues();

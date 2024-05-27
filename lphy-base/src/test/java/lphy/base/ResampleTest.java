@@ -24,28 +24,20 @@ public class ResampleTest {
     @BeforeEach
     void setUp() {
         RandomUtils.setSeed(777);
+        // Note ParserSingleton does not support multi-thread,
+        // so only 1 test method below
         ParserSingleton.clear();
     }
 
+    /**
+     * Test the core method {@link Sampler#sample(Long)} to simulate values from parser dictionary.
+     * This is distinguished with parsing, which also simulate values.
+     * 1. test after resampling, the dictionary still keeps the same values as the parsing process;
+     * 2. test after setValue and resample, the dictionary is correct,
+     *    and also the tree is resampled by new taxa.
+     */
     @Test
-    void test1() {
-        parse("model {\n  a=1; \n}");
-        LPhyParserDictionary parserDictionary = getParser();
-
-        // resample
-        Sampler sampler = new Sampler(parserDictionary);
-        sampler.sample(777L);
-
-        Map<String, Value<?>> modelDict = parserDictionary.getModelDictionary();
-        Set<Value> valueSet = parserDictionary.getModelValues();
-
-        assertEquals(1, modelDict.get("a").value(), "model dict after resampling : ");
-        // they should be the same instance
-        assertEquals(modelDict.get("a"), valueSet.stream().toList().get(0));
-    }
-
-    @Test
-    public void test2() {
+    public void testResample() {
         final int n = 16;
         parse("Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);");
         parse("ψ ~ Coalescent(n=" + n + ", theta=Θ);");
