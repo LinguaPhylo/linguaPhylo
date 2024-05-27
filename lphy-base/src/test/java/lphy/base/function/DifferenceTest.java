@@ -1,6 +1,5 @@
-package lphy.base;
+package lphy.base.function;
 
-import lphy.base.function.Difference;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.Test;
 
