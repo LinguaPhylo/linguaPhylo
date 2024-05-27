@@ -35,7 +35,7 @@ public class Newick extends DeterministicFunction<TimeTree> {
         return new Value<>(tree, this);
     }
 
-    private TimeTree parseNewick(String newick) {
+    public static TimeTree parseNewick(String newick) {
 
         CharStream charStream = CharStreams.fromString(newick);
 
