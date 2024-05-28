@@ -43,6 +43,7 @@ class NewickTest {
 
         // TODO bug
         List<TimeTreeNode> internalNodes = timeTree.getInternalNodes();
+        assertEquals(3, internalNodes.size());
 
 
         // TODO
