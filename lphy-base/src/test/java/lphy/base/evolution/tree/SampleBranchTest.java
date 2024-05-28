@@ -14,7 +14,7 @@ public class SampleBranchTest {
 
     @BeforeEach
     void setUp() {
-        newickTree = "((1:2.0, (2:1.0, 3:1.0)5:1.0)6:2.0, 4:4.0)";
+        newickTree = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
     }
 
 

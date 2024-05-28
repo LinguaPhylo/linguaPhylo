@@ -5,6 +5,8 @@ import lphy.core.model.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,13 +85,18 @@ public class SubstituteCladeTest {
         assertEquals(7, leafNodes.size());
         assertEquals(7 + 6, observe.value().getNodeCount());
         assertEquals(observe.value().getNodeCount(), observe.value().getNodes().size());
+        List<Integer> indices = new ArrayList<>();
         for (TimeTreeNode anyNode: observe.value().getNodes()){
             String metaData = (String) anyNode.getMetaData("label");
+            indices.add(anyNode.getIndex());
             if (nodeLabel.equals(metaData)){
                 assertEquals(4.0, anyNode.age);
                 assertEquals(4.0, observe.value().getLabeledNode(nodeLabel).age);
             }
         }
+        Collections.sort(indices);
+        // check the indicies
+        assertEquals(List.of(0,1,2,3,4,5,6,7,8,9,10,11,12), indices);
     }
 }
 
