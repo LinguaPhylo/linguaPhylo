@@ -19,6 +19,7 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
                         @ParameterInfo(name = ageParaName, description = "the age that branch would sample at.") Value<Double> age){
         if (tree == null) throw new IllegalArgumentException("The tree cannot be null!");
         if (age == null) throw new IllegalArgumentException("The age should be specified!");
+        if (age.value() > tree.value().getRoot().age) throw new IllegalArgumentException("The age should be smaller than the root age!");
         setParam(treeParamName, tree);
         setParam(ageParaName, age);
         this.tree = tree;
@@ -43,7 +44,7 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
             if (!node.isRoot()) {
                 double nodeAge = node.getAge();
                 double parentAge = node.getParent().getAge();
-                if (nodeAge >= age && age <= parentAge) {
+                if (nodeAge <= age && age <= parentAge) {
                     filteredNodes.add(node);
                 }
             }
