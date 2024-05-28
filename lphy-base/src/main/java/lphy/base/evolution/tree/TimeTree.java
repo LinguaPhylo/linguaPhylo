@@ -228,6 +228,10 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         return getNodes().stream().filter(Predicate.not(TimeTreeNode::isLeaf)).collect(Collectors.toList());
     }
 
+    public List<TimeTreeNode> getLeafNodes() {
+        return getNodes().stream().filter(TimeTreeNode::isLeaf).collect(Collectors.toList());
+    }
+
     // methods permitted pass-through to LPhy
 
     @MethodInfo(description = "the total length of the tree")

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NewickTest {
     String tree;
@@ -25,8 +26,7 @@ class NewickTest {
 
         System.out.println("Parsed Tree: " + timeTree.toNewick(true));
 
-        // TODO  getAllLeafNodes() in TimeTree
-        List<TimeTreeNode> leafNodes = timeTree.getRoot().getAllLeafNodes();
+        List<TimeTreeNode> leafNodes = timeTree.getLeafNodes();
 
         assertEquals(4, leafNodes.size());
         assertEquals(4, timeTree.leafCount());
@@ -40,16 +40,15 @@ class NewickTest {
         Collections.sort(ids);
         assertEquals(List.of("1", "2", "3", "4"), ids);
 
-
-        // TODO bug
         List<TimeTreeNode> internalNodes = timeTree.getInternalNodes();
         assertEquals(3, internalNodes.size());
+        // all internal node ages must > 0
+        for (TimeTreeNode node : internalNodes) {
+            assertTrue(node.getAge() > 0.0);
+        }
 
-
-        // TODO
-        List<TimeTreeNode> extantNodes = timeTree.getExtantNodes();
-
-        // TODO not ExtantNodes?
-
+        // TODO: leaf node 4 is not extant, because of precision err: age=1E-15
+//        List<TimeTreeNode> extantNodes = timeTree.getExtantNodes();
+//        assertEquals(3, extantNodes.size());
     }
 }
