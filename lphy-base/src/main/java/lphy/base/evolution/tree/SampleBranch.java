@@ -4,6 +4,7 @@ import lphy.base.distribution.UniformDiscrete;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
@@ -11,15 +12,15 @@ import java.util.*;
 
 public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
     Value<TimeTree> tree;
-    Value<Double> age;
+    Value<Number> age;
     public static final String treeParamName = "tree";
     public static final String ageParaName = "age";
 
     public SampleBranch(@ParameterInfo(name = treeParamName, description = "the full tree to sample branch from.") Value<TimeTree> tree,
-                        @ParameterInfo(name = ageParaName, description = "the age that branch would sample at.") Value<Double> age){
+                        @ParameterInfo(name = ageParaName, description = "the age that branch would sample at.") Value<Number> age){
         if (tree == null) throw new IllegalArgumentException("The tree cannot be null!");
         if (age == null) throw new IllegalArgumentException("The age should be specified!");
-        if (age.value() > tree.value().getRoot().age) throw new IllegalArgumentException("The age should be smaller than the root age!");
+        if (ValueUtils.doubleValue(age) > tree.value().getRoot().age) throw new IllegalArgumentException("The age should be smaller than the root age!");
         setParam(treeParamName, tree);
         setParam(ageParaName, age);
         this.tree = tree;
@@ -31,7 +32,7 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
     public RandomVariable<TimeTreeNode> sample() {
         // get parameters
         TimeTree tree = getTree().value();
-        Double age = getAge().value();
+        double age = ValueUtils.doubleValue(getAge());
 
         // get all the nodes
         List<TimeTreeNode> nodes = tree.getNodes();
@@ -64,8 +65,8 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
         TimeTreeNode[] nodes = filteredNodes.toArray(new TimeTreeNode[0]);
 
         // get the Value<Integer> for the lower and upper boundary
-        Value<Integer> lower = new Value<>("id", 0);
-        Value<Integer> upper = new Value<>("id", nodes.length-1);
+        Value<Integer> lower = new Value<>("low", 0);
+        Value<Integer> upper = new Value<>("high", nodes.length-1);
 
         // get the random index for the integer in the array
         UniformDiscrete uniformDiscrete = new UniformDiscrete(lower, upper);
@@ -92,7 +93,7 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
         return getParams().get(treeParamName);
     }
 
-    public Value<Double> getAge(){
+    public Value<Number> getAge(){
         return getParams().get(ageParaName);
     }
 }

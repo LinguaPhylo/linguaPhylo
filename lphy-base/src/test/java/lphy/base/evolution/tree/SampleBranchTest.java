@@ -14,15 +14,15 @@ public class SampleBranchTest {
 
     @BeforeEach
     void setUp() {
-        newickTree = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
+        newickTree = "((1:2.0, (2:1.0, 3:1.0)5:1.0)6:2.0, 4:4.0)";
     }
 
 
     @Test
     void sample() {
         TimeTree tree = Newick.parseNewick(newickTree);
-        Double age = 1.0;
-        Value<Double> ageValue = new Value<>("age", age);
+        Double age = 3.0;
+        Value<Number> ageValue = new Value<>("age", age);
         Value<TimeTree> treeValue = new Value<>("tree", tree);
         SampleBranch instance = new SampleBranch(treeValue, ageValue);
         List<TimeTreeNode> nodes = tree.getNodes();
@@ -32,7 +32,7 @@ public class SampleBranchTest {
 
         for (int i = 0; i<10000; i++) {
             Value<TimeTreeNode> node = instance.sample();
-            if (node.value() == nodes.get(4)){
+            if (node.value() == nodes.get(3)){
                 left ++;
             } else if (node.value() == nodes.get(5)){
                 right ++;
