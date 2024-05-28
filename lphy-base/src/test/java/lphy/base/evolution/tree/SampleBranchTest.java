@@ -1,13 +1,7 @@
 package lphy.base.evolution.tree;
 
-import lphy.base.parser.newick.NewickASTVisitor;
-import lphy.base.parser.newick.NewickLexer;
-import lphy.base.parser.newick.NewickParser;
+import lphy.base.function.tree.Newick;
 import lphy.core.model.Value;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,27 +10,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SampleBranchTest {
-    TimeTree tree;
+    String newickTree;
 
     @BeforeEach
     void setUp() {
-        String trNewick = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
-        CharStream charStream = CharStreams.fromString(trNewick);
-        NewickLexer lexer = new NewickLexer(charStream);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        NewickParser parser = new NewickParser(tokens);
-        ParseTree parseTree = parser.tree();
-        NewickASTVisitor visitor = new NewickASTVisitor();
-
-        // lphy
-        TimeTreeNode root = visitor.visit(parseTree);
-        this.tree = new TimeTree();
-        this.tree.setRoot(root);
+        newickTree = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
     }
 
 
     @Test
     void sample() {
+        TimeTree tree = Newick.parseNewick(newickTree);
         Double age = 1.0;
         Value<Double> ageValue = new Value<>("age", age);
         Value<TimeTree> treeValue = new Value<>("tree", tree);
@@ -52,6 +36,9 @@ public class SampleBranchTest {
                 left ++;
             } else if (node.value() == nodes.get(5)){
                 right ++;
+            }
+            if (!node.value().isRoot()) {
+                assertEquals(node.value().age <= age, node.value().getParent().age >= age);
             }
         }
 
