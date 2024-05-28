@@ -121,9 +121,10 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
 
         // Process edge length
 
-        if (postCtx.length != null)
-            node.setAge(Double.parseDouble(postCtx.length.getText()));
-        else
+        if (postCtx.length != null) {
+            String age = postCtx.length.getText();
+            node.setAge(Double.parseDouble(age));
+        } else
             node.setAge(DEFAULT_LENGTH);
 
         // Process label
@@ -167,7 +168,7 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
      */
     private void convertLengthToHeight(final TimeTreeNode root) {
         final double totalHeight = convertLengthToHeight(root, 0);
-        offset(root, -totalHeight);
+        offset(root, -totalHeight, 1E-12);
     }
 
     /**
@@ -198,9 +199,16 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
      *
      * @param node  node of clade to offset
      * @param delta offset
+     * @param epsilon handle precision err to make age correct.
      */
-    private void offset(final TimeTreeNode node, final double delta) {
-        node.setAge(node.getAge() + delta);
+    private void offset(final TimeTreeNode node, final double delta, final double epsilon) {
+
+        double age = node.getAge() + delta;
+        // handle precision err using epsilon, e.g. 1E-12
+        if (epsilon > 0.0 && epsilon < 1.0)
+            age = Math.round(age / epsilon) * epsilon;
+
+        node.setAge(age);
         if (node.isLeaf()) {
             if (node.getAge() < 0) {
                 node.setAge(0);
@@ -208,7 +216,7 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
         }
         if (!node.isLeaf()) {
             for (TimeTreeNode child : node.getChildren()) {
-                offset(child, delta);
+                offset(child, delta, epsilon);
             }
         }
     }
