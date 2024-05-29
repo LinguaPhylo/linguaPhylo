@@ -47,7 +47,7 @@ class NewickTest {
             assertTrue(node.getAge() > 0.0);
         }
 
-        // Note: NewickASTVisitor offset(...) line 208 - 209 handle precision err,
+        // Note: TimeTree isExtant(epsilon) handles precision err,
         // otherwise leaf node 4 will not be extant, because of precision err: age=1E-15
         List<TimeTreeNode> extantNodes = timeTree.getExtantNodes();
         assertEquals(4, extantNodes.size());

@@ -305,8 +305,25 @@ public class TimeTreeNode {
         return 0.0;
     }
 
+    /**
+     * @return  if this node is a leave node and age == 0.
+     * @see #isExtant(double)
+     */
     public boolean isExtant() {
-        return isLeaf() && age == 0.0;
+        return isExtant(1E-12);
+    }
+
+    /**
+     * @param epsilon   to handle precision err. If 0 or greater than 1,
+     *                  then the original age will be used.
+     * @return    if this node is a leave node and age == 0.
+     */
+    public boolean isExtant(final double epsilon) {
+        double preciseAge = age;
+        // handle precision err using epsilon, e.g. 1E-12
+        if (epsilon > 0.0 && epsilon < 1.0)
+            preciseAge = Math.round(preciseAge / epsilon) * epsilon;
+        return isLeaf() && preciseAge == 0.0;
     }
 }
 

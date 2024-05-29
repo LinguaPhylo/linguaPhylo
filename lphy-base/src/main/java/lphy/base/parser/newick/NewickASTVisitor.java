@@ -163,12 +163,14 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
      * The node height field is initially populated with the length of the edge above due
      * to the way the tree is stored in Newick format.  This method converts these lengths
      * to actual ages before the most recent sample.
+     * Note: this conversion may cause precision error in ages or lengths,
+     * please address the problem in the related Java methods.
      *
      * @param root root of tree
      */
     private void convertLengthToHeight(final TimeTreeNode root) {
         final double totalHeight = convertLengthToHeight(root, 0);
-        offset(root, -totalHeight, 1E-12);
+        offset(root, -totalHeight);
     }
 
     /**
@@ -199,16 +201,9 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
      *
      * @param node  node of clade to offset
      * @param delta offset
-     * @param epsilon handle precision err to make age correct.
      */
-    private void offset(final TimeTreeNode node, final double delta, final double epsilon) {
-
-        double age = node.getAge() + delta;
-        // handle precision err using epsilon, e.g. 1E-12
-        if (epsilon > 0.0 && epsilon < 1.0)
-            age = Math.round(age / epsilon) * epsilon;
-
-        node.setAge(age);
+    private void offset(final TimeTreeNode node, final double delta) {
+        node.setAge(node.getAge() + delta);
         if (node.isLeaf()) {
             if (node.getAge() < 0) {
                 node.setAge(0);
@@ -216,7 +211,7 @@ public class NewickASTVisitor extends NewickParserBaseVisitor<TimeTreeNode> {
         }
         if (!node.isLeaf()) {
             for (TimeTreeNode child : node.getChildren()) {
-                offset(child, delta, epsilon);
+                offset(child, delta);
             }
         }
     }
