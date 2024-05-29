@@ -212,7 +212,7 @@ public interface Taxa extends MultiDimensional {
 
     static void collectTaxon(TimeTreeNode node, Taxon[] taxa) {
         if (node.isLeaf()) {
-            taxa[node.getIndex()] = new Taxon(node.getId(), node.getAge());
+            taxa[node.getIndex()] = new Taxon(node.getId(), node.getAge()); // TODO species ?
         } else {
             for (TimeTreeNode child : node.getChildren()) {
                 collectTaxon(child, taxa);
