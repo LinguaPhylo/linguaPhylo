@@ -79,7 +79,6 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
             newParentNode.getParent().addChild(cladeRoot);
         } else if (newParentNode.getChildCount() == 2 && !newParentNode.isRoot()) {
             cladeRoot.setParent(newParentNode);
-            newParentNode.addChild(cladeRoot);
         } else if (newParentNode.getChildCount() == 1 && newParentNode.isRoot()){
             newTree.setRoot(cladeRoot);
         }
