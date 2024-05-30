@@ -4,6 +4,7 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.IntegerArrayValue;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class RangeList extends DeterministicFunction<Integer[]> {
     }
 
     @Override
+    @GeneratorInfo(name = "rangeList", description = "The range of integers from start to end using the format 'start:end'. " +
+            "Boundaries are included.")
     public IntegerArrayValue apply() {
 
         List<Integer> indices = new ArrayList<>();

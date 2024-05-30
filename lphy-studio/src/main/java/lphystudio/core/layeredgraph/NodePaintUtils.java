@@ -291,7 +291,10 @@ public class NodePaintUtils {
             // https://github.com/LinguaPhylo/linguaPhylo/issues/249
             name = ((Generator) ((LayeredGNode) node.getSuccessors().get(0)).value()).getParamName(v);
         }
-        if (name == null) name = "null";
+        if (name == null)
+            name = "null";
+        else if (name.trim().equals("0") || name.trim().equals("1") || name.trim().equals("2"))
+            name = ""; // suppress unnamed argument
 
         String displayName = name;
 
@@ -300,6 +303,8 @@ public class NodePaintUtils {
         }
 
         if (ValueUtils.isMultiDimensional(value)) {
+            if (displayName.isEmpty()) // if name is empty, then use code string
+                displayName = v.codeString();
             return "<html><center><p><b>" + displayName + "</b></p></center></html>";
         }
 
