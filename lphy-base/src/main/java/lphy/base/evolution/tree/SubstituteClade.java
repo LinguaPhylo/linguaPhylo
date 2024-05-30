@@ -30,6 +30,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         if (cladeTree == null) throw new IllegalArgumentException("The clade tree cannot be null!");
         if (node == null) throw new IllegalArgumentException("Please specify the node!");
         if (nodeLabel == null) throw new IllegalArgumentException("Please label the root of cladeTree!");
+        if (cladeTree.value().getRoot().age > time.value()) throw new IllegalArgumentException("The root age of the clade tree should be equal to or smaller than the time!");
         setParam(baseTreeName, baseTree);
         setParam(cladeTreeName, cladeTree);
         setParam(nodeName, node);
@@ -87,13 +88,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         newTree.setRoot(newTree.getRoot(),true);
 
         // set age and label for clade root
-        if (time == null) {
-            cladeRoot.setAge(cladeRoot.getAge());
-        } else {
-            Double time = getMutationHappenTime().value();
-            double newAge = time - (time - cladeRoot.age);
-            cladeRoot.setAge(newAge);
-        }
+        cladeRoot.setAge(cladeRoot.getAge());
         cladeRoot.setMetaData("label", nodeLabel);
 
         return new Value<>(null, newTree, this);
