@@ -90,8 +90,8 @@ public class SubstituteCladeTest {
             String metaData = (String) anyNode.getMetaData("label");
             indices.add(anyNode.getIndex());
             if (nodeLabel.equals(metaData)){
-                assertEquals(4.0, anyNode.age);
-                assertEquals(4.0, observe.value().getLabeledNode(nodeLabel).age);
+                assertEquals(cladeTree.getRoot().age, anyNode.age);
+                assertEquals(cladeTree.getRoot().age, observe.value().getLabeledNode(nodeLabel).age);
             }
         }
         Collections.sort(indices);
