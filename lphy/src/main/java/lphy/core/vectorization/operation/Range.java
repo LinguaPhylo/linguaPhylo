@@ -6,13 +6,16 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.RangeElement;
 
+import static lphy.core.vectorization.operation.ParameterNames.EndParamName;
+import static lphy.core.vectorization.operation.ParameterNames.StartParamName;
+
 public class Range extends DeterministicFunction<Integer[]> implements RangeElement {
 
-    public Range(@ParameterInfo(name= ParameterNames.StartParamName, description ="start of the range (inclusive)") Value<Integer> start,
-                 @ParameterInfo(name= ParameterNames.EndParamName, description ="end of the range (inclusive)") Value<Integer> end) {
+    public Range(@ParameterInfo(name= StartParamName, description ="start of the range (inclusive)") Value<Integer> start,
+                 @ParameterInfo(name= EndParamName, description ="end of the range (inclusive)") Value<Integer> end) {
 
-        setParam(ParameterNames.EndParamName, end);
-        setParam(ParameterNames.StartParamName, start);
+        setParam(EndParamName, end);
+        setParam(StartParamName, start);
     }
 
     @Override
@@ -29,11 +32,11 @@ public class Range extends DeterministicFunction<Integer[]> implements RangeElem
     }
 
     public Value<Integer> start() {
-        return (Value<Integer>)paramMap.get(ParameterNames.StartParamName);
+        return (Value<Integer>)paramMap.get(StartParamName);
     }
 
     public Value<Integer> end() {
-        return (Value<Integer>) paramMap.get(ParameterNames.EndParamName);
+        return (Value<Integer>) paramMap.get(EndParamName);
     }
 
     @Override

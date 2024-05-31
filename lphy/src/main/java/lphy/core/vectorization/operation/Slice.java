@@ -8,15 +8,17 @@ import lphy.core.parser.graphicalmodel.ValueCreator;
 
 import java.lang.reflect.Array;
 
+import static lphy.core.vectorization.operation.ParameterNames.*;
+
 public class Slice<T> extends DeterministicFunction {
 
-    public Slice(@ParameterInfo(name= ParameterNames.StartParamName, description ="start index") Value<Integer> start,
-                 @ParameterInfo(name=ParameterNames.EndParamName, description ="end index") Value<Integer> end,
-                 @ParameterInfo(name=ParameterNames.ArrayParamName, description ="array to retrieve element of") Value<T[]> array) {
+    public Slice(@ParameterInfo(name= StartParamName, description ="start index") Value<Integer> start,
+                 @ParameterInfo(name=EndParamName, description ="end index") Value<Integer> end,
+                 @ParameterInfo(name=ArrayParamName, description ="array to retrieve element of") Value<T[]> array) {
 
-        setInput(ParameterNames.StartParamName, start);
-        setInput(ParameterNames.EndParamName, end);
-        setInput(ParameterNames.ArrayParamName, array);
+        setInput(StartParamName, start);
+        setInput(EndParamName, end);
+        setInput(ArrayParamName, array);
     }
 
     @Override
@@ -40,15 +42,15 @@ public class Slice<T> extends DeterministicFunction {
     }
 
     public Value<T[]> array() {
-        return (Value<T[]>)paramMap.get(ParameterNames.ArrayParamName);
+        return (Value<T[]>)paramMap.get(ArrayParamName);
     }
 
     public Value<Integer> start() {
-        return (Value<Integer>) paramMap.get(ParameterNames.StartParamName);
+        return (Value<Integer>) paramMap.get(StartParamName);
     }
 
     public Value<Integer> end() {
-        return (Value<Integer>) paramMap.get(ParameterNames.EndParamName);
+        return (Value<Integer>) paramMap.get(EndParamName);
     }
 
     public String codeString() {
