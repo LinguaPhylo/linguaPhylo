@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Test if the dictionary to store the correct values after parsing.
  * The core method is {@link lphy.core.parser.graphicalmodel.GraphicalModel#put(String, Value, GraphicalModel.Context)}.
+ * More tests in base.ResampleTest.
  */
 public class ParserDictTest {
 

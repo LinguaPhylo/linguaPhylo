@@ -2,8 +2,10 @@ package lphy.base;
 
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.Value;
+import lphy.core.parser.LPhyListenerImpl;
 import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.ParserSingleton;
+import lphy.core.parser.REPL;
 import lphy.core.simulator.RandomUtils;
 import lphy.core.simulator.Sampler;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,5 +90,55 @@ public class ResampleTest {
         assertEquals(ntaxa, tree.n());
         assertEquals(ntaxa, tree.leafCount());
     }
+
+    @Test
+    public void testDataModel() {
+        LPhyListenerImpl parser = new LPhyListenerImpl(new REPL());
+        parser.parse("data{\n" +
+                "    taxa = taxa(names=1:10);\n" +
+                "    n = taxa.length();\n" +
+                "}\n" +
+                "model{\n" +
+                "    Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);\n" +
+                "    ψ ~ Coalescent(taxa=taxa, theta=Θ);\n" +
+                "}\n");
+
+        LPhyParserDictionary parserDictionary = parser.getParserDictionary();
+
+        Map<String, Value<?>> dataDict = parserDictionary.getDataDictionary();
+        Set<Value> dataValueSet = parserDictionary.getDataValues();
+        Map<String, Value<?>> modelDict = parserDictionary.getModelDictionary();
+        Set<Value> modelValueSet = parserDictionary.getModelValues();
+
+        assertEquals(2, dataDict.size());
+        assertEquals(5, dataValueSet.size());
+        assertEquals(2, modelDict.size());
+        assertEquals(5, modelValueSet.size());
+        // 1 sink
+
+        Value taxaV = dataDict.get("taxa");
+        Value treeV = modelDict.get("ψ");
+
+        // resample
+        Sampler sampler = new Sampler(parserDictionary);
+        // at random seed
+        sampler.sample(null);
+
+        // the instances are changed, but the size should be same
+        assertEquals(2, dataDict.size());
+        assertEquals(5, dataValueSet.size());
+        assertEquals(2, modelDict.size());
+        assertEquals(5, modelValueSet.size());
+
+        Value taxaV2 = dataDict.get("taxa");
+        Value treeV2 = modelDict.get("ψ");
+
+        // same taxa, because it is in data block
+        assertEquals(taxaV, taxaV2);
+        // different tree (model block, and tree is Random Var)
+        assertNotEquals(treeV, treeV2);
+
+    }
+
 
 }

@@ -65,6 +65,11 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //        return this.parse(CASentence);
 //    }
 
+
+    public LPhyParserDictionary getParserDictionary() {
+        return parserDictionary;
+    }
+
     public void clear() {
         this.parserDictionary.clear();
         // back to default
