@@ -16,10 +16,10 @@ public class DifferenceTest {
     void DifferenceString() {
         String[] set1 = {"1","2","3"};
         String[] set2 = {"1","2"};
-        Value<String[]> wholeSet = new Value<>("wholeSet", set1);
-        Value<String[]> subSet = new Value<>("subSet", set2);
+        Value<String[]> mainSet = new Value<>("mainSet", set1);
+        Value<String[]> excludeSet = new Value<>("excludeSet", set2);
 
-        Difference instance = new Difference(wholeSet, subSet);
+        Difference instance = new Difference(mainSet, excludeSet);
         Value<String[]> observe = instance.apply();
         String[] observeValue = observe.value();
         String[] expect = {"3"};
@@ -30,10 +30,10 @@ public class DifferenceTest {
     void SecondSetHasOtherElements() {
         String[] set1 = {"1","2","3"};
         String[] set2 = {"1","4"};
-        Value<String[]> wholeSet = new Value<>("wholeSet", set1);
-        Value<String[]> subSet = new Value<>("subSet", set2);
+        Value<String[]> mainSet = new Value<>("mainSet", set1);
+        Value<String[]> excludeSet = new Value<>("excludeSet", set2);
 
-        Difference instance = new Difference(wholeSet, subSet);
+        Difference instance = new Difference(mainSet, excludeSet);
         Value<String[]> observe = instance.apply();
         String[] observeValue = observe.value();
         String[] expect = {"2","3"};
@@ -44,10 +44,10 @@ public class DifferenceTest {
     void DifferenceInteger() {
         Integer[] set1 = {1,2,3};
         Integer[] set2 = {1,2};
-        Value<Integer[]> wholeSet = new Value<>("wholeSet", set1);
-        Value<Integer[]> subSet = new Value<>("subSet", set2);
+        Value<Integer[]> mainSet = new Value<>("mainSet", set1);
+        Value<Integer[]> excludeSet = new Value<>("excludeSet", set2);
 
-        Difference instance = new Difference(wholeSet, subSet);
+        Difference instance = new Difference(mainSet, excludeSet);
         Value<Integer[]> observe = instance.apply();
         Integer[] observeValue = observe.value();
         Integer[] expect = {3};
