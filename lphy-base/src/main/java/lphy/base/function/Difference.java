@@ -20,7 +20,8 @@ public class Difference<T> extends DeterministicFunction<T[]> {
     public Difference(
             @ParameterInfo(name = firstSetName, description = "the primary set of elements from which to exclude") Value<T[]> mainSet,
             @ParameterInfo(name = secondSetName, description = "the set of elements to be excluded from the main set") Value<T[]> excludeSet){
-        if (mainSet == null || excludeSet == null) throw new IllegalArgumentException("The sets can't be null!");
+        if (mainSet == null) throw new IllegalArgumentException("The main set can't be null!");
+        if (excludeSet == null) throw new IllegalArgumentException("The exclude set can't be null!");
         if (Arrays.equals(mainSet.value(), excludeSet.value())) {
             LOGGER.warning("The difference set is empty because the main set is equal to the exclude set.");
         }
