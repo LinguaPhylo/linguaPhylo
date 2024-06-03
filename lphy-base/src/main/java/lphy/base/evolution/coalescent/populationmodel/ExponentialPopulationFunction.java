@@ -17,10 +17,9 @@ public class ExponentialPopulationFunction extends DeterministicFunction<Populat
         setParam(N0_PARAM_NAME, N0);
     }
 
-    @GeneratorInfo(name="exponential1", narrativeName = "Exponential growth function",
+    @GeneratorInfo(name="exponentialPopFunc", narrativeName = "Exponential growth function",
             category = GeneratorCategory.COAL_TREE, examples = {" .lphy" },
             description = "Models population growth using an exponential growth function.")
-
     @Override
     public Value<PopulationFunction> apply() {
         double GrowthRate = ((Number) getParams().get(GROWTH_RATE_PARAM_NAME).value()).doubleValue();

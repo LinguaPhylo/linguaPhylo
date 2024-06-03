@@ -21,10 +21,9 @@ public class LogisticPopulationFunction extends DeterministicFunction<Population
         setParam(B_PARAM_NAME, b);
     }
 
-    @GeneratorInfo(name="logistic", narrativeName = "Logistic growth function",
+    @GeneratorInfo(name="logisticPopFunc", narrativeName = "Logistic growth function",
             category = GeneratorCategory.COAL_TREE, examples = {" .lphy" },
             description = "Models population growth using the logistic growth function.")
-
     @Override
     public Value<PopulationFunction> apply() {
         double t50 = ((Number) getParams().get(T50_PARAM_NAME).value()).doubleValue();
