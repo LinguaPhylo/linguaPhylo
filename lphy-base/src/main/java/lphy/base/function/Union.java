@@ -31,19 +31,22 @@ public class Union<T> extends DeterministicFunction<T[]> {
         T[] firstSet = (T[]) getParams().get(firstSetName).value();
         T[] secondSet = (T[]) getParams().get(secondSetName).value();
 
+        Value<Boolean> includeRepeatsValue = getParams().get(includeRepeatsName);
+        Boolean includeRepeats = (includeRepeatsValue != null && includeRepeatsValue.value() != null) ? includeRepeatsValue.value() : false;
+
         // add both set info
         List<T> combinedList = new ArrayList<>();
         combinedList.addAll(Arrays.asList(firstSet));
         combinedList.addAll(Arrays.asList(secondSet));
 
-        if ( getParams().get(includeRepeatsName).value().equals(null) || getParams().get(includeRepeatsName).value().equals(false)){
+        if ( !includeRepeats){
             //remove repeats
             Set<T> uniqueSet = new HashSet<>(combinedList);
             combinedList = new ArrayList<>(uniqueSet);
         }
 
         // convert to array
-        T[] resultArray = (T[]) Array.newInstance(((Value<T[]>) getParams().get(firstSetName)).value().getClass().getComponentType(), combinedList.size());
+        T[] resultArray = (T[]) Array.newInstance(firstSet.getClass().getComponentType(), combinedList.size());
         combinedList.toArray(resultArray);
 
         return ValueCreator.createValue(resultArray, this);
