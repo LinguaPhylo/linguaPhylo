@@ -17,7 +17,7 @@ public class Union<T> extends DeterministicFunction<T[]> {
     public Union(
             @ParameterInfo(name = firstSetName, description = "the first set to put in the final set") Value<T[]> firstSet,
             @ParameterInfo(name = secondSetName, description = "the second set to put in the final set") Value<T[]> secondSet,
-            @ParameterInfo(name = includeRepeatsName, description = "whether include the repeat elements, default false", optional = false) Value<Boolean> includeRepeats){
+            @ParameterInfo(name = includeRepeatsName, description = "whether include the repeat elements, default false", optional = true) Value<Boolean> includeRepeats){
         if (firstSet == null) throw new IllegalArgumentException("The first set should not be null!");
         if (secondSet == null) throw new IllegalArgumentException("The second set should not be null!");
         setParam(firstSetName, firstSet);
