@@ -1,5 +1,6 @@
 λ = 10.0;
-tmrca = 0.1;
+tmrca ~ LogNormal(meanlog=-2.3, sdlog=0.1);
+// root node calibration
 ψ ~ BirthDeath(lambda=λ, mu=0.0, n=16, rootAge=tmrca);
 TL = ψ.treeLength();
 rootAge = ψ.rootAge();
