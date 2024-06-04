@@ -298,9 +298,10 @@ public class NodePaintUtils {
 
         String displayName = name;
 
-        if (displayName.length() > 7) {
+        if (displayName.length() > 10)
+            displayName = displayName.substring(0, 8) + "...";
+        if (displayName.length() > 7)
             displayName = "<small>" + displayName + "</small>";
-        }
 
         if (ValueUtils.isMultiDimensional(value)) {
             if (displayName.isEmpty()) // if name is empty, then use code string
@@ -310,18 +311,22 @@ public class NodePaintUtils {
 
         String valueString = "";
         if (showValue) {
+            // if id is the value, then not show id
+            if (name.equals(value.toString()))
+                displayName = "";
+            // process value in string
             if (value instanceof Double) {
                 valueString = format.format(value);
             } else {
                 valueString = value.toString();
-                if (value instanceof String) {
+//                if (value instanceof String) {
                     if (valueString.length() > 8) {
                         valueString = valueString.length() + " chars";
                         if (valueString.length() > 10) {
                             valueString = "string";
                         }
                     }
-                }
+//                }
             }
             valueString = "<p><font color=\"#808080\" ><small>" + valueString + "</small></font></p>";
         }
