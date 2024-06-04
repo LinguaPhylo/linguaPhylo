@@ -13,6 +13,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LocalClockTest {
@@ -56,9 +59,22 @@ public class LocalClockTest {
 
     @Test
     void apply() {
-        TimeTreeNode node = tree.getNodes().get(4);
-        TimeTreeNode node2 = tree.getNodes().get(3);
-        TimeTreeNode[] clades = {node, node2};
+        TimeTreeNode node1 = null;
+        TimeTreeNode node2 = null;
+
+        for (int i = 0; i<tree.getNodes().size(); i++){
+            if (Objects.equals(tree.getNodes().get(i).getId(), "4")){ //node2 is the leaf node 4
+                node2 = tree.getNodes().get(i);
+            } else if (tree.getNodes().get(i).getAllLeafNodes().size() == 2){ //node1 is the parent of (2,3)
+                node1 = tree.getNodes().get(i);
+            }
+        }
+
+        assertEquals(true, node1 != null);
+        assertEquals(true, node2 != null);
+
+
+        TimeTreeNode[] clades = {node1, node2};
         Double[] cladeRates = {0.4,0.3};
         double rootRate = 0.2;
 
@@ -69,20 +85,39 @@ public class LocalClockTest {
         Value<Boolean> includeStemValue = new Value<>("includeStem" , Boolean.TRUE);
 
         LocalClock instance = new LocalClock(treeValue, cladesValue, cladeRatesValue, rootRateValue, includeStemValue);
-        Value<Double[]> observe = instance.apply();
+        Value<TimeTree> observe = instance.apply();
+        List<TimeTreeNode> allNodes = observe.value().getNodes();
 
-        Double[] expect = {0.4, 0.4, rootRate, 0.3, 0.4, rootRate};
-        Value<Double[]> expectValue = new Value<>(null, expect);
-        for (int i = 0; i<expect.length; i++){
-            assertEquals(expectValue.value()[i], observe.value()[i]);
+        for (int i = 0; i<allNodes.size() - 1; i++){
+            TimeTreeNode node = allNodes.get(i);
+            if (node.getId() != null){
+                if (node.getId().equals("2") || node.getId().equals("3")){ //leaf node 2 and 3 should have branch rate 0.4
+                    assertEquals(0.4, node.getBranchRate());
+                } else if (node.getId().equals("1")){ // not specified, should be rootRate
+                    assertEquals(rootRate, node.getBranchRate());
+                } else if (node.getId().equals("4")) { // node2, should be 0.3
+                    assertEquals(0.3, node.getBranchRate());
+                }
+            } else if (node.getAllLeafNodes().size() == 2){ // the node should be the parent of 2 and 3
+                assertEquals(0.4, node.getBranchRate());
+            }else if (node.getAllLeafNodes().size() == 3){ // the node should be the parent of ((2,3),1)
+                assertEquals(rootRate, node.getBranchRate());
+            }
         }
     }
 
 
     @Test
     void applyExcludeStem() {
-        TimeTreeNode node = tree.getNodes().get(4);
-        TimeTreeNode[] clades = {node};
+        TimeTreeNode clade = null;
+
+        for (int i = 0; i<tree.getNodes().size(); i++) {
+            if (tree.getNodes().get(i).getAllLeafNodes().size() == 2) { //node is the parent of (2,3)
+                clade = tree.getNodes().get(i);
+            }
+        }
+
+        TimeTreeNode[] clades = {clade};
         Double[] cladeRates = {0.4};
         double rootRate = 0.2;
 
@@ -93,12 +128,20 @@ public class LocalClockTest {
         Value<Boolean> includeStemValue = new Value<>("includeStem" , Boolean.FALSE);
 
         LocalClock instance = new LocalClock(treeValue, cladesValue, cladeRatesValue, rootRateValue, includeStemValue);
-        Value<Double[]> observe = instance.apply();
+        Value<TimeTree> observe = instance.apply();
+        List<TimeTreeNode> allNodes = observe.value().getNodes();
 
-        Double[] expect = {0.4, 0.4, rootRate, rootRate, rootRate, rootRate};
-        Value<Double[]> expectValue = new Value<>(null, expect);
-        for (int i = 0; i<expect.length; i++){
-            assertEquals(expectValue.value()[i], observe.value()[i]);
+        for (int i = 0; i<allNodes.size() - 1; i++){
+            TimeTreeNode node = allNodes.get(i);
+            if (node.getId() != null){
+                if (node.getId().equals("2") || node.getId().equals("3")){ //leaf node 2 and 3 should have branch rate 0.4
+                    assertEquals(0.4, node.getBranchRate());
+                } else if (node.getId().equals("1") || node.getId().equals("4")){ // not specified, should be rootRate
+                    assertEquals(rootRate, node.getBranchRate());
+                }
+            } else if (node.getAllLeafNodes().size() == 2 || node.getAllLeafNodes().size() == 3){ // internal nodes should all be root rate
+                assertEquals(rootRate, node.getBranchRate());
+            }
         }
     }
 }

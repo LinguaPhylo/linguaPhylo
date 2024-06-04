@@ -9,7 +9,7 @@ import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.Arrays;
 
-public class LocalClock extends DeterministicFunction<Double[]> {
+public class LocalClock extends DeterministicFunction<TimeTree> {
     public static final String treeName = "tree";
     public static final String cladeArrayName = "clades";
     public static final String cladeRateArrayName = "cladeRates";
@@ -19,7 +19,6 @@ public class LocalClock extends DeterministicFunction<Double[]> {
 
     public static final boolean DEFAULT_INCLUDE_STEM = true;
 
-    // TODO: add option for includeStem=[false]
     public LocalClock(
             @ParameterInfo(name = treeName, description = "the tree used to calculate branch rates" ) Value<TimeTree> tree,
             @ParameterInfo(name = cladeArrayName, description = "the array of the node names") Value<Object[]> clades,
@@ -30,6 +29,7 @@ public class LocalClock extends DeterministicFunction<Double[]> {
         if (clades == null) throw new IllegalArgumentException("The clades can't be null!");
         if (cladeRates == null) throw new IllegalArgumentException("The clade rates can't be null!");
         if (rootRate == null) throw new IllegalArgumentException("The root rate can't be null!");
+        if (cladeRates.value().length != clades.value().length) throw new IllegalArgumentException("The clade rates should match the given clades!");
         setParam(treeName, tree);
         setParam(cladeArrayName, clades);
         setParam(cladeRateArrayName, cladeRates);
@@ -48,21 +48,27 @@ public class LocalClock extends DeterministicFunction<Double[]> {
         }
     }
 
-    @GeneratorInfo(name = "localClock", description = "Apply local clock in a phylogenetic tree to generate the " +
+    @GeneratorInfo(name = "localClock", description = "Apply local clock in a phylogenetic tree to generate a tree with " +
             "branch rates. The order of elements in clades and cladeRates array should match. The clades" +
             " should not be overlapped with each other.")
     @Override
-    public Value<Double[]> apply() {
+    public Value<TimeTree> apply() {
         // get parameters
-        TimeTree tree = getTree().value();
+        TimeTree originalTree = getTree().value();
         Object[] clades = getClades().value();
         Double[] cladeRates = getCladeRates().value();
         Double rootRate = getRootRate().value();
         Boolean includeStem = getIncludeStem().value();
 
+        // make a deep copy of the original tree
+        TimeTree tree = new TimeTree(originalTree);
+
         // set the rates within specified clades
         for (int i = 0; i < clades.length; i++){
-            TimeTreeNode clade = (TimeTreeNode) clades[i];
+            TimeTreeNode oldClade = (TimeTreeNode) clades[i];
+            // get the clade in the deep copy tree
+            TimeTreeNode clade = tree.getNodeByIndex(oldClade.getIndex());
+
             double rate = cladeRates[i];
             if (includeStem == null || includeStem) {
                 setRate(clade, rate, true);
@@ -71,27 +77,19 @@ public class LocalClock extends DeterministicFunction<Double[]> {
             }
         }
 
-        // initialise the branch rate array
-        Double[] branchRates = new Double[tree.branchCount()];
-
         for (TimeTreeNode node : tree.getNodes()){ // set the branch rate for rest of the tree
             if (! Arrays.asList(cladeRates).contains(node.getBranchRate())){
                 node.setBranchRate(rootRate);
             }
-
-            if (! node.isRoot()) { // write the branch rate into the array
-                int cladeNumber = node.getIndex();
-                branchRates[cladeNumber] = node.getBranchRate();
-            }
         }
 
-        // return to the branch rate list
-        return new Value<>(branchRates, this);
+        // return to the tree with branch rates
+        return new Value<>(null, tree, this);
     }
 
     // public for unit test
-    public void setRate(TimeTreeNode node, double rate, boolean includeNode) {
-        if (includeNode) {
+    public void setRate(TimeTreeNode node, double rate, boolean includeStem) {
+        if (includeStem) {
             node.setBranchRate(rate);
         }
         if (node.getChildCount() == 2) {
