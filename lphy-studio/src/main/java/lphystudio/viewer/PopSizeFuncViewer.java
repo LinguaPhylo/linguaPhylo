@@ -23,10 +23,17 @@ public class PopSizeFuncViewer implements Viewer {
     @Override
     public JComponent getViewer(Object value) {
         //TODO create PopulationFunctionComponent((Value<PopulationFunction>) value)
-        if (value instanceof PopulationFunction) {
-            return new JLabel(value.toString());
+        String valStr;
+        if (value instanceof Value<?> vV && vV.value() instanceof PopulationFunction) {
+            valStr = vV.value().toString();
+        } else
+            valStr = value.toString();
+        // change to html, which looks better
+        if (!valStr.contains("<html>")) {
+            valStr = valStr.replaceAll("\n", "<br>");
+            valStr = "<html>" + valStr + "</html>";
         }
-        return new JLabel(((Value<PopulationFunction>) value).value().toString());
+        return new JLabel(valStr);
     }
     @Override
     public String toString() {
