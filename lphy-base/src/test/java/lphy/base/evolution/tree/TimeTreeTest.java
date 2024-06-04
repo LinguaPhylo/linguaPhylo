@@ -104,4 +104,13 @@ class TimeTreeTest {
         );
     }
 
+    @Test
+    void getBranchRatesTest() {
+        Double[] branchRates = tree.getBranchRates();
+        List<TimeTreeNode> nodes = tree.getNodes();
+        for (int i = 0; i<branchRates.length; i++){
+            // ensure the index matching
+            assertEquals(nodes.get(i).getBranchRate(), branchRates[i]);
+        }
+    }
 }
