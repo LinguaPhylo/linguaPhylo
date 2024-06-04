@@ -23,7 +23,7 @@ public class GompertzPopulationFunction extends DeterministicFunction<Population
     }
 
     @GeneratorInfo(name = "gompertzPopFunc", narrativeName = "Gompertz growth function",
-            category = GeneratorCategory.COAL_TREE, examples = {" .lphy"},
+            category = GeneratorCategory.COAL_TREE, examples = {" gompertzCoalescent.lphy"},
             description = "Models population growth using the Gompertz growth function.")
     @Override
     public Value<PopulationFunction> apply() {

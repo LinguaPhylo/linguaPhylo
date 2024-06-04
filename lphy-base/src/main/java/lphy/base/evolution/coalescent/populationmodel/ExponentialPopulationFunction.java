@@ -18,7 +18,7 @@ public class ExponentialPopulationFunction extends DeterministicFunction<Populat
     }
 
     @GeneratorInfo(name="exponentialPopFunc", narrativeName = "Exponential growth function",
-            category = GeneratorCategory.COAL_TREE, examples = {" .lphy" },
+            category = GeneratorCategory.COAL_TREE, examples = {" exponentialCoalescent.lphy" },
             description = "Models population growth using an exponential growth function.")
     @Override
     public Value<PopulationFunction> apply() {
