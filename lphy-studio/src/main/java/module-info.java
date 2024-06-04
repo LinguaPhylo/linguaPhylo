@@ -30,10 +30,7 @@ module lphystudio {
     // ViewerRegister loads all Viewers
     uses lphystudio.app.graphicalmodelpanel.viewer.Viewer;
     // declare what service interface the provider intends to use
-<<<<<<< HEAD
 
-=======
->>>>>>> 72a57d09f615f413b188480adbeffebd95300fd8
     // the core uses hard core to register all internal Viewers,
     // but extensions need to declare what service interface the provider intends to use for new Viewers.
     provides lphystudio.app.graphicalmodelpanel.viewer.Viewer with lphystudio.viewer.PopSizeFuncViewer;

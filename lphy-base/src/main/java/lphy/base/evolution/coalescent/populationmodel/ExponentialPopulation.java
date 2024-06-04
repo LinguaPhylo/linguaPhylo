@@ -137,15 +137,10 @@ public class ExponentialPopulation implements PopulationFunction {
 
     @Override
     public String toString() {
-<<<<<<< HEAD
         return "Exponential growth at a rate of " + GrowthRate +
                 ",\nwith an initial population size (N0) of " + N0;
     }
 
-=======
-        return "GrowthRate = " + GrowthRate +", N0 = " + N0;
-    }
->>>>>>> 72a57d09f615f413b188480adbeffebd95300fd8
 
     public static void main(String[] args) {
         double GrowthRate = 0.1;
