@@ -322,7 +322,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         }
     }
 
-    @MethodInfo(description = "get the node by given label.")
+    @MethodInfo(narrativeName = "node with given label",description = "get the node by given label.")
     public TimeTreeNode getLabeledNode(String label) {
         List<TimeTreeNode> nodes = getNodes();
         for (TimeTreeNode node : nodes) {

@@ -21,10 +21,10 @@ public class LocalClock extends DeterministicFunction<TimeTree> {
 
     public LocalClock(
             @ParameterInfo(name = treeName, description = "the tree used to calculate branch rates" ) Value<TimeTree> tree,
-            @ParameterInfo(name = cladeArrayName, description = "the array of the node names") Value<Object[]> clades,
-            @ParameterInfo(name = cladeRateArrayName, description = "the array of clade rates") Value<Double[]> cladeRates,
+            @ParameterInfo(name = cladeArrayName, narrativeName = "given clades", description = "the array of the node names") Value<Object[]> clades,
+            @ParameterInfo(name = cladeRateArrayName, narrativeName = "array of rates corresponding with clade", description = "the array of clade rates") Value<Double[]> cladeRates,
             @ParameterInfo(name = rootRateName, description = "the root rate of the tree") Value<Double> rootRate,
-            @ParameterInfo(name = includeStemName, description = "whether to include stem of clades, defaults to true", optional = true) Value<Boolean> includeStem){
+            @ParameterInfo(name = includeStemName, narrativeName = "criterion of including stem", description = "whether to include stem of clades, defaults to true", optional = true) Value<Boolean> includeStem){
         if (tree == null) throw new IllegalArgumentException("The tree can't be null!");
         if (clades == null) throw new IllegalArgumentException("The clades can't be null!");
         if (cladeRates == null) throw new IllegalArgumentException("The clade rates can't be null!");
@@ -48,7 +48,7 @@ public class LocalClock extends DeterministicFunction<TimeTree> {
         }
     }
 
-    @GeneratorInfo(name = "localClock", description = "Apply local clock in a phylogenetic tree to generate a tree with " +
+    @GeneratorInfo(name = "localClock", examples = {"substituteClade.lphy"}, description = "Apply local clock in a phylogenetic tree to generate a tree with " +
             "branch rates. The order of elements in clades and cladeRates array should match. The clades" +
             " should not be overlapped with each other.")
     @Override

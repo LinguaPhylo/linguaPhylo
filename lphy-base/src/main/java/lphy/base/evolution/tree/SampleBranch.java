@@ -27,7 +27,8 @@ public class SampleBranch implements GenerativeDistribution<TimeTreeNode> {
         this.age = age;
     }
 
-    @GeneratorInfo(name = "SampleBranch", description = "Randomly sample a branch among the branches at a given age in the given tree, representing by the node attached to this branch. The function would be deterministic when there is only one branch at the given age. The branch is represented by the node under it.")
+    @GeneratorInfo(name = "SampleBranch", examples = {"substituteClade.lphy"},
+            description = "Randomly sample a branch among the branches at a given age in the given tree, representing by the node attached to this branch. The function would be deterministic when there is only one branch at the given age. The branch is represented by the node under it.")
     @Override
     public RandomVariable<TimeTreeNode> sample() {
         // get parameters

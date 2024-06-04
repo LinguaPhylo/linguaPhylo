@@ -23,7 +23,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
 
     public SubstituteClade(@ParameterInfo(name = baseTreeName, description = "the tree that we are going to add another tree onto.") Value<TimeTree> baseTree,
                            @ParameterInfo(name = cladeTreeName, description = "the tree that we are going to add it on the base tree") Value<TimeTree> cladeTree,
-                           @ParameterInfo(name = nodeName, description = "the node with the branch that the branch tree would be add on to.") Value<TimeTreeNode> node,
+                           @ParameterInfo(name = nodeName, narrativeName = "node under the branch for attachment", description = "the node with the branch that the branch tree would be add on to.") Value<TimeTreeNode> node,
                            @ParameterInfo(name = mutationHappenTimeName, description = "the mutation happen time that the branch tree would be add onto the base tree", optional = true) Value<Double> time,
                            @ParameterInfo(name = nodeLabelName, description = "the name of added branch node.") Value<String> nodeLabel) {
         if (baseTree == null) throw new IllegalArgumentException("The base tree cannot be null!");
@@ -43,7 +43,8 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         this.time = time;
     }
 
-    @GeneratorInfo(name = "substituteClade", description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
+    @GeneratorInfo(name = "substituteClade", examples = {"substituteClade.lphy"},
+            description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
     @Override
     public Value<TimeTree> apply() {
         // get parameters
