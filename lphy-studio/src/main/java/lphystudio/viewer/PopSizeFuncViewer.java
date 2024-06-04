@@ -24,9 +24,9 @@ public class PopSizeFuncViewer implements Viewer {
     public JComponent getViewer(Object value) {
         //TODO create PopulationFunctionComponent((Value<PopulationFunction>) value)
         if (value instanceof PopulationFunction) {
-            return new JLabel("PopulationFunction TODO : " + value.toString());
+            return new JLabel(value.toString());
         }
-        return new JLabel("Value<PopulationFunction> TODO : " + ((Value<PopulationFunction>) value).value().toString());
+        return new JLabel(((Value<PopulationFunction>) value).value().toString());
     }
     @Override
     public String toString() {

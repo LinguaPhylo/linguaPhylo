@@ -139,6 +139,14 @@ public class LogisticPopulation implements PopulationFunction {
         return false; //use numerical method here
     }
 
+    @Override
+    public String toString() {
+        return "Logistic Population Model: " +
+                "t50 (midpoint of logistic function)=" + t50 +
+                ", nCarryingCapacity (maximum population size)=" + nCarryingCapacity +
+                ", b (growth rate)=" + b ;
+    }
+
 
 
     public static void main(String[] args) {
