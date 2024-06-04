@@ -7,4 +7,4 @@
 # but extensions need to declare what service interface the provider intends to use for new Viewers.
 # for example,  lphystudio.app.graphicalmodelpanel.viewer.???Viewer
 
-popsizefunc.lphystudio.viewer.PopSizeFuncViewer
+lphystudio.viewer.PopSizeFuncViewer
