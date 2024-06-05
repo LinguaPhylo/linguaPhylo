@@ -65,6 +65,12 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
 
         this.random = RandomUtils.getRandom();
 
+        Double[] treeBranchRates = tree.value().getBranchRates();
+        // if tree has branch rates, then use them
+        if (branchRates == null && treeBranchRates != null && treeBranchRates.length > 0) {
+            this.branchRates = new Value<>("branchRates", treeBranchRates);
+        }
+
 //        checkCompatibilities();
     }
 

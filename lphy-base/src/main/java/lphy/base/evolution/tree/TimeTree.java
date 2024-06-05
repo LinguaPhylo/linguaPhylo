@@ -337,8 +337,11 @@ public class TimeTree implements HasTaxa, MultiDimensional {
     public Double[] getBranchRates(){
         List<Double> branchRates = new ArrayList<>();
         for (TimeTreeNode node: nodes){
-            branchRates.add(node.getBranchRate());
+            if (node.getBranchRate() != null) {
+                branchRates.add(node.getBranchRate());
+            }
         }
+
         return branchRates.toArray(Double[]::new);
     }
 }
