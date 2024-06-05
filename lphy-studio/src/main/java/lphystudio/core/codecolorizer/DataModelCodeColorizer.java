@@ -1,6 +1,7 @@
 package lphystudio.core.codecolorizer;
 
 
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserAction;
@@ -433,7 +434,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
 
     public Object parse(String CASentence) {
 
-        System.out.println("Parsing " + CASentence + " in code colouriser");
+        LoggerUtils.log.fine("Parsing " + CASentence + " in code colouriser");
 
         // Traverse parse tree
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();

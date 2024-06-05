@@ -134,7 +134,8 @@ public class Sampler {
 //                addValueToModelDictionary(newValue);
             }
         }
-        System.out.println("Resample variable : " + sampled);
+        LoggerUtils.log.info("Resample variable : " + sampled);
+
         if (parserDict.getModelDictionary().size() != nModelDictSize)
             throw new RuntimeException("The number of stored values are not correct in parser model dictionary during resampling !\n" +
                     "It should be " + nModelDictSize + "; but get " + parserDict.getModelDictionary().size());
