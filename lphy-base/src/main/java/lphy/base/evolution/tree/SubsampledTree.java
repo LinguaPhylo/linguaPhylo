@@ -105,9 +105,13 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
                 if (parentNode.getChildCount() == 1 && !parentNode.isRoot()){
                     // if left child is removed, then set the right child's parent
                     TimeTreeNode grandparentNode = parentNode.getParent();
-                    parentNode.getChild(0).setParent(grandparentNode);
+                    TimeTreeNode childNode = parentNode.getChild(0);
+                    if (!Objects.equals(childNode.getBranchRate(), parentNode.getBranchRate())){
+                        averageBranchRate(childNode, parentNode);
+                    }
+                    childNode.setParent(grandparentNode);
                     grandparentNode.removeChild(parentNode);
-                    grandparentNode.addChild(parentNode.getChild(0));
+                    grandparentNode.addChild(childNode);
                 } else if (parentNode.getChildCount() == 1 && parentNode.isRoot()) {
                     // if only one child left and parent is root
                     newTree.setRoot(parentNode.getChild(0), true);
@@ -123,6 +127,17 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
         for (int i = 0; i<allNodes.length;i++){
             allNodes[i].setIndex(i);
         }
+    }
+
+    public static void averageBranchRate(TimeTreeNode childNode, TimeTreeNode parentNode) {
+        // branchLength = branchDuration * branchRate
+        double childRate = childNode.getBranchRate();
+        double childDuration = childNode.getBranchDuration();
+        double parentRate = parentNode.getBranchRate();
+        double parentDuration = parentNode.getBranchDuration();
+        // new rate = overall branchLength / overall branchDuration
+        double newRate = (childRate*childDuration + parentRate*parentDuration) / (childDuration + parentDuration);
+        childNode.setBranchRate(newRate);
     }
 
     public String[] getSampleResult(double fraction, String[] name) {
