@@ -22,7 +22,6 @@ public class PhyloCTMCTest {
         newickTree = "((1:2.0, (2:1.0, 3:1.0):1.0):2.0, 4:4.0)";
     }
 
-
     @Test
     void apply() {
         // generate a tree with local clock
@@ -96,5 +95,45 @@ public class PhyloCTMCTest {
         assertEquals(allNodes.get(5).getBranchRate(), branchRates[5]);
         // index 6 : node (((2,3),1),4)
         assertEquals(allNodes.get(6).getBranchRate(), branchRates[6]);
+    }
+
+    @Test
+    void testWarning() {
+        TimeTree tree = Newick.parseNewick(newickTree);
+        for (TimeTreeNode node: tree.getNodes()){
+            node.setBranchRate(0.5);
+        }
+
+        Double[][] Q = {
+                { -1.0,  0.5,  0.3,  0.2 },
+                {  0.4, -1.0,  0.1,  0.5 },
+                {  0.3,  0.2, -1.0,  0.5 },
+                {  0.2,  0.3,  0.5, -1.0 }
+        };
+
+        Value<TimeTree> newTreeValue = new Value<>("newTree", tree);
+        Value<Double[][]> QValue = new Value<>("Q", Q);
+        Value<Double[]> siteRatesValue = new Value<Double[]>("siteRates", new Double[]{0.1, 0.1, 0.1, 0.1, 0.1});
+        Value<Integer> LValue = new Value<Integer>("L", 5);
+        Value<Double[]> branchRatesValue = new Value<>("branchRates", new Double[]{0.2,0.2,0.2,0.2,0.2,0.2,0.2});
+
+        PhyloCTMC phyloCTMCInstance = new PhyloCTMC(
+                newTreeValue,null,null,
+                QValue,siteRatesValue,branchRatesValue,
+                LValue,null, null);
+
+        phyloCTMCInstance.sample();
+        // should have a warning msg
+
+        Double[] branchRates = phyloCTMCInstance.getBranchRates().value();
+
+        List<TimeTreeNode> allNodes = tree.getNodes();
+        assertEquals(allNodes.size(), branchRates.length);
+
+        // should use given branch rates and tree branch rates should not be changed
+        for (int i = 0; i<allNodes.size(); i++){
+            assertEquals(0.2, branchRates[i]);
+            assertEquals(0.5, allNodes.get(i).getBranchRate());
+        }
     }
 }
