@@ -1,14 +1,18 @@
 package lphy.base;
 
 import lphy.core.io.UserDir;
+import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
+import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
+import lphy.core.simulator.Sampler;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +51,9 @@ public class LPhyExamplesTest {
                 // TODO gradle test bug : Cannot find the sequence type  ! DNA
                 "covidDPG.lphy");
 //            String fileName = "hcv_coal_classic.lphy";
+
+        List<String> failedByParser = new ArrayList<>();
+        List<String> failedBySample = new ArrayList<>();
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
             System.out.println("Processing " + fileName + " in " + exampleDir);
             if (ignoreFiles.contains(fileName)){
@@ -61,10 +68,9 @@ public class LPhyExamplesTest {
                 BufferedReader fin = new BufferedReader(lphyFile);
                 lPhyMetaParser.source(fin, null);
             } catch (Exception e) {
-//                    failedFiles.add(fileName);
-                System.err.println("Example " + fileName + " failed\n");
-                fail("Example " + fileName + " failed at Exception :\n" + e.getMessage() + "\n\n" +
-                        String.join("\n", lPhyMetaParser.getLines()));
+                failedByParser.add(fileName);
+                System.err.println("Example " + fileName + " failed during parsing !!! \n");
+                e.printStackTrace();
             }
             // lines of code parsed
             List<String> lines = lPhyMetaParser.getLines();
@@ -74,16 +80,37 @@ public class LPhyExamplesTest {
             // check lines
             assertTrue(cmd.trim().length() > 3, "Script must contain more than 3 characters : \n" + cmd);
 
+            System.out.println("Successfully parse " + fileName + "\n");
+
+            //*** Test re-sampling ***//
+            List<Value> res1 = GraphicalModelUtils.getAllValuesFromSinks(lPhyMetaParser);
+            final int nAllVal = res1.size();
+            Sampler sampler = new Sampler(lPhyMetaParser);
+            for (int i = 0; i < 5; i++) {
+                try {
+                List<Value> res = sampler.sample(null); // random seed
+                assertEquals(nAllVal, res.size(), "Resample " + fileName +
+                        ", but the returned values ");
+                } catch (Exception e) {
+                    if (! failedBySample.contains(fileName))
+                        failedBySample.add(fileName);
+                    System.err.println("Example " + fileName + " failed during re-sampling !!! \n");
+                    e.printStackTrace();
+                }
+            }
+
+            // clean parser dict for reusing it safely
             lPhyMetaParser.clear();
-            System.out.println("Done " + fileName + "\n");
         }
-//            if (failedFiles.size() > 0) {
-//                System.out.println("\ntestThatExamplesRun::Failed for : " + failedFiles);
-//            } else {
-        System.out.println("SUCCESS!!!");
-        System.out.println(exampleFiles.length + " files tested : \n" + Arrays.toString(exampleFiles));
-        System.out.println(ignoreFiles.size() + " files ignored : \n" + ignoreFiles);
-//            }
+
+        if (!failedByParser.isEmpty() || !failedBySample.isEmpty()) {
+            fail("\nFailed LPhy scripts by parsing : " + failedByParser +
+                    "\nFailed LPhy scripts by resampling : " + failedBySample);
+        } else {
+            System.out.println("SUCCESS!!!");
+            System.out.println(exampleFiles.length + " files tested : \n" + Arrays.toString(exampleFiles));
+            System.out.println(ignoreFiles.size() + " files ignored : \n" + ignoreFiles);
+        }
 //            assertEquals(0, failedFiles.size(), failedFiles.toString());
     } // testLPhyExamplesInDir
 

@@ -50,7 +50,9 @@ public interface Generator<T> extends GraphicalModelNode<T> {
     }
 
     /**
-     * The Value can be null, if it is an optional parameter.
+     * If it is an optional parameter, then it must check if the Value is not null during setParam.
+     * Otherwise, when putting an optional parameter into paramMap, but it is not used in the lphy script,
+     * this method will cause trouble to all down-stream code.
      * @return a Map of parameters (arguments) implemented for this generator.
      */
     Map<String, Value> getParams();

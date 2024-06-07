@@ -128,7 +128,7 @@ public class Sampler {
                 } else throw new RuntimeException();
 
                 // replace value and set ID
-                replaceValueInModelDict(value, newValue, variables, sampled);
+                replaceValueInModelDict(value, newValue, sampled);
 
                 // add new Value back to Model Map
 //                addValueToModelDictionary(newValue);
@@ -153,22 +153,27 @@ public class Sampler {
     }
 
     // replace old Value with new Value both in Model Map and Value Set
-    private void replaceValueInModelDict(Value oldValue, Value newValue,
-                                         List<RandomVariable<?>> removedRandomValues, Set<String> sampled) {
-        // oldValue must exist in the list of var being removed in model parser dict before re-sampling
-        if (removedRandomValues.contains(oldValue)) {
-            String id = oldValue.getId();
-            newValue.setId(id);
-            getParserDictionary().getModelDictionary().put(oldValue.getId(), newValue);
-            sampled.add(id);
+    private void replaceValueInModelDict(Value oldValue, Value newValue, Set<String> sampled) {
+        // only replace if the value (obj instance) changed
+        if (!oldValue.equals(newValue)) {
+            // oldValue must exist in the list of var being removed in model parser dict before re-sampling
+//        if (removedRandomValues.contains(oldValue)) {
+            if (!oldValue.isAnonymous()) {
+                String id = oldValue.getId();
+                newValue.setId(id);
+                getParserDictionary().getModelDictionary().put(id, newValue);
+                sampled.add(id);
+            }
+            Set<Value> valueSet = getParserDictionary().getModelValues();
+            // only add new if oldValue exists in valueSet.
+            // for inline code, the intermediate values will not be saved into parser dict and set.
+            if (valueSet.remove(oldValue))
+                valueSet.add(newValue);
+//        else
+//            LoggerUtils.log.finer("Try to replace the old value " + oldValue + " to " + newValue +
+//                    ", but cannot find it in parser dictionary ! " +
+//                    "Check if it is inline code.");
         }
-        Set<Value> valueSet = getParserDictionary().getModelValues();
-        // only add new if oldValue exists in valueSet
-        if (valueSet.remove(oldValue))
-            valueSet.add(newValue);
-        else
-            throw new IllegalArgumentException("Try to remove the value " + oldValue +
-                    ", which was not existing in parser model dictionary previously !");
     }
 
     /**
@@ -280,7 +285,7 @@ public class Sampler {
                     newlySampledParams.put(e.getKey(), nv);
 //                    addValueToModelDictionary(nv);
                     // replace old Value with new Value both in Model Map and Value Set
-                    replaceValueInModelDict(val, nv, removedRandomValues, sampled);
+                    replaceValueInModelDict(val, nv, sampled);
                 } else {
                     // do not know which constant is changed, so add it anyway to setInput again
                     newlySampledParams.put(e.getKey(), val);
@@ -297,7 +302,7 @@ public class Sampler {
 
 
     /**
-     * Change to {@link #replaceValueInModelDict(Value, Value, List, Set)}
+     * Change to {@link #replaceValueInModelDict(Value, Value, Set)}
      * Be careful, this is called frequently.
      * @param value the value to add to the model dictionary.
      */
