@@ -34,7 +34,7 @@ public class SubsampledTreeTest {
         String[][] nameListValue = new String[2][nameList.value().length];
         nameListValue[0] = nameList.value();
         nameListValue[1] = nameList.value();
-        Value<Object[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
         SubsampledTree instance = new SubsampledTree(tree, nameListArray, fractionValue);
 
         String[] observe = instance.getSampleResult(fraction, name);
@@ -91,7 +91,7 @@ public class SubsampledTreeTest {
         String[][] nameListValue = new String[2][tumourNames.length + normalNames.length];
         nameListValue[0] = tumourNames;
         nameListValue[1] = normalNames;
-        Value<Object[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
         SubsampledTree observe = new SubsampledTree(tree, nameListArray, fractionValue);
         RandomVariable<TimeTree> observedTree = observe.sample();
 
@@ -118,13 +118,11 @@ public class SubsampledTreeTest {
         TimeTreeNode rightChild = parentNode.getRight();
         rightChild.setBranchRate(0.2);
 
-
         double expectRate = (0.5*parentNode.getBranchDuration() + 0.2*rightChild.getBranchDuration())/(parentNode.getBranchDuration() + rightChild.getBranchDuration());
 
         parentNode.removeChild(leftChild);
         SubsampledTree.averageBranchRate(rightChild,parentNode);
 
         assertEquals(expectRate, rightChild.getBranchRate());
-
     }
 }
