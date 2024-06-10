@@ -64,21 +64,27 @@ public interface Generator<T> extends GraphicalModelNode<T> {
      * This default code is to find whether any setter methods exist,
      * then it would not need to be overwritten,
      * otherwise this method must be overwritten to set the values by argument names.
+     * The setter sets the primary type inside the Value, such as,
+     * <code>public void setLambda(double p) {</code>
+     * <code>    this.lambda.setValue(p);    </code>
+     * <code>}</code>
      * @param paramName   parameter (argument) name
      * @param value       {@link Value}
      */
     default void setParam(String paramName, Value<?> value) {
+        // TODO this does not work for Number
         // such as, public void setLambda(double p) {
         //        this.lambda.setValue(p);
         //        constructDistribution(random); }
         String methodName = "set" + Character.toUpperCase(paramName.charAt(0)) + paramName.substring(1);
 
         try {
+            // just one setter
             Method method = getClass().getMethod(methodName, value.value().getClass());
 
             method.invoke(this, value.value());
         } catch (NoSuchMethodException e) {
-
+            // multiple setters due to multiple parameters
             Method[] methods = getClass().getMethods();
             for (Method method : methods) {
                 if (method.getName().equals(methodName)) {
@@ -86,12 +92,19 @@ public interface Generator<T> extends GraphicalModelNode<T> {
                         method.invoke(this, value.value());
                         break;
                     } catch (IllegalArgumentException mismatch) {
-                        //TODO Cannot handle inheritance, such as Number, but value.getType() is Double
-                        LoggerUtils.log.severe(mismatch.getMessage() + ", where " + methodName +
-                                "(" + method.getGenericParameterTypes()[0] + ") does not match the value type " +
-                                value.getType() + "!\nPlease overwrite setParam() instead of using setters !");
-                    } catch (InvocationTargetException | IllegalAccessException ignored) {
-                        LoggerUtils.log.severe(methodName + " err : " + ignored.getMessage());
+                        //TODO Cannot handle inheritance, such as Number,
+                        // it must specify to primary type, such as double
+                        String msg = mismatch.getMessage() + " in " + this.getClass().getSimpleName() +
+                                ", where " + methodName + "(" + method.getGenericParameterTypes()[0] +
+                                ") does not match the value type " + value.getType() +
+                                "!\nPlease either overwrite setParam(), or change setter value type to " +
+                                value.getType() + " !";
+                        LoggerUtils.log.severe(msg); // log to studio as well
+                        throw new RuntimeException(msg, e);
+                    } catch (InvocationTargetException | IllegalAccessException err) {
+                        String msg = methodName + " err : " + err.getMessage();
+                        LoggerUtils.log.severe(msg); // log to studio as well
+                        throw new RuntimeException(msg, e);
                     }
                 }
             }

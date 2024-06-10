@@ -59,11 +59,14 @@ public class RandomComposition extends ParametricDistribution<Integer[]> {
         }};
     }
 
-    public void setN(Value<Integer> n) {
-        this.n = n;
+    //TODO cannot work with Number. Perhaps change to setParam
+    public void setN(int n) {
+        this.n.setValue(n);
+        constructDistribution(random);
     }
 
-    public void setK(Value<Integer> k) {
-        this.k = k;
+    public void setK(int k) {
+        this.k.setValue(k);
+        constructDistribution(random);
     }
 }

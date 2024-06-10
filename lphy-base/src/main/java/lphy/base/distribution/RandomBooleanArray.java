@@ -61,11 +61,12 @@ public class RandomBooleanArray implements GenerativeDistribution<Boolean[]> {
         }};
     }
 
-    public void setLength(Value<Integer> length) {
-        this.length = length;
+    //TODO cannot work with Number. Perhaps change to setParam
+    public void setLength(int length) {
+        this.length.setValue(length);
     }
 
-    public void setHammingWeight(Value<Integer> hammingWeight) {
-        this.hammingWeight = hammingWeight;
+    public void setHammingWeight(int hammingWeight) {
+        this.hammingWeight.setValue(hammingWeight);
     }
 }
