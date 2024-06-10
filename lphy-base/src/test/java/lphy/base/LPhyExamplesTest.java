@@ -43,15 +43,11 @@ public class LPhyExamplesTest {
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
 
         List<String> ignoreFiles = Arrays.asList(
-                // TODO no problem in local, but github throw Exception :
-                //arraycopy: element type mismatch: can not cast one of the elements of java.lang.Object[] to the type of the destination array, java.lang.Double
-//                "readDelim.lphy",
                 // TODO random fail
-//                "birthDeathOnRootAgeAndTaxa.lphy",
-                //TODO Found no implementation for function simulate(lphy= ...
-//                "jcCoal.lphy",
-                // TODO gradle test bug : Cannot find the sequence type  ! DNA
-                "covidDPG.lphy");
+//                "birthDeathOnRootAgeAndTaxa.lphy", "birthDeathRhoSampling.lphy"
+                // TODO take too long ?
+//                "covidDPG.lphy"
+        );
 //            String fileName = "hcv_coal_classic.lphy";
 
         List<String> failedByParser = new ArrayList<>();
@@ -90,9 +86,9 @@ public class LPhyExamplesTest {
             Sampler sampler = new Sampler(lPhyMetaParser);
             for (int i = 0; i < 2; i++) {
                 try {
-                List<Value> res = sampler.sample(null); // random seed
-                assertEquals(nAllVal, res.size(), "Resample " + fileName +
-                        ", but the returned values ");
+                    List<Value> res = sampler.sample(null); // random seed
+                    assertEquals(nAllVal, res.size(), "Resample " + fileName +
+                            ", but the returned values ");
                 } catch (Exception e) {
                     if (! failedBySample.contains(fileName))
                         failedBySample.add(fileName);
