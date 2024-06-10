@@ -1,7 +1,7 @@
 data {
   n=20;
-  taxa = taxa(names=1:20);
-  L=1000;
+  taxa = taxa(names=1:n);
+  L=100;
 }
 model{
   π ~ Dirichlet(conc=[10.0,10.0,10.0,10.0]);
@@ -13,7 +13,7 @@ model{
   denom = abs(1.0 - turnover);
   λ = diversification / denom;
   death_rate = (turnover * diversification) / denom;
-  root_time ~ LogNormal(meanlog=2.366645, sdlog=0.25, offset=38.0);
+  root_time ~ LogNormal(meanlog=2, sdlog=0.1, offset=10.0);
   // Conditioned on root age and on number of taxa
   ψ ~ BirthDeath(lambda=λ, mu=death_rate, rootAge=root_time, taxa=taxa);
 
