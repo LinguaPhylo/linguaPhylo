@@ -20,6 +20,7 @@ import lphy.base.evolution.continuous.PhyloOU;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.substitutionmodel.*;
+import lphy.base.evolution.tree.MRCA;
 import lphy.base.evolution.tree.SampleBranch;
 import lphy.base.evolution.tree.SubsampledTree;
 import lphy.base.evolution.tree.SubstituteClade;
@@ -96,7 +97,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 VariableSites.class, InvariableSites.class, CopySites.class,
                 // Tree
                 LocalBranchRates.class, ExtantTree.class, PruneTree.class, LocalClock.class,
-                SubstituteClade.class,//NodeCount.class, TreeLength.class,
+                SubstituteClade.class, MRCA.class,//NodeCount.class, TreeLength.class,
                 // Matrix
                 BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
                 // IO
