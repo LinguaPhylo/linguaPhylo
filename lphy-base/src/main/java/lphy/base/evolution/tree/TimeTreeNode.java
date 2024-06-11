@@ -55,6 +55,7 @@ public class TimeTreeNode {
         copy.index = index;
         copy.age = age;
         copy.leafIndex = leafIndex;
+        copy.metaData = metaData;
         for (TimeTreeNode child : children) {
             copy.addChild(child.deepCopy(tree));
         }
