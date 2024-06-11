@@ -17,8 +17,8 @@ model{
   // Conditioned on root age and on number of taxa
   ψ ~ BirthDeath(lambda=λ, mu=death_rate, rootAge=root_time, taxa=taxa);
 
-  ucln_mean ~ Exp(mean=2.0);
-  ucln_sigma ~ Exp(mean=3.0);
+  ucln_mean ~ Normal(mean=-4.5, sd=0.5);
+  ucln_sigma ~ Exp(mean=0.5);
   branch_rates ~ LogNormal(meanlog=ucln_mean, sdlog=ucln_sigma, replicates=2*n - 2);
 
   D ~ PhyloCTMC(tree=ψ, Q=Q, branchRates=branch_rates, L=L);

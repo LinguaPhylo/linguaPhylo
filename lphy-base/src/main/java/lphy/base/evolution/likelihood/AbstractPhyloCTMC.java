@@ -48,11 +48,15 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     protected Value<Double[]> rootFreqs;
     protected SortedMap<String, Integer> idMap = new TreeMap<>();
     protected double[][] transProb;
+    /**
+     * <code>e^{Qt} = Ee^{At}E^-1</code>, where A is a diagonal matrix of eigenvalues (Eval),
+     * E is the matrix of right eigenvectors (Evec), and E^-1 is the matrix of left eigenvectors (Ievc).
+     */
     private EigenDecomposition decomposition;
-    private double[][] Ievc;
-    private double[][] Evec;
-    private double[][] iexp;
-    private double[] Eval;
+    private double[][] Ievc; // inverse Eigen vectors
+    private double[][] Evec; // Eigen vectors
+    private double[][] iexp; // intermediate matrix
+    private double[] Eval; // Eigenvalues
 
 
     public AbstractPhyloCTMC(Value<TimeTree> tree, Value<Number> clockRate, Value<Double[]> freq,
