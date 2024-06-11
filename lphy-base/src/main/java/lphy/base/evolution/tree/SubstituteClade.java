@@ -6,11 +6,6 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 public class SubstituteClade extends DeterministicFunction<TimeTree> {
-//    Value<TimeTree> baseTree;
-//    Value<TimeTree> cladeTree;
-//    Value<Double> time;
-//    Value<TimeTreeNode> node;
-//    Value<String> nodeLabel;
     public static final String baseTreeName = "baseTree";
     public static final String cladeTreeName = "cladeTree";
     public static final String nodeName = "node";
@@ -34,11 +29,6 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         if (time != null)
             setParam(mutationHappenTimeName, time);
         setParam(nodeLabelName,nodeLabel);
-//        this.baseTree = baseTree;
-//        this.cladeTree = cladeTree;
-//        this.node = node;
-//        this.nodeLabel = nodeLabel;
-//        this.time = time;
     }
 
     @GeneratorInfo(name = "substituteClade", examples = {"substituteClade.lphy"},
@@ -93,16 +83,6 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         return new Value<>(null, newTree, this);
     }
 
-//    @Override
-//    public Map<String, Value> getParams() {
-//        SortedMap<String, Value> map = new TreeMap<>();
-//        if (baseTree != null) map.put(baseTreeName, baseTree);
-//        if (cladeTree != null) map.put(cladeTreeName, cladeTree);
-//        if (node != null) map.put(nodeName, node);
-//        if (time != null) map.put(mutationHappenTimeName, time);
-//        if (nodeLabelName != null) map.put(nodeLabelName, nodeLabel);
-//        return map;
-//    }
     public Value<TimeTree> getBaseTree() {
         return getParams().get(baseTreeName);
     }
