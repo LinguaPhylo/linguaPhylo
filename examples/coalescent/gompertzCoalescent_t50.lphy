@@ -1,0 +1,13 @@
+data {
+  L = 500;
+}
+model {
+
+  NInfinity ~ LogNormal(meanlog=10,sdlog=0.5);
+  //t50 ~ Beta(alpha=20, beta=7);
+  t50 ~ Normal(mean=0,sd=0.333);
+  b ~ Beta(alpha=40, beta=10);
+  gompertzPopFunc = gompertzPopFunc_t50(NInfinity=NInfinity,t50=t50, b=b);
+  tree ~ CoalescentPopFunc(n=16, popFunc=gompertzPopFunc);
+  D ~ PhyloCTMC(tree=tree, L=L, Q=jukesCantor(), mu=1e-9);
+}

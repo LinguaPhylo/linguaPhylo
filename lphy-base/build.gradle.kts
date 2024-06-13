@@ -16,6 +16,7 @@ dependencies {
     api("io.github.linguaphylo:jebl:3.1.1-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("junit:junit:4.13.1")
 }
 
 val developers = "LPhy developer team"
