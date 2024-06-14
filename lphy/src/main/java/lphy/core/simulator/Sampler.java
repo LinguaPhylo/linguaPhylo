@@ -71,7 +71,7 @@ public class Sampler {
         return sampler;
     }
 
-    /**
+    /** TODO make it thread-safe ?
      * The <b>only main</b> method to re-sample values stored in {@link LPhyParserDictionary}.
      * This will not use parser.
      * @param seed  the seed value, if null then use a random seed.
