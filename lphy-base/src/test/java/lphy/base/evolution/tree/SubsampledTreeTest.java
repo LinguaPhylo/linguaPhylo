@@ -1,11 +1,13 @@
 package lphy.base.evolution.tree;
 
+import lphy.base.distribution.UniformDiscrete;
 import lphy.base.evolution.coalescent.Coalescent;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,5 +98,35 @@ public class SubsampledTreeTest {
         RandomVariable<TimeTree> observedTree = observe.sample();
 
         assertEquals(tumourNames.length*tumourFraction + normalNames.length*normalFraction , observedTree.value().getRoot().getAllLeafNodes().size() );
+    }
+
+    @Test
+    void averageBranchRate() {
+        List<TimeTreeNode> internalNodes = tree.getInternalNodes();
+
+        Value<Integer> lower = new Value<>("low", 0);
+        Value<Integer> upper = new Value<>("high", internalNodes.size()-2); //don't want root
+
+        UniformDiscrete uniformDiscrete = new UniformDiscrete(lower, upper);
+        RandomVariable<Integer> randomIndex = uniformDiscrete.sample();
+
+        TimeTreeNode parentNode = internalNodes.get(randomIndex.value());
+        parentNode.setBranchRate(0.5);
+        // ensure parent node has two children
+        assertEquals(2, parentNode.getChildCount());
+
+        TimeTreeNode leftChild = parentNode.getLeft();
+        leftChild.setBranchRate(0.2);
+        TimeTreeNode rightChild = parentNode.getRight();
+        rightChild.setBranchRate(0.2);
+
+
+        double expectRate = (0.5*parentNode.getBranchDuration() + 0.2*rightChild.getBranchDuration())/(parentNode.getBranchDuration() + rightChild.getBranchDuration());
+
+        parentNode.removeChild(leftChild);
+        SubsampledTree.averageBranchRate(rightChild,parentNode);
+
+        assertEquals(expectRate, rightChild.getBranchRate());
+
     }
 }
