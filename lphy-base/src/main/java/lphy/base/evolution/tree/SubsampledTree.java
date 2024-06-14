@@ -13,7 +13,7 @@ import java.util.*;
 
 public class SubsampledTree extends ParametricDistribution<TimeTree> {
     Value<TimeTree> tree;
-    Value<String[][]> taxaName;
+    Value<Object[][]> taxaName;
     Value<Double[]> sampleFraction;
 
     public static final String taxaParamName = EvolutionConstants.taxaParamName;
@@ -22,13 +22,20 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
 
     public SubsampledTree(
             @ParameterInfo(name = treeParamName, narrativeName = "full tree", description = "the full tree to extract taxa from.") Value<TimeTree> tree,
-            @ParameterInfo(name = taxaParamName, narrativeName = "taxa names", description = "the taxa name arrays that the function would sample") Value<String[][]> taxaName,
+            @ParameterInfo(name = taxaParamName, narrativeName = "taxa names", description = "the taxa name arrays that the function would sample") Value<Object[][]> taxaName,
             @ParameterInfo(name = sampleFractionParamName, narrativeName = "fraction of sampling", description = "the fractions that the function sample in the taxa") Value<Double[]> sampleFraction){
         if (tree == null) throw new IllegalArgumentException("The original tree cannot be null");
         if (taxaName.value().length != sampleFraction.value().length) throw new IllegalArgumentException("The sample fraction number should be same as the number of taxa name arrays!");
         this.sampleFraction = sampleFraction;
         this.tree = tree;
         this.taxaName = taxaName;
+        if (taxaName.value() != null) {
+            for (Object taxa : taxaName.value()) {
+                if (!(taxa instanceof String[])) {
+                    throw new IllegalArgumentException("The taxa array should be names!");
+                }
+            }
+        }
     }
 
     @Override
@@ -39,7 +46,7 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
     @Override
     public RandomVariable<TimeTree> sample() {
         TimeTree tree = getTree().value();
-        String[][] taxaName = getTaxaName().value();
+        String[][] taxaName = (String[][]) getTaxaName().value();
         Double[] sampleFraction = getSampleFraction().value();
 
         int sampleNumber = 0;
@@ -163,7 +170,7 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
         return getParams().get(sampleFractionParamName);
     }
 
-    public Value<String[][]> getTaxaName(){
+    public Value<Object[][]> getTaxaName(){
         return getParams().get(taxaParamName);
     }
     @Override

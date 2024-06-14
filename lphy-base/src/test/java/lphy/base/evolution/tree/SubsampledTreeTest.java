@@ -34,7 +34,7 @@ public class SubsampledTreeTest {
         String[][] nameListValue = new String[2][nameList.value().length];
         nameListValue[0] = nameList.value();
         nameListValue[1] = nameList.value();
-        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        Value<Object[][]> nameListArray = new Value<>("nameListArray", nameListValue);
         SubsampledTree instance = new SubsampledTree(tree, nameListArray, fractionValue);
 
         String[] observe = instance.getSampleResult(fraction, name);
@@ -88,13 +88,11 @@ public class SubsampledTreeTest {
 
         Value<TimeTree> tree = new Value<>("timeTree", this.tree);
         Value<Double[]> fractionValue = new Value<>("fraction",fractionList);
-        Value<String[]> tumourNameList = new Value<>("tumourList", tumourNames);
-        Value<String[]> normalNameList = new Value<>("normalList",normalNames);
-        String[][] nameListValue = new String[2][tumourNameList.value().length+normalNameList.value().length];
-        nameListValue[0] = tumourNameList.value();
-        nameListValue[1] = normalNameList.value();
-        Value<String[][]> nameListArray = new Value<>("nameListArray", nameListValue);
-        SubsampledTree observe = new SubsampledTree(tree,nameListArray, fractionValue);
+        String[][] nameListValue = new String[2][tumourNames.length + normalNames.length];
+        nameListValue[0] = tumourNames;
+        nameListValue[1] = normalNames;
+        Value<Object[][]> nameListArray = new Value<>("nameListArray", nameListValue);
+        SubsampledTree observe = new SubsampledTree(tree, nameListArray, fractionValue);
         RandomVariable<TimeTree> observedTree = observe.sample();
 
         assertEquals(tumourNames.length*tumourFraction + normalNames.length*normalFraction , observedTree.value().getRoot().getAllLeafNodes().size() );
