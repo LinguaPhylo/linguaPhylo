@@ -55,6 +55,7 @@ public class TimeTreeNode {
         copy.index = index;
         copy.age = age;
         copy.leafIndex = leafIndex;
+        copy.metaData = metaData;
         for (TimeTreeNode child : children) {
             copy.addChild(child.deepCopy(tree));
         }
@@ -77,7 +78,7 @@ public class TimeTreeNode {
     }
 
     /**
-      * @return true if this node is a direct ancestor either because it has a single child (and not the origin) or because it is a leaf child attached to it's parent by a zero branch length
+     * @return true if this node is a direct ancestor either because it has a single child (and not the origin) or because it is a leaf child attached to it's parent by a zero branch length
      */
     public boolean isDirectAncestor() {
         return (isSingleChildNonOrigin()) || (isLeaf() && (getParent().age - age) <= zeroBranchLengthTolerance);
