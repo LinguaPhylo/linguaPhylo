@@ -27,8 +27,8 @@ public class ExpMarkovChain extends ParametricDistribution<Double[]> {
     private Value<Integer> n;
 
     public ExpMarkovChain(@ParameterInfo(name = initialMeanParamName, narrativeName = "initial mean",
-                                  description = "This is the mean of the exponential from which the first value of the chain is drawn.",
-                                  optional = true) Value<Double> initialMean,
+            description = "This is the mean of the exponential from which the first value of the chain is drawn.",
+            optional = true) Value<Double> initialMean,
                           @ParameterInfo(name = firstValueParamName,
                                   description = "This is the value of the 1st element of the chain (X[0]).",
                                   optional = true) Value<Double> firstValue,
@@ -109,27 +109,20 @@ public class ExpMarkovChain extends ParametricDistribution<Double[]> {
         }
     }
 
-    public void setInitialMean(Value<Double> initialMean) {
-        this.initialMean = initialMean;
+    //TODO cannot work with Number. Perhaps change to setParam
+    public void setInitialMean(double initialMean) {
+        this.initialMean.setValue(initialMean);
+        constructDistribution(random);
     }
 
-    public void setFirstValue(Value<Double> firstValue) {
-        this.firstValue = firstValue;
+    public void setFirstValue(double firstValue) {
+        this.firstValue.setValue(firstValue);
+        constructDistribution(random);
     }
 
-    public void setN(Value<Integer> n) {
-        this.n = n;
+    public void setN(int n) {
+        this.n.setValue(n);
+        constructDistribution(random);
     }
 
-    public Value<Double> getInitialMean() {
-        return initialMean;
-    }
-
-    public Value<Double> getFirstValue() {
-        return firstValue;
-    }
-
-    public Value<Integer> getN() {
-        return n;
-    }
 }

@@ -5,4 +5,4 @@ T ~ BirthDeathSampling(diversification=diversification, turnover=turnover, rho=0
 sf ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
 er ~ Dirichlet(conc=[2.0, 4.0, 2.0, 2.0, 4.0, 2.0]);
 Q = gtr(freq=sf, rates=er); // construct the GTR instantaneous rate matrix
-D ~ PhyloCTMC(tree=T, Q=Q, mu=0.5, L=1000);
+D ~ PhyloCTMC(tree=T, Q=Q, mu=0.5, L=100);
