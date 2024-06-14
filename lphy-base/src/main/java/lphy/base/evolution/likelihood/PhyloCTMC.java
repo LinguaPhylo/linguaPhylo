@@ -40,7 +40,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
                      @ParameterInfo(name = AbstractPhyloCTMC.rootFreqParamName, verb = "are", narrativeName = "root frequencies", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
                      @ParameterInfo(name = QParamName, narrativeName= "instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
                      @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
-                     @ParameterInfo(name = AbstractPhyloCTMC.branchRatesParamName, description = "a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
+                     @ParameterInfo(name = AbstractPhyloCTMC.branchRatesParamName, description = "a rate for each branch in the tree. Original branch rates are used if rates not given. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
                      @ParameterInfo(name = AbstractPhyloCTMC.LParamName, narrativeName= "alignment length",
                              description = "length of the alignment", optional = true) Value<Integer> L,
                      @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
@@ -111,7 +111,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
         else if (paramName.equals(siteRatesParamName)) siteRates = value;
         else if (paramName.equals(AbstractPhyloCTMC.branchRatesParamName)) branchRates = value;
         else if (paramName.equals(AbstractPhyloCTMC.LParamName)) L = value;
-//        else if (paramName.equals(stateNamesParamName)) stateNames = value;
+            //        else if (paramName.equals(stateNamesParamName)) stateNames = value;
         else if (paramName.equals(AbstractPhyloCTMC.dataTypeParamName)) dataType = value;
         else if (paramName.equals(AbstractPhyloCTMC.rootSeqParamName)) rootSeq = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
@@ -123,7 +123,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
             narrativeName = "phylogenetic continuous time Markov process",
             category = GeneratorCategory.PHYLO_LIKELIHOOD, examples = {"gtrGammaCoalescent.lphy", "errorModel1.lphy"},
             description = "The phylogenetic continuous-time Markov chain distribution. A sequence is simulated for every leaf node, and every direct ancestor node with an id." +
-            "(The sampling distribution that the phylogenetic likelihood is derived from.)")
+                    "(The sampling distribution that the phylogenetic likelihood is derived from.)")
     public RandomVariable<Alignment> sample() {
         setup();
 

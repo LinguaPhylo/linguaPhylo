@@ -5,7 +5,6 @@ import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
 import lphy.core.simulator.RandomUtils;
@@ -48,15 +47,11 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     protected Value<Double[]> rootFreqs;
     protected SortedMap<String, Integer> idMap = new TreeMap<>();
     protected double[][] transProb;
-    /**
-     * <code>e^{Qt} = Ee^{At}E^-1</code>, where A is a diagonal matrix of eigenvalues (Eval),
-     * E is the matrix of right eigenvectors (Evec), and E^-1 is the matrix of left eigenvectors (Ievc).
-     */
     private EigenDecomposition decomposition;
-    private double[][] Ievc; // inverse Eigen vectors
-    private double[][] Evec; // Eigen vectors
-    private double[][] iexp; // intermediate matrix
-    private double[] Eval; // Eigenvalues
+    private double[][] Ievc;
+    private double[][] Evec;
+    private double[][] iexp;
+    private double[] Eval;
 
 
     public AbstractPhyloCTMC(Value<TimeTree> tree, Value<Number> clockRate, Value<Double[]> freq,
@@ -71,15 +66,11 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         this.random = RandomUtils.getRandom();
 
         Double[] treeBranchRates = tree.value().getBranchRates();
-
-        if (treeBranchRates != null && treeBranchRates.length > 0) {
-            if (this.branchRates != null) { // have branchRates from input but tree also has branch rates
-                LoggerUtils.log.warning("PhyloCTMC has branchRates from input parameter and tree has branch rates, " +
-                        "default to using input parameter branchRates.");
-            } else { // if tree has branch rates, then use them
-                this.branchRates = new Value<>("branchRates", treeBranchRates);
-            }
+        // if tree has branch rates, then use them
+        if (branchRates == null && treeBranchRates != null && treeBranchRates.length > 0) {
+            this.branchRates = new Value<>("branchRates", treeBranchRates);
         }
+
         //        checkCompatibilities();
     }
 
