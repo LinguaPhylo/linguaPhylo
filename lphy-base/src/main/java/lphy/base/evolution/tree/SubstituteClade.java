@@ -5,16 +5,12 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 public class SubstituteClade extends DeterministicFunction<TimeTree> {
-    Value<TimeTree> baseTree;
-    Value<TimeTree> cladeTree;
-    Value<Double> time;
-    Value<TimeTreeNode> node;
-    Value<String> nodeLabel;
+    //    Value<TimeTree> baseTree;
+    //    Value<TimeTree> cladeTree;
+    //    Value<Double> time;
+    //    Value<TimeTreeNode> node;
+    //    Value<String> nodeLabel;
     public static final String baseTreeName = "baseTree";
     public static final String cladeTreeName = "cladeTree";
     public static final String nodeName = "node";
@@ -23,7 +19,7 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
 
     public SubstituteClade(@ParameterInfo(name = baseTreeName, description = "the tree that we are going to add another tree onto.") Value<TimeTree> baseTree,
                            @ParameterInfo(name = cladeTreeName, description = "the tree that we are going to add it on the base tree") Value<TimeTree> cladeTree,
-                           @ParameterInfo(name = nodeName, description = "the node with the branch that the branch tree would be add on to.") Value<TimeTreeNode> node,
+                           @ParameterInfo(name = nodeName, narrativeName = "node under the branch for attachment", description = "the node with the branch that the branch tree would be add on to.") Value<TimeTreeNode> node,
                            @ParameterInfo(name = mutationHappenTimeName, description = "the mutation happen time that the branch tree would be add onto the base tree", optional = true) Value<Double> time,
                            @ParameterInfo(name = nodeLabelName, description = "the name of added branch node.") Value<String> nodeLabel) {
         if (baseTree == null) throw new IllegalArgumentException("The base tree cannot be null!");
@@ -34,16 +30,19 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         setParam(baseTreeName, baseTree);
         setParam(cladeTreeName, cladeTree);
         setParam(nodeName, node);
-        setParam(mutationHappenTimeName, time);
+        // for optional, it must check if not null, then setParam
+        if (time != null)
+            setParam(mutationHappenTimeName, time);
         setParam(nodeLabelName,nodeLabel);
-        this.baseTree = baseTree;
-        this.cladeTree = cladeTree;
-        this.node = node;
-        this.nodeLabel = nodeLabel;
-        this.time = time;
+        //        this.baseTree = baseTree;
+        //        this.cladeTree = cladeTree;
+        //        this.node = node;
+        //        this.nodeLabel = nodeLabel;
+        //        this.time = time;
     }
 
-    @GeneratorInfo(name = "substituteClade", description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
+    @GeneratorInfo(name = "substituteClade", examples = {"substituteClade.lphy"},
+            description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
     @Override
     public Value<TimeTree> apply() {
         // get parameters
@@ -94,16 +93,16 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         return new Value<>(null, newTree, this);
     }
 
-    @Override
-    public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
-        if (baseTree != null) map.put(baseTreeName, baseTree);
-        if (cladeTree != null) map.put(cladeTreeName, cladeTree);
-        if (node != null) map.put(nodeName, node);
-        if (time != null) map.put(mutationHappenTimeName, time);
-        if (nodeLabelName != null) map.put(nodeLabelName, nodeLabel);
-        return map;
-    }
+    //    @Override
+    //    public Map<String, Value> getParams() {
+    //        SortedMap<String, Value> map = new TreeMap<>();
+    //        if (baseTree != null) map.put(baseTreeName, baseTree);
+    //        if (cladeTree != null) map.put(cladeTreeName, cladeTree);
+    //        if (node != null) map.put(nodeName, node);
+    //        if (time != null) map.put(mutationHappenTimeName, time);
+    //        if (nodeLabelName != null) map.put(nodeLabelName, nodeLabel);
+    //        return map;
+    //    }
     public Value<TimeTree> getBaseTree() {
         return getParams().get(baseTreeName);
     }
