@@ -57,7 +57,7 @@ public abstract class Abstract2DEditor extends JPanel {
         int maxHeight = preferredElementSize.height * rowCount + GAP * (rowCount + 1);
 
         setMaximumSize(new Dimension(maxWidth, maxHeight));
-        System.out.println("Max size = " + maxWidth + ", " + maxHeight);
+        //        LoggerUtils.log.fine("Max size = " + maxWidth + ", " + maxHeight);
 
     }
 

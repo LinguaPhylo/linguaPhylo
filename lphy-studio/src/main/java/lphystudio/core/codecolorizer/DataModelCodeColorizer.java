@@ -1,6 +1,7 @@
 package lphystudio.core.codecolorizer;
 
 
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserAction;
@@ -195,10 +196,10 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
             TextElement textElement = (TextElement)visit(ctx.getChild(0));
             for (int i = 1; i < ctx.getChildCount(); i++) {
                 TextElement element = (TextElement)visit(ctx.getChild(i));
-                 if (element != null) {
-                     textElement.add(new TextElement(",", punctuationStyle));
-                     textElement.add(element);
-                 }
+                if (element != null) {
+                    textElement.add(new TextElement(",", punctuationStyle));
+                    textElement.add(element);
+                }
             }
             return textElement;
         }
@@ -393,9 +394,9 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
         @Override
         public Object visitMethodCall(MethodCallContext ctx) {
 
-//            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
-//            TextElement e = var.getTextElement(parser, context);
-//            String methodName = ctx.children.get(2).getText();
+            //            lphystudio.core.codecolorizer.Var var = (Var)visit(ctx.getChild(0));
+            //            TextElement e = var.getTextElement(parser, context);
+            //            String methodName = ctx.children.get(2).getText();
 
             String objectName = ctx.children.get(0).getText();
             String methodName = ctx.children.get(2).getText();
@@ -433,7 +434,7 @@ public class DataModelCodeColorizer extends LPhyBaseListener implements CodeColo
 
     public Object parse(String CASentence) {
 
-        System.out.println("Parsing " + CASentence + " in code colouriser");
+        LoggerUtils.log.fine("Parsing " + CASentence + " in code colouriser");
 
         // Traverse parse tree
         AbstractParseTreeVisitor visitor = new DataModelASTVisitor();
