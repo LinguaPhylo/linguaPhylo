@@ -5,6 +5,7 @@ import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
 import lphy.core.simulator.RandomUtils;
@@ -66,11 +67,15 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         this.random = RandomUtils.getRandom();
 
         Double[] treeBranchRates = tree.value().getBranchRates();
-        // if tree has branch rates, then use them
-        if (branchRates == null && treeBranchRates != null && treeBranchRates.length > 0) {
-            this.branchRates = new Value<>("branchRates", treeBranchRates);
-        }
 
+        if (treeBranchRates != null && treeBranchRates.length > 0) {
+            if (this.branchRates != null) { // have branchRates from input but tree also has branch rates
+                LoggerUtils.log.warning("PhyloCTMC has branchRates from input parameter and tree has branch rates, " +
+                        "default to using input parameter branchRates.");
+            } else { // if tree has branch rates, then use them
+                this.branchRates = new Value<>("branchRates", treeBranchRates);
+            }
+        }
         //        checkCompatibilities();
     }
 
