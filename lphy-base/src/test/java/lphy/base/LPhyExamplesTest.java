@@ -45,11 +45,11 @@ public class LPhyExamplesTest {
         List<String> ignoreFiles = Arrays.asList(
                 // TODO no problem in local, but github throw Exception :
                 //arraycopy: element type mismatch: can not cast one of the elements of java.lang.Object[] to the type of the destination array, java.lang.Double
-                "readDelim.lphy",
+                //                "readDelim.lphy",
                 // TODO random fail
-                "birthDeathOnRootAgeAndTaxa.lphy",
+                //                "birthDeathOnRootAgeAndTaxa.lphy",
                 //TODO Found no implementation for function simulate(lphy= ...
-                "jcCoal.lphy",
+                //                "jcCoal.lphy",
                 // TODO gradle test bug : Cannot find the sequence type  ! DNA
                 "covidDPG.lphy");
         //            String fileName = "hcv_coal_classic.lphy";
