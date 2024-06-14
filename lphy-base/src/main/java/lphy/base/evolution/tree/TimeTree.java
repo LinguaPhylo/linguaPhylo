@@ -132,18 +132,9 @@ public class TimeTree implements HasTaxa, MultiDimensional {
         } else {
             if (node.isLeaf()) {
                 builder.append(node.id);
-                SortedMap<String, Object> metaData = node.metaData;
-                if (metaData.size() > 0) {
-                    builder.append("[&");
-                    for (Map.Entry<String, Object> entry : metaData.entrySet()) {
-                        builder.append(entry.getKey());
-                        builder.append("=");
-                        builder.append(entry.getValue());
-                    }
-                    builder.append("]");
-                }
+                // update to handle more than one element in metaData
+                addMetaData(node, builder);
             } else {
-
                 builder.append("(");
                 List<TimeTreeNode> children = node.getChildren();
                 toNewick(children.get(0), builder, includeSingleChildNodes);
@@ -156,10 +147,32 @@ public class TimeTree implements HasTaxa, MultiDimensional {
             if (node.isRoot()) {
                 builder.append(":0.0;");
             } else {
+                if (!node.isLeaf()) {
+                    addMetaData(node, builder);
+                }
                 builder.append(":");
                 double branchLength = getBranchLength(node, includeSingleChildNodes);
                 builder.append(branchLength);
             }
+        }
+    }
+
+    private void addMetaData(TimeTreeNode node, StringBuilder builder){
+        SortedMap<String, Object> metaData = node.metaData;
+        int metaDataSize = metaData.entrySet().size();
+        if (metaData.size() > 0) { //if metaData exist then add them
+            builder.append("[&");
+            int count = 1 ;
+            for (Map.Entry<String, Object> entry : metaData.entrySet()) {
+                builder.append(entry.getKey());
+                builder.append("=");
+                builder.append(entry.getValue());
+                if (count < metaDataSize){// add comma if it's not the last element in metaData
+                    builder.append(",");
+                }
+                count++;
+            }
+            builder.append("]");
         }
     }
 
