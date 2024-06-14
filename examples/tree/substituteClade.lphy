@@ -1,0 +1,21 @@
+model{
+    // base tree
+    ψbase ~ Yule(lambda=0.25, n=100);
+
+    // sample a time for the root of clade tree
+    t ~ Uniform(lower = 5, upper = 8);
+
+    // clade tree
+    ψclade ~ Yule(lambda=0.5, n=100, rootAge=t);
+
+    // sample a branch in base tree at time t
+    node ~ SampleBranch(tree=ψbase, age=t);
+
+    // substitute the clade
+    nodeLabel = "cladeRoot";
+    ψ = substituteClade(baseTree=ψbase, cladeTree=ψclade, node=node, nodeLabel=nodeLabel);
+    cladeRoot = ψ.getLabeledNode(nodeLabel);
+
+    // apply local clock model on the tree and return a new tree with branch rates we expect
+    ψnew = localClock(tree=ψ, clades=[cladeRoot], cladeRates=[0.4], rootRate=0.2, includeStem=true);
+}
