@@ -72,7 +72,7 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
     }
 
     @GeneratorInfo(name = "CalibratedYule",
-            category = GeneratorCategory.BD_TREE,
+            category = GeneratorCategory.BD_TREE, examples = {"calibratedYule.lphy"},
             description = "The CalibratedYule method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.")
     @Override
     public RandomVariable<TimeTree> sample() {
@@ -141,7 +141,6 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         // get a certain lambda for Yule coalescent
         double lambda = (double) getBirthRate().value();
 
-        System.out.println("done initialising");
         // coalescent
         double t = 0.0;
 
@@ -174,7 +173,6 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
             } else coalesceNodes(activeNodes, t);
         }
 
-        System.out.println("done coalescent");
         // set root to construct the tree
         if (tree != null) {
             tree.setRoot(activeNodes.get(0), true);
@@ -191,8 +189,7 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
             }
         }
 
-        System.out.println("calibrated yule tree is " + tree);
-        return new RandomVariable<>(null, tree, this);
+        return new RandomVariable<>("calibratedYuleTree", tree, this);
     }
 
     /**
@@ -350,20 +347,17 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
     public Map<String, Value> getParams() {
         Map<String, Value> map = super.getParams();
         map.put(BirthDeathConstants.lambdaParamName, birthRate);
-        map.put(BirthDeathConstants.rootAgeParamName, rootAge);
         map.put(cladeMRCAAgeName, cladeMRCAAge);
         map.put(cladeTaxaName, cladeTaxaValue);
-        map.put(otherTaxaName,otherTaxa);
+        if (rootAge != null) map.put(BirthDeathConstants.rootAgeParamName, rootAge);
+        if (otherTaxa != null) map.put(otherTaxaName,otherTaxa);
         return map;
     }
 
     public void setParam(String paramName, Value value){
         if (paramName.equals(BirthDeathConstants.lambdaParamName)) birthRate = value;
         else if (paramName.equals(BirthDeathConstants.rootAgeParamName)) rootAge = value;
-        else if (paramName.equals(cladeTaxaName)) {
-            cladeTaxaValue = value;
-            constructCladeTaxa();
-        }
+        else if (paramName.equals(cladeTaxaName)) cladeTaxaValue = value;
         else if (paramName.equals(cladeMRCAAgeName)) cladeMRCAAge = value;
         else if (paramName.equals(otherTaxaName)) otherTaxa = value;
         else super.setParam(paramName, value);

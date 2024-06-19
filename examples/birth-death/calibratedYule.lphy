@@ -1,0 +1,6 @@
+λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+clade1TaxaNames = ["1","2","3"];
+clade2TaxaNames = ["1","2","3"];
+clade1MRCAAge ~ Uniform(lower=5, upper=8);
+clade2MRCAAge ~ Uniform(lower=5, upper=8);
+ψ ~ CalibratedYule(lambda=λ, n=16, cladeTaxa=[clade1TaxaNames,clade2TaxaNames], cladeMRCAAge=[clade1MRCAAge,clade2MRCAAge]);

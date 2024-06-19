@@ -59,7 +59,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
                 Multinomial.class,
                 // tree distribution
-                Yule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
+                Yule.class, CalibratedYule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
                 RhoSampleTree.class, FossilBirthDeathTree.class,
                 SimBDReverse.class, SimFBDAge.class, SimFossilsPoisson.class,
