@@ -171,7 +171,28 @@ publishing {
                 }
             }
         }
+    }
+    repositories {
+        // add sonatype snapshots repository
+        maven {
+//            name = "lphySnapshots"
+//            credentials {
+//                username = project.findProperty("ossrh.user") as String? ?: System.getenv("ossrh.user") ?: ""
+//                password = project.findProperty("ossrh.pswd") as String? ?: System.getenv("ossrh.pswd") ?: ""
+//            }
+            url=uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        }
+        mavenCentral()
+        // Managing plugin versions via pluginManagement in settings.gradle.kts
+//        mavenLocal() // only for testing
+    }
 
+    tasks.withType(JavaCompile::class.java) {
+        options.encoding = "UTF-8"
+    }
+
+    tasks.withType(Javadoc::class.java) {
+        options.encoding = "UTF-8"
     }
 }
 
