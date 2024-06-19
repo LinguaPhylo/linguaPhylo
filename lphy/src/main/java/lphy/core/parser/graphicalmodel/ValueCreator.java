@@ -59,7 +59,8 @@ public class ValueCreator {
         return new Value(null, value, generator);
     }
 
-    /**TODO does this handle List<T[]> ?
+    //TODO does this handle List<T[]> ?
+    /**
      * This is used to handle generic array, which has to be initiated as Object[].
      * @param arr2List   generic type
      * @param generator  a {@link DeterministicFunction}

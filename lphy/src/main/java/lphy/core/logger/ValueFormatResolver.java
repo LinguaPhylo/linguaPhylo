@@ -98,8 +98,7 @@ public class ValueFormatResolver {
      * @param valFmtCls  The class of {@link ValueFormatter}
      * @param value      {@link Value}
      * @param extraArgs  array of objects to be passed as extra arguments to the constructor call,
-     *                   besides valueId and value at the base constructor
-     *                   {@link ValueFormatter.Base(String, Object)}.
+     *                   besides valueId and value at the base constructor ValueFormatter.Base(String, Object).
      *                   E.g. boolean to check if the data is clamped.
      * @return    If the given {@link Value} is an array,
      *            return a list of {@link ArrayElementFormatter} or
