@@ -1,0 +1,11 @@
+# This is important for deploying service providers on the class path
+# https://docs.oracle.com/en/java/javase/20/docs/api/java.base/java/util/ServiceLoader.html
+# META-INF/services must be under src for Intellij
+# Class requires a public no-args constructor
+
+# the core uses hard core to register all internal Viewers,
+# but extensions need to declare what service interface the provider intends to use for new Viewers.
+# for example,  lphystudio.app.graphicalmodelpanel.viewer.???Viewer
+
+
+lphystudio.viewer.PopSizeFuncViewer
