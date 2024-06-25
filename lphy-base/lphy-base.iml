@@ -11,6 +11,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="lphy" exported="" />
-    <orderEntry type="library" exported="" name="lphy-base-lib" level="application" />
+    <orderEntry type="library" exported="" name="lphy-base-lib" level="project" />
   </component>
 </module>
