@@ -20,8 +20,8 @@ import static lphy.base.distribution.DistributionConstants.nParamName;
  */
 public class ExpMarkovChain extends ParametricDistribution<Double[]> {
 
-    private final static String initialMeanParamName = "initialMean";
-    private final static String firstValueParamName = "firstValue";
+    public final static String initialMeanParamName = "initialMean";
+    public final static String firstValueParamName = "firstValue";
     private Value<Double> initialMean;
     private Value<Double> firstValue;
     private Value<Integer> n;

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lphy-studio-lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lphy-studio/lib/jfreechart-1.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lphy-studio/lib/jlatexmath-1.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lphy-studio/lib/markdowngenerator-1.3.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
