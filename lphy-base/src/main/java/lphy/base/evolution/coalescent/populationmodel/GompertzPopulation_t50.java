@@ -1,6 +1,8 @@
 package lphy.base.evolution.coalescent.populationmodel;
 
 import lphy.base.evolution.coalescent.PopulationFunction;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.MethodInfo;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.math3.analysis.integration.RombergIntegrator;
@@ -57,6 +59,9 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         return tStar;
     }
 
+    @MethodInfo(description = "Get the initial population size N0", category = GeneratorCategory.COAL_TREE,
+            examples = {" gompertzCoalescent_t50.lphy"}
+    )
     public double getN0() {
         return this.N0;
     }
@@ -74,11 +79,16 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         this.b = b;
         this.t50 = t50;
         this.NInfinity = NInfinity;
+        this.N0 = calculateN0(t50, b, NInfinity);
+    }
+
+    public static double calculateN0(double t50, double b, double NInfinity) {
         // Calculate N0 based on t50, b, and NInfinity
         // N(t50) = NInfinity / 2
         // t50 is a time location given by the user, t50 < 0 means it is in the early exponential phase
-        this.N0 = NInfinity * Math.pow(2, -Math.exp(-b * this.t50));
+        return NInfinity * Math.pow(2, -Math.exp(-b * t50));
     }
+
 
     @Override  // For t50
     public double getTheta(double t) {
