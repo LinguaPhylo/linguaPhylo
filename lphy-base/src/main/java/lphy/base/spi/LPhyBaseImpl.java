@@ -109,7 +109,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Get.class, Select.class, Split.class, ParseInt.class, Rep.class, RepArray.class,  //Copy.class,
                 ConcatArray.class, Concat2Str.class,
                 // Population function
-                GompertzPopulationFunction_f0.class, GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class, LogisticPopulationFunction.class, ConstantPopulationFunction.class
+                StochasticVariableSelection.class, GompertzPopulationFunction_f0.class, GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class, LogisticPopulationFunction.class, ConstantPopulationFunction.class
 
         );
 
