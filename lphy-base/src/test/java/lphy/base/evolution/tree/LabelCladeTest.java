@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LabelCladeTest {
     String newickTree;
@@ -35,6 +36,7 @@ public class LabelCladeTest {
         // check label
         assertEquals(label, observe.getRoot().getMetaData("label"));
         assertEquals(observe.getRoot(), observe.getLabeledNode(label));
+        assertNull(observe.getRoot().getId());
     }
 
     @Test

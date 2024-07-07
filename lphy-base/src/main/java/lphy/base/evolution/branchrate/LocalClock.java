@@ -9,7 +9,7 @@ import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.Arrays;
 
-public class LocalClock extends DeterministicFunction<TimeTree> {
+public class LocalClock extends DeterministicFunction<Double[]> {
     public static final String treeName = "tree";
     public static final String cladeArrayName = "clades";
     public static final String cladeRateArrayName = "cladeRates";
@@ -52,7 +52,7 @@ public class LocalClock extends DeterministicFunction<TimeTree> {
             "branch rates. The order of elements in clades and cladeRates array should match. The clades" +
             " should not be overlapped with each other.")
     @Override
-    public Value<TimeTree> apply() {
+    public Value<Double[]> apply() {
         // get parameters
         TimeTree originalTree = getTree().value();
         Object[] clades = getClades().value();
@@ -83,8 +83,10 @@ public class LocalClock extends DeterministicFunction<TimeTree> {
             }
         }
 
+        Double[] branchRates = tree.getBranchRates();
+
         // return to the tree with branch rates
-        return new Value<>(null, tree, this);
+        return new Value<>(null, branchRates, this);
     }
 
     // public for unit test
