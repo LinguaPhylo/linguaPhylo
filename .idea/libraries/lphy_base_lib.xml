@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="lphy-base-lib">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lphy-base/lib/jebl-3.1.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

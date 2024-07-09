@@ -1,0 +1,29 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.linguaphylo</groupId>
+        <artifactId>linguaphylo</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
+    </parent>
+
+<!--    <groupId>io.github.linguaphylo</groupId>-->
+    <artifactId>lphy-base</artifactId>
+<!--    <version>1.6.0-SNAPSHOT</version>-->
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.linguaphylo</groupId>
+            <artifactId>lphy</artifactId>
+            <version>1.6.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.linguaphylo</groupId>
+            <artifactId>jebl</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
