@@ -12,6 +12,9 @@ manuscript/**/*.lot
 manuscript/*.pdf
 manuscript/**/*.pyg
 manuscript/manuscript_diff*.tex
+
+# IntelliJ
+.idea
 *.iml
 
 # output files
