@@ -87,19 +87,19 @@ public class LPhyExamplesTest {
             List<Value> res1 = GraphicalModelUtils.getAllValuesFromSinks(lPhyMetaParser);
             final int nAllVal = res1.size();
             Sampler sampler = new Sampler(lPhyMetaParser);
-            for (int i = 0; i < 2; i++) {
+            for (long seed : seeds) {
                 try {
                     List<Value> res;
                     // to avoid memory issue of random sampling BD trees
                     if (exampleDir.getPath().endsWith("birth-death"))
-                        res = sampler.sample(seeds[i]); // only for birth death
+                        res = sampler.sample(seed); // only for birth death
                     else
                         res = sampler.sample(null); // random seed
 
                     assertEquals(nAllVal, res.size(), "Resample " + fileName +
                             ", but the returned values ");
                 } catch (Exception e) {
-                    if (! failedBySample.contains(fileName)) failedBySample.add(fileName);
+                    if (!failedBySample.contains(fileName)) failedBySample.add(fileName);
                     // Display in stdout
                     System.out.println("Err: example " + fileName + " failed during re-sampling !!! \n");
                     e.printStackTrace();
