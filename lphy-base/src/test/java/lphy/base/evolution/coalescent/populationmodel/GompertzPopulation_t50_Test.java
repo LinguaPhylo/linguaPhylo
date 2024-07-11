@@ -10,13 +10,13 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 public class GompertzPopulation_t50_Test {
 
     private static final double DELTA = 1e-6;
-    private GompertzPopulation_t50 gompertzPopulation_t50;
+    double NInfinity = 1000;  // Example carrying capacity
+    double t50 = 10.0;  // Example t50 value
+    double b = 0.1;     // Example growth rate
+    GompertzPopulation_t50 gompertzPopulation_t50;
 
     @BeforeEach
     public void setUp() {
-        double t50 = 10.0;
-        double b = 0.1;
-        double NInfinity = 1000;
         gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
     }
 
@@ -24,8 +24,6 @@ public class GompertzPopulation_t50_Test {
     public void testGetTheta() {
         double t = gompertzPopulation_t50.getTimeForGivenProportion(0.5);
         double N0 = gompertzPopulation_t50.getN0();
-        double NInfinity = 1000;
-  //      double b = 0.1;
 
         double expectedTheta = NInfinity / 2;
         double actualTheta = gompertzPopulation_t50.getTheta(t);
@@ -34,12 +32,6 @@ public class GompertzPopulation_t50_Test {
 
     @Test
     public void testGetThetaAtT50() {
-        double t50 = 10.0;  // Example t50 value
-        double b = 0.1;     // Example growth rate
-        double NInfinity = 1000;  // Example carrying capacity
-
-        GompertzPopulation_t50 gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
-
         double expectedTheta = NInfinity / 2;
         double actualTheta = gompertzPopulation_t50.getTheta(t50);
         assertEquals(expectedTheta, actualTheta, DELTA);
@@ -69,7 +61,6 @@ public class GompertzPopulation_t50_Test {
     @Test
     public void testInverseIntensity() {
         double targetIntensity = 0.309539;
-
 
         double calculatedTime = gompertzPopulation_t50.getInverseIntensity(targetIntensity);
         double calculatedIntensityAtCalculatedTime = gompertzPopulation_t50.getIntensity(calculatedTime);
