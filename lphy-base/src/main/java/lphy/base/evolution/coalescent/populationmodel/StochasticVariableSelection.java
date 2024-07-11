@@ -34,7 +34,7 @@ public class StochasticVariableSelection extends DeterministicFunction<Populatio
         Object selectedModel = models[indicator];
 
         if (selectedModel instanceof PopulationFunction populationFunction)
-        return new Value<>(populationFunction, this);
+            return new Value<>(populationFunction, this);
         else
             throw new IllegalArgumentException("to do");
     }
