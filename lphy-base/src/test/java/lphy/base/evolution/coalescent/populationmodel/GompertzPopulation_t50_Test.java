@@ -10,15 +10,17 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 public class GompertzPopulation_t50_Test {
 
     private static final double DELTA = 1e-6;
-    double NInfinity = 1000;  // Example carrying capacity
-    double t50 = 10.0;  // Example t50 value
-    double b = 0.1;     // Example growth rate
-    GompertzPopulation_t50 gompertzPopulation_t50;
+    final double NInfinity = 1000;  // Example carrying capacity
+    final double t50 = 10.0;  // Example t50 value
+    final double b = 0.1;     // Example growth rate
 
-    @BeforeEach
-    public void setUp() {
-        gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
-    }
+    GompertzPopulation_t50 gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
+
+    //TODO why it only fails in github action ?
+//    @BeforeEach
+//    public void setUp() {
+//        gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
+//    }
 
     @Test
     public void testGetTheta() {
