@@ -1,13 +1,12 @@
 package lphy.base.evolution.coalescent.populationmodel;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
+import org.junit.jupiter.api.Test;
 
-public class GompertzPopulation_t50_Test {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class GompertzPopulationt50Test {
 
     private static final double DELTA = 1e-6;
     final double NInfinity = 1000;  // Example carrying capacity
