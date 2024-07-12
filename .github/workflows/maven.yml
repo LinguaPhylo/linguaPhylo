@@ -26,7 +26,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          #cache: maven
+          cache: maven
       - name: Clean
         run: mvn clean
         # -B,--batch-mode   Run in non-interactive (batch) mode (disables output color)
