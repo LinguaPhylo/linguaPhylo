@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GompertzPopulationt50Test {
+public class GompertzPopulationT50Test {
 
     private static final double DELTA = 1e-6;
     final double NInfinity = 1000;  // Example carrying capacity
