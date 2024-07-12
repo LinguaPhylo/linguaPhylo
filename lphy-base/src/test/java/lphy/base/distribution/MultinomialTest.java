@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MultinormalTest {
+public class MultinomialTest {
 
     public double DELTA_MEAN = 1.0;
     public double DELTA_VARIANCE = 1000.0;
@@ -52,9 +52,11 @@ public class MultinormalTest {
         for (int i = 0; i < k; i++) {
             Mean mean = new Mean();
             double observedMean = mean.evaluate(results[i], 0, nReplicates);
+            System.out.println(observedMean);
             assertEquals(expectedMean[i], observedMean, DELTA_MEAN);
             Variance variance = new Variance();
             double observedVariance = variance.evaluate(results[i], 0, nReplicates);
+            System.out.println(observedVariance);
             assertEquals(expectedVariance[i], observedVariance, DELTA_VARIANCE);
         }
 
@@ -81,8 +83,12 @@ public class MultinormalTest {
             Mean mean2 = new Mean();
             double observedMean2 = mean2.evaluate(results2[i], 0, nReplicates);
             assertEquals(expectedMean2[i], observedMean2, DELTA_MEAN);
+            System.out.println(observedMean2);
+
             Variance variance2 = new Variance();
             double observedVariance2 = variance2.evaluate(results2[i], 0, nReplicates);
+            System.out.println(observedVariance2);
+
             assertEquals(expectedVariance2[i], observedVariance2, DELTA_VARIANCE);
         }
     }
