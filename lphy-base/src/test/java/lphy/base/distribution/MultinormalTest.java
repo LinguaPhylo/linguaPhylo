@@ -1,8 +1,10 @@
 package lphy.base.distribution;
 
 import lphy.core.model.Value;
+import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +13,11 @@ public class MultinormalTest {
 
     public double DELTA_MEAN = 1.0;
     public double DELTA_VARIANCE = 1000.0;
+
+    @BeforeEach
+    void setUp() {
+        RandomUtils.setSeed(777);
+    }
 
     /**
      * testing Multinomial moments
@@ -46,17 +53,10 @@ public class MultinormalTest {
             Mean mean = new Mean();
             double observedMean = mean.evaluate(results[i], 0, nReplicates);
             assertEquals(expectedMean[i], observedMean, DELTA_MEAN);
-//            System.out.println("expectedMean: " + expectedMean[i] + ", expectedVariance: " + expectedVariance[i]);
-//            System.out.println("mean = " + observedMean);
             Variance variance = new Variance();
             double observedVariance = variance.evaluate(results[i], 0, nReplicates);
-//            System.out.println("var = " + observedVariance);
             assertEquals(expectedVariance[i], observedVariance, DELTA_VARIANCE);
         }
-
-
-
-
 
         Double[] prob2 = {0.3, 0.2, 0.2, 0.3};
         Value<Integer> n2 = new Value<>("n", 1000);
@@ -81,22 +81,10 @@ public class MultinormalTest {
             Mean mean2 = new Mean();
             double observedMean2 = mean2.evaluate(results2[i], 0, nReplicates);
             assertEquals(expectedMean2[i], observedMean2, DELTA_MEAN);
-            //System.out.println("expectedMean: " + expectedMean2[i] + ", expectedVariance: " + expectedVariance2[i]);
-            //System.out.println("mean = " + observedMean2);
             Variance variance2 = new Variance();
             double observedVariance2 = variance2.evaluate(results2[i], 0, nReplicates);
-            //System.out.println("var = " + observedVariance2);
             assertEquals(expectedVariance2[i], observedVariance2, DELTA_VARIANCE);
         }
-
-
-
-        result = multinomial.sample();
-        System.out.println(result);
-
-
-
-
     }
 
 }
