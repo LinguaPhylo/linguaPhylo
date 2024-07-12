@@ -52,11 +52,11 @@ public class MultinomialTest {
         for (int i = 0; i < k; i++) {
             Mean mean = new Mean();
             double observedMean = mean.evaluate(results[i], 0, nReplicates);
-            System.out.println(observedMean);
             assertEquals(expectedMean[i], observedMean, DELTA_MEAN);
             Variance variance = new Variance();
             double observedVariance = variance.evaluate(results[i], 0, nReplicates);
-            System.out.println(observedVariance);
+//            System.out.println(observedMean);
+//            System.out.println(observedVariance);
             assertEquals(expectedVariance[i], observedVariance, DELTA_VARIANCE);
         }
 
@@ -83,12 +83,10 @@ public class MultinomialTest {
             Mean mean2 = new Mean();
             double observedMean2 = mean2.evaluate(results2[i], 0, nReplicates);
             assertEquals(expectedMean2[i], observedMean2, DELTA_MEAN);
-            System.out.println(observedMean2);
-
             Variance variance2 = new Variance();
             double observedVariance2 = variance2.evaluate(results2[i], 0, nReplicates);
-            System.out.println(observedVariance2);
-
+//            System.out.println(observedMean2);
+//            System.out.println(observedVariance2);
             assertEquals(expectedVariance2[i], observedVariance2, DELTA_VARIANCE);
         }
     }
