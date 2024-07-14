@@ -30,4 +30,8 @@ public class SVSPopulationFunction implements PopulationFunction {
         return model.isAnalytical();
     }
 
+
+    public PopulationFunction getModel() {
+        return model;
+    }
 }
