@@ -20,15 +20,21 @@ public class SVSFunction extends DeterministicFunction<PopulationFunction> {
     }
 
     @GeneratorInfo(name="stochasticVariableSelection", narrativeName = "Stochastic Variable Selection",
-            category = GeneratorCategory.COAL_TREE, examples = {" SVS.lphy" },
+            category = GeneratorCategory.COAL_TREE, examples = {"SVS.lphy"},
             description = "Models population using different growth models based on the indicator value.")
     @Override
     public Value<PopulationFunction> apply() {
         int indicator = ((Number) getParams().get(INDICATOR_PARAM_NAME).value()).intValue();
         Object[] modelObjs = (Object[]) getParams().get(MODELS_PARAM_NAME).value();
         PopulationFunction[] models = new PopulationFunction[modelObjs.length];
-        for (int i = 0; i < models.length; i++) {
-            models[i] = (PopulationFunction) modelObjs[i];
+
+        // Ensure all models are cast to PopulationFunction correctly
+        for (int i = 0; i < modelObjs.length; i++) {
+            if (modelObjs[i] instanceof PopulationFunction) {
+                models[i] = (PopulationFunction) modelObjs[i];
+            } else {
+                throw new IllegalArgumentException("Model at index " + i + " is not a PopulationFunction.");
+            }
         }
 
         if (indicator < 0 || indicator >= models.length) {
@@ -38,10 +44,7 @@ public class SVSFunction extends DeterministicFunction<PopulationFunction> {
         PopulationFunction selectedModelPopFunc = models[indicator];
         SVSPopulationFunction selectedModelSVS = new SVSPopulationFunction(selectedModelPopFunc);
 
-        //        if (selectedModel instanceof PopulationFunction populationFunction)
         return new Value<>(selectedModelSVS, this);
-        //        else
-        //            throw new IllegalArgumentException("to do");
     }
 
     public Value<Integer> getIndicator() {
