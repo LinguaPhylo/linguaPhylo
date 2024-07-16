@@ -201,7 +201,7 @@ where the working directory must set to the parent folder of the "examples" fold
 This setting will make the studio to find the LPhy script, and list them into the "File" menu.  
 
 <a href="./figs/RunStudio.png"><img src="./figs/RunStudio.png" width="500" ></a>
-f
+
 
 ### Commit
 
