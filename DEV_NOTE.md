@@ -1,8 +1,9 @@
 # LPhy Developer Guide 101 
 
-The project is a Maven project. 
-Please follow the instruction to load the project as a Maven project into IntelliJ.
-The modules and their dependencies suppose to be automatically configured by IntelliJ.
+We set up the project as a Maven project, 
+but we do not use Maven to build project in IntelliJ.
+Please follow the instruction to load the project,
+and the modules and their dependencies will be automatically configured by IntelliJ.
 
 ## Setup development environment
 
@@ -128,11 +129,33 @@ Wait for IntelliJ to download all dependencies and make indexing, it normally ta
 After it is done (no progress bar appears on the bottom), your IntelliJ should have the Maven icon on the right side.
 Check if there is any red line under any Maven tasks, which is indicating a problem.
 
-If all good, then click the `Rebuild project` from the `Build` menu, and wait until it finishes.
-
 Once the project is successfully imported, it should look like:
 
 <a href="./figs/IntelliJLPhy.png"><img src="./figs/IntelliJLPhy.png" width="700" ></a>
+
+### Build project
+
+The final step is to build the Java project. Simply go to the menu "Build", 
+click the "Rebuild Project", and wait until the building process finishes.
+
+Please **do not** select "Delegate IDE build/run actions to Maven", it is unchecked as default.
+
+<a href="./figs/BuildMaven.png"><img src="./figs/BuildMaven.png" width="500" ></a>
+
+### Project settings
+
+After the project is imported, the project settings and modules will be automatically configured by IntelliJ.
+You can view them though [Project Structure](https://www.jetbrains.com/help/idea/project-settings-and-structure.html).
+Please keep the compiler output as the blank, so that we can use the Maven output directory named as "target",
+otherwise IntelliJ will produce an additional folder named as "out" for each module. 
+
+<a href="./figs/ProjectStructure.png"><img src="./figs/ProjectStructure.png" width="500" ></a>
+
+You can also click "Modules" to look at the dependencies. They are configured by "pom.xml".
+The nice thing is that you can simply recover or update the settings and dependencies by clicking the cycle icon, 
+called as ["Reload All Maven Projects"](https://www.jetbrains.com/help/idea/delegate-build-and-run-actions-to-maven.html#maven_reimport), 
+in the Maven windows on the right side, 
+when either they are changed accidentally or updated by core developers.
 
 ### If you had LPhy previously in IntelliJ
 
@@ -150,62 +173,47 @@ you can follow the following steps:
 3. [Clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html)
    by selecting all options.
 
-4. Repeat the process in [the above section](#First-time).
+4. Repeat the process in [the "First time" section](#First-time).
 
-### Project settings
+## Working inside IntelliJ
 
+We use "pom.xml" to configure the project,
+but we do not use Maven instead use IntelliJ to build/run/debug the project.
 
+### Standard directory layout
 
+Please understand the [standard directory layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) 
+of Maven project before you continue.
 
-### Working inside IntelliJ
-
-
-
-### Dependencies
-
-
-
+### Build
 
 
-## Release procedure
 
-1. Make sure all versions not containing the postfix "SNAPSHOT".
-Run `./gradlew clean build --no-build-cache`, which will run all unit tests as well.
-In the end, it creates a Zip file `lphy-studio-1.x.x.zip` in `$PROJECT_DIR/lphy-studio/distributions`.
+### Run 
 
-2. Run the task `lphyDoc` to generate LPhy docs.
-The output will be in the directory [$PROJECT_DIR/lphy/doc](lphy/doc) as default.  
 
-For the extension developer, you need to change the script to set the arguments
-passed main method in your lphyDoc from `setArgs(listOf("$version"))`
-into `setArgs(listOf("$version", "$EXT_NAME", "$CLS_NAME"))`,
-where $EXT_NAME is your extension name appeared in the doc title,
-and $CLS_NAME is the full class name with package that implements LPhyExtension,
-such as phylonco.lphy.spi.Phylonco in the Phylonco extension.
+### Debug
 
-3. Create a pre-release in Github, and upload the Zip file.
-In addition, if you do not publish the jars to the Maven central repository,
-you need to provide the jar file and its source jar in the release. 
 
-4. Run `./gradlew publish --info -P...` to publish to the Maven central repository. 
-Please note: once published, you will not be able to remove/update/modify the jar.
+### Test
 
-5. Follow the [instruction](https://central.sonatype.org/publish/release/)
-of the releasing deployment to complete publishing at https://s01.oss.sonatype.org/.
 
-For snapshots, check https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/linguaphylo/.
-For releases, check https://s01.oss.sonatype.org/content/repositories/releases/io/github/linguaphylo/.
+### Commit
 
-### Tips:
 
-- After final release, it is a good behavior to instantly update your versions
-  in the build files into the next version with the postfix "SNAPSHOT".
-- After release, the version will immediately appear in the s01.oss,
-  but it will take one/two days to synchronise to [Maven Central Repository](https://central.sonatype.com).
-  For example, https://repo.maven.apache.org/maven2/io/github/linguaphylo/.
+## Developer tips
+
+1. Check what you are going to commit before you actually commit.
+
+
+
+2. Always `git pull` before `git commit`.
+
+
 
 ## Useful Links
 
-- [LPhyBEAST developer note](https://github.com/LinguaPhylo/LPhyBeast/blob/master/DEV_NOTE.md)
+- [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
-- [Maven linguaphylo group](https://search.maven.org/search?q=io.github.linguaphylo)
+- [Advanced developer guide]()
+
