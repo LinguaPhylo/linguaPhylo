@@ -32,7 +32,7 @@ git clone https://github.com/LinguaPhylo/linguaPhylo.git
 
 More projects are using this as a core, such as: 
 
--[LPhyBeast](https://github.com/LinguaPhylo/LPhyBeast)
+- [LPhyBeast](https://github.com/LinguaPhylo/LPhyBeast)
 - [Phylonco](https://github.com/bioDS/beast-phylonco)
 - [LPhyBeastExt](https://github.com/LinguaPhylo/LPhyBeastExt)
 - [ToroidalDiffusion](https://github.com/alexeid/toroidalDiffusion)
