@@ -19,6 +19,8 @@ java -version
 git -v
 ```
 
+Here is a simple [tutorial](https://www.w3schools.com/git/).
+
 3. Install the latest version of [IntelliJ](https://www.jetbrains.com/idea/download/)
 
 4. Clone the project from GitHub:
@@ -27,12 +29,14 @@ git -v
 git clone https://github.com/LinguaPhylo/linguaPhylo.git
 ```
 
-**Please note** all LPhy related projects must be stored as sister folders
-inside one parent folder.  
-In addition, please keep the original folder name when the project is cloned, 
-otherwise the automatic configuration will be interrupted.
+More projects are using this as a core, such as: 
 
-5. (Optional) install Maven. For Mac, recommend to use Homebrew:
+-[LPhyBeast](https://github.com/LinguaPhylo/LPhyBeast)
+- [Phylonco](https://github.com/bioDS/beast-phylonco)
+- [LPhyBeastExt](https://github.com/LinguaPhylo/LPhyBeastExt)
+- [ToroidalDiffusion](https://github.com/alexeid/toroidalDiffusion)
+
+5. (Optional) install Maven if you want to use it in the terminal. For Mac, recommend to use Homebrew:
 
 ```bash
 brew install maven
@@ -41,6 +45,11 @@ brew install maven
 ## Folder structure
 
 Once you cloned the project, it will look like the following structure in your computer.
+
+**Please note** all LPhy related projects must be stored as sister folders
+inside one parent folder.  
+In addition, please keep the original folder name when the project is cloned,
+otherwise the automatic configuration will be interrupted.
 
 ```
 home.dir
@@ -67,59 +76,93 @@ home.dir
     └──...
 ```
 
+Some concepts:
 
-## Open as project
+- `home.dir` represents your [home directory](https://en.wikipedia.org/wiki/Home_directory), which is also known as `~` in Linux or Mac.
+- `WorkSpace` is the parent folder to keep all LPhy projects, which can be any names.
+- `linguaPhylo` is the project root directory for the linguaPhylo project.
+- `lphy`, `lphy-base`, and `lphy-studio` contains the tree modules defined in the linguaPhylo project.
+- `LPhyBeast` is the project root directory for the LPhyBeast project.
+
+Here is a tutorial for [Multi-module projects](https://www.jetbrains.com/guide/java/tutorials/marco-codes-maven/multi-module-projects/).
+
+## Maven project 
+
+Here are two tutorials for importing a Maven project to IntelliJ :
+
+- [Importing a Maven project](https://www.jetbrains.com/guide/java/tutorials/working-with-maven/importing-a-project/)
+- [Add Maven support to an existing project](https://www.jetbrains.com/help/idea/convert-a-regular-project-into-a-maven-project.html)
+
+**Please note** we provide the project settings in another directory called [IntelliJ](IntelliJ/.idea/). 
+After following the instruction below, you can simply load the project by selecting the directory not pom file. 
 
 ### First time
 
-We do not share the project settings, so that you need to copy the [setting](IntelliJ/.idea/) 
-into the project root directory in order to start the project at the first time.
+We do not share the project settings, so please **do not** change your git settings 
+to commit any IntelliJ project settings.
+For the first time to set up the project, you need to copy the [settings](IntelliJ/.idea/) 
+into the project root directory in order to start the project.
 
 Go to the project root directory, for example, `~/WorkSpace/linguaPhylo` in my Mac.
-Then use the 1st command to check if there `.idea/` exists. 
-Only use the 2nd command to delete the previous settings, when it exists.
+Use the 1st command to check if the hidden folder `.idea/` exists. 
+Only use the 2nd command to delete it, when it exists.
 
 ```bash
 ls -la 
 rm -r .idea/
 ```
 
-In the end, use the 1st command to copy the settings, and 2nd command line to check if it is done.
+Then, use the 1st command to copy the settings, and 2nd command line to check if it is done.
 
 ```bash
 cp -r ./IntelliJ/.idea/ .
 ls -la .idea/
 ```
 
+We recommend you to [clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html)
+by selecting all options before importing the project.
+Now you can start the IntelliJ, and click the `Open` button to select the project root directory.
+IntelliJ will open it as a Maven project (please go through the above tutorials if you are not familiar with this process).
+
+Wait for IntelliJ to download all dependencies and make indexing, it normally takes about one minute.
+After it is done (no progress bar appears on the bottom), your IntelliJ should have the Maven icon on the right side.
+Check if there is any red line under any Maven tasks, which is indicating a problem.
+
+If all good, then click the `Rebuild project` from the `Build` menu, and wait until it finishes.
+
+Once the project is successfully imported, it should look like:
+
+<a href="./figs/IntelliJLPhy.png"><img src="./figs/IntelliJLPhy.png" width="700" ></a>
 
 ### If you had LPhy previously in IntelliJ
 
+You can skip this section, if you are the first time to set up the project 
+or your project has been successfully imported following the instructions above. 
 
-1. Delete the existing project in IntelliJ.
+If you had any LPhy related projects previously (below version 1.6.*) in IntelliJ,
+or you have a problem during the importing,
+you can follow the following steps: 
+
+1. Delete all existing projects in IntelliJ.
+
+2. Delete all cloned LPhy projects, and clone a new copy again.  
+
+3. [Clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html)
+   by selecting all options.
+
+4. Repeat the process in [the above section](#First-time).
+
+### Project settings
 
 
-2. Reset the IntelliJ.  
+
+
+### Working inside IntelliJ
 
 
 
 ### Dependencies
 
-The LPhy project and its extensions use the Gradle [dependency configurations](https://docs.gradle.org/current/userguide/declaring_dependencies.html).
-IntelliJ provides nice GUI to [add and manage dependencies](https://www.jetbrains.com/help/idea/work-with-gradle-dependency-diagram.html)
-in your Gradle project.
-
-<a href="./GradleDependencies.png"><img src="GradleDependencies.png" width="800" ></a>
-
-Please see [an example of LPhy extension](https://linguaphylo.github.io/developer/dependencies/).
-
-When the dependencies are changed in the Gradle build, 
-you can simply click the "refresh" icon in the top right corner of IntelliJ.
-It will complete updates automatically.
-
-But to update a snapshot version, which you cannot change from the dependencies in the Gradle build,
-you have to click "Refresh Gradle Dependencies" to download the latest snapshot version from Maven repo.
-Then click the task `clean` and `build` sequentially to rebuild the project.
-See also [force updating all the snapshot Gradle dependencies in intelliJ](https://stackoverflow.com/questions/32652738/how-can-i-force-update-all-the-snapshot-gradle-dependencies-in-intellij).
 
 
 
