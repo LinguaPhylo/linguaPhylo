@@ -110,6 +110,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 ConcatArray.class, Concat2Str.class,
                 // Population function
                 SVSFunction.class,
+                SVSPopulationFunction.class,
                 GompertzPopulationFunction_f0.class,
                 GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class,
                 LogisticPopulationFunction.class, ConstantPopulationFunction.class
