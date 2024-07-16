@@ -140,7 +140,7 @@ click the "Rebuild Project", and wait until the building process finishes.
 
 Please **do not** select "Delegate IDE build/run actions to Maven", it is unchecked as default.
 
-<a href="./figs/BuildMaven.png"><img src="./figs/BuildMaven.png" width="500" ></a>
+<a href="./figs/BuildMaven.png"><img src="./figs/BuildMaven.png" width="400" ></a>
 
 ### Project settings
 
@@ -149,7 +149,7 @@ You can view them though [Project Structure](https://www.jetbrains.com/help/idea
 Please keep the compiler output as the blank, so that we can use the Maven output directory named as "target",
 otherwise IntelliJ will produce an additional folder named as "out" for each module. 
 
-<a href="./figs/ProjectStructure.png"><img src="./figs/ProjectStructure.png" width="500" ></a>
+<a href="./figs/ProjectStructure.png"><img src="./figs/ProjectStructure.png" width="400" ></a>
 
 You can also click "Modules" to look at the dependencies. They are configured by "pom.xml".
 The nice thing is that you can simply recover or update the settings and dependencies by clicking the cycle icon, 
@@ -187,16 +187,21 @@ of Maven project before you continue.
 
 ### Build
 
+Always use the IntelliJ to build/rebuild the project. 
+The technical detail is [here](https://www.jetbrains.com/help/idea/compiling-applications.html).
+Since we use Maven to automatically configure modules, 
+you do not need to worry about the settings required by the linked tutorial.
 
+### Run / Debug / Test
 
-### Run 
+Follow the tutorial [Run/debug configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) 
+to run your Java applications or unit tests from IntelliJ. 
+For example, the screenshot below defines a configuration to run LPhy studio from the linguaPhylo project, 
+where the working directory must set to the parent folder of the "examples" folder, which contains all LPhy scripts. 
+This setting will make the studio to find the LPhy script, and list them into the "File" menu.  
 
-
-### Debug
-
-
-### Test
-
+<a href="./figs/RunStudio.png"><img src="./figs/RunStudio.png" width="500" ></a>
+f
 
 ### Commit
 
