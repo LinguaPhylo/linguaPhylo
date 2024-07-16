@@ -7,10 +7,12 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
-public class SVSFunction extends DeterministicFunction<PopulationFunction> {
+public class SVSFunction extends DeterministicFunction<SVSPopulationFunction> {
 
     public static final String INDICATOR_PARAM_NAME = "indicator";
     public static final String MODELS_PARAM_NAME = "models";
+
+    private PopulationFunction[] models;
 
     public SVSFunction(
             @ParameterInfo(name = INDICATOR_PARAM_NAME, description = "The indicator for the population model.") Value<Integer> indicator,
@@ -23,10 +25,10 @@ public class SVSFunction extends DeterministicFunction<PopulationFunction> {
             category = GeneratorCategory.COAL_TREE, examples = {"SVS.lphy"},
             description = "Models population using different growth models based on the indicator value.")
     @Override
-    public Value<PopulationFunction> apply() {
+    public Value<SVSPopulationFunction> apply() {
         int indicator = ((Number) getParams().get(INDICATOR_PARAM_NAME).value()).intValue();
-        Object[] modelObjs = (Object[]) getParams().get(MODELS_PARAM_NAME).value();
-        PopulationFunction[] models = new PopulationFunction[modelObjs.length];
+         Object[] modelObjs = (Object[]) getParams().get(MODELS_PARAM_NAME).value();
+         models = new PopulationFunction[modelObjs.length];
 
         // Ensure all models are cast to PopulationFunction correctly
         for (int i = 0; i < modelObjs.length; i++) {
