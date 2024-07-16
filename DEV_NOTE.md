@@ -7,20 +7,20 @@ and the modules and their dependencies will be automatically configured by Intel
 
 ## Setup development environment
 
-1. Install [OpenJDK 17](https://jdk.java.net/17/), or Higher version. Try the following command line in your terminal 
+1. [Install OpenJDK 17](https://jdk.java.net/17/), or Higher version. Try the following command line in your terminal 
 to identify if you have a correct version of JDK.
 
 ```bash
 java -version
 ```
 
-2. Install [Git](https://github.com/git-guides/install-git) if you do not have it.
+2. [Install Git](https://github.com/git-guides/install-git) if you do not have it.
 
 ```bash
 git -v
 ```
 
-Here is a simple [tutorial](https://www.w3schools.com/git/).
+Here is a simple [tutorial for Git](https://www.w3schools.com/git/).
 
 3. Install the latest version of [IntelliJ](https://www.jetbrains.com/idea/download/)
 
