@@ -200,6 +200,17 @@ of Maven project before you continue.
 
 ### Commit
 
+It is recommended to use IntelliJ to commit your changes. 
+It provides a nice GUI, but you need to change the default settings for view option.
+First, open the "Commit" window, it is usually located on the left side or bottom toolbar.
+If you cannot find it, go to the menu "Git", and click the "Commit...".
+
+Then find the icon looking like an eye, which is called as "View Options", 
+and select all options three under "Group By", as shown below. 
+This makes the changes grouped by repository, directory and module.
+It helps you to identify what you have changed and what you suppose to commit.
+
+<a href="./figs/CommitView.png"><img src="./figs/CommitView.png" width="300" ></a>
 
 ## Developer tips
 
