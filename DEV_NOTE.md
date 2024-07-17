@@ -1,4 +1,4 @@
-# LPhy Developer Guide 101 
+# LPhy Developer Guide 101 (Development Environment)
 
 This is the first tutorial for LPhy developers. 
 It focuses on how to set up IntelliJ for the LPhy project and some basic skills for working with it.
@@ -47,12 +47,11 @@ brew install maven
 
 ## Folder structure
 
-Once you cloned the project, it will look like the following structure in your computer.
+Once you have cloned the project, it will appear in the following structure on your computer.
 
-**Please note** all LPhy related projects must be stored as sister folders
-inside one parent folder.  
-In addition, please keep the original folder name when the project is cloned,
-otherwise the automatic configuration will be interrupted.
+**Please note** all LPhy-related projects must be stored as sibling folders inside one parent folder. 
+Additionally, please keep the original folder name when cloning the project; 
+otherwise, the automatic configuration will be disrupted.
 
 ```
 home.dir
@@ -87,35 +86,31 @@ Some concepts:
 - `lphy`, `lphy-base`, and `lphy-studio` contains the tree modules defined in the linguaPhylo project.
 - `LPhyBeast` is the project root directory for the LPhyBeast project.
 
-Here is a tutorial for [Multi-module projects](https://www.jetbrains.com/guide/java/tutorials/marco-codes-maven/multi-module-projects/).
+Here is a tutorial for [Multi-module projects](https://www.jetbrains.com/guide/java/tutorials/marco-codes-maven/multi-module-projects/) for your interest.
 
-## Maven project 
+## Load as a Maven project in IntelliJ
 
-Here are two tutorials for importing a Maven project to IntelliJ :
-
-- [Importing a Maven project](https://www.jetbrains.com/guide/java/tutorials/working-with-maven/importing-a-project/)
-- [Add Maven support to an existing project](https://www.jetbrains.com/help/idea/convert-a-regular-project-into-a-maven-project.html)
-
-**Please note** we provide the project settings in another directory called [IntelliJ](IntelliJ/.idea/). 
-After following the instruction below, you can simply load the project by selecting the directory not pom file. 
-
-### First time
-
-We do not share the project settings, so please **do not** change your git settings 
+**Please note** we do not share the project settings, so please do **not** change your git settings
 to commit any IntelliJ project settings.
-For the first time to set up the project, you need to copy the [settings](IntelliJ/.idea/) 
-into the project root directory in order to start the project.
+However, we provide the project settings in another directory called [IntelliJ](IntelliJ/.idea/).
+After following the instruction below, 
+you can simply load the project by selecting the directory, not the pom file.
 
-Go to the project root directory, for example, `~/WorkSpace/linguaPhylo` in my Mac.
-Use the 1st command to check if the hidden folder `.idea/` exists. 
-Only use the 2nd command to delete it, when it exists.
+### First time to use
+
+For the initial setup of the project, you need to copy the [settings](IntelliJ/.idea/)
+into the project root directory to start the project.
+
+Navigate to the project root directory, for example, `~/WorkSpace/linguaPhylo` on my Mac. 
+Use the first command to check if the hidden folder `.idea/` exists. 
+Only use the second command to delete it if it exists.
 
 ```bash
 ls -la 
 rm -r .idea/
 ```
 
-Then, use the 1st command to copy the settings, and 2nd command line to check if it is done.
+Then, use the first command to copy the settings, and the second command to check if it is done.
 
 ```bash
 cp -r ./IntelliJ/.idea/ .
@@ -123,55 +118,57 @@ ls -la .idea/
 ```
 
 We recommend you to [clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html)
-by selecting all options before importing the project.
-Now you can start the IntelliJ, and click the `Open` button to select the project root directory.
-IntelliJ will open it as a Maven project (please go through the above tutorials if you are not familiar with this process).
+by selecting all options before importing the project. 
+Once cleared, start IntelliJ and click the `Open` button to select the project root directory. 
+IntelliJ will open it as a Maven project (please refer to "LPhy Developer Guide 103" if you are unfamiliar with this process).
 
-Wait for IntelliJ to download all dependencies and make indexing, it normally takes about one minute.
-After it is done (no progress bar appears on the bottom), your IntelliJ should have the Maven icon on the right side.
-Check if there is any red line under any Maven tasks, which is indicating a problem.
+Wait for IntelliJ to download all dependencies and complete indexing,
+this typically takes about one minute. 
+Once done (when no progress bar appears at the bottom), 
+you should see the Maven icon on the right side of IntelliJ. 
+Check for any red lines under any Maven tasks, as these indicate problems.
 
-Once the project is successfully imported, it should look like:
+Once the project is successfully imported, it should look like this:
 
 <a href="./figs/IntelliJLPhy.png"><img src="./figs/IntelliJLPhy.png" width="700" ></a>
 
 ### Build project
 
-The final step is to build the Java project. Simply go to the menu "Build", 
-click the "Rebuild Project", and wait until the building process finishes.
+The final step is to build the Java project. Simply go to the "Build" menu, 
+click "Rebuild Project," and wait until the building process finishes.
 
-Please **do not** select "Delegate IDE build/run actions to Maven", it is unchecked as default.
+Please do **not** select "Delegate IDE build/run actions to Maven", it is unchecked as default.
 
 <a href="./figs/BuildMaven.png"><img src="./figs/BuildMaven.png" width="400" ></a>
 
 ### Project settings
 
-After the project is imported, the project settings and modules will be automatically configured by IntelliJ.
-You can view them though [Project Structure](https://www.jetbrains.com/help/idea/project-settings-and-structure.html).
-Please keep the compiler output as the blank, so that we can use the Maven output directory named as "target",
-otherwise IntelliJ will produce an additional folder named as "out" for each module. 
+After the project is imported, IntelliJ will automatically configure the project settings and modules. 
+You can view these settings through [Project Structure](https://www.jetbrains.com/help/idea/project-settings-and-structure.html).
+Please leave the "compiler output" blank so that we can utilize the Maven output directory named "target." 
+Otherwise, IntelliJ will create an additional folder named "out" for each module.
 
 <a href="./figs/ProjectStructure.png"><img src="./figs/ProjectStructure.png" width="400" ></a>
 
-You can also click "Modules" to look at the dependencies. They are configured by "pom.xml".
+You can also click "Modules" to look at the dependencies. 
+They are configured by "pom.xml", and do **not** change them manually.
 
 ### Reload all Maven projects
 
-One nice thing is that you can simply recover or update the settings and dependencies by clicking the cycle icon, 
-called as ["Reload All Maven Projects"](https://www.jetbrains.com/help/idea/delegate-build-and-run-actions-to-maven.html#maven_reimport), 
-in the Maven windows on the right side, 
-when either they are changed accidentally or updated by core developers.
+One convenient feature is that you can easily recover or update the settings and dependencies by clicking the cycle icon, 
+known as ["Reload All Maven Projects"](https://www.jetbrains.com/help/idea/delegate-build-and-run-actions-to-maven.html#maven_reimport),
+located in the Maven window on the right side. 
+This is useful when settings have been changed accidentally or updated by core developers.
 
 <a href="./figs/ReloadMaven.png"><img src="./figs/ReloadMaven.png" width="200" ></a>
 
 ### If you had LPhy previously in IntelliJ
 
-You can skip this section, if you are the first time to set up the project 
-or your project has been successfully imported following the instructions above. 
+You can skip this section if you are setting up the project for the first time 
+or if your project has been successfully imported following the instructions above.
 
-If you had any LPhy related projects previously (below version 1.6.*) in IntelliJ,
-or you have a problem during the importing,
-you can follow the following steps: 
+If you previously had any LPhy-related projects (version 1.6.* or earlier) in IntelliJ, 
+or if you encountered any issues during the import process, please follow the steps below:
 
 1. Delete all existing projects in IntelliJ.
 
@@ -182,10 +179,11 @@ you can follow the following steps:
 
 4. Repeat the process in [the "First time" section](#First-time).
 
+
 ## Working inside IntelliJ
 
-We use "pom.xml" to configure the project,
-but we do not use Maven instead use IntelliJ to build/run/debug the project.
+We use "pom.xml" to configure the LPhy related projects,
+but we recommend using IntelliJ to build, run, debug, or test.  
 
 ### Standard directory layout
 
@@ -194,33 +192,35 @@ of Maven project before you continue.
 
 ### Build
 
-Always use the IntelliJ to build/rebuild the project. 
-The technical detail is [here](https://www.jetbrains.com/help/idea/compiling-applications.html).
-Since we use Maven to automatically configure modules, 
-you do not need to worry about the settings required by the linked tutorial.
+Always use IntelliJ to build or rebuild the project. 
+The technical details can be found [here](https://www.jetbrains.com/help/idea/compiling-applications.html).
+Since we use Maven to automatically configure the modules, 
+you don’t need to worry about the settings mentioned in the linked tutorial.
 
 ### Run / Debug / Test
 
-Follow the tutorial [Run/debug configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) 
+Follow the tutorial on [run/debug configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html)
 to run your Java applications or unit tests from IntelliJ. 
-For example, the screenshot below defines a configuration to run LPhy studio from the linguaPhylo project, 
-where the working directory must set to the parent folder of the "examples" folder, which contains all LPhy scripts. 
-This setting will make the studio to find the LPhy script, and list them into the "File" menu.  
+For example, the screenshot below shows a configuration to run LPhy Studio from the linguaPhylo project. 
+Ensure that the working directory is set to the parent folder of the "examples" folder, 
+which contains all LPhy scripts. 
+This setting allows the studio to locate the LPhy scripts and list them in the "File" menu.
 
 <a href="./figs/RunStudio.png"><img src="./figs/RunStudio.png" width="500" ></a>
 
 
 ### Commit
 
-It is recommended to use IntelliJ to commit your changes. 
-It provides a nice GUI, but you need to change the default settings for view option.
-First, open the "Commit" window, it is usually located on the left side or bottom toolbar.
-If you cannot find it, go to the menu "Git", and click the "Commit...".
+It is recommended to use IntelliJ for committing your changes, as it provides a user-friendly GUI. 
+However, you will need to adjust the default settings for the view options.
 
-Then find the icon looking like an eye, which is called as "View Options", 
-and select all options three under "Group By", as shown below. 
-This makes the changes grouped by repository, directory and module.
-It helps you to identify what you have changed and what you suppose to commit.
+First, open the "Commit" window, usually located on the left side or in the bottom toolbar. 
+If you cannot find it, go to the "Git" menu and click "Commit...".
+
+Next, locate the icon that looks like an eye, known as "View Options," 
+and select all three options under "Group By," as shown below. 
+This will group the changes by repository, directory, and module, 
+helping you identify what you have changed and what you need to commit.
 
 <a href="./figs/CommitView.png"><img src="./figs/CommitView.png" width="300" ></a>
 
@@ -228,17 +228,17 @@ It helps you to identify what you have changed and what you suppose to commit.
 
 1. Check what you are going to commit before you actually commit.
 
-
 2. Always `git pull` before `git commit`.
 
-
-3. If you have a problem with dependencies, or update them, 
-just simply [Clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html) selecting all options,
-and [Reload all Maven projects](#reload-all-maven-projects).
+3. If you encounter issues with dependencies or need to update them, 
+simply [clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html) by selecting all options, 
+and then [reload all Maven projects](#reload-all-maven-projects).
 
 ## Next
 
-- [LPhy Developer Guide 102]()  coming soon ...
+- [LPhy Developer Guide 102 (LPhy in Java)](DEV_NOTE2.md)  in dev ...
+
+- [LPhy Developer Guide 103 (Maven project)](DEV_NOTE3.md)  in dev ...
 
 - [Advanced developer guide]()  coming soon ...
 
@@ -247,8 +247,6 @@ and [Reload all Maven projects](#reload-all-maven-projects).
 ## Useful Links
 
 - [LPhy home page](https://linguaphylo.github.io/)
-
-- [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
 
 

@@ -1,4 +1,4 @@
-# LPhy Developer Guide 102 
+# LPhy Developer Guide 102 (LPhy in Java)
 
 This tutorial focuses on how to implement LPhy components using Java classes.
 
