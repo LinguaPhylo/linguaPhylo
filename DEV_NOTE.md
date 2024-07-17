@@ -1,11 +1,13 @@
 # LPhy Developer Guide 101 
 
-We set up the project as a Maven project, 
-but we do not use Maven to build project in IntelliJ.
-Please follow the instruction to load the project,
-and the modules and their dependencies will be automatically configured by IntelliJ.
+This is the first tutorial for LPhy developers. 
+It focuses on how to set up IntelliJ for the LPhy project and some basic skills for working with it.
 
 ## Setup development environment
+
+We use the Maven "pom.xml" to automatically configure the modules and their dependencies 
+in the IntelliJ project, but we do **not** recommend using Maven to build, run, debug, or test. 
+Please follow the instructions to load the project:
 
 1. [Install OpenJDK 17](https://jdk.java.net/17/), or Higher version. Try the following command line in your terminal 
 to identify if you have a correct version of JDK.
@@ -243,6 +245,8 @@ and [Reload all Maven projects](#reload-all-maven-projects).
 - [LPhyBeast developer guide]()  coming soon ...
 
 ## Useful Links
+
+- [LPhy home page](https://linguaphylo.github.io/)
 
 - [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
