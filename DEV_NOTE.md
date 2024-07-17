@@ -177,7 +177,7 @@ or if you encountered any issues during the import process, please follow the st
 3. [Clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html)
    by selecting all options.
 
-4. Repeat the process in [the "First time" section](#First-time).
+4. Repeat the process in [the "First time" section](#First-time-to-use).
 
 
 ## Working inside IntelliJ
