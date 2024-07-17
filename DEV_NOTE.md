@@ -152,10 +152,15 @@ otherwise IntelliJ will produce an additional folder named as "out" for each mod
 <a href="./figs/ProjectStructure.png"><img src="./figs/ProjectStructure.png" width="400" ></a>
 
 You can also click "Modules" to look at the dependencies. They are configured by "pom.xml".
-The nice thing is that you can simply recover or update the settings and dependencies by clicking the cycle icon, 
+
+### Reload all Maven projects
+
+One nice thing is that you can simply recover or update the settings and dependencies by clicking the cycle icon, 
 called as ["Reload All Maven Projects"](https://www.jetbrains.com/help/idea/delegate-build-and-run-actions-to-maven.html#maven_reimport), 
 in the Maven windows on the right side, 
 when either they are changed accidentally or updated by core developers.
+
+<a href="./figs/ReloadMaven.png"><img src="./figs/ReloadMaven.png" width="200" ></a>
 
 ### If you had LPhy previously in IntelliJ
 
