@@ -227,14 +227,24 @@ It helps you to identify what you have changed and what you suppose to commit.
 1. Check what you are going to commit before you actually commit.
 
 
-
 2. Always `git pull` before `git commit`.
 
 
+3. If you have a problem with dependencies, or update them, 
+just simply [Clear the IntelliJ caches](https://www.jetbrains.com/help/idea/invalidate-caches.html) selecting all options,
+and [Reload all Maven projects](#reload-all-maven-projects).
+
+## Next
+
+- [LPhy Developer Guide 102]()  coming soon ...
+
+- [Advanced developer guide]()  coming soon ...
+
+- [LPhyBeast developer guide]()  coming soon ...
 
 ## Useful Links
 
 - [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 
-- [Advanced developer guide]()
+
 
