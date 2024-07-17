@@ -28,9 +28,9 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
     Taxa[] cladeTaxaArray;
     List<TimeTreeNode> activeNodes;
     List<TimeTreeNode> inactiveNodes;
-    public final String cladeMRCAAgeName = "cladeMRCAAge";
-    public final String cladeTaxaName = "cladeTaxa";
-    public final String otherTaxaName = "otherTaxa";
+    public static final String cladeMRCAAgeName = "cladeMRCAAge";
+    public static final String cladeTaxaName = "cladeTaxa";
+    public static final String otherTaxaName = "otherTaxa";
 
     public CalibratedYule(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
                           @ParameterInfo(name = DistributionConstants.nParamName, description = "the total number of taxa.", optional = true) Value<Integer> n,
