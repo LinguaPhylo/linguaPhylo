@@ -162,7 +162,7 @@ This is useful when settings have been changed accidentally or updated by core d
 
 <a href="./figs/ReloadMaven.png"><img src="./figs/ReloadMaven.png" width="200" ></a>
 
-### If you had LPhy previously in IntelliJ
+### Troubleshooting
 
 You can skip this section if you are setting up the project for the first time 
 or if your project has been successfully imported following the instructions above.
