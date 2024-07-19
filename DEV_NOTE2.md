@@ -63,19 +63,72 @@ A few things are required:
      and then wrap it into `RandomVariable`.
 
 
-   - Correctly implement both methods `Map<String, Value> getParams()` and `setParam(String paramName, Value value)`, 
+   - Correctly implement **both** methods `Map<String, Value> getParams()` and `setParam(String paramName, Value value)`, 
      otherwise, it will fail when re-sampling values from the probabilistic graphical model represented by 
      an LPhy script using this distribution.
 
 
 3. Register the distribution to SPI.
 
+The SPI registration class for generative distributions is located at the Java package named as `*.spi`, 
+for example, `lphy.base.spi.LPhyBaseImpl`, or `phylonco.lphy.spi.PhyloncoImpl`.    
+You can simply add your class into the list returned by the method `List<Class<? extends GenerativeDistribution>> declareDistributions()`. 
+Here is the example in [LPhyBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/27efe2d517ca4de98bfd62f74220168ced4d7b77/lphy-base/src/main/java/lphy/base/spi/LPhyBaseImpl.java#L50-L75).
+
+**Please note** the LPhy code will only function properly after the distribution class is registered. 
+Therefore, it is acceptable to commit incomplete LPhy object during development (to avoid painful merges) 
+without registering it, provided it compiles and is not included in any published unit tests.  
+
 
 ### Deterministic function
 
+It is an abstract class and extends [BasicFunction](https://github.com/LinguaPhylo/linguaPhylo/blob/27efe2d517ca4de98bfd62f74220168ced4d7b77/lphy/src/main/java/lphy/core/model/BasicFunction.java).
+
+To write your own deterministic function, you need to follow the similar steps:
+
+1. Design your LPhy script first, for example, `Q = hky(kappa=κ, freq=π)`.
+
+2. Create a Java class (e.g. HKY.java) to extend [DeterministicFunction<T>](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/DeterministicFunction.java).
+
+Look at the example [HKY.java](https://github.com/LinguaPhylo/linguaPhylo/blob/27efe2d517ca4de98bfd62f74220168ced4d7b77/lphy-base/src/main/java/lphy/base/evolution/substitutionmodel/HKY.java).
+A few things are required:
+
+- Define its LPhy name by the annotation `@GeneratorInfo` for the overwritten method `Value<Double[][]> apply()`.
+
+  `name = "hky"` will allow the parser to parse it in a LPhy code into this Java object.
+
+
+- Define the arguments for this distribution using the annotation `@ParameterInfo` inside the constructor.
+
+  `name = "kappa"` declares one of the arguments as "kappa". This is also referred to as a **named argument**.
+  Following the annotation, you need to declare the Java argument for this constructor,
+  which must be a Value, such as `Value<Number> kappa`. We use `Number` so that this input can accept integer values.
+  To make an argument optional, simply add `optional = true`.
+
+
+- Define the data type, e.g. `extends DeterministicFunction<Double[][]>`,
+  where the 2d matrix `Double[][]` replaces `T` and must be consistent with the returned type `Value<Double[][]> apply()`.
+
+
+- Implement the method `Value<...> apply()` which should return a value **deterministically** 
+  and then wrap it into `Value`.
+
+
+3. Register the distribution to SPI.
+
+Simply add your class into the list returned by the method 
+`List<Class<? extends BasicFunction>> declareFunctions()`.
 
 
 ### Method call
+
+[Alignment](https://github.com/LinguaPhylo/linguaPhylo/blob/27efe2d517ca4de98bfd62f74220168ced4d7b77/lphy-base/src/main/java/lphy/base/evolution/alignment/Alignment.java#L22-L56)
+
+### Inheritance
+
+
+
+### Overload
 
 
 
