@@ -9,6 +9,7 @@ public class DistributionConstants {
     public static final String shapeParamName = "shape";
     public static final String alphaParamName = "alpha";
     public static final String betaParamName =  "beta";
+    public static final String wParamName =  "w";
 
     // the argument name for the mean of a distribution
     public static final String meanParamName = "mean";
