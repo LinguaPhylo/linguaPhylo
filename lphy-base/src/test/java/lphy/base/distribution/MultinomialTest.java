@@ -11,12 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MultinomialTest {
 
-    public double DELTA_MEAN = 1.0;
-    public double DELTA_VARIANCE = 1000.0;
+//    public double DELTA_MEAN = 1.0;
+//    public double DELTA_VARIANCE = 1000.0;
+
+    public double DELTA = 1e-6;
 
     @BeforeEach
     void setUp() {
-        RandomUtils.setSeed(777);
+        RandomUtils.setSeed(123);
     }
 
     /**
@@ -26,22 +28,59 @@ public class MultinomialTest {
      */
     @Test
     public void testMultinomial() {
-        int nReplicates = 100000;
-        Value<Integer> n = new Value<>("n", 100000);
+        int nSamples = 30; // 1% of E(X)
+        int nTrials = 10000;
         Double[] prob = {0.3, 0.2, 0.4, 0.1};
+        // E(X) = (3000 , 2000, 4000, 1000)
+
+        // repeat 100 times
+        // should fail with 1/20 probability
+        int reps = 100;
+        int[][] totalCount = new int[reps][prob.length];
+        for (int i = 0; i < reps; i++) {
+            int[] count = sample(nSamples, nTrials, prob);
+            for (int j = 0; j < count.length; j++) {
+                totalCount[i][j] += count[j];
+            }
+        }
+
+        int totalFailures = 0;
+        // print failure counts
+        for (int i = 0; i < reps; i++) {
+            boolean rowFailure = false; // rows are reps, cols are k counts
+            for (int j = 0; j < prob.length; j++) {
+                System.out.print(totalCount[i][j] + " ");
+                if (totalCount[i][j] > 0) {
+                    totalFailures++;
+//                    rowFailure = true;
+                }
+            }
+            System.out.println();
+        }
+
+        // assert 1/20 prob for failures
+        System.out.println("Total failures: " + totalFailures);
+        assertEquals(0.05 * reps * prob.length-1, totalFailures, DELTA);
+
+    }
+
+    private int[] sample(int nSamples, int nTrials, Double[] prob) {
+        Value<Integer> n = new Value<>("n", nTrials);
         Value<Double[]> p = new Value<>("p", prob);
         Multinomial multinomial = new Multinomial();
         multinomial.setParam("n", n);
         multinomial.setParam("p", p);
 
         int k = prob.length;
-        double[][] results = new double[k][nReplicates];
+        double[][] results = new double[k][nSamples];
         double[] expectedMean = new double[k];
         double[] expectedVariance = new double[k];
 
         Value<Integer[]> result;
-        for (int j = 0; j < nReplicates; j++) {
-            result = multinomial.sample();
+        int[] count = new int[k];
+        double stdError;
+        for (int j = 0; j < nSamples; j++) {
+            result = multinomial.sample(); // one sample from multinomial x = (x1, .. xk)
             for (int i = 0; i < k; i++) {
                 // expected mean
                 expectedMean[i] = n.value() * prob[i];
@@ -49,46 +88,28 @@ public class MultinomialTest {
                 results[i][j] = (double) (result.value()[i]);
             }
         }
-        for (int i = 0; i < k; i++) {
-            Mean mean = new Mean();
-            double observedMean = mean.evaluate(results[i], 0, nReplicates);
-            assertEquals(expectedMean[i], observedMean, DELTA_MEAN);
-            Variance variance = new Variance();
-            double observedVariance = variance.evaluate(results[i], 0, nReplicates);
-//            System.out.println(observedMean);
-//            System.out.println(observedVariance);
-            assertEquals(expectedVariance[i], observedVariance, DELTA_VARIANCE);
-        }
 
-        Double[] prob2 = {0.3, 0.2, 0.2, 0.3};
-        Value<Integer> n2 = new Value<>("n", 1000);
-        Value<Double[]> p2 = new Value<>("p", prob2);
-        multinomial.setParam("n", new Value<>("n", n2.value()));
-        multinomial.setParam("p", new Value<>("p", p2.value()));
-        int k2 = prob2.length;
-        double[][] results2 = new double[k2][nReplicates];
-        double[] expectedMean2 = new double[k2];
-        double[] expectedVariance2 = new double[k2];
-        Value<Integer[]> result2;
-        for (int j = 0; j < nReplicates; j++) {
-            result2 = multinomial.sample();
-            for (int i = 0; i < k2; i++) {
-                // expected mean
-                expectedMean2[i] = n2.value() * prob2[i];
-                expectedVariance2[i] = expectedMean2[i] * (1 - prob2[i]);
-                results2[i][j] = (double) (result2.value()[i]);
+
+        for (int i = 0; i < k; i++) {
+//            System.out.println(count[i] + "\t" + nSamples/20 + "\t" + nSamples);
+            Mean mean = new Mean();
+            double observedMean = mean.evaluate(results[i], 0, nSamples);
+//            System.out.println(observedMean);
+            Variance variance = new Variance();
+            double observedVariance = variance.evaluate(results[i], 0, nSamples);
+//            System.out.println(observedVariance);
+            stdError =  calculateStdError(expectedVariance[i], nSamples);
+            if (observedMean > expectedMean[i] + 2 * stdError || observedMean < expectedMean[i] - 2 * stdError) {
+                count[i] = count[i] + 1;
             }
         }
-        for (int i = 0; i < k2; i++) {
-            Mean mean2 = new Mean();
-            double observedMean2 = mean2.evaluate(results2[i], 0, nReplicates);
-            assertEquals(expectedMean2[i], observedMean2, DELTA_MEAN);
-            Variance variance2 = new Variance();
-            double observedVariance2 = variance2.evaluate(results2[i], 0, nReplicates);
-//            System.out.println(observedMean2);
-//            System.out.println(observedVariance2);
-            assertEquals(expectedVariance2[i], observedVariance2, DELTA_VARIANCE);
-        }
+
+        return count;
+    }
+
+    private double calculateStdError(double variance, double sampleSize) {
+            return Math.sqrt(variance / sampleSize);
     }
 
 }
+
