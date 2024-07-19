@@ -25,6 +25,8 @@ manuscript/manuscript_diff*.tex
 # build files
 .gradle
 **/build/**
+*.class
+**/target/**
 
 # macOS Files
 **/.DS_Store
