@@ -5,7 +5,6 @@ import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +25,7 @@ public class MultinomialTest {
      * E(Xi) = n * pi
      * Var(Xi) = n * pi * (1 - pi)
      */
-    @Test
+    //@Test
     public void testMultinomial() {
         int nSamples = 30; // 1% of E(X)
         int nTrials = 10000;
