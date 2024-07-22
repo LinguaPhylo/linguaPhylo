@@ -26,6 +26,25 @@ Also see https://linguaphylo.github.io/programming/2020/09/22/linguaphylo-for-de
 ## Write your LPhy object in Java
 
 
+### LPhy data type
+
+LPhy is a [dynamic typing](https://en.wikipedia.org/wiki/Type_system) language. 
+Therefore, as a developer, you need to understand how the data type is handled. 
+For example,
+
+- All actual values are wrapped in the [Value](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/Value.java) class, there are few classes inherit it, 
+such as [RandomVariable](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/RandomVariable.java).
+
+You need to use the method `.value()` to retrieve the actual value, 
+and `.getType()` to get its data type.
+
+- It is also required to define what data type to return in either [Generative distribution](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/GenerativeDistribution.java) 
+or [Deterministic function](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/DeterministicFunction.java).
+The detail is explained in next subsections.
+
+Although we have already implemented some commonly used data types in LPhy, 
+developers may still need to implement new LPhy data types for certain new generators.
+
 ### Generative distribution
 
 It is a Java interface to represent all types of generative distributions, 
@@ -122,7 +141,27 @@ Simply add your class into the list returned by the method
 
 ### Method call
 
-[Alignment](https://github.com/LinguaPhylo/linguaPhylo/blob/27efe2d517ca4de98bfd62f74220168ced4d7b77/lphy-base/src/main/java/lphy/base/evolution/alignment/Alignment.java#L22-L56)
+The [method call](https://github.com/LinguaPhylo/linguaPhylo/blob/a04bbc4d2d9f46f4049986ba993d4d6d01cdecbf/lphy/src/main/java/lphy/core/parser/function/MethodCall.java)
+is a special case of **deterministic** function, but its implementation in Java is somewhat simpler. 
+Here is an example of an [LPhy script](https://github.com/LinguaPhylo/linguaPhylo/blob/a04bbc4d2d9f46f4049986ba993d4d6d01cdecbf/examples/data-clamping/twoPartitionCoalescentNex.lphy):
+
+```lphy
+data {
+  D = readNexus(file="data/primate.nex");
+  taxa = D.taxa();
+  ...
+}
+```
+
+In this script, the first line imports an alignment `D` from "primate.nex", 
+and the second line uses the method call `D.taxa()` to extract the [taxa](https://github.com/LinguaPhylo/linguaPhylo/blob/a04bbc4d2d9f46f4049986ba993d4d6d01cdecbf/lphy-base/src/main/java/lphy/base/evolution/Taxa.java) object.
+
+To implement this, simply add a Java method with the same name, `taxa()`, in the Alignment class. 
+Then, add the `@MethodInfo` annotation with the necessary information. 
+The script line `taxa = D.taxa();` will work as long as `D` is an Alignment object.
+
+It is important to **note** that the method call must be implemented inside an existing Java class 
+implementing the LPhy object that calls this method.
 
 ### Inheritance
 
