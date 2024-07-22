@@ -23,27 +23,36 @@ In the Java implementation, Value and Generator classes are defined by
 Also see https://linguaphylo.github.io/programming/2020/09/22/linguaphylo-for-developers.html
 
 
-## Write your LPhy object in Java
+## LPhy data type
 
-
-### LPhy data type
-
-LPhy is a [dynamic typing](https://en.wikipedia.org/wiki/Type_system) language. 
-Therefore, as a developer, you need to understand how the data type is handled. 
+LPhy is a [dynamic typing](https://en.wikipedia.org/wiki/Type_system) language.
+Therefore, as a developer, you need to understand how the data type is handled.
 For example,
 
-- All actual values are wrapped in the [Value](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/Value.java) class, there are few classes inherit it, 
-such as [RandomVariable](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/RandomVariable.java).
+- All actual values are wrapped in the [Value](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/Value.java) class, there are few classes inherit it,
+  such as [RandomVariable](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/RandomVariable.java).
 
-You need to use the method `.value()` to retrieve the actual value, 
+You need to use the method `.value()` to retrieve the actual value,
 and `.getType()` to get its data type.
 
-- It is also required to define what data type to return in either [Generative distribution](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/GenerativeDistribution.java) 
-or [Deterministic function](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/DeterministicFunction.java).
-The detail is explained in next subsections.
+- It is also required to define what data type to return in either [Generative distribution](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/GenerativeDistribution.java)
+  or [Deterministic function](https://github.com/LinguaPhylo/linguaPhylo/blob/432a3edea15188c72fa12d42d0f238e9c25c1843/lphy/src/main/java/lphy/core/model/DeterministicFunction.java).
+  The detail is explained in next subsections.
 
-Although we have already implemented some commonly used data types in LPhy, 
+Although we have already implemented some commonly used data types in LPhy,
 developers may still need to implement new LPhy data types for certain new generators.
+
+### LPhy data type is not sequence type
+
+You may encounter many different "data types" in LPhy or BEAST.
+Please do not confuse these with sequence types. In LPhy, data types are specifically defined for the LPhy language.
+For example, they can be Double, Integer, Taxa, Alignment, or TimeTree.
+
+However, any "data type" classes that inherit from JEBL [SequenceType](https://github.com/LinguaPhylo/jebl3/blob/b5421dc622e8fff8a93a28352377e5a4c51b57a4/src/main/java/jebl/evolution/sequences/SequenceType.java)
+do not fall under this concept. These classes define the type of sequences.
+
+
+## Write your LPhy object in Java
 
 ### Generative distribution
 
@@ -165,6 +174,7 @@ implementing the LPhy object that calls this method.
 
 ### Inheritance
 
+You can use the Java Inheritance to reuse the code, such as []
 
 
 ### Overload
