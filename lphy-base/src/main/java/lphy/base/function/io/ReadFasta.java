@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 public class ReadFasta extends DeterministicFunction<Alignment> {
 
-    public ReadFasta(@ParameterInfo(name = ReaderConst.FILE, description = "the name of fasta file including path.") Value<String> filePath,
+    public ReadFasta(@ParameterInfo(name = ReaderConst.FILE, description = "the name of fasta file including path, which contains an alignment.") Value<String> filePath,
                      @ParameterInfo(name = ReaderConst.OPTIONS, description = "the map containing optional arguments and their values for reuse.",
                              optional=true) Value<Map<String, String>> options,
                      @ParameterInfo(name = ReaderConst.SEQUENCE_TYPE, description = "the sequence type for sequences in the fasta format, " +
@@ -126,9 +126,12 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
             faData = new SimpleAlignment(Taxa.createTaxa(taxons), siteCount, sequenceType);
         }
 
+        int len = sequenceList.get(0).getLength();
         // fill in sequences
         for (int i = 0; i < sequenceList.size(); i++) {
             Sequence sequence = sequenceList.get(i);
+            if (len != sequence.getLength())
+                throw new IllegalArgumentException("Sequence " + i + " has different length ! Alignment is required.");
             for (int s = 0; s < sequence.getLength(); s++) {
                 //*** convert char into int ***//
                 State state = sequence.getState(s);
