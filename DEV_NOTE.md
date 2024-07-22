@@ -16,6 +16,9 @@ to identify if you have a correct version of JDK.
 java -version
 ```
 
+Here is a simple [tutorial for Java](https://www.w3schools.com/java/). 
+There are also many good Java tutorials available, just Google it.
+
 2. [Install Git](https://github.com/git-guides/install-git) if you do not have it.
 
 ```bash
