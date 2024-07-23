@@ -174,8 +174,9 @@ implementing the LPhy object that calls this method.
 
 ### Inheritance
 
-You can use the Java Inheritance to reuse the code, such as []
-
+You can use Java inheritance to reuse code. 
+For example, the [RateMatrix](https://github.com/LinguaPhylo/linguaPhylo/blob/41c70aaee60032e9a9cdbb77b4a8a47b2b7b8d86/lphy-base/src/main/java/lphy/base/evolution/substitutionmodel/RateMatrix.java),
+class is the parent class of most substitution models.
 
 ### Overload
 
