@@ -180,14 +180,25 @@ class is the parent class of most substitution models.
 
 ### Overload
 
+LPhy allows overloading. For example, the 1st script is implemented by [Bernoulli](https://github.com/LinguaPhylo/linguaPhylo/blob/bf0cb08d26fed00f8c7ef40b12530bbb6b8578a1/lphy-base/src/main/java/lphy/base/distribution/Bernoulli.java)
+
+```lphy
+I_siteRates ~ Bernoulli(p=0.5);
+```
+
+The 2nd script is implemented by [BernoulliMulti](https://github.com/LinguaPhylo/linguaPhylo/blob/41c70aaee60032e9a9cdbb77b4a8a47b2b7b8d86/lphy-base/src/main/java/lphy/base/distribution/BernoulliMulti.java)
+
+```lphy
+I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
+```
 
 
 ## LPhy extension mechanism
 
-After you complete a LPhy object in Java, you need to register it in SPI, 
-so that it can be used in a LPhy script. 
+After you complete the Java implementation, you need to register it using SPI (Service Provider Interface) 
+so that it can be used in an LPhy script.
 
-https://linguaphylo.github.io/programming/2021/07/19/lphy-extension.html
+
 
 
 

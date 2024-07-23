@@ -26,9 +26,9 @@ public class BernoulliMulti extends ParametricDistribution<Boolean[]> {
     private Value<Integer> n;
     private Value<Integer> minSuccesses;
 
-    public final String minSuccessesParamName = "minSuccesses";
+    public static final String minSuccessesParamName = "minSuccesses";
 
-    private final String repParamName = IID.REPLICATES_PARAM_NAME;
+    private static final String repParamName = IID.REPLICATES_PARAM_NAME;
     private static final int MAX_TRIES = 1000;
 
     BinomialDistribution binomialDistribution;
