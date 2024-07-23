@@ -4,8 +4,10 @@ This tutorial focuses on how to implement LPhy components using Java classes.
 
 ## LPhy terms
 
-Please read the LPhy publication before you start to write the code. 
-https://doi.org/10.1371/journal.pcbi.1011226
+Please read the following articles before you start to write the code: 
+
+- [LPhy publication](https://doi.org/10.1371/journal.pcbi.1011226)
+- [LPhy language specification](language_specification.md)
 
 It is essential to have a thorough understanding of the following concepts:
 
