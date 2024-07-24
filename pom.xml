@@ -4,13 +4,14 @@
 
     <groupId>io.github.linguaphylo</groupId>
     <artifactId>linguaphylo</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>linguaphylo</name>
     <url>https://linguaphylo.github.io/</url>
 
     <properties>
+        <revision>1.6.0-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,6 +31,7 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
