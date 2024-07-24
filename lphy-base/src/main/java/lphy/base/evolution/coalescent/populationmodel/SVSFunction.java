@@ -26,9 +26,10 @@ public class SVSFunction extends DeterministicFunction<SVSPopulationFunction> {
             description = "Models population using different growth models based on the indicator value.")
     @Override
     public Value<SVSPopulationFunction> apply() {
+        // Convert the double indicator to an int
         int indicator = ((Number) getParams().get(INDICATOR_PARAM_NAME).value()).intValue();
-         Object[] modelObjs = (Object[]) getParams().get(MODELS_PARAM_NAME).value();
-         models = new PopulationFunction[modelObjs.length];
+        Object[] modelObjs = (Object[]) getParams().get(MODELS_PARAM_NAME).value();
+        models = new PopulationFunction[modelObjs.length];
 
         // Ensure all models are cast to PopulationFunction correctly
         for (int i = 0; i < modelObjs.length; i++) {
@@ -60,4 +61,5 @@ public class SVSFunction extends DeterministicFunction<SVSPopulationFunction> {
     public Value<PopulationFunction[]> getModels() {
         return (Value<PopulationFunction[]>) getParams().get(MODELS_PARAM_NAME);
     }
+
 }
