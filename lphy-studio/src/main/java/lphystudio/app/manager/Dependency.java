@@ -14,9 +14,9 @@ public class Dependency implements Comparable<Dependency> {
 //    private String scope;
 
     public Dependency(String groupId, String artifactId, String version) { //, String scope
-        this.groupId = Objects.requireNonNull(groupId);
-        this.artifactId = Objects.requireNonNull(artifactId);
-        this.version = Objects.requireNonNull(version);
+        this.groupId = groupId == null ? "" : groupId;
+        this.artifactId = artifactId == null ? "" : artifactId;
+        this.version = version == null ? "" : version;
 //        this.scope = scope;
     }
 

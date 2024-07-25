@@ -24,5 +24,6 @@ if [ -z "$LPHY" ]; then
 	cd "$saveddir"
 fi
 
+# cannot take white space in $LPHY
 LPHY_LIB=$LPHY/lib
 java -Xms64m -Xmx5g -Duser.dir="$LPHY" -p $LPHY_LIB -m lphystudio $*

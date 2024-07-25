@@ -17,6 +17,10 @@
                 <include>io.github.linguaphylo:lphy-base</include>
                 <include>io.github.linguaphylo:lphy-studio</include>
             </includes>
+<!--            <binaries>-->
+<!--                <unpack>false</unpack>-->
+<!--                <outputDirectory>/</outputDirectory>-->
+<!--            </binaries>-->
 
             <sources>
                 <includeModuleDirectory>false</includeModuleDirectory>
@@ -58,6 +62,7 @@
             <directory>../examples</directory>
             <outputDirectory>examples</outputDirectory>
             <includes>
+                <include>**/*.lphy</include>
                 <include>**/data/**</include>
                 <include>**/data/RSV2_11_samples.log.*</include>
             </includes>

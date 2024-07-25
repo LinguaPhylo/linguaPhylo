@@ -27,6 +27,9 @@ module lphystudio {
     exports lphystudio.app.graphicalmodelpanel.viewer;
     exports lphystudio.spi;
 
+    // declares the main class
+    uses lphystudio.app.LinguaPhyloStudio;
+
     // ViewerRegister loads all Viewers
     uses lphystudio.app.graphicalmodelpanel.viewer.Viewer;
     // declare what service interface the provider intends to use

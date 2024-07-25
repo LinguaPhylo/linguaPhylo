@@ -34,19 +34,20 @@
 
     <build>
         <plugins>
-<!--         TODO   not working -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven</groupId>-->
-<!--                <artifactId>maven-archiver</artifactId>-->
-<!--                <version>3.6.2</version>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>lphystudio.app.LinguaPhyloStudio</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>lphystudio.app.LinguaPhyloStudio</mainClass> <!-- Specify your main class here -->
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
