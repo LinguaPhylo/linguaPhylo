@@ -56,6 +56,15 @@ public class Binomial extends ParametricDistribution<Integer> implements Generat
         }};
     }
 
+    @Override
+    public void setParam(String paramName, Value value) {
+        if (paramName.equals(DistributionConstants.pParamName)) p = value;
+        else if (paramName.equals(DistributionConstants.nParamName)) n = value;
+        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
+
+        super.setParam(paramName, value); // constructDistribution
+    }
+
     public void setP(Value<Double> p) {
         this.p = p;
     }
