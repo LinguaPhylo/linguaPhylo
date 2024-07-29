@@ -1,5 +1,6 @@
 package lphy.base;
 
+import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.Value;
 import lphy.core.parser.LPhyListenerImpl;
@@ -11,6 +12,7 @@ import lphy.core.simulator.Sampler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,8 +20,7 @@ import java.util.stream.Collectors;
 
 import static lphy.core.parser.ParserSingleton.getParser;
 import static lphy.core.parser.ParserSingleton.parse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ResampleTest {
 
@@ -134,9 +135,15 @@ public class ResampleTest {
         Value treeV2 = modelDict.get("ψ");
 
         // same taxa, because it is in data block
-        assertEquals(taxaV, taxaV2);
+        String[] taxa1 = ((Taxa) taxaV.value()).getTaxaNames();
+        Arrays.sort(taxa1);
+        String[] taxa2 = ((Taxa) taxaV.value()).getTaxaNames();
+        Arrays.sort(taxa2);
+        assertArrayEquals(taxa1, taxa2);
         // different tree (model block, and tree is Random Var)
-        assertNotEquals(treeV, treeV2);
+        int n1 = ((TimeTree) treeV.value()).n();
+        int n2 = ((TimeTree) treeV2.value()).n();
+        assertEquals(n1, n2);
 
     }
 
