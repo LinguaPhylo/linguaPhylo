@@ -293,21 +293,25 @@ public class StudioConsoleInterpreter extends JPanel {
                 }
             }
 
-            try {
-                LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);
-                // if no data{}, input is empty
-                codeColorizer.parse(input);
-            } catch (Exception e) {
-                LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
-                e.printStackTrace(System.err);
-            }
+            addInputToPane(input, context);
 
-        //TODO below it will handle err messages for user
+            //TODO below it will handle err messages for user
         } catch (SimulatorParsingException spe) {
             LoggerUtils.log.severe("Parsing of " + context + " block failed: " + spe.getMessage());
         } catch (IllegalArgumentException ex) {
             LoggerUtils.log.severe(ex.getMessage());
 //            LoggerUtils.logStackTrace(ex);
+        }
+    }
+
+    public void addInputToPane(String input, LPhyParserDictionary.Context context) {
+        try {
+            LineCodeColorizer codeColorizer = new LineCodeColorizer(parserDictionary, context, textPane);
+            // if no data{}, input is empty
+            codeColorizer.parse(input);
+        } catch (Exception e) {
+            LoggerUtils.log.severe("CodeColorizer failed with exception: " + e.getMessage());
+            e.printStackTrace(System.err);
         }
     }
 

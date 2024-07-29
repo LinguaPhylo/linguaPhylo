@@ -17,6 +17,8 @@ public class CanonicalModelPanel extends JComponent {
     JTextPane pane = new JTextPane();
     JScrollPane scrollPane;
 
+    CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
+
     public CanonicalModelPanel(GraphicalModelParserDictionary parserDictionary) {
         this.parserDictionary = parserDictionary;
 
@@ -46,7 +48,6 @@ public class CanonicalModelPanel extends JComponent {
             e.printStackTrace();
         }
 
-        CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         String text = codeBuilder.getCode(parserDictionary);
 
         System.out.println(text);
