@@ -36,6 +36,7 @@ public class SVSPopulationFunction extends DeterministicFunction<PopulationFunct
     }
 
 
+
     public PopulationFunction getModel() {
         return model;
     }
@@ -51,5 +52,23 @@ public class SVSPopulationFunction extends DeterministicFunction<PopulationFunct
     @Override
     public Value<PopulationFunction> apply() {
         return new Value<>(null, model);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SVSPopulationFunction using model: ").append(model.toString());
+
+        Value<Integer> indicator = getIndicator();
+        Value<PopulationFunction[]> models = getModels();
+
+        if (indicator != null && models != null) {
+            sb.append(" with indicator ").append(indicator.value()).append(" and models: ");
+            for (PopulationFunction pf : models.value()) {
+                sb.append(pf.toString()).append(" ");
+            }
+        }
+
+        return sb.toString();
     }
 }
