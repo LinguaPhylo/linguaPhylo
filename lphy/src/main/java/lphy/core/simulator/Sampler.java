@@ -1,5 +1,6 @@
 package lphy.core.simulator;
 
+import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
@@ -25,6 +26,9 @@ import java.util.*;
 public class Sampler {
 
     LPhyParserDictionary parser; // storing {@link Value}s
+    CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
+
+    protected boolean isSampleValuesUsingParser = LPhyParserDictionary.Utils.isSampleValuesUsingParser();
 
     public Sampler() {
 
@@ -84,6 +88,28 @@ public class Sampler {
         }
 
         LPhyParserDictionary parserDict = getParserDictionary();
+        if (isSampleValuesUsingParser)
+            sampleUsingParser(parserDict);
+        else
+            resampleFromDictionary(parserDict);
+
+        // get the values from traversing the graphical model,
+        // if the setInput() not be called after value changes, or setParam() not implemented,
+        // this list of values could be wrong.
+        return GraphicalModelUtils.getAllValuesFromSinks(parserDict);
+    }
+
+    protected void sampleUsingParser(LPhyParserDictionary parserDict) {
+        System.out.println("Sample values using the parser ... ");
+
+        String lphyCode = codeBuilder.getCode(parserDict);
+        parserDict.clear(); // dict must be cleared before parse, even same code
+        parserDict.parse(lphyCode);
+    }
+
+    protected void resampleFromDictionary(LPhyParserDictionary parserDict) {
+        System.out.println("Resample values from the parser dictionary ... ");
+
         // store all values
         List<Value<?>> sinks = parserDict.getDataModelSinks();
         final int nDataDictSize = parserDict.getDataDictionary().size();
@@ -145,11 +171,6 @@ public class Sampler {
         // only re-sample the values in Model Dictionary. Those values in Data dict can be changed by setValue().
         if (parserDict.getDataDictionary().size() != nDataDictSize || parserDict.getDataValues().size() != nDataValSet)
             throw new RuntimeException("The number of values generated from the data block of lphy script cannot be re-sampled !");
-
-        // get the values from traversing the graphical model,
-        // if the setInput() not be called after value changes, or setParam() not implemented,
-        // this list of values could be wrong.
-        return GraphicalModelUtils.getAllValuesFromSinks(parserDict);
     }
 
     // replace old Value with new Value both in Model Map and Value Set

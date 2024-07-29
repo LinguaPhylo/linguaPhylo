@@ -61,7 +61,7 @@ public class GraphicalModelPanel extends JPanel {
 
     JLabel repsLabel = new JLabel("reps:");
     JTextField repsField = new TidyTextField("1", 4);
-    JButton sampleButton = new JButton("Sample");
+    JButton sampleButton;
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{
             new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()
@@ -100,13 +100,25 @@ public class GraphicalModelPanel extends JPanel {
 
         buttonPanel.add(repsLabel);
         buttonPanel.add(repsField);
+        sampleButton = new JButton("Sample");
+        sampleButton.setToolTipText(LPhyParserDictionary.Utils.SAMPLE_FROM_PARSER);
         buttonPanel.add(sampleButton);
+
         buttonPanel.add(new JLabel(" Layering:"));
         buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
 //        buttonPanel.add(editValues);
 
-        sampleButton.addActionListener(e -> sample(getReps()));
+        sampleButton.addActionListener(e -> {
+            if (LPhyParserDictionary.Utils.isSampleValuesUsingParser()) {
+                sampleButton.setText("Sample");
+                sampleButton.setToolTipText(LPhyParserDictionary.Utils.SAMPLE_FROM_PARSER);
+            } else {
+                sampleButton.setText("Re-sample");
+                sampleButton.setToolTipText("Resample values from the dictionary with variables");
+            }
+            sample(getReps());
+        });
 
         showConstantNodes.addActionListener(new AbstractAction() {
             @Override
@@ -241,6 +253,13 @@ public class GraphicalModelPanel extends JPanel {
 
         LPhyParserDictionary metaData = component.getParserDictionary();
         metaData.source(reader, null);
+
+        // fill in data lines and model lines
+        String wholeSource = codeBuilder.getCode(metaData);
+        String data = codeBuilder.getDataLines();
+        dataInterpreter.addInputToPane(data, GraphicalModel.Context.data);
+        String model = codeBuilder.getModelLines();
+        modelInterpreter.addInputToPane(model, GraphicalModel.Context.model);
 
         repaint();
     }

@@ -1,6 +1,6 @@
 package lphystudio.core.awt;
 
-import lphystudio.app.LinguaPhyloStudio;
+import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.app.graphicalmodelcomponent.GraphicalModelComponent;
 import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 import lphystudio.core.layeredgraph.LayeredGNode;
@@ -104,6 +104,12 @@ public class PreferencesHelper {
         useStraightEdges.addActionListener(
                 e -> component.setUseStraightEdges(useStraightEdges.isSelected()));
         checkBoxList.add(useStraightEdges);
+
+        JCheckBox sampleValuesUsingParser = new JCheckBox("Sample Values Using Parser",
+                LPhyParserDictionary.Utils.isSampleValuesUsingParser());
+        sampleValuesUsingParser.addActionListener(
+                e -> LPhyParserDictionary.Utils.setSampleValuesUsingParser(sampleValuesUsingParser.isSelected()));
+        checkBoxList.add(sampleValuesUsingParser);
 
         //TODO
 //        JCheckBox showTreeInAlignmentView = new JCheckBox("Show tree with alignment if available", true);
