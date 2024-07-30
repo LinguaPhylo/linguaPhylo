@@ -1,8 +1,6 @@
 package lphy.base.evolution.coalescent.populationmodel;
 
 import lphy.base.evolution.coalescent.PopulationFunction;
-import lphy.core.model.annotation.GeneratorCategory;
-import lphy.core.model.annotation.MethodInfo;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.math3.analysis.integration.RombergIntegrator;
@@ -59,12 +57,12 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         return tStar;
     }
 
-    @MethodInfo(description = "Get the initial population size N0", category = GeneratorCategory.COAL_TREE,
-            examples = {" gompertzCoalescent_t50.lphy"}
-    )
-    public double getN0() {
-        return this.N0;
-    }
+//    @MethodInfo(description = "Get the initial population size N0", category = GeneratorCategory.COAL_TREE,
+//            examples = {" gompertzCoalescent_t50.lphy"}
+//    )
+//    public double getN0() {
+//        return this.N0;
+//    }
 
     private IterativeLegendreGaussIntegrator createIntegrator() {
         int numberOfPoints = 5; // Legendre-Gauss points
@@ -154,6 +152,12 @@ public class GompertzPopulation_t50 implements PopulationFunction {
             System.err.println("Solver failed: " + e.getMessage());
             return Double.NaN;
         }
+    }
+
+
+    @Override
+    public String toString() {
+        return "Gompertz_t50 Model: t50=" + t50 + ", NInfinity=" + NInfinity + ", b=" + b + ", N0=" + N0;
     }
 
     @Override

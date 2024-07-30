@@ -141,11 +141,9 @@ public class LogisticPopulation implements PopulationFunction {
 
     @Override
     public String toString() {
-        return "Logistic Population Model: " +
-                "t50 (midpoint of logistic function)=" + t50 +
-                ", nCarryingCapacity (maximum population size)=" + nCarryingCapacity +
-                ", b (growth rate)=" + b ;
+        return "Logistic Model: t50=" + t50 + ", nCarryingCapacity=" + nCarryingCapacity + ", b=" + b;
     }
+
 
 
 
