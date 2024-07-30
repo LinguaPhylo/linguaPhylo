@@ -28,6 +28,14 @@ public class CodeStringUtils {
         return prefix + value.getId();
     }
 
+    /**
+     * LPhy function can either have names for all arguments, or no names,
+     * when the number of arguments <= 2.
+     * Moreover, this takes in count all optional arguments.
+     * @param function
+     * @param params
+     * @return
+     */
     public static String codeString(BasicFunction function, Map<String, Value> params) {
         Map<String, Value> map = params;
         Class<?> funcClass = function.getClass();

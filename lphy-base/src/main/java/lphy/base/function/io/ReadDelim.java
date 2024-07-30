@@ -63,11 +63,13 @@ public class ReadDelim extends DeterministicFunction<Table> {
         String filePath = ((Value<String>) getParams().get(ReaderConst.FILE)).value();
         String delimiter = ((Value<String>) getParams().get(ReaderConst.DELIMITER)).value();
         Boolean header = ((Value<Boolean>) getParams().get(ReaderConst.HEADER)).value();
+//TODO  String commentChar = ((Value<String>) getParams().get(ReaderConst.COMMENT)).value();
 
         Table map = readDelim(filePath, delimiter, header);
         return new TableValue(null, map, this);
     }
 
+    // TODO ignore "#"
     private Table readDelim(String filePath, String delimiter, boolean header) {
         Table dataMap = new Table();
 
