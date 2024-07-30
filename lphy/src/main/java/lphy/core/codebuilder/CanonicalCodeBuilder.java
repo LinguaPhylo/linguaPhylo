@@ -11,6 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Use the values stored in {@link LPhyParserDictionary} and traverse graphical model
+ * to rebuild the lphy script.
+ * Note: if any code is not involved in the graphical model,
+ * e.g. "a=1;" which is not used but exists in the script,
+ * it would <b>not</b> be generated in the new script.
+ */
 public class CanonicalCodeBuilder implements CodeBuilder {
 
     List<String> dataLines = new ArrayList<>();
