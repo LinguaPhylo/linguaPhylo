@@ -21,15 +21,15 @@ public class GompertzPopulationT50Test {
 //        gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity);
 //    }
 
-//    @Test
-//    public void testGetTheta() {
-//        double t = gompertzPopulation_t50.getTimeForGivenProportion(0.5);
-//        double N0 = gompertzPopulation_t50.getN0();
-//
-//        double expectedTheta = NInfinity / 2;
-//        double actualTheta = gompertzPopulation_t50.getTheta(t);
-//        assertEquals(expectedTheta, actualTheta, DELTA);
-//    }
+    @Test
+    public void testGetTheta() {
+        double t = gompertzPopulation_t50.getTimeForGivenProportion(0.5);
+        double N0 = gompertzPopulation_t50.getN0();
+
+        double expectedTheta = NInfinity / 2;
+        double actualTheta = gompertzPopulation_t50.getTheta(t);
+        assertEquals(expectedTheta, actualTheta, DELTA);
+    }
 
     @Test
     public void testGetThetaAtT50() {
