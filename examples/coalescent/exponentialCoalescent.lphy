@@ -6,7 +6,7 @@ data {
 model {
   GrowthRate ~ Normal(mean=0.055, sd=0.0005);
   N0 ~ Normal(mean=30, sd=1.0);
-  expPopFunc = expPopFunc(GrowthRate=GrowthRate, N0=N0);
+  exponentialPopFunc = exponentialPopFunc(GrowthRate=GrowthRate, N0=N0);
   times ~ CoalescentPopFunc(popFunc=exponentialPopFunc, n=16);
   D ~ PhyloCTMC(tree=times, L=L, Q=jukesCantor());
 }
