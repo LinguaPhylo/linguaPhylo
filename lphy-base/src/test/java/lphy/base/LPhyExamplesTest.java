@@ -7,6 +7,7 @@ import lphy.core.model.Value;
 import lphy.core.parser.LPhyParserDictionary;
 import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
+import lphy.core.simulator.RandomUtils;
 import lphy.core.simulator.Sampler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,8 @@ public class LPhyExamplesTest {
 
         tutorialDir = Paths.get(wd, "..", "tutorials").toFile();
         assertTrue(tutorialDir.exists(), "Cannot find tutorial folder : " + tutorialDir);
+
+        RandomUtils.setSeed(666L);
     }
 
     @Test
@@ -153,7 +156,7 @@ public class LPhyExamplesTest {
         testCodeBuilder(tutorialDir);
     }
 
-    // test if the lphy script can be revertible by CanonicalCodeBuilder
+    // test if the lphy script can be reversible by CanonicalCodeBuilder to all example scripts.
     protected void testCodeBuilder(File exampleDir) {
         System.out.println("\nTest that examples are revisable using CodeBuilder in " + exampleDir.getAbsolutePath());
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
