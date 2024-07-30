@@ -36,7 +36,7 @@ public class LPhyExamplesTest {
         tutorialDir = Paths.get(wd, "..", "tutorials").toFile();
         assertTrue(tutorialDir.exists(), "Cannot find tutorial folder : " + tutorialDir);
 
-        RandomUtils.setSeed(666L);
+        RandomUtils.setSeed(666L); // birth death could sample too many trees
     }
 
     @Test
@@ -142,6 +142,8 @@ public class LPhyExamplesTest {
     @Test
     public void testCodeBuilder() {
 
+//        testCodeBuilder(Paths.get(String.valueOf(exampleDir), "io").toFile());
+
         // lphy scripts under this dir
         testCodeBuilder(exampleDir);
 
@@ -161,10 +163,9 @@ public class LPhyExamplesTest {
         System.out.println("\nTest that examples are revisable using CodeBuilder in " + exampleDir.getAbsolutePath());
         String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
         List<String> ignoreFiles = Arrays.asList(
-                "cpacific.lphy", // tutorials/cpacific.lphy ==> array lengths differ,
-                "vars-in-array.lphy", //TODO
-                "jcc2Fasta.lphy" //TODO
+                "cpacific.lphy" //TODO string var is replaced by value, D.charset([bird, and, belly]);
         );
+//        exampleFiles = new String[]{"cpacific.lphy"};
 
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         List<String> failed = new ArrayList<>();
@@ -215,7 +216,8 @@ public class LPhyExamplesTest {
                     filter(v -> !(v instanceof RandomVariable)).map(Value::codeString).toList().toArray(new String[0]);
             String[] vals2 = GraphicalModelUtils.getAllValuesFromSinks(newDict).stream().
                     filter(v -> ! (v instanceof RandomVariable)).map(Value::codeString).toList().toArray(new String[0]);
-
+            Arrays.sort(vals1);
+            Arrays.sort(vals2);
             assertArrayEquals(vals1, vals2, "Original data value set : " + Arrays.toString(vals1) +
                     "\nBut data value set after code builder : " + Arrays.toString(vals2) + "\nFile = " + lphyPath);
         }
