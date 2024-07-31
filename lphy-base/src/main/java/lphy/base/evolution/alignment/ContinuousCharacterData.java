@@ -20,8 +20,14 @@ public class ContinuousCharacterData implements TaxaCharacterMatrix<Double> {
         this.continuousCharacterData = continuousCharacterData;
     }
 
+    @Override
     public Double getState(String taxonName, int column) {
         return continuousCharacterData[taxa.indexOfTaxon(taxonName)][column];
+    }
+
+    @Override
+    public void setState(int taxon, int position, Double state) {
+        continuousCharacterData[taxon][position] = state;
     }
 
     public Double getState(int taxonIndex, int column) {

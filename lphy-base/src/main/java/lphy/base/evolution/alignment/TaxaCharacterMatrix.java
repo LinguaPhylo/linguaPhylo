@@ -16,6 +16,14 @@ public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa, MultiDimensional
     T getState(String taxon, int characterColumn);
 
     /**
+     * Set int states.
+     * @param taxon      the index of taxon in the 1st dimension.
+     * @param position   the site position in the 2nd dimension.
+     * @param state      the state in integer
+     */
+    void setState(int taxon, int position, T state);
+
+    /**
      * @return the class of this character (e.g. Double for continuous characters, Integer for discrete characters)
      */
     Class getComponentType();

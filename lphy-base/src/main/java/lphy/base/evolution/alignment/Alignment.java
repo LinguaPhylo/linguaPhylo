@@ -62,7 +62,7 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
      * @param position   the site position in the 2nd dimension.
      * @param state      the state in integer
      */
-    void setState(int taxon, int position, int state);
+    void setState(int taxon, int position, Integer state);
 
     /**
      * @param taxon      the name of the taxon.

@@ -47,7 +47,7 @@ public class SimpleAlignment extends AbstractAlignment implements NarrativeName 
      * @param position   the site position in the 2nd dimension of {@link #alignment}.
      * @param state      the state in integer
      */
-    public void setState(int taxon, int position, int state) {
+    public void setState(int taxon, int position, Integer state) {
         if (sequenceType == null)
             throw new IllegalArgumentException("Please define SequenceType, not numStates !");
         // TODO how to distinguish imported alignment and simulated

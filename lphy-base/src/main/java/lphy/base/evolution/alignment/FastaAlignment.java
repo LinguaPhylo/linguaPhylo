@@ -46,7 +46,7 @@ public class FastaAlignment implements Alignment, TextFileFormatted {
 
 
     @Override
-    public void setState(int taxon, int position, int state) {
+    public void setState(int taxon, int position, Integer state) {
         throw new UnsupportedOperationException("Unsupported for FastaAlignment !");
     }
 
