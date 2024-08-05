@@ -12,7 +12,7 @@
         <dependency>
             <groupId>io.github.linguaphylo</groupId>
             <artifactId>lphy-base</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

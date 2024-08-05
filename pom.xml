@@ -11,6 +11,7 @@
     <url>https://linguaphylo.github.io/</url>
 
     <properties>
+        <!-- it is used as project.version -->
         <revision>1.6.0-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
