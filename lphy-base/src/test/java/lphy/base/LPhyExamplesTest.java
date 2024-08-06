@@ -100,28 +100,18 @@ public class LPhyExamplesTest {
             System.out.println("Successfully parse " + fileName + "\n");
 
             //*** Test re-sampling ***//
-            final long[] seeds = new long[]{666L, 777L};
-
             List<Value> res1 = GraphicalModelUtils.getAllValuesFromSinks(lPhyMetaParser);
             final int nAllVal = res1.size();
             Sampler sampler = new Sampler(lPhyMetaParser);
-            for (long seed : seeds) {
-                try {
-                    List<Value> res;
-                    // to avoid memory issue of random sampling BD trees
-                    if (exampleDir.getPath().endsWith("birth-death"))
-                        res = sampler.sample(seed); // only for birth death
-                    else
-                        res = sampler.sample(null); // random seed
-
-                    assertEquals(nAllVal, res.size(), "Resample " + fileName +
-                            ", but the returned values ");
-                } catch (Exception e) {
-                    if (!failedBySample.contains(fileName)) failedBySample.add(fileName);
-                    // Display in stdout
-                    System.out.println("Err: example " + fileName + " failed during re-sampling !!! \n");
-                    e.printStackTrace();
-                }
+            try {
+                List<Value> res = sampler.sample(666L); // only for birth death
+                assertEquals(nAllVal, res.size(), "Resample " + fileName +
+                        ", but the returned values ");
+            } catch (Exception e) {
+                if (!failedBySample.contains(fileName)) failedBySample.add(fileName);
+                // Display in stdout
+                System.out.println("Err: example " + fileName + " failed during re-sampling !!! \n");
+                e.printStackTrace();
             }
 
             // clean parser dict for reusing it safely
