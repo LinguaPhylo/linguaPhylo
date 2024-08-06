@@ -17,6 +17,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.organization.name>LPhy team</project.organization.name>
+
+        <skip.lphy.tests>false</skip.lphy.tests>
     </properties>
 
     <modules>
@@ -25,6 +27,15 @@
         <module>lphy-studio</module>
     </modules>
 
+    <profiles>
+        <!-- mvn clean test -P skipLPhyTests -->
+        <profile>
+            <id>skipLPhyTests</id>
+            <properties>
+                <skip.lphy.tests>true</skip.lphy.tests>
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <pluginManagement>
             <plugins>
@@ -36,7 +47,10 @@
                 <!-- https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-->
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <skipTests>${skip.lphy.tests}</skipTests>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
