@@ -51,12 +51,18 @@ public class DiscretizedGamma extends ParametricDistribution<Double> {
             description = "The discretized gamma probability distribution with mean = 1.")
     public RandomVariable<Double> sample() {
 
-        for (int i = 0; i < rates.length; i++) {
-            double q = (2.0 * i + 1.0) / (2.0 * rates.length);
-            rates[i] = gammaDistribution.inverseCumulativeProbability(q);
-        }
-
-        return new RandomVariable<>(null, rates[random.nextInt(rates.length)], this);
+        double meanRate = 0;
+		for (int i = 0; i < rates.length; i++) {
+			double q = (2.0 * i + 1.0) / (2.0 * rates.length);
+			rates[i] = gammaDistribution.inverseCumulativeProbability(q);
+			meanRate += rates[i];
+		}
+		// renormalise cat rates
+		meanRate /= rates.length;
+		for (int i = 0; i < rates.length; i++) {
+			rates[i] /= meanRate;
+		}
+		return new RandomVariable<>(null, rates[random.nextInt(rates.length)], this);
     }
 
     public double logDensity(Double[] x) {
