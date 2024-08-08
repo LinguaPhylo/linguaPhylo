@@ -37,14 +37,19 @@ public class Table extends LinkedHashMap<String, List> {
         return keySet().toArray(new String[0]);
     }
 
-    @MethodInfo(description = "return the 2d matrix of phi and psi angles.")
+    @MethodInfo(description = "return the array of (array) records for selected column indices.")
     public Double[][] getColumnAsMatrix(Integer... ArrayIndex) {
-        Double[][] anglesMatrix = new Double[ArrayIndex.length][];
+
+        List[] columns = new List[ArrayIndex.length];
+        for (int i = 0; i < ArrayIndex.length; i++) {
+            columns[i] = getColumn(ArrayIndex[i]);
+        }
+
+        Double[][] anglesMatrix = new Double[columns[0].size()][ArrayIndex.length];
+
         for (int i = 0; i < anglesMatrix.length; i++) {
-            List column = getColumn(ArrayIndex[i]); //get column 1 and column 2
-            anglesMatrix[i] = new Double[column.size()];
-            for (int j = 0; j < column.size(); j++) {
-                anglesMatrix[i][j] = Double.parseDouble(column.get(j).toString());
+            for (int j = 0; j < anglesMatrix[i].length; j++) {
+                anglesMatrix[i][j] = Double.parseDouble(columns[j].get(i).toString());
             }
         }
         return anglesMatrix;
