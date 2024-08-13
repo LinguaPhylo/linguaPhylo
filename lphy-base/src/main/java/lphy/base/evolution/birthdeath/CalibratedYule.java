@@ -32,6 +32,7 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
     public static final String cladeTaxaName = "cladeTaxa";
     public static final String otherTaxaName = "otherTaxa";
 
+    // TODO: make cladeTaxa and cladeMRCAAge take the same type of data
     public CalibratedYule(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, description = "per-lineage birth rate, possibly scaled to mutations or calendar units.") Value<Number> birthRate,
                           @ParameterInfo(name = DistributionConstants.nParamName, description = "the total number of taxa.", optional = true) Value<Integer> n,
                           @ParameterInfo(name = cladeTaxaName, description = "a string array of taxa id or a taxa object for clade taxa (e.g. dataframe, alignment or tree)") Value cladeTaxa,
@@ -71,6 +72,10 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         return nTaxa;
     }
 
+    /**
+     * Construct taxa and initialise the tree first. Fill in active and inactive nodes list to do coalesce. Build the tree at last.
+     * @return calibrated yule tree
+     */
     @GeneratorInfo(name = "CalibratedYule",
             category = GeneratorCategory.BD_TREE, examples = {"calibratedYule.lphy"},
             description = "The CalibratedYule method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.")
@@ -96,6 +101,7 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
             activeNodeNames.add(node.getId());
         }
 
+        // get inactive nodes names and change repeat names
         for (int i = 0; i < getCladeTaxaArray().length; i++) {
             // generate the clade tree
             TimeTree cladeTree = getCladeTree(cladeMRCAAge[i], cladeTaxaArray[i]);
@@ -143,7 +149,35 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
 
         // coalescent
         double t = 0.0;
+        coalesce(lambda, t);
 
+        // set root to construct the tree
+        if (tree != null) {
+            tree.setRoot(activeNodes.get(0), true);
+        }
+
+        // specify the root age if given
+        if (rootAge != null){
+            Number rootAgeValue = getRootAge().value();
+            if (rootAgeValue instanceof Double) {
+                tree.getRoot().setAge((double) rootAgeValue);
+            } else {
+                // handle other number types if necessary
+                tree.getRoot().setAge(rootAgeValue.doubleValue());
+            }
+        }
+
+        return new RandomVariable<>("calibratedYuleTree", tree, this);
+    }
+
+    /**
+     * Do coalesce process.
+     * After coalesce all nodes in activeNodes, if time is still smaller than the youngest node in inactiveNodes,
+     * then force time to be same as the youngest node age.
+     * @param lambda
+     * @param t
+     */
+    private void coalesce(double lambda, double t) {
         while (activeNodes.size() > 1){
             // sample t with exp distribution
             double mean = activeNodes.size() * lambda;
@@ -164,6 +198,8 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
                     coalesceNodes(activeNodes, t);
                 } else { // do not count clade root to coalesce
                     coalesceNodes(activeNodes, t);
+                    // if there is only one node in activeNodes and is not from inactiveNodes
+                    // then add the youngest node from inactiveNodes to activeNodes
                     if (activeNodes.size() == 1 && !activeNodes.contains(getYoungestNode(inactiveNodes))) {
                         activeNodes.add(getYoungestNode(inactiveNodes));
                         inactiveNodes.remove(getYoungestNode(inactiveNodes));
@@ -172,24 +208,6 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
                 }
             } else coalesceNodes(activeNodes, t);
         }
-
-        // set root to construct the tree
-        if (tree != null) {
-            tree.setRoot(activeNodes.get(0), true);
-        }
-
-        // specify the root age if given
-        if (rootAge != null){
-            Number rootAgeValue = getRootAge().value();
-            if (rootAgeValue instanceof Double) {
-                tree.getRoot().setAge((double) rootAgeValue);
-            } else {
-                // handle other number types if necessary
-                tree.getRoot().setAge(rootAgeValue.doubleValue());
-            }
-        }
-
-        return new RandomVariable<>("calibratedYuleTree", tree, this);
     }
 
     /**
