@@ -201,9 +201,9 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
                     // if there is only one node in activeNodes and is not from inactiveNodes
                     // then add the youngest node from inactiveNodes to activeNodes
                     if (activeNodes.size() == 1 && !activeNodes.contains(getYoungestNode(inactiveNodes))) {
+                        t = getYoungestNode(inactiveNodes).getAge();
                         activeNodes.add(getYoungestNode(inactiveNodes));
                         inactiveNodes.remove(getYoungestNode(inactiveNodes));
-                        t = getYoungestNode(inactiveNodes).getAge();
                     }
                 }
             } else coalesceNodes(activeNodes, t);
