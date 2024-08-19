@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ public class GraphicalModelPanel extends JPanel {
 
     JLabel repsLabel = new JLabel("reps:");
     JTextField repsField = new TidyTextField("1", 4);
-    JButton sampleButton;
+    public JButton sampleButton;
     JCheckBox showConstantNodes = new JCheckBox("Show constants");
     JComboBox<Layering> layeringAlgorithm = new TidyComboBox<>(new Layering[]{
             new Layering.LongestPathFromSinks(), new Layering.LongestPathFromSources()
@@ -76,9 +75,9 @@ public class GraphicalModelPanel extends JPanel {
     Object displayedElement;
 
 //    Sampler sampler;
-
     CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
 
+    private JProgressBar progressBar;
 
     public GraphicalModelPanel(GraphicalModelParserDictionary parser, UndoManagerHelper undoManagerHelper) {
 
@@ -104,8 +103,8 @@ public class GraphicalModelPanel extends JPanel {
         sampleButton.setToolTipText(LPhyParserDictionary.Utils.SAMPLE_FROM_PARSER);
         buttonPanel.add(sampleButton);
 
-        buttonPanel.add(new JLabel(" Layering:"));
-        buttonPanel.add(layeringAlgorithm);
+//        buttonPanel.add(new JLabel(" Layering:"));
+//        buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
 //        buttonPanel.add(editValues);
 
@@ -117,7 +116,8 @@ public class GraphicalModelPanel extends JPanel {
                 sampleButton.setText("Re-sample");
                 sampleButton.setToolTipText("Resample values from the dictionary with variables");
             }
-            sample(getReps());
+//            sample(getReps());
+            startLongRunningTask();
         });
 
         showConstantNodes.addActionListener(new AbstractAction() {
@@ -128,6 +128,11 @@ public class GraphicalModelPanel extends JPanel {
             }
         });
         showConstantNodes.setSelected(component.getShowConstantNodes());
+
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+//        progressBar.setVisible(false); // Initially hidden
+        buttonPanel.add(progressBar);
 
 //        editValues.addActionListener(new AbstractAction() {
 //            @Override
@@ -237,7 +242,47 @@ public class GraphicalModelPanel extends JPanel {
         }
     }
 
-//    public Sampler getSampler() {
+    private void startLongRunningTask() {
+        // Create a SwingWorker to perform the calculations
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Make the progress bar visible
+                SwingUtilities.invokeLater(() -> progressBar.setVisible(true));
+
+                // Simulate long-running task
+//                for (int i = 0; i <= 100; i++) {
+//                    Thread.sleep(50); // Simulate work
+//                    setProgress(i); // Update progress
+//                }
+                sample(getReps(), progressBar);
+                return null;
+            }
+
+            @Override
+            protected void process(java.util.List<Void> chunks) {
+                // Update the progress bar
+                progressBar.setValue(getProgress());
+            }
+
+            @Override
+            protected void done() {
+                // Task is done, reset the progress bar
+//                progressBar.setVisible(false);
+//                progressBar.setValue(0);
+//                JOptionPane.showMessageDialog(component, "Task completed!");
+            }
+        };
+
+        // Execute the worker thread
+        worker.execute();
+    }
+
+    public JProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    //    public Sampler getSampler() {
 //        return this.sampler;
 //    }
 
@@ -293,28 +338,29 @@ public class GraphicalModelPanel extends JPanel {
         return valuesAllRepsMap;
     }
 
-    public void sample(int reps) {
-        sample(reps, new LinkedList<>());
-    }
-
-    public void sample(int reps, List<SimulatorListener> loggers) {
+    private void sample(int reps, JProgressBar progressBar) {
+        sampleButton.setEnabled(false);
+        progressBar.setValue(0);
 
         long start = System.currentTimeMillis();
+
+        // add Loggers here, to trigger after click Sample button
+        List<SimulatorListener> loggers = rightPane.getGUISimulatorListener();
 
         String id = null;
         if (displayedElement instanceof Value && !((Value) displayedElement).isAnonymous()) {
             id = ((Value) displayedElement).getId();
         }
 
-        // add Loggers here, to trigger after click Sample button
-        loggers.addAll(rightPane.getGUISimulatorListener());
-
+        progressBar.setValue(5);
         // GraphicalModelSampler notifies listeners in ParserDictionary
         Sampler sampler = new GraphicalModelSampler(component.getParserDictionary());
+        progressBar.setValue(10);
         // Sampler use the lphy code in component.getParser(), and output results to loggers
         // if null then use a random seed
         valuesAllRepsMap = sampler.sampleAll(reps, loggers, null);
 //        this.sampler = sampler;
+        progressBar.setValue(90);
 
         // refresh graphical nodes
         component.modelChanged();
@@ -338,8 +384,13 @@ public class GraphicalModelPanel extends JPanel {
         long end = System.currentTimeMillis();
         LoggerUtils.log.info("sample(" + reps + ") took " + (end - start) + " ms.");
 
+        progressBar.setValue(95);
+
         // refresh all viewerComponent
         rightPane.refresh();
+
+        progressBar.setValue(100);
+        sampleButton.setEnabled(true);
     }
 
     void showValue(Value value) {

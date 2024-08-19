@@ -84,6 +84,10 @@ public class Utils {
      * @param panel    clear panel and parser, then paint.
      */
     public static void readFileFromDir(String lphyFileName, String dir, GraphicalModelPanel panel) throws IOException {
+        final JProgressBar progressBar = panel.getProgressBar();
+        progressBar.setValue(0);
+        panel.sampleButton.setEnabled(false);
+
         File lphyFile = new File(lphyFileName);
         if (dir != null) {
             // must be relative
@@ -103,6 +107,9 @@ public class Utils {
             }
         } else
             readFile(lphyFile, panel);
+
+        progressBar.setValue(100);
+        panel.sampleButton.setEnabled(true);
     }
 
     /**
