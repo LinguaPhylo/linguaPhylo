@@ -2,6 +2,7 @@ package lphystudio.app;
 
 import lphy.core.codebuilder.CanonicalCodeBuilder;
 import lphy.core.logger.LoggerUtils;
+import lphy.core.logger.TextFileFormatted;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.Value;
 import lphy.core.simulator.RandomUtils;
@@ -307,6 +308,9 @@ public class LinguaPhyloStudio {
                         List<Value> alignmentValuePerRep = AlignmentTextArea.getSimulatedAlignmentValues(entry.getValue(), parserDictionary);
                         //TODO could do this same to trees
                         fileLoggerListener.replicate(entry.getKey(), alignmentValuePerRep);
+                        // TaxaCharacterMatrix<T> is now generic alignment, TextFileFormatted make anything loggable
+                        List<Value> loggableValuesPerRep = TextFileFormatted.getLoggableValues(entry.getValue(), TextFileFormatted.class);
+                        fileLoggerListener.replicate(entry.getKey(), loggableValuesPerRep);
                     }
                     fileLoggerListener.complete();
 
