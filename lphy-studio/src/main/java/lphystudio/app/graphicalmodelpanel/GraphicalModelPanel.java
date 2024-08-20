@@ -88,6 +88,7 @@ public class GraphicalModelPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 
         layeringAlgorithm.addActionListener(new AbstractAction() {
             @Override
@@ -95,7 +96,7 @@ public class GraphicalModelPanel extends JPanel {
                 component.setLayering((Layering) layeringAlgorithm.getSelectedItem());
             }
         });
-        layeringAlgorithm.setPreferredSize(new Dimension(200, 20));
+        layeringAlgorithm.setPreferredSize(new Dimension(160, 20));
 
         buttonPanel.add(repsLabel);
         buttonPanel.add(repsField);
@@ -103,8 +104,8 @@ public class GraphicalModelPanel extends JPanel {
         sampleButton.setToolTipText(LPhyParserDictionary.Utils.SAMPLE_FROM_PARSER);
         buttonPanel.add(sampleButton);
 
-//        buttonPanel.add(new JLabel(" Layering:"));
-//        buttonPanel.add(layeringAlgorithm);
+        buttonPanel.add(new JLabel(" Layering:"));
+        buttonPanel.add(layeringAlgorithm);
         buttonPanel.add(showConstantNodes);
 //        buttonPanel.add(editValues);
 
