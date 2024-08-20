@@ -131,7 +131,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
             toNewick(node.getChildren().get(0), builder, includeSingleChildNodes);
         } else {
             if (node.isLeaf()) {
-                builder.append(node.id);
+                builder.append(node.getId());
                 // update to handle more than one element in metaData
                 addMetaData(node, builder);
             } else {
@@ -144,6 +144,10 @@ public class TimeTree implements HasTaxa, MultiDimensional {
                 }
                 builder.append(")");
             }
+
+            if (!node.isLeaf() && node.getId() != null)
+                builder.append(node.getId());
+
             if (node.isRoot()) {
                 builder.append(":0.0;");
             } else {

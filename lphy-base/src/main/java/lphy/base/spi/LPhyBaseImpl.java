@@ -27,10 +27,7 @@ import lphy.base.function.datatype.NucleotidesFunction;
 import lphy.base.function.datatype.StandardDatatypeFunction;
 import lphy.base.function.io.*;
 import lphy.base.function.taxa.*;
-import lphy.base.function.tree.ExtantTree;
-import lphy.base.function.tree.MigrationCount;
-import lphy.base.function.tree.Newick;
-import lphy.base.function.tree.PruneTree;
+import lphy.base.function.tree.*;
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.spi.LPhyCoreImpl;
@@ -91,8 +88,9 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 SelectSitesByMissingFraction.class, RemoveTaxa.class,
                 VariableSites.class, InvariableSites.class, CopySites.class,
                 // Tree
-                LocalBranchRates.class, ExtantTree.class, PruneTree.class, LocalClock.class,
-                SubstituteClade.class, MRCA.class, LabelClade.class,//NodeCount.class, TreeLength.class,
+                LocalBranchRates.class, LocalClock.class,
+                ExtantTree.class, PruneTree.class, InternalNodesID.class,
+                SubstituteClade.class, MRCA.class, LabelClade.class, //NodeCount.class, TreeLength.class,
                 // Matrix
                 BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
                 // IO
