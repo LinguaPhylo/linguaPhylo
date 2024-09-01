@@ -24,7 +24,7 @@ The LPhy language features are described at https://linguaphylo.github.io/featur
 
 ### ANTLR parse tree
 
-The parse tree to show how the above lphy script to be parsed by [ANTLR grammar](lphy/src/main/java/lphy/parser/LPhy.g4):
+The parse tree to show how the above lphy script to be parsed by [ANTLR grammar](lphy/src/main/java/lphy/core/parser/antlr/LPhy.g4):
 
 <a href="./parseTree.png"><img src="parseTree.png" width="600" ></a>
 
@@ -32,15 +32,15 @@ The parse tree to show how the above lphy script to be parsed by [ANTLR grammar]
 
 More details on the available tree generative distributions can be found here: 
 
-* [Birth-death generative distributions](lphy/doc/lphy/evolution/birthdeath.md)
-* [Coalescent generative distributions](lphy/doc/lphy/evolution/coalescent.md)
+* [Birth-death generative distributions](docs/lphy/evolution/birthdeath.md)
+* [Coalescent generative distributions](docs/lphy/evolution/coalescent.md)
 
 ### Models of evolutionary rates and sequence evolution
 
 You can read more details about the PhyloCTMC generative distribution and how to specify substitution models, 
 site rates and branch rates here:
 
-* [PhyloCTMC generative distribution](lphy/doc/lphy/evolution/likelihood.md)
+* [PhyloCTMC generative distribution](docs/lphy/evolution/likelihood.md)
 
 ### LinguaPhylo Studio
 
@@ -67,7 +67,7 @@ The source can be found here: [https://github.com/LinguaPhylo/LPhyBeast](https:/
 
 ## License 
 
-This software is licensed under the [GNU Lesser General Public License v3.0](https://github.com/LinguaPhylo/linguaPhylo/blob/master/LICENSE)
+This software is licensed under the [GNU Lesser General Public License v3.0](LICENSE)
 
 The toolbar icon art is licensed under the [Oracle Software Icon License](https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy-studio/src/main/resources/LICENSE.txt)
 
