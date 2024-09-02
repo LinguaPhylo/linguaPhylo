@@ -75,6 +75,55 @@ public class Utils {
         return null;
     }
 
+    public static File selectFolderFromFileChooser(Component parent){
+        JFileChooser jfc = new JFileChooser();
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setDialogTitle("Select a folder");
+
+        // disable the "All files" option.
+        jfc.setAcceptAllFileFilterUsed(false);
+        jfc.setApproveButtonText("Save to");
+        jfc.setApproveButtonToolTipText("Select a directory to save your files");
+
+        if (lastDirectory == null) {
+            File workingDir = new File(System.getProperty("user.dir"));
+            jfc.setCurrentDirectory(workingDir);
+        } else
+            jfc.setCurrentDirectory(lastDirectory);
+
+        // modify stupid FileFilter design for DIRECTORIES_ONLY
+        jfc.setFileFilter( new javax.swing.filechooser.FileFilter(){
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory();
+            }
+            @Override
+            public String getDescription() {
+                return "Directories only";
+            }
+        });
+        // following code to rm the Save as textfield
+        jfc.setDialogType(JFileChooser.SAVE_DIALOG);
+        Component[] components = jfc.getComponents();
+        int iPanel = 0;
+        for (int i = 0; i < components.length; i++) {
+            Component c = components[i];
+            if (c instanceof JPanel jPanel) {
+                if (iPanel == 0)
+                    jPanel.getComponent(0).setVisible(false);
+                iPanel++;
+            }
+        }
+
+        if (jfc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+             File selectedDir = jfc.getSelectedFile();
+//            File selectedDir = jfc.getCurrentDirectory();
+            lastDirectory = selectedDir;
+            return selectedDir;
+        }
+        return null;
+    }
+
     /**
      * Load Lphy script from a file, and set user.dir to parameter dir,
      * which makes sure the relative path in LPhy script working.

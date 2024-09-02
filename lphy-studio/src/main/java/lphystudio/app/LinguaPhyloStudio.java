@@ -287,7 +287,8 @@ public class LinguaPhyloStudio {
         JMenuItem saveAlignmentAsMenuItem = new JMenuItem("Save Alignments to Directory...");
         fileMenu.add(saveAlignmentAsMenuItem);
         saveAlignmentAsMenuItem.addActionListener(e -> {
-            File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
+//            File selectedDir = Utils.getFileFromFileChooser(frame, null, JFileChooser.DIRECTORIES_ONLY, false);
+            File selectedDir = Utils.selectFolderFromFileChooser(frame);
 
             if (selectedDir != null && selectedDir.isDirectory()) {
 
