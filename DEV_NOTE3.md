@@ -22,19 +22,29 @@ https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html
 
 ## Release 
 
+1. Git pull, and then build and test. If there is no issues, go to the next step.
+
+2. Update the version in "pom.xml". If the project is also a BEAST2 package, e.g. LPhyBeast, 
+you need to update the "version.xml" as well.
+
+3. Run the `install` command to create the release.
+
 ```bash
-mvn clean package 
+mvn clean install 
 ```
 
 The release will be available under the build directory `target`.
 
 ```bash
-mvn clean package -Dmaven.test.skip
+mvn clean install -Dmaven.test.skip
 ```
+
+4. Find the jar or zip file in the corresponding `target` folder, and upload it to Github release.
+
 
 ## Useful Links
 
 - [Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 - [List of predefined Maven properties](https://github.com/cko/predefined_maven_properties/blob/master/README.md)
-
+- [How are "mvn clean package" and "mvn clean install" different?](https://stackoverflow.com/questions/16602017/how-are-mvn-clean-package-and-mvn-clean-install-different)
 
