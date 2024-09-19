@@ -60,6 +60,11 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         inactiveNodes = new ArrayList<>();
     }
 
+    /**
+     * Get the number of given taxa
+     * @param taxa
+     * @return the number of taxa
+     */
     private int getTaxaLength(Value taxa) {
         int nTaxa = 0;
         if (taxa.value() instanceof Taxa) {
@@ -242,6 +247,9 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         return tempNode;
     }
 
+    /**
+     * Construct clade taxa and build cladeTaxaArray
+     */
     public void constructCladeTaxa() {
         Object cladeTaxaValueObject = getCladeTaxa().value();
 
@@ -276,6 +284,9 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         }
     }
 
+    /**
+     * Construct other taxa if given and build constructOtherTaxa
+     */
     private void constructOtherTaxa() {
         if (getOtherTaxa() == null) {
 
@@ -311,6 +322,11 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         }
     }
 
+    /**
+     * Coalesce two given nodes at time t
+     * @param activeNodes
+     * @param t
+     */
     private static void coalesceNodes(List<TimeTreeNode> activeNodes, double t) {
         // random two nodes to coalesceT
         List<TimeTreeNode> nodes = randomTwoNodes(activeNodes);
@@ -332,6 +348,11 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
     }
 
     // public for unit test
+    /**
+     * Randomly draw two different nodes in activeNodes
+     * @param activeNodes
+     * @return list of two nodes
+     */
     public static List<TimeTreeNode> randomTwoNodes(List<TimeTreeNode> activeNodes) {
         // get node1
         TimeTreeNode node1 = randomNode(activeNodes);
@@ -351,6 +372,11 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         return randomNodes;
     }
 
+    /**
+     * Randomly draw a node in activeNodes
+     * @param nodeList
+     * @return list of one node
+     */
     private static TimeTreeNode randomNode(List<TimeTreeNode> nodeList) {
         // create uniform discrete instance
         Value<Integer> lower = new Value<>("low", 0);
