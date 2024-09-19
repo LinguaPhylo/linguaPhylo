@@ -84,6 +84,9 @@
                 <include>h*.lphy</include>
                 <include>RSV2.lphy</include>
             </includes>
+            <excludes>
+                <exclude>h5n1BDSS*.lphy</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
     <files>
