@@ -79,8 +79,10 @@
             <directory>../tutorials</directory>
             <outputDirectory>tutorials</outputDirectory>
             <includes>
-                <include>data/*.*</include>
-                <include>*.lphy</include>
+                <include>data/h*.*</include>
+                <include>data/RSV2.nex</include>
+                <include>h*.lphy</include>
+                <include>RSV2.lphy</include>
             </includes>
         </fileSet>
     </fileSets>
