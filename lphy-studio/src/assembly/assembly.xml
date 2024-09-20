@@ -79,7 +79,9 @@
             <directory>../tutorials</directory>
             <outputDirectory>tutorials</outputDirectory>
             <includes>
-                <include>data/h*.*</include>
+                <include>data/h3n2.nexus</include>
+                <include>data/H5N1.nex</include>
+                <include>data/hcv.nexus</include>
                 <include>data/RSV2.nex</include>
                 <include>h*.lphy</include>
                 <include>RSV2.lphy</include>
