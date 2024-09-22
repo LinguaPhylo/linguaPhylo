@@ -111,7 +111,8 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 SVSPopulationFunction.class,
                 GompertzPopulationFunction_f0.class,
                 GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class,
-                LogisticPopulationFunction.class, ConstantPopulationFunction.class
+                LogisticPopulationFunction.class, ConstantPopulationFunction.class,
+                ExpansionPopulationFunction.class
 
         );
 

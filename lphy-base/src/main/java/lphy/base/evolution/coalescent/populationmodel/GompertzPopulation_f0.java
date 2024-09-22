@@ -153,14 +153,6 @@ public class GompertzPopulation_f0 implements PopulationFunction {
         return false; // Use numerical method here
     }
 
-    @Override
-    public String toString() {
-        return "Gompertz Population Model:\n" +
-                "  Initial population size (N0): " + N0 + "\n" +
-                "  Initial growth rate (b): " + b + "\n" +
-                "  Carrying capacity (NInfinity): " + NInfinity + "\n" +
-                "  Initial proportion of the carrying capacity (f0): " + f0;
-    }
 
     public static void main(String[] args) {
         double f0 = 0.5;
