@@ -1,5 +1,6 @@
 // It only shows the default when using studio,
 // but macro value can be replaced by SLPhy (command line application).
+// Note: do not change the values, this is used for JUnit test.
 data {
   L = {{L = 100}};
   taxa = taxa(names=1:{{n = 10}});

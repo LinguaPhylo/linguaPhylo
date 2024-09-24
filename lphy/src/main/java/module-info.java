@@ -13,7 +13,7 @@ module lphy.core {
     requires transitive org.apache.commons.lang3;
     requires transitive commons.math3;
 
-    requires info.picocli;
+    requires transitive info.picocli;
 
     // graphical model
     exports lphy.core.model;
