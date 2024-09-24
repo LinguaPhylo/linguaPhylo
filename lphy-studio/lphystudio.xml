@@ -1,7 +1,7 @@
 <project>
     <shortName>lphystudio</shortName>
     <fullName>LPhyStudio</fullName>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <readmeFile>${build_project_directory}/../README.md</readmeFile>
     <licenseFile>${build_project_directory}/../LICENSE</licenseFile>
     <componentList>
@@ -91,25 +91,25 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/bin</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/examples</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/examples</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/lib</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/src</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/tutorials</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/tutorials</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/LICENSE</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/LICENSE</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>${build_project_directory}/build/distributions/lphy-studio-${product_version}/README.md</origin>
+                            <origin>${build_project_directory}/target/lphy-studio-${product_version}/README.md</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -201,7 +201,7 @@
     <!--  mac OS Bundle -->
     <osxApplicationBundleIdentifier>io.github.linguaphylo.LPhyStudioLauncher</osxApplicationBundleIdentifier>
     <!--TODO still invalid ? -->
-<!--    <osxApplicationBundleIcon>${build_project_directory}/build/distributions/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>&ndash;&gt;-->
+<!--    <osxApplicationBundleIcon>${build_project_directory}/target/lphy-studio-${product_version}/src/lphy512x512.icns</osxApplicationBundleIcon>&ndash;&gt;-->
 
     <!--  windows  -->
     <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
