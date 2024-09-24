@@ -1,6 +1,8 @@
 package lphy.base;
 
+import lphy.core.io.UserDir;
 import lphy.core.simulator.SLPhy;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
@@ -14,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class SLPhyTest {
-    Path exampleDir;
-
-    CommandLine cmd;
+    private Path exampleDir;
+    private CommandLine cmd;
 //    StringWriter sw;
+    private final String WD = System.getProperty("user.dir");
 
     @BeforeEach
     void setUp() {
@@ -25,11 +27,13 @@ public class SLPhyTest {
         cmd = new CommandLine(slPhy);
 //        sw = new StringWriter();
 //        cmd.setOut(new PrintWriter(sw));
-
-        final String wd = System.getProperty("user.dir");
         // github workflow run tests in $project_root/lphy, so "**/lphy/../examples" is required
-        exampleDir = Paths.get(wd, "..", "examples");
+        exampleDir = Paths.get(WD, "..", "examples");
+    }
 
+    @AfterEach
+    public void setUserDir(){
+        UserDir.setUserDir(WD);
     }
 
     @Test

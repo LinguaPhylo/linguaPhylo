@@ -9,6 +9,7 @@ import lphy.core.parser.REPL;
 import lphy.core.parser.graphicalmodel.GraphicalModelUtils;
 import lphy.core.simulator.RandomUtils;
 import lphy.core.simulator.Sampler;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,20 +24,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LPhyExamplesTest {
 
-    File exampleDir;
-    File tutorialDir;
+    private File exampleDir;
+    private File tutorialDir;
+
+    private final String WD = System.getProperty("user.dir");
 
     @BeforeEach
     void setUp() {
-        final String wd = System.getProperty("user.dir");
         // github workflow run tests in $project_root/lphy, so "**/lphy/../examples" is required
-        exampleDir = Paths.get(wd, "..", "examples").toFile();
+        exampleDir = Paths.get(WD, "..", "examples").toFile();
         assertTrue(exampleDir.exists(), "Cannot find examples folder : " + exampleDir);
 
-        tutorialDir = Paths.get(wd, "..", "tutorials").toFile();
+        tutorialDir = Paths.get(WD, "..", "tutorials").toFile();
         assertTrue(tutorialDir.exists(), "Cannot find tutorial folder : " + tutorialDir);
 
         RandomUtils.setSeed(666L); // birth death could sample too many trees
+    }
+
+    @AfterEach
+    public void setUserDir(){
+        UserDir.setUserDir(WD);
     }
 
     @Test
@@ -58,11 +65,11 @@ public class LPhyExamplesTest {
 
     /**
      * Check the values are sampled correctly from both parser and {@link Sampler#sample(Long)}.
-     * @param exampleDir   folder to contain lphy script, no recursive.
+     * @param workingDir   folder to contain lphy script, no recursive.
      */
-    protected void testLPhyExamplesInDir(File exampleDir) {
-        System.out.println("\nTest that Examples parse in " + exampleDir.getAbsolutePath());
-        String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
+    protected void testLPhyExamplesInDir(File workingDir) {
+        System.out.println("\nTest that Examples parse in " + workingDir.getAbsolutePath());
+        String[] exampleFiles = workingDir.list((dir1, name) -> name.endsWith(".lphy"));
 
         List<String> ignoreFiles = Arrays.asList(
                 // give the lphy file name here, if it is not tested
@@ -72,16 +79,16 @@ public class LPhyExamplesTest {
         List<String> failedByParser = new ArrayList<>();
         List<String> failedBySample = new ArrayList<>();
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
-            System.out.println("Processing " + fileName + " in " + exampleDir);
+            System.out.println("Processing " + fileName + " in " + workingDir);
             if (ignoreFiles.contains(fileName)){
                 System.out.println("Skip testing " + fileName + " ! ");
                 break;
             }
 
-            UserDir.setUserDir(exampleDir.getPath());
+            UserDir.setUserDir(workingDir.getPath());
             LPhyParserDictionary lPhyMetaParser = new REPL();
             try {
-                FileReader lphyFile = new FileReader(exampleDir.getAbsoluteFile() + File.separator + fileName);
+                FileReader lphyFile = new FileReader(workingDir.getAbsoluteFile() + File.separator + fileName);
                 BufferedReader fin = new BufferedReader(lphyFile);
                 lPhyMetaParser.source(fin, null);
             } catch (Exception e) {
@@ -150,9 +157,9 @@ public class LPhyExamplesTest {
     }
 
     // test if the lphy script can be reversible by CanonicalCodeBuilder to all example scripts.
-    protected void testCodeBuilder(File exampleDir) {
-        System.out.println("\nTest that examples are revisable using CodeBuilder in " + exampleDir.getAbsolutePath());
-        String[] exampleFiles = exampleDir.list((dir1, name) -> name.endsWith(".lphy"));
+    protected void testCodeBuilder(File workingDir) {
+        System.out.println("\nTest that examples are revisable using CodeBuilder in " + workingDir.getAbsolutePath());
+        String[] exampleFiles = workingDir.list((dir1, name) -> name.endsWith(".lphy"));
         List<String> ignoreFiles = Arrays.asList(
                 "cpacific.lphy" //TODO string var is replaced by value, D.charset([bird, and, belly]);
         );
@@ -161,15 +168,15 @@ public class LPhyExamplesTest {
         CanonicalCodeBuilder codeBuilder = new CanonicalCodeBuilder();
         List<String> failed = new ArrayList<>();
         for (String fileName : Objects.requireNonNull(exampleFiles)) {
-            System.out.println("Processing " + fileName + " in " + exampleDir);
+            System.out.println("Processing " + fileName + " in " + workingDir);
             if (ignoreFiles.contains(fileName)){
                 System.out.println("Skip testing " + fileName + " ! ");
                 break;
             }
 
-            UserDir.setUserDir(exampleDir.getPath());
+            UserDir.setUserDir(workingDir.getPath());
             LPhyParserDictionary originalDict = new REPL();
-            Path lphyPath = Paths.get(exampleDir.getAbsolutePath(), fileName);
+            Path lphyPath = Paths.get(workingDir.getAbsolutePath(), fileName);
             try {
                 FileReader lphyFile = new FileReader(lphyPath.toString());
                 BufferedReader fin = new BufferedReader(lphyFile);
