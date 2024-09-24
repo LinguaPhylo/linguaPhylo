@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,18 +45,18 @@ public class SLPhyTest {
 //        String outStr = sw.toString();
 
         // Create file : MacroLanguage_D.nexus
-        File nex = new File(macroDir.toFile(), "MacroLanguage_D.nexus");
+        Path nex = Paths.get(macroDir.toString(), "MacroLanguage_D.nexus");
         //Create file : MacroLanguage_psi.trees
-        File trees = new File(macroDir.toFile(), "MacroLanguage_psi.trees");
+        Path trees = Paths.get(macroDir.toString(), "MacroLanguage_psi.trees");
 
-        assertTrue(nex.exists(), "SLPhy output file does not exist : " + nex);
-        assertTrue(trees.exists(), "SLPhy output file does not exist : " + trees);
+        assertTrue(nex.toFile().exists(), "SLPhy output file does not exist : " + nex);
+        assertTrue(trees.toFile().exists(), "SLPhy output file does not exist : " + trees);
 
         final String expect = "ntax=10";
         try {
-            assertTrue(Files.lines(nex.toPath()).anyMatch(l -> l.contains(expect)),
+            assertTrue(Files.lines(nex).anyMatch(l -> l.contains(expect)),
                     nex + " should contain " + expect);
-            assertTrue(Files.lines(trees.toPath()).anyMatch(l -> l.contains(expect)),
+            assertTrue(Files.lines(trees).anyMatch(l -> l.contains(expect)),
                     trees + " should contain " + expect);
         } catch (IOException e) {
             fail(e);
