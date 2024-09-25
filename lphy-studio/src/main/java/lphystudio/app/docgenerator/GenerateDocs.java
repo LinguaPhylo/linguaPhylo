@@ -152,7 +152,7 @@ public class GenerateDocs {
         if (generatorInfo != null) {
             category = generatorInfo.category();
         } else {
-            LoggerUtils.log.severe("GeneratorInfo annotation is not found from class "+ genDist + " !");
+            LoggerUtils.log.severe("GeneratorInfo annotation is not found from "+ genDist + " !");
             category = GeneratorCategory.NONE;
         }
 
@@ -169,7 +169,7 @@ public class GenerateDocs {
         if (generatorInfo != null) {
             category = generatorInfo.category();
         } else {
-            LoggerUtils.log.severe("GeneratorInfo annotation is not found from class "+ func + " !");
+            LoggerUtils.log.severe("GeneratorInfo annotation is not found from "+ func + " !");
             category = NONE;
         }
 
