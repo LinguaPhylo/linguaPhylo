@@ -1,0 +1,7 @@
+model{
+    // base tree
+    ψfull ~ Yule(lambda=0.25, n=100);
+    taxa = ψfull.getTaxaNames();
+    // 80 taxa would be shown in ψ
+    ψ ~ SubsampledTree(tree=ψfull, taxa=[taxa], sampleFraction=[0.8]);
+}

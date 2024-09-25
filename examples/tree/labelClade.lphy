@@ -1,0 +1,11 @@
+model{
+    ψfull ~ Yule(lambda=0.1, n=10000);
+    taxa = ψfull.getTaxaNames();
+
+    sampledTaxa ~ sample(array=taxa, size=10);
+
+    nodeLabel = "label";
+    ψ = labelClade(tree=ψfull, taxa=sampledTaxa, label=nodeLabel);
+
+    node = ψ.getLabeledNode(nodeLabel);
+}
