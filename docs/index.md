@@ -1,4 +1,4 @@
-<a href="https://linguaphylo.github.io">LPhy</a> Language Reference (version 1.5.0)
+<a href="https://linguaphylo.github.io">LPhy</a> Language Reference (version 1.6.0)
 ===================================================================================
 This an automatically generated language reference of the <a href="https://linguaphylo.github.io">LinguaPhylo</a> (LPhy) statistical phylogenetic modeling language.
 
@@ -32,9 +32,11 @@ Tree models
 - [BirthDeathSampling](tree-model/BirthDeathSampling.md)
 - [BirthDeathSerialSampling](tree-model/BirthDeathSerialSampling.md)
 - [BirthDeath](tree-model/BirthDeath.md)
+- [CalibratedYule](tree-model/CalibratedYule.md)
 - [FossilBirthDeathTree](tree-model/FossilBirthDeathTree.md)
 - [FullBirthDeath](tree-model/FullBirthDeath.md)
 - [MultispeciesCoalescent](tree-model/MultispeciesCoalescent.md)
+- [CoalescentPopFunc](tree-model/CoalescentPopFunc.md)
 - [RhoSampleTree](tree-model/RhoSampleTree.md)
 - [Coalescent](tree-model/Coalescent.md)
 - [SimBDReverse](tree-model/SimBDReverse.md)
@@ -48,12 +50,15 @@ Other generative distributions
 ------------------------------
 - [ErrorModel](distributions/ErrorModel.md)
 - [MissingSites](distributions/MissingSites.md)
+- [Multinomial](distributions/Multinomial.md)
 - [PhyloBrownian](distributions/PhyloBrownian.md)
 - [PhyloCTMC](distributions/PhyloCTMC.md)
 - [PhyloMultivariateBrownian](distributions/PhyloMultivariateBrownian.md)
 - [PhyloOU](distributions/PhyloOU.md)
 - [sample](distributions/sample.md)
+- [SampleBranch](distributions/SampleBranch.md)
 - [Sequence](distributions/Sequence.md)
+- [SubsampledTree](distributions/SubsampledTree.md)
 - [bSiteRates](distributions/bSiteRates.md)
 
 Sequence type
@@ -82,6 +87,7 @@ Taxa & alignment
 Substitution and site models
 ----------------------------
 - [bModelSet](subst-site-model/bModelSet.md)
+- [binaryCovarion](subst-site-model/binaryCovarion.md)
 - [binaryRateMatrix](subst-site-model/binaryRateMatrix.md)
 - [f81](subst-site-model/f81.md)
 - [gtr](subst-site-model/gtr.md)
@@ -92,17 +98,19 @@ Substitution and site models
 - [lewisMK](subst-site-model/lewisMK.md)
 - [migrationMatrix](subst-site-model/migrationMatrix.md)
 - [nucleotideModel](subst-site-model/nucleotideModel.md)
-- [toDouble](subst-site-model/toDouble.md)
+- [strToDouble](subst-site-model/strToDouble.md)
 - [wag](subst-site-model/wag.md)
 - [bSiteModel](subst-site-model/bSiteModel.md)
 
 Tree functions
 --------------
 - [extantTree](tree-func/extantTree.md)
+- [setInternalNodesID](tree-func/setInternalNodesID.md)
 - [localBranchRates](tree-func/localBranchRates.md)
 - [countMigrations](tree-func/countMigrations.md)
 - [newick](tree-func/newick.md)
 - [pruneTree](tree-func/pruneTree.md)
+- [readTrees](tree-func/readTrees.md)
 
 Other functions
 ---------------
@@ -110,11 +118,21 @@ Other functions
 - [argi](functions/argi.md)
 - [concat2Str](functions/concat2Str.md)
 - [concatArray](functions/concatArray.md)
+- [constantPopFunc](functions/constantPopFunc.md)
+- [setDifference](functions/setDifference.md)
 - [elementsAt](functions/elementsAt.md)
+- [expansionPopFunc](functions/expansionPopFunc.md)
+- [exponentialPopFunc](functions/exponentialPopFunc.md)
 - [get](functions/get.md)
+- [gompertzPopFunc_f0](functions/gompertzPopFunc_f0.md)
+- [gompertzPopFunc_t50](functions/gompertzPopFunc_t50.md)
 - [ifelse](functions/ifelse.md)
 - [intersect](functions/intersect.md)
+- [labelClade](functions/labelClade.md)
 - [length](functions/length.md)
+- [localClock](functions/localClock.md)
+- [logisticPopFunc](functions/logisticPopFunc.md)
+- [mrca](functions/mrca.md)
 - [map](functions/map.md)
 - [nchar](functions/nchar.md)
 - [ntaxa](functions/ntaxa.md)
@@ -122,15 +140,18 @@ Other functions
 - [rangeInt](functions/rangeInt.md)
 - [rep](functions/rep.md)
 - [repArray](functions/repArray.md)
+- [stochasticVariableSelection](functions/stochasticVariableSelection.md)
 - [select](functions/select.md)
 - [simulate](functions/simulate.md)
 - [slice](functions/slice.md)
 - [sort](functions/sort.md)
 - [split](functions/split.md)
+- [substituteClade](functions/substituteClade.md)
 - [sum](functions/sum.md)
 - [hammingWeight](functions/hammingWeight.md)
 - [sumCols](functions/sumCols.md)
 - [sumRows](functions/sumRows.md)
+- [setUnion](functions/setUnion.md)
 - [unique](functions/unique.md)
 
 Types
@@ -140,8 +161,12 @@ Types
 - [Integer[]](types/Integer[].md)
 - [Number[]](types/Number[].md)
 - [Object[]](types/Object[].md)
+- [String[]](types/String[].md)
+- [PopulationFunction[]](types/PopulationFunction[].md)
+- [TimeTree[]](types/TimeTree[].md)
 - [Double[][]](types/Double[][].md)
 - [Number[][]](types/Number[][].md)
+- [String[][]](types/String[][].md)
 - [Boolean](types/Boolean.md)
 - [Double](types/Double.md)
 - [Integer](types/Integer.md)
@@ -157,7 +182,10 @@ Types
 - [FastaAlignment](types/FastaAlignment.md)
 - [MetaDataAlignment](types/MetaDataAlignment.md)
 - [SimpleAlignment](types/SimpleAlignment.md)
+- [PopulationFunction](types/PopulationFunction.md)
+- [SVSPopulation](types/SVSPopulation.md)
 - [SiteModel](types/SiteModel.md)
 - [TimeTree](types/TimeTree.md)
+- [TimeTreeNode](types/TimeTreeNode.md)
 - [Table](types/Table.md)
 

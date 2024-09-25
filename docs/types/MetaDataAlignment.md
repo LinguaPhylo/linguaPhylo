@@ -13,6 +13,8 @@ An alignment containing metadata and parsed from a nexus file.
   - the canonical states excluding ambiguous states.
 - **charset**
   - return a partition alignment. If the string doesn't match charset's syntax, then check if the string matches a defined name in the nexus file. Otherwise it is an error. The string is referred to one partition at a call, but can be multiple blocks, such as a dummy example: d.charset(["2-457\3", "660-896\3", "1-.\3"]).
+- **charsets**
+  - return an alignment array defined by charsets, which could be pre-defined in the nexus file.
 - **dataType**
   - get the data type of this alignment.
 - **getTaxaNames**

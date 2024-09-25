@@ -14,7 +14,7 @@ The nucleotide data type.
 
 ### Examples
 
-- primates2.lphy
+- simpleSerialCoalescentNex.lphy
 
 
 

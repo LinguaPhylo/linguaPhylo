@@ -12,7 +12,7 @@ The phylogenetic continuous-time Markov chain distribution. A sequence is simula
 - [Double[]](../types/Double[].md) **freq** - (optional) the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.
 - [Double[][]](../types/Double[][].md) **Q** - the instantaneous rate matrix.
 - [Double[]](../types/Double[].md) **siteRates** - (optional) a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.
-- [Double[]](../types/Double[].md) **branchRates** - (optional) a rate for each branch in the tree. Branch rates are assumed to be 1.0 otherwise.
+- [Double[]](../types/Double[].md) **branchRates** - (optional) a rate for each branch in the tree. Original branch rates are used if rates not given. Branch rates are assumed to be 1.0 otherwise.
 - [Integer](../types/Integer.md) **L** - (optional) length of the alignment
 - [SequenceType](../types/SequenceType.md) **dataType** - (optional) the data type used for simulations, default to nucleotide
 - [SimpleAlignment](../types/SimpleAlignment.md) **root** - (optional) root sequence, defaults to root sequence generated from equilibrium frequencies.

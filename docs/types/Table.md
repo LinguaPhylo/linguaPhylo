@@ -3,7 +3,9 @@ Table
 ### Methods
 
 - **getColumn**
-  - Return the array of ith column values, where i starts from 0.
+  - Return the column values given a column name.
+- **getColumnAsMatrix**
+  - return the array of (array) records for selected column indices.
 - **getColumnName**
   - Return ith column name, where i starts from 0.
 - **getColumnNames**
