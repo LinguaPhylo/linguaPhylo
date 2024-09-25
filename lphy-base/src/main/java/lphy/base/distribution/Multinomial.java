@@ -2,6 +2,8 @@ package lphy.base.distribution;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -29,9 +31,12 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-
     }
 
+
+    @GeneratorInfo(name = "Multinomial", verbClause = "has", narrativeName = "multinomial distribution",
+            category = GeneratorCategory.PRIOR,
+            description = "The multinomial probability distribution.")
 
     @Override
     public RandomVariable<Integer[]> sample() {
