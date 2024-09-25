@@ -71,7 +71,7 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
 
     @Override
     public Double[] getDomainBounds() {
-        throw new UnsupportedOperationException("TODO");
+        return new Double[]{0.0, Double.POSITIVE_INFINITY};
     }
 
     public double getMean() {
