@@ -11,12 +11,16 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.*;
 
+@Citation(value = "Heled, J., & Drummond, A. J. (2012). Calibrated tree priors for relaxed phylogenetics and divergence time estimation. Systematic biology, 61(1), 138–149. https://doi.org/10.1093/sysbio/syr087",
+        title = "Calibrated tree priors for relaxed phylogenetics and divergence time estimation",
+        DOI = "10.1093/sysbio/syr087", authors = {"Heled","Drummond"}, year = 2012)
 
 public class CalibratedYule extends TaxaConditionedTreeGenerator implements GenerativeDistribution<TimeTree> {
     Value<Number> rootAge;
