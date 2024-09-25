@@ -2,6 +2,7 @@ package lphy.base.evolution.tree;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
@@ -31,7 +32,8 @@ public class SubstituteClade extends DeterministicFunction<TimeTree> {
         setParam(nodeLabelName,nodeLabel);
     }
 
-    @GeneratorInfo(name = "substituteClade", examples = {"substituteClade.lphy"},
+    @GeneratorInfo(name = "substituteClade",
+            category = GeneratorCategory.TREE, examples = {"substituteClade.lphy"},
             description = "Substitute a clade in a tree with a given node and time, as well as the label of the clade root node. The original child clade would be replaced by the give tree." )
     @Override
     public Value<TimeTree> apply() {

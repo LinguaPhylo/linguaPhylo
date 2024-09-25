@@ -2,6 +2,7 @@ package lphy.base.evolution.tree;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
@@ -26,7 +27,8 @@ public class MRCA extends DeterministicFunction<TimeTreeNode> {
         this.taxa = taxa;
     }
 
-    @GeneratorInfo(name = "mrca", description = "get the most recent common ancestor from given tree and taxa names.")
+    @GeneratorInfo(name = "mrca", category = GeneratorCategory.TREE,
+            description = "get the most recent common ancestor from given tree and taxa names.")
     @Override
     public Value<TimeTreeNode> apply() {
         TimeTree tree = getTree().value();

@@ -2,6 +2,7 @@ package lphy.base.evolution.tree;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
@@ -19,7 +20,9 @@ public class LabelClade extends DeterministicFunction<TimeTree> {
         setParam(taxaParamName, taxa);
         setParam(labelParamName, label);
     }
-    @GeneratorInfo(name = "labelClade", description = "Find the most recent common ancestor of given taxa names in the tree and give it a label.")
+    @GeneratorInfo(name = "labelClade",
+            category = GeneratorCategory.TREE, examples = {"labelClade.lphy"},
+            description = "Find the most recent common ancestor of given taxa names in the tree and give it a label.")
     @Override
     public Value<TimeTree> apply() {
         // make a deep copy of the tree

@@ -4,6 +4,7 @@ import lphy.base.distribution.ParametricDistribution;
 import lphy.base.evolution.EvolutionConstants;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -38,7 +39,9 @@ public class SubsampledTree extends ParametricDistribution<TimeTree> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
-    @GeneratorInfo(name = "SubsampledTree", description = "Generate the randomly sampled tree with given sample fractions and clade taxa name arrays within the given tree. The order of sample fractions are respectively matching the name arrays.")
+    @GeneratorInfo(name = "SubsampledTree",
+            category = GeneratorCategory.BD_TREE, examples = {"SubsampledTree.lphy"},
+            description = "Generate a randomly sampled tree using the given sample fractions and clade taxa name arrays from the specified tree. The order of sample fractions corresponds to the order of the name arrays.")
     @Override
     public RandomVariable<TimeTree> sample() {
         TimeTree tree = getTree().value();

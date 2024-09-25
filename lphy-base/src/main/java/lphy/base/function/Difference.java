@@ -29,7 +29,8 @@ public class Difference<T> extends DeterministicFunction<T[]> {
         setParam(secondSetName,  excludeSet);
     }
 
-    @GeneratorInfo(name = "setDifference", description = "Computes the difference between two arrays. The first parameter is the main set, and the second parameter is the exclude set to subtract from the whole set. Elements in the second set not found in the first set are ignored.")
+    @GeneratorInfo(name = "setDifference",
+            description = "Computes the difference between two arrays. The first parameter is the main set, and the second is the set of elements to subtract. Elements in the second set that are not found in the first set are ignored.")
     @Override
     public Value<T[]> apply() {
         Set<T> set1 = new HashSet<>(Arrays.asList(((Value<T[]>) getParams().get(firstSetName)).value()));
