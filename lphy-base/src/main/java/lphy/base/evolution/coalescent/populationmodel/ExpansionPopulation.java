@@ -147,10 +147,10 @@ public class ExpansionPopulation implements PopulationFunction {
      */
     public static void main(String[] args) {
         // Test parameters
-        double N0 = 150.0;
-        double tau = 3.0;
-        double r = 1.4;
-        double NC = 3000.0;
+        double N0 = 175.0;
+        double tau = 70.0;
+        double r = 0.182;
+        double NC = 12383.0;
 
         // Create an instance of ExpansionPopulation
         ExpansionPopulation popModel = new ExpansionPopulation(N0, tau, r, NC);

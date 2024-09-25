@@ -16,7 +16,7 @@ public class ConstantPopulationFunction extends DeterministicFunction<Population
     }
 
     @GeneratorInfo(name="constantPopFunc", narrativeName = "Constant population function",
-            category = GeneratorCategory.COAL_TREE, examples = {" constantCoalescent.lphy" },
+            category = GeneratorCategory.COAL_TREE, examples = {" constantCoal.lphy, constantCoal_gt16.lphy" },
             description = "Models population using a constant population size.")
     @Override
     public Value<PopulationFunction> apply() {

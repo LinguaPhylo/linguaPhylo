@@ -34,7 +34,7 @@ public class ExpansionPopulationFunction extends DeterministicFunction<Populatio
             name = "expansionPopFunc",
             narrativeName = "Piecewise Exponential Growth Function",
             category = GeneratorCategory.COAL_TREE,
-            examples = {"expansionCoalescent.lphy"},
+            examples = {"expansionCoal.lphy"},
             description = "Models population growth using a piecewise exponential growth function."
     )
     @Override

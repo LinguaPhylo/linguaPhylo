@@ -22,7 +22,7 @@ public class LogisticPopulationFunction extends DeterministicFunction<Population
     }
 
     @GeneratorInfo(name="logisticPopFunc", narrativeName = "Logistic growth function",
-            category = GeneratorCategory.COAL_TREE, examples = {" logisticCoalescent.lphy" },
+            category = GeneratorCategory.COAL_TREE, examples = {" logisticCoalescent.lphy, logisticCoalJC.lphy" },
             description = "Models population growth using the logistic growth function.")
     @Override
     public Value<PopulationFunction> apply() {
