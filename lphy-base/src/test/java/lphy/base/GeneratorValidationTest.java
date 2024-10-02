@@ -18,6 +18,10 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Validate if GenerativeDistribution and Function implemented correctly, also see
+ * <a href="https://github.com/LinguaPhylo/linguaPhylo/blob/master/DEV_NOTE2.md">LPhy Developer Guide</a>.
+ */
 public class GeneratorValidationTest {
 
     private static List<Class<GenerativeDistribution>> generativeDistributions = new ArrayList<>();
