@@ -2,7 +2,9 @@ package lphy.base;
 
 import lphy.core.model.BasicFunction;
 import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.GeneratorUtils;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.spi.Extension;
 import lphy.core.spi.LPhyCoreLoader;
 import lphy.core.spi.LPhyExtension;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Validate if GenerativeDistribution and Function implemented correctly, also see
@@ -87,7 +89,13 @@ public class GeneratorValidationTest {
                 fail(genDistCls.getName() + " does not implement getParams() !");
             }
 
-            //TODO constructor, @GeneratorInfo
+            GeneratorInfo ginfo = GeneratorUtils.getGeneratorInfo(genDistCls);
+            assertNotNull(ginfo, genDistCls.getName());
+            // must have name and description
+            assertTrue(ginfo.name() != null && !ginfo.name().isEmpty(), genDistCls.getName());
+            assertTrue(ginfo.description() != null && !ginfo.description().isEmpty(), genDistCls.getName());
+
+            //TODO constructor, params
 
         }
 
@@ -98,18 +106,24 @@ public class GeneratorValidationTest {
     @Test
     void validateFunctions() {
 
-        for (Class<BasicFunction> functionClass : functions) {
-            System.out.println("Validating function : " + functionClass.getName());
+        for (Class<BasicFunction> funcCls : functions) {
+            System.out.println("Validating function : " + funcCls.getName());
 
             try {
                 // Value<T> apply() {
-                Method apply = functionClass.getMethod("apply");
+                Method apply = funcCls.getMethod("apply");
             } catch (NoSuchMethodException e) {
-                fail(functionClass.getName() + " does not implement apply() !");
+                fail(funcCls.getName() + " does not implement apply() !");
             }
-        }
 
-        //TODO constructor, @GeneratorInfo, setParam in constructor, ...
+            GeneratorInfo ginfo = GeneratorUtils.getGeneratorInfo(funcCls);
+            assertNotNull(ginfo, funcCls.getName());
+            // must have name and description
+            assertTrue(ginfo.name() != null && !ginfo.name().isEmpty(), funcCls.getName());
+            assertTrue(ginfo.description() != null && !ginfo.description().isEmpty(), funcCls.getName());
+
+            //TODO constructor, params, setParam in constructor, ...
+        }
 
         System.out.println("\nTotal " + functions.size() + " Generative Distributions.\n");
     }
