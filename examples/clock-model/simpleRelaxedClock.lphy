@@ -1,5 +1,6 @@
 λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
 ψ ~ Yule(lambda=λ, n=16);
+//Deprecated: please use UCLN.
 //To use lphybeast, the mean in real space has to be 1, otherwise there is identifiability issue in MCMC.
 branchRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, replicates=30);
 D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
