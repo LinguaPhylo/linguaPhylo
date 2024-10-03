@@ -52,6 +52,8 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
                 Multinomial.class,
+                // clock model
+                UCLN.class, // TODO LPhyBeast and well-calbr
                 // tree distribution
                 Yule.class, CalibratedYule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,

@@ -1,0 +1,8 @@
+λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Yule(lambda=λ, n=16);
+σ ~ Gamma(shape=5.0, scale=0.05);
+// To use lphybeast, it must be "uclnMean = 1;", otherwise there is identifiability issue in MCMC.
+uclnMean = 1; //uclnMean ~ Exp(mean=2.0);
+// nBranches = 2 * nTaxa - 2
+branchRates ~ UCLN(uclnMean=uclnMean, uclnSigma=σ, n=30);
+D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
