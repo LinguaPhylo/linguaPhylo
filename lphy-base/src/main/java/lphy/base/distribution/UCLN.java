@@ -1,5 +1,6 @@
 package lphy.base.distribution;
 
+import lphy.base.evolution.tree.TimeTree;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
@@ -12,8 +13,6 @@ import org.apache.commons.math3.random.RandomGenerator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static lphy.base.distribution.DistributionConstants.nParamName;
-
 /**
  * Uncorrelated Lognormal Rates Model
  */
@@ -25,20 +24,21 @@ public class UCLN extends ParametricDistribution<Double[]> {
 
     public final static String UCLN_MEAN = "uclnMean";
     public final static String UCLN_SIGMA = "uclnSigma";
+    public static final String TREE = "tree";
     private Value<Number> uclnMean;
     private Value<Number> uclnSigma;
-    private Value<Integer> nBranches;
+    private Value<TimeTree> tree;
 
     public UCLN(@ParameterInfo(name = UCLN_MEAN, narrativeName = "the mean (in real space) of the expected lognormal distribution on branch rates.",
             description = "The mean (in real space) of the lognormal distribution.") Value<Number> uclnMean,
                 @ParameterInfo(name = UCLN_SIGMA, narrativeName = "the standard deviation of the expected lognormal distribution on branch rates",
             description = "The standard deviation of the lognormal distribution.") Value<Number> uclnSigma,
-                @ParameterInfo(name = nParamName, narrativeName = "number of branches",
-            description = "The number of branches.") Value<Integer> nBranches) {
+                @ParameterInfo(name = TREE, narrativeName = "the tree",
+            description = "The tree.") Value<TimeTree> tree) {
         super();
         this.uclnMean = uclnMean;
         this.uclnSigma = uclnSigma;
-        this.nBranches = nBranches;
+        this.tree = tree;
 
         constructDistribution(random);
     }
@@ -51,8 +51,9 @@ public class UCLN extends ParametricDistribution<Double[]> {
             category = GeneratorCategory.PRIOR,
             description = "The uncorrelated lognormal (UCLN) relaxed clock model")
     public RandomVariable<Double[]> sample() {
-
-        Double[] rates = new Double[nBranches.value()];
+        // nBranches = 2 * nTaxa - 2
+        int nBranches = 2 * tree.value().leafCount() - 2;
+        Double[] rates = new Double[nBranches];
 
         LogNormalDistribution lND = createLogNormalDistribution();
 
@@ -86,7 +87,7 @@ public class UCLN extends ParametricDistribution<Double[]> {
         return new TreeMap<>() {{
             put(UCLN_MEAN, uclnMean);
             put(UCLN_SIGMA, uclnSigma);
-            put(nParamName, nBranches);
+            put(TREE, tree);
         }};
     }
 
@@ -95,10 +96,22 @@ public class UCLN extends ParametricDistribution<Double[]> {
         switch (paramName) {
             case UCLN_MEAN -> uclnMean = value;
             case UCLN_SIGMA -> uclnSigma = value;
-            case nParamName -> nBranches = value;
+            case TREE -> tree = value;
             default -> throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
 
         super.setParam(paramName, value); // constructDistribution
+    }
+
+    public Value<Number> getUclnMean() {
+        return uclnMean;
+    }
+
+    public Value<Number> getUclnSigma() {
+        return uclnSigma;
+    }
+
+    public Value<TimeTree> getTree() {
+        return tree;
     }
 }

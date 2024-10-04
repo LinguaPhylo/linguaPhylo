@@ -4,5 +4,5 @@
 // To use lphybeast, it must be "uclnMean = 1;".
 // Otherwise it may have an identifiability issue in MCMC. For example, uclnMean ~ Exp(mean=2.0);
 // nBranches = 2 * nTaxa - 2
-branchRates ~ UCLN(uclnMean=1, uclnSigma=σ, n=30);
+branchRates ~ UCLN(uclnMean=1, uclnSigma=σ, tree=ψ);
 D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
