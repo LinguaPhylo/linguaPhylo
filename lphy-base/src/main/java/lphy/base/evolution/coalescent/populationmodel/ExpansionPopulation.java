@@ -43,6 +43,7 @@ public class ExpansionPopulation implements PopulationFunction {
             throw new IllegalArgumentException("Time tau must be non-negative.");
         }
         this.x = tau + (1.0 / r) * Math.log(N0 / NC);
+        this.N0 = NC * Math.exp(-r * (tau - x));
     }
 
     /**
@@ -147,10 +148,10 @@ public class ExpansionPopulation implements PopulationFunction {
      */
     public static void main(String[] args) {
         // Test parameters
-        double N0 = 175.0;
-        double tau = 70.0;
-        double r = 0.182;
-        double NC = 12383.0;
+        double N0 = 207.0;
+        double tau = 54.59;
+        double r = 0.0117;
+        double NC = 8794.0;
 
         // Create an instance of ExpansionPopulation
         ExpansionPopulation popModel = new ExpansionPopulation(N0, tau, r, NC);
