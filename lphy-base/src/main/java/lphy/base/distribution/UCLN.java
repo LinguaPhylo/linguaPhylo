@@ -16,9 +16,9 @@ import java.util.TreeMap;
 /**
  * Uncorrelated Lognormal Rates Model
  */
-@Citation( value="Drummond et al. Relaxed Phylogenetics and Dating with Confidence, PLoS biology, 4(5), 2006, e88.",
+@Citation( value="Drummond, A.J., Ho, S.Y.W., Phillips, M.J. and Rambaut, A., Relaxed Phylogenetics and Dating with Confidence, PLoS biology, 4(5), 2006, e88.",
         title = "Relaxed Phylogenetics and Dating with Confidence", year = 2006,
-        authors = {"Drummond, A.J., Ho, S.Y.W., Phillips, M.J. and Rambaut, A."},
+        authors = {"Drummond et al."},
         DOI="https://doi.org/10.1371/journal.pbio.0040088")
 public class UCLN extends ParametricDistribution<Double[]> {
 
@@ -29,10 +29,10 @@ public class UCLN extends ParametricDistribution<Double[]> {
     private Value<Number> uclnSigma;
     private Value<TimeTree> tree;
 
-    public UCLN(@ParameterInfo(name = UCLN_MEAN, narrativeName = "the mean (in real space) of the expected lognormal distribution on branch rates.",
-            description = "The mean (in real space) of the lognormal distribution.") Value<Number> uclnMean,
-                @ParameterInfo(name = UCLN_SIGMA, narrativeName = "the standard deviation of the expected lognormal distribution on branch rates",
-            description = "The standard deviation of the lognormal distribution.") Value<Number> uclnSigma,
+    public UCLN(@ParameterInfo(name = UCLN_MEAN, narrativeName = "the mean (real space) of the lognormal distribution",
+            description = "The mean (real space) of the expected lognormal distribution on branch rates.") Value<Number> uclnMean,
+                @ParameterInfo(name = UCLN_SIGMA, narrativeName = "the standard deviation",
+            description = "The standard deviation of the expected lognormal distribution on branch rates.") Value<Number> uclnSigma,
                 @ParameterInfo(name = TREE, narrativeName = "the tree",
             description = "The tree.") Value<TimeTree> tree) {
         super();
