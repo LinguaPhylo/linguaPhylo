@@ -30,18 +30,18 @@ public class ExpansionPopulation implements PopulationFunction {
         this.NC = NC;
 
         // Validate parameters
-        if (N0 <= 0) {
-            throw new IllegalArgumentException("Initial population size N0 must be greater than 0.");
-        }
-        if (NC <= N0) {
-            throw new IllegalArgumentException("Current population size NC must be greater than N0.");
-        }
-        if (r <= 0) {
-            throw new IllegalArgumentException("Growth rate r must be greater than 0.");
-        }
-        if (tau < 0) {
-            throw new IllegalArgumentException("Time tau must be non-negative.");
-        }
+//        if (N0 <= 0) {
+//            throw new IllegalArgumentException("Initial population size N0 must be greater than 0.");
+//        }
+//        if (NC <= N0) {
+//            throw new IllegalArgumentException("Current population size NC must be greater than N0.");
+//        }
+//        if (r <= 0) {
+//            throw new IllegalArgumentException("Growth rate r must be greater than 0.");
+//        }
+//        if (tau < 0) {
+//            throw new IllegalArgumentException("Time tau must be non-negative.");
+//        }
         this.x = tau + (1.0 / r) * Math.log(N0 / NC);
         this.N0 = NC * Math.exp(-r * (tau - x));
     }
@@ -148,10 +148,10 @@ public class ExpansionPopulation implements PopulationFunction {
      */
     public static void main(String[] args) {
         // Test parameters
-        double N0 = 207.0;
-        double tau = 54.59;
-        double r = 0.0117;
-        double NC = 8794.0;
+        double N0 = 0.386;
+        double tau = 2.72;
+        double r = 0.4;
+        double NC = 398.0;
 
         // Create an instance of ExpansionPopulation
         ExpansionPopulation popModel = new ExpansionPopulation(N0, tau, r, NC);
