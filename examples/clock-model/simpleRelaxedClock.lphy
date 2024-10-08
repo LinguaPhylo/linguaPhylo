@@ -1,6 +1,11 @@
-λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(lambda=λ, n=16);
-//This cannot be used by LPhyBEAST, because the mean of log-normal distr on branch rates in real space must be fixed to 1.
-//To create BEAST 2 XML, please use UCLN. See relaxedClockUCLN.lphy
-branchRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, replicates=30);
-D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
+data {
+  n=16;
+  nBranches = 2 * n - 2;
+}
+model {
+  λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Yule(lambda=λ, n=n);
+  //To create BEAST 2 XML using ORC package, please use UCLN_Mean1. See relaxedClockUCLN.lphy
+  branchRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, replicates=nBranches);
+  D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
+}

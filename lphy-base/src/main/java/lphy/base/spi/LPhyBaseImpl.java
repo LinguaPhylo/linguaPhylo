@@ -53,7 +53,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
                 Multinomial.class,
                 // clock model
-                UCLN.class, // TODO LPhyBeast and well-calbr
+                UCLNMean1.class, // TODO LPhyBeast and well-calbr
                 // tree distribution
                 Yule.class, CalibratedYule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
