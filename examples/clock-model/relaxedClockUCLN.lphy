@@ -1,9 +1,16 @@
-λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
-ψ ~ Yule(lambda=λ, n=16);
-σ ~ Gamma(shape=5.0, scale=0.05);
-// To use ORC package, the mean of log-normal distr on branch rates in real space must be fixed to 1.
-// Otherwise it may have an identifiability issue in MCMC.
-branchRates ~ UCLN_Mean1(uclnSigma=σ, tree=ψ);
-// Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate
-uclnMean ~ Gamma(shape=0.1, scale=100);
-D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates, mu=uclnMean);
+data {
+  // 20 taxa
+  ages = arange(start=0.0, stop=2.0, step=0.1);
+}
+model {
+  Θ ~ LogNormal(meanlog=3.0, sdlog=0.5);
+  ψ ~ Coalescent(theta=Θ, ages=ages);
+
+  σ ~ Gamma(shape=5.0, scale=0.05);
+  // To use ORC package, the mean of log-normal distr on branch rates in real space must be fixed to 1.
+  // Otherwise it may have an identifiability issue in MCMC.
+  branchRates ~ UCLN_Mean1(uclnSigma=σ, tree=ψ);
+  // Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate
+  uclnMean ~ Gamma(shape=0.1, scale=100);
+  D ~ PhyloCTMC(L=1000, Q=jukesCantor(), tree=ψ, branchRates=branchRates, mu=uclnMean);
+}

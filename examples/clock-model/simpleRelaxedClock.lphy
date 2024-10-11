@@ -1,11 +1,11 @@
 data {
-  n=16;
+  n=20;
   nBranches = 2 * n - 2;
 }
 model {
   λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
   ψ ~ Yule(lambda=λ, n=n);
-  //To create BEAST 2 XML using ORC package, please use UCLN_Mean1. See relaxedClockUCLN.lphy
+  //To create BEAST 2 XML using ORC package, please use UCLN_Mean1. See relaxedClockUCLN.lphy or simpleUCLN.lphy
   branchRates ~ LogNormal(meanlog=-0.25, sdlog=0.5, replicates=nBranches);
   D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates);
 }

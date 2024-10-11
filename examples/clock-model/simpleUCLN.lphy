@@ -1,0 +1,12 @@
+data {
+  n=20;
+  uclnMean = exp(-0.25);
+}
+model {
+  λ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+  ψ ~ Yule(lambda=λ, n=n);
+  // estimate Sigma
+  σ ~ Gamma(shape=5.0, scale=0.05);
+  branchRates ~ UCLN_Mean1(uclnSigma=σ, tree=ψ);
+  D ~ PhyloCTMC(L=100, Q=jukesCantor(), tree=ψ, branchRates=branchRates, mu=uclnMean);
+}
