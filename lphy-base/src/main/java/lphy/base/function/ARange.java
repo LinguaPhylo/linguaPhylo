@@ -5,6 +5,8 @@ import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
+import java.math.BigDecimal;
+
 public class ARange extends DeterministicFunction<Double[]> {
 
     String startParamName;
@@ -35,11 +37,18 @@ public class ARange extends DeterministicFunction<Double[]> {
 
         Double[] sequence = new Double[len];
 
-        int c = 0;
-        for (double i = s; i <= e; i += t) {
-            sequence[c] = i;
-            c += 1;
+        double v = s;
+        for (int i = 0; i < len; i++) {
+            sequence[i] = BigDecimal.valueOf(v).doubleValue();
+            v += t;
         }
+        if (sequence[len-1] > e) sequence[len-1] = e;
+//  Double Precision Problem
+//        int c = 0;
+//        for (double i = s; i <= e; i += t) {
+//            sequence[c] = i;
+//            c += 1;
+//        }
         return new Value<>(null, sequence, this);
     }
 
