@@ -14,5 +14,6 @@ model {
   uclnMean ~ LogNormal(meanlog=-7, sdlog=0.1);
   D ~ PhyloCTMC(L=1000, Q=jukesCantor(), tree=ψ, branchRates=branchRates, mu=uclnMean);
   // m is model, but model is reserved to model block
+  // TODO the last line has to comment out for lphybeast, otherwise likelihood XML is incorrect.
   jcDist = distance(alignment=D, m="JC96");
 }
