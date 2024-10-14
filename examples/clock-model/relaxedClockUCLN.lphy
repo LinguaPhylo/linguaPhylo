@@ -10,7 +10,9 @@ model {
   // To use ORC package, the mean of log-normal distr on branch rates in real space must be fixed to 1.
   // Otherwise it may have an identifiability issue in MCMC.
   branchRates ~ UCLN_Mean1(uclnSigma=σ, tree=ψ);
-  // Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate
-  uclnMean ~ Gamma(shape=0.1, scale=100);
+  // Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate. "7.50e-04" "9.12e-04" "1.11e-03"
+  uclnMean ~ LogNormal(meanlog=-7, sdlog=0.1);
   D ~ PhyloCTMC(L=1000, Q=jukesCantor(), tree=ψ, branchRates=branchRates, mu=uclnMean);
+  // m is model, but model is reserved to model block
+  jcDist = distance(alignment=D, m="JC96");
 }
