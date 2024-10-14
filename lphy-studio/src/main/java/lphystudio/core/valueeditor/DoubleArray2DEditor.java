@@ -17,15 +17,11 @@ public class DoubleArray2DEditor extends Abstract2DEditor {
         draw2DArray(matrix, editable);
     }
 
-    @Override
-    protected String elementToString(Object obj) {
-        if (obj instanceof Double d)
-            return Double.toString(d);
-        return obj.toString();
-    }
-
-    protected String formatMatrixElement(Object obj) {
-        return format.format(obj);
+    protected String formatMatrixElement(Object element) {
+        String str = elementToString(element);
+        if (str == null || str.isEmpty() || str.equals("null"))
+            return "null";
+        return format.format(Double.parseDouble(str));
     }
 
 }

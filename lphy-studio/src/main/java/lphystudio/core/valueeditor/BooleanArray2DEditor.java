@@ -10,15 +10,7 @@ public class BooleanArray2DEditor extends Abstract2DEditor {
         draw2DArray(matrix, editable);
     }
 
-
-    @Override
-    protected String elementToString(Object obj) {
-        if (obj instanceof Integer d)
-            return Integer.toString(d);
-        return obj.toString();
-    }
-
-    protected String formatMatrixElement(Object obj) {
-        return elementToString(obj);
+    protected String formatMatrixElement(Object element) {
+        return elementToString(element);
     }
 }

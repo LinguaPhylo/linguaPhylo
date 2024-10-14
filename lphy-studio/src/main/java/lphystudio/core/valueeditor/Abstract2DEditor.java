@@ -10,9 +10,11 @@ public abstract class Abstract2DEditor extends JPanel {
     int GAP = 5;
     int corner = 5;
 
-    protected abstract String formatMatrixElement(Object obj);
+    protected abstract String formatMatrixElement(Object element);
 
-    protected abstract String elementToString(Object matrix);
+    protected String elementToString(Object element) {
+        return String.valueOf(element);
+    }
 
     protected void draw2DArray(Object[][] matrix, boolean editable) {
         setOpaque(false);

@@ -18,7 +18,7 @@ public class IntegerArray2DEditor extends Abstract2DEditor {
         return obj.toString();
     }
 
-    protected String formatMatrixElement(Object obj) {
-        return elementToString(obj);
+    protected String formatMatrixElement(Object element) {
+        return elementToString(element);
     }
 }
