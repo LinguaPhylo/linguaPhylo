@@ -42,10 +42,11 @@ public interface AugmentedAlignment<T> extends TaxaCharacterMatrix<T> {
                 String id = treeNode.getId();
                 // ids[i] could be null, but nodeId cannot be null.
                 if (Objects.requireNonNull(nodeId).equals(id)) {
-                    if (i != treeNode.getIndex())
-                        LoggerUtils.log.warning("The index of sequence of internal node (" + nodeId +
-                                ") does not match its internal node index = " + treeNode.getIndex() + " !");
-                    return i;
+                    sequenceId = taxa.ntaxa() + i;
+                    if (sequenceId != treeNode.getIndex())
+                        LoggerUtils.log.warning("The index " + sequenceId + " of sequence of internal node (" +
+                                nodeId + ") does not match its internal node index = " + treeNode.getIndex() + " !");
+                    return sequenceId;
                 }
             }
             return -1;
