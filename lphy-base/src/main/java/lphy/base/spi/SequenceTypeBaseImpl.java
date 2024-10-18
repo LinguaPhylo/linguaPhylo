@@ -33,13 +33,14 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
     /**TODO private or protected?
      * LPhy sequence types {@link SequenceType}
      */
-    private static Map<String, SequenceType> dataTypeMap;
+    protected static Map<String, SequenceType> dataTypeMap;
 
     /**
      * Required by ServiceLoader.
      */
     public SequenceTypeBaseImpl() {
-        dataTypeMap = new ConcurrentHashMap<>();
+        if (dataTypeMap == null)
+            dataTypeMap = new ConcurrentHashMap<>();
     }
 
     /**
