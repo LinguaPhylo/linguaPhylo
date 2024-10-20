@@ -48,7 +48,9 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
                 q1[i] = 0.0;
             else {
                 q1[i] = this.p.value()[i] / cum_prob;
+                if (q1[i] > 1.0){q1[i] = 1.0;}
                 cum_prob = cum_prob - this.p.value()[i];
+                if (cum_prob < 0){ cum_prob = 0;}
             }
         }
         q = new Value<>("q", q1);
