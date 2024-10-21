@@ -23,7 +23,7 @@ public class DataClampingUtils {
     /**
      * @param varInModel   the {@link Var} created by the generator in model block
      * @param parser       used to pull out data dict
-     * @return     If it is data clamping, given a variable id and data dict.
+     * @return     true if it is data clamping, given a variable id and data dict.
      *             This is currently used in parser.
      */
     public static boolean isDataClamping(Var varInModel, LPhyParserDictionary parser) {
