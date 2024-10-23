@@ -197,16 +197,33 @@ I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
 
 ## Registration
 
-After you complete the Java implementation, you need to register it using SPI (Service Provider Interface) 
-so that it can be used in an LPhy script.
+After you complete the Java implementation, you need to register it using [SPI (Service Provider Interface)](https://www.baeldung.com/java-spi)
+so that it can be applied in an LPhy script.
 
-In LPhy core, the registration is normally in the class [lphy.base.spi.LPhyBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/214bb91e8546fc136d51fb50ab6555522a8385a6/lphy-base/src/main/java/lphy/base/spi/LPhyBaseImpl.java#L46-L120). 
-Add your class into the corresponding list.
+In LPhy core, the registration is normally in the Service Provider class [lphy.base.spi.LPhyBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/214bb91e8546fc136d51fb50ab6555522a8385a6/lphy-base/src/main/java/lphy/base/spi/LPhyBaseImpl.java#L46-L120). 
+Add your class into the corresponding list. In the LPhy extension, the registration is in the class to inherit `LPhyBaseImpl`.
 
-To add and register new `SequenceType` in LPhy extension, you need to:
+The registration for `SequenceType` is in the different Service Provider class [lphy.base.spi.SequenceTypeBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/15b3db186f9667f2dcc96cd565a3c0f94e6b1dde/lphy-base/src/main/java/lphy/base/spi/SequenceTypeBaseImpl.java#L19-L31)
 
-1. create your own class and inherit (extends) `SequenceTypeBaseImpl` ;
-2. initialize Map using the same code in the constructor;
-3. copy the method `register()`;
-4. overwrite `declareSequenceTypes()` and register your `SequenceType` there;
-5. overwrite `getExtensionName()`.
+### SPI in LPhy extensions
+
+First, you need to create your own Service Provider class. 
+For `GenerativeDistribution` and `BasicFunction`, 
+it should inherit (extends) `LPhyBaseImpl`. Then, follow the steps below:
+
+1. create an empty constructor, which is required by `ServiceLoader`.
+2. overwrite `declareDistributions()` and register your `GenerativeDistribution` there;
+3. overwrite `declareFunctions()` and register your `BasicFunction` there;
+4. overwrite `getExtensionName()`.
+
+For `SequenceType`, it should inherit (extends) `SequenceTypeBaseImpl`.
+
+1. initialize Map using the same code in the constructor;
+2. copy the method `register()`;
+3. overwrite `declareSequenceTypes()` and register your `SequenceType` there;
+4. overwrite `getExtensionName()`.
+
+The last step is to add your SPI implementation into two configuration files:
+
+i. [module-info](https://github.com/LinguaPhylo/linguaPhylo/blob/15b3db186f9667f2dcc96cd565a3c0f94e6b1dde/lphy-base/src/main/java/module-info.java#L55-L58),
+ii. [META-INF/services](https://github.com/LinguaPhylo/linguaPhylo/blob/master/lphy-base/src/main/resources/META-INF/services/lphy.core.spi.Extension).
