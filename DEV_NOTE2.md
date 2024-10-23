@@ -195,12 +195,12 @@ I ~ Bernoulli(p=0.5, replicates=dim, minSuccesses=dim-2);
 ```
 
 
-## LPhy extension mechanism
+## Registration
 
 After you complete the Java implementation, you need to register it using SPI (Service Provider Interface) 
 so that it can be used in an LPhy script.
 
-
-
+In LPhy core, the registration is normally in the class [lphy.base.spi.LPhyBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/214bb91e8546fc136d51fb50ab6555522a8385a6/lphy-base/src/main/java/lphy/base/spi/LPhyBaseImpl.java#L46-L120). 
+Add your class into the corresponding list.
 
 
