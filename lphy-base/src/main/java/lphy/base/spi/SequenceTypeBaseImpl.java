@@ -30,8 +30,13 @@ public class SequenceTypeBaseImpl implements SequenceTypeExtension {
         return dataTypeMap;
     }
 
-    /**TODO private or protected?
-     * LPhy sequence types {@link SequenceType}
+    /**
+     * To add and register new SequenceType in LPhy extension, you need to:
+     * 1. create your own class and inherit (extends) SequenceTypeBaseImpl ;
+     * 2. copy the constructor to init Map;
+     * 3. copy the method {@link #register()};
+     * 4. overwrite {@link #declareSequenceTypes()} and register your SequenceType there;
+     * 5. overwrite {@link #getExtensionName()}.
      */
     protected static Map<String, SequenceType> dataTypeMap;
 

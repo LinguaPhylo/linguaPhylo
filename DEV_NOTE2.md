@@ -203,4 +203,10 @@ so that it can be used in an LPhy script.
 In LPhy core, the registration is normally in the class [lphy.base.spi.LPhyBaseImpl](https://github.com/LinguaPhylo/linguaPhylo/blob/214bb91e8546fc136d51fb50ab6555522a8385a6/lphy-base/src/main/java/lphy/base/spi/LPhyBaseImpl.java#L46-L120). 
 Add your class into the corresponding list.
 
+To add and register new `SequenceType` in LPhy extension, you need to:
 
+1. create your own class and inherit (extends) `SequenceTypeBaseImpl` ;
+2. initialize Map using the same code in the constructor;
+3. copy the method `register()`;
+4. overwrite `declareSequenceTypes()` and register your `SequenceType` there;
+5. overwrite `getExtensionName()`.
