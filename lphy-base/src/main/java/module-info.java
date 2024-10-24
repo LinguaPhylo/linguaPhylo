@@ -8,6 +8,7 @@ import lphy.base.spi.ValueFormatterBaseImpl;
 module lphy.base {
     requires transitive lphy.core;
     requires transitive jebl;
+    requires transitive mahout.math;
 
     requires transitive java.desktop;
 
