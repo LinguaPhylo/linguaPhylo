@@ -13,7 +13,7 @@ Here’s a breakdown of each:
 
 ### Updating Dependencies by Maven
 
-<a href="./figs/MavenInstall.png"><img src="./figs/MavenInstall.png" width="200" style="float:right"></a>
+<a href="./figs/MavenInstall.png"><img src="./figs/MavenInstall.png" width="200" align="right"></a>
 
 This is typically done with the `mvn install` command (for compiling and installing the project in the local repository).
 
