@@ -239,9 +239,11 @@ and then [reload all Maven projects](#reload-all-maven-projects).
 
 ## Next
 
+- [LPhy Developer Guide 101b (Multi-Module Maven Projects)](DEV_NOTE1.md)
+
 - [LPhy Developer Guide 102 (LPhy in Java)](DEV_NOTE2.md)  in dev ...
 
-- [LPhy Developer Guide 103 (Maven project)](DEV_NOTE3.md)  in dev ...
+- [LPhy Developer Guide 103 (Maven project)](DEV_NOTE3.md) 
 
 - [Advanced developer guide]()  coming soon ...
 
