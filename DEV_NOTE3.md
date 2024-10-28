@@ -41,6 +41,23 @@ mvn clean install -Dmaven.test.skip
 
 4. Find the jar or zip file in the corresponding `target` folder, and upload it to Github release.
 
+## Dependency management
+
+Read [Introduction to the Dependency Mechanism](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html). 
+
+### Dependency analysis tools
+
+1. Displays the dependency tree for this project. https://maven.apache.org/plugins/maven-dependency-plugin/tree-mojo.html
+
+```bash
+mvn dependency:tree -Dverbose
+```
+
+2. Output a classpath string of dependencies from the local repository. https://maven.apache.org/plugins/maven-dependency-plugin/build-classpath-mojo.html
+
+```bash
+mvn dependency:build-classpath
+```
 
 ## Useful Links
 
