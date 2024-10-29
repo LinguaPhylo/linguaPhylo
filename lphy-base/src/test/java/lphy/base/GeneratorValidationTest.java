@@ -90,7 +90,7 @@ public class GeneratorValidationTest {
             }
 
             GeneratorInfo ginfo = GeneratorUtils.getGeneratorInfo(genDistCls);
-            assertNotNull(ginfo, genDistCls.getName());
+            assertNotNull(ginfo, genDistCls.getName() + " does not have @GeneratorInfo !");
             // must have name and description
             assertTrue(ginfo.name() != null && !ginfo.name().isEmpty(), genDistCls.getName());
             assertTrue(ginfo.description() != null && !ginfo.description().isEmpty(), genDistCls.getName());
@@ -117,7 +117,7 @@ public class GeneratorValidationTest {
             }
 
             GeneratorInfo ginfo = GeneratorUtils.getGeneratorInfo(funcCls);
-            assertNotNull(ginfo, funcCls.getName());
+            assertNotNull(ginfo, funcCls.getName() + " does not have @GeneratorInfo !");
             // must have name and description
             assertTrue(ginfo.name() != null && !ginfo.name().isEmpty(), funcCls.getName());
             assertTrue(ginfo.description() != null && !ginfo.description().isEmpty(), funcCls.getName());
