@@ -2,20 +2,17 @@ package lphy.base.distribution;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.model.annotation.GeneratorCategory;
-import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.mahout.math.random.WeightedThing;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Multinomial extends ParametricDistribution<Integer[]> {
-
     private Value<Integer> n;
     private Value<Double[]> p;
-    private Value<Double[]> q;
+    private org.apache.mahout.math.random.Multinomial<String> multinomial;
+    private List<WeightedThing<String>> weightedThings;
 
     public Multinomial(
             @ParameterInfo(name = DistributionConstants.nParamName, description = "number of trials.") Value<Integer> n,
@@ -27,53 +24,31 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
         constructDistribution(random);
     }
 
-    public Multinomial(){}
+    public Multinomial(){
+        constructDistribution(random);
+    }
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
     }
 
-
-    @GeneratorInfo(name = "Multinomial", verbClause = "has", narrativeName = "multinomial distribution",
-            category = GeneratorCategory.PRIOR,
-            description = "The multinomial probability distribution.")
-
     @Override
     public RandomVariable<Integer[]> sample() {
-        //org.apache.mahout.math.random.Multinomial multinomial = new org.apache.mahout.math.random.Multinomial();
-        Double[] q1 = new Double[this.p.value().length];
-        double cum_prob = 1.0;
+        weightedThings = new ArrayList<>();
+        String index;
         for (int i = 0; i < this.p.value().length; i++) {
-            if (p.value()[i] == 0.0)
-                q1[i] = 0.0;
-            else {
-                q1[i] = this.p.value()[i] / cum_prob;
-                if (q1[i] > 1.0){q1[i] = 1.0;}
-                cum_prob = cum_prob - this.p.value()[i];
-                if (cum_prob < 0){ cum_prob = 0;}
-            }
+            index = String.format("%d", i);
+            weightedThings.add(new WeightedThing<>(index,this.p.value()[i]));
         }
-        q = new Value<>("q", q1);
-        int sampleSize = n.value();
-        Integer[] result = new Integer[p.value().length];
-        for (int i = 0; i < p.value().length-1; i++) {
-            Value<Double> pro = new Value<Double>("pro", this.q.value()[i]);
-            Value<Integer> sampleS = new Value<>("sample", sampleSize);
-            Binomial binomial = new Binomial(pro, sampleS);
-            int rand = binomial.sample().value();
-            result[i] = rand;
-            sampleSize -= rand;
-
-            if (sampleSize == 0) {
-                Arrays.fill(result, i + 1, result.length, 0);
-                break;
-            }
+        multinomial = new org.apache.mahout.math.random.Multinomial<String>(weightedThings);
+        Integer[] results = new Integer[p.value().length];
+        Arrays.fill(results, 0);
+        for (int i = 0; i < n.value(); i++) {
+            int result = Integer.parseInt(multinomial.sample());
+            results[result]++;
         }
-
-        result[p.value().length-1] = sampleSize;
-        return new RandomVariable<>(null, result, this);
+        return new RandomVariable<>(null, results, this);
     }
-
 
     @Override
     public Map<String, Value> getParams() {
@@ -87,19 +62,16 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
     public void setParam(String paramName, Value value) {
         switch (paramName) {
             case DistributionConstants.nParamName:
-                n = value;
+                this.n = value;
                 break;
             case DistributionConstants.pParamName:
-                p = value;
+                this.p = value;
                 break;
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
 
-//        super.setParam(paramName, value); // constructDistribution
-    }
 
-    public String toString() {
-        return getName();
+//        super.setParam(paramName, value); // constructDistribution
     }
 }
