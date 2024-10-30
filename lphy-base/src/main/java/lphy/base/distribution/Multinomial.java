@@ -2,6 +2,8 @@ package lphy.base.distribution;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.mahout.math.random.WeightedThing;
@@ -32,6 +34,9 @@ public class Multinomial extends ParametricDistribution<Integer[]> {
     protected void constructDistribution(RandomGenerator random) {
     }
 
+    @GeneratorInfo(name = "Multinomail", verbClause = "has", narrativeName = "multinomial prior",
+            category = GeneratorCategory.PRIOR, examples = {"gt16ReadCountModel.lphy"},
+            description = "The multinomial probability distribution.")
     @Override
     public RandomVariable<Integer[]> sample() {
         weightedThings = new ArrayList<>();
