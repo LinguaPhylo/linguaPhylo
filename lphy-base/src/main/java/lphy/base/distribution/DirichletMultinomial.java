@@ -31,6 +31,7 @@ public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
     }
 
     public DirichletMultinomial(){
+        constructDistribution(random);
     }
 
 

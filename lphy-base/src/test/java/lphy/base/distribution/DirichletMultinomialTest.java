@@ -5,6 +5,7 @@ import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DirichletMultinomialTest {
 
@@ -30,7 +31,7 @@ public class DirichletMultinomialTest {
      * Var(Xi) = n * pi * (1 - pi) * (n + w) / (1 + w)
      * stdDev = sqrt(Var(Xi))
      */
-    //@Test
+    @Test
     public void testDirichletMultinomial() {
         int nReplicates = 100000;
         Integer nv = 100000; // sample size
