@@ -205,7 +205,8 @@
 
     <!--  windows  -->
     <windowsResourceFileVersion>1.0.0.0</windowsResourceFileVersion>
-    <windowsExecutableIcon>${installdir}/src/lphy.ico</windowsExecutableIcon>
+    <!--  this will pick up ico while building  -->
+    <windowsExecutableIcon>/lphy-studio-${product_version}/src/lphy.ico</windowsExecutableIcon>
 
     <vendor>LPhy Development Team</vendor>
 
