@@ -61,6 +61,10 @@ public class SVSPopulationFunction extends DeterministicFunction<SVSPopulation> 
         return (Value<PopulationFunction[]>) getParams().get(MODELS_PARAM_NAME);
     }
 
+    public PopulationFunction getModel(int indicator) {
+        return getModels().value()[indicator];
+    }
+
 
 
     @Override
