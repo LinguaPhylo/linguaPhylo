@@ -1,27 +1,20 @@
 package lphy.base.evolution.coalescent.populationmodel;
 
 import lphy.base.evolution.coalescent.PopulationFunction;
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
+import org.apache.commons.math3.analysis.solvers.BrentSolver;
+import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Locale;
 
 public class ExponentialPopulation implements PopulationFunction {
 
-    private double GrowthRate;
+    private double growthRate;
     private double N0;
+    private double NA; // Ancestral population size
+    private boolean useAncestralPopulation; // Flag to indicate whether to use NA
 
-    /**
-     * Initializes an IterativeLegendreGaussIntegrator with predefined settings for numerical integration.
-     * This setup is optimized for accuracy and efficiency in logistic population model computations.
-     *
-     * @return Configured IterativeLegendreGaussIntegrator with:
-     * - 5 Legendre-Gauss points for quadrature precision.
-     * - Relative accuracy of 1.0e-12 and absolute accuracy of 1.0e-8.
-     * - A minimum of 2 iterations and a maximum of 10,000 iterations.
-     */
     private IterativeLegendreGaussIntegrator createIntegrator() {
         int numberOfPoints = 5; // Legendre-Gauss points
         double relativeAccuracy = 1.0e-12; // relative precision
@@ -32,139 +25,233 @@ public class ExponentialPopulation implements PopulationFunction {
     }
 
 
-    public ExponentialPopulation(double GrowthRate, double N0) {
-        this.GrowthRate = GrowthRate;
+    /**
+     * Constructor without ancestral population.
+     *
+     * @param growthRate Growth rate of the population.
+     * @param N0         Initial population size at time t=0.
+     */
+    public ExponentialPopulation(double growthRate, double N0) {
+        if (N0 <= 0) {
+            throw new IllegalArgumentException("Initial population size N0 must be positive.");
+        }
+        this.growthRate = growthRate;
         this.N0 = N0;
+        this.useAncestralPopulation = false;
+        this.NA = 0.0; // Default value when not using NA
     }
 
     /**
-     * Calculate the growth value at a given time t.。
+     * Constructor with ancestral population.
+     *
+     * @param growthRate             Growth rate of the population.
+     * @param N0                     Initial population size at time t=0.
+     * @param ancestralPopulationSize Ancestral population size NA.
+     */
+    public ExponentialPopulation(double growthRate, double N0, double ancestralPopulationSize) {
+        if (N0 <= 0) {
+            throw new IllegalArgumentException("Initial population size N0 must be positive.");
+        }
+        if (ancestralPopulationSize <= 0) {
+            throw new IllegalArgumentException("Ancestral population size NA must be positive.");
+        }
+        if (ancestralPopulationSize > N0) {
+            throw new IllegalArgumentException("Ancestral population size NA cannot exceed initial population size N0.");
+        }
+        this.growthRate = growthRate;
+        this.N0 = N0;
+        this.useAncestralPopulation = true;
+        this.NA = ancestralPopulationSize;
+    }
+
+    /**
+     * Calculates the population size at a given time t.
+     *
+     * @param t Time at which to calculate the population size.
+     * @return Population size N(t) at time t.
      */
     @Override
     public double getTheta(double t) {
-
-        double r = GrowthRate;
+        double r = growthRate;
         if (r == 0) {
-            return N0;
+            return useAncestralPopulation ? NA : N0;
         } else {
-            return N0 * Math.exp(-t * r);
+            if (useAncestralPopulation) {
+                return (N0 - NA) * Math.exp(-r * t) + NA;
+            } else {
+                return N0 * Math.exp(-r * t);
+            }
         }
     }
 
     /**
-     * Calculate the cumulative intensity over time period from 0 to t.
+     * Calculates the cumulative intensity from time 0 to t.
+     *
+     * @param t Time up to which to calculate the cumulative intensity.
+     * @return Cumulative intensity up to time t.
      */
-
     @Override
     public double getIntensity(double t) {
+        if (t == 0) return 0.0;
 
-        double r = GrowthRate;
-        if (r == 0.0) {
-            return t / N0;
+        if (!useAncestralPopulation) {
+            // Without NA, use analytical solution
+            double r = growthRate;
+            if (r == 0.0) {
+                return t / N0;
+            }
+            return (Math.exp(r * t) - 1.0) / (r * N0);
         } else {
-            return (Math.exp(t * r) - 1.0) / N0 / r;
+            // Numerical integration when using Ancestral Population (NA)
+            UnivariateFunction function = time -> 1.0 / getTheta(time);
+            IterativeLegendreGaussIntegrator integrator = createIntegrator();
+
+            return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
         }
     }
-//
-//        if (t == 0) return 0;
-//
-//
-//        UnivariateFunction function = time -> 1 / getTheta(time);
-//        IterativeLegendreGaussIntegrator integrator = createIntegrator();
-//        return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
-//    }
 
-
-//    @Override
-//    public double getInverseIntensity(double x) {
-////        If min is set to 0 in BrentSolver, an error will be reported:
-////        org.apache.commons.math3.exception.NumberIsTooLargeException: endpoints do not specify an interval: [0, 0]
-////        so I change min equals to 0.1
-//        UnivariateFunction function = time -> getIntensity(time) - x;
-//        UnivariateSolver solver = new BrentSolver();
-//        // The range [0, 100] might need to be adjusted depending on the growth model and expected time range.
-////        return solver.solve(100, function, 0, 100);
-//        return solver.solve(100, function, 0.1, 50);
-//    }
-
+    /**
+     * Calculates the time t corresponding to a given cumulative intensity x.
+     *
+     * @param x Cumulative intensity.
+     * @return Time t such that Intensity(t) = x.
+     */
     @Override
     public double getInverseIntensity(double x) {
-        double r = GrowthRate;
-        if (r == 0.0) {
-            return N0 * x;
+        if (x == 0.0) return 0.0;
+
+        if (!useAncestralPopulation) {
+            // Without NA, use analytical solution
+            double r = growthRate;
+            if (r == 0.0) {
+                return N0 > 0 ? x * N0 : 0.0;
+            }
+            return Math.log(1.0 + x * r * N0) / r;
         } else {
-            return Math.log(1.0 + N0 * x * r) / r;
+            // With NA, use numerical solver
+            UnivariateFunction function = time -> getIntensity(time) - x;
+            UnivariateSolver solver = new BrentSolver();
+            double tMin = 0.0;
+
+            // Estimate initial tMax based on the given intensity x
+            double tMax = estimateInitialTMax(x);
+
+            // Ensure tMax does not exceed half of Double.MAX_VALUE
+            tMax = Math.min(tMax, Double.MAX_VALUE / 2);
+
+            // Attempt to solve within [tMin, tMax]
+            try {
+                return solver.solve(100, function, tMin, tMax);
+            } catch (Exception e) {
+                // If not found, double tMax and retry
+                tMax *= 2.0;
+                while (tMax < Double.MAX_VALUE / 2) {
+                    try {
+                        return solver.solve(100, function, tMin, tMax);
+                    } catch (Exception ex) {
+                        tMax *= 2.0;
+                    }
+                }
+                throw new RuntimeException("Failed to find a valid time for given intensity: " + x, e);
+            }
         }
     }
-//        UnivariateFunction function = time -> getIntensity(time) - x;
-//        UnivariateSolver solver = new BrentSolver();
-//        double tMin = 0;
-//        double tMax = 10;
-//
-//        double lastIntensity = getIntensity(tMin);
-//        System.out.println("Starting search: tMin=" + tMin + ", Intensity=" + lastIntensity);
-//
-//
-//
-//        while (lastIntensity < x) {
-//            tMax *= 2;
-//            lastIntensity = getIntensity(tMax);
-//            System.out.println("Expanding search: tMax=" + tMax + ", Intensity=" + lastIntensity);
-//
-//            if (tMax >= Double.MAX_VALUE / 2) {
-//                System.out.println("Reached maximum double value for tMax.");
-//                tMax = Double.MAX_VALUE / 2;
-//                break;
-//            }
-//        }
-//
-//        try {
-//            double result = solver.solve(100, function, tMin, tMax);
-//            System.out.println("Found time for given intensity: " + result);
-//            System.out.println("Found time for given intensity: " + result + ", x=" + x);
-//            return result;
-//        } catch (Exception e) {
-//            System.out.println("Failed at tMax=" + tMax + " with lastIntensity=" + lastIntensity);
-//            throw new RuntimeException("Failed to find a valid time for given intensity: " + x, e);
-//        }
-//    }
 
+    /**
+     * Estimates an initial tMax value to improve solver efficiency.
+     *
+     * @param x Cumulative intensity.
+     * @return Estimated tMax.
+     */
+    private double estimateInitialTMax(double x) {
+        // Based on cumulative intensity x and model parameters, estimate tMax
+        // Assume when N(t) approaches NA, Intensity(t) ≈ t / (NA * (N0 - NA))
+        // Hence, estimate tMax ≈ x * NA * (N0 - NA) * 1.5
+        double estimatedTMax = x * NA * (N0 - NA) * 1.5;
 
+        // Prevent tMax from being too small
+        estimatedTMax = Math.max(estimatedTMax, 1.0);
+
+        return estimatedTMax;
+    }
+
+    /**
+     * Checks whether the model is using an ancestral population.
+     *
+     * @return True if using NA, false otherwise.
+     */
+    public boolean isUsingAncestralPopulation() {
+        return useAncestralPopulation;
+    }
+
+    /**
+     * Retrieves the ancestral population size NA.
+     *
+     * @return Ancestral population size NA.
+     */
+    public double getAncestralPopulation() {
+        return NA;
+    }
+
+    /**
+     * Indicates whether the model uses an analytical solution.
+     *
+     * @return True if using analytical solution (without NA), false otherwise.
+     */
     @Override
     public boolean isAnalytical() {
-        return false; //use numerical method here
+        return !useAncestralPopulation; // Analytical only when not using NA
     }
 
+    /**
+     * Provides a string representation of the ExponentialPopulation model.
+     *
+     * @return String describing the model parameters.
+     */
     @Override
     public String toString() {
-        return "Exponential growth rate: " + GrowthRate + ", initial size: " + N0;
-    }
-
-
-
-    public static void main(String[] args) {
-        double GrowthRate = 0.1;
-        double N0 = 3;
-        double tStart = 0;
-        double tEnd = 100;
-        int nPoints = 100;
-
-        ExponentialPopulation exponentialPopulation = new ExponentialPopulation(GrowthRate, N0);
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter("exponential_data.csv"))) {
-            writer.println("time,theta");
-            for (int i = 0; i < nPoints; i++) {
-                double t = tStart + (i / (double) (nPoints - 1)) * (tEnd - tStart);
-                double theta = exponentialPopulation.getTheta(t);
-
-                writer.printf(Locale.US, "%.4f,%.4f%n", t, theta);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (useAncestralPopulation) {
+            return "Exponential Population: Growth Rate = " + growthRate +
+                    ", Initial Size = " + N0 + ", Ancestral Population = " + NA;
+        } else {
+            return "Exponential Population: Growth Rate = " + growthRate +
+                    ", Initial Size = " + N0;
         }
     }
 
+    /**
+     * Main method for testing the ExponentialPopulation class functionality.
+     *
+     * @param args Command-line arguments.
+     */
+    public static void main(String[] args) {
+        double growthRate = 0.1;
+        double N0 = 100.0;
+        double ancestralPopulation = 50.0;
+
+        // Define specific test time points
+        double[] testTimes = {0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0};
+
+        // Create an instance without NA
+        ExponentialPopulation expPop = new ExponentialPopulation(growthRate, N0);
+
+        // Create an instance with NA
+        ExponentialPopulation expPopWithNA = new ExponentialPopulation(growthRate, N0, ancestralPopulation);
+
+        // Print header for test points
+        System.out.println("time,theta_noNA,theta_withNA,intensity_noNA,intensity_withNA");
+
+        // Iterate over each test time point
+        for (double t : testTimes) {
+            double theta_noNA = expPop.getTheta(t);
+            double theta_withNA = expPopWithNA.getTheta(t);
+            double intensity_noNA = expPop.getIntensity(t);
+            double intensity_withNA = expPopWithNA.getIntensity(t);
+
+            // Print the results in CSV format
+            System.out.printf(Locale.US, "%.2f,%.4f,%.4f,%.6f,%.6f%n",
+                    t, theta_noNA, theta_withNA, intensity_noNA, intensity_withNA);
+        }
+    }
 }
-
-
 
