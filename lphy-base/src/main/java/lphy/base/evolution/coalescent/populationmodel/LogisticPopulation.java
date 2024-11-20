@@ -6,88 +6,79 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 import org.apache.commons.math3.analysis.solvers.BrentSolver;
 import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Locale;
 
-/**
- * Represents a logistic growth model.
- * This model is defined by the logistic function, which is characterized by an S-shaped growth curve.
- * It is similar to the Gompertz growth model but uses the logistic function parameters:
- * - t50 corresponds to the inflection point of the curve, similar to t50 in the Gompertz model, indicating the time at which the population reaches half of its carrying capacity.
- * - L is analogous to NInfinity in the Gompertz model, representing the carrying capacity or the maximum achievable population size.
- * - b is related to the growth rate parameter b in the Gompertz model, determining the steepness of the curve.
- */
+
 public class LogisticPopulation implements PopulationFunction {
     private double t50;
     private double nCarryingCapacity;
     private double b;
+    private boolean useAncestralPopulation;
+    private double NA;
     private double resolution_magic_number = 1e3;
 
     /**
-     * Constructs a LogisticPopulation model with specified parameters.
-     * @param t50 The midpoint of the logistic function, similar to t50 in the Gompertz model.
-     * @param nCarryingCapacity The carrying capacity or the maximum population size, analogous to NInfinity in the Gompertz model.
-     * @param b The growth rate, related to the growth rate b in the Gompertz model.
+     * Constructs a LogisticPopulation model without ancestral population size (NA).
+     *
+     * @param t50               The midpoint of the logistic function, indicating the inflection point.
+     * @param nCarryingCapacity The carrying capacity or the maximum population size.
+     * @param b                 The growth rate parameter, determining the steepness of the curve.
      */
-
     public LogisticPopulation(double t50, double nCarryingCapacity, double b) {
+        if (nCarryingCapacity <= 0) {
+            throw new IllegalArgumentException("Carrying capacity nCarryingCapacity must be positive.");
+        }
         this.t50 = t50;
         this.nCarryingCapacity = nCarryingCapacity;
         this.b = b;
+        this.useAncestralPopulation = false;
+        this.NA = 0.0; // Default value when not using NA.
     }
 
     /**
-     * Initializes an IterativeLegendreGaussIntegrator with predefined settings for numerical integration.
-     * This setup is optimized for accuracy and efficiency in logistic population model computations.
-     * Parameter values are from chatGPT
+     * Constructs a LogisticPopulation model with an optional ancestral population size (NA).
      *
-     * @return Configured IterativeLegendreGaussIntegrator with:
-     * - 5 Legendre-Gauss points for quadrature precision.
-     * - Relative accuracy of 1.0e-12 and absolute accuracy of 1.0e-8.
-     * - A minimum of 2 iterations and a maximum of 10,000 iterations.
+     * @param t50               The midpoint of the logistic function, indicating the inflection point.
+     * @param nCarryingCapacity The carrying capacity or the maximum population size.
+     * @param b                 The growth rate parameter, determining the steepness of the curve.
+     * @param NA                The ancestral population size. If NA > 0, it modifies the logistic function to approach NA as time increases.
      */
-    private IterativeLegendreGaussIntegrator createIntegrator() {
-        int numberOfPoints = 5; // Legendre-Gauss points
-        double relativeAccuracy = 1.0e-12; // relative precision
-        double absoluteAccuracy = 1.0e-8; // absolute accuracy
-        int minimalIterationCount = 2; // Minimum number of iterations
-        int maximalIterationCount = 10000; //Maximum number of iterations, adjust as needed
-        return new IterativeLegendreGaussIntegrator(numberOfPoints, relativeAccuracy, absoluteAccuracy, minimalIterationCount, maximalIterationCount);
+    public LogisticPopulation(double t50, double nCarryingCapacity, double b, double NA) {
+        if (nCarryingCapacity <= 0) {
+            throw new IllegalArgumentException("Carrying capacity nCarryingCapacity must be positive.");
+        }
+        if (NA <= 0) {
+            throw new IllegalArgumentException("Ancestral population size NA must be positive.");
+        }
+        if (NA > nCarryingCapacity) {
+            throw new IllegalArgumentException("Ancestral population size NA cannot exceed carrying capacity nCarryingCapacity.");
+        }
+        this.t50 = t50;
+        this.nCarryingCapacity = nCarryingCapacity;
+        this.b = b;
+        this.useAncestralPopulation = true;
+        this.NA = NA;
     }
 
 
-    //
     @Override
     public double getTheta(double t) {
-        return nCarryingCapacity / (1 + Math.exp(b * (t - t50)));
+        if (useAncestralPopulation) {
+            return NA + (nCarryingCapacity - NA) / (1 + Math.exp(b * (t - t50)));
+        } else {
+            return nCarryingCapacity / (1 + Math.exp(b * (t - t50)));
+        }
     }
 
-
-    /**
-     * Updates the IterativeLegendreGaussIntegrator setup to address the issue of exceeding the maximum number of evaluations.
-     * Previously, the method encountered TooManyEvaluationsException when the specified maximum iteration count (10,000) was surpassed,
-     * indicating the numerical integration task required more evaluations to achieve the desired accuracy. This update aims to mitigate
-     * the exception by either adjusting the maximum iteration count or enhancing the integrator's accuracy parameters, ensuring the integration
-     * process can complete successfully without compromising computational efficiency or precision.
-     *
-     * Adjustments include:
-     * - Increasing the maximum iteration count, if the computation demands more iterations for convergence.
-     * - Tweaking accuracy parameters (relative and absolute accuracy) for a more robust integration evaluation.
-     * The exact strategy should be chosen based on the specific integration challenges and performance considerations of the task at hand.
-     */
     @Override
     public double getIntensity(double t) {
-        if (t == 0) return 0;
+        if (t == 0) return 0.0;
 
         if (getTheta(t) < nCarryingCapacity / resolution_magic_number) {
 //            throw new RuntimeException("Theta too small to calculate intensity!");
         }
-        UnivariateFunction function = time -> 1 / getTheta(time);
-
-        // Use the separate method to create the integrator
-        IterativeLegendreGaussIntegrator integrator = createIntegrator();
+        UnivariateFunction function = time -> 1 / Math.max(getTheta(time), 1e-20);
+        IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(5, 1.0e-12, 1.0e-8, 2, 10000);
         return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
     }
 
@@ -99,32 +90,26 @@ public class LogisticPopulation implements PopulationFunction {
         UnivariateSolver solver = new BrentSolver();
         double tMin, tMax;
 
-        // Calculate the cumulative intensity at t50 to determine which part of the curve x belongs to
         double intensityAtT50 = getIntensity(t50);
 
         if (x <= intensityAtT50) {
-            // If the given x is less than or equal to the cumulative intensity at t50, the search interval is from 0 to t50
             tMin = 0;
             tMax = t50;
         } else {
             // If the given x is greater than the cumulative intensity at t50, start the search interval from t50 and extend further
             tMin = t50;
-            tMax = 2 * t50; // Initially assume the maximum time as 2*t50
+            tMax = 2 * t50;
 
-
-            // Dynamically adjust tMax until finding a sufficiently large value such that getIntensity(tMax) >= x
             while (getIntensity(tMax) < x) {
                 if (tMax < Double.MAX_VALUE / 2) {
-                    tMax *= 2; // Gradually increase the upper limit of the interval
+                    tMax *= 2;
                 } else {
                     tMax = Double.MAX_VALUE;
-                    System.out.println("Reached Double.MAX_VALUE when finding tMax"); // This print statement is just for testing purposes
-                    break; // Prevent infinite loop
+                    System.out.println("Reached Double.MAX_VALUE when finding tMax");
+                    break;
                 }
             }
         }
-
-        // Attempt to solve using the adjusted interval
         try {
             return solver.solve(100, function, tMin, tMax);
         } catch (Exception e) {
@@ -141,37 +126,12 @@ public class LogisticPopulation implements PopulationFunction {
 
     @Override
     public String toString() {
-        return "Logistic Model: t50=" + t50 + ", nCarryingCapacity=" + nCarryingCapacity + ", b=" + b;
-    }
-
-
-
-
-    public static void main(String[] args) {
-        double nCarryingCapacity = 1;
-        double b = 1;
-        double t50 = 0;
-        double tStart = -10;
-        double tEnd = 10;
-        int nPoints = 100;
-
-        // Logistic constructor order is (t50, L, b)
-        LogisticPopulation logisticPopulation = new LogisticPopulation(t50, nCarryingCapacity, b);
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter("logistic_data.csv"))) {
-            writer.println("time,theta");
-            for (int i = 0; i < nPoints; i++) {
-                double t = tStart + (i / (double) (nPoints - 1)) * (tEnd - tStart);
-                double theta = logisticPopulation.getTheta(t);
-
-                writer.printf(Locale.US, "%.4f,%.4f%n", t, theta);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (useAncestralPopulation) {
+            return String.format(Locale.US, "Logistic Model with NA: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f, NA=%.4f",
+                    t50, nCarryingCapacity, b, NA);
+        } else {
+            return String.format(Locale.US, "Logistic Model: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f",
+                    t50, nCarryingCapacity, b);
         }
     }
-
-
-
-
 }

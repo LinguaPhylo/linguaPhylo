@@ -15,15 +15,6 @@ public class ExponentialPopulation implements PopulationFunction {
     private double NA; // Ancestral population size
     private boolean useAncestralPopulation; // Flag to indicate whether to use NA
 
-    private IterativeLegendreGaussIntegrator createIntegrator() {
-        int numberOfPoints = 5; // Legendre-Gauss points
-        double relativeAccuracy = 1.0e-12; // relative precision
-        double absoluteAccuracy = 1.0e-8; // absolute accuracy
-        int minimalIterationCount = 2; // Minimum number of iterations
-        int maximalIterationCount = 10000; //Maximum number of iterations, adjust as needed
-        return new IterativeLegendreGaussIntegrator(numberOfPoints, relativeAccuracy, absoluteAccuracy, minimalIterationCount, maximalIterationCount);
-    }
-
 
     /**
      * Constructor without ancestral population.
@@ -103,8 +94,9 @@ public class ExponentialPopulation implements PopulationFunction {
             return (Math.exp(r * t) - 1.0) / (r * N0);
         } else {
             // Numerical integration when using Ancestral Population (NA)
-            UnivariateFunction function = time -> 1.0 / getTheta(time);
-            IterativeLegendreGaussIntegrator integrator = createIntegrator();
+            UnivariateFunction function = time -> 1 / Math.max(getTheta(time), 1e-20);
+            IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(5, 1.0e-12, 1.0e-8, 2, 10000);
+
 
             return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
         }
