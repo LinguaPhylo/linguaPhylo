@@ -7,14 +7,14 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
-public class ExpansionPopulationFunction extends DeterministicFunction<PopulationFunction> {
+public class Cons_Exp_ConsPopulationFunction extends DeterministicFunction<PopulationFunction> {
 
     public static final String TAU_PARAM_NAME = "tau";
     public static final String R_PARAM_NAME = "r";
     public static final String NC_PARAM_NAME = "NC";
     public static final String X_PARAM_NAME = "x"; // New independent parameter for time x
 
-    public ExpansionPopulationFunction(
+    public Cons_Exp_ConsPopulationFunction(
             @ParameterInfo(name = TAU_PARAM_NAME, description = "Time before which population size is constant.")
             Value<Double> tau,
             @ParameterInfo(name = R_PARAM_NAME, description = "The exponential growth rate.")
@@ -31,10 +31,10 @@ public class ExpansionPopulationFunction extends DeterministicFunction<Populatio
     }
 
     @GeneratorInfo(
-            name = "expansionPopFunc",
+            name = "Cons_Exp_ConsPopFunc",
             narrativeName = "Piecewise Exponential Growth Function",
             category = GeneratorCategory.COAL_TREE,
-            examples = {"expansionCoal.lphy"},
+            examples = {"Cons_Exp_ConsCoal.lphy"},
             description = "Models population growth using a piecewise exponential growth function with x as an independent parameter."
     )
     @Override
@@ -50,9 +50,9 @@ public class ExpansionPopulationFunction extends DeterministicFunction<Populatio
         double x = xValue.value();
 
         // Create the population function using tau, r, NC, and x
-        PopulationFunction expansionPopulation = new ExpansionPopulation(tau, r, NC, x);
+        PopulationFunction Cons_Exp_ConsPopulation = new Cons_Exp_ConsPopulation(tau, r, NC, x);
 
-        return new Value<>(expansionPopulation, this);
+        return new Value<>(Cons_Exp_ConsPopulation, this);
     }
 
     public Value<Double> getTau() {

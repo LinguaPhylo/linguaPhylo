@@ -7,7 +7,7 @@ import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 import org.apache.commons.math3.exception.NoBracketingException;
 import org.apache.commons.math3.exception.TooManyEvaluationsException;
 
-public class ExpansionPopulation implements PopulationFunction {
+public class Cons_Exp_ConsPopulation implements PopulationFunction {
 
     private double tau; // Time before which population size is constant at N0
     private double r;   // Exponential growth rate
@@ -15,14 +15,14 @@ public class ExpansionPopulation implements PopulationFunction {
     private double x;   // Independent parameter for time at which the population reaches NC
 
     /**
-     * Constructor for ExpansionPopulation model
+     * Constructor for Cons_Exp_ConsPopulation model
      *
      * @param tau Time before which population size is constant at N0
      * @param r   Exponential growth rate
      * @param NC  Current population size after time x
      * @param x   Independent parameter indicating time at which population size equals NC
      */
-    public ExpansionPopulation(double tau, double r, double NC, double x) {
+    public Cons_Exp_ConsPopulation(double tau, double r, double NC, double x) {
         this.tau = tau;
         this.r = r;
         this.NC = NC;
@@ -116,7 +116,7 @@ public class ExpansionPopulation implements PopulationFunction {
 
     @Override
     public String toString() {
-        return "Expansion Population with tau=" + tau + ", r=" + r + ", NC=" + NC + ", x=" + x;
+        return "Cons_Exp_Cons Population with tau=" + tau + ", r=" + r + ", NC=" + NC + ", x=" + x;
     }
 
 
