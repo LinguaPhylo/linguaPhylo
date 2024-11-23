@@ -6,8 +6,6 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 import org.apache.commons.math3.analysis.solvers.BrentSolver;
 import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 
-import java.util.Locale;
-
 public class ExponentialPopulation implements PopulationFunction {
 
     private double growthRate;
@@ -208,41 +206,6 @@ public class ExponentialPopulation implements PopulationFunction {
         } else {
             return "Exponential Population: Growth Rate = " + growthRate +
                     ", Initial Size = " + N0;
-        }
-    }
-
-    /**
-     * Main method for testing the ExponentialPopulation class functionality.
-     *
-     * @param args Command-line arguments.
-     */
-    public static void main(String[] args) {
-        double growthRate = 0.1;
-        double N0 = 100.0;
-        double ancestralPopulation = 50.0;
-
-        // Define specific test time points
-        double[] testTimes = {0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0};
-
-        // Create an instance without NA
-        ExponentialPopulation expPop = new ExponentialPopulation(growthRate, N0);
-
-        // Create an instance with NA
-        ExponentialPopulation expPopWithNA = new ExponentialPopulation(growthRate, N0, ancestralPopulation);
-
-        // Print header for test points
-        System.out.println("time,theta_noNA,theta_withNA,intensity_noNA,intensity_withNA");
-
-        // Iterate over each test time point
-        for (double t : testTimes) {
-            double theta_noNA = expPop.getTheta(t);
-            double theta_withNA = expPopWithNA.getTheta(t);
-            double intensity_noNA = expPop.getIntensity(t);
-            double intensity_withNA = expPopWithNA.getIntensity(t);
-
-            // Print the results in CSV format
-            System.out.printf(Locale.US, "%.2f,%.4f,%.4f,%.6f,%.6f%n",
-                    t, theta_noNA, theta_withNA, intensity_noNA, intensity_withNA);
         }
     }
 }

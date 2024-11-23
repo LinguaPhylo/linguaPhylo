@@ -1,10 +1,6 @@
 package lphy.base.evolution.coalescent.populationmodel;
-import lphy.base.evolution.coalescent.PopulationFunction;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Locale;
+import lphy.base.evolution.coalescent.PopulationFunction;
 
 public class ConstantPopulation implements PopulationFunction {
 
@@ -62,24 +58,4 @@ public class ConstantPopulation implements PopulationFunction {
         return "Constant population size of " + N0;
     }
 
-    public static void main(String[] args) {
-        double N = 100;
-        double tStart = 0;
-        double tEnd = 100;
-        int nPoints = 100;
-
-        ConstantPopulation constantPopulation = new ConstantPopulation(N);
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter("constant_data.csv"))) {
-            writer.println("time,theta");
-            for (int i = 0; i < nPoints; i++) {
-                double t = tStart + (i / (double) (nPoints - 1)) * (tEnd - tStart);
-                double theta = constantPopulation.getTheta(t);
-
-                writer.printf(Locale.US, "%.4f,%.4f%n", t, theta);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
