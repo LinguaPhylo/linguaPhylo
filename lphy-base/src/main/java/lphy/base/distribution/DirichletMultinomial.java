@@ -2,6 +2,8 @@ package lphy.base.distribution;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
@@ -39,6 +41,10 @@ public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
     protected void constructDistribution(RandomGenerator random) {
 
     }
+
+    @GeneratorInfo(name = "DirichletMultinomial", verbClause = "has", narrativeName = "dirichlet multinomial distribution",
+            category = GeneratorCategory.PRIOR,
+            description = "The dirichlet multinomial distribution.")
 
     @Override
     public RandomVariable<Integer[]> sample() {
