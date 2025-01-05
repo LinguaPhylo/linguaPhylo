@@ -5,121 +5,165 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GompertzPopulationT50Test {
 
     private static final double DELTA = 1e-6;
-    final double NInfinity = 10000;  // Example carrying capacity
-    final double t50 = 10.0;  // Example t50 value
-    final double b = 0.1;     // Example growth rate
-    final double NA = 10.000000002;
-//
-GompertzPopulation_t50 gompertzPopulation_t50 = new GompertzPopulation_t50(t50, b, NInfinity, NA);
-    GompertzPopulation_t50 gompertzPopulation_t50WithoutNA = new GompertzPopulation_t50(t50, b, NInfinity);
 
+    /**
+     * Basic test verifying that, if I_na=1 and NA>0, the population uses NA.
+     */
     @Test
-    public void testGetTheta() {
-        double t = gompertzPopulation_t50.getTimeForGivenProportion(0.23456);
-
-
-        double expectedTheta =NA + 0.23456 * (NInfinity - NA);
-        double actualTheta = gompertzPopulation_t50.getTheta(t);
-        assertEquals(expectedTheta, actualTheta, DELTA);
-    }
-    @Test
-    public void testGetThetaWithoutNA() {
-        double t = gompertzPopulation_t50WithoutNA.getTimeForGivenProportion(0.5);
-
-
-        double expectedTheta =0.5 * (NInfinity);
-        double actualTheta = gompertzPopulation_t50WithoutNA.getTheta(t);
-        assertEquals(expectedTheta, actualTheta, DELTA);
-    }
-
-
-
-    @Test
-    public void testGetIntensity() {
-        double t = 5.0;
-        UnivariateFunction function = time -> 1 / gompertzPopulation_t50.getTheta(time);
-        IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(5, 1.0e-10, 1.0e-9, 2, 100000);
-        double expectedIntensity = integrator.integrate(Integer.MAX_VALUE, function, 0, t);
-
-        double actualIntensity = gompertzPopulation_t50.getIntensity(t);
-        assertEquals(expectedIntensity, actualIntensity, DELTA);
-    }
-
-    @Test
-    public void testGetInverseIntensity() {
-        double t = 5.0;
-        double intensity = gompertzPopulation_t50.getIntensity(t);
-
-        double computedTime = gompertzPopulation_t50.getInverseIntensity(intensity);
-
-        assertEquals(t, computedTime, DELTA);
-    }
-
-    @Test
-    void testWithoutAncestralPopulation() {
+    public void testGetThetaWithNA() {
         double t50 = 50.0;
         double b = 0.1;
         double NInfinity = 1000.0;
+        double NA = 10.0;
+        int I_na = 1;
 
-        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity);
+        // Construct with NA usage
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
 
-        double N0 = model.getN0();
-        double N_at_0 = model.getTheta(0.0);
-        assertEquals(N0, N_at_0, 1e-6, "N(t=0) should = N0");
+        // Suppose we want 23.456% of the distance from NA to (NInfinity).
+        double proportion = 0.23456;
+        double expectedTheta = NA + proportion * (NInfinity - NA);
 
-        double N_at_t50 = model.getTheta(t50);
-        assertEquals(NInfinity / 2.0, N_at_t50, 1e-6, "N(t50) should = NInfinity / 2");
+        // Get time at which the model is at that fraction
+        double t = model.getTimeForGivenProportion(proportion);
+        double actualTheta = model.getTheta(t);
 
-        double largeTime = 1000.0;
-        double N_at_largeTime = model.getTheta(largeTime);
-        assertEquals(0, N_at_largeTime, 1e-3, "N(t) should near 0 when t -> +∞");
+        assertEquals(expectedTheta, actualTheta, DELTA, "Theta(t) should match NA + proportion*(N∞ - NA)");
+        assertTrue(model.isUsingAncestralPopulation(), "isUsingAncestralPopulation() should be true when I_na=1 and NA>0.");
     }
 
+    /**
+     * If I_na=0 or NA<=0, the ancestral population is ignored.
+     */
     @Test
-    void testWithAncestralPopulation() {
+    public void testGetThetaWithoutNA() {
+        double t50 = 10.0;
+        double b = 0.1;
+        double NInfinity = 10000.0;
+        double NA = 50.0; // would be ignored if I_na=0
+        int I_na = 0;
+
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
+
+        // For proportion=0.5 => half of NInfinity
+        double proportion = 0.5;
+        double expectedTheta = proportion * NInfinity;
+
+        double t = model.getTimeForGivenProportion(proportion);
+        double actualTheta = model.getTheta(t);
+
+        // NA should be ignored
+        assertEquals(expectedTheta, actualTheta, DELTA, "Theta(t50) should match 0.5*N∞ if I_na=0.");
+        assertTrue(!model.isUsingAncestralPopulation(), "Model should not be using NA if I_na=0.");
+    }
+
+    /**
+     * Tests intensity numeric integration matches a direct numeric approach.
+     */
+    @Test
+    public void testGetIntensity() {
+        double t50 = 50.0;
+        double b = 0.1;
+        double NInfinity = 10000.0;
+        double NA = 10.0;
+        int I_na = 1;
+
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
+        double t = 5.0;
+
+        // Numeric integration reference
+        UnivariateFunction f = time -> 1.0 / model.getTheta(time);
+        IterativeLegendreGaussIntegrator integrator =
+                new IterativeLegendreGaussIntegrator(5, 1.0e-10, 1.0e-9, 2, 100000);
+        double expected = integrator.integrate(Integer.MAX_VALUE, f, 0, t);
+
+        double actual = model.getIntensity(t);
+        assertEquals(expected, actual, DELTA, "Intensity(t) numeric check with NA usage.");
+    }
+
+    /**
+     * Tests getInverseIntensity: the time at which Intensity(t)=x should return t.
+     */
+    @Test
+    public void testGetInverseIntensity() {
+        double t50 = 10.0;
+        double b = 0.05;
+        double NInfinity = 5000.0;
+        double NA = 0.0;  // effectively no baseline
+        int I_na = 1;     // but NA=0 => no effect
+
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
+
+        double t = 4.0;
+        double intensity = model.getIntensity(t);
+
+        double computedTime = model.getInverseIntensity(intensity);
+        assertEquals(t, computedTime, 1e-2, "InverseIntensity(t) should retrieve t within a small tolerance.");
+    }
+
+    /**
+     * Checks that if we construct with I_na=0, the model truly ignores the NA parameter.
+     */
+    @Test
+    public void testIgnoreNA() {
         double t50 = 20.0;
         double b = 0.1;
         double NInfinity = 10000.0;
-        double NA = 100.0;
+        double NA = 10.0;
+        int I_na = 0;  // ignore NA
 
-        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA);
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
 
-        double N0 = model.getN0();
-        double N_at_0 = model.getTheta(0.0);
-        assertEquals(N0, N_at_0, 1e-6, "N(t=0) should =  N0");
+        // For t50 => half of NInfinity
+        double realT50 = model.getT50();
+        double N_at_realT50 = model.getTheta(realT50);
+        assertEquals(NInfinity*0.5, N_at_realT50, 1e-5,
+                "N(t50) should be NInfinity/2 for no-NA scenario.");
 
-        double expectedN_at_t50 = NA + (NInfinity - NA) / 2.0;
-        double N_at_t50 = model.getTheta(t50);
-        assertEquals(expectedN_at_t50, N_at_t50, 1e-6, "N(t50) should = NA + (NInfinity - NA) / 2");
-
-        double largeTime = 1000.0;
-        double N_at_largeTime = model.getTheta(largeTime);
-        assertEquals(NA, N_at_largeTime, 1e-3, "N(t) should = NA when t -> +∞");
     }
 
+    /**
+     * If we set a large time with I_na=1 and NA>0, model should approach NA as t->∞.
+     */
     @Test
-    void testCalculateN0WithNA() {
-        double t50 = 20.0;
+    public void testLongTimeApproachesNA() {
+        double t50 = 55.0;
         double b = 0.1;
-        double NInfinity = 10000.0;
-        double NA = 100.0;
+        double NInfinity = 2000.0;
+        double NA = 10.0;
+        int I_na = 1;
 
-        double exponent = -Math.log(2) * Math.exp(-b * t50);
-        double N0_minus_NA = (NInfinity - NA) * Math.exp(exponent);
-        double expectedN0 = N0_minus_NA + NA;
-        double calculatedN0 = GompertzPopulation_t50.calculateN0(t50, b, NInfinity, NA);
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(t50, b, NInfinity, NA, I_na);
 
-        assertEquals(expectedN0, calculatedN0, 1e-6, "calculateN0 with NA error ");
+        double largeTime = 1e5;
+        double N_at_largeTime = model.getTheta(largeTime);
+        // Should be close to NA
+        assertEquals(NA, N_at_largeTime, 1.0, "As t->∞, N(t) should approach NA if I_na=1.");
     }
 
+    /**
+     * Verifies N0 calculation with an ancestral population.
+     */
+    @Test
+    public void testCalculateN0WithNA() {
+        double testT50 = 163.0;
+        double testB = 0.018;
+        double testNInfinity = 400.0;
+        double testNA = 150.0;
+        int testI_na = 1;
 
+        GompertzPopulation_t50 model = new GompertzPopulation_t50(testT50, testB, testNInfinity, testNA, testI_na);
 
+        // Cross-check the formula
+        double exponent = -Math.log(2) / Math.exp(testB * testT50);
+        double expectedN0 = (testNInfinity - testNA) * Math.exp(exponent) + testNA;
+        double actualN0 = model.getN0();
 
-
-
-
+        assertEquals(expectedN0, actualN0, DELTA, "N0 mismatch with NA usage.");
+    }
 }

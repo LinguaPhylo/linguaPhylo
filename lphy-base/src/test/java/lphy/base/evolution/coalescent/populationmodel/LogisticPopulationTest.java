@@ -4,162 +4,152 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * JUnit tests for the updated LogisticPopulation class,
+ * which now includes an indicator iNa (0 or 1) to control NA usage.
+ */
 public class LogisticPopulationTest {
 
     private static final double DELTA = 1e-6;
 
     /**
-     * Tests the getTheta method without ancestral population size (NA).
+     * Tests getTheta(t) without NA usage (iNa=0).
+     * The logistic equation should behave as if NA=0.0.
      */
     @Test
     public void testThetaWithoutNA() {
-        // Parameter settings
-        double t50 = 10.0; // Midpoint of the logistic growth curve
-        double nCarryingCapacity = 1000.0; // Carrying capacity of the population
-        double b = 0.03; // Growth rate
+        double t50 = 10.0;
+        double carryingCapacity = 1000.0;
+        double b = 0.03;
+        double NA = 500.0; // but will be ignored if iNa=0
+        int iNa = 0;
 
-        // Instantiate LogisticPopulation without NA
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b);
+        // Creates a logistic population ignoring NA
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
 
-        // Test time points
-        double[] testTimes = {5.0, 10.0, 15.0};
-
-        // Expected Theta values based on the logistic growth equation
-        double[] expectedThetaValues = {
-                nCarryingCapacity / (1 + Math.exp(b * (testTimes[0] - t50))), // t = 5
-                nCarryingCapacity / (1 + Math.exp(b * (testTimes[1] - t50))), // t = 10
-                nCarryingCapacity / (1 + Math.exp(b * (testTimes[2] - t50)))  // t = 15
-        };
-
-        // Test each time point
-        for (int i = 0; i < testTimes.length; i++) {
-            double t = testTimes[i];
-            double expected = expectedThetaValues[i];
+        double[] times = {5.0, 10.0, 15.0};
+        for (double t : times) {
+            // Expected: K/(1+exp[b*(t - t50)])
+            double expected = carryingCapacity / (1.0 + Math.exp(b * (t - t50)));
             double actual = population.getTheta(t);
-            System.out.printf("Testing getTheta without NA at t = %.1f: Expected = %.3f, Actual = %.3f%n",
-                    t, expected, actual);
-            assertEquals(expected, actual, DELTA, "Theta without NA should match the expected logistic value.");
+            assertEquals(expected, actual, DELTA,
+                    "Theta(t) without NA should match the standard logistic formula.");
         }
+        assertFalse(population.isUsingAncestralPopulation(),
+                "iNa=0 => the model must not use NA.");
     }
 
     /**
-     * Tests the getTheta method with ancestral population size (NA).
+     * Tests getTheta(t) with NA usage (iNa=1, NA>0).
+     * The logistic equation should incorporate NA as a baseline.
      */
     @Test
     public void testThetaWithNA() {
-        // Parameter settings
-        double t50 = 10.0; // Midpoint of the logistic growth curve
-        double nCarryingCapacity = 1000.0; // Carrying capacity of the population
-        double b = 0.03; // Growth rate
-        double NA = 500.0; // Ancestral population size
+        double t50 = 10.0;
+        double carryingCapacity = 1000.0;
+        double b = 0.03;
+        double NA = 500.0;
+        int iNa = 1; // use NA
 
-        // Instantiate LogisticPopulation with NA
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b, NA);
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
 
-        // Test time points
-        double[] testTimes = {5.0, 10.0, 15.0};
-
-        // Expected Theta values based on the logistic growth equation with NA
-        double[] expectedThetaValues = {
-                NA + (nCarryingCapacity - NA) / (1 + Math.exp(b * (testTimes[0] - t50))), // t = 5
-                NA + (nCarryingCapacity - NA) / (1 + Math.exp(b * (testTimes[1] - t50))), // t = 10
-                NA + (nCarryingCapacity - NA) / (1 + Math.exp(b * (testTimes[2] - t50)))  // t = 15
-        };
-
-        // Test each time point
-        for (int i = 0; i < testTimes.length; i++) {
-            double t = testTimes[i];
-            double expected = expectedThetaValues[i];
+        double[] times = {5.0, 10.0, 15.0};
+        for (double t : times) {
+            // Expected: NA + (K - NA)/(1+exp[b*(t - t50)])
+            double expected = NA + (carryingCapacity - NA)
+                    / (1.0 + Math.exp(b * (t - t50)));
             double actual = population.getTheta(t);
-            System.out.printf("Testing getTheta with NA at t = %.1f: Expected = %.3f, Actual = %.3f%n",
-                    t, expected, actual);
-            assertEquals(expected, actual, DELTA, "Theta with NA should match the expected logistic value considering ancestral population.");
+            assertEquals(expected, actual, DELTA,
+                    "Theta(t) with NA must follow NA + (K - NA)/(1+exp(...)).");
         }
+        assertTrue(population.isUsingAncestralPopulation(),
+                "iNa=1 and NA>0 => the model should be using NA.");
     }
 
     /**
-     * Tests the getIntensity and getInverseIntensity methods without ancestral population size (NA).
+     * Tests intensity and inverseIntensity without NA (iNa=0).
+     * InverseIntensity should recover the original time, within tolerance.
      */
     @Test
     public void testIntensityAndInverseIntensityWithoutNA() {
-        // Parameter settings
         double t50 = 50.0;
-        double nCarryingCapacity = 1000.0;
+        double carryingCapacity = 1000.0;
         double b = 0.1;
+        double NA = 500.0; // ignored
+        int iNa = 0;       // skip NA
 
-        // Instantiate LogisticPopulation without NA
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b);
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
 
-        // Test time points
         double[] testTimes = {0.0, 25.0, 50.0, 75.0, 100.0};
-
         for (double t : testTimes) {
             double intensity = population.getIntensity(t);
-            double inverseT = population.getInverseIntensity(intensity);
-            System.out.printf("Testing Intensity and InverseIntensity without NA at t = %.2f: Intensity = %.6f, Inverse Intensity = %.6f%n",
-                    t, intensity, inverseT);
-            assertEquals(t, inverseT, DELTA, "Inverse intensity should return the original time point within an acceptable error margin.");
+            double recoveredT = population.getInverseIntensity(intensity);
+            assertEquals(t, recoveredT, DELTA,
+                    "Inverse intensity with iNa=0 must retrieve the original time.");
         }
     }
 
     /**
-     * Tests the getIntensity and getInverseIntensity methods with ancestral population size (NA).
+     * Tests intensity and inverseIntensity with NA usage (iNa=1, NA>0).
      */
     @Test
     public void testIntensityAndInverseIntensityWithNA() {
-        // Parameter settings
         double t50 = 50.0;
-        double nCarryingCapacity = 1000.0;
+        double carryingCapacity = 1000.0;
         double b = 0.1;
         double NA = 500.0;
+        int iNa = 1;
 
-        // Instantiate LogisticPopulation with NA
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b, NA);
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
 
-        // Test time points
         double[] testTimes = {0.0, 25.0, 50.0, 75.0, 100.0};
-
         for (double t : testTimes) {
             double intensity = population.getIntensity(t);
-            double inverseT = population.getInverseIntensity(intensity);
-            System.out.printf("Testing Intensity and InverseIntensity with NA at t = %.2f: Intensity = %.6f, Inverse Intensity = %.6f%n",
-                    t, intensity, inverseT);
-            assertEquals(t, inverseT, DELTA, "Inverse intensity should return the original time point within an acceptable error margin.");
+            double recoveredT = population.getInverseIntensity(intensity);
+            assertEquals(t, recoveredT, DELTA,
+                    "Inverse intensity with NA must retrieve the original time within tolerance.");
         }
     }
 
     /**
-     * Tests the toString method of LogisticPopulation with ancestral population size (NA).
+     * Tests the toString output when using NA (iNa=1).
      */
     @Test
     public void testToStringWithNA() {
         double t50 = 10.0;
-        double nCarryingCapacity = 1000.0;
+        double carryingCapacity = 1000.0;
         double b = 0.03;
         double NA = 500.0;
+        int iNa = 1;
 
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b, NA);
-        String expected = String.format(Locale.US, "Logistic Model with NA: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f, NA=%.4f",
-                t50, nCarryingCapacity, b, NA);
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
+        String expected = String.format(Locale.US,
+                "LogisticPopulation [t50=%.4f, K=%.4f, b=%.4f, NA=%.4f, iNa=%d]",
+                t50, carryingCapacity, b, NA, iNa);
         String actual = population.toString();
-        assertEquals(expected, actual);
+        assertEquals(expected, actual, "toString with NA usage must match the expected format.");
     }
 
     /**
-     * Tests the toString method of LogisticPopulation without ancestral population size (NA).
+     * Tests the toString output when ignoring NA (iNa=0).
      */
     @Test
     public void testToStringWithoutNA() {
         double t50 = 10.0;
-        double nCarryingCapacity = 1000.0;
+        double carryingCapacity = 1000.0;
         double b = 0.03;
+        double NA = 500.0; // ignored
+        int iNa = 0;
 
-        LogisticPopulation population = new LogisticPopulation(t50, nCarryingCapacity, b);
-        String expected = String.format(Locale.US, "Logistic Model: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f",
-                t50, nCarryingCapacity, b);
+        LogisticPopulation population = new LogisticPopulation(t50, carryingCapacity, b, NA, iNa);
+        String expected = String.format(Locale.US,
+                "LogisticPopulation [t50=%.4f, K=%.4f, b=%.4f, NA=%.4f, iNa=%d] (NA ignored)",
+                t50, carryingCapacity, b, 0.0, iNa);
+        // note: once iNa=0 => we effectively store NA=0.0 in the constructor
+
         String actual = population.toString();
-        assertEquals(expected, actual);
+        assertEquals(expected, actual, "toString without NA usage must match the expected format.");
     }
 }

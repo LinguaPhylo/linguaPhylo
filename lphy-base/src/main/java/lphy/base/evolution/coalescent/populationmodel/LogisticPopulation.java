@@ -8,130 +8,208 @@ import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
 
 import java.util.Locale;
 
-
+/**
+ * Logistic population model with a single constructor that accepts (t50, carryingCapacity, growthRate, NA, iNa).
+ * <p>
+ * If iNa=0 or ancestralPopulation <= 0, the model ignores NA:
+ * <pre>
+ *   N(t) = carryingCapacity / (1 + exp[growthRate * (t - t50)])
+ * </pre>
+ * If iNa=1 and ancestralPopulation > 0, NA is incorporated:
+ * <pre>
+ *   N(t) = ancestralPopulation +
+ *          (carryingCapacity - ancestralPopulation)
+ *            / (1 + exp[growthRate * (t - t50)])
+ * </pre>
+ * </p>
+ * The coalescent intensity is calculated numerically via ∫1/N(t) dt.
+ */
 public class LogisticPopulation implements PopulationFunction {
-    private double t50;
-    private double nCarryingCapacity;
-    private double b;
-    private boolean useAncestralPopulation;
-    private double NA;
-    private double resolution_magic_number = 1e3;
+
+    private final double t50;                // Logistic midpoint
+    private final double carryingCapacity;   // Logistic carrying capacity (K)
+    private final double growthRate;         // Logistic growth rate (b)
+    private final double ancestralPopulation; // NA (may be 0 if ignored)
+    private final int iNa;                  // 0 or 1
+
+    // A small "resolution" factor used to check for extremely small N(t) if desired
+    private static final double RESOLUTION_MAGIC_NUMBER = 1e3;
 
     /**
-     * Constructs a LogisticPopulation model without ancestral population size (NA).
+     * A single constructor for logistic growth with an optional ancestral population (NA) and indicator (iNa).
+     * <p>
+     *  - If iNa=1 and ancestralPopulation>0, we incorporate NA in the logistic formula.
+     *  - Otherwise, the model ignores NA (effectively sets NA=0 internally).
      *
-     * @param t50               The midpoint of the logistic function, indicating the inflection point.
-     * @param nCarryingCapacity The carrying capacity or the maximum population size.
-     * @param b                 The growth rate parameter, determining the steepness of the curve.
+     * @param t50                The midpoint (inflection point) of the logistic function.
+     * @param carryingCapacity   The carrying capacity K (must be >0).
+     * @param growthRate         The logistic growth rate b (must be >=0).
+     * @param ancestralPopulation Proposed ancestral population size (must be >=0, <= carryingCapacity).
+     * @param iNa                0 or 1. If 1 and ancestralPopulation>0 => use NA, else ignore NA.
      */
-    public LogisticPopulation(double t50, double nCarryingCapacity, double b) {
-        if (nCarryingCapacity <= 0) {
-            throw new IllegalArgumentException("Carrying capacity nCarryingCapacity must be positive.");
+    public LogisticPopulation(double t50,
+                              double carryingCapacity,
+                              double growthRate,
+                              double ancestralPopulation,
+                              int iNa)
+    {
+        if (carryingCapacity <= 0) {
+            throw new IllegalArgumentException("Carrying capacity must be > 0.");
         }
+        if (growthRate < 0) {
+            throw new IllegalArgumentException("Growth rate cannot be negative.");
+        }
+        if (ancestralPopulation < 0) {
+            throw new IllegalArgumentException("Ancestral population (NA) cannot be negative.");
+        }
+
+        if (iNa != 0 && iNa != 1) {
+            throw new IllegalArgumentException("iNa must be 0 or 1.");
+        }
+
         this.t50 = t50;
-        this.nCarryingCapacity = nCarryingCapacity;
-        this.b = b;
-        this.useAncestralPopulation = false;
-        this.NA = 0.0; // Default value when not using NA.
+        this.carryingCapacity = carryingCapacity;
+        this.growthRate = growthRate;
+
+        // Determine whether to actually use NA:
+        if (iNa == 1 && ancestralPopulation > 0.0) {
+            this.ancestralPopulation = ancestralPopulation;
+            this.iNa = 1;
+        } else {
+            // iNa=0 or NA <=0 => ignore NA
+            this.ancestralPopulation = 0.0;
+            this.iNa = 0;
+        }
     }
 
     /**
-     * Constructs a LogisticPopulation model with an optional ancestral population size (NA).
-     *
-     * @param t50               The midpoint of the logistic function, indicating the inflection point.
-     * @param nCarryingCapacity The carrying capacity or the maximum population size.
-     * @param b                 The growth rate parameter, determining the steepness of the curve.
-     * @param NA                The ancestral population size. If NA > 0, it modifies the logistic function to approach NA as time increases.
+     * Returns the logistic population size at time t.
      */
-    public LogisticPopulation(double t50, double nCarryingCapacity, double b, double NA) {
-        if (nCarryingCapacity <= 0) {
-            throw new IllegalArgumentException("Carrying capacity nCarryingCapacity must be positive.");
-        }
-        if (NA <= 0) {
-            throw new IllegalArgumentException("Ancestral population size NA must be positive.");
-        }
-        if (NA > nCarryingCapacity) {
-            throw new IllegalArgumentException("Ancestral population size NA cannot exceed carrying capacity nCarryingCapacity.");
-        }
-        this.t50 = t50;
-        this.nCarryingCapacity = nCarryingCapacity;
-        this.b = b;
-        this.useAncestralPopulation = true;
-        this.NA = NA;
-    }
-
-
     @Override
     public double getTheta(double t) {
-        if (useAncestralPopulation) {
-            return NA + (nCarryingCapacity - NA) / (1 + Math.exp(b * (t - t50)));
+        if (isUsingAncestralPopulation()) {
+            return ancestralPopulation
+                    + (carryingCapacity - ancestralPopulation)
+                    / (1.0 + Math.exp(growthRate * (t - t50)));
         } else {
-            return nCarryingCapacity / (1 + Math.exp(b * (t - t50)));
+            return carryingCapacity
+                    / (1.0 + Math.exp(growthRate * (t - t50)));
         }
     }
 
+    /**
+     * Returns the coalescent intensity: ∫(0..t) [1/N(u)] du, computed by numerical integration.
+     */
     @Override
     public double getIntensity(double t) {
-        if (t == 0) return 0.0;
-
-        if (getTheta(t) < nCarryingCapacity / resolution_magic_number) {
-//            throw new RuntimeException("Theta too small to calculate intensity!");
+        if (t <= 0.0) {
+            return 0.0;
         }
-        UnivariateFunction function = time -> 1 / Math.max(getTheta(time), 1e-20);
-        IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(5, 1.0e-12, 1.0e-8, 2, 10000);
-        return integrator.integrate(Integer.MAX_VALUE, function, 0, t);
+
+        // Optional check for extremely small pop sizes:
+        if (getTheta(t) < carryingCapacity / RESOLUTION_MAGIC_NUMBER) {
+            // e.g. we might throw a warning or skip, but we'll proceed
+        }
+
+        UnivariateFunction integrand = x -> 1.0 / Math.max(getTheta(x), 1e-20);
+        IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(
+                5, 1.0e-12, 1.0e-8, 2, 10000
+        );
+        return integrator.integrate(Integer.MAX_VALUE, integrand, 0.0, t);
     }
 
-
-
+    /**
+     * Solves for t given x = Intensity(t), using a Brent solver.
+     */
     @Override
     public double getInverseIntensity(double x) {
-        UnivariateFunction function = time -> getIntensity(time) - x;
-        UnivariateSolver solver = new BrentSolver();
-        double tMin, tMax;
+        if (x <= 0.0) {
+            return 0.0;
+        }
 
+        UnivariateFunction f = time -> getIntensity(time) - x;
+        UnivariateSolver solver = new BrentSolver();
+
+        double tMin, tMax;
         double intensityAtT50 = getIntensity(t50);
 
         if (x <= intensityAtT50) {
-            tMin = 0;
+            tMin = 0.0;
             tMax = t50;
         } else {
-            // If the given x is greater than the cumulative intensity at t50, start the search interval from t50 and extend further
             tMin = t50;
-            tMax = 2 * t50;
-
+            tMax = 2.0 * t50;
             while (getIntensity(tMax) < x) {
-                if (tMax < Double.MAX_VALUE / 2) {
-                    tMax *= 2;
+                if (tMax < Double.MAX_VALUE / 2.0) {
+                    tMax *= 2.0;
                 } else {
                     tMax = Double.MAX_VALUE;
-                    System.out.println("Reached Double.MAX_VALUE when finding tMax");
+                    System.err.println("Reached Double.MAX_VALUE for tMax bracket");
                     break;
                 }
             }
         }
+
         try {
-            return solver.solve(100, function, tMin, tMax);
+            return solver.solve(100, f, tMin, tMax);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to find a valid time for given intensity: " + x, e);
+            throw new RuntimeException(
+                    String.format("Failed to find valid time for intensity=%.4f", x), e
+            );
         }
     }
 
-
-
     @Override
     public boolean isAnalytical() {
-        return false; //use numerical method here
+        // We use numeric integration
+        return false;
     }
+
+    /**
+     * Checks if we are using an ancestral population in the model (iNa=1 and NA>0).
+     */
+    public boolean isUsingAncestralPopulation() {
+        return (iNa == 1 && ancestralPopulation > 0.0);
+    }
+
+    // ------------------------------------------------------------------
+    // Getters
+    // ------------------------------------------------------------------
+
+    public double getT50() {
+        return t50;
+    }
+
+    public double getCarryingCapacity() {
+        return carryingCapacity;
+    }
+
+    public double getGrowthRate() {
+        return growthRate;
+    }
+
+    public double getAncestralPopulation() {
+        return ancestralPopulation;
+    }
+
+    public int getINa() {
+        return iNa;
+    }
+
+    // ------------------------------------------------------------------
+    // toString
+    // ------------------------------------------------------------------
 
     @Override
     public String toString() {
-        if (useAncestralPopulation) {
-            return String.format(Locale.US, "Logistic Model with NA: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f, NA=%.4f",
-                    t50, nCarryingCapacity, b, NA);
+        if (isUsingAncestralPopulation()) {
+            return String.format(Locale.US,
+                    "LogisticPopulation [t50=%.4f, K=%.4f, b=%.4f, NA=%.4f, iNa=%d]",
+                    t50, carryingCapacity, growthRate, ancestralPopulation, iNa);
         } else {
-            return String.format(Locale.US, "Logistic Model: t50=%.4f, nCarryingCapacity=%.4f, b=%.4f",
-                    t50, nCarryingCapacity, b);
+            return String.format(Locale.US,
+                    "LogisticPopulation [t50=%.4f, K=%.4f, b=%.4f, NA=%.4f, iNa=%d] (NA ignored)",
+                    t50, carryingCapacity, growthRate, ancestralPopulation, iNa);
         }
     }
 }
