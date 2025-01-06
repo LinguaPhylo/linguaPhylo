@@ -1,11 +1,19 @@
 data {
-  L = 200;
+ L = 1000;
 }
 model {
-  t50 ~ Normal(mean=40.0, sd=1.0);
-  b ~ Normal(mean=0.0555, sd=0.0005);
-  nCarryingCapacity ~ Normal(mean=1500.0, sd=50.0);
-  logisticPopFunc = logisticPopFunc(t50=t50, nCarryingCapacity=nCarryingCapacity, b=b);
-  tree ~ CoalescentPopFunc(popFunc=logisticPopFunc, n=16);
-  D ~ PhyloCTMC(tree=tree, L=L, Q=jukesCantor());
+t50 ~ LogNormal(meanlog=0.3, sdlog=0.1);
+b ~ LogNormal(meanlog=2.0, sdlog=0.5);
+nCarryingCapacity ~ LogNormal(meanlog=5, sdlog=0.3);
+I_na ~ UniformDiscrete(lower=0, upper=1);
+NA ~ LogNormal(meanlog=3, sdlog=0.3);
+logisticPopFunc = logisticPopFunc(t50=t50, nCarryingCapacity=nCarryingCapacity, b=b, NA=NA, I_na=I_na);
+tree ~CoalescentPopFunc(n=40, popFunc=logisticPopFunc);
+
+D ~ PhyloCTMC(L=L, Q=jukesCantor(),mu=0.01, tree=tree);
+height = tree.rootAge();
+length = tree.treeLength();
+
 }
+
+
