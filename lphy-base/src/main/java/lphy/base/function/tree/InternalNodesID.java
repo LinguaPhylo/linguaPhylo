@@ -25,7 +25,9 @@ public class InternalNodesID extends DeterministicFunction<TimeTree> {
                            @ParameterInfo(name = INTER_NODE_ID, optional = true,
                                    description = "the vector of internal nodes id.") Value<Object[]> internalNodesID) {
         setInput(treeParamName, tree);
-        setInput(INTER_NODE_ID, internalNodesID);
+        // handle optional
+        if (internalNodesID != null)
+            setInput(INTER_NODE_ID, internalNodesID);
     }
 
     @GeneratorInfo(name = "setInternalNodesID", category = GeneratorCategory.TREE,
