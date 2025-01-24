@@ -10,7 +10,7 @@ model {
   gompertzPopFunc = gompertzPopFunc_f0(f0=f0, b=b, N0=N0, NA=NA, I_na = I_na);
   tree ~ CoalescentPopFunc(n=40, popFunc=gompertzPopFunc);
   D ~ PhyloCTMC(L=L, Q=jukesCantor(), mu=0.01, tree=tree);
-  //height = tree.rootAge();
+  height = tree.rootAge();
 }
 
 
