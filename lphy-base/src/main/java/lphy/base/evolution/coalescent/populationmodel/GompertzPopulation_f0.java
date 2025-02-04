@@ -26,18 +26,6 @@ import java.util.Locale;
  */
 public class GompertzPopulation_f0 implements PopulationFunction {
 
-    // ----------------------------------------------------------------------
-    // Constants for reference (unchanged from your original code)
-    // ----------------------------------------------------------------------
-    public static final String BParamName        = "b";
-    public static final String NINFINITYParamName= "NInfinity";
-    public static final String F0ParamName       = "f0";
-    public static final String N0ParamName       = "N0";
-    public static final String T50ParamName      = "t50"; // not directly used here, but retained if needed
-
-    // ----------------------------------------------------------------------
-    // Core fields
-    // ----------------------------------------------------------------------
     private double N0;         // Initial population size
     private double f0;         // Initial proportion of the carrying capacity (N0/NInfinity)
     private double b;          // Growth rate parameter

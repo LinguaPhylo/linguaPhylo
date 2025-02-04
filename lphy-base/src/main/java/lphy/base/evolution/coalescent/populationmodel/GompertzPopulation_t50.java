@@ -18,17 +18,7 @@ import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
  */
 public class GompertzPopulation_t50 implements PopulationFunction {
 
-    // ----------------------------------------------------------------------
-    // Parameter names
-    // ----------------------------------------------------------------------
-    public static final String BParamName         = "b";
-    public static final String NINFINITYParamName = "NInfinity";
-    public static final String T50ParamName       = "t50";
-    public static final String NAParamName        = "NA";
 
-    // ----------------------------------------------------------------------
-    // Core fields
-    // ----------------------------------------------------------------------
     private double N0;           // Initial population size
     private double b;            // Growth rate
     private double NInfinity;    // Carrying capacity
@@ -36,9 +26,11 @@ public class GompertzPopulation_t50 implements PopulationFunction {
     private double NA;           // Ancestral population size
     private boolean useAncestralPopulation; // Derived from I_na + NA
     private int I_na = 1;        // 0 or 1, defaults to 1
+    private double userT50;
+
 
     /**
-     * Constructor without explicit NA. Defaults I_na=1 but sets NA=0 => effectively ignoring NA.
+     * Constructor without NA. Defaults I_na=1 but sets NA=0 => effectively ignoring NA.
      */
     public GompertzPopulation_t50(double t50, double b, double NInfinity) {
         this(t50, b, NInfinity, 0.0, 1);
@@ -53,13 +45,14 @@ public class GompertzPopulation_t50 implements PopulationFunction {
 
     /**
      * Full constructor: if I_na=0 => ignore NA; if I_na=1 && NA>0 => use NA.
-     * This constructor ensures that N0 is computed immediately if I_na=1 and NA>0,
-     * so that getTheta(...) will work properly without requiring a separate setI_na(1) call.
      *
-     * @param t50 time when population reaches half of carrying capacity
-     * @param b growth rate
-     * @param NInfinity carrying capacity
-     * @param NA ancestral population size
+     * t50 is treated as a "time parameter" for half-carrying capacity.
+     * Then N0 is derived from t50.
+     *
+     * @param t50  time when population reaches half of carrying capacity
+     * @param b    growth rate (> 0)
+     * @param NInfinity carrying capacity (> 0)
+     * @param NA   ancestral population size (>= 0)
      * @param I_na indicator: 0 or 1
      */
     public GompertzPopulation_t50(double t50, double b, double NInfinity, double NA, int I_na) {
@@ -76,47 +69,28 @@ public class GompertzPopulation_t50 implements PopulationFunction {
             throw new IllegalArgumentException("I_na must be 0 or 1.");
         }
 
-        this.b         = b;
+        this.b = b;
         this.NInfinity = NInfinity;
-        this.I_na      = I_na;
+        this.I_na = I_na;
+        this.userT50 = t50;  // store user input
+        this.t50 = t50;      // the actual t50 used in the model
 
-        // If I_na=0 or NA <= 0 => treat as no NA
-        if (I_na == 0 || NA <= 0.0) {
-            this.NA = 0.0;
-            this.useAncestralPopulation = false;
-
-            // Recompute t50 and N0 ignoring NA
-            this.t50 = computeT50(NInfinity, t50, b, false, 0.0);
-            this.N0  = calculateN0(this.t50, b, NInfinity);
-        } else {
-            // I_na=1 && NA>0 => use NA
+        if (I_na == 1 && NA > 0.0) {
             this.NA = NA;
-            this.useAncestralPopulation = true;
-
-            // Immediately compute N0 here to avoid uninitialized N0
-            double tempN0 = calculateN0(t50, b, NInfinity, NA);
-
-//            // Check validity: NInfinity must be > NA, and N0 must be > NA
-//            if (NInfinity <= NA) {
-//                throw new IllegalArgumentException("NInfinity must be > NA when I_na=1.");
-//            }
-//            if (tempN0 <= NA) {
-//                throw new IllegalArgumentException("Calculated N0 <= NA. Invalid usage with I_na=1.");
-//            }
-
-            // Optionally, recompute t50 using the effective scenario
-            // to ensure t50 matches the final N0 used, if needed:
-            t50 = computeT50(NInfinity, t50, b, true, NA);
-
-            // Store final t50, N0
-            this.t50 = t50;
-            this.N0  = tempN0;
+            useAncestralPopulation = true;
+            // Calculate N0 from the t50-based formula with NA
+            this.N0 = calculateN0(t50, b, NInfinity, NA);
+        } else {
+            this.NA = 0.0;
+            useAncestralPopulation = false;
+            // Calculate N0 ignoring NA
+            this.N0 = calculateN0(t50, b, NInfinity);
         }
     }
 
     /**
-     * getTheta(t): if using NA, uses the extended Gompertz formula;
-     * otherwise, uses the standard Gompertz formula.
+     * getTheta(t): standard Gompertz if ignoring NA;
+     * extended formula if useAncestralPopulation==true.
      */
     @Override
     public double getTheta(double t) {
@@ -132,20 +106,16 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         }
     }
 
-    /**
-     * getIntensity(t) = ∫ 1 / N(u) du from 0 to t (numerical).
-     */
     @Override
     public double getIntensity(double t) {
-        if (t <= 0.0) {
-            return 0.0;
-        }
+        if (t <= 0.0) return 0.0;
         UnivariateFunction function = x -> 1.0 / Math.max(getTheta(x), 1e-20);
         IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(
                 5, 1e-12, 1e-8, 2, 10000
         );
         return integrator.integrate(Integer.MAX_VALUE, function, 0.0, t);
     }
+
 
     /**
      * getInverseIntensity(x) solves for time T where getIntensity(T) = x (numerical approach).
@@ -180,70 +150,27 @@ public class GompertzPopulation_t50 implements PopulationFunction {
             return Double.NaN;
         }
     }
-
     @Override
     public boolean isAnalytical() {
         return false;
     }
 
     /**
-     * Static method to compute t50 if needed, depending on whether NA is used.
-     * The second parameter is treated as "N0" in the logic, but you can pass a
-     * provisional t50 or N0 depending on your usage.
-     */
-    public static double computeT50(double NInfinity, double N0, double b, boolean useAncestralPopulation, double NA) {
-        if (b <= 0) {
-            throw new IllegalArgumentException("Growth rate b must be >0.");
-        }
-        double ratio;
-        if (useAncestralPopulation) {
-            double effN0 = N0 - NA;
-            double effNInfinity = NInfinity - NA;
-            ratio = effNInfinity / effN0;
-        } else {
-            if (N0 <= 0 || NInfinity <= N0) {
-                throw new IllegalArgumentException("NInfinity must be > N0 > 0 for no-NA scenario.");
-            }
-            ratio = NInfinity / N0;
-        }
-//        if (ratio <= 1) {
-//            throw new IllegalArgumentException("N0 must be < NInfinity.");
-//        }
-        double proportion = 0.5;
-        return Math.log(1 - Math.log(proportion) / Math.log(ratio)) / b;
-    }
-
-    /**
-     * Static method to compute N0 when ignoring NA.
-     */
-    public static double calculateN0(double t50, double b, double NInfinity) {
-        return NInfinity * Math.pow(2, -Math.exp(-b * t50));
-    }
-
-    /**
-     * Static method to compute N0 when NA>0.
-     */
-    public static double calculateN0(double t50, double b, double NInfinity, double NA) {
-        double exponent = -Math.log(2) / Math.exp(b * t50);
-        double N0_minus_NA = (NInfinity - NA) * Math.exp(exponent);
-        return N0_minus_NA + NA;
-    }
-
-    /**
-     * Returns t50 from the final model perspective, usually getTimeForGivenProportion(0.5).
+     * Returns t50 from the final model perspective.
+     * In principle, this might differ if we recast b or NInfinity, but here we keep it fixed as userT50
+     * or we simply do getTimeForGivenProportion(0.5).
      */
     public double getT50() {
-        return getTimeForGivenProportion(0.5);
+        return t50;
     }
 
-    /**
-     * Returns the initial population size N0.
-     */
-    @MethodInfo(description = "Get the initial population size N0", category = GeneratorCategory.COAL_TREE,
+    @MethodInfo(description = "Get the initial population size N0 derived from t50",
+            category = GeneratorCategory.COAL_TREE,
             examples = {"gompertzCoalescent_t50.lphy"})
     public double getN0() {
-        return this.N0;
+        return N0;
     }
+
 
     /**
      * Returns the time at which N(t) is fraction k of the ratio
@@ -272,47 +199,20 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         return Math.log(1 - Math.log(proportion) / Math.log(ratio)) / b;
     }
 
-    /**
-     * Sets I_na (0 or 1). If set to 0 => ignore NA => recalc N0 ignoring NA.
-     * If set to 1 && NA>0 => we re-derive N0 with NA, ensuring validity.
-     *
-     * This method can be used to switch between ignoring NA and using NA
-     * after construction, but it is not strictly required anymore to
-     * initialize N0 properly if the constructor was already given (I_na=1, NA>0).
-     *
-     * @param i_na 0 or 1
-     */
     public void setI_na(int i_na) {
         if (i_na != 0 && i_na != 1) {
             throw new IllegalArgumentException("I_na must be 0 or 1.");
         }
         this.I_na = i_na;
-        if (i_na == 0) {
-            NA = 0.0;
-            useAncestralPopulation = false;
-            // Recompute N0 ignoring NA
-            t50 = computeT50(NInfinity, t50, b, false, 0.0);
-            N0  = calculateN0(t50, b, NInfinity);
+        if (i_na == 1 && NA > 0.0) {
+            useAncestralPopulation = true;
+            N0 = calculateN0(t50, b, NInfinity, NA);
         } else {
-            if (NA > 0.0) {
-                useAncestralPopulation = true;
-                // Ensure NInfinity>NA, re-check
-                if (NInfinity <= NA) {
-                    throw new IllegalArgumentException("NInfinity must be > NA when I_na=1.");
-                }
-                double tempN0 = calculateN0(t50, b, NInfinity, NA);
-                if (tempN0 <= NA) {
-                    throw new IllegalArgumentException("Calculated N0 <= NA. Invalid usage with I_na=1.");
-                }
-                t50 = computeT50(NInfinity, t50, b, true, NA);
-                N0  = tempN0;
-            } else {
-                // NA=0 => same as ignoring
-                useAncestralPopulation = false;
-                t50 = computeT50(NInfinity, t50, b, false, 0.0);
-                N0  = calculateN0(t50, b, NInfinity);
-            }
+            useAncestralPopulation = false;
+            NA = 0.0;
+            N0 = calculateN0(t50, b, NInfinity);
         }
+
     }
 
     /**
@@ -322,18 +222,34 @@ public class GompertzPopulation_t50 implements PopulationFunction {
         return useAncestralPopulation;
     }
 
+    /**
+     * If you want an alternative approach for the "time at which population is half of NInfinity",
+     * you could add the 'computeT50FromN0(...)' function, but here we interpret user input t50 as final.
+     */
+
+    // --- Helper calculations to get N0 from t50 ---
+    public static double calculateN0(double t50, double b, double NInfinity) {
+        return NInfinity * Math.pow(2, -Math.exp(-b * t50));
+    }
+    public static double calculateN0(double t50, double b, double NInfinity, double NA) {
+        double exponent = -Math.log(2) / Math.exp(b * t50);
+        double N0_minus_NA = (NInfinity - NA) * Math.exp(exponent);
+        return N0_minus_NA + NA;
+    }
+
     @Override
     public String toString() {
         if (useAncestralPopulation) {
             return String.format(
-                    "Gompertz_t50 Model with NA: t50=%.4f, NInfinity=%.4f, b=%.4f, N0=%.4f, NA=%.4f, I_na=%d",
-                    t50, NInfinity, b, N0, NA, I_na
+                    "Gompertz_t50 Model with NA: T50=%.4f, b=%.4f, NInfinity=%.4f, N0=%.4f, NA=%.4f, I_na=%d",
+                    userT50, b, NInfinity, N0, NA, I_na, t50
             );
         } else {
             return String.format(
-                    "Gompertz_t50 Model: t50=%.4f, NInfinity=%.4f, b=%.4f, N0=%.4f, (NA=%.4f ignored), I_na=%d",
-                    t50, NInfinity, b, N0, NA, I_na
+                    "Gompertz_t50 Model: T50=%.4f, b=%.4f, NInfinity=%.4f, N0=%.4f, (NA=%.4f ignored), I_na=%d",
+                    userT50, b, NInfinity, N0, NA, I_na, t50
             );
         }
     }
+
 }
