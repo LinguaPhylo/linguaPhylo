@@ -72,8 +72,6 @@ public class LPhyExamplesTest {
         String[] exampleFiles = workingDir.list((dir1, name) -> name.endsWith(".lphy"));
 
         List<String> ignoreFiles = Arrays.asList(
-                // out of mem
-                "birthDeathRhoSampling.lphy",
                 // give the lphy file name here, if it is not tested
                 "h5n1BDSS.lphy"
         );
@@ -163,10 +161,7 @@ public class LPhyExamplesTest {
         System.out.println("\nTest that examples are revisable using CodeBuilder in " + workingDir.getAbsolutePath());
         String[] exampleFiles = workingDir.list((dir1, name) -> name.endsWith(".lphy"));
         List<String> ignoreFiles = Arrays.asList(
-                // out of mem
-                "birthDeathRhoSampling.lphy",
-                //TODO string var is replaced by value, D.charset([bird, and, belly]);
-                "cpacific.lphy"
+                "cpacific.lphy" //TODO string var is replaced by value, D.charset([bird, and, belly]);
         );
 //        exampleFiles = new String[]{"cpacific.lphy"};
 
