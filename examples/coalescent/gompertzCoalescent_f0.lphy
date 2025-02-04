@@ -1,5 +1,5 @@
 data {
-  L = 1000;
+  L = 100;
 }
 model {
   N0 =1000.0;
@@ -8,7 +8,7 @@ model {
   NA =10.0;
   I_na ~ UniformDiscrete(lower=0, upper=1);
   gompertzPopFunc = gompertzPopFunc_f0(f0=f0, b=b, N0=N0, NA=NA, I_na = I_na);
-  tree ~ CoalescentPopFunc(n=40, popFunc=gompertzPopFunc);
+  tree ~ CoalescentPopFunc(n=20, popFunc=gompertzPopFunc);
   D ~ PhyloCTMC(L=L, Q=jukesCantor(), mu=0.01, tree=tree);
   //height = tree.rootAge();
 }

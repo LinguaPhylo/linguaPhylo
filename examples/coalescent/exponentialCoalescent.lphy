@@ -7,9 +7,9 @@ NA ~ LogNormal(meanlog=5.2, sdlog=0.12);
 I_na ~ UniformDiscrete(lower=0, upper=1);
 
 exponentialPopFunc = exponentialPopFunc(GrowthRate=GrowthRate, N0=N0, NA=NA, I_na=I_na);
-tree ~ CoalescentPopFunc(n=40, popFunc=exponentialPopFunc);
+tree ~ CoalescentPopFunc(n=20, popFunc=exponentialPopFunc);
 
-D ~ PhyloCTMC(L=2000, Q=jukesCantor(),mu=0.01, tree=tree);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(),mu=0.01, tree=tree);
 height = tree.rootAge();
 length = tree.treeLength();
 }

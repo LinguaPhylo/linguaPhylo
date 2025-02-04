@@ -1,5 +1,5 @@
 data {
-  L = 1000;
+  L = 100;
 }
 model {
   t50 ~ LogNormal(meanlog=2.3, sdlog=0.3);
@@ -10,7 +10,7 @@ model {
   gompertzPopFunc = gompertzPopFunc_t50(NInfinity=NInfinity,t50=t50, b=b, NA=NA,I_na = I_na);
   // n0 = gompertzPopFunc.getN0();
   // f0=n0/NInfinity;
-  tree ~ CoalescentPopFunc(n=40, popFunc=gompertzPopFunc);
+  tree ~ CoalescentPopFunc(n=20, popFunc=gompertzPopFunc);
   D ~ PhyloCTMC(tree=tree, L=L, Q=jukesCantor(), mu=1e-2);
   height = tree.rootAge();
   length = tree.treeLength();
