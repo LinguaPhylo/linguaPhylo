@@ -50,6 +50,12 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
             throw new IllegalArgumentException("At least one of " + DistributionConstants.nParamName + ", " + otherTaxaName + " must be specified.");
         }
 
+        for (int i = 0; i < cladeMRCAAge.value().length; i++){
+            if (rootAge.value().doubleValue() <= cladeMRCAAge.value()[i].doubleValue()){
+                throw new IllegalArgumentException("The clade MARCA age shouldn't be smaller than the tree root age!");
+            }
+        }
+
         this.cladeTaxaValue = cladeTaxa;
         this.cladeMRCAAge = cladeMRCAAge;
         this.otherTaxa = otherTaxa;
