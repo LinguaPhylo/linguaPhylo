@@ -211,7 +211,7 @@ public class TimeTreeNode {
      * @return array of all the leaf node names
      */
     @MethodInfo(description = "get all leaf node names under the node.")
-    public String[] getAllLeafNodeNames(){
+    public String[] getLeafNames(){
         final List<TimeTreeNode> leafNodes = new ArrayList<>();
         if (!this.isLeaf()) getAllLeafNodes(leafNodes);
         final String[] nodeNames = new String[leafNodes.size()];

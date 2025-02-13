@@ -4,5 +4,5 @@ TimeTreeNode
 
 - **getAge**
   - Age of the node.
-- **getAllLeafNodeNames**
+- **getLeafNames**
   - get all leaf node names under the node.

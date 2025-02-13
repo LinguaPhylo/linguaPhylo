@@ -124,7 +124,7 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
             inactiveNodes.add(cladeTree.getRoot());
 
             // check repeat names
-            List<String> leafNames = List.of(cladeTree.getRoot().getAllLeafNodeNames());
+            List<String> leafNames = List.of(cladeTree.getRoot().getLeafNames());
             // prepare for checking active nodes names
             boolean hasRepeatName = leafNames.stream().anyMatch(activeNodeNames::contains);
 
