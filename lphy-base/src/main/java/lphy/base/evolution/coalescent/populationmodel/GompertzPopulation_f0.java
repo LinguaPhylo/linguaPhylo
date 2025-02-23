@@ -145,7 +145,7 @@ public class GompertzPopulation_f0 implements PopulationFunction {
         }
         UnivariateFunction integrand = x -> 1.0 / Math.max(getTheta(x), 1e-20);
         IterativeLegendreGaussIntegrator integrator = new IterativeLegendreGaussIntegrator(5, 1.0e-12, 1.0e-8, 2, 10000);
-        return integrator.integrate(Integer.MAX_VALUE, integrand, 0.0, t);
+        return integrator.integrate(100000, integrand, 0.0, t);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class GompertzPopulation_f0 implements PopulationFunction {
 
         // Expand until we bracket the root or reach a huge upper bound
         while (getIntensity(tMax) < x && tMax < Double.MAX_VALUE / 2) {
-            tMax *= 2.0;
+            tMax *= 1.001;
         }
 
         try {
