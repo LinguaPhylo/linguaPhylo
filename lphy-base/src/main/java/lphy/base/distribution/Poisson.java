@@ -55,6 +55,17 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
         constructDistribution(random);
     }
 
+    public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.")
+                   Value<Number> lambda) {
+        super();
+        this.lambda = lambda;
+        this.min = null;
+        this.max = null;
+        this.offset = null;
+
+        constructDistribution(random);
+    }
+
     @Override
     protected void constructDistribution(RandomGenerator random) {
         poisson = new PoissonDistribution(RandomUtils.getRandom(), ValueUtils.doubleValue(lambda),
