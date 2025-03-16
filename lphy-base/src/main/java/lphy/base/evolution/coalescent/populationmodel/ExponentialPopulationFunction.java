@@ -24,13 +24,12 @@ public class ExponentialPopulationFunction extends DeterministicFunction<Populat
     public ExponentialPopulationFunction(
             @ParameterInfo(name = GROWTH_RATE_PARAM_NAME, description = "Exponential growth rate") Value<Double> GrowthRate,
             @ParameterInfo(name = N0_PARAM_NAME, description = "Initial population size") Value<Double> N0,
-            @ParameterInfo(name = NA_PARAM_NAME, description = "Ancestral population size") Value<Double> NA,
-            @ParameterInfo(name = I_NA_PARAM_NAME, description = "Indicator for using NA (0 or 1)") Value<Integer> I_na
+            @ParameterInfo(name = NA_PARAM_NAME, description = "Ancestral population size",optional = true) Value<Double> NA,
+            @ParameterInfo(name = I_NA_PARAM_NAME, description = "Indicator for using NA (0 or 1)",optional = true) Value<Integer> I_na
     ) {
         setParam(GROWTH_RATE_PARAM_NAME, GrowthRate);
         setParam(N0_PARAM_NAME, N0);
-        setParam(NA_PARAM_NAME, NA);
-        setParam(I_NA_PARAM_NAME, I_na);
+
     }
 
     @GeneratorInfo(
