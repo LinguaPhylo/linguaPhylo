@@ -1,5 +1,6 @@
 package lphy.base.spi;
 
+import lphy.base.logger.VCFFormatter;
 import lphy.base.logger.NexusAlignmentFormatter;
 import lphy.base.logger.NexusTreeFormatter;
 import lphy.core.logger.ValueFormatter;
@@ -20,7 +21,8 @@ public class ValueFormatterBaseImpl extends ValueFormatterCoreImpl {//implements
     // extension mechanism is implemented in TextFileFormatted now.
     @Override
     public Set<Class<? extends ValueFormatter>> declareValueFormatters() {
-        return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class);
+        return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class,
+                VCFFormatter.class);
     }
 
     /**
