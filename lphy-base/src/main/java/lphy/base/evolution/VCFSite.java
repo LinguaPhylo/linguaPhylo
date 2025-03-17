@@ -1,17 +1,9 @@
 package lphy.base.evolution;
 
-import lphy.core.logger.TextFileFormatted;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * implement a VCFSites data type {@link TextFileFormatted},
- * which will trigger logging as a vcf format to file.
- */
-public class VCFSite implements TextFileFormatted{
+public class VCFSite{
     private List<VCFSite> sites = new ArrayList<>();
     private String taxaName;
     private int position;
@@ -43,6 +35,20 @@ public class VCFSite implements TextFileFormatted{
         return alt;
     }
 
+    // TODO: deal with ambiguities
+    public String getCanonicalState(int index){
+        if (index == 0){
+            return "A";
+        } else if (index == 1){
+            return "C";
+        } else if (index == 2){
+            return "G";
+        } else if (index == 3){
+            return "T";
+        }
+        return null;
+    }
+
     public String getGenotype(){
         return genotype;
     }
@@ -51,39 +57,4 @@ public class VCFSite implements TextFileFormatted{
         sites.add(site);
     }
 
-    public String toVCFLines(){
-        return taxaName + "\t" + position + "\t.\t" + ref + "\t" + alt + "\t.\t" + "PASS" + "\t.\t" + "GT" + genotype + "\t";
-    }
-
-    @Override
-    public List<String> getTextForFile() {
-        List<String> lines = new ArrayList<>();
-        String formattedDate = getDate();
-
-        // add info lines
-        lines.add("##fileformat=VCFv4.3\n");
-        lines.add("##fileDate="+formattedDate+"\n");
-        lines.add("##source=LinguaPhylo");
-        lines.add("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">");
-        lines.add("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tCELL\n");
-
-        // add each site line
-        for (VCFSite site : this.sites) {
-            lines.add(site.toVCFLines());
-        }
-
-        return lines;
-    }
-
-    private static String getDate() {
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formattedDate = today.format(formatter);
-        return formattedDate;
-    }
-
-    @Override
-    public String getFileType() {
-        return ".vcf";
-    }
 }
