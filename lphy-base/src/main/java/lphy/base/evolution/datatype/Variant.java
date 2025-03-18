@@ -74,4 +74,15 @@ public class Variant{
     public String getGenotype(){
         return genotype;
     }
+
+    public static String getGenotype(int ref, int alt) {
+        String genotype = "";
+        if (ref == alt){
+            genotype = "0|0";
+        } else if (ref !=alt){
+            genotype = "0|1";
+        }
+        return genotype;
+    }
+
 }

@@ -13,14 +13,16 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static lphy.base.evolution.datatype.Variant.getGenotype;
 
 public class SNPSampler extends ParametricDistribution<Variant[]> {
     public final String probabilityName = "p";
     public final String ratioName = "r";
+    Value<Alignment> alignment;
+    Value<Number> p;
+    Value<Number> r;
 
     public SNPSampler(@ParameterInfo(name = ReaderConst.ALIGNMENT, description = "the one sequence alignment") Value<Alignment> alignment,
                       @ParameterInfo(name = probabilityName, description = "the probability of each site to be SNP, deafult to be 0.01", optional = true) Value<Number> p,
@@ -67,23 +69,24 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
         // initialise the output snps
         List<Variant> snpList = new ArrayList<>();
-//
-//        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", (double) p), new Value<>("id", alignment.nchar()), null);
-//        Boolean[] snp_mask = bm.sample().value();
-//
-//        String taxaName = alignment.getTaxonName(0);
-//
-//        for (int i = 0; i < snp_mask.length; i++) {
-//            if (snp_mask[i]) {
-//                int position = i+1;
-//                int ref = getAmbiguousStateIndex(alignment.getState(0,i));
-//                int alt = getRandomCanonicalState(ref);
-//                String genotype = getGenotype(ref,alt);
-//                Variant snp = new Variant(taxaName, position, ref, alt, genotype);
-//
-//                snpList.add(snp);
-//            }
-//        }
+
+        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", (double) p), new Value<>("id", alignment.nchar()), null);
+        Boolean[] snp_mask = bm.sample().value();
+
+        String taxaName = alignment.getTaxonName(0);
+
+        // TODO: deal with heterozygous/non-ref homo rate
+        for (int i = 0; i < snp_mask.length; i++) {
+            if (snp_mask[i]) {
+                int position = i+1;
+                int ref = getAmbiguousStateIndex(alignment.getState(0,i));
+                int alt = getRandomCanonicalState(ref);
+                String genotype = getGenotype(ref,alt);
+                Variant snp = new Variant(taxaName, position, ref, alt, genotype);
+
+                snpList.add(snp);
+            }
+        }
 
         return new RandomVariable<>(null, snpList.toArray(new Variant[0]), this);
     }
@@ -178,7 +181,17 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
     @Override
     public Map<String, Value> getParams() {
-        return Map.of();
+        Map<String, Value> params = new TreeMap<>();
+        if (ReaderConst.ALIGNMENT != null) params.put(ReaderConst.ALIGNMENT, alignment);
+        if (probabilityName != null) params.put(probabilityName, p);
+        if (ratioName != null) params.put(ratioName, r);
+        return params;
+    }
+
+    public void setParam(String paramName, Value value){
+        if (paramName.equals(ReaderConst.ALIGNMENT)) alignment = value;
+        else if (paramName.equals(probabilityName)) p = value;
+        else if (paramName.equals(ratioName)) r = value;
     }
 
     public Value<Alignment> getAlignment() {
@@ -192,4 +205,6 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
     public Value<Number> getRatio() {
         return getParams().get(ratioName);
     }
+
+
 }
