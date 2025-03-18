@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static lphy.base.evolution.datatype.Variant.getGenotype;
-
 public class SNPSampler extends ParametricDistribution<Variant[]> {
     public final String probabilityName = "p";
     public final String ratioName = "r";
