@@ -1,7 +1,7 @@
 package lphy.base.logger;
 
 import lphy.base.parser.VCFUtils;
-import lphy.base.evolution.Variant;
+import lphy.base.evolution.datatype.Variant;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 

@@ -1,4 +1,4 @@
-package lphy.base.evolution;
+package lphy.base.evolution.datatype;
 
 public class Variant{
     private String taxaName;

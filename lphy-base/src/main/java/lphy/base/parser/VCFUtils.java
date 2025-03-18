@@ -1,6 +1,6 @@
 package lphy.base.parser;
 
-import lphy.base.evolution.Variant;
+import lphy.base.evolution.datatype.Variant;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,8 +53,7 @@ public class VCFUtils {
     private static String getDate() {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formattedDate = today.format(formatter);
-        return formattedDate;
+        return today.format(formatter);
     }
 
     private static String fillInGenotype(Variant variant, String name, String[] names) {
@@ -77,7 +76,7 @@ public class VCFUtils {
     public static String[] getTaxaNames(Variant[] variants){
         List<String> names = new ArrayList<>();
         for (Variant variant: variants) {
-            if (names.size() == 0) {
+            if (names.isEmpty()) {
                 names.add(variant.getName());
             } else {
                 if (! names.contains(variant.getName())) {
