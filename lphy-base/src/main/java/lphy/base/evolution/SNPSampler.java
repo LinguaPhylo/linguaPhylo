@@ -11,7 +11,6 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
@@ -70,23 +69,23 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
         // initialise the output snps
         List<Variant> snpList = new ArrayList<>();
-
-        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", (double) p), new Value<>("id", alignment.nchar()), null);
-        Boolean[] snp_mask = bm.sample().value();
-
-        String taxaName = alignment.getTaxonName(0);
-
-        for (int i = 0; i < snp_mask.length; i++) {
-            if (snp_mask[i]) {
-                int position = i+1;
-                int ref = getAmbiguousStateIndex(alignment.getState(0,i));
-                int alt = getRandomCanonicalState(ref);
-                String genotype = getGenotype(ref,alt);
-                Variant snp = new Variant(taxaName, position, ref, alt, genotype);
-
-                snpList.add(snp);
-            }
-        }
+//
+//        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", (double) p), new Value<>("id", alignment.nchar()), null);
+//        Boolean[] snp_mask = bm.sample().value();
+//
+//        String taxaName = alignment.getTaxonName(0);
+//
+//        for (int i = 0; i < snp_mask.length; i++) {
+//            if (snp_mask[i]) {
+//                int position = i+1;
+//                int ref = getAmbiguousStateIndex(alignment.getState(0,i));
+//                int alt = getRandomCanonicalState(ref);
+//                String genotype = getGenotype(ref,alt);
+//                Variant snp = new Variant(taxaName, position, ref, alt, genotype);
+//
+//                snpList.add(snp);
+//            }
+//        }
 
         return new RandomVariable<>(null, snpList.toArray(new Variant[0]), this);
     }
