@@ -142,7 +142,7 @@ public class ThemeColours {
         } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
 //            fillColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             fillColor = getTransparentColor(getFunctionColor());
-        } else if (parser.isClampedVariable(value)) {
+        } else if (parser.isObservedVariable(value)) {
             // fillColor = new Color(0.2f, 0.2f, 1.0f, 0.5f);
             fillColor = getTransparentColor(getClampedVarColor());
         }
@@ -158,7 +158,7 @@ public class ThemeColours {
         } else if (ValueUtils.isValueOfDeterministicFunction(value)) {
 //            drawColor = new Color(0.75f, 0.0f, 0.0f, 1.0f);
             drawColor = getFunctionColor();
-        } else if (parser.isClampedVariable(value)) {
+        } else if (parser.isObservedVariable(value)) {
 //            drawColor = new Color(0.15f, 0.15f, 0.75f, 1.0f);
             drawColor = getClampedVarColor();
         }

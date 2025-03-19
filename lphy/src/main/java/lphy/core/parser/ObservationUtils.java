@@ -10,11 +10,11 @@ import lphy.core.vectorization.VectorizedRandomVariable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataClampingUtils {
+public class ObservationUtils {
 
     // true if this id is contained in both the data block
     // and the model block and the model id is a random variable.
-    public static boolean isClamped(String id, GraphicalModel graphicalModel) {
+    public static boolean isObserved(String id, GraphicalModel graphicalModel) {
         return (id != null && graphicalModel.getDataDictionary().containsKey(id) &&
                 graphicalModel.getModelDictionary().containsKey(id) &&
                 graphicalModel.getModelDictionary().get(id) instanceof RandomVariable);
@@ -26,7 +26,7 @@ public class DataClampingUtils {
      * @return     true if it is data clamping, given a variable id and data dict.
      *             This is currently used in parser.
      */
-    public static boolean isDataClamping(Var varInModel, LPhyParserDictionary parser) {
+    public static boolean isObserved(Var varInModel, LPhyParserDictionary parser) {
         return varInModel.id != null && parser.getDataDictionary().containsKey(varInModel.id);
     }
 
@@ -37,7 +37,7 @@ public class DataClampingUtils {
      * @return {@link VectorizedRandomVariable} for the data clamping case,
      * when the generator is {@link VectorizedDistribution}.
      */
-    public static VectorizedRandomVariable clampDataToVectorizedRandomVariable(
+    public static VectorizedRandomVariable setObservationsToVectorizedRandomVariable(
             Object[] dataToClamp, String id, VectorizedDistribution<?> generator) {
 
         List<RandomVariable> componentVariables = new ArrayList<>();
@@ -48,39 +48,39 @@ public class DataClampingUtils {
             String elemId = id + VectorUtils.INDEX_SEPARATOR + i;
             // clamp data to component variables
             RandomVariable compVar = new RandomVariable(elemId, element, generator.getBaseDistribution(i));
-            compVar.setClamped(true);
+            compVar.setObserved(true);
             componentVariables.add(compVar);
         }
         // require to wrap with VectorizedRandomVariable
         VectorizedRandomVariable variable = new VectorizedRandomVariable(id, componentVariables, generator);
-        variable.setClamped(true);
+        variable.setObserved(true);
         return variable;
     }
 
     /**
-     * @param dataToClamp data to clamp
+     * @param observations normally mean data in Bayesian
      * @param id          id of VectorizedRandomVariable
      * @param generator         the generator
      * @return {@link VectorizedRandomVariable} for the data clamping case,
      * when the generator is {@link IID}.
      */
-    public static VectorizedRandomVariable clampDataToVectorizedRandomVariable(
-            Object[] dataToClamp, String id, IID<?> generator) {
+    public static VectorizedRandomVariable setObservationsToVectorizedRandomVariable(
+            Object[] observations, String id, IID<?> generator) {
 
         List<RandomVariable> componentVariables = new ArrayList<>();
         // loop through the data dataArray to clamp
-        Object[] objects = dataToClamp;
+        Object[] objects = observations;
         for (int i = 0; i < objects.length; i++) {
             Object element = objects[i];
             String elemId = id + VectorUtils.INDEX_SEPARATOR + i;
             // clamp data to component variables
             RandomVariable compVar = new RandomVariable(elemId, element, generator.getBaseDistribution());
-            compVar.setClamped(true);
+            compVar.setObserved(true);
             componentVariables.add(compVar);
         }
         // require to wrap with VectorizedRandomVariable
         VectorizedRandomVariable variable = new VectorizedRandomVariable(id, componentVariables, generator);
-        variable.setClamped(true);
+        variable.setObserved(true);
         return variable;
     }
 }

@@ -2,7 +2,7 @@ package lphy.core.parser.graphicalmodel;
 
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.parser.DataClampingUtils;
+import lphy.core.parser.ObservationUtils;
 
 import java.util.*;
 
@@ -52,8 +52,8 @@ public interface GraphicalModel {
      * @return true if this id is contained in both the data block
      * and the model block and the model id is a random variable.
      */
-    default boolean isClamped(String id) {
-        return DataClampingUtils.isClamped(id, this);
+    default boolean isObserved(String id) {
+        return ObservationUtils.isObserved(id, this);
     }
 
     /**
@@ -61,8 +61,8 @@ public interface GraphicalModel {
      * @return  true if value is {@link RandomVariable}, which should be in model block,
      *          and it is clamped.
      */
-    default boolean isClampedVariable(Value value) {
-        return value instanceof RandomVariable && isClamped(value.getId());
+    default boolean isObservedVariable(Value value) {
+        return value instanceof RandomVariable && isObserved(value.getId());
     }
 
     /**
@@ -113,7 +113,7 @@ public interface GraphicalModel {
         double logPosterior = 0.0;
         for (RandomVariable variable : variables) {
 
-            if (!isClampedVariable(variable)) {
+            if (!isObservedVariable(variable)) {
                 logPosterior += variable.getGenerativeDistribution().logDensity(variable.value());
             } else {
                 logPosterior += variable.getGenerativeDistribution().logDensity(getDataDictionary().get(variable.getId()));

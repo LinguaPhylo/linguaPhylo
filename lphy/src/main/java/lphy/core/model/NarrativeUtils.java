@@ -149,7 +149,7 @@ public class NarrativeUtils {
                             dataVisited.add(value);
 
                             String name = getName(value);
-                            if (!value.isAnonymous() && !model.isClamped(value.getId())) {
+                            if (!value.isAnonymous() && !model.isObserved(value.getId())) {
                                 nameCounts.merge(name, 1, Integer::sum);
                             }
                         }
@@ -232,7 +232,7 @@ public class NarrativeUtils {
                     if (!model.isNamedDataValue(value)) {
                         if (!modelVisited.contains(value)) {
                             modelVisited.add(value);
-                            if (model.isClamped(value.getId()) || value.getOutputs().size() == 0) {
+                            if (model.isObserved(value.getId()) || value.getOutputs().size() == 0) {
                                 dataValues.add(value);
                             }
                         }

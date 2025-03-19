@@ -155,7 +155,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
             ParseTree childContext = ctx.getChild(0);
             String key = childContext.getText();
             TextElement var;
-            if (parser.hasValue(key, context) && parser.isClamped(key)) {
+            if (parser.hasValue(key, context) && parser.isObserved(key)) {
                 // data clamping
                 var = new TextElement(key, textPane.getStyle(ColorizerStyles.clampedVariable));
             } else
@@ -380,7 +380,7 @@ public class LineCodeColorizer extends LPhyBaseListener implements CodeColorizer
         if (parser.hasValue(key, context)) {
             Value value = parser.getValue(key, context);
 
-            if (parser.isClamped(key)) // data clamping
+            if (parser.isObserved(key)) // data clamping
                 return new TextElement(key, textPane.getStyle(ColorizerStyles.clampedVariable));
 
             return new TextElement(key, value instanceof RandomVariable ? randomStyle : valueStyle);

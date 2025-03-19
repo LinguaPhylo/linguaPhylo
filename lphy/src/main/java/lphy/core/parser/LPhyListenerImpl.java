@@ -283,7 +283,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             Var var = (Var)visit(ctx.getChild(0));
             RandomVariable variable = null;
 
-            if (DataClampingUtils.isDataClamping(var, parserDictionary)) {
+            if (ObservationUtils.isObserved(var, parserDictionary)) {
                 // data clamping
                 Object valueVal = Objects.requireNonNull(parserDictionary.getDataDictionary().get(var.getId())).value();
 
@@ -291,15 +291,15 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                 // data clamping requires to wrap the list of component RandomVariable into VectorizedRandomVariable,
                 // so that the equation and narrative can be generated properly
                 if (genDist instanceof VectorizedDistribution<?> vectDist && valueVal.getClass().isArray()) {
-                    variable = DataClampingUtils.clampDataToVectorizedRandomVariable(
+                    variable = ObservationUtils.setObservationsToVectorizedRandomVariable(
                             (Object[]) valueVal, var.getId(), vectDist);
                 } else if (genDist instanceof IID<?> iid && valueVal.getClass().isArray()) {
-                    variable = DataClampingUtils.clampDataToVectorizedRandomVariable(
+                    variable = ObservationUtils.setObservationsToVectorizedRandomVariable(
                             (Object[]) valueVal, var.getId(), iid);
                 } else {
                     // singe var
                     variable = new RandomVariable(var.getId(), valueVal, genDist);
-                    variable.setClamped(true);
+                    variable.setObserved(true);
                 }
                 LoggerUtils.log.info("Data clamping: the value of " + var.getId() +
                         " in the 'model' block is replaced by the value of " + var.getId() + " in the 'data' block .");

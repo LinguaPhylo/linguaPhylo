@@ -35,7 +35,7 @@ public class Value<T> implements GraphicalModelNode<T> {
     DeterministicFunction<T> function = null;
 
     // for UI
-    boolean isClamped = false;
+    boolean isObserved = false;
 
     /**
      * Detect if the value has been changed, especially in GUI.
@@ -195,12 +195,12 @@ public class Value<T> implements GraphicalModelNode<T> {
         this.function = f;
     }
 
-    public boolean isClamped() {
-        return isClamped;
+    public boolean isObserved() {
+        return isObserved;
     }
 
-    public void setClamped(boolean clamped) {
-        isClamped = clamped;
+    public void setObserved(boolean observed) {
+        isObserved = observed;
     }
 
     public boolean isDirty() {

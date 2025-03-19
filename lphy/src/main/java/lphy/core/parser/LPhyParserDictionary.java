@@ -129,7 +129,7 @@ public interface LPhyParserDictionary extends GraphicalModel {
     default String getUniqueId(Value value) {
         String uniqueId = value.getCanonicalId();
         if (uniqueId == null) uniqueId = value.getUniqueId();
-        if (isClamped(value.getId()) && isNamedDataValue(value)) {
+        if (isObserved(value.getId()) && isNamedDataValue(value)) {
             uniqueId = "'" + uniqueId + "'";
         }
         return uniqueId;

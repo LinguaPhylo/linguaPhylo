@@ -5,8 +5,8 @@ import lphy.core.parser.LPhyParserDictionary;
 import lphystudio.core.theme.ThemeColours;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static lphystudio.core.theme.ThemeColours.*;
 
@@ -76,7 +76,7 @@ public class GraphvizDotUtils {
             }
 
             String name = getUniqueId(node, parser);
-            boolean isClamped = parser.isClamped(node.getUniqueId());
+            boolean isClamped = parser.isObserved(node.getUniqueId());
             String nodeString = graphvizNodeString(node, name, isData, isClamped) + ";\n";
             if (isData) {
                 dataNodes.add(nodeString);
@@ -194,7 +194,7 @@ public class GraphvizDotUtils {
 
     private static String getUniqueId(GraphicalModelNode node, LPhyParserDictionary parser) {
         String name = node.getUniqueId();
-        if (node instanceof Value && !((Value)node).isAnonymous() && parser.isClamped(((Value) node).getId())) {
+        if (node instanceof Value && !((Value)node).isAnonymous() && parser.isObserved(((Value) node).getId())) {
             name = node.hashCode()+"";
         }
         return name;

@@ -429,7 +429,7 @@ public class LaTeXNarrative implements NarrativeLayeredGraph {
         String type = "const";
         String style = "cstyle";
 
-        if (parser.isClampedVariable(value)) {
+        if (parser.isObservedVariable(value)) {
             type = "obs";
             style = "dstyle";
         } else if (value instanceof RandomVariable) {
@@ -455,7 +455,7 @@ public class LaTeXNarrative implements NarrativeLayeredGraph {
             label = LaTeXUtils.getMathId(value, true, true);
         }
 
-        if (parser.isClamped(value.getId()) && parser.isNamedDataValue(value)) {
+        if (parser.isObserved(value.getId()) && parser.isNamedDataValue(value)) {
             label = "'" + label + "'";
         }
 

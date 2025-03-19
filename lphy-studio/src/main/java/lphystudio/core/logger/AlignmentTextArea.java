@@ -116,7 +116,7 @@ public class AlignmentTextArea extends JTextArea implements SimulatorListener {
         for (Value<?> v : variables) {
             if (v.value() instanceof SimpleAlignment || v.value() instanceof SimpleAlignment[]) {
                 // exclude clamped alignment
-                if (! parser.isClampedVariable(v))
+                if (! parser.isObservedVariable(v))
                     values.add(v);
             }
         }
