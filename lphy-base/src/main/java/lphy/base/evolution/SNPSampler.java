@@ -30,8 +30,8 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
                                "default all SNPs are heterozygous", optional = true) Value<Number> r) {
 
         if (alignment == null) throw new IllegalArgumentException("The alignment can't be null!");
-        if (alignment.value().length() >= 1) throw new IllegalArgumentException("The alignment should be one sequence alignment");
-        if (! alignment.getType().equals(Nucleotides.NAME)) throw new IllegalArgumentException("Only take haploid alignment!");
+        if (alignment.value().length() > 1) throw new IllegalArgumentException("The alignment should be one sequence alignment");
+        if (! alignment.value().getSequenceTypeStr().equals(Nucleotides.NAME)) throw new IllegalArgumentException("Only take haploid alignment!");
         setParam(ReaderConst.ALIGNMENT, alignment);
 
         if (p != null){
@@ -70,24 +70,22 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
         // initialise the output snps
         List<Variant> snpList = new ArrayList<>();
 
-        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", (double) p), new Value<>("id", alignment.nchar()), null);
+        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", p.doubleValue()), new Value<>("id", alignment.nchar()), null);
         Boolean[] snp_mask = bm.sample().value();
 
         String taxaName = alignment.getTaxonName(0);
 
         // TODO: deal with heterozygous/non-ref homo rate
         for (int i = 0; i < snp_mask.length; i++) {
-            if (snp_mask[i]) {
-                int position = i+1;
+            if (snp_mask[i] == Boolean.TRUE) {
+                int position = i;
                 int ref = getAmbiguousStateIndex(alignment.getState(0,i));
                 int alt = getRandomCanonicalState(ref);
                 String genotype = getGenotype(ref,alt);
                 Variant snp = new Variant(taxaName, position, ref, alt, genotype);
-
                 snpList.add(snp);
             }
         }
-
         return new RandomVariable<>(null, snpList.toArray(new Variant[0]), this);
     }
 
@@ -170,7 +168,7 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
         return stateIndices.get(randomIndex);
     }
 
-    private static int sampleRandomNumber(int min, int max) {
+    public static int sampleRandomNumber(int min, int max) {
         Value<Integer> lower = new Value<>("low", min);
         Value<Integer> upper = new Value<>("high",max);
         UniformDiscrete uniformDiscrete = new UniformDiscrete(lower, upper);

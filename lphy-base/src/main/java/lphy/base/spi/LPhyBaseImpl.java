@@ -5,6 +5,7 @@ import lphy.base.bmodeltest.NucleotideModel;
 import lphy.base.bmodeltest.bSiteModelFunction;
 import lphy.base.bmodeltest.bSiteRates;
 import lphy.base.distribution.*;
+import lphy.base.evolution.SNPSampler;
 import lphy.base.evolution.alignment.ErrorModel;
 import lphy.base.evolution.alignment.Sequence;
 import lphy.base.evolution.birthdeath.*;
@@ -67,7 +68,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // alignment
                 Sequence.class, ErrorModel.class, MissingSites.class,
                 // others
-                RandomBooleanArray.class, Sample.class,
+                RandomBooleanArray.class, Sample.class, SNPSampler.class,
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
