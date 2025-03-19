@@ -36,10 +36,14 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
         if (p != null){
             setParam(probabilityName, p);
+        } else {
+            setParam(probabilityName, new Value<>("id", p.value().doubleValue()));
         }
 
         if (r != null){
             setParam(ratioName, r);
+        } else {
+            setParam(ratioName, new Value<>("id", 0));
         }
     }
     @Override
@@ -86,6 +90,7 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
                 snpList.add(snp);
             }
         }
+
         return new RandomVariable<>(null, snpList.toArray(new Variant[0]), this);
     }
 
