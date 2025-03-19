@@ -42,7 +42,7 @@ public class VCFUtils {
                     .append("GT").append("\t");  // FORMAT
 
             String genotype = fillInGenotype(variant, variant.getName(), getTaxaNames(variants));
-            line.append(genotype);
+            line.append(genotype).append("\n");
 
             builder.append(line);
         }
