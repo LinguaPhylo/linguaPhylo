@@ -1,10 +1,12 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.distribution.Categorical;
 import lphy.base.distribution.Poisson;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.tree.TimeTree;
+import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
@@ -13,6 +15,7 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -151,21 +154,69 @@ public class PhyloCTMC2 extends AbstractPhyloCTMC {
 
 
 
-//        for (int i = 0; i < length; i++) {
-//            if (rootSeq != null) {
-//                // use simulated or user specified root sequence
-//                int rootState = rootSeq.value().getState(0, i); // root taxon is 0
+        for (int i = 0; i < length; i++) {
+            if (rootSeq != null) {
+                // use simulated or user specified root sequence
+                int rootState = rootSeq.value().getState(0, i); // root taxon is 0
+
+
+
 //                traverseTree(tree.value().getRoot(), rootState, a, i, transProb, mu,
 //                        (siteRates == null) ? 1.0 : siteRates.value()[i]);
-//            } else {
-//                int rootState = Categorical.sample(rootFreqs.value(), random);
+            } else {
+                int rootState = Categorical.sample(rootFreqs.value(), random);
+
+
 //                traverseTree(tree.value().getRoot(), rootState, a, i, transProb, mu,
 //                        (siteRates == null) ? 1.0 : siteRates.value()[i]);
-//            }
-//
-//        }
+            }
+
+        }
 
         return new RandomVariable<>("D", a, this);
+
+    }
+
+    protected void traverseTree(TimeTreeNode node, int nodeState, double tlSum, double blThreshold,
+                                SimpleAlignment alignment, int pos,
+                                double[][] transProb, double clockRate, double siteRate) {
+
+        if (tlSum > blThreshold) {
+            // set state from here to all children
+
+// TODO           alignment.setState(node.getLeafIndex(), pos, nodeState); // no ambiguous state
+        }
+        // start from root
+        List<TimeTreeNode> children = node.getChildren();
+        for (TimeTreeNode child : children) {
+            double branchLength = siteRate * clockRate * (node.getAge() - child.getAge());
+
+            if (branchRates != null) {
+                branchLength *= branchRates.value()[child.getIndex()];
+            }
+
+            getTransitionProbabilities(branchLength, transProb);
+            // draw state from Q
+            int state = drawState(transProb[nodeState]);
+
+            tlSum += branchLength;
+
+            traverseTree(child, state, tlSum, blThreshold, alignment, pos,
+                    transProb, clockRate, siteRate);
+        }
+    }
+
+    // TODO
+    private int drawState(double[] p) {
+        double U = random.nextDouble();
+        double totalP = p[0];
+        if (U <= totalP) return 0;
+        for (int i = 1; i < p.length; i++) {
+            totalP += p[i];
+            if (U <= totalP) return i;
+        }
+        if (Math.abs(totalP - 1.0) < 1e-6) return p.length - 1;
+        throw new RuntimeException("p vector should add to 1.0 but adds to " + totalP +  " instead.");
     }
 
     public Value<Double[]> getSiteRates() {
