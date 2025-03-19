@@ -32,7 +32,7 @@ public class VCFUtils {
         for (Variant variant: variants) {
             StringBuilder line = new StringBuilder();
             line.append(variant.getName()).append("\t")
-                    .append(variant.getPosition()).append("\t")
+                    .append(variant.getPosition()+1).append("\t") //vcf position starts from 1
                     .append(".").append("\t")   // ID (missing)
                     .append(variant.getCanonicalState(variant.getRef())).append("\t")  // REF
                     .append(variant.getCanonicalState(variant.getAlt())).append("\t")  // ALT
