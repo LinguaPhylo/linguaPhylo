@@ -40,6 +40,11 @@ public class Symbols {
        return getCanonical(name, "", "");
     }
 
+    public static String getUnicodeSymbol(String name) {
+        if (name == null) return null;
+        return nameToSymbolMap.get(name);
+    }
+
     public static String getCanonical(String name, String prefix, String suffix) {
         if (name == null) return null;
         for (String unicodeSymbol : unicodeSymbols) {
