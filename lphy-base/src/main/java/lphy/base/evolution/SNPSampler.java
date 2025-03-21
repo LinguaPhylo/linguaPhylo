@@ -15,6 +15,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
+import static java.lang.Math.round;
 import static lphy.base.evolution.datatype.Variant.inferGenotype;
 
 public class SNPSampler extends ParametricDistribution<Variant[]> {
@@ -105,7 +106,7 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
         // if r == 0, then skip the checking; if r != 0, change variants to non-ref snps
         if (r.doubleValue() != 0){
             // get array for true=non-ref SNP
-            double prob = 1 - 1 / (1 + r.doubleValue());
+            double prob = 1 / (1 + r.doubleValue());
             Boolean[] hSNP_mask = sampleSites(prob, sites.size());
             // modify the snpList if the site is non-ref SNP
             for (int i = 0; i < hSNP_mask.length; i++) {
@@ -240,6 +241,5 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
     public Value<Number> getRatio() {
         return getParams().get(ratioName);
     }
-
 
 }
