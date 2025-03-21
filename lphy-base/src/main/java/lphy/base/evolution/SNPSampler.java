@@ -15,7 +15,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
-import static lphy.base.evolution.datatype.Variant.getGenotype;
+import static lphy.base.evolution.datatype.Variant.inferGenotype;
 
 public class SNPSampler extends ParametricDistribution<Variant[]> {
     public final String probabilityName = "p";
@@ -69,29 +69,61 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
         Number r;
         if (getRatio()!=null){
             r = getRatio().value();
+        } else {
+            r = 0;
         }
 
         // initialise the output snps
         List<Variant> snpList = new ArrayList<>();
 
-        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", p.doubleValue()), new Value<>("id", alignment.nchar()), null);
-        Boolean[] snp_mask = bm.sample().value();
+        int repeats =  alignment.nchar();
+        Boolean[] snp_mask = sampleSites(p, repeats);
+
+        List<Integer> sites = new ArrayList<>();
+
+        for (int i = 0; i < snp_mask.length; i++){
+            if (snp_mask[i]){
+                sites.add(i);
+            }
+        }
 
         String taxaName = alignment.getTaxonName(0);
 
-        // TODO: deal with heterozygous/non-ref homo rate
+        // assume all snps are heterozygous snps
         for (int i = 0; i < snp_mask.length; i++) {
-            if (snp_mask[i] == Boolean.TRUE) {
+            if (snp_mask[i]) {
                 int position = i;
                 int ref = getAmbiguousStateIndex(alignment.getState(0,i));
                 int alt = getRandomCanonicalState(ref);
-                String genotype = getGenotype(ref,alt);
+                String genotype = inferGenotype(ref,alt);
                 Variant snp = new Variant(taxaName, position, ref, alt, genotype);
                 snpList.add(snp);
             }
         }
 
+        // check if non-ref snps are appearing with r
+        // if r == 0, then skip the checking; if r != 0, change variants to non-ref snps
+        if (r.doubleValue() != 0){
+            // get array for true=non-ref SNP
+            double prob = 1 - 1 / (1 + r.doubleValue());
+            Boolean[] hSNP_mask = sampleSites(prob, sites.size());
+            // modify the snpList if the site is non-ref SNP
+            for (int i = 0; i < hSNP_mask.length; i++) {
+                if (hSNP_mask[i]){
+                    Variant nonRefSnp = snpList.get(i);
+                    nonRefSnp.setGenotype(nonRefSnp,"1|1");
+                }
+            }
+
+        }
+
         return new RandomVariable<>(null, snpList.toArray(new Variant[0]), this);
+    }
+
+    private static Boolean[] sampleSites(Number p, int repeats) {
+        BernoulliMulti bm = new BernoulliMulti(new Value<>("id", p.doubleValue()), new Value<>("id", repeats), null);
+        Boolean[] snp_mask = bm.sample().value();
+        return snp_mask;
     }
 
     /**

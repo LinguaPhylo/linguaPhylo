@@ -75,7 +75,7 @@ public class Variant{
         return genotype;
     }
 
-    public static String getGenotype(int ref, int alt) {
+    public static String inferGenotype(int ref, int alt) {
         String genotype = "";
         if (ref == alt){
             genotype = "0|0";
@@ -83,6 +83,10 @@ public class Variant{
             genotype = "0|1";
         }
         return genotype;
+    }
+
+    public void setGenotype(Variant variant, String genotype){
+        variant.genotype = genotype;
     }
 
 }
