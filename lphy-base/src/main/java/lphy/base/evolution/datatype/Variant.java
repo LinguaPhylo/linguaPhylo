@@ -1,5 +1,10 @@
 package lphy.base.evolution.datatype;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Variant{
     private String taxaName;
     private int position;
@@ -27,9 +32,26 @@ public class Variant{
         return ref;
     }
 
+    public void setRef(Variant variant,int ref){
+        variant.ref = ref;
+    }
+
     public int getAlt(){
         return alt;
     }
+
+    public void setAlt(Variant variant, int alt){
+        variant.alt = alt;
+    }
+
+    public String getGenotype(){
+        return genotype;
+    }
+
+    public void setGenotype(Variant variant, String genotype){
+        variant.genotype = genotype;
+    }
+
 
     public String getCanonicalState(int index){
         if (index == 0){
@@ -71,10 +93,6 @@ public class Variant{
         }
     }
 
-    public String getGenotype(){
-        return genotype;
-    }
-
     public static String inferGenotype(int ref, int alt) {
         String genotype = "";
         if (ref == alt){
@@ -85,8 +103,19 @@ public class Variant{
         return genotype;
     }
 
-    public void setGenotype(Variant variant, String genotype){
-        variant.genotype = genotype;
+    public class VariantFinder {
+        private static Map<String, Map<Integer, Variant>> variantIndex = null;
+
+        public static Variant getVariant(List<Variant> variants, String taxonName, int position) {
+            if (variantIndex == null) {
+                variantIndex = new HashMap<>();
+                for (Variant variant : variants) {
+                    variantIndex.computeIfAbsent(variant.getName(), k -> new HashMap<>()).put(variant.getPosition(), variant);
+                }
+            }
+
+            return variantIndex.getOrDefault(taxonName, Collections.emptyMap()).get(position);
+        }
     }
 
 }

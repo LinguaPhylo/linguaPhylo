@@ -31,11 +31,22 @@ public class VCFUtils {
 
         for (Variant variant: variants) {
             StringBuilder line = new StringBuilder();
+            List<Integer> alleles = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 14));
+
+            int ref = variant.getRef();
+            if (! alleles.contains(ref)) {
+                throw new IllegalArgumentException("The ref in the VCF should only be A,C,T,G,N");
+            }
+
+            int alt = variant.getAlt();
+            if (! alleles.contains(alt)) {
+                throw new IllegalArgumentException("The ref in the VCF should only be A,C,T,G,N");
+            }
             line.append(variant.getName()).append("\t")
                     .append(variant.getPosition()+1).append("\t") //vcf position starts from 1
                     .append(".").append("\t")   // ID (missing)
-                    .append(variant.getCanonicalState(variant.getRef())).append("\t")  // REF
-                    .append(variant.getCanonicalState(variant.getAlt())).append("\t")  // ALT
+                    .append(variant.getCanonicalState(ref)).append("\t")  // REF
+                    .append(variant.getCanonicalState(alt)).append("\t")  // ALT
                     .append(".").append("\t")  // QUAL
                     .append("PASS").append("\t")  // FILTER
                     .append(".").append("\t")  // INFO
