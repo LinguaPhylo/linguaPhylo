@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static lphy.base.evolution.datatype.Variant.getTaxaNames;
 
 public class VCFUtils {
     public static final String KEY_WORD = "##fileformat=VCFv4.3";
@@ -54,7 +53,7 @@ public class VCFUtils {
                     .append(".").append("\t")  // INFO
                     .append("GT").append("\t");  // FORMAT
 
-            String genotype = fillInGenotype(variant, variant.getName(), getTaxaNames(variants));
+            String genotype = fillInGenotype(variant, variant.getName(), Variant.getTaxaNames(variants));
             line.append(genotype).append("\n");
 
             builder.append(line);
