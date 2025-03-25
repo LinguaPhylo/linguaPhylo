@@ -146,8 +146,13 @@ public class ReadFasta extends DeterministicFunction<Alignment> {
     private Reader getReader(String fileName) {
         Reader reader = null;
         try {
-            if (!(fileName.endsWith("fasta") || fileName.endsWith("fna") || fileName.endsWith("ffn") ||
-                    fileName.endsWith("faa") || fileName.endsWith("frn")))
+            // Common Extensions: .fasta, .fas, .fa
+            // Other Extensions (depending on sequence type):
+            // .fna (nucleotide sequences), .ffn (nucleotide sequences),
+            // .faa (amino acid sequences), .frn (RNA sequences), .mpfa (multiple protein FASTA)
+            if (!(fileName.endsWith("fasta") || fileName.endsWith("fas") || fileName.endsWith("fa") ||
+                    fileName.endsWith("fna") || fileName.endsWith("ffn") ||
+                    fileName.endsWith("faa") || fileName.endsWith("frn") || fileName.endsWith("mpfa") ))
                 throw new IOException("Fasta file name's suffix is invalid ! " + fileName);
 
             final Path nexFile = Paths.get(fileName);
