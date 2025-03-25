@@ -42,7 +42,7 @@ public class VCFFormatter implements ValueFormatter<Variant[]> {
 
     @Override
     public String header() {
-        String[] taxaNames = VCFUtils.getTaxaNames(variants);
+        String[] taxaNames = Variant.getTaxaNames(variants);
         return VCFUtils.buildHeader(taxaNames);
     }
 
