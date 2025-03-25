@@ -112,7 +112,7 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
             for (int i = 0; i < hSNP_mask.length; i++) {
                 if (hSNP_mask[i]){
                     Variant nonRefSnp = snpList.get(i);
-                    nonRefSnp.setGenotype(nonRefSnp,"1|1");
+                    nonRefSnp.setGenotype("1|1");
                 }
             }
 

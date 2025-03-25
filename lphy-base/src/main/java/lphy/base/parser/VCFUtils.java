@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static lphy.base.evolution.datatype.Variant.getTaxaNames;
+
 public class VCFUtils {
     public static final String KEY_WORD = "##fileformat=VCFv4.3";
 
@@ -82,19 +84,5 @@ public class VCFUtils {
             genotype.append(".").append("\n");
         }
         return genotype.toString();
-    }
-
-    public static String[] getTaxaNames(Variant[] variants){
-        List<String> names = new ArrayList<>();
-        for (Variant variant: variants) {
-            if (names.isEmpty()) {
-                names.add(variant.getName());
-            } else {
-                if (! names.contains(variant.getName())) {
-                    names.add(variant.getName());
-                }
-            }
-        }
-        return names.toArray(new String[names.size()]);
     }
 }

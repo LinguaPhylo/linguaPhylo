@@ -1,9 +1,6 @@
 package lphy.base.evolution.datatype;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Variant{
     private String taxaName;
@@ -32,24 +29,24 @@ public class Variant{
         return ref;
     }
 
-    public void setRef(Variant variant,int ref){
-        variant.ref = ref;
+    public void setRef(int ref){
+        this.ref = ref;
     }
 
     public int getAlt(){
         return alt;
     }
 
-    public void setAlt(Variant variant, int alt){
-        variant.alt = alt;
+    public void setAlt(int alt){
+        this.alt = alt;
     }
 
     public String getGenotype(){
         return genotype;
     }
 
-    public void setGenotype(Variant variant, String genotype){
-        variant.genotype = genotype;
+    public void setGenotype(String genotype){
+        this.genotype = genotype;
     }
 
 
@@ -116,6 +113,20 @@ public class Variant{
 
             return variantIndex.getOrDefault(taxonName, Collections.emptyMap()).get(position);
         }
+    }
+
+    public static String[] getTaxaNames(Variant[] variants){
+        List<String> names = new ArrayList<>();
+        for (Variant variant: variants) {
+            if (names.isEmpty()) {
+                names.add(variant.getName());
+            } else {
+                if (! names.contains(variant.getName())) {
+                    names.add(variant.getName());
+                }
+            }
+        }
+        return names.toArray(new String[names.size()]);
     }
 
 }
