@@ -2,7 +2,6 @@ package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.alignment.Alignment;
-import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.logger.LoggerUtils;
@@ -135,7 +134,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         }
     }
 
-    protected void traverseTree(TimeTreeNode node, int nodeState, SimpleAlignment alignment,
+    protected void traverseTree(TimeTreeNode node, int nodeState, Alignment alignment,
                                 int pos, double[][] transProb, double clockRate, double siteRate) {
 
         if (node.isLeaf() || (node.isSingleChildNonOrigin() && node.getId() != null)) {

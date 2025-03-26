@@ -35,7 +35,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             Value<Double[]> branchRates,
             Value<Integer> L,
             Value<SequenceType> dataType,
-            Value<SimpleAlignment> rootSeq)  {
+            Value<Alignment> rootSeq)  {
         super(tree, clockRate, freq, Q, siteRates, branchRates, L, dataType, rootSeq);
         // TODO
         if (rootSeq != null) {

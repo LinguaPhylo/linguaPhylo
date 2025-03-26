@@ -29,7 +29,7 @@ import java.util.TreeMap;
 public class PhyloCTMC extends AbstractPhyloCTMC {
     Value<Double[][]> Q; // to keep the input Value<Double[][]>
     Value<Double[]> siteRates;
-    Value<SimpleAlignment> rootSeq;
+    Value<Alignment> rootSeq;
 
     public static final String QParamName = "Q";
     public static final String siteRatesParamName = "siteRates";
@@ -45,7 +45,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
                              description = "length of the alignment", optional = true) Value<Integer> L,
                      @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
                              narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
-                     @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<SimpleAlignment> rootSeq) {
+                     @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<Alignment> rootSeq) {
 
         super(tree, mu, rootFreq, branchRates, L, dataType);
         this.Q = Q;
@@ -133,8 +133,7 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
         if (dataType != null) dt = dataType.value();
 
         int length = getSiteCount();
-
-        SimpleAlignment a = new SimpleAlignment(idMap, length, dt);
+        Alignment a = new SimpleAlignment(idMap, length, dt);
 
         double mu = (this.clockRate == null) ? 1.0 : ValueUtils.doubleValue(clockRate);
 

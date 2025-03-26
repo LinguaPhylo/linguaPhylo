@@ -144,7 +144,7 @@ public class PhyloCTMCSiteModel extends AbstractPhyloCTMC {
             }
         }
 
-        SimpleAlignment a = new SimpleAlignment(idMap, siteCount, dt);
+        Alignment a = new SimpleAlignment(idMap, siteCount, dt);
 
         double mu = (this.clockRate == null) ? 1.0 : ValueUtils.doubleValue(clockRate);
 
