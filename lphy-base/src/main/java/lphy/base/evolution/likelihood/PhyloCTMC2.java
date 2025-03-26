@@ -23,6 +23,7 @@ import java.util.TreeMap;
 /**
  * @author Walter Xie
  */
+@Deprecated
 @Citation(
         value="Felsenstein, J. (1981). Evolutionary trees from DNA sequences: a maximum likelihood approach. Journal of molecular evolution, 17(6), 368-376.",
         title = "Evolutionary trees from DNA sequences: a maximum likelihood approach",
@@ -149,12 +150,17 @@ public class PhyloCTMC2 extends AbstractPhyloCTMC {
         Poisson poisson = new Poisson(new Value<>(null, expectedChanges));
         int nMut = poisson.sample().value();
 
-        // Random (0, TL)
-        double thr = random.nextDouble() * tl;
+        int[] siteI  = new int[nMut];
+        for (int i = 0; i < siteI.length; i++) {
+            siteI[i] = random.nextInt(length); // [0, length)
+        }
+        // int[] siteI can have same int (site)
+        for (int i = 0; i < siteI.length; i++) {
+
+            // Random (0, TL)
+            double thr = random.nextDouble() * tl;
 
 
-
-        for (int i = 0; i < length; i++) {
             if (rootSeq != null) {
                 // use simulated or user specified root sequence
                 int rootState = rootSeq.value().getState(0, i); // root taxon is 0
