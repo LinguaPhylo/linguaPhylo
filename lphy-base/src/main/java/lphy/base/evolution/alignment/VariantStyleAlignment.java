@@ -38,6 +38,10 @@ public class VariantStyleAlignment extends AbstractAlignment {
         variantStore.put(cellPosition, state);
     }
 
+    public void setState(String taxonName, int position, Integer state) {
+        setState(indexOfTaxon(taxonName), position, state);
+    }
+
     private CellPosition getCellPosition(int taxon, int position) {
         if (taxaNames == null || taxon >= taxaNames.length) {
             throw new IllegalArgumentException("Invalid taxon index: " + taxon);
@@ -61,6 +65,10 @@ public class VariantStyleAlignment extends AbstractAlignment {
             // if not, then return the root sequence state
             return alignment.getState(alignment.length()-1, position);
         }
+    }
+
+    public Integer getState(String taxonName, int position) {
+        return getState(indexOfTaxon(taxonName), position);
     }
 
     public Map<CellPosition, Integer> getVariantStore() {
