@@ -63,4 +63,11 @@ public class VariantStyleAlignment extends AbstractAlignment {
         }
     }
 
+    public Map<CellPosition, Integer> getVariantStore() {
+        return variantStore;
+    }
+
+    public Alignment getRoot(){
+        return alignment;
+    }
 }
