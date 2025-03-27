@@ -302,16 +302,14 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
-
         for (String taxonName : idMap.keySet()) {
             TimeTreeNode node = findNodeById(root, taxonName);
             if (node != null) {
-                int nodeIndex = node.getLeafIndex();
                 for (int site = 0; site < length; site++) {
                     int state = getEffectiveState(node, site);
                     // if the site is a variant then set into variantStore
-                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site)) {
-                        alignment.setState(nodeIndex, site, state);
+                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site) && state != rootSeq.value().getState(rootSeq.value().length()-1, site)) {
+                        alignment.setState(node.getId(), site, state);
                     }
                 }
             }
