@@ -10,7 +10,6 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
@@ -99,6 +98,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         //    We'll compute mu from the Q matrix.
         Double[][] Qm = getQ();
         double mu = computeMeanOffDiagonalRate(Qm);
+
         int N = getSiteCount();
         double lambda = branchLength * mu * N;
 
