@@ -64,20 +64,10 @@ public abstract class AbstractAlignment implements Alignment {
 
 //    public abstract boolean hasParts();
 
-    public AbstractAlignment(Alignment root, Map<CellPosition, Integer> variantStore) {
+    public AbstractAlignment(Map<String, Integer> idMap, Alignment root, Map<CellPosition, Integer> variantStore) {
         this.sequenceType = root.getSequenceType();
         this.nchar = root.nchar();
-
-        // calculate how many taxa in variantStore
-        List<String> names = new ArrayList<>();
-        for (CellPosition cellPosition: variantStore.keySet()){
-            String name = cellPosition.getCellName();
-            if (! names.contains(name)){
-                names.add(name);
-            }
-        }
-
-        this.taxa = Taxa.createTaxa(names.size());
+        this.taxa = Taxa.createTaxa(idMap);
     }
 
     //****** MethodInfo ******
