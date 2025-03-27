@@ -309,7 +309,10 @@ public class SparsePhyloCTMC extends PhyloCTMC {
                 int nodeIndex = node.getLeafIndex();
                 for (int site = 0; site < length; site++) {
                     int state = getEffectiveState(node, site);
-                    alignment.setState(nodeIndex, site, state);
+                    // if the site is a variant then set into variantStore
+                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site)) {
+                        alignment.setState(nodeIndex, site, state);
+                    }
                 }
             }
         }
