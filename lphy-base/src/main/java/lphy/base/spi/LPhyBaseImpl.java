@@ -18,6 +18,7 @@ import lphy.base.evolution.continuous.PhyloMultivariateBrownian;
 import lphy.base.evolution.continuous.PhyloOU;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
+import lphy.base.evolution.likelihood.SparsePhyloCTMC;
 import lphy.base.evolution.substitutionmodel.*;
 import lphy.base.evolution.tree.*;
 import lphy.base.function.*;
@@ -70,7 +71,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // others
                 RandomBooleanArray.class, Sample.class, SNPSampler.class,
                 // phylogenetic distribution
-                PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
+                PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class, SparsePhyloCTMC.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
     }
 

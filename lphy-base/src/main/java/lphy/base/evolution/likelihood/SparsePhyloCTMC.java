@@ -1,20 +1,23 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.evolution.CellPosition;
+import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
+import lphy.base.evolution.alignment.VariantStyleAlignment;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An event-based (sparse) CTMC simulation extending PhyloCTMC.
@@ -25,33 +28,25 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // We store the differences in a Map: node -> (siteIndex -> mutatedState).
     // Each node's difference map tells which sites changed from its parent.
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
+    private Set<Integer> changedSites = new HashSet<>();
 
     public SparsePhyloCTMC(
-            Value<TimeTree> tree,
-            Value<Number> clockRate,
-            Value<Double[]> freq,
-            Value<Double[][]> Q,
-            Value<Double[]> siteRates,
-            Value<Double[]> branchRates,
-            Value<Integer> L,
-            Value<SequenceType> dataType,
-            Value<Alignment> rootSeq)  {
-        super(tree, clockRate, freq, Q, siteRates, branchRates, L, dataType, rootSeq);
-        // TODO
+            @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
+            @ParameterInfo(name = AbstractPhyloCTMC.muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
+            @ParameterInfo(name = AbstractPhyloCTMC.rootFreqParamName, verb = "are", narrativeName = "root frequencies", description = "the root probabilities. Optional parameter. If not specified then first row of e^{100*Q) is used.", optional = true) Value<Double[]> rootFreq,
+            @ParameterInfo(name = QParamName, narrativeName= "instantaneous rate matrix", description = "the instantaneous rate matrix.") Value<Double[][]> Q,
+            @ParameterInfo(name = siteRatesParamName, description = "a rate for each site in the alignment. Site rates are assumed to be 1.0 otherwise.",  optional = true) Value<Double[]> siteRates,
+            @ParameterInfo(name = AbstractPhyloCTMC.branchRatesParamName, description = "a rate for each branch in the tree. Original branch rates are used if rates not given. Branch rates are assumed to be 1.0 otherwise.", optional = true) Value<Double[]> branchRates,
+            @ParameterInfo(name = AbstractPhyloCTMC.LParamName, narrativeName= "alignment length",
+                    description = "length of the alignment", optional = true) Value<Integer> L,
+            @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
+                    narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
+            @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<Alignment> rootSeq) {
+        super(tree, null, null, Q, siteRates, branchRates, L, dataType, rootSeq);
+
         if (rootSeq != null) {
-            throw new UnsupportedOperationException("rootSeq is not supported !");
+            this.rootSeq = rootSeq;
         }
-    }
-
-    // Simplified constructor without optional parameters
-    public SparsePhyloCTMC(
-            Value<TimeTree> tree,
-            Value<Number> clockRate,
-            Value<Double[]> freq,
-            Value<Double[][]> Q,
-            Value<Integer> L,
-            Value<SequenceType> dataType) {
-        super(tree, clockRate, freq, Q, null, null, L, dataType, null);
     }
 
     // ======================================================================
@@ -88,7 +83,14 @@ public class SparsePhyloCTMC extends PhyloCTMC {
      */
     private void simulateBranchSparse(TimeTreeNode parent, TimeTreeNode child) {
         // 1) Branch length scaled by clockRate & branchRates
-        double branchLength = clockRate.value().doubleValue() * (parent.getAge() - child.getAge());
+        double branchLength;
+
+        if (clockRate != null){
+            branchLength = clockRate.value().doubleValue() * (parent.getAge() - child.getAge());
+        } else {
+            branchLength = parent.getAge() - child.getAge();
+        }
+
         if (branchRates != null) {
             branchLength *= branchRates.value()[child.getIndex()];
         }
@@ -150,6 +152,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         }
 
         nodeDifferences.put(child, childDiffs);
+        changedSites.addAll(childDiffs.values());
 
         // 6) Recurse
         for (TimeTreeNode grandChild : child.getChildren()) {
@@ -162,10 +165,19 @@ public class SparsePhyloCTMC extends PhyloCTMC {
      * or we reach the root. If nobody had a difference, sample from rootFreq (once).
      */
     private int getEffectiveState(TimeTreeNode node, int siteIndex) {
-        if (node == null) {
+        // if node is root
+        if (rootSeq == null && node == null) {
             // fallback: sample from root freq
-            return sampleFromRootFreq();
+            int rootState = sampleFromRootFreq();
+            // set root sequence
+            rootSeq.value().setState(rootSeq.value().length()-1, siteIndex, rootState);
+
+            return rootState;
         }
+        if (rootSeq != null && node == tree.value().getRoot()) {
+            return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
+        }
+
         Map<Integer,Integer> diffs = nodeDifferences.get(node);
         if (diffs == null) {
             // no map means we haven't visited this node yet or something is off
@@ -272,14 +284,25 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         // 1) run the sparse simulation
         simulateSparse();
 
-        // 2) create an alignment using the tree and sequence type
+        // 2) create a variant storing map with root sequence and variants
+        // initialise the root sequence if it's not given
         int length = getSiteCount();
-        SequenceType dt = getDataType();
-        // TODO
-        Alignment alignment = new SimpleAlignment(idMap, length, dt);
+
+        // default to nucleotide
+        SequenceType dt = SequenceType.NUCLEOTIDE;
+        if (dataType != null) dt = dataType.value();
+
+        if (rootSeq == null) {
+            rootSeq = new Value<>("rootSeq", new SimpleAlignment(Taxa.createTaxa(idMap.get(tree.value().getRoot())), length, dt));
+        }
+
+        // initialise the variantStore map
+        Map<CellPosition, Integer> variantStore = new HashMap<>();
+        VariantStyleAlignment alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
+
         for (String taxonName : idMap.keySet()) {
             TimeTreeNode node = findNodeById(root, taxonName);
             if (node != null) {
@@ -288,6 +311,15 @@ public class SparsePhyloCTMC extends PhyloCTMC {
                     int state = getEffectiveState(node, site);
                     alignment.setState(nodeIndex, site, state);
                 }
+            }
+        }
+
+        // 4) fill in other sites in the root alignment if not given or sampled
+        for (int i = 0; i < length ; i ++){
+            if (! changedSites.contains(i)) {
+                int rootState = sampleFromRootFreq();
+                // set root sequence
+                rootSeq.value().setState(rootSeq.value().length()-1, i, rootState);
             }
         }
 
@@ -309,4 +341,5 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         }
         return null;
     }
+
 }
