@@ -50,6 +50,11 @@ public class VariantStyleAlignment extends AbstractAlignment {
         return new CellPosition(taxaName, position);
     }
 
+    public CellPosition getCellPosition(String taxonName, int position) {
+        CellPosition cellPosition = getCellPosition(taxonName, position);
+        return cellPosition;
+    }
+
     @Override
     public String toJSON() {
         return "";
