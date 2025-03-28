@@ -67,7 +67,6 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         // 3) Mark root differences as empty: by default the root has no changes from itself
         TimeTreeNode root = tree.value().getRoot();
         nodeDifferences.put(root, Collections.emptyMap());
-
         // 4) Recursively traverse children
         for (TimeTreeNode child : root.getChildren()) {
             simulateBranchSparse(root, child);
@@ -122,6 +121,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             
             // Find the current state for this site in this branch (if previously mutated)
             int currentState;
+
             if (childDiffs.containsKey(siteIndex)) {
                 // Use the latest state from previous mutations in this branch
                 currentState = childDiffs.get(siteIndex);
@@ -152,6 +152,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         }
 
         nodeDifferences.put(child, childDiffs);
+
         changedSites.addAll(childDiffs.values());
 
         // 6) Recurse
@@ -302,26 +303,36 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
+        int taxonIndex = 0;
+
         for (String taxonName : idMap.keySet()) {
             TimeTreeNode node = findNodeById(root, taxonName);
             if (node != null) {
+                // fill by each site
                 for (int site = 0; site < length; site++) {
-                    int state = getEffectiveState(node, site);
-                    // if the site is a variant then set into variantStore
-                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site) && state != rootSeq.value().getState(rootSeq.value().length()-1, site)) {
-                        alignment.setState(node.getId(), site, state);
+                    // add parent site mutations first
+                    TimeTreeNode tempNode = node.getParent();
+
+                    // find the youngest parent that has a mutation on this site
+                    while (tempNode != null && tempNode != root && // while node exist and is not root and node has differences
+                            (!nodeDifferences.containsKey(tempNode) || nodeDifferences.get(tempNode).get(site) == null)) {
+                        tempNode = tempNode.getParent();
+                    }
+
+                    // if a parent mutation exists, assign the effective state
+                    if (tempNode != null && tempNode != root) {
+                        int state = nodeDifferences.get(tempNode).get(site);
+                        alignment.setState(taxonIndex, site, state);
+                    } // else, skip
+
+                    // map the mutations on the tip
+                    if (nodeDifferences.containsKey(node) && nodeDifferences.get(node).containsKey(site)) {
+                        int state = nodeDifferences.get(node).get(site);
+                        alignment.setState(taxonIndex, site, state);
                     }
                 }
             }
-        }
-
-        // 4) fill in other sites in the root alignment if not given or sampled
-        for (int i = 0; i < length ; i ++){
-            if (! changedSites.contains(i)) {
-                int rootState = sampleFromRootFreq();
-                // set root sequence
-                rootSeq.value().setState(rootSeq.value().length()-1, i, rootState);
-            }
+            taxonIndex++;
         }
 
         return new RandomVariable<>("D", alignment, this);
