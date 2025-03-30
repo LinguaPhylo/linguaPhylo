@@ -10,6 +10,7 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
@@ -28,6 +29,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // Each node's difference map tells which sites changed from its parent.
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
     private Set<Integer> changedSites = new HashSet<>();
+    int mutations;
 
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
@@ -41,7 +43,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
                     narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
             @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<Alignment> rootSeq) {
-        super(tree, null, null, Q, siteRates, branchRates, L, dataType, rootSeq);
+        super(tree, mu, rootFreq, Q, siteRates, branchRates, L, dataType, rootSeq);
 
         if (rootSeq != null) {
             this.rootSeq = rootSeq;
@@ -96,7 +98,13 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         // 2) The total expected # of events = branchLength * N * mu
         //    We'll compute mu from the Q matrix.
         Double[][] Qm = getQ();
-        double mu = computeMeanOffDiagonalRate(Qm);
+
+        double mu;
+        if (clockRate == null){
+            mu = computeMeanOffDiagonalRate(Qm);
+        } else {
+            mu = ValueUtils.doubleValue(clockRate);
+        }
 
         int N = getSiteCount();
         double lambda = branchLength * mu * N;
@@ -152,7 +160,6 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         }
 
         nodeDifferences.put(child, childDiffs);
-
         changedSites.addAll(childDiffs.values());
 
         // 6) Recurse
@@ -352,6 +359,18 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             }
         }
         return null;
+    }
+
+    // for unit test
+    public int getMutations(){
+        for (TimeTreeNode node: nodeDifferences.keySet()){
+            mutations += nodeDifferences.get(node).size();
+        }
+        return mutations;
+    }
+
+    public Map<TimeTreeNode, Map<Integer,Integer>> getNodeDifferences(){
+        return nodeDifferences;
     }
 
 }
