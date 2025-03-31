@@ -1,6 +1,7 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
+import lphy.base.distribution.Categorical;
 import lphy.base.evolution.CellPosition;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
@@ -29,7 +30,6 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // Each node's difference map tells which sites changed from its parent.
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
     private Set<Integer> changedSites = new HashSet<>();
-    int mutations;
 
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
@@ -98,13 +98,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         // 2) The total expected # of events = branchLength * N * mu
         //    We'll compute mu from the Q matrix.
         Double[][] Qm = getQ();
-
-        double mu;
-        if (clockRate == null){
-            mu = computeMeanOffDiagonalRate(Qm);
-        } else {
-            mu = ValueUtils.doubleValue(clockRate);
-        }
+        double mu = (this.clockRate == null) ? computeMeanOffDiagonalRate(Qm) : ValueUtils.doubleValue(clockRate);
 
         int N = getSiteCount();
         double lambda = branchLength * mu * N;
@@ -182,6 +176,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
             return rootState;
         }
+
         if (rootSeq != null && node == tree.value().getRoot()) {
             return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
         }
@@ -359,14 +354,6 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             }
         }
         return null;
-    }
-
-    // for unit test
-    public int getMutations(){
-        for (TimeTreeNode node: nodeDifferences.keySet()){
-            mutations += nodeDifferences.get(node).size();
-        }
-        return mutations;
     }
 
     public Map<TimeTreeNode, Map<Integer,Integer>> getNodeDifferences(){
