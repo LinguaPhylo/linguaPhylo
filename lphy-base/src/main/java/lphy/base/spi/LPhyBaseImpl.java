@@ -72,6 +72,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 RandomBooleanArray.class, Sample.class, SNPSampler.class,
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
+                SparsePhyloCTMC.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
     }
 

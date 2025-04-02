@@ -30,6 +30,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     // Each node's difference map tells which sites changed from its parent.
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
     private Set<Integer> changedSites = new HashSet<>();
+    VariantStyleAlignment alignment;
 
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
@@ -301,7 +302,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
         // initialise the variantStore map
         Map<CellPosition, Integer> variantStore = new HashMap<>();
-        VariantStyleAlignment alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
+        alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
@@ -337,7 +338,19 @@ public class SparsePhyloCTMC extends PhyloCTMC {
             taxonIndex++;
         }
 
-        return new RandomVariable<>("D", alignment, this);
+        Alignment a = mapAlignment(alignment);
+
+        return new RandomVariable<>("D", a, this);
+    }
+
+    public static Alignment mapAlignment(VariantStyleAlignment alignment) {
+        Alignment a = new SimpleAlignment(alignment.getTaxa(), alignment.nchar(), alignment.getSequenceType());
+        for (int i = 0; i < alignment.length(); i++) {
+            for (int j = 0; j < alignment.nchar(); j++) {
+                a.setState(i,j, alignment.getState(i,j));
+            }
+        }
+        return a;
     }
 
     /**
@@ -356,8 +369,13 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         return null;
     }
 
+    // for unit test
     public Map<TimeTreeNode, Map<Integer,Integer>> getNodeDifferences(){
         return nodeDifferences;
+    }
+
+    public VariantStyleAlignment getAlignment() {
+        return alignment;
     }
 
 }

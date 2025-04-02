@@ -58,7 +58,8 @@ public class SparsePhyloCTMCTest {
         Value<Double[][]> QValue = Q.apply();
 
         SparsePhyloCTMC sparse = new SparsePhyloCTMC(treeValue,null, null, QValue,null,null, new Value<>("", alignment.nchar()), null, alignmentValue);
-        VariantStyleAlignment observe = (VariantStyleAlignment) sparse.sample().value();
+        sparse.sample();
+        VariantStyleAlignment observe = sparse.getAlignment();
 
         Map<TimeTreeNode, Map<Integer,Integer>> diffs = sparse.getNodeDifferences();
         Map<CellPosition, Integer> variantStore = observe.getVariantStore();
@@ -133,7 +134,7 @@ public class SparsePhyloCTMCTest {
         }
 
         SparsePhyloCTMC sparse = new SparsePhyloCTMC(treeValue,new Value<>("mu", 1), new Value<>("rootfreq", rootFreqs), QValue,null,null, new Value<>("", alignment.nchar()), null, alignmentValue);
-        VariantStyleAlignment observe = (VariantStyleAlignment) sparse.sample().value();
+        Alignment observe = sparse.sample().value();
 
         PhyloCTMC phylo = new PhyloCTMC(treeValue, new Value<>("mu", 1), new Value<>("rootfreq", rootFreqs), QValue,null,null, new Value<>("", alignment.nchar()), null, alignmentValue);
         Alignment theory = phylo.sample().value();
@@ -191,15 +192,5 @@ public class SparsePhyloCTMCTest {
         assertEquals(APresent.get(1)/totalSparse, APresentPhylo.get(1)/totalPhylo);
         assertEquals(APresent.get(2)/totalSparse, APresentPhylo.get(2)/totalPhylo);
         assertEquals(APresent.get(3)/totalSparse, APresentPhylo.get(3)/totalPhylo);
-
-
-    }
-
-    public static Map<Integer, Integer> calculateFrequencies(List<Integer> nucleotides) {
-        Map<Integer, Integer> freqMap = new HashMap<>();
-        for (Integer nucleotide : nucleotides) {
-            freqMap.put(nucleotide, freqMap.getOrDefault(nucleotide, 0) + 1);
-        }
-        return freqMap;
     }
 }
