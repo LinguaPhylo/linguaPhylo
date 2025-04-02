@@ -20,6 +20,7 @@ public class VCFUtils {
         builder.append("##fileDate=" + formattedDate).append("\n");
 
         builder.append("##source=LinguaPhylo").append("\n");
+       // builder.append("##reference=").append(getReferencePath()).append("\n");
         builder.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">").append("\n");
 
         builder.append("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" + String.join("\t", taxaNames));
