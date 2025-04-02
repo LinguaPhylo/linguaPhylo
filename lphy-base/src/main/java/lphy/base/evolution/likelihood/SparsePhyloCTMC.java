@@ -282,7 +282,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     @GeneratorInfo(name = "SparsePhyloCTMC", verbClause = "is assumed to have evolved under",
             narrativeName = "phylogenetic continuous time Markov process",
             category = GeneratorCategory.PHYLO_LIKELIHOOD,
-            description = "")
+            description = "Simulate random number of mutations on branches along the tree. Variable sites and root sequence are stored to return the alignment.  ")
     @Override
     public RandomVariable<Alignment> sample() {
         // 1) run the sparse simulation
