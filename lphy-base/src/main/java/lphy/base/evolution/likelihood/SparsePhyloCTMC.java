@@ -1,7 +1,6 @@
 package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
-import lphy.base.distribution.Categorical;
 import lphy.base.evolution.CellPosition;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.alignment.Alignment;
