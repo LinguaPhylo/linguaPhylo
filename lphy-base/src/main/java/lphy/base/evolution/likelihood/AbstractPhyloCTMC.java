@@ -7,6 +7,7 @@ import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
+import lphy.core.model.ValueUtils;
 import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
@@ -58,7 +59,14 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
                              Value<Double[]> branchRates, Value<Integer> l, Value<SequenceType> dataType) {
         this.tree = tree;
         this.clockRate = clockRate;
-        this.freq = freq;
+
+        // root frequencies should sum to 1
+        if (freq != null) {
+            this.freq = freq;
+            if (ValueUtils.sum(freq) != 1)
+                throw new IllegalArgumentException("root frequencies should sum to 1 !" + freq);
+        }
+
         this.branchRates = branchRates;
         this.L = l;
         this.dataType = dataType;

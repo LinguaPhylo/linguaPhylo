@@ -59,6 +59,15 @@ public class ValueUtils {
         return values;
     }
 
+    public static double sum(Value<? extends Number[]> value) {
+        Number[] num = value.value();
+        double sum = 0;
+        for (Number number : num) {
+            sum += number.doubleValue();
+        }
+        return sum;
+    }
+
     public static double[][] double2DArrayValue(Value<Number[][]> value) {
         Number[][] num = value.value();
         double[][] values = new double[num.length][num[0].length];
