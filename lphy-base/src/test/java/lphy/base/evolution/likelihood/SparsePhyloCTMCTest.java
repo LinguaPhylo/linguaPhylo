@@ -127,11 +127,15 @@ public class SparsePhyloCTMCTest {
         JukesCantor Q = new JukesCantor(new Value<>("",1));
         Value<Double[][]> QValue = Q.apply();
 
-        Double[] rootFreqs = new Double[5];
+        Double[] rootFreqs = new Double[4];
 
+        double sum = 0;
         for (int i = 0; i< rootFreqs.length; i++){
-            rootFreqs[i] = 1.0;
+            rootFreqs[i] = 0.25;
+            sum += rootFreqs[i];
         }
+
+        assertEquals(1, sum);
 
         SparsePhyloCTMC sparse = new SparsePhyloCTMC(treeValue,new Value<>("mu", 1), new Value<>("rootfreq", rootFreqs), QValue,null,null, new Value<>("", alignment.nchar()), null, alignmentValue);
         Alignment observe = sparse.sample().value();
