@@ -128,9 +128,20 @@ public class SparsePhyloCTMCTest {
         int L = 100000;
 
         // construct phyloctmcs
-        SparsePhyloCTMC sparse = new SparsePhyloCTMC(treeValue, new Value<>("",1), rootFreqsValue, QValue, null, null, new Value<>("", L), null, null);
+        SparsePhyloCTMC sparse = new SparsePhyloCTMC(treeValue, new Value<>("",1), null, QValue, null, null, new Value<>("", L), null, null);
         Alignment observe = sparse.sample().value();
         Alignment rootSeq = sparse.sampledRootSeq;
+
+        // root sequence should be the same
+//        for (int i = 0; i<rootSeq.nchar(); i++){
+//            assertEquals(rootSeq.getState(0,i), observe.getState(0,i));
+//        }
+
+        // for sparse
+        double transProbAA = 0.25 + 0.75 * Math.exp(-4*2/3);
+        double transProbAX = 0.25 - 0.25 * Math.exp(-4*2/3);
+
+        double[] sparseProbs = new double[4];
 
         // get all indices for A in root
         List<Integer> indicesA = new ArrayList<>();
@@ -140,29 +151,25 @@ public class SparsePhyloCTMCTest {
             }
         }
 
-        // for sparse
-        double transProbAA = 0.25 + 0.75 * Math.exp(-4*2/3);
-        double transProbAX = 0.25 - 0.25 * Math.exp(-4*2/3);
-
-        double[] sparseProbs = new double[4];
-        double[] phyloProbs = new double[4];
+        int[] counter = new int[4];
+        int total = 0;
         for (int i = 1; i < 3; i++){
-            int[] counter = new int[4];
-            int total = 0;
             for (int j = 0; j < indicesA.size(); j++){
                 int state = observe.getState(String.valueOf(i), indicesA.get(j));
                 counter[state] ++;
                 total ++;
             }
-            for (int state = 0; state < counter.length; state++){
-                double prob = (double) counter[state] / (double) total;
-                sparseProbs[state] = prob;
-            }
+        }
+
+        for (int state = 0; state < counter.length; state++){
+            double prob = (double) counter[state] / (double) total;
+            sparseProbs[state] = prob;
         }
 
         PhyloCTMC phylo = new PhyloCTMC(treeValue, new Value<>("", 1), null, QValue,null,null, new Value<>("", L), null, null);
         Alignment theory = phylo.sample().value();
 
+        double[] phyloProbs = new double[4];
         // get all indices for A in root
         // index 0 is the root
         List<Integer> indicesAPhylo = new ArrayList<>();
@@ -171,24 +178,24 @@ public class SparsePhyloCTMCTest {
                 indicesAPhylo.add(i);
             }
         }
-
+        int[] counterPhylo = new int[4];
+        int totalPhylo = 0;
         for (int i =1 ; i < 3; i++) {
-            int[] counter = new int[4];
-            int total = 0;
-            for (int j = 0; j < indicesA.size(); j++) {
+            for (int j = 0; j < indicesAPhylo.size(); j++) {
                 int state = theory.getState(String.valueOf(i), indicesAPhylo.get(j));
-                counter[state]++;
-                total++;
-            }
-            for (int state = 0; state < counter.length; state++) {
-                double prob = (double) counter[state] / (double) total;
-                phyloProbs[state] = prob;
+                counterPhylo[state]++;
+                totalPhylo++;
             }
         }
 
+        for (int state = 0; state < counterPhylo.length; state++) {
+            double prob = (double) counterPhylo[state] / (double) totalPhylo;
+            phyloProbs[state] = prob;
+        }
+
         for (int i = 0; i < phyloProbs.length; i++){
-            assertEquals(phyloProbs[i], phyloProbs[i], 0.001);
-            // TODO: make it equal to theory
+            //assertEquals(phyloProbs[i], sparseProbs[i], 0.001);
+//            // TODO: make it equal to theory
 //            if (i == 0){
 //                assertEquals(transProbAA, phyloProbs[i], 0.005);
 //            } else {
@@ -260,6 +267,7 @@ public class SparsePhyloCTMCTest {
                 phyloTotal++;
             }
         }
+
         double transProbAA = 0.25 + 0.75 * Math.exp(-4*2/3);
         double transProbAX = 0.25 - 0.25 * Math.exp(-4*2/3);
 
