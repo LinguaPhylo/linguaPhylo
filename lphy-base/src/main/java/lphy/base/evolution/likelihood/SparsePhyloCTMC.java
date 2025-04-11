@@ -30,6 +30,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
     private Set<Integer> changedSites = new HashSet<>();
     VariantStyleAlignment alignment;
+    Alignment sampledRootSeq;
 
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
@@ -47,6 +48,13 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
         if (rootSeq != null) {
             this.rootSeq = rootSeq;
+            this.sampledRootSeq = new SimpleAlignment(rootSeq.value().nchar(), rootSeq.value());
+        } else {
+            if (dataType != null){
+                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), dataType.value());
+            } else {
+                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), SequenceType.NUCLEOTIDE);
+            }
         }
     }
 
@@ -168,17 +176,17 @@ public class SparsePhyloCTMC extends PhyloCTMC {
      */
     private int getEffectiveState(TimeTreeNode node, int siteIndex) {
         // if node is root
-        if (rootSeq == null && node == null) {
-            // fallback: sample from root freq
-            int rootState = sampleFromRootFreq();
-            // set root sequence
-            rootSeq.value().setState(rootSeq.value().length()-1, siteIndex, rootState);
+        if (node == tree.value().getRoot()) {
+            if (rootSeq != null){
+                return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
+            } else {
+                // fallback: sample from root freq
+                int rootState = sampleFromRootFreq();
+                // set root sequence
+                sampledRootSeq.setState(sampledRootSeq.length()-1, siteIndex, rootState);
 
-            return rootState;
-        }
-
-        if (rootSeq != null && node == tree.value().getRoot()) {
-            return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
+                return rootState;
+            }
         }
 
         Map<Integer,Integer> diffs = nodeDifferences.get(node);
@@ -291,17 +299,9 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         // initialise the root sequence if it's not given
         int length = getSiteCount();
 
-        // default to nucleotide
-        SequenceType dt = SequenceType.NUCLEOTIDE;
-        if (dataType != null) dt = dataType.value();
-
-        if (rootSeq == null) {
-            rootSeq = new Value<>("rootSeq", new SimpleAlignment(Taxa.createTaxa(idMap.get(tree.value().getRoot())), length, dt));
-        }
-
         // initialise the variantStore map
         Map<CellPosition, Integer> variantStore = new HashMap<>();
-        alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
+        alignment = new VariantStyleAlignment(idMap, sampledRootSeq, variantStore);
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
