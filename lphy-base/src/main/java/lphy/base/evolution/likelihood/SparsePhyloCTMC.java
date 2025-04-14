@@ -30,7 +30,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     private Map<TimeTreeNode, Map<Integer,Integer>> nodeDifferences;
     private Set<Integer> changedSites = new HashSet<>();
     VariantStyleAlignment alignment;
-    Alignment sampledRootSeq;
+//    Alignment sampledRootSeq;
 
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
@@ -43,18 +43,19 @@ public class SparsePhyloCTMC extends PhyloCTMC {
                     description = "length of the alignment", optional = true) Value<Integer> L,
             @ParameterInfo(name = AbstractPhyloCTMC.dataTypeParamName, description = "the data type used for simulations, default to nucleotide",
                     narrativeName = "data type used for simulations", optional = true) Value<SequenceType> dataType,
-            @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.", optional = true) Value<Alignment> rootSeq) {
+            @ParameterInfo(name = AbstractPhyloCTMC.rootSeqParamName, narrativeName="root sequence", description = "root sequence, defaults to root sequence generated from equilibrium frequencies.") Value<Alignment> rootSeq) {
         super(tree, mu, rootFreq, Q, siteRates, branchRates, L, dataType, rootSeq);
 
         if (rootSeq != null) {
             this.rootSeq = rootSeq;
-            this.sampledRootSeq = new SimpleAlignment(rootSeq.value().nchar(), rootSeq.value());
+//            this.sampledRootSeq = new SimpleAlignment(rootSeq.value().nchar(), rootSeq.value());
         } else {
-            if (dataType != null){
-                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), dataType.value());
-            } else {
-                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), SequenceType.NUCLEOTIDE);
-            }
+            throw new IllegalArgumentException("The root sequence should be provided!");
+//            if (dataType != null){
+//                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), dataType.value());
+//            } else {
+//                this.sampledRootSeq = new SimpleAlignment(Taxa.createTaxa(1), L.value(), SequenceType.NUCLEOTIDE);
+//            }
         }
     }
 
@@ -179,13 +180,13 @@ public class SparsePhyloCTMC extends PhyloCTMC {
         if (node == tree.value().getRoot()) {
             if (rootSeq != null){
                 return rootSeq.value().getState(rootSeq.value().length()-1, siteIndex);
-            } else {
-                // fallback: sample from root freq
-                int rootState = sampleFromRootFreq();
-                // set root sequence
-                sampledRootSeq.setState(sampledRootSeq.length()-1, siteIndex, rootState);
-
-                return rootState;
+//            } else {
+//                // fallback: sample from root freq
+//                int rootState = sampleFromRootFreq();
+//                // set root sequence
+//                sampledRootSeq.setState(sampledRootSeq.length()-1, siteIndex, rootState);
+//
+//                return rootState;
             }
         }
 
@@ -301,7 +302,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
 
         // initialise the variantStore map
         Map<CellPosition, Integer> variantStore = new HashMap<>();
-        alignment = new VariantStyleAlignment(idMap, sampledRootSeq, variantStore);
+        alignment = new VariantStyleAlignment(idMap, rootSeq.value(), variantStore);
 
         // 3) fill in the alignment using the simulated sparse differences
         TimeTreeNode root = tree.value().getRoot();
