@@ -210,9 +210,28 @@ public class VectorUtils {
 
         if (maybeArray.value().getClass().isArray()) {
             Class componentClass = maybeArray.value().getClass().getComponentType();
+            // componentClass.isAssignableFrom(ofType) returns false, when ofType is Alignment, componentClass is SimpleAlignment
+            // So this code returns true if maybeArray type is the parent class/interface or same as ofType.
+            // Not other way around.
             return componentClass.isAssignableFrom(ofType);
         }
         return false;
+    }
+
+    /**
+     * @param maybeArray
+     * @param parentOrSameCls
+     * @return  returns true if parentOrSameCls is the parent class/interface or same as maybeArray type.
+     *          if maybeArray is not array, then use the value type.
+     */
+    public static boolean isAssignableFrom(Value maybeArray, Class parentOrSameCls) {
+
+        if (maybeArray.value().getClass().isArray()) {
+            Class componentClass = maybeArray.value().getClass().getComponentType();
+            // returns true if ofType is the parent class/interface or same as maybeArray type.
+            return parentOrSameCls.isAssignableFrom(componentClass);
+        } else
+            return parentOrSameCls.isAssignableFrom(maybeArray.getType());
     }
 
     public static Object getElement(Value value, int i) {
