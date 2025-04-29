@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
     private Value<Double[]> p;
-    private Value<Double> w;
+    private Value<Number> w;
     private Value<Integer> n;
 
     private Multinomial multinomial;
@@ -21,7 +21,7 @@ public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
 
     public DirichletMultinomial(
             @ParameterInfo(name = DistributionConstants.pParamName, description = "event probabilities.") Value<Double[]> p,
-            @ParameterInfo(name = DistributionConstants.wParamName, description = "overdispersion parameter of Dirichlet multinomial distribution.") Value<Double> w,
+            @ParameterInfo(name = DistributionConstants.wParamName, description = "overdispersion parameter of Dirichlet multinomial distribution.") Value<Number> w,
             @ParameterInfo(name = DistributionConstants.nParamName, description = "number of trials.") Value<Integer> n
             ){
         super();
@@ -51,7 +51,7 @@ public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
         Value<Number[]> concentration;
         Number [] concentrationv = new Number[p.value().length];
         for (int i = 0; i < this.p.value().length; i++) {
-            concentrationv[i] = this.w.value() * this.p.value()[i];
+            concentrationv[i] = this.w.value().doubleValue() * this.p.value()[i];
         }
         concentration = new Value<>("concentration", concentrationv);
         this.dirichlet = new Dirichlet(concentration);

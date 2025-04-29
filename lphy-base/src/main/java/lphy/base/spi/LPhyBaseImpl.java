@@ -53,6 +53,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 DiscretizedGamma.class, Exp.class, Gamma.class, Geometric.class, InverseGamma.class, LogNormal.class,
                 NegativeBinomial.class, Normal.class, NormalGamma.class, Poisson.class,
                 Uniform.class, UniformDiscrete.class, Weibull.class, WeightedDirichlet.class,
+                DirichletMultinomial.class,
 //                Multinomial.class,
                 // clock model
                 UCLNMean1.class, // => Beast ORC package
