@@ -2,6 +2,7 @@ package lphystudio.app.graphicalmodelpanel;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.exception.SimulatorParsingException;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.model.*;
 import lphy.core.parser.LPhyParserDictionary;
@@ -293,21 +294,35 @@ public class GraphicalModelPanel extends JPanel {
      * and panel function.
      *
      * @param reader
-     * @throws IOException
      */
-    public void source(BufferedReader reader) throws IOException {
+    public void source(BufferedReader reader) {
 
         LPhyParserDictionary metaData = component.getParserDictionary();
-        metaData.source(reader, null);
 
+        try {
+            metaData.source(reader, null);
+        } catch (IOException e) {
+            LoggerUtils.logStackTrace(e);
+            e.printStackTrace();
+        } catch (SimulatorParsingException spe) {
+            LoggerUtils.log.severe("Parsing of " + metaData.getName() + " failed: " + spe.getMessage());
+        } catch (IllegalArgumentException ex) {
+//            LoggerUtils.log.severe(ex.getMessage());
+            LoggerUtils.logStackTrace(ex);
+        }
+
+        addLinesToConsole(metaData);
+
+        repaint();
+    }
+
+    private void addLinesToConsole(LPhyParserDictionary metaData) {
         // fill in data lines and model lines
         String wholeSource = codeBuilder.getCode(metaData);
         String data = codeBuilder.getDataLines();
         dataInterpreter.addInputToPane(data, GraphicalModel.Context.data);
         String model = codeBuilder.getModelLines();
         modelInterpreter.addInputToPane(model, GraphicalModel.Context.model);
-
-        repaint();
     }
 
     private String consumeForLoop(String firstLine, BufferedReader reader) throws IOException {

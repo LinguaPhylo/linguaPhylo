@@ -7,6 +7,7 @@ import lphystudio.app.graphicalmodelpanel.GraphicalModelPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -92,7 +93,7 @@ public class Utils {
             jfc.setCurrentDirectory(lastDirectory);
 
         // modify stupid FileFilter design for DIRECTORIES_ONLY
-        jfc.setFileFilter( new javax.swing.filechooser.FileFilter(){
+        jfc.setFileFilter( new FileFilter(){
             @Override
             public boolean accept(File f) {
                 return f.isDirectory();
@@ -167,18 +168,20 @@ public class Utils {
      * @param panel       clear panel and parser, then paint.
      * @throws IOException
      */
-    public static void readFile(File lphyFile, GraphicalModelPanel panel) throws IOException {
+    public static void readFile(File lphyFile, GraphicalModelPanel panel) {
         // verify final file path
-        if (!lphyFile.exists()) {
+//        if (!lphyFile.exists())
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(lphyFile));
+        } catch (FileNotFoundException e) {
             LoggerUtils.log.severe("Cannot find the LPhy script : " + lphyFile +
                     " from the directory " + lphyFile.getParent() + ", set it using '-d' !");
-            return;
+            LoggerUtils.logStackTrace(e);
         }
 
         LoggerUtils.log.config("Read LPhy script " + lphyFile + " from " + lphyFile.getParent());
 
-        BufferedReader reader;
-        reader = new BufferedReader(new FileReader(lphyFile));
         panel.clear();
         panel.getParserDictionary().setName(lphyFile.getName());
         panel.source(reader);

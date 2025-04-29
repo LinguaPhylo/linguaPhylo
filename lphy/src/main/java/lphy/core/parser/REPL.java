@@ -33,6 +33,9 @@ public class REPL implements LPhyParserDictionary {
     public REPL() {
     }
 
+    /**
+     * only used by {@link #main(String[])}
+     */
     public void doREPL() {
         while (true) {
             System.out.print(">");

@@ -101,11 +101,13 @@ public interface LPhyParserDictionary extends GraphicalModel {
      *                       Null, if no user input.
      */
     default void source(BufferedReader bufferedReader, String[] constants) throws IOException {
+        if (bufferedReader == null)
+            throw new IOException("BufferedReader is null !");
+
         // init processor by use input if there is any
         MacroProcessor macroProcessor = new MacroProcessor(constants);
 
         StringBuilder builder = new StringBuilder();
-
         String lineProcessed;
         String line = bufferedReader.readLine();
         while (line != null) {
@@ -118,6 +120,7 @@ public interface LPhyParserDictionary extends GraphicalModel {
         }
         bufferedReader.close();
         // after macro processed
+        // throws SimulatorParsingException,IllegalArgumentException
         parse(builder.toString());
     }
 
