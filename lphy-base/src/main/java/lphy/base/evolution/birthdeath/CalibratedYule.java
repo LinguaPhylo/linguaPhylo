@@ -8,6 +8,7 @@ import lphy.base.evolution.Taxon;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -46,6 +47,8 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         super(n, null, null);
         if (cladeTaxa == null) throw new IllegalArgumentException("The clade taxa shouldn't be null!");
         if (cladeMRCAAge == null) throw new IllegalArgumentException("The clade mrca age shouldn't be null!");
+        if (cladeMRCAAge.value().length > 1)
+            LoggerUtils.log.warning("LphyBeast for CalibratedYule with more than one calibration is currently not supported.");
         if (n == null && otherTaxa == null) {
             throw new IllegalArgumentException("At least one of " + DistributionConstants.nParamName + ", " + otherTaxaName + " must be specified.");
         }
@@ -104,6 +107,9 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
 
         Number[] cladeMRCAAge = getCladeMRCAAge().value();
 
+        System.out.println(getCladeTaxaArray());
+        System.out.println(getCladeTaxaArray().length);
+        System.out.println(cladeMRCAAge.length);
         // do another check after constructing clade taxa
         if (getCladeTaxaArray().length != cladeMRCAAge.length) throw new IllegalArgumentException("The number of clade mrca age should be the same as clade taxa number!");
 
@@ -266,11 +272,16 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
         if (cladeTaxaValueObject instanceof Taxa) {
             cladeTaxaArray = new Taxa[] {(Taxa) cladeTaxaValueObject};
         } else if (cladeTaxaValueObject.getClass().isArray()) {
-            if (cladeTaxaValueObject instanceof Taxa[]){
-                cladeTaxaArray = (Taxa[]) cladeTaxaValueObject;
-            } else if (cladeTaxaValueObject instanceof Taxon[]) {
-                cladeTaxaArray = new Taxa[] {Taxa.createTaxa((Taxon[]) cladeTaxaValueObject)};
-            } else if (cladeTaxaValueObject instanceof Taxon[][]){
+            Object[] array = (Object[]) cladeTaxaValueObject;
+            Object sample = array[0];
+            if (sample instanceof Taxa) {
+                cladeTaxaArray = new Taxa[array.length];
+                for (int i = 0; i < array.length; i++) {
+                    cladeTaxaArray[i] = (Taxa) array[i];
+                }
+            } else if (sample instanceof Taxon) {
+                cladeTaxaArray = new Taxa[]{Taxa.createTaxa((Taxon[]) cladeTaxaValueObject)};
+            } else if (sample instanceof Taxon[]) {
                 Taxon[][] taxonArray = (Taxon[][]) cladeTaxaValueObject;
                 cladeTaxaArray = new Taxa[taxonArray.length];
 
@@ -278,19 +289,17 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
                     Taxon[] innerArray = taxonArray[i];
                     cladeTaxaArray[i] = Taxa.createTaxa(innerArray);
                 }
-            } else if (cladeTaxaValueObject instanceof Object[]) {
-                if (((Object[]) cladeTaxaValueObject).length > 0 && ((Object[]) cladeTaxaValueObject)[0] instanceof Object[]) {
-                    Object[][] objectArray = (Object[][]) cladeTaxaValueObject;
-                    cladeTaxaArray = new Taxa[objectArray.length];
-                    for (int i = 0; i < objectArray.length; i++) {
-                        cladeTaxaArray[i] = Taxa.createTaxa(objectArray[i]);
-                    }
-                } else {
-                    cladeTaxaArray = new Taxa[]{Taxa.createTaxa((Object[]) cladeTaxaValueObject)};
+            } else if (sample instanceof Object[]) {
+                Object[][] objectArray = (Object[][]) cladeTaxaValueObject;
+                cladeTaxaArray = new Taxa[objectArray.length];
+                for (int i = 0; i < objectArray.length; i++) {
+                    cladeTaxaArray[i] = Taxa.createTaxa(objectArray[i]);
                 }
             } else {
-                throw new IllegalArgumentException(taxaParamName + " must be of type Object[], Taxa, or Taxa[], but it is type " + cladeTaxaValueObject.getClass());
+                cladeTaxaArray = new Taxa[]{Taxa.createTaxa((Object[]) cladeTaxaValueObject)};
             }
+        } else {
+            throw new IllegalArgumentException(taxaParamName + " must be of type Object[], Taxa, or Taxa[], but it is type " + cladeTaxaValueObject.getClass());
         }
     }
 
