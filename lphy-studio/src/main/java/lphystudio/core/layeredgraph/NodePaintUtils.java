@@ -1,5 +1,6 @@
 package lphystudio.core.layeredgraph;
 
+import lphy.base.math.MathUtils;
 import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -13,11 +14,11 @@ import lphystudio.core.theme.ThemeColours;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
-import java.text.DecimalFormat;
 
 public class NodePaintUtils {
 
-    static DecimalFormat format = new DecimalFormat();
+//    static DecimalFormat format = new DecimalFormat("0.00E0");
+    private static int SIGNIFICANT_FIGURE = 3;
 
     private static float FACTOR_LABEL_FONT_SIZE = 11.0f;
     private static double ARROWHEAD_WIDTH = 4;
@@ -281,6 +282,13 @@ public class NodePaintUtils {
                 ((LayeredGNode) ((NodeWrapper) v).wrappedNode()).value() instanceof Value;
     }
 
+    /**
+     * @param node        A node in the graph. It will be drawn in GUI, e.g. a DataButton or SquareButton.
+     * @param v           {@link Value}
+     * @param showValue   whether to show the value
+     * @return    A nice-look string or number, if it is too long,
+     *            then either truncate or round or convert to scientific notation.
+     */
     public static String getNodeString(LayeredGNode node, Value v, boolean showValue) {
 
         Object value = v.value();
@@ -315,8 +323,12 @@ public class NodePaintUtils {
             if (name.equals(value.toString()))
                 displayName = "";
             // process value in string
-            if (value instanceof Double) {
-                valueString = format.format(value);
+            if (value instanceof Number number) {
+//                valueString = format.format(value);
+                valueString = MathUtils.formatScientific(number.doubleValue(), SIGNIFICANT_FIGURE);
+                // more work on int, e.g. 1000 to 1E3, not 1.00E3
+                if (value instanceof Integer)
+                    valueString = valueString.replaceAll("\\.0+E", "E");
             } else {
                 valueString = value.toString();
 //                if (value instanceof String) {

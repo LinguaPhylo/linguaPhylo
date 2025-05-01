@@ -83,6 +83,7 @@ public class LayeredGNode extends LayeredNode.Default {
             borderColor = Color.red;
         }
 
+        // this also format numbers
         String str = NodePaintUtils.getNodeString(this, value, showValue);
 
         boolean inData = inData(value);
