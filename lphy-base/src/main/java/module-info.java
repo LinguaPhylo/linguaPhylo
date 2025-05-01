@@ -11,6 +11,7 @@ module lphy.base {
     requires transitive mahout.math;
 
     requires transitive java.desktop;
+    requires colt;
 
     // bmodel test
     exports lphy.base.bmodeltest;
