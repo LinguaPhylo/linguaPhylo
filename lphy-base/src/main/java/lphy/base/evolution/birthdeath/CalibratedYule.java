@@ -107,9 +107,6 @@ public class CalibratedYule extends TaxaConditionedTreeGenerator implements Gene
 
         Number[] cladeMRCAAge = getCladeMRCAAge().value();
 
-        System.out.println(getCladeTaxaArray());
-        System.out.println(getCladeTaxaArray().length);
-        System.out.println(cladeMRCAAge.length);
         // do another check after constructing clade taxa
         if (getCladeTaxaArray().length != cladeMRCAAge.length) throw new IllegalArgumentException("The number of clade mrca age should be the same as clade taxa number!");
 

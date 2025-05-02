@@ -1,5 +1,7 @@
 package lphy.base.evolution.tree;
 
+import lphy.base.evolution.Taxa;
+import lphy.base.evolution.Taxon;
 import lphy.base.evolution.birthdeath.CalibratedYule;
 import lphy.core.model.Value;
 import org.junit.jupiter.api.Test;
@@ -132,5 +134,69 @@ public class CalibratedYuleTest {
         assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade_1"));
         assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade_3"));
         assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade_10"));
+    }
+
+    @Test
+    void testTaxon() {
+        double birthRate = 0.25;
+        int n = 520;
+        Taxon taxon1 = new Taxon("1");
+        Taxon taxon2 = new Taxon("2");
+        Taxon taxon3 = new Taxon("3");
+        Taxon taxon4 = new Taxon("4");
+        Taxon[] taxa1 = {taxon1, taxon2};
+        Taxon[] taxa2 = {taxon3, taxon4};
+        Taxon[][] taxa = new Taxon[][] { taxa1, taxa2 };
+
+        Number[] cladeAge = new Number[]{5.5, 4};
+        Value<Number> birthRateValue = new Value<>("birthRate", birthRate);
+        Value<Integer> nValue = new Value<>("n", n);
+        Value taxaValue = new Value("taxa", taxa);
+        Value<Number[]> cladeAgeValue = new Value<>("cladeAge", cladeAge);
+
+        CalibratedYule instance = new CalibratedYule(birthRateValue, nValue, taxaValue, cladeAgeValue, null, null);
+        TimeTree observe = instance.sample().value();
+
+        // node number should be same
+        assertEquals(n , observe.getRoot().getAllLeafNodes().size());
+        // randomly check the names for clade taxa
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade0_1"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade0_2"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade1_3"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade1_4"));
+    }
+
+    @Test
+    void testTaxa() {
+        double birthRate = 0.25;
+        int n = 520;
+        Taxon taxon1 = new Taxon("1");
+        Taxon taxon2 = new Taxon("2");
+        Taxon taxon3 = new Taxon("3");
+        Taxon taxon4 = new Taxon("4");
+        Taxon[] taxonArray1 = {taxon1, taxon2};
+        Taxa taxa1 = new Taxa.Simple(taxonArray1);
+        Taxon[] taxonArray2 = {taxon3, taxon4};
+        Taxa taxa2 = new Taxa.Simple(taxonArray2);
+        Taxa[] taxa = new Taxa[2];
+        taxa[0] = taxa1;
+        taxa[1] = taxa2;
+        Number[] cladeAge = new Number[]{5.5, 4};
+
+        Value<Number> birthRateValue = new Value<>("birthRate", birthRate);
+        Value<Integer> nValue = new Value<>("n", n);
+        Value taxaValue = new Value("taxa", taxa);
+        Value<Number[]> cladeAgeValue = new Value<>("cladeAge", cladeAge);
+
+        CalibratedYule instance = new CalibratedYule(birthRateValue, nValue, taxaValue, cladeAgeValue, null, null);
+        TimeTree observe = instance.sample().value();
+
+        // node number should be same
+        assertEquals(n , observe.getRoot().getAllLeafNodes().size());
+        // randomly check the names for clade taxa
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade0_1"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade0_2"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade1_3"));
+        assert observe.getRoot().getAllLeafNodes().stream().anyMatch(node -> node.getId().equals("clade1_4"));
     }
 }
