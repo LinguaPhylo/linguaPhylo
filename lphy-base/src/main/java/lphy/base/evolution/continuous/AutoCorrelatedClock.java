@@ -4,6 +4,8 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.*;
@@ -94,6 +96,20 @@ public class AutoCorrelatedClock extends DeterministicFunction<Double[]> {
         }
         return map;
     }
+    @GeneratorInfo(
+            name = "AutoCorrelatedClock",
+            verbClause = "is assumed to have rates evolving under an autocorrelated Brownian process",
+            narrativeName = "autocorrelated clock",
+            category = GeneratorCategory.PHYLO_LIKELIHOOD,
+            examples = {"autoCorrelatedClock.lphy"},
+            description = """
+      This deterministic function calculates the mean substitution rate on each branch
+      of a phylogeny under an autocorrelated Brownian motion (log-rate) model.
+      For each parent-child node pair, the average rate is computed via a bridging integral
+      (the so-called MeanZ approach). Optionally, the average rates can be normalized so that
+      the time-weighted mean rate over the entire tree is 1.0.
+      """
+    )
 
     @Override
     public void setParam(String paramName, Value value) {

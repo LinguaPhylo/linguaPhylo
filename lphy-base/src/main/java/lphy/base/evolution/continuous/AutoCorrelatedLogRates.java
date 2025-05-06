@@ -5,6 +5,8 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -95,6 +97,20 @@ public class AutoCorrelatedLogRates extends ParametricDistribution<Double[]> {
         }
         super.setParam(paramName, value);
     }
+
+    @GeneratorInfo(
+            name = "AutoCorrelatedLogRates",
+            verbClause = "are assumed to evolve under a parent-child Brownian increment",
+            narrativeName = "auto-correlated log-rates",
+            category = GeneratorCategory.PHYLO_LIKELIHOOD,
+            examples = {"autoCorrelatedClock.lphy"},
+            description = """
+      This parametric distribution generates node-specific log-rates by a Brownian increment process
+      along the given time tree. The root node has a specified log-rate, and each child node's log-rate
+      is drawn from Normal( parentLogRate, sigma^2 * dt ), where dt is the time between parent and child.
+      This leads to an auto-correlated relaxation of the molecular clock across lineages.
+      """)
+
 
     @Override
     public RandomVariable<Double[]> sample() {
