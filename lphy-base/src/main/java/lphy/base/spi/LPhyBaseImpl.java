@@ -13,9 +13,7 @@ import lphy.base.evolution.branchrate.LocalBranchRates;
 import lphy.base.evolution.branchrate.LocalClock;
 import lphy.base.evolution.coalescent.*;
 import lphy.base.evolution.coalescent.populationmodel.*;
-import lphy.base.evolution.continuous.PhyloBrownian;
-import lphy.base.evolution.continuous.PhyloMultivariateBrownian;
-import lphy.base.evolution.continuous.PhyloOU;
+import lphy.base.evolution.continuous.*;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.likelihood.SparsePhyloCTMC;
@@ -73,7 +71,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 RandomBooleanArray.class, Sample.class, SNPSampler.class,
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
-                SparsePhyloCTMC.class,
+                SparsePhyloCTMC.class,AutoCorrelatedLogRates.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
     }
 
@@ -117,9 +115,11 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 GompertzPopulationFunction_f0.class,
                 GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class,
                 LogisticPopulationFunction.class, ConstantPopulationFunction.class,
-                Cons_Exp_ConsPopulationFunction.class, ExpansionPopulationFunction.class
+                Cons_Exp_ConsPopulationFunction.class, ExpansionPopulationFunction.class,
+                AutoCorrelatedClock.class
 
-        );
+
+                );
 
     }
 
