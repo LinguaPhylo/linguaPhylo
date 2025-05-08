@@ -54,7 +54,7 @@ public class DirichletMultinomial extends ParametricDistribution<Integer[]>{
             concentrationv[i] = this.w.value().doubleValue() * this.p.value()[i];
         }
         concentration = new Value<>("concentration", concentrationv);
-        this.dirichlet = new Dirichlet(concentration);
+        this.dirichlet = new Dirichlet(concentration, null);
         this.multinomial = new Multinomial();
         this.multinomial.setParam("n", this.n);
         Value<Double[]> prob;
