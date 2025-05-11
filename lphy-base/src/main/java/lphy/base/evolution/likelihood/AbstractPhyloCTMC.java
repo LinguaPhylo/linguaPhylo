@@ -2,6 +2,7 @@ package lphy.base.evolution.likelihood;
 
 import jebl.evolution.sequences.SequenceType;
 import lphy.base.evolution.alignment.Alignment;
+import lphy.base.evolution.eigensystem.*;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.logger.LoggerUtils;
@@ -49,6 +50,8 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     protected SortedMap<String, Integer> idMap = new TreeMap<>();
     protected double[][] transProb;
     private EigenDecomposition decomposition;
+    protected EigenSystem complexEigenSystem;
+    protected EigenDecompositionExt complexDecomposition;
     private double[][] Ievc;
     private double[][] Evec;
     private double[][] iexp;
@@ -97,6 +100,11 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
     // return Q matrix
     protected abstract Double[][] getQ();
 
+    // flags when asymmetric rate matrix used
+    protected boolean canReturnComplexDiagonalization() {
+        return false;
+    }
+
     // shared code in setup()
     protected void computePAndRootFreqs() {
         idMap.clear();
@@ -113,28 +121,33 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         transProb = new double[numStates][numStates];
         iexp = new double[numStates][numStates];
 
-        double[][] primitive = new double[numStates][numStates];
-        for (int i = 0; i < numStates; i++) {
-            for (int j = 0; j < numStates; j++) {
-                primitive[i][j] = Qm[i][j];
+        // regular method
+        if (!canReturnComplexDiagonalization()) {
+            double[][] primitive = new double[numStates][numStates];
+            for (int i = 0; i < numStates; i++) {
+                for (int j = 0; j < numStates; j++) {
+                    primitive[i][j] = Qm[i][j];
+                }
             }
-        }
-        Array2DRowRealMatrix Qmatrix = new Array2DRowRealMatrix(primitive);
+            Array2DRowRealMatrix Qmatrix = new Array2DRowRealMatrix(primitive);
 
-        decomposition = new EigenDecomposition(Qmatrix);
-        Eval = decomposition.getRealEigenvalues();
-        Ievc = new double[numStates][numStates];
+            decomposition = new EigenDecomposition(Qmatrix);
+            Eval = decomposition.getRealEigenvalues();
+            Ievc = new double[numStates][numStates];
 
-        // Eigen vectors
-        Evec = new double[numStates][numStates];
-        for (int i = 0; i < numStates; i++) {
-            RealVector evec = decomposition.getEigenvector(i);
-            for (int j = 0; j < numStates; j++) {
-                Evec[j][i] = evec.getEntry(j);
+            // Eigen vectors
+            Evec = new double[numStates][numStates];
+            for (int i = 0; i < numStates; i++) {
+                RealVector evec = decomposition.getEigenvector(i);
+                for (int j = 0; j < numStates; j++) {
+                    Evec[j][i] = evec.getEntry(j);
+                }
             }
-        }
 
-        luinverse(Evec, Ievc, numStates);
+            luinverse(Evec, Ievc, numStates);
+        } else {
+            getComplexEigen(numStates, Qm);
+        }
 
         rootFreqs = freq;
         if (rootFreqs == null) {
@@ -191,29 +204,31 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
 
     // make public for unit test
     public void getTransitionProbabilities(double branchLength, double[][] transProbs) {
+        // regular method
+        if (!canReturnComplexDiagonalization()) {
+            int i, j, k;
+            double temp;
 
-        int i, j, k;
-        double temp;
-
-        final int numStates = transProbs.length; // getQ().length ?
-        // inverse Eigen vectors
-        // Eigen values
-        for (i = 0; i < numStates; i++) {
-            temp = FastMath.exp(branchLength * Eval[i]);
-            for (j = 0; j < numStates; j++) {
-                iexp[i][j] = Ievc[i][j] * temp;
-            }
-        }
-
-        for (i = 0; i < numStates; i++) {
-            for (j = 0; j < numStates; j++) {
-                temp = 0.0;
-                for (k = 0; k < numStates; k++) {
-                    temp += Evec[i][k] * iexp[k][j];
+            final int numStates = transProbs.length; // getQ().length ?
+            // inverse Eigen vectors
+            // Eigen values
+            for (i = 0; i < numStates; i++) {
+                temp = FastMath.exp(branchLength * Eval[i]);
+                for (j = 0; j < numStates; j++) {
+                    iexp[i][j] = Ievc[i][j] * temp;
                 }
-                transProbs[i][j] = FastMath.abs(temp);
             }
-        }
+
+            for (i = 0; i < numStates; i++) {
+                for (j = 0; j < numStates; j++) {
+                    temp = 0.0;
+                    for (k = 0; k < numStates; k++) {
+                        temp += Evec[i][k] * iexp[k][j];
+                    }
+                    transProbs[i][j] = FastMath.abs(temp);
+                }
+            }
+        } else getComplexTransitionProbabilities(branchLength, transProbs);
     }
 
     //+++ private methods +++//
@@ -265,6 +280,83 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         }
         if (Math.abs(totalP - 1.0) < 1e-6) return p.length - 1;
         throw new RuntimeException("p vector should add to 1.0 but adds to " + totalP +  " instead.");
+    }
+
+    // gets complex eigensystem with colt dependency
+    private void getComplexEigen(int numStates, Double[][] Qm) {
+        complexEigenSystem = new ComplexColtEigenSystem(numStates);
+        complexDecomposition = complexEigenSystem.decomposeMatrix(Qm);
+        Eval = complexDecomposition.getEigenValues();
+
+        Evec = new double[numStates][numStates];
+        Ievc = new double[numStates][numStates];
+        double[] evec = complexDecomposition.getEigenVectors();
+        double[] ievc = complexDecomposition.getInverseEigenVectors();
+        int x = 0;
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                Evec[i][j] = evec[x];
+                Ievc[i][j] = ievc[x];
+                x++;
+            }
+        }
+    }
+
+    // nonreversible Q matrix eigen decomposition
+    private void getComplexTransitionProbabilities(double branchLength, double[][] transProbs) {
+        final int numStates = transProbs.length; // getQ().length ?
+        double temp;
+        double[] Ievc2 = new double[numStates * numStates];
+        double[] Evec2 = new double[numStates * numStates];
+
+        double[] EvalImag = new double[numStates];
+        System.arraycopy(Eval, numStates, EvalImag, 0, numStates);
+        int k = 0;
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                Ievc2[k] = Ievc[i][j];
+                Evec2[k] = Evec[i][j];
+                k++;
+            }
+        }
+        for (int i = 0; i < numStates; i++) {
+
+            if (EvalImag[i] == 0) {
+                // 1x1 block
+                temp = Math.exp(branchLength * Eval[i]);
+                for (int j = 0; j < numStates; j++) {
+                    iexp[i][j] = Ievc2[i * numStates + j] * temp;
+                }
+            } else {
+                // 2x2 conjugate block
+                // If A is 2x2 with complex conjugate pair eigenvalues a +/- bi, then
+                // exp(At) = exp(at)*( cos(bt)I + \frac{sin(bt)}{b}(A - aI)).
+                int i2 = i + 1;
+                double b = EvalImag[i];
+                double expat = Math.exp(branchLength * Eval[i]);
+                double expatcosbt = expat * Math.cos(branchLength * b);
+                double expatsinbt = expat * Math.sin(branchLength * b);
+
+                for (int j = 0; j < numStates; j++) {
+                    iexp[i][j] = expatcosbt * Ievc2[i * numStates + j] +
+                            expatsinbt * Ievc2[i2 * numStates + j];
+                    iexp[i2][j] = expatcosbt * Ievc2[i2 * numStates + j] -
+                            expatsinbt * Ievc2[i * numStates + j];
+                }
+                i++; // processed two conjugate rows
+            }
+        }
+
+        for (int i = 0; i < numStates; i++) {
+            for (int j = 0; j < numStates; j++) {
+                temp = 0.0;
+                for (k = 0; k < numStates; k++) {
+                    temp += Evec2[i * numStates + k] * iexp[k][j];
+                }
+                transProbs[i][j] = Math.abs(temp);
+            }
+        }
+
     }
 
 

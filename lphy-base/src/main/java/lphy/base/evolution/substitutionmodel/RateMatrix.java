@@ -19,6 +19,8 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
         if (rate != null) setParam(meanRateParamName, rate);
     }
 
+    // regular eigen decomposition methods used by default
+    public boolean canReturnComplexDiagonalization() { return false; }
 
     void normalize(Double[] freqs, Double[][] Q) {
         normalize(freqs, Q, totalRateDefault1());

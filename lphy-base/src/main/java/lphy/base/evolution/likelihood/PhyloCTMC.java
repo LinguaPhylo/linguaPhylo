@@ -4,7 +4,9 @@ import jebl.evolution.sequences.SequenceType;
 import lphy.base.distribution.Categorical;
 import lphy.base.evolution.alignment.Alignment;
 import lphy.base.evolution.alignment.SimpleAlignment;
+import lphy.base.evolution.substitutionmodel.RateMatrix;
 import lphy.base.evolution.tree.TimeTree;
+import lphy.core.model.Generator;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
@@ -85,6 +87,16 @@ public class PhyloCTMC extends AbstractPhyloCTMC {
     @Override
     protected Double[][] getQ() {
         return Objects.requireNonNull(Q).value();
+    }
+
+    @Override
+    protected boolean canReturnComplexDiagonalization() {
+        // check whether Q matrix will require complex eigensystems
+        Generator generator = getQValue().getGenerator();
+        if (generator instanceof RateMatrix rateMatrix && rateMatrix.canReturnComplexDiagonalization()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
