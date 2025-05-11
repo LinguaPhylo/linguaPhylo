@@ -245,6 +245,9 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
 
             }
         }
+        if (canReturnComplexDiagonalization()) {
+            LoggerUtils.log.warning("Complex eigen decomposition methods being used.");
+        }
 
         return new Value<>(null, freqs);
     }
