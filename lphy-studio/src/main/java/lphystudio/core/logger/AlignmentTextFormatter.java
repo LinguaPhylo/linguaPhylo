@@ -4,21 +4,31 @@ import lphy.base.evolution.alignment.SimpleAlignment;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 
+import java.io.BufferedWriter;
+
 public class AlignmentTextFormatter implements ValueFormatter<SimpleAlignment> {
 
     SimpleAlignment simpleAlignment;
     String valueID;
-//    boolean isClamped;
-
-//    public AlignmentTextFormatter(String valueID, SimpleAlignment simpleAlignment, Boolean isClamped) {
-//        this.valueID = Symbols.getCanonical(valueID);
-//        this.simpleAlignment = simpleAlignment;
-//        this.isClamped = isClamped;
-//    }
 
     public AlignmentTextFormatter(String valueID, SimpleAlignment simpleAlignment) {
         this.valueID = Symbols.getCanonical(valueID);
         this.simpleAlignment = simpleAlignment;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, SimpleAlignment simpleAlignment) {
+        for (int i = 0; i < simpleAlignment.ntaxa(); i++) {
+            try {
+                writer.write(">" + simpleAlignment.getTaxonName(i) + "\n");
+                for (int j = 0; j < simpleAlignment.nchar(); j++) {
+                    writer.write(simpleAlignment.getCharacter(i, j));
+                }
+                writer.write("\n");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override

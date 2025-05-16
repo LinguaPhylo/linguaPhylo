@@ -2,6 +2,8 @@ package lphy.core.logger;
 
 import lphy.core.model.Value;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +15,13 @@ import java.util.List;
  */
 public interface TextFileFormatted {
 
+    /*
+       To be replaced with writeToFile() method below
+     */
+    @Deprecated
     List<String> getTextForFile();
+
+    void writeToFile(BufferedWriter writer);
 
     String getFileType();
 
