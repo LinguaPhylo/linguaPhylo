@@ -5,6 +5,9 @@ import lphy.base.parser.nexus.NexusUtils;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class NexusTreeFormatter implements ValueFormatter<TimeTree> {
 
     String valueID;
@@ -16,6 +19,16 @@ public class NexusTreeFormatter implements ValueFormatter<TimeTree> {
     public NexusTreeFormatter(String valueID, TimeTree tree) {
         this.valueID = Symbols.getCanonical(valueID);
         this.tree = tree;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, TimeTree value) {
+        // TODO: write trees
+        try {
+            writer.write(format(value));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

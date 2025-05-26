@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static lphy.core.io.OutputSystem.getOutputFile;
 import static lphy.core.spi.LoaderManager.valueFormatResolver;
 
 public class FileLoggerListener implements SimulatorListener {
@@ -63,7 +64,7 @@ public class FileLoggerListener implements SimulatorListener {
 
                 String fileName = FileConfig.getOutFileName(canonicalId, index,
                         fileConfig.getNumReplicates(), fileConfig.getFilePrefix(), fileExtension);
-                File file = OutputSystem.getOutputFile(fileName, true);
+                File file = getOutputFile(fileName, true);
 
                 try {
                     file.createNewFile(); // create file
@@ -89,7 +90,7 @@ public class FileLoggerListener implements SimulatorListener {
                         try {
                             file.createNewFile(); // create file
                             writer = new BufferedWriter(new FileWriter(file));
-                            formatter.writeToFile(writer, value); // write values to file
+                            formatter.writeToFile(writer, value.value()); // write values to file
                             writer.close(); // close file
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -112,7 +113,7 @@ public class FileLoggerListener implements SimulatorListener {
                                 // write body
                                 String rowName = formatter.getRowName(index);
                                 writer.write(rowName); // row index
-                                formatter.writeToFile(writer, value); // write values
+                                formatter.writeToFile(writer, value.value()); // write values
                                 writer.write("\n");
                             } else if (index == fileConfig.numReplicates - 1) {
                                 // write footer
@@ -142,12 +143,12 @@ public class FileLoggerListener implements SimulatorListener {
                                     // replicate number
                                     writer.write(rowName + DELIMITER);
                                     // value
-                                    formatter.writeToFile(writer, value);
+                                    formatter.writeToFile(writer, value.value());
                                     firstCol = false;
                                 } else {
                                     writer = writerMap.get(file.getAbsolutePath());
                                     writer.write(DELIMITER);
-                                    formatter.writeToFile(writer, value);
+                                    formatter.writeToFile(writer, value.value());
                                 }
 
                             } catch (IOException ex) {
@@ -159,11 +160,11 @@ public class FileLoggerListener implements SimulatorListener {
                                 writer = writerMap.get(file.getAbsolutePath());
                                 if (firstCol) {
                                     writer.write(rowName + DELIMITER);
-                                    formatter.writeToFile(writer, value);
+                                    formatter.writeToFile(writer, value.value());
                                     firstCol = false;
                                 } else {
                                     writer.write(DELIMITER);
-                                    formatter.writeToFile(writer, value);
+                                    formatter.writeToFile(writer, value.value());
                                 }
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -179,17 +180,27 @@ public class FileLoggerListener implements SimulatorListener {
         }
     }
 
+    public void setOutputDir(String dir) {
+        OutputSystem.setOutputDirectory(dir);
+    }
+
     private File getFile(ValueFormatter formatter, int index) {
         String filePrefix = fileConfig.getFilePrefix();
         int numReplicates = fileConfig.getNumReplicates();
         String fileExtension = formatter.getExtension();
         String id = formatter.getValueID();
         String fileName = FileConfig.getOutFileName(id, index, numReplicates, filePrefix, fileExtension);
-        return new File(fileName);
+
+        return getOutputFile(fileName, true);
+//        return new File(fileName);
     }
 
     @Override
     public void complete() {
+        if (writerMap == null || writerMap.size() == 0) {
+            return;
+        }
+
         try {
             // close all remaining buffered writers
             for (BufferedWriter w : writerMap.values()) {

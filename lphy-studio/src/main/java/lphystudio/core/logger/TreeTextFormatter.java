@@ -4,6 +4,9 @@ import lphy.base.evolution.tree.TimeTree;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class TreeTextFormatter implements ValueFormatter<TimeTree> {
 
     String valueID;
@@ -15,6 +18,15 @@ public class TreeTextFormatter implements ValueFormatter<TimeTree> {
     public TreeTextFormatter(String valueID, TimeTree tree) {
         this.valueID = Symbols.getCanonical(valueID);
         this.tree = tree;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, TimeTree value) {
+        try {
+            writer.write(format(value));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

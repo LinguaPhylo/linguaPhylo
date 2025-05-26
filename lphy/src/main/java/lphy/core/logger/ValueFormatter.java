@@ -89,7 +89,7 @@ public interface ValueFormatter<T> {
         @Override
         public void writeToFile(BufferedWriter writer, T value) {
             try {
-                writer.write(value.toString());
+                writer.write(format(value));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

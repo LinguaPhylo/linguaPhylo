@@ -1,6 +1,7 @@
 package lphystudio.app;
 
 import lphy.core.codebuilder.CanonicalCodeBuilder;
+import lphy.core.logger.FileLoggerListener;
 import lphy.core.logger.LoggerUtils;
 import lphy.core.logger.TextFileFormatted;
 import lphy.core.logger.ValueFileLoggerListener;
@@ -298,7 +299,7 @@ public class LinguaPhyloStudio {
 
                     // TODO: Cannot specify to call which formatter in the core, as Nexus formatter is in the base,
                     // so call ValueFileLoggerListener instead, however the alignment will be simulated again.
-                    ValueFileLoggerListener fileLoggerListener = new ValueFileLoggerListener();
+                    FileLoggerListener fileLoggerListener = new FileLoggerListener();
                     // set alignment directory
                     fileLoggerListener.setOutputDir(selectedDir.getAbsolutePath());
                     LoggerUtils.log.info("Save the alignments to: " + selectedDir.getAbsolutePath());
