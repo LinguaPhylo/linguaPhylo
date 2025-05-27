@@ -28,24 +28,16 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
     public SNPSampler(@ParameterInfo(name = ReaderConst.ALIGNMENT, description = "the one sequence alignment") Value<Alignment> alignment,
                       @ParameterInfo(name = probabilityName, description = "the probability of each site to be SNP, deafult to be 0.01", optional = true) Value<Number> p,
                       @ParameterInfo(name = ratioName, description = "the ratio of heterozygousSNPs and non-reference homozygous SNPs, " +
-                               "default all SNPs are heterozygous", optional = true) Value<Number> r) {
+                              "default all SNPs are heterozygous", optional = true) Value<Number> r) {
 
         if (alignment == null) throw new IllegalArgumentException("The alignment can't be null!");
         if (alignment.value().length() > 1) throw new IllegalArgumentException("The alignment should be one sequence alignment");
         if (! alignment.value().getSequenceTypeStr().equals(Nucleotides.NAME)) throw new IllegalArgumentException("Only take haploid alignment!");
         setParam(ReaderConst.ALIGNMENT, alignment);
 
-        if (p != null){
-            setParam(probabilityName, p);
-        } else {
-            setParam(probabilityName, new Value<>("id", p.value().doubleValue()));
-        }
-
-        if (r != null){
-            setParam(ratioName, r);
-        } else {
-            setParam(ratioName, new Value<>("id", 0));
-        }
+        this.alignment = alignment;
+        this.p = p;
+        this.r = r;
     }
     @Override
     protected void constructDistribution(RandomGenerator random) {
@@ -58,21 +50,9 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
     @Override
     public RandomVariable<Variant[]> sample() {
         // get parameter value
-        Alignment alignment = getAlignment().value();
-
-        Number p;
-        if (getProbability()!= null){
-             p = getProbability().value();
-        } else {
-            p = 0.001;
-        }
-
-        Number r;
-        if (getRatio()!=null){
-            r = getRatio().value();
-        } else {
-            r = 0;
-        }
+        Alignment alignment = this.alignment.value();
+        Number p = getProbability();
+        Number r = getRatio();
 
         // initialise the output snps
         List<Variant> snpList = new ArrayList<>();
@@ -217,11 +197,11 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
     @Override
     public Map<String, Value> getParams() {
-        Map<String, Value> params = new TreeMap<>();
-        if (ReaderConst.ALIGNMENT != null) params.put(ReaderConst.ALIGNMENT, alignment);
-        if (probabilityName != null) params.put(probabilityName, p);
-        if (ratioName != null) params.put(ratioName, r);
-        return params;
+        return new TreeMap<>() {{
+            put(ReaderConst.ALIGNMENT, alignment);
+            if (p != null) put(probabilityName, p);
+            if (r != null) put(ratioName, r);
+        }};
     }
 
     public void setParam(String paramName, Value value){
@@ -230,16 +210,19 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
         else if (paramName.equals(ratioName)) r = value;
     }
 
-    public Value<Alignment> getAlignment() {
-        return getParams().get(ReaderConst.ALIGNMENT);
+    public Number getProbability() {
+        if (p == null || p.value() == null)
+            return 0.01;
+        else
+            return p.value();
     }
 
-    public Value<Number> getProbability() {
-        return getParams().get(probabilityName);
-    }
-
-    public Value<Number> getRatio() {
-        return getParams().get(ratioName);
+    public Number getRatio() {
+        if (r == null || r.value() == null)
+            return 0;
+        else
+            return r.value();
     }
 
 }
+
