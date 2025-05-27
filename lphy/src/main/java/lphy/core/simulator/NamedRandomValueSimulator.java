@@ -1,6 +1,7 @@
 package lphy.core.simulator;
 
 import lphy.core.io.FileConfig;
+import lphy.core.logger.FileLoggerListener;
 import lphy.core.logger.ValueFileLoggerListener;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -29,7 +30,8 @@ public class NamedRandomValueSimulator {
     protected Sampler sampler;
 
     public NamedRandomValueSimulator() {
-        this(new ValueFileLoggerListener());
+        // calls LoggerListener code
+        this(new FileLoggerListener());
     }
 
     public NamedRandomValueSimulator(SimulatorListener simulatorListener) {
