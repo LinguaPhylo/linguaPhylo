@@ -143,9 +143,9 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
         return mean;
     }
 
-    public Value<Number> getSum() {
+    public Value<Double> getSum() {
         double sum = 0;
-        if (mean == null) {
+        if (mean != null) {
             sum = mean.value().doubleValue() * (concentration.value().length);
         } else {
             sum = 1;
