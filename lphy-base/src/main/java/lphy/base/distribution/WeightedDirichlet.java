@@ -10,8 +10,10 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 import static lphy.base.distribution.DistributionConstants.concParamName;
+import static lphy.base.distribution.DistributionConstants.meanParamName;
 
 /**
  * The scaled dirichlet probability distribution.
@@ -25,12 +27,22 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
 
     private Value<Number[]> concentration;
     private Value<Integer[]> weights;
+    private Value<Number> mean;
+
+    private final double DEFAULT_MEAN = 1.0;
 
     public WeightedDirichlet(@ParameterInfo(name = concParamName, narrativeName = "concentration", description = "the concentration parameters of the scaled Dirichlet distribution.") Value<Number[]> concentration,
-                             @ParameterInfo(name = weightsParamName, description = "the weight parameters of the scaled Dirichlet distribution.") Value<Integer[]> weights) {
+                             @ParameterInfo(name = weightsParamName, description = "the relative weight parameters of the scaled Dirichlet distribution.") Value<Integer[]> weights,
+                             @ParameterInfo(name = meanParamName, optional = true,
+                                     description = "the expected weighted mean of the values, default to 1.") Value<Number> mean) {
         super();
         this.concentration = concentration;
         this.weights = weights;
+        this.mean = mean;
+        Number[] conc = concentration.value();
+        Integer[] weight = weights.value();
+        if (conc ==null || weight == null || conc.length != weight.length)
+            throw new IllegalArgumentException("The concentration parameters must have the same length of weight parameters !");
     }
 
     @Override
@@ -43,30 +55,46 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
 
         Number[] weight = weights.value();
         Number[] conc = concentration.value();
+        // the expected mean default to 1
+        double expectedMean = DEFAULT_MEAN;
+        if (mean != null)
+            expectedMean = mean.value().doubleValue();
 
-        double weightsum = 0.0;
-        for (int i = 0; i < weight.length; i++) {
-            weightsum += weight[i].doubleValue();
+        int dim = conc.length;
+        double weightSum = 0.0;
+        for (int i = 0; i < dim; i++) {
+            weightSum += weight[i].doubleValue();
         }
 
-        Double[] z = new Double[concentration.value().length];
-        double sum = 0.0;
-        for (int i = 0; i < z.length; i++) {
-            double val = MathUtils.randomGamma(conc[i].doubleValue(), 1.0, random);
-            z[i] = val;
-            sum += val * (weight[i].doubleValue() / weightsum);
+        Double[] x = new Double[dim];
+        double sumX = 0.0;
+        for (int i = 0; i < dim; i++) {
+            // Sample gamma
+            x[i] = MathUtils.randomGamma(conc[i].doubleValue(), 1.0, random);
+            // Sum with normalized weights
+            sumX += x[i] * weight[i].doubleValue() / weightSum;
         }
 
-        for (int i = 0; i < z.length; i++) {
-            z[i] /= sum;
+        // re-normalise
+        for (int i = 0; i < x.length; i++) {
+            x[i] = x[i] / sumX;
         }
 
-        return new RandomVariable<>(null, z, this);
+        // the weight mean = sum(x[i] * weight[i]) / sum(weight[i])
+        double weightedSumX = IntStream.range(0, x.length)
+                .mapToDouble(i -> x[i] * weight[i].doubleValue()).sum();
+        double weightedMeanX = weightedSumX / weightSum;
+        // TODO 1e-2
+        if (Math.abs(weightedMeanX - expectedMean) > 1e-6)
+            throw new RuntimeException("The weighted mean of values (" + weightedMeanX +
+                    ") differs significantly from the expected mean of values (" + expectedMean +") !");
+
+        return new RandomVariable<>(null, x, this);
     }
 
-    public double density(Double d) {
+    public double density(Double[] x) {
         // TODO
-        return 0;
+        throw new UnsupportedOperationException("WeightedDirichlet density is not supported yet");
     }
 
     @Override
@@ -74,6 +102,7 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
         return new TreeMap<>() {{
             put(concParamName, concentration);
             put(weightsParamName, weights);
+            if (mean != null) put(meanParamName, mean);
         }};
     }
 
@@ -81,6 +110,7 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
     public void setParam(String paramName, Value value) {
         if (paramName.equals(concParamName)) concentration = value;
         else if (paramName.equals(weightsParamName)) weights = value;
+        else if (paramName.equals(meanParamName)) mean = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
         super.setParam(paramName, value); // constructDistribution
@@ -91,5 +121,11 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
 
     public Value<Integer[]> getWeights() {
         return weights;
+    }
+
+    public Value<Number> getMean() {
+        if (mean != null)
+            return mean;
+        return new Value<>("mean", DEFAULT_MEAN);
     }
 }
