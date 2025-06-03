@@ -63,10 +63,7 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
             expectedMean = mean.value().doubleValue();
 
         int dim = conc.length;
-        double weightSum = 0.0;
-        for (int i = 0; i < dim; i++) {
-            weightSum += weight[i].doubleValue();
-        }
+        double weightSum = MathUtils.sumArray(weight);
 
         Double[] x = new Double[dim];
         double sumX = 0.0;

@@ -62,4 +62,28 @@ public class MathUtils {
         return defaultDecimalFormat.format(integer);
     }
 
+    /*
+    The fastest way to sum all elements in a Java array is generally to use a basic for loop.
+     */
+
+    public static int sumArray(int[] arr) {
+        int sum = 0;
+        for (int e : arr)
+            sum += e;
+        return sum;
+    }
+
+    public static double sumArray(double[] arr) {
+        double sum = 0;
+        for (double e : arr)
+            sum += e;
+        return sum;
+    }
+
+    public static double sumArray(Number[] arr) {
+        double sum = 0;
+        for (Number e : arr)
+            sum += e.doubleValue();
+        return sum;
+    }
 }
