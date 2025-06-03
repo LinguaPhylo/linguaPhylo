@@ -10,7 +10,6 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.IntStream;
 
 import static lphy.base.distribution.DistributionConstants.concParamName;
 import static lphy.base.distribution.DistributionConstants.meanParamName;
@@ -84,8 +83,11 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
         }
 
         // the weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
-        double weightedSumX = IntStream.range(0, x.length)
-                .mapToDouble(i -> x[i] * weight[i].doubleValue()).sum();
+        double weightedSumX = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            double v = x[i] * weight[i].doubleValue();
+            weightedSumX += v;
+        }
         double weightedMeanX = weightedSumX / weightSum;
         if (Math.abs(weightedMeanX - expectedMean) > 1e-6)
             throw new RuntimeException("The weighted mean of values (" + weightedMeanX +
