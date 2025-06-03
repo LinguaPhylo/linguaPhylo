@@ -87,7 +87,6 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
         double weightedSumX = IntStream.range(0, x.length)
                 .mapToDouble(i -> x[i] * weight[i].doubleValue()).sum();
         double weightedMeanX = weightedSumX / weightSum;
-        // TODO 1e-2
         if (Math.abs(weightedMeanX - expectedMean) > 1e-6)
             throw new RuntimeException("The weighted mean of values (" + weightedMeanX +
                     ") differs significantly from the expected mean of values (" + expectedMean +") !");
