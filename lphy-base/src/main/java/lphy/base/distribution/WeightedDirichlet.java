@@ -17,6 +17,8 @@ import static lphy.base.distribution.DistributionConstants.meanParamName;
 
 /**
  * The scaled dirichlet probability distribution.
+ * The weighted mean of values must equal to the expected weighted mean (default to 1).
+ * The weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
  * @see Dirichlet
  * @author Alexei Drummond
  * @author Walter Xie
@@ -50,7 +52,8 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
 
     @GeneratorInfo(name = "WeightedDirichlet",
             category = GeneratorCategory.PRIOR, examples = {"totalEvidence.lphy","weightedDirichlet.lphy"},
-            description = "The scaled dirichlet probability distribution.")
+            description = "The scaled dirichlet probability distribution. " +
+                    "The weighted mean of values must equal to the expected weighted mean (default to 1).")
     public RandomVariable<Double[]> sample() {
 
         Number[] weight = weights.value();
@@ -80,7 +83,7 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
             x[i] = x[i] / sumX;
         }
 
-        // the weight mean = sum(x[i] * weight[i]) / sum(weight[i])
+        // the weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
         double weightedSumX = IntStream.range(0, x.length)
                 .mapToDouble(i -> x[i] * weight[i].doubleValue()).sum();
         double weightedMeanX = weightedSumX / weightSum;
