@@ -90,7 +90,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
                 // Alignment
                 SelectSitesByMissingFraction.class, RemoveTaxa.class, Distance.class,
-                VariableSites.class, InvariableSites.class, CopySites.class,
+                VariableSites.class, InvariableSites.class, InformativeSites.class, CopySites.class,
                 // Tree
                 LocalBranchRates.class, LocalClock.class,
                 ExtantTree.class, PruneTree.class, InternalNodesID.class,

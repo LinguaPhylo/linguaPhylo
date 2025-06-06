@@ -37,6 +37,34 @@ public final class AlignmentUtils {
     }
 
     /**
+     * @param aSite            states as an int array
+     * @param ignoreUnknown    ignore unknown or gap
+     * @param sequenceType     {@link  SequenceType}
+     * @return      true if the site is a parsimony informative site
+     */
+    public static boolean isInformative(final int[] aSite, boolean ignoreUnknown, SequenceType sequenceType) {
+        if (isInvarSite(aSite, ignoreUnknown, sequenceType)){
+            return false;
+        } else {
+            Map<Integer, Integer> countMap = new HashMap<>();
+
+            for (int state : aSite) {
+                if (ignoreUnknown &&
+                        (state == sequenceType.getUnknownState().getIndex() || state == sequenceType.getGapState().getIndex())) {
+                    continue;
+                }
+                countMap.put(state, countMap.getOrDefault(state, 0) + 1);
+            }
+
+            long numStatesWithAtLeastTwo = countMap.values().stream()
+                    .filter(count -> count >= 2)
+                    .count();
+
+            return numStatesWithAtLeastTwo >= 2;
+        }
+    }
+
+    /**
      * @param alignment  {@link SimpleAlignment} only containing the constant sites.
      * @param ignoreUnknown    ignore unknown or gap
      * @return   a counter of constant sites,
