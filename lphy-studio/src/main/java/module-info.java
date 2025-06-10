@@ -5,7 +5,7 @@ module lphystudio {
     requires transitive lphy.base;
 
     requires jlatexmath;
-//    requires org.json;
+    requires org.json;
     requires org.jfree.jfreechart;
     requires markdowngenerator;
 
