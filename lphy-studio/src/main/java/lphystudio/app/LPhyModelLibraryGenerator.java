@@ -99,7 +99,7 @@ public class LPhyModelLibraryGenerator {
                 for (Map.Entry<String, Set<Class<?>>> entry : distMap.entrySet()) {
                     for (Class<?> clazz : entry.getValue()) {
                         if (GenerativeDistribution.class.isAssignableFrom(clazz)) {
-                            processGenerativeDistribution((Class<? extends GenerativeDistribution>) clazz, entry.getKey());
+                            processGenerativeDistribution((Class<? extends GenerativeDistribution>) clazz, extension.getExtensionName());
                         }
                     }
                 }
@@ -109,7 +109,7 @@ public class LPhyModelLibraryGenerator {
                 for (Map.Entry<String, Set<Class<?>>> entry : funcMap.entrySet()) {
                     for (Class<?> clazz : entry.getValue()) {
                         if (BasicFunction.class.isAssignableFrom(clazz)) {
-                            processFunction((Class<? extends BasicFunction>) clazz, entry.getKey());
+                            processFunction((Class<? extends BasicFunction>) clazz, extension.getExtensionName());
                         }
                     }
                 }
@@ -143,22 +143,27 @@ public class LPhyModelLibraryGenerator {
 
         JSONObject generator = new JSONObject();
         generator.put("name", name);
+
+        // Use the extension name as the package
         generator.put("package", packageName);
         generator.put("fullyQualifiedName", clazz.getName());
         generator.put("generatorType", "distribution");
 
-        GeneratorInfo info = GeneratorUtils.getGeneratorInfo(clazz);
-        if (info != null) {
-            generator.put("description", info.description());
+        // Get description from GeneratorInfo annotation on the sample() method
+        String description = getGeneratorDescription(clazz);
+        generator.put("description", description);
 
-            // Add examples if available
-            String[] examples = info.examples();
-            if (examples.length > 0) {
-                JSONArray examplesArray = new JSONArray(examples);
-                generator.put("examples", examplesArray);
-            }
-        } else {
-            generator.put("description", "LPhy " + name + " distribution");
+        // Get examples from GeneratorInfo
+        String[] examples = GeneratorUtils.getGeneratorExamples(clazz);
+        if (examples.length > 0) {
+            JSONArray examplesArray = new JSONArray(examples);
+            generator.put("examples", examplesArray);
+        }
+
+        // Get category from GeneratorInfo
+        String category = getGeneratorCategory(clazz);
+        if (category != null && !category.isEmpty()) {
+            generator.put("category", category);
         }
 
         // Determine generated type
@@ -227,20 +232,20 @@ public class LPhyModelLibraryGenerator {
 
         JSONObject generator = new JSONObject();
         generator.put("name", name);
+
+        // Use the extension name as the package
         generator.put("package", packageName);
         generator.put("fullyQualifiedName", clazz.getName());
         generator.put("generatorType", "function");
 
-        GeneratorInfo info = GeneratorUtils.getGeneratorInfo(clazz);
-        if (info != null) {
-            generator.put("description", info.description());
+        // Get description from GeneratorInfo annotation
+        String description = getGeneratorDescription(clazz);
+        generator.put("description", description);
 
-            // Add category
-            if (info.category() != GeneratorCategory.NONE) {
-                generator.put("category", info.category().getName());
-            }
-        } else {
-            generator.put("description", "LPhy " + name + " function");
+        // Get category from GeneratorInfo
+        String category = getGeneratorCategory(clazz);
+        if (category != null && !category.isEmpty()) {
+            generator.put("category", category);
         }
 
         // Determine generated type
@@ -283,6 +288,32 @@ public class LPhyModelLibraryGenerator {
      */
     private void processType(Class<?> clazz, String packageName) {
         addTypeDefinition(clazz);
+    }
+
+    /**
+     * Get generator description from GeneratorInfo annotation
+     */
+    private String getGeneratorDescription(Class<?> clazz) {
+        // First try to get from GeneratorUtils (which looks at methods)
+        String description = GeneratorUtils.getGeneratorDescription(clazz);
+        if (description != null && !description.isEmpty()) {
+            return description;
+        }
+
+        // Fallback to a default description
+        String name = GeneratorUtils.getGeneratorName(clazz);
+        return "The " + name + " distribution.";
+    }
+
+    /**
+     * Get generator category from GeneratorInfo annotation
+     */
+    private String getGeneratorCategory(Class<?> clazz) {
+        GeneratorInfo info = GeneratorUtils.getGeneratorInfo(clazz);
+        if (info != null && info.category() != GeneratorCategory.NONE) {
+            return info.category().getName();
+        }
+        return null;
     }
 
     /**
