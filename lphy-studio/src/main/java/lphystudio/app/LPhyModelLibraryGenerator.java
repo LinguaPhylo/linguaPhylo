@@ -9,6 +9,7 @@ import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.IOFunction;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.spi.Extension;
 import lphy.core.spi.LPhyCoreLoader;
@@ -280,6 +281,17 @@ public class LPhyModelLibraryGenerator {
         }
 
         generator.put("arguments", arguments);
+
+        // If annotated with @IOFunction, emit ioHints automatically
+        IOFunction ioAnn = clazz.getAnnotation(IOFunction.class);
+        if (ioAnn != null) {
+            JSONObject io = new JSONObject();
+            io.put("role", ioAnn.role().name());
+            io.put("extensions", new JSONArray(Arrays.asList(ioAnn.extensions())));
+            io.put("fileArgument", ioAnn.fileArgument());
+            generator.put("ioHints", io);
+        }
+
         generatorDefinitions.put(name, generator);
     }
 
