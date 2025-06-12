@@ -49,6 +49,17 @@ public class LPhyModelLibraryGenerator {
             "Integer[][]", "Double[][]", "Number[][]"
     );
 
+    // Important LPhy types (interfaces, abstract classes, etc.) that should be included
+    private static final Set<String> IMPORTANT_TYPES = Set.of(
+            "lphy.base.evolution.alignment.Alignment",  // interface
+            "lphy.base.evolution.alignment.AbstractAlignment",  // abstract class
+            "lphy.base.evolution.alignment.TaxaCharacterMatrix",  // interface
+            "lphy.base.evolution.NChar",  // interface
+            "lphy.base.evolution.HasTaxa",  // interface
+            "lphy.base.evolution.Taxa",  // interface
+            "lphy.core.model.Value"  // interface
+    );
+
     /**
      * Generate the complete model library schema
      */
@@ -66,10 +77,25 @@ public class LPhyModelLibraryGenerator {
         // Scan for all components
         scanAllComponents(extensionClassNames);
 
+        // Add important types explicitly
+        addImportantTypes();
+
         // Generate types and generators
         JSONArray types = new JSONArray();
-        typeDefinitions.values().forEach(types::put);
+
+        // Sort types by name for consistent output
+        List<String> sortedTypeNames = new ArrayList<>(typeDefinitions.keySet());
+        Collections.sort(sortedTypeNames);
+
+        for (String typeName : sortedTypeNames) {
+            types.put(typeDefinitions.get(typeName));
+        }
+
         modelLibrary.put("types", types);
+
+        // Log the types we're including
+        logger.info("Including " + types.length() + " types in the model library");
+        logger.info("Types include: " + sortedTypeNames);
 
         JSONArray generators = new JSONArray();
         generatorDefinitions.values().forEach(generators::put);
@@ -77,6 +103,22 @@ public class LPhyModelLibraryGenerator {
 
         schema.put("modelLibrary", modelLibrary);
         return schema.toString(2);
+    }
+
+    /**
+     * Add important LPhy types to ensure type system closure
+     */
+    private void addImportantTypes() {
+        logger.info("Adding important types to ensure type system closure...");
+        for (String className : IMPORTANT_TYPES) {
+            try {
+                Class<?> clazz = Class.forName(className);
+                logger.info("Adding important type: " + className);
+                addTypeDefinition(clazz, true); // force add
+            } catch (ClassNotFoundException e) {
+                logger.warning("Could not find type class: " + className);
+            }
+        }
     }
 
     /**
@@ -131,10 +173,11 @@ public class LPhyModelLibraryGenerator {
      * Process a generative distribution
      */
     private void processGenerativeDistribution(Class<? extends GenerativeDistribution> clazz, String packageName) {
-        if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
-            // Add as type only
-            addTypeDefinition(clazz);
-            return;
+        // Always add the class itself as a type (interface, abstract, or concrete)
+        addTypeDefinition(clazz);
+
+        if (clazz.isInterface()) {
+            return; // Don't create generator for interfaces
         }
 
         String name = GeneratorUtils.getGeneratorName(clazz);
@@ -172,10 +215,8 @@ public class LPhyModelLibraryGenerator {
         String generatedTypeName = getSimpleTypeName(generatedType);
         generator.put("generatedType", generatedTypeName);
 
-        // Add generated type to types if not primitive
-        if (!isPrimitive(generatedTypeName)) {
-            addTypeDefinition(generatedType);
-        }
+        // Add generated type to types regardless of whether it's primitive, interface, or abstract
+        addTypeDefinition(generatedType);
 
         // Get constructor parameters
         JSONArray arguments = new JSONArray();
@@ -220,10 +261,11 @@ public class LPhyModelLibraryGenerator {
      * Process a function
      */
     private void processFunction(Class<? extends BasicFunction> clazz, String packageName) {
-        if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
-            // Add as type only
-            addTypeDefinition(clazz);
-            return;
+        // Always add the class itself as a type (interface, abstract, or concrete)
+        addTypeDefinition(clazz);
+
+        if (clazz.isInterface()) {
+            return; // Don't create generator for interfaces
         }
 
         String name = GeneratorUtils.getGeneratorName(clazz);
@@ -332,6 +374,13 @@ public class LPhyModelLibraryGenerator {
      * Add a type definition
      */
     private void addTypeDefinition(Class<?> clazz) {
+        addTypeDefinition(clazz, false);
+    }
+
+    /**
+     * Add a type definition with option to force add
+     */
+    private void addTypeDefinition(Class<?> clazz, boolean forceAdd) {
         String typeName = getSimpleTypeName(clazz);
 
         if (typeDefinitions.containsKey(typeName) || isPrimitive(typeName)) {
@@ -343,6 +392,13 @@ public class LPhyModelLibraryGenerator {
             return;
         }
 
+        // Skip interfaces unless they are:
+        // 1. Being force-added (from important interfaces list)
+        // 2. Important interfaces
+        // 3. Return types of generators (called without forceAdd=false)
+        // 4. Parameter types of generators
+        // The default behavior (forceAdd=false) will add all types including interfaces
+
         // Derive package from the actual class
         String actualPackage = getPackageFromClass(clazz);
 
@@ -350,7 +406,7 @@ public class LPhyModelLibraryGenerator {
         type.put("name", typeName);
         type.put("package", actualPackage);
         type.put("fullyQualifiedName", clazz.getName());
-        type.put("description", "LPhy " + typeName);
+        type.put("description", "LPhy " + typeName + (clazz.isInterface() ? " interface" : ""));
 
         // Class modifiers
         type.put("isAbstract", Modifier.isAbstract(clazz.getModifiers()));
@@ -362,22 +418,18 @@ public class LPhyModelLibraryGenerator {
             type.put("extends", superTypeName);
 
             // Add superclass to types
-            if (!isPrimitive(superTypeName)) {
-                addTypeDefinition(clazz.getSuperclass());
-            }
+            addTypeDefinition(clazz.getSuperclass());
         }
 
-        // Interfaces - only include LPhy-specific interfaces
+        // Interfaces - include all LPhy interfaces
         JSONArray interfaces = new JSONArray();
         for (Class<?> iface : clazz.getInterfaces()) {
             String ifaceName = getSimpleTypeName(iface);
             if (isLPhyInterface(iface)) {
                 interfaces.put(ifaceName);
 
-                // Add interface to types
-                if (!isPrimitive(ifaceName)) {
-                    addTypeDefinition(iface);
-                }
+                // Add interface to types (recursively calls addTypeDefinition)
+                addTypeDefinition(iface);
             }
         }
         if (interfaces.length() > 0) {
@@ -397,6 +449,14 @@ public class LPhyModelLibraryGenerator {
 
         typeDefinitions.put(typeName, type);
         knownTypeNames.add(typeName);
+    }
+
+    /**
+     * Check if a type is important and should be included
+     */
+    private boolean isImportantType(Class<?> clazz) {
+        return IMPORTANT_TYPES.contains(clazz.getName()) ||
+                clazz.getName().startsWith("lphy.base.evolution.");
     }
 
     /**
@@ -604,6 +664,18 @@ public class LPhyModelLibraryGenerator {
 
             System.out.println("Generated lphy-model-library.json");
             System.out.println("Types and generators have been created following the PhyloSpec schema format");
+
+            // Print summary of types
+            System.out.println("\nType Summary:");
+            System.out.println("Total types: " + generator.typeDefinitions.size());
+
+            // Check for specific types
+            System.out.println("\nChecking for important types:");
+            for (String typeName : IMPORTANT_TYPES) {
+                String simpleName = typeName.substring(typeName.lastIndexOf('.') + 1);
+                boolean found = generator.typeDefinitions.containsKey(simpleName);
+                System.out.println(simpleName + ": " + (found ? "FOUND" : "MISSING"));
+            }
 
         } catch (Exception e) {
             logger.severe("Error generating model library: " + e.getMessage());
