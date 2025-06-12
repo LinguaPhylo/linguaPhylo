@@ -13,6 +13,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.IOFunction;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.io.BufferedReader;
@@ -27,10 +28,15 @@ import java.util.List;
  * Newick or Nexus
  * @see lphy.base.function.tree.Newick
  */
+@IOFunction(
+        role = IOFunction.Role.dataInput,
+        extensions = { ".nexus", ".trees",".tree", ".nex", ".nxs"},
+        fileArgument = ReaderConst.FILE
+)
 public class ReadTrees extends DeterministicFunction<TimeTree[]> {
 
     public ReadTrees(@ParameterInfo(name = ReaderConst.FILE, narrativeName = "file name", description = "the name of Nexus/Newick file including path.") Value<String> filePath,
-                     @ParameterInfo(name = ReaderConst.FORMAT, description = "Nexus or Newick (case-insesitive), default to Nexus.",
+                     @ParameterInfo(name = ReaderConst.FORMAT, description = "Nexus or Newick (case-insensitive), default to Nexus.",
                              optional=true) Value<String> format ) {
         setParam(ReaderConst.FILE, filePath);
         // default to true

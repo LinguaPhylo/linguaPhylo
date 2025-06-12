@@ -10,6 +10,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.IOFunction;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.io.IOException;
@@ -25,6 +26,11 @@ import java.util.TreeMap;
  * This does not involve partitioning.
  * @see MetaDataAlignment
  */
+@IOFunction(
+        role = IOFunction.Role.dataInput,
+        extensions = { ".nex", ".nexus",".nxs"},
+        fileArgument = ReaderConst.FILE
+)
 public class ReadNexus extends DeterministicFunction<MetaDataAlignment> {
 
     Value<String> filePath;

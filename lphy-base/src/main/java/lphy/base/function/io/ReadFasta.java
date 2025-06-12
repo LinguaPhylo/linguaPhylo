@@ -17,6 +17,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.IOFunction;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.io.IOException;
@@ -33,6 +34,11 @@ import java.util.Objects;
  * D = readFasta(file="h3n2_2deme.fna");
  * @see MetaDataAlignment
  */
+@IOFunction(
+        role = IOFunction.Role.dataInput,
+        extensions = { ".fasta"},
+        fileArgument = ReaderConst.FILE
+)
 public class ReadFasta extends DeterministicFunction<Alignment> {
 
     public ReadFasta(@ParameterInfo(name = ReaderConst.FILE, description = "the name of fasta file including path, which contains an alignment.") Value<String> filePath,

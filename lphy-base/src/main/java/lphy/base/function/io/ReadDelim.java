@@ -7,6 +7,7 @@ import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
+import lphy.core.model.annotation.IOFunction;
 import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.Table;
 import lphy.core.model.datatype.TableValue;
@@ -21,9 +22,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
- * D = readFasta(file="h3n2_2deme.fna");
- * @see MetaDataAlignment
  */
+@IOFunction(
+        role = IOFunction.Role.dataInput,
+        extensions = { ".csv", ".tsv"},
+        fileArgument = ReaderConst.FILE
+)
 public class ReadDelim extends DeterministicFunction<Table> {
 //TODO provide column types ?
     public ReadDelim(@ParameterInfo(name = ReaderConst.FILE, description = "the file name including path.")
