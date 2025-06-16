@@ -15,9 +15,21 @@ import static lphy.base.distribution.DistributionConstants.concParamName;
 import static lphy.base.distribution.DistributionConstants.meanParamName;
 
 /**
- * The scaled dirichlet probability distribution.
- * The weighted mean of values must equal to the expected weighted mean (default to 1).
- * The weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
+ * The Weighted Dirichlet distribution, denoted WeightedDirichlet(α, w, μ), is
+ * a transformation of the standard Dirichlet distribution that produces rate variables 
+ * with a specified weighted mean (default 1).
+ * <br>
+ * R code construction:
+ * # Sample
+ * rwd <- function(alpha, w, mu) {
+ *   k <- length(alpha)
+ *   W <- sum(w)
+ *   x <- rgamma(k, alpha) 
+ *   x <- x / sum(x) # x are Dirichlet distributed
+ *   # normalise so that weighted mean is mu
+ *   r <- mu * W * x / w 
+ *   return (r) 
+ * }
  * @see Dirichlet
  * @author Alexei Drummond
  * @author Walter Xie
