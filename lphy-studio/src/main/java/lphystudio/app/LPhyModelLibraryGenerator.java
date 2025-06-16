@@ -142,7 +142,7 @@ public class LPhyModelLibraryGenerator {
                 for (Map.Entry<String, Set<Class<?>>> entry : distMap.entrySet()) {
                     for (Class<?> clazz : entry.getValue()) {
                         if (GenerativeDistribution.class.isAssignableFrom(clazz)) {
-                            processGenerativeDistribution((Class<? extends GenerativeDistribution>) clazz, extension.getExtensionName());
+                            processGenerativeDistribution((Class<? extends GenerativeDistribution>) clazz, extension.getModuleName());
                         }
                     }
                 }
@@ -152,7 +152,7 @@ public class LPhyModelLibraryGenerator {
                 for (Map.Entry<String, Set<Class<?>>> entry : funcMap.entrySet()) {
                     for (Class<?> clazz : entry.getValue()) {
                         if (BasicFunction.class.isAssignableFrom(clazz)) {
-                            processFunction((Class<? extends BasicFunction>) clazz, extension.getExtensionName());
+                            processFunction((Class<? extends BasicFunction>) clazz, extension.getModuleName());
                         }
                     }
                 }
