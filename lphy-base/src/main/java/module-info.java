@@ -33,6 +33,7 @@ module lphy.base {
     exports lphy.base.evolution.coalescent.populationmodel;
     exports lphy.base.evolution.continuous;
     exports lphy.base.evolution.datatype;
+    exports lphy.base.evolution.eigensystem;
     exports lphy.base.evolution.likelihood;
     exports lphy.base.evolution.sitemodel;
     exports lphy.base.evolution.substitutionmodel;
