@@ -27,7 +27,7 @@ import static lphy.base.distribution.DistributionConstants.meanParamName;
  *   x <- rgamma(k, alpha) 
  *   x <- x / sum(x) # x are Dirichlet distributed
  *   # normalise so that weighted mean is mu
- *   r <- mu * W * x / w 
+ *   r <- k * mu * W * x / w 
  *   return (r) 
  * }
  * @see Dirichlet
