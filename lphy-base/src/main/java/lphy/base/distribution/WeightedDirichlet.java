@@ -67,34 +67,28 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
                     "The weighted mean of values must equal to the expected weighted mean (default to 1).")
     public RandomVariable<Double[]> sample() {
 
-        Number[] weight = weights.value();
-        Number[] conc = concentration.value();
+        // step 1: Sample from standard Dirichlet with expected mean to 1
+        Dirichlet dirichlet = new Dirichlet(concentration, null);
+        RandomVariable<Double[]> xRV = dirichlet.sample();
+        Double[] x = xRV.value();
+
+        // step 2: Transform to weighted rates
+        //         and adjust to the given expected mean if it is not 1:
+        Number[] w = weights.value();
         // the expected mean default to 1
         double expectedMean = DEFAULT_MEAN;
         if (mean != null)
             expectedMean = mean.value().doubleValue();
-
-        int dim = conc.length;
-        double weightSum = MathUtils.sumArray(weight);
-
-        Double[] x = new Double[dim];
-        double sumX = 0.0;
+        int dim = w.length;
+        double weightSum = MathUtils.sumArray(w);
         for (int i = 0; i < dim; i++) {
-            // Sample gamma
-            x[i] = MathUtils.randomGamma(conc[i].doubleValue(), 1.0, random);
-            // Sum with normalized weights
-            sumX += x[i] * weight[i].doubleValue() / weightSum;
+            x[i] = expectedMean * x[i] * weightSum / w[i].doubleValue();
         }
 
-        // re-normalise
-        for (int i = 0; i < x.length; i++) {
-            x[i] = x[i] / sumX;
-        }
-
-        // the weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
+        // step 3: validation, the weighted mean = sum(x[i] * weight[i]) / sum(weight[i])
         double weightedSumX = 0.0;
         for (int i = 0; i < x.length; i++) {
-            double v = x[i] * weight[i].doubleValue();
+            double v = x[i] * w[i].doubleValue();
             weightedSumX += v;
         }
         double weightedMeanX = weightedSumX / weightSum;

@@ -45,10 +45,10 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
             examples = {"birthDeathRhoSampling.lphy","dirichlet.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description="The dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
-        double mean = 0;
-        if (getMean() != null){
-            mean = getMean().value().doubleValue();
-        }
+//        double mean = 0;
+//        if (getMean() != null){
+//            mean = getMean().value().doubleValue();
+//        }
         Double[] dirichlet = new Double[concentration.value().length];
         double sum = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
@@ -57,17 +57,18 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
             sum += val;
         }
 
-        if (mean == 0) {
+        if (getMean() == null) {
             // Make sum = 1
             for (int i = 0; i < dirichlet.length; i++) {
                 dirichlet[i] /= sum;
             }
         } else {
+            double mean = getMean().value().doubleValue();
             // Make sum = mean * n
             int K = dirichlet.length;
             for (int i = 0; i < dirichlet.length; i++) {
                 // scaling, sum * proportion
-                dirichlet[i] = dirichlet[i] / sum * K * mean;
+                dirichlet[i] = (dirichlet[i] / sum) * K * mean;
             }
         }
 
