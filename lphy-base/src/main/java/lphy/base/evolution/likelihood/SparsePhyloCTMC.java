@@ -31,7 +31,7 @@ public class SparsePhyloCTMC extends PhyloCTMC {
     private Set<Integer> changedSites = new HashSet<>();
     VariantStyleAlignment alignment;
 //    Alignment sampledRootSeq;
-
+    //TODO: didn't pass the validation test
     public SparsePhyloCTMC(
             @ParameterInfo(name = AbstractPhyloCTMC.treeParamName, verb = "on", narrativeName = "phylogenetic time tree", description = "the time tree.") Value<TimeTree> tree,
             @ParameterInfo(name = AbstractPhyloCTMC.muParamName, narrativeName = "molecular clock rate", description = "the clock rate. Default value is 1.0.", optional = true) Value<Number> mu,
