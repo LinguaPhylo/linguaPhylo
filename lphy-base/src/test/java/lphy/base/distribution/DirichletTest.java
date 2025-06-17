@@ -10,15 +10,15 @@ public class DirichletTest {
     void scale() {
         Number[] conc = new Number[]{2,2,2};
         Value<Number[]> concValue = new Value<>("", conc);
-        double mean = 5.0;
-        Dirichlet d = new Dirichlet(concValue, new Value<>("", mean));
+        double sum = 5.0;
+        Dirichlet d = new Dirichlet(concValue, new Value<>("", sum));
         Double[] result = d.sample().value();
         double observe = 0;
         for (int i = 0; i< result.length; i++) {
             observe += result[i];
         }
 
-        assertEquals(mean*3, observe, 1e-6);
+        assertEquals(sum, observe, 1e-6);
     }
 
     @Test

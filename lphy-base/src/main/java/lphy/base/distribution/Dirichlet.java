@@ -21,19 +21,19 @@ import static lphy.base.distribution.DistributionConstants.concParamName;
 public class Dirichlet extends ParametricDistribution<Double[]> {
 
     private Value<Number[]> concentration;
-    private Value<Number> mean;
-    private static final String meanName = "mean";
+    private Value<Number> sum;
+    private static final String sumName = "sum";
 
 
     public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration",
             description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration,
-                     @ParameterInfo(name = meanName,
-                             description = "The expected mean per element. By default, the sampled values sum to 1.",
-                             optional = true) Value<Number> mean){
+                     @ParameterInfo(name = sumName,
+                             description = "The expected sum of values. By default, the sum is 1.",
+                             optional = true) Value<Number> sum){
         super();
         this.concentration = concentration;
-        if (mean != null){
-            this.mean = mean;
+        if (sum != null){
+            this.sum = sum;
         }
     }
 
@@ -45,30 +45,25 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
             examples = {"birthDeathRhoSampling.lphy","dirichlet.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description="The dirichlet probability distribution.")
     public RandomVariable<Double[]> sample() {
-//        double mean = 0;
-//        if (getMean() != null){
-//            mean = getMean().value().doubleValue();
-//        }
         Double[] dirichlet = new Double[concentration.value().length];
-        double sum = 0.0;
+        double total = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
             double val = MathUtils.randomGamma(concentration.value()[i].doubleValue(), 1.0, random);
             dirichlet[i] = val;
-            sum += val;
+            total += val;
         }
 
-        if (getMean() == null) {
+        if (getSum() == null) {
             // Make sum = 1
             for (int i = 0; i < dirichlet.length; i++) {
-                dirichlet[i] /= sum;
+                dirichlet[i] /= total;
             }
         } else {
-            double mean = getMean().value().doubleValue();
-            // Make sum = mean * n
-            int K = dirichlet.length;
+            // Make sum expected value
+            double expectedSum = getSum().value().doubleValue();
             for (int i = 0; i < dirichlet.length; i++) {
                 // scaling, sum * proportion
-                dirichlet[i] = (dirichlet[i] / sum) * K * mean;
+                dirichlet[i] = (dirichlet[i] / total) * expectedSum;
             }
         }
 
@@ -123,14 +118,14 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
     public Map<String,Value> getParams() {
         return new TreeMap<>() {{
             if (concentration!= null) put(concParamName, concentration);
-            if (mean != null) put(meanName, mean);
+            if (sum != null) put(sumName, sum);
         }};
     }
 
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(concParamName)) concentration = value;
-        else if (paramName.equals(meanName)) mean = value;
+        else if (paramName.equals(sumName)) sum = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
 
         super.setParam(paramName, value); // constructDistribution
@@ -140,17 +135,7 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
         return concentration;
     }
 
-    public Value<Number> getMean() {
-        return mean;
-    }
-
-    public Value<Double> getSum() {
-        double sum = 0;
-        if (mean != null) {
-            sum = mean.value().doubleValue() * (concentration.value().length);
-        } else {
-            sum = 1;
-        }
-        return new Value<>("", sum);
+    public Value<Number> getSum() {
+        return sum;
     }
 }
