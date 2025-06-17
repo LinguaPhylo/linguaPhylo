@@ -136,6 +136,7 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
     }
 
     public Value<Number> getSum() {
-        return sum;
+        if (sum != null) return sum;
+        else return new Value<>("", 1);
     }
 }
