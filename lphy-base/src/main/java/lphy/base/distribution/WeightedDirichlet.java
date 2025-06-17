@@ -31,6 +31,9 @@ import static lphy.base.distribution.DistributionConstants.meanParamName;
  *   return (r) 
  * }
  * @see Dirichlet
+ * @implNote For backward compatibility,
+ *           WeightedDirichlet uses optional parameter "mean" as the constraint,
+ *           but Dirichlet uses "sum".
  * @author Alexei Drummond
  * @author Walter Xie
  */
@@ -67,7 +70,7 @@ public class WeightedDirichlet extends ParametricDistribution<Double[]> {
                     "The weighted mean of values must equal to the expected weighted mean (default to 1).")
     public RandomVariable<Double[]> sample() {
 
-        // step 1: Sample from standard Dirichlet with expected mean to 1
+        // step 1: Sample from standard Dirichlet with expected sum to 1
         Dirichlet dirichlet = new Dirichlet(concentration, null);
         RandomVariable<Double[]> xRV = dirichlet.sample();
         Double[] x = xRV.value();
