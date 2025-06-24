@@ -9,10 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static lphy.core.io.OutputSystem.getOutputFile;
 import static lphy.core.spi.LoaderManager.valueFormatResolver;
@@ -27,6 +24,11 @@ public class FileLoggerListener implements SimulatorListener {
 
     // map file absolute paths to buffered writer
     Map<String, BufferedWriter> writerMap = new HashMap<>();
+
+    // default logger header
+    List<String> headerList = new ArrayList<>(); // header for default logger
+    List<String> rowValues = new ArrayList<>(); // values for first row
+    int col = 0; // column number for default logger
 
     public final String DELIMITER = "\t";
 
@@ -105,53 +107,53 @@ public class FileLoggerListener implements SimulatorListener {
         }
     }
 
-    private void writeValuePerCell(ValueFormatter formatter, Value value, int index) {
-        boolean firstCol = true;
+    private void writeValuePerCell(ValueFormatter formatter, Value value, int sampleIndex) {
         // TODO log tab delimited file
-        int numColumns = 0;
-        // default log file
-        // column headers (Sample, var1, var1, ...)
-        String rowName = formatter.getRowName(index);
+        // default log file with column headers (Sample, var1, var1, ...)
         File file = getFilePerCell(formatter);
-        System.out.println("Value per cell: " + value.getId());
-        System.out.println("File: " + file.getAbsolutePath());
-        if (index == 0) {
+        if (sampleIndex == 0) {
             String header = formatter.header();
+            headerList.add(header);
+            rowValues.add(formatter.format(value.value()));
             try {
                 if (writerMap.containsKey(file.getAbsolutePath())) {
                     writer = writerMap.get(file.getAbsolutePath());
                     writer.write(DELIMITER);
                     writer.write(header);
-                    System.out.println("Header for value is " + header);
-//                                    formatter.writeToFile(writer, value.value());
                 } else {
-                    System.out.println("Creating new file: " + file.getAbsolutePath());
                     file.createNewFile(); // create file
                     writer = new BufferedWriter(new FileWriter(file));
-                    System.out.println("BufferedWriter " + writer);
                     writerMap.put(file.getAbsolutePath(), writer);
-                    String styledHeader = "Sample" + DELIMITER + header;
-                    writer.write(styledHeader); // header
-                    // value
-//                                    formatter.writeToFile(writer, value.value());
+                    writer.write("Sample" + DELIMITER + header);
                 }
-
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            numColumns++;
         } else {
             try {
+                col++;
                 // replicates do not need to write header
                 writer = writerMap.get(file.getAbsolutePath());
-                if (firstCol) {
-                    // replicate number
+                if (sampleIndex == 1 && col == 1) {
+                    // write first row
+                    writer.write("\n");
+                    String rowName = formatter.getRowName(sampleIndex - 1); // TODO: rowName is the same sampleIndex for file
+                    writer.write(rowName + DELIMITER);
+                    writer.write(String.join(DELIMITER, rowValues));
+                    writer.write("\n");
+                }
+                if (formatter.header().equals(headerList.get(0))) {
+                    // write replicate number for first column
+                    String rowName = formatter.getRowName(sampleIndex); // TODO: see above TODO comment
                     writer.write(rowName + DELIMITER);
                     formatter.writeToFile(writer, value.value());
-                    firstCol = false;
                 } else {
                     writer.write(DELIMITER);
                     formatter.writeToFile(writer, value.value());
+                }
+                if (col == headerList.size()) {
+                    writer.write("\n");
+                    col = 0;
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
