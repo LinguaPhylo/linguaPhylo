@@ -53,20 +53,23 @@ public class FileLoggerListener implements SimulatorListener {
         }
     }
 
+    /**
+     * 
+     * @param index   the index of each replicates of a simulation,
+     *                which starts from 0.
+     * @param values  the list of {@link Value} from one replicate of the simulation.
+     */
     @Override
     public void replicate(int index, List<Value> values) {
-        boolean firstCol = true;
         for (int i = 0; i < values.size(); i++) {
             Value value = values.get(i);
             Class type = value.getType();
 
             if (TextFileFormatted.class.isAssignableFrom(type)) {
-                // extension formatter (one file per type?)
+                // formatter for extensions
                 TextFileFormatted fileFormatted = (TextFileFormatted) value.value();
-
                 String fileExtension = fileFormatted.getFileType();
                 String canonicalId = value.getCanonicalId();
-
                 String fileName = FileConfig.getOutFileName(canonicalId, index,
                         fileConfig.getNumReplicates(), fileConfig.getFilePrefix(), fileExtension);
                 File file = getOutputFile(fileName, true);
@@ -89,114 +92,126 @@ public class FileLoggerListener implements SimulatorListener {
                         // no formatter available
                         LoggerUtils.log.warning(String.format("No formatter for %s of type %s", value.getId(), value.getType()));
                     } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_FILE) {
-                        // one value per file (alignment file)
-                        File file = getFile(formatter, index);
-                        System.out.println("Value per file: " + value.getId());
-                        System.out.println("File: " + file.getAbsolutePath());
-                        try {
-                            file.createNewFile(); // create file
-                            writer = new BufferedWriter(new FileWriter(file));
-                            writer.write(formatter.header());
-                            formatter.writeToFile(writer, value.value()); // write values to file
-                            writer.write(formatter.footer());
-                            writer.close(); // close file
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
+                        writeValuePerFile(formatter, value, index);
                     } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_LINE) {
-                        // one value per line (tree file)
-                        File file = getFilePerLine(formatter);
-                        System.out.println("Line per file: " + value.getId());
-                        System.out.println("File: " + file.getAbsolutePath());
-                        try {
-                            if (index == 0) {
-                                file.createNewFile(); // create file
-                                String header = formatter.header(); // file header
-                                writer = new BufferedWriter(new FileWriter(file));
-                                writer.write(header + "\n");
-                                writerMap.put(file.getAbsolutePath(), writer);
-                            } else {
-                                writer = writerMap.get(file.getAbsolutePath());
-                            }
-
-                            if (index <= fileConfig.numReplicates - 1) {
-                                // write body
-                                String rowName = formatter.getRowName(index);
-                                writer.write(rowName); // row index
-                                formatter.writeToFile(writer, value.value()); // write values
-                                writer.write("\n\n");
-                            }
-
-                            if (index == fileConfig.numReplicates - 1) {
-                                // also write footer
-                                String footer = formatter.footer();
-                                writer.write(footer);
-                                writer.write("\n");
-                                writer.close(); // close file at last replicate
-                                writerMap.remove(file.getAbsolutePath()); // remove from writing list
-                            }
-
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
+                        writeValuePerLine(formatter, value, index);
                     } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) {
-                        // TODO log tab delimited file
-                        int numColumns = 0;
-                        // default log file
-                        // column headers (Sample, var1, var1, ...)
-                        String rowName = formatter.getRowName(index);
-                        File file = getFilePerCell(formatter);
-                        System.out.println("Value per cell: " + value.getId());
-                        System.out.println("File: " + file.getAbsolutePath());
-                        if (index == 0) {
-                            String header = formatter.header();
-                            try {
-                                if (writerMap.containsKey(file.getAbsolutePath())) {
-                                    writer = writerMap.get(file.getAbsolutePath());
-                                    writer.write(DELIMITER);
-                                    writer.write(header);
-                                    System.out.println("Header for value is " + header);
-//                                    formatter.writeToFile(writer, value.value());
-                                } else {
-                                    System.out.println("Creating new file: " + file.getAbsolutePath());
-                                    file.createNewFile(); // create file
-                                    writer = new BufferedWriter(new FileWriter(file));
-                                    System.out.println("BufferedWriter " + writer);
-                                    writerMap.put(file.getAbsolutePath(), writer);
-                                    String styledHeader = "Sample" + DELIMITER + header;
-                                    writer.write(styledHeader); // header
-                                    // value
-//                                    formatter.writeToFile(writer, value.value());
-                                }
-
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            numColumns++;
-                        } else {
-                            try {
-                                // replicates do not need to write header
-                                writer = writerMap.get(file.getAbsolutePath());
-                                if (firstCol) {
-                                    // replicate number
-                                    writer.write(rowName + DELIMITER);
-                                    formatter.writeToFile(writer, value.value());
-                                    firstCol = false;
-                                } else {
-                                    writer.write(DELIMITER);
-                                    formatter.writeToFile(writer, value.value());
-                                }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-
-                        }
-
+                        writeValuePerCell(formatter, value, index);
                     }
 
                 }
             }
 
+        }
+    }
+
+    private void writeValuePerCell(ValueFormatter formatter, Value value, int index) {
+        boolean firstCol = true;
+        // TODO log tab delimited file
+        int numColumns = 0;
+        // default log file
+        // column headers (Sample, var1, var1, ...)
+        String rowName = formatter.getRowName(index);
+        File file = getFilePerCell(formatter);
+        System.out.println("Value per cell: " + value.getId());
+        System.out.println("File: " + file.getAbsolutePath());
+        if (index == 0) {
+            String header = formatter.header();
+            try {
+                if (writerMap.containsKey(file.getAbsolutePath())) {
+                    writer = writerMap.get(file.getAbsolutePath());
+                    writer.write(DELIMITER);
+                    writer.write(header);
+                    System.out.println("Header for value is " + header);
+//                                    formatter.writeToFile(writer, value.value());
+                } else {
+                    System.out.println("Creating new file: " + file.getAbsolutePath());
+                    file.createNewFile(); // create file
+                    writer = new BufferedWriter(new FileWriter(file));
+                    System.out.println("BufferedWriter " + writer);
+                    writerMap.put(file.getAbsolutePath(), writer);
+                    String styledHeader = "Sample" + DELIMITER + header;
+                    writer.write(styledHeader); // header
+                    // value
+//                                    formatter.writeToFile(writer, value.value());
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            numColumns++;
+        } else {
+            try {
+                // replicates do not need to write header
+                writer = writerMap.get(file.getAbsolutePath());
+                if (firstCol) {
+                    // replicate number
+                    writer.write(rowName + DELIMITER);
+                    formatter.writeToFile(writer, value.value());
+                    firstCol = false;
+                } else {
+                    writer.write(DELIMITER);
+                    formatter.writeToFile(writer, value.value());
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+    }
+
+    private void writeValuePerFile(ValueFormatter formatter, Value value, int index) {
+        // one value per file (alignment file)
+        File file = getFile(formatter, index);
+        System.out.println("Value per file: " + value.getId());
+        System.out.println("File: " + file.getAbsolutePath());
+        try {
+            file.createNewFile(); // create file
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(formatter.header());
+            formatter.writeToFile(writer, value.value()); // write values to file
+            writer.write(formatter.footer());
+            writer.close(); // close file
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void writeValuePerLine(ValueFormatter formatter, Value value, int index) {
+        // one value per line (tree file)
+        File file = getFilePerLine(formatter);
+        System.out.println("Line per file: " + value.getId());
+        System.out.println("File: " + file.getAbsolutePath());
+        try {
+            if (index == 0) {
+                file.createNewFile(); // create file
+                String header = formatter.header(); // file header
+                writer = new BufferedWriter(new FileWriter(file));
+                writer.write(header + "\n");
+                writerMap.put(file.getAbsolutePath(), writer);
+            } else {
+                writer = writerMap.get(file.getAbsolutePath());
+            }
+
+            if (index <= fileConfig.numReplicates - 1) {
+                // write body
+                String rowName = formatter.getRowName(index);
+                writer.write(rowName); // row index
+                formatter.writeToFile(writer, value.value()); // write values
+                writer.write("\n\n");
+            }
+
+            if (index == fileConfig.numReplicates - 1) {
+                // also write footer
+                String footer = formatter.footer();
+                writer.write(footer);
+                writer.write("\n");
+                writer.close(); // close file at last replicate
+                writerMap.remove(file.getAbsolutePath()); // remove from writing list
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
