@@ -3,6 +3,9 @@ package lphy.core.logger;
 import lphy.core.model.Symbols;
 import lphy.core.vectorization.VectorUtils;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  * The 1d array case for the implementation of ValueFormatter.
  *
@@ -33,6 +36,15 @@ public class ArrayElementFormatter<T> implements ValueFormatter<T[]> {
 
     public static String getElementValueId(String arrayValueID, int arrayIndex) {
         return Symbols.getCanonical(arrayValueID) + VectorUtils.INDEX_SEPARATOR + arrayIndex;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, T[] value) {
+        try {
+            writer.write(format(value));
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

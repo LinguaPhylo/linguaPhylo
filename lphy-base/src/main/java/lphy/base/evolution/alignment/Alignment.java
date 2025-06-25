@@ -125,6 +125,12 @@ public interface Alignment extends Taxa, TaxaCharacterMatrix<Integer> {
         return Objects.requireNonNull(getSequenceType()).getCanonicalStates();
     }
 
+    default String getCharacter(int taxonIndex, int position) {
+        int stateInt = getState(taxonIndex, position);
+        State state = getSequenceType().getState(stateInt);
+        return state.toString();
+    }
+
     /**
      * @param taxonIndex   the taxon index
      * @return   the sequence in a string of a taxon given by index

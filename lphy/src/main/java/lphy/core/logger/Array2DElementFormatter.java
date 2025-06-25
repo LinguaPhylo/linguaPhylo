@@ -3,6 +3,8 @@ package lphy.core.logger;
 import lphy.core.model.Symbols;
 import lphy.core.vectorization.VectorUtils;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -39,6 +41,15 @@ public class Array2DElementFormatter<T> implements ValueFormatter<T[][]> {
     public static String getElementValueId(String arrayValueID, int rowIndex, int colIndex) {
         return Symbols.getCanonical(arrayValueID) + VectorUtils.INDEX_SEPARATOR + rowIndex +
                 VectorUtils.INDEX_SEPARATOR + colIndex;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, T[][] value) {
+        try {
+            writer.write(format(value));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

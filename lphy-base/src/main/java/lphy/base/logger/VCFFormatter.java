@@ -5,6 +5,9 @@ import lphy.base.evolution.datatype.Variant;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class VCFFormatter implements ValueFormatter<Variant[]> {
     String valueID;
     Variant[] variants;
@@ -12,6 +15,15 @@ public class VCFFormatter implements ValueFormatter<Variant[]> {
     public VCFFormatter(String valueID, Variant[] variants) {
         this.valueID = Symbols.getCanonical(valueID);
         this.variants = variants;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, Variant[] value) {
+        try {
+            writer.write(format(value));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

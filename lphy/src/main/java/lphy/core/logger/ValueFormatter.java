@@ -3,6 +3,10 @@ package lphy.core.logger;
 import lphy.core.model.Symbols;
 import lphy.core.model.Value;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Note: this cannot be extended by lphy extension developers,
  *       please use {@link TextFileFormatted}.
@@ -24,6 +28,8 @@ public interface ValueFormatter<T> {
         // The value of each replicate should be logged into separate rows as a column in a single container.
         VALUE_PER_CELL
     }
+
+    public void writeToFile(BufferedWriter writer, T value);
 
     default String getExtension() {
         return ".log";
@@ -81,6 +87,15 @@ public interface ValueFormatter<T> {
         }
 
         @Override
+        public void writeToFile(BufferedWriter writer, T value) {
+            try {
+                writer.write(format(value));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        @Override
         public Class<T> getDataTypeClass() {
             // getTypeParameters()[0] retrieves the type T
             return (Class<T>) getClass().getTypeParameters()[0].getClass();
@@ -91,7 +106,6 @@ public interface ValueFormatter<T> {
             this.value = value;
             return ValueFormatter.super.format(value);
         }
-
         @Override
         public String getValueID() {
             return valueID;
@@ -101,19 +115,5 @@ public interface ValueFormatter<T> {
             return value;
         }
     }
-
-    //TODO this feature requires to return Number not String, perhaps it should be in parser.
-    // Currently it is implemented in RandomNumberLoggerListener
-//    class BooleanValueFormatter extends ValueFormatter.Base<Boolean> {
-//
-//        public BooleanValueFormatter(String valueID, Boolean value) {
-//            super(valueID, value);
-//        }
-//
-//        @Override
-//        public String format(Boolean value) {
-//            return value ? "1.0" : "0.0";
-//        }
-//    }
 
 }

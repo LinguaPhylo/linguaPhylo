@@ -5,6 +5,9 @@ import lphy.base.parser.nexus.NexusUtils;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.Symbols;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class NexusAlignmentFormatter implements ValueFormatter<SimpleAlignment> {
 
     SimpleAlignment simpleAlignment;
@@ -16,6 +19,15 @@ public class NexusAlignmentFormatter implements ValueFormatter<SimpleAlignment> 
     public NexusAlignmentFormatter(String valueID, SimpleAlignment simpleAlignment) {
         this.valueID = Symbols.getCanonical(valueID);
         this.simpleAlignment = simpleAlignment;
+    }
+
+    @Override
+    public void writeToFile(BufferedWriter writer, SimpleAlignment value) {
+        try {
+            writer.write(format(value));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
