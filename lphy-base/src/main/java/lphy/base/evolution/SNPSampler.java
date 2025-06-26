@@ -32,7 +32,7 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
 
         if (alignment == null) throw new IllegalArgumentException("The alignment can't be null!");
         if (alignment.value().length() > 1) throw new IllegalArgumentException("The alignment should be one sequence alignment");
-        if (! alignment.value().getSequenceTypeStr().equals(Nucleotides.NAME)) throw new IllegalArgumentException("Only take haploid alignment!");
+        if (! alignment.value().getSequenceTypeStr().equals(Nucleotides.NAME)) throw new IllegalArgumentException("Only take nucleotide as sequence type!");
         setParam(ReaderConst.ALIGNMENT, alignment);
 
         this.alignment = alignment;
@@ -45,8 +45,8 @@ public class SNPSampler extends ParametricDistribution<Variant[]> {
     }
 
     @GeneratorInfo(name = "SNPSampler", examples = {""},
-            description = "Sample SNPs with the given alignment by sampling mutation sites using a binomial distribution (size = number of sites)." +
-                    "Take haploid alignment only, take the site as ref and randomly sample an alt.")
+            description = "Sample SNPs from a given nucleotide one sequence alignment by using a binomial distribution to choose mutation sites (with the number of trials equal to the number of sites). " +
+                    "For each selected site, use the reference nucleotide as the reference allele and randomly choose a different nucleotide as the alternative allele.")
     @Override
     public RandomVariable<Variant[]> sample() {
         // get parameter value
