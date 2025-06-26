@@ -25,7 +25,8 @@ public class FileLoggerListener implements SimulatorListener {
     // map file absolute paths to buffered writer
     Map<String, BufferedWriter> writerMap = new HashMap<>();
 
-    // default logger header
+    String defaultLogPath = "";
+    ValueFormatter defaultValueFormatter;
     List<String> headerList = new ArrayList<>(); // header for default logger
     List<String> rowValues = new ArrayList<>(); // values for first row
     int col = 0; // column number for default logger
@@ -100,17 +101,20 @@ public class FileLoggerListener implements SimulatorListener {
                     } else if (formatter.getMode() == ValueFormatter.Mode.VALUE_PER_CELL) {
                         writeValuePerCell(formatter, value, index);
                     }
-
                 }
             }
+        }
 
+        if (fileConfig.getNumReplicates() == 1) { // write values for replicates = 1
+            writeFirstRow(defaultValueFormatter);
         }
     }
 
     private void writeValuePerCell(ValueFormatter formatter, Value value, int sampleIndex) {
-        // TODO log tab delimited file
         // default log file with column headers (Sample, var1, var1, ...)
         File file = getFilePerCell(formatter);
+        defaultLogPath = file.getAbsolutePath();
+        defaultValueFormatter = formatter;
         if (sampleIndex == 0) {
             String header = formatter.header();
             headerList.add(header);
@@ -123,7 +127,7 @@ public class FileLoggerListener implements SimulatorListener {
                 } else {
                     file.createNewFile(); // create file
                     writer = new BufferedWriter(new FileWriter(file));
-                    writerMap.put(file.getAbsolutePath(), writer);
+                    writerMap.put(defaultLogPath, writer);
                     writer.write("Sample" + DELIMITER + header);
                 }
             } catch (IOException ex) {
@@ -135,16 +139,11 @@ public class FileLoggerListener implements SimulatorListener {
                 // replicates do not need to write header
                 writer = writerMap.get(file.getAbsolutePath());
                 if (sampleIndex == 1 && col == 1) {
-                    // write first row
-                    writer.write("\n");
-                    String rowName = formatter.getRowName(sampleIndex - 1); // TODO: rowName is the same sampleIndex for file
-                    writer.write(rowName + DELIMITER);
-                    writer.write(String.join(DELIMITER, rowValues));
-                    writer.write("\n");
+                    writeFirstRow(formatter);
                 }
                 if (formatter.header().equals(headerList.get(0))) {
                     // write replicate number for first column
-                    String rowName = formatter.getRowName(sampleIndex); // TODO: see above TODO comment
+                    String rowName = formatter.getRowName(sampleIndex); // TODO: rowName is the same as sampleIndex?
                     writer.write(rowName + DELIMITER);
                     formatter.writeToFile(writer, value.value());
                 } else {
@@ -162,11 +161,27 @@ public class FileLoggerListener implements SimulatorListener {
         }
     }
 
+    private void writeFirstRow(ValueFormatter formatter) {
+        try {
+            writer = writerMap.get(defaultLogPath);
+            if (writer == null) {
+                LoggerUtils.log.warning("Default logger not in writerMap, results may be unexpected!");
+                return;
+            }
+            writer.write("\n");
+            String rowName = formatter.getRowName(0);
+            writer.write(rowName + DELIMITER);
+            writer.write(String.join(DELIMITER, rowValues));
+            writer.write("\n");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     private void writeValuePerFile(ValueFormatter formatter, Value value, int index) {
         // one value per file (alignment file)
         File file = getFile(formatter, index);
-        System.out.println("Value per file: " + value.getId());
-        System.out.println("File: " + file.getAbsolutePath());
         try {
             file.createNewFile(); // create file
             writer = new BufferedWriter(new FileWriter(file));
@@ -182,8 +197,6 @@ public class FileLoggerListener implements SimulatorListener {
     private void writeValuePerLine(ValueFormatter formatter, Value value, int index) {
         // one value per line (tree file)
         File file = getFilePerLine(formatter);
-        System.out.println("Line per file: " + value.getId());
-        System.out.println("File: " + file.getAbsolutePath());
         try {
             if (index == 0) {
                 file.createNewFile(); // create file
@@ -256,7 +269,6 @@ public class FileLoggerListener implements SimulatorListener {
             // close all remaining buffered writers
             for (String key: writerMap.keySet()) {
                 BufferedWriter w = writerMap.get(key);
-                System.out.println("Complete Closing: " + key);
                 w.close();
             }
         } catch (IOException ex) {
