@@ -51,7 +51,9 @@ public class UCLNMean1 extends ParametricDistribution<Double[]> {
     @GeneratorInfo(name = "UCLN_Mean1", verbClause = "are sampled from",
             narrativeName = "uncorrelated lognormal (UCLN) relaxed clock model",
             category = GeneratorCategory.PRIOR,
-            description = "The uncorrelated lognormal (UCLN) relaxed clock model. Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate.")
+            description = "The uncorrelated lognormal (UCLN) relaxed clock model, " +
+                    "where the mean of log-normal distr on branch rates in real space must be fixed to 1. " +
+                    "Use the clock rate (mu) in PhyloCTMC as the expected mean clock rate.")
     public RandomVariable<Double[]> sample() {
         // nBranches = 2 * nTaxa - 2
         int nBranches = 2 * tree.value().leafCount() - 2;
