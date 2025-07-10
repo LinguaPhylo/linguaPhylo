@@ -168,7 +168,7 @@ public class GeneratorMarkdown {
         final String desc = "Sequences data types, such as nucleotide, amino acid, binary, " +
                 "standard type (e.g. morphology, locations, traits, ...), etc.";
         builder.append("\n").append(new Text(desc)).append("\n\n");
-        final String seealso = "https://github.com/LinguaPhylo/linguaPhylo/tree/master/lphy/doc/sequence-type";
+        final String seealso = "https://github.com/LinguaPhylo/linguaPhylo/tree/master/docs/sequence-type";
         builder.append("\n").append(new Text("See also: " + seealso)).append("\n\n");
 
         return builder.toString();
