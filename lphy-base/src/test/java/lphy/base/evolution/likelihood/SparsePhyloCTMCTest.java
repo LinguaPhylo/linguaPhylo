@@ -200,9 +200,9 @@ public class SparsePhyloCTMCTest {
 //            //assertEquals(phyloProbs[i], sparseProbs[i], 0.001);
 ////            // TODO: make it equal to theory
 ////            if (i == 0){
-////                assertEquals(transProbAA, phyloProbs[i], 0.005);
+//                assertEquals(transProbAA, phyloProbs[i], 0.005);
 ////            } else {
-////                assertEquals(transProbAX, phyloProbs[i], 0.005);
+//                assertEquals(transProbAX, phyloProbs[i], 0.005);
 ////            }
 //        }
 //    }
