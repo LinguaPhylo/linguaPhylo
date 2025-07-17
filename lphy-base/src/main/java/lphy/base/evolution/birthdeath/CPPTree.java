@@ -51,7 +51,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     /*
         root conditioned cpp
      */
-    @GeneratorInfo(name="CPP",
+    @GeneratorInfo(name="CPP", examples = {"CPPTree.lphy"},
         description = "Generate a tree with coalescent point processing progress with node ages drawn i.i.d and factorised. If a root age is provided, the method conditions the tree generation on this root age.")
     @Override
     public RandomVariable<TimeTree> sample() {
@@ -244,9 +244,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
 
     public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, int nSims) {
         // Calculate the CDF value (Q)
-        double conditionTime = Double.POSITIVE_INFINITY;
-
-        return sampleTimes(birthRate, deathRate, samplingProbability, nSims);
+       return sampleTimes(birthRate, deathRate, samplingProbability, 0, Double.POSITIVE_INFINITY, nSims);
     }
 
     public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, double lowerTime, double upperTime, int nSims) {

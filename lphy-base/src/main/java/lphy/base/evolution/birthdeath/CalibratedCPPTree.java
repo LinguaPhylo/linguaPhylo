@@ -1,7 +1,6 @@
 package lphy.base.evolution.birthdeath;
 
 import lphy.base.distribution.DistributionConstants;
-import lphy.base.evolution.Taxa;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
@@ -60,7 +59,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                              @ParameterInfo(name = cladeTaxaName, description = "a string array of taxa id or a taxa object for clade taxa (e.g. dataframe, alignment or tree)") Value<String[][]> cladeTaxa,
                              @ParameterInfo(name = cladeMRCAAgeName, description = "an array of ages for clade most recent common ancestor, ages should be correspond with clade taxa array.") Value<Number[]> cladeMRCAAge,
                              @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on optional.", optional = true) Value<Number> rootAge,
-                             @ParameterInfo(name = stemAgeName, description = "the age of stem of the tree root") Value<Number> stemAge) {
+                             @ParameterInfo(name = stemAgeName, description = "the age of stem of the tree root", optional = true) Value<Number> stemAge) {
         super(n, null, null);
         // check legal params
         if (cladeTaxa == null) throw new IllegalArgumentException("The clade taxa shouldn't be null, otherwise please use CPP");
@@ -87,7 +86,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         this.stemAge = stemAge;
     }
 
-    @GeneratorInfo(name = "CalibratedCCP",
+    @GeneratorInfo(name = "CalibratedCPP", examples = {"CalibratedCPPTree.lphy"},
             description = "The CalibratedCCP method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.")
     @Override
     public RandomVariable<TimeTree> sample() {
@@ -274,7 +273,8 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // get non-clade taxa
         List<String> nonCladeTaxa = new ArrayList<>();
-        for (int i = 0; i <= n - nameList.size(); i++) {
+        int nameListSize = nameList.size();
+        for (int i = 0; i <= n - nameListSize; i++) {
             nameList.add(String.valueOf(i));
             nonCladeTaxa.add(String.valueOf(i));
         }
@@ -291,7 +291,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 }
             }
         }
-
 
         // combine sub-CPPs into the final tree
         while (nodeList.size() > 1) {
@@ -397,17 +396,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             }
         }
     }
-
-    private List<String> getNonCladeTaxa(List<String> nameList, TreeMap<Double, String[]> cladeCalibrations, List<Map.Entry<Double, String[]>> cladeCalibrationsEntries) {
-        List<String> cladeNames = new ArrayList<>();
-        for (int i = 0; i < cladeCalibrationsEntries.size(); i++) {
-            cladeNames.addAll(List.of(cladeCalibrations.get(cladeCalibrationsEntries.get(i).getKey())));
-        }
-        List<String> diff = new ArrayList<>(nameList);
-        diff.removeAll(cladeNames);
-        return diff;
-    }
-
 
     /*
         criticising functions
@@ -626,9 +614,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
     public void setParam(String paramName, Value value){
         if (paramName.equals(BirthDeathConstants.lambdaParamName)) birthRate = value;
+        else if (paramName.equals(BirthDeathConstants.muParamName)) deathRate = value;
+        else if (paramName.equals(BirthDeathConstants.rhoParamName)) rho = value;
+        else if (paramName.equals(DistributionConstants.nParamName)) n = value;
         else if (paramName.equals(BirthDeathConstants.rootAgeParamName)) rootAge = value;
         else if (paramName.equals(cladeTaxaName)) cladeTaxa = value;
         else if (paramName.equals(cladeMRCAAgeName)) cladeMRCAAge = value;
+        else if (paramName.equals(stemAgeName)) stemAge = value;
         else super.setParam(paramName, value);
     }
 
