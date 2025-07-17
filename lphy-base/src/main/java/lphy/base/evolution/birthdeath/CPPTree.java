@@ -36,6 +36,9 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
                    @ParameterInfo(name = DistributionConstants.nParamName, description = "the total number of taxa.", optional = true) Value<Integer> n,
                    @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on optional.", optional = true) Value<Number> rootAge,
                    @ParameterInfo(name = randomStemAgeName, description = "the age of stem of the tree root, default has no stem", optional = true)Value<Boolean> randomStemAge) {
+        if (birthRate.value().doubleValue() <= deathRate.value().doubleValue()) {
+            throw new IllegalArgumentException("The birth rate should be bigger than death rate!");
+        }
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rho = rho;
@@ -72,7 +75,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         // determine stem age
         double stemAge = 0;
         if (getRandomStemAge() != null) {
-            stemAge = simRandomStem(birthRate, deathRate, rho, rootAge, 1);
+            stemAge = simRandomStem(birthRate, deathRate, rootAge, 1);
             t.add(stemAge);
         } else {
             t.add(rootAge);
@@ -266,10 +269,10 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         return times;
     }
 
-    public static double simRandomStem(double birthRate, double deathRate, double samplingProbability, double greaterThan, int nSims){
-        double Q = Qdist(birthRate, deathRate, greaterThan, nSims);
+    public static double simRandomStem(double birthRate, double deathRate, double greaterThan, int nTaxa){
+        double Q = Qdist(birthRate, deathRate, greaterThan, nTaxa);
         double p = Math.random() * (1.0 - Q) + Q;
-        double t = transform(p, birthRate, deathRate, nSims);
+        double t = transform(p, birthRate, deathRate, nTaxa);
         return t;
     }
 
@@ -296,6 +299,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             // all tips have age 0
             TimeTreeNode leaf = new TimeTreeNode(0.0);
             leaf.setId(name);
+            activeNodes = new ArrayList<>();
             activeNodes.add(leaf);
         }
 
@@ -363,7 +367,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         return getParams().get(BirthDeathConstants.rootAgeParamName);
     }
     public Value<Boolean> getRandomStemAge(){
-        return getParams().get(randomStemAge);
+        return getParams().get(randomStemAgeName);
     }
     public Value<String[]> getTaxa(){
         return getParams().get(TaxaConditionedTreeGenerator.taxaParamName);
