@@ -322,17 +322,17 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
             // adjust indices
             nodeList.set(j-1, parent);
-            nodeList.set(j, null);
+            nodeList.remove(j);
 
             // set parent node to time of current node
             nodeAges.set(j-1, times.get(j));
 
             // remove the time and age of the second node
             times.remove(j);
-            nodeAges.set(j, null);
+            nodeAges.remove(j);
         }
 
-        tree.setRoot(nodeList.get(0));
+        tree.setRoot(nodeList.get(0), true);
         return new RandomVariable<>("CPPTree", tree, this);
     }
 
