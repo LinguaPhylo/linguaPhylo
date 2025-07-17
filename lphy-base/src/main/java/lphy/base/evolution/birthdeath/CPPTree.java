@@ -170,7 +170,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         return p;
     }
 
-    public static double inverseCDF(double b, double d, double rho, double conditionTime, double p) {
+    public static double inverseCDF(double b, double d, double rho, double p) {
         double t = Math.log(1 + ((b - d) * p) / (b * rho * (1 - p))) / (b - d);
         return t;
     }
@@ -186,7 +186,9 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     }
 
     public static double transform(double p, double birthRate, double deathRate, int nSims) {
-        double t = Math.log((deathRate * Math.pow(p, 1 / nSims) - birthRate) / birthRate * (Math.pow(p, 1 / nSims) - 1.0)) / (birthRate - deathRate);
+        double t = Math.log((deathRate * Math.pow(p, 1.0 / nSims) - birthRate)
+                / (birthRate * (Math.pow(p, 1.0 / nSims) - 1.0)))
+                / (birthRate - deathRate);
         return t;
     }
     /*
@@ -212,7 +214,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             } else {
                 p = rand.nextDouble() * (1 - Q) + Q;
             }
-            results[i] = inverseCDF(birthRate, deathRate, samplingProbability, conditionTime, p);
+            results[i] = inverseCDF(birthRate, deathRate, samplingProbability,p);
         }
 
         return results;
@@ -234,7 +236,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             // default sample from [0,Q], lowerTail=True
             p = rand.nextDouble() * Q;
 
-            results[i] = inverseCDF(birthRate, deathRate, samplingProbability, conditionTime, p);
+            results[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
 
         return results;
@@ -244,7 +246,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         // Calculate the CDF value (Q)
         double conditionTime = Double.POSITIVE_INFINITY;
 
-        return sampleTimes(birthRate, deathRate, samplingProbability, conditionTime, nSims);
+        return sampleTimes(birthRate, deathRate, samplingProbability, nSims);
     }
 
     public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, double lowerTime, double upperTime, int nSims) {
@@ -263,7 +265,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             // Generate a random probability between Qlower and Qupper
             double p = rand.nextDouble() * (Qupper - Qlower) + Qlower;
             // Use InverseCDF to get the sample time
-            times[i] = inverseCDF(birthRate, deathRate, samplingProbability, lowerTime, p);
+            times[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
 
         return times;
@@ -294,12 +296,12 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     public static TimeTree mapCPPTree(List<Double> t) {
         List<Double> nodeAges = new ArrayList<>(Collections.nCopies(t.size(), 0.0));
 
+        activeNodes = new ArrayList<>();
         // map all leaves into activeNodes
         for (String name : nameList){
             // all tips have age 0
             TimeTreeNode leaf = new TimeTreeNode(0.0);
             leaf.setId(name);
-            activeNodes = new ArrayList<>();
             activeNodes.add(leaf);
         }
 
