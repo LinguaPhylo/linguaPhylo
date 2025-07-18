@@ -11,8 +11,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.*;
-
-import static lphy.base.evolution.birthdeath.CPPTree.*;
+import static lphy.base.evolution.birthdeath.CPPUtils.*;
 
 /*
 <distribution id="prior" spec="beast.base.inference.CompoundDistribution">
@@ -66,10 +65,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         if (cladeMRCAAge == null) throw new IllegalArgumentException("The clade mrca age shouldn't be null!");
         if (cladeTaxa.value().length != cladeMRCAAge.value().length) {
             throw new IllegalArgumentException("The clade mrca age should correspond to the clade taxa!");
-        }
-
-        if (birthRate.value().doubleValue() <= deathRate.value().doubleValue()) {
-            throw new IllegalArgumentException("The birth rate should be bigger than death rate!");
         }
 
         for (int i = 0; i < cladeMRCAAge.value().length; i++) {
@@ -165,7 +160,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             if (getStemAge()!= null) {
                 conditionAge = getStemAge().value().doubleValue();
             } else {
-                conditionAge = CPPTree.simRandomStem(birthRate, deathRate, maximalCalibrations.firstEntry().getKey(), n);
+                conditionAge = CPPUtils.simRandomStem(birthRate, deathRate, maximalCalibrations.firstEntry().getKey(), n);
             }
         }
 
@@ -219,7 +214,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 l[i] = A.get(0);
             } else {
                 // sample one element from A with probability weights
-                sampleElement(A, weights, l, i);
+                CPPUtils.sampleElement(A, weights, l, i);
             }
 
             if (subClades.size() != 0) {
@@ -237,11 +232,11 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
             // deal with the nodes have l[i] still 0
             if (times.get(l[i]) == null) {
-                double time = sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
+                double time = CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
                 times.set(l[i],time);
             }
             if ((l[i] < m) && (times.get(l[i] + 1) == null)) {
-                times.set(l[i] + 1, sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0]);
+                times.set(l[i] + 1, CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0]);
             }
 
             nodeAges.set(l[i], maximalCalibrationsEntries.get(i).getKey());
@@ -253,7 +248,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         // after calibrations, sample times for remaining unassigned nodes
         for (int i = 0; i < times.size(); i++) {
             if (times.get(i) == null) {
-                times.set(i, sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
+                times.set(i, CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
             }
         }
 
@@ -384,80 +379,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         return subClades;
     }
 
-
-    private void sampleElement(List<Integer> A, double[] weights, int[] l, int i) {
-        double prob = random.nextDouble(); // random number between 0 and 1
-        double cumulative = 0.0;
-        for (int j = 0; j < A.size(); j++) {
-            cumulative += weights[j];
-            if (prob <= cumulative) {
-                l[i] = A.get(j);
-                break;
-            }
-        }
-    }
-
-    /*
-        criticising functions
-     */
-    // returns list of booleans if clade contains cladeCalibrations.get(i) under the partial order of set inclusion
-    public boolean[] isSuperSetOf(TreeMap<Double, String[]> clade, TreeMap<Double, String[]> cladeCalibrations) {
-        Set<String> cladeTaxa = new HashSet<>();
-        for (String[] taxaArray : clade.values()) {
-            cladeTaxa.addAll(Arrays.asList(taxaArray));
-        }
-
-        // Prepare result array
-        boolean[] result = new boolean[cladeCalibrations.size()];
-        int i = 0;
-
-        // Check each calibration to see if it's a subset of cladeTaxa
-        for (Map.Entry<Double, String[]> entry : cladeCalibrations.entrySet()) {
-            String[] calibrationTaxa = entry.getValue();
-            boolean isSubset = true;
-
-            for (String taxon : calibrationTaxa) {
-                if (!cladeTaxa.contains(taxon)) {
-                    isSubset = false;
-                    break;
-                }
-            }
-
-            result[i++] = isSubset;
-        }
-
-        return result;
-    }
-    // returns list of TRUE if clade is subset of cladeCalibrations.get(i) under the partial order of set inclusion
-    public static boolean[] isSubsetOf(TreeMap<Double, String[]> clade, TreeMap<Double, String[]> cladeCalibrations) {
-        // Combine all taxa from the clade into a single set
-        Set<String> cladeTaxa = new HashSet<>();
-        for (String[] taxaArray : clade.values()) {
-            cladeTaxa.addAll(Arrays.asList(taxaArray));
-        }
-
-        // Prepare result array
-        boolean[] result = new boolean[cladeCalibrations.size()];
-        int i = 0;
-
-        // For each calibration, check if clade is a subset
-        for (Map.Entry<Double, String[]> entry : cladeCalibrations.entrySet()) {
-            Set<String> calibrationSet = new HashSet<>(Arrays.asList(entry.getValue()));
-            boolean isSubset = true;
-
-            for (String taxon : cladeTaxa) {
-                if (!calibrationSet.contains(taxon)) {
-                    isSubset = false;
-                    break;
-                }
-            }
-
-            result[i++] = isSubset;
-        }
-
-        return result;
-    }
-
     public TreeMap<Double, String[]> getMaximalCalibrations(TreeMap<Double, String[]> cladeCalibrations) {
         TreeMap<Double, String[]> maximalCalibrations = new TreeMap<>();
 
@@ -476,125 +397,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         }
 
         return maximalCalibrations;
-    }
-
-    public List<Integer> checkTrues(boolean[] results) {
-        int i = 0;
-        List<Integer> indices = new ArrayList<>();
-        for (boolean val : results) {
-            if (val) {
-                indices.add(i);
-            }
-            i ++;
-        }
-        return indices;
-    }
-
-
-
-//    // TODO: what's returning here, what's calculating?
-//    public Object probCalibrations(double b, double d, double rho, List<TimeTreeNode> calibrations, Taxa taxa) {
-//        int nCalibrations = calibrations.size();
-//        int nCalibratedTaxa = 0;
-//        for (TimeTreeNode calibration : calibrations) {
-//            nCalibratedTaxa += calibration.getAllLeafNodes().size();
-//        }
-//        int n = taxa.ntaxa() - nCalibratedTaxa + nCalibrations;
-//        int k = nCalibrations;
-//
-//        double totalSum = sumOverSubsets(n,k);
-//        return null;
-//    }
-
-    /**
-     * Get the number of given taxa
-     * @param n length of the whole set
-     * @param k the length of each subset
-     * @return the total number of all subsets
-     */
-    private double sumOverSubsets(int n, int k) {
-        int[][] subsets = permutations(n,k);
-        double totalSum = 0;
-        for (int[] subset : subsets) {
-            totalSum += f(subset);
-        }
-        return totalSum;
-    }
-
-    // TODO: what is f()
-    private double f(int[] subset) {
-        return 0.0;
-    }
-
-    public static int[][] permutations(int n, int k) {
-        // Use default values from the R function:
-        // v = 1:n, set = true, repeats.allowed = false
-        int[] v = new int[n];
-        for (int i = 0; i < n; i++) {
-            v[i] = i + 1;
-        }
-        boolean set = true;
-        boolean repeatsAllowed = false;
-
-        // Input validation
-        if (n < 1) {
-            throw new IllegalArgumentException("bad value of n");
-        }
-        if (k < 1) {
-            throw new IllegalArgumentException("bad value of k");
-        }
-        if (k > n && !repeatsAllowed) {
-            throw new IllegalArgumentException("k > n and repeats.allowed=false");
-        }
-
-        // Generate permutations without repeats
-        return generateWithoutRepeats(n, k, v);
-    }
-
-    // Recursive function for permutations without repeats
-    private static int[][] generateWithoutRepeats(int n, int r, int[] v) {
-        if (r == 1) {
-            int[][] result = new int[n][1];
-            for (int i = 0; i < n; i++) {
-                result[i][0] = v[i];
-            }
-            return result;
-        } else if (n == 1) {
-            int[][] result = new int[1][r];
-            result[0][0] = v[0];
-            return result;
-        } else {
-            List<int[]> resultList = new ArrayList<>();
-
-            for (int i = 0; i < n; i++) {
-                // Create a new array without element at index i
-                int[] newV = new int[n - 1];
-                int idx = 0;
-                for (int j = 0; j < n; j++) {
-                    if (j != i) {
-                        newV[idx++] = v[j];
-                    }
-                }
-
-                // Recursive call
-                int[][] subPermutations = generateWithoutRepeats(n - 1, r - 1, newV);
-
-                // Combine current element with sub-permutations
-                for (int[] subPerm : subPermutations) {
-                    int[] newRow = new int[r];
-                    newRow[0] = v[i];
-                    System.arraycopy(subPerm, 0, newRow, 1, r - 1);
-                    resultList.add(newRow);
-                }
-            }
-
-            // Convert List to array
-            int[][] result = new int[resultList.size()][r];
-            for (int i = 0; i < resultList.size(); i++) {
-                result[i] = resultList.get(i);
-            }
-            return result;
-        }
     }
 
 

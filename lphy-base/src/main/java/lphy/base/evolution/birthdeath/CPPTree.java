@@ -3,7 +3,6 @@ package lphy.base.evolution.birthdeath;
 import lphy.base.distribution.DistributionConstants;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -12,6 +11,7 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 
 import java.util.*;
+import static lphy.base.evolution.birthdeath.CPPUtils.*;
 
 @Citation(value = "Lambert, A., & Stadler, T. (2013). Birth-death models and coalescent point processes: the shape and probability of reconstructed phylogenies. Theoretical population biology, 90, 113–128. https://doi.org/10.1016/j.tpb.2013.10.002",
         title = "Birth–death models and coalescent point processes: The shape and probability of reconstructed phylogenies",
@@ -25,8 +25,6 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     Value<Integer> n;
     Value<String[]> taxa;
     Value<Boolean> randomStemAge;
-    static List<TimeTreeNode> activeNodes;
-    static List<String> nameList;
     public final String randomStemAgeName = "randomStemAge";
 
     public CPPTree(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
@@ -36,9 +34,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
                    @ParameterInfo(name = DistributionConstants.nParamName, description = "the total number of taxa.", optional = true) Value<Integer> n,
                    @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on optional.", optional = true) Value<Number> rootAge,
                    @ParameterInfo(name = randomStemAgeName, description = "the age of stem of the tree root, default has no stem", optional = true)Value<Boolean> randomStemAge) {
-        if (birthRate.value().doubleValue() <= deathRate.value().doubleValue()) {
-            throw new IllegalArgumentException("The birth rate should be bigger than death rate!");
-        }
+
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rho = rho;
@@ -48,9 +44,6 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         this.rootAge = rootAge;
     }
 
-    /*
-        root conditioned cpp
-     */
     @GeneratorInfo(name="CPP", examples = {"CPPTree.lphy"},
         description = "Generate a tree with coalescent point processing progress with node ages drawn i.i.d and factorised. If a root age is provided, the method conditions the tree generation on this root age.")
     @Override
@@ -65,7 +58,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         // determine root age
         double rootAge = 0;
         if (getRootAge() == null) {
-            rootAge = sampleTimes(birthRate, deathRate, rho, 1)[0];
+            rootAge = CPPUtils.sampleTimes(birthRate, deathRate, rho, 1)[0];
         } else {
             rootAge = getRootAge().value().doubleValue();
         }
@@ -83,7 +76,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
 
         // determine number of taxa and names
         int n = 0;
-        nameList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
 
         if (getN() != null) {
             n = getN().value().intValue();
@@ -105,9 +98,9 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         while (i < n - 1){
             double ti;
             if (n == (int) Double.POSITIVE_INFINITY){
-                ti = sampleTimes(birthRate, deathRate, rho, 0.0, Double.POSITIVE_INFINITY, 1)[0];
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0.0, Double.POSITIVE_INFINITY, 1)[0];
             } else {
-                ti = sampleTimes(birthRate, deathRate, rho, 0.0, rootAge, 1)[0];
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0.0, rootAge, 1)[0];
             }
 
             if (n == (int) Double.POSITIVE_INFINITY && ti > rootAge) {
@@ -134,7 +127,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         // shuffle nameList
         Collections.shuffle(nameList);
 
-        TimeTree tree = mapCPPTree(t);
+        TimeTree tree = CPPUtils.mapCPPTree(nameList, t);
         return new RandomVariable<>("CPPTree", tree, this);
     }
 
@@ -162,195 +155,6 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         else setParam(paramName, value);
     }
 
-    /*
-        main mathematical methods
-     */
-    public static double CDF(double b, double d, double rho, double t) {
-        double p = rho * b * (1 - Math.exp(-(b - d) * t)) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * t));
-        return p;
-    }
-
-    public static double inverseCDF(double b, double d, double rho, double p) {
-        double t = Math.log(1 + ((b - d) * p) / (b * rho * (1 - p))) / (b - d);
-        return t;
-    }
-
-    public double densityBD(double b, double d, double rho, double time) {
-        double density = rho * b * (b - d) * Math.exp(-(b - d) * time) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * time));
-        return density;
-    }
-
-    public static double Qdist(double birthRate, double deathRate, double t, int nSims){
-        double p = birthRate *( 1 - Math.exp(- (birthRate - deathRate) * t))/(birthRate - deathRate * Math.exp(-(birthRate - deathRate)* t));
-        return Math.pow(p, nSims);
-    }
-
-    public static double transform(double p, double birthRate, double deathRate, int nSims) {
-        double t = Math.log((deathRate * Math.pow(p, 1.0 / nSims) - birthRate)
-                / (birthRate * (Math.pow(p, 1.0 / nSims) - 1.0)))
-                / (birthRate - deathRate);
-        return t;
-    }
-    /*
-        sampling methods
-     */
-
-    // time sampling methods (with condition time optional and lowerTail optional)
-    public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, double conditionTime, boolean lowerTail, int nSims) {
-        // Calculate the CDF value (Q)
-        double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
-
-        // Random number generator
-        Random rand = new Random();
-
-        // Array to store the result
-        double[] results = new double[nSims];
-
-        // Generate the samples based on the lowerTail flag
-        for (int i = 0; i < nSims; i++) {
-            double p;
-            if (lowerTail) {
-                p = rand.nextDouble() * Q;
-            } else {
-                p = rand.nextDouble() * (1 - Q) + Q;
-            }
-            results[i] = inverseCDF(birthRate, deathRate, samplingProbability,p);
-        }
-
-        return results;
-    }
-
-    public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, double conditionTime, int nSims) {
-        // Calculate the CDF value (Q)
-        double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
-
-        // Random number generator
-        Random rand = new Random();
-
-        // Array to store the result
-        double[] results = new double[nSims];
-
-        // Generate the samples based on the lowerTail flag
-        for (int i = 0; i < nSims; i++) {
-            double p;
-            // default sample from [0,Q], lowerTail=True
-            p = rand.nextDouble() * Q;
-
-            results[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
-        }
-
-        return results;
-    }
-
-    public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, int nSims) {
-        // Calculate the CDF value (Q)
-       return sampleTimes(birthRate, deathRate, samplingProbability, 0, Double.POSITIVE_INFINITY, nSims);
-    }
-
-    public static double[] sampleTimes(double birthRate, double deathRate, double samplingProbability, double lowerTime, double upperTime, int nSims) {
-        // Calculate the CDF values at lowerTime and upperTime
-        double Qlower = CDF(birthRate, deathRate, samplingProbability, lowerTime);
-        double Qupper = CDF(birthRate, deathRate, samplingProbability, upperTime);
-
-        // Random number generator
-        Random rand = new Random();
-
-        // Array to store the result
-        double[] times = new double[nSims];
-
-        // Generate the samples
-        for (int i = 0; i < nSims; i++) {
-            // Generate a random probability between Qlower and Qupper
-            double p = rand.nextDouble() * (Qupper - Qlower) + Qlower;
-            // Use InverseCDF to get the sample time
-            times[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
-        }
-
-        return times;
-    }
-
-    public static double simRandomStem(double birthRate, double deathRate, double greaterThan, int nTaxa){
-        double Q = Qdist(birthRate, deathRate, greaterThan, nTaxa);
-        double p = Math.random() * (1.0 - Q) + Q;
-        double t = transform(p, birthRate, deathRate, nTaxa);
-        return t;
-    }
-
-    /*
-        tree mapping methods
-     */
-    public static int indexOfMin(List<Double> t) {
-        int minIndex = 0;
-        double minValue = t.get(0);
-        for (int i = 1; i < t.size(); i++) {
-            if (t.get(i) < minValue) {
-                minValue = t.get(i);
-                minIndex = i;
-            }
-        }
-        return minIndex;
-    }
-
-    public static TimeTree mapCPPTree(List<Double> t) {
-        List<Double> nodeAges = new ArrayList<>(Collections.nCopies(t.size(), 0.0));
-
-        activeNodes = new ArrayList<>();
-        // map all leaves into activeNodes
-        for (String name : nameList){
-            // all tips have age 0
-            TimeTreeNode leaf = new TimeTreeNode(0.0);
-            leaf.setId(name);
-            activeNodes.add(leaf);
-        }
-
-        // map the tree
-        while (activeNodes.size() > 1){
-            // Find the index `j` of the minimum time (earliest event).
-            int j = indexOfMin(t);
-
-            // If only two events remain, set `j` to 1 (because when two nodes are left, we combine them into the root).
-            if (t.size() == 2){
-                j = 1;
-            }
-            // If the first time is the smallest then set j to 1 (avoid j-1 < 0)
-            if (j == 0){
-                j = 1;
-            }
-
-            // Calculate the branch lengths for the left and right branches of the current split.
-            // The branch length is the difference in time between the current event `j` and the time of the nodes being merged.
-            TimeTreeNode node1 = activeNodes.get(j-1);
-            TimeTreeNode node2 = activeNodes.get(j);
-            TimeTreeNode parent = new TimeTreeNode(t.get(j), new TimeTreeNode[]{node1, node2});
-
-            activeNodes.remove(node1);
-            activeNodes.remove(node2);
-            activeNodes.add(parent);
-
-            nodeAges.remove(node1.getAge());
-            nodeAges.add(node2.getAge());
-            nodeAges.add(parent.getAge());
-
-            t.remove(t.get(j));
-        }
-
-        TimeTree tree = new TimeTree();
-        tree.setRoot(activeNodes.get(0));
-
-        // if tree has a stem
-        if (t.size() > nodeAges.size()){
-            // get a new node for the stem
-            TimeTreeNode newRoot = new TimeTreeNode(t.get(0));
-            // make the new root origin
-            newRoot.addChild(tree.getRoot());
-            tree.setRoot(newRoot);
-        }
-        return tree;
-    }
-
-    /*
-        getting pass in parameters
-     */
     public Value<Integer> getN(){
         return getParams().get(DistributionConstants.nParamName);
     }

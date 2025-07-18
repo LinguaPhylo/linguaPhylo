@@ -7,14 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static lphy.base.evolution.birthdeath.CPPTree.Qdist;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CPPTest {
     @Test
     public void testQdistBasic() {
-        double result = Qdist(2, 1, 1, 10);
+        double result = CPPUtils.Qdist(2, 1, 1, 10);
         assertTrue(result > 0 && result < 1);
     }
 
