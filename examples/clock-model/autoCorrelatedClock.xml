@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+model {
+  meanRate = 1.0;
+  rootLogRate ~ Normal(mean=0.0, sd=0.3);
+  σ2 ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  λ ~ LogNormal(meanlog=2.0, sdlog=0.7);
+  ψ ~ Yule(lambda=λ, n=8);
+  nodeLogRates ~ AutoCorrelatedLogRates(rootLogRate=rootLogRate, sigma2=σ2, tree=ψ);
+  doNormalize = false;
+  tOrder = 10;
+  branchRates = AutoCorrelatedClock(tree=ψ, nodeLogRates=nodeLogRates, rootLogRate=rootLogRate, sigma2=σ2, meanRate=meanRate, normalize=doNormalize, taylorOrder=tOrder);
+  D ~ PhyloCTMC(L=400, Q=jukesCantor(), branchRates=branchRates, tree=ψ);
+  height = ψ.rootAge();
+  length = ψ.treeLength();
+}
+
+-->
+<beast namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="lphybeast v1.2.1" version="2.7">
+
+    <data
+id="D"
+spec="Alignment">
+        <sequence id="Sequence" spec="Sequence" taxon="3" totalcount="4" value="TAGGTACGGCGTGATCCGATCGCTTCACGCAAACCAATTCGGAGACGCAGGCCGGCCTTCGCTTAAGCAGTCATTTTGGTAACCTTGCGCCAACTCCCTGTGACCCCTATGAAACCCCCCATTGGATAATTACAGAGCCTCTAGGCTACCCTTCTCGCATTGTAAGTAAAAAATGAAGTGAGCCACCCGCCGTAAAGTAAGCGTGTCTCTTTTAATGCGGTAATCATACAGCTCGACCGCCCAGTCCTTTTGGTCACTTTGCATACAACGTGTCCCTTGATCCGGCGGCTCGAGACTCAAGGGGGGCCGGAGTCAGTACGGCTCGAACCCCCGTAAATGTGTTCGAGGATCCGAAGTCATGACGGGTTGGCGCGGCTAACAGGCGGTTTGTGATTGGTAG"/>
+        <sequence id="Sequence1" spec="Sequence" taxon="6" totalcount="4" value="TAGGTAAGCAGTGATCGGATCGCTTCGCGCAAACCAATTCGGAGACGCAGGCCGGCCTTCGCATAAGCACTCATTGTGGTAACCTTGCTCCAACTCTCTGTGACCCCTATGAAAACTCCCATTCTATAATTGCACAGTCTCTAGGCTACCCTTCACGCGTTATAAGTAAAAAATGAAGTGAGACACCGGCCGTAAAGTAAGCGTGTCTCTTATAATGCGGTAATCATACTGCTCCATCGCCCAATCCTTTTCGTCACTTTGCAGTCAACGTGTCCCTTGAGACGGCGGCGCGAGACTCAAAGGGGGCCGGAGGAAGCACAGCTCGACCCCCCCTAAATGGGTGCGATGATCCGGAGTCATGACGGTTTGCCGCGGCTAACAGGTGGTTTGTGAAGCTTAG"/>
+        <sequence id="Sequence2" spec="Sequence" taxon="7" totalcount="4" value="TAGGGAAGCAGTGATCGGATCGCTTCACGTAAACCAATTCGGAGACGCAAGCCGGCCTTCGCATAAGCACTCATTGTGGTAACCTTGCTCCAACTCTCTGTGACCCCTATGAAAACTCCCATTCTATAATTGCACAGTCTCTAGGCTACCCTTCACGCGTTATAAGTAAAAAATGAAGTGAGCCACCGGCCGTAAAGTAAGCGTGTCTCATTTAATGCGGTAATCATACAGCTCCATCGCCCAATCCTTTTCGTCACTTTGCAGTCAACGTGTCCCTTGAGACGGCGGCGCGAGACTCAAAGGGGGCCGGAGGAAGCACAGCTCGACCCCCCGTAAATGGGTGCGATGATCCGGAGTCATGACGGGATGCCGCGGCTAACAGGTGGTTTGTGAAGCTTAG"/>
+        <sequence id="Sequence3" spec="Sequence" taxon="4" totalcount="4" value="TAGGTAAGGAGTGATCCGATCGCTTCACCGAAACCAATTCGGAGACACAGGCCGGCCTTCGCATAAGCAGTCATGGTGGTGACCTTGCGCCAACGCCCGCTGACCCCGATGAAACCCCACATTCCATGATTGCACAAGGTTAAACCAGACCTTCACGCATTGAAAGTATAGAATGAAGTGAGCCTCCGGCCGTAAAGTAAGCTTGTCTCTTTTAATGCGGTAATCAGACAGCTCCATGGCCCAATCCTTTTCGTCACTTTGCATACAACGTGTCCCTTGATACTTCGGCTCGAGACTCAAGGGGGGCCGGATTAAGTACAGCTCCACCCCCCGTAAACGCGTTCTAGGATCCGCAGTCATGAAGGGTTTCAGCGGATGACAGATGATTTTAGACTCTTAG"/>
+        <sequence id="Sequence4" spec="Sequence" taxon="2" totalcount="4" value="TAGCCATGACGTGTTCCGATATTATTAAGAAAAGCAATTACGAGACAAAGGCAGGCCTCGGCATTGGGCGGTTCTGTGGCAACCTGGTGTCGGATCCCCGTGTGACCTATGCAAACTTCCGTTTGATGATCCCAAAGGACGAAGGCAACCCTACACGCACAGTAACATAAGTTTTAAGAGGCCCACCCTCCGTAGAGTTAGCGCGTCCCTTTTAATGCGGCAAGAATGCTGGTCCATGCCTCAACCTTCTATCTAACTTATTCTACCACGTTTCCCTTGATGCGTTGCCCCAAGACCTAAAGGGCGGCACATTTAGTACGGCTACACCGTCCCTAAAGTCGTTTTATGAGCCGCAATGCACAAGGATTTCTGCGGCTACCAGCAGATTCTTCATTCCATG"/>
+        <sequence id="Sequence5" spec="Sequence" taxon="0" totalcount="4" value="TAGGCAGCTCGTGTTCCGCTATTATCAAGAAAACCAATTCCGAGACAACGGCTGGCCTCTGCATAGGGCGGCTTGGTGGTAACCTTGTCCCGGAACGCCGTGGGGCCTACGAACGCTTCTGTTGGATGGTTCCAAAGGAAGAAGGCAACCCTGCATGCACAGTAACGTAAGTAGTAAGAGTCCCAACCTCAGTAGACTAAGCGCGTCCCTTTTAATGCGGTAAGACTACTAGTCCATGCCTCATCCTTGTATGTTACTTTGTCTACCACGCGTCCCATGATGCGGCGTCCCAAGACCTAAAGGAGGGCGCATTAAGTACAGCTACACCATCCCTAAAGTTGTATTATAAGCCGAGGAGCATAAGGCTTTCTGCGTCTAACAGTAGATTCTTCATTTCATG"/>
+        <sequence id="Sequence6" spec="Sequence" taxon="1" totalcount="4" value="TACGCATGAAGTGTGCAGATAACTTCAGGGAAACCTATGGGTAGTCACAAGCCGGCCTCCGCATAGGGGCTCATTGGCGAAACCTTGCGCCAACTACCCGTGACCACTATGCAACCCTACATTCGACGGTTCCATAAGATCAAGACGACTCCTCACGCAGTTTAACAATACTGTACAATGAGCCCCCGTCCGTATAGTAAGCGTGTACCTTTTGCTGCGTGAAGACTGCGGGTAAATACCCCAACGCGTTTTGTGCCATTGTATACTGCGTGTCCCTTGACGCGGCGGCTCAACTCTAAAGGGAGTCCGGATTAGGTTCAGCAGCACCCCCCCTTAACCCGTCCGATATGCCTCTTTGATGGGGGATTGCCGCGCCTATCTGCTGAAGCTTTACTATGTC"/>
+        <sequence id="Sequence7" spec="Sequence" taxon="5" totalcount="4" value="TTGGCTTGAAGTGTATAGATAACTTCAAGTAAACCAATGGGGAGACACAAGCCGGCCTCCGCACAGGGAGTTATTGTAGAAACCTTGCGCCAACTACCCGTGATCAATATGCATCCCTACATTCGACTGTTCCGGAAGATCAAGACGCCTACTCACGCAGGTTAAGACTAATGTACAATGAGCCCCCGTCCGTATAGCAAGCCTGTACCTTCTGCTGCGTCAAATCTGCCAGTAAATACCCCAACGCTTTTTGTGGCATTGTATACTAGGGGTCGCTTGATGAGGCCGCTCAACTCTAAAGGGAGGTCGCATTAGGTACAGCAGCACCGCCCCTAAACCCGTCCGATGTGCTGCTATGCTGGGGAGTTGCCGCGGCTAGCAGCAGATGATTTATTAGGTC"/>
+    </data>
+
+    <run id="MCMC" spec="MCMC" chainLength="1000000" preBurnin="240">
+        <state id="State" spec="State">
+            <parameter id="rootLogRate" spec="parameter.RealParameter" name="stateNode">0.3090175042562903</parameter>
+            <parameter id="sigma2" spec="parameter.RealParameter" lower="0.0" name="stateNode">0.08078527702264521</parameter>
+            <parameter id="lambda" spec="parameter.RealParameter" lower="0.0" name="stateNode">6.05409920889121</parameter>
+            <stateNode id="psi" spec="beast.base.evolution.tree.TreeParser" IsLabelledNewick="true" newick="((((3:0.05014144260036833,(6:0.01242080114654661,7:0.01242080114654661):0.03772064145382172):0.02906886241565379,4:0.07921030501602212):0.11209687395754674,(2:0.06766965036740841,0:0.06766965036740841):0.12363752860616045):0.025292897484472388,(1:0.08920409104053073,5:0.08920409104053073):0.12739598541751052):0.0;">
+                <taxonset id="TaxonSet" spec="TaxonSet">
+                    <taxon id="0" spec="Taxon"/>
+                    <taxon id="1" spec="Taxon"/>
+                    <taxon id="2" spec="Taxon"/>
+                    <taxon id="3" spec="Taxon"/>
+                    <taxon id="4" spec="Taxon"/>
+                    <taxon id="5" spec="Taxon"/>
+                    <taxon id="6" spec="Taxon"/>
+                    <taxon id="7" spec="Taxon"/>
+                </taxonset>
+            </stateNode>
+            <parameter id="nodeLogRates" spec="parameter.RealParameter" dimension="14" name="stateNode">0.29289569275565686 0.22974254956460682 0.2110815097968346 0.2980034652373461 0.13187725270474088 0.06829170491691434 0.20389497237994875 0.2701909728781399 0.4587100019906896 0.5664579871198367 0.49405435633934347 0.16009163857312242 0.1923114693296593 0.037149687827135805</parameter>
+        </state>
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution id="YuleModel" spec="beast.base.evolution.speciation.YuleModel" birthDiffRate="@lambda" tree="@psi"/>
+                <distribution id="rootLogRate.prior" spec="distribution.Prior" x="@rootLogRate">
+                    <distr id="Normal" spec="distribution.Normal">
+                        <parameter id="RealParameter" spec="parameter.RealParameter" name="mean">0.0</parameter>
+                        <parameter id="RealParameter1" spec="parameter.RealParameter" name="sigma">0.3</parameter>
+                    </distr>
+                </distribution>
+                <distribution id="sigma2.prior" spec="distribution.Prior" x="@sigma2">
+                    <distr id="LogNormalDistributionModel" spec="distribution.LogNormalDistributionModel">
+                        <parameter id="RealParameter2" spec="parameter.RealParameter" name="M">0.0</parameter>
+                        <parameter id="RealParameter3" spec="parameter.RealParameter" name="S">1.0</parameter>
+                    </distr>
+                </distribution>
+                <distribution id="lambda.prior" spec="distribution.Prior" x="@lambda">
+                    <distr id="LogNormalDistributionModel1" spec="distribution.LogNormalDistributionModel">
+                        <parameter id="RealParameter4" spec="parameter.RealParameter" name="M">2.0</parameter>
+                        <parameter id="RealParameter5" spec="parameter.RealParameter" name="S">0.7</parameter>
+                    </distr>
+                </distribution>
+                <distribution id="AutoCorrPrior.658404420" spec="rc.beast.evolution.clockmodel.AutoCorrelatedPrior" nodeRates="@nodeLogRates" rootLogRate="@rootLogRate" sigma2="@sigma2" tree="@psi"/>
+            </distribution>
+            <distribution id="likelihood" spec="CompoundDistribution">
+                <distribution id="D.treeLikelihood" spec="ThreadedTreeLikelihood" tree="@psi" useAmbiguities="true">
+                    <data idref="D"/>
+                    <siteModel id="SiteModel" spec="SiteModel">
+                        <substModel id="JukesCantor" spec="JukesCantor"/>
+                    </siteModel>
+                    <branchRateModel id="AutoCorrClockModel.2108763062" spec="rc.beast.evolution.clockmodel.AutoCorrelatedClockModel" nodeRates="@nodeLogRates" rootLogRate="@rootLogRate" sigma2="@sigma2" tree="@psi">
+                        <parameter id="meanRate" spec="parameter.RealParameter" name="myMeanRate">1.0</parameter>
+                    </branchRateModel>
+                </distribution>
+            </distribution>
+        </distribution>
+        <operator id="lambda.scale" spec="kernel.BactrianScaleOperator" parameter="@lambda" upper="10.0" weight="1.0"/>
+        <operator id="nodeLogRates.scale" spec="kernel.BactrianScaleOperator" parameter="@nodeLogRates" upper="10.0" weight="6.342925711719625"/>
+        <operator id="psi.BICEPSEpochAll" spec="EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@psi" weight="1.624504792712471"/>
+        <operator id="psi.BICEPSEpochTop" spec="EpochFlexOperator" scaleFactor="0.1" tree="@psi" weight="1.0"/>
+        <operator id="psi.BICEPSTreeFlex" spec="TreeStretchOperator" scaleFactor="0.01" tree="@psi" weight="3.9045287771227217"/>
+        <operator id="psi.narrowExchange" spec="Exchange" tree="@psi" weight="3.9045287771227217"/>
+        <operator id="psi.rootAgeScale" spec="kernel.BactrianScaleOperator" rootOnly="true" tree="@psi" upper="0.975" weight="1.0"/>
+        <operator id="psi.subtreeSlide" spec="kernel.BactrianSubtreeSlide" size="0.021660007645804127" tree="@psi" weight="3.9045287771227217"/>
+        <operator id="psi.uniform" spec="kernel.BactrianNodeOperator" tree="@psi" weight="3.9045287771227217"/>
+        <operator id="psi.wideExchange" spec="Exchange" isNarrow="false" tree="@psi" weight="1.4757731615945522"/>
+        <operator id="psi.wilsonBalding" spec="WilsonBalding" tree="@psi" weight="1.4757731615945522"/>
+        <operator id="gompertzPopFuncUptreeDownOperator1" spec="operator.UpDownOperator" scaleFactor="0.75" weight="3.0">
+            <up idref="lambda"/>
+            <down idref="psi"/>
+        </operator>
+        <operator id="gompertzPopFuncUptreeDownOperator2" spec="operator.UpDownOperator" scaleFactor="0.75" weight="3.0">
+            <up idref="sigma2"/>
+            <down idref="psi"/>
+        </operator>
+        <operator id="rootLogRate.randomWalk" spec="operator.kernel.BactrianRandomWalkOperator" parameter="@rootLogRate" scaleFactor="0.75" weight="1.0"/>
+        <operator id="sigma2.scale" spec="kernel.BactrianScaleOperator" parameter="@sigma2" upper="10.0" weight="1.0"/>
+        <logger id="ScreenLogger" spec="Logger" logEvery="50000">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="rootLogRate"/>
+            <log idref="sigma2"/>
+            <log idref="lambda"/>
+            <log idref="nodeLogRates"/>
+        </logger>
+        <logger id="Logger" spec="Logger" fileName="autoCorrelatedClock.log" logEvery="500">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="rootLogRate"/>
+            <log idref="sigma2"/>
+            <log idref="lambda"/>
+            <log idref="nodeLogRates"/>
+            <log id="TreeStatLogger" spec="beast.base.evolution.tree.TreeStatLogger" tree="@psi"/>
+            <log idref="D.treeLikelihood"/>
+        </logger>
+        <logger id="TreeWithMetaDataLogger.psi" spec="Logger" fileName="autoCorrelatedClock_with_rates.trees" logEvery="500" mode="tree">
+            <log id="TreeWithMetaDataLogger" spec="beast.base.evolution.TreeWithMetaDataLogger" branchratemodel="@AutoCorrClockModel.2108763062" tree="@psi"/>
+        </logger>
+    </run>
+
+</beast>
+
