@@ -52,7 +52,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         for (int i = 0; i < cladeMRCAAge.value().length; i++) {
             if (rootAge != null && rootAge.value().doubleValue() < cladeMRCAAge.value()[i].doubleValue()) {
-                throw new IllegalArgumentException("The clade MARCA age shouldn't be smaller than the tree root age!");
+                throw new IllegalArgumentException("The clade MRCA age shouldn't be smaller than the tree root age!");
             }
         }
         this.rho = rho;
@@ -170,11 +170,8 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             maximalCalibrations.put(maximalCalibrationsEntries.get(i).getKey(), uniqueNames);
         }
 
-        List<TimeTreeNode> nodeList = new ArrayList<>(A.size());
         // pre-fill the list with nulls so it has actual elements at each index
-        for (int i = 0; i < A.size(); i++) {
-            nodeList.add(null);
-        }
+        List<TimeTreeNode> nodeList = new ArrayList<>((Collections.nCopies(A.size(), null)));
 
         for (int i = 0; i < maximalCalibrations.size(); i++) {
             TreeMap<Double, String[]> clade = new TreeMap<>();
