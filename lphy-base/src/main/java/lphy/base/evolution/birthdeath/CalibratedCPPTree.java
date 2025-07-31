@@ -4,6 +4,7 @@ import lphy.base.distribution.DistributionConstants;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.logger.LoggerUtils;
 import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
@@ -49,7 +50,9 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         if (cladeTaxa.value().length != cladeMRCAAge.value().length) {
             throw new IllegalArgumentException("The clade mrca age should correspond to the clade taxa!");
         }
-
+        if (rootAge != null & stemAge != null) {
+            LoggerUtils.log.warning("Stem age will be ignored when root age is provided.");
+        }
         for (int i = 0; i < cladeMRCAAge.value().length; i++) {
             if (rootAge != null && rootAge.value().doubleValue() < cladeMRCAAge.value()[i].doubleValue()) {
                 throw new IllegalArgumentException("The clade MRCA age shouldn't be smaller than the tree root age!");
@@ -79,30 +82,31 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         String[][] cladeTaxaNames = getCladeTaxa().value();
         Number[] cladeAges = getCladeMRCAAge().value();
 
-        // get valid clade calibrations
+        // step1: get valid clade calibrations
         TreeMap<Double, String[]> cladeCalibrations = new TreeMap<>();
         for (int i = 0; i< cladeTaxaNames.length; i++) {
             cladeCalibrations.put(cladeAges[i].doubleValue(), cladeTaxaNames[i]);
         }
 
-        // if there's only one calibration and it's the root
-        if (cladeTaxaNames.length == 1 && cladeTaxaNames[0].length == n){
-            // return to the normal CPP tree with fixed rootAge
-            if (getRootAge() != null && getRootAge().value().doubleValue() == getCladeMRCAAge().value()[0].doubleValue()) {
+        // directly return a cpp tree if root conditioned
+        // if the oldest calibration is root
+        if (cladeCalibrations.lastEntry().getValue().length == n) {
+            if (getRootAge() != null && ! cladeCalibrations.lastEntry().getKey().equals(getRootAge().value().doubleValue())) {
+                throw new IllegalArgumentException("The calibrated root age should be the same as the root age!");
+            }
+
+            // if only one calibration
+            if (cladeCalibrations.size() == 1) {
                 CPPTree cpp = new CPPTree(getBirthRate(), getDeathRate(), getSamplingProb(),
-                        new Value<>("", getCladeTaxa().value()[0]), getN(), getRootAge(), null);
+                        new Value<>("", getCladeTaxa().value()[0]), getN(), new Value<>("", getCladeMRCAAge().value()[0]), null);
                 tree = cpp.sample().value();
                 return new RandomVariable<>("", tree, this);
             } else {
-                throw new IllegalArgumentException("The root age should be the same as the clade mrca age when calibrating the root!");
+                cladeCalibrations.remove(cladeCalibrations.lastEntry().getKey());
             }
-
-        } else if (cladeTaxaNames.length > 1){
-            cladeCalibrations.remove(cladeCalibrations.lastEntry().getKey());
-        } else if (cladeTaxaNames.length == 0) {
-            throw new IllegalArgumentException("The clade taxa shouldn't be empty!");
         }
 
+        // step2: get all maximal calibration
         TreeMap<Double, String[]> maximalCalibrations = getMaximalCalibrations(cladeCalibrations);
 
         // map the taxa names for calibration clades
@@ -119,7 +123,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         // m = non-clade tips + clade roots
         int m = n - cladeSizes + maximalCalibrations.size();
 
-        // create A hodling indices of nodes as inactive nodes
+        /* initialise the lists
+            A : holding the indices of inactive nodes
+            l : holding the indices of active nodes
+            times : holding the times of internal nodes, the first element is root or stem age
+            nodeAges : holding the times for each node
+            nodeList : holding all nodes
+         */
         List<Integer> A = new ArrayList<>(m);
         for (int i = 0; i < m; i++) {
             A.add(i);
@@ -127,15 +137,20 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // initialise l store indices of nodes as activated nodes
         int[] l = new int[m];
-        List<Double> times = new ArrayList<>(Collections.nCopies(m, null));
+        List<Double> times = new ArrayList<>(Collections.nCopies(m, 0.0));
+        List<Double> nodeAges = new ArrayList<>(Collections.nCopies(m, 0.0));
+        List<TimeTreeNode> nodeList = new ArrayList<>((Collections.nCopies(A.size(), null)));
 
+        // step3: calculate condition age (root or stem age)
+        // if root age is provided, then condition on root
+        // if root age is not provided, then use stem age or sample one
         double conditionAge = 0.0;
-
-        if (rootAge != null) {
-            int ind = random.nextInt(m - 1) + 1;
-
-            if (m == 1){ // the second number
-                ind = 1;
+        if (getRootAge() != null) {
+            int ind;
+            if (m == 1){
+                ind = 0;
+            } else {
+                ind = random.nextInt(m - 1) + 1; // [1, m-1]
             }
             conditionAge = getRootAge().value().doubleValue();
             times.set(ind, conditionAge);
@@ -148,16 +163,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             }
         }
 
-        List<Double> nodeAges = new ArrayList<>(m);
-        for (int i = 0; i < m; i++) {
-            nodeAges.add(0.0);
-        }
-
+        // step4: build clades for each maximalCalibrations
         List<Map.Entry<Double, String[]>> maximalCalibrationsEntries = new ArrayList<>(maximalCalibrations.entrySet());
         List<Map.Entry<Double, String[]>> cladeCalibrationsEntries = new ArrayList<>(cladeCalibrations.entrySet());
         nameList = new ArrayList<>(n);
 
         // set name list
+        // TODO: check if name provided overlap the automatic names make them have prefix
         for (int i = 0; i< maximalCalibrations.size(); i++) {
             String[] uniqueNames = new String[maximalCalibrationsEntries.get(i).getValue().length];
             for (int j = 0; j< maximalCalibrationsEntries.get(i).getValue().length; j++) {
@@ -169,56 +181,66 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             }
             maximalCalibrations.put(maximalCalibrationsEntries.get(i).getKey(), uniqueNames);
         }
-
-        // pre-fill the list with nulls so it has actual elements at each index
-        List<TimeTreeNode> nodeList = new ArrayList<>((Collections.nCopies(A.size(), null)));
-
+        // loop through all maximalCalibrations
         for (int i = 0; i < maximalCalibrations.size(); i++) {
+            // step1: get subclades
+            // get the clade at index i
             TreeMap<Double, String[]> clade = new TreeMap<>();
             clade.put(maximalCalibrationsEntries.get(i).getKey(), maximalCalibrationsEntries.get(i).getValue());
+            // get nested clades
             TreeMap<Double, String[]> subClades = getNestedClades(clade, cladeCalibrations);
+            List<Map.Entry<Double, String[]>> subCladeEntries = new ArrayList<>(subClades.entrySet());
 
-            if (subClades.size() == 0){
-                subClades = clade;
-            }
-
+            // step2: get sampled element
             // calculate weight w
             double w = CDF(getBirthRate().value().doubleValue(), getDeathRate().value().doubleValue(), getSamplingProb().value().doubleValue(), conditionAge) -
                     CDF(getBirthRate().value().doubleValue(), getDeathRate().value().doubleValue(), getSamplingProb().value().doubleValue(), cladeCalibrationsEntries.get(i).getKey());
-
             // calculate score s for each node
             double[] s = calculateScore(A, m, times);
-
             // calculate weight for each node
             double[] weights = getWeights(s, w);
-
             if (A.size() == 1){
                 l[i] = A.get(0);
             } else {
                 // sample one element from A with probability weights
-                CPPUtils.sampleElement(A, weights, l, i);
+                l[i] = CPPUtils.sampleElement(A, weights, l, i);
             }
 
-            if (subClades.size() != 0) {
-                // simulate a tree for this clade
-                CalibratedCPPTree calibratedCPPTree = new CalibratedCPPTree(getBirthRate(), getDeathRate(), getSamplingProb(),
-                        new Value<>("", maximalCalibrationsEntries.get(i).getValue().length),
-                        new Value<>("", subClades.values().toArray(new String[0][])),
-                        new Value<>("", subClades.keySet().toArray(new Number[0])), null,
-                        new Value<>("", maximalCalibrationsEntries.get(i).getKey()),null);
-
-                // put clade mrca into a list waiting for assign
-                TimeTree subTree = calibratedCPPTree.sample().value();
-                nodeList.set(i, subTree.getRoot());
+            // step3: construct subtrees
+            // construct calibration clade leaf names
+            String[][] cladeNames = new String[subClades.size()][];
+            Double[] cladeMRCAAges = new Double[subClades.size()];
+            for (int j = 0; j < subClades.size(); j++) {
+                String[] taxa = subCladeEntries.get(j).getValue();
+                cladeNames[j] = new String[taxa.length];
+                for (int k = 0; k < taxa.length; k++) {
+                    cladeNames[j][k] = taxa[k];
+                }
+                cladeMRCAAges[j] = subCladeEntries.get(j).getKey();
             }
 
+            // simulate a tree for these clades, only offer calibrations
+            CalibratedCPPTree calibratedCPPTree = new CalibratedCPPTree(getBirthRate(),
+                    getDeathRate(), getSamplingProb(),
+                    new Value<>("", maximalCalibrationsEntries.get(i).getValue().length),
+                    new Value<>("", cladeNames),
+                    new Value<>("", cladeMRCAAges), null, null, null);
+
+            // put clade mrca into a list waiting for assign
+            TimeTree subTree = calibratedCPPTree.sample().value();
+            nodeList.set(i, subTree.getRoot());
+
+            // step4: assign unresolved node times for l[i]
+            // once done, remove l[i] from list A
             // deal with the nodes have l[i] still 0
-            if (times.get(l[i]) == null) {
+            if (times.get(l[i]) == 0) {
                 double time = CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
                 times.set(l[i],time);
             }
-            if ((l[i] < m) && (times.get(l[i] + 1) == null)) {
-                times.set(l[i] + 1, CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0]);
+
+            if ((l[i] < m -1 ) && (times.get(l[i] + 1) == 0)) {
+                double time = CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
+                times.set(l[i] + 1, time);
             }
 
             nodeAges.set(l[i], maximalCalibrationsEntries.get(i).getKey());
@@ -229,24 +251,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // after calibrations, sample times for remaining unassigned nodes
         for (int i = 0; i < times.size(); i++) {
-            if (times.get(i) == null) {
+            if (times.get(i) == 0) {
                 times.set(i, CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
             }
         }
 
         // set the first node to be the max, make it the root
-        if (times.size() > 1) {
-            double max = times.get(0);
-            for (int i = 0; i < times.size() ; i++) {
-                if (times.get(i) > max) {
-                    max = times.get(i);
-                }
-            }
-        }
-
-        if (rootAge != null) {
-            times.set(0, conditionAge); // Override if not root-conditioned
-        }
+        times.set(0, conditionAge); // set root or stem to be the first one
 
         // get non-clade taxa
         List<String> nonCladeTaxa = new ArrayList<>();
@@ -267,13 +278,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         Collections.shuffle(nonCladeTaxa);
 
         // Assign remaining uncalibrated taxa names to available node positions
-        for (int j = 0; j < nonCladeTaxa.size(); j++) {
-            for (int i = 0; i < nodeList.size(); i++) {
-                if (nodeList.get(i) == null){
-                    TimeTreeNode tip = new TimeTreeNode(0);
-                    tip.setId(nonCladeTaxa.get(j));
-                    nodeList.set(A.get(j), tip);
-                }
+        int ind = 0;
+        for (int i = 0; i < nodeList.size() && ind < nonCladeTaxa.size(); i++) {
+            if (nodeList.get(i) == null) {
+                TimeTreeNode tip = new TimeTreeNode(0);
+                tip.setId(nonCladeTaxa.get(ind));
+                nodeList.set(i, tip);
+                ind++;
             }
         }
 
@@ -329,11 +340,11 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             int nodeIndex = A.get(j); // or A[idx] if it's an array
             int count = 0;
             // Check if i < m and i+1 is within bounds
-            if (nodeIndex < m && (nodeIndex + 1) < times.size() && times.get(nodeIndex + 1) == null) {
+            if (nodeIndex < m && (nodeIndex + 1) < times.size() && times.get(nodeIndex + 1) == 0) {
                 count++;
             }
             // Check if nodeIndex is within bounds and times[i] == 0
-            if (nodeIndex < times.size() && times.get(nodeIndex) == null) {
+            if (nodeIndex < times.size() && times.get(nodeIndex) == 0) {
                 count++;
             }
             s[j] = count;
@@ -345,14 +356,20 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     private static double[] getWeights(double[] s, double w) {
         double sumOfWeights = 0;
         double[] weights = new double[s.length];
+
         for (int k = 0; k < s.length; k++) {
             weights[k] = Math.pow(w, s[k]);
             sumOfWeights += weights[k];
-            // normalise
+        }
+
+        // normalise weights
+        for (int k = 0; k < s.length; k++) {
             weights[k] /= sumOfWeights;
         }
+
         return weights;
     }
+
 
     public TreeMap<Double, String[]> getNestedClades(TreeMap<Double, String[]> clade, TreeMap<Double, String[]> cladeCalibrations) {
         boolean[] isNested = isSuperSetOf(clade,cladeCalibrations);

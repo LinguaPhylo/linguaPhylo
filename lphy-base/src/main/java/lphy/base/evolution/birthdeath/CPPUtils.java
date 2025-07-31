@@ -1,7 +1,9 @@
 package lphy.base.evolution.birthdeath;
 
+import lphy.base.distribution.Uniform;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
+import lphy.core.model.Value;
 
 import java.util.*;
 
@@ -113,7 +115,7 @@ public class CPPUtils {
         return times;
     }
 
-    public static void sampleElement(List<Integer> A, double[] weights, int[] l, int i) {
+    public static int sampleElement(List<Integer> A, double[] weights, int[] l, int i) {
         Random random = new Random();
         double prob = random.nextDouble(); // random number between 0 and 1
         double cumulative = 0.0;
@@ -124,6 +126,7 @@ public class CPPUtils {
                 break;
             }
         }
+        return l[i];
     }
 
 //    // TODO: what's returning here, what's calculating?
@@ -317,9 +320,12 @@ public class CPPUtils {
     // ****** tree methods ******
 
     public static double simRandomStem(double birthRate, double deathRate, double greaterThan, int nTaxa){
-        double Q = CPPUtils.Qdist(birthRate, deathRate, greaterThan, nTaxa);
-        double p = Math.random() * (1.0 - Q) + Q;
-        double t = CPPUtils.transform(p, birthRate, deathRate, nTaxa);
+        double Q = Qdist(birthRate, deathRate, greaterThan, nTaxa);
+
+        Uniform uniform = new Uniform(new Value<>("",Q), new Value<>("", 1));
+        double p = uniform.sample().value();
+
+        double t = transform(p, birthRate, deathRate, nTaxa);
         return t;
     }
 
