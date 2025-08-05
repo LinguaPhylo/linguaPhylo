@@ -235,7 +235,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
             // put clade mrca into a list waiting for assign
             TimeTree subTree = calibratedCPPTree.sample().value();
-            nodeList.set(i, subTree.getRoot());
+            nodeList.set(l[i], subTree.getRoot());
 
             // step4: assign unresolved node times for l[i]
             // once done, remove l[i] from list A
