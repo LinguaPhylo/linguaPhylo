@@ -1,0 +1,24 @@
+model {
+    λ ~ LogNormal(meanlog=2.0, sdlog=0.7);
+    ψ ~ Yule(lambda=λ, n=5);
+    σ2 ~ LogNormal(meanlog=0.0, sdlog=0.5);
+    rootLogRate ~ Normal(mean=0.0, sd=0.5);
+    nodeLogRates ~ AutoCorrelatedLogRates(tree=ψ, sigma2=σ2, rootLogRate=rootLogRate);
+    meanRate = 1.0;
+    doNormalize = false;
+    tOrder = 10;
+    branchRates = AutoCorrelatedClock(tree=ψ, nodeLogRates=nodeLogRates,sigma2=σ2, meanRate=meanRate,rootLogRate=rootLogRate,
+                                      normalize=doNormalize, taylorOrder=tOrder);
+    nchar = 200;
+    I_siteRates ~ Bernoulli(p=0.5);
+    I_pInv ~ Bernoulli(p=0.5);
+    pInv ~ Beta(alpha=1.0, beta=1.0);
+    siteRates ~ DiscretizeGamma(shape=0.5, ncat=4, replicates=nchar);
+    siteModel = bSiteModel(Q=jukesCantor(), siteRates=siteRates, pInv=pInv, useSiteRates=I_siteRates, usePInv=I_pInv);
+    D ~ PhyloCTMC( L = nchar, siteModel = siteModel,tree = ψ, branchRates = branchRates);
+
+
+    height = ψ.rootAge();
+    length = ψ.treeLength();
+
+}
