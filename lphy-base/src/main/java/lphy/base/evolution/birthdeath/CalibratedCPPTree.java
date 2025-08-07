@@ -165,7 +165,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             if (getStemAge()!= null) {
                 conditionAge = getStemAge().value().doubleValue();
             } else {
-                conditionAge = CPPUtils.simRandomStem(birthRate, deathRate, maximalCalibrations.firstEntry().getKey(), n);
+                conditionAge = simRandomStem(birthRate, deathRate, maximalCalibrations.firstEntry().getKey(), n);
             }
         }
 
@@ -210,7 +210,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 l[i] = A.get(0);
             } else {
                 // sample one element from A with probability weights
-                l[i] = CPPUtils.sampleElement(A, weights, l, i);
+                l[i] = sampleElement(A, weights, l, i);
             }
 
             // step3: construct subtrees
@@ -241,12 +241,12 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             // once done, remove l[i] from list A
             // deal with the nodes have l[i] still 0
             if (times.get(l[i]) == 0) {
-                double time = CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
+                double time = sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
                 times.set(l[i],time);
             }
 
             if ((l[i] < m -1 ) && (times.get(l[i] + 1) == 0)) {
-                double time = CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
+                double time = sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
                 times.set(l[i] + 1, time);
             }
 
@@ -256,10 +256,11 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             A.remove(Integer.valueOf(l[i]));
         }
 
+        // step5: organise times
         // after calibrations, sample times for remaining unassigned nodes
         for (int i = 0; i < times.size(); i++) {
             if (times.get(i) == 0) {
-                times.set(i, CPPUtils.sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
+                times.set(i, sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
             }
         }
 
@@ -278,6 +279,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             times.set(0, conditionAge);
         }
 
+        // step6: fill in nodelist
         // get non-clade taxa
         List<String> nonCladeTaxa = new ArrayList<>();
         int nameListSize = nameList.size();
@@ -307,6 +309,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             }
         }
 
+        // step7: coalesce
         // combine sub-CPPs into the final tree
         while (nodeList.size() > 1) {
             // start from the youngest node
@@ -420,7 +423,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         return maximalCalibrations;
     }
-
 
     @Override
     public Map<String, Value> getParams() {

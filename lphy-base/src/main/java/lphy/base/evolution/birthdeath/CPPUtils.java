@@ -46,8 +46,9 @@ public class CPPUtils {
         // Calculate the CDF value (Q)
         double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
 
-        // Random number generator
-        Random rand = new Random();
+        // uniform generator
+        Uniform uniformLower = new Uniform(new Value<>("", 0), new Value<>("", Q));
+        Uniform uniformHigher = new Uniform(new Value<>("", Q), new Value<>("", 1));
 
         // Array to store the result
         double[] results = new double[nSims];
@@ -56,9 +57,9 @@ public class CPPUtils {
         for (int i = 0; i < nSims; i++) {
             double p;
             if (lowerTail) {
-                p = rand.nextDouble() * Q;
+                p = uniformLower.sample().value();
             } else {
-                p = rand.nextDouble() * (1 - Q) + Q;
+                p = uniformHigher.sample().value();
             }
             results[i] = inverseCDF(birthRate, deathRate, samplingProbability,p);
         }
@@ -70,8 +71,8 @@ public class CPPUtils {
         // Calculate the CDF value (Q)
         double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
 
-        // Random number generator
-        Random rand = new Random();
+        // uniform generator
+        Uniform uniform = new Uniform(new Value<>("", 0), new Value<>("", Q));
 
         // Array to store the result
         double[] results = new double[nSims];
@@ -80,7 +81,7 @@ public class CPPUtils {
         for (int i = 0; i < nSims; i++) {
             double p;
             // default sample from [0,Q], lowerTail=True
-            p = rand.nextDouble() * Q;
+            p = uniform.sample().value();
 
             results[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
@@ -98,8 +99,8 @@ public class CPPUtils {
         double Qlower = CDF(birthRate, deathRate, samplingProbability, lowerTime);
         double Qupper = CDF(birthRate, deathRate, samplingProbability, upperTime);
 
-        // Random number generator
-        Random rand = new Random();
+        // uniform generator
+        Uniform uniform = new Uniform(new Value<>("", Qlower), new Value<>("", Qupper));
 
         // Array to store the result
         double[] times = new double[nSims];
@@ -107,7 +108,7 @@ public class CPPUtils {
         // Generate the samples
         for (int i = 0; i < nSims; i++) {
             // Generate a random probability between Qlower and Qupper
-            double p = rand.nextDouble() * (Qupper - Qlower) + Qlower;
+            double p = uniform.sample().value();
             // Use InverseCDF to get the sample time
             times[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
