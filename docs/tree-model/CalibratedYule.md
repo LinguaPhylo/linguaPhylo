@@ -23,5 +23,7 @@ The CalibratedYule method accepts one or more clade taxa and generates a tip-lab
 
 - calibratedYule.lphy
 
+### Reference
 
+Heled, J., & Drummond, A. J. (2012). Calibrated tree priors for relaxed phylogenetics and divergence time estimation. Systematic biology, 61(1), 138–149. https://doi.org/10.1093/sysbio/syr087[http://doi.org/10.1093/sysbio/syr087](http://doi.org/10.1093/sysbio/syr087)
 

@@ -16,9 +16,7 @@ import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.FastMath;
 
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Extract Alexei's code shared by {@link PhyloCTMC} and {@link PhyloCTMCSiteModel}
@@ -110,7 +108,7 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         idMap.clear();
         // if internal nodes have id, then simulate sequences,
         // otherwise only sequences on tips.
-        fillIdMap(tree.value().getRoot(), idMap);
+        fillIdMap(tree.value(), idMap);
 
         Double[][] Qm = getQ();
         if (Qm == null)
@@ -252,23 +250,59 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         return new Value<>(null, freqs);
     }
 
-    private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap) {
+    private boolean isValidIntegers(Map<String, Integer> idMap) {
+        Collection<Integer> indices = idMap.values();
+
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        for (Integer i : indices) {
+            if (i < min) min = i;
+            if (i > max) max = i;
+        }
+
+        return (min == 0) && (max == idMap.size()-1);
+    }
+
+    private int nextValue(SortedMap<String, Integer> idMap) {
+        int nextValue = 0;
+        for (Integer j : idMap.values()) {
+            if (j >= nextValue) nextValue = j + 1;
+        }
+        return nextValue;
+    }
+
+    private void fillIdMap(TimeTree tree, SortedMap<String, Integer> idMap) {
+        fillIdMap(tree.getRoot(), idMap, true);
+        if (!isValidIntegers(idMap)) {
+            idMap.clear();
+            fillIdMap(tree.getRoot(), idMap, false);
+        }
+    }
+
+    private void fillIdMap(TimeTreeNode node, SortedMap<String, Integer> idMap, boolean parseIntegers) {
         // if internal nodes have id, then simulate sequences, otherwise only sequences on tips.
         if (node.isLeaf() || node.getId() != null) {
-            Integer i = idMap.get(node.getId());
-            if (i == null) {
-                int nextValue = 0;
-                for (Integer j : idMap.values()) {
-                    if (j >= nextValue) nextValue = j + 1;
+
+            Integer id = idMap.get(node.getId());
+            if (id == null) {
+                if (parseIntegers) {
+                    try {
+                        id = Integer.parseInt(node.getId());
+                    } catch (NumberFormatException ignored) {
+                        id = nextValue(idMap);
+                    }
+                } else {
+                    id = nextValue(idMap);
                 }
-                idMap.put(node.getId(), nextValue);
-                node.setLeafIndex(nextValue);
+                idMap.put(node.getId(), id);
+                node.setLeafIndex(id);
             } else {
-                node.setLeafIndex(i);
+                node.setLeafIndex(id);
             }
         }
         for (TimeTreeNode child : node.getChildren()) {
-            fillIdMap(child, idMap);
+            fillIdMap(child, idMap, parseIntegers);
         }
 
     }

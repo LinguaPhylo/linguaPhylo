@@ -1,16 +1,17 @@
-expansionPopFunc function
+ExpansionPopFunc function
 =========================
-expansionPopFunc([Double](../types/Double.md) **N0**, [Double](../types/Double.md) **tau**, [Double](../types/Double.md) **r**, [Double](../types/Double.md) **NC**)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ExpansionPopFunc([Double](../types/Double.md) **NA**, [Double](../types/Double.md) **r**, [Double](../types/Double.md) **NC**, [Double](../types/Double.md) **x**, [Integer](../types/Integer.md) **I_na**)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Models population growth using a piecewise exponential growth function.
+Models population using a piecewise constant-exponential function with optional NA and I_na.
 
 ### Parameters
 
-- [Double](../types/Double.md) **N0** - Initial population size before tau.
-- [Double](../types/Double.md) **tau** - Time before which population size is constant at N0.
-- [Double](../types/Double.md) **r** - The exponential growth rate.
-- [Double](../types/Double.md) **NC** - Current population size after time x.
+- [Double](../types/Double.md) **NA** - Ancestral population size.
+- [Double](../types/Double.md) **r** - Exponential decay rate.
+- [Double](../types/Double.md) **NC** - Population size for [0, x].
+- [Double](../types/Double.md) **x** - Time boundary x.
+- [Integer](../types/Integer.md) **I_na** - Indicator for NA usage (0 or 1).
 
 ### Return type
 
