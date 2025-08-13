@@ -14,6 +14,7 @@ module lphy.core {
     requires transitive commons.math3;
 
     requires transitive info.picocli;
+    requires transitive lphy.phylospec;
 
     // graphical model
     exports lphy.core.model;
