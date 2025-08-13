@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PhyloSpec New Types in LPhy Schema",
+  "description": "Machine-readable definitions of the PhyloSpec new type system in LPhy",
+  "version": "1.0.0",
+  "restrictedTypes": [
+    {
+      "name": "BoundedReal",
+      "baseType": "Real",
+      "description": "Real number with bound",
+      "constraints": [
+        {
+          "type": "Upper",
+          "description": "The upper bound of the number, default to Inf"
+        },
+        {
+          "type": "Lower",
+          "description": "The lower bound of the number, default to -Inf"
+        },
+        {
+          "type": "UpperInclusive",
+          "description": "whether to equal upper bound, default to false"
+        },
+        {
+          "type": "LowerInclusive",
+          "description": "whether to equal lower bound, default to false"
+        },
+        {
+          "type": "Finite"
+        }
+      ]
+    },
+    {
+      "name": "BoundedInteger",
+      "baseType": "Integer",
+      "description": "Integer number with bound",
+      "constraints": [
+        {
+          "type": "Upper",
+          "description": "The upper bound of the number, default to Inf"
+        },
+        {
+          "type": "Lower",
+          "description": "The lower bound of the number, default to -Inf"
+        },
+        {
+          "type": "UpperInclusive",
+          "description": "whether to equal upper bound, default to false"
+        },
+        {
+          "type": "LowerInclusive",
+          "description": "whether to equal lower bound, default to false"
+        },
+        {
+          "type": "WholeNumber"
+        }
+      ]
+    }
+  ]
+}

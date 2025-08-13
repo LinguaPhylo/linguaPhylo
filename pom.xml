@@ -22,6 +22,7 @@
     </properties>
 
     <modules>
+        <module>lphy-phylospec</module>
         <module>lphy</module>
         <module>lphy-base</module>
         <module>lphy-studio</module>
