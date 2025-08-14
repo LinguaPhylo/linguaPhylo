@@ -4,14 +4,17 @@ import lphy.core.logger.LoggerUtils;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.BooleanArrayValue;
-import lphy.core.model.datatype.DoubleArrayValue;
 import lphy.core.model.datatype.IntegerArrayValue;
+import lphy.core.model.datatype.RealArrayValue;
 import lphy.core.model.datatype.StringArrayValue;
 import lphy.core.parser.graphicalmodel.GraphicalModel;
 import lphy.core.vectorization.operation.ElementsAt;
 import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
 import lphy.core.vectorization.operation.SliceDoubleArray;
+import org.phylospec.types.Bool;
+import org.phylospec.types.Int;
+import org.phylospec.types.Real;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -58,7 +61,7 @@ public class Var {
      */
     public static DeterministicFunction getIndexedValue(Value array, RangeList rangeList) {
 
-        if (array.value() instanceof Double[]) {
+        if (array.value() instanceof Real[]) {
             if (rangeList.isRange()) {
                 Range range = (Range) rangeList.getRangeElement(0);
                 return new SliceDoubleArray(range.start(), range.end(), array);
@@ -70,7 +73,7 @@ public class Var {
             }
         }
 
-        Value<Integer[]> indices = rangeList.apply();
+        Value<Int[]> indices = rangeList.apply();
 
         return new ElementsAt(indices, array);
     }
@@ -91,7 +94,8 @@ public class Var {
             return value;
         }
 
-        List<Integer> range = Arrays.asList(rangeList.apply().value());
+        Int[] intArr = rangeList.apply().value();
+        List<Integer> range = Arrays.stream(intArr).map(Int::getPrimitive).toList();
 
         // get max index
         int max = max(range);
@@ -135,6 +139,9 @@ public class Var {
             // if this is a new value to be constructed
             // generic support for array creation
             if (value.value().getClass().isArray()) {
+
+                //TODO
+
                 Object sourceArray = value.value();
 
                 Object destinationArray = Array.newInstance(sourceArray.getClass().getComponentType(), max + 1);
@@ -144,12 +151,12 @@ public class Var {
                     Array.set(destinationArray, index, Array.get(sourceArray, i));
                 }
                 Value v;
-                if (destinationArray instanceof Double[]) {
-                    v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
-                } else if (destinationArray instanceof Integer[]) {
-                    v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
-                } else if (destinationArray instanceof Boolean[]) {
-                    v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
+                if (destinationArray instanceof Real[]) {
+                    v = new RealArrayValue(id, (Real[]) destinationArray, function);
+                } else if (destinationArray instanceof Int[]) {
+                    v = new IntegerArrayValue(id, (Int[]) destinationArray, function);
+                } else if (destinationArray instanceof Bool[]) {
+                    v = new BooleanArrayValue(id, (Bool[]) destinationArray, function);
                 } else if (destinationArray instanceof String[]) {
                     v = new StringArrayValue(id, (String[]) destinationArray, function);
                 } else {
@@ -168,12 +175,12 @@ public class Var {
                     Array.set(destinationArray, index, sourceValue);
                 }
                 Value v = null;
-                if (destinationArray instanceof Double[]) {
-                    v = new DoubleArrayValue(id, (Double[]) destinationArray, function);
+                if (destinationArray instanceof Real[]) {
+                    v = new RealArrayValue(id, (Real[]) destinationArray, function);
                 } else if (destinationArray instanceof Integer[]) {
-                    v = new IntegerArrayValue(id, (Integer[]) destinationArray, function);
+                    v = new IntegerArrayValue(id, (Int[]) destinationArray, function);
                 } else if (destinationArray instanceof Boolean[]) {
-                    v = new BooleanArrayValue(id, (Boolean[]) destinationArray, function);
+                    v = new BooleanArrayValue(id, (Bool[]) destinationArray, function);
                 } else if (destinationArray instanceof String[]) {
                     v = new StringArrayValue(id, (String[]) destinationArray, function);
                 } else {

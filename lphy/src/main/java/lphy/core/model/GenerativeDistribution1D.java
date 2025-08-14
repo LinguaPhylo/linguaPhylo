@@ -5,11 +5,11 @@ package lphy.core.model;
  * For example, lphy.base.distributions.ExpMarkovChain requires
  * 1-d prior at first value.
  */
-public interface GenerativeDistribution1D<T> extends GenerativeDistribution<T> {
+public interface GenerativeDistribution1D<T,S> extends GenerativeDistribution<T> {
 
     /**
      * @return a two-dimensional array containing the lower and the upper bounds of the domain
      */
-    T[] getDomainBounds();
+    S[] getDomainBounds();
 
 }

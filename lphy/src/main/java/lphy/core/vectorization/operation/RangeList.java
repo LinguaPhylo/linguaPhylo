@@ -6,12 +6,13 @@ import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.IntegerArrayValue;
+import org.phylospec.types.Int;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RangeList extends DeterministicFunction<Integer[]> {
+public class RangeList extends DeterministicFunction<Int[]> {
 
     List<GraphicalModelNode> rangeElements = new ArrayList<>();
 
@@ -19,7 +20,7 @@ public class RangeList extends DeterministicFunction<Integer[]> {
         int arg = 0;
         for (GraphicalModelNode node : rangeElements) {
             Object value = node.value();
-            if (value instanceof Integer || value instanceof Integer[]) {
+            if (value instanceof Int || value instanceof Int[]) {
                 this.rangeElements.add(node);
                 if (node instanceof Value) {
                     setInput(arg + "", (Value)node );
@@ -38,16 +39,16 @@ public class RangeList extends DeterministicFunction<Integer[]> {
             "Boundaries are included.")
     public IntegerArrayValue apply() {
 
-        List<Integer> indices = new ArrayList<>();
+        List<Int> indices = new ArrayList<>();
         for (GraphicalModelNode node : rangeElements) {
             Object value = node.value();
-            if (value instanceof Integer) {
-                indices.add((Integer)value);
-            } else {
-                indices.addAll(Arrays.asList((Integer[])value));
+            if (value instanceof Int intVal) {
+                indices.add(intVal);
+            } else if (value instanceof Int[] intArr) {
+                indices.addAll(Arrays.asList(intArr));
             }
         }
-        return new IntegerArrayValue(null, indices.toArray(new Integer[0]), this);
+        return new IntegerArrayValue(null, indices.toArray(new Int[0]), this);
     }
 
     public boolean isRange() {

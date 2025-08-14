@@ -3,27 +3,28 @@ package lphy.core.vectorization.array;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.IntegerArray2DValue;
+import org.phylospec.types.Int;
 
-public class IntegerArray2D extends ArrayFunction<Integer[][]> {
+public class IntegerArray2D extends ArrayFunction<Int[][]> {
 
-    Value<Integer[]>[] x;
+    Value<Int[]>[] x;
 
-    public IntegerArray2D(Value<Integer[]>... x) {
+    public IntegerArray2D(Value<Int[]>... x) {
         this.x = x;
         super.setInput(x);
     }
 
     @GeneratorInfo(name = "integerArray", description = "The constructor function for a 2d array of integers.")
-    public Value<Integer[][]> apply() {
+    public Value<Int[][]> apply() {
 
-        Integer[][] values = new Integer[x.length][];
+        Int[][] values = new Int[x.length][];
 
         for (int i = 0; i < x.length; i++) {
             if (x[i] != null) // handle null
                 values[i] = x[i].value();
         }
 
-        return new IntegerArray2DValue(null, values, this);
+        return new IntegerArray2DValue(null,values, this);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class IntegerArray2D extends ArrayFunction<Integer[][]> {
     }
 
     @Override
-    public Value<Integer[]>[] getValues() {
+    public Value<Int[]>[] getValues() {
         return x;
     }
 }

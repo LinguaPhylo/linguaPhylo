@@ -21,6 +21,12 @@ import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.phylospec.types.Bool;
+import org.phylospec.types.Int;
+import org.phylospec.types.Real;
+import org.phylospec.types.impl.BoolImpl;
+import org.phylospec.types.impl.IntImpl;
+import org.phylospec.types.impl.RealImpl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -165,7 +171,8 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             String text = ctx.getText();
 //            try {
             double d = Double.parseDouble(text);
-            return new DoubleValue(null, d);
+            Real realImpl = new RealImpl(d);
+            return new RealValue(null, realImpl);
 //            } catch (NumberFormatException e) {
             //TODO better Exception?
 //            }
@@ -178,7 +185,8 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                long aLong = Long.parseLong(text);
             // TODO: should be a LongValue?
             int i = Integer.parseInt(text);
-            return new IntegerValue(null, i); // (int) aLong
+            Int intImpl = new IntImpl(i);
+            return new IntegerValue(null, intImpl); // (int) aLong
 //            } catch (NumberFormatException e) {
             //TODO better Exception?
 //            }
@@ -188,7 +196,8 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         public Object visitBooleanLiteral(BooleanLiteralContext ctx) {
             String text = ctx.getText();
             boolean bool = Boolean.parseBoolean(text);
-            return new BooleanValue(null, bool);
+            Bool boolImpl = new BoolImpl(bool);
+            return new BooleanValue(null, boolImpl);
         }
 
         /**

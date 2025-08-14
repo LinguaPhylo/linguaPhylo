@@ -3,6 +3,8 @@ package lphy.core.parser.function;
 import lphy.core.model.GraphicalModelNode;
 import lphy.core.model.Value;
 import lphy.core.model.datatype.*;
+import org.phylospec.types.Bool;
+import org.phylospec.types.Int;
 
 import java.util.function.BiFunction;
 
@@ -21,21 +23,21 @@ public interface ElementWise2Args<R,S> {
 	static ElementWise2Args<Value<Object>, Value<Object>> elementWiseOO() {
 		return (a,b,o) -> {
 			Object result = o.apply(a.value(), b.value());
-			if (result instanceof Boolean rB)
+			if (result instanceof Bool rB)
 				// the logical operators
 				return new BooleanValue(null, rB);
-			else if (result instanceof Integer rI) {
+			else if (result instanceof Int rI) {
 				return new IntegerValue(null, rI);
-			} else if (result instanceof Number) {
-				if ( a.value() instanceof Integer && b.value() instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer r = ((Number)result).intValue();
-					return new IntegerValue(null, r);
-				} else {
-					// default to double
-					Double r = ((Number)result).doubleValue();
-					return new DoubleValue(null, r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( a.value() instanceof Int && b.value() instanceof Int ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Int r = ((Number)result).intValue();
+//					return new IntegerValue(null, r);
+//				} else {
+//					// default to double
+//					Double r = ((Number)result).doubleValue();
+//					return new DoubleValue(null, r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -55,34 +57,34 @@ public interface ElementWise2Args<R,S> {
 			Object[] vb = b.value();
 			// check types
 			Object result = o.apply(va, vb[0]);
-			if (result instanceof Boolean) {
-				Boolean[] r = new Boolean[vb.length];
+			if (result instanceof Bool) {
+				Bool[] r = new Bool[vb.length];
 				for (int i = 0; i < vb.length; i++) {
-					r[i] = (Boolean) o.apply(va, vb[i]);
+					r[i] = (Bool) o.apply(va, vb[i]);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[] r = new Integer[vb.length];
+			} else if (result instanceof Int) {
+				Int[] r = new Int[vb.length];
 				for (int i = 0; i < vb.length; i++) {
-					r[i] = (Integer) o.apply(va, vb[i]);
+					r[i] = (Int) o.apply(va, vb[i]);
 				}
 				return new IntegerArrayValue("", r);
-			} else if (result instanceof Number) {
-				if ( va instanceof Integer && vb[0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[] r = new Integer[vb.length];
-					for (int i = 0; i < vb.length; i++) {
-						r[i] = ((Number) o.apply(va, vb[i])).intValue();
-					}
-					return new IntegerArrayValue(null, r);
-				} else {
-					// default to double
-					Double[] r = new Double[vb.length];
-					for (int i = 0; i < vb.length; i++) {
-						r[i] = (Double) o.apply(va, vb[i]);
-					}
-					return new DoubleArrayValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va instanceof Integer && vb[0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[] r = new Integer[vb.length];
+//					for (int i = 0; i < vb.length; i++) {
+//						r[i] = ((Number) o.apply(va, vb[i])).intValue();
+//					}
+//					return new IntegerArrayValue(null, r);
+//				} else {
+//					// default to double
+//					Double[] r = new Double[vb.length];
+//					for (int i = 0; i < vb.length; i++) {
+//						r[i] = (Double) o.apply(va, vb[i]);
+//					}
+//					return new DoubleArrayValue("", r);
+//				}
 			} else {
 					throw new UnsupportedOperationException("Unsupported result type " +
 							result.getClass().getName());
@@ -102,34 +104,34 @@ public interface ElementWise2Args<R,S> {
 			Object vb = b.value();
 			// check types
 			Object result = o.apply(va[0], vb);
-			if (result instanceof Boolean) {
-				Boolean[] r = new Boolean[va.length];
+			if (result instanceof Bool) {
+				Bool[] r = new Bool[va.length];
 				for (int i = 0; i < va.length; i++) {
-					r[i] = (Boolean) o.apply(va[i], vb);
+					r[i] = (Bool) o.apply(va[i], vb);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[] r = new Integer[va.length];
+			} else if (result instanceof Int) {
+				Int[] r = new Int[va.length];
 				for (int i = 0; i < va.length; i++) {
-					r[i] = (Integer) o.apply(va[i], vb);
+					r[i] = (Int) o.apply(va[i], vb);
 				}
 				return new IntegerArrayValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0] instanceof Integer && vb instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[] r = new Integer[va.length];
-					for (int i = 0; i < va.length; i++) {
-						r[i] = ((Number) o.apply(va[i], vb)).intValue();
-					}
-					return new IntegerArrayValue(null, r);
-				} else {
-					// default to double
-					Double[] r = new Double[va.length];
-					for (int i = 0; i < va.length; i++) {
-						r[i] = (Double) o.apply(va[i], vb);
-					}
-					return new DoubleArrayValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0] instanceof Integer && vb instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[] r = new Integer[va.length];
+//					for (int i = 0; i < va.length; i++) {
+//						r[i] = ((Number) o.apply(va[i], vb)).intValue();
+//					}
+//					return new IntegerArrayValue(null, r);
+//				} else {
+//					// default to double
+//					Double[] r = new Double[va.length];
+//					for (int i = 0; i < va.length; i++) {
+//						r[i] = (Double) o.apply(va[i], vb);
+//					}
+//					return new DoubleArrayValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -152,34 +154,34 @@ public interface ElementWise2Args<R,S> {
 						"both vectors have the same length ! " + va.length + " != " + vb.length);
 			// check types
 			Object result = o.apply(va[0], vb[0]);
-			if (result instanceof Boolean) {
-				Boolean[] r = new Boolean[va.length];
+			if (result instanceof Bool) {
+				Bool[] r = new Bool[va.length];
 				for (int i = 0; i < va.length; i++) {
-					r[i] = (Boolean) o.apply(va[i], vb[i]);
+					r[i] = (Bool) o.apply(va[i], vb[i]);
 				}
 				return new BooleanArrayValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[] r = new Integer[va.length];
+			} else if (result instanceof Int) {
+				Int[] r = new Int[va.length];
 				for (int i = 0; i < va.length; i++) {
-					r[i] = (Integer) o.apply(va[i], vb[i]);
+					r[i] = (Int) o.apply(va[i], vb[i]);
 				}
 				return new IntegerArrayValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0] instanceof Integer && vb[0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[] r = new Integer[va.length];
-					for (int i = 0; i < va.length; i++) {
-						r[i] = ((Number) o.apply(va[i], vb[i])).intValue();
-					}
-					return new IntegerArrayValue(null, r);
-				} else {
-					// default to double
-					Double[] r = new Double[va.length];
-					for (int i = 0; i < va.length; i++) {
-						r[i] = (Double) o.apply(va[i], vb[i]);
-					}
-					return new DoubleArrayValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0] instanceof Integer && vb[0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[] r = new Integer[va.length];
+//					for (int i = 0; i < va.length; i++) {
+//						r[i] = ((Number) o.apply(va[i], vb[i])).intValue();
+//					}
+//					return new IntegerArrayValue(null, r);
+//				} else {
+//					// default to double
+//					Double[] r = new Double[va.length];
+//					for (int i = 0; i < va.length; i++) {
+//						r[i] = (Double) o.apply(va[i], vb[i]);
+//					}
+//					return new DoubleArrayValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -198,42 +200,42 @@ public interface ElementWise2Args<R,S> {
 			Object va = a.value();
 			Object[][] vb = b.value();
 			Object result = o.apply(va, vb[0][0]);
-			if (result instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
+			if (result instanceof Bool) {
+				Bool[][] r = new Bool[vb.length][vb[0].length];
 				for (int i = 0; i < vb.length; i++) {
 					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va, vb[i][j]);
+						r[i][j] = (Bool) o.apply(va, vb[i][j]);
 					}
 				}
 				return new BooleanArray2DValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[][] r = new Integer[vb.length][vb[0].length];
+			} else if (result instanceof Int) {
+				Int[][] r = new Int[vb.length][vb[0].length];
 				for (int i = 0; i < vb.length; i++) {
 					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Integer) o.apply(va, vb[i][j]);
+						r[i][j] = (Int) o.apply(va, vb[i][j]);
 					}
 				}
 				return new IntegerArray2DValue("", r);
-			} else if (result instanceof Number) {
-				if ( va instanceof Integer && vb[0][0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[][] r = new Integer[vb.length][vb[0].length];
-					for (int i = 0; i < vb.length; i++) {
-						for (int j = 0; j < vb[i].length; j++) {
-							r[i][j] = ((Number) o.apply(va, vb[i][j])).intValue();
-						}
-					}
-					return new IntegerArray2DValue(null, r);
-				} else {
-					// default to double
-					Double[][] r = new Double[vb.length][vb[0].length];
-					for (int i = 0; i < vb.length; i++) {
-						for (int j = 0; j < vb[i].length; j++) {
-							r[i][j] = (Double) o.apply(va, vb[i][j]);
-						}
-					}
-					return new DoubleArray2DValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va instanceof Integer && vb[0][0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[][] r = new Integer[vb.length][vb[0].length];
+//					for (int i = 0; i < vb.length; i++) {
+//						for (int j = 0; j < vb[i].length; j++) {
+//							r[i][j] = ((Number) o.apply(va, vb[i][j])).intValue();
+//						}
+//					}
+//					return new IntegerArray2DValue(null, r);
+//				} else {
+//					// default to double
+//					Double[][] r = new Double[vb.length][vb[0].length];
+//					for (int i = 0; i < vb.length; i++) {
+//						for (int j = 0; j < vb[i].length; j++) {
+//							r[i][j] = (Double) o.apply(va, vb[i][j]);
+//						}
+//					}
+//					return new DoubleArray2DValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -252,42 +254,42 @@ public interface ElementWise2Args<R,S> {
 			Object[][] va = a.value();
 			Object vb = b.value();
 			Object result = o.apply(va[0][0], vb);
-			if (result instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
+			if (result instanceof Bool) {
+				Bool[][] r = new Bool[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[i][j], vb);
+						r[i][j] = (Bool) o.apply(va[i][j], vb);
 					}
 				}
 				return new BooleanArray2DValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[][] r = new Integer[va.length][va[0].length];
+			} else if (result instanceof Int) {
+				Int[][] r = new Int[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Integer) o.apply(va[i][j], vb);
+						r[i][j] = (Int) o.apply(va[i][j], vb);
 					}
 				}
 				return new IntegerArray2DValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0][0] instanceof Integer && vb instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[][] r = new Integer[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = ((Number) o.apply(va[i][j], vb)).intValue();
-						}
-					}
-					return new IntegerArray2DValue(null, r);
-				} else {
-					// default to double
-					Double[][] r = new Double[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = (Double) o.apply(va[i][j], vb);
-						}
-					}
-					return new DoubleArray2DValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0][0] instanceof Integer && vb instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[][] r = new Integer[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = ((Number) o.apply(va[i][j], vb)).intValue();
+//						}
+//					}
+//					return new IntegerArray2DValue(null, r);
+//				} else {
+//					// default to double
+//					Double[][] r = new Double[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = (Double) o.apply(va[i][j], vb);
+//						}
+//					}
+//					return new DoubleArray2DValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -314,42 +316,42 @@ public interface ElementWise2Args<R,S> {
 						"the number of columns of 2D ! " + va.length + " != " + vb.length);
 			// check types
 			Object result = o.apply(va[0], vb[0][0]);
-			if (result instanceof Boolean) {
-				Boolean[][] r = new Boolean[vb.length][vb[0].length];
+			if (result instanceof Bool) {
+				Bool[][] r = new Bool[vb.length][vb[0].length];
 				for (int i = 0; i < vb.length; i++) {
 					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[j], vb[i][j]);
+						r[i][j] = (Bool) o.apply(va[j], vb[i][j]);
 					}
 				}
 				return new BooleanArray2DValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[][] r = new Integer[vb.length][vb[0].length];
+			} else if (result instanceof Int) {
+				Int[][] r = new Int[vb.length][vb[0].length];
 				for (int i = 0; i < vb.length; i++) {
 					for (int j = 0; j < vb[i].length; j++) {
-						r[i][j] = (Integer) o.apply(va[j], vb[i][j]);
+						r[i][j] = (Int) o.apply(va[j], vb[i][j]);
 					}
 				}
 				return new IntegerArray2DValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0] instanceof Integer && vb[0][0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[][] r = new Integer[vb.length][vb[0].length];
-					for (int i = 0; i < vb.length; i++) {
-						for (int j = 0; j < vb[i].length; j++) {
-							r[i][j] = ((Number) o.apply(va[j], vb[i][j])).intValue();
-						}
-					}
-					return new IntegerArray2DValue(null, r);
-				} else {
-					// default to double
-					Double[][] r = new Double[vb.length][vb[0].length];
-					for (int i = 0; i < vb.length; i++) {
-						for (int j = 0; j < vb[i].length; j++) {
-							r[i][j] = (Double) o.apply(va[j], vb[i][j]);
-						}
-					}
-					return new DoubleArray2DValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0] instanceof Integer && vb[0][0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[][] r = new Integer[vb.length][vb[0].length];
+//					for (int i = 0; i < vb.length; i++) {
+//						for (int j = 0; j < vb[i].length; j++) {
+//							r[i][j] = ((Number) o.apply(va[j], vb[i][j])).intValue();
+//						}
+//					}
+//					return new IntegerArray2DValue(null, r);
+//				} else {
+//					// default to double
+//					Double[][] r = new Double[vb.length][vb[0].length];
+//					for (int i = 0; i < vb.length; i++) {
+//						for (int j = 0; j < vb[i].length; j++) {
+//							r[i][j] = (Double) o.apply(va[j], vb[i][j]);
+//						}
+//					}
+//					return new DoubleArray2DValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -376,42 +378,42 @@ public interface ElementWise2Args<R,S> {
 						"the number of columns of 2D ! " + va.length + " != " + vb.length);
 			// check types
 			Object result = o.apply(va[0][0], vb[0]);
-			if (result instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
+			if (result instanceof Bool) {
+				Bool[][] r = new Bool[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[i][j], vb[j]);
+						r[i][j] = (Bool) o.apply(va[i][j], vb[j]);
 					}
 				}
 				return new BooleanArray2DValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[][] r = new Integer[va.length][va[0].length];
+			} else if (result instanceof Int) {
+				Int[][] r = new Int[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Integer) o.apply(va[i][j], vb[j]);
+						r[i][j] = (Int) o.apply(va[i][j], vb[j]);
 					}
 				}
 				return new IntegerArray2DValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0][0] instanceof Integer && vb[0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[][] r = new Integer[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = ((Number) o.apply(va[i][j], vb[j])).intValue();
-						}
-					}
-					return new IntegerArray2DValue(null, r);
-				} else {
-					// default to double
-					Double[][] r = new Double[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = (Double) o.apply(va[i][j], vb[j]);
-						}
-					}
-					return new DoubleArray2DValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0][0] instanceof Integer && vb[0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[][] r = new Integer[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = ((Number) o.apply(va[i][j], vb[j])).intValue();
+//						}
+//					}
+//					return new IntegerArray2DValue(null, r);
+//				} else {
+//					// default to double
+//					Double[][] r = new Double[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = (Double) o.apply(va[i][j], vb[j]);
+//						}
+//					}
+//					return new DoubleArray2DValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());
@@ -435,42 +437,42 @@ public interface ElementWise2Args<R,S> {
 						va.length + " != " + vb.length + " or " + va[0].length + " != " + vb[0].length);
 			// check types
 			Object result = o.apply(va[0][0], vb[0][0]);
-			if (result instanceof Boolean) {
-				Boolean[][] r = new Boolean[va.length][va[0].length];
+			if (result instanceof Bool) {
+				Bool[][] r = new Bool[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Boolean) o.apply(va[i][j], vb[i][j]);
+						r[i][j] = (Bool) o.apply(va[i][j], vb[i][j]);
 					}
 				}
 				return new BooleanArray2DValue("", r);
-			} else if (result instanceof Integer) {
-				Integer[][] r = new Integer[va.length][va[0].length];
+			} else if (result instanceof Int) {
+				Int[][] r = new Int[va.length][va[0].length];
 				for (int i = 0; i < va.length; i++) {
 					for (int j = 0; j < va[i].length; j++) {
-						r[i][j] = (Integer) o.apply(va[i][j], vb[i][j]);
+						r[i][j] = (Int) o.apply(va[i][j], vb[i][j]);
 					}
 				}
 				return new IntegerArray2DValue("", r);
-			} else if (result instanceof Number) {
-				if ( va[0][0] instanceof Integer && vb[0][0] instanceof Integer ) {
-					// if result is Number, both inputs have to be integer to return IntegerValue
-					Integer[][] r = new Integer[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = ((Number) o.apply(va[i][j], vb[i][j])).intValue();
-						}
-					}
-					return new IntegerArray2DValue(null, r);
-				} else {
-					// default to double
-					Double[][] r = new Double[va.length][va[0].length];
-					for (int i = 0; i < va.length; i++) {
-						for (int j = 0; j < va[i].length; j++) {
-							r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
-						}
-					}
-					return new DoubleArray2DValue("", r);
-				}
+//			} else if (result instanceof Number) {
+//				if ( va[0][0] instanceof Integer && vb[0][0] instanceof Integer ) {
+//					// if result is Number, both inputs have to be integer to return IntegerValue
+//					Integer[][] r = new Integer[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = ((Number) o.apply(va[i][j], vb[i][j])).intValue();
+//						}
+//					}
+//					return new IntegerArray2DValue(null, r);
+//				} else {
+//					// default to double
+//					Double[][] r = new Double[va.length][va[0].length];
+//					for (int i = 0; i < va.length; i++) {
+//						for (int j = 0; j < va[i].length; j++) {
+//							r[i][j] = (Double) o.apply(va[i][j], vb[i][j]);
+//						}
+//					}
+//					return new DoubleArray2DValue("", r);
+//				}
 			} else {
 				throw new UnsupportedOperationException("Unsupported result type " +
 						result.getClass().getName());

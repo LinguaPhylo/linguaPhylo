@@ -1,7 +1,7 @@
 package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
-
+@Deprecated
 public class DoubleArrayValue extends VectorValue<Double> {
 
     public DoubleArrayValue(String id, Double[] value) {

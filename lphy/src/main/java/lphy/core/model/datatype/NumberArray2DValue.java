@@ -2,7 +2,7 @@ package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-
+@Deprecated
 public class NumberArray2DValue extends Value<Number[][]> {
 
     public NumberArray2DValue(String id, Number[][] value) {

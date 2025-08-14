@@ -1,5 +1,7 @@
 package lphy.core.model;
 
+import org.phylospec.types.Primitive;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +71,18 @@ public class Value<T> implements GraphicalModelNode<T> {
     }
 
     public final T value() {
+        return value;
+    }
+
+    //TODO not sure it is good, as "get???().value().getPrimitive()" seems better
+    public final Object getPrimitiveValue() {
+        if (value instanceof Primitive<?> primitive) {
+            if (getType().equals(primitive.getPrimitiveType())) {
+                return primitive.getPrimitive();
+            } else
+                throw new RuntimeException("Primitive type mismatch ! Expected " + getType() +
+                        " but got " + primitive.getPrimitiveType());
+        }
         return value;
     }
 

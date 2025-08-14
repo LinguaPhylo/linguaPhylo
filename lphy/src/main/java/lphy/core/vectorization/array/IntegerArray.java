@@ -3,20 +3,21 @@ package lphy.core.vectorization.array;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.datatype.IntegerArrayValue;
+import org.phylospec.types.Int;
 
-public class IntegerArray extends ArrayFunction<Integer[]> {
+public class IntegerArray extends ArrayFunction<Int[]> {
 
-    Value<Integer>[] x;
+    Value<Int>[] x;
 
-    public IntegerArray(Value<Integer>... x) {
+    public IntegerArray(Value<Int>... x) {
         this.x = x;
         super.setInput(x);
     }
 
     @GeneratorInfo(name = "integerArray", description = "The constructor function for an array of integers.")
-    public Value<Integer[]> apply() {
+    public Value<Int[]> apply() {
 
-        Integer[] values = new Integer[x.length];
+        Int[] values = new Int[x.length];
 
         for (int i = 0; i < x.length; i++) {
             if (x[i] != null) // handle null
@@ -33,7 +34,7 @@ public class IntegerArray extends ArrayFunction<Integer[]> {
     }
 
     @Override
-    public Value<Integer>[] getValues() {
+    public Value<Int>[] getValues() {
         return x;
     }
 }

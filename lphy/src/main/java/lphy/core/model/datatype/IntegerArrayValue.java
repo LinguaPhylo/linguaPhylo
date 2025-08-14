@@ -1,15 +1,16 @@
 package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
+import org.phylospec.types.Int;
 
 import java.util.Arrays;
-public class IntegerArrayValue extends VectorValue<Integer> implements RangeElement {
+public class IntegerArrayValue extends VectorValue<Int> implements RangeElement {
 
-    public IntegerArrayValue(String id, Integer[] value) {
+    public IntegerArrayValue(String id, Int[] value) {
         super(id, value);
     }
 
-    public IntegerArrayValue(String id, Integer[] value, DeterministicFunction function) {
+    public IntegerArrayValue(String id, Int[] value, DeterministicFunction function) {
         super(id, value, function);
     }
 
@@ -19,6 +20,9 @@ public class IntegerArrayValue extends VectorValue<Integer> implements RangeElem
 
     @Override
     public Integer[] range() {
-        return value();
+        return Arrays.stream(value())
+                .mapToInt(Int::getPrimitive)
+                .boxed()                  // converts int -> Integer
+                .toArray(Integer[]::new); // collect as Integer[]
     }
 }

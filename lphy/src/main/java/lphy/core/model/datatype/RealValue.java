@@ -2,10 +2,11 @@ package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-@Deprecated
-public class DoubleValue extends NumberValue<Double> {
+import org.phylospec.types.Real;
 
-    public DoubleValue(String id, Double value) {
+public class RealValue extends Value<Real> {
+
+    public RealValue(String id, Real value) {
 
         super(id, value);
     }
@@ -14,12 +15,12 @@ public class DoubleValue extends NumberValue<Double> {
      * Constructs an anonymous Double value.
      * @param value
      */
-    public DoubleValue(Double value) {
+    public RealValue(Real value) {
 
         super(null, value);
     }
 
-    public DoubleValue(String id, Value<Double[]> value) {
+    public RealValue(String id, Value<Real[]> value) {
         super(id, value.value()[0]);
 
         if (value.value().length > 1) {
@@ -27,7 +28,7 @@ public class DoubleValue extends NumberValue<Double> {
         }
     }
 
-    public DoubleValue(String id, Double value, DeterministicFunction<Double> function) {
+    public RealValue(String id, Real value, DeterministicFunction<Real> function) {
 
         super(id, value, function);
     }
@@ -37,7 +38,7 @@ public class DoubleValue extends NumberValue<Double> {
      * @param value
      * @param function
      */
-    public DoubleValue(Double value, DeterministicFunction<Double> function) {
+    public RealValue(Real value, DeterministicFunction<Real> function) {
 
         super(null, value, function);
     }

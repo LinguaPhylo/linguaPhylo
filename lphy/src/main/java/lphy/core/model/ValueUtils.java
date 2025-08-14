@@ -1,6 +1,7 @@
 package lphy.core.model;
 
 import lphy.core.model.datatype.StringArrayValue;
+import org.phylospec.types.Primitive;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,12 +41,19 @@ public class ValueUtils {
     }
 
 
+    public static double doublePrimitiveValue(Value<? extends Primitive> value) {
+        Primitive primitive = value.value();
+        return Double.parseDouble(primitive.toString());
+    }
+
+
     /**
      * useful function to get a number value as a double;
      *
      * @param value
      * @return
      */
+    @Deprecated
     public static double doubleValue(Value<Number> value) {
         return value.value().doubleValue();
     }

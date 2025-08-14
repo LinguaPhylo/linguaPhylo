@@ -2,14 +2,15 @@ package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
-@Deprecated
-public class DoubleArray2DValue extends Value<Double[][]> {
+import org.phylospec.types.Real;
 
-    public DoubleArray2DValue(String id, Double[][] value) {
+public class RealArray2DValue extends Value<Real[][]> {
+
+    public RealArray2DValue(String id, Real[][] value) {
         super(id, value);
     }
 
-    public DoubleArray2DValue(String id, Double[][] value, DeterministicFunction function) {
+    public RealArray2DValue(String id, Real[][] value, DeterministicFunction function) {
         super(id, value, function);
     }
 
@@ -18,7 +19,7 @@ public class DoubleArray2DValue extends Value<Double[][]> {
      * @param value
      * @param function
      */
-    public DoubleArray2DValue(Double[][] value, DeterministicFunction function) {
+    public RealArray2DValue(Real[][] value, DeterministicFunction function) {
         super(null, value, function);
     }
 
