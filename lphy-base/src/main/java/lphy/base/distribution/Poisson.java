@@ -10,6 +10,9 @@ import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.NonNegativeInt;
+import org.phylospec.types.PositiveInt;
+import org.phylospec.types.impl.NonNegativeIntImpl;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,29 +26,33 @@ import static lphy.base.distribution.DistributionConstants.offsetParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Poisson extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
+public class Poisson extends ParametricDistribution<NonNegativeInt> implements GenerativeDistribution1D<NonNegativeInt, Integer> {
 
     private static final String lambdaParamName = "lambda";
     private static final String minParamName = "min";
     private static final String maxParamName = "max";
-    private Value<Number> lambda;
-    private Value<Integer> min;
-    private Value<Integer> max;
-    private Value<Integer> offset;
+    private Value<PositiveInt> lambda;
+    private Value<NonNegativeInt> min;
+    private Value<PositiveInt> max;
+    private Value<NonNegativeInt> offset;
 
     PoissonDistribution poisson;
 
     static final int MAX_TRIES = 10000;
 
-    public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.") Value<Number> lambda,
+    public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.")
+                   Value<PositiveInt> lambda,
                    @ParameterInfo(name= offsetParamName, optional = true,
-                           description = "optional parameter to add a constant to the returned result, default is 0") Value<Integer> offset,
+                           description = "optional parameter to add a constant to the returned result, default is 0")
+                   Value<NonNegativeInt> offset,
                    @ParameterInfo(name=minParamName, optional = true,
                            description = "optional parameter to specify a condition that the number of events " +
-                                   "must be greater than or equal to this mininum, default is 0.") Value<Integer> min,
+                                   "must be greater than or equal to this mininum, default is 0.")
+                   Value<NonNegativeInt> min,
                    @ParameterInfo(name=maxParamName, optional = true,
                            description = "optional parameter to specify a condition that the number of events " +
-                                   "must be less than or equal to this maximum") Value<Integer> max) {
+                                   "must be less than or equal to this maximum")
+                   Value<PositiveInt> max) {
         super();
         this.lambda = lambda;
         this.min = min;
@@ -56,7 +63,7 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
     }
 
     public Poisson(@ParameterInfo(name=lambdaParamName, description="the expected number of events.")
-                   Value<Number> lambda) {
+                   Value<PositiveInt> lambda) {
         super();
         this.lambda = lambda;
         this.min = null;
@@ -68,7 +75,7 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        poisson = new PoissonDistribution(RandomUtils.getRandom(), ValueUtils.doubleValue(lambda),
+        poisson = new PoissonDistribution(RandomUtils.getRandom(), ValueUtils.doublePrimitiveValue(lambda),
                 PoissonDistribution.DEFAULT_EPSILON, PoissonDistribution.DEFAULT_MAX_ITERATIONS);
     }
 
@@ -76,7 +83,7 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
             category = GeneratorCategory.PRIOR,
             examples = {"expression4.lphy","simpleRandomLocalClock2.lphy"},
             description="The probability distribution of the number of events when the expected number of events is lambda, supported on the set { 0, 1, 2, 3, ... }.")
-    public RandomVariable<Integer> sample() {
+    public RandomVariable<NonNegativeInt> sample() {
 
         // constructDistribution() only required in constructor and setParam
 
@@ -92,25 +99,26 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
                 throw new RuntimeException("Failed to draw conditional Poisson random variable after " + MAX_TRIES + " attempts.");
             }
         }
+        NonNegativeInt nonNegativeInt = new NonNegativeIntImpl(val);
 
-        return new RandomVariable<>(null, val, this);
+        return new RandomVariable<>(null, nonNegativeInt, this);
     }
 
     private int C() {
         int C = 0;
         if (offset != null) {
-            C = offset.value();
+            C = offset.value().getPrimitive();
         }
         return C;
     }
 
     private int min() {
-        if (min != null) return min.value();
+        if (min != null) return min.value().getPrimitive();
         return 0;
     }
 
     private int max() {
-        if (max != null) return max.value();
+        if (max != null) return max.value().getPrimitive();
         return Integer.MAX_VALUE;
     }
 
@@ -150,19 +158,19 @@ public class Poisson extends ParametricDistribution<Integer> implements Generati
         return domainBounds;
     }
 
-    public Value<Number> getLambda() {
+    public Value<PositiveInt> getLambda() {
         return lambda;
     }
 
-    public Value<Integer> getMin() {
+    public Value<NonNegativeInt> getMin() {
         return min;
     }
 
-    public Value<Integer> getMax() {
+    public Value<PositiveInt> getMax() {
         return max;
     }
 
-    public Value<Integer> getOffset() {
+    public Value<NonNegativeInt> getOffset() {
         return offset;
     }
 
