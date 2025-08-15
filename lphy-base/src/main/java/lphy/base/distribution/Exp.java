@@ -3,12 +3,14 @@ package lphy.base.distribution;
 import lphy.core.model.GenerativeDistribution1D;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.NonNegativeReal;
+import org.phylospec.types.PositiveReal;
+import org.phylospec.types.impl.NonNegativeRealImpl;
 
 import java.util.Collections;
 import java.util.Map;
@@ -21,14 +23,14 @@ import static lphy.base.distribution.DistributionConstants.meanParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Exp extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
+public class Exp extends ParametricDistribution<NonNegativeReal> implements GenerativeDistribution1D<NonNegativeReal, Double> {
 
-    private Value<Number> mean;
+    private Value<PositiveReal> mean;
 
     ExponentialDistribution exp;
 
     public Exp(@ParameterInfo(name= meanParamName,
-            description="the mean of an exponential distribution.") Value<Number> mean) {
+            description="the mean of an exponential distribution.") Value<PositiveReal> mean) {
         super();
         this.mean = mean;
         //this.rate = rate;
@@ -40,20 +42,23 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
     @Override
     protected void constructDistribution(RandomGenerator random) {
         // use code available since apache math 3.1
-        exp = new ExponentialDistribution(random, ValueUtils.doubleValue(mean), ExponentialDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
+        exp = new ExponentialDistribution(random, mean.value().getPrimitive(),
+                ExponentialDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name="Exp", verbClause = "has", narrativeName = "exponential distribution prior",
             category = GeneratorCategory.PRIOR, examples = {"birthDeathRhoSampling.lphy","yuleRelaxed.lphy"},
             description="The exponential probability distribution.")
-    public RandomVariable<Double> sample() {
+    public RandomVariable<NonNegativeReal> sample() {
         double x = - Math.log(random.nextDouble()) * getMean();
-        return new RandomVariable<>("x", x, this);
+        // [0, Inf)
+        NonNegativeReal nonNegativeReal = new NonNegativeRealImpl(x);
+        return new RandomVariable<>("x", nonNegativeReal, this);
     }
 
     @Override
-    public double density(Double aDouble) {
-        return exp.logDensity(aDouble);
+    public double density(NonNegativeReal aDouble) {
+        return exp.logDensity(aDouble.getPrimitive());
     }
 
     @Override
@@ -75,7 +80,7 @@ public class Exp extends ParametricDistribution<Double> implements GenerativeDis
     }
 
     public double getMean() {
-        if (mean != null) return ValueUtils.doubleValue(mean);
+        if (mean != null) return mean.value().getPrimitive();
         return 1.0;
     }
 

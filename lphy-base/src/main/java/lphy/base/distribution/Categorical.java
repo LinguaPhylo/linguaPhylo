@@ -8,6 +8,7 @@ import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.phylospec.types.NonNegativeInt;
 import org.phylospec.types.Probability;
+import org.phylospec.types.Simplex;
 import org.phylospec.types.impl.NonNegativeIntImpl;
 
 import java.util.Collections;
@@ -16,11 +17,11 @@ import java.util.Map;
 //TODO
 public class Categorical extends ParametricDistribution<NonNegativeInt> {
 
-    Value<Probability[]> probs;
+    Value<Simplex> probs;
 
     public Categorical(@ParameterInfo(name = DistributionConstants.pParamName,
             description = "the probability distribution over integer states 1 to K.")
-                       Value<Probability[]> probs) {
+                       Value<Simplex> probs) {
         super();
         this.probs = probs;
 
@@ -32,7 +33,8 @@ public class Categorical extends ParametricDistribution<NonNegativeInt> {
     @GeneratorInfo(name = "Categorical", verbClause = "has", narrativeName = "Categorical distribution prior",
             category = GeneratorCategory.PRIOR, description = "The categorical distribution.")
     public RandomVariable<NonNegativeInt> sample() {
-        int i = sample(probs.value(), random);
+        Probability[] probArr = probs.value().getElements().toArray(new Probability[0]);
+        int i = sample(probArr, random);
         NonNegativeInt nonNegativeInt = new NonNegativeIntImpl(i);
         return new RandomVariable<>("X", nonNegativeInt, this);
     }
@@ -60,7 +62,7 @@ public class Categorical extends ParametricDistribution<NonNegativeInt> {
         return Collections.singletonMap(DistributionConstants.pParamName, probs);
     }
 
-    public void setProbs(Value<Probability[]> probs) {
+    public void setProbs(Value<Simplex> probs) {
         this.probs = probs;
     }
 }
