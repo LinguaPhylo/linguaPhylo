@@ -64,8 +64,8 @@ public class Beta extends ParametricDistribution<Probability> implements Generat
         return new RandomVariable<>("x", prob, this);
     }
 
-    public double logDensity(Double d) {
-        return betaDistribution.logDensity(d);
+    public double logDensity(Probability d) {
+        return betaDistribution.logDensity(d.getPrimitive());
     }
 
     @Override

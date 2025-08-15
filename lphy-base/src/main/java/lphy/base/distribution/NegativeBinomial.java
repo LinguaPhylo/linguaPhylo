@@ -7,6 +7,9 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.NonNegativeInt;
+import org.phylospec.types.Probability;
+import org.phylospec.types.impl.NonNegativeIntImpl;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,15 +22,17 @@ import static lphy.base.distribution.DistributionConstants.*;
  * @see org.apache.commons.math3.distribution.PascalDistribution
  * @author Walter Xie
  */
-public class NegativeBinomial extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
+public class NegativeBinomial extends ParametricDistribution<NonNegativeInt> implements GenerativeDistribution1D<NonNegativeInt, Integer> {
 
-    private Value<Double> p;
-    private Value<Integer> r;
+    private Value<Probability> p;
+    private Value<NonNegativeInt> r;
 
     org.apache.commons.math3.distribution.PascalDistribution pascalDist;
 
-    public NegativeBinomial(@ParameterInfo(name = rParamName, description = "the number of successes.") Value<Integer> r,
-                            @ParameterInfo(name = pParamName, description = "the probability of a success.") Value<Double> p) {
+    public NegativeBinomial(@ParameterInfo(name = rParamName, description = "the number of successes.")
+                            Value<NonNegativeInt> r,
+                            @ParameterInfo(name = pParamName, description = "the probability of a success.")
+                            Value<Probability> p) {
         super();
         this.p = p;
         this.r = r;
@@ -37,18 +42,20 @@ public class NegativeBinomial extends ParametricDistribution<Integer> implements
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        pascalDist = new org.apache.commons.math3.distribution.PascalDistribution(random, r.value(), p.value());
+        pascalDist = new org.apache.commons.math3.distribution.PascalDistribution(random,
+                r.value().getPrimitive(), p.value().getPrimitive());
     }
 
     @GeneratorInfo(name = "NegativeBinomial", verbClause = "has", narrativeName = "negative binomial distribution",
             category = GeneratorCategory.PRIOR,
             description = "It uses the Pascal distribution with the given number of successes (integer) and probability of success.")
-    public RandomVariable<Integer> sample() {
-        return new RandomVariable<>(null, pascalDist.sample(), this);
+    public RandomVariable<NonNegativeInt> sample() {
+        NonNegativeInt nonNegativeInt = new NonNegativeIntImpl(pascalDist.sample());
+        return new RandomVariable<>(null, nonNegativeInt, this);
     }
 
-    public double density(Integer i) {
-        return pascalDist.probability(i);
+    public double density(NonNegativeInt i) {
+        return pascalDist.probability(i.getPrimitive());
     }
 
     @Override
@@ -59,11 +66,11 @@ public class NegativeBinomial extends ParametricDistribution<Integer> implements
         }};
     }
 
-    public void setP(Value<Double> p) {
+    public void setP(Value<Probability> p) {
         this.p = p;
     }
 
-    public void setR(Value<Integer> r) {
+    public void setR(Value<NonNegativeInt> r) {
         this.r = r;
     }
 

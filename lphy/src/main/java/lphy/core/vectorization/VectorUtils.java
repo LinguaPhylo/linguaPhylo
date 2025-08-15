@@ -2,9 +2,9 @@ package lphy.core.vectorization;
 
 import lphy.core.model.Generator;
 import lphy.core.model.Value;
-import lphy.core.model.datatype.Vector;
 import lphy.core.model.datatype.VectorValue;
 import lphy.core.parser.argument.Argument;
+import lphy.phylospec.types.Vector;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

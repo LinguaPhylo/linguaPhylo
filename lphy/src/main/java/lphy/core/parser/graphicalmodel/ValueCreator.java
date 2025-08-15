@@ -16,7 +16,7 @@ public class ValueCreator {
     public static final Value<Double> Double_1 = new DoubleValue(null, 1.0, null);
 
 
-    public static Value createValue(Int intValue, DeterministicFunction generator) {
+    public static Value createValue(Integer intValue, DeterministicFunction generator) {
         return new IntegerValue(null, intValue, generator);
     }
 
@@ -24,7 +24,7 @@ public class ValueCreator {
         return new IntegerArrayValue(null, intArrayValue, generator);
     }
 
-    public static Value createValue(Real doubleValue, DeterministicFunction generator) {
+    public static Value createValue(Double doubleValue, DeterministicFunction generator) {
         return new RealValue(null, doubleValue, generator);
     }
 
@@ -32,7 +32,7 @@ public class ValueCreator {
         return new RealArrayValue(null, doubleArrayValue, generator);
     }
 
-    public static Value createValue(Bool booleanValue, DeterministicFunction generator) {
+    public static Value createValue(Boolean booleanValue, DeterministicFunction generator) {
         return new BooleanValue(null, booleanValue, generator);
     }
 
@@ -49,11 +49,11 @@ public class ValueCreator {
     }
 
     public static Value createValue(Object value, DeterministicFunction generator) {
-        if (value instanceof Int v) return createValue(v, generator);
+        if (value instanceof Integer v) return createValue(v, generator);
         if (value instanceof Int[] v) return createValue(v, generator);
-        if (value instanceof Real v) return createValue(v, generator);
+        if (value instanceof Double v) return createValue(v, generator);
         if (value instanceof Real[] v) return createValue(v, generator);
-        if (value instanceof Bool v) return createValue(v, generator);
+        if (value instanceof Boolean v) return createValue(v, generator);
         if (value instanceof Bool[] v) return createValue(v, generator);
         if (value instanceof String v) return createValue(v, generator);
         if (value instanceof String[] v) return createValue(v, generator);

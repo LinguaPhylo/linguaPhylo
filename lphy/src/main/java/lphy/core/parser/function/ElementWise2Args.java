@@ -23,10 +23,10 @@ public interface ElementWise2Args<R,S> {
 	static ElementWise2Args<Value<Object>, Value<Object>> elementWiseOO() {
 		return (a,b,o) -> {
 			Object result = o.apply(a.value(), b.value());
-			if (result instanceof Bool rB)
+			if (result instanceof Boolean rB)
 				// the logical operators
 				return new BooleanValue(null, rB);
-			else if (result instanceof Int rI) {
+			else if (result instanceof Integer rI) {
 				return new IntegerValue(null, rI);
 //			} else if (result instanceof Number) {
 //				if ( a.value() instanceof Int && b.value() instanceof Int ) {

@@ -9,6 +9,9 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.NonNegativeReal;
+import org.phylospec.types.PositiveReal;
+import org.phylospec.types.impl.NonNegativeRealImpl;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,15 +25,17 @@ import static lphy.base.distribution.DistributionConstants.shapeParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Gamma extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
+public class Gamma extends ParametricDistribution<NonNegativeReal> implements GenerativeDistribution1D<NonNegativeReal, Double> {
 
-    private Value<Number> shape;
-    private Value<Number> scale;
+    private Value<PositiveReal> shape;
+    private Value<PositiveReal> scale;
 
     GammaDistribution gammaDistribution;
 
-    public Gamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.") Value<Number> shape,
-                 @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.") Value<Number> scale) {
+    public Gamma(@ParameterInfo(name = shapeParamName, description = "the shape of the distribution.")
+                 Value<PositiveReal> shape,
+                 @ParameterInfo(name = scaleParamName, description = "the scale of the distribution.")
+                 Value<PositiveReal> scale) {
         super();
         this.shape = shape;
         this.scale = scale;
@@ -43,9 +48,9 @@ public class Gamma extends ParametricDistribution<Double> implements GenerativeD
         if (shape == null) throw new IllegalArgumentException("The shape value can't be null!");
         if (scale == null) throw new IllegalArgumentException("The scale value can't be null!");
         // in case the shape is type integer
-        double sh = ValueUtils.doubleValue(shape);
+        double sh = ValueUtils.doublePrimitiveValue(shape);
         // in case the scale is type integer
-        double sc = ValueUtils.doubleValue(scale);
+        double sc = ValueUtils.doublePrimitiveValue(scale);
         // use code available since apache math 3.1
         gammaDistribution = new GammaDistribution(random, sh, sc, GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
@@ -53,15 +58,16 @@ public class Gamma extends ParametricDistribution<Double> implements GenerativeD
     @GeneratorInfo(name = "Gamma", verbClause = "has", narrativeName = "gamma distribution prior",
             category = GeneratorCategory.PRIOR, examples = {"covidDPG.lphy"},
             description = "The gamma probability distribution.")
-    public RandomVariable<Double> sample() {
+    public RandomVariable<NonNegativeReal> sample() {
         // constructDistribution() only required in constructor and setParam
         double x = gammaDistribution.sample();
-        return new RandomVariable<>("x", x, this);
+        NonNegativeReal nonNegativeReal = new NonNegativeRealImpl(x);
+        return new RandomVariable<>("x", nonNegativeReal, this);
     }
 
     @Override
-    public double density(Double x) {
-        return gammaDistribution.density(x);
+    public double density(NonNegativeReal x) {
+        return gammaDistribution.density(x.getPrimitive());
     }
 
     public Map<String, Value> getParams() {
@@ -80,11 +86,11 @@ public class Gamma extends ParametricDistribution<Double> implements GenerativeD
         super.setParam(paramName, value); // constructDistribution
     }
 
-    public Value<Number> getScale() {
+    public Value<PositiveReal> getScale() {
         return scale;
     }
 
-    public Value<Number> getShape() {
+    public Value<PositiveReal> getShape() {
         return shape;
     }
 

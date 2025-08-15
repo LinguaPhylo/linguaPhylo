@@ -6,8 +6,6 @@ import lphy.core.model.datatype.IntegerValue;
 import lphy.core.parser.ParserTest;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.jupiter.api.Test;
-import org.phylospec.types.Int;
-import org.phylospec.types.impl.IntImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,8 +27,7 @@ class ExpressionNode1ArgTest {
     @Test
     void testIdNull() {
         final String exprStr = "round(10/3)";
-        Int three = new IntImpl(3);
-        Value[] values = new Value[]{new IntegerValue(null, three)};
+        Value[] values = new Value[]{new IntegerValue(null, 3)};
         ExpressionNode expr = new ExpressionNode1Arg(exprStr, ExpressionNode1Arg.round(), values);
         
         assertNotNull(expr, "test expression " + exprStr);

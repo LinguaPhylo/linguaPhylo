@@ -21,12 +21,6 @@ import lphy.core.vectorization.operation.Range;
 import lphy.core.vectorization.operation.RangeList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.phylospec.types.Bool;
-import org.phylospec.types.Int;
-import org.phylospec.types.Real;
-import org.phylospec.types.impl.BoolImpl;
-import org.phylospec.types.impl.IntImpl;
-import org.phylospec.types.impl.RealImpl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -171,8 +165,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
             String text = ctx.getText();
 //            try {
             double d = Double.parseDouble(text);
-            Real realImpl = new RealImpl(d);
-            return new RealValue(null, realImpl);
+            return new RealValue(null, d);
 //            } catch (NumberFormatException e) {
             //TODO better Exception?
 //            }
@@ -185,8 +178,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                long aLong = Long.parseLong(text);
             // TODO: should be a LongValue?
             int i = Integer.parseInt(text);
-            Int intImpl = new IntImpl(i);
-            return new IntegerValue(null, intImpl); // (int) aLong
+            return new IntegerValue(null, i); // (int) aLong
 //            } catch (NumberFormatException e) {
             //TODO better Exception?
 //            }
@@ -196,8 +188,7 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
         public Object visitBooleanLiteral(BooleanLiteralContext ctx) {
             String text = ctx.getText();
             boolean bool = Boolean.parseBoolean(text);
-            Bool boolImpl = new BoolImpl(bool);
-            return new BooleanValue(null, boolImpl);
+            return new BooleanValue(null, bool);
         }
 
         /**
@@ -652,8 +643,8 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
 //                            }
 //                            return new DoubleArrayValue(null, value);
 //                        } else {
-                        DoubleArray doubleArray = new DoubleArray(var);
-                        res = doubleArray.apply();
+                        RealArray realArray = new RealArray(var);
+                        res = realArray.apply();
 //                        }
                     } else if (type == Double[].class) {
                         //TODO not sure how to do properly for 2d ?
@@ -684,13 +675,13 @@ public class LPhyListenerImpl extends LPhyBaseListener implements LPhyParserActi
                         StringArray stringArray = new StringArray(var);
                         res = stringArray.apply();
 
-                    } else if (type == Number[].class) {
-                        NumberArray2D numberArray2D = new NumberArray2D(var);
-                        return numberArray2D.apply();
-
-                    } else if (type == Number.class) {
-                        NumberArray numberArray = new NumberArray(var);
-                        res = numberArray.apply();
+//                    } else if (type == Number[].class) {
+//                        NumberArray2D numberArray2D = new NumberArray2D(var);
+//                        return numberArray2D.apply();
+//
+//                    } else if (type == Number.class) {
+//                        NumberArray numberArray = new NumberArray(var);
+//                        res = numberArray.apply();
 
                     } else if (type == Object[].class) {
                         ObjectArray2D objectArray2D = new ObjectArray2D(var);

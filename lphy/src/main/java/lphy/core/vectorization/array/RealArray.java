@@ -2,32 +2,33 @@ package lphy.core.vectorization.array;
 
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorInfo;
-import lphy.core.model.datatype.DoubleArrayValue;
+import lphy.core.model.datatype.RealArrayValue;
+import org.phylospec.types.Real;
 
-public class DoubleArray extends ArrayFunction<Double[]> {
+public class RealArray extends ArrayFunction<Real[]> {
 
-    Value<Double>[] x;
+    Value<Real>[] x;
 
-    public DoubleArray(Value<Double>... x) {
+    public RealArray(Value<Real>... x) {
         this.x = x;
         super.setInput(x);
     }
 
     @GeneratorInfo(name = "doubleArray", description = "The constructor function for an array of doubles.")
-    public Value<Double[]> apply() {
+    public Value<Real[]> apply() {
 
-        Double[] values = new Double[x.length];
+        Real[] values = new Real[x.length];
 
         for (int i = 0; i < x.length; i++) {
             if (x[i] != null) // handle null
                 values[i] = x[i].value();
         }
 
-        return new DoubleArrayValue(null, values, this);
+        return new RealArrayValue(null, values, this);
     }
 
     @Override
-    public Value<Double>[] getValues() {
+    public Value<Real>[] getValues() {
         return x;
     }
 

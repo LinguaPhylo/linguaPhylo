@@ -2,11 +2,12 @@ package lphy.core.model.datatype;
 
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.Value;
+import lphy.phylospec.types.PrimitiveType;
 import org.phylospec.types.Real;
 
-public class RealValue extends Value<Real> {
+public class RealValue extends Value<Double> implements Real, PrimitiveType<Double> {
 
-    public RealValue(String id, Real value) {
+    public RealValue(String id, Double value) {
 
         super(id, value);
     }
@@ -15,12 +16,12 @@ public class RealValue extends Value<Real> {
      * Constructs an anonymous Double value.
      * @param value
      */
-    public RealValue(Real value) {
+    public RealValue(Double value) {
 
         super(null, value);
     }
 
-    public RealValue(String id, Value<Real[]> value) {
+    public RealValue(String id, Value<Double[]> value) {
         super(id, value.value()[0]);
 
         if (value.value().length > 1) {
@@ -28,7 +29,7 @@ public class RealValue extends Value<Real> {
         }
     }
 
-    public RealValue(String id, Real value, DeterministicFunction<Real> function) {
+    public RealValue(String id, Double value, DeterministicFunction<Double> function) {
 
         super(id, value, function);
     }
@@ -38,8 +39,13 @@ public class RealValue extends Value<Real> {
      * @param value
      * @param function
      */
-    public RealValue(Real value, DeterministicFunction<Real> function) {
+    public RealValue(Double value, DeterministicFunction<Double> function) {
 
         super(null, value, function);
+    }
+
+    @Override
+    public Double getPrimitive() {
+        return value();
     }
 }

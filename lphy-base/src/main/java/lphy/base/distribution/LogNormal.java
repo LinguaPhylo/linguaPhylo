@@ -80,9 +80,9 @@ public class LogNormal extends ParametricDistribution<PositiveReal> implements G
         return C;
     }
 
-    public double logDensity(Double x) {
+    public double logDensity(PositiveReal x) {
         // x is after offset, so - to get the original point
-        return logNormalDistribution.logDensity(x-C());
+        return logNormalDistribution.logDensity(x.getPrimitive()-C());
     }
 
     public Map<String, Value> getParams() {

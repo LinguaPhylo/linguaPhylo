@@ -3,13 +3,15 @@ package lphy.base.distribution;
 import lphy.core.model.GenerativeDistribution1D;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
-import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
+import lphy.core.model.datatype.RealValue;
 import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.PositiveReal;
+import org.phylospec.types.Real;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,15 +25,18 @@ import static lphy.base.distribution.DistributionConstants.sdParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Normal extends ParametricDistribution<Double> implements GenerativeDistribution1D<Double> {
+public class Normal extends ParametricDistribution<Real> implements GenerativeDistribution1D<Real,Double> {
 
-    private Value<Number> mean;
-    private Value<Number> sd;
+    private Value<Real> mean;
+    private Value<PositiveReal> sd;
 
     NormalDistribution normalDistribution;
 
-    public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.") Value<Number> mean,
-                  @ParameterInfo(name = "sd", narrativeName = "standard deviation", description = "the standard deviation of the distribution.") Value<Number> sd) {
+    public Normal(@ParameterInfo(name = "mean", description = "the mean of the distribution.")
+                  Value<Real> mean,
+                  @ParameterInfo(name = "sd", narrativeName = "standard deviation",
+                          description = "the standard deviation of the distribution.")
+                  Value<PositiveReal> sd) {
         super();
         this.mean = mean;
         this.sd = sd;
@@ -44,22 +49,24 @@ public class Normal extends ParametricDistribution<Double> implements Generative
         if (mean == null) throw new IllegalArgumentException("The mean value can't be null!");
         if (sd == null) throw new IllegalArgumentException("The sd value can't be null!");
 
-        normalDistribution = new NormalDistribution(RandomUtils.getRandom(), ValueUtils.doubleValue(mean), ValueUtils.doubleValue(sd),
+        normalDistribution = new NormalDistribution(RandomUtils.getRandom(),
+                mean.value().getPrimitive(), sd.value().getPrimitive(),
                 NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
     }
 
     @GeneratorInfo(name = "Normal", verbClause = "has", narrativeName = "normal prior",
             category = GeneratorCategory.PRIOR, examples = {"simplePhyloBrownian.lphy","simplePhyloOU.lphy"},
             description = "The normal probability distribution.")
-    public RandomVariable<Double> sample() {
+    public RandomVariable<Real> sample() {
         // constructDistribution() only required in constructor and setParam
         double x = normalDistribution.sample();
-        return new RandomVariable<>("x", x, this);
+        Real real = new RealValue(x);
+        return new RandomVariable<>("x", real, this);
     }
 
     @Override
-    public double density(Double x) {
-        return normalDistribution.density(x);
+    public double density(Real x) {
+        return normalDistribution.density(x.getPrimitive());
     }
 
     public Map<String, Value> getParams() {
@@ -77,11 +84,11 @@ public class Normal extends ParametricDistribution<Double> implements Generative
         super.setParam(paramName, value); // constructDistribution
     }
 
-    public Value<Number> getMean() {
+    public Value<Real> getMean() {
         return mean;
     }
 
-    public Value<Number> getSd() {
+    public Value<PositiveReal> getSd() {
         return sd;
     }
 

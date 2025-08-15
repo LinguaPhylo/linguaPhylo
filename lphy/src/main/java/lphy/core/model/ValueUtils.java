@@ -43,7 +43,7 @@ public class ValueUtils {
 
     public static double doublePrimitiveValue(Value<? extends Primitive> value) {
         Primitive primitive = value.value();
-        return Double.parseDouble(primitive.toString());
+        return Double.parseDouble(primitive.getPrimitive().toString());
     }
 
 

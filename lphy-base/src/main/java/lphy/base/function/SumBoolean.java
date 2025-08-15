@@ -10,7 +10,9 @@ import lphy.core.model.datatype.IntegerValue;
 
 public class SumBoolean extends DeterministicFunction<Integer> {
 
-    public SumBoolean(@ParameterInfo(name = ParameterNames.ArrayParamName, description = "the boolean array to sum the elements of.") Value<Boolean[]> x) {
+    public SumBoolean(@ParameterInfo(name = ParameterNames.ArrayParamName,
+            description = "the boolean array to sum the elements of.")
+                      Value<Boolean[]> x) {
         setParam(ParameterNames.ArrayParamName, x);
     }
 

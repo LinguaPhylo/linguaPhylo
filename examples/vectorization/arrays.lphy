@@ -6,14 +6,14 @@ c = ["foo", "bar"]; // strings
 d = [[1.1,2.2,3.3],[4.4,5.5,6.6]];
 e = [[1,2,3], [4,5,6]];
 // empty array
-doubleArray = rep(0.0, 0); // an empty array of doubles
+realArray = rep(0.0, 0); // an empty array of doubles
 intArray = rep(0, 0); // an empty array of integers
 stringArray = rep("", 0); // an empty array of strings
 // length
 len1 = length(a); // 1d
 len2 = length(d); // 2d row
 len3 = length(d[0]); // 2d column
-len4 = length(doubleArray); // empty array
+len4 = length(realArray); // empty array
 
 // TODO vector should be immutable
 //a[0] = 1.0;

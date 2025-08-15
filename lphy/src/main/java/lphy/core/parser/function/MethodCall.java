@@ -3,13 +3,13 @@ package lphy.core.parser.function;
 import lphy.core.model.*;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.MethodInfo;
-import lphy.core.model.datatype.Vector;
 import lphy.core.parser.graphicalmodel.ValueCreator;
 import lphy.core.vectorization.CompoundVectorValue;
 import lphy.core.vectorization.VectorMatchUtils;
 import lphy.core.vectorization.VectorizedFunction;
 import lphy.core.vectorization.operation.ElementsAt;
 import lphy.core.vectorization.operation.Slice;
+import lphy.phylospec.types.Vector;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

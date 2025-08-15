@@ -1,7 +1,5 @@
 package lphy.core.model;
 
-import org.phylospec.types.Primitive;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,17 +72,24 @@ public class Value<T> implements GraphicalModelNode<T> {
         return value;
     }
 
-    //TODO not sure it is good, as "get???().value().getPrimitive()" seems better
-    public final Object getPrimitiveValue() {
-        if (value instanceof Primitive<?> primitive) {
-            if (getType().equals(primitive.getPrimitiveType())) {
-                return primitive.getPrimitive();
-            } else
-                throw new RuntimeException("Primitive type mismatch ! Expected " + getType() +
-                        " but got " + primitive.getPrimitiveType());
-        }
-        return value;
-    }
+    /**
+     * Utility method to unwrap the primitive value from Primitive,
+     * when the value is a Primitive
+     *
+//     * @param value   T
+     * @return   If the value is Primitive, then unwrap the primitive value from Primitive,
+     *           otherwise return the value
+     */
+//    public static final Object getPrimitive(Object value) {
+//        if (value instanceof Primitive<?> primitive) {
+//            if (value.getClass().equals(primitive.getPrimitiveType())) {
+//                return primitive.getPrimitive();
+//            } else
+//                throw new RuntimeException("Primitive type mismatch ! Expected " + value.getClass() +
+//                        " but got " + primitive.getPrimitiveType());
+//        }
+//        return value;
+//    }
 
     public String getLabel() {
         if (isAnonymous()) {

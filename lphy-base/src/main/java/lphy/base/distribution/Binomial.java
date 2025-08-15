@@ -7,6 +7,9 @@ import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.NonNegativeInt;
+import org.phylospec.types.Probability;
+import org.phylospec.types.impl.NonNegativeIntImpl;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,15 +20,17 @@ import java.util.TreeMap;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Binomial extends ParametricDistribution<Integer> implements GenerativeDistribution1D<Integer> {
+public class Binomial extends ParametricDistribution<NonNegativeInt> implements GenerativeDistribution1D<NonNegativeInt,Integer> {
 
-    private Value<Double> p;
-    private Value<Integer> n;
+    private Value<Probability> p;
+    private Value<NonNegativeInt> n;
 
     BinomialDistribution binomial;
 
-    public Binomial(@ParameterInfo(name = DistributionConstants.pParamName, description = "the probability of a success.") Value<Double> p,
-                    @ParameterInfo(name = DistributionConstants.nParamName, description = "number of trials.") Value<Integer> n) {
+    public Binomial(@ParameterInfo(name = DistributionConstants.pParamName, description = "the probability of a success.")
+                    Value<Probability> p,
+                    @ParameterInfo(name = DistributionConstants.nParamName, description = "number of trials.")
+                    Value<NonNegativeInt> n) {
         super();
         this.p = p;
         this.n = n;
@@ -35,17 +40,18 @@ public class Binomial extends ParametricDistribution<Integer> implements Generat
 
     @Override
     protected void constructDistribution(RandomGenerator random) {
-        binomial = new BinomialDistribution(random, n.value(), p.value());
+        binomial = new BinomialDistribution(random, n.value().getPrimitive(), p.value().getPrimitive());
     }
 
     @GeneratorInfo(name = "Binomial", narrativeName = "binomial distribution",
             description = "The binomial distribution of x successes in n trials given probability p of success of a single trial.")
-    public RandomVariable<Integer> sample() {
-        return new RandomVariable<>(null, binomial.sample(), this);
+    public RandomVariable<NonNegativeInt> sample() {
+        NonNegativeInt nonNegativeInt = new NonNegativeIntImpl(binomial.sample());
+        return new RandomVariable<>(null, nonNegativeInt, this);
     }
 
-    public double density(Integer i) {
-        return binomial.probability(i);
+    public double density(NonNegativeInt i) {
+        return binomial.probability(i.getPrimitive());
     }
 
     @Override
@@ -65,11 +71,11 @@ public class Binomial extends ParametricDistribution<Integer> implements Generat
         super.setParam(paramName, value); // constructDistribution
     }
 
-    public void setP(Value<Double> p) {
+    public void setP(Value<Probability> p) {
         this.p = p;
     }
 
-    public void setN(Value<Integer> n) {
+    public void setN(Value<NonNegativeInt> n) {
         this.n = n;
     }
 

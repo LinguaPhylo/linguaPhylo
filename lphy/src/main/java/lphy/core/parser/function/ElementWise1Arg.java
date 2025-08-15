@@ -13,10 +13,10 @@ public interface ElementWise1Arg<R> {
 	
 	Value apply(R a, Function o);
 
-	static ElementWise1Arg<Value<Real>> elementWiseD() {
+	static ElementWise1Arg<RealValue> elementWiseD() {
 		return (a,o) -> {
-			Real va = a.value();
-			Real r = (Real) o.apply(va);
+			Double va = a.value();
+			Double r = (Double) o.apply(va);
 			return new RealValue("", r);
 		};
 	}
@@ -46,9 +46,9 @@ public interface ElementWise1Arg<R> {
 	}
 	
 	
-	static ElementWise1Arg<Value<Int>> elementWiseI() {
+	static ElementWise1Arg<IntegerValue> elementWiseI() {
 		return (a,o) -> {
-			Int va = a.value();
+			Integer va = a.value();
 			return new Value(null, o.apply(va));
 		};
 	}

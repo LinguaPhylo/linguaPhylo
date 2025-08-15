@@ -41,4 +41,14 @@ public class VectorValue<T> extends Value<T[]> implements Vector<T> {
     public int size() {
         return value().length;
     }
+
+//    @Override
+//    public List<T> getElements() {
+//        return Arrays.stream(value()).toList();
+//    }
+//
+//    @Override
+//    public T get(int i) {
+//        return value()[i];
+//    }
 }
