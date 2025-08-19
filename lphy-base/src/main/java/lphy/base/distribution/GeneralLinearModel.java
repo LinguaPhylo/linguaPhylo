@@ -30,9 +30,15 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
 
     private Value<Number> sd;
 
-    public GeneralLinearModel(@ParameterInfo(name = betaParamName, narrativeName = "beta", description = "the coefficients of the general linear model.") Value<Number[]> beta,
-                              @ParameterInfo(name = xParamName, narrativeName = "x", description = "the explanatory variables of the general linear model.") Value<Number[]> x,
-                              @ParameterInfo(name = sdParamName, narrativeName = "stdev", description = "the standard deviation of the general linear model.") Value<Number> sd) {
+    public GeneralLinearModel(@ParameterInfo(name = betaParamName, narrativeName = "beta",
+                                      description = "the coefficients of the general linear model.")
+                              Value<Number[]> beta,
+                              @ParameterInfo(name = xParamName, narrativeName = "x",
+                                      description = "the explanatory variables of the general linear model.")
+                              Value<Number[]> x,
+                              @ParameterInfo(name = sdParamName, narrativeName = "stdev",
+                                      description = "the standard deviation of the general linear model.")
+                              Value<Number> sd) {
         super();
         this.beta = beta;
         this.x = x;

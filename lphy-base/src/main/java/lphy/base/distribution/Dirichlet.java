@@ -7,6 +7,9 @@ import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.phylospec.types.PositiveReal;
+import org.phylospec.types.Simplex;
+import org.phylospec.types.impl.PositiveRealImpl;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,18 +21,19 @@ import static lphy.base.distribution.DistributionConstants.concParamName;
  * @author Alexei Drummond
  * @author Walter Xie
  */
-public class Dirichlet extends ParametricDistribution<Double[]> {
+public class Dirichlet extends ParametricDistribution<Simplex> {
 
-    private Value<Number[]> concentration;
-    private Value<Number> sum;
+    private Value<PositiveReal[]> concentration;
+    private Value<PositiveReal> sum;
     private static final String sumName = "sum";
 
 
     public Dirichlet(@ParameterInfo(name=concParamName, narrativeName = "concentration",
-            description="the concentration parameters of a Dirichlet distribution.") Value<Number[]> concentration,
+            description="the concentration parameters of a Dirichlet distribution.")
+                     Value<PositiveReal[]> concentration,
                      @ParameterInfo(name = sumName,
                              description = "The expected sum of values. By default, the sum is 1.",
-                             optional = true) Value<Number> sum){
+                             optional = true) Value<PositiveReal> sum){
         super();
         this.concentration = concentration;
         if (sum != null){
@@ -44,11 +48,11 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
             category = GeneratorCategory.PRIOR,
             examples = {"birthDeathRhoSampling.lphy","dirichlet.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"},
             description="The dirichlet probability distribution.")
-    public RandomVariable<Double[]> sample() {
+    public RandomVariable<Simplex> sample() {
         Double[] dirichlet = new Double[concentration.value().length];
         double total = 0.0;
         for (int i = 0; i < dirichlet.length; i++) {
-            double val = MathUtils.randomGamma(concentration.value()[i].doubleValue(), 1.0, random);
+            double val = MathUtils.randomGamma(concentration.value()[i].getPrimitive(), 1.0, random);
             dirichlet[i] = val;
             total += val;
         }
@@ -60,7 +64,7 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
             }
         } else {
             // Make sum expected value
-            double expectedSum = getSum().value().doubleValue();
+            double expectedSum = getSum().value().getPrimitive();
             for (int i = 0; i < dirichlet.length; i++) {
                 // scaling, sum * proportion
                 dirichlet[i] = (dirichlet[i] / total) * expectedSum;
@@ -70,8 +74,8 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
         return new RandomVariable<>("x", dirichlet, this);
     }
 
-    public double density(Double[] d) {
-        Number[] alpha = getConcentration().value();
+    public double density(PositiveReal[] d) {
+        PositiveReal[] alpha = getConcentration().value();
         if (alpha.length != d.length) {
             throw new IllegalArgumentException("Dimensions don't match");
         }
@@ -131,12 +135,12 @@ public class Dirichlet extends ParametricDistribution<Double[]> {
         super.setParam(paramName, value); // constructDistribution
     }
 
-    public Value<Number[]> getConcentration() {
+    public Value<PositiveReal[]> getConcentration() {
         return concentration;
     }
 
-    public Value<Number> getSum() {
+    public Value<PositiveReal> getSum() {
         if (sum != null) return sum;
-        else return new Value<>("", 1);
+        else return new Value<>(sumName, new PositiveRealImpl(1));
     }
 }
