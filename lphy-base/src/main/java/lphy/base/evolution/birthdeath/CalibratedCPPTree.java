@@ -14,7 +14,6 @@ import lphy.core.model.annotation.ParameterInfo;
 import java.util.*;
 import static lphy.base.evolution.birthdeath.CPPUtils.*;
 
-// TODO: needs validation
 public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements GenerativeDistribution<TimeTree> {
 
     Value<Number> rootAge;

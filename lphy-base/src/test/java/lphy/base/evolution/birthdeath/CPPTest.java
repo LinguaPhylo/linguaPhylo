@@ -89,7 +89,7 @@ public class CPPTest {
 
     @Test
     void testCPP3() {
-        Value<Number> samplingProb = new Value("", 0);
+        Value<Number> samplingProb = new Value("", 0.5);
         Value<Number> birthRate = new Value("", 0.3);
         Value<Number> deathRate = new Value("", 0.1);
         Value<Integer> n = new Value("", 3);
@@ -131,5 +131,39 @@ public class CPPTest {
                 break;
             }
         }
+    }
+
+    @Test
+    void testCPP4() {
+        Value<Number> samplingProb = new Value("", 0.5);
+        Value<Number> birthRate = new Value("", 0.3);
+        Value<Number> deathRate = new Value("", 0.1);
+        Value<Integer> n = new Value("", 5);
+        Value<String[][]> cladeTaxa = new Value<>("", new String[][]{{"1", "2", "3"},{"1","2"}});
+        Value<Number[]> cladeMRCAAge = new Value<>("", new Number[]{2.0, 1.0});
+
+        CalibratedCPPTree cpp = new CalibratedCPPTree(birthRate, deathRate, samplingProb, n, cladeTaxa, cladeMRCAAge, null, null, null);
+        TimeTree cppTree = cpp.sample().value();
+        System.out.println(cppTree);
+
+        for (int i = 0; i < cppTree.getNodeCount(); i++) {
+            TimeTreeNode node = cppTree.getNodeByIndex(i);
+            if (node.getChildren().size() != 0) {
+                String[] children = node.getLeafNames();
+                if (children.length == 3 && Math.abs(node.getAge() - 2.0) < 1e-8) {
+                    List<String> childList = List.of(children);
+                    assertEquals (2, node.getAge(), 1e-8);
+                    assertTrue(childList.contains("1"), "Missing '1' in 3-clade");
+                    assertTrue(childList.contains("2"), "Missing '2' in 3-clade");
+                    assertTrue(childList.contains("3"), "Missing '3' in 3-clade");
+                }
+
+
+                if (children.length == 2 && List.of(children).contains("1") && List.of(children).contains("2")) {
+                    assertEquals(1, node.getAge() , 1e-8);
+                }
+            }
+        }
+
     }
 }
