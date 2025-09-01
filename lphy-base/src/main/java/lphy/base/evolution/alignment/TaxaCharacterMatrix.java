@@ -2,11 +2,21 @@ package lphy.base.evolution.alignment;
 
 import lphy.base.evolution.HasTaxa;
 import lphy.base.evolution.NChar;
+import lphy.base.evolution.Taxa;
 import lphy.core.model.MultiDimensional;
+import lphy.core.model.annotation.GeneratorCategory;
+import lphy.core.model.annotation.MethodInfo;
 
 import java.lang.reflect.Array;
 
 public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa, MultiDimensional {
+
+    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa",
+            category = GeneratorCategory.TAXA_ALIGNMENT,
+            examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
+    default Taxa taxa() {
+        return getTaxa();
+    }
 
     /**
      * @param taxon
