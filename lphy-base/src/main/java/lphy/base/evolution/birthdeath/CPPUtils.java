@@ -114,124 +114,21 @@ public class CPPUtils {
         return times;
     }
 
-    public static int sampleElement(List<Integer> A, double[] weights, int[] l, int i) {
+    public static int sampleElement(List<Integer> A, double[] weights) {
         Random random = new Random();
         double prob = random.nextDouble(); // random number between 0 and 1
         double cumulative = 0.0;
+        int result = 0;
         for (int j = 0; j < A.size(); j++) {
             cumulative += weights[j];
             if (prob <= cumulative) {
-                l[i] = A.get(j);
+                result = A.get(j);
                 break;
             }
         }
-        return l[i];
+        return result;
     }
 
-//    // TODO: what's returning here, what's calculating?
-//    public Object probCalibrations(double b, double d, double rho, List<TimeTreeNode> calibrations, Taxa taxa) {
-//        int nCalibrations = calibrations.size();
-//        int nCalibratedTaxa = 0;
-//        for (TimeTreeNode calibration : calibrations) {
-//            nCalibratedTaxa += calibration.getAllLeafNodes().size();
-//        }
-//        int n = taxa.ntaxa() - nCalibratedTaxa + nCalibrations;
-//        int k = nCalibrations;
-//
-//        double totalSum = sumOverSubsets(n,k);
-//        return null;
-//    }
-
-    /**
-     * Get the number of given taxa
-     * @param n length of the whole set
-     * @param k the length of each subset
-     * @return the total number of all subsets
-     */
-    private double sumOverSubsets(int n, int k) {
-        int[][] subsets = permutations(n,k);
-        double totalSum = 0;
-        for (int[] subset : subsets) {
-            totalSum += f(subset);
-        }
-        return totalSum;
-    }
-
-    // TODO: what is f()
-    private double f(int[] subset) {
-        return 0.0;
-    }
-
-    public static int[][] permutations(int n, int k) {
-        // Use default values from the R function:
-        // v = 1:n, set = true, repeats.allowed = false
-        int[] v = new int[n];
-        for (int i = 0; i < n; i++) {
-            v[i] = i + 1;
-        }
-        boolean set = true;
-        boolean repeatsAllowed = false;
-
-        // Input validation
-        if (n < 1) {
-            throw new IllegalArgumentException("bad value of n");
-        }
-        if (k < 1) {
-            throw new IllegalArgumentException("bad value of k");
-        }
-        if (k > n && !repeatsAllowed) {
-            throw new IllegalArgumentException("k > n and repeats.allowed=false");
-        }
-
-        // Generate permutations without repeats
-        return generateWithoutRepeats(n, k, v);
-    }
-
-    // Recursive function for permutations without repeats
-    private static int[][] generateWithoutRepeats(int n, int r, int[] v) {
-        if (r == 1) {
-            int[][] result = new int[n][1];
-            for (int i = 0; i < n; i++) {
-                result[i][0] = v[i];
-            }
-            return result;
-        } else if (n == 1) {
-            int[][] result = new int[1][r];
-            result[0][0] = v[0];
-            return result;
-        } else {
-            List<int[]> resultList = new ArrayList<>();
-
-            for (int i = 0; i < n; i++) {
-                // Create a new array without element at index i
-                int[] newV = new int[n - 1];
-                int idx = 0;
-                for (int j = 0; j < n; j++) {
-                    if (j != i) {
-                        newV[idx++] = v[j];
-                    }
-                }
-
-                // Recursive call
-                int[][] subPermutations = generateWithoutRepeats(n - 1, r - 1, newV);
-
-                // Combine current element with sub-permutations
-                for (int[] subPerm : subPermutations) {
-                    int[] newRow = new int[r];
-                    newRow[0] = v[i];
-                    System.arraycopy(subPerm, 0, newRow, 1, r - 1);
-                    resultList.add(newRow);
-                }
-            }
-
-            // Convert List to array
-            int[][] result = new int[resultList.size()][r];
-            for (int i = 0; i < resultList.size(); i++) {
-                result[i] = resultList.get(i);
-            }
-            return result;
-        }
-    }
 
     // ****** check methods ******
     public static int indexOfMin(List<Double> t) {
@@ -272,16 +169,18 @@ public class CPPUtils {
         // Check each calibration to see if it's a subset of cladeTaxa
         for (Map.Entry<Double, String[]> entry : cladeCalibrations.entrySet()) {
             String[] calibrationTaxa = entry.getValue();
-            boolean isSubset = true;
+            // assume it is super set, unless check unique names
+            boolean isSuperSet = true;
 
             for (String taxon : calibrationTaxa) {
                 if (!cladeTaxa.contains(taxon)) {
-                    isSubset = false;
+                    isSuperSet = false;
                     break;
                 }
             }
 
-            result[i++] = isSubset;
+            result[i] = isSuperSet;
+            i++;
         }
 
         return result;
@@ -310,7 +209,8 @@ public class CPPUtils {
                 }
             }
 
-            result[i++] = isSubset;
+            result[i] = isSubset;
+            i++;
         }
 
         return result;
@@ -327,5 +227,111 @@ public class CPPUtils {
         double t = transform(p, birthRate, deathRate, nTaxa);
         return t;
     }
+
+    // TODO: not finished
+//    public Object probCalibrations(double b, double d, double rho, List<TimeTreeNode> calibrations, Taxa taxa) {
+//        int nCalibrations = calibrations.size();
+//        int nCalibratedTaxa = 0;
+//        for (TimeTreeNode calibration : calibrations) {
+//            nCalibratedTaxa += calibration.getAllLeafNodes().size();
+//        }
+//        int n = taxa.ntaxa() - nCalibratedTaxa + nCalibrations;
+//        int k = nCalibrations;
+//
+//        double totalSum = sumOverSubsets(n,k);
+//        return null;
+//    }
+
+//    /**
+//     * Get the number of given taxa
+//     * @param n length of the whole set
+//     * @param k the length of each subset
+//     * @return the total number of all subsets
+//     */
+//    private double sumOverSubsets(int n, int k) {
+//        int[][] subsets = permutations(n,k);
+//        double totalSum = 0;
+//        for (int[] subset : subsets) {
+//            totalSum += f(subset);
+//        }
+//        return totalSum;
+//    }
+//
+//    // TODO: what is f()
+//    private double f(int[] subset) {
+//        return 0.0;
+//    }
+//
+//    public static int[][] permutations(int n, int k) {
+//        // Use default values from the R function:
+//        // v = 1:n, set = true, repeats.allowed = false
+//        int[] v = new int[n];
+//        for (int i = 0; i < n; i++) {
+//            v[i] = i + 1;
+//        }
+//        boolean set = true;
+//        boolean repeatsAllowed = false;
+//
+//        // Input validation
+//        if (n < 1) {
+//            throw new IllegalArgumentException("bad value of n");
+//        }
+//        if (k < 1) {
+//            throw new IllegalArgumentException("bad value of k");
+//        }
+//        if (k > n && !repeatsAllowed) {
+//            throw new IllegalArgumentException("k > n and repeats.allowed=false");
+//        }
+//
+//        // Generate permutations without repeats
+//        return generateWithoutRepeats(n, k, v);
+//    }
+//
+//    // Recursive function for permutations without repeats
+//    private static int[][] generateWithoutRepeats(int n, int r, int[] v) {
+//        if (r == 1) {
+//            int[][] result = new int[n][1];
+//            for (int i = 0; i < n; i++) {
+//                result[i][0] = v[i];
+//            }
+//            return result;
+//        } else if (n == 1) {
+//            int[][] result = new int[1][r];
+//            result[0][0] = v[0];
+//            return result;
+//        } else {
+//            List<int[]> resultList = new ArrayList<>();
+//
+//            for (int i = 0; i < n; i++) {
+//                // Create a new array without element at index i
+//                int[] newV = new int[n - 1];
+//                int idx = 0;
+//                for (int j = 0; j < n; j++) {
+//                    if (j != i) {
+//                        newV[idx++] = v[j];
+//                    }
+//                }
+//
+//                // Recursive call
+//                int[][] subPermutations = generateWithoutRepeats(n - 1, r - 1, newV);
+//
+//                // Combine current element with sub-permutations
+//                for (int[] subPerm : subPermutations) {
+//                    int[] newRow = new int[r];
+//                    newRow[0] = v[i];
+//                    System.arraycopy(subPerm, 0, newRow, 1, r - 1);
+//                    resultList.add(newRow);
+//                }
+//            }
+//
+//            // Convert List to array
+//            int[][] result = new int[resultList.size()][r];
+//            for (int i = 0; i < resultList.size(); i++) {
+//                result[i] = resultList.get(i);
+//            }
+//            return result;
+//        }
+//    }
+
 
 }

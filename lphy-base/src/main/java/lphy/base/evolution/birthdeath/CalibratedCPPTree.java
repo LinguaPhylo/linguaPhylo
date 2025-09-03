@@ -76,6 +76,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         int n = getN().value().intValue();
         String[][] cladeTaxaNames = getCladeTaxa().value();
         Number[] cladeAges = getCladeMRCAAge().value();
+
         // initialise params
         double rootAge = 0;
         TimeTree tree = new TimeTree();
@@ -96,23 +97,21 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // if root calibration is already in clade calibration
         if (cladeCalibrations.lastEntry().getValue().length == n){
+            rootConditioned = true;
             // if calibration conflict with rootAge
-            if (rootAge != 0 &&  cladeCalibrations.lastEntry().getKey() != getRootAge().value()){
+            if (rootAge != 0 &&  cladeCalibrations.lastEntry().getKey() != rootAge){
                 throw new IllegalArgumentException("The calibrated root age should be the same as the root age!");
             } else {
                 // if only one root calibration, then return cpp
                 if (cladeCalibrations.size() == 1){
                     CPPTree cpp = new CPPTree(getBirthRate(), getDeathRate(), getSamplingProb(),
-                            new Value<>("", cladeCalibrations.get(cladeCalibrations.firstKey())), getN(), new Value<>("", cladeCalibrations.firstKey()), null);
+                            new Value<>("", cladeCalibrations.lastEntry().getValue()), getN(), new Value<>("", cladeCalibrations.lastKey()), null);
                     tree = cpp.sample().value();
                     return new RandomVariable<>("", tree, this);
                 } else {
                     // else specify rootAge and remove the root calibration from cladeCalibrations
-                    rootAge = cladeCalibrations.lastEntry().getKey();
-                    rootConditioned = true;
-                    for (String name : cladeCalibrations.lastEntry().getValue()) {
-                        backUpNames.add(name);
-                    }
+                    rootAge = cladeCalibrations.lastKey();
+                    backUpNames = Arrays.stream(cladeCalibrations.lastEntry().getValue()).toList();
                     cladeCalibrations.remove(cladeCalibrations.lastEntry().getKey());
                 }
             }
@@ -213,7 +212,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 l[i] = A.get(0);
             } else {
                 // sample one element from A with probability weights
-                l[i] = sampleElement(A, weights, l, i);
+                l[i] = sampleElement(A, weights);
             }
 
             // step3: construct subtrees
@@ -248,7 +247,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 times.set(l[i],time);
             }
 
-            if ((l[i] < m -1 ) && (times.get(l[i] + 1) == 0)) {
+            if (l[i] < m -1  && times.get(l[i] + 1) == 0 ) {
                 double time = sampleTimes(birthRate, deathRate, samplingProb, maximalCalibrationsEntries.get(i).getKey(), conditionAge, 1)[0];
                 times.set(l[i] + 1, time);
             }
@@ -278,6 +277,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             times.set(0, max); // set this the largest
         }
 
+        // or if not root conditioned, set it to stem age
         if (!rootConditioned){
             times.set(0, conditionAge);
         }
@@ -367,11 +367,11 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             int nodeIndex = A.get(j); // or A[idx] if it's an array
             int count = 0;
             // Check if i < m and i+1 is within bounds
-            if (nodeIndex < m && (nodeIndex + 1) < times.size() && times.get(nodeIndex + 1) == 0) {
+            if (nodeIndex < m - 1 && times.get(nodeIndex + 1) == 0) {
                 count++;
             }
             // Check if nodeIndex is within bounds and times[i] == 0
-            if (nodeIndex < times.size() && times.get(nodeIndex) == 0) {
+            if (times.get(nodeIndex) == 0) {
                 count++;
             }
             s[j] = count;

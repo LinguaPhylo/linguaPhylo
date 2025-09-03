@@ -53,8 +53,10 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         double deathRate = getDeathRate().value().doubleValue();
         double rho = getSamplingProbability().value().doubleValue();
 
+        // double Q = CDF(birthRate, deathRate, rho, rootAge);
         // initialise a list for node ages
         List<Double> t = new ArrayList<>();
+        double conditionAge = 0;
 
         // determine root age
         double rootAge = 0;
@@ -64,16 +66,14 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             rootAge = getRootAge().value().doubleValue();
         }
 
-        // double Q = CDF(birthRate, deathRate, rho, rootAge);
+        conditionAge = rootAge;
 
         // determine stem age
-        double stemAge = 0;
-        if (getRandomStemAge() != null) {
-            stemAge = simRandomStem(birthRate, deathRate, rho, 1);
-            t.add(stemAge);
-        } else {
-            t.add(rootAge);
+        if (getRandomStemAge() != null && getRandomStemAge().value().booleanValue()) { // if random stem age
+            conditionAge = simRandomStem(birthRate, deathRate, rho, 1);
         }
+
+        t.add(conditionAge);
 
         // determine number of taxa and names
         int n = 0;
@@ -82,29 +82,37 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         if (getN() != null) {
             n = getN().value().intValue();
             if (getTaxa() != null) {
-                for (int i = 0; i < n; i++) {
-                    nameList.add(getTaxa().value()[i]);
+                // check the length
+                if (getTaxa().value().length > n) {
+                    throw new IllegalArgumentException("taxa must contain at most " + n + " elements");
+                } else {
+                    for (int i = 0; i < n; i++) {
+                        nameList.add(getTaxa().value()[i]);
+                    }
+                    if (getTaxa().value().length < n) {
+                        for (int i = 0; i < n - getTaxa().value().length; i++) {
+                            nameList.add(String.valueOf(i));
+                        }
+                    }
                 }
             } else {
                 for (int i = 0; i < n; i++) {
                     nameList.add(String.valueOf(i));
                 }
             }
-        } else {
-            n = (int) Double.POSITIVE_INFINITY;
         }
 
         // generate node ages
         int i = 1;
         while (i < n - 1){
             double ti;
-            if (n == (int) Double.POSITIVE_INFINITY){
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0.0, Double.POSITIVE_INFINITY, 1)[0];
+            if (n == 0){
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, Double.POSITIVE_INFINITY, 1)[0];
             } else {
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0.0, rootAge, 1)[0];
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
             }
 
-            if (n == (int) Double.POSITIVE_INFINITY && ti > rootAge) {
+            if (n == 0 && ti > rootAge) {
                 break;
             }
 
@@ -117,8 +125,8 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         int after = random.nextInt(t.size()) + 1; // insert after, at next index
         t.add(after, rootAge);
 
-        // check nTaxa is infinite
-        if (n == (int) Double.POSITIVE_INFINITY){
+        // check nTaxa is unassigned
+        if (n == 0){
             n = t.size();
             for (int j = 0; j < n; j++) {
                 nameList.add(String.valueOf(j));
