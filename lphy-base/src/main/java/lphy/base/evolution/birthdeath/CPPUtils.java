@@ -1,8 +1,6 @@
 package lphy.base.evolution.birthdeath;
 
 import lphy.base.distribution.Uniform;
-import lphy.base.evolution.tree.TimeTree;
-import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.core.model.Value;
 
 import java.util.*;
@@ -330,60 +328,4 @@ public class CPPUtils {
         return t;
     }
 
-    public static TimeTree mapCPPTree(List<String> nameList, List<Double> t) {
-        List<Double> nodeAges = new ArrayList<>(Collections.nCopies(t.size(), 0.0));
-
-        List<TimeTreeNode> activeNodes = new ArrayList<>();
-        // map all leaves into activeNodes
-        for (String name : nameList){
-            // all tips have age 0
-            TimeTreeNode leaf = new TimeTreeNode(0.0);
-            leaf.setId(name);
-            activeNodes.add(leaf);
-        }
-
-        // map the tree
-        while (activeNodes.size() > 1){
-            // Find the index `j` of the minimum time (earliest event).
-            int j = indexOfMin(t);
-
-            // If only two events remain, set `j` to 1 (because when two nodes are left, we combine them into the root).
-            if (t.size() == 2){
-                j = 1;
-            }
-            // If the first time is the smallest then set j to 1 (avoid j-1 < 0)
-            if (j == 0){
-                j = 1;
-            }
-
-            // Calculate the branch lengths for the left and right branches of the current split.
-            // The branch length is the difference in time between the current event `j` and the time of the nodes being merged.
-            TimeTreeNode node1 = activeNodes.get(j-1);
-            TimeTreeNode node2 = activeNodes.get(j);
-            TimeTreeNode parent = new TimeTreeNode(t.get(j), new TimeTreeNode[]{node1, node2});
-
-            activeNodes.remove(node1);
-            activeNodes.remove(node2);
-            activeNodes.add(parent);
-
-            nodeAges.remove(node1.getAge());
-            nodeAges.add(node2.getAge());
-            nodeAges.add(parent.getAge());
-
-            t.remove(t.get(j));
-        }
-
-        TimeTree tree = new TimeTree();
-        tree.setRoot(activeNodes.get(0));
-
-        // if tree has a stem
-        if (t.size() > nodeAges.size()){
-            // get a new node for the stem
-            TimeTreeNode newRoot = new TimeTreeNode(t.get(0));
-            // make the new root origin
-            newRoot.addChild(tree.getRoot());
-            tree.setRoot(newRoot);
-        }
-        return tree;
-    }
 }

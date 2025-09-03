@@ -167,7 +167,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             if (getStemAge()!= null) {
                 conditionAge = getStemAge().value().doubleValue();
             } else {
-                conditionAge = simRandomStem(birthRate, deathRate, maximalCalibrations.firstEntry().getKey(), n);
+                conditionAge = simRandomStem(birthRate, deathRate, maximalCalibrations.lastEntry().getKey(), n);
             }
         }
 
@@ -203,8 +203,8 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
             // step2: get sampled element
             // calculate weights
-            double w = CDF(getBirthRate().value().doubleValue(), getDeathRate().value().doubleValue(), getSamplingProb().value().doubleValue(), conditionAge) -
-                    CDF(getBirthRate().value().doubleValue(), getDeathRate().value().doubleValue(), getSamplingProb().value().doubleValue(), cladeCalibrationsEntries.get(i).getKey());
+            double w = CDF(birthRate, deathRate, samplingProb, conditionAge) -
+                    CDF(birthRate, deathRate, samplingProb, cladeCalibrationsEntries.get(i).getKey());
             // calculate score s for each node
             double[] s = calculateScore(A, m, times);
             // calculate weight for each node
@@ -269,13 +269,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // set the first node to be the max, make it the root
         if (times.size() > 1) {
-            double max = times.get(0);
-            for (int i = 0; i < times.size() ; i++) {
+            double max = times.get(1);
+            for (int i = 1; i < times.size() ; i++) {
                 if (times.get(i) > max) {
                     max = times.get(i);
                 }
             }
-            times.set(0, max); // set root or stem to be the first one
+            times.set(0, max); // set this the largest
         }
 
         if (!rootConditioned){
@@ -324,7 +324,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             // start from the youngest node
             int j = indexOfMin(times);
             if (times.size() == 2) {
-                j = 1; // make it being the second one
+                j = 1; // make it being the second one if there are only 2 nodes
             }
 
             // build relationship
