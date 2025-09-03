@@ -111,7 +111,9 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                 } else {
                     // else specify rootAge and remove the root calibration from cladeCalibrations
                     rootAge = cladeCalibrations.lastKey();
-                    backUpNames = Arrays.stream(cladeCalibrations.lastEntry().getValue()).toList();
+                    for (String name : cladeCalibrations.lastEntry().getValue()) {
+                        backUpNames.add(name);
+                    }
                     cladeCalibrations.remove(cladeCalibrations.lastEntry().getKey());
                 }
             }
