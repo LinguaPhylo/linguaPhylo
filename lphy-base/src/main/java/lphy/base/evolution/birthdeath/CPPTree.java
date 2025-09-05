@@ -69,7 +69,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         conditionAge = rootAge;
 
         // determine stem age
-        if (getRandomStemAge() != null && getRandomStemAge().value().booleanValue()) { // if random stem age
+        if (getRandomStemAge() != null && getRandomStemAge().value()) { // if random stem age
             conditionAge = simRandomStem(birthRate, deathRate, rho, 1);
         }
 
@@ -80,7 +80,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         List<String> nameList = new ArrayList<>();
 
         if (getN() != null) {
-            n = getN().value().intValue();
+            n = getN().value();
             if (getTaxa() != null) {
                 // check the length
                 if (getTaxa().value().length > n) {
@@ -106,15 +106,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         int i = 1;
         while (i < n - 1){
             double ti;
-            if (n == 0){
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, Double.POSITIVE_INFINITY, 1)[0];
-            } else {
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
-            }
-
-            if (n == 0 && ti > rootAge) {
-                break;
-            }
+            ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
 
             t.add(ti);
             i++;

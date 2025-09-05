@@ -9,6 +9,31 @@ import java.util.*;
        The mathematical and sampling methods for CPP
     */
 public class CPPUtils {
+    public static class Clade{
+        private String[] names;
+        private double age;
+        public Clade(double age, String[] names){
+            this.age = age;
+            this.names = names;
+        }
+
+        public String[] getNames(){
+            return names;
+        }
+
+        public double getAge(){
+            return age;
+        }
+
+        public void setAge(double age){
+            this.age = age;
+        }
+
+        public void setNames(String[] names){
+            this.names = names;
+        }
+    }
+
     // ****** mathematical methods ******
     public static double CDF(double b, double d, double rho, double t) {
         double p = rho * b * (1 - Math.exp(-(b - d) * t)) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * t));
@@ -31,9 +56,7 @@ public class CPPUtils {
     }
 
     public static double transform(double p, double birthRate, double deathRate, int nSims) {
-        double t = Math.log((deathRate * Math.pow(p, 1.0 / nSims) - birthRate)
-                / (birthRate * (Math.pow(p, 1.0 / nSims) - 1.0)))
-                / (birthRate - deathRate);
+        double t = Math.log((deathRate * Math.pow(p, (double) 1 / nSims) - birthRate) / (birthRate * (Math.pow(p, (double) 1 / nSims) - 1))) / (birthRate - deathRate);
         return t;
     }
 
@@ -114,23 +137,32 @@ public class CPPUtils {
         return times;
     }
 
-    public static int sampleElement(List<Integer> A, double[] weights) {
-        Random random = new Random();
-        double prob = random.nextDouble(); // random number between 0 and 1
-        double cumulative = 0.0;
-        int result = 0;
-        for (int j = 0; j < A.size(); j++) {
-            cumulative += weights[j];
-            if (prob <= cumulative) {
-                result = A.get(j);
-                break;
+    public static int sampleIndex(double[] weights) {
+        // Step 1: build cumulative sum (CDF)
+        double[] cdf = new double[weights.length];
+        cdf[0] = weights[0];
+        for (int i = 1; i < weights.length; i++) {
+            cdf[i] = cdf[i - 1] + weights[i];
+        }
+
+        // Step 2: generate a uniform random number between 0 and 1
+        Uniform uniform = new Uniform(new Value<>("",0), new Value<>("", 1));
+        double num = uniform.sample().value();
+
+        // Step 3: find the first index where cdf[i] >= num
+        for (int i = 0; i < cdf.length; i++) {
+            if (num <= cdf[i]) {
+                return i;
             }
         }
-        return result;
+
+        // should not happen
+        return -1;
     }
 
 
-    // ****** check methods ******
+
+        // ****** check methods ******
     public static int indexOfMin(List<Double> t) {
         int minIndex = 0;
         double minValue = t.get(0);
@@ -156,23 +188,19 @@ public class CPPUtils {
     }
 
     // returns list of booleans if clade contains cladeCalibrations.get(i) under the partial order of set inclusion
-    public static boolean[] isSuperSetOf(TreeMap<Double, String[]> clade, TreeMap<Double, String[]> cladeCalibrations) {
-        Set<String> cladeTaxa = new HashSet<>();
-        for (String[] taxaArray : clade.values()) {
-            cladeTaxa.addAll(Arrays.asList(taxaArray));
-        }
+    public static boolean[] isSuperSetOf(Clade clade, List<Clade> cladeCalibrations) {
+        Set<String> cladeTaxa = new HashSet<>(Arrays.asList(clade.getNames()));
 
         // Prepare result array
         boolean[] result = new boolean[cladeCalibrations.size()];
         int i = 0;
 
         // Check each calibration to see if it's a subset of cladeTaxa
-        for (Map.Entry<Double, String[]> entry : cladeCalibrations.entrySet()) {
-            String[] calibrationTaxa = entry.getValue();
+        for (Clade entry : cladeCalibrations) {
             // assume it is super set, unless check unique names
             boolean isSuperSet = true;
 
-            for (String taxon : calibrationTaxa) {
+            for (String taxon : entry.getNames()) {
                 if (!cladeTaxa.contains(taxon)) {
                     isSuperSet = false;
                     break;
@@ -186,23 +214,17 @@ public class CPPUtils {
         return result;
     }
     // returns list of TRUE if clade is subset of cladeCalibrations.get(i) under the partial order of set inclusion
-    public static boolean[] isSubsetOf(TreeMap<Double, String[]> clade, TreeMap<Double, String[]> cladeCalibrations) {
-        // Combine all taxa from the clade into a single set
-        Set<String> cladeTaxa = new HashSet<>();
-        for (String[] taxaArray : clade.values()) {
-            cladeTaxa.addAll(Arrays.asList(taxaArray));
-        }
-
+    public static boolean[] isSubsetOf(Clade clade, List<Clade> cladeCalibrations) {
         // Prepare result array
         boolean[] result = new boolean[cladeCalibrations.size()];
         int i = 0;
 
         // For each calibration, check if clade is a subset
-        for (Map.Entry<Double, String[]> entry : cladeCalibrations.entrySet()) {
-            Set<String> calibrationSet = new HashSet<>(Arrays.asList(entry.getValue()));
+        for (Clade entry : cladeCalibrations) {
+            Set<String> calibrationSet = new HashSet<>(Arrays.asList(entry.getNames()));
             boolean isSubset = true;
 
-            for (String taxon : cladeTaxa) {
+            for (String taxon : clade.getNames()) {
                 if (!calibrationSet.contains(taxon)) {
                     isSubset = false;
                     break;
