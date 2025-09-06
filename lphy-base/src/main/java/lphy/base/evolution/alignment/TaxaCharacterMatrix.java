@@ -11,13 +11,6 @@ import java.lang.reflect.Array;
 
 public interface TaxaCharacterMatrix<T> extends NChar, HasTaxa, MultiDimensional {
 
-    @MethodInfo(description = "the taxa of the alignment.", narrativeName = "list of taxa",
-            category = GeneratorCategory.TAXA_ALIGNMENT,
-            examples = {"twoPartitionCoalescentNex.lphy","https://linguaphylo.github.io/tutorials/time-stamped-data/"})
-    default Taxa taxa() {
-        return getTaxa();
-    }
-
     /**
      * @param taxon
      * @param characterColumn
