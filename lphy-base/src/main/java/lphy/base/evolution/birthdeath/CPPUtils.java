@@ -45,7 +45,7 @@ public class CPPUtils {
         return t;
     }
 
-    public double densityBD(double b, double d, double rho, double time) {
+    public static double densityBD(double b, double d, double rho, double time) {
         double density = rho * b * (b - d) * Math.exp(-(b - d) * time) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * time));
         return density;
     }
@@ -161,7 +161,6 @@ public class CPPUtils {
     }
 
 
-
         // ****** check methods ******
     public static int indexOfMin(List<Double> t) {
         int minIndex = 0;
@@ -250,7 +249,7 @@ public class CPPUtils {
         return t;
     }
 
-    // TODO: not finished
+        // TODO: not finished
 //    public Object probCalibrations(double b, double d, double rho, List<TimeTreeNode> calibrations, Taxa taxa) {
 //        int nCalibrations = calibrations.size();
 //        int nCalibratedTaxa = 0;

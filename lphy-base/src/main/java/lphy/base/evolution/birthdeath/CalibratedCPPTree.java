@@ -1,7 +1,6 @@
 package lphy.base.evolution.birthdeath;
 
 import lphy.base.distribution.DistributionConstants;
-import lphy.base.distribution.Uniform;
 import lphy.base.evolution.tree.TaxaConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
