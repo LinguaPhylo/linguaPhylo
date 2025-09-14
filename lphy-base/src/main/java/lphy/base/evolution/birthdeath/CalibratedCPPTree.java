@@ -39,7 +39,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                              @ParameterInfo(name = cladeMRCAAgeName, description = "an array of ages for clade most recent common ancestor, ages should be correspond with clade taxa array.") Value<Number[]> cladeMRCAAge,
                              @ParameterInfo(name = otherTaxaNames, description = "a string array of taxa names for non-calibrated tips", optional = true) Value<String[]> otherNames,
                              @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on optional.", optional = true) Value<Number> rootAge,
-                             @ParameterInfo(name = stemAgeName, description = "the age of stem of the tree root", optional = true) Value<Number> stemAge) {
+                             @ParameterInfo(name = stemAgeName, description = "the stem age working as condition time", optional = true) Value<Number> stemAge) {
         super(n, null, null);
         // check legal params
         if (cladeTaxa == null) throw new IllegalArgumentException("The clade taxa shouldn't be null, otherwise please use CPP");
@@ -89,7 +89,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             Clade clade = new Clade(cladeAges[i].doubleValue(), cladeTaxaNames[i]);
             cladeCalibrations.add(clade);
         }
-        // sort it
+        // sort it with decreasing order
         cladeCalibrations.sort((c1, c2) -> Double.compare(c2.getAge(), c1.getAge()));
 
         // if root age given, then make it rootConditioned
@@ -259,10 +259,13 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
         // step5: organise times
         // after calibrations, sample times for remaining unassigned nodes
+        List<Integer> zeroIndices = new ArrayList<>();
         for (int i = 0; i < times.size(); i++) {
-            if (times.get(i) == 0) {
-                times.set(i, sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, 1)[0]);
-            }
+            if (times.get(i) == 0) zeroIndices.add(i);
+        }
+        double[] sampledTimes = sampleTimes(birthRate, deathRate, samplingProb, 0, conditionAge, zeroIndices.size());
+        for (int j = 0; j < zeroIndices.size(); j++) {
+            times.set(zeroIndices.get(j), sampledTimes[j]);
         }
 
         // set the first node to be the max, make it the root

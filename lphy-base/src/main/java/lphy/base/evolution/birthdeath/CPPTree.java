@@ -53,7 +53,6 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         double deathRate = getDeathRate().value().doubleValue();
         double rho = getSamplingProbability().value().doubleValue();
 
-        // double Q = CDF(birthRate, deathRate, rho, rootAge);
         // initialise a list for node ages
         List<Double> t = new ArrayList<>();
         double conditionAge = 0;
@@ -104,12 +103,20 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
 
         // generate node ages
         int i = 1;
-        while (i < n - 1){
-            double ti;
-            ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
-
-            t.add(ti);
-            i++;
+        if (n != 0) {
+            while (i < n - 1) {
+                double ti;
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
+                t.add(ti);
+                i++;
+            }
+        } else {
+            double ti = 0.0;
+            while (ti <= rootAge) {
+                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 1)[0];
+                t.add(ti);
+                i ++;
+            }
         }
 
         // Insert the root age at a random position
@@ -153,24 +160,29 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             if (t.size() == 2){
                 j = 1;
             }
-            // If the first time is the smallest then set j to 1 (avoid j-1 < 0)
-            if (j == 0){
-                j = 1;
-            }
+//            // If the first time is the smallest then set j to 1 (avoid j-1 < 0)
+//            if (j == 0){
+//                j = 1;
+//            }
 
             // Calculate the branch lengths for the left and right branches of the current split.
             // The branch length is the difference in time between the current event `j` and the time of the nodes being merged.
             TimeTreeNode node1 = activeNodes.get(j-1);
             TimeTreeNode node2 = activeNodes.get(j);
-            TimeTreeNode parent = new TimeTreeNode(t.get(j), new TimeTreeNode[]{node1, node2});
+            TimeTreeNode parent = new TimeTreeNode(t.get(j));
+
+            node1.setParent(parent);
+            node2.setParent(parent);
+            parent.addChild(node1);
+            parent.addChild(node2);
 
             activeNodes.remove(node1);
             activeNodes.remove(node2);
             activeNodes.add(parent);
 
             nodeAges.remove(node1.getAge());
-            nodeAges.add(node2.getAge());
-            nodeAges.add(parent.getAge());
+            nodeAges.remove(node2.getAge());
+            nodeAges.add(t.get(j));
 
             t.remove(t.get(j));
         }
@@ -181,10 +193,8 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         // if tree has a stem
         if (t.size() > nodeAges.size()){
             // get a new node for the stem
-            TimeTreeNode newRoot = new TimeTreeNode(t.get(0));
-            // make the new root origin
-            newRoot.addChild(tree.getRoot());
-            tree.setRoot(newRoot);
+            double stemLength = t.get(0) - nodeAges.get(0);
+            tree.getRoot().setRootStem(stemLength);
         }
         return tree;
     }

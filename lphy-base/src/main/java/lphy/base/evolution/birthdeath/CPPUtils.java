@@ -1,6 +1,5 @@
 package lphy.base.evolution.birthdeath;
 
-import lphy.base.distribution.Uniform;
 import lphy.core.model.Value;
 
 import java.util.*;
@@ -36,7 +35,12 @@ public class CPPUtils {
 
     // ****** mathematical methods ******
     public static double CDF(double b, double d, double rho, double t) {
-        double p = rho * b * (1 - Math.exp(-(b - d) * t)) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * t));
+        double p;
+        if (Math.abs(b - d)> 1e-4) {
+            p = rho * b * (1 - Math.exp(-(b - d) * t)) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * t));
+        } else {
+            p = rho * b * t / (1 + rho + b + t);
+        }
         return p;
     }
 
@@ -46,7 +50,12 @@ public class CPPUtils {
     }
 
     public static double densityBD(double b, double d, double rho, double time) {
-        double density = rho * b * (b - d) * Math.exp(-(b - d) * time) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * time));
+        double density;
+        if (Math.abs(b-d)> 1e-4) {
+            density = rho * b * (b - d) * Math.exp(-(b - d) * time) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * time));
+        } else {
+            density = rho * b / Math.exp(1 + rho * b * time);
+        }
         return density;
     }
 
@@ -67,10 +76,6 @@ public class CPPUtils {
         // Calculate the CDF value (Q)
         double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
 
-        // uniform generator
-        Uniform uniformLower = new Uniform(new Value<>("", 0), new Value<>("", Q));
-        Uniform uniformHigher = new Uniform(new Value<>("", Q), new Value<>("", 1));
-
         // Array to store the result
         double[] results = new double[nSims];
 
@@ -78,9 +83,9 @@ public class CPPUtils {
         for (int i = 0; i < nSims; i++) {
             double p;
             if (lowerTail) {
-                p = uniformLower.sample().value();
+                p = Math.random()*Q;
             } else {
-                p = uniformHigher.sample().value();
+                p = Math.random()*(1-Q) + Q;
             }
             results[i] = inverseCDF(birthRate, deathRate, samplingProbability,p);
         }
@@ -92,9 +97,6 @@ public class CPPUtils {
         // Calculate the CDF value (Q)
         double Q = CDF(birthRate, deathRate, samplingProbability, conditionTime);
 
-        // uniform generator
-        Uniform uniform = new Uniform(new Value<>("", 0), new Value<>("", Q));
-
         // Array to store the result
         double[] results = new double[nSims];
 
@@ -102,7 +104,7 @@ public class CPPUtils {
         for (int i = 0; i < nSims; i++) {
             double p;
             // default sample from [0,Q], lowerTail=True
-            p = uniform.sample().value();
+            p = Math.random()*Q;
 
             results[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
@@ -120,16 +122,13 @@ public class CPPUtils {
         double Qlower = CDF(birthRate, deathRate, samplingProbability, lowerTime);
         double Qupper = CDF(birthRate, deathRate, samplingProbability, upperTime);
 
-        // uniform generator
-        Uniform uniform = new Uniform(new Value<>("", Qlower), new Value<>("", Qupper));
-
         // Array to store the result
         double[] times = new double[nSims];
 
         // Generate the samples
         for (int i = 0; i < nSims; i++) {
             // Generate a random probability between Qlower and Qupper
-            double p = uniform.sample().value();
+            double p = Math.random()*(Qupper - Qlower) + Qlower;
             // Use InverseCDF to get the sample time
             times[i] = inverseCDF(birthRate, deathRate, samplingProbability, p);
         }
@@ -138,27 +137,25 @@ public class CPPUtils {
     }
 
     public static int sampleIndex(double[] weights) {
-        // Step 1: build cumulative sum (CDF)
+        // normalize weights
+        double sum = 0;
+        for (double w : weights) sum += w;
         double[] cdf = new double[weights.length];
-        cdf[0] = weights[0];
+        cdf[0] = weights[0] / sum;
         for (int i = 1; i < weights.length; i++) {
-            cdf[i] = cdf[i - 1] + weights[i];
+            cdf[i] = cdf[i - 1] + weights[i] / sum;
         }
 
-        // Step 2: generate a uniform random number between 0 and 1
-        Uniform uniform = new Uniform(new Value<>("",0), new Value<>("", 1));
-        double num = uniform.sample().value();
+        // generate random number
+        double num = Math.random();
 
-        // Step 3: find the first index where cdf[i] >= num
+        // find index
         for (int i = 0; i < cdf.length; i++) {
-            if (num <= cdf[i]) {
-                return i;
-            }
+            if (num <= cdf[i]) return i;
         }
-
-        // should not happen
-        return -1;
+        return weights.length - 1; // fallback
     }
+
 
 
         // ****** check methods ******
@@ -242,8 +239,7 @@ public class CPPUtils {
     public static double simRandomStem(double birthRate, double deathRate, double greaterThan, int nTaxa){
         double Q = Qdist(birthRate, deathRate, greaterThan, nTaxa);
 
-        Uniform uniform = new Uniform(new Value<>("",Q), new Value<>("", 1));
-        double p = uniform.sample().value();
+        double p = Math.random()*(1-Q) + Q;
 
         double t = transform(p, birthRate, deathRate, nTaxa);
         return t;
