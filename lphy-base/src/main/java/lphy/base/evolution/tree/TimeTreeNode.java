@@ -109,6 +109,10 @@ public class TimeTreeNode {
         return (Double)getMetaData("rate");
     }
 
+    public void setRootStem(Double stemLength) { setMetaData("stem", stemLength);}
+
+    public Double getRootStem() {return (Double)getMetaData("stem");}
+
     public void setMetaData(String key, Object value) {
         metaData.put(key, value);
     }
