@@ -160,10 +160,6 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             if (t.size() == 2){
                 j = 1;
             }
-//            // If the first time is the smallest then set j to 1 (avoid j-1 < 0)
-//            if (j == 0){
-//                j = 1;
-//            }
 
             // Calculate the branch lengths for the left and right branches of the current split.
             // The branch length is the difference in time between the current event `j` and the time of the nodes being merged.
@@ -176,14 +172,11 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
             parent.addChild(node1);
             parent.addChild(node2);
 
-            activeNodes.remove(node1);
-            activeNodes.remove(node2);
-            activeNodes.add(parent);
+            activeNodes.set(j-1, parent);
+            activeNodes.remove(j);
 
-            nodeAges.remove(node1.getAge());
-            nodeAges.remove(node2.getAge());
-            nodeAges.add(t.get(j));
-
+            nodeAges.set(j-1, t.get(j));
+            nodeAges.remove(j);
             t.remove(t.get(j));
         }
 
