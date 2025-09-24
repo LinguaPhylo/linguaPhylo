@@ -24,6 +24,8 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     Value<Number> stemAge;
     Value<Number> rho;
     Value<String[]> otherNames;
+    double conditionAge;
+    boolean rootConditioned = false;
 
     List<String> nameList;
     public static final String cladeMRCAAgeName = "cladeMRCAAge";
@@ -80,7 +82,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         // initialise params
         double rootAge = 0;
         TimeTree tree = new TimeTree();
-        boolean rootConditioned = false;
+
         List<String> backUpNames = new ArrayList<>();
 
         // step1: get valid clade calibrations
@@ -156,7 +158,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         // step3: calculate condition age (root or stem age)
         // if rootConditioned, then condition on root
         // if !rootConditioned, then use stem age or sample one
-        double conditionAge = 0;
         if (rootConditioned) {
             int ind;
             ind = random.nextInt(m - 1) + 1; // [1, m-1]
@@ -494,6 +495,14 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
 
     public Value<String[]> getOtherNames(){
         return getParams().get(otherTaxaNames);
+    }
+
+    public Value<Double> getOrigin(){
+        return new Value<>("", conditionAge);
+    }
+
+    public boolean getRootCondition(){
+        return rootConditioned;
     }
 }
 
