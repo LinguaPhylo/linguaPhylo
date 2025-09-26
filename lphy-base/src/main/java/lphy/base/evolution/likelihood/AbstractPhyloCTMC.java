@@ -24,7 +24,7 @@ import java.util.*;
  * Created by Alexei Drummond on 2/02/20.
  * @author Alexei Drummond
  */
-public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignment> {
+public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignment>,PhyloLikelihood {
 
     public static final String treeParamName = "tree";
     public static final String muParamName = "mu";
