@@ -421,7 +421,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     }
 
     public List<Clade> getMaximalCalibrations(List<Clade> cladeCalibrations) {
-       List<Clade> maximalCalibrations = new ArrayList<>();
+        List<Clade> maximalCalibrations = new ArrayList<>();
 
         for (int i = 0; i < cladeCalibrations.size(); i++) {
             Clade current = cladeCalibrations.get(i);

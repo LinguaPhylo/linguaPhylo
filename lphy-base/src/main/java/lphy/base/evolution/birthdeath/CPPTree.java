@@ -26,6 +26,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     Value<Integer> n;
     Value<String[]> taxa;
     Value<Boolean> randomStemAge;
+    double conditionAge;
     public final String randomStemAgeName = "randomStemAge";
 
     public CPPTree(@ParameterInfo(name = BirthDeathConstants.lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
@@ -46,7 +47,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     }
 
     @GeneratorInfo(name="CPP", examples = {"CPPTree.lphy"},
-        description = "Generate a tree with coalescent point processing progress with node ages drawn i.i.d and factorised. If a root age is provided, the method conditions the tree generation on this root age.")
+            description = "Generate a tree with coalescent point processing progress with node ages drawn i.i.d and factorised. If a root age is provided, the method conditions the tree generation on this root age.")
     @Override
     public RandomVariable<TimeTree> sample() {
         double birthRate = getBirthRate().value().doubleValue();
@@ -55,12 +56,11 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
 
         // initialise a list for node ages
         List<Double> t = new ArrayList<>();
-        double conditionAge = 0;
 
         // determine root age
         double rootAge = 0;
         if (getRootAge() == null) {
-            rootAge = CPPUtils.sampleTimes(birthRate, deathRate, rho, 1)[0];
+            rootAge = sampleTimes(birthRate, deathRate, rho, 1)[0];
         } else {
             rootAge = getRootAge().value().doubleValue();
         }
@@ -106,14 +106,14 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
         if (n != 0) {
             while (i < n - 1) {
                 double ti;
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
+                ti = sampleTimes(birthRate, deathRate, rho, 0, rootAge, 1)[0];
                 t.add(ti);
                 i++;
             }
         } else {
             double ti = 0.0;
             while (ti <= rootAge) {
-                ti = CPPUtils.sampleTimes(birthRate, deathRate, rho, 1)[0];
+                ti = sampleTimes(birthRate, deathRate, rho, 1)[0];
                 t.add(ti);
                 i ++;
             }
@@ -236,5 +236,8 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     }
     public Value<String[]> getTaxa(){
         return getParams().get(TaxaConditionedTreeGenerator.taxaParamName);
+    }
+    public double getConditionAge(){
+        return conditionAge;
     }
 }
