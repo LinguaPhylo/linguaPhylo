@@ -47,7 +47,7 @@ public class CPPTree implements GenerativeDistribution<TimeTree>{
     }
 
     @GeneratorInfo(name="CPP", examples = {"CPPTree.lphy"},
-            description = "Generate a tree with coalescent point processing progress with node ages drawn i.i.d and factorised. If a root age is provided, the method conditions the tree generation on this root age.")
+            description = "Generate a tree with coalescent point processing process (CPP) with node ages drawn i.i.d and factorised. If a root age is provided, the method is conditioned on root age.")
     @Override
     public RandomVariable<TimeTree> sample() {
         double birthRate = getBirthRate().value().doubleValue();

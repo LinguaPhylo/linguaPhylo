@@ -68,7 +68,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     }
 
     @GeneratorInfo(name = "CalibratedCPP", examples = {"CalibratedCPPTree.lphy"},
-            description = "The CalibratedCCP method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method conditions the tree generation on this root age.")
+            description = "The Calibrated Coalescent Point Process (calibrated CPP) method accepts one or more clade taxa and generates a tip-labelled time tree. If a root age is provided, the method is conditioned on root age. If the stem age is provided, the origin is the stem age.")
     @Override
     public RandomVariable<TimeTree> sample() {
         // obtain pass in parameters
