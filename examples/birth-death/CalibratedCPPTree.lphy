@@ -3,7 +3,7 @@ mu ~ LogNormal(meanlog=-8, sdlog=0.05);
 rho ~ LogNormal(meanlog=0.4, sdlog=0.2);
 cladeName = ["1", "2"];
 
-T ~ CalibratedCPP(lambda=lambda, mu=mu, rho=rho, n=5, cladeTaxa = [cladeName], cladeMRCAAge=[0.1], rootAge=0.5);
+T ~ CalibratedCPP(lambda=lambda, mu=mu, rho=rho, n=5, cladeTaxa = [cladeName], cladeAge=[0.1], rootAge=0.5);
 sf ~ Dirichlet(conc=[2.0, 2.0, 2.0, 2.0]);
 er ~ Dirichlet(conc=[2.0, 4.0, 2.0, 2.0, 4.0, 2.0]);
 Q = gtr(freq=sf, rates=er); // construct the GTR instantaneous rate matrix

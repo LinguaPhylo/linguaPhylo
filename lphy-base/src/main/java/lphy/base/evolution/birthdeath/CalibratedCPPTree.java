@@ -19,7 +19,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     Value<Number> rootAge;
     Value<Number> birthRate;
     Value<Number> deathRate;
-    Value<Number[]> cladeMRCAAge;
+    Value<Number[]> cladeAge;
     Value<String[][]> cladeTaxa;
     Value<Number> stemAge;
     Value<Number> rho;
@@ -28,7 +28,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
     boolean rootConditioned = false;
 
     List<String> nameList;
-    public static final String cladeMRCAAgeName = "cladeMRCAAge";
+    public static final String cladeAgeName = "cladeAge";
     public static final String cladeTaxaName = "cladeTaxa";
     public static final String stemAgeName = "stemAge";
     public static final String otherTaxaNames = "otherNames";
@@ -38,28 +38,28 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
                              @ParameterInfo(name = BirthDeathConstants.rhoParamName, description = "sampling probability") Value<Number> rho,
                              @ParameterInfo(name = DistributionConstants.nParamName, description = "the total number of taxa.") Value<Integer> n,
                              @ParameterInfo(name = cladeTaxaName, description = "a string array of taxa id or a taxa object for clade taxa (e.g. dataframe, alignment or tree)") Value<String[][]> cladeTaxa,
-                             @ParameterInfo(name = cladeMRCAAgeName, description = "an array of ages for clade most recent common ancestor, ages should be correspond with clade taxa array.") Value<Number[]> cladeMRCAAge,
+                             @ParameterInfo(name = cladeAgeName, description = "an array of ages for clade most recent common ancestor, ages should be correspond with clade taxa array.") Value<Number[]> cladeAge,
                              @ParameterInfo(name = otherTaxaNames, description = "a string array of taxa names for non-calibrated tips", optional = true) Value<String[]> otherNames,
                              @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on optional.", optional = true) Value<Number> rootAge,
                              @ParameterInfo(name = stemAgeName, description = "the stem age working as condition time", optional = true) Value<Number> stemAge) {
         super(n, null, null);
         // check legal params
         if (cladeTaxa == null) throw new IllegalArgumentException("The clade taxa shouldn't be null, otherwise please use CPP");
-        if (cladeMRCAAge == null) throw new IllegalArgumentException("The clade mrca age shouldn't be null!");
-        if (cladeTaxa.value().length != cladeMRCAAge.value().length) {
+        if (cladeAge == null) throw new IllegalArgumentException("The clade mrca age shouldn't be null!");
+        if (cladeTaxa.value().length != cladeAge.value().length) {
             throw new IllegalArgumentException("The clade mrca age should correspond to the clade taxa!");
         }
         if (rootAge != null & stemAge != null) {
             LoggerUtils.log.warning("Stem age will be ignored when root age is provided.");
         }
-        for (int i = 0; i < cladeMRCAAge.value().length; i++) {
-            if (rootAge != null && rootAge.value().doubleValue() < cladeMRCAAge.value()[i].doubleValue()) {
+        for (int i = 0; i < cladeAge.value().length; i++) {
+            if (rootAge != null && rootAge.value().doubleValue() < cladeAge.value()[i].doubleValue()) {
                 throw new IllegalArgumentException("The clade MRCA age shouldn't be smaller than the tree root age!");
             }
         }
         this.rho = rho;
         this.cladeTaxa = cladeTaxa;
-        this.cladeMRCAAge = cladeMRCAAge;
+        this.cladeAge = cladeAge;
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rootAge = rootAge;
@@ -77,7 +77,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         double samplingProb = getSamplingProb().value().doubleValue();
         int n = getN().value().intValue();
         String[][] cladeTaxaNames = getCladeTaxa().value();
-        Number[] cladeAges = getCladeMRCAAge().value();
+        Number[] cladeAges = getCladeAge().value();
 
         // initialise params
         double rootAge = 0;
@@ -442,7 +442,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         map.put(BirthDeathConstants.muParamName, deathRate);
         map.put(BirthDeathConstants.rhoParamName, rho);
         map.put(DistributionConstants.nParamName, n);
-        map.put(cladeMRCAAgeName, cladeMRCAAge);
+        map.put(cladeAgeName, cladeAge);
         map.put(cladeTaxaName, cladeTaxa);
         if (rootAge != null) map.put(BirthDeathConstants.rootAgeParamName, rootAge);
         if (stemAge != null) map.put(stemAgeName, stemAge);
@@ -457,7 +457,7 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         else if (paramName.equals(DistributionConstants.nParamName)) n = value;
         else if (paramName.equals(BirthDeathConstants.rootAgeParamName)) rootAge = value;
         else if (paramName.equals(cladeTaxaName)) cladeTaxa = value;
-        else if (paramName.equals(cladeMRCAAgeName)) cladeMRCAAge = value;
+        else if (paramName.equals(cladeAgeName)) cladeAge = value;
         else if (paramName.equals(otherTaxaNames)) otherNames = value;
         else if (paramName.equals(stemAgeName)) stemAge = value;
         else super.setParam(paramName, value);
@@ -483,8 +483,8 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
         return getParams().get(cladeTaxaName);
     }
 
-    public Value<Number[]> getCladeMRCAAge(){
-        return getParams().get(cladeMRCAAgeName);
+    public Value<Number[]> getCladeAge(){
+        return getParams().get(cladeAgeName);
     }
 
     public Value<Number> getStemAge(){return getParams().get(stemAgeName);}
