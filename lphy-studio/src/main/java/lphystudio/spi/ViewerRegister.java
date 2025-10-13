@@ -506,8 +506,6 @@ public class ViewerRegister {
     static {
         loader = ServiceLoader.load(Viewer.class);
 
-        // register all viewers in studio core
-        viewerList.addAll(Arrays.stream(viewers).toList());
 
         //*** Viewer must have a public no-args constructor ***//
         Iterator<Viewer> viewerIterator = loader.iterator();
@@ -525,6 +523,10 @@ public class ViewerRegister {
             // TODO validation here?
             viewerList.add(viewer);
         }
+
+        // register all viewers in studio core
+        viewerList.addAll(Arrays.stream(viewers).toList());
+
 
     }
 
