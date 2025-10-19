@@ -22,6 +22,12 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
     // regular eigen decomposition methods used by default
     public boolean canReturnComplexDiagonalization() { return false; }
 
+    /**
+     * If this is overwritten, the child class needs to call super.{@link #normalize(Double[], Double[][])},
+     * to make sure the mean rate is involved.
+     * @param freqs
+     * @param Q
+     */
     void normalize(Double[] freqs, Double[][] Q) {
         normalize(freqs, Q, totalRateDefault1());
     }
