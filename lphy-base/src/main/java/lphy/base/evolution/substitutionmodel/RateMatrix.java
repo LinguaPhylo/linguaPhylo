@@ -28,11 +28,11 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
      * @param freqs
      * @param Q
      */
-    void normalize(Double[] freqs, Double[][] Q) {
+    void normalize(final Double[] freqs, Double[][] Q) {
         normalize(freqs, Q, totalRateDefault1());
     }
 
-    protected void normalize(Double[] freqs, Double[][] Q, double rate) {
+    protected void normalize(final Double[] freqs, Double[][] Q, double rate) {
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;
         for (int i = 0; i < Q.length; i++) {
@@ -47,7 +47,7 @@ public abstract class RateMatrix extends DeterministicFunction<Double[][]> {
     }
 
     // Java Double matter
-    Double[][] normalize(double[] freqs, double[][] Q, double rate) {
+    Double[][] normalize(final double[] freqs, double[][] Q, double rate) {
         Double[][] Qn = new Double[Q.length][Q.length];
         // normalise rate matrix to one expected substitution per unit time
         double subst = 0.0;

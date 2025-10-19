@@ -101,7 +101,7 @@ public class BinaryCovarion extends RateMatrix {
         return unnormalizedQ;
     }
 
-    void normalize(Double[] freqs, Double[][] Q) {
+    void normalize(final Double[] freqs, Double[][] Q) {
 //        double subst = 0.0;
 //        int dimension = freqs.length;
 //
@@ -115,7 +115,7 @@ public class BinaryCovarion extends RateMatrix {
 //                Q[i][j] = Q[i][j] / subst;
 //            }
 //        }
-        // this take mean rate
+        // this processes mean rate
         super.normalize(freqs, Q);
 
         double switchingProportion = 0.0;
