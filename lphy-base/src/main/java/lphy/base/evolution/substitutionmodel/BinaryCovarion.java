@@ -33,7 +33,7 @@ public class BinaryCovarion extends RateMatrix {
                           @ParameterInfo(name = hfreqParamName, description = "the frequencies of the hidden rates") Value<Number[]> hfreq,
                           @ParameterInfo(name = meanRateParamName, description = "the mean rate of the process. default = 1.0", optional = true) Value<Number> meanRate) {
 
-        super(meanRate); // TODO this seems not used because of overwrites
+        super(meanRate);
 
         setParam(AlphaParamName, alpha);
         setParam(SwitchRateParamName, s);
@@ -102,19 +102,21 @@ public class BinaryCovarion extends RateMatrix {
     }
 
     void normalize(Double[] freqs, Double[][] Q) {
-        double subst = 0.0;
-        int dimension = freqs.length;
-
-        for (int i = 0; i < dimension; i++) {
-            subst += -Q[i][i] * freqs[i];
-        }
-
-        // normalize, including switches
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                Q[i][j] = Q[i][j] / subst;
-            }
-        }
+//        double subst = 0.0;
+//        int dimension = freqs.length;
+//
+//        for (int i = 0; i < dimension; i++) {
+//            subst += -Q[i][i] * freqs[i];
+//        }
+//
+//        // normalize, including switches
+//        for (int i = 0; i < dimension; i++) {
+//            for (int j = 0; j < dimension; j++) {
+//                Q[i][j] = Q[i][j] / subst;
+//            }
+//        }
+        // this take mean rate
+        super.normalize(freqs, Q);
 
         double switchingProportion = 0.0;
         switchingProportion += Q[0][2] * freqs[2];
@@ -125,8 +127,8 @@ public class BinaryCovarion extends RateMatrix {
         //System.out.println("switchingProportion=" + switchingProportion);
 
         // normalize, removing switches
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
+        for (int i = 0; i < Q.length; i++) {
+            for (int j = 0; j < Q.length; j++) {
                 Q[i][j] = Q[i][j] / (1.0 - switchingProportion);
             }
         }
