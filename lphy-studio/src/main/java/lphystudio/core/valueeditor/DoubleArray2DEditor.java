@@ -2,7 +2,7 @@ package lphystudio.core.valueeditor;
 
 import java.text.DecimalFormat;
 
-public class DoubleArray2DEditor extends Abstract2DEditor {
+public class DoubleArray2DEditor extends Abstract2DEditor<Double> {
 
     Double[][] matrix;
 
@@ -17,7 +17,7 @@ public class DoubleArray2DEditor extends Abstract2DEditor {
         draw2DArray(matrix, editable);
     }
 
-    protected String formatMatrixElement(Object element) {
+    protected String formatMatrixElement(Double element) {
         String str = elementToString(element);
         if (str == null || str.isEmpty() || str.equals("null"))
             return "null";

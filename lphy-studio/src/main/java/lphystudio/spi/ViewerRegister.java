@@ -18,8 +18,8 @@ import lphystudio.core.valueeditor.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class registers viewers for different classes of values
@@ -194,6 +194,37 @@ public class ViewerRegister {
             }
 
             return new DoubleArray2DEditor(rawValue, editable);
+        }
+
+        @Override
+        public String toString() {
+            return "Double 2d array Viewer";
+        }
+    };
+
+    private static Viewer doubleArray3DViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof Double[][][];
+
+            } else return object instanceof Double[][][];
+        }
+
+        public JComponent getViewer(Object object) {
+            boolean editable = false;
+            Double[][][] rawValue;
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                editable = value.getGenerator() == null;
+                rawValue = (Double[][][]) value.value();
+            } else {
+                rawValue = (Double[][][]) object;
+            }
+
+            return new DoubleArray3DEditor(rawValue, editable);
         }
 
         @Override
@@ -481,6 +512,7 @@ public class ViewerRegister {
             stringValueViewer,
             booleanValueViewer,
             doubleArray2DViewer,
+            doubleArray3DViewer,
             integerArray2DViewer,
             booleanArray2DViewer,
             mapValueViewer,
@@ -538,7 +570,8 @@ public class ViewerRegister {
     public static JComponent getJComponentForValue(Object object) {
         // loop through all viewers.
         for (Viewer viewer : viewerList) {
-            if (viewer.match(object)) return viewer.getViewer(object);
+            if (viewer.match(object))
+                return viewer.getViewer(object);
         }
 //            LoggerUtils.log.severe("Found no viewer for " + object);
         String label;

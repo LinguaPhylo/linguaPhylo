@@ -1,6 +1,6 @@
 package lphystudio.core.valueeditor;
 
-public class BooleanArray2DEditor extends Abstract2DEditor {
+public class BooleanArray2DEditor extends Abstract2DEditor<Boolean> {
 
     Boolean[][] matrix;
 
@@ -10,7 +10,7 @@ public class BooleanArray2DEditor extends Abstract2DEditor {
         draw2DArray(matrix, editable);
     }
 
-    protected String formatMatrixElement(Object element) {
+    protected String formatMatrixElement(Boolean element) {
         return elementToString(element);
     }
 }

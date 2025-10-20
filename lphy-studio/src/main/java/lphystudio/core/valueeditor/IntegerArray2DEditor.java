@@ -1,6 +1,6 @@
 package lphystudio.core.valueeditor;
 
-public class IntegerArray2DEditor extends Abstract2DEditor {
+public class IntegerArray2DEditor extends Abstract2DEditor<Integer> {
 
     Integer[][] matrix;
 
@@ -11,14 +11,14 @@ public class IntegerArray2DEditor extends Abstract2DEditor {
     }
 
 
-    @Override
-    protected String elementToString(Object obj) {
-        if (obj instanceof Integer d)
-            return Integer.toString(d);
-        return obj.toString();
-    }
+//    @Override
+//    protected String elementToString(Integer element) {
+//        if (element instanceof Integer d)
+//            return Integer.toString(d);
+//        return Integer.toString(element);
+//    }
 
-    protected String formatMatrixElement(Object element) {
+    protected String formatMatrixElement(Integer element) {
         return elementToString(element);
     }
 }

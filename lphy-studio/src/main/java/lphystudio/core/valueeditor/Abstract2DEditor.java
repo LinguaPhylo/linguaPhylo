@@ -3,20 +3,20 @@ package lphystudio.core.valueeditor;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class Abstract2DEditor extends JPanel {
+public abstract class Abstract2DEditor<T> extends JPanel {
     JTextField[][] textFields;
     JLabel[][] labels;
 
     int GAP = 5;
     int corner = 5;
 
-    protected abstract String formatMatrixElement(Object element);
+    protected abstract String formatMatrixElement(T element);
 
-    protected String elementToString(Object element) {
+    protected String elementToString(T element) {
         return String.valueOf(element);
     }
 
-    protected void draw2DArray(Object[][] matrix, boolean editable) {
+    protected void draw2DArray(T[][] matrix, boolean editable) {
         setOpaque(false);
 
         int rowCount = matrix.length;
