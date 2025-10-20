@@ -229,7 +229,7 @@ public class ViewerRegister {
 
         @Override
         public String toString() {
-            return "Double 2d array Viewer";
+            return "Double 3d array Viewer";
         }
     };
 
@@ -292,6 +292,38 @@ public class ViewerRegister {
         }
     };
 
+    private static Viewer intArray3DViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof Integer[][][];
+
+            } else return object instanceof Integer[][][];
+        }
+
+        public JComponent getViewer(Object object) {
+            boolean editable = false;
+            Integer[][][] rawValue;
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                editable = value.getGenerator() == null;
+                rawValue = (Integer[][][]) value.value();
+            } else {
+                rawValue = (Integer[][][]) object;
+            }
+
+            return new IntegerArray3DEditor(rawValue, editable);
+        }
+
+        @Override
+        public String toString() {
+            return "Integer 3d array Viewer";
+        }
+    };
+
+
     private static Viewer booleanArray2DViewer = new Viewer() {
 
         public boolean match(Object object) {
@@ -320,6 +352,37 @@ public class ViewerRegister {
         @Override
         public String toString() {
             return "Boolean 2d array Viewer";
+        }
+    };
+
+    private static Viewer booleanArray3DViewer = new Viewer() {
+
+        public boolean match(Object object) {
+
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                return value.value() instanceof Boolean[][][];
+
+            } else return object instanceof Boolean[][][];
+        }
+
+        public JComponent getViewer(Object object) {
+            boolean editable = false;
+            Boolean[][][] rawValue;
+            if (object instanceof Value) {
+                Value value = (Value) object;
+                editable = value.getGenerator() == null;
+                rawValue = (Boolean[][][]) value.value();
+            } else {
+                rawValue = (Boolean[][][]) object;
+            }
+
+            return new BooleanArray3DEditor(rawValue, editable);
+        }
+
+        @Override
+        public String toString() {
+            return "Boolean 3d array Viewer";
         }
     };
 
@@ -514,7 +577,9 @@ public class ViewerRegister {
             doubleArray2DViewer,
             doubleArray3DViewer,
             integerArray2DViewer,
+            intArray3DViewer,
             booleanArray2DViewer,
+            booleanArray3DViewer,
             mapValueViewer,
             alignmentValueViewer,
             timeTreeValueViewer,
