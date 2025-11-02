@@ -1,5 +1,7 @@
 package lphy.base.evolution.datatype;
 
+import lphy.core.logger.LoggerUtils;
+
 import java.util.*;
 
 public class Variant{
@@ -49,45 +51,31 @@ public class Variant{
         this.genotype = genotype;
     }
 
+    private static final String[] SYMBOLS = {
+            "A", "C", "G", "T",
+            "R", "Y", "M", "W", "S", "K", "B", "D", "H", "V",
+            "N", "?", "-"
+    };
 
-    public String getCanonicalState(int index){
-        if (index == 0){
-            return "A";
-        } else if (index == 1){
-            return "C";
-        } else if (index == 2){
-            return "G";
-        } else if (index == 3){
-            return "T";
-        } else if (index == 4){
-            return "R";
-        } else if (index == 5){
-            return "Y";
-        } else if (index == 6){
-            return "M";
-        } else if (index == 7){
-            return "W";
-        } else if (index == 8){
-            return "S";
-        } else if (index == 9){
-            return "K";
-        } else if (index == 10){
-            return "B";
-        } else if (index == 11){
-            return "D";
-        } else if (index == 12){
-            return "H";
-        } else if (index == 13){
-            return "V";
-        } else if (index == 14){
-            return "N";
-        } else if (index == 15){
-            return "?";
-        } else if (index == 16){
-            return "-";
-        } else {
-            return "invalid state index";
-        }
+    // Reverse lookup table for quick symbol → index mapping
+    private static final Map<String, Integer> SYMBOL_TO_INDEX = Map.ofEntries(
+            Map.entry("A", 0), Map.entry("C", 1), Map.entry("G", 2), Map.entry("T", 3),
+            Map.entry("R", 4), Map.entry("Y", 5), Map.entry("M", 6), Map.entry("W", 7),
+            Map.entry("S", 8), Map.entry("K", 9), Map.entry("B", 10), Map.entry("D", 11),
+            Map.entry("H", 12), Map.entry("V", 13),
+            Map.entry("N", 14), Map.entry("?", 15), Map.entry("-", 16)
+    );
+
+    public static String getCanonicalState(int index) {
+        return (index >= 0 && index < SYMBOLS.length)
+                ? SYMBOLS[index]
+                : "?"; // fallback for invalid index
+    }
+
+    public static int getCanonicalState(String symbol) {
+        if (symbol == null) return -1;
+        Integer idx = SYMBOL_TO_INDEX.get(symbol.toUpperCase());
+        return (idx != null) ? idx : -1;
     }
 
     public static String inferGenotype(int ref, int alt) {
