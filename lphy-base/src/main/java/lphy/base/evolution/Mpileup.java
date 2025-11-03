@@ -38,19 +38,17 @@ public class Mpileup {
     public void addPileupData(String cellName, PileupSite.CellPileupData data) {
         pileupData.put(cellName, data);
     }
-    public void removeCell(String cellName) {
+    public void removePileupData(String cellName) {
         pileupData.remove(cellName);
     }
 
     public String getChromName() {
         return chromName;
     }
-
     public int getPosition() {
         return position;
     }
     public int getRef() {
         return ref;
     }
-
 }
