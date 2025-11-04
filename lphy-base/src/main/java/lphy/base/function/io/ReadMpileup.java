@@ -25,7 +25,6 @@ import static lphy.base.evolution.datatype.Variant.getCanonicalState;
 
 public class ReadMpileup extends DeterministicFunction<List<Mpileup>> {
     public final String cellNameFileName = "cellNames";
-    Value<String> cellNames;
 
     public ReadMpileup(@ParameterInfo(name = ReaderConst.FILE, description = "the name of mpileup file including path, should have .mpileup or .pileup suffix") Value<String> mpileup,
                        @ParameterInfo(name = cellNameFileName, description = "the name of cell name txt file including path, with .txt suffix. Containing the cell names of mpileup samples, one name per line.") Value<String> cellNames) {
