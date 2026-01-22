@@ -14,6 +14,7 @@ import lphy.base.evolution.branchrate.LocalClock;
 import lphy.base.evolution.coalescent.*;
 import lphy.base.evolution.coalescent.populationmodel.*;
 import lphy.base.evolution.continuous.*;
+import lphy.base.evolution.likelihood.MixturePhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
 import lphy.base.evolution.likelihood.SparsePhyloCTMC;
@@ -74,7 +75,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
                 // SparsePhyloCTMC.class,
-                AutoCorrelatedLogRates.class,
+                AutoCorrelatedLogRates.class, MixturePhyloCTMC.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
     }
 
