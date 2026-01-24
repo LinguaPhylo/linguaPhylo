@@ -1,0 +1,17 @@
+model {
+  meanRate = 1.0;
+
+  rootLogRate ~ Normal(mean=0, sd=0.4);
+  σ2 ~ LogNormal(meanlog=-1.5, sdlog=0.5);
+  λ ~ LogNormal(meanlog=2.0, sdlog=0.35);
+  ψ ~ Yule(lambda=λ, n=16);
+  nodeLogRates ~ AutoCorrelatedLogRates(rootLogRate=rootLogRate, sigma2=σ2, tree=ψ);
+  doNormalize = false;
+  tOrder = 10;
+  branchRates = AutoCorrelatedClock(tree=ψ, nodeLogRates=nodeLogRates, rootLogRate=rootLogRate,
+  sigma2=σ2, meanRate=meanRate, normalize=doNormalize, taylorOrder=tOrder);
+
+  D ~ PhyloCTMC(L=1000, Q=jukesCantor(), branchRates=branchRates, tree=ψ);
+  height = ψ.rootAge();
+  length = ψ.treeLength();
+}

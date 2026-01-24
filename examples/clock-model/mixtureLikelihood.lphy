@@ -1,0 +1,23 @@
+
+data {
+  L = 800;
+  n = 30;
+}
+model {
+  mu = 1.0;
+  λ ~ LogNormal(meanlog=2.0, sdlog=0.3);
+  ψ ~ Yule(lambda=λ, n=n);
+  D_strict ~ PhyloCTMC(L=L, Q=jukesCantor(), mu=mu, tree=ψ);
+  sigmaUCLN ~ LogNormal(meanlog=-1.5, sdlog=0.6);
+  uclnRates ~ UCLN_Mean1(tree=ψ, uclnSigma=sigmaUCLN);
+  D_relax ~ PhyloCTMC(L=L, Q=jukesCantor(), branchRates=uclnRates, mu=mu, tree=ψ);
+  rootLogRate ~ Normal(mean=0, sd=0.4);
+  σ2 ~ LogNormal(meanlog=-1.5, sdlog=0.5);
+  nodeLogRates ~ AutoCorrelatedLogRates(rootLogRate=rootLogRate, sigma2=σ2, tree=ψ);
+  branchRates = AutoCorrelatedClock(tree=ψ, nodeLogRates=nodeLogRates, rootLogRate=rootLogRate, sigma2=σ2, meanRate=1.0, normalize=false, taylorOrder=10);
+  D_auto ~ PhyloCTMC(L=L, Q=jukesCantor(), branchRates=branchRates, mu=mu, tree=ψ);
+  w = [1.0/3, 1.0/3, 1.0/3];
+  i ~ Categorical(p=w);
+  D ~ MixturePhyloCTMC(comp1=D_strict, comp2=D_relax, comp3=D_auto, index=i, weights=w);
+  length = ψ.treeLength();
+}
