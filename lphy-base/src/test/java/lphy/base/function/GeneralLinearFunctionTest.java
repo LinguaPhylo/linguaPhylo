@@ -16,7 +16,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "identity"));
+                new Value<>(null, "identity"),
+                null);
 
         Value<Double> result = func.apply();
         assertEquals(8.0, result.value(), 1e-10);
@@ -32,7 +33,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                null);  // no link specified
+                null,   // no link specified
+                null);  // no scale specified
 
         Value<Double> result = func.apply();
         assertEquals(8.0, result.value(), 1e-10);
@@ -48,7 +50,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "log"));
+                new Value<>(null, "log"),
+                null);
 
         Value<Double> result = func.apply();
         assertEquals(Math.exp(2.0), result.value(), 1e-10);
@@ -64,7 +67,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "logit"));
+                new Value<>(null, "logit"),
+                null);
 
         Value<Double> result = func.apply();
         assertEquals(0.5, result.value(), 1e-10);
@@ -80,7 +84,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "logit"));
+                new Value<>(null, "logit"),
+                null);
 
         Value<Double> result = func.apply();
         double expected = 1.0 / (1.0 + Math.exp(-2.0));
@@ -97,7 +102,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "logit"));
+                new Value<>(null, "logit"),
+                null);
 
         Value<Double> result = func.apply();
         double expected = 1.0 / (1.0 + Math.exp(2.0));
@@ -112,7 +118,8 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction func = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "unknown"));
+                new Value<>(null, "unknown"),
+                null);
 
         assertThrows(IllegalArgumentException.class, func::apply);
     }
@@ -127,14 +134,16 @@ public class GeneralLinearFunctionTest {
         GeneralLinearFunction funcUpper = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "LOG"));
+                new Value<>(null, "LOG"),
+                null);
         assertEquals(Math.exp(eta), funcUpper.apply().value(), 1e-10);
 
         // Test mixed case
         GeneralLinearFunction funcMixed = new GeneralLinearFunction(
                 new Value<>(null, beta),
                 new Value<>(null, x),
-                new Value<>(null, "Log"));
+                new Value<>(null, "Log"),
+                null);
         assertEquals(Math.exp(eta), funcMixed.apply().value(), 1e-10);
     }
 
@@ -144,5 +153,65 @@ public class GeneralLinearFunctionTest {
         assertEquals(5.0, GeneralLinearFunction.applyInverseLink(5.0, "identity"), 1e-10);
         assertEquals(Math.exp(2.0), GeneralLinearFunction.applyInverseLink(2.0, "log"), 1e-10);
         assertEquals(0.5, GeneralLinearFunction.applyInverseLink(0.0, "logit"), 1e-10);
+    }
+
+    @Test
+    public void testScaleParameter() {
+        Double[] beta = {1.0, 0.5};
+        Double[] x = {1.0, 2.0};
+        // eta = 1*1 + 0.5*2 = 2
+        // exp(2) = 7.389...
+        // scale * exp(2) = 2.5 * 7.389... = 18.47...
+
+        double scale = 2.5;
+        GeneralLinearFunction func = new GeneralLinearFunction(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, "log"),
+                new Value<>(null, scale));
+
+        Value<Double> result = func.apply();
+        assertEquals(scale * Math.exp(2.0), result.value(), 1e-10);
+    }
+
+    @Test
+    public void testScaleDefaultIsOne() {
+        Double[] beta = {1.0, 0.5};
+        Double[] x = {1.0, 2.0};
+        // eta = 2, exp(2) = 7.389...
+
+        // With scale = null (default 1.0)
+        GeneralLinearFunction funcNoScale = new GeneralLinearFunction(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, "log"),
+                null);
+
+        // With scale = 1.0 explicitly
+        GeneralLinearFunction funcScale1 = new GeneralLinearFunction(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, "log"),
+                new Value<>(null, 1.0));
+
+        assertEquals(funcNoScale.apply().value(), funcScale1.apply().value(), 1e-10);
+    }
+
+    @Test
+    public void testScaleWithIdentityLink() {
+        Double[] beta = {2.0, 3.0};
+        Double[] x = {1.0, 2.0};
+        // eta = 8
+        // scale * eta = 0.5 * 8 = 4
+
+        double scale = 0.5;
+        GeneralLinearFunction func = new GeneralLinearFunction(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, "identity"),
+                new Value<>(null, scale));
+
+        Value<Double> result = func.apply();
+        assertEquals(4.0, result.value(), 1e-10);
     }
 }

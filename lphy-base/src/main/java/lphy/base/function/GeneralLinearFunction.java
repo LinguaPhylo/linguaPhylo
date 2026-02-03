@@ -7,17 +7,21 @@ import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleValue;
 
 /**
- * General linear function with optional link function.
- * Computes y = g^{-1}(β · x) where g^{-1} is the inverse link function.
+ * General linear function with optional link function and scale parameter.
+ * Computes y = scale × g^{-1}(β · x) where g^{-1} is the inverse link function.
  *
- * <h3>Vectorization</h3>
- * <p>LPhy's implicit vectorization automatically handles matrix inputs.
+ * <h3>Vectorisation</h3>
+ * <p>LPhy's implicit vectorisation automatically handles matrix inputs.
  * If x is a Double[][] matrix (design matrix), the function is applied to each row,
  * returning a Double[] array of results. This enables GLM-style computations:</p>
  * <pre>
  * // X is a design matrix [n x p], beta is coefficients [p]
  * // Returns Double[n] - one value per row of X
  * m = generalLinearFunction(beta=beta, x=X, link="log");
+ *
+ * // With optional scale parameter (useful for MASCOT GLM conversion):
+ * m = generalLinearFunction(beta=beta, x=X, link="log", scale=s);
+ * // Returns: scale × exp(X × beta)
  * </pre>
  *
  * @author Alexei Drummond
@@ -27,26 +31,33 @@ public class GeneralLinearFunction extends DeterministicFunction<Double> {
     public static final String betaParamName = "beta";
     public static final String xParamName = "x";
     public static final String linkParamName = "link";
+    public static final String scaleParamName = "scale";
 
     public GeneralLinearFunction(
             @ParameterInfo(name = betaParamName,
                 description = "the coefficients of the general linear model.")
             Value<Double[]> b,
             @ParameterInfo(name = xParamName,
-                description = "the explanatory variables.")
+                description = "the explanatory variables (predictors). " +
+                              "For GLM with separate scale, do not include an intercept column.")
             Value<Double[]> x,
             @ParameterInfo(name = linkParamName, optional = true,
                 description = "the link function: 'identity' (default), 'log', or 'logit'.")
-            Value<String> link) {
+            Value<String> link,
+            @ParameterInfo(name = scaleParamName, optional = true,
+                description = "optional scale multiplier applied after the inverse link transformation. " +
+                              "Result is: scale × g^{-1}(β · x). Default is 1.0.")
+            Value<Double> scale) {
         setParam(betaParamName, b);
         setParam(xParamName, x);
         if (link != null) setParam(linkParamName, link);
+        if (scale != null) setParam(scaleParamName, scale);
     }
 
     @GeneratorInfo(name = "generalLinearFunction",
-        description = "The general linear function: y = g^{-1}(sum_i b_i*x_i) " +
-                      "where g^{-1} is the inverse link function. " +
-                      "When x is a matrix (Double[][]), vectorization applies the function to each row, " +
+        description = "The general linear function: y = scale × g^{-1}(sum_i b_i*x_i) " +
+                      "where g^{-1} is the inverse link function and scale is an optional multiplier (default 1.0). " +
+                      "When x is a matrix (Double[][]), vectorisation applies the function to each row, " +
                       "returning Double[] - useful for computing multiple GLM predictions from a design matrix.")
     public Value<Double> apply() {
         Value<Double[]> b = getParams().get(betaParamName);
@@ -61,7 +72,11 @@ public class GeneralLinearFunction extends DeterministicFunction<Double> {
         Value<String> linkValue = getParams().get(linkParamName);
         if (linkValue != null) link = linkValue.value();
 
-        return new DoubleValue(applyInverseLink(eta, link), this);
+        double scale = 1.0;
+        Value<Double> scaleValue = getParams().get(scaleParamName);
+        if (scaleValue != null) scale = scaleValue.value();
+
+        return new DoubleValue(scale * applyInverseLink(eta, link), this);
     }
 
     /**

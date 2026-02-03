@@ -25,7 +25,8 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, 0.5),  // small sd for tighter distribution
-                new Value<>(null, "identity"));
+                new Value<>(null, "identity"),
+                null);  // no scale
 
         SummaryStatistics stats = new SummaryStatistics();
         for (int i = 0; i < 10000; i++) {
@@ -49,7 +50,8 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, 0.5),
-                null);  // no link specified
+                null,   // no link specified
+                null);  // no scale specified
 
         SummaryStatistics stats = new SummaryStatistics();
         for (int i = 0; i < 10000; i++) {
@@ -72,7 +74,8 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, sd),
-                new Value<>(null, "log"));
+                new Value<>(null, "log"),
+                null);  // no scale
 
         SummaryStatistics stats = new SummaryStatistics();
         for (int i = 0; i < 10000; i++) {
@@ -99,7 +102,8 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, sd),
-                new Value<>(null, "logit"));
+                new Value<>(null, "logit"),
+                null);  // no scale
 
         SummaryStatistics stats = new SummaryStatistics();
         for (int i = 0; i < 10000; i++) {
@@ -122,7 +126,8 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, 1.0),  // larger sd
-                new Value<>(null, "logit"));
+                new Value<>(null, "logit"),
+                null);  // no scale
 
         for (int i = 0; i < 1000; i++) {
             double sample = glm.sample().value();
@@ -141,7 +146,8 @@ public class GeneralLinearModelTest {
                 new Value<>("beta", beta),
                 new Value<>("x", x),
                 new Value<>("sd", 0.5),
-                new Value<>("link", "log"));
+                new Value<>("link", "log"),
+                null);  // no scale
 
         assertTrue(glmWithLink.getParams().containsKey("link"));
         assertEquals(4, glmWithLink.getParams().size());
@@ -151,10 +157,22 @@ public class GeneralLinearModelTest {
                 new Value<>("beta", beta),
                 new Value<>("x", x),
                 new Value<>("sd", 0.5),
-                null);
+                null,   // no link
+                null);  // no scale
 
         assertFalse(glmNoLink.getParams().containsKey("link"));
         assertEquals(3, glmNoLink.getParams().size());
+
+        // With scale parameter
+        GeneralLinearModel glmWithScale = new GeneralLinearModel(
+                new Value<>("beta", beta),
+                new Value<>("x", x),
+                new Value<>("sd", 0.5),
+                new Value<>("link", "log"),
+                new Value<>("scale", 2.5));
+
+        assertTrue(glmWithScale.getParams().containsKey("scale"));
+        assertEquals(5, glmWithScale.getParams().size());
     }
 
     @Test
@@ -166,12 +184,18 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, 0.5),
-                null);
+                null,   // no link
+                null);  // no scale
 
         // Set link parameter
         glm.setParam("link", new Value<>(null, "log"));
         assertTrue(glm.getParams().containsKey("link"));
         assertEquals("log", glm.getParams().get("link").value());
+
+        // Set scale parameter
+        glm.setParam("scale", new Value<>(null, 2.0));
+        assertTrue(glm.getParams().containsKey("scale"));
+        assertEquals(2.0, ((Number) glm.getParams().get("scale").value()).doubleValue());
     }
 
     @Test
@@ -183,8 +207,72 @@ public class GeneralLinearModelTest {
                 new Value<>(null, beta),
                 new Value<>(null, x),
                 new Value<>(null, 0.5),
-                new Value<>(null, "unknown"));
+                new Value<>(null, "unknown"),
+                null);  // no scale
 
         assertThrows(IllegalArgumentException.class, glm::sample);
+    }
+
+    @Test
+    public void testScaleParameter() {
+        Number[] beta = {1.0};
+        Number[] x = {1.0};
+        // eta = 1.0
+        // exp(1.0) ≈ 2.718
+        // scale * exp(1.0) = 2.0 * 2.718 ≈ 5.436
+
+        double sd = 0.1;
+        double scale = 2.0;
+        GeneralLinearModel glm = new GeneralLinearModel(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, sd),
+                new Value<>(null, "log"),
+                new Value<>(null, scale));
+
+        SummaryStatistics stats = new SummaryStatistics();
+        for (int i = 0; i < 10000; i++) {
+            double sample = glm.sample().value();
+            assertTrue(sample > 0, "Log link with scale should produce positive values");
+            stats.addValue(sample);
+        }
+
+        // For log-normal scaled: E[Y] = scale * exp(mu + sigma^2/2)
+        double expectedMean = scale * Math.exp(1.0 + 0.01 / 2);
+        assertEquals(expectedMean, stats.getMean(), 0.2);
+    }
+
+    @Test
+    public void testScaleDefaultIsOne() {
+        Number[] beta = {1.0};
+        Number[] x = {1.0};
+        double sd = 0.1;
+
+        // With scale = null (default 1.0)
+        GeneralLinearModel glmNoScale = new GeneralLinearModel(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, sd),
+                new Value<>(null, "log"),
+                null);
+
+        // With scale = 1.0 explicitly
+        GeneralLinearModel glmScale1 = new GeneralLinearModel(
+                new Value<>(null, beta),
+                new Value<>(null, x),
+                new Value<>(null, sd),
+                new Value<>(null, "log"),
+                new Value<>(null, 1.0));
+
+        // Both should produce similar statistics
+        SummaryStatistics statsNoScale = new SummaryStatistics();
+        SummaryStatistics statsScale1 = new SummaryStatistics();
+        for (int i = 0; i < 10000; i++) {
+            statsNoScale.addValue(glmNoScale.sample().value());
+            statsScale1.addValue(glmScale1.sample().value());
+        }
+
+        // Means should be close (within statistical variation)
+        assertEquals(statsNoScale.getMean(), statsScale1.getMean(), 0.2);
     }
 }
