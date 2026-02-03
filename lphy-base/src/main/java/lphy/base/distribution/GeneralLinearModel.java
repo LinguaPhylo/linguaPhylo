@@ -14,10 +14,23 @@ import java.util.TreeMap;
 
 import static lphy.base.distribution.DistributionConstants.betaParamName;
 import static lphy.base.distribution.DistributionConstants.sdParamName;
+import static lphy.base.function.GeneralLinearFunction.linkParamName;
 import static lphy.base.function.GeneralLinearFunction.xParamName;
 
 /**
- * General Linear Model.
+ * General Linear Model (GLM) distribution with optional link function.
+ * Samples from y where g(y) ~ Normal(β · x, σ), i.e., error is on the link scale.
+ *
+ * <h3>Vectorization</h3>
+ * <p>LPhy's implicit vectorization automatically handles matrix inputs.
+ * If x is a Double[][] matrix (design matrix), the distribution is applied to each row,
+ * returning a Double[] array of samples. This enables GLM-style modeling:</p>
+ * <pre>
+ * // X is a design matrix [n x p], beta is coefficients [p]
+ * // Returns Double[n] - one sample per row of X
+ * y ~ GLM(beta=beta, x=X, sd=sigma, link="log");
+ * </pre>
+ *
  * @author Alexei Drummond
  */
 public class GeneralLinearModel extends ParametricDistribution<Double> {
@@ -30,13 +43,26 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
 
     private Value<Number> sd;
 
-    public GeneralLinearModel(@ParameterInfo(name = betaParamName, narrativeName = "beta", description = "the coefficients of the general linear model.") Value<Number[]> beta,
-                              @ParameterInfo(name = xParamName, narrativeName = "x", description = "the explanatory variables of the general linear model.") Value<Number[]> x,
-                              @ParameterInfo(name = sdParamName, narrativeName = "stdev", description = "the standard deviation of the general linear model.") Value<Number> sd) {
+    private Value<String> link;
+
+    public GeneralLinearModel(
+            @ParameterInfo(name = betaParamName, narrativeName = "beta",
+                description = "the coefficients of the general linear model.")
+            Value<Number[]> beta,
+            @ParameterInfo(name = xParamName, narrativeName = "x",
+                description = "the explanatory variables of the general linear model.")
+            Value<Number[]> x,
+            @ParameterInfo(name = sdParamName, narrativeName = "stdev",
+                description = "the standard deviation of residual error (on the link scale).")
+            Value<Number> sd,
+            @ParameterInfo(name = linkParamName, optional = true,
+                description = "the link function: 'identity' (default), 'log', or 'logit'.")
+            Value<String> link) {
         super();
         this.beta = beta;
         this.x = x;
         this.sd = sd;
+        this.link = link;
     }
 
     @Override
@@ -44,21 +70,32 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
     }
 
     @GeneratorInfo(name = "GLM", verbClause = "have", narrativeName = "General linear model",
-            category = GeneratorCategory.ALL, description = "The general linear model.")
+            category = GeneratorCategory.ALL,
+            description = "The general linear model with optional link function. " +
+                          "Error is on the link scale: g(y) ~ Normal(β·x, σ). " +
+                          "When x is a matrix (Double[][]), vectorization applies the model to each row, " +
+                          "returning Double[] - useful for sampling multiple GLM responses from a design matrix.")
     public RandomVariable<Double> sample() {
-
-        double mean = 0.0;
 
         double[] b = ValueUtils.doubleArrayValue(beta);
         double[] xv = ValueUtils.doubleArrayValue(x);
 
+        // Compute linear predictor
+        double eta = 0.0;
         for (int i = 0; i < b.length; i++) {
-            mean += b[i] * xv[i];
+            eta += b[i] * xv[i];
         }
 
-        NormalDistribution normalDistribution = new NormalDistribution(mean, ValueUtils.doubleValue(sd));
+        // Add error on link scale
+        NormalDistribution normalDistribution = new NormalDistribution(
+            random, eta, ValueUtils.doubleValue(sd));
+        double etaWithError = normalDistribution.sample();
 
-        return new RandomVariable<>("y", normalDistribution.sample(), this);
+        // Apply inverse link
+        String linkFunc = (link != null) ? link.value() : "identity";
+        double y = lphy.base.function.GeneralLinearFunction.applyInverseLink(etaWithError, linkFunc);
+
+        return new RandomVariable<>("y", y, this);
     }
 
     public double density(Double[] d) {
@@ -68,19 +105,22 @@ public class GeneralLinearModel extends ParametricDistribution<Double> {
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(betaParamName, beta);
-            put(xParamName, x);
-            put(sdParamName, sd);
-        }};
+        Map<String, Value> params = new TreeMap<>();
+        params.put(betaParamName, beta);
+        params.put(xParamName, x);
+        params.put(sdParamName, sd);
+        if (link != null) params.put(linkParamName, link);
+        return params;
     }
 
     public void setParam(String paramName, Value value) {
-        if (paramName.equals(betaParamName)) beta = value;
-        else if (paramName.equals(xParamName)) x = value;
-        else if (paramName.equals(sdParamName)) sd = value;
-        else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-
+        switch (paramName) {
+            case betaParamName -> beta = value;
+            case xParamName -> x = value;
+            case sdParamName -> sd = value;
+            case linkParamName -> link = value;
+            default -> throw new RuntimeException("Unrecognised parameter name: " + paramName);
+        }
         super.setParam(paramName, value); // constructDistribution
     }
 }

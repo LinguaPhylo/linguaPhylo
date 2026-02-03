@@ -1,0 +1,22 @@
+// GLM Vectorized Example
+// Demonstrates automatic vectorization when passing a matrix to generalLinearFunction
+// LPhy automatically applies the function to each row of the matrix
+
+data {
+  // Design matrix: 4 observations, 3 predictors (including intercept)
+  // Each row is one observation [intercept, x1, x2]
+  X = [[1.0, 0.5, 0.2],
+       [1.0, 1.0, 0.8],
+       [1.0, 1.5, 0.4],
+       [1.0, 2.0, 1.0]];
+}
+
+model {
+  // GLM coefficients (intercept + 2 predictors)
+  beta ~ Normal(mean=0.0, sd=1.0, replicates=3);
+
+  // Vectorization: generalLinearFunction applied to each row of X
+  // Returns Double[4] - one value per row
+  // With log link: y[i] = exp(beta[0] + beta[1]*X[i,1] + beta[2]*X[i,2])
+  y = generalLinearFunction(beta=beta, x=X, link="log");
+}

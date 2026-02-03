@@ -1,0 +1,26 @@
+// GLM Example: Demonstrates the link function parameter
+// The generalLinearFunction computes y = g^{-1}(sum_i beta_i * x_i)
+// where g^{-1} is the inverse link function
+
+data {
+  // Explanatory variables (predictors)
+  x = [1.0, 2.0, 3.0];
+}
+
+model {
+  // GLM coefficients
+  beta ~ Normal(mean=0.0, sd=1.0, replicates=3);
+
+  // Identity link (default): y = beta . x
+  y_identity = generalLinearFunction(beta=beta, x=x);
+
+  // Log link: y = exp(beta . x) - ensures positive output
+  y_log = generalLinearFunction(beta=beta, x=x, link="log");
+
+  // Logit link: y = 1/(1+exp(-beta . x)) - output in (0,1)
+  y_logit = generalLinearFunction(beta=beta, x=x, link="logit");
+
+  // Stochastic GLM with log link and residual error
+  sigma ~ Exp(mean=0.5);
+  y_glm ~ GLM(beta=beta, x=x, sd=sigma, link="log");
+}

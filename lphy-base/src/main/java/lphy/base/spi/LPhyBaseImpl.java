@@ -76,7 +76,9 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
                 // SparsePhyloCTMC.class,
                 AutoCorrelatedLogRates.class, MixturePhyloCTMC.class,
-                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class);
+                PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class,
+                // general linear model
+                GeneralLinearModel.class);
     }
 
     @Override
@@ -120,9 +122,9 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 GompertzPopulationFunction_t50.class, ExponentialPopulationFunction.class,
                 LogisticPopulationFunction.class, ConstantPopulationFunction.class,
                 Cons_Exp_ConsPopulationFunction.class, ExpansionPopulationFunction.class,
-                AutoCorrelatedClock.class
-
-
+                AutoCorrelatedClock.class,
+                // general linear function
+                GeneralLinearFunction.class
                 );
 
     }
