@@ -1,0 +1,104 @@
+// GLM Structured Coalescent with Rate Shifts
+// Time-varying migration rates and Ne computed via GLM with covariates
+//
+// IMPORTANT: Deme Ordering Contract
+// ==================================
+// Demes are ALWAYS sorted ALPHABETICALLY: A=0, B=1, C=2
+// Covariate matrices must be ordered accordingly.
+//
+// This example demonstrates how GLM coefficients (shared across time)
+// combined with time-varying covariates produce time-varying rates.
+
+data {
+  // 3 populations/demes: A, B, C (alphabetically ordered)
+  S = 3;
+  nMigRates = 6;  // S*(S-1)
+
+  // 2 time intervals
+  nIntervals = 2;
+
+  // Rate shift times: start of each interval going backward from present
+  rateShiftTimes = [0.0, 5.0];
+
+  // Number of predictors for each GLM
+  nPredictors = 2;
+
+  // === Design matrix for Ne (time-varying) ===
+  // Layout: [interval_0_demes; interval_1_demes] = [nIntervals * S rows] x [nPredictors cols]
+  // Deme order within each interval: A, B, C (alphabetical)
+  //
+  // Predictors: [log_area, urbanization]
+  // Interval 0 (recent): larger areas, higher urbanization
+  // Interval 1 (ancient): same areas, lower urbanization (pre-industrial)
+  X_Ne = [
+    // Interval 0 (recent)
+    [2.0, 0.8],   // A: large, urban
+    [1.5, 0.5],   // B: medium
+    [1.8, 0.6],   // C: large-medium
+    // Interval 1 (ancient)
+    [2.0, 0.2],   // A: same area, less urban
+    [1.5, 0.1],   // B: same area, rural
+    [1.8, 0.15]   // C: same area, mostly rural
+  ];
+
+  // === Design matrix for migration rates (time-varying) ===
+  // Layout: [interval_0_rates; interval_1_rates] = [nIntervals * nMigRates rows] x [nPredictors cols]
+  // Rate order: A→B, A→C, B→A, B→C, C→A, C→B
+  //
+  // Predictors: [inverse_distance, connectivity]
+  // Interval 0 (recent): higher connectivity due to modern transport
+  // Interval 1 (ancient): lower connectivity, geographic barriers matter more
+  X_m = [
+    // Interval 0 (recent)
+    [0.5, 0.9],   // A→B: short distance, high connectivity
+    [2.0, 0.5],   // A→C: long distance, medium connectivity
+    [0.5, 0.9],   // B→A: short distance, high connectivity
+    [1.5, 0.6],   // B→C: medium distance, medium connectivity
+    [2.0, 0.5],   // C→A: long distance, medium connectivity
+    [1.5, 0.6],   // C→B: medium distance, medium connectivity
+    // Interval 1 (ancient)
+    [0.5, 0.3],   // A→B: same distance, low connectivity
+    [2.0, 0.1],   // A→C: same distance, very low connectivity
+    [0.5, 0.3],   // B→A: same distance, low connectivity
+    [1.5, 0.2],   // B→C: same distance, low connectivity
+    [2.0, 0.1],   // C→A: same distance, very low connectivity
+    [1.5, 0.2]    // C→B: same distance, low connectivity
+  ];
+
+  // Taxa with deme assignments
+  taxa = taxa(names=["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"]);
+  demes = ["A","A","A","A","A","B","B","B","B","B","C","C","C","C","C"];
+}
+
+model {
+  // === Ne GLM ===
+  // Coefficients are shared across time intervals
+  // Time-variation comes from the covariates in X_Ne
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors);
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+
+  // Compute Ne for all intervals via vectorized GLM
+  // Result: Double[nIntervals * S] in the correct flattened order
+  theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+
+  // === Migration GLM ===
+  // Coefficients are shared across time intervals
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors);
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+
+  // Compute migration rates for all intervals via vectorized GLM
+  // Result: Double[nIntervals * nMigRates] in the correct flattened order
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+
+  // Structured Coalescent with rate shifts
+  ψ ~ StructuredCoalescentRateShifts(
+    theta=theta,
+    m=m,
+    rateShiftTimes=rateShiftTimes,
+    taxa=taxa,
+    demes=demes
+  );
+
+  // Sequence evolution
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+}

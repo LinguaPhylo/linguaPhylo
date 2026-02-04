@@ -1,0 +1,64 @@
+// Full GLM Structured Coalescent Example
+// Models BOTH migration rates AND effective population sizes using GLM
+// This tests the complete MASCOT-GLM functionality
+
+data {
+  // 3 populations/demes
+  S = 3;
+
+  // Number of predictors
+  nPredictors_m = 2;  // for migration
+  nPredictors_Ne = 2; // for Ne
+
+  // Design matrix for migration rates [S*(S-1) x nPredictors_m]
+  // Predictors: [log_distance, connectivity]
+  // Row order: 0->1, 0->2, 1->0, 1->2, 2->0, 2->1
+  X_m = [[0.5, 0.9],   // 0->1: short distance, high connectivity
+         [2.0, 0.1],   // 0->2: long distance, low connectivity
+         [0.5, 0.9],   // 1->0: short distance, high connectivity
+         [1.5, 0.3],   // 1->2: medium distance, medium connectivity
+         [2.0, 0.1],   // 2->0: long distance, low connectivity
+         [1.5, 0.3]];  // 2->1: medium distance, medium connectivity
+
+  // Design matrix for Ne [S x nPredictors_Ne]
+  // Predictors: [log_area, urbanization]
+  X_Ne = [[2.0, 0.8],   // deme 0: large area, high urbanization
+          [1.0, 0.3],   // deme 1: small area, low urbanization
+          [1.5, 0.5]];  // deme 2: medium area, medium urbanization
+
+  // Taxa with deme assignments
+  taxa = taxa(names=["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"]);
+  demes = ["A","A","A","A","A","B","B","B","B","B","C","C","C","C","C"];
+}
+
+model {
+  // === Ne GLM ===
+  // Coefficients for Ne predictors
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors_Ne);
+
+  // Ne baseline scale
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+
+  // Ne via GLM: Ne = scale * exp(X_Ne * beta_Ne)
+  Theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+
+  // === Migration GLM ===
+  // Coefficients for migration predictors
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors_m);
+
+  // Migration baseline scale
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+
+  // Migration rates via GLM: m = scale * exp(X_m * beta_m)
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+
+  // === Structured Coalescent ===
+  M = migrationMatrix(theta=Theta, m=m);
+  ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
+
+  // Summary statistics
+  C = countMigrations(tree=ψ);
+
+  // Sequence evolution
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+}

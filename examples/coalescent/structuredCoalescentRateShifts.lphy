@@ -1,0 +1,98 @@
+// Structured Coalescent with Rate Shifts
+// Time-varying (piecewise constant) migration rates and effective population sizes
+//
+// IMPORTANT: Deme Ordering Contract
+// ==================================
+// Demes are ALWAYS sorted ALPHABETICALLY to determine indices:
+//   - If demes array contains ["B", "A", "C"], the indices are: A=0, B=1, C=2
+//
+// Theta (Ne) array layout:
+//   For each interval (0, 1, ..., nIntervals-1):
+//     Ne for deme 0 (alphabetically first), deme 1, ..., deme S-1
+//   Total length: nIntervals * S
+//
+// Migration (m) array layout:
+//   For each interval:
+//     m_0→1, m_0→2, ..., m_1→0, m_1→2, ..., m_2→0, m_2→1, ...
+//   Where indices refer to alphabetically sorted demes
+//   Total length: nIntervals * S * (S-1)
+//
+// Rate shift times:
+//   Times are the START of each interval, going backward from present
+//   [0.0, 5.0, 10.0] means:
+//     Interval 0: time 0.0 to 5.0 (most recent)
+//     Interval 1: time 5.0 to 10.0
+//     Interval 2: time 10.0 to infinity (most ancient)
+
+data {
+  // 3 populations/demes: A, B, C (alphabetically ordered)
+  S = 3;
+  nMigRates = 6;  // S*(S-1) = 3*2
+
+  // 2 time intervals (epochs)
+  nIntervals = 2;
+
+  // Rate shift times: start of each interval going backward from present
+  rateShiftTimes = [0.0, 5.0];
+
+  // Taxa with deme assignments
+  taxa = taxa(names=["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"]);
+  demes = ["A","A","A","A","A","B","B","B","B","B","C","C","C","C","C"];
+  // Unique demes sorted: A=0, B=1, C=2
+
+  // === Theta (Ne) for all intervals ===
+  // Layout: [interval_0_demes; interval_1_demes]
+  // Deme order within each interval: A, B, C (alphabetical)
+  //
+  // Interval 0 (recent: 0 to 5.0): larger populations
+  // Interval 1 (ancient: 5.0+): smaller populations
+  theta_data = [
+    // Interval 0 (recent)
+    10.0,   // A (deme 0)
+    8.0,    // B (deme 1)
+    12.0,   // C (deme 2)
+    // Interval 1 (ancient)
+    5.0,    // A (deme 0)
+    4.0,    // B (deme 1)
+    6.0     // C (deme 2)
+  ];
+
+  // === Migration rates for all intervals ===
+  // Layout: [interval_0_rates; interval_1_rates]
+  // Rate order within each interval: 0→1, 0→2, 1→0, 1→2, 2→0, 2→1
+  // Which is: A→B, A→C, B→A, B→C, C→A, C→B
+  //
+  // Interval 0 (recent): higher connectivity
+  // Interval 1 (ancient): lower connectivity
+  m_data = [
+    // Interval 0 (recent) - higher migration
+    0.2,    // A→B
+    0.1,    // A→C
+    0.2,    // B→A
+    0.15,   // B→C
+    0.1,    // C→A
+    0.15,   // C→B
+    // Interval 1 (ancient) - lower migration
+    0.05,   // A→B
+    0.02,   // A→C
+    0.05,   // B→A
+    0.03,   // B→C
+    0.02,   // C→A
+    0.03    // C→B
+  ];
+}
+
+model {
+  // Structured Coalescent with rate shifts
+  // No additional parameters to estimate in this simulation example
+  ψ ~ StructuredCoalescentRateShifts(
+    theta=theta_data,
+    m=m_data,
+    rateShiftTimes=rateShiftTimes,
+    taxa=taxa,
+    demes=demes
+  );
+
+  // Sequence evolution on the structured tree
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+}

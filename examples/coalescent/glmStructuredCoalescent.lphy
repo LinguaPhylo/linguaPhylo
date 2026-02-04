@@ -18,6 +18,10 @@ data {
        [1.5, 0.0],   // 1->2: medium distance, different continent
        [2.0, 0.0],   // 2->0: long distance, different continent
        [1.5, 0.0]];  // 2->1: medium distance, different continent
+
+  // Taxa with deme assignments for 3 demes, 5 samples each
+  taxa = taxa(names=["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"]);
+  demes = ["A","A","A","A","A","B","B","B","B","B","C","C","C","C","C"];
 }
 
 model {
@@ -44,7 +48,7 @@ model {
 
   // Structured coalescent tree
   // 5 samples from each of S demes
-  ψ ~ StructuredCoalescent(M=M, k=rep(element=5, times=S));
+  ψ ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
 
   // Count migrations for summary
   C = countMigrations(tree=ψ);
