@@ -301,8 +301,8 @@ public class NodePaintUtils {
         }
         if (name == null)
             name = "null";
-        else if (name.trim().equals("0") || name.trim().equals("1") || name.trim().equals("2"))
-            name = ""; // suppress unnamed argument
+        else if (name.trim().matches("\\d+"))
+            name = ""; // suppress unnamed numeric index arguments
 
         String displayName = name;
 

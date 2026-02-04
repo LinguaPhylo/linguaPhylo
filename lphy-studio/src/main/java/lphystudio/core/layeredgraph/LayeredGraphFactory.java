@@ -72,6 +72,16 @@ public class LayeredGraphFactory {
         return node;
     }
 
+    /**
+     * Check if the generator is an array constructor function (doubleArray, integerArray, etc.)
+     * These are used internally when script has array literals like [[0.5, 0.9], [2.0, 0.2]]
+     */
+    private static boolean isArrayConstructor(Generator g) {
+        String name = g.getName();
+        return name != null && (name.equals("doubleArray") || name.equals("integerArray") ||
+                name.equals("booleanArray") || name.equals("stringArray") || name.equals("objectArray"));
+    }
+
     private static LayeredGNode createAndAddNode(LPhyParserDictionary parser, Generator g, LayeredGNode parentNode, Map<Object, LayeredGNode> allNodes, boolean showAllNodes) {
         LayeredGNode node = allNodes.get(g);
         if (node == null) {
@@ -80,10 +90,14 @@ public class LayeredGraphFactory {
             node.setLayer();
             allNodes.put(node.value(), node);
 
-            Map<String, Value> params = g.getParams();
-            for (String key : params.keySet()) {
-                LayeredNode child = createAndAddNode(parser, params.get(key), node, allNodes, showAllNodes);
-                if (child != null) node.getPredecessors().add(child);
+            // Skip expanding children for array constructors (doubleArray, integerArray, etc.)
+            // The array values are still inspectable when clicked, but keeps the graph clean
+            if (!isArrayConstructor(g)) {
+                Map<String, Value> params = g.getParams();
+                for (String key : params.keySet()) {
+                    LayeredNode child = createAndAddNode(parser, params.get(key), node, allNodes, showAllNodes);
+                    if (child != null) node.getPredecessors().add(child);
+                }
             }
         }
         return node;

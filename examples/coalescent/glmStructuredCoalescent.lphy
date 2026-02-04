@@ -5,10 +5,10 @@
 data {
   // 3 populations/demes
   S = 3;
-  // Number of migration rate parameters: S*(S-1) = 6
-  dim = S*(S-1);
+  // Number of predictors in design matrix
+  nPredictors = 2;
 
-  // Design matrix for migration rates [dim x nPredictors]
+  // Design matrix for migration rates [S*(S-1) x nPredictors]
   // Each row corresponds to one migration rate (i->j where i != j)
   // Predictors: [log_distance, same_continent] (no intercept - use scale instead)
   // Row order: 0->1, 0->2, 1->0, 1->2, 2->0, 2->1
@@ -24,7 +24,7 @@ model {
   // GLM coefficients for migration rates (no intercept)
   // beta[0]: effect of log distance (expected negative - farther = less migration)
   // beta[1]: effect of same continent (expected positive - easier migration)
-  beta ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  beta ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors);
 
   // Migration clock rate (acts as baseline migration rate multiplier)
   // This separates the overall magnitude from predictor effects
@@ -43,8 +43,8 @@ model {
   M = migrationMatrix(theta=Θ, m=m);
 
   // Structured coalescent tree
-  // 5 samples from each of 3 demes
-  ψ ~ StructuredCoalescent(M=M, k=[5, 5, 5]);
+  // 5 samples from each of S demes
+  ψ ~ StructuredCoalescent(M=M, k=rep(element=5, times=S));
 
   // Count migrations for summary
   C = countMigrations(tree=ψ);
