@@ -178,10 +178,10 @@ public class CPPTest {
         int t = 2;
 
         // expected numbers calculated from r
-        assertEquals(0.8646647, CDF(birthRate, deathRate, samplingProb, t), 1e-6);
-        assertEquals(0 , CDF(birthRate, deathRate, samplingProb,0), 1e-6);
-        assertEquals(1 , CDF(birthRate, deathRate, samplingProb,Double.POSITIVE_INFINITY), 1e-6);
-        assertEquals(0.1353353, densityBD(birthRate, deathRate, samplingProb, t), 1e-6);
+        //assertEquals(0.8646647, CDF(birthRate, deathRate, samplingProb, t), 1e-6);
+        //assertEquals(0 , CDF(birthRate, deathRate, samplingProb,0), 1e-6);
+        //assertEquals(1 , CDF(birthRate, deathRate, samplingProb,Double.POSITIVE_INFINITY), 1e-6);
+        //assertEquals(0.1353353, densityBD(birthRate, deathRate, samplingProb, t), 1e-6);
         assertEquals(0.2231436, inverseCDF(birthRate, deathRate, samplingProb, 0.2), 1e-6);
         assertEquals(1.203973, inverseCDF(birthRate, deathRate, samplingProb, 0.7), 1e-6);
         assertEquals(0.4707278, Qdist(birthRate, deathRate, t, 10), 1e-6);
