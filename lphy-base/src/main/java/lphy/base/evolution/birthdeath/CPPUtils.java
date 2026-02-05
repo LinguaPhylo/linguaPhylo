@@ -1,7 +1,5 @@
 package lphy.base.evolution.birthdeath;
 
-import lphy.core.model.Value;
-
 import java.util.*;
 
     /*
@@ -36,10 +34,19 @@ public class CPPUtils {
     // ****** mathematical methods ******
     public static double CDF(double b, double d, double rho, double t) {
         double p;
-        if (Math.abs(b - d)> 1e-4) {
-            p = rho * b * (1 - Math.exp(-(b - d) * t)) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * t));
-        } else {
-            p = rho * b * t / (1 + rho + b + t);
+        double r = b - d;
+        double A = rho * b;
+        double B = b * (1- rho) - d;
+        if (Math.abs(r) < 1e-10) {
+            // when diversification rate ~ 0
+            p = A * t / (1 + A * t);
+        } else if (r < 0){
+            double exp_rt = Math.exp(r * t);
+            p = A * (1 - exp_rt) / (-A * exp_rt - B);
+        } else{
+            // r > 0
+            double exp_neg_rt = Math.exp(-r * t);
+            p = A * (1-exp_neg_rt) / (A + B * exp_neg_rt);
         }
         return p;
     }
@@ -51,10 +58,17 @@ public class CPPUtils {
 
     public static double densityBD(double b, double d, double rho, double time) {
         double density;
-        if (Math.abs(b-d)> 1e-4) {
-            density = rho * b * (b - d) * Math.exp(-(b - d) * time) / (rho * b + (b * (1 - rho) - d) * Math.exp(-(b - d) * time));
+        double r = b - d;
+        double A = rho * b;
+        double B = b * (1- rho) - d;
+        if (Math.abs(r) < 1e-10) {
+             density = A / ((1.0 + A * time) * (1.0 + A * time));
+        } else if (r < 0){
+            double exp_rt = Math.exp(r * time);
+            density = A* r  * r * r * time / (A * exp_rt + B) * (A * exp_rt + B);
         } else {
-            density = rho * b / Math.exp(1 + rho * b * time);
+            double exp_neg_rt = Math.exp(-r*time);
+            density = A * r / Math.pow(A + B * exp_neg_rt, 2) * time;
         }
         return density;
     }
