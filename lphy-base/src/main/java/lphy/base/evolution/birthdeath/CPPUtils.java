@@ -125,6 +125,10 @@ public class CPPUtils {
         // Array to store the result
         double[] times = new double[nSims];
 
+        double eps = 1e-12;
+        Qlower = Math.max(eps, Math.min(1.0 - eps, Qlower));
+        Qupper = Math.max(Qlower + eps, Math.min(1.0 - eps, Qupper));
+
         // Generate the samples
         for (int i = 0; i < nSims; i++) {
             // Generate a random probability between Qlower and Qupper
