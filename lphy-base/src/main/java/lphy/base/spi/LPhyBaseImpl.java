@@ -17,7 +17,6 @@ import lphy.base.evolution.continuous.*;
 import lphy.base.evolution.likelihood.MixturePhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMC;
 import lphy.base.evolution.likelihood.PhyloCTMCSiteModel;
-import lphy.base.evolution.likelihood.SparsePhyloCTMC;
 import lphy.base.evolution.substitutionmodel.*;
 import lphy.base.evolution.tree.*;
 import lphy.base.function.*;
@@ -107,6 +106,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // IO
                 Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, WriteFasta.class,
                 ReadTrees.class, ExtractTrait.class, SpeciesTaxa.class, ReadMpileup.class,
+                toGLM.class,
                 // Math
                 SumBoolean.class, SumRows.class, SumCols.class, Sum2dArray.class, Sum.class, Difference.class, Union.class,// Product.class,
                 // Set Op
