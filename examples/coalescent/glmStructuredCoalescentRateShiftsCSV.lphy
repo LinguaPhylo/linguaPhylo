@@ -1,0 +1,48 @@
+// GLM Structured Coalescent with Rate Shifts — CSV-based predictors
+// Same model as glmStructuredCoalescentRateShifts.lphy but reads
+// design matrices from CSV files via readDelim + toDesignMatrix.
+
+data {
+  // Read Ne predictor table and convert to design matrix
+  ne_table = readDelim(file="predictors_ne.csv", sep=",");
+  X_Ne = toDesignMatrix(table=ne_table);
+
+  // Read migration predictor table and convert to design matrix
+  m_table = readDelim(file="predictors_m.csv", sep=",");
+  X_m = toDesignMatrix(table=m_table, migrationMatrix=true);
+
+  // 3 populations/demes: A, B, C (alphabetically ordered)
+  S = 3;
+  nPredictors = 2;
+
+  // 2 time intervals
+  rateShiftTimes = [0.0, 5.0];
+
+  // Taxa with deme assignments
+  taxa = taxa(names=["A1","A2","A3","A4","A5","B1","B2","B3","B4","B5","C1","C2","C3","C4","C5"]);
+  demes = ["A","A","A","A","A","B","B","B","B","B","C","C","C","C","C"];
+}
+
+model {
+  // === Ne GLM ===
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors);
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+
+  // === Migration GLM ===
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=nPredictors);
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+
+  // Structured Coalescent with rate shifts
+  ψ ~ StructuredCoalescentRateShifts(
+    theta=theta,
+    m=m,
+    rateShiftTimes=rateShiftTimes,
+    taxa=taxa,
+    demes=demes
+  );
+
+  // Sequence evolution
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+}
