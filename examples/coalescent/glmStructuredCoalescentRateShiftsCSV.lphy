@@ -4,11 +4,11 @@
 
 data {
   // Read Ne predictor table and convert to design matrix
-  ne_table = readDelim(file="predictors_ne.csv", sep=",");
+  ne_table = readDelim(file="data/predictors_ne.csv", sep=",");
   X_Ne = toDesignMatrix(table=ne_table);
 
   // Read migration predictor table and convert to design matrix
-  m_table = readDelim(file="predictors_m.csv", sep=",");
+  m_table = readDelim(file="data/predictors_m.csv", sep=",");
   X_m = toDesignMatrix(table=m_table, migrationMatrix=true);
 
   // 3 populations/demes: A, B, C (alphabetically ordered)
