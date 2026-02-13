@@ -224,6 +224,24 @@ public class CPPUtils {
             result[i] = isSuperSet;
             i++;
         }
+        // check the ages, superset should be older
+        for (int j = 0; j < result.length; j++) {
+            if (result[j]) {
+                double supersetAge = clade.getAge();
+                double subsetAge = cladeCalibrations.get(j).getAge();
+
+                if (supersetAge < subsetAge) {
+                    throw new IllegalArgumentException(
+                            "Superset clade " + Arrays.toString(clade.getNames()) +
+                                    " has age " + supersetAge +
+                                    " which is younger than its subset calibration clade " +
+                                    Arrays.toString(cladeCalibrations.get(j).getNames()) +
+                                    " with age " + subsetAge +
+                                    ". Please double check the clade ages."
+                    );
+                }
+            }
+        }
 
         return result;
     }
@@ -249,6 +267,25 @@ public class CPPUtils {
             i++;
         }
 
+        // check ages
+        // If there's a superset calibration, check ages: subset clade must not be older than superset
+        for (int j = 0; j < result.length; j++) {
+            if (result[j]) {
+                double supersetAge = cladeCalibrations.get(j).getAge();
+                double subsetAge = clade.getAge();
+
+                if (subsetAge > supersetAge) {
+                    throw new IllegalArgumentException(
+                            "Clade " + Arrays.toString(clade.getNames()) +
+                                    " has age " + subsetAge +
+                                    " which is older than its superset calibration clade " +
+                                    Arrays.toString(cladeCalibrations.get(j).getNames()) +
+                                    " with age " + supersetAge +
+                                    ". Please double check the clade ages."
+                    );
+                }
+            }
+        }
         return result;
     }
 
@@ -262,111 +299,5 @@ public class CPPUtils {
         double t = transform(p, birthRate, deathRate, nTaxa);
         return t;
     }
-
-        // TODO: not finished
-//    public Object probCalibrations(double b, double d, double rho, List<TimeTreeNode> calibrations, Taxa taxa) {
-//        int nCalibrations = calibrations.size();
-//        int nCalibratedTaxa = 0;
-//        for (TimeTreeNode calibration : calibrations) {
-//            nCalibratedTaxa += calibration.getAllLeafNodes().size();
-//        }
-//        int n = taxa.ntaxa() - nCalibratedTaxa + nCalibrations;
-//        int k = nCalibrations;
-//
-//        double totalSum = sumOverSubsets(n,k);
-//        return null;
-//    }
-
-//    /**
-//     * Get the number of given taxa
-//     * @param n length of the whole set
-//     * @param k the length of each subset
-//     * @return the total number of all subsets
-//     */
-//    private double sumOverSubsets(int n, int k) {
-//        int[][] subsets = permutations(n,k);
-//        double totalSum = 0;
-//        for (int[] subset : subsets) {
-//            totalSum += f(subset);
-//        }
-//        return totalSum;
-//    }
-//
-//    // TODO: what is f()
-//    private double f(int[] subset) {
-//        return 0.0;
-//    }
-//
-//    public static int[][] permutations(int n, int k) {
-//        // Use default values from the R function:
-//        // v = 1:n, set = true, repeats.allowed = false
-//        int[] v = new int[n];
-//        for (int i = 0; i < n; i++) {
-//            v[i] = i + 1;
-//        }
-//        boolean set = true;
-//        boolean repeatsAllowed = false;
-//
-//        // Input validation
-//        if (n < 1) {
-//            throw new IllegalArgumentException("bad value of n");
-//        }
-//        if (k < 1) {
-//            throw new IllegalArgumentException("bad value of k");
-//        }
-//        if (k > n && !repeatsAllowed) {
-//            throw new IllegalArgumentException("k > n and repeats.allowed=false");
-//        }
-//
-//        // Generate permutations without repeats
-//        return generateWithoutRepeats(n, k, v);
-//    }
-//
-//    // Recursive function for permutations without repeats
-//    private static int[][] generateWithoutRepeats(int n, int r, int[] v) {
-//        if (r == 1) {
-//            int[][] result = new int[n][1];
-//            for (int i = 0; i < n; i++) {
-//                result[i][0] = v[i];
-//            }
-//            return result;
-//        } else if (n == 1) {
-//            int[][] result = new int[1][r];
-//            result[0][0] = v[0];
-//            return result;
-//        } else {
-//            List<int[]> resultList = new ArrayList<>();
-//
-//            for (int i = 0; i < n; i++) {
-//                // Create a new array without element at index i
-//                int[] newV = new int[n - 1];
-//                int idx = 0;
-//                for (int j = 0; j < n; j++) {
-//                    if (j != i) {
-//                        newV[idx++] = v[j];
-//                    }
-//                }
-//
-//                // Recursive call
-//                int[][] subPermutations = generateWithoutRepeats(n - 1, r - 1, newV);
-//
-//                // Combine current element with sub-permutations
-//                for (int[] subPerm : subPermutations) {
-//                    int[] newRow = new int[r];
-//                    newRow[0] = v[i];
-//                    System.arraycopy(subPerm, 0, newRow, 1, r - 1);
-//                    resultList.add(newRow);
-//                }
-//            }
-//
-//            // Convert List to array
-//            int[][] result = new int[resultList.size()][r];
-//            for (int i = 0; i < resultList.size(); i++) {
-//                result[i] = resultList.get(i);
-//            }
-//            return result;
-//        }
-//    }
-
 
 }

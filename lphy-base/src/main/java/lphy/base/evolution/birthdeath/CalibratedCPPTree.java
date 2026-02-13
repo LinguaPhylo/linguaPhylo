@@ -200,7 +200,6 @@ public class CalibratedCPPTree extends TaxaConditionedTreeGenerator implements G
             List<Clade> subClades = getNestedClades(maximalCalibrations.get(i), cladeCalibrations);
             // step2: get sampled element
             // calculate weights
-            // TODO: why cladeCalibrationsEntries here
             double w = CDF(birthRate, deathRate, samplingProb, conditionAge) -
                     CDF(birthRate, deathRate, samplingProb, cladeCalibrations.get(i).getAge());
             // calculate score s for each node
