@@ -64,8 +64,6 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 MultispeciesCoalescent.class,
                 SubsampledTree.class, PopulationFunctionCoalescent.class,
                 SampleBranch.class,
-                CPPTree.class,
-                CalibratedCPPTree.class,
                 // skyline
                 SkylineCoalescent.class, BICEPS.class, ExpMarkovChain.class, RandomComposition.class,
                 // alignment
