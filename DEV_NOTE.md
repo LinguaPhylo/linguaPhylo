@@ -211,6 +211,33 @@ This setting allows the studio to locate the LPhy scripts and list them in the "
 
 <a href="./figs/RunStudio.png"><img src="./figs/RunStudio.png" width="500" ></a>
 
+### Run LPhy Studio from the command line
+
+As an alternative to IntelliJ, you can run LPhy Studio directly from the terminal.
+
+First, build the project and assemble the distribution:
+
+```bash
+mvn package -DskipTests
+```
+
+Then launch the studio using the Java module path:
+
+```bash
+java -p lphy-studio/target/lphy-studio-1.7.0/lib \
+     -m lphystudio/lphystudio.app.LinguaPhyloStudio
+```
+
+You can use `-d` to set the working directory for loading example scripts:
+
+```bash
+java -p lphy-studio/target/lphy-studio-1.7.0/lib \
+     -m lphystudio/lphystudio.app.LinguaPhyloStudio \
+     -d examples/coalescent
+```
+
+**Note:** The version number in the path (e.g. `1.7.0`) must match the current project version
+defined in the root `pom.xml`.
 
 ### Commit
 

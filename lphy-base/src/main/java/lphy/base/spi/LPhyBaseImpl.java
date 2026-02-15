@@ -67,7 +67,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 CPPTree.class,
                 CalibratedCPPTree.class,
                 // skyline
-                SkylineCoalescent.class, ExpMarkovChain.class, RandomComposition.class,
+                SkylineCoalescent.class, BICEPS.class, ExpMarkovChain.class, RandomComposition.class,
                 // alignment
                 Sequence.class, ErrorModel.class, MissingSites.class,
                 // others

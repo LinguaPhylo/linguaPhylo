@@ -1,0 +1,4 @@
+numGroups = 4;
+groupSizes ~ RandomComposition(n=16, k=numGroups);
+ψ ~ BICEPS(populationShape=3.0, populationMean=0.01, groupSizes=groupSizes);
+D ~ PhyloCTMC(L=200, Q=jukesCantor(), tree=ψ);
