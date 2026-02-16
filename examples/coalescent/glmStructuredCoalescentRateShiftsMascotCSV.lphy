@@ -1,0 +1,89 @@
+// GLM Structured Coalescent with Rate Shifts — full MASCOT-GLM tutorial workflow
+// Demonstrates the complete multi-predictor workflow:
+//   - Static predictors tiled across intervals via nIntervals
+//   - Time-variant predictors read directly
+//   - Multiple predictors combined via cbind
+//
+// Ne GLM:  tiled population density (static) + time-variant weekly case counts
+//          => 2-predictor design matrix via cbind
+// Migration GLM: tiled great circle distances + tiled border sharing
+//          => 2-predictor design matrix via cbind
+//
+// 5 Sierra Leone districts: Bombali, Kailahun, Kenema, WesternRural, WesternUrban
+// 99 weekly intervals
+
+data {
+  S = 5;
+  nIntervals = 99;
+
+  // Rate shift times: weekly intervals 0 through 98
+  rateShiftTimes = arange(start=0.0, stop=98.0, step=1.0);
+
+  // === Ne predictors ===
+  // Static predictor: population density, tiled across 99 intervals
+  pdens_table = readDelim(file="data/Ne_Pdens.csv", sep=",", header=false);
+  X_pdens = toDesignMatrix(table=pdens_table, nIntervals=99);
+  // X_pdens is Double[495][1] (5 demes x 99 intervals, tiled)
+
+  // Time-variant predictor: weekly case counts (already has 99 intervals)
+  cases_table = readDelim(file="data/Ne_cases.csv", sep=",");
+  X_cases = toDesignMatrix(table=cases_table);
+  // X_cases is Double[495][1] (5 demes x 99 intervals)
+
+  // Combine into 2-predictor Ne design matrix
+  X_Ne = cbind(a=X_pdens, b=X_cases);
+  // X_Ne is Double[495][2]
+
+  // === Migration predictors ===
+  // Static predictor 1: great circle distances, tiled across 99 intervals
+  dist_table = readDelim(file="data/migration_greatCircleDistances.csv", sep=",");
+  X_dist = toDesignMatrix(table=dist_table, migrationMatrix=true, nIntervals=99);
+  // X_dist is Double[1980][1] (5*(5-1)*99 = 1980 rows)
+
+  // Static predictor 2: border sharing, tiled across 99 intervals
+  border_table = readDelim(file="data/migration_national_border_shared.csv", sep=",");
+  X_border = toDesignMatrix(table=border_table, migrationMatrix=true, nIntervals=99);
+  // X_border is Double[1980][1]
+
+  // Combine into 2-predictor migration design matrix
+  X_m = cbind(a=X_dist, b=X_border);
+  // X_m is Double[1980][2]
+
+  // Taxa: 3 samples per district
+  taxa = taxa(names=["Bom1","Bom2","Bom3",
+                      "Kai1","Kai2","Kai3",
+                      "Ken1","Ken2","Ken3",
+                      "WR1","WR2","WR3",
+                      "WU1","WU2","WU3"]);
+  demes = ["Bombali","Bombali","Bombali",
+           "Kailahun","Kailahun","Kailahun",
+           "Kenema","Kenema","Kenema",
+           "WesternRural","WesternRural","WesternRural",
+           "WesternUrban","WesternUrban","WesternUrban"];
+}
+
+model {
+  // === Ne GLM with 2 predictors ===
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+  // theta: Double[495] = Ne for each (interval, deme)
+
+  // === Migration GLM with 2 predictors ===
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+  // m: Double[1980] = migration rates for each (interval, from, to)
+
+  // Structured coalescent with rate shifts
+  psi ~ StructuredCoalescentRateShifts(
+    theta=theta,
+    m=m,
+    rateShiftTimes=rateShiftTimes,
+    taxa=taxa,
+    demes=demes
+  );
+
+  // Sequence evolution
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=psi);
+}

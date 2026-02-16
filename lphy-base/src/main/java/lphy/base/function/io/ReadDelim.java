@@ -83,6 +83,7 @@ public class ReadDelim extends DeterministicFunction<Table> {
             String line;
             String[] keys = null;
 
+            String[] firstRowValues = null;
             if (header && (line = reader.readLine()) != null) {
                 // 1st row is col names
                 keys = line.split(delimiter);
@@ -90,7 +91,8 @@ public class ReadDelim extends DeterministicFunction<Table> {
                 // 1st row is values, then create the default col names
                 line = reader.readLine();
                 if (line != null) {
-                    String[] defaultKeys = new String[line.split(delimiter).length];
+                    firstRowValues = line.split(delimiter);
+                    String[] defaultKeys = new String[firstRowValues.length];
                     for (int i = 0; i < defaultKeys.length; i++) {
                         defaultKeys[i] = "Column" + (i + 1);
                     }
@@ -108,6 +110,17 @@ public class ReadDelim extends DeterministicFunction<Table> {
 
                 int l = 1;
                 Class[] dataTypes = new Class[keyCount];
+
+                // When header=false, add the first row values that were consumed for column counting
+                if (firstRowValues != null && firstRowValues.length == keyCount) {
+                    for (int i = 0; i < keyCount; i++) {
+                        Object obj = Table.getValueGuessType(firstRowValues[i]);
+                        dataTypes[i] = obj.getClass();
+                        dataMap.get(keys[i]).add(obj);
+                    }
+                    l++;
+                }
+
                 while ((line = reader.readLine()) != null) {
                     String[] values = line.split(delimiter);
 
@@ -120,10 +133,28 @@ public class ReadDelim extends DeterministicFunction<Table> {
                             if (l==1)
                                 dataTypes[i] = obj.getClass();
                             else if (!obj.getClass().equals(dataTypes[i])) {
-                                LoggerUtils.log.warning("The column " + i + " in line " + l +
-                                        " has a different data type with the 1st row ! Cast " + obj +
-                                        " to " + dataTypes[i]);
-                                obj = castType(obj, dataTypes[i]);
+                                // Silently handle Integer/Double mismatches in both directions:
+                                // - Integer column + Double value: promote column to Double (avoids truncation)
+                                // - Double column + Integer value: widen Integer to Double (lossless)
+                                if (dataTypes[i].equals(Integer.class) && obj instanceof Double) {
+                                    dataTypes[i] = Double.class;
+                                    // Convert all previously stored Integer values in this column to Double
+                                    java.util.List<Object> col = dataMap.get(keys[i]);
+                                    for (int k = 0; k < col.size(); k++) {
+                                        if (col.get(k) instanceof Integer) {
+                                            col.set(k, ((Integer) col.get(k)).doubleValue());
+                                        }
+                                    }
+                                    // obj is already Double, no cast needed
+                                } else if (dataTypes[i].equals(Double.class) && obj instanceof Integer) {
+                                    // Lossless widening: Integer to Double
+                                    obj = ((Integer) obj).doubleValue();
+                                } else {
+                                    LoggerUtils.log.warning("The column " + i + " in line " + l +
+                                            " has a different data type with the 1st row ! Cast " + obj +
+                                            " to " + dataTypes[i]);
+                                    obj = castType(obj, dataTypes[i]);
+                                }
                             }
 
                             // obj type is guessed, but if it is diff to the 1st one,

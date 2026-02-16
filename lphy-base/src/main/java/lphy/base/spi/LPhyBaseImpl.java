@@ -100,7 +100,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 ExtantTree.class, PruneTree.class, InternalNodesID.class,
                 SubstituteClade.class, MRCA.class, LabelClade.class, //NodeCount.class, TreeLength.class,
                 // Matrix
-                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class,
+                BinaryRateMatrix.class, MigrationMatrix.class, MigrationCount.class, Cbind.class,
                 // IO
                 Newick.class, ReadNexus.class, ReadFasta.class, ReadDelim.class, WriteFasta.class,
                 ReadTrees.class, ExtractTrait.class, SpeciesTaxa.class, ReadMpileup.class,

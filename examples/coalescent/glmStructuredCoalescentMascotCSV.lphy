@@ -1,0 +1,61 @@
+// GLM Structured Coalescent with MASCOT-style CSV predictors
+// Demonstrates reading MASCOT-format predictor files via readDelim + toDesignMatrix + cbind.
+// Uses Ebola data from 5 Sierra Leone districts:
+//   Bombali, Kailahun, Kenema, WesternRural, WesternUrban
+//
+// Ne predictor:  population density (Ne_Pdens.csv, no header)
+// Migration predictors: great circle distances + national border shared
+//   (migration_greatCircleDistances.csv, migration_national_border_shared.csv)
+// Both migration predictors are combined into a 2-column design matrix via cbind.
+
+data {
+  S = 5;
+
+  // Ne predictor: 2-column CSV with no header (deme_name, value)
+  ne_table = readDelim(file="data/Ne_Pdens.csv", sep=",", header=false);
+  X_Ne = toDesignMatrix(table=ne_table);
+
+  // Migration predictors: two square matrices with deme-name headers
+  m_dist_table = readDelim(file="data/migration_greatCircleDistances.csv", sep=",");
+  X_m_dist = toDesignMatrix(table=m_dist_table, migrationMatrix=true);
+
+  m_border_table = readDelim(file="data/migration_national_border_shared.csv", sep=",");
+  X_m_border = toDesignMatrix(table=m_border_table, migrationMatrix=true);
+
+  // Combine two migration predictors into a single 2-column design matrix
+  X_m = cbind(a=X_m_dist, b=X_m_border);
+  // X_m is Double[20][2] (5*(5-1) pairs, 2 predictors)
+
+  // Taxa: 3 samples per district
+  taxa = taxa(names=["Bom1","Bom2","Bom3",
+                      "Kai1","Kai2","Kai3",
+                      "Ken1","Ken2","Ken3",
+                      "WR1","WR2","WR3",
+                      "WU1","WU2","WU3"]);
+  demes = ["Bombali","Bombali","Bombali",
+           "Kailahun","Kailahun","Kailahun",
+           "Kenema","Kenema","Kenema",
+           "WesternRural","WesternRural","WesternRural",
+           "WesternUrban","WesternUrban","WesternUrban"];
+}
+
+model {
+  // === Ne GLM ===
+  // beta_Ne: effect of log population density on Ne
+  beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=1);
+  Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+  Theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+
+  // === Migration GLM ===
+  // beta_m: effects of great-circle distance and border sharing on migration rate
+  beta_m ~ Normal(mean=0.0, sd=1.0, replicates=2);
+  m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+  m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+
+  // Structured coalescent tree
+  M = migrationMatrix(theta=Theta, m=m);
+  psi ~ StructuredCoalescent(M=M, taxa=taxa, demes=demes, sort=true);
+
+  // Sequence evolution
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=psi);
+}
