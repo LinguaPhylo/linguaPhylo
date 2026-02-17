@@ -1,0 +1,79 @@
+// GLM Structured Coalescent with Rate Shifts — time variant example
+//
+// Ne GLM:  tiled population density (static) + time-variant weekly case counts
+//          => 2-predictor design matrix via cbind
+// Migration GLM: time variant example with "deme:interval" as header + tiled border sharing
+//          => 2-predictor design matrix via cbind
+// 5 Sierra Leone districts: Bombali, Kailahun, Kenema, WesternRural, WesternUrban
+// 99 weekly intervals
+
+
+data {
+    S = 5;
+    nIntervals = 99;
+    rateShiftTimes = arange(start=0.0, stop=98.0, step=1.0);
+
+    // Ne predictors
+    // Static predictor: population density, tiled across 99 intervals
+    pdens_table = readDelim(file="data/Ne_Pdens.csv", sep=",", header=false);
+    X_pdens = toDesignMatrix(table=pdens_table, nIntervals=nIntervals); // 495 x 1
+
+    // Time-variant predictor: weekly cases as MASCOT Ne matrix (blank first col + interval columns)
+    cases_table = readDelim(file="data/Ne_cases.csv", sep=",");
+    X_cases = toDesignMatrix(table=cases_table); // 495 x 1
+
+    // Combine into Ne design matrix (495 x 2)
+    X_Ne = cbind(a=X_pdens, b=X_cases);
+
+
+    // Migration predictor (time-variant)
+    tv_dist_table = readDelim(file="data/timevariantexample_migration_greatCircleDistances.csv", sep=",");
+    X_tv_dist = toDesignMatrix(table=tv_dist_table, migrationMatrix=true); // 1980 x 1
+
+    border_table = readDelim(file="data/migration_national_border_shared.csv", sep=",");
+    X_border = toDesignMatrix(table=border_table, migrationMatrix=true, nIntervals=nIntervals); // 1980 x 1
+    X_m = cbind(a=X_tv_dist, b=X_border); // 1980 x 2
+
+
+    taxa = taxa(names=[
+        "Bom1","Bom2","Bom3",
+        "Kai1","Kai2","Kai3",
+        "Ken1","Ken2","Ken3",
+        "WR1","WR2","WR3",
+        "WU1","WU2","WU3"
+        ]);
+
+    demes = [
+        "Bombali","Bombali","Bombali",
+        "Kailahun","Kailahun","Kailahun",
+        "Kenema","Kenema","Kenema",
+        "WesternRural","WesternRural","WesternRural",
+        "WesternUrban","WesternUrban","WesternUrban"
+        ];
+}
+
+model {
+  // Ne GLM
+   beta_Ne ~ Normal(mean=0.0, sd=1.0, replicates=2);
+   Ne_scale ~ LogNormal(meanlog=0.0, sdlog=1.0);
+   theta = generalLinearFunction(beta=beta_Ne, x=X_Ne, link="log", scale=Ne_scale);
+   // theta: Double[495] = Ne for each (interval, deme)
+
+
+  // Migration GLM
+   beta_m ~ Normal(mean=0.0, sd=1.0, replicates=2);
+   m_scale ~ LogNormal(meanlog=-2.0, sdlog=1.0);
+   m = generalLinearFunction(beta=beta_m, x=X_m, link="log", scale=m_scale);
+
+  // Structured coalescent with rate shifts
+   psi ~ StructuredCoalescentRateShifts(
+        theta=theta,
+        m=m,
+        rateShiftTimes=rateShiftTimes,
+        taxa=taxa,
+        demes=demes
+      );
+
+    // Sequence evolution
+    D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=psi);
+}
