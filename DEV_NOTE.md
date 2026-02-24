@@ -274,7 +274,7 @@ and then [reload all Maven projects](#reload-all-maven-projects).
 
 - [Advanced developer guide]()  coming soon ...
 
-- [LPhyBeast developer guide]()  coming soon ...
+- [LPhyBeast developer guide](https://github.com/LinguaPhylo/LPhyBeast/blob/master/claude.md)  
 
 ## Useful Links
 
