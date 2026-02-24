@@ -27,6 +27,7 @@ manuscript/manuscript_diff*.tex
 **/build/**
 *.class
 **/target/**
+.flattened-pom.xml
 
 # macOS Files
 **/.DS_Store
