@@ -41,7 +41,8 @@ a prior `install` (which populates the local Maven repo) or `-am` to build depen
 Requires the assembly built by `./mvnw clean install -DskipTests`.
 
 ```bash
-export LPHY=lphy-studio/target/lphy-studio-1.7.0
+export LPHY="$(pwd)/lphy-studio/target/lphy-studio-1.7.0"
+export LPHY_LIB=$LPHY/lib
 
 # Launch LPhy Studio (GUI)
 $LPHY/bin/lphystudio
