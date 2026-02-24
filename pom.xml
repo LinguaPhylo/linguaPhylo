@@ -18,7 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.organization.name>LPhy team</project.organization.name>
 
-        <skip.lphy.tests>false</skip.lphy.tests>
+        <skipTests>false</skipTests>
+        <skip.lphy.tests>${skipTests}</skip.lphy.tests>
     </properties>
 
     <modules>

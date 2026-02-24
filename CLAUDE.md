@@ -15,7 +15,7 @@ The project version is set by the `<revision>` property in the root `pom.xml` (c
 
 ```bash
 # Build all modules (creates assembly at lphy-studio/target/lphy-studio-<version>/)
-./mvnw clean install -Dmaven.test.skip=true
+./mvnw clean install -DskipTests
 
 # Run all tests
 ./mvnw test
@@ -38,7 +38,7 @@ a prior `install` (which populates the local Maven repo) or `-am` to build depen
 
 ## Run from Command Line
 
-Requires the assembly built by `./mvnw clean install -Dmaven.test.skip=true`.
+Requires the assembly built by `./mvnw clean install -DskipTests`.
 
 ```bash
 export LPHY=lphy-studio/target/lphy-studio-1.7.0
