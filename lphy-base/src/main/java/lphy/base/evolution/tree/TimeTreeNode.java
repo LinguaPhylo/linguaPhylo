@@ -109,7 +109,7 @@ public class TimeTreeNode {
         return (Double)getMetaData("rate");
     }
 
-    public void setRootStem(Double stemLength) { setMetaData("stem", stemLength);}
+    public void setRootStem(Double stemAge) { setMetaData("stem", stemAge);}
 
     public Double getRootStem() {return (Double)getMetaData("stem");}
 

@@ -152,9 +152,7 @@ public class TimeTree implements HasTaxa, MultiDimensional {
                 if (node.getRootStem() == null){
                     builder.append(":0.0;");
                 } else {
-                    double branchLength = (node.getRootStem() != null) ? node.getRootStem() : 0.0;
-                    builder.append(":").append(branchLength).append(";");
-                    System.out.println(branchLength);
+                    builder.append("[&stemAge=").append(node.getRootStem()).append("];");
                 }
             } else {
                 if (!node.isLeaf()) {
