@@ -7,6 +7,7 @@ public class BirthDeathConstants {
     public static final String rhoParamName = "rho";
     public static final String fracParamName = "frac";
     public static final String psiParamName = "psi";
+    public static final String samplingProportionParamName = "samplingProportion";
     public static final String diversificationParamName = "diversification";
     public static final String turnoverParamName = "turnover";
     public static final String rootAgeParamName = "rootAge";
