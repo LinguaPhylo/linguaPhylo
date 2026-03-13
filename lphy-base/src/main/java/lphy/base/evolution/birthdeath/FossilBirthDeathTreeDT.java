@@ -62,7 +62,7 @@ public class FossilBirthDeathTreeDT implements GenerativeDistribution<TimeTree> 
         setup();
     }
 
-    @GeneratorInfo(name = "FossilBirthDeathTree",
+    @GeneratorInfo(name = "FossilBirthDeathTreeDT",
             category = GeneratorCategory.BD_TREE,
             description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
                     "Parameterised by diversification rate, turnover and sampling proportion. Conditioned on root age and (optionally) on number of extant taxa.")
