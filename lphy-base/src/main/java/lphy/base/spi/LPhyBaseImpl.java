@@ -5,6 +5,7 @@ import lphy.base.bmodeltest.NucleotideModel;
 import lphy.base.bmodeltest.bSiteModelFunction;
 import lphy.base.bmodeltest.bSiteRates;
 import lphy.base.distribution.*;
+import lphy.base.evolution.DateToAge;
 import lphy.base.evolution.SNPSampler;
 import lphy.base.evolution.alignment.ErrorModel;
 import lphy.base.evolution.alignment.Sequence;
@@ -69,7 +70,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // alignment
                 Sequence.class, ErrorModel.class, MissingSites.class,
                 // others
-                RandomBooleanArray.class, Sample.class, SNPSampler.class,
+                RandomBooleanArray.class, Sample.class, SNPSampler.class, LeafCalibrations.class,
                 // phylogenetic distribution
                 PhyloBrownian.class, PhyloMultivariateBrownian.class, PhyloOU.class,
                 // SparsePhyloCTMC.class,
@@ -92,6 +93,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 AminoAcidsFunction.class,
                 // Taxa
                 CreateTaxa.class, ExtantTaxa.class, NCharFunction.class, NTaxaFunction.class, TaxaFunction.class,
+                DateToAge.class,
                 // Alignment
                 SelectSitesByMissingFraction.class, RemoveTaxa.class, Distance.class,
                 VariableSites.class, InvariableSites.class, InformativeSites.class, CopySites.class,

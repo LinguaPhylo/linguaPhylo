@@ -47,7 +47,14 @@ public interface Taxa extends MultiDimensional {
         return 2*ntaxa()-1;
     }
 
-
+    @MethodInfo(description = "set the ages to the taxa")
+    default Taxa setTaxaAges(Double[] ages){
+        Taxon[] taxa = getTaxonArray();
+        for (int i = 0; i < taxa.length; i++) {
+            taxa[i].setAge(ages[i]);
+        }
+        return createTaxa(taxa);
+    }
     //******  ******//
 
     /**
@@ -134,6 +141,7 @@ public interface Taxa extends MultiDimensional {
         if (index >= 0) return taxa[index].getAge();
         throw new IllegalArgumentException("Taxon named " + taxonName + " not found");
     }
+
 
 
     /**

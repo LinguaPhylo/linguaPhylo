@@ -1,0 +1,30 @@
+data{
+    nexus="./data/calibrations.nexus";
+    D = readNexus(file=nexus);
+    taxa = D.taxa();
+    numGroups = 10;
+    n = taxa.length();
+    w = n - 1;
+    L = D.nchar();
+}
+model{
+    // GTR substitution model
+    π ~ Dirichlet(conc=[3.0, 3.0, 3.0, 3.0]);
+    rates ~ Dirichlet(conc=[1.0, 2.0, 1.0, 1.0, 2.0, 1.0]);
+    Q = gtr(rates=rates, freq=π);
+
+    // group size dist
+    groupSizes ~ RandomComposition(k=numGroups, n=w);
+
+    theta1 ~ LogNormal(meanlog=4, sdlog=2);
+    theta ~ ExpMarkovChain(firstValue=theta1, n=numGroups);
+
+    // skyline coalescent tree prior
+    tipDates ~ LeafCalibrations(file=nexus);
+    // get relative ages for the taxa
+    relativeAges = dateToAge(dates=tipDates);
+    calibratedTaxa = taxa.setTaxaAges(relativeAges);
+    tree ~ SkylineCoalescent(theta=theta, taxa=calibratedTaxa, groupSizes=groupSizes);
+
+    D ~ PhyloCTMC(L = L, Q = Q, tree = tree);
+}
