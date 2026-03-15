@@ -90,6 +90,8 @@ public class LeafCalibrations implements GenerativeDistribution<Double[]> {
                     double muLog  = Math.log(mean) - 0.5 * sigmaLog * sigmaLog;
                     yield new double[]{ muLog, sigmaLog };
                 }
+                // exponential(<mean_age>) → [mean]
+                case "exponential" -> new double[]{ params[0] };
 
                 // offsetlognormal(<min_age>,<mean_age>,<sd=1.0>): convert real-scale mean+sd to log-scale
                 // sigmaLog = sqrt(log(1 + sd²/mean²)), muLog = log(mean) - 0.5*sigmaLog²
@@ -212,6 +214,11 @@ public class LeafCalibrations implements GenerativeDistribution<Double[]> {
                     yield computedParams[0] + exp.sample();
                 }
 
+                case "exponential" -> {
+                    ExponentialDistribution exp = new ExponentialDistribution(computedParams[0]);
+                    yield exp.sample();
+                }
+
                 // lognormal: computedParams are [muLog, sigmaLog]
                 case "lognormal" -> {
                     LogNormalDistribution logNormal = new LogNormalDistribution(computedParams[0], computedParams[1]);
@@ -305,7 +312,7 @@ public class LeafCalibrations implements GenerativeDistribution<Double[]> {
 
         Double[] ages = calibrations.stream().map(TipCalibration::sampleAge).toArray(Double[]::new);
 
-        return new RandomVariable<>("", ages, this);
+        return new RandomVariable<>("tipAges", ages, this);
     }
 
     /**
