@@ -7,8 +7,8 @@ import lphy.core.model.annotation.ParameterInfo;
 import lphy.core.model.datatype.DoubleValue;
 
 /**
- * General linear function with optional link function and scale parameter.
- * Computes y = scale × g^{-1}(β · x) where g^{-1} is the inverse link function.
+ * General linear function with optional link function, scale parameter, indicator, and error term.
+ * Computes y = scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error) where g^{-1} is the inverse link function.
  *
  * <h3>Vectorisation</h3>
  * <p>LPhy's implicit vectorisation automatically handles matrix inputs.
@@ -22,6 +22,14 @@ import lphy.core.model.datatype.DoubleValue;
  * // With optional scale parameter (useful for MASCOT GLM conversion):
  * m = generalLinearFunction(beta=beta, x=X, link="log", scale=s);
  * // Returns: scale × exp(X × beta)
+ *
+ * // With BSSVS indicators for predictor selection:
+ * indicator ~ Bernoulli(p=0.5, replicates=nPredictors);
+ * m = generalLinearFunction(beta=beta, x=X, link="log", scale=s, indicator=indicator);
+ *
+ * // With error term (additive on the linear predictor):
+ * error ~ Normal(mean=0.0, sd=sigma);
+ * m = generalLinearFunction(beta=beta, x=X, link="log", scale=s, error=error);
  * </pre>
  *
  * @author Alexei Drummond
@@ -32,6 +40,8 @@ public class GeneralLinearFunction extends DeterministicFunction<Double> {
     public static final String xParamName = "x";
     public static final String linkParamName = "link";
     public static final String scaleParamName = "scale";
+    public static final String indicatorParamName = "indicator";
+    public static final String errorParamName = "error";
 
     public GeneralLinearFunction(
             @ParameterInfo(name = betaParamName,
@@ -46,26 +56,51 @@ public class GeneralLinearFunction extends DeterministicFunction<Double> {
             Value<String> link,
             @ParameterInfo(name = scaleParamName, optional = true,
                 description = "optional scale multiplier applied after the inverse link transformation. " +
-                              "Result is: scale × g^{-1}(β · x). Default is 1.0.")
-            Value<Double> scale) {
+                              "Result is: scale × g^{-1}(linear predictor). Default is 1.0.")
+            Value<Double> scale,
+            @ParameterInfo(name = indicatorParamName, optional = true,
+                description = "optional Boolean array for BSSVS (Bayesian stochastic search variable selection). " +
+                              "When provided, only predictors with indicator=true contribute to the linear predictor. " +
+                              "Must have same length as beta.")
+            Value<Boolean[]> indicator,
+            @ParameterInfo(name = errorParamName, optional = true,
+                description = "optional error term added to the linear predictor before the inverse link transformation. " +
+                              "Result is: scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error).")
+            Value<Double> error) {
         setParam(betaParamName, b);
         setParam(xParamName, x);
         if (link != null) setParam(linkParamName, link);
         if (scale != null) setParam(scaleParamName, scale);
+        if (indicator != null) setParam(indicatorParamName, indicator);
+        if (error != null) setParam(errorParamName, error);
     }
 
     @GeneratorInfo(name = "generalLinearFunction",
-        description = "The general linear function: y = scale × g^{-1}(sum_i b_i*x_i) " +
-                      "where g^{-1} is the inverse link function and scale is an optional multiplier (default 1.0). " +
+        description = "The general linear function: y = scale × g^{-1}(sum_j indicator_j * beta_j * x_j + error) " +
+                      "where g^{-1} is the inverse link function, scale is an optional multiplier (default 1.0), " +
+                      "indicator is an optional Boolean array for BSSVS predictor selection (default all true), " +
+                      "and error is an optional additive term on the linear predictor (default 0.0). " +
                       "When x is a matrix (Double[][]), vectorisation applies the function to each row, " +
                       "returning Double[] - useful for computing multiple GLM predictions from a design matrix.")
     public Value<Double> apply() {
         Value<Double[]> b = getParams().get(betaParamName);
         Value<Double[]> x = getParams().get(xParamName);
 
+        // Optional indicator for BSSVS
+        Value<Boolean[]> indicatorValue = getParams().get(indicatorParamName);
+        Boolean[] indicators = (indicatorValue != null) ? indicatorValue.value() : null;
+
         double eta = 0.0;
         for (int i = 0; i < b.value().length; i++) {
-            eta += b.value()[i] * x.value()[i];
+            if (indicators == null || indicators[i]) {
+                eta += b.value()[i] * x.value()[i];
+            }
+        }
+
+        // Optional error term
+        Value<Double> errorValue = getParams().get(errorParamName);
+        if (errorValue != null) {
+            eta += errorValue.value();
         }
 
         String link = "identity";

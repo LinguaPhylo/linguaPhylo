@@ -54,12 +54,17 @@ import java.util.*;
  * <p>Where indices 0, 1, 2 correspond to alphabetically sorted deme names (A, B, C).</p>
  *
  * <h3>Rate shift times:</h3>
- * <p>Times are the <b>start</b> of each interval, going backward from the present:</p>
+ * <p>Times are the <b>start</b> of each interval, going backward from the present.
+ * Negative times are allowed to support time offsets between predictor data and the tree
+ * (e.g., when predictor data has a different temporal origin than the most recent sample).
+ * Times must be in strictly increasing order.</p>
  * <pre>
  * rateShiftTimes = [0.0, 5.0, 10.0]  // 3 intervals
  * // Interval 0: time 0.0 to 5.0 (most recent)
  * // Interval 1: time 5.0 to 10.0
  * // Interval 2: time 10.0 to infinity (most ancient)
+ *
+ * rateShiftTimes = [-3.0, 0.0, 5.0]  // negative offset: predictor data starts 3 years before most recent sample
  * </pre>
  *
  * @see StructuredCoalescent
@@ -123,8 +128,10 @@ public class StructuredCoalescentRateShifts extends TaxaConditionedTreeGenerator
 
             @ParameterInfo(name = rateShiftTimesParamName,
                     description = "Start times of each interval, going backward from present. " +
-                            "First element should be 0.0 (present). " +
-                            "Example: [0.0, 5.0, 10.0] defines 3 intervals.")
+                            "Times must be in strictly increasing order. " +
+                            "Negative times are allowed for time offsets between predictor data and the tree. " +
+                            "Example: [0.0, 5.0, 10.0] defines 3 intervals. " +
+                            "Example: [-3.0, 0.0, 5.0] offsets predictor data 3 years before most recent sample.")
             Value<Double[]> rateShiftTimes,
 
             @ParameterInfo(name = TaxaConditionedTreeGenerator.taxaParamName,
