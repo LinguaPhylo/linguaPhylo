@@ -77,7 +77,9 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 AutoCorrelatedLogRates.class, MixturePhyloCTMC.class,
                 PhyloCTMC.class, PhyloCTMCSiteModel.class, bSiteRates.class,
                 // general linear model
-                GeneralLinearModel.class);
+                GeneralLinearModel.class,
+                // indicator prior
+                PoissonIndicators.class);
     }
 
     @Override
@@ -125,7 +127,9 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 Cons_Exp_ConsPopulationFunction.class, ExpansionPopulationFunction.class,
                 AutoCorrelatedClock.class,
                 // general linear function
-                GeneralLinearFunction.class
+                GeneralLinearFunction.class,
+                // rate shift times
+                RateShiftTimes.class
                 );
 
     }
