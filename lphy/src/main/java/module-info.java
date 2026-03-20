@@ -30,7 +30,7 @@ module lphy.core {
 
     // vectorization
     exports lphy.core.vectorization;
-//    exports lphy.core.vectorization.array;
+    exports lphy.core.vectorization.array;
     exports lphy.core.vectorization.operation;
 
     // others
