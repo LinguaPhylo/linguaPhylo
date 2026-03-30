@@ -35,6 +35,7 @@ public class LeafCalibrations implements GenerativeDistribution<Double[]> {
          calibrate <node_name> = offsetexponential(<min_age>,<mean_age>)
          calibrate <node_name> = truncatednormal(<min_age>,<mean_age>,)
          calibrate <node_name> = lognormal(<mean_age>,)
+         calibrate <node_name> = exponential(<mean_age>)
          calibrate <node_name> = offsetlognormal(<min_age>,<mean_age>,)
          calibrate <node_name> = gamma(<mean_age>,)
          calibrate <node_name> = offsetgamma(<min_age>,<mean_age>,)
