@@ -23,7 +23,7 @@ public class VCFUtils {
        // builder.append("##reference=").append(getReferencePath()).append("\n");
         builder.append("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">").append("\n");
 
-        builder.append("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" + String.join("\t", taxaNames));
+        builder.append("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t" + String.join("\t", taxaNames)).append("\n");
 
         return builder.toString();
     }
@@ -81,7 +81,7 @@ public class VCFUtils {
 
         genotype.append(variant.getGenotype()).append("\t");
         for (int i = count; i<names.length-1; i++){
-            genotype.append(".").append("\n");
+            genotype.append(".").append("\t");
         }
         return genotype.toString();
     }
