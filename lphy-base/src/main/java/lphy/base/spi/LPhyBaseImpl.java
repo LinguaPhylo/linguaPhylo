@@ -99,6 +99,7 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // Alignment
                 SelectSitesByMissingFraction.class, RemoveTaxa.class, Distance.class,
                 VariableSites.class, InvariableSites.class, InformativeSites.class, CopySites.class,
+                ExtractAlignment.class,
                 // Tree
                 LocalBranchRates.class, LocalClock.class,
                 ExtantTree.class, PruneTree.class, InternalNodesID.class,
