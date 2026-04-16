@@ -1,5 +1,6 @@
 package lphy.base.spi;
 
+import lphy.base.logger.ContinuousCharacterDataCSVFormatter;
 import lphy.base.logger.VCFFormatter;
 import lphy.base.logger.NexusAlignmentFormatter;
 import lphy.base.logger.NexusTreeFormatter;
@@ -22,7 +23,7 @@ public class ValueFormatterBaseImpl extends ValueFormatterCoreImpl {//implements
     @Override
     public Set<Class<? extends ValueFormatter>> declareValueFormatters() {
         return Set.of(NexusAlignmentFormatter.class, NexusTreeFormatter.class,
-                VCFFormatter.class);
+                VCFFormatter.class, ContinuousCharacterDataCSVFormatter.class);
     }
 
     /**
