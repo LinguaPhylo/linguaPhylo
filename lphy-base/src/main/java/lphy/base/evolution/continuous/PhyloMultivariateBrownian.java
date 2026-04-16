@@ -28,19 +28,23 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
     Value<TimeTree> tree;
     Value<Double[][]> diffusionMatrix;
     Value<Double[]> y0;
+    Value<Double[]> branchRates;
     RandomGenerator random;
 
     public static final String treeParamName = "tree";
     public static final String diffusionMatrixParamName = "diffusionMatrix";
     public static final String y0ParamName = "y0";
+    public static final String branchRatesParamName = "branchRates";
 
     public PhyloMultivariateBrownian(@ParameterInfo(name = treeParamName, description = "the time tree.") Value<TimeTree> tree,
                                      @ParameterInfo(name = diffusionMatrixParamName, description = "the multivariate diffusion rates.") Value<Double[][]> diffusionRate,
-                                     @ParameterInfo(name = y0ParamName, description = "the value of multivariate traits at the root.") Value<Double[]> y0) {
+                                     @ParameterInfo(name = y0ParamName, description = "the value of multivariate traits at the root.") Value<Double[]> y0,
+                                     @ParameterInfo(name = branchRatesParamName, description = "a rate multiplier for each branch in the tree, indexed by child node getIndex(). If absent, all branches have rate 1. Enables a relaxed random walk (RRW) when combined with drawn per-branch rates.", optional = true) Value<Double[]> branchRates) {
 
         this.tree = tree;
         this.diffusionMatrix = diffusionRate;
         this.y0 = y0;
+        this.branchRates = branchRates;
         this.random = RandomUtils.getRandom();
     }
 
@@ -110,6 +114,9 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
         else {
             for (TimeTreeNode child : node.getChildren()) {
                 double branchLength = node.getAge() - child.getAge();
+                if (branchRates != null) {
+                    branchLength *= branchRates.value()[child.getIndex()];
+                }
                 Double[] newIntNodeState = getSampleFromNewMVN(nodeState.value(), diffusionMatrix, branchLength); // MVN sampling here
                 DoubleArrayValue newIntNodeStateValue = new DoubleArrayValue(null, newIntNodeState);
 
@@ -166,11 +173,12 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
     // getParams is in the Generator interface
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(treeParamName, tree);
-            put(diffusionMatrixParamName, diffusionMatrix);
-            put(y0ParamName, y0);
-        }};
+        Map<String, Value> map = new TreeMap<>();
+        map.put(treeParamName, tree);
+        map.put(diffusionMatrixParamName, diffusionMatrix);
+        map.put(y0ParamName, y0);
+        if (branchRates != null) map.put(branchRatesParamName, branchRates);
+        return map;
     }
 
     // setParam is in the Generator interface
@@ -185,6 +193,9 @@ public class PhyloMultivariateBrownian implements GenerativeDistribution<Continu
                 break;
             case y0ParamName:
                 y0 = value;
+                break;
+            case branchRatesParamName:
+                branchRates = value;
                 break;
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);

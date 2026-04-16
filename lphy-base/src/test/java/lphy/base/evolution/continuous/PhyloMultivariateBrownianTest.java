@@ -85,7 +85,7 @@ public class PhyloMultivariateBrownianTest {
         Value<Double[]> y0Value = new Value<Double[]>("y0", y0);
 
         // distribution
-        PhyloMultivariateBrownian phyloMB = new PhyloMultivariateBrownian(trValue, rateMatValue, y0Value);
+        PhyloMultivariateBrownian phyloMB = new PhyloMultivariateBrownian(trValue, rateMatValue, y0Value, null);
 
         // sampling
         nTries = 100; // 95 out of 100 should be inside 95 CI
