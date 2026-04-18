@@ -1,0 +1,52 @@
+// Structured Coalescent Skyline
+// Per-deme Skyline on log effective population size (Gaussian random walk
+// smoothing prior) with time-constant migration rates. Mirrors the structure
+// of a Mascot StructuredSkyline analysis (e.g. the ZIKV 2-deme example).
+//
+// Deme Ordering Contract
+// ======================
+// Demes are ALWAYS sorted ALPHABETICALLY to determine indices:
+//   - If demes array contains ["B", "A"], indices are: A=0, B=1.
+//
+// logNe layout: Double[K][n]
+//   Row index follows alphabetical deme order, column index is epoch
+//   (epoch 0 = most recent).
+//
+// M layout: flat Double[K*(K-1)]
+//   For source i (alphabetical), for dest j != i (alphabetical):
+//     m_0->1, m_0->2, ..., m_1->0, m_1->2, ..., m_2->0, m_2->1, ...
+//   Constant over time (no per-interval migration).
+//
+// rateShifts layout: Double[n]
+//   Start times of each Ne epoch, increasing from present (first element 0.0).
+
+K = 2;                    // number of demes (A, B)
+n = 2;                    // number of Skyline epochs per deme
+stepSd = 1.0;             // Gaussian random walk step sd on log-Ne
+rateShifts = [0.0, 0.5];  // start times of the 2 epochs (0 = present)
+
+// Per-deme initial log-Ne: K independent Normal draws, then a
+// K-independent GRW chains of length n (auto-vectorisation over firstValue).
+init  ~ Normal(mean=0.0, sd=1.0, replicates=K);
+logNe ~ GaussianRandomWalk(firstValue=init, sd=stepSd, n=n);
+
+// Flat K*(K-1) constant migration rates.
+M ~ LogNormal(meanlog=0.0, sdlog=1.0, replicates=K*(K-1));
+
+// 10 taxa, 5 from each deme.
+taxa = taxa(names=["t1_A","t2_A","t3_A","t4_A","t5_A","t1_B","t2_B","t3_B","t4_B","t5_B"]);
+demes = ["A","A","A","A","A","B","B","B","B","B"];
+
+// interpolation="constant" (default): piecewise-constant log-Ne per epoch,
+// matching Mascot's StructuredSkygrid.
+// interpolation="linear": piecewise-linear log-Ne between knots at rateShifts,
+// matching Mascot's Skygrowth.
+ψ ~ StructuredCoalescentSkyline(
+    logNe=logNe,
+    M=M,
+    rateShifts=rateShifts,
+    taxa=taxa,
+    demes=demes,
+    interpolation="constant");
+
+D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);

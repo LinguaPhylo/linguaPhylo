@@ -62,11 +62,12 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 RhoSampleTree.class, FossilBirthDeathTree.class, FossilBirthDeathTreeDT.class,
                 SimBDReverse.class, SimFBDAge.class, SimFBDAgeDT.class, SimFossilsPoisson.class,
                 SerialCoalescent.class, StructuredCoalescent.class, StructuredCoalescentRateShifts.class,
+                StructuredCoalescentSkyline.class,
                 MultispeciesCoalescent.class,
                 SubsampledTree.class, PopulationFunctionCoalescent.class,
                 SampleBranch.class,
                 // skyline
-                SkylineCoalescent.class, BICEPS.class, ExpMarkovChain.class, RandomComposition.class,
+                SkylineCoalescent.class, BICEPS.class, ExpMarkovChain.class, GaussianRandomWalk.class, RandomComposition.class,
                 // alignment
                 Sequence.class, ErrorModel.class, MissingSites.class,
                 // others
