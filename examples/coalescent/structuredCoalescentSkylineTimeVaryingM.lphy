@@ -1,0 +1,39 @@
+// Structured Coalescent Skyline with time-varying migration (independent
+// Ne and migration grids). Mirrors the structure of a Mascot
+// StructuredMigrationSkyline analysis, as offered in BEAUti's MASCOT Skyline
+// template: separate counts for # of Ne epochs and # of migration matrices.
+//
+// Toby Koch's WNV phylogeography use case (2026-04): n_Ne = 4 Ne epochs at
+// classic skyline resolution; n_M = 2 migration matrices (expansion vs
+// endemic phases).
+
+K = 2;
+n   = 4;     // number of Ne epochs per deme (skyline resolution)
+n_M = 2;     // number of migration-rate epochs (expansion vs endemic)
+stepSd  = 1.0;
+mStepSd = 1.0;
+
+rateShifts          = [0.0, 0.25, 0.5, 0.75];   // n Ne knots
+migrationRateShifts = [0.0, 0.5];               // n_M migration knots
+
+// Per-deme initial log-Ne + K independent GRW chains of length n.
+init  ~ Normal(mean=0.0, sd=1.0, replicates=K);
+logNe ~ GaussianRandomWalk(firstValue=init, sd=stepSd, n=n);
+
+// Per-pair initial log-M + K*(K-1) independent GRW chains of length n_M.
+initM ~ Normal(mean=0.0, sd=1.0, replicates=K*(K-1));
+logM  ~ GaussianRandomWalk(firstValue=initM, sd=mStepSd, n=n_M);
+
+taxa = taxa(names=["t1_A","t2_A","t3_A","t4_A","t5_A","t1_B","t2_B","t3_B","t4_B","t5_B"]);
+demes = ["A","A","A","A","A","B","B","B","B","B"];
+
+ψ ~ StructuredCoalescentSkyline(
+    logNe=logNe,
+    logM=logM,
+    rateShifts=rateShifts,
+    migrationRateShifts=migrationRateShifts,
+    taxa=taxa,
+    demes=demes,
+    interpolation="linear");
+
+D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);

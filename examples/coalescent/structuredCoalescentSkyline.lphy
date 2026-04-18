@@ -50,3 +50,20 @@ demes = ["A","A","A","A","A","B","B","B","B","B"];
     interpolation="constant");
 
 D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+
+// ------------------------------------------------------------------
+// Time-varying migration variant
+// ------------------------------------------------------------------
+// Supply logM (log migration trajectory, shape [K*(K-1)][n_M]) and
+// migrationRateShifts (length n_M) in place of the constant M:
+//
+//   n_M = 2;
+//   migrationRateShifts = [0.0, 0.5];
+//   initM ~ Normal(mean=0.0, sd=1.0, replicates=K*(K-1));
+//   logM  ~ GaussianRandomWalk(firstValue=initM, sd=stepSd, n=n_M);
+//   ψ ~ StructuredCoalescentSkyline(
+//           logNe=logNe, logM=logM,
+//           rateShifts=rateShifts,
+//           migrationRateShifts=migrationRateShifts,
+//           taxa=taxa, demes=demes,
+//           interpolation="constant");

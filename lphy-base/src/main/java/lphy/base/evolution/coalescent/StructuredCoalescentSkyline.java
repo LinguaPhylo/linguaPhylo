@@ -16,33 +16,42 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import java.util.*;
 
 /**
- * Structured coalescent with piecewise-constant per-deme effective population sizes
- * (a Skyline on log-Ne) and time-constant migration rates. Counterpart of Mascot's
- * StructuredSkyline with per-deme Skygrowth.
+ * Structured coalescent with piecewise per-deme effective population sizes
+ * (a Skyline on log-Ne) and either time-constant or time-varying migration rates.
+ * Counterpart of Mascot's StructuredSkyline / StructuredMigrationSkyline.
  *
  * <h2>Deme Ordering Contract</h2>
  *
  * <p>Demes are <b>always sorted alphabetically</b> to ensure consistency with BEAST2/MASCOT.
- * This determines how {@code logNe} and {@code M} are indexed.</p>
+ * This determines how {@code logNe}, {@code M}, and {@code logM} are indexed.</p>
  *
  * <h3>logNe layout</h3>
  * <p>{@code logNe[i][e]} is the natural log of effective population size of deme {@code i}
- * (alphabetical) during epoch {@code e} (epoch 0 = most recent).
+ * (alphabetical) during Ne epoch {@code e} (epoch 0 = most recent).
  * Shape: {@code [nDemes][nEpochs]}.</p>
  *
- * <h3>Migration layout</h3>
- * <p>Flat array of length {@code nDemes * (nDemes - 1)}. Order: for source deme {@code i}
- * (alphabetical), for dest deme {@code j != i} (alphabetical):</p>
+ * <h3>Migration layouts</h3>
+ * <p>Constant mode ({@code M}): flat array of length {@code nDemes * (nDemes - 1)}.
+ * Order: for source deme {@code i} (alphabetical), for dest deme {@code j != i}
+ * (alphabetical):</p>
  * <pre>
  * M = [ m_0→1, m_0→2, ..., m_1→0, m_1→2, ..., m_2→0, m_2→1, ... ]
  * </pre>
- * <p>Migration is constant over time in this generator (no per-interval migration).</p>
+ *
+ * <p>Time-varying mode ({@code logM}): shape {@code [nDemes*(nDemes-1)][nMigEpochs]}.
+ * Row index follows the same source-major order as {@code M}; column index is the
+ * migration epoch (epoch 0 = most recent). Values are log migration rates.</p>
  *
  * <h3>Rate shift times</h3>
- * <p>{@code rateShifts[e]} is the start of epoch {@code e}, going backward from the present.
- * Length equals the number of epochs ({@code logNe[i].length}). Times must be strictly
- * increasing; first element is typically {@code 0.0}. Epoch {@code e} covers
- * {@code [rateShifts[e], rateShifts[e+1])}; the last epoch extends to infinity.</p>
+ * <p>{@code rateShifts[e]} is the start of Ne epoch {@code e}, going backward from the
+ * present. Length equals the number of Ne epochs. Strictly increasing; first element
+ * typically {@code 0.0}. Epoch {@code e} covers {@code [rateShifts[e], rateShifts[e+1])};
+ * the last epoch extends to infinity. When {@code logM} is supplied,
+ * {@code migrationRateShifts} plays the same role for migration epochs.</p>
+ *
+ * <h3>Parameter XOR</h3>
+ * <p>Exactly one of {@code M} or {@code logM} must be supplied. If {@code logM} is
+ * supplied then {@code migrationRateShifts} is required.</p>
  *
  * @see StructuredCoalescentRateShifts
  * @see StructuredCoalescent
@@ -58,7 +67,9 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
 
     public static final String logNeParamName = "logNe";
     public static final String MParamName = "M";
+    public static final String logMParamName = "logM";
     public static final String rateShiftsParamName = "rateShifts";
+    public static final String migrationRateShiftsParamName = "migrationRateShifts";
     public static final String demesParamName = "demes";
     public static final String interpolationParamName = "interpolation";
 
@@ -67,14 +78,18 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
 
     private Value<Double[][]> logNe;
     private Value<Double[]> M;
+    private Value<Double[][]> logM;
     private Value<Double[]> rateShifts;
+    private Value<Double[]> migrationRateShifts;
     private Value<Object[]> demes;
     private Value<String> interpolation;
 
     private List<String> uniqueDemes;
     private int nDemes;
     private int nEpochs;
+    private int nMigEpochs;
     private boolean isLinear;
+    private boolean timeVaryingMigration;
 
     public static final String populationLabel = "deme";
 
@@ -91,13 +106,31 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
                     description = "Migration rates (constant over time). " +
                             "Flat array of length nDemes * (nDemes - 1). " +
                             "Order: for source i (alphabetical), for dest j != i (alphabetical). " +
-                            "Rates are in units of expected migrants per generation backward in time.")
+                            "Rates are in units of expected migrants per generation backward in time. " +
+                            "Exactly one of M or logM must be supplied.",
+                    optional = true)
             Value<Double[]> M,
+
+            @ParameterInfo(name = logMParamName,
+                    description = "Log migration rates, time-varying. " +
+                            "Shape [nDemes*(nDemes-1)][nMigEpochs]. Row index follows the same " +
+                            "source-major order as M; column index is the migration epoch " +
+                            "(epoch 0 = most recent). Requires migrationRateShifts. " +
+                            "Exactly one of M or logM must be supplied.",
+                    optional = true)
+            Value<Double[][]> logM,
 
             @ParameterInfo(name = rateShiftsParamName,
                     description = "Start times of each Ne epoch, going backward from the present. " +
                             "Length equals number of epochs. Strictly increasing; first element typically 0.0.")
             Value<Double[]> rateShifts,
+
+            @ParameterInfo(name = migrationRateShiftsParamName,
+                    description = "Start times of each migration epoch, going backward from the present. " +
+                            "Length equals logM[*].length. Strictly increasing; first element typically 0.0. " +
+                            "Required when logM is supplied.",
+                    optional = true)
+            Value<Double[]> migrationRateShifts,
 
             @ParameterInfo(name = TaxaConditionedTreeGenerator.taxaParamName,
                     description = "The taxa.")
@@ -123,7 +156,9 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
 
         this.logNe = logNe;
         this.M = M;
+        this.logM = logM;
         this.rateShifts = rateShifts;
+        this.migrationRateShifts = migrationRateShifts;
         this.demes = demes;
         this.interpolation = interpolation;
 
@@ -133,6 +168,18 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             throw new IllegalArgumentException("demes must be specified!");
         if (rateShifts == null)
             throw new IllegalArgumentException("rateShifts must be specified!");
+
+        boolean hasM = (M != null);
+        boolean hasLogM = (logM != null);
+        if (hasM == hasLogM) {
+            throw new IllegalArgumentException(
+                    "Exactly one of M (constant migration) or logM (time-varying migration) must be supplied.");
+        }
+        this.timeVaryingMigration = hasLogM;
+        if (hasLogM && migrationRateShifts == null) {
+            throw new IllegalArgumentException(
+                    "migrationRateShifts must be supplied when logM is used.");
+        }
 
         String mode = (interpolation == null) ? INTERP_CONSTANT : interpolation.value();
         if (!INTERP_CONSTANT.equals(mode) && !INTERP_LINEAR.equals(mode)) {
@@ -154,6 +201,7 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
         uniqueDemes = new ArrayList<>(demesSet);
         nDemes = uniqueDemes.size();
         nEpochs = rateShifts.value().length;
+        nMigEpochs = timeVaryingMigration ? migrationRateShifts.value().length : 1;
     }
 
     private void validateArraySizes() {
@@ -171,11 +219,34 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             }
         }
 
-        int expectedMSize = nDemes * (nDemes - 1);
-        if (M.value().length != expectedMSize) {
-            throw new IllegalArgumentException(String.format(
-                    "M array size mismatch: expected %d (nDemes * (nDemes - 1)), got %d",
-                    expectedMSize, M.value().length));
+        int expectedMPairs = nDemes * (nDemes - 1);
+        if (timeVaryingMigration) {
+            Double[][] logMVal = logM.value();
+            if (logMVal.length != expectedMPairs) {
+                throw new IllegalArgumentException(String.format(
+                        "logM outer dimension mismatch: expected %d (nDemes * (nDemes - 1)), got %d",
+                        expectedMPairs, logMVal.length));
+            }
+            for (int i = 0; i < expectedMPairs; i++) {
+                if (logMVal[i].length != nMigEpochs) {
+                    throw new IllegalArgumentException(String.format(
+                            "logM[%d] length mismatch: expected %d (nMigEpochs), got %d",
+                            i, nMigEpochs, logMVal[i].length));
+                }
+            }
+            Double[] mTimes = migrationRateShifts.value();
+            for (int i = 1; i < mTimes.length; i++) {
+                if (mTimes[i] <= mTimes[i - 1]) {
+                    throw new IllegalArgumentException(
+                            "migrationRateShifts must be in strictly increasing order. Got: " + Arrays.toString(mTimes));
+                }
+            }
+        } else {
+            if (M.value().length != expectedMPairs) {
+                throw new IllegalArgumentException(String.format(
+                        "M array size mismatch: expected %d (nDemes * (nDemes - 1)), got %d",
+                        expectedMPairs, M.value().length));
+            }
         }
 
         Double[] times = rateShifts.value();
@@ -245,7 +316,8 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
         int nodeNumber = getTotalNodeCount(activeNodes);
 
         int currentInterval = 0;
-        Double[][] rateMatrix = buildRateMatrix(currentInterval);
+        int currentMigInterval = 0;
+        Double[][] rateMatrix = buildRateMatrix(currentInterval, currentMigInterval);
 
         double[][] rates = new double[nDemes][nDemes];
         double totalRate = StructuredCoalescentRateShifts.populateRateMatrix(activeNodes, rateMatrix, rates);
@@ -258,16 +330,20 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             } else if (k > 1) {
                 SCEvent event = selectRandomEvent(rates, totalRate, time);
 
-                double nextIntervalStart = (currentInterval + 1 < nEpochs) ?
+                double nextNeShift = (currentInterval + 1 < nEpochs) ?
                         rateShifts.value()[currentInterval + 1] : Double.POSITIVE_INFINITY;
+                double nextMigShift = (timeVaryingMigration && currentMigInterval + 1 < nMigEpochs) ?
+                        migrationRateShifts.value()[currentMigInterval + 1] : Double.POSITIVE_INFINITY;
+                double nextShift = Math.min(nextNeShift, nextMigShift);
 
                 double nextLeafTime = leavesToBeAdded.isEmpty() ?
                         Double.POSITIVE_INFINITY : leavesToBeAdded.get(leavesToBeAdded.size() - 1).getAge();
 
-                if (nextIntervalStart < event.time && nextIntervalStart <= nextLeafTime) {
-                    time = nextIntervalStart;
-                    currentInterval++;
-                    rateMatrix = buildRateMatrix(currentInterval);
+                if (nextShift < event.time && nextShift <= nextLeafTime) {
+                    time = nextShift;
+                    currentInterval = getIntervalAtTime(time);
+                    currentMigInterval = getMigIntervalAtTime(time);
+                    rateMatrix = buildRateMatrix(currentInterval, currentMigInterval);
                     totalRate = StructuredCoalescentRateShifts.populateRateMatrix(activeNodes, rateMatrix, rates);
                     continue;
                 }
@@ -310,7 +386,8 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             }
 
             currentInterval = getIntervalAtTime(time);
-            rateMatrix = buildRateMatrix(currentInterval);
+            currentMigInterval = getMigIntervalAtTime(time);
+            rateMatrix = buildRateMatrix(currentInterval, currentMigInterval);
             totalRate = StructuredCoalescentRateShifts.populateRateMatrix(activeNodes, rateMatrix, rates);
         }
 
@@ -320,6 +397,17 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             }
         }
         throw new RuntimeException("No root node found!");
+    }
+
+    private int getMigIntervalAtTime(double time) {
+        if (!timeVaryingMigration) return 0;
+        Double[] times = migrationRateShifts.value();
+        for (int i = times.length - 1; i >= 0; i--) {
+            if (time >= times[i]) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private int getIntervalAtTime(double time) {
@@ -364,9 +452,12 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
 
         double time = 0.0;
         int nodeNumber = getTotalNodeCount(activeNodes);
+        int nPairs = nDemes * (nDemes - 1);
         double[] a = new double[nDemes];
         double[] b = new double[nDemes];
-        Double[] mVals = M.value();
+        double[] mA = new double[nPairs];
+        double[] mB = new double[nPairs];
+        Double[] mVals = timeVaryingMigration ? null : M.value();
 
         while ((getTotalNodeCount(activeNodes) + leavesToBeAdded.size()) > 1) {
             int k = getTotalNodeCount(activeNodes);
@@ -383,9 +474,19 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             int segment = getIntervalAtTime(time);
             double segmentEndTime = (segment + 1 < nEpochs) ?
                     rateShifts.value()[segment + 1] : Double.POSITIVE_INFINITY;
-            double horizon = Math.min(segmentEndTime, nextLeafTime);
+            double nextMigShift = Double.POSITIVE_INFINITY;
+            if (timeVaryingMigration) {
+                int migSegment = getMigIntervalAtTime(time);
+                if (migSegment + 1 < nMigEpochs) {
+                    nextMigShift = migrationRateShifts.value()[migSegment + 1];
+                }
+            }
+            double horizon = Math.min(Math.min(segmentEndTime, nextMigShift), nextLeafTime);
 
             computeLogNeAndSlope(segment, time, a, b);
+            if (timeVaryingMigration) {
+                computeLogMAndSlope(time, mA, mB);
+            }
 
             double bestTau = Double.POSITIVE_INFINITY;
             int bestPop = -1, bestToPop = -1;
@@ -406,10 +507,17 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
                 for (int j = 0; j < nDemes; j++) {
                     if (i == j) continue;
                     int n_i = activeNodes.get(i).size();
-                    double m_ij = mVals[mIdx++];
+                    int pair = mIdx++;
                     if (n_i == 0) continue;
-                    double A = n_i * m_ij * Math.exp(a[j] - a[i]);
-                    double B = b[j] - b[i];
+                    double A, B;
+                    if (timeVaryingMigration) {
+                        A = n_i * Math.exp(mA[pair] + a[j] - a[i]);
+                        B = mB[pair] + b[j] - b[i];
+                    } else {
+                        double m_ij = mVals[pair];
+                        A = n_i * m_ij * Math.exp(a[j] - a[i]);
+                        B = b[j] - b[i];
+                    }
                     double tau = sampleWaitingTime(A, B);
                     if (tau < bestTau) { bestTau = tau; bestPop = i; bestToPop = j; }
                 }
@@ -455,6 +563,35 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
             }
         }
         throw new RuntimeException("No root node found!");
+    }
+
+    /**
+     * Fill {@code mA[p] = logM[p](time)} and {@code mB[p] = d/dt logM[p]} for
+     * each ordered deme pair {@code p}, in the linear migration segment
+     * containing {@code time}. Tail segment: slope zero, value held at last knot.
+     */
+    private void computeLogMAndSlope(double time, double[] mA, double[] mB) {
+        Double[][] logMVal = logM.value();
+        Double[] times = migrationRateShifts.value();
+        int nPairs = logMVal.length;
+        int segment = getMigIntervalAtTime(time);
+        boolean tail = (segment + 1 >= times.length);
+        if (tail) {
+            for (int p = 0; p < nPairs; p++) {
+                mA[p] = logMVal[p][times.length - 1];
+                mB[p] = 0.0;
+            }
+            return;
+        }
+        double segStart = times[segment];
+        double segLen = times[segment + 1] - segStart;
+        double frac = (time - segStart) / segLen;
+        for (int p = 0; p < nPairs; p++) {
+            double left = logMVal[p][segment];
+            double right = logMVal[p][segment + 1];
+            mA[p] = left + frac * (right - left);
+            mB[p] = (right - left) / segLen;
+        }
     }
 
     /**
@@ -514,25 +651,40 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
         }
     }
 
-/**
-     * Build rate matrix for a given epoch: Ne on the diagonal (from exp(logNe)),
-     * migration rates off-diagonal (constant over time, from flat M).
+    /**
+     * Build rate matrix for the current Ne epoch and migration epoch: Ne on the
+     * diagonal (from exp(logNe[deme][neEpoch])), migration rates off-diagonal —
+     * either from the constant flat M, or from exp(logM[pair][migEpoch]) when
+     * migration is time-varying.
      */
-    private Double[][] buildRateMatrix(int epoch) {
+    private Double[][] buildRateMatrix(int neEpoch, int migEpoch) {
         Double[][] matrix = new Double[nDemes][nDemes];
         Double[][] logNeVal = logNe.value();
-        Double[] mVals = M.value();
 
         for (int i = 0; i < nDemes; i++) {
-            matrix[i][i] = Math.exp(logNeVal[i][epoch]);
+            matrix[i][i] = Math.exp(logNeVal[i][neEpoch]);
         }
 
-        int mIndex = 0;
-        for (int i = 0; i < nDemes; i++) {
-            for (int j = 0; j < nDemes; j++) {
-                if (i != j) {
-                    matrix[i][j] = mVals[mIndex];
-                    mIndex++;
+        if (timeVaryingMigration) {
+            Double[][] logMVal = logM.value();
+            int mIndex = 0;
+            for (int i = 0; i < nDemes; i++) {
+                for (int j = 0; j < nDemes; j++) {
+                    if (i != j) {
+                        matrix[i][j] = Math.exp(logMVal[mIndex][migEpoch]);
+                        mIndex++;
+                    }
+                }
+            }
+        } else {
+            Double[] mVals = M.value();
+            int mIndex = 0;
+            for (int i = 0; i < nDemes; i++) {
+                for (int j = 0; j < nDemes; j++) {
+                    if (i != j) {
+                        matrix[i][j] = mVals[mIndex];
+                        mIndex++;
+                    }
                 }
             }
         }
@@ -595,8 +747,10 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
     public Map<String, Value> getParams() {
         Map<String, Value> params = super.getParams();
         params.put(logNeParamName, logNe);
-        params.put(MParamName, M);
+        if (M != null) params.put(MParamName, M);
+        if (logM != null) params.put(logMParamName, logM);
         params.put(rateShiftsParamName, rateShifts);
+        if (migrationRateShifts != null) params.put(migrationRateShiftsParamName, migrationRateShifts);
         params.put(demesParamName, demes);
         if (interpolation != null) params.put(interpolationParamName, interpolation);
         return params;
@@ -607,7 +761,9 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
         switch (paramName) {
             case logNeParamName -> logNe = value;
             case MParamName -> M = value;
+            case logMParamName -> logM = value;
             case rateShiftsParamName -> rateShifts = value;
+            case migrationRateShiftsParamName -> migrationRateShifts = value;
             case demesParamName -> demes = value;
             case interpolationParamName -> {
                 interpolation = value;
@@ -619,14 +775,18 @@ public class StructuredCoalescentSkyline extends TaxaConditionedTreeGenerator {
 
     public Value<Double[][]> getLogNe() { return logNe; }
     public Value<Double[]> getM() { return M; }
+    public Value<Double[][]> getLogM() { return logM; }
     public Value<Double[]> getRateShifts() { return rateShifts; }
+    public Value<Double[]> getMigrationRateShifts() { return migrationRateShifts; }
     public Value<Object[]> getDemes() { return demes; }
     public Value<String> getInterpolation() { return interpolation; }
 
     public List<String> getUniqueDemes() { return uniqueDemes; }
     public int getNDemes() { return nDemes; }
     public int getNEpochs() { return nEpochs; }
+    public int getNMigEpochs() { return nMigEpochs; }
     public boolean isLinearInterpolation() { return isLinear; }
+    public boolean isTimeVaryingMigration() { return timeVaryingMigration; }
 
     class SCEvent {
         int pop;
