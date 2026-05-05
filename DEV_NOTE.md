@@ -9,7 +9,7 @@ We use the Maven "pom.xml" to automatically configure the modules and their depe
 in the IntelliJ project, but we do **not** recommend using Maven to build, run, debug, or test. 
 Please follow the instructions to load the project:
 
-1. [Install OpenJDK 17](https://jdk.java.net/17/), or Higher version. Try the following command line in your terminal 
+1. [Install OpenJDK 25](https://jdk.java.net/25/), or Higher version. Try the following command line in your terminal 
 to identify if you have a correct version of JDK.
 
 ```bash

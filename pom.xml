@@ -8,14 +8,53 @@
     <packaging>pom</packaging>
 
     <name>linguaphylo</name>
+    <description>LinguaPhylo: probabilistic model specification language for phylogenetics</description>
     <url>https://linguaphylo.github.io/</url>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License v3</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>alexeid</id>
+            <name>Alexei Drummond</name>
+            <url>https://github.com/alexeid</url>
+        </developer>
+        <developer>
+            <id>walterxie</id>
+            <name>Walter Xie</name>
+            <url>https://www.cs.auckland.ac.nz/~walter/</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/LinguaPhylo/linguaPhylo.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/LinguaPhylo/linguaPhylo.git</developerConnection>
+        <url>https://github.com/LinguaPhylo/linguaPhylo</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/LinguaPhylo/linguaPhylo</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/LinguaPhylo/linguaPhylo</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <!-- it is used as project.version -->
-        <revision>1.7.0</revision>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <revision>1.8.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.organization.name>LPhy team</project.organization.name>
 
         <skipTests>false</skipTests>
@@ -36,14 +75,81 @@
                 <skip.lphy.tests>true</skip.lphy.tests>
             </properties>
         </profile>
+
+        <!-- mvn -Prelease clean deploy  (triggered by mvnrelease.yml on tag push) -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals><goal>sign</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.6.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- matches server-id: central in ci-publish workflow -->
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals><goal>jar-no-fork</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals><goal>jar</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <!-- pluginManagement is used to configure plugins without actually running them. -->
+        <!-- So that a plugin can be inherited in child POM and listed without a version number -->
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.13.0</version>
                 </plugin>
                 <!-- https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-->
                 <plugin>
@@ -52,6 +158,19 @@
                     <configuration>
                         <skipTests>${skip.lphy.tests}</skipTests>
                         <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.11.2</version>
+                    <configuration>
+                        <doclint>none</doclint>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -77,12 +196,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
     <dependencyManagement>

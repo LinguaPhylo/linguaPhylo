@@ -1,0 +1,43 @@
+name: Maven Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25 for Maven Central
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Set release version from tag
+        # -B: suppresses download progress bars and ANSI colour codes, keeping CI logs readable
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "Publishing version: $VERSION"
+          mvn -B versions:set -DnewVersion=$VERSION -DgenerateBackupPoms=false
+
+      - name: Publish to Maven Central
+        # include compile → test → package → verify → deploy
+        run: mvn -B -Prelease deploy
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

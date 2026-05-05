@@ -1,6 +1,6 @@
 # LinguaPhylo (LPhy)
 
-Probabilistic model specification language for phylogenetics. Java 17, Maven, JPMS modules.
+Probabilistic model specification language for phylogenetics. Java 25, Maven, JPMS modules.
 
 ## Modules
 
@@ -10,26 +10,25 @@ Probabilistic model specification language for phylogenetics. Java 17, Maven, JP
 
 ## Build & Test
 
-Uses Maven wrapper (`./mvnw`) for reproducible builds. Plain `mvn` also works.
 The project version is set by the `<revision>` property in the root `pom.xml` (currently `1.7.0`).
 
 ```bash
 # Build all modules (creates assembly at lphy-studio/target/lphy-studio-<version>/)
-./mvnw clean install -DskipTests
+mvn clean install -DskipTests
 
 # Run all tests
-./mvnw test
+mvn test
 
 # Run tests for a single module (after initial install)
-./mvnw -pl lphy test
-./mvnw -pl lphy-base test
-./mvnw -pl lphy-studio test
+mvn -pl lphy test
+mvn -pl lphy-base test
+mvn -pl lphy-studio test
 
 # Run tests for a single module (without prior install, -am builds dependencies)
-./mvnw -pl lphy-base -am test
+mvn -pl lphy-base -am test
 
 # Run a single test class
-./mvnw -pl lphy-base -am test -Dtest=BetaTest
+mvn -pl lphy-base -am test -Dtest=BetaTest
 ```
 
 Note: `lphy` has no internal dependencies, so `-pl lphy test` always works.
@@ -38,7 +37,7 @@ a prior `install` (which populates the local Maven repo) or `-am` to build depen
 
 ## Run from Command Line
 
-Requires the assembly built by `./mvnw clean install -DskipTests`.
+Requires the assembly built by `mvn clean install -DskipTests`.
 
 ```bash
 export LPHY="$(pwd)/lphy-studio/target/lphy-studio-1.7.0"
@@ -54,7 +53,7 @@ $LPHY/bin/slphy examples/coalescent/hkyCoalescent.lphy
 
 ## Coding Conventions
 
-- Java 17, 4-space indentation, braces on same line
+- Java 25, 4-space indentation, braces on same line
 - Distributions extend `GenerativeDistribution<T>`, implement `sample()`
 - Functions extend `DeterministicFunction<T>`, implement `apply()`
 - Return values wrapped in `RandomVariable<T>` or `Value<T>`

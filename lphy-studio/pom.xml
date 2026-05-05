@@ -59,6 +59,7 @@
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <appendAssemblyId>false</appendAssemblyId>
                     <finalName>${project.artifactId}-${project.version}</finalName>
+                    <attach>false</attach>
                 </configuration>
                 <executions>
                     <execution>

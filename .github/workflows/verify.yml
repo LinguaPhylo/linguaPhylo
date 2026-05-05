@@ -1,0 +1,80 @@
+name: LPhy build and test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  # Runs on every push to master and every PR — compiles, tests, and publishes results
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and test
+        # compiling, unit testing, and integration testing.
+        run: mvn -B clean verify
+
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: |
+            lphy/target/surefire-reports/**/*.xml
+            lphy-base/target/surefire-reports/**/*.xml
+            lphy-studio/target/surefire-reports/**/*.xml
+
+  # Runs only on push to master after build succeeds — deploys snapshot JARs to GitHub Packages
+  deploy-snapshot:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Check if snapshot version
+        id: version_check
+        # reads <revision> from pom.xml to avoid running mvn twice just for version resolution
+        run: |
+          VERSION=$(grep -m1 '<revision>' pom.xml | sed 's|.*<revision>\(.*\)</revision>.*|\1|')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          if [[ "$VERSION" == *-SNAPSHOT ]]; then
+            echo "is_snapshot=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_snapshot=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy snapshot to GitHub Packages
+        if: steps.version_check.outputs.is_snapshot == 'true'
+        # -DskipTests: tests already ran in the build job above
+        run: mvn -B deploy -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
