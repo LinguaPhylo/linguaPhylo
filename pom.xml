@@ -57,6 +57,9 @@
         <maven.compiler.release>25</maven.compiler.release>
         <project.organization.name>LPhy team</project.organization.name>
 
+        <maven.compiler.plugin>3.15.0</maven.compiler.plugin>
+        <junit.version>5.8.2</junit.version>
+
         <skipTests>false</skipTests>
         <skip.lphy.tests>${skipTests}</skip.lphy.tests>
     </properties>
@@ -149,12 +152,16 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>${maven.compiler.plugin}</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
                 </plugin>
                 <!-- https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-->
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.5.2</version>
                     <configuration>
                         <skipTests>${skip.lphy.tests}</skipTests>
                         <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
