@@ -87,8 +87,13 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
     public List<Class<? extends BasicFunction>> declareFunctions() {
         return Arrays.asList(ARange.class, ArgI.class,
                 // Substitution models
-                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class, WAG.class,
+                JukesCantor.class, K80.class, F81.class, HKY.class, GTR.class,
                 GeneralTimeReversible.class, LewisMK.class, BinaryCovarion.class,
+                // Empirical amino acid models
+                WAG.class, LG.class, JTT.class, Dayhoff.class, DCMut.class,
+                Blosum62.class, VT.class, CpREV.class, MtREV.class, MtMam.class,
+                MtArt.class, RtREV.class, FLU.class, HIVb.class, HIVw.class,
+                Obama.class,
                 BModelSetFunction.class, bSiteModelFunction.class, NucleotideModel.class,
 
                 // Data types

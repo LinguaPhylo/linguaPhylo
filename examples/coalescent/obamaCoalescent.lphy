@@ -1,0 +1,19 @@
+// OBAMA-style amino acid model averaging.
+// `models` selects an arbitrary subset of the 15 supported empirical AA models.
+// `modelIndicator` indexes into that subset; the BEAUti template lets the user
+// choose any subset, and we mirror that here.
+// `useExternalFreqs` toggles whether `freq` overrides the model's empirical
+// frequencies (true → use freq, false → empirical).
+models = ["WAG", "JTT", "LG", "Dayhoff", "DCMut", "cpREV", "mtREV", "mtMam",
+          "mtArt", "Blosum62", "VT", "RtREV", "FLU", "HIVb", "HIVw"];
+modelIndicator   ~ UniformDiscrete(lower=0, upper=14);
+useExternalFreqs ~ Bernoulli(p=0.5);
+freq             ~ Dirichlet(conc=rep(element=1.0, times=20));
+Θ ~ LogNormal(meanlog=3.0, sdlog=1.0);
+ψ ~ Coalescent(n=16, theta=Θ);
+D ~ PhyloCTMC(L=200,
+              Q=obama(modelIndicator=modelIndicator,
+                      models=models,
+                      useExternalFreqs=useExternalFreqs,
+                      freq=freq),
+              tree=ψ, dataType=aminoAcids());
