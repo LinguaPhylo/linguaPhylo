@@ -185,32 +185,39 @@ mvn clean verify
 
 **2. Update `<revision>` in `pom.xml` if needed**
 
-During development `pom.xml` carries a `SNAPSHOT` version, e.g. `1.8.0-SNAPSHOT`.
-The CI overwrites this automatically using the tag name, so the `pom.xml` value
-does not need to change *before* tagging. However, it is good practice to confirm
-that the version you intend to release matches the current `<revision>`:
+Update the version in `pom.xml` before tagging the release. During development it
+carries a `SNAPSHOT` version (e.g. `1.8.0-SNAPSHOT`); change it to the intended
+release version, for example `1.8.0-beta1` for a beta release or `1.8.0` for a
+final release:
 
 ```xml
 <!-- root pom.xml -->
-<revision>1.8.0-SNAPSHOT</revision>   <!-- will become 1.8.0 when you push v1.8.0 -->
+<revision>1.8.0-beta1</revision>
 ```
+
+> **Note:** If the tag version differs from the `<revision>` in `pom.xml`, the CI
+> will overwrite `pom.xml` to use the tag version (by running
+> `mvn versions:set -DnewVersion=<tag>`). The tag is always the authoritative
+> source of the published version.
 
 **3. Push the release tag**
 
 ```bash
-# Replace 1.8.0 with the actual release version
-git tag v1.8.0
-git push origin v1.8.0
+# Replace 1.8.0-beta1 with the actual release version
+git tag v1.8.0-beta1
+git push origin v1.8.0-beta1
 ```
 
 Pushing a tag that matches `v*` triggers `mvnrelease.yml`. The CI will:
 
-1. Strip the `v` prefix → version string `1.8.0`.
-2. Run `mvn versions:set -DnewVersion=1.8.0` to rewrite all POMs in the reactor.
+1. Strip the `v` prefix → version string `1.8.0-beta1`.
+2. Run `mvn versions:set -DnewVersion=1.8.0-beta1` to rewrite all POMs in the reactor.
 3. Run `mvn -Prelease deploy`, which executes the full lifecycle
    (compile → test → package → verify → deploy) with:
    - GPG artifact signing (`maven-gpg-plugin`).
    - Upload and auto-publication to Maven Central (`central-publishing-maven-plugin`).
+
+You can check the Maven release https://central.sonatype.com/search?q=io.github.linguaphylo
 
 **4. Bump the snapshot version after release**
 
