@@ -7,6 +7,7 @@
     </parent>
 
     <artifactId>lphy-studio</artifactId>
+    <name>lphy-studio</name>
 
     <properties>
         <studio.args></studio.args>

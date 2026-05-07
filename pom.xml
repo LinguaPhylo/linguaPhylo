@@ -7,7 +7,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>linguaphylo</name>
+    <name>lphy-parent</name>
     <description>LinguaPhylo: probabilistic model specification language for phylogenetics</description>
     <url>https://linguaphylo.github.io/</url>
 
