@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.linguaphylo</groupId>
-        <artifactId>linguaphylo</artifactId>
+        <artifactId>lphy-parent</artifactId>
         <version>${revision}</version>
     </parent>
 
@@ -34,5 +34,31 @@
 
     </dependencies>
 
+    <properties>
+        <!-- Override on the command line: -Dslphy.args="examples/coalescent/hkyCoalescent.lphy" -->
+        <slphy.args>--help</slphy.args>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-Xms64m</argument>
+                        <argument>-Xmx5g</argument>
+                        <argument>--module-path</argument>
+                        <modulepath/>
+                        <argument>--module</argument>
+                        <argument>lphy.core/lphy.core.simulator.SLPhy</argument>
+                        <argument>${slphy.args}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

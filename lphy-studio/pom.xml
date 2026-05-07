@@ -2,11 +2,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.linguaphylo</groupId>
-        <artifactId>linguaphylo</artifactId>
+        <artifactId>lphy-parent</artifactId>
         <version>${revision}</version>
     </parent>
 
     <artifactId>lphy-studio</artifactId>
+
+    <properties>
+        <studio.args></studio.args>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -37,11 +41,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.4.2</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>lphystudio.app.LinguaPhyloStudio</mainClass> <!-- Specify your main class here -->
+                            <mainClass>lphystudio.app.LinguaPhyloStudio</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -70,6 +74,23 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-Xms64m</argument>
+                        <argument>-Xmx5g</argument>
+                        <argument>--module-path</argument>
+                        <modulepath/>
+                        <argument>--module</argument>
+                        <argument>lphystudio/lphystudio.app.LinguaPhyloStudio</argument>
+                        <argument>${studio.args}</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
