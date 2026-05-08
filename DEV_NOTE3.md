@@ -1,4 +1,4 @@
-# LPhy Developer Guide 103 (Maven Project)
+# LPhy Developer Guide (Maven Project)
 
 This guide explains technical details about the Maven project and how to build,
 test, and run LPhy Studio or SLPhy directly from Maven.
