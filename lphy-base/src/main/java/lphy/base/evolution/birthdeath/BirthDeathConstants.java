@@ -1,5 +1,7 @@
 package lphy.base.evolution.birthdeath;
 
+import lphy.base.evolution.tree.AgeConditionedTreeGenerator;
+
 public class BirthDeathConstants {
 
     public static final String lambdaParamName = "lambda";
@@ -10,6 +12,7 @@ public class BirthDeathConstants {
     public static final String samplingProportionParamName = "samplingProportion";
     public static final String diversificationParamName = "diversification";
     public static final String turnoverParamName = "turnover";
-    public static final String rootAgeParamName = "rootAge";
-    public static final String originAgeParamName = "originAge";
+    // single source of truth: the age-conditioning vocabulary is owned by AgeConditionedTreeGenerator
+    public static final String rootAgeParamName = AgeConditionedTreeGenerator.rootAgeParamName;
+    public static final String originAgeParamName = AgeConditionedTreeGenerator.originAgeParamName;
 }

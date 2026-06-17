@@ -1,18 +1,15 @@
 package lphy.base.evolution.birthdeath;
 
+import lphy.base.evolution.tree.AgeConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.simulator.RandomUtils;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 import static lphy.base.evolution.birthdeath.BirthDeathConstants.*;
 
@@ -25,29 +22,25 @@ import static lphy.base.evolution.birthdeath.BirthDeathConstants.*;
         title = "Estimating the Basic Reproductive Number from Viral Sequence Data",
         DOI="https://doi.org/10.1093/molbev/msr217",
         authors = {"Stadler", "Kouyos", "...", "Bonhoeffer"}, year=2012)
-public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> {
+public class BirthDeathSamplingTree extends AgeConditionedTreeGenerator {
 
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> rho;
-    private Value<Number> rootAge;
-
-    RandomGenerator random;
 
     public BirthDeathSamplingTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                                   @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                                   @ParameterInfo(name = rhoParamName, description = "the sampling proportion.") Value<Number> rho,
                                   @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree.") Value<Number> rootAge) {
 
+        super(rootAge, null);
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rho = rho;
-        this.rootAge = rootAge;
-        this.random = RandomUtils.getRandom();
     }
 
 
-    @GeneratorInfo(name = "BirthDeathSampling", verbClause = "is assumed to have evolved according to",
+    @GeneratorInfo(name = "BirthDeath", aliases = {"BirthDeathSampling"}, verbClause = "is assumed to have evolved according to",
             narrativeName = "birth-death-sampling tree process",
             category = GeneratorCategory.BD_TREE, examples = {"simpleBirthDeath.lphy"},
             description = "The Birth-death-sampling tree distribution over tip-labelled time trees.<br>" +
@@ -71,16 +64,16 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(lambdaParamName, birthRate);
-            put(muParamName, deathRate);
-            put(rhoParamName, rho);
-            put(rootAgeParamName, rootAge);
-        }};
+        Map<String, Value> map = super.getParams(); // rootAge
+        map.put(lambdaParamName, birthRate);
+        map.put(muParamName, deathRate);
+        map.put(rhoParamName, rho);
+        return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
+        if (setAgeParam(paramName, value)) return; // rootAge
         switch (paramName) {
             case lambdaParamName:
                 birthRate = value;
@@ -91,15 +84,8 @@ public class BirthDeathSamplingTree implements GenerativeDistribution<TimeTree> 
             case rhoParamName:
                 rho = value;
                 break;
-            case rootAgeParamName:
-                rootAge = value;
-                break;
             default:
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
-    }
-
-    public String toString() {
-        return getName();
     }
 }

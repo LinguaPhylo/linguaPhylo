@@ -70,6 +70,10 @@ public class LPhyCoreImpl implements LPhyExtension {
 
             Set<Class<?>> genDistSet = genDistDictionary.computeIfAbsent(name, k -> new HashSet<>());
             genDistSet.add(genClass);
+            // also index under any deprecated alias name(s) for backward compatibility
+            for (String alias : GeneratorUtils.getGeneratorAliases(genClass)) {
+                genDistDictionary.computeIfAbsent(alias, k -> new HashSet<>()).add(genClass);
+            }
             // collect LPhy data types from GenerativeDistribution
             types.add(GeneratorUtils.getReturnType(genClass));
             Collections.addAll(types, NarrativeUtils.getParameterTypes(genClass, 0));
@@ -90,6 +94,10 @@ public class LPhyCoreImpl implements LPhyExtension {
 
             Set<Class<?>> funcSet = functionDictionary.computeIfAbsent(name, k -> new HashSet<>());
             funcSet.add(functionClass);
+            // also index under any deprecated alias name(s) for backward compatibility
+            for (String alias : GeneratorUtils.getGeneratorAliases(functionClass)) {
+                functionDictionary.computeIfAbsent(alias, k -> new HashSet<>()).add(functionClass);
+            }
             // collect LPhy data types from Func
             Collections.addAll(types, NarrativeUtils.getParameterTypes(functionClass, 0));
             Collections.addAll(types, GeneratorUtils.getReturnType(functionClass));

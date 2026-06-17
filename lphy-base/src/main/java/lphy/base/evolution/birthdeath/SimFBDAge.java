@@ -1,56 +1,49 @@
 package lphy.base.evolution.birthdeath;
 
+import lphy.base.evolution.tree.AgeConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.function.tree.PruneTree;
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.simulator.RandomUtils;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static lphy.base.evolution.birthdeath.BirthDeathConstants.*;
 
 /**
  * A Birth-death tree generative distribution
  */
-public class SimFBDAge implements GenerativeDistribution<TimeTree> {
+public class SimFBDAge extends AgeConditionedTreeGenerator {
 
     private Value<Number> birthRate;
     private Value<Number> deathRate;
     private Value<Number> psiVal;
     private Value<Double> fracVal;
-    private Value<Number> originAge;
-
-    RandomGenerator random;
 
     private static final int MAX_ATTEMPTS = 1000;
 
     public SimFBDAge(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                      @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
-                     @ParameterInfo(name = fracParamName, description = "fraction of extant taxa sampled.") Value<Double> fracVal,
+                     @ParameterInfo(name = rhoParamName, aliases = {fracParamName}, description = "proportion of extant taxa sampled.") Value<Double> fracVal,
                      @ParameterInfo(name = psiParamName, description = "per-lineage sampling-through-time rate.") Value<Number> psiVal,
                      @ParameterInfo(name = originAgeParamName, description = "the age of the origin.") Value<Number> originAge) {
 
+
+        super(null, originAge);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.fracVal = fracVal;
         this.psiVal = psiVal;
-        this.originAge = originAge;
-
-        random = RandomUtils.getRandom();
     }
 
-    @GeneratorInfo(name = "SimFBDAge",
+    @GeneratorInfo(name = "FossilBirthDeath", aliases = {"SimFBDAge", "FBD"},
             category = GeneratorCategory.BD_TREE, examples = {"simFBDAge.lphy"},
             description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on origin age.")
@@ -107,17 +100,17 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(lambdaParamName, birthRate);
-            put(muParamName, deathRate);
-            put(fracParamName, fracVal);
-            put(psiParamName, psiVal);
-            put(originAgeParamName, originAge);
-        }};
+        Map<String, Value> map = super.getParams(); // originAge
+        map.put(lambdaParamName, birthRate);
+        map.put(muParamName, deathRate);
+        map.put(rhoParamName, fracVal);
+        map.put(psiParamName, psiVal);
+        return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
+        if (setAgeParam(paramName, value)) return; // originAge
         switch (paramName) {
             case lambdaParamName:
                 birthRate = value;
@@ -125,14 +118,11 @@ public class SimFBDAge implements GenerativeDistribution<TimeTree> {
             case muParamName:
                 deathRate = value;
                 break;
-            case fracParamName:
+            case rhoParamName:
                 fracVal = value;
                 break;
             case psiParamName:
                 psiVal = value;
-                break;
-            case originAgeParamName:
-                originAge = value;
                 break;
             default:
                 throw new RuntimeException("Unexpected parameter " + paramName);

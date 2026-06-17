@@ -33,8 +33,8 @@ public class SimFBDAgeDT implements GenerativeDistribution<TimeTree> {
                     description = "diversification rate (birth rate - death rate).") Value<Number> diversification,
             @ParameterInfo(name = turnoverParamName,
                     description = "turnover (death rate / birth rate).") Value<Number> turnover,
-            @ParameterInfo(name = fracParamName,
-                    description = "fraction of extant taxa sampled.") Value<Double> fracVal,
+            @ParameterInfo(name = rhoParamName, aliases = {fracParamName},
+                    description = "proportion of extant taxa sampled.") Value<Double> fracVal,
             @ParameterInfo(name = samplingProportionParamName,
                     description = "the probability of sampling prior to death: psi / (psi + mu).") Value<Number> samplingProportion,
             @ParameterInfo(name = originAgeParamName,
@@ -48,7 +48,7 @@ public class SimFBDAgeDT implements GenerativeDistribution<TimeTree> {
         setup();
     }
 
-    @GeneratorInfo(name = "SimFBDAge",
+    @GeneratorInfo(name = "FossilBirthDeath", aliases = {"SimFBDAge", "FBD"},
             category = GeneratorCategory.BD_TREE,
             description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
                     "Parameterised by diversification rate, turnover and sampling proportion. Conditioned on origin age.")
@@ -87,7 +87,7 @@ public class SimFBDAgeDT implements GenerativeDistribution<TimeTree> {
         return new TreeMap<>() {{
             put(diversificationParamName, diversificationRate);
             put(turnoverParamName, turnover);
-            put(fracParamName, fracVal);
+            put(rhoParamName, fracVal);
             put(samplingProportionParamName, samplingProportion);
             put(originAgeParamName, originAge);
         }};
@@ -102,7 +102,7 @@ public class SimFBDAgeDT implements GenerativeDistribution<TimeTree> {
             case turnoverParamName:
                 turnover = value;
                 break;
-            case fracParamName:
+            case rhoParamName:
                 fracVal = value;
                 break;
             case samplingProportionParamName:
@@ -124,7 +124,7 @@ public class SimFBDAgeDT implements GenerativeDistribution<TimeTree> {
         return turnover;
     }
 
-    public Value<Double> getFrac() {
+    public Value<Double> getRho() {
         return fracVal;
     }
 

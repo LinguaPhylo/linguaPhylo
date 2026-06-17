@@ -30,7 +30,6 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;
     private Value<Number> deathRate;
-    private Value<Number> rootAge;
 
     public BirthDeathTree(@ParameterInfo(name = lambdaParamName, description = "per-lineage birth rate.") Value<Number> birthRate,
                           @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
@@ -38,11 +37,10 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
                           @ParameterInfo(name = TaxaConditionedTreeGenerator.taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree), optional.", optional = true) Value taxa,
                           @ParameterInfo(name = rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
 
-        super(n, taxa, null);
+        super(n, taxa, null, rootAge, null);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
-        this.rootAge = rootAge;
 
         checkTaxaParameters(true);
     }
@@ -99,10 +97,9 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
 
     @Override
     public Map<String, Value> getParams() {
-        Map<String, Value> map = super.getParams();
+        Map<String, Value> map = super.getParams(); // includes rootAge
         map.put(lambdaParamName, birthRate);
         map.put(muParamName, deathRate);
-        map.put(rootAgeParamName, rootAge);
         return map;
     }
 
@@ -115,11 +112,8 @@ public class BirthDeathTree extends TaxaConditionedTreeGenerator {
             case muParamName:
                 deathRate = value;
                 break;
-            case rootAgeParamName:
-                rootAge = value;
-                break;
             default:
-                super.setParam(paramName, value);
+                super.setParam(paramName, value); // handles rootAge and taxa params
                 break;
         }
     }

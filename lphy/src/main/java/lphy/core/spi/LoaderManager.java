@@ -5,6 +5,7 @@ import lphy.core.logger.ValueFormatResolver;
 import lphy.core.logger.ValueFormatter;
 import lphy.core.model.DeterministicFunction;
 import lphy.core.model.GenerativeDistribution;
+import lphy.core.model.GeneratorUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +18,13 @@ public class LoaderManager {
     private static Map<String, Set<Class<?>>> genDistDictionary = new TreeMap<>();
     private static Map<String, Set<Class<?>>> functionDictionary = new TreeMap<>();
     private static TreeSet<Class<?>> types = new TreeSet<>(Comparator.comparing(Class::getName));
+
+    /**
+     * Maps a deprecated generator/function name (a {@code @GeneratorInfo} alias) to the
+     * canonical name it should be replaced with. Used to emit deprecation warnings when
+     * a script refers to a generator by an old name. See {@link #getCanonicalGeneratorName(String)}.
+     */
+    private static Map<String, String> deprecatedGeneratorNames = new HashMap<>();
 
     private static Set<String> bivarOperators;
     private static Set<String> univarfunctions;
@@ -58,6 +66,10 @@ public class LoaderManager {
         }
         // pass all ValueFormatter classes to the Resolver
         valueFormatResolver = new ValueFormatResolver(allValueFormatters);
+
+        // identify deprecated alias names (keys under which no registered class is canonical)
+        collectDeprecatedNames(genDistDictionary);
+        collectDeprecatedNames(functionDictionary);
 
         bivarOperators = new HashSet<>();
         for (String s : new String[]{"+", "-", "*", "/", "**", "&&", "||", "<=", "<", ">=", ">", "%", ":", "^", "!=", "==", "&", "|", "<<", ">>", ">>>"}) {
@@ -105,6 +117,37 @@ public class LoaderManager {
         return lphyCoreLoader;
     }
 
+
+    /**
+     * Populate {@link #deprecatedGeneratorNames} from a name dictionary. A dictionary key is
+     * treated as a deprecated alias only if none of the classes registered under it report that
+     * key as their canonical {@code @GeneratorInfo} name (i.e. it exists purely via aliases()).
+     */
+    private static void collectDeprecatedNames(Map<String, Set<Class<?>>> dictionary) {
+        for (Map.Entry<String, Set<Class<?>>> entry : dictionary.entrySet()) {
+            String key = entry.getKey();
+            String canonicalForAlias = null;
+            boolean canonicalForSome = false;
+            for (Class<?> c : entry.getValue()) {
+                String canonical = GeneratorUtils.getGeneratorName(c);
+                if (canonical.equals(key)) {
+                    canonicalForSome = true;
+                    break;
+                }
+                canonicalForAlias = canonical;
+            }
+            if (!canonicalForSome && canonicalForAlias != null)
+                deprecatedGeneratorNames.put(key, canonicalForAlias);
+        }
+    }
+
+    /**
+     * @param name a generator or function name as written in a script
+     * @return the canonical name if {@code name} is a deprecated alias, otherwise null.
+     */
+    public static String getCanonicalGeneratorName(String name) {
+        return deprecatedGeneratorNames.get(name);
+    }
 
     public static Set<Class<?>> getAllGenerativeDistributionClasses(String name) {
         return genDistDictionary.get(name);

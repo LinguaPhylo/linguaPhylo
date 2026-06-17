@@ -12,6 +12,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface GeneratorInfo {
     String name();
+    /**
+     * Deprecated former name(s) for this generator, retained for backward compatibility.
+     * A script that calls the generator by an alias resolves to this generator but triggers
+     * a deprecation warning. Use this when renaming a generator to avoid breaking old scripts.
+     */
+    String[] aliases() default {};
     String narrativeName() default "";
     String verbClause() default "is assumed to come from";
     String description();

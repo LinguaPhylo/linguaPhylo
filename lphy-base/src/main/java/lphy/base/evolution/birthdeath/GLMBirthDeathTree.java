@@ -1,24 +1,21 @@
 package lphy.base.evolution.birthdeath;
 
 import lphy.base.evolution.continuous.PhyloBrownian;
+import lphy.base.evolution.tree.AgeConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
 import lphy.base.function.GeneralLinearFunction;
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.simulator.RandomUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static lphy.base.evolution.birthdeath.BirthDeathConstants.muParamName;
 import static lphy.base.evolution.birthdeath.BirthDeathConstants.originAgeParamName;
@@ -26,7 +23,7 @@ import static lphy.base.evolution.birthdeath.BirthDeathConstants.originAgeParamN
 /**
  * A birth-death tree with birth rate driven by a GLM.
  */
-public class GLMBirthDeathTree implements GenerativeDistribution<TimeTree> {
+public class GLMBirthDeathTree extends AgeConditionedTreeGenerator {
 
     public static final String x0ParamName = "x0";
     private Value<Number[]> beta;
@@ -34,26 +31,21 @@ public class GLMBirthDeathTree implements GenerativeDistribution<TimeTree> {
     private Value<Number[]> diffRate;
     private Value<Number> deathRate;
 
-    private Value<Number> originAge;
-
-    RandomGenerator random;
-
     public GLMBirthDeathTree(@ParameterInfo(name = GeneralLinearFunction.betaParamName, narrativeName = "beta", description = "the coefficients of the general linear model driving the (log) birth rate.") Value<Number[]> beta,
                              @ParameterInfo(name = x0ParamName, narrativeName = "x0", description = "the initial values of the traits that drive the birth rate at the origin of the process.") Value<Number[]> x0,
                              @ParameterInfo(name = PhyloBrownian.diffRateParamName, description = "the variance of the underlying Brownian process for each trait.") Value<Number[]> diffRate,
                              @ParameterInfo(name = muParamName, description = "per-lineage death rate.") Value<Number> deathRate,
                              @ParameterInfo(name = originAgeParamName, description = "the age of the origin.") Value<Number> originAge) {
 
+        super(null, originAge);
         this.beta = beta;
         this.x0 = x0;
         this.diffRate = diffRate;
         this.deathRate = deathRate;
-        this.originAge = originAge;
-        this.random = RandomUtils.getRandom();
     }
 
 
-    @GeneratorInfo(name = "GLMBirthDeathTree",
+    @GeneratorInfo(name = "GLMBirthDeath", aliases = {"GLMBirthDeathTree"},
             category = GeneratorCategory.BD_TREE,
             description = "A full birth death tree driven by continuous trait evolution.<br>" +
                     "Conditioned on root age.")
@@ -159,28 +151,23 @@ public class GLMBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(GeneralLinearFunction.betaParamName, beta);
-            put(x0ParamName, x0);
-            put(PhyloBrownian.diffRateParamName, diffRate);
-            put(muParamName, deathRate);
-            put(originAgeParamName, originAge);
-        }};
+        Map<String, Value> map = super.getParams(); // originAge
+        map.put(GeneralLinearFunction.betaParamName, beta);
+        map.put(x0ParamName, x0);
+        map.put(PhyloBrownian.diffRateParamName, diffRate);
+        map.put(muParamName, deathRate);
+        return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
+        if (setAgeParam(paramName, value)) return; // originAge
         switch (paramName) {
             case GeneralLinearFunction.betaParamName -> beta = value;
             case x0ParamName -> x0 = value;
             case PhyloBrownian.diffRateParamName -> diffRate = value;
             case muParamName -> deathRate = value;
-            case originAgeParamName -> originAge = value;
             default -> throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
-    }
-
-    public String toString() {
-        return getName();
     }
 }

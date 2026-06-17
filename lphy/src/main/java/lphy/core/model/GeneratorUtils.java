@@ -38,6 +38,17 @@ public class GeneratorUtils {
         return c.getSimpleName();
     }
 
+    /**
+     * @param c a generator class
+     * @return the deprecated alias names declared in its {@link GeneratorInfo#aliases()},
+     * or an empty array if none (or no annotation present).
+     */
+    public static String[] getGeneratorAliases(Class<?> c) {
+        GeneratorInfo ginfo = getGeneratorInfo(c);
+        if (ginfo != null) return ginfo.aliases();
+        return new String[]{};
+    }
+
     public static String[] getGeneratorExamples(Class<?> c) {
         GeneratorInfo ginfo = getGeneratorInfo(c);
         if (ginfo != null) return ginfo.examples();

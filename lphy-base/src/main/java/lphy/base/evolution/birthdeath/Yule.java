@@ -28,7 +28,6 @@ import java.util.Map;
 public class Yule extends TaxaConditionedTreeGenerator {
 
     private Value<Number> birthRate;
-    private Value<Number> rootAge;
 
     private List<TimeTreeNode> activeNodes;
 
@@ -37,10 +36,9 @@ public class Yule extends TaxaConditionedTreeGenerator {
                 @ParameterInfo(name = TaxaConditionedTreeGenerator.taxaParamName, description = "a string array of taxa id or a taxa object (e.g. dataframe, alignment or tree)", optional=true) Value taxa,
                 @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the root age to be conditioned on. optional.", optional=true) Value<Number> rootAge) {
 
-        super(n, taxa, null);
+        super(n, taxa, null, rootAge, null);
 
         this.birthRate = birthRate;
-        this.rootAge = rootAge;
 
         checkTaxaParameters(true);
 
@@ -111,9 +109,8 @@ public class Yule extends TaxaConditionedTreeGenerator {
 
     @Override
     public Map<String, Value> getParams() {
-        Map<String, Value> map = super.getParams();
+        Map<String, Value> map = super.getParams(); // includes rootAge (if specified)
         map.put(BirthDeathConstants.lambdaParamName, birthRate);
-        if (rootAge != null) map.put(BirthDeathConstants.rootAgeParamName, rootAge);
         return map;
     }
 
@@ -124,11 +121,6 @@ public class Yule extends TaxaConditionedTreeGenerator {
     @Override
     public void setParam(String paramName, Value value) {
         if (paramName.equals(BirthDeathConstants.lambdaParamName)) birthRate = value;
-        else if (paramName.equals(BirthDeathConstants.rootAgeParamName)) rootAge = value;
-        else super.setParam(paramName, value);
-    }
-
-    public String toString() {
-        return getName();
+        else super.setParam(paramName, value); // handles rootAge and taxa params
     }
 }

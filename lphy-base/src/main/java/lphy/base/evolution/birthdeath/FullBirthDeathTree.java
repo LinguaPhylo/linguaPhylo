@@ -1,8 +1,8 @@
 package lphy.base.evolution.birthdeath;
 
+import lphy.base.evolution.tree.AgeConditionedTreeGenerator;
 import lphy.base.evolution.tree.TimeTree;
 import lphy.base.evolution.tree.TimeTreeNode;
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.RandomVariable;
 import lphy.core.model.Value;
 import lphy.core.model.ValueUtils;
@@ -10,13 +10,10 @@ import lphy.core.model.annotation.Citation;
 import lphy.core.model.annotation.GeneratorCategory;
 import lphy.core.model.annotation.GeneratorInfo;
 import lphy.core.model.annotation.ParameterInfo;
-import lphy.core.simulator.RandomUtils;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static lphy.base.evolution.birthdeath.BirthDeathConstants.*;
 
@@ -29,16 +26,12 @@ import static lphy.base.evolution.birthdeath.BirthDeathConstants.*;
         title="On the Generalized \"Birth-and-Death\" Process",
         authors={"Kendall"},
         DOI="https://doi.org/10.1214/aoms/1177730285")
-public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
+public class FullBirthDeathTree extends AgeConditionedTreeGenerator {
 
     private Value<Number> birthRate;
     private Value<Number> deathRate;
-    private Value<Number> rootAge;
-    private Value<Number> originAge;
 
     private List<TimeTreeNode> activeNodes;
-
-    RandomGenerator random;
 
     private static final int MAX_ATTEMPTS = 1000;
 
@@ -47,14 +40,12 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
                               @ParameterInfo(name = rootAgeParamName, description = "the age of the root of the tree (only one of rootAge and originAge may be specified).", optional=true) Value<Number> rootAge,
                               @ParameterInfo(name = originAgeParamName, description = "the age of the origin of the tree  (only one of rootAge and originAge may be specified).", optional=true) Value<Number> originAge) {
 
+        super(rootAge, originAge);
+
         this.birthRate = birthRate;
         this.deathRate = deathRate;
-        this.rootAge = rootAge;
-        this.originAge = originAge;
-        this.random = RandomUtils.getRandom();
 
-        if (rootAge != null && originAge != null) throw new IllegalArgumentException("Only one of rootAge and originAge may be specified!");
-        if (rootAge == null && originAge == null) throw new IllegalArgumentException("One of rootAge and originAge must be specified!");
+        checkAgeParameters(true); // exactly one of rootAge / originAge must be specified
 
         activeNodes = new ArrayList<>();
     }
@@ -166,25 +157,18 @@ public class FullBirthDeathTree implements GenerativeDistribution<TimeTree> {
 
     @Override
     public Map<String, Value> getParams() {
-        return new TreeMap<>() {{
-            put(lambdaParamName, birthRate);
-            put(muParamName, deathRate);
-            if (rootAge != null) put(rootAgeParamName, rootAge);
-            if (originAge != null) put(originAgeParamName, originAge);
-        }};
+        Map<String, Value> map = super.getParams(); // rootAge or originAge
+        map.put(lambdaParamName, birthRate);
+        map.put(muParamName, deathRate);
+        return map;
     }
 
     @Override
     public void setParam(String paramName, Value value) {
+        if (setAgeParam(paramName, value)) return; // rootAge / originAge
         if (paramName.equals(lambdaParamName)) birthRate = value;
         else if (paramName.equals(muParamName)) deathRate = value;
-        else if (paramName.equals(rootAgeParamName)) rootAge = value;
-        else if (paramName.equals(originAgeParamName)) originAge = value;
         else throw new RuntimeException("Unrecognised parameter name: " + paramName);
-    }
-
-    public String toString() {
-        return getName();
     }
 
 }
