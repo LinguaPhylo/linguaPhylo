@@ -13,6 +13,7 @@ import lphy.core.vectorization.VectorMatchUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static lphy.core.vectorization.IID.REPLICATES_PARAM_NAME;
 
@@ -22,6 +23,15 @@ import static lphy.core.vectorization.IID.REPLICATES_PARAM_NAME;
 public class ParserUtils {
 
     private static final int MAX_UNNAMED_ARGS = 3;
+
+    /** deprecation messages already emitted, so each is logged only once */
+    private static final Set<String> warnedDeprecations = ConcurrentHashMap.newKeySet();
+
+    /** Log a deprecation warning the first time a given message is encountered. */
+    private static void warnDeprecated(String message) {
+        if (warnedDeprecations.add(message))
+            LoggerUtils.log.warning(message);
+    }
 
     public static List<Generator> getMatchingFunctions(String name, Value[] argValues) {
         List<Generator> matches = new ArrayList<>();
@@ -33,8 +43,12 @@ public class ParserUtils {
 
     public static List<Generator> getMatchingFunctions(String name, Map<String, Value> arguments) {
         List<Generator> matches = new ArrayList<>();
-        for (Class functionClass : LoaderManager.getFunctionClasses(name)) {
-            matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
+        Set<Class<?>> functions = LoaderManager.getFunctionClasses(name);
+        if (functions != null) {
+            warnIfDeprecatedName(name);
+            for (Class functionClass : functions) {
+                matches.addAll(getGeneratorByArguments(name, arguments, functionClass));
+            }
         }
         return matches;
     }
@@ -45,13 +59,21 @@ public class ParserUtils {
         Set<Class<?>> generators = LoaderManager.getAllGenerativeDistributionClasses(name);
 
         if (generators != null) {
-            for (Class genClass : LoaderManager.getAllGenerativeDistributionClasses(name)) {
+            warnIfDeprecatedName(name);
+            for (Class genClass : generators) {
                 matches.addAll(getGeneratorByArguments(name, arguments, genClass));
             }
         } else {
             LoggerUtils.log.severe("No generator with name " + name + " available.");
         }
         return matches;
+    }
+
+    /** Warn if {@code name} is a deprecated generator/function alias, pointing to the canonical name. */
+    private static void warnIfDeprecatedName(String name) {
+        String canonical = LoaderManager.getCanonicalGeneratorName(name);
+        if (canonical != null)
+            warnDeprecated("'" + name + "' is a deprecated name; use '" + canonical + "' instead.");
     }
 
     //*** private ***//
@@ -67,11 +89,21 @@ public class ParserUtils {
             if (match(arguments, argumentInfo)) {
 
                 for (int i = 0; i < argumentInfo.size(); i++) {
-                    Value arg = arguments.get(argumentInfo.get(i).name);
+                    Argument argument = argumentInfo.get(i);
+                    String key = argument.matchingKey(arguments.keySet());
+                    Value arg = key != null ? arguments.get(key) : null;
                     if (arg != null) {
+                        // a deprecated alias was used: canonicalise the key in the shared arguments
+                        // map so the downstream setInput() call uses the generator's real param name
+                        if (!key.equals(argument.name)) {
+                            warnDeprecated("Argument '" + key + "' of '" + name +
+                                    "' is a deprecated name; use '" + argument.name + "' instead.");
+                            arguments.remove(key);
+                            arguments.put(argument.name, arg);
+                        }
                         initargs.add(arg);
-                    } else if (!argumentInfo.get(i).optional) {
-                        throw new RuntimeException("Required argument " + argumentInfo.get(i).name + " not found!");
+                    } else if (!argument.optional) {
+                        throw new RuntimeException("Required argument " + argument.name + " not found!");
                     } else {
                         initargs.add(null);
                     }
@@ -94,26 +126,20 @@ public class ParserUtils {
      */
     private static boolean match(Map<String, Value> arguments, List<Argument> argumentInfo) {
 
-        Set<String> requiredArguments = new TreeSet<>();
-        Set<String> optionalArguments = new TreeSet<>();
-        Set<String> keys = new TreeSet<>();
-        keys.addAll(arguments.keySet());
+        // each argument consumes its supplying key (canonical name or a deprecated alias);
+        // a required argument with no supplying key fails the match
+        Set<String> keys = new TreeSet<>(arguments.keySet());
 
         for (Argument argumentInf : argumentInfo) {
-            if (argumentInf.optional) {
-                optionalArguments.add(argumentInf.name);
-            } else {
-                requiredArguments.add(argumentInf.name);
+            String key = argumentInf.matchingKey(keys);
+            if (key != null) {
+                keys.remove(key);
+            } else if (!argumentInf.optional) {
+                return false;
             }
         }
 
-        // return false if not all required arguments are present
-        if (!keys.containsAll(requiredArguments)) {
-            return false;
-        }
-
-        keys.removeAll(requiredArguments);
-        keys.removeAll(optionalArguments);
+        // any remaining keys (other than "replicates") mean the arguments do not match
         return keys.size() == 0 || (keys.size() == 1 && keys.contains(REPLICATES_PARAM_NAME));
     }
 

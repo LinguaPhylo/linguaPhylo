@@ -4,17 +4,16 @@ import lphy.base.distribution.DistributionConstants;
 import lphy.base.evolution.EvolutionConstants;
 import lphy.base.evolution.Taxa;
 import lphy.base.evolution.Taxon;
-import lphy.core.model.GenerativeDistribution;
 import lphy.core.model.Value;
-import lphy.core.simulator.RandomUtils;
-import org.apache.commons.math3.random.RandomGenerator;
 
 import java.util.*;
 
 /**
  * Centralized shared code for dealing with taxa-conditioned tree generative distributions.
+ * Extends {@link AgeConditionedTreeGenerator} so subclasses additionally inherit the shared
+ * {@code rootAge}/{@code originAge} conditioning vocabulary (see the 5-arg constructor).
  */
-public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribution<TimeTree> {
+public abstract class TaxaConditionedTreeGenerator extends AgeConditionedTreeGenerator {
 
     public static final String taxaParamName = EvolutionConstants.taxaParamName;
     public static final String agesParamName = "ages";
@@ -38,19 +37,21 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     private boolean taxaConstructed = false;
 
     /**
-     * Make sure to use this random generator in all child classes
-     */
-    protected RandomGenerator random;
-
-    /**
-     * Init parameters and get random generator
+     * Init taxa parameters (no age conditioning) and get random generator.
      */
     public TaxaConditionedTreeGenerator(Value<Integer> n, Value taxaValue, Value<Double[]> ages) {
+        this(n, taxaValue, ages, null, null);
+    }
+
+    /**
+     * Init taxa and age conditioning parameters and get random generator.
+     */
+    public TaxaConditionedTreeGenerator(Value<Integer> n, Value taxaValue, Value<Double[]> ages,
+                                        Value<Number> rootAge, Value<Number> originAge) {
+        super(rootAge, originAge);
         this.n = n;
         this.taxaValue = taxaValue;
         this.ages = ages;
-
-        this.random = RandomUtils.getRandom();
     }
 
     /**
@@ -148,7 +149,7 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
     }
 
     public Map<String, Value> getParams() {
-        SortedMap<String, Value> map = new TreeMap<>();
+        Map<String, Value> map = super.getParams(); // age params (if any)
         if (n != null) map.put(DistributionConstants.nParamName, n);
         if (taxaValue != null) map.put(taxaParamName, taxaValue);
         if (ages != null) map.put(agesParamName, ages);
@@ -157,6 +158,7 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
 
     @Override
     public void setParam(String paramName, Value value) {
+        if (setAgeParam(paramName, value)) return; // rootAge / originAge need no taxa reconstruction
         switch (paramName) {
             case DistributionConstants.nParamName:
                 n = value;
@@ -171,9 +173,5 @@ public abstract class TaxaConditionedTreeGenerator implements GenerativeDistribu
                 throw new RuntimeException("Unrecognised parameter name: " + paramName);
         }
         constructTaxa();
-    }
-
-    public String toString() {
-        return getName();
     }
 }

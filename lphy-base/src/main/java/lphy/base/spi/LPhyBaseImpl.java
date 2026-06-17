@@ -59,8 +59,10 @@ public class LPhyBaseImpl extends LPhyCoreImpl { //implements LPhyExtension {
                 // tree distribution
                 Yule.class, CalibratedYule.class, BirthDeathTree.class, FullBirthDeathTree.class, BirthDeathTreeDT.class,
                 BirthDeathSamplingTree.class, BirthDeathSamplingTreeDT.class, BirthDeathSerialSamplingTree.class,
-                RhoSampleTree.class, FossilBirthDeathTree.class, FossilBirthDeathTreeDT.class,
-                SimBDReverse.class, SimFBDAge.class, SimFBDAgeDT.class, SimFossilsPoisson.class,
+                FossilBirthDeathTree.class, FossilBirthDeathTreeDT.class,
+                SimFBDAge.class, SimFBDAgeDT.class,
+                // SimBDReverse, RhoSampleTree and SimFossilsPoisson are internal building blocks
+                // used by composition (e.g. inside FossilBirthDeath / BirthDeath); not script-callable.
                 SerialCoalescent.class, StructuredCoalescent.class, StructuredCoalescentRateShifts.class,
                 StructuredCoalescentSkyline.class,
                 MultispeciesCoalescent.class,

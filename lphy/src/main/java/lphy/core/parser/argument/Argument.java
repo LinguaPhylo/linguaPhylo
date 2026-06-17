@@ -2,10 +2,14 @@ package lphy.core.parser.argument;
 
 import lphy.core.model.annotation.ParameterInfo;
 
+import java.util.Set;
+
 public class Argument implements Comparable<Argument> {
 
     public final int index;
     public final String name;
+    /** deprecated former names accepted in place of {@link #name}, see {@link ParameterInfo#aliases()} */
+    public final String[] aliases;
     public final String description;
     public final boolean optional;
     public final Class type;
@@ -13,9 +17,23 @@ public class Argument implements Comparable<Argument> {
     public Argument(int index, ParameterInfo parameterInfo, Class type) {
         this.index = index;
         this.name = parameterInfo.name();
+        this.aliases = parameterInfo.aliases();
         this.description = parameterInfo.description();
         this.optional = parameterInfo.optional();
         this.type = type;
+    }
+
+    /**
+     * @param argKeys the argument names supplied in a script
+     * @return the key in {@code argKeys} that supplies this argument: the canonical {@link #name}
+     * if present, otherwise the first matching {@link #aliases alias}, otherwise null.
+     */
+    public String matchingKey(Set<String> argKeys) {
+        if (argKeys.contains(name)) return name;
+        for (String alias : aliases) {
+            if (argKeys.contains(alias)) return alias;
+        }
+        return null;
     }
 
     public int compareTo(Argument a) {

@@ -30,7 +30,6 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
     private Value<Number> deathRate;
     private Value<Number> psiVal;
     private Value<Number> rhoVal;
-    private Value<Number> rootAge;
 
     private double c1;
     private double c2;
@@ -45,19 +44,17 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
                                         @ParameterInfo(name = TaxaConditionedTreeGenerator.agesParamName, description = "an array of leaf node ages.", optional = true) Value<Double[]> ages,
                                         @ParameterInfo(name = BirthDeathConstants.rootAgeParamName, description = "the age of the root.") Value<Number> rootAge) {
 
-        super(n, taxa, ages);
+        super(n, taxa, ages, rootAge, null);
 
         this.birthRate = birthRate;
         this.deathRate = deathRate;
         this.rhoVal = rhoVal;
         this.psiVal = psiVal;
-        this.rootAge = rootAge;
-        this.ages = ages;
 
         checkTaxaParameters(false);
     }
 
-    @GeneratorInfo(name = "BirthDeathSerialSampling",
+    @GeneratorInfo(name = "BirthDeathSerial", aliases = {"BirthDeathSerialSampling"},
             category = GeneratorCategory.BD_TREE, examples = {"simpleBirthDeathSerial.lphy"},
             description = "A tree of extant species and those sampled through time, which is conceptually embedded in a full species tree produced by a speciation-extinction (birth-death) branching process.<br>" +
             "Conditioned on root age and on number of taxa and their ages (Stadler and Yang, 2013).")
@@ -246,12 +243,11 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
 
     @Override
     public Map<String, Value> getParams() {
-        Map<String, Value> map = super.getParams();
+        Map<String, Value> map = super.getParams(); // includes rootAge
         map.put(BirthDeathConstants.lambdaParamName, birthRate);
         map.put(BirthDeathConstants.muParamName, deathRate);
         map.put(BirthDeathConstants.rhoParamName, rhoVal);
         map.put(BirthDeathConstants.psiParamName, psiVal);
-        map.put(BirthDeathConstants.rootAgeParamName, rootAge);
         return map;
     }
 
@@ -270,11 +266,8 @@ public class BirthDeathSerialSamplingTree extends TaxaConditionedTreeGenerator {
             case BirthDeathConstants.psiParamName:
                 psiVal = value;
                 break;
-            case BirthDeathConstants.rootAgeParamName:
-                rootAge = value;
-                break;
             default:
-                super.setParam(paramName, value);
+                super.setParam(paramName, value); // handles rootAge and taxa params
                 break;
         }
     }
