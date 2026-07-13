@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+data {
+  K = 2;
+  n = 2;
+  stepSd = 1.0;
+  rateShifts = [0.0, 0.5];
+}
+model {
+  M ~ LogNormal(meanlog=0.0, sdlog=1.0, replicates=K*(K-1));
+  demes = ["A", "A", "A", "A", "A", "B", "B", "B", "B", "B"];
+  init ~ Normal(mean=0.0, sd=1.0, replicates=K);
+  logNe ~ GaussianRandomWalk(firstValue=init, n=n, sd=stepSd);
+  taxa = taxa(names=["t1_A", "t2_A", "t3_A", "t4_A", "t5_A", "t1_B", "t2_B", "t3_B", "t4_B", "t5_B"]);
+  ψ ~ StructuredCoalescentSkyline(M=M, demes=demes, interpolation="constant", logNe=logNe, rateShifts=rateShifts, taxa=taxa);
+  D ~ PhyloCTMC(L=500, Q=jukesCantor(), tree=ψ);
+}
+
+-->
+<beast namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="" version="2.8">
+
+    <data
+id="D"
+spec="Alignment">
+        <sequence id="Sequence" spec="Sequence" taxon="t3_A" totalcount="4" value="GCCAGCGCGTTGACCCCTTGGTCTAAAGAACTTAACATCACCGGGGCAAGAAACACGGCAATCCTGCTATCGTTACTCCAATGTTCTGATTTAGTCTCAACTGTAAGTGGATGAGCCATGCTTGACCAGTAAAGTGCCGGATTATCGAGCTTTGTCCATCGTTCGCTTAGCTATTGTGAGCGGGGTCCTCCCTTGTTTTTCCCACATGGGCCATTCCTAGATGGCGAGACCCTAGAGCAGGATTTCCAGTCCCCAGCAGCATCAGTGTAACCCGTCAGTCTCTTTGGTAGATTTCACGCGTTTCCTTCTGATATTCAGTACTATTTTTGTCTAAAAGACGCTTTAACCGCTCGAAAATCGATCTTCAACCGTGAACGTGGTTAGGAACGCGCTGACCGAATGACCTGACACGGGACGGTTGCTCGAATGTAAAGGTACACGAGAGCCAGAATGGGTAAAAGTAATTTCGTGCTGGCATGGTGAGTGCAAGAGCGAAACAT"/>
+        <sequence id="Sequence1" spec="Sequence" taxon="t1_B" totalcount="4" value="TCCGCGGGCCATATGAAGGAACCCGACGAAATCGACGCCACTATTTTGGACGAGCATTCCATCACGAGGTTGACAGCGCAGTTTTCTCCCGACAGCTTGTTCTTCATAAGCGGCATTACACTGCGACTCTAAGCATAGGTCAGTTCCATATCGATGGAGTATGTGTTTAGCGGATGTCTTGGAAGTCCGTCGCTGTATAGCAGGCTGGTCCTTTTTTTGTTACTTCGCTCGCAGCCACAGAGTTTCTGTGTTAGTTTTGAACAGTTTGTGCCCGCTACGTTGAAAGGCCCATTCCACCCCTTTGGTACCGTTACGTTGATGTATGTTATGCTACAGCACCGAAAATCAAACTGTGACGCTTTCTTTCAGCTTCTCCGATGTTTTGTGAAACACGGCAGCGGGACCGGGCAATGTGTAGCCTGTCTGGGCGTAGGAGACCTAAGACGAGTTATGCGTTCAAGTGTTGTGGCGTTCGCGTACCGGGTAGCGTAAAATAACGA"/>
+        <sequence id="Sequence2" spec="Sequence" taxon="t2_A" totalcount="4" value="TATCGGGGCCAAATGATGGAGCCAGACGAAATCGACACCACCGTTCTAAAGGAGTATCTCCTCACACAAGTGAAGGTGCAGGGTTCTACGAACAGCTAGTTCCACCTATGCCTCGGTACACTGCGACTCCAGGGTAAGGTAACTTATATATCCATGGAGTATGTGTTTAACGGTTATCGTAGAACTCTATGACTTGATACCAGGCTTGCCCTATAAATAGTACTTCGCTCTCAGCCACCGGGCCTCTATCTAAGCTTTGAAGAGAACGGGCCCGATACGTTGAAGGCCCTAGTCCACCAGTCTCGCGCCGCTACTTTGATGTATGGTATGTTACCGCATGGAACATCAAAGTGTTAGGCCTTCTTTTAGCTGCTGCGCTGTTTGGACAAACAGGGACGACAGACCGGGCAAGGTGTACACTGTCTTCTCACAGGAGACTATAGGGGCAATATCCGTGAAATTGTTGTCGCTTTGCCGCTCCTGCTAGAATAAAATAACAA"/>
+        <sequence id="Sequence3" spec="Sequence" taxon="t4_A" totalcount="4" value="TATCTGGGCCAAATGATGGAGCCAGACGAAATCGACACGATCGTTCTAAAGGAGTATCTCCTCACACAAGTGAAGGTGCTGGGTTCTACGAACAGCTAGTTCTACCTATGCCTCGGTTCACTGCGACTCCAGGGTAAGGTAACTTATATATCCATGGAGTATGTGTATAACGGTTATCGTAGAACTCTATGACTTGATAGCAGGCTTGCCCTATTAATAGTACTTCGCTCTCAGCCCCCGGGCCTCTATCTAAGCTTTGAAGAGAACGGGCCCGATACGTTGACGGCCCTAGTCCACCAATCTCGCGCCGCTACTTTGATGTATGGTATGTTACCGCATGGAACATCAAAGTGTTAGGCCTTCTTTTAGCTGCTGCGCTGTTTGGACAAACAGGGACGACAGACCGGGCAAGGTGTACACTGTCTTCGCACAGGTGACTATACGGGCCATATCCGTGAAATTGTTGTCGCTTTGCCGCTCCTGCTAGAATAAAATAACAA"/>
+        <sequence id="Sequence4" spec="Sequence" taxon="t4_B" totalcount="4" value="TGTGGGGGGTAAATCACGGAGCAAGATGAAATCCACACCACTATATTGAAGCCGCTAGGCCTCACACGAGTGACGGGGCAGTGTTTTTCGGACAGCATGTTCCACCTAACCCGCTTTAAACTTATACTCTAAGGATTGGTCATTTTTCTATCGTTGGATTATGCGTTTAGCGGATGTAACGGAGCTCCGCCGCTGTAGAACAGCCTGGTCCTATCATTATTACCTCGCTCTCCCCCTCCGAGCTTCTGTTTTAGCTCTTAAGAGGAGGGCCCCGATACGTTCAAAAGCCTAATCCACCCGTGTCGAGCCGCTCCGTCGATTTAAGTTTAGCTAACCCACGGTAGATCAAAGAGTGAGGCCTCCTCTAGGTTTCGGCGCTGATTGGACGACCCCGGCTGCTAGAGCGGTGGAGTTGGAGCACGTCAACCCCTTGGACACGTTGGTTGAGTCATGCGTTCAACGGTTGTCAGTTTCGCGTTCCTAAGAGATAAAAAACACGG"/>
+        <sequence id="Sequence5" spec="Sequence" taxon="t1_A" totalcount="4" value="GGGGATGATCCTACATGGTACCTGGACGTCGACTCCTCCACAATGATGGGGAGCCATCCTTTAAAACAGGGTACAACAGCCAAAAAGTTAACTTAGTCCCTATTGCCTACGACCAGCTCCAGTTTTAGTATCCGCCAAATCGTCTCGTCGCTGCTACTCTGAAAACCGGTCGGGTCTCCGCGTATAGCGTGCTCTGTCTTTATCCCACTCACAAAGCGAAAGAGTTCCACCACCAGCCGGGTGAGAGCGGGCGTGACGGTATTAACCTCAATCCTCGCCTATATATTGGAGAAACGACGATTAGCGGTTACAACTGGCCAACTGCAAATATGGAAATTATGATCGATTACTACGTGGCGCCGAGCTGAAAAGCAATCACCACTCTTCAAGTATTGTAGAGATGCGATATCTGTAGTCCTAGGCCCGTGCCCTCCAGAGTAAATTCGCCCGACAAAGTCGCGCCTGTATTATCGCAGAAAACCTTTGTGCAGTGGGATGTT"/>
+        <sequence id="Sequence6" spec="Sequence" taxon="t3_B" totalcount="4" value="AGGGGACGAGTACCCGAGGCTTCGTTTTCGGGGGGTCACGGTTGGATAGGTCGTTGACCGAGTCGTACAGGCGGTACTCGTCAAAGTTATGAACTGATCCAGGGACCTCGTGATTTGTCGGAATCAGAATACTACATAACCGAGATCCATCGTGTACTGTCGGATCGGCCCCCCCACTAACATAGGAGGTGGTCGTGACTCTCTAGGTACTCATGGGGACTATCGTGCTACAACTCTAGGGTCTTACTGAGGAGGACAGTGTTGCCTCTTGTGAGTATGATGGTATGCTTGATGTTTATTTTTTGAGCACTAAATATACCGCAGTCAAGGTAGAACTCAATTTATAGAGAGGGGCTGGCACAACAGAAAGTGCGGTTTCTCATCGGTGGCAGAGGGGGGTCAACCAGGAGGCCGAAAACCAGCCGCACTCCAATGATATCGGGCCCCCTACACTGGTTAGGAGTACCGGGTCGACATGTTCGGTTAACCGGGCCGGCCAG"/>
+        <sequence id="Sequence7" spec="Sequence" taxon="t5_B" totalcount="4" value="AGGCGCCTGATTCTCGATGCTTGGTTTTCGCGGAGTTGGGGTAGTGGAGGACGTTTCCTTTGTCGAACGTAGGGTACTCGTCTAACGTATAGACTGATCTAGGGGCCTCCGGGTTTGTTGTGAAGAGAGGTATATCTAAGCTGCAAACCTGTCCTACGGCCGGTTCGACCCCACCACCAACATAGGTCGGAATCGGGACTATTTAAAAACTCATCGGGACGATCTTGTTACAACTGTTTGCTCTTACTCTGAAATTCCGTGTGGCGTCGTGGAAGTATCCTGCGGTTCATCATCTGCATTATTTTAGCACTGTGTATACCGTCCGCGAGGTATAACTCAATGTCCAGAGTGGTCGGAAGACCACAGATATAGGATTTCTGCATGGGTGGCAGAGAGGGTTCAAAGTGAACGCTGAAAACCTTTGGCACTCCAAATTATACAGAAGCACTCTTATGGTTTTGTGTACCGGGTTAAAACGTATCGGTAATCGTACCAGCCCG"/>
+        <sequence id="Sequence8" spec="Sequence" taxon="t5_A" totalcount="4" value="GGAGGACTCCATTTCCTTTACGTTAATGAATTCACTGCCCTGGCCCACTACCGTGAGCTTGTAGAAATCCTGGCAGCGTATGCGCGTTAATGCATCCTTAGTAGTCTGTTCAGGAGCCGTCAGCATGAGCGCGCCCACATAGAGCCGTATAACGAAATAAATTCGATTGGCCTCACGGCTAACCCAGTGGCGTCTTTGAATCAAGCGTTCTGGAGGACCATACTAGGTTTACCAAAGCCAAGTGCAAGAACTCAGTATGCGCAGGCTCCGTAAACATGGTGTCTATAAAGCTACACCCCCTGCGAGTATTGGTCGCGAGATCGAAGTAGATCGAGTGCCCCAGGAAGCAAAATTGCTGTAGCGCCGGGACAAGGGACACTCACGAACGGTTCCTTGTTGAAACTAAAGAACAGTAAGCGGGTTCCCCGTGATAAATGCTGTCTGCGGCCTTTCGCTGTTAATTGTATCAACCGTCCCCAAGGGGCCACTAGAAGAACACG"/>
+        <sequence id="Sequence9" spec="Sequence" taxon="t2_B" totalcount="4" value="GCTGCCCCGGAAAAACGTTAGATGGGAGAAGTCGGAGATTTGTGGCTCAGCCCCTAACCTCGGTACAATCTGGGTCGCTATCAGCGCCCATTAACCGGTCCTCTCGATTCTTATCGCCGTCTTAATATATGTGACCTCAGAAGGACTCGTTATCAACTAGGATCCGTACGCCTTGCCGCAGTTCCAGCCTCCGCCCGTAAGTGGGCCGACTACCCTTGTCTCTTAGTTTACGCGCGCCCCCGTCGTTTGGCTGTAACTCCGATGGCTAGGTGATTAAGCTGTCAAGCAACGTACAAGCTGGTCTCGATTCCTTCTCGCGACCGATAGAATGGAAGAGCCTAAACTTTCAAACTTTCAGTATGGGGTGGAACTGGACGATTCAATAATGGTTCGTGGCGTGGAGCTGGGACCACCCAGCGCGTTTTGCATCCGAAATCTTCCCTGCGTACCGGCGGCGTTATATGTCTGAGGCTTCGGGAAGCAGTGATTCGAGGTGCCCG"/>
+    </data>
+
+    <run id="MCMC" spec="MCMC" chainLength="5000" preBurnin="90">
+        <state id="State" spec="State">
+            <stateNode id="M" spec="beast.base.spec.inference.parameter.RealVectorParam" dimension="2" domain="NonNegativeReal">1.5182749507905007 1.695099241710519</stateNode>
+            <stateNode id="SkylineNe.A" spec="beast.base.spec.inference.parameter.RealVectorParam" dimension="2" domain="Real">-0.8658354124936554 -1.708883147170379</stateNode>
+            <stateNode id="SkylineNe.B" spec="beast.base.spec.inference.parameter.RealVectorParam" dimension="2" domain="Real">0.3816821326348326 -0.038843391202361355</stateNode>
+            <stateNode id="psi" spec="beast.base.evolution.tree.TreeParser" IsLabelledNewick="true" newick="((t3_A[&amp;deme=A]:0.7655488095592817,((t1_B[&amp;deme=B]:0.22179067245057937,(t2_A[&amp;deme=A]:0.017728085973415693,t4_A[&amp;deme=A]:0.017728085973415693)[&amp;deme=A]:0.2040625864771637)[&amp;deme=B]:0.021592030616122804,t4_B[&amp;deme=B]:0.24338270306670218)[&amp;deme=B]:0.5221661064925796)[&amp;deme=B]:0.6300207682784671,((t1_A[&amp;deme=A]:0.9777555892712713,(t3_B[&amp;deme=B]:0.24432582953425472,t5_B[&amp;deme=B]:0.24432582953425472)[&amp;deme=B]:0.7334297597370165)[&amp;deme=B]:1.1910694673235815,(t5_A[&amp;deme=A]:0.48677983490637144,t2_B[&amp;deme=B]:0.48677983490637144)[&amp;deme=B]:1.6820452216884814)[&amp;deme=B]:1.636651485922577):0.0;">
+                <taxonset id="TaxonSet" spec="TaxonSet">
+                    <taxon id="t3_A" spec="Taxon"/>
+                    <taxon id="t1_B" spec="Taxon"/>
+                    <taxon id="t2_A" spec="Taxon"/>
+                    <taxon id="t4_A" spec="Taxon"/>
+                    <taxon id="t4_B" spec="Taxon"/>
+                    <taxon id="t1_A" spec="Taxon"/>
+                    <taxon id="t3_B" spec="Taxon"/>
+                    <taxon id="t5_B" spec="Taxon"/>
+                    <taxon id="t5_A" spec="Taxon"/>
+                    <taxon id="t2_B" spec="Taxon"/>
+                </taxonset>
+            </stateNode>
+        </state>
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution id="CompoundDistribution" spec="CompoundDistribution">
+                    <distribution id="Normal" spec="beast.base.spec.inference.distribution.Normal">
+                        <mean id="RealScalarParam" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real"/>
+                        <sigma id="RealScalarParam1" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="PositiveReal" value="1.0"/>
+                        <param id="First" spec="mascot.util.First" arg="@SkylineNe.B"/>
+                    </distribution>
+                    <distribution id="IID" spec="beast.base.spec.inference.distribution.IID">
+                        <distr id="Normal1" spec="beast.base.spec.inference.distribution.Normal">
+                            <mean id="RealScalarParam2" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real"/>
+                            <sigma id="stepSd" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real" value="1.0"/>
+                        </distr>
+                        <param id="Difference" spec="mascot.util.Difference" arg="@SkylineNe.B"/>
+                    </distribution>
+                </distribution>
+                <distribution id="M.prior" spec="beast.base.spec.inference.distribution.IID" param="@M">
+                    <distr id="LogNormal" spec="beast.base.spec.inference.distribution.LogNormal">
+                        <M id="RealScalarParam3" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real"/>
+                        <S id="RealScalarParam4" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real" value="1.0"/>
+                    </distr>
+                </distribution>
+                <distribution id="CompoundDistribution1" spec="CompoundDistribution">
+                    <distribution id="Normal2" spec="beast.base.spec.inference.distribution.Normal">
+                        <mean id="RealScalarParam5" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real"/>
+                        <sigma id="RealScalarParam6" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="PositiveReal" value="1.0"/>
+                        <param id="First1" spec="mascot.util.First" arg="@SkylineNe.A"/>
+                    </distribution>
+                    <distribution id="IID1" spec="beast.base.spec.inference.distribution.IID">
+                        <distr id="Normal3" spec="beast.base.spec.inference.distribution.Normal" sigma="@stepSd">
+                            <mean id="RealScalarParam7" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="Real"/>
+                        </distr>
+                        <param id="Difference1" spec="mascot.util.Difference" arg="@SkylineNe.A"/>
+                    </distribution>
+                </distribution>
+                <distribution id="Mascot" spec="mascot.distribution.Mascot" tree="@psi">
+                    <dynamics id="StructuredSkyline" spec="mascot.dynamics.StructuredSkyline" dimension="2" forwardsMigration="@M">
+                        <NeDynamics id="NeDynamicsList" spec="mascot.util.InitializedNeDynamicsList">
+                            <neDynamics id="Skygrid.A" spec="mascot.parameterdynamics.StructuredSkygrid" NeLog="@SkylineNe.A"/>
+                            <neDynamics id="Skygrid.B" spec="mascot.parameterdynamics.StructuredSkygrid" NeLog="@SkylineNe.B"/>
+                        </NeDynamics>
+                        <rateShifts id="SkylineRateShifts" spec="mascot.dynamics.RateShifts">0.5 1000.5</rateShifts>
+                        <indicators id="MigrationIndicators" spec="beast.base.spec.inference.parameter.BoolVectorParam" dimension="2" estimate="false">true true</indicators>
+                        <typeTrait id="TraitSet" spec="beast.base.evolution.tree.TraitSet" traitname="deme" value="t3_A=A, t1_B=B, t2_A=A, t4_A=A, t4_B=B, t1_A=A, t3_B=B, t5_B=B, t5_A=A, t2_B=B">
+                            <taxa id="TaxonSet1" spec="TaxonSet">
+                                <taxon idref="t3_A"/>
+                                <taxon idref="t1_B"/>
+                                <taxon idref="t2_A"/>
+                                <taxon idref="t4_A"/>
+                                <taxon idref="t4_B"/>
+                                <taxon idref="t1_A"/>
+                                <taxon idref="t3_B"/>
+                                <taxon idref="t5_B"/>
+                                <taxon idref="t5_A"/>
+                                <taxon idref="t2_B"/>
+                            </taxa>
+                        </typeTrait>
+                    </dynamics>
+                    <structuredTreeIntervals id="StructuredTreeIntervals" spec="mascot.distribution.StructuredTreeIntervals" tree="@psi"/>
+                </distribution>
+            </distribution>
+            <distribution id="likelihood" spec="CompoundDistribution">
+                <distribution id="D.treeLikelihood" spec="beast.base.spec.evolution.likelihood.ThreadedTreeLikelihood" tree="@psi" useAmbiguities="true">
+                    <data idref="D"/>
+                    <siteModel id="SiteModel" spec="beast.base.spec.evolution.sitemodel.SiteModel">
+                        <substModel id="JukesCantor" spec="beast.base.spec.evolution.substitutionmodel.JukesCantor"/>
+                    </siteModel>
+                    <branchRateModel id="StrictClockModel" spec="beast.base.spec.evolution.branchratemodel.StrictClockModel">
+                        <clock.rate id="RealScalarParam8" spec="beast.base.spec.inference.parameter.RealScalarParam" domain="PositiveReal" value="1.0"/>
+                    </branchRateModel>
+                </distribution>
+            </distribution>
+        </distribution>
+        <operator id="M.scale" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@M" upper="10.0" weight="1.624504792712471"/>
+        <operator id="SkylineNe.A.scale" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@SkylineNe.A" upper="10.0" weight="1.624504792712471"/>
+        <operator id="SkylineNe.B.scale" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@SkylineNe.B" upper="10.0" weight="1.624504792712471"/>
+        <operator id="psi.intervalScale" spec="beast.base.spec.evolution.operator.IntervalScaleOperator" scaleFactor="0.1" tree="@psi" weight="4.655536721746079"/>
+        <operator id="psi.narrowExchange" spec="Exchange" tree="@psi" weight="4.655536721746079"/>
+        <operator id="psi.rootAgeScale" spec="beast.base.spec.evolution.operator.ScaleTreeOperator" rootOnly="true" tree="@psi" upper="0.975" weight="1.0"/>
+        <operator id="psi.subtreeSlide" spec="kernel.BactrianSubtreeSlide" size="0.380547654251743" tree="@psi" weight="4.655536721746079"/>
+        <operator id="psi.uniform" spec="kernel.BactrianNodeOperator" tree="@psi" weight="4.655536721746079"/>
+        <operator id="psi.wideExchange" spec="Exchange" isNarrow="false" tree="@psi" weight="1.5518455739153598"/>
+        <operator id="psi.wilsonBalding" spec="WilsonBalding" tree="@psi" weight="1.5518455739153598"/>
+        <logger id="ScreenLogger" spec="Logger" logEvery="200">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="M"/>
+            <log idref="SkylineNe.A"/>
+            <log idref="SkylineNe.B"/>
+        </logger>
+        <logger id="Logger" spec="Logger" fileName="structuredCoalescentSkyline.log" logEvery="2">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="M"/>
+            <log idref="SkylineNe.A"/>
+            <log idref="SkylineNe.B"/>
+            <log id="TreeStatLogger" spec="beast.base.evolution.tree.TreeStatLogger" tree="@psi"/>
+            <log idref="Mascot"/>
+            <log idref="D.treeLikelihood"/>
+        </logger>
+        <logger id="StructuredTreeLoggerpsi" spec="Logger" fileName="structuredCoalescentSkyline.mascot.trees" logEvery="2" mode="tree">
+            <log id="StructuredTreeLogger" spec="mascot.logger.StructuredTreeLogger" mascot="@Mascot"/>
+        </logger>
+    </run>
+
+</beast>
+

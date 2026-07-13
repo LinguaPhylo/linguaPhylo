@@ -57,3 +57,26 @@ manuscript/manuscript_diff*.tex
 hs_err_pid*
 
 .Rproj.user
+
+# --- added during laptop migration 2026 ---
+.DS_Store
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.Rhistory
+.Rapp.history
+_site/
+.pytest_cache/
+*.aux
+*.toc
+*.out
+*.blg
+*.bbl
+*.fls
+*.fdb_latexmk
+*.nav
+*.snm
+*.vrb
+*.synctex.gz
