@@ -1,4 +1,0 @@
-# META-INF/services must be under src for Intellij
-# Class requires a public no-args constructor
-
-lphy.base.spi.LPhyBaseImpl
