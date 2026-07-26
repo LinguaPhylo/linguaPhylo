@@ -61,11 +61,19 @@ public abstract class AbstractPhyloCTMC implements GenerativeDistribution<Alignm
         this.tree = tree;
         this.clockRate = clockRate;
 
-        // root frequencies should sum to 1
+        // Root frequencies should sum to 1.
         if (freq != null) {
             this.freq = freq;
-            if (ValueUtils.sum(freq) != 1)
-                throw new IllegalArgumentException("root frequencies should sum to 1 !" + freq);
+
+            double sum = ValueUtils.sum(freq);
+            double tolerance = 1e-12;
+
+            if (Math.abs(sum - 1.0) > tolerance) {
+                throw new IllegalArgumentException(
+                        "Root frequencies should sum to 1, but sum to " +
+                                sum + "! " + freq
+                );
+            }
         }
 
         this.branchRates = branchRates;
