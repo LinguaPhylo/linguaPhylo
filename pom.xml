@@ -51,7 +51,7 @@
 
     <properties>
         <!-- it is used as project.version -->
-        <revision>1.8.0-beta1</revision>
+        <revision>1.8.1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>25</maven.compiler.release>
@@ -105,7 +105,7 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.6.0</version>
+                        <version>0.11.0</version>
                         <extensions>true</extensions>
                         <configuration>
                             <!-- matches server-id: central in ci-publish workflow -->
